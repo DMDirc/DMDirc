@@ -23,6 +23,7 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.Main;
+import com.dmdirc.Precondition;
 import com.dmdirc.actions.wrappers.ActionWrapper;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.actions.wrappers.PerformWrapper;
@@ -102,6 +103,10 @@ public final class ActionManager {
      *
      * @param wrapper The wrapper to be registered
      */
+    @Precondition({
+        "The specified wrapper is not null",
+        "The specified wrapper's group name is non-null and not empty"
+    })
     public static void registerWrapper(final ActionWrapper wrapper) {
         assert(wrapper != null);
         assert(wrapper.getGroupName() != null);
@@ -115,6 +120,7 @@ public final class ActionManager {
      *
      * @param types An array of ActionTypes to be registered
      */
+    @Precondition("None of the specified ActionTypes are null")
     public static void registerActionTypes(final ActionType[] types) {
         for (ActionType type : types) {
             assert(type != null);
@@ -133,6 +139,7 @@ public final class ActionManager {
      *
      * @param comps An array of ActionComponents to be registered
      */
+    @Precondition("None of the specified ActionComponents are null")
     public static void registerActionComponents(final ActionComponent[] comps) {
         for (ActionComponent comp : comps) {
             assert(comp != null);
@@ -146,6 +153,7 @@ public final class ActionManager {
      *
      * @param comps An array of ActionComparisons to be registered
      */
+    @Precondition("None of the specified ActionComparisons are null")
     public static void registerActionComparisons(final ActionComparison[] comps) {
         for (ActionComparison comp : comps) {
             assert(comp != null);
@@ -216,6 +224,7 @@ public final class ActionManager {
      * @param name The group name to find
      * @return An ActionWrapper with the specified group name, or null
      */
+    @Precondition("The specified name is non-null and not empty")
     private static ActionWrapper getWrapper(final String name) {
         assert(name != null);
         assert(!name.isEmpty());
@@ -236,6 +245,7 @@ public final class ActionManager {
      * @param name The group name to test
      * @return True if the group is part of a wrapper, false otherwise
      */
+    @Precondition("The specified name is non-null and not empty")
     private static boolean isWrappedGroup(final String name) {
         assert(name != null);
         assert(!name.isEmpty());
@@ -248,6 +258,7 @@ public final class ActionManager {
      *
      * @param dir The directory to scan.
      */
+    @Precondition("The specified File is not null and represents a directory")
     private static void loadActions(final File dir) {
         assert(dir != null);
         assert(dir.isDirectory());
@@ -262,6 +273,7 @@ public final class ActionManager {
      *
      * @param action The action to be registered
      */
+    @Precondition("The specified action is not null")
     public static void registerAction(final Action action) {
         assert(action != null);
         
@@ -289,6 +301,7 @@ public final class ActionManager {
      *
      * @param action The action to be unregistered
      */
+    @Precondition("The specified action is not null")
     public static void unregisterAction(final Action action) {
         assert(action != null);
         
@@ -321,6 +334,7 @@ public final class ActionManager {
      *
      * @param action The action to be deleted
      */
+    @Precondition("The specified Action is not null")
     public static void deleteAction(final Action action) {
         assert(action != null);
         
@@ -337,6 +351,11 @@ public final class ActionManager {
      * the event. Actions may change this format.
      * @param arguments The arguments for the event
      */
+    @Precondition({
+        "The specified ActionType is not null",
+        "The specified ActionType has a valid ActionMetaType",
+        "The length of the arguments array equals the arity of the ActionType's ActionMetaType"
+    })
     public static void processEvent(final ActionType type,
             final StringBuffer format, final Object ... arguments) {
         assert(type != null);
@@ -358,6 +377,7 @@ public final class ActionManager {
      * the event. Actions may change this format.*
      * @param arguments The arguments for the event
      */
+    @Precondition("The specified ActionType is not null")
     private static void triggerActions(final ActionType type,
             final StringBuffer format, final Object ... arguments) {
         assert(type != null);
@@ -383,6 +403,10 @@ public final class ActionManager {
      *
      * @param group The group to be created
      */
+    @Precondition({
+        "The specified group is non-null and not empty",
+        "The specified group is not an existing group"
+    })
     public static void makeGroup(final String group) {
         assert(group != null);
         assert(!group.isEmpty());
@@ -398,6 +422,10 @@ public final class ActionManager {
      *
      * @param group The group to be removed
      */
+    @Precondition({
+        "The specified group is non-null and not empty",
+        "The specified group is an existing group"
+    })    
     public static void removeGroup(final String group) {
         assert(group != null);
         assert(!group.isEmpty());
@@ -432,6 +460,13 @@ public final class ActionManager {
      * @param oldName The old name of the group
      * @param newName The new name of the group
      */
+    @Precondition({
+        "The old name is non-null and not empty",
+        "The old name is an existing group",
+        "The new name is non-null and not empty",
+        "The new name is not an existing group",
+        "The old name does not equal the new name"
+    })    
     public static void renameGroup(final String oldName, final String newName) {
         assert(oldName != null);
         assert(!oldName.isEmpty());
@@ -460,6 +495,7 @@ public final class ActionManager {
      * @param type The name of the action comparison to try and find
      * @return The actioncomparison with the specified name, or null on failure
      */
+    @Precondition("The specified type is non-null and not empty")
     public static ActionType getActionType(final String type) {
         assert(type != null);
         assert(!type.isEmpty());
@@ -480,6 +516,7 @@ public final class ActionManager {
      * @param type The type to be checked against
      * @return A list of compatible action types
      */
+    @Precondition("The specified type is not null")
     public static List<ActionType> getCompatibleTypes(final ActionType type) {
         assert(type != null);
         
@@ -500,6 +537,7 @@ public final class ActionManager {
      * @param target The class to be tested
      * @return A list of compatible action components
      */
+    @Precondition("The specified target is not null")
     public static List<ActionComponent> getCompatibleComponents(final Class target) {
         assert(target != null);
         
@@ -520,6 +558,7 @@ public final class ActionManager {
      * @param target The class to be tested
      * @return A list of compatible action comparisons
      */
+    @Precondition("The specified target is not null")
     public static List<ActionComparison> getCompatibleComparisons(final Class target) {
         assert(target != null);
         
@@ -558,6 +597,7 @@ public final class ActionManager {
      * @param type The name of the action component to try and find
      * @return The actioncomponent with the specified name, or null on failure
      */
+    @Precondition("The specified type is non-null and not empty")
     public static ActionComponent getActionComponent(final String type) {
         assert(type != null);
         assert(!type.isEmpty());
@@ -578,6 +618,7 @@ public final class ActionManager {
      * @param type The name of the action type to try and find
      * @return The actiontype with the specified name, or null on failure
      */
+    @Precondition("The specified type is non-null and not empty")
     public static ActionComparison getActionComparison(final String type) {
         assert(type != null);
         assert(!type.isEmpty());

@@ -23,6 +23,7 @@
 package com.dmdirc.config;
 
 import com.dmdirc.Main;
+import com.dmdirc.Precondition;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -167,6 +168,7 @@ public final class IdentityManager {
      * Adds the specific identity to this manager.
      * @param identity The identity to be added
      */
+    @Precondition("The specified Identity is not null")
     public static void addIdentity(final Identity identity) {
         assert(identity != null);
         
@@ -181,6 +183,10 @@ public final class IdentityManager {
      * Removes an identity from this manager.
      * @param identity The identity to be removed
      */
+    @Precondition({
+        "The specified Identity is not null",
+        "The specified Identity has previously been added and not removed"
+    })
     public static void removeIdentity(final Identity identity) {
         assert(identity != null);
         assert(identities.contains(identity));
@@ -192,6 +198,7 @@ public final class IdentityManager {
      * Adds a config manager to this manager.
      * @param manager The ConfigManager to add
      */
+    @Precondition("The specified ConfigManager is not null")
     public static void addConfigManager(final ConfigManager manager) {
         assert(manager != null);
         
@@ -295,6 +302,10 @@ public final class IdentityManager {
      * @param channel The name of the channel
      * @return A config source for the channel
      */
+    @Precondition({
+        "The specified network is non-null and not empty",
+        "The specified channel is non-null and not empty"
+    })
     public static Identity getChannelConfig(final String network,
             final String channel) {
         assert(network != null);
@@ -324,6 +335,7 @@ public final class IdentityManager {
      * @param network The name of the network
      * @return A config source for the network
      */
+    @Precondition("The specified network is non-null and not empty")
     public static Identity getNetworkConfig(final String network) {
         assert(network != null);
         assert(!network.isEmpty());

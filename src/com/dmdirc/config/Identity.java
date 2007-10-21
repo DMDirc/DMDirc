@@ -23,6 +23,7 @@
 package com.dmdirc.config;
 
 import com.dmdirc.Main;
+import com.dmdirc.Precondition;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -95,6 +96,7 @@ public class Identity implements Serializable, Comparable<Identity> {
      * @param properties The properties to use for this identity
      * @param target The target of this identity
      */
+    @Precondition("The specified Properties is not null")
     public Identity(final Properties properties, final ConfigTarget target) {
         assert(properties != null);
         

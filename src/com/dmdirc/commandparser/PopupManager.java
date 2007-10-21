@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser;
 
+import com.dmdirc.Precondition;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -54,6 +55,10 @@ public class PopupManager {
      * 
      * @return A map of "friendly names" to commands (without command characters)
      */
+    @Precondition({
+        "The specified PopupType is not null",
+        "The specified ConfigManager is not null"
+    })
     public static Map<String, String> getMenuItems(final PopupType menuType,
             final ConfigManager configManager, final Object ... arguments) {
         assert(menuType != null);

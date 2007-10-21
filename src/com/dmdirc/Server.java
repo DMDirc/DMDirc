@@ -196,6 +196,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @param ssl Whether to use SSL or not
      * @param profile The profile to use
      */
+    @Precondition("The IRC Parser is null or not connected")
     public void connect(final String server, final int port, final String password,
             final boolean ssl, final Identity profile) {
         synchronized(myState) {
@@ -1104,6 +1105,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      *
      * @param errorInfo The parser's error information
      */
+    @Precondition("The current server state is CONNECTING")
     public void onConnectError(final ParserError errorInfo) {
         synchronized(myState) {
             assert(myState == ServerState.CONNECTING);

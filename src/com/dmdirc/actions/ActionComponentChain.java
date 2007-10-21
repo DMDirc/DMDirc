@@ -22,6 +22,7 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.Precondition;
 import com.dmdirc.logger.Logger;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +79,7 @@ public class ActionComponentChain implements ActionComponent {
     }
     
     /** {@inheritDoc} */
+    @Precondition("This component chain has one or more components")
     public Class appliesTo() {
         assert(!components.isEmpty());
         
@@ -85,6 +87,7 @@ public class ActionComponentChain implements ActionComponent {
     }
     
     /** {@inheritDoc} */
+    @Precondition("This component chain has one or more components")
     public Class getType() {
         assert(!components.isEmpty());
         
@@ -92,6 +95,7 @@ public class ActionComponentChain implements ActionComponent {
     }
     
     /** {@inheritDoc} */
+    @Precondition("This component chain has one or more components")
     public String getName() {
         assert(!components.isEmpty());
         
@@ -107,6 +111,7 @@ public class ActionComponentChain implements ActionComponent {
     
     /** {@inheritDoc} */
     @Override
+    @Precondition("This component chain has one or more components")
     public String toString() {
         assert(!components.isEmpty());
         

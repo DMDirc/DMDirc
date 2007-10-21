@@ -23,6 +23,7 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.Main;
+import com.dmdirc.Precondition;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -77,6 +78,7 @@ public final class Formatter {
      * @param arguments The arguments to this message type
      * @return A formatted string
      */
+    @Precondition("The specified message type is not null")
     public static String formatMessage(final String messageType,
             final Object... arguments) {
         assert(messageType != null);
@@ -114,6 +116,7 @@ public final class Formatter {
      * @param args The arguments to be casted
      * @return A new set of arguments of appropriate types
      */
+    @Precondition("The specified format is not null")
     private static Object[] castArguments(final String format, final Object[] args) {
         assert(format != null);
         
