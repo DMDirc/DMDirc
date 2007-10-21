@@ -27,6 +27,8 @@ import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.updater.components.ClientComponent;
+import com.dmdirc.updater.components.ModeAliasesComponent;
 import com.dmdirc.util.Downloader;
 
 import java.awt.event.MouseAdapter;
@@ -49,12 +51,21 @@ import javax.swing.JLabel;
  * @author chris
  */
 public final class UpdateChecker extends MouseAdapter implements Runnable {
+       
+    /** A list of components that we're to check. */
+    private static final List<UpdateComponent> components
+            = new ArrayList<UpdateComponent>();
     
     /** The label used to indicate that there's an update available. */
     private static JLabel label;
     
     /** The list of updates that are available. */
     private static final List<Update> updates = new ArrayList<Update>();
+    
+    static {
+        components.add(new ClientComponent());
+        components.add(new ModeAliasesComponent());
+    }    
     
     /**
      * Instantiates an Updatechecker.
@@ -71,25 +82,29 @@ public final class UpdateChecker extends MouseAdapter implements Runnable {
         updates.clear();
         
         try {
-            final String content = "component=client&channel="
-                    + Main.UPDATE_CHANNEL + "&date=" + Main.RELEASE_DATE;
+            // TODO: Make this use one HTTP request
+            for (UpdateComponent component : components) {
+                final String content = "component=" + component.getName() + "&channel="
+                    + Main.UPDATE_CHANNEL + "&date=" + component.getVersion();
             
-            final List<String> response
+                final List<String> response
                     = Downloader.getPage("http://www.dmdirc.com/update.php", content);
             
-            for (String line : response) {
-                checkLine(line);
+                for (String line : response) {
+                    checkLine(line);
+                }
             }
-            
-            IdentityManager.getConfigIdentity().setOption("updater",
-                    "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
-            UpdateChecker.init();
         } catch (MalformedURLException ex) {
             Logger.appError(ErrorLevel.LOW, "Error when checking for updates", ex);
         } catch (IOException ex) {
             Logger.userError(ErrorLevel.LOW, 
                     "I/O error when checking for updates: " + ex.getMessage());
         }
+        
+        UpdateChecker.init();
+        
+        IdentityManager.getConfigIdentity().setOption("updater",
+                "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));        
     }
     
     /**
@@ -163,6 +178,15 @@ public final class UpdateChecker extends MouseAdapter implements Runnable {
         if (e.getButton() == MouseEvent.BUTTON1) {
             Main.getUI().getUpdaterDialog(updates).display();
         }
+    }
+    
+    /**
+     * Registers an update component.
+     * 
+     * @param component The component to be registered
+     */
+    public static void registerComponent(final UpdateComponent component) {
+        components.add(component);
     }
     
 }
