@@ -49,22 +49,22 @@ public class WindowManager {
     }
     
     public static void addFrameManager(final FrameManager frameManager) {
-        Logger.doAssertion(frameManager != null);
-        Logger.doAssertion(!frameManagers.contains(frameManager));
+        assert(frameManager != null);
+        assert(!frameManagers.contains(frameManager));
         
         frameManagers.add(frameManager);
     }
     
     public static void removeFrameManager(final FrameManager frameManager) {
-        Logger.doAssertion(frameManager != null);
-        Logger.doAssertion(frameManagers.contains(frameManager));
+        assert(frameManager != null);
+        assert(frameManagers.contains(frameManager));
         
         frameManagers.remove(frameManager);
     }
     
     public static void addWindow(final Window window) {
-        Logger.doAssertion(window != null);
-        Logger.doAssertion(!rootWindows.contains(window));
+        assert(window != null);
+        assert(!rootWindows.contains(window));
         
         rootWindows.add(window);
         childWindows.put(window, new ArrayList<Window>());
@@ -73,8 +73,10 @@ public class WindowManager {
     }
     
     public static void addWindow(final Window parent, final Window child) {
-        Logger.doAssertion(parent != null, child != null);
-        Logger.doAssertion(childWindows.containsKey(parent), !childWindows.containsKey(child));
+        assert(parent != null);
+        assert(child != null);
+        assert(childWindows.containsKey(parent));
+        assert(!childWindows.containsKey(child));
         
         childWindows.get(parent).add(child);
         childWindows.put(child, new ArrayList<Window>());
@@ -83,8 +85,8 @@ public class WindowManager {
     }
     
     public static void removeWindow(final Window window) {
-        Logger.doAssertion(window != null);
-        Logger.doAssertion(childWindows.containsKey(window));
+        assert(window != null);
+        assert(childWindows.containsKey(window));
         
         if (!childWindows.get(window).isEmpty()) {
             for (Window child : new ArrayList<Window>(childWindows.get(window))) {
@@ -108,14 +110,15 @@ public class WindowManager {
     }
     
     public static Window findCustomWindow(final String name) {
-        Logger.doAssertion(name != null);
+        assert(name != null);
         
         return findCustomWindow(rootWindows, name);
     }
     
     public static Window findCustomWindow(final Window parent, final String name) {
-        Logger.doAssertion(parent != null, name != null);
-        Logger.doAssertion(childWindows.containsKey(parent));
+        assert(parent != null);
+        assert(name != null);
+        assert(childWindows.containsKey(parent));
         
         return findCustomWindow(childWindows.get(parent), name);
     }

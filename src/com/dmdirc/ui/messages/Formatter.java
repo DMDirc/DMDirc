@@ -79,7 +79,7 @@ public final class Formatter {
      */
     public static String formatMessage(final String messageType,
             final Object... arguments) {
-        Logger.doAssertion(messageType != null);
+        assert(messageType != null);
         
         if (properties == null) {
             initialise();
@@ -115,7 +115,7 @@ public final class Formatter {
      * @return A new set of arguments of appropriate types
      */
     private static Object[] castArguments(final String format, final Object[] args) {
-        Logger.doAssertion(format != null);
+        assert(format != null);
         
         if (!typeCache.containsKey(format)) {
             analyseFormat(format, args);

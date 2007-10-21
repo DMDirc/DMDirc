@@ -79,21 +79,21 @@ public class ActionComponentChain implements ActionComponent {
     
     /** {@inheritDoc} */
     public Class appliesTo() {
-        Logger.doAssertion(!components.isEmpty());
+        assert(!components.isEmpty());
         
         return components.get(0).appliesTo();
     }
     
     /** {@inheritDoc} */
     public Class getType() {
-        Logger.doAssertion(!components.isEmpty());
+        assert(!components.isEmpty());
         
         return components.get(components.size() - 1).getType();
     }
     
     /** {@inheritDoc} */
     public String getName() {
-        Logger.doAssertion(!components.isEmpty());
+        assert(!components.isEmpty());
         
         final StringBuilder name = new StringBuilder();
         
@@ -108,7 +108,7 @@ public class ActionComponentChain implements ActionComponent {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        Logger.doAssertion(!components.isEmpty());
+        assert(!components.isEmpty());
         
         final StringBuilder name = new StringBuilder();
         

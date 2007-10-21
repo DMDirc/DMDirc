@@ -56,7 +56,8 @@ public class PopupManager {
      */
     public static Map<String, String> getMenuItems(final PopupType menuType,
             final ConfigManager configManager, final Object ... arguments) {
-        Logger.doAssertion(menuType != null, configManager != null);
+        assert(menuType != null);
+        assert(configManager != null);
         
         final Map<String, String> res = new LinkedHashMap<String, String>();
         

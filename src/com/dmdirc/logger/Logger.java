@@ -47,21 +47,6 @@ public final class Logger {
     }
     
     /**
-     * Called to assert that a set of conditions are true. If any condition
-     * fails, an error is thrown. This method fails-fast, and the conditions
-     * are guarenteed to be tested in the order that they're specified in.
-     * 
-     * @param conditions The condition to be tested
-     */
-    public static void doAssertion(final boolean ... conditions) {
-        for (int i = 0; i < conditions.length; i++) {
-            if (!conditions[i]) {
-                throw new AssertionError("Assert failed: condition " + i + ".");
-            }
-        }
-    }
-    
-    /**
      * Called when a user correctable error occurs.
      *
      * @param level Severity of the error
@@ -106,7 +91,7 @@ public final class Logger {
         }
         
         if (sendable && report) {
-            ErrorManager.getErrorManager().sendError(error);
+            ErrorManager.sendError(error);
         }
         
         if (level == ErrorLevel.FATAL && !report) {

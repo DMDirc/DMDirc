@@ -222,7 +222,7 @@ public final class Server extends WritableFrameContainer implements Serializable
 
         ActionManager.processEvent(CoreActionType.SERVER_CONNECTING, null, this);
 
-        Logger.doAssertion(parser == null || parser.getSocketState() != IRCParser.STATE_OPEN);
+        assert(parser == null || parser.getSocketState() != IRCParser.STATE_OPEN);
 
         serverInfo = new ServerInfo(server, port, password);
         serverInfo.setSSL(ssl);
@@ -1106,7 +1106,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public void onConnectError(final ParserError errorInfo) {
         synchronized(myState) {
-            Logger.doAssertion(myState == ServerState.CONNECTING);
+            assert(myState == ServerState.CONNECTING);
 
             myState = ServerState.TRANSIENTLY_DISCONNECTED;
         }

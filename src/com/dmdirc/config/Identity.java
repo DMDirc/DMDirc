@@ -96,7 +96,7 @@ public class Identity implements Serializable, Comparable<Identity> {
      * @param target The target of this identity
      */
     public Identity(final Properties properties, final ConfigTarget target) {
-        Logger.doAssertion(properties != null);
+        assert(properties != null);
         
         this.properties = properties;
         

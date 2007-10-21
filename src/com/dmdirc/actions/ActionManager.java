@@ -103,8 +103,9 @@ public final class ActionManager {
      * @param wrapper The wrapper to be registered
      */
     public static void registerWrapper(final ActionWrapper wrapper) {
-        Logger.doAssertion(wrapper != null && wrapper.getGroupName() != null
-                 && !wrapper.getGroupName().isEmpty());
+        assert(wrapper != null);
+        assert(wrapper.getGroupName() != null);
+        assert(!wrapper.getGroupName().isEmpty());
         
         actionWrappers.add(wrapper);
     }
@@ -116,7 +117,7 @@ public final class ActionManager {
      */
     public static void registerActionTypes(final ActionType[] types) {
         for (ActionType type : types) {
-            Logger.doAssertion(type != null);
+            assert(type != null);
             
             if (!actionTypeGroups.containsKey(type.getType().getGroup())) {
                 actionTypeGroups.put(type.getType().getGroup(), new ArrayList<ActionType>());
@@ -134,7 +135,7 @@ public final class ActionManager {
      */
     public static void registerActionComponents(final ActionComponent[] comps) {
         for (ActionComponent comp : comps) {
-            Logger.doAssertion(comp != null);
+            assert(comp != null);
             
             actionComponents.add(comp);
         }
@@ -147,7 +148,7 @@ public final class ActionManager {
      */
     public static void registerActionComparisons(final ActionComparison[] comps) {
         for (ActionComparison comp : comps) {
-            Logger.doAssertion(comp != null);
+            assert(comp != null);
             
             actionComparisons.add(comp);
         }
@@ -216,7 +217,8 @@ public final class ActionManager {
      * @return An ActionWrapper with the specified group name, or null
      */
     private static ActionWrapper getWrapper(final String name) {
-        Logger.doAssertion(name != null && !name.isEmpty());
+        assert(name != null);
+        assert(!name.isEmpty());
         
         for (ActionWrapper wrapper : actionWrappers) {
             if (name.equals(wrapper.getGroupName())) {
@@ -235,7 +237,8 @@ public final class ActionManager {
      * @return True if the group is part of a wrapper, false otherwise
      */
     private static boolean isWrappedGroup(final String name) {
-        Logger.doAssertion(name != null && !name.isEmpty());
+        assert(name != null);
+        assert(!name.isEmpty());
         
         return getWrapper(name) != null;
     }
@@ -246,7 +249,8 @@ public final class ActionManager {
      * @param dir The directory to scan.
      */
     private static void loadActions(final File dir) {
-        Logger.doAssertion(dir != null && dir.isDirectory());
+        assert(dir != null);
+        assert(dir.isDirectory());
         
         for (File file : dir.listFiles()) {
             new Action(dir.getName(), file.getName());
@@ -259,7 +263,7 @@ public final class ActionManager {
      * @param action The action to be registered
      */
     public static void registerAction(final Action action) {
-        Logger.doAssertion(action != null);
+        assert(action != null);
         
         for (ActionType trigger : action.getTriggers()) {
             if (!actions.containsKey(trigger)) {
@@ -286,7 +290,7 @@ public final class ActionManager {
      * @param action The action to be unregistered
      */
     public static void unregisterAction(final Action action) {
-        Logger.doAssertion(action != null);
+        assert(action != null);
         
         for (Map.Entry<ActionType, List<Action>> map : actions.entrySet()) {
             if (map.getValue().contains(action)) {
@@ -318,7 +322,7 @@ public final class ActionManager {
      * @param action The action to be deleted
      */
     public static void deleteAction(final Action action) {
-        Logger.doAssertion(action != null);
+        assert(action != null);
         
         unregisterAction(action);
         
@@ -335,8 +339,9 @@ public final class ActionManager {
      */
     public static void processEvent(final ActionType type,
             final StringBuffer format, final Object ... arguments) {
-        Logger.doAssertion(type != null &&type.getType() != null 
-                && type.getType().getArity() == arguments.length);
+        assert(type != null);
+        assert(type.getType() != null);
+        assert(type.getType().getArity() == arguments.length);
         
         PluginManager.getPluginManager().processEvent(type, format, arguments);
         
@@ -355,7 +360,7 @@ public final class ActionManager {
      */
     private static void triggerActions(final ActionType type,
             final StringBuffer format, final Object ... arguments) {
-        Logger.doAssertion(type != null);
+        assert(type != null);
         
         if (actions.containsKey(type)) {
             for (Action action : actions.get(type)) {
@@ -379,8 +384,9 @@ public final class ActionManager {
      * @param group The group to be created
      */
     public static void makeGroup(final String group) {
-        Logger.doAssertion(group != null && !group.isEmpty()
-               && !groups.containsKey(group));
+        assert(group != null);
+        assert(!group.isEmpty());
+        assert(!groups.containsKey(group));
         
         if (new File(getDirectory() + group).mkdir()) {
             groups.put(group, new ArrayList<Action>());
@@ -393,8 +399,9 @@ public final class ActionManager {
      * @param group The group to be removed
      */
     public static void removeGroup(final String group) {
-        Logger.doAssertion(group != null && !group.isEmpty()
-                && groups.containsKey(group));
+        assert(group != null);
+        assert(!group.isEmpty());
+        assert(groups.containsKey(group));        
         
         for (Action action : new ArrayList<Action>(groups.get(group))) {
             unregisterAction(action);
@@ -426,9 +433,13 @@ public final class ActionManager {
      * @param newName The new name of the group
      */
     public static void renameGroup(final String oldName, final String newName) {
-        Logger.doAssertion(oldName != null && !oldName.isEmpty()
-                && newName != null && !newName.isEmpty() && groups.containsKey(oldName)
-                &&!groups.containsKey(newName) && !newName.equals(oldName));
+        assert(oldName != null);
+        assert(!oldName.isEmpty());
+        assert(newName != null);
+        assert(!newName.isEmpty());
+        assert(groups.containsKey(oldName));
+        assert(!groups.containsKey(newName));
+        assert(!newName.equals(oldName));
         
         makeGroup(newName);
         
@@ -450,7 +461,8 @@ public final class ActionManager {
      * @return The actioncomparison with the specified name, or null on failure
      */
     public static ActionType getActionType(final String type) {
-        Logger.doAssertion(type != null && !type.isEmpty());
+        assert(type != null);
+        assert(!type.isEmpty());
         
         for (ActionType target : actionTypes) {
             if (((Enum) target).name().equals(type)) {
@@ -469,7 +481,7 @@ public final class ActionManager {
      * @return A list of compatible action types
      */
     public static List<ActionType> getCompatibleTypes(final ActionType type) {
-        Logger.doAssertion(type != null);
+        assert(type != null);
         
         final List<ActionType> res = new ArrayList<ActionType>();
         for (ActionType target : actionTypes) {
@@ -489,7 +501,7 @@ public final class ActionManager {
      * @return A list of compatible action components
      */
     public static List<ActionComponent> getCompatibleComponents(final Class target) {
-        Logger.doAssertion(target != null);
+        assert(target != null);
         
         final List<ActionComponent> res = new ArrayList<ActionComponent>();
         for (ActionComponent subject : actionComponents) {
@@ -509,7 +521,7 @@ public final class ActionManager {
      * @return A list of compatible action comparisons
      */
     public static List<ActionComparison> getCompatibleComparisons(final Class target) {
-        Logger.doAssertion(target != null);
+        assert(target != null);
         
         final List<ActionComparison> res = new ArrayList<ActionComparison>();
         for (ActionComparison subject : actionComparisons) {
@@ -547,7 +559,8 @@ public final class ActionManager {
      * @return The actioncomponent with the specified name, or null on failure
      */
     public static ActionComponent getActionComponent(final String type) {
-        Logger.doAssertion(type != null && !type.isEmpty());
+        assert(type != null);
+        assert(!type.isEmpty());
         
         for (ActionComponent target : actionComponents) {
             if (((Enum) target).name().equals(type)) {
@@ -566,7 +579,8 @@ public final class ActionManager {
      * @return The actiontype with the specified name, or null on failure
      */
     public static ActionComparison getActionComparison(final String type) {
-        Logger.doAssertion(type != null && !type.isEmpty());
+        assert(type != null);
+        assert(!type.isEmpty());
         
         for (ActionComparison target : actionComparisons) {
             if (((Enum) target).name().equals(type)) {
