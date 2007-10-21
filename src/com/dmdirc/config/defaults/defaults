@@ -56,6 +56,7 @@ notifications.numeric_313=group:whois
 notifications.numeric_317=group:whois
 notifications.numeric_318=group:whois
 notifications.numeric_319=group:whois
+notifications.numeric_320=group:whois
 notifications.numeric_330=group:whois
 notifications.numeric_343=group:whois
 
@@ -70,6 +71,7 @@ notifications.numeric_473=server
 notifications.numeric_474=server
 notifications.numeric_475=server
 notifications.numeric_479=server
+notifications.numeric_482=channel:%4$s
 
 notifications.numeric_524=server
 

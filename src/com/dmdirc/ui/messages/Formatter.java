@@ -413,9 +413,10 @@ public final class Formatter {
         defaultProperties.setProperty("numeric_317", "%4$s has been idle for %5$s seconds; signed on at %6$TT on %6$TF.");
         defaultProperties.setProperty("numeric_318", "End of WHOIS info for %4$s" + stop + ".\n-");
         defaultProperties.setProperty("numeric_319", "%4$s is on: %5$s");
+        defaultProperties.setProperty("numeric_320", "%4$s %5$s.");
         defaultProperties.setProperty("numeric_330", "%4$s %6$s %5$s" + stop + ".");
         defaultProperties.setProperty("numeric_343", "%4$s %6$s %5$s" + stop + ".");
-        
+                
         defaultProperties.setProperty("numeric_401", "6A7000%4$s" + stop + ": %5$s");
         defaultProperties.setProperty("numeric_404", "6A7000%5$s");
         defaultProperties.setProperty("numeric_421", "6A7000%4$s" + stop + ": %5$s");
@@ -427,6 +428,7 @@ public final class Formatter {
         defaultProperties.setProperty("numeric_474", "6A7000%4$s" + stop + ": %5$s");
         defaultProperties.setProperty("numeric_475", "6A7000%4$s" + stop + ": %5$s");
         defaultProperties.setProperty("numeric_479", "6A7000%4$s" + stop + ": %5$s");
+        defaultProperties.setProperty("numeric_482", "6A7000%4$s" + stop + ": %5$s");
         
         defaultProperties.setProperty("numeric_524", "6A7000%4$s" + stop + ": %5$s");
         
