@@ -402,7 +402,7 @@ public final class AliasManagerDialog extends StandardDialog implements
         for (Alias alias : aliases) {
             final Action action = getAction(alias);
             if (action != null) {
-                action.rename(alias.getName());
+                action.setName(alias.getName());
                 action.setConditions(alias.getArguments());
                 action.setResponse(alias.getResponse());
                 action.save();
