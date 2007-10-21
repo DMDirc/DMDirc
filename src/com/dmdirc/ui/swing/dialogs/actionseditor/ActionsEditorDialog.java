@@ -256,7 +256,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
                     ((ResponseTabPanel) tabbedPane.getComponentAt(2)).getFormatter());
         } else {
             if (!action.getName().equals(((GeneralTabPanel) tabbedPane.getComponentAt(0)).getName())) {
-                action.rename(((GeneralTabPanel) tabbedPane.getComponentAt(0)).getName());
+                action.setName(((GeneralTabPanel) tabbedPane.getComponentAt(0)).getName());
             }
             action.setTriggers(((GeneralTabPanel) tabbedPane.getComponentAt(0)).getTriggers().toArray(new ActionType[0]));
             action.setConditions(((ConditionsTabPanel) tabbedPane.getComponentAt(1)).getConditions());
