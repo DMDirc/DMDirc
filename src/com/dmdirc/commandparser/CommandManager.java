@@ -328,6 +328,7 @@ public final class CommandManager {
         new Notify();
         new LoadFormatter();
         new LoadPlugin();
+        new OpenWindow();
         new ReloadActions();
         new ReloadFormatter();
         new ReloadPlugin();

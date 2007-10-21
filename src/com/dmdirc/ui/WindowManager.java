@@ -131,7 +131,7 @@ public class WindowManager {
         return null;
     }
     
-    private static Window getParent(final Window window) {
+    public static Window getParent(final Window window) {
         for (Entry<Window, List<Window>> entry : childWindows.entrySet()) {
             if (entry.getValue().contains(window)) {
                 return entry.getKey();

@@ -25,65 +25,93 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.Main;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
 
 /**
  * The echo commands simply echos text to the current window.
+ * 
  * @author chris
  */
 public final class Echo extends GlobalCommand {
-    
+
     /**
      * Creates a new instance of Echo.
      */
     public Echo() {
         super();
-        
+
         CommandManager.registerCommand(this);
     }
-    
+
     /**
      * Executes this command.
-     * @param origin The frame in which this command was issued
-     * @param isSilent Whether this command is silenced or not
-     * @param args The user supplied arguments
+     * 
+     * @param origin
+     *            The frame in which this command was issued
+     * @param isSilent
+     *            Whether this command is silenced or not
+     * @param args
+     *            The user supplied arguments
      */
-    public void execute(final InputWindow origin, final boolean isSilent, 
-            final String... args) {        
+    public void execute(final InputWindow origin, final boolean isSilent,
+            final String... args) {
         if (args.length > 0 && args[0].equalsIgnoreCase("--active")) {
             final Window frame = Main.getUI().getMainWindow().getActiveFrame();
             if (frame instanceof InputWindow) {
-                ((InputWindow) frame).addLine(FORMAT_OUTPUT, implodeArgs(1, args));
+                ((InputWindow) frame).addLine(FORMAT_OUTPUT, implodeArgs(1,
+                        args));
             }
+        } else if (args.length > 1 && args[0].equalsIgnoreCase("--target")) {
+            Window frame = null;
+            Window target = origin;
+
+            while (frame == null && target != null) {
+                frame = WindowManager.findCustomWindow(target, args[1]);
+                target = WindowManager.getParent(target);
+            }
+
+            if (frame == null) {
+                frame = WindowManager.findCustomWindow(args[1]);
+            }
+
+            if (frame == null) {
+                sendLine(origin, isSilent, FORMAT_ERROR,
+                        "Unable to find target window");
+            } else {
+                frame.addLine(FORMAT_OUTPUT, implodeArgs(2, args));
+            }
+
         } else {
             sendLine(origin, isSilent, FORMAT_OUTPUT, implodeArgs(args));
         }
     }
-    
+
     /** {@inheritDoc}. */
     public String getName() {
         return "echo";
     }
-    
+
     /** {@inheritDoc}. */
     public boolean showInHelp() {
         return true;
     }
-    
+
     /** {@inheritDoc}. */
     public boolean isPolyadic() {
         return true;
     }
-    
+
     /** {@inheritDoc}. */
     public int getArity() {
         return 0;
     }
-    
+
     /** {@inheritDoc}. */
     public String getHelp() {
-        return "echo [--active] <line> - echos the specified line to the window";
+        return "echo [--active|--target <window>] <line> "
+                + "- echos the specified line to the window";
     }
-    
+
 }

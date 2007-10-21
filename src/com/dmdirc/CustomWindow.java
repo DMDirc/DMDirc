@@ -22,77 +22,80 @@
 
 package com.dmdirc;
 
+import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.Window;
 
 /**
- *
+ * 
  * @author chris
  */
 public class CustomWindow extends FrameContainer {
-    
+
     /** This custom window's name. */
     private final String name;
-    
+
     /** This custom window's title. */
     private final String title;
-    
+
     private final Window window;
-    
+
     private Window parent = null;
-    
-    public CustomWindow(final String name, final String title, final Window parent) {
+
+    public CustomWindow(final String name, final String title,
+            final Window parent) {
         super();
-        
+
         this.name = name;
         this.title = title;
         this.parent = parent;
-        
+
         icon = IconManager.getIconManager().getIcon("custom");
-        
+
         window = Main.getUI().getWindow(this);
         window.setTitle(title);
         window.setFrameIcon(icon);
-        
+
         WindowManager.addWindow(parent, window);
-        
+
         window.setVisible(true);
     }
-    
+
     public CustomWindow(final String name, final String title) {
         super();
-        
+
         this.name = name;
         this.title = title;
-        
+
         icon = IconManager.getIconManager().getIcon("custom");
-        
+
         window = Main.getUI().getWindow(this);
         window.setTitle(title);
         window.setFrameIcon(icon);
-        
+
         WindowManager.addWindow(window);
-        
+
         window.setVisible(true);
-    }    
+    }
 
     /** {@inheritDoc} */
-    @Override    
+    @Override
     public Window getFrame() {
         return window;
     }
 
     /** {@inheritDoc} */
-    @Override    
+    @Override
     public String toString() {
         return name;
     }
 
     /** {@inheritDoc} */
-    @Override    
+    @Override
     public void close() {
         window.setVisible(false);
-        
+
         WindowManager.removeWindow(window);
     }
 
@@ -104,7 +107,7 @@ public class CustomWindow extends FrameContainer {
 
     /**
      * Retrieves this custom window's name.
-     *
+     * 
      * @return This custom window's name
      */
     public String getName() {
@@ -113,11 +116,17 @@ public class CustomWindow extends FrameContainer {
 
     /**
      * Retrieves this custom window's title.
-     *
+     * 
      * @return This custom window's title
-     */    
+     */
     public String getTitle() {
         return title;
+    }
+
+    @Override
+    public ConfigManager getConfigManager() {
+        return parent == null ? IdentityManager.getGlobalConfig() : parent
+                .getConfigManager();
     }
 
 }
