@@ -134,6 +134,7 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
                         ((DefaultListModel) otherTriggers.getModel()).addElement(thisType);
                     }
             owner.setType((ActionType) trigger.getSelectedItem());
+            otherTriggers.setEnabled(true);
         }
         otherTriggers.repaint();
     }
