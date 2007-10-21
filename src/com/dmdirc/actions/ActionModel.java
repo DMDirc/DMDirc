@@ -59,6 +59,9 @@ public class ActionModel {
     /** The conditions for this action. */
     protected List<ActionCondition> conditions = new ArrayList<ActionCondition>();
     
+    /** Whether this action has been modified or not. */
+    protected boolean modified = false;
+    
     /**
      * Creates a new instance of ActionModel with the specified properties.
      *
@@ -151,6 +154,7 @@ public class ActionModel {
      */
     public void setConditions(final List<ActionCondition> conditions) {
         this.conditions = conditions;
+        this.modified = true;
     }
 
     /**
@@ -169,6 +173,7 @@ public class ActionModel {
      */
     public void setTriggers(final ActionType[] triggers) {
         this.triggers = triggers.clone();
+        this.modified = true;
     }
 
     /**
@@ -187,6 +192,7 @@ public class ActionModel {
      */
     public void setNewFormat(final String newFormat) {
         this.newFormat = newFormat;
+        this.modified = true;
     }
 
     /**
@@ -205,6 +211,7 @@ public class ActionModel {
      */
     public void setResponse(final String[] response) {
         this.response = response.clone();
+        this.modified = true;
     }
 
     /**
@@ -222,7 +229,8 @@ public class ActionModel {
      * @param newGroup The new group for this action
      */
     public void setGroup(final String newGroup) {
-        group = newGroup;
+        this.group = newGroup;
+        this.modified = true;
     }
 
     /**
@@ -240,7 +248,27 @@ public class ActionModel {
      * @param newName The new name for this action
      */
     public void setName(final String newName) {
-        name = newName;
+        this.name = newName;
+        this.modified = true;
+    }
+    
+    /**
+     * Determine if this model has been modified since it was constructed or
+     * its modified status was reset.
+     * 
+     * @return True if this model has been modified, false otherwise
+     */
+    public boolean isModified() {
+        return modified;
+    }
+    
+    /**
+     * Resets the modified status of this model. After a call to
+     * resetModified(), this model will report that it has not been modified,
+     * until one of the set* methods is used.
+     */
+    public void resetModified() {
+        this.modified = false;
     }
     
     /** {@inheritDoc} */
