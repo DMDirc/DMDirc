@@ -53,7 +53,8 @@ public interface UpdateComponent {
      * file.
      * 
      * @param path The full path to the downloaded data
+     * @throws java.lang.Throwable If any error occured
      */
-    void doInstall(String path);
+    void doInstall(String path) throws Throwable;
 
 }

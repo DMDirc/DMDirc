@@ -77,8 +77,7 @@ public final class IdentityManager {
         
         final String base = "com/dmdirc/config/defaults/";
         
-        final String[] urls = {"asuka", "bahamut", "defaults", "generic", 
-        "hyperion", "ircu", "plexus", "snircd", "unreal", "inspircd",  };
+        final String[] urls = {"defaults"};
         
         for (String url : urls) {
             try {
@@ -107,7 +106,7 @@ public final class IdentityManager {
     }
     
     /** Loads user-defined identity files. */
-    private static void loadUser() {
+    public static void loadUser() {
         final File dir = new File(getDirectory());
         
         if (!dir.exists()) {
@@ -206,6 +205,10 @@ public final class IdentityManager {
     @Precondition("The specified Identity is not null")
     public static void addIdentity(final Identity identity) {
         assert(identity != null);
+        
+        if (identities.contains(identity)) {
+            removeIdentity(identity);
+        }
         
         identities.add(identity);
         

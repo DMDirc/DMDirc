@@ -22,7 +22,12 @@
 
 package com.dmdirc.updater.components;
 
+import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.updater.UpdateComponent;
+import com.dmdirc.util.resourcemanager.ResourceManager;
+import com.dmdirc.util.resourcemanager.ZipResourceManager;
+import java.io.IOException;
 
 /**
  * Represents the mode alias identities.
@@ -40,13 +45,27 @@ public class ModeAliasesComponent implements UpdateComponent {
     /** {@inheritDoc} */
     @Override    
     public int getVersion() {
-        return -1; // TODO: Read this from disc
+        final ConfigManager globalConfig = IdentityManager.getGlobalConfig();
+        
+        if (!globalConfig.hasOption("identity", "modealiasversion")) {
+            return -1;
+        } else {
+            return globalConfig.getOptionInt("identity", "modealiasversion", -2);
+        }
     }
 
-    /** {@inheritDoc} */
-    @Override    
-    public void doInstall(final String path) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws java.io.IOException On i/o exception when reading zip file
+     */
+    @Override
+    public void doInstall(final String path) throws IOException {
+        final ZipResourceManager ziprm = ZipResourceManager.getInstance(path);
+        
+        ziprm.extractResources("", IdentityManager.getDirectory());
+        
+        IdentityManager.loadUser();
     }
 
 }
