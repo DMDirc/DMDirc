@@ -50,7 +50,7 @@ public class ProcessWallops extends IRCProcessor {
 			if (message.charAt(0) == '*') {
 				callWallop(bits[1], user);
 				return;
-			} else if (message.charAt(0) == '*') {
+			} else if (message.charAt(0) == '$') {
 				callWalluser(bits[1], user);
 				return;
 			}
