@@ -58,11 +58,11 @@ public final class SwingUpdaterDialog extends StandardDialog implements
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /** Update table headers. */
     private static final String[] HEADERS = new String[]{"Component", 
-    "Local version", "Remote version", "Status", };
+    "New version", "Status", };
     
     /** Previously created instance of SwingUpdaterDialog. */
     private static SwingUpdaterDialog me;
@@ -90,7 +90,11 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         setTitle("Update available");
     }
     
-    /** Creates the dialog if one doesn't exist, and displays it. */
+    /**
+     * Creates the dialog if one doesn't exist, and displays it.
+     * 
+     * @param updates The updates that are available
+     */
     public static synchronized void showSwingUpdaterDialog(
             final List<Update> updates) {
         me = getSwingUpdaterDialog(updates);
@@ -170,9 +174,8 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         
         for (int i = 0; i < updates.size(); i++) {
             tableData[i][0] = updates.get(i).getComponent();
-            tableData[i][1] = updates.get(i).getLocalVersion();
-            tableData[i][2] = updates.get(i).getRemoteVersion();
-            tableData[i][3] = "Pending";
+            tableData[i][1] = updates.get(i).getRemoteVersion();
+            tableData[i][2] = "Pending";
         }
         
         return tableData;

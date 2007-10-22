@@ -81,18 +81,23 @@ public final class UpdateChecker extends MouseAdapter implements Runnable {
         
         updates.clear();
         
-        try {
-            // TODO: Make this use one HTTP request
-            for (UpdateComponent component : components) {
-                final String content = "component=" + component.getName() + "&channel="
-                    + Main.UPDATE_CHANNEL + "&date=" + component.getVersion();
+        StringBuilder data = new StringBuilder();
+        
+        for (UpdateComponent component : components) {
+            data.append(component.getName());
+            data.append(',');
+            data.append(Main.UPDATE_CHANNEL);
+            data.append(',');
+            data.append(component.getVersion());
+            data.append(';');
+        }
+        
+        try {            
+            final List<String> response
+                = Downloader.getPage("http://updates.dmdirc.com/", "data=" + data);
             
-                final List<String> response
-                    = Downloader.getPage("http://www.dmdirc.com/update.php", content);
-            
-                for (String line : response) {
-                    checkLine(line);
-                }
+            for (String line : response) {
+                checkLine(line);
             }
         } catch (MalformedURLException ex) {
             Logger.appError(ErrorLevel.LOW, "Error when checking for updates", ex);
@@ -114,9 +119,12 @@ public final class UpdateChecker extends MouseAdapter implements Runnable {
      */
     private void checkLine(final String line) {
         if (line.startsWith("uptodate")) {
-            Main.getUI().getStatusBar().setMessage("No updates available");
+            // Do nothing
         } else if (line.startsWith("outofdate")) {
             doUpdateAvailable(line);
+        } else if (line.startsWith("error")) {
+            Logger.userError(ErrorLevel.LOW, "Error when checking for updates: "
+                    + line.substring(6));
         } else {
             Logger.userError(ErrorLevel.LOW, "Unknown update line received from server: "
                     + line);

@@ -96,12 +96,19 @@ public final class IdentityManager {
             }
         }
     }
+
+    /**
+     * Retrieves the directory used to store identities in.
+     * 
+     * @return The identity directory path
+     */
+    public static String getDirectory() {
+        return Main.getConfigDir() + "identities" + System.getProperty("file.separator"); 
+    }
     
     /** Loads user-defined identity files. */
     private static void loadUser() {
-        final String fs = System.getProperty("file.separator");
-        final String location = Main.getConfigDir() + "identities" + fs;
-        final File dir = new File(location);
+        final File dir = new File(getDirectory());
         
         if (!dir.exists()) {
             try {
@@ -169,7 +176,8 @@ public final class IdentityManager {
             // This shouldn't happen as we're forcing it to global
             Logger.appError(ErrorLevel.HIGH, "Unable to load global config", ex);
         } catch (IOException ex) {
-            Logger.userError(ErrorLevel.MEDIUM, "I/O error when loading file: " + ex.getMessage());
+            Logger.userError(ErrorLevel.MEDIUM, "I/O error when loading file: "
+                    + ex.getMessage());
         }
     }
     

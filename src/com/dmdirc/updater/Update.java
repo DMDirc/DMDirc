@@ -34,10 +34,12 @@ public final class Update {
     
     /** Update component. */
     private final String component;
-    /** Local version. */
-    private final String localVersion;
-    /** Remove version. */
-    private final String remoteVersion;
+    /** Channel name. */
+    private final String channel;
+    /** Remote version number. */
+    private final String versionID;
+    /** Remote version name. */
+    private final String versionName;
     /** Update url. */
     private final String url;
     
@@ -47,20 +49,25 @@ public final class Update {
      * @param updateInfo An update information line from the update server
      */
     public Update(final String updateInfo) {
+        // outofdate client STABLE 20071007 0.5.1 file
         final String[] parts = updateInfo.split(" ");
         
-        if (parts.length == 5) {
+        if (parts.length == 6) {
             component = parts[1];
-            remoteVersion = parts[2];
-            localVersion = parts[3];
-            url = parts[4];
+            channel = parts[2];
+            versionID = parts[3];
+            versionName = parts[4];
+            url = parts[5];            
         } else {
             component = null;
-            remoteVersion = null;
-            localVersion = null;
-            url = null;
-            Logger.userError(ErrorLevel.LOW, "Unknown update line received from server: "
-                    + updateInfo);
+            channel = null;
+            versionID = null;
+            versionName = null;
+            url = null;  
+            
+            Logger.appError(ErrorLevel.LOW,
+                    "Invalid update line received from server: ",
+                    new UnsupportedOperationException("line: " + updateInfo));
         }
     }
     
@@ -74,21 +81,12 @@ public final class Update {
     }
     
     /**
-     * Returns the local version of the component that's updateable.
-     *
-     * @return The local (outdated) version number
-     */
-    public String getLocalVersion() {
-        return localVersion;
-    }
-    
-    /**
      * Returns the remote version of the component that's available.
      *
      * @return The remote version number
      */
     public String getRemoteVersion() {
-        return remoteVersion;
+        return versionName;
     }
     
     /**

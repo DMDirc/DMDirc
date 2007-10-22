@@ -48,7 +48,9 @@ public interface UpdateComponent {
     int getVersion();
     
     /**
-     * Installs the updated version of this component.
+     * Installs the updated version of this component. After the update has
+     * been installed, the component is responsible for deleting the specified
+     * file.
      * 
      * @param path The full path to the downloaded data
      */
