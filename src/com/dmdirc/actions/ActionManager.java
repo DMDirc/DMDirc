@@ -32,6 +32,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.util.MapList;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,26 +50,32 @@ import java.util.Map;
 public final class ActionManager {
     
     /** A list of registered action types. */
-    private final static List<ActionType> actionTypes = new ArrayList<ActionType>();
+    private final static List<ActionType> actionTypes
+            = new ArrayList<ActionType>();
     
     /** A list of registered action components. */
-    private final static List<ActionComponent> actionComponents = new ArrayList<ActionComponent>();
+    private final static List<ActionComponent> actionComponents
+            = new ArrayList<ActionComponent>();
     
     /** A list of registered action comparisons. */
-    private final static List<ActionComparison> actionComparisons = new ArrayList<ActionComparison>();
+    private final static List<ActionComparison> actionComparisons
+            = new ArrayList<ActionComparison>();
     
     /** A list of all action wrappers that have registered with us. */
-    private final static List<ActionWrapper> actionWrappers = new ArrayList<ActionWrapper>();
+    private final static List<ActionWrapper> actionWrappers
+            = new ArrayList<ActionWrapper>();
     
     /** A map linking types and a list of actions that're registered for them. */
-    private final static Map<ActionType, List<Action>> actions = new HashMap<ActionType, List<Action>>();
+    private final static MapList<ActionType, Action> actions
+            = new MapList<ActionType, Action>();
     
     /** A map linking groups and a list of actions that're in them. */
-    private final static Map<String, List<Action>> groups = new HashMap<String, List<Action>>();
+    private final static MapList<String, Action> groups
+            = new MapList<String, Action>();
     
     /** A map of the action type groups to the action types within. */
-    private final static Map<String, List<ActionType>> actionTypeGroups
-            = new LinkedHashMap<String, List<ActionType>>();
+    private final static MapList<String, ActionType> actionTypeGroups
+            = new MapList<String, ActionType>();
     
     /** Indicates whether or not user actions should be killed (not processed). */
     private static boolean killSwitch
@@ -125,12 +132,8 @@ public final class ActionManager {
         for (ActionType type : types) {
             assert(type != null);
             
-            if (!actionTypeGroups.containsKey(type.getType().getGroup())) {
-                actionTypeGroups.put(type.getType().getGroup(), new ArrayList<ActionType>());
-            }
-            
             actionTypes.add(type);
-            actionTypeGroups.get(type.getType().getGroup()).add(type);
+            actionTypeGroups.add(type.getType().getGroup(), type);
         }
     }
     
@@ -167,7 +170,7 @@ public final class ActionManager {
      *
      * @return a map of groups to action lists
      */
-    public static Map<String, List<Action>> getGroups() {
+    public static MapList<String, Action> getGroups() {
         return groups;
     }
     
@@ -176,7 +179,7 @@ public final class ActionManager {
      *
      * @return A map of type groups to types
      */
-    public static Map<String, List<ActionType>> getTypeGroups() {
+    public static MapList<String, ActionType> getTypeGroups() {
         return actionTypeGroups;
     }
     
@@ -207,11 +210,7 @@ public final class ActionManager {
             Logger.userError(ErrorLevel.MEDIUM, "Unable to load user action files");
         } else {
             for (File file : dir.listFiles()) {
-                if (file.isDirectory()) {
-                    if (!isWrappedGroup(file.getName())) {
-                        groups.put(file.getName(), new ArrayList<Action>());
-                    }
-                    
+                if (file.isDirectory()) {                    
                     loadActions(file);
                 }
             }
@@ -278,21 +277,13 @@ public final class ActionManager {
         assert(action != null);
         
         for (ActionType trigger : action.getTriggers()) {
-            if (!actions.containsKey(trigger)) {
-                actions.put(trigger, new ArrayList<Action>());
-            }
-            
-            actions.get(trigger).add(action);
+            actions.add(trigger, action);
         }
         
         if (isWrappedGroup(action.getGroup())) {
             getWrapper(action.getGroup()).registerAction(action);
         } else {
-            if (!groups.containsKey(action.getGroup())) {
-                groups.put(action.getGroup(), new ArrayList<Action>());
-            }
-            
-            groups.get(action.getGroup()).add(action);
+            groups.add(action.getGroup(), action);
         }
     }
     
@@ -305,17 +296,8 @@ public final class ActionManager {
     public static void unregisterAction(final Action action) {
         assert(action != null);
         
-        for (Map.Entry<ActionType, List<Action>> map : actions.entrySet()) {
-            if (map.getValue().contains(action)) {
-                map.getValue().remove(action);
-            }
-        }
-        
-        for (Map.Entry<String, List<Action>> map : groups.entrySet()) {
-            if (map.getValue().contains(action)) {
-                map.getValue().remove(action);
-            }
-        }
+        actions.removeFromAll(action);
+        groups.removeFromAll(action);
     }
     
     /**
@@ -413,7 +395,7 @@ public final class ActionManager {
         assert(!groups.containsKey(group));
         
         if (new File(getDirectory() + group).mkdir()) {
-            groups.put(group, new ArrayList<Action>());
+            groups.add(group);
         }
     }
     
@@ -480,10 +462,10 @@ public final class ActionManager {
         
         for (Action action : groups.get(oldName)) {
             action.setGroup(newName);
-            groups.get(newName).add(action);
+            groups.add(newName, action);
         }
         
-        groups.get(oldName).clear();
+        groups.clear(oldName);
         
         removeGroup(oldName);
     }

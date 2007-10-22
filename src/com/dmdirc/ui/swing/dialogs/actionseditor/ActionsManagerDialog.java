@@ -27,6 +27,7 @@ import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
+import com.dmdirc.util.MapList;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
@@ -37,8 +38,6 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -250,7 +249,7 @@ public final class ActionsManagerDialog extends StandardDialog
         
         groups.removeAll();
         
-        final Map<String, List<Action>> actionGroups = ActionManager.getGroups();
+        final MapList<String, Action> actionGroups = ActionManager.getGroups();
         
         if (actionGroups == null) {
             return;
@@ -262,7 +261,7 @@ public final class ActionsManagerDialog extends StandardDialog
         
         for (Object group : keys) {
             groups.addTab((String) group, new ActionsGroupPanel(this,
-                    actionGroups.get(group), (String) group));
+                    actionGroups.get((String) group), (String) group));
         }
         
         if (groups.getTabCount() == 0) {

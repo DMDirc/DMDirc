@@ -26,11 +26,10 @@ import com.dmdirc.CustomWindow;
 import com.dmdirc.Precondition;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.util.MapList;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 /**
@@ -46,8 +45,8 @@ public class WindowManager {
             = new ArrayList<Window>();
 
     /** A map of parent windows to their children. */
-    private final static Map<Window, List<Window>> childWindows
-            = new HashMap<Window, List<Window>>();
+    private final static MapList<Window, Window> childWindows
+            = new MapList<Window, Window>();
 
     /** A list of frame managers. */
     private final static List<FrameManager> frameManagers
@@ -106,7 +105,7 @@ public class WindowManager {
         assert(!rootWindows.contains(window));
 
         rootWindows.add(window);
-        childWindows.put(window, new ArrayList<Window>());
+        childWindows.add(window);
 
         fireAddWindow(window);
     }
@@ -128,8 +127,8 @@ public class WindowManager {
         assert(childWindows.containsKey(parent));
         assert(!childWindows.containsKey(child));
 
-        childWindows.get(parent).add(child);
-        childWindows.put(child, new ArrayList<Window>());
+        childWindows.add(parent, child);
+        childWindows.add(child);
 
         fireAddWindow(parent, child);
     }
@@ -163,7 +162,7 @@ public class WindowManager {
         } else {
             final Window parent = getParent(window);
 
-            childWindows.get(parent).remove(window);
+            childWindows.remove(parent, window);
 
             fireDeleteWindow(parent, window);
         }

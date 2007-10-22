@@ -222,6 +222,8 @@ public class Action extends ActionModel implements Serializable {
             final FileOutputStream outputStream = new FileOutputStream(file);
             properties.store(outputStream, "Created by GUI actions editor");
             outputStream.close();
+            
+            resetModified();
         } catch (IOException ex) {
             Logger.userError(ErrorLevel.HIGH, "I/O error when saving action: "
                     + group + "/" + name + ": " + ex.getMessage());
@@ -320,17 +322,6 @@ public class Action extends ActionModel implements Serializable {
     private void error(final String message) {
         Logger.userError(ErrorLevel.LOW, "Error when parsing action: "
                 + group + "/" + name + ": " + message);
-    }
-    
-    /**
-     * Renames this action to the specified new name.
-     *
-     * @param newName The new name for this action
-     * @deprecated Use setName instead
-     */
-    @Deprecated
-    public void rename(final String newName) {
-        setName(newName);
     }
     
     /** {@inheritDoc} */

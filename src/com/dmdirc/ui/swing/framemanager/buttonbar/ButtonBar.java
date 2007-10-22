@@ -33,6 +33,7 @@ import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.FramemanagerPosition;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.UIUtilities;
+import com.dmdirc.util.MapList;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -45,7 +46,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -76,7 +76,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
     private static final long serialVersionUID = 3;
     
     /** A map of parent containers to their respective windows. */
-    private final Map<FrameContainer, List<FrameContainer>> windows;
+    private final MapList<FrameContainer, FrameContainer> windows;
     
     /** A map of containers to the buttons we're using for them. */
     private final Map<FrameContainer, JToggleButton> buttons;
@@ -104,7 +104,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
     
     /** Creates a new instance of DummyFrameManager. */
     public ButtonBar() {
-        windows = new HashMap<FrameContainer, List<FrameContainer>>();
+        windows = new MapList<FrameContainer, FrameContainer>();
         buttons = new HashMap<FrameContainer, JToggleButton>();
         position = FramemanagerPosition.getPosition(
                 IdentityManager.getGlobalConfig().getOption("ui", "framemanagerPosition"));
@@ -236,7 +236,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
     
     /** {@inheritDoc} */
     public void addWindow(final FrameContainer window) {
-        windows.put(window, new ArrayList<FrameContainer>());
+        windows.add(window);
         addButton(window);
         
         relayout();
@@ -257,7 +257,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
         
     /** {@inheritDoc} */
     public void addWindow(final FrameContainer parent, final FrameContainer window) {
-        windows.get(parent).add(window);
+        windows.add(parent, window);
         addButton(window);
         
         relayout();
@@ -268,7 +268,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
     
     /** {@inheritDoc} */
     public void delWindow(final FrameContainer parent, final FrameContainer window) {
-        windows.get(parent).remove(window);
+        windows.remove(parent, window);
         
         relayout();
         window.removeNotificationListener(this);

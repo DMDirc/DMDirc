@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.dialogs.channelsetting;
 
 import com.dmdirc.Channel;
 import com.dmdirc.parser.ChannelListModeItem;
+import com.dmdirc.util.MapList;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.GridBagConstraints;
@@ -76,7 +77,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
     /** list modes available on this server. */
     private final char[] listModesArray;
     /** Modes on creation. */
-    private final Map<Character, List<ChannelListModeItem>> existingListItems;
+    private final MapList<Character, ChannelListModeItem> existingListItems;
     /** Mode count label. */
     private final JLabel modeCount;
 
@@ -95,7 +96,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
         listModesArray =
                 channel.getServer().getParser().getListChanModes().toCharArray();
         existingListItems =
-                new HashMap<Character, List<ChannelListModeItem>>();
+                new MapList<Character, ChannelListModeItem>();
         listModesMenu =
                 new JComboBox(new DefaultComboBoxModel());
         addListModeButton = new JButton("Add");
@@ -122,7 +123,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
         for (int i = 0; i < listModesArray.length;
                 i++) {
             final char mode = listModesArray[i];
-            existingListItems.put(mode,
+            existingListItems.add(mode,
                     new ArrayList<ChannelListModeItem>(channel.getChannelInfo().
                     getListModeParam(mode)));
             final ArrayList<ChannelListModeItem> listItems =

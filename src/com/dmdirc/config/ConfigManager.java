@@ -25,12 +25,12 @@ package com.dmdirc.config;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.messages.ColourManager;
+import com.dmdirc.util.MapList;
 
 import java.awt.Color;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -55,8 +55,8 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
     private List<Identity> sources;
     
     /** The listeners registered for this manager. */
-    private final Map<String, List<ConfigChangeListener>> listeners
-            = new HashMap<String, List<ConfigChangeListener>>();
+    private final MapList<String, ConfigChangeListener> listeners
+            = new MapList<String, ConfigChangeListener>();
     
     /** The ircd this manager is for. */
     private final String ircd;
@@ -420,9 +420,7 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
      * @param listener The listener to be removed
      */
     public void removeListener(final ConfigChangeListener listener) {
-        for (List<ConfigChangeListener> list : listeners.values()) {
-            list.remove(listener);
-        }
+        listeners.removeFromAll(listener);
     }
     
     /**
@@ -433,11 +431,7 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
      */
     private void addListener(final String key,
             final ConfigChangeListener listener) {
-        if (!listeners.containsKey(key)) {
-            listeners.put(key, new ArrayList<ConfigChangeListener>());
-        }
-        
-        listeners.get(key).add(listener);
+        listeners.add(key, listener);
     }
     
     /** {@inheritDoc} */

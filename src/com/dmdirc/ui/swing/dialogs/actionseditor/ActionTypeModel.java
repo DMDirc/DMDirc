@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.dialogs.actionseditor;
 
 import com.dmdirc.actions.ActionType;
+import com.dmdirc.util.MapList;
 
 import java.util.Collections;
 import java.util.List;
@@ -50,7 +51,7 @@ public final class ActionTypeModel extends DefaultComboBoxModel {
      * 
      * @param typeGroups The action type groups to use
      */
-    public ActionTypeModel(final Map<String, List<ActionType>> typeGroups) {
+    public ActionTypeModel(final MapList<String, ActionType> typeGroups) {
         super();
         
         for (Map.Entry<String, List<ActionType>> entry : typeGroups.entrySet()) {
