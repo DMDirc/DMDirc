@@ -28,6 +28,7 @@ import com.dmdirc.Precondition;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.updater.Update.STATUS;
 import com.dmdirc.updater.components.ClientComponent;
 import com.dmdirc.updater.components.ModeAliasesComponent;
 import com.dmdirc.util.Downloader;
@@ -138,7 +139,19 @@ public final class UpdateChecker extends MouseAdapter implements Runnable {
      * @param line The line that was received from the update server
      */
     public void doUpdateAvailable(final String line) {
-        updates.add(new Update(line));
+        final Update update = new Update(line);
+        
+        updates.add(update);
+        update.addUpdateListener(new UpdateListener() {
+            /** {@inheritDoc} */
+            @Override
+            public void updateStatusChange(Update update, STATUS status) {
+                if (status == Update.STATUS.INSTALLED
+                        || status == Update.STATUS.ERROR) {
+                    removeUpdate(update);
+                }
+            }
+        });
         
         if (label == null) {
             label = new JLabel();
@@ -215,6 +228,19 @@ public final class UpdateChecker extends MouseAdapter implements Runnable {
         }
        
         return null;
+    }
+    
+    /**
+     * Removes the specified update from the list. This should be called when
+     * the update has finished or has encountered an error.
+     */
+    private static void removeUpdate(final Update update) {
+        updates.remove(update);
+        
+        if (updates.isEmpty()) {
+            Main.getUI().getStatusBar().removeComponent(label);
+            label = null;
+        }
     }
     
 }

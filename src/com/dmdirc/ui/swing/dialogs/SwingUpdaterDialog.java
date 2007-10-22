@@ -209,11 +209,13 @@ public final class SwingUpdaterDialog extends StandardDialog implements
             for (Update update : updates) {
                 if (update.getStatus() == Update.STATUS.PENDING) {
                     update.doUpdate();
-                    break;
+                    return;
                 }
             }
-        } else if (e.getSource().equals(getCancelButton())) {
+            
             dispose();
+        } else if (e.getSource().equals(getCancelButton())) {
+            setVisible(false);
         }
     }
     
@@ -239,9 +241,11 @@ public final class SwingUpdaterDialog extends StandardDialog implements
             for (Update myupdate : updates) {
                 if (myupdate.getStatus() == Update.STATUS.PENDING) {
                     myupdate.doUpdate();
-                    break;
+                    return;
                 }
             }            
         }
+        
+        getOkButton().setEnabled(true);
     }
 }

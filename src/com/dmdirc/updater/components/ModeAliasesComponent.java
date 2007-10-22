@@ -25,8 +25,8 @@ package com.dmdirc.updater.components;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.updater.UpdateComponent;
-import com.dmdirc.util.resourcemanager.ResourceManager;
 import com.dmdirc.util.resourcemanager.ZipResourceManager;
+
 import java.io.IOException;
 
 /**
