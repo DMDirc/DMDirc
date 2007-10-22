@@ -23,7 +23,6 @@
 package com.dmdirc.actions;
 
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Deque;
 
 /**
@@ -74,6 +73,11 @@ public class ConditionTree {
         this.op = OPERATION.NOOP;
     }
     
+    /**
+     * Retrieves the highest argument number that is used in this condition tree.
+     * 
+     * @return The highest argument number used in this tree
+     */
     public int getMaximumArgument() {
         if (this.op == OPERATION.NOOP) {
             return 0;
@@ -86,6 +90,14 @@ public class ConditionTree {
         }
     }
 
+    /**
+     * Evaluates this tree with the specified conditions. Returns the result
+     * of the evaluation.
+     * 
+     * @param conditions The binary values of each of the conditions used in
+     * this three
+     * @return The result of the evaluation of this tree
+     */
     public boolean evaluate(final boolean[] conditions) {
         switch (op) {
             case VAR:
@@ -101,6 +113,14 @@ public class ConditionTree {
         }
     }
     
+    /**
+     * Retrieves a String representation of this ConditionTree. The string
+     * representation is a normalised formula describing this tree and all of
+     * its children. The output of this method will generate an identical tree
+     * if passed to parseString.
+     * 
+     * @return A string representation of this tree
+     */
     @Override
     public String toString() {
         switch (op) {
@@ -119,6 +139,13 @@ public class ConditionTree {
         }
     }    
     
+    /**
+     * Parses the specified string into a condition tree.
+     * 
+     * @param string The string to be parsed
+     * @return The corresponding condition tree, or null if there as an error
+     * while parsing the data
+     */
     public static ConditionTree parseString(final String string) {
         final Deque<Object> stack = new ArrayDeque<Object>();
         
@@ -252,6 +279,13 @@ public class ConditionTree {
         return target >= '0' && target <= '9';
     }
     
+    /**
+     * Creates a condition tree by disjoining the specified number of arguments
+     * together.
+     * 
+     * @param numArgs The number of arguments to be disjoined
+     * @return The corresponding condition tree
+     */
     public static ConditionTree createDisjunction(final int numArgs) {
         final StringBuilder builder = new StringBuilder();
         
@@ -265,7 +299,14 @@ public class ConditionTree {
         
         return parseString(builder.toString());        
     }
-    
+
+    /**
+     * Creates a condition tree by conjoining the specified number of arguments
+     * together.
+     * 
+     * @param numArgs The number of arguments to be conjoined
+     * @return The corresponding condition tree
+     */    
     public static ConditionTree createConjunction(final int numArgs) {
         final StringBuilder builder = new StringBuilder();
         

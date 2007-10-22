@@ -29,7 +29,6 @@ import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.InviteListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -183,6 +182,10 @@ public final class Server extends WritableFrameContainer implements Serializable
                 }
             }
         }, 0, configManager.getOptionInt(DOMAIN_GENERAL, "whotime", 60000));
+        
+        if (configManager.getOptionBool(DOMAIN_GENERAL, "showrawwindow", false)) {
+            addRaw();
+        }        
 
         connect(server, port, password, ssl, profile);
     }
@@ -296,10 +299,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      * Registers callbacks.
      */
     private void doCallbacks() {
-        if (raw == null && IdentityManager.getGlobalConfig()
-                .getOptionBool(DOMAIN_GENERAL, "showrawwindow", false)) {
-            addRaw();
-        } else if (raw != null) {
+        if (raw != null) {
             raw.registerCallbacks();
         }
 
@@ -442,7 +442,10 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public void addRaw() {
         raw = new Raw(this);
-        raw.registerCallbacks();
+        
+        if (parser != null) {
+            raw.registerCallbacks();
+        }
     }
 
     /**
