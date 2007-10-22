@@ -62,7 +62,7 @@ public class ProcessNames extends IRCProcessor {
 			String[] sNames = token[token.length-1].split(" ");
 			String sNameBit = "", sName = "";
 			StringBuilder sModes = new StringBuilder();
-			int nPrefix = 0;
+			long nPrefix = 0;
 			for (int j = 0; j < sNames.length; ++j) {
 				sNameBit = sNames[j];
 				// If name is empty (ie there was an extra space) ignore it.

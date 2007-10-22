@@ -151,18 +151,18 @@ public final class IRCParser implements Runnable {
 	boolean isFirst = true;
 	
 	/** Hashtable storing known prefix modes (ohv). */
-	Hashtable<Character, Integer> hPrefixModes = new Hashtable<Character, Integer>();
+	Hashtable<Character, Long> hPrefixModes = new Hashtable<Character, Long>();
 	/**
 	 * Hashtable maping known prefix modes (ohv) to prefixes (@%+) - Both ways.
 	 * Prefix map contains 2 pairs for each mode. (eg @ => o and o => @)
 	 */
 	Hashtable<Character, Character> hPrefixMap = new Hashtable<Character, Character>();
 	/** Integer representing the next avaliable integer value of a prefix mode. */
-	int nNextKeyPrefix = 1;
+	long nNextKeyPrefix = 1;
 	/** Hashtable storing known user modes (owxis etc). */
-	Hashtable<Character, Integer> hUserModes = new Hashtable<Character, Integer>();
+	Hashtable<Character, Long> hUserModes = new Hashtable<Character, Long>();
 	/** Integer representing the next avaliable integer value of a User mode. */
-	int nNextKeyUser = 1;
+	long nNextKeyUser = 1;
 	/**
 	 * Hashtable storing known boolean chan modes (cntmi etc).
 	 * Valid Boolean Modes are stored as Hashtable.pub('m',1); where 'm' is the mode and 1 is a numeric value.<br><br>
@@ -171,9 +171,10 @@ public final class IRCParser implements Runnable {
 	 * <br>
 	 * Channel modes discovered but not listed in 005 are stored as boolean modes automatically (and a ERROR_WARNING Error is called)
 	 */
-	Hashtable<Character, Integer> hChanModesBool = new Hashtable<Character, Integer>();
+	Hashtable<Character, Long> hChanModesBool = new Hashtable<Character, Long>();
 	/** Integer representing the next avaliable integer value of a Boolean mode. */
-	int nNextKeyCMBool = 1;
+	
+	long nNextKeyCMBool = 1;
 	
 	/**
 	 * Hashtable storing known non-boolean chan modes (klbeI etc).
@@ -889,6 +890,12 @@ public final class IRCParser implements Runnable {
 				callPingSuccess();
 			} else {
 				if (got001) {
+					// Freenode sends a random notice in a stupid place, others might do aswell
+					// These shouldn't cause post005 to be fired, so handle them here.
+					if (token[0].equalsIgnoreCase("NOTICE")) {
+							try { myProcessingManager.process("Notice Auth", token); } catch (Exception e) { }
+							return;
+					}
 					if (!post005) {
 						try { nParam = Integer.parseInt(token[1]); } catch (Exception e) { nParam = -1; }
 						if (nParam < 0 || nParam > 5) {
@@ -1023,7 +1030,7 @@ public final class IRCParser implements Runnable {
 		// don't care about it but ordered guarentees that on a specific ircd this
 		// method will ALWAYs return the same value.
 		final char[] modes = new char[hChanModesBool.size()];
-		int nTemp;
+		long nTemp;
 		double pos;
 		
 		for (char cTemp : hChanModesBool.keySet()) {
@@ -1189,6 +1196,20 @@ public final class IRCParser implements Runnable {
 	}
 	
 	/**
+	 * Get the known usermodes.
+	 * Modes are returned in the order specified by the ircd.
+	 *
+	 * @return All the currently known usermodes (returns "" if usermodes are unknown)
+	 */
+	public String getUserModeString() {
+		if (h005Info.containsKey("USERMODES")) {
+			return h005Info.get("USERMODES");
+		} else {
+			return "";
+		}
+	}
+	
+	/**
 	 * Process USERMODES from 004.
 	 */
 	protected void parseUserModes() {
@@ -1197,7 +1218,8 @@ public final class IRCParser implements Runnable {
 		if (h005Info.containsKey("USERMODES")) {
 			modeStr = h005Info.get("USERMODES");
 		} else {
-			modeStr = sDefaultModes; h005Info.put("USERMODES", sDefaultModes);
+			modeStr = sDefaultModes;
+			h005Info.put("USERMODES", sDefaultModes);
 		}
 		
 		// resetState

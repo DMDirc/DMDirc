@@ -185,14 +185,14 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 		} else if (current instanceof Channel) {
 			final Channel frame = (Channel)current;
 			final ChannelInfo chan = frame.getChannelInfo();
-			final Hashtable<Integer,String> names = new Hashtable<Integer,String>();
-			final Hashtable<Integer,Integer> types = new Hashtable<Integer,Integer>();
+			final Hashtable<Long,String> names = new Hashtable<Long,String>();
+			final Hashtable<Long,Integer> types = new Hashtable<Long,Integer>();
 			
 			textString.append(chan.getName());
 			textString.append(" - Nicks: "+chan.getUserCount()+" (");
 			
 			for (ChannelClientInfo client : chan.getChannelClients()) {
-				Integer im = client.getImportantModeValue();
+				Long im = client.getImportantModeValue();
 				
 				if (!names.containsKey(im)) {
 					String mode = client.getImportantModePrefix();
@@ -223,7 +223,7 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 			
 			boolean isFirst = true;
 			
-			for (Entry<Integer, Integer> entry : types.entrySet()) {
+			for (Entry<Long, Integer> entry : types.entrySet()) {
 				if (isFirst) { isFirst = false; } else { textString.append(" "); }
 				textString.append(names.get(entry.getKey())+entry.getValue());
 			}

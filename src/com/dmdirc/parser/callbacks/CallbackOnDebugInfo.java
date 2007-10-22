@@ -50,7 +50,7 @@ public final class CallbackOnDebugInfo extends CallbackObject {
 	 * @return true if a callback was called, else false
 	 */
 	public boolean call(final int level, final String data) {
-//System.out.printf("[%d] %s\n", level, data);
+// System.out.printf("[%d] %s\n", level, data);
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			try {

@@ -53,7 +53,7 @@ public final class ChannelInfo {
 	private long nTopicTime;
 	
 	/** Known boolean-modes for channel. */
-	private int nModes;
+	private long nModes;
 	/** Reference to the parser object that owns this channel, Used for modes. */
 	private IRCParser myParser; // Reference to parser object that owns this channel. Used for Modes
 	
@@ -285,27 +285,27 @@ public final class ChannelInfo {
 	/**
 	 * Set the channel modes (as an integer).
 	 *
-	 * @param nNewMode new integer representing channel modes. (Boolean only)
+	 * @param nNewMode new long representing channel modes. (Boolean only)
 	 */	
-	protected void setMode(final int nNewMode) { nModes = nNewMode; }
+	protected void setMode(final long nNewMode) { nModes = nNewMode; }
 	/**
 	 * Get the channel modes (as an integer).
 	 *
-	 * @return integer representing channel modes. (Boolean only)
+	 * @return long representing channel modes. (Boolean only)
 	 */	
-	public int getMode() { return nModes; }	
+	public long getMode() { return nModes; }	
 	
 	/**
 	 * Get the channel modes (as a string representation).
 	 *
 	 * @return string representing modes. (boolean and non-list)
 	 */	
-	public String getModeStr() { 
+	public String getModeStr() {
 		final StringBuilder sModes = new StringBuilder("+");
 		final StringBuilder sModeParams = new StringBuilder();
 		String sTemp = "";
-		int nTemp = 0;
-		final int nChanModes = this.getMode();
+		long nTemp = 0;
+		final long nChanModes = this.getMode();
 		for (char cTemp : myParser.hChanModesBool.keySet()) {
 			nTemp = myParser.hChanModesBool.get(cTemp);
 			if ((nChanModes & nTemp) == nTemp) { sModes.append(cTemp); }

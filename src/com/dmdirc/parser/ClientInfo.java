@@ -26,6 +26,7 @@ package com.dmdirc.parser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.Hashtable;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +47,7 @@ public final class ClientInfo {
 	/** Known host of client. */
 	private String sHost = "";
 	/** Known user modes of client. */
-	private int nModes;
+	private long nModes;
 	/** Known Away Reason of client. */
 	private String myAwayReason = "";
 	/** Known RealName of client. */
@@ -61,6 +62,8 @@ public final class ClientInfo {
 	private Map myMap;
 	/** List of ChannelClientInfos that point to this */
 	private Hashtable<String, ChannelClientInfo> myChannelClientInfos = new Hashtable<String, ChannelClientInfo>();
+	/** Modes waiting to be sent to the server. */
+	private LinkedList<String> lModeQueue = new LinkedList<String>();
 
 	/**
 	 * Create a new client object from a hostmask.
@@ -233,15 +236,15 @@ public final class ClientInfo {
 	/**
 	 * Set the user modes (as an integer).
 	 *
-	 * @param nNewMode new integer representing channel modes. (Boolean only)
+	 * @param nNewMode new long representing channel modes. (Boolean only)
 	 */	
-	protected void setUserMode(final int nNewMode) { nModes = nNewMode; }
+	protected void setUserMode(final long nNewMode) { nModes = nNewMode; }
 	/**
 	 * Get the user modes (as an integer).
 	 *
-	 * @return integer representing channel modes. (Boolean only)
+	 * @return long representing channel modes. (Boolean only)
 	 */	
-	public int getUserMode() { return nModes; }	
+	public long getUserMode() { return nModes; }	
 	
 	/**
 	 * Get the user modes (as a string representation).
@@ -250,8 +253,8 @@ public final class ClientInfo {
 	 */	
 	public String getUserModeStr() { 
 		final StringBuilder sModes = new StringBuilder("+");
-		int nTemp = 0;
-		final int nChanModes = this.getUserMode();
+		long nTemp = 0;
+		final long nChanModes = this.getUserMode();
 		
 		for (char cTemp : myParser.hUserModes.keySet()) {
 			nTemp = myParser.hUserModes.get(cTemp);
@@ -314,7 +317,71 @@ public final class ClientInfo {
 			result.add(cci);
 		}
 		return result;
-	}	
+	}
+	
+	/**
+	 * Adjust the channel modes on a channel.
+	 * This function will queue modes up to be sent in one go, according to 005 params.
+	 * If less modes are altered than the queue accepts, sendModes() must be called.<br><br>
+	 * sendModes is automatically called if you attempt to add more modes than is allowed
+	 * to be queued
+	 *
+	 * @param positive Is this a positive mode change, or a negative mode change
+	 * @param mode Character representing the mode to change
+	 */
+	public void alterMode(final boolean positive, final Character mode) {
+		int modecount = 1;
+		String modestr = "";
+		if (myParser.h005Info.containsKey("MODES")) {
+			try { 
+				modecount = Integer.parseInt(myParser.h005Info.get("MODES")); 
+			} catch (NumberFormatException e) { 
+				modecount = 1;
+			}
+		}
+		if (lModeQueue.size() == modecount) { sendModes(); }
+		if (positive) { modestr = "+"; } else { modestr = "-"; }
+		modestr = modestr + mode;
+		if (!myParser.hUserModes.containsKey(mode)) { return; }
+		myParser.callDebugInfo(myParser.DEBUG_INFO, "Queueing user mode: %s", modestr);
+		lModeQueue.add(modestr);
+	}
+	
+	/**
+	 * This function will send modes that are currently queued up to send.
+	 * This assumes that the queue only contains the amount that are alowed to be sent
+	 * and thus will try to send the entire queue in one go.<br><br>
+	 * Modes are always sent negative then positive and not mixed.
+	 */
+	public void sendModes() { 
+		if (lModeQueue.size() == 0) { return; }
+		final StringBuilder positivemode = new StringBuilder();
+		final StringBuilder negativemode = new StringBuilder();
+		final StringBuilder sendModeStr = new StringBuilder();
+		String modestr;
+		boolean positive;
+		for (int i = 0; i < lModeQueue.size(); ++i) {
+			modestr = lModeQueue.get(i);
+			positive = modestr.charAt(0) == '+';
+			if (positive) {
+				positivemode.append(modestr.charAt(1));
+			} else {
+				negativemode.append(modestr.charAt(1));
+			}
+		}
+		if (negativemode.length() > 0) { sendModeStr.append("-").append(negativemode); }
+		if (positivemode.length() > 0) { sendModeStr.append("+").append(positivemode); }
+		myParser.callDebugInfo(myParser.DEBUG_INFO, "Sending mode: %s", sendModeStr.toString());
+		myParser.sendLine("MODE " + sNickname + " " + sendModeStr.toString());
+		clearModeQueue();
+	}
+	
+	/**
+	 * This function will clear the mode queue (WITHOUT Sending).
+	 */
+	public void clearModeQueue() { 
+		lModeQueue.clear();
+	}
 	
 	/**
 	 * Get the parser object that owns this client

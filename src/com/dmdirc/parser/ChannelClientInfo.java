@@ -39,7 +39,7 @@ public final class ChannelClientInfo {
 	/** Reference to ClientInfo object this represents. */
 	private ClientInfo cClient;
 	/** Integer representation of the channel modes assocated with this user. */
-	private int nModes;
+	private long nModes;
 	/** Reference to the parser object that owns this channelclient, Used for modes. */
 	private IRCParser myParser;
 	/** Reference to the channel object that owns this channelclient. */
@@ -110,13 +110,13 @@ public final class ChannelClientInfo {
 	 *
 	 * @param nNewMode integer representing the modes this client has.
 	 */	
-	public void setChanMode(final int nNewMode) { nModes = nNewMode; }
+	public void setChanMode(final long nNewMode) { nModes = nNewMode; }
 	/**
 	 * Get the modes this client has (Prefix modes).
 	 *
 	 * @return integer representing the modes this client has.
 	 */
-	public int getChanMode() { return nModes; }
+	public long getChanMode() { return nModes; }
 	
 	/**
 	 * Get the modes this client has (Prefix modes) as a string.
@@ -129,10 +129,10 @@ public final class ChannelClientInfo {
 	 */
 	public String getChanModeStr(final boolean bPrefix) {
 		StringBuilder sModes = new StringBuilder();
-		int nTemp = 0;
-		final int nCurrentModes = this.getChanMode();
+		long nTemp = 0;
+		final long nCurrentModes = this.getChanMode();
 
-		for (int i = myParser.nNextKeyPrefix; i > 0; i = i / 2) {
+		for (long i = myParser.nNextKeyPrefix; i > 0; i = i / 2) {
 			if ((nCurrentModes & i) == i) {
 				for (char cTemp : myParser.hPrefixModes.keySet()) {
 					nTemp = myParser.hPrefixModes.get(cTemp);
@@ -154,8 +154,8 @@ public final class ChannelClientInfo {
 	 *
 	 * @return integer representing the value of the most important mode.
 	 */
-	public int getImportantModeValue() {
-		for (int i = myParser.nNextKeyPrefix; i > 0; i = i / 2) {
+	public long getImportantModeValue() {
+		for (long i = myParser.nNextKeyPrefix; i > 0; i = i / 2) {
 			if ((nModes & i) == i) { return i; }
 		}
 		return 0;

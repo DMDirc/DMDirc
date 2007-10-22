@@ -79,8 +79,8 @@ public class ProcessMode extends IRCProcessor {
 		String sNonUserModeStrParams = "";
 		String sModeParam;
 		String sTemp;
-		int nCurrent = 0, nParam = 1, nValue = 0;
-		long nTemp = 0;
+		int nParam = 1;
+		long nTemp = 0, nValue = 0, nCurrent = 0;
 		boolean bPositive = true, bBooleanMode = true;
 		char cPositive = '+';
 		ChannelInfo iChannel;
@@ -209,7 +209,7 @@ public class ProcessMode extends IRCProcessor {
 	 * @param token IRCTokenised Array of the incomming line
 	 */	
 	private void processUserMode(String sParam, String token[], String sModestr[]) {
-		int nCurrent = 0, nValue = 0;
+		long nCurrent = 0, nValue = 0;
 		boolean bPositive = true;
 		
 		ClientInfo iClient;
