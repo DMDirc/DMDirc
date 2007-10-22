@@ -27,7 +27,10 @@ import com.dmdirc.logger.Logger;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -78,23 +81,10 @@ public class Downloader {
         
         final List<String> res = new ArrayList<String>();
         
-        final URL myUrl = new URL(url);
-        final URLConnection urlConn = myUrl.openConnection();
+        final URLConnection urlConn = getConnection(url, postData);
         
-        urlConn.setUseCaches(false);
-        urlConn.setDoInput(true);
-        urlConn.setDoOutput(postData.length() > 0);
-        
-        if (postData.length() > 0) {
-            urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            
-            final DataOutputStream out = new DataOutputStream(urlConn.getOutputStream());
-            out.writeBytes(postData);
-            out.flush();
-            out.close();
-        }
-        
-        final BufferedReader in = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
+        final BufferedReader in = new BufferedReader(
+                new InputStreamReader(urlConn.getInputStream()));
         
         String line;
         
@@ -137,6 +127,59 @@ public class Downloader {
         }
         
         return getPage(url, data.length() == 0 ? "" : data.substring(1));
+    }
+    
+    /**
+     * Downloads the specified page to disk.
+     * 
+     * @param url The URL to retrieve
+     * @param file The file to save the page to
+     * @throws java.net.MalformedURLException If the URL is malformed
+     * @throws java.io.IOException If there's an I/O error while downloading
+     */    
+    public static void downloadPage(final String url, final String file)
+            throws MalformedURLException, IOException {
+                
+        final URLConnection urlConn = getConnection(url, "");
+        final File myFile = new File(file);
+        
+        final FileOutputStream output = new FileOutputStream(myFile);
+        final InputStream input = urlConn.getInputStream();
+        
+        byte[] buffer = new byte[512];
+        int count;
+        
+        do {
+            count = input.read(buffer);
+            
+            if (count > 0) {
+                output.write(buffer, 0, count);
+            }
+        } while (count > 0);
+
+        input.close();
+        output.close();
+    }    
+    
+    private static URLConnection getConnection(final String url, final String postData)
+            throws MalformedURLException, IOException {
+        final URL myUrl = new URL(url);
+        final URLConnection urlConn = myUrl.openConnection();
+        
+        urlConn.setUseCaches(false);
+        urlConn.setDoInput(true);
+        urlConn.setDoOutput(postData.length() > 0);
+        
+        if (postData.length() > 0) {
+            urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            
+            final DataOutputStream out = new DataOutputStream(urlConn.getOutputStream());
+            out.writeBytes(postData);
+            out.flush();
+            out.close();
+        }
+        
+        return urlConn;
     }
     
 }

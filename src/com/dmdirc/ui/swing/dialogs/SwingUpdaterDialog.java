@@ -207,7 +207,10 @@ public final class SwingUpdaterDialog extends StandardDialog implements
                 + "DMDirc is updating the following components:</html>");
             
             for (Update update : updates) {
-                update.doUpdate();
+                if (update.getStatus() == Update.STATUS.PENDING) {
+                    update.doUpdate();
+                    break;
+                }
             }
         } else if (e.getSource().equals(getCancelButton())) {
             dispose();
@@ -230,6 +233,15 @@ public final class SwingUpdaterDialog extends StandardDialog implements
             if (table.getModel().getValueAt(i, 0).equals(update.getComponent())) {
                 table.getModel().setValueAt(status, i, 2);
             }
+        }
+        
+        if (status == Update.STATUS.ERROR || status == Update.STATUS.INSTALLED) {            
+            for (Update myupdate : updates) {
+                if (myupdate.getStatus() == Update.STATUS.PENDING) {
+                    myupdate.doUpdate();
+                    break;
+                }
+            }            
         }
     }
 }

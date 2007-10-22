@@ -22,11 +22,16 @@
 
 package com.dmdirc.updater;
 
+import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.Update.STATUS;
+import com.dmdirc.util.Downloader;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * Represents a single available update for some component.
@@ -34,19 +39,18 @@ import java.util.List;
  * @author chris
  */
 public final class Update {
-    
+
     /**
      * An enumeration of possible statuses.
      */
     public static enum STATUS {
         PENDING,
         DOWNLOADING,
-        DOWNLOADED,
         INSTALLING,
         INSTALLED,
         ERROR
     }
-    
+
     /** Update component. */
     private final String component;
     /** Channel name. */
@@ -57,14 +61,14 @@ public final class Update {
     private final String versionName;
     /** Update url. */
     private final String url;
-    
+
     /** A list of registered update listeners. */
     private final List<UpdateListener> listeners
             = new ArrayList<UpdateListener>();
-    
+
     /** Our current status. */
     private STATUS status = Update.STATUS.PENDING;
-    
+
     /**
      * Creates a new instance of Update, with details from the specified line.
      *
@@ -73,26 +77,26 @@ public final class Update {
     public Update(final String updateInfo) {
         // outofdate client STABLE 20071007 0.5.1 file
         final String[] parts = updateInfo.split(" ");
-        
+
         if (parts.length == 6) {
             component = parts[1];
             channel = parts[2];
             versionID = parts[3];
             versionName = parts[4];
-            url = parts[5];            
+            url = parts[5];
         } else {
             component = null;
             channel = null;
             versionID = null;
             versionName = null;
-            url = null;  
-            
+            url = null;
+
             Logger.appError(ErrorLevel.LOW,
                     "Invalid update line received from server: ",
                     new UnsupportedOperationException("line: " + updateInfo));
         }
     }
-    
+
     /**
      * Retrieves the component that this update is for.
      *
@@ -101,7 +105,7 @@ public final class Update {
     public String getComponent() {
         return component;
     }
-    
+
     /**
      * Returns the remote version of the component that's available.
      *
@@ -110,7 +114,7 @@ public final class Update {
     public String getRemoteVersion() {
         return versionName;
     }
-    
+
     /**
      * Returns the URL where the new update may be downloaded.
      *
@@ -122,21 +126,21 @@ public final class Update {
 
     /**
      * Retrieves the status of this update.
-     * 
+     *
      * @return This update's status
      */
     public STATUS getStatus() {
         return status;
     }
-    
+
     /**
      * Sets the status of this update, and notifies all listeners of the change.
-     * 
+     *
      * @param newStatus This update's new status
      */
     protected void setStatus(final STATUS newStatus) {
         status = newStatus;
-        
+
         for (UpdateListener listener : listeners) {
             listener.updateStatusChange(this, status);
         }
@@ -144,27 +148,61 @@ public final class Update {
 
     /**
      * Removes the specified update listener.
-     * 
+     *
      * @param o The update listener to remove
-     */    
+     */
     public void removeUpdateListener(Object o) {
         listeners.remove(o);
     }
 
     /**
      * Adds the specified update listener.
-     * 
+     *
      * @param e The update listener to add
      */
     public void addUpdateListener(UpdateListener e) {
         listeners.add(e);
     }
-    
+
     /**
      * Makes this update download and install itself.
      */
     public void doUpdate() {
-        setStatus(STATUS.DOWNLOADING);
+        new Thread(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                final String path = Main.getConfigDir() + "update.tmp."
+                        + Math.round(Math.random() * 1000);
+
+                setStatus(STATUS.DOWNLOADING);
+
+                try {
+                    Downloader.downloadPage(getUrl(), path);
+                } catch (Throwable ex) {
+                    setStatus(STATUS.ERROR);
+
+                    Logger.appError(ErrorLevel.MEDIUM,
+                            "Error when updating component " + component, ex);
+
+                    return;
+                }
+
+                setStatus(STATUS.INSTALLING);
+
+                try {
+                    UpdateChecker.findComponent(getComponent()).doInstall(path);
+
+                    setStatus(STATUS.INSTALLED);
+                } catch (Throwable ex) {
+                    setStatus(STATUS.ERROR);
+                    Logger.appError(ErrorLevel.MEDIUM,
+                            "Error when updating component " + component, ex);
+                }
+            }
+
+        }, "Update thread").start();
     }
-    
+
 }
