@@ -24,6 +24,9 @@ package com.dmdirc.updater;
 
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.updater.Update.STATUS;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a single available update for some component.
@@ -31,6 +34,18 @@ import com.dmdirc.logger.Logger;
  * @author chris
  */
 public final class Update {
+    
+    /**
+     * An enumeration of possible statuses.
+     */
+    public static enum STATUS {
+        PENDING,
+        DOWNLOADING,
+        DOWNLOADED,
+        INSTALLING,
+        INSTALLED,
+        ERROR
+    }
     
     /** Update component. */
     private final String component;
@@ -42,6 +57,13 @@ public final class Update {
     private final String versionName;
     /** Update url. */
     private final String url;
+    
+    /** A list of registered update listeners. */
+    private final List<UpdateListener> listeners
+            = new ArrayList<UpdateListener>();
+    
+    /** Our current status. */
+    private STATUS status = Update.STATUS.PENDING;
     
     /**
      * Creates a new instance of Update, with details from the specified line.
@@ -97,4 +119,52 @@ public final class Update {
     public String getUrl() {
         return url;
     }
+
+    /**
+     * Retrieves the status of this update.
+     * 
+     * @return This update's status
+     */
+    public STATUS getStatus() {
+        return status;
+    }
+    
+    /**
+     * Sets the status of this update, and notifies all listeners of the change.
+     * 
+     * @param newStatus This update's new status
+     */
+    protected void setStatus(final STATUS newStatus) {
+        status = newStatus;
+        
+        for (UpdateListener listener : listeners) {
+            listener.updateStatusChange(this, status);
+        }
+    }
+
+    /**
+     * Removes the specified update listener.
+     * 
+     * @param o The update listener to remove
+     */    
+    public void removeUpdateListener(Object o) {
+        listeners.remove(o);
+    }
+
+    /**
+     * Adds the specified update listener.
+     * 
+     * @param e The update listener to add
+     */
+    public void addUpdateListener(UpdateListener e) {
+        listeners.add(e);
+    }
+    
+    /**
+     * Makes this update download and install itself.
+     */
+    public void doUpdate() {
+        setStatus(STATUS.DOWNLOADING);
+    }
+    
 }

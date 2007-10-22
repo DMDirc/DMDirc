@@ -24,6 +24,7 @@ package com.dmdirc.updater;
 
 import com.dmdirc.IconManager;
 import com.dmdirc.Main;
+import com.dmdirc.Precondition;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -195,6 +196,25 @@ public final class UpdateChecker extends MouseAdapter implements Runnable {
      */
     public static void registerComponent(final UpdateComponent component) {
         components.add(component);
+    }
+    
+    /**
+     * Finds and returns the component with the specified name.
+     * 
+     * @param name The name of the component that we're looking for
+     * @return The corresponding UpdateComponent, or null if it's not found
+     */
+    @Precondition("The specified name is not null")
+    public static UpdateComponent findComponent(final String name) {
+        assert(name != null);
+        
+        for (UpdateComponent component : components) {
+            if (name.equals(component.getName())) {
+                return component;
+            }
+        }
+       
+        return null;
     }
     
 }

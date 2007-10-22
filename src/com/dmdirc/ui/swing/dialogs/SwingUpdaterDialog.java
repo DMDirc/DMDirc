@@ -27,6 +27,8 @@ import com.dmdirc.ui.interfaces.UpdaterDialog;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.updater.Update;
+import com.dmdirc.updater.Update.STATUS;
+import com.dmdirc.updater.UpdateListener;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
@@ -51,7 +53,7 @@ import javax.swing.table.DefaultTableModel;
  * @author chris
  */
 public final class SwingUpdaterDialog extends StandardDialog implements
-        ActionListener, UpdaterDialog {
+        ActionListener, UpdaterDialog, UpdateListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -73,6 +75,9 @@ public final class SwingUpdaterDialog extends StandardDialog implements
     /** Update table. */
     private JTable table;
     
+    /** The label we use for the dialog header. */
+    private JLabel header;
+    
     /**
      * Creates a new instance of the updater dialog.
      * @param updates A list of updates that are available.
@@ -81,6 +86,10 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         super((MainFrame) Main.getUI().getMainWindow(), false);
         
         this.updates = updates;
+        
+        for (Update update : updates) {
+            update.addUpdateListener(this);
+        }
         
         initComponents();
         
@@ -120,7 +129,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         
         setLayout(new BorderLayout());
         
-        final JLabel header = new JLabel("<html><big>Update Available</big><br><br>"
+        header = new JLabel("<html><big>Update Available</big><br><br>"
                 + "An update is available for one or more "
                 + "components of DMDirc:</html>");
         header.setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER,
@@ -131,6 +140,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         table = new JTable(new DefaultTableModel(getTableData(), HEADERS)) {
             private static final long serialVersionUID = 1;
             
+            @Override
             public boolean isCellEditable(final int x, final int y) {
                 return false;
             }
@@ -175,7 +185,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         for (int i = 0; i < updates.size(); i++) {
             tableData[i][0] = updates.get(i).getComponent();
             tableData[i][1] = updates.get(i).getRemoteVersion();
-            tableData[i][2] = "Pending";
+            tableData[i][2] = updates.get(i).getStatus().toString();
         }
         
         return tableData;
@@ -190,14 +200,18 @@ public final class SwingUpdaterDialog extends StandardDialog implements
     
     /** {@inheritDoc} */
     public void actionPerformed(final ActionEvent e) {
-        /*if (e.getSource().equals(getOkButton())) {
+        if (e.getSource().equals(getOkButton())) {
             getOkButton().setEnabled(false);
          
             header.setText("<html><big>Updating...</big><br><br>"
                 + "DMDirc is updating the following components:</html>");
-        } else if (e.getSource().equals(getCancelButton())) {*/
-        dispose();
-        //}
+            
+            for (Update update : updates) {
+                update.doUpdate();
+            }
+        } else if (e.getSource().equals(getCancelButton())) {
+            dispose();
+        }
     }
     
     /** {@inheritDoc} */
@@ -206,6 +220,16 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         synchronized (me) {
             super.dispose();
             me = null;
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateStatusChange(final Update update, final STATUS status) {
+        for (int i = 0; i < updates.size(); i++) {
+            if (table.getModel().getValueAt(i, 0).equals(update.getComponent())) {
+                table.getModel().setValueAt(status, i, 2);
+            }
         }
     }
 }

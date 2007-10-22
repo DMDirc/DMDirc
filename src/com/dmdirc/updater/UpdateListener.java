@@ -20,33 +20,21 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.updater.components;
-
-import com.dmdirc.updater.UpdateComponent;
+package com.dmdirc.updater;
 
 /**
- * Represents the mode alias identities.
+ * Defines the method that must be implemented by update listeners.
  * 
  * @author chris
  */
-public class ModeAliasesComponent implements UpdateComponent {
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return "modealiases";
-    }
-
-    /** {@inheritDoc} */
-    @Override    
-    public int getVersion() {
-        return -1; // TODO: Read this from disc
-    }
-
-    /** {@inheritDoc} */
-    @Override    
-    public void doInstall(final String path) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+public interface UpdateListener {
+    
+    /**
+     * Called when the state of the update has changed.
+     * 
+     * @param update The update in question
+     * @param status The new status of the update
+     */
+    void updateStatusChange(Update update, Update.STATUS status);
+    
 }
