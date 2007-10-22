@@ -84,7 +84,8 @@ public final class IdentityManager {
             try {
                 final InputStream res = cldr.getResourceAsStream(base + url);
                 if (res == null) {
-                    Logger.userError(ErrorLevel.MEDIUM, "Unable to load default identity: " + url);
+                    Logger.userError(ErrorLevel.MEDIUM,
+                            "Unable to load default identity: " + url);
                 } else {
                     addIdentity(new Identity(res, false));
                 }
@@ -111,16 +112,42 @@ public final class IdentityManager {
             }
         }
         
+        loadUser(dir);
+    }
+     
+    /**
+     * Recursively loads files from the specified directory.
+     * 
+     * @param dir The directory to be loaded
+     */
+    @Precondition({
+        "The specified File is not null",
+        "The specified File is a directory"
+    })
+    private static void loadUser(final File dir) {
+        assert(dir != null);
+        assert(dir.isDirectory());
+        
         if (dir.listFiles() == null) {
-            Logger.userError(ErrorLevel.MEDIUM, "Unable to load user identity files");
+            Logger.userError(ErrorLevel.MEDIUM,
+                    "Unable to load user identity files from "
+                    + dir.getAbsolutePath());
         } else {
             for (File file : dir.listFiles()) {
-                try {
-                    addIdentity(new Identity(file, false));
-                } catch (InvalidIdentityFileException ex) {
-                    Logger.userError(ErrorLevel.MEDIUM, "Invalid identity file");
-                } catch (IOException ex) {
-                    Logger.userError(ErrorLevel.MEDIUM, "Unable to load identity file");
+                if (file.isDirectory()) {
+                    loadUser(file);
+                } else {
+                    try {
+                        addIdentity(new Identity(file, false));
+                    } catch (InvalidIdentityFileException ex) {
+                        Logger.userError(ErrorLevel.MEDIUM,
+                                "Invalid identity file: " + file.getAbsolutePath()
+                                + " (" + ex.getMessage() + ")");
+                    } catch (IOException ex) {
+                        Logger.userError(ErrorLevel.MEDIUM,
+                                "I/O error when reading identity file: "
+                                + file.getAbsolutePath());
+                    }
                 }
             }
         }
