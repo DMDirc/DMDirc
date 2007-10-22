@@ -36,6 +36,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -85,7 +86,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
     private SwingUpdaterDialog(final List<Update> updates) {
         super((MainFrame) Main.getUI().getMainWindow(), false);
         
-        this.updates = updates;
+        this.updates = new ArrayList<Update>(updates);
         
         for (Update update : updates) {
             update.addUpdateListener(this);
