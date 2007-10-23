@@ -270,7 +270,8 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     private void updateIcon() {
         icon = IconManager.getIconManager().getIcon(
-                serverInfo.getSSL() ? "secure-server" : "server");
+                myState == ServerState.CONNECTED ?
+                    serverInfo.getSSL() ? "secure-server" : "server" : "server-disconnected");
         if (window != null) {
             window.setFrameIcon(icon);
 
@@ -664,6 +665,8 @@ public final class Server extends WritableFrameContainer implements Serializable
 
             myState = ServerState.DISCONNECTED;
         }
+        
+        updateIcon();
 
         if (parser != null && parser.getSocketState() == IRCParser.STATE_OPEN) {
             parser.disconnect(reason);
@@ -1089,6 +1092,8 @@ public final class Server extends WritableFrameContainer implements Serializable
 
             myState = ServerState.TRANSIENTLY_DISCONNECTED;
         }
+        
+        updateIcon();
 
         if (configManager.getOptionBool(DOMAIN_GENERAL, "closechannelsondisconnect", false)) {
             closeChannels();
@@ -1115,6 +1120,8 @@ public final class Server extends WritableFrameContainer implements Serializable
 
             myState = ServerState.TRANSIENTLY_DISCONNECTED;
         }
+        
+        updateIcon();
 
         String description;
 
@@ -1167,6 +1174,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         }, delay * 1000);
 
         myState = ServerState.RECONNECT_WAIT;
+        updateIcon();
     }
 
     /**
@@ -1195,6 +1203,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         synchronized(myState) {
             myState = ServerState.CONNECTED;
         }
+        updateIcon();
 
         configManager = new ConfigManager(parser.getIRCD(true), getNetwork(), getName());
         updateIgnoreList();

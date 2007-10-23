@@ -292,6 +292,9 @@ public final class Channel extends MessageTarget implements
         final ClientInfo me = server.getParser().getMyself();
         addLine("channelSelfJoin", "", me.getNickname(), me.getIdent(),
                 me.getHost(), channelInfo.getName());
+        
+        icon = IconManager.getIconManager().getIcon("channel");
+        iconUpdated(icon);        
     }
     
     /**
@@ -318,6 +321,9 @@ public final class Channel extends MessageTarget implements
      */
     public void join() {
         server.getParser().joinChannel(channelInfo.getName());
+        
+        icon = IconManager.getIconManager().getIcon("channel");
+        iconUpdated(icon);        
     }
     
     /**
@@ -335,6 +341,9 @@ public final class Channel extends MessageTarget implements
      */
     public void resetWindow() {
         onChannel = false;
+        
+        icon = IconManager.getIconManager().getIcon("channel-inactive");
+        iconUpdated(icon);
         
         window.updateNames(new ArrayList<ChannelClientInfo>());
     }
