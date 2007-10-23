@@ -224,7 +224,7 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
     /** {@inheritDoc} */
     public void onActivate() {
         if (IdentityManager.getGlobalConfig().hasOption(DOMAIN, "randomcolours")) {
-            randColours = IdentityManager.getGlobalConfig().getOption(DOMAIN, "randomcolours").split("\n");
+            randColours =(String[]) IdentityManager.getGlobalConfig().getOptionList(DOMAIN, "randomcolours").toArray();
         }
     }
     

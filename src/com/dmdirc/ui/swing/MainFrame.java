@@ -25,7 +25,6 @@ package com.dmdirc.ui.swing;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.IconManager;
 import com.dmdirc.Main;
-import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
@@ -70,11 +69,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
@@ -930,23 +927,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         } else if (e.getActionCommand().equals("Close")) {
             ((Frame) Main.getUI().getMainWindow().getActiveFrame()).close();
         } else if (e.getActionCommand().equals("JoinDevChat")) {
-            final List<Server> servers =
-                    ServerManager.getServerManager().
-                    getServersByNetwork("Quakenet");
-            if (servers.isEmpty()) {
-                final List<String> channels =
-                        new ArrayList<String>();
-                channels.add("#DMDirc");
-                servers.add(new Server("irc.quakenet.org", 6667, "", false,
-                        IdentityManager.getProfiles().get(0), channels));
-            } else {
-                final Server server = servers.get(0);
-                if (server.hasChannel("#DMDirc")) {
-                    server.getChannel("#DMDirc").activateFrame();
-                } else {
-                    server.getParser().sendLine("JOIN :#DMDirc");
-                }
-            }
+            ServerManager.getServerManager().joinDevChat();
         } else if (e.getActionCommand().equals("configurePlugin")) {
             PluginManager.getPluginManager().
                     getPlugin(pluginList.get(e.getSource())).showConfig();

@@ -310,6 +310,22 @@ public final class Server extends WritableFrameContainer implements Serializable
             query.reregister();
         }
     }
+    
+    /**
+     * Joins the specified channel.
+     * 
+     * @param channel The channel to be joined
+     */
+    @Precondition("This server is connected")
+    public void join(final String channel) {
+        assert(myState == ServerState.CONNECTED);
+        
+        if (hasChannel(channel)) {
+            getChannel(channel).join();
+        } else {
+            parser.joinChannel(channel);
+        }
+    }
 
     /**
      * Reconnects to the IRC server with a specified reason.
@@ -362,7 +378,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         parser.getIgnoreList().clear();
 
         if (configManager.hasOption("network", "ignorelist")) {
-            for (String line : configManager.getOption("network", "ignorelist").split("\n")) {
+            for (String line : configManager.getOptionList("network", "ignorelist")) {
                 parser.getIgnoreList().add(line);
             }
         }

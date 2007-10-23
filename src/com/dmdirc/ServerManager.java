@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.Window;
 
@@ -175,6 +176,36 @@ public final class ServerManager {
         }
         
         return res;
+    }
+    
+    /**
+     * Connects the user to Quakenet if neccessary and joins #DMDirc.
+     */
+    public void joinDevChat() {
+        final List<Server> qnetServers = getServersByNetwork("Quakenet");
+        
+        Server connectedServer = null;
+        
+        for (Server server : qnetServers) {
+            if (server.getState() == ServerState.CONNECTED) {
+                connectedServer = server;
+                
+                if (server.hasChannel("#DMDirc")) {
+                    server.getChannel("#DMDirc").activateFrame();
+                    return;
+                }
+            }
+        }
+        
+        if (connectedServer == null) {
+            final List<String> channels = new ArrayList<String>();
+                channels.add("#DMDirc");
+                
+                new Server("irc.quakenet.org", 6667, "", false,
+                        IdentityManager.getProfiles().get(0), channels);
+        } else {
+            connectedServer.join("#DMDirc");
+        }        
     }
     
 }
