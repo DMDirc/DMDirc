@@ -51,7 +51,8 @@ import java.util.Properties;
  *
  * @author chris
  */
-public class Identity implements Serializable, Comparable<Identity> {
+public class Identity extends ConfigSource implements Serializable,
+        Comparable<Identity> {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -70,7 +71,8 @@ public class Identity implements Serializable, Comparable<Identity> {
     protected final Properties properties;
     
     /** The config change listeners for this source. */
-    protected final List<ConfigChangeListener> listeners = new ArrayList<ConfigChangeListener>();
+    protected final List<ConfigChangeListener> listeners
+            = new ArrayList<ConfigChangeListener>();
     
     /** The file that this identity is read from. */
     protected File file;
@@ -200,25 +202,14 @@ public class Identity implements Serializable, Comparable<Identity> {
         return hasOption("profile", "nickname") && hasOption("profile", "realname");
     }
     
-    /**
-     * Determines whether this identity has a setting for the specified
-     * option in the specified domain.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @return True iff this source has the option, false otherwise
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean hasOption(final String domain, final String option) {
         return properties.containsKey(domain + "." + option);
     }
     
-    /**
-     * Retrieves the specified option from this identity.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @return The value of the specified option
-     */
+    /** {@inheritDoc} */
+    @Override
     public String getOption(final String domain, final String option) {
         return properties.getProperty(domain + "." + option);
     }
@@ -234,11 +225,13 @@ public class Identity implements Serializable, Comparable<Identity> {
             final String value) {
         final String oldValue = getOption(domain, option);
         
-        if ((oldValue == null && value != null) || (oldValue != null && !oldValue.equals(value))) {
+        if ((oldValue == null && value != null)
+                || (oldValue != null && !oldValue.equals(value))) {
             properties.setProperty(domain + "." + option, value);
             needSave = true;
             
-            for (ConfigChangeListener listener : new ArrayList<ConfigChangeListener>(listeners)) {
+            for (ConfigChangeListener listener : 
+                new ArrayList<ConfigChangeListener>(listeners)) {
                 listener.configChanged(domain, option);
             }
         }
@@ -328,10 +321,12 @@ public class Identity implements Serializable, Comparable<Identity> {
                 globalConfig.removeIdentity(this);
                 
                 for (Object key : new HashSet<Object>(properties.keySet())) {
-                    final String domain = ((String) key).substring(0, ((String) key).indexOf('.'));
-                    final String option = ((String) key).substring(1 + ((String) key).indexOf('.'));
+                    final String skey = (String) key;
+                    final String domain = skey.substring(0, skey.indexOf('.'));
+                    final String option = skey.substring(1 + skey.indexOf('.'));
                     final String global = globalConfig.getOption(domain, option, null);
-                    if (properties.getProperty((String) key).equals(global) || "temp".equals(domain)) {
+                    if (properties.getProperty((String) key).equals(global)
+                            || "temp".equals(domain)) {
                         properties.remove(key);
                     }
                 }
@@ -344,9 +339,11 @@ public class Identity implements Serializable, Comparable<Identity> {
                 
                 needSave = false;
             } catch (FileNotFoundException ex) {
-                Logger.userError(ErrorLevel.MEDIUM, "Unable to save identity file: " + ex.getMessage());
+                Logger.userError(ErrorLevel.MEDIUM,
+                        "Unable to save identity file: " + ex.getMessage());
             } catch (IOException ex) {
-                Logger.userError(ErrorLevel.MEDIUM, "Unable to save identity file: " + ex.getMessage());
+                Logger.userError(ErrorLevel.MEDIUM,
+                        "Unable to save identity file: " + ex.getMessage());
             }
         }
     }
@@ -424,6 +421,7 @@ public class Identity implements Serializable, Comparable<Identity> {
      * @return -1 if this config source is less specific, 0 if they're equal,
      * +1 if this config is more specific.
      */
+    @Override
     public int compareTo(final Identity target) {
         return target.getTarget().compareTo(myTarget);
     }
@@ -456,7 +454,8 @@ public class Identity implements Serializable, Comparable<Identity> {
                 properties.store(writer, "");
                 writer.close();
             } catch (IOException ex) {
-                Logger.userError(ErrorLevel.MEDIUM, "Unable to write new identity file: " + ex.getMessage());
+                Logger.userError(ErrorLevel.MEDIUM,
+                        "Unable to write new identity file: " + ex.getMessage());
                 return null;
             }
         }
@@ -467,13 +466,16 @@ public class Identity implements Serializable, Comparable<Identity> {
             
             return identity;
         } catch (MalformedURLException ex) {
-            Logger.userError(ErrorLevel.MEDIUM, "Unable to open new identity file: " + ex.getMessage());
+            Logger.userError(ErrorLevel.MEDIUM,
+                    "Unable to open new identity file: " + ex.getMessage());
             return null;
         } catch (InvalidIdentityFileException ex) {
-            Logger.userError(ErrorLevel.MEDIUM, "Unable to open new identity file: " + ex.getMessage());
+            Logger.userError(ErrorLevel.MEDIUM,
+                    "Unable to open new identity file: " + ex.getMessage());
             return null;
         } catch (IOException ex) {
-            Logger.userError(ErrorLevel.MEDIUM, "Unable to open new identity file: " + ex.getMessage());
+            Logger.userError(ErrorLevel.MEDIUM,
+                    "Unable to open new identity file: " + ex.getMessage());
             return null;
         }
     }

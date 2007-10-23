@@ -29,6 +29,8 @@ import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
+import java.util.List;
+
 /**
  * Allows the user to add/view/delete ignores.
  * @author chris
@@ -59,13 +61,13 @@ public final class Ignore extends ServerCommand {
         if (args.length == 0 || args[0].toLowerCase().equals("view")) {
             
             if (identity.hasOption("network", "ignorelist")) {
-                final String list = identity.getOption("network", "ignorelist");
+                final List<String> list = identity.getOptionList("network", "ignorelist");
                 
                 if (!list.isEmpty()) {
                     sendLine(origin, isSilent, FORMAT_OUTPUT, "Ignore list:");
                     
                     int i = 0;
-                    for (String line : list.split("\n")) {
+                    for (String line : list) {
                         if (!line.isEmpty()) {
                             i++;
                             sendLine(origin, isSilent, FORMAT_OUTPUT, i + ". " + line);

@@ -22,12 +22,8 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.util.MapList;
 
-import java.awt.Color;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,9 +33,11 @@ import java.util.TreeMap;
 
 /**
  * The config manager manages the various config sources for each entity.
+ * 
  * @author chris
  */
-public final class ConfigManager implements Serializable, ConfigChangeListener {
+public final class ConfigManager extends ConfigSource implements Serializable,
+        ConfigChangeListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -102,13 +100,8 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
         IdentityManager.addConfigManager(this);
     }
     
-    /**
-     * Retrieves the specified option.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @return The value of the option
-     */
+    /** {@inheritDoc} */
+    @Override
     public String getOption(final String domain, final String option) {
         doStats(domain, option);
         
@@ -120,128 +113,20 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
         
         throw new IllegalArgumentException("Config option not found: " + domain + "." + option);
     }
-    
-    /**
-     * Retrieves the specified option.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param fallback Value to use if the option isn't set
-     * @return The value of the option
-     */
-    public String getOption(final String domain, final String option,
-            final String fallback) {
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasOption(final String domain, final String option) {
         doStats(domain, option);
         
         for (Identity source : sources) {
             if (source.hasOption(domain, option)) {
-                return source.getOption(domain, option);
+                return true;
             }
         }
         
-        return fallback;
-    }
-       
-    /**
-     * Retrieves a colour representation of the specified option.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param fallback The colour that should be used in case of error
-     * @return The colour representation of the option
-     */
-    public Color getOptionColour(final String domain, final String option,
-            final Color fallback) {
-        if (!hasOption(domain, option)) {
-            return fallback;
-        }
-        
-        return ColourManager.parseColour(getOption(domain, option), fallback);
-    }
-    
-    /**
-     * Retrieves a boolean representation of the specified option.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @return The boolean representation of the option
-     */
-    public boolean getOptionBool(final String domain, final String option) {
-        return Boolean.parseBoolean(getOption(domain, option));
-    }
-    
-    /**
-     * Retrieves a boolean representation of the specified option.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param fallback The value to use if the config isn't value
-     * @return The boolean representation of the option
-     */
-    public boolean getOptionBool(final String domain, final String option, final boolean fallback) {
-        return hasOption(domain, option) ? Boolean.parseBoolean(getOption(domain, option)) : fallback;
-    }
-    
-    /**
-     * Retrieves a list representation of the specified option.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param trimEmpty Whether or not to trim empty lines
-     * @return The list representation of the option
-     */
-    public List<String> getOptionList(final String domain, final String option,
-            final boolean trimEmpty) {
-        final List<String> res = new ArrayList<String>();
-        
-        if (hasOption(domain, option)) {
-            for (String line : getOption(domain, option).split("\n")) {
-                if (!line.isEmpty() || !trimEmpty) {
-                    res.add(line);
-                }
-            }
-        }
-        
-        return res;
-    }
-
-    /**
-     * Retrieves a list representation of the specified option, trimming empty
-     * lines by default.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @return The list representation of the option
-     */    
-    public List<String> getOptionList(final String domain, final String option) {
-        return getOptionList(domain, option, true);
-    }
-    
-    /**
-     * Retrieves an integral representation of the specified option.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param fallback The value to use if the config isn't valud
-     * @return The integer representation of the option
-     */
-    public int getOptionInt(final String domain, final String option,
-            final int fallback) {
-        if (!hasOption(domain, option)) {
-            return fallback;
-        }
-        
-        int res;
-        
-        try {
-            res = Integer.parseInt(getOption(domain, option));
-        } catch (NumberFormatException ex) {
-            Logger.userError(ErrorLevel.MEDIUM, "Invalid number format for " + domain + "." + option);
-            res = fallback;
-        }
-        
-        return res;
-    }
+        return false;
+    }    
     
     /**
      * Returns the name of all known options.
@@ -278,25 +163,7 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
         
         return res;
     }
-    
-    /**
-     * Determines if this manager has the specified option.
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @return True iff the option exists, false otherwise.
-     */
-    public boolean hasOption(final String domain, final String option) {
-        doStats(domain, option);
-        
-        for (Identity source : sources) {
-            if (source.hasOption(domain, option)) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
-    
+       
     /**
      * Removes the specified identity from this manager.
      *
@@ -435,6 +302,7 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void configChanged(final String domain, final String key) {
         final List<ConfigChangeListener> targets
                 = new ArrayList<ConfigChangeListener>();

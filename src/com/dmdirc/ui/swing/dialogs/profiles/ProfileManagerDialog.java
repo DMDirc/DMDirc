@@ -238,8 +238,8 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
                     profile.getOption(profileString, "nickname"),
                     profile.getOption(profileString, "realname"),
                     profile.getOption(profileString, "ident"),
-                    Arrays.asList(profile.getOption(profileString, "altnicks").
-                    split("\n")), false));
+                    profile.getOptionList(profileString, "altnicks"),
+                    false));
         }
     }
 
