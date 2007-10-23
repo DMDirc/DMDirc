@@ -57,11 +57,7 @@
      inkscape:groupmode="layer">
     <path
        sodipodi:type="arc"
-<<<<<<< .mine
        style="fill:#d40000;stroke:none;stroke-width:0.52081227;stroke-miterlimit:4;stroke-dasharray:none"
-=======
-       style="fill:#d40000;stroke:#000000;stroke-width:0.52081227;stroke-miterlimit:4;stroke-dasharray:none"
->>>>>>> .r2443
        id="path2168"
        sodipodi:cx="8.0638618"
        sodipodi:cy="8.0712872"
@@ -71,11 +67,7 @@
        transform="matrix(0.9600389,0,0,0.9600389,0.3047411,0.2048888)" />
     <path
        sodipodi:type="arc"
-<<<<<<< .mine
        style="fill:#b60000;fill-opacity:1;stroke-width:0.607189;stroke-miterlimit:4;stroke-dasharray:none"
-=======
-       style="fill:#800000;fill-opacity:1;stroke-width:0.607189;stroke-miterlimit:4;stroke-dasharray:none"
->>>>>>> .r2443
        id="path4116"
        sodipodi:cx="8.0638618"
        sodipodi:cy="8.0712872"
@@ -89,7 +81,6 @@
        inkscape:transform-center-y="-2.0722772" />
     <path
        sodipodi:type="arc"
-<<<<<<< .mine
        style="fill:#eb0000;fill-opacity:1;stroke-width:0.607189;stroke-miterlimit:4;stroke-dasharray:none"
        id="path7212"
        sodipodi:cx="8.0638618"
@@ -103,21 +94,6 @@
     <path
        sodipodi:type="arc"
        style="fill:none;stroke-width:0.52081227;stroke-miterlimit:4;stroke-dasharray:none"
-=======
-       style="fill:#eb0000;fill-opacity:1;stroke-width:0.607189;stroke-miterlimit:4;stroke-dasharray:none"
-       id="path7212"
-       sodipodi:cx="8.0638618"
-       sodipodi:cy="8.0712872"
-       sodipodi:rx="6.9826732"
-       sodipodi:ry="6.9826732"
-       d="M 1.1056779,8.6555825 A 6.9826732,6.9826732 0 0 1 11.764117,2.1496458 L 8.0638618,8.0712872 z"
-       transform="matrix(0.9600389,0,0,0.9600389,0.2574227,0.2142829)"
-       sodipodi:start="3.0578168"
-       sodipodi:end="5.2708947" />
-    <path
-       sodipodi:type="arc"
-       style="fill:none;stroke:#000000;stroke-width:0.52081227;stroke-miterlimit:4;stroke-dasharray:none"
->>>>>>> .r2443
        id="path4118"
        sodipodi:cx="8.0638618"
        sodipodi:cy="8.0712872"
