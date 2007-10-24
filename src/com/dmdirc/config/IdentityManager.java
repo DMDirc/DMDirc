@@ -77,7 +77,7 @@ public final class IdentityManager {
         
         final String base = "com/dmdirc/config/defaults/";
         
-        final String[] urls = {"defaults", "formatter"};
+        final String[] urls = {"default/defaults", "default/formatter"};
         
         for (String url : urls) {
             try {
