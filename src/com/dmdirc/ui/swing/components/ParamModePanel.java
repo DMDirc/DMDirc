@@ -23,14 +23,11 @@
 package com.dmdirc.ui.swing.components;
 
 import com.dmdirc.config.ConfigManager;
-import java.awt.Component;
-import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.InputVerifier;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -41,7 +38,6 @@ import javax.swing.SpringLayout;
 /**
  * A component to encapsulate one parameter-requiring channel mode, displaying
  * the user a checkbox, the mode's name, and a text field.
- * @author chris
  */
 public final class ParamModePanel extends JPanel implements ActionListener {
     
@@ -104,35 +100,16 @@ public final class ParamModePanel extends JPanel implements ActionListener {
         }
         
         checkBox.addActionListener(this);
-        checkBox.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 
-                LARGE_BORDER));
-        
-        layout.putConstraint(SpringLayout.WEST, checkBox,
-                0,
-                SpringLayout.WEST, this);
-        layout.putConstraint(SpringLayout.NORTH, checkBox,
-                SMALL_BORDER,
-                SpringLayout.NORTH, this);
-        layout.putConstraint(SpringLayout.WEST, textField,
-                SMALL_BORDER,
-                SpringLayout.EAST, checkBox);
-        layout.putConstraint(SpringLayout.NORTH, textField,
-                SMALL_BORDER,
-                SpringLayout.NORTH, this);
-        layout.putConstraint(SpringLayout.EAST, this,
-                SMALL_BORDER,
-                SpringLayout.EAST, textField);
-        layout.putConstraint(SpringLayout.SOUTH, this,
-                0,
-                SpringLayout.SOUTH, textField);
     }
     
     /**
      * Called when our checkbox is toggled.
      * @param actionEvent associated action event
      */
+    @Override
     public void actionPerformed(final ActionEvent actionEvent) {
         textField.setEnabled(checkBox.isSelected());
+        textField.requestFocus();
     }
     
     /**
@@ -205,6 +182,7 @@ class ModeParameterVerifier extends InputVerifier {
      * @param jComponent The component to be tested
      * @return true iff the text contains no spaces, false otherwise
      */
+    @Override
     public boolean verify(final JComponent jComponent) {
         final JTextField textField = (JTextField) jComponent;
         return !textField.getText().contains(" ");
