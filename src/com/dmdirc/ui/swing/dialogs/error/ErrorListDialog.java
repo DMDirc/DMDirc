@@ -30,27 +30,24 @@ import com.dmdirc.logger.ProgramError;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.PackingTable;
 import com.dmdirc.ui.swing.components.StandardDialog;
-import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Error list dialog.
@@ -63,7 +60,7 @@ public final class ErrorListDialog extends StandardDialog implements
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 4;
+    private static final long serialVersionUID = 5;
     
     /** Previously instantiated instance of ErrorListDialog. */
     private static ErrorListDialog me;
@@ -82,9 +79,6 @@ public final class ErrorListDialog extends StandardDialog implements
     
     /** Error detail panel. */
     private ErrorDetailPanel errorDetails;
-    
-    /** Buttons pane. */
-    private JPanel buttonsPanel;
     
     /** Send button. */
     private JButton sendButton;
@@ -134,7 +128,7 @@ public final class ErrorListDialog extends StandardDialog implements
     
     /** Initialises the components. */
     private void initComponents() {
-        initButtonsPanel();
+        initButtons();
         
         scrollPane = new JScrollPane();
         
@@ -175,10 +169,8 @@ public final class ErrorListDialog extends StandardDialog implements
         errorDetails = new ErrorDetailPanel();
     }
     
-    /** Initialises the button panel. */
-    private void initButtonsPanel() {
-        buttonsPanel = new JPanel();
-        
+    /** Initialises the buttons. */
+    private void initButtons() {        
         orderButtons(new JButton(), new JButton());
         
         getCancelButton().setText("Close");
@@ -193,28 +185,6 @@ public final class ErrorListDialog extends StandardDialog implements
         } else {
             deleteAllButton.setEnabled(false);
         }
-        
-        sendButton.setPreferredSize(new Dimension(100, 25));
-        deleteButton.setPreferredSize(new Dimension(100, 25));
-        sendButton.setMinimumSize(new Dimension(100, 25));
-        deleteButton.setMinimumSize(new Dimension(100, 25));
-        deleteAllButton.setMinimumSize(new Dimension(100, 25));
-        
-        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER));
-        
-        buttonsPanel.setPreferredSize(new Dimension(600, 35));
-        buttonsPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
-        
-        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
-        buttonsPanel.add(Box.createHorizontalGlue());
-        buttonsPanel.add(deleteAllButton);
-        buttonsPanel.add(Box.createHorizontalGlue());
-        buttonsPanel.add(deleteButton);
-        buttonsPanel.add(Box.createHorizontalStrut(SMALL_BORDER));
-        buttonsPanel.add(sendButton);
-        buttonsPanel.add(Box.createHorizontalStrut(LARGE_BORDER));
-        buttonsPanel.add(getCancelButton());
     }
     
     /** Initialises the listeners. */
@@ -230,19 +200,21 @@ public final class ErrorListDialog extends StandardDialog implements
     
     /** Lays out the components. */
     private void layoutComponents() {
-        getContentPane().setLayout(new BoxLayout(getContentPane(),
-                BoxLayout.PAGE_AXIS));
+        final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true);
+        final JPanel panel = new JPanel();
         
-        scrollPane.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER,
-                0, SMALL_BORDER),
-                scrollPane.getBorder()));
-        errorDetails.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
-                SMALL_BORDER, 0, 0));
+        panel.setLayout(new MigLayout("fill"));
         
-        getContentPane().add(scrollPane);
-        getContentPane().add(errorDetails);
-        getContentPane().add(buttonsPanel);
+        panel.add(errorDetails, "wrap, grow");
+        panel.add(deleteAllButton, "split 4, tag left, sgx button");
+        panel.add(deleteButton, "tag other, sgx button");
+        panel.add(sendButton, "tag other, sgx button");
+        panel.add(getCancelButton(), "tag ok, sgx button");
+        
+        splitPane.setTopComponent(scrollPane);
+        splitPane.setBottomComponent(panel);
+        
+        getContentPane().add(splitPane);
     }
     
     /** {@inheritDoc}. */

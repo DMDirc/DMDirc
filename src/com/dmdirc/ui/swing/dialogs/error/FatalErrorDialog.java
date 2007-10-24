@@ -74,7 +74,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
     private JLabel infoLabel;
     
     /** label. */
-    private JTextArea messageLabel;
+    private TextLabel messageLabel;
     
     /** label. */
     private JButton showMore;

@@ -25,21 +25,20 @@ package com.dmdirc.ui.swing.dialogs.channelsetting;
 import com.dmdirc.Channel;
 import com.dmdirc.parser.IRCParser;
 import com.dmdirc.ui.swing.components.ParamModePanel;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.Hashtable;
 import java.util.Map;
-
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.JCheckBox;
-import javax.swing.JPanel;
 
-/**
- * Non list mode panel.
- */
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+
+import net.miginfocom.swing.MigLayout;
+
+/** Non list mode panel. */
 public final class ChannelModesPane extends JPanel {
 
     /**
@@ -66,6 +65,7 @@ public final class ChannelModesPane extends JPanel {
         this.channel = channel;
 
         initModesPanel();
+        layoutComponents();
 
         setVisible(true);
     }
@@ -80,8 +80,6 @@ public final class ChannelModesPane extends JPanel {
 
     /** Initialises the modes panel. */
     private void initModesPanel() {
-        final GridBagConstraints constraints = new GridBagConstraints();
-
         final IRCParser parser = channel.getServer().getParser();
 
         final String booleanModes = parser.getBoolChanModes();
@@ -89,19 +87,8 @@ public final class ChannelModesPane extends JPanel {
         final String paramModes =
                 parser.getSetOnlyChanModes() + parser.getSetUnsetChanModes();
 
-        setLayout(new GridBagLayout());
-        setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER));
-
         modeCheckBoxes =
                 new Hashtable<String, JCheckBox>();
-
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.anchor = GridBagConstraints.NORTHWEST;
-        constraints.weightx = 1.0;
-        constraints.weighty = 0.0;
 
         // Lay out all the boolean mode checkboxes
         for (int i = 0; i < booleanModes.length();
@@ -132,16 +119,8 @@ public final class ChannelModesPane extends JPanel {
             }
 
             final JCheckBox checkBox = new JCheckBox(text, state);
+            checkBox.setMargin(new Insets(0, 0, 0, 0));
             checkBox.setToolTipText(tooltip);
-            checkBox.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0,
-                    0, SMALL_BORDER));
-            add(checkBox, constraints);
-
-            constraints.gridx++;
-            if (constraints.gridx == 2) {
-                constraints.gridy++;
-                constraints.gridx = 0;
-            }
 
             modeCheckBoxes.put(mode, checkBox);
             if (channel.getConfigManager().
@@ -156,13 +135,6 @@ public final class ChannelModesPane extends JPanel {
         modeInputs =
                 new Hashtable<String, ParamModePanel>();
 
-        constraints.gridwidth = 2;
-
-        if (constraints.gridx != 0) {
-            constraints.gridy++;
-            constraints.gridx = 0;
-        }
-
         for (int i = 0; i < paramModes.length();
                 i++) {
             final String mode = paramModes.substring(i, i + 1);
@@ -174,18 +146,32 @@ public final class ChannelModesPane extends JPanel {
             final ParamModePanel panel =
                     new ParamModePanel(mode, state, value,
                     channel.getConfigManager());
-            panel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0, 0,
-                    0));
-            add(panel, constraints);
 
             modeInputs.put(mode, panel);
-
-            constraints.gridy++;
         }
+    }
+
+    /** Lays out the components. */
+    private void layoutComponents() {
+        final JPanel booleanModes =
+                new JPanel(new MigLayout("wrap 2, fillx"));
+        for (JCheckBox checkBox : modeCheckBoxes.values()) {
+            booleanModes.add(checkBox);
+        }
+
+        final JPanel paramModes =
+                new JPanel(new MigLayout("wrap 2, fillx"));
+        for (ParamModePanel modePanel : modeInputs.values()) {
+            paramModes.add(modePanel.getCheckboxComponent());
+            paramModes.add(modePanel.getValueComponent(), "growx");
+        }
+
+        booleanModes.setBorder(BorderFactory.createTitledBorder("Boolean modes"));
+        paramModes.setBorder(BorderFactory.createTitledBorder("Parameter modes"));
         
-        constraints.weighty = 1.0;
-        constraints.fill = GridBagConstraints.VERTICAL;
-        add(Box.createVerticalGlue(), constraints);
+        setLayout(new MigLayout("flowy, fillx", "fill", ""));
+        add(booleanModes);
+        add(paramModes);
     }
 
     /**

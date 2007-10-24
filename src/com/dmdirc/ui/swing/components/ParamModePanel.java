@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.components;
 
 import com.dmdirc.config.ConfigManager;
+import java.awt.Component;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
@@ -165,6 +166,24 @@ public final class ParamModePanel extends JPanel implements ActionListener {
      */
     public String getMode() {
         return mode;
+    }
+    
+    /**
+     * Returns the checkbox component.
+     * 
+     * @return Checkbox component.
+     */
+    public Component getCheckboxComponent() {
+        return checkBox;
+    }
+    
+    /**
+     * Returns the value component.
+     * 
+     * @return Value component
+     */
+    public Component getValueComponent() {
+        return textField;
     }
     
 }

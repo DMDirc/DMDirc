@@ -41,6 +41,7 @@ import com.dmdirc.ui.interfaces.MainWindow;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.components.Frame;
 import com.dmdirc.ui.swing.components.SwingStatusBar;
+import com.dmdirc.ui.swing.dialogs.FeedbackDialog;
 import com.dmdirc.ui.swing.dialogs.NewServerDialog;
 import com.dmdirc.ui.swing.dialogs.PluginDialog;
 import com.dmdirc.ui.swing.dialogs.PreferencesDialog;
@@ -472,7 +473,8 @@ public final class MainFrame extends JFrame implements WindowListener,
      */
     private void initComponents(final SwingStatusBar statusBar) {
         final JSplitPane mainSplitPane = new JSplitPane();
-
+        final JPanel panel = new JPanel();
+        
         frameManagerPanel = new JPanel();
         desktopPane = new JDesktopPane();
         desktopPane.setBackground(new Color(238, 238, 238));
@@ -485,16 +487,17 @@ public final class MainFrame extends JFrame implements WindowListener,
 
         setPreferredSize(new Dimension(800, 600));
 
+        panel.setLayout(new BorderLayout());
+        panel.add(mainSplitPane, BorderLayout.CENTER);
+        panel.add(statusBar, BorderLayout.SOUTH);
+        
         getContentPane().setLayout(new BorderLayout(0, 0));
-
-        getContentPane().add(mainSplitPane, BorderLayout.CENTER);
-
-        getContentPane().add(statusBar, BorderLayout.SOUTH);
+        
+        getContentPane().add(panel, BorderLayout.CENTER);
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         setTitle("DMDirc");
-        frameManagerPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         desktopPane.setBorder(UIManager.getBorder("TextField.border"));
 
         pack();
@@ -724,6 +727,13 @@ public final class MainFrame extends JFrame implements WindowListener,
         menuItem.setActionCommand("JoinDevChat");
         menuItem.addActionListener(this);
         helpMenu.add(menuItem);
+        
+        menuItem = new JMenuItem();
+        menuItem.setMnemonic('f');
+        menuItem.setText("Send Feedback");
+        menuItem.setActionCommand("feedback");
+        menuItem.addActionListener(this);
+        helpMenu.add(menuItem);
 
         pluginsMenu = new JMenu("Plugins");
         pluginsMenu.setMnemonic('p');
@@ -931,6 +941,8 @@ public final class MainFrame extends JFrame implements WindowListener,
         } else if (e.getActionCommand().equals("configurePlugin")) {
             PluginManager.getPluginManager().
                     getPlugin(pluginList.get(e.getSource())).showConfig();
+        } else if (e.getActionCommand().equals("feedback")) {
+            FeedbackDialog.showFeedbackDialog();
         }
     }
 

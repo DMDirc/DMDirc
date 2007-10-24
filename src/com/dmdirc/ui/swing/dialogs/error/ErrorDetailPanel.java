@@ -33,9 +33,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Shows information about an error.
@@ -174,35 +174,25 @@ public final class ErrorDetailPanel extends JPanel implements ErrorListener {
     
     /** Lays out the components. */
     private void layoutComponents() {
-        setLayout(new SpringLayout());
+        setLayout(new MigLayout("fill, wrap 2", "[right]rel[grow,fill]", ""));
         
-        JLabel label;
-        
-        label = new JLabel("ID: ");
-        add(label);
+        add(new JLabel("ID: "));
         add(id);
         
-        label = new JLabel("Date: ");
-        add(label);
+        add(new JLabel("Date: "));
         add(date);
         
-        label = new JLabel("Severity: ");
-        add(label);
+        add(new JLabel("Severity: "));
         add(level);
         
-        label = new JLabel("Report status: ");
-        add(label);
+        add(new JLabel("Report status: "));
         add(reportStatus);
         
-        label = new JLabel("Error status: ");
-        add(label);
+        add(new JLabel("Error status: "));
         add(errorStatus);
         
-        label = new JLabel("Details: ");
-        add(label);
-        add(scrollPane);
-        
-        layoutGrid(this, 6, 2, 0, 0, SMALL_BORDER, SMALL_BORDER);
+        add(new JLabel("Details: "));
+        add(scrollPane, "grow");
     }
 
     public void errorAdded(final ProgramError error) {

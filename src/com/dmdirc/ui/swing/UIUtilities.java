@@ -66,18 +66,18 @@ public final class UIUtilities {
      * @param parent parent container
      * @param rows number of rows
      * @param columns number of columns
-     * @param initialXPadding initial x padding
-     * @param initialYPadding initial y padding
+     * @param outerXPadding outer x padding
+     * @param outerYPadding outer y padding
      * @param xPadding x padding
      * @param yPadding y padding
      */
     public static void layoutGrid(final Container parent, final int rows,
-            final int columns, final int initialXPadding,
-            final int initialYPadding, final int xPadding, final int yPadding) {
+            final int columns, final int outerXPadding,
+            final int outerYPadding, final int xPadding, final int yPadding) {
         final SpringLayout layout = (SpringLayout) parent.getLayout();
         
-        Spring x = Spring.constant(initialXPadding);
-        Spring y = Spring.constant(initialYPadding);
+        Spring x = Spring.constant(outerXPadding);
+        Spring y = Spring.constant(outerYPadding);
         SpringLayout.Constraints constraints;
         
         for (int c = 0; c < columns; c++) {
@@ -92,7 +92,11 @@ public final class UIUtilities {
                 constraints.setX(x);
                 constraints.setWidth(width);
             }
-            x = Spring.sum(x, Spring.sum(width, Spring.constant(xPadding)));
+            if (c == columns - 1) {
+                x = Spring.sum(x, width);
+            } else {
+                x = Spring.sum(x, Spring.sum(width, Spring.constant(xPadding)));
+            }
         }
         
         for (int r = 0; r < rows; r++) {
@@ -107,9 +111,16 @@ public final class UIUtilities {
                 constraints.setY(y);
                 constraints.setHeight(Spring.constant(height));
             }
-            y = Spring.sum(y, Spring.sum(Spring.constant(height),
-                    Spring.constant(yPadding)));
+            if (r == rows - 1) {
+                y = Spring.sum(y, Spring.constant(height));
+            } else {
+                y = Spring.sum(y, Spring.sum(Spring.constant(height),
+                        Spring.constant(yPadding)));
+            }
         }
+        
+        x = Spring.sum(x, Spring.constant(outerXPadding));
+        y = Spring.sum(y, Spring.constant(outerYPadding));
         
         final SpringLayout.Constraints pCons = layout.getConstraints(parent);
         pCons.setConstraint(SpringLayout.SOUTH, y);
