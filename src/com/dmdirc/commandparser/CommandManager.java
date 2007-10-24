@@ -48,6 +48,7 @@ import java.util.List;
 /**
  * The command manager creates and manages a single instance of all commands,
  * and provides methods to load each group of commands into a parser instance.
+ * 
  * @author chris
  */
 public final class CommandManager {
@@ -131,6 +132,7 @@ public final class CommandManager {
     
     /**
      * Registers a command with the command manager.
+     * 
      * @param command The command to be registered
      */
     public static void registerCommand(final Command command) {
@@ -139,6 +141,7 @@ public final class CommandManager {
     
     /**
      * Unregisters a command with the command manager.
+     * 
      * @param command The command to be unregistered
      */
     public static void unregisterCommand(final Command command) {
@@ -254,6 +257,7 @@ public final class CommandManager {
     
     /**
      * Registers a command for use in the nicklist popup.
+     * 
      * @param command The command to be registered
      */
     public static void registerPopupCommand(final Command command) {
@@ -262,6 +266,7 @@ public final class CommandManager {
     
     /**
      * Retrieves the commands for use in the nicklist popup.
+     * 
      * @return A list of commands suitable for use in the nicklist popup
      */
     public static List<Command> getNicklistCommands() {
@@ -326,18 +331,16 @@ public final class CommandManager {
         new Ifplugin();
         new NewServer();
         new Notify();
-        new LoadFormatter();
         new LoadPlugin();
         new OpenWindow();
         new ReloadActions();
-        new ReloadFormatter();
         new ReloadPlugin();
         new SaveConfig();
-        new SaveFormatter();
         new Set();
         
         // Set up a listener for config changes
         final ConfigChangeListener listener = new ConfigChangeListener() {
+            @Override
             public void configChanged(String domain, String key) {
                 commandChar = IdentityManager.getGlobalConfig()
                         .getOption("general", "commandchar").charAt(0);
@@ -352,6 +355,7 @@ public final class CommandManager {
     
     /**
      * Loads all channel commands into the specified parser.
+     * 
      * @param parser The parser to load commands into
      */
     public static void loadChannelCommands(final CommandParser parser) {
@@ -368,6 +372,7 @@ public final class CommandManager {
     
     /**
      * Loads all server commands into the specified parser.
+     * 
      * @param parser The parser to load commands into
      */
     public static void loadServerCommands(final CommandParser parser) {
@@ -380,6 +385,7 @@ public final class CommandManager {
     
     /**
      * Loads all global commands into the specified parser.
+     * 
      * @param parser The parser to load commands into
      */
     public static void loadGlobalCommands(final CommandParser parser) {
@@ -392,6 +398,7 @@ public final class CommandManager {
     
     /**
      * Loads all query commands into the specified parser.
+     * 
      * @param parser The parser to load commands into
      */
     public static void loadQueryCommands(final CommandParser parser) {
@@ -429,6 +436,7 @@ public final class CommandManager {
     
     /**
      * Retrieves the server command identified by the specified signature.
+     * 
      * @param signature The signature to look for
      * @return A server command with a matching signature, or null if none
      * were found.
@@ -445,6 +453,7 @@ public final class CommandManager {
     
     /**
      * Retrieves the server command identified by the specified name.
+     * 
      * @param name The name to look for
      * @return A server command with a matching name, or null if none were found
      */
@@ -454,6 +463,7 @@ public final class CommandManager {
     
     /**
      * Retrieves the global command identified by the specified signature.
+     * 
      * @param signature The signature to look for
      * @return A global command with a matching signature, or null if none
      * were found.
@@ -470,6 +480,7 @@ public final class CommandManager {
     
     /**
      * Retrieves the global command identified by the specified name.
+     * 
      * @param name The name to look for
      * @return A global command with a matching name, or null if none were found
      */
@@ -479,6 +490,7 @@ public final class CommandManager {
     
     /**
      * Retrieves the channel command identified by the specified signature.
+     * 
      * @param signature The signature to look for
      * @return A channel command with a matching signature, or null if none
      * were found.
@@ -495,6 +507,7 @@ public final class CommandManager {
     
     /**
      * Retrieves the channel command identified by the specified name.
+     * 
      * @param name The name to look for
      * @return A channel command with a matching name, or null if none were found
      */
@@ -504,6 +517,7 @@ public final class CommandManager {
     
     /**
      * Retrieves the chat command identified by the specified signature.
+     * 
      * @param signature The signature to look for
      * @return A chat command with a matching signature, or null if none
      * were found.
@@ -520,6 +534,7 @@ public final class CommandManager {
     
     /**
      * Retrieves the chat command identified by the specified name.
+     * 
      * @param name The name to look for
      * @return A chat command with a matching name, or null if none were found
      */
@@ -529,6 +544,7 @@ public final class CommandManager {
     
     /**
      * Retrieves the command identified by the specified name.
+     * 
      * @param name The name to look for
      * @param list The list to look in
      * @return A command with a matching name, or null if none were found
@@ -547,6 +563,7 @@ public final class CommandManager {
     /**
      * Returns a list containing the global commands that have been initialised
      * by this command manager.
+     * 
      * @return An ArrayList of global commands, or null if none have been loaded
      */
     public static List<Command> getGlobalCommands() {
@@ -556,6 +573,7 @@ public final class CommandManager {
     /**
      * Returns a list containing the server commands that have been initialised
      * by this command manager.
+     * 
      * @return An ArrayList of server commands, or null if none have been loaded
      */
     public static List<Command> getServerCommands() {
@@ -565,6 +583,7 @@ public final class CommandManager {
     /**
      * Returns a list containing the channel commands that have been initialised
      * by this command manager.
+     * 
      * @return An ArrayList of channel commands, or null if none have been loaded
      */
     public static List<Command> getChannelCommands() {
@@ -574,6 +593,7 @@ public final class CommandManager {
     /**
      * Returns a list containing the chat commands that have been initialised
      * by this command manager.
+     * 
      * @return An ArrayList of chat commands, or null if none have been loaded
      */
     public static List<Command> getChatCommands() {
@@ -583,6 +603,7 @@ public final class CommandManager {
     /**
      * Returns a list containing the query commands that have been initialised
      * by this command manager.
+     * 
      * @return An ArrayList of query commands, or null if none have been loaded
      */
     public static List<Command> getQueryCommands() {
@@ -591,6 +612,7 @@ public final class CommandManager {
     
     /**
      * Determines if the specified command is a valid channel command.
+     * 
      * @param command The name of the command to test
      * @return True iff the command is a channel command, false otherwise
      */
@@ -613,6 +635,7 @@ public final class CommandManager {
     /**
      * Returns the names (including command char) of all registered server
      * commands.
+     * 
      * @return An ArrayList&lt;String&gt; containing all registered server command
      * names
      */
@@ -623,6 +646,7 @@ public final class CommandManager {
     /**
      * Returns the names (including command char) of all registered global
      * commands.
+     * 
      * @return An ArrayList&lt;String&gt; containing all registered global command
      * names
      */
@@ -633,6 +657,7 @@ public final class CommandManager {
     /**
      * Returns the names (including command char) of all registered channel
      * commands.
+     * 
      * @return A list containing all registered channel command names
      */
     public static List<String> getChannelCommandNames() {
@@ -642,6 +667,7 @@ public final class CommandManager {
     /**
      * Returns the names (including command char) of all registered query
      * commands.
+     * 
      * @return A list containing all registered query command names
      */
     public static List<String> getQueryCommandNames() {
@@ -651,6 +677,7 @@ public final class CommandManager {
     /**
      * Returns the names (including command char) of all registered chat
      * commands.
+     * 
      * @return An ArrayList&lt;String&gt; containing all registered chat command
      * names
      */
@@ -661,6 +688,7 @@ public final class CommandManager {
     /**
      * Iterates through the specified source and returns a list of the names
      * of all commands found in it.
+     * 
      * @param source The source vector to iterate over
      * @return A list of all commands in the source
      */
