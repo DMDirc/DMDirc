@@ -26,6 +26,7 @@ import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.util.resourcemanager.ZipResourceManager;
+import java.io.File;
 
 import java.io.IOException;
 
@@ -66,6 +67,8 @@ public class ModeAliasesComponent implements UpdateComponent {
         ziprm.extractResources("", IdentityManager.getDirectory());
         
         IdentityManager.loadUser();
+        
+        new File(path).delete();
     }
 
 }

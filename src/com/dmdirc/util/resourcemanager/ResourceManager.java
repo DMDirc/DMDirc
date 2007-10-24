@@ -170,8 +170,8 @@ public abstract class ResourceManager {
             return false;
         }
         
-        final File newDir = new File(directory,
-                resourceName.substring(0, resourceName.lastIndexOf('/')) + "/");
+        final File newDir = new File(directory);
+                //, resourceName.substring(0, resourceName.lastIndexOf('/')) + "/");
         
         if (!newDir.exists()) {
             newDir.mkdirs();

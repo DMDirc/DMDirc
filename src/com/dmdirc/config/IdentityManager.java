@@ -26,14 +26,15 @@ import com.dmdirc.Main;
 import com.dmdirc.Precondition;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.util.WeakList;
+import com.dmdirc.util.resourcemanager.ResourceManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+    
 /**
  * The identity manager manages all known identities, providing easy methods
  * to access them.
@@ -46,7 +47,7 @@ public final class IdentityManager {
     
     /** The config managers that have registered with this manager. */
     // XXX: Should this be a weak list?
-    private final static List<ConfigManager> managers = new ArrayList<ConfigManager>();
+    private final static List<ConfigManager> managers = new WeakList<ConfigManager>();
     
     /** The identity file used for the global config. */
     private static Identity config;
@@ -74,26 +75,31 @@ public final class IdentityManager {
     
     /** Loads the default (built in) identities. */
     private static void loadDefaults() {
-        final ClassLoader cldr = IdentityManager.class.getClassLoader();
+        final String[] targets = {"default", "modealiases"};
+        final String dir = getDirectory();
         
-        final String base = "com/dmdirc/config/defaults/";
-        
-        final String[] urls = {"default/defaults", "default/formatter"};
-        
-        for (String url : urls) {
-            try {
-                final InputStream res = cldr.getResourceAsStream(base + url);
-                if (res == null) {
-                    Logger.userError(ErrorLevel.MEDIUM,
-                            "Unable to load default identity: " + url);
-                } else {
-                    addIdentity(new Identity(res, false));
-                }
-            } catch (InvalidIdentityFileException ex) {
-                Logger.userError(ErrorLevel.MEDIUM, "Invalid identity file");
-            } catch (IOException ex) {
-                Logger.userError(ErrorLevel.MEDIUM, "Unable to load identity file");
+        for (String target : targets) {
+            final File file = new File(dir + target);
+            if (!file.exists() || file.listFiles().length == 0) {
+                file.mkdirs();
+                extractIdentities(target);
             }
+        }
+    }
+    
+    /**
+     * Extracts the specific set of default identities to the user's identity
+     * folder.
+     * 
+     * @param target The target to be extracted
+     */
+    private static void extractIdentities(final String target) {
+        try {
+            ResourceManager.getResourceManager().extractResources(
+                    "com/dmdirc/config/defaults/" + target, getDirectory() + target);
+        } catch (IOException ex) {
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to extract default "
+                    + "identities: " + ex.getMessage());
         }
     }
 

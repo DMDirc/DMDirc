@@ -57,40 +57,40 @@ public final class CommandManager {
     /**
      * The global commands that have been instansiated.
      */
-    private static List<Command> globalCommands = new ArrayList<Command>();
+    private static final List<Command> globalCommands = new ArrayList<Command>();
     /**
      * The server commands that have been instansiated.
      */
-    private static List<Command> serverCommands = new ArrayList<Command>();
+    private static final List<Command> serverCommands = new ArrayList<Command>();
     /**
      * The channel commands that have been instansiated.
      */
-    private static List<Command> channelCommands = new ArrayList<Command>();
+    private static final List<Command> channelCommands = new ArrayList<Command>();
     /**
      * The query commands that have been instansiated.
      */
-    private static List<Command> queryCommands = new ArrayList<Command>();
+    private static final List<Command> queryCommands = new ArrayList<Command>();
     /**
      * The "chat" commands that have been instansiated.
      */
-    private static List<Command> chatCommands = new ArrayList<Command>();
+    private static final List<Command> chatCommands = new ArrayList<Command>();
     
     /**
      * The parsers that have requested global commands.
      */
-    private static List<CommandParser> globalParsers = new WeakList<CommandParser>();
+    private static final List<CommandParser> globalParsers = new WeakList<CommandParser>();
     /**
      * The parsers that have requested server commands.
      */
-    private static List<CommandParser> serverParsers = new WeakList<CommandParser>();
+    private static final List<CommandParser> serverParsers = new WeakList<CommandParser>();
     /**
      * The parsers that have requested channel commands.
      */
-    private static List<CommandParser> channelParsers = new WeakList<CommandParser>();
+    private static final List<CommandParser> channelParsers = new WeakList<CommandParser>();
     /**
      * The parsers that have requested query commands.
      */
-    private static List<CommandParser> queryParsers = new WeakList<CommandParser>();
+    private static final List<CommandParser> queryParsers = new WeakList<CommandParser>();
     
     /**
      * Channel commands that have been registered to appear in the nicklist
@@ -100,11 +100,11 @@ public final class CommandManager {
     
     /** The command char we're using. */
     private static char commandChar = IdentityManager.getGlobalConfig()
-            .getOption("general", "commandchar").charAt(0);
+            .getOption("general", "commandchar", "/").charAt(0);
     
     /** The silence char we're using. */
     private static char silenceChar = IdentityManager.getGlobalConfig()
-            .getOption("general", "silencechar").charAt(0);
+            .getOption("general", "silencechar", ".").charAt(0);
     
     /**
      * Prevents creation of a new command manager.

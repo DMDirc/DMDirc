@@ -1,5 +1,6 @@
 identity.name = DMDirc default settings
 identity.globaldefault = true
+identity.defaultsversion = 0
 
 general.submitErrors=true
 
