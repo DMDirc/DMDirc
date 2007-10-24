@@ -1,0 +1,21 @@
+# Default mode settings for Hyperion
+# bdeIq,k,lfJD,cgijLmnPQrRstz
+
+identity.name = Hyperion mode aliases
+identity.ircd = hyperion
+
+server.moded = Real name ban
+server.modeq = Silence
+
+server.modef = Forward uninvited
+server.modeJ = Join throttling
+server.modeD = Auto D:Line clients
+
+server.modec = Filter control codes
+server.modeg = Allow anybody to invite
+server.modej = Juped
+server.modeL = Allow large lists
+server.modeP = Permanent channel
+server.modeQ = No forwarded users
+server.modeR = Silence unidentified users
+server.modez = Reduced moderation
