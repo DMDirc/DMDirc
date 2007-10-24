@@ -22,7 +22,7 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.util.MapList;
+import com.dmdirc.util.WeakMapList;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -53,8 +53,8 @@ public final class ConfigManager extends ConfigSource implements Serializable,
     private List<Identity> sources;
     
     /** The listeners registered for this manager. */
-    private final MapList<String, ConfigChangeListener> listeners
-            = new MapList<String, ConfigChangeListener>();
+    private final WeakMapList<String, ConfigChangeListener> listeners
+            = new WeakMapList<String, ConfigChangeListener>();
     
     /** The ircd this manager is for. */
     private final String ircd;

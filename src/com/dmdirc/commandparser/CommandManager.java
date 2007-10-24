@@ -41,6 +41,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.util.WeakList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,25 +78,25 @@ public final class CommandManager {
     /**
      * The parsers that have requested global commands.
      */
-    private static List<CommandParser> globalParsers = new ArrayList<CommandParser>();
+    private static List<CommandParser> globalParsers = new WeakList<CommandParser>();
     /**
      * The parsers that have requested server commands.
      */
-    private static List<CommandParser> serverParsers = new ArrayList<CommandParser>();
+    private static List<CommandParser> serverParsers = new WeakList<CommandParser>();
     /**
      * The parsers that have requested channel commands.
      */
-    private static List<CommandParser> channelParsers = new ArrayList<CommandParser>();
+    private static List<CommandParser> channelParsers = new WeakList<CommandParser>();
     /**
      * The parsers that have requested query commands.
      */
-    private static List<CommandParser> queryParsers = new ArrayList<CommandParser>();
+    private static List<CommandParser> queryParsers = new WeakList<CommandParser>();
     
     /**
      * Channel commands that have been registered to appear in the nicklist
      * popup.
      */
-    private static List<Command> channelPopupCommands = new ArrayList<Command>();
+    private static List<Command> channelPopupCommands = new WeakList<Command>();
     
     /** The command char we're using. */
     private static char commandChar = IdentityManager.getGlobalConfig()
@@ -194,8 +195,6 @@ public final class CommandManager {
      */
     private static void registerCommand(final Command command,
             final List<CommandParser> parsers, final boolean register) {
-        // FIXME: There's no way to kill old/dead entries in the *Parsers lists.
-        //        Ideally, they'd unregister themselves (or so) when unloaded.
         for (CommandParser parser : parsers) {
             if (register) {
                 parser.registerCommand(command);

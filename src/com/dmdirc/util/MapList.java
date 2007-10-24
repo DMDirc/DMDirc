@@ -40,7 +40,7 @@ import java.util.Set;
 public class MapList<S,T> {
     
     /** Our internal map. */
-    private final Map<S, List<T>> map = new HashMap<S, List<T>>();
+    protected final Map<S, List<T>> map = new HashMap<S, List<T>>();
 
     /**
      * Determines if this MapList is empty. An empty MapList is one that either
@@ -109,7 +109,7 @@ public class MapList<S,T> {
      * @param key The key to retrieve
      * @return A list of the specified key's values
      */
-    private List<T> safeGet(final S key) {
+    protected List<T> safeGet(final S key) {
         if (!map.containsKey(key)) {
             map.put(key, new ArrayList<T>());
         }

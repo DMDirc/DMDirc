@@ -26,6 +26,7 @@ import com.dmdirc.Main;
 import com.dmdirc.Precondition;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.util.WeakList;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -72,7 +73,7 @@ public class Identity extends ConfigSource implements Serializable,
     
     /** The config change listeners for this source. */
     protected final List<ConfigChangeListener> listeners
-            = new ArrayList<ConfigChangeListener>();
+            = new WeakList<ConfigChangeListener>();
     
     /** The file that this identity is read from. */
     protected File file;

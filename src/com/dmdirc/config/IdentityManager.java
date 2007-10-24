@@ -45,6 +45,7 @@ public final class IdentityManager {
     private final static List<Identity> identities = new ArrayList<Identity>();
     
     /** The config managers that have registered with this manager. */
+    // XXX: Should this be a weak list?
     private final static List<ConfigManager> managers = new ArrayList<ConfigManager>();
     
     /** The identity file used for the global config. */

@@ -27,11 +27,9 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.Update.STATUS;
 import com.dmdirc.util.Downloader;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
+import com.dmdirc.util.WeakList;
+
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  * Represents a single available update for some component.
@@ -64,7 +62,7 @@ public final class Update {
 
     /** A list of registered update listeners. */
     private final List<UpdateListener> listeners
-            = new ArrayList<UpdateListener>();
+            = new WeakList<UpdateListener>();
 
     /** Our current status. */
     private STATUS status = Update.STATUS.PENDING;
