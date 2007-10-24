@@ -59,6 +59,7 @@ import com.dmdirc.ui.messages.Styliser;
 import java.awt.Color;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -105,6 +106,10 @@ public final class Channel extends MessageTarget implements
     
     /** The config manager for this channel. */
     private final ConfigManager configManager;
+    
+    // TODO: Make this some kind of fixed-length buffer
+    /** A list of previous topics we've seen. */
+    private final List<Topic> topics = new ArrayList<Topic>();
     
     /** Whether we're in this channel or not. */
     private boolean onChannel;
@@ -475,6 +480,10 @@ public final class Channel extends MessageTarget implements
             
             addLine(buff, modes, parts[0], parts[1], parts[2], cChannel, topic);
         }
+        
+        topics.add(new Topic(cChannel.getTopic(), 
+                cChannel.getTopicUser(), cChannel.getTopicTime()));
+        
         updateTitle();
     }
     
@@ -748,6 +757,16 @@ public final class Channel extends MessageTarget implements
         }
         
         return res;
+    }
+    
+    /**
+     * Retrieve the topics that have been seen on this channel.
+     * 
+     * @return A list of topics that have been seen on this channel, including
+     * the current one.
+     */
+    public List<Topic> getTopics() {
+        return new ArrayList<Topic>(topics);
     }
     
     /**

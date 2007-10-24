@@ -67,16 +67,13 @@ public class ConfigFile {
 
                 domains.add(domain);
 
-                keydomain = "meta".equals(domain) || keydomains.containsKey(domain);
+                keydomain = keydomains.containsKey(domain)
+                        || flatdomains.containsValue("keysections", domain);
             } else if (domain != null && keydomain && (offset = tline.indexOf('=')) != -1) {
                 final String key = tline.substring(0, offset);
                 final String value = tline.substring(offset + 1);
 
-                if ("meta".equals(domain) && value.equals("key")) {
-                    keydomains.put(domain, new HashMap<String, String>());
-                } else if (!"meta".equals(domain)) {
-                    keydomains.get(domain).put(key, value);
-                }
+                keydomains.get(domain).put(key, value);
             } else if (domain != null && !keydomain) {
                 flatdomains.add(domain, tline);
             }
@@ -92,7 +89,7 @@ public class ConfigFile {
         writeMeta(lines);
 
         for (String domain : domains) {
-            if ("meta".equals(domain)) {
+            if ("keysections".equals(domain)) {
                 continue;
             }
 
@@ -116,16 +113,29 @@ public class ConfigFile {
 
     private void writeMeta(final List<String> lines) {
         lines.add("");
-        lines.add("# This section describes the format of the rest of the file.");
+        lines.add("# This section indicates which sections below take key/value");
+        lines.add("# pairs, rather than a simple list. It should be placed above");
+        lines.add("# any sections that take key/values.");
+        lines.add("keysections:");
 
         for (String domain : domains) {
-            if ("meta".equals(domain)) {
+            if ("keysections".equals(domain)) {
                 continue;
             } else if (keydomains.containsKey(domain)) {
-                lines.add("  " + domain + "=key");
-            } else {
-                lines.add("  " + domain + "=list");
+                lines.add("  " + domain);
             }
         }
+    }
+    
+    public Map<String, String> getKeyDomain(final String domain) {
+        return keydomains.get(domain);
+    }
+    
+    public List<String> getListDomain(final String domain) {
+        return flatdomains.get(domain);
+    }
+    
+    public boolean hasDomain(final String domain) {
+        return keydomains.containsKey(domain) || flatdomains.containsKey(domain);
     }
 }

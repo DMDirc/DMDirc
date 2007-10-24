@@ -20,36 +20,35 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.updater;
+package com.dmdirc;
 
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-public class UpdateTest {
+/**
+ * Stores information about a channel topic.
+ * 
+ * @author chris
+ */
+public class Topic {
     
-    private final String subject = "outofdate component channel date version url";
-    
-    private Update update;
+    private final String topic;
+    private final String client;
+    private final long time;
 
-    @Before
-    public void setUp() throws Exception {
-        update = new Update(subject);
+    public Topic(String topic, String client, long time) {
+        this.topic = topic;
+        this.client = client;
+        this.time = time;
     }
 
-    @Test
-    public void testGetComponent() {
-        assertEquals("component", update.getComponent());
+    public String getClient() {
+        return client;
     }
 
-    @Test
-    public void testGetRemoteVersion() {
-        assertEquals("version", update.getRemoteVersion());
+    public long getTime() {
+        return time;
     }
 
-    @Test
-    public void testGetUrl() {
-        assertEquals("url", update.getUrl());
+    public String getTopic() {
+        return topic;
     }
     
 }
