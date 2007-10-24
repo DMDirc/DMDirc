@@ -37,6 +37,7 @@ import com.dmdirc.ui.input.tabstyles.TabCompletionStyle;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.ui.swing.components.ColourPickerDialog;
+import com.dmdirc.util.RollingList;
 
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -71,27 +72,8 @@ public final class InputHandler extends KeyAdapter implements ActionListener,
      */
     private static final int POSITION_START = 2;
     
-    /**
-     * The current position in the buffer (where the user has scrolled back
-     * to).
-     */
-    private int bufferPosition;
-    
-    /**
-     * The maximum position we've got to in the buffer. This will be the
-     * position that is inserted to next. Note that it will wrap around once
-     * we hit the maximum size.
-     */
-    private int bufferMaximum;
-    
-    /** The maximum size of the buffer. */
-    private final int bufferSize;
-    
-    /** The lowest entry we've used in the buffer. */
-    private int bufferMinimum;
-    
-    /** The buffer itself. */
-    private String[] buffer;
+    /** The input buffer. */
+    private RollingList<String> buffer;
     
     /** The textfield that we're handling input for. */
     private final JTextField target;
@@ -123,15 +105,13 @@ public final class InputHandler extends KeyAdapter implements ActionListener,
             final CommandParser thisCommandParser,
             final InputWindow thisParentWindow) {
         
-        bufferSize = thisParentWindow.getConfigManager().getOptionInt("ui", "inputbuffersize", 50);
+        buffer = new RollingList<String>(
+                thisParentWindow.getConfigManager().getOptionInt("ui", "inputbuffersize", 50),
+                "");
         
         this.commandParser = thisCommandParser;
         this.parentWindow = thisParentWindow;
         this.target = thisTarget;
-        this.buffer = new String[bufferSize];
-        bufferPosition = 0;
-        bufferMinimum = 0;
-        bufferMaximum = 0;
         
         setStyle();
         
@@ -253,11 +233,10 @@ public final class InputHandler extends KeyAdapter implements ActionListener,
      * Handles cycling through the input buffer.
      */
     private void doBufferUp() {
-        if (bufferPosition == bufferMinimum) {
-            Toolkit.getDefaultToolkit().beep();
+        if (buffer.hasPrevious()) {
+            target.setText(buffer.getPrevious());
         } else {
-            bufferPosition = normalise(bufferPosition - 1);
-            retrieveBuffer();
+            Toolkit.getDefaultToolkit().beep();
         }
     }
     
@@ -266,9 +245,8 @@ public final class InputHandler extends KeyAdapter implements ActionListener,
      * Handles cycling through the input buffer, and storing incomplete lines.
      */
     private void doBufferDown() {
-        if (bufferPosition != bufferMaximum) {
-            bufferPosition = normalise(bufferPosition + 1);
-            retrieveBuffer();
+        if (buffer.hasNext()) {
+            target.setText(buffer.getNext());
         } else if (target.getText().isEmpty()) {
             Toolkit.getDefaultToolkit().beep();
         } else {
@@ -418,27 +396,6 @@ public final class InputHandler extends KeyAdapter implements ActionListener,
     }
     
     /**
-     * Retrieves the buffered text stored at the position indicated by
-     * bufferPos, and replaces the current textbox content with it.
-     */
-    private void retrieveBuffer() {
-        target.setText(buffer[bufferPosition]);
-    }
-    
-    /**
-     * Normalises the input so that it is in the range 0 &lt;= x &lt; bufferSize.
-     * @param input The number to normalise
-     * @return The normalised number
-     */
-    private int normalise(final int input) {
-        int res = input;
-        while (res < 0) {
-            res += bufferSize;
-        }
-        return res % bufferSize;
-    }
-    
-    /**
      * Adds all items in the string array to the buffer.
      *
      * @param lines lines to add to the buffer
@@ -452,17 +409,12 @@ public final class InputHandler extends KeyAdapter implements ActionListener,
     
     /**
      * Adds the specified string to the buffer.
+     * 
      * @param line The line to be added to the buffer
      */
     public void addToBuffer(final String line) {
-        buffer[bufferMaximum] = line;
-        bufferMaximum = normalise(bufferMaximum + 1);
-        bufferPosition = bufferMaximum;
-        
-        if (buffer[bufferSize - 1] != null) {
-            bufferMinimum = normalise(bufferMaximum + 1);
-            buffer[bufferMaximum] = null;
-        }
+        buffer.add(line);
+        buffer.seekToEnd();
         
         target.setText("");
     }
@@ -477,6 +429,7 @@ public final class InputHandler extends KeyAdapter implements ActionListener,
         if (IdentityManager.getGlobalConfig().getOptionBool("general", "showcolourdialog", false)) {
             colourPicker = new ColourPickerDialog(irc, hex);
             colourPicker.addActionListener(new ActionListener() {
+                @Override
                 public void actionPerformed(final ActionEvent actionEvent) {
                     target.setText(target.getText() + actionEvent.getActionCommand());
                     colourPicker.dispose();
@@ -489,6 +442,7 @@ public final class InputHandler extends KeyAdapter implements ActionListener,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void configChanged(final String domain, final String key) {
         setStyle();
     }
