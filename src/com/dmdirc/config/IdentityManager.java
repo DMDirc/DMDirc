@@ -96,7 +96,8 @@ public final class IdentityManager {
     private static void extractIdentities(final String target) {
         try {
             ResourceManager.getResourceManager().extractResources(
-                    "com/dmdirc/config/defaults/" + target, getDirectory() + target);
+                    "com/dmdirc/config/defaults/" + target,
+                    getDirectory() + target, false);
         } catch (IOException ex) {
             Logger.userError(ErrorLevel.MEDIUM, "Unable to extract default "
                     + "identities: " + ex.getMessage());

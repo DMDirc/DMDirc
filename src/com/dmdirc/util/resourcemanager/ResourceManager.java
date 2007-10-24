@@ -151,27 +151,35 @@ public abstract class ResourceManager {
         out.flush();
         out.close();
     }
-    
+       
     /**
      * Extracts the specified resource to the specified directory.
      *
      * @param resourceName The name of the resource to extract
      * @param directory The name of the directory to extract to
+     * @param usePath If true, append the path of the files in the resource
+     * to the extraction path
      *
      * @throws IOException if the write operation fails
      *
      * @return success of failure of the operation
      */
     public final boolean extractResource(final String resourceName,
-            final String directory) throws IOException {
+            final String directory, final boolean usePath) throws IOException {
         final byte[] resource = getResourceBytes(resourceName);
         
         if (resource.length == 0) {
             return false;
         }
         
-        final File newDir = new File(directory);
-                //, resourceName.substring(0, resourceName.lastIndexOf('/')) + "/");
+        File newDir;
+        
+        if (usePath) {
+            newDir = new File(directory,
+                    resourceName.substring(0, resourceName.lastIndexOf('/')) + "/");
+        } else {
+            newDir = new File(directory);
+        }
         
         if (!newDir.exists()) {
             newDir.mkdirs();
@@ -197,16 +205,31 @@ public abstract class ResourceManager {
      *
      * @param resourcesPrefix The prefix of the resources to extract
      * @param directory The name of the directory to extract to
+     * @param usePath If true, append the path of the files in the resource
+     * to the extraction path
+     *
+     * @throws IOException if the write operation fails
+     */
+    public final void extractResources(final String resourcesPrefix,
+            final String directory, final boolean usePath) throws IOException {
+        final Map<String, byte[]> resourcesBytes =
+                getResourcesStartingWithAsBytes(resourcesPrefix);
+        for (Entry<String, byte[]> entry : resourcesBytes.entrySet()) {
+            extractResource(entry.getKey(), directory, usePath);
+        }
+    }
+    
+    /**
+     * Extracts the specified resources to the specified directory.
+     *
+     * @param resourcesPrefix The prefix of the resources to extract
+     * @param directory The name of the directory to extract to
      *
      * @throws IOException if the write operation fails
      */
     public final void extractResources(final String resourcesPrefix,
             final String directory) throws IOException {
-        final Map<String, byte[]> resourcesBytes =
-                getResourcesStartingWithAsBytes(resourcesPrefix);
-        for (Entry<String, byte[]> entry : resourcesBytes.entrySet()) {
-            extractResource(entry.getKey(), directory);
-        }
+        extractResources(resourcesPrefix, directory, true);
     }
     
     /**

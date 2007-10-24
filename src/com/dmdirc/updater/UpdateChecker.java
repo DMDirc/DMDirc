@@ -30,6 +30,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.Update.STATUS;
 import com.dmdirc.updater.components.ClientComponent;
+import com.dmdirc.updater.components.DefaultsComponent;
 import com.dmdirc.updater.components.ModeAliasesComponent;
 import com.dmdirc.util.Downloader;
 
@@ -67,6 +68,7 @@ public final class UpdateChecker extends MouseAdapter implements Runnable {
     static {
         components.add(new ClientComponent());
         components.add(new ModeAliasesComponent());
+        components.add(new DefaultsComponent());
     }    
     
     /**
