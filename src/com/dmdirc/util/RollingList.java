@@ -97,6 +97,7 @@ public class RollingList<T> {
         if (items.size() > position + 1 || !addEmpty) {
             return get(++position);
         } else {
+            position++;
             return empty;
         }
     }
