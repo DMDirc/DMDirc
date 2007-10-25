@@ -97,7 +97,27 @@ public class Action extends ActionModel implements Serializable {
     public Action(final String group, final String name,
             final ActionType[] triggers, final String[] response,
             final List<ActionCondition> conditions, final String newFormat) {
-        super(group, name, triggers, response, conditions, newFormat);
+        this(group, name, triggers, response, conditions,
+                ConditionTree.createConjunction(conditions.size()), newFormat);
+    }
+    
+    /**
+     * Creates a new instance of Action with the specified properties and saves
+     * it to disk.
+     *
+     * @param group The group the action belongs to
+     * @param name The name of the action
+     * @param triggers The triggers to use
+     * @param response The response to use
+     * @param conditions The conditions to use
+     * @param conditionTree The condition tree to use
+     * @param newFormat The new formatter to use
+     */    
+    public Action(final String group, final String name,
+            final ActionType[] triggers, final String[] response,
+            final List<ActionCondition> conditions, 
+            final ConditionTree conditionTree, final String newFormat) {
+        super(group, name, triggers, response, conditions, conditionTree, newFormat);
         
         final String fs = System.getProperty("file.separator");
         final String dir = ActionManager.getDirectory() + group + fs;
@@ -171,9 +191,27 @@ public class Action extends ActionModel implements Serializable {
             valid = valid & readCondition(i);
         }
         
-        if (valid) {
-            ActionManager.registerAction(this);
+        if (!valid) {
+            return;
         }
+        
+        if (properties.containsKey("conditiontree")) {
+            conditionTree = ConditionTree.parseString(properties.getProperty("conditiontree"));
+            
+            if (conditionTree == null) {
+                error("Unable to parse condition tree");
+                return;
+            }
+            
+            if (conditionTree.getMaximumArgument() >= conditions.size()) {
+                error("Condition tree references condition "
+                        + conditionTree.getMaximumArgument() + " but there are"
+                        + " only " + conditions.size() + " conditions");
+                return;
+            }
+        }
+        
+        ActionManager.registerAction(this);
     }
     
     /**
@@ -204,6 +242,10 @@ public class Action extends ActionModel implements Serializable {
         properties.setProperty("trigger", triggerString.substring(1));
         properties.setProperty("conditions", "" + conditions.size());
         properties.setProperty("response", responseString.substring(1));
+        
+        if (conditionTree != null) {
+            properties.setProperty("conditiontree", conditionTree.toString());
+        }
         
         if (newFormat != null) {
             properties.setProperty("format", newFormat);

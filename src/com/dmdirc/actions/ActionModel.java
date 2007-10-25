@@ -23,6 +23,7 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.Main;
+import com.dmdirc.Precondition;
 import com.dmdirc.ServerManager;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.CommandParser;
@@ -59,6 +60,9 @@ public class ActionModel {
     /** The conditions for this action. */
     protected List<ActionCondition> conditions = new ArrayList<ActionCondition>();
     
+    /** The condition tree used for evaluating conditions. */
+    protected ConditionTree conditionTree;
+    
     /** Whether this action has been modified or not. */
     protected boolean modified = false;
     
@@ -81,16 +85,19 @@ public class ActionModel {
      * @param triggers The triggers to use
      * @param response The response to use
      * @param conditions The conditions to use
+     * @param conditionTree The condition tree to use
      * @param newFormat The new formatter to use
      */
     public ActionModel(final String group, final String name,
             final ActionType[] triggers, final String[] response,
-            final List<ActionCondition> conditions, final String newFormat) {
+            final List<ActionCondition> conditions,
+            final ConditionTree conditionTree, final String newFormat) {
         this.group = group;
         this.name = name;
         this.triggers = triggers.clone();
         this.response = response.clone();
         this.conditions = conditions;
+        this.conditionTree = conditionTree;
         this.newFormat = newFormat;        
     }
 
@@ -100,13 +107,30 @@ public class ActionModel {
      * @param format The format of the message that's going to be displayed.
      * @param arguments The arguments from the action that caused this trigger.
      */
+    @Precondition({
+        "This action has at least one trigger",
+        "This action's primary trigger is non-null"
+    })
     public void trigger(final StringBuffer format, final Object... arguments) {
+        assert(triggers.length > 0);
+        assert(triggers[0] != null);
+        
         final ActionSubstitutor sub = new ActionSubstitutor(triggers[0]);
-
+        final boolean[] results = new boolean[conditions.size()];
+        
+        int i = 0;
         for (ActionCondition condition : conditions) {
-            if (!condition.test(sub, arguments)) {
-                return;
+            results[i++] = condition.test(sub, arguments);
+        }
+        
+         if (conditionTree == null) {
+            for (boolean res : results) {
+                if (!res) {
+                    return;
+                }
             }
+        } else if (!conditionTree.evaluate(results)) {
+            return;
         }
 
         final Window active = Main.getUI().getMainWindow().getActiveFrame();
@@ -129,7 +153,8 @@ public class ActionModel {
         }
 
         for (String command : response) {
-            cp.parseCommand(cw, new ActionSubstitutor(triggers[0]).doSubstitution(command, arguments));
+            cp.parseCommand(cw,
+                    new ActionSubstitutor(triggers[0]).doSubstitution(command, arguments));
         }
 
         if (newFormat != null && format != null) {
@@ -251,6 +276,25 @@ public class ActionModel {
         this.name = newName;
         this.modified = true;
     }
+
+    /**
+     * Retrieves the condition tree used for this action.
+     * 
+     * @return This action's condition tree
+     */
+    public ConditionTree getConditionTree() {
+        return conditionTree;
+    }
+
+    /**
+     * Sets the condition tree used for this action.
+     * 
+     * @param conditionTree The new condition tree to be used
+     */
+    public void setConditionTree(final ConditionTree conditionTree) {
+        this.conditionTree = conditionTree;
+        this.modified = true;
+    }    
     
     /**
      * Determine if this model has been modified since it was constructed or
