@@ -348,6 +348,7 @@ public final class InputHandler extends KeyAdapter implements ActionListener,
      * typed is added to the buffer for future use.
      * @param actionEvent The event that was fired
      */
+    @Override
     public void actionPerformed(final ActionEvent actionEvent) {
         final String line = actionEvent.getActionCommand();
         

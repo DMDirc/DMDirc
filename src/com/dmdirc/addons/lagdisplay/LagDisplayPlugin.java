@@ -35,8 +35,8 @@ import com.dmdirc.ui.interfaces.Window;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -54,7 +54,7 @@ public final class LagDisplayPlugin extends Plugin implements EventPlugin,
     private final JPanel panel = new JPanel();
     
     /** A cache of ping times. */
-    private final Map<Server, String> pings = new HashMap<Server, String>();
+    private final Map<Server, String> pings = new WeakHashMap<Server, String>();
     
     /** The label we use to show lag. */
     private final JLabel label = new JLabel("Unknown");

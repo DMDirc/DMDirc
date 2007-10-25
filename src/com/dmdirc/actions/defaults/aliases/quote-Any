@@ -1,0 +1,10 @@
+trigger=UNKNOWN_COMMAND
+conditions=1
+
+condition0-arg=1
+condition0-component=STRING_STRING
+condition0-comparison=STRING_EQUALS
+condition0-target=quote
+
+response=/raw $1-
+format=

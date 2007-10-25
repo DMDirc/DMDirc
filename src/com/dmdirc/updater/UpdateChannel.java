@@ -24,15 +24,18 @@ package com.dmdirc.updater;
 
 /**
  * Represents one update channel (e.g., stable, nightly, etc).
+ * 
  * @author chris
  */
 public enum UpdateChannel {
 
     /** Stable update channel. */
     STABLE, 
+    /** Unstable update channel. */
+    UNSTABLE,
     /** Nightly update chanel. */
     NIGHTLY, 
-    /** No update checks. */
+    /** Not an official release (e.g. SVN). */
     NONE;
 
 }
