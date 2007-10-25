@@ -227,52 +227,52 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     private void initNotificationsTab() {
         final String tabName = "Notifications";
         preferencesPanel.addCategory("Messages", tabName, "");
-        final DefaultComboBoxModel windowOptions = new DefaultComboBoxModel(
-                new Entry[] {
+        final Entry[] windowOptions = new Entry[] {
                     new SimpleImmutableEntry<String, String>("All", "all"),
                     new SimpleImmutableEntry<String, String>("Active", "active"), 
                     new SimpleImmutableEntry<String, String>("Server", "server"), 
-                    new SimpleImmutableEntry<String, String>("None", "none  "), });
-        final DefaultComboBoxModel windowOptions2 = new DefaultComboBoxModel(
-                new Entry[] {
+                    new SimpleImmutableEntry<String, String>("None", "none  "), 
+        };
+        final Entry[] windowOptions2 = new Entry[] {
                     new SimpleImmutableEntry<String, String>("All", "all"),
                     new SimpleImmutableEntry<String, String>("Active", "active"), 
                     new SimpleImmutableEntry<String, String>("Server", "server"), 
                     new SimpleImmutableEntry<String, String>("Source of command", 
                             "lastcommand:whois %4$s( %4$s)"),
-                    new SimpleImmutableEntry<String, String>("None", "none  "), });
+                    new SimpleImmutableEntry<String, String>("None", "none  "), 
+        };
         
         preferencesPanel.addComboboxOption(tabName, "notifications.socketClosed",
                 "Socket closed: ", "Where to display socket closed notifications",
-                windowOptions, new MapEntryRenderer(),
+                new DefaultComboBoxModel(windowOptions), new MapEntryRenderer(),
                 config.getOption("notifications", "socketClosed"), false);
         preferencesPanel.addComboboxOption(tabName, "notifications.privateNotice",
                 "Private notice: ", "Where to display private notice notifications",
-                windowOptions, new MapEntryRenderer(),
+                new DefaultComboBoxModel(windowOptions), new MapEntryRenderer(),
                 config.getOption("notifications", "privateNotice"), false);
         preferencesPanel.addComboboxOption(tabName, "notifications.privateCTCP",
                 "CTCP request: ", "Where to display CTCP request notifications",
-                windowOptions, new MapEntryRenderer(),
+                new DefaultComboBoxModel(windowOptions), new MapEntryRenderer(),
                 config.getOption("notifications", "privateCTCP"), false);
         preferencesPanel.addComboboxOption(tabName, "notifications.privateCTCPreply",
                 "CTCP reply: ", "Where to display CTCP reply notifications",
-                windowOptions, new MapEntryRenderer(),
+                new DefaultComboBoxModel(windowOptions), new MapEntryRenderer(),
                 config.getOption("notifications", "privateCTCPreply"), false);
         preferencesPanel.addComboboxOption(tabName, "notifications.connectError",
                 "Connect error: ", "Where to display connect error notifications",
-                windowOptions, new MapEntryRenderer(),
+                new DefaultComboBoxModel(windowOptions), new MapEntryRenderer(),
                 config.getOption("notifications", "connectError"), false);
         preferencesPanel.addComboboxOption(tabName, "notifications.connectRetry",
                 "Connect retry: ", "Where to display connect retry notifications",
-                windowOptions, new MapEntryRenderer(),
+                new DefaultComboBoxModel(windowOptions), new MapEntryRenderer(),
                 config.getOption("notifications", "connectRetry"), false);
         preferencesPanel.addComboboxOption(tabName, "notifications.stonedServer",
                 "Stoned server: ", "Where to display stoned server notifications",
-                windowOptions, new MapEntryRenderer(),
+                new DefaultComboBoxModel(windowOptions), new MapEntryRenderer(),
                 config.getOption("notifications", "stonedServer"), false);
         preferencesPanel.addComboboxOption(tabName, "notifications.whois",
                 "Whois output: ", "Where to display whois command output",
-                windowOptions2, new MapEntryRenderer(),
+                new DefaultComboBoxModel(windowOptions2), new MapEntryRenderer(),
                 config.getOption("notifications", "whois"), false);
     }
     
