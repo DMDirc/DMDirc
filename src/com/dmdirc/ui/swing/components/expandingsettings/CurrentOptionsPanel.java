@@ -26,8 +26,6 @@ import com.dmdirc.IconManager;
 import com.dmdirc.ui.swing.components.ColourChooser;
 import com.dmdirc.ui.swing.components.ImageButton;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel.OptionType;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
-import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -42,7 +40,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SpringLayout;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Current options panel.
@@ -212,19 +210,14 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
                 IconManager.getIconManager().getIcon("close-inactive"),
                 IconManager.getIconManager().getIcon("close-active"));
         
-        component.setPreferredSize(new Dimension(150,
-                component.getFont().getSize()));
-        
         label.setText(displayName + ": ");
-        label.setPreferredSize(new Dimension(150,
-                label.getFont().getSize()));
         label.setLabelFor(component);
         
         button.addActionListener(this);
         
         panel.add(label);
-        panel.add(component);
-        panel.add(button);
+        panel.add(component, "growx, pushx");
+        panel.add(button, "wrap");
     }
     
     
@@ -232,7 +225,7 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
     protected void populateCurrentSettings() {
         setVisible(false);
         
-        setLayout(new SpringLayout());
+        setLayout(new MigLayout("fillx, aligny top"));
         
         removeAll();
         
@@ -259,8 +252,6 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
                     parent.getOptionName(entry.getKey()),
                     this, entry.getValue());
         }
-        
-        layoutGrid(this, getComponentCount() / 3, 3, 0, 0, SMALL_BORDER, SMALL_BORDER);
         
         setVisible(true);
     }

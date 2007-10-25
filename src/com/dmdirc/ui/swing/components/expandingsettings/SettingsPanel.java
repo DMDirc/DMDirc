@@ -118,10 +118,8 @@ public final class SettingsPanel extends JPanel {
         setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER));
         
-        scrollPane.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(UIManager.getBorder("TextField.border"),
-                "Current settings"),
-                BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER)));
+        scrollPane.setBorder(BorderFactory.createTitledBorder(
+                UIManager.getBorder("TextField.border"), "Current settings"));
         
         addOptionPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Add new setting"),
                 BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER,
