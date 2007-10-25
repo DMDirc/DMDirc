@@ -102,6 +102,7 @@ treeview.sortservers=true
 channel.splitusermodes=false
 channel.sendwho=false
 channel.showmodeprefix=true
+channel.topichistorysize=10
 general.whotime=60000
 
 tabcompletion.casesensitive=false

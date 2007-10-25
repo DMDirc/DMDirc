@@ -55,6 +55,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.Styliser;
+import com.dmdirc.util.RollingList;
 
 import java.awt.Color;
 import java.io.Serializable;
@@ -109,7 +110,7 @@ public final class Channel extends MessageTarget implements
     
     // TODO: Make this some kind of fixed-length buffer
     /** A list of previous topics we've seen. */
-    private final List<Topic> topics = new ArrayList<Topic>();
+    private final RollingList<Topic> topics;
     
     /** Whether we're in this channel or not. */
     private boolean onChannel;
@@ -134,8 +135,11 @@ public final class Channel extends MessageTarget implements
         
         configManager = new ConfigManager(server.getIrcd(), server.getNetwork(),
                 server.getName(), channelInfo.getName());
-        
+                
         configManager.addChangeListener("channel", this);
+        
+        topics = new RollingList<Topic>(configManager.getOptionInt("channel",
+                "topichistorysize", 10));
         
         sendWho = configManager.getOptionBool("channel", "sendwho", false);
         showModePrefix = configManager.getOptionBool("channel", "showmodeprefix", false);
@@ -766,7 +770,7 @@ public final class Channel extends MessageTarget implements
      * the current one.
      */
     public List<Topic> getTopics() {
-        return new ArrayList<Topic>(topics);
+        return topics.getList();
     }
     
     /**

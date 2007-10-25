@@ -117,5 +117,9 @@ public class RollingList<T> {
     public void seekToStart() {
         position = 0;
     }
+    
+    public List<T> getList() {
+        return new ArrayList<T>(items);
+    }
 
 }
