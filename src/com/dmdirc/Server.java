@@ -1113,6 +1113,8 @@ public final class Server extends WritableFrameContainer implements Serializable
 
         if (configManager.getOptionBool(DOMAIN_GENERAL, "closechannelsondisconnect", false)) {
             closeChannels();
+        } else {
+            clearChannels();
         }
 
         if (configManager.getOptionBool(DOMAIN_GENERAL, "closequeriesondisconnect", false)) {
@@ -1158,7 +1160,8 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
         }
 
-        ActionManager.processEvent(CoreActionType.SERVER_CONNECTERROR, null, this, description);
+        ActionManager.processEvent(CoreActionType.SERVER_CONNECTERROR, null,
+                this, description);
 
         handleNotification("connectError", getName(), description);
 
