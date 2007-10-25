@@ -24,6 +24,8 @@ package com.dmdirc.logger;
 
 import com.dmdirc.Main;
 import com.dmdirc.util.Downloader;
+import com.dmdirc.util.ListenerList;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
@@ -35,8 +37,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.event.EventListenerList;
-
 /**
  * Error manager.
  */
@@ -47,7 +47,7 @@ public final class ErrorManager implements Serializable {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 3;
+    private static final long serialVersionUID = 4;
     
     /** Previously instantiated instance of ErrorManager. */
     private static ErrorManager me = new ErrorManager();
@@ -56,7 +56,7 @@ public final class ErrorManager implements Serializable {
     private final Map<Integer, ProgramError> errors;
     
     /** Listener list. */
-    private final EventListenerList errorListeners;
+    private final ListenerList errorListeners = new ListenerList();
     
     /** Next error ID. */
     private int nextErrorID;
@@ -64,7 +64,6 @@ public final class ErrorManager implements Serializable {
     /** Creates a new instance of ErrorListDialog. */
     private ErrorManager() {
         errors = new HashMap<Integer, ProgramError>();
-        errorListeners = new EventListenerList();
         nextErrorID = 0;
     }
     
@@ -158,6 +157,7 @@ public final class ErrorManager implements Serializable {
      */
     public static void sendError(final ProgramError error) {
         new Timer("ErrorManager Timer").schedule(new TimerTask() {
+            @Override
             public void run() {
                 getErrorManager().sendErrorInternal(error);
             }
@@ -261,14 +261,11 @@ public final class ErrorManager implements Serializable {
      */
     protected void fireErrorAdded(final ProgramError error) {
         int firedListeners = 0;
-        final Object[] listeners = errorListeners.getListenerList();
-        for (int i = 0; i < listeners.length; i += 2) {
-            if (listeners[i] == ErrorListener.class) {
-                final ErrorListener thisListener = ((ErrorListener) listeners[i + 1]);
-                if (thisListener.isReady()) {
-                    thisListener.errorAdded(error);
-                    firedListeners++;
-                }
+        
+        for (ErrorListener listener : errorListeners.get(ErrorListener.class)) {
+            if (listener.isReady()) {
+                listener.errorAdded(error);
+                firedListeners++;
             }
         }
         
@@ -288,14 +285,11 @@ public final class ErrorManager implements Serializable {
      */
     protected void fireFatalError(final ProgramError error) {
         int firedListeners = 0;
-        final Object[] listeners = errorListeners.getListenerList();
-        for (int i = 0; i < listeners.length; i += 2) {
-            if (listeners[i] == ErrorListener.class) {
-                final ErrorListener thisListener = ((ErrorListener) listeners[i + 1]);
-                if (thisListener.isReady()) {
-                    thisListener.fatalError(error);
-                    firedListeners++;
-                }
+        
+        for (ErrorListener listener : errorListeners.get(ErrorListener.class)) {
+            if (listener.isReady()) {
+                listener.fatalError(error);
+                firedListeners++;
             }
         }
          
@@ -313,11 +307,8 @@ public final class ErrorManager implements Serializable {
      * @param error Error that has been deleted
      */
     protected void fireErrorDeleted(final ProgramError error) {
-        final Object[] listeners = errorListeners.getListenerList();
-        for (int i = 0; i < listeners.length; i += 2) {
-            if (listeners[i] == ErrorListener.class) {
-                ((ErrorListener) listeners[i + 1]).errorDeleted(error);
-            }
+        for (ErrorListener listener : errorListeners.get(ErrorListener.class)) {
+            listener.errorDeleted(error);
         }
     }
     
@@ -327,11 +318,8 @@ public final class ErrorManager implements Serializable {
      * @param error Error that has been altered
      */
     protected void fireErrorStatusChanged(final ProgramError error) {
-        final Object[] listeners = errorListeners.getListenerList();
-        for (int i = 0; i < listeners.length; i += 2) {
-            if (listeners[i] == ErrorListener.class) {
-                ((ErrorListener) listeners[i + 1]).errorStatusChanged(error);
-            }
+        for (ErrorListener listener : errorListeners.get(ErrorListener.class)) {
+            listener.errorStatusChanged(error);
         }
     }
     

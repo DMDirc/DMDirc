@@ -29,12 +29,12 @@ import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.util.ListenerList;
 
 import java.awt.Color;
 import java.beans.PropertyVetoException;
 
 import javax.swing.Icon;
-import javax.swing.event.EventListenerList;
 
 /**
  * The frame container implements basic methods that should be present in
@@ -48,7 +48,7 @@ public abstract class FrameContainer {
     protected Color notification = Color.BLACK;
 
     /** A list of listeners for this containers's events. */
-    protected final EventListenerList listeners = new EventListenerList();
+    protected final ListenerList listeners = new ListenerList();
 
     /** The icon being used for this container's frame. */
     protected Icon icon;
@@ -70,6 +70,7 @@ public abstract class FrameContainer {
      *
      * @return String identifier
      */
+    @Override
     public abstract String toString();
 
     /**
@@ -119,13 +120,9 @@ public abstract class FrameContainer {
     protected void clearNotification() {
         // TODO: This should default ot something colour independent
         notification = Color.BLACK;
-
-        final Object[] listenerList = listeners.getListenerList();
-        for (int i = 0; i < listenerList.length; i += 2) {
-            if (listenerList[i] == NotificationListener.class) {
-                ((NotificationListener) listenerList[i + 1])
-                        .notificationCleared(getFrame());
-             }
+       
+        for (NotificationListener listener : listeners.get(NotificationListener.class)) {
+                listener.notificationCleared(getFrame());
         }
     }
 
@@ -136,16 +133,13 @@ public abstract class FrameContainer {
      */
     public void sendNotification(final Color colour) {
         final Window activeFrame = Main.getUI().getMainWindow().getActiveFrame();
+        
         if (activeFrame != null && !activeFrame.equals(getFrame())
                 && !colour.equals(notification)) {
             notification = colour;
-
-            final Object[] listenerList = listeners.getListenerList();
-            for (int i = 0; i < listenerList.length; i += 2) {
-                if (listenerList[i] == NotificationListener.class) {
-                    ((NotificationListener) listenerList[i + 1])
-                            .notificationSet(getFrame(), colour);
-                }
+       
+            for (NotificationListener listener : listeners.get(NotificationListener.class)) {
+                listener.notificationSet(getFrame(), colour);
             }
         }
     }
@@ -217,12 +211,8 @@ public abstract class FrameContainer {
             }
         }
         
-        final Object[] listenerList = listeners.getListenerList();
-        for (int i = 0; i < listenerList.length; i += 2) {
-            if (listenerList[i] == SelectionListener.class) {
-                ((SelectionListener) listenerList[i + 1])
-                            .selectionChanged(getFrame());
-            }
+        for (SelectionListener listener : listeners.get(SelectionListener.class)) {
+            listener.selectionChanged(getFrame());
         }        
         
         clearNotification();
@@ -271,12 +261,8 @@ public abstract class FrameContainer {
      * @param newIcon This container's new icon
      */
     protected void iconUpdated(final Icon newIcon) {
-        final Object[] listenerList = listeners.getListenerList();
-        for (int i = 0; i < listenerList.length; i += 2) {
-            if (listenerList[i] == IconChangeListener.class) {
-                ((IconChangeListener) listenerList[i + 1])
-                            .iconChanged(getFrame(), newIcon);
-            }
+        for (IconChangeListener listener : listeners.get(IconChangeListener.class)) {
+            listener.iconChanged(getFrame(), newIcon);
         }        
     }
 

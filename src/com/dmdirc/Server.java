@@ -1281,11 +1281,8 @@ public final class Server extends WritableFrameContainer implements Serializable
     public void addInvite(final Invite invite) {
         invites.add(invite);
 
-        final Object[] listenerList = listeners.getListenerList();
-        for (int i = 0; i < listenerList.length; i += 2) {
-            if (listenerList[i] == InviteListener.class) {
-                ((InviteListener) listenerList[i + 1]).inviteReceived(this, invite);
-            }
+        for (InviteListener listener : listeners.get(InviteListener.class)) {
+            listener.inviteReceived(this, invite);
         }
     }
 
@@ -1297,11 +1294,8 @@ public final class Server extends WritableFrameContainer implements Serializable
     public void removeInvite(final Invite invite) {
         invites.remove(invite);
 
-        final Object[] listenerList = listeners.getListenerList();
-        for (int i = 0; i < listenerList.length; i += 2) {
-            if (listenerList[i] == InviteListener.class) {
-                ((InviteListener) listenerList[i + 1]).inviteReceived(this, invite);
-            }
+        for (InviteListener listener : listeners.get(InviteListener.class)) {
+            listener.inviteExpired(this, invite);
         }
     }
 
