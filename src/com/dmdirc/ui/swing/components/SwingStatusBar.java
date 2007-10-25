@@ -46,8 +46,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.Spring;
-import javax.swing.SpringLayout;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Status bar, shows message and info on the gui.
@@ -102,9 +101,9 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         iconLabel.addMouseListener(this);
         ErrorManager.getErrorManager().addErrorListener(this);
         
-        setLayout(new SpringLayout());
+        setLayout(new MigLayout("ins 0, hidemode 3"));
         
-        add(messageLabel);
+        add(messageLabel, "growx, pushx");
         add(iconLabel);
         
         setPreferredSize(new Dimension(Short.MAX_VALUE, 25));
@@ -114,11 +113,13 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void setMessage(final String newMessage) {
         setMessage(newMessage, null);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void setMessage(final String newMessage,
             final StatusMessageNotifier newNotifier) {
         final int timeout =  IdentityManager.getGlobalConfig().getOptionInt("statusBar", "messageDisplayLength", 5);
@@ -126,6 +127,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     }
     
     /** {@inheritDoc} */
+    @Override
     public synchronized void setMessage(final String newMessage,
             final StatusMessageNotifier newNotifier, final int timeout) {
         messageLabel.setText(newMessage);
@@ -138,6 +140,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         
         if (!DEFAULT_MESSAGE.equals(newMessage)) {
             messageTimer = new TimerTask() {
+                @Override
                 public void run() {
                     clearMessage();
                 }
@@ -148,6 +151,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void clearMessage() {
         setMessage(DEFAULT_MESSAGE);
     }
@@ -155,25 +159,29 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     /** {@inheritDoc} */
     public void clearError() {
         iconLabel.setIcon(DEFAULT_ICON);
-        errorLevel = ErrorLevel.UNKNOWN;
+        errorLevel = null;
     }
     
     /** {@inheritDoc} */
+    @Override
     public void errorAdded(final ProgramError error) {
         checkErrors();
     }
     
     /** {@inheritDoc} */
+    @Override
     public void fatalError(final ProgramError error) {
         //Ignore
     }
     
     /** {@inheritDoc} */
+    @Override
     public void errorDeleted(final ProgramError error) {
         checkErrors();
     }
     
     /** {@inheritDoc} */
+    @Override
     public void errorStatusChanged(final ProgramError error) {
         //Ignore
     }
@@ -184,7 +192,8 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         final List<ProgramError> errors = ErrorManager.getErrorManager().getErrors();
         if (errors.size() > 0) {
             for (ProgramError error : errors) {
-                if (error.getLevel().moreImportant(errorLevel)) {
+                System.out.println("comparing: " + error.getLevel() + " to " + errorLevel);
+                if (errorLevel == null || error.getLevel().moreImportant(errorLevel)) {
                     errorLevel = error.getLevel();
                     iconLabel.setIcon(errorLevel.getIcon());
                 }
@@ -193,30 +202,34 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         } else {
             iconLabel.setVisible(false);
         }
-        layoutBar();
     }
     
     /** {@inheritDoc} */
+    @Override
     public void mousePressed(final MouseEvent mouseEvent) {
         //Ignore.
     }
     
     /** {@inheritDoc} */
+    @Override
     public void mouseReleased(final MouseEvent mouseEvent) {
         //Ignore.
     }
     
     /** {@inheritDoc} */
+    @Override
     public void mouseEntered(final MouseEvent mouseEvent) {
         //Ignore.
     }
     
     /** {@inheritDoc} */
+    @Override
     public void mouseExited(final MouseEvent mouseEvent) {
         //Ignore.
     }
     
     /** {@inheritDoc} */
+    @Override
     public void mouseClicked(final MouseEvent mouseEvent) {
         if (mouseEvent.getButton() == MouseEvent.BUTTON1
                 && mouseEvent.getSource() == iconLabel) {
@@ -225,58 +238,21 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void addComponent(final Component component) {
         remove(iconLabel);
         add(component);
         add(iconLabel);
-        layoutBar();
     }
     
     /** {@inheritDoc} */
+    @Override
     public void removeComponent(final Component component) {
         remove(component);
-        layoutBar();
-    }
-    
-    /** Layout the status bar. */
-    private void layoutBar() {
-        this.setVisible(false);
-        final SpringLayout layout = (SpringLayout) this.getLayout();
-        final int numComponents = this.getComponentCount() - 1;
-        
-        SpringLayout.Constraints constraints;
-        
-        layout.putConstraint(SpringLayout.WEST, getComponent(0),
-                Spring.constant(0), SpringLayout.WEST, this);
-        layout.putConstraint(SpringLayout.EAST, getComponent(0),
-                Spring.constant(-SMALL_BORDER), SpringLayout.WEST, getComponent(1));
-        constraints = layout.getConstraints(getComponent(0));
-        constraints.setHeight(Spring.constant(20));
-        
-        for (int i = 1; i < numComponents; i++) {
-            layout.putConstraint(SpringLayout.EAST, getComponent(i),
-                    Spring.constant(-SMALL_BORDER), SpringLayout.WEST,
-                    getComponent(i + 1));
-            constraints = layout.getConstraints(getComponent(i));
-            constraints.setHeight(Spring.constant(20));
-            constraints.setWidth(constraints.getWidth());
-        }
-        
-        if (getComponent(numComponents).isVisible()) {
-            layout.putConstraint(SpringLayout.EAST, getComponent(numComponents),
-                    Spring.constant(0), SpringLayout.EAST, this);
-            constraints = layout.getConstraints(getComponent(numComponents));
-            constraints.setHeight(Spring.constant(20));
-            constraints.setWidth(constraints.getWidth());
-        } else {
-            layout.putConstraint(SpringLayout.EAST, getComponent(numComponents - 1),
-                Spring.constant(0), SpringLayout.EAST, this);
-        }
-        
-        this.setVisible(true);
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean isReady() {
         return isValid();
     }
