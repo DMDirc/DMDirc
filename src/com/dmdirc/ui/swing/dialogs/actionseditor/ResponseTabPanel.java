@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.dialogs.actionseditor;
 
 import com.dmdirc.actions.ActionType;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.messages.Formatter;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
@@ -31,6 +32,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
@@ -102,7 +104,9 @@ public final class ResponseTabPanel extends JPanel implements
         ((DefaultComboBoxModel) formatter.getModel()).addElement("No change");
         ((DefaultComboBoxModel) formatter.getModel()).addElement("No response");
         
-        for (String format : Formatter.getFormats()) {
+        final List<String> formatters = IdentityManager.getGlobalConfig().getOptions("formatter");
+        
+        for (String format : formatters) {
             ((DefaultComboBoxModel) formatter.getModel()).addElement(format);
         }
         
