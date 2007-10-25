@@ -512,7 +512,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         mainSplitPane.setBorder(null);
 
         mainSplitPane.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
+                SMALL_BORDER, 0, SMALL_BORDER));
 
         mainSplitPane.setDividerSize(SMALL_BORDER);
         mainSplitPane.setOneTouchExpandable(false);

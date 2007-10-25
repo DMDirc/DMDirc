@@ -31,10 +31,8 @@ import com.dmdirc.logger.ProgramError;
 import com.dmdirc.ui.interfaces.StatusBar;
 import com.dmdirc.ui.interfaces.StatusMessageNotifier;
 import com.dmdirc.ui.swing.dialogs.error.ErrorListDialog;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Date;
@@ -46,6 +44,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -88,9 +87,6 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     public SwingStatusBar() {
         super();
         
-        setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER, SMALL_BORDER,
-                SMALL_BORDER));
-        
         messageLabel = new JLabel(DEFAULT_MESSAGE);
         iconLabel = new JLabel(DEFAULT_ICON);
         
@@ -101,13 +97,10 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         iconLabel.addMouseListener(this);
         ErrorManager.getErrorManager().addErrorListener(this);
         
-        setLayout(new MigLayout("ins 0, hidemode 3"));
+        setLayout(new MigLayout("ins rel, hidemode 3"));
         
-        add(messageLabel, "growx, pushx");
-        add(iconLabel);
-        
-        setPreferredSize(new Dimension(Short.MAX_VALUE, 25));
-        setMaximumSize(new Dimension(Short.MAX_VALUE, 25));
+        add(messageLabel, "growx, pushx, sgy components");
+        add(iconLabel, "sgy components");
         
         checkErrors();
     }
@@ -240,8 +233,8 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     @Override
     public void addComponent(final Component component) {
         remove(iconLabel);
-        add(component);
-        add(iconLabel);
+        add(component, "sgy components");
+        add(iconLabel, "sgy components");
     }
     
     /** {@inheritDoc} */

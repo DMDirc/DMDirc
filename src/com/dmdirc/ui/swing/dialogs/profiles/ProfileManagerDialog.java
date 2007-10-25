@@ -35,7 +35,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -64,7 +63,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     /** Previously created instance of ProfileEditorDialog. */
     private static ProfileManagerDialog me;
     /** Profile list. */
-    private final List<Identity> profiles;
+    private List<Identity> profiles;
     /** Profile list. */
     private JList profileList;
     /** Profile list mode. */
@@ -85,8 +84,6 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     /** Creates a new instance of ProfileEditorDialog. */
     private ProfileManagerDialog() {
         super((MainFrame) Main.getUI().getMainWindow(), false);
-
-        profiles = IdentityManager.getProfiles();
 
         initComponents();
 
@@ -232,7 +229,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     public void populateList() {
         final String profileString = "profile";
         model.clear();
-
+        profiles = IdentityManager.getProfiles();
         for (Identity profile : profiles) {
             model.add(new Profile(profile.getName(),
                     profile.getOption(profileString, "nickname"),
