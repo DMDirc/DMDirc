@@ -22,14 +22,12 @@
 
 package com.dmdirc.addons.windowstatus;
 
-import java.awt.BorderLayout;
 import java.util.Hashtable;
 import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
@@ -50,6 +48,7 @@ import com.dmdirc.ui.interfaces.PreferencesInterface;
 import com.dmdirc.ui.interfaces.PreferencesPanel;
 import com.dmdirc.ui.interfaces.Window;
 import java.util.Map.Entry;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Displays information related to the current window in the status bar.
@@ -65,15 +64,13 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 	private final JPanel panel = new JPanel();
 	
 	/** The label we use to show window status. */
-	private final JLabel label = new JLabel(" ??? ");
+	private final JLabel label = new JLabel("???");
 	
 	/** Creates a new instance of WindowStatusPlugin. */
 	public WindowStatusPlugin() {
 		super();
-		//		panel.setPreferredSize(new Dimension(70, 25));
-		panel.setLayout(new BorderLayout());
 		panel.setBorder(BorderFactory.createEtchedBorder());
-		label.setHorizontalAlignment(SwingConstants.CENTER);
+		panel.setLayout(new MigLayout("ins 0 rel 0 rel, aligny center"));
 		panel.add(label);
 	}
 	
@@ -243,7 +240,7 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 				}
 			}
 		}
-		label.setText(" "+textString.toString()+" ");
+		label.setText(textString.toString());
 	}
 	
 	/**

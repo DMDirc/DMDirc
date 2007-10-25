@@ -33,15 +33,14 @@ import com.dmdirc.plugins.EventPlugin;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.interfaces.Window;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Displays the current server's lag in the status bar.
@@ -69,12 +68,8 @@ public final class LagDisplayPlugin extends Plugin implements EventPlugin,
         IdentityManager.getGlobalConfig().addChangeListener("plugin-Lagdisplay", this);
         configChanged(null, null);
         
-        panel.setLayout(new BorderLayout());
-        panel.setPreferredSize(new Dimension(70, 25));
         panel.setBorder(BorderFactory.createEtchedBorder());
-        
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-        
+        panel.setLayout(new MigLayout("ins 0 rel 0 rel, aligny center"));
         panel.add(label);
     }
     

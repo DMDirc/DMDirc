@@ -99,8 +99,8 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         
         setLayout(new MigLayout("ins rel, hidemode 3"));
         
-        add(messageLabel, "growx, pushx, sgy components");
-        add(iconLabel, "sgy components");
+        add(messageLabel, "growx, pushx, sgy components, hmax 20");
+        add(iconLabel, "sgy components, hmax 20");
         
         checkErrors();
     }
@@ -233,8 +233,8 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     @Override
     public void addComponent(final Component component) {
         remove(iconLabel);
-        add(component, "sgy components");
-        add(iconLabel, "sgy components");
+        add(component, "sgy components, hmax 20");
+        add(iconLabel, "sgy components, hmax 20");
     }
     
     /** {@inheritDoc} */
