@@ -48,7 +48,7 @@ public class ProcessMOTD extends IRCProcessor {
 			if (!myParser.h005Info.containsKey("PREFIX")) { myParser.parsePrefixModes(); }
 			if (!myParser.h005Info.containsKey("USERMODES")) { myParser.parseUserModes(); }
 			if (!myParser.h005Info.containsKey("CHANMODES")) { myParser.parseChanModes(); }
-			callMOTDEnd(sParam.equals("422"));
+			callMOTDEnd(sParam.equals("422"), token[token.length-1]);
 		}
 	}
 	
@@ -56,12 +56,13 @@ public class ProcessMOTD extends IRCProcessor {
 	 * Callback to all objects implementing the MOTDEnd Callback.
 	 *
 	 * @param noMOTD Was this an MOTDEnd or NoMOTD
+	 * @param data The contents of the line (incase of language changes or so)
 	 * @see IMOTDEnd
-         * @return true if a method was called, false otherwise
+	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callMOTDEnd(boolean noMOTD) {
+	protected boolean callMOTDEnd(boolean noMOTD, String data) {
 		CallbackOnMOTDEnd cb = (CallbackOnMOTDEnd)getCallbackManager().getCallbackType("OnMOTDEnd");
-		if (cb != null) { return cb.call(noMOTD); }
+		if (cb != null) { return cb.call(noMOTD, data); }
 		return false;
 	}
 	
@@ -70,7 +71,7 @@ public class ProcessMOTD extends IRCProcessor {
 	 *
 	 * @see IMOTDLine
 	 * @param data Incomming Line.
-         * @return true if a method was called, false otherwise
+	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callMOTDLine(String data) {
 		CallbackOnMOTDLine cb = (CallbackOnMOTDLine)getCallbackManager().getCallbackType("OnMOTDLine");
@@ -83,7 +84,7 @@ public class ProcessMOTD extends IRCProcessor {
 	 *
 	 * @see IMOTDStart
 	 * @param data Incomming Line.
-         * @return true if a method was called, false otherwise
+	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callMOTDStart(String data) {
 		CallbackOnMOTDStart cb = (CallbackOnMOTDStart)getCallbackManager().getCallbackType("OnMOTDStart");

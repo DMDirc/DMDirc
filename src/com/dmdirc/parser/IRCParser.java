@@ -30,8 +30,10 @@ import com.dmdirc.parser.callbacks.CallbackOnDataIn;
 import com.dmdirc.parser.callbacks.CallbackOnDataOut;
 import com.dmdirc.parser.callbacks.CallbackOnDebugInfo;
 import com.dmdirc.parser.callbacks.CallbackOnErrorInfo;
+import com.dmdirc.parser.callbacks.CallbackOnServerError;
 import com.dmdirc.parser.callbacks.CallbackOnSocketClosed;
 import com.dmdirc.parser.callbacks.CallbackOnPingFailed;
+import com.dmdirc.parser.callbacks.CallbackOnPingSent;
 import com.dmdirc.parser.callbacks.CallbackOnPingSuccess;
 import com.dmdirc.parser.callbacks.CallbackOnPost005;
 
@@ -390,6 +392,19 @@ public final class IRCParser implements Runnable {
 	//---------------------------------------------------------------------------
 	
 	/**
+	 * Callback to all objects implementing the ServerError Callback.
+	 *
+	 * @see com.dmdirc.parser.callbacks.interfaces.IServerError
+	 * @param message The error message
+	 * @return true if a method was called, false otherwise
+	 */
+	protected boolean callServerError(final String message) {
+		final CallbackOnServerError cb = (CallbackOnServerError) myCallbackManager.getCallbackType("ServerError");
+		if (cb != null) { return cb.call(message); }
+		return false;
+	}
+	
+	/**
 	 * Callback to all objects implementing the DataIn Callback.
 	 *
 	 * @see com.dmdirc.parser.callbacks.interfaces.IDataIn
@@ -488,6 +503,18 @@ public final class IRCParser implements Runnable {
 	 */
 	protected boolean callPingFailed() {
 		final CallbackOnPingFailed cb = (CallbackOnPingFailed) myCallbackManager.getCallbackType("OnPingFailed");
+		if (cb != null) { return cb.call(); }
+		return false;
+	}
+	
+	/**
+	 * Callback to all objects implementing the PingSent Callback.
+	 *
+	 * @see com.dmdirc.parser.callbacks.interfaces.IPingSent
+	 * @return true if a method was called, false otherwise
+	 */
+	protected boolean callPingSent() {
+		final CallbackOnPingSent cb = (CallbackOnPingSent) myCallbackManager.getCallbackType("OnPingSent");
 		if (cb != null) { return cb.call(); }
 		return false;
 	}
@@ -886,8 +913,14 @@ public final class IRCParser implements Runnable {
 			if (token[0].equalsIgnoreCase("PING") || token[1].equalsIgnoreCase("PING")) {
 				sendString("PONG :" + sParam);
 			} else if (token[0].equalsIgnoreCase("PONG") || token[1].equalsIgnoreCase("PONG")) {
-				serverLag = System.currentTimeMillis() - pingTime;
-				callPingSuccess();
+				if (token[token.length-1].matches("^:?DMD[0-9]*$")) {
+					serverLag = System.currentTimeMillis() - pingTime;
+					callPingSuccess();
+				}
+			} else if (token[0].equalsIgnoreCase("ERROR")) {
+				StringBuilder errorMessage = new StringBuilder();
+				for (int i = 1; i < token.length; ++i) { errorMessage.append(token[i]); }
+				callServerError(errorMessage.toString());
 			} else {
 				if (got001) {
 					// Freenode sends a random notice in a stupid place, others might do aswell
@@ -1742,7 +1775,8 @@ public final class IRCParser implements Runnable {
 				pingTime = System.currentTimeMillis();
 				setPingNeeded(true);
 				pingCountDown = pingCountDownLength;
-				sendLine("PING "+System.currentTimeMillis());
+				callPingSent();
+				sendLine("PING DMD"+System.currentTimeMillis());
 			}
 		}
 	}

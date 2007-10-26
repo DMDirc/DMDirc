@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * SVN: $Id$
+ * SVN: $Id: IServerError.java 1320 2007-05-21 09:53:01Z ShaneMcC $
  */
 
 package com.dmdirc.parser.callbacks.interfaces;
@@ -27,16 +27,15 @@ package com.dmdirc.parser.callbacks.interfaces;
 import com.dmdirc.parser.IRCParser;
 
 /**
- * Called when "End of MOTD" or "No MOTD" is received.
+ * Interface Used to give ServerError.
  */
-public interface IMOTDEnd extends ICallbackInterface { 
+public interface IServerError extends ICallbackInterface { 
 	/**
-	 * Called when "End of MOTD" or "No MOTD".
+	 * This callback is used to give messages the server sends as an ERROR.
 	 *
 	 * @param tParser Reference to the parser object that made the callback.
-	 * @param noMOTD Set to true if this was a "No MOTD Found" message rather than an "End of MOTD"
-	 * @param sData The contents of the line (incase of language changes or so)
-	 * @see com.dmdirc.parser.ProcessMOTD#callMOTDEnd
+	 * @param sMessage Error Information
+	 * @see com.dmdirc.parser.IRCParser#callServerError
 	 */
-	void onMOTDEnd(IRCParser tParser, boolean noMOTD, String sData);
+	void onServerError(IRCParser tParser, String sMessage);
 }

@@ -87,6 +87,7 @@ public final class CallbackManager {
 		addCallbackType(new CallbackOnNumeric(myParser, this));
 		addCallbackType(new CallbackOnPasswordRequired(myParser, this));
 		addCallbackType(new CallbackOnPingFailed(myParser, this));
+		addCallbackType(new CallbackOnPingSent(myParser, this));
 		addCallbackType(new CallbackOnPingSuccess(myParser, this));
 		addCallbackType(new CallbackOnPrivateAction(myParser, this));
 		addCallbackType(new CallbackOnPrivateCTCP(myParser, this));
@@ -95,6 +96,7 @@ public final class CallbackManager {
 		addCallbackType(new CallbackOnPrivateNotice(myParser, this));
 		addCallbackType(new CallbackOnPost005(myParser, this));
 		addCallbackType(new CallbackOnQuit(myParser, this));
+		addCallbackType(new CallbackOnServerError(myParser, this));
 		addCallbackType(new CallbackOnServerReady(myParser, this));
 		addCallbackType(new CallbackOnSocketClosed(myParser, this));
 		addCallbackType(new CallbackOnUnknownAction(myParser, this));

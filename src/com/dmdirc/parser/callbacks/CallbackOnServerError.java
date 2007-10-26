@@ -19,19 +19,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * SVN: $Id$
+ * SVN: $Id: CallbackOnServerError.java 2514 2007-10-22 11:35:05Z ShaneMcC $
  */
 
 package com.dmdirc.parser.callbacks;
 
 import com.dmdirc.parser.IRCParser;
 import com.dmdirc.parser.ParserError;
-import com.dmdirc.parser.callbacks.interfaces.IMOTDEnd;
+import com.dmdirc.parser.callbacks.interfaces.IServerError;
 
 /**
- * Callback to all objects implementing the IMotdEnd Interface.
+ * Callback to all objects implementing the IServerError Interface.
  */
-public final class CallbackOnMOTDEnd extends CallbackObject {
+public final class CallbackOnServerError extends CallbackObject {
 	
 	/**
 	 * Create a new instance of the Callback Object.
@@ -39,23 +39,22 @@ public final class CallbackOnMOTDEnd extends CallbackObject {
 	 * @param parser IRCParser That owns this callback
 	 * @param manager CallbackManager that is in charge of this callback
 	 */
-	public CallbackOnMOTDEnd(final IRCParser parser, final CallbackManager manager) { super(parser, manager); }
+	public CallbackOnServerError(final IRCParser parser, final CallbackManager manager) { super(parser, manager); }
 	
 	/**
-	 * Callback to all objects implementing the IMotdEnd Interface.
+	 * Callback to all objects implementing the IServerError Interface.
 	 *
-	 * @param noMOTD true if there was an MOTD, false otherwise
-	 * @param data The contents of the line (incase of language changes or so)
-	 * @see IMOTDEnd
+	 * @see IServerError
+	 * @param message Message received
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(final boolean noMOTD, final String data) {
+	public boolean call(final String message) {
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			try {
-				((IMOTDEnd) callbackInfo.get(i)).onMOTDEnd(myParser, noMOTD, data);
+				((IServerError) callbackInfo.get(i)).onServerError(myParser, message);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onMOTDEnd", myParser.getLastLine());
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onServerError", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
@@ -69,5 +68,5 @@ public final class CallbackOnMOTDEnd extends CallbackObject {
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo() { return "$Id$"; }	
+	public static String getSvnInfo() { return "$Id: CallbackOnServerError.java 2514 2007-10-22 11:35:05Z ShaneMcC $"; }
 }

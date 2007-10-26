@@ -188,7 +188,7 @@ public final class ServerEventHandler implements IChannelSelfJoin,
     
     /** {@inheritDoc} */
     @Override
-    public void onMOTDEnd(final IRCParser tParser, final boolean noMOTD) {
+    public void onMOTDEnd(final IRCParser tParser, final boolean noMOTD, final String sData) {
         checkParser(tParser);
         owner.onMOTDEnd();
     }

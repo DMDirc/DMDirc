@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * SVN: $Id$
+ * SVN: $Id: IPingSent.java 719 2007-03-28 13:20:56Z ShaneMcC $
  */
 
 package com.dmdirc.parser.callbacks.interfaces;
@@ -27,16 +27,14 @@ package com.dmdirc.parser.callbacks.interfaces;
 import com.dmdirc.parser.IRCParser;
 
 /**
- * Called when "End of MOTD" or "No MOTD" is received.
+ * Called when a Ping was Sent.
  */
-public interface IMOTDEnd extends ICallbackInterface { 
+public interface IPingSent extends ICallbackInterface {
 	/**
-	 * Called when "End of MOTD" or "No MOTD".
-	 *
+	 * Called when a ping was Sent.
+	 * 
 	 * @param tParser Reference to the parser object that made the callback.
-	 * @param noMOTD Set to true if this was a "No MOTD Found" message rather than an "End of MOTD"
-	 * @param sData The contents of the line (incase of language changes or so)
-	 * @see com.dmdirc.parser.ProcessMOTD#callMOTDEnd
+	 * @see IRCParser#callPingSent
 	 */
-	void onMOTDEnd(IRCParser tParser, boolean noMOTD, String sData);
+	void onPingSent(IRCParser tParser);
 }
