@@ -27,7 +27,6 @@ import com.dmdirc.ui.swing.components.ColourChooser;
 import com.dmdirc.ui.swing.components.ImageButton;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel.OptionType;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
