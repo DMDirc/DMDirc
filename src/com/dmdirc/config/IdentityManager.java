@@ -38,6 +38,7 @@ import java.util.List;
 /**
  * The identity manager manages all known identities, providing easy methods
  * to access them.
+ * 
  * @author chris
  */
 public final class IdentityManager {
@@ -46,7 +47,6 @@ public final class IdentityManager {
     private final static List<Identity> identities = new ArrayList<Identity>();
     
     /** The config managers that have registered with this manager. */
-    // XXX: Should this be a weak list?
     private final static List<ConfigManager> managers = new WeakList<ConfigManager>();
     
     /** The identity file used for the global config. */
@@ -151,19 +151,37 @@ public final class IdentityManager {
                 if (file.isDirectory()) {
                     loadUser(file);
                 } else {
-                    try {
-                        addIdentity(new Identity(file, false));
-                    } catch (InvalidIdentityFileException ex) {
-                        Logger.userError(ErrorLevel.MEDIUM,
-                                "Invalid identity file: " + file.getAbsolutePath()
-                                + " (" + ex.getMessage() + ")");
-                    } catch (IOException ex) {
-                        Logger.userError(ErrorLevel.MEDIUM,
-                                "I/O error when reading identity file: "
-                                + file.getAbsolutePath());
-                    }
+                    loadIdentity(file);
                 }
             }
+        }
+    }
+    
+    private static void loadIdentity(final File file) {
+        for (Identity identity : identities) {
+            if (file.equals(identity.getFile())) {
+                try {
+                    identity.reload();
+                } catch (IOException ex) {
+                    Logger.userError(ErrorLevel.MEDIUM,
+                            "I/O error when reloading identity file: "
+                            + file.getAbsolutePath() + " (" + ex.getMessage() + ")");
+                }
+                
+                return;
+            }
+        }
+        
+        try {
+            addIdentity(new Identity(file, false));
+        } catch (InvalidIdentityFileException ex) {
+            Logger.userError(ErrorLevel.MEDIUM,
+                    "Invalid identity file: " + file.getAbsolutePath()
+                    + " (" + ex.getMessage() + ")");
+        } catch (IOException ex) {
+            Logger.userError(ErrorLevel.MEDIUM,
+                    "I/O error when reading identity file: "
+                    + file.getAbsolutePath());
         }
     }
     

@@ -40,7 +40,9 @@ import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 /**
@@ -168,6 +170,57 @@ public class Identity extends ConfigSource implements Serializable,
         }
         
         stream.close();
+    }
+    
+    /**
+     * Attempts to reload this identity from disk. If this identity has been
+     * modified (i.e., {@code needSave} is true), then this method silently
+     * returns straight away. All relevant ConfigChangeListeners are fired for
+     * new, altered and deleted properties. The target of the identity will not
+     * be changed by this method, even if it has changed on disk.
+     * 
+     * @throws java.io.IOException On I/O exception when reading the identity
+     */
+    @Precondition("This identity was instansiated with a File object")
+    public void reload() throws IOException {
+        if (needSave) {
+            return;
+        }
+        
+        assert(file != null);
+               
+        final InputStream input = new FileInputStream(file);
+        final Hashtable<Object,Object> oldProps = new Hashtable<Object, Object>(properties);
+        
+        properties.clear();
+        properties.load(input);
+        
+        for (Entry<Object, Object> entry : properties.entrySet()) {
+            if (oldProps.containsKey(entry.getKey())) {
+                
+                if (!entry.getValue().equals(oldProps.get(entry.getKey()))) {
+                    fireReloadChange(entry.getKey());
+                }
+                
+                oldProps.remove(entry.getKey());
+            } else {
+                fireReloadChange(entry.getKey());
+            }
+        }
+        
+        for (Object entry : oldProps.keySet()) {
+            fireReloadChange(entry);
+        }
+    }
+    
+    private void fireReloadChange(final Object object) {
+        final String string = (String) object;
+        final String domain = string.substring(0, string.indexOf('.'));
+        final String key = string.substring(domain.length() + 1);
+        
+        for (ConfigChangeListener listener : new ArrayList<ConfigChangeListener>(listeners)) {
+            listener.configChanged(domain, key);
+        }
     }
     
     /**
@@ -368,6 +421,15 @@ public class Identity extends ConfigSource implements Serializable,
     public ConfigTarget getTarget() {
         return myTarget;
     }
+
+    /**
+     * Retrieve this identity's file. May be null.
+     * 
+     * @return The file objectused by this identity
+     */
+    public File getFile() {
+        return file;
+    }    
     
     /**
      * Adds a new config change listener for this identity.
