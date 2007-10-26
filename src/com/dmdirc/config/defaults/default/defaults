@@ -117,6 +117,7 @@ server.pingtimeout=60000
 
 updater.frequency=86400
 updater.lastcheck=0
+updater.enable=true
 
 actions.textcolour=12
 actions.eventcolour=3

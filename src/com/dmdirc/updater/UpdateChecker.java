@@ -25,6 +25,7 @@ package com.dmdirc.updater;
 import com.dmdirc.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.Precondition;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -62,6 +63,9 @@ public final class UpdateChecker extends MouseAdapter implements Runnable {
     /** The label used to indicate that there's an update available. */
     private static JLabel label;
     
+    /** Our timer. */
+    private static Timer timer = new Timer("Update Checker Timer");
+    
     /** The list of updates that are available. */
     private static final List<Update> updates = new ArrayList<Update>();
     
@@ -81,33 +85,46 @@ public final class UpdateChecker extends MouseAdapter implements Runnable {
     /** {@inheritDoc} */
     @Override
     public void run() {
+        final ConfigManager config = IdentityManager.getGlobalConfig();
+        
+        if (!config.getOptionBool("updater", "enable", true)) {
+            init();
+            return;
+        }
+        
         Main.getUI().getStatusBar().setMessage("Checking for updates...");
         
         updates.clear();
         
-        StringBuilder data = new StringBuilder();
+        final StringBuilder data = new StringBuilder();
+        final String updateChannel 
+                = config.getOption("updater", "channel", Main.UPDATE_CHANNEL.toString());
         
         for (UpdateComponent component : components) {
-            data.append(component.getName());
-            data.append(',');
-            data.append(Main.UPDATE_CHANNEL);
-            data.append(',');
-            data.append(component.getVersion());
-            data.append(';');
+            if (config.getOptionBool("updater", "enable-" + component.getName(), true)) {
+                data.append(component.getName());
+                data.append(',');
+                data.append(updateChannel);
+                data.append(',');
+                data.append(component.getVersion());
+                data.append(';');
+            }
         }
         
-        try {            
-            final List<String> response
-                = Downloader.getPage("http://updates.dmdirc.com/", "data=" + data);
+        if (data.length() > 0) {
+            try {            
+                final List<String> response
+                    = Downloader.getPage("http://updates.dmdirc.com/", "data=" + data);
             
-            for (String line : response) {
-                checkLine(line);
+                for (String line : response) {
+                    checkLine(line);
+                }
+            } catch (MalformedURLException ex) {
+                Logger.appError(ErrorLevel.LOW, "Error when checking for updates", ex);
+            } catch (IOException ex) {
+                Logger.userError(ErrorLevel.LOW, 
+                        "I/O error when checking for updates: " + ex.getMessage());
             }
-        } catch (MalformedURLException ex) {
-            Logger.appError(ErrorLevel.LOW, "Error when checking for updates", ex);
-        } catch (IOException ex) {
-            Logger.userError(ErrorLevel.LOW, 
-                    "I/O error when checking for updates: " + ex.getMessage());
         }
         
         UpdateChecker.init();
@@ -186,14 +203,23 @@ public final class UpdateChecker extends MouseAdapter implements Runnable {
                     + ", rescheduling.");
             time = 1;
         }
-                
-        new Timer("Update Checker Timer").schedule(new TimerTask() {
+             
+        timer.cancel();
+        timer = new Timer("Update Checker Timer");
+        timer.schedule(new TimerTask() {
             /** {@inheritDoc} */
             @Override
             public void run() {
-                new Thread(new UpdateChecker(), "UpdateChecker thread").start();
+                checkNow();
             }
         }, time * 1000);
+    }
+    
+    /**
+     * Checks for updates now.
+     */
+    public static void checkNow() {
+        new Thread(new UpdateChecker(), "Update Checker thread").start();
     }
     
     /** {@inheritDoc} */
@@ -235,6 +261,8 @@ public final class UpdateChecker extends MouseAdapter implements Runnable {
     /**
      * Removes the specified update from the list. This should be called when
      * the update has finished or has encountered an error.
+     * 
+     * @param update The update to be removed
      */
     private static void removeUpdate(final Update update) {
         updates.remove(update);
@@ -243,6 +271,15 @@ public final class UpdateChecker extends MouseAdapter implements Runnable {
             Main.getUI().getStatusBar().removeComponent(label);
             label = null;
         }
+    }
+
+    /**
+     * Retrieves a list of components registered with the checker.
+     * 
+     * @return A list of registered components
+     */
+    public static List<UpdateComponent> getComponents() {
+        return components;
     }
     
 }
