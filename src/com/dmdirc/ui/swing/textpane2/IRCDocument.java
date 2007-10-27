@@ -22,148 +22,30 @@
 
 package com.dmdirc.ui.swing.textpane2;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.StyleContext;
 
-import javax.swing.event.EventListenerList;
+/** Stylised document. */
+public class IRCDocument extends DefaultStyledDocument {
 
-/**
- * Data contained in a TextPane.
- */
-public final class IRCDocument implements Serializable {
-    
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
-    /** List of stylised lines of text. */
-    private final List<String> iterators;
-    
-    /** Listener list. */
-    private final EventListenerList listeners;
-    
-    /** Creates a new instance of IRCDocument. */
-    protected IRCDocument() {
-        iterators = new ArrayList<String>();
-        listeners = new EventListenerList();
+
+    /** Instantiates a new IRCDocument. */
+    public IRCDocument() {
+        this(new StyleContext());
     }
-    
+
     /**
-     * Returns the number of lines in this document.
+     * Instantiates a new IRCDocument using the specified StyleContext.
      *
-     * @return Number of lines
+     * @param styles StyleContext to use
      */
-    protected int getNumLines() {
-        return iterators.size();
-    }
-    
-    /**
-     * Returns the Line at the specified number.
-     *
-     * @param lineNumber Line number to retrieve
-     *
-     * @return Line at the specified number or null
-     */
-    protected String getLine(final int lineNumber) {
-        return iterators.get(lineNumber);
-    }
-    
-    /**
-     * Adds the stylised string to the canvas.
-     * @param text stylised string to add to the text
-     */
-    protected void addText(final String text) {
-        synchronized (iterators) {
-            iterators.add(text);
-            fireLineAdded(iterators.indexOf(text));
-        }
-    }
-    
-    /**
-     * Trims the document to the specified number of lines.
-     *
-     * @param numLines Number of lines to trim the document to
-     */
-    public void trim(final int numLines) {
-        synchronized (iterators) {
-            while (iterators.size() > numLines) {
-                iterators.remove(0);
-            }
-            fireTrimmed();
-        }
-    }
-    
-    /** Clears all lines from the document. */
-    protected void clear() {
-        synchronized (iterators) {
-            iterators.clear();
-            fireCleared();
-        }
-    }
-    
-    /**
-     * Adds a IRCDocumentListener to the listener list.
-     *
-     * @param listener Listener to add
-     */
-    public void addIRCDocumentListener(final IRCDocumentListener listener) {
-        synchronized (listeners) {
-            if (listener == null) {
-                return;
-            }
-            listeners.add(IRCDocumentListener.class, listener);
-        }
-    }
-    
-    /**
-     * Removes a IRCDocumentListener from the listener list.
-     *
-     * @param listener Listener to remove
-     */
-    public void removeIRCDocumentListener(final IRCDocumentListener listener) {
-        listeners.remove(IRCDocumentListener.class, listener);
-    }
-    
-    /**
-     * Fires the line added method on all listeners.
-     *
-     * @param index Index of the added line
-     */
-    protected void fireLineAdded(final int index) {
-        final Object[] listenerList = listeners.getListenerList();
-        for (int i = 0; i < listenerList.length; i += 2) {
-            if (listenerList[i] == IRCDocumentListener.class) {
-                ((IRCDocumentListener) listenerList[i + 1]).lineAdded(index, iterators.size());
-            }
-        }
-    }
-    
-    /**
-     * Fires the trimmed method on all listeners.
-     */
-    protected void fireTrimmed() {
-        final Object[] listenerList = listeners.getListenerList();
-        for (int i = 0; i < listenerList.length; i += 2) {
-            if (listenerList[i] == IRCDocumentListener.class) {
-                ((IRCDocumentListener) listenerList[i + 1]).trimmed(iterators.size());
-            }
-        }
-    }
-    
-    /**
-     * fires the cleared method on all listeners.
-     */
-    protected void fireCleared() {
-        final Object[] listenerList = listeners.getListenerList();
-        for (int i = 0; i < listenerList.length; i += 2) {
-            if (listenerList[i] == IRCDocumentListener.class) {
-                ((IRCDocumentListener) listenerList[i + 1]).cleared();
-            }
-        }
+    public IRCDocument(final StyleContext styles) {
+        super(new BufferContent(), styles);
     }
 }
-
