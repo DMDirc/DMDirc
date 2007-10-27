@@ -117,16 +117,7 @@ public final class Styliser {
     private Styliser() {
     }
     
-    /**
-     * Stylises the specified string.
-     *
-     * @param strings The line to be stylised
-     *
-     * @return StyledDocument for the inputted strings
-     */
-    public static StyledDocument getStyledString(final String[] strings) {
-        final StyledDocument styledDoc = new DefaultStyledDocument();
-        
+    public static void addStyledString(final StyledDocument styledDoc, final String[] strings) {
         for (int i = 0; i < strings.length; i++) {
             final char[] chars = strings[i].toCharArray();
             
@@ -166,6 +157,20 @@ public final class Styliser {
                         "Unable to insert styled string: " + ex.getMessage());
             }
         }
+    }
+    
+    /**
+     * Stylises the specified string.
+     *
+     * @param strings The line to be stylised
+     *
+     * @return StyledDocument for the inputted strings
+     */
+    public static StyledDocument getStyledString(final String[] strings) {
+        final StyledDocument styledDoc = new DefaultStyledDocument();
+        
+        addStyledString(styledDoc, strings);
+        
         return styledDoc;
     }
     
