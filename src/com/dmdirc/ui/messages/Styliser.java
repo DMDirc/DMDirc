@@ -117,6 +117,12 @@ public final class Styliser {
     private Styliser() {
     }
     
+    /**
+     * Stylises the specified strings and adds them to the specified document.
+     *
+     * @param styledDoc Document to add the styled strings to
+     * @param strings The lines to be stylised
+     */
     public static void addStyledString(final StyledDocument styledDoc, final String[] strings) {
         for (int i = 0; i < strings.length; i++) {
             final char[] chars = strings[i].toCharArray();
