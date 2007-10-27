@@ -333,6 +333,7 @@ public final class CommandManager {
         new LoadPlugin();
         new OpenWindow();
         new ReloadActions();
+        new ReloadIdentities();
         new ReloadPlugin();
         new SaveConfig();
         new Set();
