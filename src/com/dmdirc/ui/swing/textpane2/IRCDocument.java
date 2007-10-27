@@ -22,7 +22,9 @@
 
 package com.dmdirc.ui.swing.textpane2;
 
+import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Segment;
 import javax.swing.text.StyleContext;
 
 /** Stylised document. */
@@ -46,6 +48,22 @@ public class IRCDocument extends DefaultStyledDocument {
      * @param styles StyleContext to use
      */
     public IRCDocument(final StyleContext styles) {
-        super(new BufferContent(), styles);
+        super(new DocumentContent(), styles);
     }
+    
+    public String getText(int offset, int length) throws BadLocationException {
+	if (length < 0) {
+	    throw new UnsupportedOperationException("Length must be positive. Length = "+length);
+	}
+	
+	return super.getText(offset, length);
+    }    
+    
+    public void getText(int offset, int length, Segment txt) throws BadLocationException {
+	if (length < 0) {
+	    throw new UnsupportedOperationException("Length must be positive. Length = "+length);
+	}
+	
+        super.getText(offset, length, txt);
+    }    
 }
