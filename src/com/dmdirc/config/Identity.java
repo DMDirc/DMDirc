@@ -161,7 +161,7 @@ public class Identity extends ConfigSource implements Serializable,
             myTarget.setChannel(getOption(DOMAIN, "channel"));
         } else if (hasOption(DOMAIN, "globaldefault")) {
             myTarget.setGlobalDefault();
-        } else if (forceDefault && !isProfile()) {
+        } else if (hasOption(DOMAIN, "global") || (forceDefault && !isProfile())) {
             myTarget.setGlobal();
         } else if (isProfile()) {
             myTarget.setProfile();
