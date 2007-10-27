@@ -44,7 +44,7 @@ public final class ServerEventHandler implements IChannelSelfJoin,
         IMOTDEnd, INumeric, IPingFailed, IPingSuccess, IAwayState,
         IConnectError, IAwayStateOther, INickInUse, IPost005, INoticeAuth,
         IUnknownNotice, IUserModeChanged, IInvite, IWallop, IWalluser,
-        IWallDesync, INickChanged {
+        IWallDesync, INickChanged, IServerError {
     
     private static final String CALLBACK_PREFIX = "com.dmdirc.parser.callbacks.interfaces.I";
     
@@ -190,7 +190,8 @@ public final class ServerEventHandler implements IChannelSelfJoin,
     @Override
     public void onMOTDEnd(final IRCParser tParser, final boolean noMOTD, final String sData) {
         checkParser(tParser);
-        owner.onMOTDEnd();
+        
+        owner.doNotification("motdEnd", CoreActionType.SERVER_MOTDEND, sData);
     }
     
     /** {@inheritDoc} */
@@ -339,5 +340,13 @@ public final class ServerEventHandler implements IChannelSelfJoin,
             owner.doNotification("selfNickChange", CoreActionType.SERVER_NICKCHANGE,
                     sOldNick, cClient.getNickname());
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onServerError(final IRCParser tParser, final String sMessage) {
+        checkParser(tParser);
+        
+        owner.doNotification("serverError", CoreActionType.SERVER_ERROR, sMessage);
     }
 }

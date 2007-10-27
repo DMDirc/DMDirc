@@ -35,6 +35,7 @@ notifications.unknownNotice=server
 notifications.connectError=server
 notifications.connectRetry=server
 notifications.selfNickChange=server
+notifications.serverError=all
 notifications.socketClosed=all
 notifications.stonedServer=all
 notifications.privateNotice=all

@@ -1029,17 +1029,6 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
 
     /**
-     * Called when the server has finished sending the MOTD.
-     */
-    public void onMOTDEnd() {
-        final StringBuffer buffer = new StringBuffer("motdEnd");
-
-        ActionManager.processEvent(CoreActionType.SERVER_MOTDEND, buffer, this);
-
-        addLine(buffer, "End of server's MOTD.");
-    }
-
-    /**
      * Called when the server sends a numeric event.
      *
      * @param numeric The numeric code for the event

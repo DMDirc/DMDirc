@@ -66,6 +66,8 @@ public enum CoreActionType implements ActionType {
     SERVER_BACK(ServerEvents.SERVER_EVENT, "Marked as 'back'"),
     /** Marked as back. */
     SERVER_AWAY(ServerEvents.SERVER_EVENT_WITH_ARG, "Marked as 'away'"),
+    /** Error. */
+    SERVER_ERROR(ServerEvents.SERVER_EVENT_WITH_ARG, "Server error"),
     
     /** Auth notice received. */
     SERVER_AUTHNOTICE(ServerEvents.SERVER_EVENT_WITH_ARG, "Received auth notice"),
@@ -86,7 +88,7 @@ public enum CoreActionType implements ActionType {
     /** MOTD starting. */
     SERVER_MOTDSTART(ServerEvents.SERVER_EVENT_WITH_ARG, "Start of MOTD received"),
     /** MOTD ended. */
-    SERVER_MOTDEND(ServerEvents.SERVER_EVENT, "End of MOTD received"),
+    SERVER_MOTDEND(ServerEvents.SERVER_EVENT_WITH_ARG, "End of MOTD received"),
     /** MOTD line. */
     SERVER_MOTDLINE(ServerEvents.SERVER_EVENT_WITH_ARG, "MOTD line received"),
     

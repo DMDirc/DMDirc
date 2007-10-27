@@ -164,6 +164,7 @@ formatter.commandOutput = %1$s
 formatter.commandError = \u00037%1$s
 formatter.actionTooLong = Warning: action too long to be sent
 formatter.tabCompletion = \u000314Multiple possibilities: %1$s
+formatter.serverError = \u00034ERROR: %1$s
 
 # Type: Binary Miscellaneous
 #    1: Miscellaneous data
