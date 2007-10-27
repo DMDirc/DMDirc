@@ -399,7 +399,7 @@ public final class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callServerError(final String message) {
-		final CallbackOnServerError cb = (CallbackOnServerError) myCallbackManager.getCallbackType("ServerError");
+		final CallbackOnServerError cb = (CallbackOnServerError) myCallbackManager.getCallbackType("OnServerError");
 		if (cb != null) { return cb.call(message); }
 		return false;
 	}
