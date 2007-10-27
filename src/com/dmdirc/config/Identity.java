@@ -170,6 +170,10 @@ public class Identity extends ConfigSource implements Serializable,
         }
         
         stream.close();
+        
+        if (hasOption(DOMAIN, "order")) {
+            myTarget.setOrder(getOptionInt(DOMAIN, "order", 50000));
+        }
     }
     
     /**

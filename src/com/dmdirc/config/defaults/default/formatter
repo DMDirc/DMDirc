@@ -1,5 +1,6 @@
 identity.name = DMDirc default formats
 identity.globaldefault = true
+identity.order = 100000
 
 # Type: Timestamp
 #    1: Current timestamp

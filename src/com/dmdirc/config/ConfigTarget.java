@@ -51,9 +51,30 @@ public final class ConfigTarget implements Comparable, Serializable {
     /** The data of this target. */
     private String data;
     
+    /** The user-defined ordering for this target. */
+    private int order = 50000;
+    
     /** Creates a new instance of ConfigTarget. */
     public ConfigTarget() {
         //Do nothing.
+    }
+    
+    /**
+     * Sets the ordering value for this target. Lower means higher preference.
+     * 
+     * @param order The new order to use
+     */
+    public void setOrder(final int order) {
+        this.order = order;
+    }
+    
+    /**
+     * Retrieves the ordering value for this target. Lower means higher preference.
+     * 
+     * @return This target's order
+     */
+    public int getOrder() {
+        return order;
     }
     
     /** Sets this target to be a global config source. */
@@ -191,7 +212,11 @@ public final class ConfigTarget implements Comparable, Serializable {
      * equal, or a positive integer if this is more specific
      */
     public int compareTo(final Object target) {
-        return type.compareTo(((ConfigTarget) target).getType());
+        if (type.equals(((ConfigTarget) target).getType())) {
+            return ((ConfigTarget) target).getOrder() - order;
+        } else {
+            return type.compareTo(((ConfigTarget) target).getType());
+        }
     }
     
     /**

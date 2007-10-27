@@ -57,6 +57,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final boolean isSilent, final String ... args) {
         if (args.length == 0) {
             showUsage(origin, isSilent, "debug", "<debug command> [options]");
@@ -203,7 +204,8 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      */
     private void doConfigInfo(final InputWindow origin, final boolean isSilent) {
         for (Identity source : origin.getConfigManager().getSources()) {
-            sendLine(origin, isSilent, FORMAT_OUTPUT, source.getTarget() + " - " + source);
+            sendLine(origin, isSilent, FORMAT_OUTPUT, source.getTarget() + " - "
+                    + source + "(" + source.getTarget().getOrder() + ")");
         }
     }
     
@@ -215,7 +217,8 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      */
     private void doGlobalConfigInfo(final InputWindow origin, final boolean isSilent) {
         for (Identity source : IdentityManager.getGlobalConfig().getSources()) {
-            sendLine(origin, isSilent, FORMAT_OUTPUT, source.getTarget() + " - " + source);
+            sendLine(origin, isSilent, FORMAT_OUTPUT, source.getTarget() + " - "
+                    + source + "(" + source.getTarget().getOrder() + ")");
         }
     }
     
@@ -253,31 +256,37 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
     }
     
     /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "debug";
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return false;
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean isPolyadic() {
         return true;
     }
     
     /** {@inheritDoc} */
+    @Override
     public int getArity() {
         return 0;
     }
     
     /** {@inheritDoc} */
+    @Override
     public String getHelp() {
         return null;
     }
     
     /** {@inheritDoc} */
+    @Override
     public AdditionalTabTargets getSuggestions(int arg, List<String> previousArgs) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
@@ -326,6 +335,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
         }
         
         /** {@inheritDoc} */
+        @Override
         public int compare(final Entry<String, Integer> o1,
                 final Entry<String, Integer> o2) {
             int returnValue = o1.getValue().compareTo(o2.getValue()) * -1;
