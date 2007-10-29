@@ -282,7 +282,7 @@ public final class MainFrame extends JFrame implements WindowListener,
                     frame.getContainer());
         }
         if (frame instanceof InputFrame) {
-        ((InputFrame) frame).requestFocus();
+            ((InputFrame) frame).requestInputFieldFocus();
         }
     }
 
