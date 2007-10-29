@@ -509,4 +509,9 @@ public abstract class InputFrame extends Frame implements InputWindow,
         }
     }
     
+    /** Request input field focus. */
+    public void requestInputFieldFocus() {
+        inputField.requestFocus();
+    }
+    
 }

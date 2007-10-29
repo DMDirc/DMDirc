@@ -40,6 +40,7 @@ import com.dmdirc.ui.interfaces.FramemanagerPosition;
 import com.dmdirc.ui.interfaces.MainWindow;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.components.Frame;
+import com.dmdirc.ui.swing.components.InputFrame;
 import com.dmdirc.ui.swing.components.SwingStatusBar;
 import com.dmdirc.ui.swing.dialogs.FeedbackDialog;
 import com.dmdirc.ui.swing.dialogs.NewServerDialog;
@@ -279,6 +280,9 @@ public final class MainFrame extends JFrame implements WindowListener,
 
             ActionManager.processEvent(CoreActionType.CLIENT_FRAME_CHANGED, null,
                     frame.getContainer());
+        }
+        if (frame instanceof InputFrame) {
+        ((InputFrame) frame).requestFocus();
         }
     }
 
