@@ -32,9 +32,7 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 
 import net.miginfocom.swing.MigLayout;
 

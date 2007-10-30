@@ -65,7 +65,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
     /** List modes panel. */
     private ChannelModesPane channelModesPane;
     /** List modes panel. */
-    private TopicModesPane topicModesPane;
+    private TopicPane topicModesPane;
     /** List modes panel. */
     private ChannelListModesPane channelListModesPane;
     /** Channel identity file. */
@@ -177,7 +177,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
     /** Initialises the Topic tab. */
     private void initTopicTab() {
         topicModesPane =
-                new TopicModesPane(channel, this);
+                new TopicPane(channel, this);
         tabbedPane.addTab("Topic", topicModesPane);
     }
 

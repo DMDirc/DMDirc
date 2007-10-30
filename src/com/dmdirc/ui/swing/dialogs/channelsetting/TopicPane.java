@@ -48,7 +48,7 @@ import javax.swing.event.DocumentListener;
 /**
  * Topic panel.
  */
-public final class TopicModesPane extends JPanel implements KeyListener,
+public final class TopicPane extends JPanel implements KeyListener,
         DocumentListener {
     
     /**
@@ -85,7 +85,7 @@ public final class TopicModesPane extends JPanel implements KeyListener,
      * @param channel Parent channel
      * @param parent Parent dialog
      */
-    public TopicModesPane(final Channel channel,
+    public TopicPane(final Channel channel,
             final ChannelSettingsDialog parent) {
         super();
         
