@@ -275,7 +275,7 @@ public final class IRCParser implements Runnable {
 	public IRCParser(final MyInfo myDetails, final ServerInfo serverDetails) {
 		if (myDetails != null) { this.me = myDetails; }
 		if (serverDetails != null) { this.server = serverDetails; }
-		updateCharArrays((byte)3);
+		resetState();
 	}
 	
 	/**
