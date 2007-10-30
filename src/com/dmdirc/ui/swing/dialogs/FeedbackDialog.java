@@ -24,21 +24,29 @@ package com.dmdirc.ui.swing.dialogs;
 
 import com.dmdirc.Main;
 import com.dmdirc.ui.swing.MainFrame;
+import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.TextLabel;
+
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
 import net.miginfocom.swing.MigLayout;
 
 /** Feedback form. */
-public class FeedbackDialog extends StandardDialog implements ActionListener {
+public class FeedbackDialog extends StandardDialog implements ActionListener,
+        DocumentListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -56,8 +64,6 @@ public class FeedbackDialog extends StandardDialog implements ActionListener {
     private JTextField email;
     /** Feedback area. */
     private JTextArea feedback;
-    /** Buttons panel. */
-    private JPanel buttonsPanel;
 
     /** Instantiates the feedback dialog. */
     private FeedbackDialog() {
@@ -66,8 +72,10 @@ public class FeedbackDialog extends StandardDialog implements ActionListener {
         initComponents();
         layoutComponents();
         addListeners();
-        
+
         setPreferredSize(new Dimension(600, 400));
+
+        setTitle("DMDirc: Feedback");
 
         pack();
     }
@@ -98,8 +106,13 @@ public class FeedbackDialog extends StandardDialog implements ActionListener {
 
     /** Initialises the components. */
     private void initComponents() {
-        buttonsPanel = new JPanel();
         orderButtons(new JButton(), new JButton());
+        
+        getOkButton().setText("Send");
+        getOkButton().setActionCommand("Send");
+        getOkButton().setEnabled(false);
+        getCancelButton().setActionCommand("Close");
+
         info =  new TextLabel("This is a feedback dialog, if you fancy " +
                 "sending us some feedback fill in the form below, only the " +
                 "feedback field is required, but if you want us to get back " +
@@ -108,6 +121,10 @@ public class FeedbackDialog extends StandardDialog implements ActionListener {
         name = new JTextField();
         email = new JTextField();
         feedback = new JTextArea();
+        
+        UIUtilities.addUndoManager(name);
+        UIUtilities.addUndoManager(email);
+        UIUtilities.addUndoManager(feedback);
     }
 
     /** Lays out the components. */
@@ -115,7 +132,7 @@ public class FeedbackDialog extends StandardDialog implements ActionListener {
         setLayout(new MigLayout("fill"));
 
         add(info, "span 3, growx, wrap");
-        
+
         add(new JLabel("Name: "));
         add(name, "span 2, growx, wrap");
 
@@ -124,15 +141,74 @@ public class FeedbackDialog extends StandardDialog implements ActionListener {
 
         add(new JLabel("Feedback: "));
         add(new JScrollPane(feedback), "span 2, grow, pushx, wrap");
-        
+
         add(getCancelButton(), "skip, right, tag cancel, sg button");
         add(getOkButton(), "tag ok, sg button");
+    }
+
+    /** Lays out the components. */
+    private void layoutComponents2() {
+        getContentPane().setVisible(false);
+        getContentPane().removeAll();
+        getOkButton().setText("Close");
+        getOkButton().setActionCommand("Close");
+
+        setLayout(new MigLayout("fill"));
+
+        info.setText("Thank you for your feedback, if you have provided an " +
+                "email address you may receive a response.");
+
+        add(info, "span 3, grow, wrap");
+
+        add(getOkButton(), "skip, right, tag ok, sg button");
+        getContentPane().setVisible(true);
     }
 
     /** Adds listeners to the components. */
     private void addListeners() {
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
+        feedback.getDocument().addDocumentListener(this);
+    }
+
+    /** Checks and sends the feedback. */
+    private void send() {
+        final String nameText = name.getText().trim();
+        final String emailText = email.getText().trim();
+        final String feedbackText = feedback.getText().trim();
+
+        final Map<String, String> postData =
+                new HashMap<String, String>();
+
+        if (nameText.isEmpty()) {
+            postData.put("name", "Not given");
+        } else {
+            postData.put("name", nameText);
+        }
+
+        if (emailText.isEmpty()) {
+            postData.put("email", "Not given");
+        } else {
+            postData.put("email", emailText);
+        }
+
+        if (feedbackText.isEmpty()) {
+            postData.put("feedback", "Not given");
+        } else {
+            postData.put("feedback", feedbackText);
+        }
+
+        //Send the data
+        layoutComponents2();
+    }
+    
+    /** Validates the input. */
+    private void validateInput() {
+        if (feedback.getDocument().getLength() > 0) {
+            getOkButton().setEnabled(true);
+        } else {
+            getOkButton().setEnabled(false);
+        }
     }
 
     /**
@@ -142,7 +218,11 @@ public class FeedbackDialog extends StandardDialog implements ActionListener {
      */
     @Override
     public void actionPerformed(final ActionEvent e) {
-        dispose();
+        if (e.getActionCommand().equals("Send")) {
+            send();
+        } else if (e.getActionCommand().equals("Close")) {
+            dispose();
+        }
     }
 
     /** {@inheritDoc} */
@@ -152,5 +232,23 @@ public class FeedbackDialog extends StandardDialog implements ActionListener {
             super.dispose();
             me = null;
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+        validateInput();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeUpdate(DocumentEvent e) {
+        validateInput();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void changedUpdate(DocumentEvent e) {
+        //Ignore
     }
 }
