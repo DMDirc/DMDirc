@@ -35,28 +35,23 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 
-/**
- * Renders the nicklist.
- */
+/** Renders the nicklist. */
 public final class NicklistRenderer extends DefaultListCellRenderer implements
         ConfigChangeListener {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 3;
-    
+    private static final long serialVersionUID = 4;
     /** Config manager. */
     private final ConfigManager config;
-    
     /** Nicklist alternate background colour. */
     private Color altBackgroundColour;
-    
     /** Show nick colours. */
     private boolean showColours;
-    
+
     /**
      * Creates a new instance of NicklistRenderer.
      *
@@ -67,43 +62,47 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
         this.config = config;
         config.addChangeListener("ui", this);
         config.addChangeListener("nicklist", this);
-        
-        altBackgroundColour = config.getOptionColour("nicklist",
-                    "altBackgroundColour", config.getOptionColour("ui",
-                    "nicklistbackgroundcolour", config.getOptionColour("ui",
-                    "backgroundcolour", Color.WHITE)));
-        showColours = config.getOptionBool("ui", "shownickcoloursinnicklist", false);
+
+        altBackgroundColour =
+                config.getOptionColour("nicklist", "altBackgroundColour",
+                config.getOptionColour("ui", "nicklistbackgroundcolour",
+                config.getOptionColour("ui", "backgroundcolour",
+                Color.WHITE)));
+        showColours =
+                config.getOptionBool("ui", "shownickcoloursinnicklist", false);
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public Component getListCellRendererComponent(final JList list,
             final Object value, final int index, final boolean isSelected,
             final boolean cellHasFocus) {
-        
+
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        
+
         if (!isSelected && (index & 1) == 1) {
-            this.setBackground(altBackgroundColour);
+            setBackground(altBackgroundColour);
         }
-        
+
         final Map map = ((ChannelClientInfo) value).getMap();
-        
+
         if (showColours && map != null) {
             if (map.containsKey(ChannelClientProperty.NICKLIST_FOREGROUND)) {
                 setForeground((Color) map.get(ChannelClientProperty.NICKLIST_FOREGROUND));
             }
-            
+
             if (map.containsKey(ChannelClientProperty.NICKLIST_BACKGROUND)) {
                 setBackground((Color) map.get(ChannelClientProperty.NICKLIST_BACKGROUND));
             }
         }
-        
-        this.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
-        
+
+        setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
+
         return this;
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void configChanged(final String domain, final String key) {
         if (("ui".equals(domain) || "nicklist".equals(domain)) &&
                 ("altBackgroundColour".equals(key) ||
@@ -112,14 +111,16 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
                 "nicklistforegroundcolour".equals(key) ||
                 "foregroundcolour".equals(key) ||
                 "altBackgroundColour".equals(key))) {
-            altBackgroundColour = config.getOptionColour("nicklist",
-                    "altBackgroundColour", config.getOptionColour("ui",
-                    "nicklistbackgroundcolour", config.getOptionColour("ui",
-                    "backgroundcolour", Color.WHITE)));
+            altBackgroundColour =
+                    config.getOptionColour("nicklist", "altBackgroundColour",
+                    config.getOptionColour("ui", "nicklistbackgroundcolour",
+                    config.getOptionColour("ui", "backgroundcolour",
+                    Color.WHITE)));
         }
         if ("ui".equals(domain) && "shownickcoloursinnicklist".equals(key)) {
-            showColours = config.getOptionBool("ui", "shownickcoloursinnicklist", false);
+            showColours =
+                    config.getOptionBool("ui", "shownickcoloursinnicklist",
+                    false);
         }
     }
-    
 }

@@ -516,7 +516,9 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @return The name of this server's network
      */
     public String getNetwork() {
-        if (parser.getNetworkName().isEmpty()) {
+        if (parser == null) {
+            return "";
+        } else if (parser.getNetworkName().isEmpty()) {
             return getNetworkFromServerName(parser.getServerName());
         } else {
             return parser.getNetworkName();

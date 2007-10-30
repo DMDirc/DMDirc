@@ -147,7 +147,7 @@ public class WindowManager {
         assert(window != null);
         assert(childWindows.containsKey(window));
 
-        if (!childWindows.get(window).isEmpty()) {
+        if (childWindows.get(window) != null && !childWindows.get(window).isEmpty()) {
             for (Window child : new ArrayList<Window>(childWindows.get(window))) {
                 removeWindow(child);
             }
