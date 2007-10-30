@@ -33,8 +33,6 @@ import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.PackingTable;
 import com.dmdirc.ui.swing.components.StandardDialog;
-import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -43,18 +41,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Alias manager dialog.
@@ -144,6 +142,7 @@ public final class AliasManagerDialog extends StandardDialog implements
         tableModel = new AliasTableModel(getTableData());
         table = new PackingTable(tableModel, false, scrollPane) {
             private static final long serialVersionUID = 1;
+            @Override
             public TableCellRenderer getCellRenderer(final int row, final int column) {
                 switch (column) {
                     case 1:
@@ -216,27 +215,6 @@ public final class AliasManagerDialog extends StandardDialog implements
         orderButtons(new JButton(), new JButton());
         addButton = new JButton("Add");
         deleteButton = new JButton("Delete");
-        
-        addButton.setPreferredSize(new Dimension(100, 25));
-        deleteButton.setPreferredSize(new Dimension(100, 25));
-        addButton.setMinimumSize(new Dimension(100, 25));
-        deleteButton.setMinimumSize(new Dimension(100, 25));
-        
-        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER));
-        
-        buttonsPanel.setPreferredSize(new Dimension(600, 35));
-        buttonsPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
-        
-        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
-        buttonsPanel.add(Box.createHorizontalGlue());
-        buttonsPanel.add(deleteButton);
-        buttonsPanel.add(Box.createHorizontalStrut(SMALL_BORDER));
-        buttonsPanel.add(addButton);
-        buttonsPanel.add(Box.createHorizontalStrut(LARGE_BORDER));
-        buttonsPanel.add(getLeftButton());
-        buttonsPanel.add(Box.createHorizontalStrut(SMALL_BORDER));
-        buttonsPanel.add(getRightButton());
     }
     
     /** Initialises the listeners. */
@@ -250,22 +228,25 @@ public final class AliasManagerDialog extends StandardDialog implements
     
     /** Lays out the components. */
     private void layoutComponents() {
-        getContentPane().setLayout(new BoxLayout(getContentPane(),
-                BoxLayout.PAGE_AXIS));
+        final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true);
+        final JPanel panel = new JPanel();
         
-        scrollPane.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER,
-                0, SMALL_BORDER),
-                scrollPane.getBorder()));
-        aliasDetails.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
-                SMALL_BORDER, 0, 0));
+        panel.setLayout(new MigLayout("fill"));
         
-        getContentPane().add(scrollPane);
-        getContentPane().add(aliasDetails);
-        getContentPane().add(buttonsPanel);
+        panel.add(aliasDetails, "span 6, wrap, grow");
+        panel.add(addButton, "split 6, skip 2, sgx button");
+        panel.add(deleteButton, "sgx button");
+        panel.add(getLeftButton(), "sgx button, gap unrel");
+        panel.add(getRightButton(), "sgx button");
+        
+        splitPane.setTopComponent(scrollPane);
+        splitPane.setBottomComponent(panel);
+        
+        getContentPane().add(splitPane);
     }
     
     /** {@inheritDoc}. */
+    @Override
     public void valueChanged(final ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
             
@@ -300,6 +281,7 @@ public final class AliasManagerDialog extends StandardDialog implements
     }
     
     /** {@inheritDoc}. */
+    @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == deleteButton) {
             delete();

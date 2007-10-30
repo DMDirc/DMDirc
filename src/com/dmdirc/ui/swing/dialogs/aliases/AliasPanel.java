@@ -27,13 +27,9 @@ import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
 import com.dmdirc.ui.swing.UIUtilities;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
-import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
 import com.dmdirc.ui.swing.actions.SanitisedFilenamePasteAction;
 import com.dmdirc.ui.swing.components.SanitisedFilenameFilter;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -49,8 +45,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SpringLayout;
 import javax.swing.text.AbstractDocument;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Panel to display an alias.
@@ -114,30 +111,17 @@ public final class AliasPanel extends JPanel implements ActionListener {
     
     /** Lays out and initialises the components. */
     private void layoutComponents() {
-        final JPanel panel = new JPanel(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
-        
-        command.setPreferredSize(new Dimension(0, getFont().getSize()));
-        argumentComponent.setPreferredSize(new Dimension(
-                12 * getFont().getSize(), getFont().getSize()));
-        argumentNumber.setPreferredSize(new Dimension(0, getFont().getSize()));
-        response.setPreferredSize(new Dimension(0, getFont().getSize()));
-        
-        panel.add(argumentComponent, BorderLayout.LINE_START);
-        panel.add(argumentNumber, BorderLayout.CENTER);
-        
-        setLayout(new SpringLayout());
+        setLayout(new MigLayout("fill", "[right]rel[]rel[]", ""));
         
         add(new JLabel("Command: "));
-        add(command);
+        add(command, "span 2, growx, wrap");
         
-        add(new JLabel("# Arguments: "));
-        add(panel);
+        add(new JLabel("#Arguments: "));
+        add(argumentComponent, "sgy args");
+        add(argumentNumber, "sgy args, growx, wrap");
         
         add(new JLabel("Response: "));
-        add(new JScrollPane(response));
-        
-        layoutGrid(this, 3, 2, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER,
-                SMALL_BORDER);
+        add(new JScrollPane(response), "span 2, grow, wrap");
     }
     
     /** Clears the details. */
@@ -196,6 +180,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
     }
     
     /** {@inheritDoc}. */
+    @Override
     public void actionPerformed(final ActionEvent e) {
         ((SpinnerNumberModel) argumentNumber.getModel()).setMinimum(0);
         if (argumentComponent.getSelectedIndex() > 0) {

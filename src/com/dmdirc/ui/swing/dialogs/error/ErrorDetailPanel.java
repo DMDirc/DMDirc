@@ -25,8 +25,6 @@ package com.dmdirc.ui.swing.dialogs.error;
 import com.dmdirc.logger.ErrorListener;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ProgramError;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
-import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -130,6 +128,7 @@ public final class ErrorDetailPanel extends JPanel implements ErrorListener {
     /** Updates the panels details. */
     private void updateDetails() {
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 details.setText("");
                 if (error == null) {
@@ -163,10 +162,12 @@ public final class ErrorDetailPanel extends JPanel implements ErrorListener {
                 }
                 
                 SwingUtilities.invokeLater(new Runnable() {
+                    @Override
                     public void run() {
                         scrollPane.getVerticalScrollBar().setValue(0);
                     }
                 }
+                
                 );
             }
         });
@@ -195,18 +196,22 @@ public final class ErrorDetailPanel extends JPanel implements ErrorListener {
         add(scrollPane, "grow");
     }
 
+    @Override
     public void errorAdded(final ProgramError error) {
         //Ignore
     }
 
+    @Override
     public void fatalError(final ProgramError error) {
         //Ignore
     }
 
+    @Override
     public void errorDeleted(final ProgramError error) {
         //Ignore
     }
 
+    @Override
     public void errorStatusChanged(final ProgramError error) {
         if (this.error != null && this.error.equals(error)) {
             reportStatus.setText(error.getReportStatus().toString());
@@ -215,6 +220,7 @@ public final class ErrorDetailPanel extends JPanel implements ErrorListener {
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isReady() {
         return isVisible();
     }
