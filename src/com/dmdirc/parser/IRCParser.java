@@ -1448,15 +1448,18 @@ public final class IRCParser implements Runnable {
 		// MAXLIST=bdeI:50
 		// MAXLIST=b:60,e:60,I:60
 		// MAXBANS=30
-		int result = 0;
-		
+		int result = -2;
+		callDebugInfo(DEBUG_INFO, "Looking for maxlistmodes for: "+mode);
 		// Try in MAXLIST
 		if (h005Info.get("MAXLIST") != null) {
 			final String maxlist = h005Info.get("MAXLIST");
+			callDebugInfo(DEBUG_INFO, "Found maxlist ("+maxlist+")");
 			final String[] bits = maxlist.split(",");
 			for (String bit : bits) {
 				final String[] parts = maxlist.split(":", 2);
+				callDebugInfo(DEBUG_INFO, "Bit: "+bit+" | parts.length = "+parts.length+" ("+parts[0].indexOf(mode)+")");
 				if (parts.length == 2 && parts[0].indexOf(mode) > -1) {
+					callDebugInfo(DEBUG_INFO, "parts[0] = '"+parts[0]+"' | parts[1] = '"+parts[1]+"'");
 					try {
 						result = Integer.parseInt(parts[1]);
 						break;
@@ -1466,14 +1469,17 @@ public final class IRCParser implements Runnable {
 		}
 		
 		// If not in max list, try MAXBANS
-		if (result == 0 && h005Info.get("MAXBANS") != null) {
+		if (result == -2 && h005Info.get("MAXBANS") != null) {
+			callDebugInfo(DEBUG_INFO, "Trying max bans");
 			try {
 				result = Integer.parseInt(h005Info.get("MAXBANS"));
 			} catch (NumberFormatException nfe) { result = -1; }
-		} else {
+		} else if (result == -2) {
 			result = -1;
+			callDebugInfo(DEBUG_INFO, "Failed");
 			callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "Unable to discover max list modes."));
 		}
+		callDebugInfo(DEBUG_INFO, "Result: "+result);
 		return result;
 	}
 	
