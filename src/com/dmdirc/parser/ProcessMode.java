@@ -155,8 +155,9 @@ public class ProcessMode extends IRCProcessor {
 				
 				if (bBooleanMode) {
 					callDebugInfo(myParser.DEBUG_INFO, "Boolean Mode: %c [%d] {Positive: %b}",cMode, nValue, bPositive);
-					if (bPositive) { nCurrent = nCurrent + nValue; }
-					else { nCurrent = nCurrent - nValue; }
+					
+					if (bPositive) { nCurrent = nCurrent | nValue; }
+					else { nCurrent = nCurrent ^ (nCurrent & nValue); }
 				} else {
 					if (nValue == myParser.MODE_LIST) {
 						// List Mode
@@ -234,8 +235,8 @@ public class ProcessMode extends IRCProcessor {
 				}
 				// Usermodes are always boolean
 				callDebugInfo(myParser.DEBUG_INFO, "User Mode: %c [%d] {Positive: %b}",cMode, nValue, bPositive);
-				if (bPositive) { nCurrent = nCurrent + nValue; }
-				else { nCurrent = nCurrent - nValue; }
+				if (bPositive) { nCurrent = nCurrent | nValue; }
+				else { nCurrent = nCurrent ^ (nCurrent & nValue); }
 			}
 		}
 		
