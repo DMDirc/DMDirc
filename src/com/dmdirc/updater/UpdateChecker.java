@@ -22,11 +22,12 @@
 
 package com.dmdirc.updater;
 
-import com.dmdirc.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.Precondition;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.UpdateListener;
+import com.dmdirc.interfaces.UpdateCheckerListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.Update.STATUS;
@@ -34,9 +35,8 @@ import com.dmdirc.updater.components.ClientComponent;
 import com.dmdirc.updater.components.DefaultsComponent;
 import com.dmdirc.updater.components.ModeAliasesComponent;
 import com.dmdirc.util.Downloader;
+import com.dmdirc.util.ListenerList;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -45,29 +45,39 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-
 /**
  * The update checker contacts the DMDirc website to check to see if there
  * are any updates available.
  *
  * @author chris
  */
-public final class UpdateChecker extends MouseAdapter implements Runnable {
+public final class UpdateChecker implements Runnable {
+    
+    /** The possible states for the checker. */
+    public static enum STATE {
+        /** Nothing's happening. */
+        IDLE,
+        /** Currently checking for updates. */
+        CHECKING,
+        /** New updates are available. */
+        UPDATES_AVAILABLE
+    }
        
     /** A list of components that we're to check. */
     private static final List<UpdateComponent> components
             = new ArrayList<UpdateComponent>();
-    
-    /** The label used to indicate that there's an update available. */
-    private static JLabel label;
-    
+        
     /** Our timer. */
     private static Timer timer = new Timer("Update Checker Timer");
     
     /** The list of updates that are available. */
     private static final List<Update> updates = new ArrayList<Update>();
+    
+    /** A list of our listeners. */
+    private static final ListenerList listeners = new ListenerList();
+    
+    /** Our current state. */
+    private static STATE status = STATE.IDLE;
     
     static {
         components.add(new ClientComponent());
@@ -91,6 +101,8 @@ public final class UpdateChecker extends MouseAdapter implements Runnable {
             init();
             return;
         }
+        
+        setStatus(STATE.CHECKING);
         
         Main.getUI().getStatusBar().setMessage("Checking for updates...");
         
@@ -127,6 +139,10 @@ public final class UpdateChecker extends MouseAdapter implements Runnable {
                 Logger.userError(ErrorLevel.LOW, 
                         "I/O error when checking for updates: " + ex.getMessage());
             }
+        }
+        
+        if (!updates.isEmpty()) {
+            setStatus(STATE.UPDATES_AVAILABLE);
         }
         
         UpdateChecker.init();
@@ -173,14 +189,6 @@ public final class UpdateChecker extends MouseAdapter implements Runnable {
                 }
             }
         });
-        
-        if (label == null) {
-            label = new JLabel();
-            label.addMouseListener(this);
-            label.setBorder(BorderFactory.createEtchedBorder());
-            label.setIcon(IconManager.getIconManager().getIcon("update"));
-            Main.getUI().getStatusBar().addComponent(label);
-        }
     }
     
     /**
@@ -224,14 +232,6 @@ public final class UpdateChecker extends MouseAdapter implements Runnable {
         new Thread(new UpdateChecker(), "Update Checker thread").start();
     }
     
-    /** {@inheritDoc} */
-    @Override
-    public void mouseClicked(final MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1) {
-            Main.getUI().getUpdaterDialog(updates).display();
-        }
-    }
-    
     /**
      * Registers an update component.
      * 
@@ -270,8 +270,7 @@ public final class UpdateChecker extends MouseAdapter implements Runnable {
         updates.remove(update);
         
         if (updates.isEmpty()) {
-            Main.getUI().getStatusBar().removeComponent(label);
-            label = null;
+            setStatus(STATE.IDLE);
         }
     }
 
@@ -282,6 +281,47 @@ public final class UpdateChecker extends MouseAdapter implements Runnable {
      */
     public static List<UpdateComponent> getComponents() {
         return components;
+    }
+    
+    
+    /**
+     * Adds a new status listener to the update checker.
+     * 
+     * @param listener The listener to be added
+     */
+    public static void addListener(final UpdateCheckerListener listener) {
+        listeners.add(UpdateCheckerListener.class, listener);
+    }
+    
+    /**
+     * Removes a status listener from the update checker.
+     * 
+     * @param listener The listener to be removed
+     */
+    public static void removeListener(final UpdateCheckerListener listener) {
+        listeners.remove(UpdateCheckerListener.class, listener);
+    }
+    
+    /**
+     * Retrieves the current status of the update checker.
+     * 
+     * @return The update checker's current status
+     */
+    public static STATE getStatus() {
+        return status;
+    }
+    
+    /**
+     * Sets the status of the update checker to the specified new status.
+     * 
+     * @param newStatus The new status of this checker
+     */
+    private static void setStatus(final STATE newStatus) {
+        status = newStatus;
+        
+        for (UpdateCheckerListener listener : listeners.get(UpdateCheckerListener.class)) {
+            listener.statusChanged(newStatus);
+        }
     }
     
 }

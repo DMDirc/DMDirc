@@ -20,21 +20,23 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.updater;
+package com.dmdirc.interfaces;
+
+import com.dmdirc.updater.UpdateChecker;
 
 /**
- * Defines the method that must be implemented by update listeners.
+ * Update Checker Listeners receive notifications when the status of the update
+ * checker changes.
  * 
  * @author chris
  */
-public interface UpdateListener {
+public interface UpdateCheckerListener {
     
     /**
-     * Called when the state of the update has changed.
+     * Called when the status of the update checker changes.
      * 
-     * @param update The update in question
-     * @param status The new status of the update
+     * @param newStatus The new status of the update checker
      */
-    void updateStatusChange(Update update, Update.STATUS status);
-    
+    void statusChanged(UpdateChecker.STATE newStatus);
+
 }

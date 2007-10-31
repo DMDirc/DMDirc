@@ -28,7 +28,7 @@ import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.updater.Update;
 import com.dmdirc.updater.Update.STATUS;
-import com.dmdirc.updater.UpdateListener;
+import com.dmdirc.interfaces.UpdateListener;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
