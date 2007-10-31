@@ -141,7 +141,9 @@ public final class UpdateChecker implements Runnable {
             }
         }
         
-        if (!updates.isEmpty()) {
+        if (updates.isEmpty()) {
+            setStatus(STATE.IDLE);
+        } else {
             setStatus(STATE.UPDATES_AVAILABLE);
         }
         
