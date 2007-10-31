@@ -123,6 +123,9 @@ public abstract class Frame extends JInternalFrame implements Window,
     /** Frame buffer size. */
     private int frameBufferSize;
     
+    /** Quick copy? */
+    private boolean quickCopy;
+    
     /**
      * Creates a new instance of Frame.
      *
@@ -134,6 +137,7 @@ public abstract class Frame extends JInternalFrame implements Window,
         final Boolean pref = config.getOptionBool("ui", "maximisewindows", false);
         frameBufferSize = config.getOptionInt("ui", "frameBufferSize", 
                 Integer.MAX_VALUE);
+        quickCopy = config.getOptionBool("ui", "quickCopy", false);
         parent = owner;
         
         setFrameIcon(Main.getUI().getMainWindow().getIcon());
@@ -167,6 +171,7 @@ public abstract class Frame extends JInternalFrame implements Window,
         
         config.addChangeListener("ui", "foregroundcolour", this);
         config.addChangeListener("ui", "backgroundcolour", this);
+        config.addChangeListener("ui", "quickCopy", this);
         
         if (pref || Main.getUI().getMainWindow().getMaximised()) {
             hideTitlebar();
@@ -623,6 +628,9 @@ public abstract class Frame extends JInternalFrame implements Window,
             } else if ("frameBufferSize".equals(key)) {
                 frameBufferSize = getContainer().getConfigManager().
                         getOptionInt("ui", "frameBufferSize", Integer.MAX_VALUE);
+            } else if ("quickCopy".equals(key)) {
+                quickCopy = getContainer().getConfigManager().
+                        getOptionBool("ui", "quickCopy", false);
             }
         }
     }

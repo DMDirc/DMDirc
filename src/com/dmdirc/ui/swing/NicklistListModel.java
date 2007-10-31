@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing;
 
+import com.dmdirc.config.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.parser.ChannelClientInfo;
 
@@ -31,133 +32,162 @@ import java.util.List;
 
 import javax.swing.AbstractListModel;
 
-/**
- * Stores and provides means to modify nicklist data for a channel.
- */
-public final class NicklistListModel extends AbstractListModel {
-    
+/** Stores and provides means to modify nicklist data for a channel. */
+public final class NicklistListModel extends AbstractListModel implements ConfigChangeListener {
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
-    /**
-     * stores the nicknames to be shown in this list.
-     */
+    /** stores the nicknames to be shown in this list. */
     private final List<ChannelClientInfo> nicknames;
-    
-    /**
-     * Creates a new empty model.
-     */
+    /** Sort by mode? */
+    private boolean sortByMode;
+    /** Sort by case? */
+    private boolean sortByCase;
+
+    /** Creates a new empty model. */
     public NicklistListModel() {
-        super();
-        nicknames = Collections.synchronizedList(new ArrayList<ChannelClientInfo>());
+        this(Collections.synchronizedList(new ArrayList<ChannelClientInfo>()));
     }
-    
+
     /**
      * Creates a new model and initiliases it with the data provided.
      * @param newNicknames list of nicknames used for initialisation
      */
     public NicklistListModel(final List<ChannelClientInfo> newNicknames) {
         super();
-        this.nicknames = Collections.synchronizedList(newNicknames);
-        this.sort();
+        
+        sortByMode =
+                IdentityManager.getGlobalConfig().
+                getOptionBool("ui", "sortByMode", false);
+        sortByCase =
+                IdentityManager.getGlobalConfig().
+                getOptionBool("ui", "sortByCase", false);
+        nicknames = Collections.synchronizedList(newNicknames);
+        
+        sort();
     }
-    
+
     /**
      * Returns the size of the current nicklist.
      * @return nicklist size
      */
+    @Override
     public int getSize() {
         return nicknames.size();
     }
-    
+
     /**
      * Returns the element at the specified place in the nicklist.
+     * 
      * @param index index of nick required
+     * 
      * @return nicklist entry requested
      */
+    @Override
     public ChannelClientInfo getElementAt(final int index) {
         return nicknames.get(index);
     }
-    
+
     /**
-     * Sorts the nicklist based on settings in the Config, only needed if
-     * the sort.
-     * method changes
+     * Sorts the nicklist based on settings in the Config.
      */
     public void sort() {
-        final boolean sortByMode = IdentityManager.getGlobalConfig().getOptionBool("ui", "sortByMode", false);
-        final boolean sortByCase = IdentityManager.getGlobalConfig().getOptionBool("ui", "sortByCase", false);
-        
         synchronized (nicknames) {
             Collections.sort(nicknames,
                     new NicklistComparator(sortByMode, sortByCase));
         }
-        this.rerender();
+        rerender();
     }
-    
+
     /**
      * Replaces the entire nicklist with the arraylist specified.
+     * 
      * @param clients replacement nicklist
+     * 
      * @return boolean success
      */
     public boolean replace(final List<ChannelClientInfo> clients) {
         boolean returnValue = false;
-        
+
         nicknames.clear();
         returnValue = nicknames.addAll(clients);
-        
-        this.sort();
-        
+        sort();
+
         return returnValue;
     }
-    
+
     /**
      * Adds the specified client to the nicklist.
+     * 
      * @param client client to add to the nicklist
+     * 
      * @return boolean success
      */
     public boolean add(final ChannelClientInfo client) {
         boolean returnValue = false;
-        
+
         returnValue = nicknames.add(client);
-        
-        this.sort();
-        
+        sort();
+
         return returnValue;
     }
-    
+
     /**
      * Removes the specified client from the nicklist.
+     * 
      * @param client client to remove
+     * 
      * @return boolean success
      */
     public boolean remove(final ChannelClientInfo client) {
         boolean returnValue;
+        
         returnValue = nicknames.remove(client);
-        this.rerender();
+        rerender();
+        
         return returnValue;
     }
-    
+
     /**
      * Removes the specified index from the nicklist.
+     * 
      * @param index index to remove
+     * 
      * @return ChannelClientInfo client removed
      */
     public ChannelClientInfo remove(final int index) {
         ChannelClientInfo returnValue;
+        
         returnValue = nicknames.remove(index);
-        this.rerender();
+        rerender();
+        
         return returnValue;
     }
-    
-    /**
-     *Fires the model changed event forcing the model to re-render.
+
+    /** 
+     * Fires the model changed event forcing the model to re-render. 
      */
     public void rerender() {
-        this.fireContentsChanged(this, 0, nicknames.size());
+        fireContentsChanged(this, 0, nicknames.size());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void configChanged(String domain, String key) {
+        if ("sortByMode".equals(key)) {
+            sortByMode =
+                    IdentityManager.getGlobalConfig().
+                    getOptionBool("ui", "sortByMode", false);
+        } else if ("sortByCase".equals(key)) {
+            sortByCase =
+                    IdentityManager.getGlobalConfig().
+                    getOptionBool("ui", "sortByCase", false);
+        }
+        
+        sort();
     }
 }
