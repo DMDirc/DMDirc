@@ -24,6 +24,7 @@ package com.dmdirc.actions;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.ServerState;
 import com.dmdirc.config.IdentityManager;
 
 import java.util.HashMap;
@@ -147,14 +148,17 @@ public class ActionSubstitutor {
      * @param args The arguments passed for this action type
      */
     private void doServerSubstitutions(final StringBuilder target, final Object ... args) {
-        if (args.length > 0 && args[0] instanceof FrameContainer
-                && ((FrameContainer) args[0]).getServer() != null) {
-            for (ActionComponent comp : ActionManager.getCompatibleComponents(Server.class)) {
-                final String key = "${" + comp.toString() + "}";
-                final Object res = comp.get(((FrameContainer) args[0]).getServer());
+        if (args.length > 0 && args[0] instanceof FrameContainer) {
+            final Server server = ((FrameContainer) args[0]).getServer();
+        
+            if (server != null && server.getState().equals(ServerState.CONNECTED)) {
+                for (ActionComponent comp : ActionManager.getCompatibleComponents(Server.class)) {
+                    final String key = "${" + comp.toString() + "}";
+                    final Object res = comp.get(((FrameContainer) args[0]).getServer());
                 
-                if (res != null) {
-                    doReplacement(target, key, res.toString());
+                    if (res != null) {
+                        doReplacement(target, key, res.toString());
+                    }
                 }
             }
         }
