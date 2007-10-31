@@ -115,6 +115,8 @@ public final class UpdateChecker extends MouseAdapter implements Runnable {
             try {            
                 final List<String> response
                     = Downloader.getPage("http://updates.dmdirc.com/", "data=" + data);
+                
+                updates.clear();
             
                 for (String line : response) {
                     checkLine(line);
