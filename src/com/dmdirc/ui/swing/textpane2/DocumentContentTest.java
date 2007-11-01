@@ -2,12 +2,12 @@ package com.dmdirc.ui.swing.textpane2;
 
 import java.awt.Dimension;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.StyleContext;
 
-public class BufferContentTest {
+public class DocumentContentTest {
 
     public static void main(String[] args) throws BadLocationException {
 
@@ -16,15 +16,17 @@ public class BufferContentTest {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(800, 600));
         tp.setEditable(false);
-        tp.setDocument(new IRCDocument(new StyleContext()));
+        tp.setDocument(new IRCDocument(new DocumentContent(), new StyleContext()));
 
-        frame.add(tp);
+        frame.add(new JScrollPane(tp));
 
         frame.pack();
-
+        
         frame.setVisible(true);
         
+        //for (int i = 0; i <= 1000; i++) {
         tp.getDocument().insertString(tp.getDocument().getLength(), "RAR\n", null);
+        //}
 
         try {
             Thread.sleep(5000);

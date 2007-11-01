@@ -50,6 +50,10 @@ public class IRCDocument extends DefaultStyledDocument {
     public IRCDocument(final StyleContext styles) {
         super(new DocumentContent(), styles);
     }
+
+    public IRCDocument(Content c, StyleContext styles) {
+        super(c, styles);
+    }
     
     public String getText(int offset, int length) throws BadLocationException {
 	if (length < 0) {

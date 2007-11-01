@@ -68,7 +68,7 @@ public class DocumentContent implements AbstractDocument.Content {
     @Override
     public UndoableEdit insertString(final int where, final String str) throws BadLocationException {
         semaphore.acquireUninterruptibly();
-        System.out.println("insertString(" + where + ", " + str.trim() + "). Endoffset = " + endOffset);
+        System.out.println("insertString(" + where + ", " + str + "). Endoffset = " + endOffset);
         if (where == endOffset) {
             final int newOffset = endOffset + str.length();
             
@@ -151,6 +151,6 @@ public class DocumentContent implements AbstractDocument.Content {
         txt.offset = 0;
         txt.count = txt.array.length;
         
-        System.out.println("getChars(" + where + ", " + len + ") - count = " + txt.count);
+        System.out.println("getChars(" + where + ", " + len + ") - count = ");
     }
 }
