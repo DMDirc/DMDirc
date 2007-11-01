@@ -375,7 +375,7 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
                 ValidationResult.PASS;
         final String identText = ident.getText();
 
-        if (identText.isEmpty() || identText.matches(IDENT_REGEX)) {
+        if (identText.matches(IDENT_REGEX)) {
             identError.setIcons(errorIcon);
             ident.requestFocus();
             returnValue =

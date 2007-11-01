@@ -79,7 +79,7 @@ public final class UserModesPane extends JPanel {
 
         final IRCParser parser = server.getParser();
 
-        final String booleanModes = ""; //parser.getUserModes();
+        final String booleanModes = parser.getUserModeString();
         final String ourBooleanModes = parser.getMyself().getUserModeStr();
 
         setLayout(new GridBagLayout());

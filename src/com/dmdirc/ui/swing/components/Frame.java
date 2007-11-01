@@ -572,9 +572,9 @@ public abstract class Frame extends JInternalFrame implements Window,
     public void channelClicked(final String channel, final MouseEvent e) {
         if (e.isPopupTrigger()) {
             //Show channel popup
-        } else {
-            if (parent.getServer().getParser().getChannelInfo(channel) == null) {
-                parent.getServer().getParser().joinChannel(channel);
+        } else if (parent != null && parent.getServer() != null) {
+            if (parent.getServer().hasChannel(channel)) {
+                parent.getServer().join(channel);
             } else {
                 parent.getServer().getChannel(channel).activateFrame();
             }

@@ -328,7 +328,7 @@ public class Profile {
         }
 
         final Profile other = (Profile) obj;
-
+        
         if (!this.name.equals(other.name) &&
                 (this.name == null || !this.name.equals(other.name))) {
             return false;
@@ -341,7 +341,8 @@ public class Profile {
                 (this.realname == null || !this.realname.equals(other.realname))) {
             return false;
         }
-        if (!this.ident.equals(other.ident) &&
+        if ((this.ident == null && other.ident != null) && 
+                !this.ident.equals(other.ident) &&
                 (this.ident == null || !this.ident.equals(other.ident))) {
             return false;
         }
