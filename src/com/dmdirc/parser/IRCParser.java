@@ -916,7 +916,7 @@ public final class IRCParser implements Runnable {
 			if (token[0].equalsIgnoreCase("PING") || token[1].equalsIgnoreCase("PING")) {
 				sendString("PONG :" + sParam);
 			} else if (token[0].equalsIgnoreCase("PONG") || token[1].equalsIgnoreCase("PONG")) {
-				if (!lastPingValue.equals("") && lastPingValue.equals(token[token.length-1]) {
+				if (!lastPingValue.equals("") && lastPingValue.equals(token[token.length-1])) {
 					lastPingValue = "";
 					serverLag = System.currentTimeMillis() - pingTime;
 					callPingSuccess();
