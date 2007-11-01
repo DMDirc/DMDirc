@@ -22,6 +22,7 @@
 
 package com.dmdirc.config;
 
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.Main;
 import com.dmdirc.Precondition;
 import com.dmdirc.logger.ErrorLevel;

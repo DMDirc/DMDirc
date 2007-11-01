@@ -23,7 +23,7 @@
 package com.dmdirc.ui.swing.dialogs;
 
 import com.dmdirc.Main;
-import com.dmdirc.config.ConfigChangeListener;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;

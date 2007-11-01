@@ -27,7 +27,7 @@ import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.config.ConfigChangeListener;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.plugins.EventPlugin;
 import com.dmdirc.plugins.Plugin;

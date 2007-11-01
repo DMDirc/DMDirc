@@ -28,7 +28,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
-import com.dmdirc.config.ConfigChangeListener;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.input.tabstyles.BashStyle;
 import com.dmdirc.ui.input.tabstyles.MircStyle;

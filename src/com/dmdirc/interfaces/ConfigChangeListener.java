@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.config;
+package com.dmdirc.interfaces;
 
 /**
  * Defines the method required for config change listeners.

@@ -23,7 +23,7 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.Precondition;
-import com.dmdirc.config.ConfigChangeListener;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 

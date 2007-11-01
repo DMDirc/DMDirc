@@ -26,7 +26,7 @@ import com.dmdirc.util.BrowserLauncher;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.util.StringTranscoder;
-import com.dmdirc.config.ConfigChangeListener;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;

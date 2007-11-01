@@ -22,6 +22,7 @@
 
 package com.dmdirc.config;
 
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.util.WeakMapList;
 
 import java.io.Serializable;

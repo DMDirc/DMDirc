@@ -23,7 +23,7 @@
 package com.dmdirc.ui.swing;
 
 import com.dmdirc.ChannelClientProperty;
-import com.dmdirc.config.ConfigChangeListener;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.parser.ChannelClientInfo;
 

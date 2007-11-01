@@ -22,7 +22,7 @@
 
 package com.dmdirc;
 
-import com.dmdirc.config.ConfigChangeListener;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
 
 import java.awt.Image;

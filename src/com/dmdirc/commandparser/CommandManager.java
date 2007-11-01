@@ -36,7 +36,7 @@ import com.dmdirc.commandparser.commands.global.*;
 //import com.dmdirc.commandparser.commands.query.*;
 import com.dmdirc.commandparser.commands.server.*;
 import com.dmdirc.commandparser.parsers.CommandParser;
-import com.dmdirc.config.ConfigChangeListener;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
