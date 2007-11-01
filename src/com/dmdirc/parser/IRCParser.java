@@ -1786,7 +1786,7 @@ public final class IRCParser implements Runnable {
 				setPingNeeded(true);
 				pingCountDown = pingCountDownLength;
 				callPingSent();
-				lastPingValue = System.currentTimeMillis()
+				lastPingValue = System.currentTimeMillis();
 				sendLine("PING "+lastPingValue);
 			}
 		}
