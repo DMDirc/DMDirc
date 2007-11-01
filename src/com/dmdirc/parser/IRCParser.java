@@ -114,6 +114,9 @@ public final class IRCParser implements Runnable {
 	private long pingTime;
 	/** Current Server Lag. */
 	private long serverLag;
+	/** Last value sent as a ping argument. */
+	private String lastPingValue = "";
+	
 	/**
 	 * Count down to next ping.
 	 * The timer fires every 10 seconds, this value is decreased every time the
@@ -913,7 +916,8 @@ public final class IRCParser implements Runnable {
 			if (token[0].equalsIgnoreCase("PING") || token[1].equalsIgnoreCase("PING")) {
 				sendString("PONG :" + sParam);
 			} else if (token[0].equalsIgnoreCase("PONG") || token[1].equalsIgnoreCase("PONG")) {
-				if (token[token.length-1].matches("^:?DMD[0-9]*$")) {
+				if (!lastPingValue.equals("") && lastPingValue.equals(token[token.length-1]) {
+					lastPingValue = "";
 					serverLag = System.currentTimeMillis() - pingTime;
 					callPingSuccess();
 				}
@@ -1782,7 +1786,8 @@ public final class IRCParser implements Runnable {
 				setPingNeeded(true);
 				pingCountDown = pingCountDownLength;
 				callPingSent();
-				sendLine("PING DMD"+System.currentTimeMillis());
+				lastPingValue = System.currentTimeMillis()
+				sendLine("PING "+lastPingValue);
 			}
 		}
 	}
