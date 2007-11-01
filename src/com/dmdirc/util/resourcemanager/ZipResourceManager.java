@@ -22,7 +22,6 @@
 
 package com.dmdirc.util.resourcemanager;
 
-import com.dmdirc.util.resourcemanager.ResourceManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -69,6 +68,9 @@ public final class ZipResourceManager extends ResourceManager {
      * Returns an instance of a ZipResourceManager for the specified file.
      *
      * @param filename Filename of the zip to load
+     * 
+     * @return ZipResourceManager instance
+     * 
      * @throws IOException Throw when the zip fails to load
      */
     public static synchronized ZipResourceManager getInstance(final String filename) throws
@@ -77,6 +79,19 @@ public final class ZipResourceManager extends ResourceManager {
     }
     
     /** {@inheritDoc} */
+    @Override
+    public boolean resourceExists(final String resource) {
+        final ZipEntry zipEntry = zipFile.getEntry(resource);        
+        
+        if (zipEntry == null || zipEntry.isDirectory()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    /** {@inheritDoc} */
+    @Override
     public byte[] getResourceBytes(final String resource) {
         final ZipEntry zipEntry = zipFile.getEntry(resource);
         BufferedInputStream inputStream;
@@ -118,6 +133,7 @@ public final class ZipResourceManager extends ResourceManager {
     }
     
     /** {@inheritDoc} */
+    @Override
     public InputStream getResourceInputStream(final String resource) {
         final ZipEntry zipEntry = zipFile.getEntry(resource);
         
@@ -134,6 +150,7 @@ public final class ZipResourceManager extends ResourceManager {
     }
     
     /** {@inheritDoc} */
+    @Override
     public Map<String, byte[]> getResourcesStartingWithAsBytes(
             final String resourcesPrefix) {
         final Map<String, byte[]> resources = new HashMap<String, byte[]>();
@@ -148,6 +165,7 @@ public final class ZipResourceManager extends ResourceManager {
     }
     
     /** {@inheritDoc} */
+    @Override
     public Map<String, InputStream> getResourcesStartingWithAsInputStreams(
             final String resourcesPrefix) {
         final Map<String, InputStream> resources =

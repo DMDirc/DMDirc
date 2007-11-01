@@ -46,14 +46,35 @@ public final class FileResourceManager extends ResourceManager {
     
     /**
      * Creates a new instance of FileResourceManager.
+     * 
+     * @param basePath Base path for the resource manager
      */
-    protected FileResourceManager() {
+    protected FileResourceManager(final String basePath) {
         super();
         
-        basePath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+        this.basePath = basePath;
     }
     
     /** {@inheritDoc} */
+    @Override
+    public boolean resourceExists(final String resource) {
+        final File file;
+        
+        if (resource.startsWith(basePath)) {
+            file = new File(resource);
+        } else {
+            file = new File(basePath, resource);
+        }
+        
+        if (!file.exists() || file.isDirectory()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    /** {@inheritDoc} */
+    @Override
     public byte[] getResourceBytes(final String resource) {
         FileInputStream inputStream;
         final File file;
@@ -96,6 +117,7 @@ public final class FileResourceManager extends ResourceManager {
     }
     
     /** {@inheritDoc} */
+    @Override
     public InputStream getResourceInputStream(final String resource) {
         final File file;
         
@@ -121,6 +143,7 @@ public final class FileResourceManager extends ResourceManager {
     }
     
     /** {@inheritDoc} */
+    @Override
     public Map<String, byte[]> getResourcesStartingWithAsBytes(
             final String resourcesPrefix) {
         final List<File> files = getFileListing(new File(basePath));
@@ -138,6 +161,7 @@ public final class FileResourceManager extends ResourceManager {
     }
     
     /** {@inheritDoc} */
+    @Override
     public Map<String, InputStream> getResourcesStartingWithAsInputStreams(
             final String resourcesPrefix) {
         final List<File> files = getFileListing(new File(basePath));

@@ -43,7 +43,7 @@ public abstract class ResourceManager {
     private static ResourceManager me;
     
     /** Enum indicating resource manager type. */
-    private enum Type {
+    public enum Type {
         /** File resource manager. */
         FILE,
         /** Jar resource manager. */
@@ -73,7 +73,8 @@ public abstract class ResourceManager {
             
             try {
                 if ("file".equals(protocol)) {
-                    me = new FileResourceManager();
+                    me = new FileResourceManager(Thread.currentThread().
+                            getContextClassLoader().getResource("").getPath());
                 } else if ("jar".equals(protocol)) {
                     if (System.getProperty("os.name").startsWith("Windows")) {
                         me = new ZipResourceManager(path.substring(6, path.length() - 23));
@@ -89,6 +90,32 @@ public abstract class ResourceManager {
         return me;
     }
     
+    /**
+     * Returns an appropriate instance of ResourceManager for the specified url string.
+     *
+     * @param type  file://path/to/base
+     *              jar://path/to/jar
+     *              zip://path/to/zip
+     * 
+     * @return ResourceManager implementation
+     * 
+     * @throws java.io.IOException if an IO Error occurs opening the file
+     */
+    public static final ResourceManager getResourceManager(final String type) throws IOException {
+        if (type.startsWith("file://")) {
+            return new FileResourceManager(type.substring(7));
+        } else if (type.startsWith("jar://") || type.startsWith("zip://")) {
+            return new ZipResourceManager(type.substring(6));
+        } else {
+            throw new IllegalArgumentException("Unknown resource manager type");
+        }
+    }
+    
+    /**
+     * Returns the working directory for the application.
+     * 
+     * @return Current working directory
+     */
     public static final synchronized String getCurrentWorkingDirectory() {
         final URL resource = Thread.currentThread().getContextClassLoader().
                         getResource("com/dmdirc/Main.class");
@@ -231,6 +258,15 @@ public abstract class ResourceManager {
             final String directory) throws IOException {
         extractResources(resourcesPrefix, directory, true);
     }
+    
+    /**
+     * Checks if a resource exists.
+     * 
+     * @param resource Resource to check
+     * 
+     * @return true iif the resource exists
+     */
+    public abstract boolean resourceExists(final String resource);
     
     /**
      * Gets a byte[] of the specified resource.
