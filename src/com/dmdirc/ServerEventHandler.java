@@ -223,7 +223,7 @@ public final class ServerEventHandler extends EventHandler
         
         // Just proxy it
         for (String chan : owner.getChannels()) {
-            owner.getChannel(chan).onAwayStateOther(tParser, client, state);
+            owner.getChannel(chan).onAwayStateOther(client, state);
         }
     }
     

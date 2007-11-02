@@ -58,6 +58,13 @@ public abstract class EventHandler implements ICallbackInterface {
         }
     }    
     
+    /**
+     * Adds a callback to this event handler.
+     * 
+     * @param cbm The callback manager to use
+     * @param name The name of the callback to be added
+     * @throws CallbackNotFoundException if the specified callback isn't found
+     */
     protected abstract void addCallback(CallbackManager cbm, String name) 
             throws CallbackNotFoundException;
     

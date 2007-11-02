@@ -66,14 +66,14 @@ public final class ChannelEventHandler extends EventHandler implements
             final ChannelInfo cChannel, final ChannelClientInfo cChannelClient,
             final String sMessage, final String sHost) {
         checkParser(tParser);
-        owner.onChannelMessage(tParser, cChannel, cChannelClient, sMessage, sHost);
+        owner.onChannelMessage(cChannelClient, sMessage);
     }
 
     /** {@inheritDoc} */
     @Override    
     public void onChannelGotNames(final IRCParser tParser, final ChannelInfo cChannel) {
         checkParser(tParser);
-        owner.onChannelGotNames(tParser, cChannel);
+        owner.onChannelGotNames();
     }
 
     /** {@inheritDoc} */
@@ -81,7 +81,7 @@ public final class ChannelEventHandler extends EventHandler implements
     public void onChannelTopic(final IRCParser tParser, final ChannelInfo cChannel,
             final boolean bIsJoinTopic) {
         checkParser(tParser);
-        owner.onChannelTopic(tParser, cChannel, bIsJoinTopic);
+        owner.onChannelTopic(bIsJoinTopic);
     }
 
     /** {@inheritDoc} */
@@ -89,7 +89,7 @@ public final class ChannelEventHandler extends EventHandler implements
     public void onChannelJoin(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient) {
         checkParser(tParser);
-        owner.onChannelJoin(tParser, cChannel, cChannelClient);
+        owner.onChannelJoin(cChannelClient);
     }
 
     /** {@inheritDoc} */
@@ -97,7 +97,7 @@ public final class ChannelEventHandler extends EventHandler implements
     public void onChannelPart(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sReason) {
         checkParser(tParser);
-        owner.onChannelPart(tParser, cChannel, cChannelClient, sReason);
+        owner.onChannelPart(cChannelClient, sReason);
     }
 
     /** {@inheritDoc} */
@@ -106,8 +106,7 @@ public final class ChannelEventHandler extends EventHandler implements
             final ChannelClientInfo cKickedClient, final ChannelClientInfo cKickedByClient,
             final String sReason, final String sKickedByHost) {
         checkParser(tParser);
-        owner.onChannelKick(tParser, cChannel, cKickedClient, cKickedByClient,
-                sReason, sKickedByHost);
+        owner.onChannelKick(cKickedClient, cKickedByClient, sReason);
     }
 
     /** {@inheritDoc} */
@@ -115,7 +114,7 @@ public final class ChannelEventHandler extends EventHandler implements
     public void onChannelQuit(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sReason) {
         checkParser(tParser);
-        owner.onChannelQuit(tParser, cChannel, cChannelClient, sReason);
+        owner.onChannelQuit(cChannelClient, sReason);
     }
 
     /** {@inheritDoc} */
@@ -123,7 +122,7 @@ public final class ChannelEventHandler extends EventHandler implements
     public void onChannelAction(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
         checkParser(tParser);
-        owner.onChannelAction(tParser, cChannel, cChannelClient, sMessage, sHost);
+        owner.onChannelAction(cChannelClient, sMessage);
     }
 
     /** {@inheritDoc} */
@@ -131,7 +130,7 @@ public final class ChannelEventHandler extends EventHandler implements
     public void onChannelNickChanged(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sOldNick) {
         checkParser(tParser);
-        owner.onChannelNickChanged(tParser, cChannel, cChannelClient, sOldNick);
+        owner.onChannelNickChanged(cChannelClient, sOldNick);
     }
 
     /** {@inheritDoc} */
@@ -139,7 +138,7 @@ public final class ChannelEventHandler extends EventHandler implements
     public void onChannelModeChanged(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sHost, final String sModes) {
         checkParser(tParser);
-        owner.onChannelModeChanged(tParser, cChannel, cChannelClient, sHost, sModes);
+        owner.onChannelModeChanged(cChannelClient, sHost, sModes);
     }
 
     /** {@inheritDoc} */
@@ -148,8 +147,7 @@ public final class ChannelEventHandler extends EventHandler implements
             final ChannelClientInfo cChangedClient, final ChannelClientInfo cSetByClient,
             final String sHost, final String sMode) {
         checkParser(tParser);
-        owner.onChannelUserModeChanged(tParser, cChannel, cChangedClient,
-                cSetByClient, sHost, sMode);
+        owner.onChannelUserModeChanged(cChangedClient, cSetByClient, sMode);
     }
 
     /** {@inheritDoc} */
@@ -158,7 +156,7 @@ public final class ChannelEventHandler extends EventHandler implements
             final ChannelClientInfo cChannelClient, final String sType, 
             final String sMessage, final String sHost) {
         checkParser(tParser);
-        owner.onChannelCTCP(tParser, cChannel, cChannelClient, sType, sMessage, sHost);
+        owner.onChannelCTCP(cChannelClient, sType, sMessage);
     }
 
     /** {@inheritDoc} */
@@ -166,7 +164,7 @@ public final class ChannelEventHandler extends EventHandler implements
     public void onAwayStateOther(final IRCParser tParser, final ClientInfo client, 
             final boolean state) {
         checkParser(tParser);
-        owner.onAwayStateOther(tParser, client, state);
+        owner.onAwayStateOther(client, state);
     }
 
 }

@@ -32,21 +32,6 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.parser.ChannelInfo;
 import com.dmdirc.parser.ClientInfo;
-import com.dmdirc.parser.IRCParser;
-import com.dmdirc.parser.callbacks.CallbackManager;
-import com.dmdirc.parser.callbacks.interfaces.IAwayStateOther;
-import com.dmdirc.parser.callbacks.interfaces.IChannelAction;
-import com.dmdirc.parser.callbacks.interfaces.IChannelCTCP;
-import com.dmdirc.parser.callbacks.interfaces.IChannelGotNames;
-import com.dmdirc.parser.callbacks.interfaces.IChannelJoin;
-import com.dmdirc.parser.callbacks.interfaces.IChannelKick;
-import com.dmdirc.parser.callbacks.interfaces.IChannelMessage;
-import com.dmdirc.parser.callbacks.interfaces.IChannelModeChanged;
-import com.dmdirc.parser.callbacks.interfaces.IChannelNickChanged;
-import com.dmdirc.parser.callbacks.interfaces.IChannelPart;
-import com.dmdirc.parser.callbacks.interfaces.IChannelQuit;
-import com.dmdirc.parser.callbacks.interfaces.IChannelTopic;
-import com.dmdirc.parser.callbacks.interfaces.IChannelUserModeChanged;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.ChannelWindow;
@@ -69,11 +54,8 @@ import java.util.Map;
  *
  * @author chris
  */
-public final class Channel extends MessageTarget implements
-        IChannelMessage, IChannelGotNames, IChannelTopic, IChannelJoin,
-        IChannelPart, IChannelKick, IChannelQuit, IChannelAction,
-        IChannelNickChanged, IChannelModeChanged, IChannelUserModeChanged,
-        IChannelCTCP, IAwayStateOther, ConfigChangeListener, Serializable {
+public final class Channel extends MessageTarget
+        implements ConfigChangeListener, Serializable {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -369,9 +351,7 @@ public final class Channel extends MessageTarget implements
      */
     public void closeWindow(final boolean shouldRemove) {
         if (server.getParser() != null) {
-            final CallbackManager callbackManager = server.getParser().getCallbackManager();
-        
-            callbackManager.delAllCallback(eventHandler);
+            server.getParser().getCallbackManager().delAllCallback(eventHandler);
         }
         
         ActionManager.processEvent(CoreActionType.CHANNEL_CLOSED, null, this);
@@ -396,13 +376,11 @@ public final class Channel extends MessageTarget implements
         }
     }
     
-    /** {@inheritDoc} */
-    @Override
-    public void onChannelMessage(final IRCParser tParser, final ChannelInfo cChannel,
-            final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
+    public void onChannelMessage(
+            final ChannelClientInfo cChannelClient, final String sMessage) {
         
         String type = "channelMessage";
-        if (cChannelClient.getClient().equals(tParser.getMyself())) {
+        if (cChannelClient.getClient().equals(server.getParser().getMyself())) {
             type = "channelSelfExternalMessage";
         }
         
@@ -413,17 +391,15 @@ public final class Channel extends MessageTarget implements
         
         ActionManager.processEvent(CoreActionType.CHANNEL_MESSAGE, buff, this, cChannelClient, sMessage);
         
-        addLine(buff, modes, parts[0], parts[1], parts[2], sMessage, cChannel);
+        addLine(buff, modes, parts[0], parts[1], parts[2], sMessage, channelInfo);
     }
     
-    /** {@inheritDoc} */
-    @Override
-    public void onChannelAction(final IRCParser tParser, final ChannelInfo cChannel,
-            final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
+    public void onChannelAction(
+            final ChannelClientInfo cChannelClient, final String sMessage) {
         final String[] parts = getDetails(cChannelClient);
         final String modes = getModes(cChannelClient);
         String type = "channelAction";
-        if (parts[0].equals(tParser.getMyself().getNickname())) {
+        if (parts[0].equals(server.getParser().getMyself().getNickname())) {
             type = "channelSelfExternalAction";
         }
         
@@ -431,18 +407,16 @@ public final class Channel extends MessageTarget implements
         
         ActionManager.processEvent(CoreActionType.CHANNEL_ACTION, buff, this, cChannelClient, sMessage);
         
-        addLine(buff, modes, parts[0], parts[1], parts[2], sMessage, cChannel);
+        addLine(buff, modes, parts[0], parts[1], parts[2], sMessage, channelInfo);
     }
     
-    /** {@inheritDoc} */
-    @Override
-    public void onChannelGotNames(final IRCParser tParser, final ChannelInfo cChannel) {
+    public void onChannelGotNames() {
         
         window.updateNames(channelInfo.getChannelClients());
         
         final ArrayList<String> names = new ArrayList<String>();
         
-        for (ChannelClientInfo channelClient : cChannel.getChannelClients()) {
+        for (ChannelClientInfo channelClient : channelInfo.getChannelClients()) {
             names.add(channelClient.getNickname());
         }
         
@@ -453,40 +427,34 @@ public final class Channel extends MessageTarget implements
         ActionManager.processEvent(CoreActionType.CHANNEL_GOTNAMES, null, this);
     }
     
-    /** {@inheritDoc} */
-    @Override
-    public void onChannelTopic(final IRCParser tParser, final ChannelInfo cChannel,
-            final boolean bIsJoinTopic) {
+    public void onChannelTopic(final boolean bIsJoinTopic) {
         if (bIsJoinTopic) {
             final StringBuffer buff = new StringBuffer("channelJoinTopic");
             
             ActionManager.processEvent(CoreActionType.CHANNEL_GOTTOPIC, buff, this);
             
-            addLine(buff, cChannel.getTopic(), cChannel.getTopicUser(),
-                    1000 * cChannel.getTopicTime(), cChannel);
+            addLine(buff, channelInfo.getTopic(), channelInfo.getTopicUser(),
+                    1000 * channelInfo.getTopicTime(), channelInfo);
         } else {
-            final ChannelClientInfo user = cChannel.getUser(cChannel.getTopicUser());
-            final String[] parts = ClientInfo.parseHostFull(cChannel.getTopicUser());
+            final ChannelClientInfo user = channelInfo.getUser(channelInfo.getTopicUser());
+            final String[] parts = ClientInfo.parseHostFull(channelInfo.getTopicUser());
             final String modes = getModes(user);
-            final String topic = cChannel.getTopic();
+            final String topic = channelInfo.getTopic();
             
             final StringBuffer buff = new StringBuffer("channelTopicChange");
             
             ActionManager.processEvent(CoreActionType.CHANNEL_TOPICCHANGE, buff, this, user, topic);
             
-            addLine(buff, modes, parts[0], parts[1], parts[2], cChannel, topic);
+            addLine(buff, modes, parts[0], parts[1], parts[2], channelInfo, topic);
         }
         
-        topics.add(new Topic(cChannel.getTopic(), 
-                cChannel.getTopicUser(), cChannel.getTopicTime()));
+        topics.add(new Topic(channelInfo.getTopic(), 
+                channelInfo.getTopicUser(), channelInfo.getTopicTime()));
         
         updateTitle();
     }
     
-    /** {@inheritDoc} */
-    @Override
-    public void onChannelJoin(final IRCParser tParser, final ChannelInfo cChannel,
-            final ChannelClientInfo cChannelClient) {
+    public void onChannelJoin(final ChannelClientInfo cChannelClient) {
         final ClientInfo client = cChannelClient.getClient();
         
         final StringBuffer buff = new StringBuffer("channelJoin");
@@ -494,15 +462,13 @@ public final class Channel extends MessageTarget implements
         ActionManager.processEvent(CoreActionType.CHANNEL_JOIN, buff, this, cChannelClient);
         
         addLine(buff, "", client.getNickname(), client.getIdent(),
-                client.getHost(), cChannel);
+                client.getHost(), channelInfo);
         
         window.addName(cChannelClient);
         tabCompleter.addEntry(cChannelClient.getNickname());
     }
     
-    /** {@inheritDoc} */
-    @Override
-    public void onChannelPart(final IRCParser tParser, final ChannelInfo cChannel,
+    public void onChannelPart(
             final ChannelClientInfo cChannelClient, final String sReason) {
         final ClientInfo client = cChannelClient.getClient();
         final String nick = cChannelClient.getNickname();
@@ -512,7 +478,7 @@ public final class Channel extends MessageTarget implements
         
         String type;
         
-        if (nick.equals(tParser.getMyself().getNickname())) {
+        if (nick.equals(server.getParser().getMyself().getNickname())) {
             if (sReason.isEmpty()) {
                 type = "channelSelfPart";
             } else {
@@ -531,18 +497,16 @@ public final class Channel extends MessageTarget implements
         
         ActionManager.processEvent(CoreActionType.CHANNEL_PART, buff, this, cChannelClient, sReason);
         
-        addLine(buff, modes, nick, ident, host, cChannel, sReason);
+        addLine(buff, modes, nick, ident, host, channelInfo, sReason);
         
         window.removeName(cChannelClient);
         
         tabCompleter.removeEntry(cChannelClient.getNickname());
     }
     
-    /** {@inheritDoc} */
-    @Override
-    public void onChannelKick(final IRCParser tParser, final ChannelInfo cChannel,
+    public void onChannelKick(
             final ChannelClientInfo cKickedClient, final ChannelClientInfo cKickedByClient,
-            final String sReason, final String sKickedByHost) {
+            final String sReason) {
         final String[] kicker = getDetails(cKickedByClient);
         final String kickermodes = getModes(cKickedByClient);
         final String victim = cKickedClient.getNickname();
@@ -556,20 +520,18 @@ public final class Channel extends MessageTarget implements
                 cKickedByClient, cKickedClient, sReason);
         
         addLine(buff, kickermodes, kicker[0], kicker[1], kicker[2], victimmodes,
-                victim, victimident, victimhost, cChannel.getName(), sReason);
+                victim, victimident, victimhost, channelInfo.getName(), sReason);
         
         window.removeName(cKickedClient);
         
         tabCompleter.removeEntry(cKickedClient.getNickname());
         
-        if (cKickedClient.getClient().equals(tParser.getMyself())) {
+        if (cKickedClient.getClient().equals(server.getParser().getMyself())) {
             resetWindow();
         }
     }
     
-    /** {@inheritDoc} */
-    @Override
-    public void onChannelQuit(final IRCParser tParser, final ChannelInfo cChannel,
+    public void onChannelQuit(
             final ChannelClientInfo cChannelClient, final String sReason) {
         final ClientInfo client = cChannelClient.getClient();
         final String source = cChannelClient.getNickname();
@@ -580,22 +542,20 @@ public final class Channel extends MessageTarget implements
         ActionManager.processEvent(CoreActionType.CHANNEL_QUIT, buff, this, cChannelClient, sReason);
         
         addLine(buff, modes, source, client.getIdent(),
-                client.getHost(), cChannel, sReason);
+                client.getHost(), channelInfo, sReason);
         
         window.removeName(cChannelClient);
         tabCompleter.removeEntry(cChannelClient.getNickname());
     }
     
-    /** {@inheritDoc} */
-    @Override
-    public void onChannelNickChanged(final IRCParser tParser, final ChannelInfo cChannel,
+    public void onChannelNickChanged(
             final ChannelClientInfo cChannelClient, final String sOldNick) {
         final String modes = cChannelClient.getImportantModePrefix();
         final String nick = cChannelClient.getNickname();
         final String ident = cChannelClient.getClient().getIdent();
         final String host = cChannelClient.getClient().getHost();
         String type = "channelNickChange";
-        if (nick.equals(tParser.getMyself().getNickname())) {
+        if (nick.equals(server.getParser().getMyself().getNickname())) {
             type = "channelSelfNickChange";
         }
         tabCompleter.removeEntry(sOldNick);
@@ -605,13 +565,11 @@ public final class Channel extends MessageTarget implements
         
         ActionManager.processEvent(CoreActionType.CHANNEL_NICKCHANGE, buff, this, cChannelClient, sOldNick);
         
-        addLine(buff, modes, sOldNick, ident, host, cChannel, nick);
+        addLine(buff, modes, sOldNick, ident, host, channelInfo, nick);
         window.updateNames();
     }
     
-    /** {@inheritDoc} */
-    @Override
-    public void onChannelModeChanged(final IRCParser tParser, final ChannelInfo cChannel,
+    public void onChannelModeChanged(
             final ChannelClientInfo cChannelClient, final String sHost, final String sModes) {
         if (sHost.isEmpty()) {
             final StringBuffer buff = new StringBuffer(21);
@@ -624,11 +582,11 @@ public final class Channel extends MessageTarget implements
             
             ActionManager.processEvent(CoreActionType.CHANNEL_MODECHANGE, buff, this, cChannelClient, sModes);
             
-            addLine(buff, sModes, cChannel.getName());
+            addLine(buff, sModes, channelInfo.getName());
         } else {
             final String modes = getModes(cChannelClient);
             final String[] details = getDetails(cChannelClient);
-            final String myNick = tParser.getMyself().getNickname();
+            final String myNick = server.getParser().getMyself().getNickname();
             
             String type = "channelModeChange";
             if (myNick.equals(cChannelClient.getNickname())) {
@@ -640,18 +598,15 @@ public final class Channel extends MessageTarget implements
             ActionManager.processEvent(CoreActionType.CHANNEL_MODECHANGE, buff, this, cChannelClient, sModes);
             
             addLine(type,  modes, details[0], details[1],
-                    details[2], cChannel.getName(), sModes);
+                    details[2], channelInfo.getName(), sModes);
         }
         
         window.updateNames();
     }
     
-    /** {@inheritDoc} */
-    @Override
-    public void onChannelUserModeChanged(final IRCParser tParser,
-            final ChannelInfo cChannel, final ChannelClientInfo cChangedClient,
-            final ChannelClientInfo cSetByClient, final String sHost,
-            final String sMode) {
+    public void onChannelUserModeChanged(
+            final ChannelClientInfo cChangedClient,
+            final ChannelClientInfo cSetByClient, final String sMode) {
         
         if (configManager.getOptionBool("channel", "splitusermodes", false)) {
             final String sourceModes = getModes(cSetByClient);
@@ -668,34 +623,28 @@ public final class Channel extends MessageTarget implements
             
             addLine(format, sourceModes, sourceHost[0], sourceHost[1],
                     sourceHost[2], targetModes, targetNick, targetIdent,
-                    targetHost, cChannel, sMode);
+                    targetHost, channelInfo, sMode);
         }
         
         ActionManager.processEvent(CoreActionType.CHANNEL_USERMODECHANGE, null,
                 this, cSetByClient, cChangedClient, sMode);
     }
     
-    /** {@inheritDoc} */
-    @Override
-    public void onChannelCTCP(final IRCParser tParser,
-            final ChannelInfo cChannel, final ChannelClientInfo cChannelClient,
-            final String sType, final String sMessage, final String sHost) {
+    public void onChannelCTCP(final ChannelClientInfo cChannelClient,
+            final String sType, final String sMessage) {
         
         final String modes = getModes(cChannelClient);
         final String[] source = getDetails(cChannelClient);
         
         addLine("channelCTCP", modes, source[0], source[1], source[2],
-                sType, sMessage, cChannel);
+                sType, sMessage, channelInfo);
         
         server.sendCTCPReply(source[0], sType, sMessage);
         
         // TODO: Action hook
     }
     
-    /** {@inheritDoc} */
-    @Override
-    public void onAwayStateOther(final IRCParser tParser,
-            final ClientInfo client, final boolean state) {
+    public void onAwayStateOther(final ClientInfo client, final boolean state) {
         final ChannelClientInfo channelClient = channelInfo.getUser(client);
         
         if (channelClient != null) {
