@@ -159,7 +159,6 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 */
 	public void loadPlugin() {
 		if (isLoaded()) {
-			Logger.userError(ErrorLevel.LOW, "Tried to load Plugin that was already loaded.");
 			return;
 		}
 		loadClass(getMainClass());
