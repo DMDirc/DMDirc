@@ -88,9 +88,12 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void close() {
-        server.getParser().getCallbackManager().delCallback("OnDataIn", this);
-        server.getParser().getCallbackManager().delCallback("OnDataOut", this);
+        if (server.getParser() != null) {
+            server.getParser().getCallbackManager().delCallback("OnDataIn", this);
+            server.getParser().getCallbackManager().delCallback("OnDataOut", this);
+        }
         
         window.setVisible(false);
         Main.getUI().getMainWindow().delChild(window);

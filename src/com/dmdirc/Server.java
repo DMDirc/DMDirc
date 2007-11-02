@@ -199,9 +199,14 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @param ssl Whether to use SSL or not
      * @param profile The profile to use
      */
-    @Precondition("The IRC Parser is null or not connected")
+    @Precondition({
+        "The IRC Parser is null or not connected",
+        "The specified profile is not null"
+    })
     public void connect(final String server, final int port, final String password,
             final boolean ssl, final Identity profile) {
+        assert(profile != null);
+        
         synchronized(myState) {
             switch (myState) {
             case RECONNECT_WAIT:
@@ -284,7 +289,10 @@ public final class Server extends WritableFrameContainer implements Serializable
      *
      * @return The MyInfo object for our profile
      */
+    @Precondition("The current profile is not null")
     private MyInfo getMyInfo() {
+        assert(profile != null);
+        
         final MyInfo myInfo = new MyInfo();
         myInfo.setNickname(profile.getOption(DOMAIN_PROFILE, "nickname"));
         myInfo.setRealname(profile.getOption(DOMAIN_PROFILE, "realname"));

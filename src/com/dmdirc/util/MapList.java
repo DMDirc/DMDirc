@@ -175,7 +175,9 @@ public class MapList<S,T> {
      * @param value The value to be removed
      */
     public void remove(final S key, final T value) {
-        map.get(key).remove(value);
+        if (map.containsKey(key)) {
+            map.get(key).remove(value);
+        }
     }    
 
     /**
