@@ -27,6 +27,7 @@ import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.plugins.Plugin;
+import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -62,11 +63,11 @@ public final class Ifplugin extends GlobalCommand implements IntelligentCommand 
         
         final String pname = args[0].substring(negative ? 1 : 0);
         
-        final Plugin plugin = PluginManager.getPluginManager().getPlugin(pname);
+        final PluginInfo pluginInfo = PluginManager.getPluginManager().getPluginInfoByName(pname);
         
         boolean result = true;
         
-        if (plugin == null || !plugin.isActive()) {
+        if (pluginInfo == null || !pluginInfo.isLoaded()) {
             result = false;
         }
         
@@ -111,9 +112,9 @@ public final class Ifplugin extends GlobalCommand implements IntelligentCommand 
         if (arg == 0) {
             res.setIncludeNormal(false);
 
-            for (Plugin possPlugin : PluginManager.getPluginManager().getPossiblePlugins()) {
-                res.add(possPlugin.getClass().getCanonicalName());
-                res.add("!" + possPlugin.getClass().getCanonicalName());
+            for (PluginInfo possPlugin : PluginManager.getPluginManager().getPossiblePluginInfos()) {
+                res.add(possPlugin.getName());
+                res.add("!" + possPlugin.getName());
             }            
         }
         

@@ -25,6 +25,7 @@ package com.dmdirc.ui.swing.dialogs;
 import com.dmdirc.util.BrowserLauncher;
 import com.dmdirc.Main;
 import com.dmdirc.plugins.Plugin;
+import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.PluginCellRenderer;
@@ -218,11 +219,11 @@ public final class PluginDialog extends StandardDialog implements
     
     /** Populates the plugins list with plugins from the plugin manager. */
     private void populateList() {
-        final List<Plugin> list = PluginManager.getPluginManager().getPossiblePlugins();
+        final List<PluginInfo> list = PluginManager.getPluginManager().getPossiblePluginInfos();
         Collections.sort(list);
         
         ((DefaultListModel) pluginList.getModel()).clear();
-        for (Plugin plugin : list) {
+        for (PluginInfo plugin : list) {
             ((DefaultListModel) pluginList.getModel()).addElement(plugin);
         }
         if (((DefaultListModel) pluginList.getModel()).size() > 0) {
@@ -248,23 +249,24 @@ public final class PluginDialog extends StandardDialog implements
         if (e.getSource() == myOkButton) {
             dispose();
         } else if (e.getSource() == configureButton && selectedPlugin >= 0) {
-            final Plugin plugin = (Plugin) pluginList.getSelectedValue();
-            if (plugin.isConfigurable()) {
+            final PluginInfo pluginInfo = (PluginInfo) pluginList.getSelectedValue();
+            final Plugin plugin = pluginInfo.getPlugin();
+            if (plugin != null && plugin.isConfigurable()) {
                 plugin.showConfig();
             }
         } else if (e.getSource() == toggleButton && selectedPlugin >= 0) {
-            final Plugin plugin = (Plugin) pluginList.getSelectedValue();
-            if (plugin.isActive()) {
-                plugin.setActive(false);
+            final PluginInfo pluginInfo = (PluginInfo) pluginList.getSelectedValue();
+            if (pluginInfo.isLoaded()) {
+                pluginInfo.unloadPlugin();
                 toggleButton.setText("Enable");
                 configureButton.setEnabled(false);
             } else {
-                plugin.setActive(true);
+                pluginInfo.loadPlugin();
                 toggleButton.setText("Disable");
-                configureButton.setEnabled(plugin.isConfigurable());
+                configureButton.setEnabled(pluginInfo.getPlugin().isConfigurable());
             }
             
-            PluginManager.getPluginManager().updateAutoLoad(plugin);
+            PluginManager.getPluginManager().updateAutoLoad(pluginInfo);
             
             pluginList.repaint();
         }
@@ -275,11 +277,17 @@ public final class PluginDialog extends StandardDialog implements
         if (!selectionEvent.getValueIsAdjusting()) {
             final int selected = ((JList) selectionEvent.getSource()).getSelectedIndex();
             if (selected >= 0) {
-                final Plugin plugin = (Plugin) ((JList) selectionEvent.getSource()).getSelectedValue();
-                if (plugin.isActive()) {
+                final PluginInfo pluginInfo = (PluginInfo) ((JList) selectionEvent.getSource()).getSelectedValue();
+                final Plugin plugin = pluginInfo.getPlugin();
+                if (pluginInfo.isLoaded()) {
                     configureButton.setEnabled(plugin.isConfigurable());
+                    pluginInfo.loadPlugin();
+                    if (pluginInfo.isPersistant()) {
+                        toggleButton.setEnabled(false);
+                    }
                     toggleButton.setText("Disable");
                 } else {
+                    pluginInfo.unloadPlugin();
                     configureButton.setEnabled(false);
                     toggleButton.setText("Enable");
                 }

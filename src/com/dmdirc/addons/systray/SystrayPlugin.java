@@ -83,9 +83,7 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
      * @param type The type of notification
      */
     public void notify(final String title, final String message, final TrayIcon.MessageType type) {
-        if (isActive()) {
-            icon.displayMessage(title, Styliser.stipControlCodes(message), type);
-        }
+        icon.displayMessage(title, Styliser.stipControlCodes(message), type);
     }
     
     /**
@@ -107,12 +105,12 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
     }
     
     /** {@inheritDoc} */
-    public boolean onLoad() {
+    public boolean checkPrerequisites() {
         return SystemTray.isSupported();
     }
     
     /** {@inheritDoc} */
-    public void onActivate() {
+    public void onLoad() {
         try {
             SystemTray.getSystemTray().add(icon);
             command = new PopupCommand(this);
@@ -122,29 +120,9 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
     }
     
     /** {@inheritDoc}. */
-    public void onDeactivate() {
+    public void onUnload() {
         SystemTray.getSystemTray().remove(icon);
         command.unregister();
-    }
-    
-    /** {@inheritDoc} */
-    public String getVersion() {
-        return "0.1";
-    }
-    
-    /** {@inheritDoc} */
-    public String getAuthor() {
-        return "Chris <chris@dmdirc.com>";
-    }
-    
-    /** {@inheritDoc} */
-    public String getDescription() {
-        return "Adds a system tray icon";
-    }
-    
-    /** {@inheritDoc}. */
-    public String toString() {
-        return "Systray Plugin";
     }
     
     /** {@inheritDoc} */

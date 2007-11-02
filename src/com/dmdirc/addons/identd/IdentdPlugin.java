@@ -56,10 +56,8 @@ public class IdentdPlugin extends Plugin implements EventPlugin, PreferencesInte
 	
 	/**
 	 * Called when the plugin is loaded.
-	 *
-	 * @return false if the plugin can not be loaded
 	 */
-	public boolean onLoad() {
+	public void onLoad() {
 		// Set defaults
 		Properties defaults = new Properties();
 		defaults.setProperty(getDomain() + ".general.useUsername", "false");
@@ -77,14 +75,6 @@ public class IdentdPlugin extends Plugin implements EventPlugin, PreferencesInte
 		defaults.setProperty("identity.name", "Identd Plugin Defaults");
 		IdentityManager.addIdentity(new Identity(defaults));
 		
-		return true;
-	}
-	
-	
-	/**
-	 * Called when this plugin is Activated.
-	 */
-	public void onActivate() {
 		myServer = new IdentdServer(this);
 		if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "advanced.alwaysOn")) {
 			myServer.startServer();
@@ -92,47 +82,11 @@ public class IdentdPlugin extends Plugin implements EventPlugin, PreferencesInte
 	}
 	
 	/**
-	 * Called when this plugin is deactivated.
+	 * Called when this plugin is unloaded.
 	 */
-	public void onDeactivate() {
+	public void onUnload() {
 		myServer.stopServer();
 		servers.clear();
-	}
-	
-	/**
-	 * Get the plugin version.
-	 *
-	 * @return Plugin Version
-	 */
-	public String getVersion() {
-		return "0.1";
-	}
-	
-	/**
-	 * Get the plugin Author.
-	 *
-	 * @return Author of plugin
-	 */
-	public String getAuthor() {
-		return "Shane <shane@dmdirc.com>";
-	}
-	
-	/**
-	 * Get the plugin Description.
-	 *
-	 * @return Description of plugin
-	 */
-	public String getDescription() {
-		return "Answers ident requests from IRC servers";
-	}
-	
-	/**
-	 * Get the name of the plugin (used in "Manage Plugins" dialog).
-	 *
-	 * @return Name of plugin
-	 */
-	public String toString() {
-		return "Identd";
 	}
 	
 	/**

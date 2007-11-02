@@ -76,10 +76,8 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 	
 	/**
 	 * Called when the plugin is loaded.
-	 *
-	 * @return false if the plugin can not be loaded
 	 */
-	public boolean onLoad() {
+	public void onLoad() {
 		// Set defaults
 		Properties defaults = new Properties();
 		defaults.setProperty(MY_DOMAIN + ".channel.shownone", "true");
@@ -88,51 +86,16 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 		defaults.setProperty("identity.name", "WindowStatus Plugin Defaults");
 		IdentityManager.addIdentity(new Identity(defaults));
 		
-		return true;
-	}
-	
-	/**
-	 * Called when this plugin is Activated.
-	 */
-	public void onActivate() {
 		Main.getUI().getStatusBar().addComponent(panel);
 		updateStatus();
 	}
 	
 	/**
-	 * Called when this plugin is deactivated.
+	 * Called when this plugin is unloaded.
 	 */
-	public void onDeactivate() {
+	public void onUnload() {
 		Main.getUI().getStatusBar().removeComponent(panel);
 	}
-	
-	/**
-	 * Get the plugin version.
-	 *
-	 * @return Plugin Version
-	 */
-	public String getVersion() { return "0.4"; }
-	
-	/**
-	 * Get the plugin Author.
-	 *
-	 * @return Author of plugin
-	 */
-	public String getAuthor() { return "Shane <shane@dmdirc.com>"; }
-	
-	/**
-	 * Get the plugin Description.
-	 *
-	 * @return Description of plugin
-	 */
-	public String getDescription() { return "Displays information related to the current window in the status bar."; }
-	
-	/**
-	 * Get the name of the plugin (used in "Manage Plugins" dialog).
-	 *
-	 * @return Name of plugin
-	 */
-	public String toString() { return "WindowStatus Plugin"; }
 	
 	/**
 	 * Process an event of the specified type.

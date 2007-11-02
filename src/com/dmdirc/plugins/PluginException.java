@@ -18,55 +18,45 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
+ * SVN: $Id: PluginException.java 2022 2007-09-12 00:35:14Z ShaneMcC $
  */
 
-package com.dmdirc.actions.metatypes;
-
-import com.dmdirc.actions.ActionMetaType;
-import com.dmdirc.plugins.PluginInfo;
+package com.dmdirc.plugins;
 
 /**
- * Defines plugin-related events.
+ * Plugin Exception.
  *
- * @author Chris
+ * @author            Shane Mc Cormack
+ * @version           $Id: PluginException.java 2022 2007-09-12 00:35:14Z ShaneMcC $
  */
-public enum PluginEvents implements ActionMetaType {
-    
-    /** Plugin event type. */
-    PLUGIN_EVENT(new String[]{"plugin"}, PluginInfo.class);
-    
-    private String[] argNames;
-    private Class[] argTypes;
-    
-    /**
-     * Creates a new instance of this meta-type.
-     *
-     * @param argNames The names of the meta-type's arguments
-     * @param argTypes The types of the meta-type's arguments
-     */
-    PluginEvents(final String[] argNames, final Class ... argTypes) {
-        this.argNames = argNames;
-        this.argTypes = argTypes;
-    }
-    
-    /** {@inheritDoc} */
-    public int getArity() {
-        return argNames.length;
-    }
-    
-    /** {@inheritDoc} */
-    public Class[] getArgTypes() {
-        return argTypes;
-    }
-    
-    /** {@inheritDoc} */
-    public String[] getArgNames() {
-        return argNames;
-    }
-    
-    /** {@inheritDoc} */
-    public String getGroup() {
-        return "Plugin Events";
-    }    
-    
+public class PluginException extends Exception {
+	/**
+	 * A version number for this class. It should be changed whenever the class
+	 * structure is changed (or anything else that would prevent serialized
+	 * objects being unserialized with the new class).
+	 */
+	private static final long serialVersionUID = 1;
+	
+	/**
+	 * Create a new PluginException Exception.
+	 *
+	 * @param message Reason for exception
+	 */
+	public PluginException(final String message) { super(message); }
+	
+	/**
+	 * Create a new PluginException Exception.
+	 *
+	 * @param message Reason for exception
+	 * @param cause Cause of Exception
+	 */
+	public PluginException(final String message, final Throwable cause) { super(message, cause); }
+	
+	/**
+	 * Get SVN Version information.
+	 *
+	 * @return SVN Version String
+	 */
+	public static String getSvnInfo() { return "$Id: PluginException.java 2022 2007-09-12 00:35:14Z ShaneMcC $"; }	
 }

@@ -23,25 +23,22 @@
  */
 package com.dmdirc.plugins;
 
-import java.io.FileInputStream;
-import java.io.DataInputStream;
-import java.io.File;
+import com.dmdirc.util.resourcemanager.ResourceManager;
+
 import java.io.IOException;
 
 public class PluginClassLoader extends ClassLoader {
-	/** Directory where plugins are stored. */
-	String myDir;
-	
-	/** Name of the package I am loading. */
-	String myPackage = "";
+	/** The plugin Info object for the plugin we are loading */
+	final PluginInfo pluginInfo;
 	
 	/**
 	 * Create a new PluginClassLoader.
 	 *
 	 * @param directory Directory where plugins are stored.
 	 */
-	public PluginClassLoader(String directory) {
-		myDir = directory;
+	public PluginClassLoader(final PluginInfo info) {
+		super();
+		pluginInfo = info;
 	}
 	
 	/**
@@ -52,28 +49,36 @@ public class PluginClassLoader extends ClassLoader {
 	 * @throws ClassNotFoundException if the class to be loaded could not be found.
 	 */
 	public Class< ? > loadClass(final String name) throws ClassNotFoundException {
+		ResourceManager res;
+		try {
+			res = pluginInfo.getResourceManager();
+		} catch (IOException ioe) {
+			throw new ClassNotFoundException("Error with resourcemanager", ioe);
+		}
+	
 		Class< ? > loadedClass = null;
 
-		// Check to make sure we only load things in our own package!
+		final String fileName = name.replace('.', '/')+".class";
 		try {
-			if (myPackage.isEmpty()) {
-				int i = name.lastIndexOf('.');
-				if (i != -1) { myPackage = name.substring(0, i); }
-				else { return getParent().loadClass(name); }
+			if (pluginInfo.isPersistant(name) || !res.resourceExists(fileName)) {
+				return getParent().loadClass(name);
 			}
-			if (!name.startsWith(myPackage)) { return getParent().loadClass(name); }
 		} catch (NoClassDefFoundError e) {
-			throw new ClassNotFoundException("Error loading '"+name+"' (wanted by '"+myPackage+"' in '"+myDir+"') -> "+e.getMessage(), e);
+			throw new ClassNotFoundException("Error loading '"+name+"' (wanted by "+pluginInfo.getName()+") -> "+e.getMessage(), e);
 		}
 		
+		
+		// Don't duplicate a class
+		Class existing = findLoadedClass(name);
+		if (existing != null) { return existing; }
+		
 		// We are ment to be loading this one!
-		final String fileName = myDir + File.separator + name.replace(myDir+".", "").replace('.', File.separatorChar) + ".class";
 		byte[] data = null;
-
-		try {
-			data = loadClassData(fileName);
-		} catch (IOException e) {
-			throw new ClassNotFoundException(e.getMessage());
+		
+		if (res.resourceExists(fileName)) {
+			data = res.getResourceBytes(fileName);
+		} else {
+			throw new ClassNotFoundException("Resource '"+name+"' (wanted by "+pluginInfo.getName()+") does not exist.");
 		}
 		
 		try {
@@ -89,22 +94,5 @@ public class PluginClassLoader extends ClassLoader {
 		}
 		
 		return loadedClass;
-	}
-	
-	/**
-	 * Load the class from the .class file
-	 *
-	 * @param filename Filename to load from
-	 * @throws IOException when the file doesn't exist or can't be read
- 	 */
-	public byte[] loadClassData(String filename) throws IOException {
-		final File file = new File(filename);
-		final byte[] fileBuffer = new byte[(int)file.length()];
-		final DataInputStream fileInput = new DataInputStream(new FileInputStream(file));
-		
-		fileInput.readFully(fileBuffer);
-		fileInput.close();
-		
-		return fileBuffer;
 	}
 }

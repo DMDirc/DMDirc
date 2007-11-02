@@ -31,6 +31,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.plugins.EventPlugin;
 import com.dmdirc.plugins.Plugin;
+import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
 import com.dmdirc.ui.interfaces.PreferencesPanel;
@@ -63,19 +64,13 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
     }
     
     /** {@inheritDoc} */
-    public boolean onLoad() {
-        return true;
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    protected void onActivate() {
+    public void onLoad() {
         sources.clear();
         
         loadSettings();
         
-        for (Plugin target : PluginManager.getPluginManager().getPlugins()) {
-            if (target.isActive()) {
+        for (PluginInfo target : PluginManager.getPluginManager().getPluginInfos()) {
+            if (target.isLoaded()) {
                 addPlugin(target);
             }
         }
@@ -84,31 +79,10 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
     }
     
     /** {@inheritDoc} */
-    @Override
-    protected void onDeactivate() {
+    public void onUnload() {
         sources.clear();
         
         CommandManager.unregisterCommand(command);
-    }
-    
-    /** {@inheritDoc} */
-    public String getVersion() {
-        return "0.2";
-    }
-    
-    /** {@inheritDoc} */
-    public String getAuthor() {
-        return "Chris <chris@dmdirc.com>";
-    }
-    
-    /** {@inheritDoc} */
-    public String getDescription() {
-        return "Adds a nowplaying command";
-    }
-    
-    /** {@inheritDoc} */
-    public String toString() {
-        return "Now playing command";
     }
     
     /** {@inheritDoc} */
@@ -158,10 +132,10 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
     /** {@inheritDoc} */
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {
-        if (type == CoreActionType.PLUGIN_ACTIVATED) {
-            addPlugin((Plugin) arguments[0]);
-        } else if (type == CoreActionType.PLUGIN_DEACTIVATED) {
-            removePlugin((Plugin) arguments[0]);
+        if (type == CoreActionType.PLUGIN_LOADED) {
+            addPlugin((PluginInfo) arguments[0]);
+        } else if (type == CoreActionType.PLUGIN_UNLOADED) {
+            removePlugin((PluginInfo) arguments[0]);
         }
     }
     
@@ -171,16 +145,17 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
      *
      * @param target The plugin to be tested
      */
-    private void addPlugin(final Plugin target) {
-        if (target instanceof MediaSource) {
-            sources.add((MediaSource) target);
-            addSourceToOrder((MediaSource) target);
+    private void addPlugin(final PluginInfo target) {
+        final Plugin targetPlugin = target.getPlugin();
+        if (targetPlugin instanceof MediaSource) {
+            sources.add((MediaSource) targetPlugin);
+            addSourceToOrder((MediaSource) targetPlugin);
         }
         
-        if (target instanceof MediaSourceManager) {
-            sources.addAll(((MediaSourceManager) target).getSources());
+        if (targetPlugin instanceof MediaSourceManager) {
+            sources.addAll(((MediaSourceManager) targetPlugin).getSources());
             
-            for (MediaSource source : ((MediaSourceManager) target).getSources()) {
+            for (MediaSource source : ((MediaSourceManager) targetPlugin).getSources()) {
                 addSourceToOrder(source);
             }
         }
@@ -204,13 +179,14 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
      *
      * @param target The plugin to be tested
      */
-    private void removePlugin(final Plugin target) {
-        if (target instanceof MediaSource) {
-            sources.remove(target);
+    private void removePlugin(final PluginInfo target) {
+        final Plugin targetPlugin = target.getPlugin();
+        if (targetPlugin instanceof MediaSource) {
+            sources.remove(targetPlugin);
         }
         
-        if (target instanceof MediaSourceManager) {
-            sources.removeAll(((MediaSourceManager) target).getSources());
+        if (targetPlugin instanceof MediaSourceManager) {
+            sources.removeAll(((MediaSourceManager) targetPlugin).getSources());
         }
     }
     

@@ -33,6 +33,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.Plugin;
+import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.FrameManager;
@@ -770,6 +771,7 @@ public final class MainFrame extends JFrame implements WindowListener,
                 //Ignore
             }
         });
+        pluginsMenu.addMenuListener(configureMenu.getMenuListeners()[0]);
 
         menuBar.add(fileMenu);
         menuBar.add(settingsMenu);
@@ -785,18 +787,21 @@ public final class MainFrame extends JFrame implements WindowListener,
      * @param menu Menu to populate
      */
     private void populateConfigurePluginsMenu(final JMenu menu) {
-        final Plugin[] plugins =
-                PluginManager.getPluginManager().getPlugins();
+        final PluginInfo[] plugins =
+                PluginManager.getPluginManager().getPluginInfos();
         pluginList.clear();
         menu.removeAll();
 
-        for (Plugin plugin : plugins) {
-            if (plugin.isConfigurable() && plugin.isActive()) {
-                final JMenuItem mi = new JMenuItem(plugin.toString());
-                mi.setActionCommand("configurePlugin");
-                mi.addActionListener(this);
-                menu.add(mi);
-                pluginList.put(mi, plugin.getClass().getName());
+        for (PluginInfo pluginInfo : plugins) {
+            if (pluginInfo.isLoaded()) {
+                Plugin plugin = pluginInfo.getPlugin();
+                if (plugin.isConfigurable()) {
+                    final JMenuItem mi = new JMenuItem(pluginInfo.getNiceName());
+                    mi.setActionCommand("configurePlugin");
+                    mi.addActionListener(this);
+                    menu.add(mi);
+                    pluginList.put(mi, pluginInfo.getFilename());
+                }
             }
         }
         
@@ -944,7 +949,8 @@ public final class MainFrame extends JFrame implements WindowListener,
             ServerManager.getServerManager().joinDevChat();
         } else if (e.getActionCommand().equals("configurePlugin")) {
             PluginManager.getPluginManager().
-                    getPlugin(pluginList.get(e.getSource())).showConfig();
+                    getPluginInfo(pluginList.get(e.getSource())).getPlugin().
+                    showConfig();
         } else if (e.getActionCommand().equals("feedback")) {
             FeedbackDialog.showFeedbackDialog();
         }

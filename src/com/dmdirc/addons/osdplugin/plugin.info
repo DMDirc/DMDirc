@@ -1,0 +1,8 @@
+mainclass=com.dmdirc.addons.osdplugin.OsdPlugin
+version=2
+friendlyversion=0.2
+author=Chris <chris@dmdirc.com>
+description=Provides command to show on screen display
+name=osd
+nicename=OSD Plugin
+minversion=0

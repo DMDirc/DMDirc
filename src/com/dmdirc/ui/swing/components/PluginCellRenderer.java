@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.components;
 
 import com.dmdirc.plugins.Plugin;
+import com.dmdirc.plugins.PluginInfo;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
@@ -55,7 +56,7 @@ public final class PluginCellRenderer implements ListCellRenderer {
             final boolean cellHasFocus) {
         
         final JPanel res = new JPanel();
-        final Plugin plugin = (Plugin) value;
+        final PluginInfo plugin = (PluginInfo) value;
         
         res.setLayout(new BorderLayout());
         
@@ -70,17 +71,17 @@ public final class PluginCellRenderer implements ListCellRenderer {
         
         Color foreground;
         
-        if (plugin.isActive()) {
+        if (plugin.isLoaded()) {
             foreground = Color.BLACK;
         } else {
             foreground = Color.GRAY;
         }
         
-        final JLabel name = new JLabel(plugin.toString());
+        final JLabel name = new JLabel(plugin.getNiceName());
         name.setFont(name.getFont().deriveFont(Font.BOLD));
         name.setForeground(foreground);
         
-        final JLabel version = new JLabel("v" + plugin.getVersion());
+        final JLabel version = new JLabel("v" + plugin.getFriendlyVersion());
         version.setForeground(foreground);
         version.setHorizontalAlignment(JLabel.CENTER);
         

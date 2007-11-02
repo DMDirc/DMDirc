@@ -41,54 +41,17 @@ public final class AudioPlugin extends Plugin {
 	
 	/**
 	 * Called when the plugin is loaded.
-	 *
-	 * @return false if the plugin can not be loaded
 	 */
-	public boolean onLoad() {
-		return true;
-	}
-	
-	/**
-	 * Called when this plugin is activated.
-	 */
-	public void onActivate() {
+	public void onLoad() {
 		command = new AudioCommand();
 	}
 	
 	/**
-	 * Called when this plugin is deactivated.
+	 * Called when this plugin is Unloaded
 	 */
-	public void onDeactivate() {
+	public void onUnload() {
 		CommandManager.unregisterCommand(command);
 	}
-
-	/**
-	 * Get the plugin version.
-	 *
-	 * @return Plugin Version
-	 */
-	public String getVersion() { return "0.1"; }
-	
-	/**
-	 * Get the plugin Author.
-	 *
-	 * @return Author of plugin
-	 */
-	public String getAuthor() { return "Shane <shane@dmdirc.com>"; }
-	
-	/**
-	 * Get the plugin Description.
-	 *
-	 * @return Description of plugin
-	 */
-	public String getDescription() { return "Allows playing audio files"; }
-	
-	/**
-	 * Get the name of the plugin (used in "Manage Plugins" dialog).
-	 *
-	 * @return Name of plugin
-	 */
-	public String toString() { return "Audio Plugin"; }
 	
 	/**
 	 * Get SVN Version information.

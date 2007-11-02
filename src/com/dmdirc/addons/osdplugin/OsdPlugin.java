@@ -71,32 +71,15 @@ public final class OsdPlugin extends Plugin implements PreferencesInterface {
     }
     
     /** {@inheritDoc}. */
-    public boolean onLoad() {
+    public void onLoad() {
         command = new OsdCommand();
-        
-        return true;
     }
     
     /** {@inheritDoc}. */
     public void onUnload() {
         CommandManager.unregisterCommand(command);
     }
-    
-    /** {@inheritDoc}. */
-    public String getVersion() {
-        return "0.1";
-    }
-    
-    /** {@inheritDoc}. */
-    public String getAuthor() {
-        return "Chris <chris@dmdirc.com>";
-    }
-    
-    /** {@inheritDoc}. */
-    public String getDescription() {
-        return "Provides command to show on screen display";
-    }
-    
+
     /** {@inheritDoc}. */
     public boolean isConfigurable() {
         return true;
@@ -175,10 +158,5 @@ public final class OsdPlugin extends Plugin implements PreferencesInterface {
     /** {@inheritDoc}. */
     public void configCancelled() {
         osdWindow.dispose();
-    }
-    
-    /** {@inheritDoc}. */
-    public String toString() {
-        return "OSD Plugin";
     }
 }

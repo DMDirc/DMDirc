@@ -217,15 +217,14 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
     }
     
     /** {@inheritDoc} */
-    public boolean onLoad() {
-        return true;
-    }
-    
-    /** {@inheritDoc} */
-    public void onActivate() {
+    public void onLoad() {
         if (IdentityManager.getGlobalConfig().hasOption(DOMAIN, "randomcolours")) {
             randColours =(String[]) IdentityManager.getGlobalConfig().getOptionList(DOMAIN, "randomcolours").toArray();
         }
+    }
+    
+    /** {@inheritDoc} */
+    public void onUnload() {
     }
     
     /** {@inheritDoc} */
@@ -299,26 +298,6 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
     /** {@inheritDoc} */
     public void configCancelled() {
         // Do nothing
-    }
-    
-    /** {@inheritDoc} */
-    public String getVersion() {
-        return "0.5";
-    }
-    
-    /** {@inheritDoc} */
-    public String getAuthor() {
-        return "Chris <chris@dmdirc.com>";
-    }
-    
-    /** {@inheritDoc} */
-    public String getDescription() {
-        return "Provides various nick colouring tools";
-    }
-    
-    /** {@inheritDoc} */
-    public String toString() {
-        return "Nick Colour Plugin";
     }
     
 }

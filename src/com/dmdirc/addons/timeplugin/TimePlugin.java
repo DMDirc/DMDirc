@@ -51,17 +51,12 @@ public final class TimePlugin  extends Plugin {
     }
     
     /** {@inheritDoc} */
-    public boolean onLoad() {
+    public void onLoad() {
         if (!registered) {
             ActionManager.registerActionTypes(TimeActionType.values());
             registered = true;
         }
-        
-        return true;
-    }
-    
-    /** {@inheritDoc} */
-    public void onActivate() {
+
         final int offset = 60 - Calendar.getInstance().get(Calendar.SECOND);
         
         timer = new Timer("Time plugin timer");
@@ -92,30 +87,10 @@ public final class TimePlugin  extends Plugin {
     
     
     /** {@inheritDoc} */
-    public void onDeactivate() {
+    public void onUnload() {
         timer.cancel();
         timer = null;
         
         CommandManager.unregisterCommand(command);
-    }
-    
-    /** {@inheritDoc} */
-    public String getVersion() {
-        return "0.1";
-    }
-    
-    /** {@inheritDoc} */
-    public String getAuthor() {
-        return "Chris <chris@dmdirc.com>";
-    }
-    
-    /** {@inheritDoc} */
-    public String getDescription() {
-        return "Provides time-related actions and commands";
-    }
-    
-    /** {@inheritDoc} */
-    public String toString() {
-        return "Time Plugin";
     }
 }

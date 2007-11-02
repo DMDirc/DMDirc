@@ -27,6 +27,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.plugins.Plugin;
+import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -57,7 +58,12 @@ public final class LoggingCommand extends ServerCommand implements IntelligentCo
 	 * @param args The user supplied arguments
 	 */
 	public void execute(final InputWindow origin, final Server server, final boolean isSilent, final String... args) {
-		final Plugin gotPlugin = PluginManager.getPluginManager().getPlugin("com.dmdirc.addons.logging.LoggingPlugin");
+		final PluginInfo pluginInfo = PluginManager.getPluginManager().getPluginInfoByName("LoggingPlugin");
+		if (pluginInfo == null) { 
+			sendLine(origin, isSilent, FORMAT_ERROR, "Logging Plugin is not loaded.");
+			return;
+		}
+		final Plugin gotPlugin = pluginInfo.getPlugin();
 		
 		if (gotPlugin == null || !(gotPlugin instanceof LoggingPlugin)) {
 			sendLine(origin, isSilent, FORMAT_ERROR, "Logging Plugin is not loaded.");
@@ -70,10 +76,8 @@ public final class LoggingCommand extends ServerCommand implements IntelligentCo
 			if (args[0].equalsIgnoreCase("config")) {
 				plugin.showConfig();
 			} else if (args[0].equalsIgnoreCase("reload")) {
-				boolean wasActive = plugin.isActive();
-				if (PluginManager.getPluginManager().reloadPlugin("com.dmdirc.addons.logging.LoggingPlugin")) {
+				if (PluginManager.getPluginManager().reloadPlugin(pluginInfo.getFilename())) {
 					sendLine(origin, isSilent, FORMAT_OUTPUT, "Plugin reloaded.");
-					PluginManager.getPluginManager().getPlugin("com.dmdirc.addons.logging.LoggingPlugin").setActive(wasActive);
 				} else {
 					sendLine(origin, isSilent, FORMAT_ERROR, "Plugin failed to reload.");
 				}

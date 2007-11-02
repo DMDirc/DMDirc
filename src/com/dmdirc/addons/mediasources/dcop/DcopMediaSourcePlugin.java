@@ -57,31 +57,19 @@ public class DcopMediaSourcePlugin extends Plugin
     }
     
     /** {@inheritDoc} */
-    public boolean onLoad() {
-        if (Arrays.asList(PluginManager.getPluginManager().getNames()).
-                contains("com.dmdirc.addons.dcop.dcopplugin")) {
+    public void onLoad() {
+    }
+    
+    /** {@inheritDoc} */
+    public void onUnload() {
+    }
+    
+    /** {@inheritDoc} */
+    public boolean checkPrerequisites() {
+        if (Arrays.asList(PluginManager.getPluginManager().getMainClassNames()).
+                contains("com.dmdirc.addons.dcop.DcopPlugin")) {
             return true;
         }
         return false;
-    }
-    
-    /** {@inheritDoc} */
-    public String getVersion() {
-        return "0.1";
-    }
-    
-    /** {@inheritDoc} */
-    public String getAuthor() {
-        return "Greboid <greboid@dmdirc.com>";
-    }
-    
-    /** {@inheritDoc} */
-    public String getDescription() {
-        return "Provides DCOP media sources for the now playing plugin";
-    }
-    
-    /** {@inheritDoc} */
-    public String toString() {
-        return "DCOP media sources";
     }
 }

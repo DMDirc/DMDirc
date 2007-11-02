@@ -40,52 +40,21 @@ public abstract class Plugin implements Comparable<Plugin> {
 
 	/**
 	 * Called when the plugin is loaded.
-	 *
-	 * @return false if the plugin can not be loaded
 	 */
-	public abstract boolean onLoad();
+	public abstract void onLoad();
+	
+	/**
+	 * Check any further Prerequisites for this plugin to load that can not be
+	 * checked using metainfo.
+	 *
+	 * @return true if the plugin can be used, else false.
+	 */
+	public boolean checkPrerequisites() { return true; }
 	
 	/**
 	 * Called when the plugin is about to be unloaded.
 	 */
-	public void onUnload() { }
-
-	/**
-	 * Change the active state of this plugin.
-	 * (Non-Active Plugins will not recieve Events)
-	 *
-	 * @param newState True if activating, else False.
-	 */
-	public final void setActive(boolean newState) {
-		if (isActive != newState) {
-			isActive = newState;
-			if (isActive) {
-				ActionManager.processEvent(CoreActionType.PLUGIN_ACTIVATED, null, this);
-				onActivate();
-			} else {
-				ActionManager.processEvent(CoreActionType.PLUGIN_DEACTIVATED, null, this);
-				onDeactivate();
-			}
-		}
-	}
-	
-	/**
-	 * Check to see if a plugin is active.
-	 * (Non-Active Plugins will not recieve Events)
-	 *
-	 * @return True if active, else False.
-	 */
-	public final boolean isActive() { return isActive; }
-	
-	/**
-	 * Called when this plugin becomes active.
-	 */
-	protected void onActivate() { }
-	
-	/**
-	 * Called when this plugin is deactivated.
-	 */
-	protected void onDeactivate() { }
+	public abstract void onUnload();
 	
 	/**
 	 * Called to see if the plugin has configuration options (via dialog).
@@ -99,34 +68,6 @@ public abstract class Plugin implements Comparable<Plugin> {
 	 */
 	public void showConfig() { }
 	
-	/**
-	 * Get the plugin version
-	 *
-	 * @return Plugin Version
-	 */
-	public abstract String getVersion();
-	
-	/**
-	 * Get the plugin Author.
-	 *
-	 * @return Author of plugin
-	 */
-	public abstract String getAuthor();
-	
-	/**
-	 * Get the plugin Description.
-	 *
-	 * @return Description of plugin
-	 */
-	public abstract String getDescription();
-	
-	/**
-	 * Get the name of the plugin (used in "Manage Plugins" dialog).
-	 *
-	 * @return Name of plugin
-	 */
-	public abstract String toString();
-
 	/**
 	 * Compares this object with the specified object for order.
 	 * Returns a negative integer, zero, or a positive integer as per String.compareTo();

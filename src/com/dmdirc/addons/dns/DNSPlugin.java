@@ -45,38 +45,13 @@ public final class DNSPlugin extends Plugin {
     }
     
     /** {@inheritDoc} */
-    public boolean onLoad() {
-        return true;
-    }
-    
-    /** {@inheritDoc} */
-    public void onActivate() {
+    public void onLoad() {
         command = new DNSCommand();
     }
     
     /** {@inheritDoc} */
-    public void onDeactivate() {
+    public void onUnload() {
         CommandManager.unregisterCommand(command);
-    }
-    
-    /** {@inheritDoc} */
-    public String getVersion() {
-        return "0.1";
-    }
-    
-    /** {@inheritDoc} */
-    public String getAuthor() {
-        return "Greboid <greg@dmdirc.com>";
-    }
-    
-    /** {@inheritDoc} */
-    public String getDescription() {
-        return "Provides a DNS command and method to the client.";
-    }
-    
-    /** {@inheritDoc} */
-    public String toString() {
-        return "DNS plugin";
     }
     
     /**

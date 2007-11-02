@@ -23,6 +23,7 @@
 package com.dmdirc.addons.dcop;
 
 import com.dmdirc.plugins.Plugin;
+import com.dmdirc.commandparser.CommandManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,6 +37,8 @@ import java.util.List;
  * @author chris
  */
 public final class DcopPlugin extends Plugin {
+    /** The DcopCommand we created */
+    private DcopCommand command = null;
     
     /** Creates a new instance of DcopPlugin. */
     public DcopPlugin() {
@@ -78,34 +81,17 @@ public final class DcopPlugin extends Plugin {
     }
     
     /** {@inheritDoc}. */
-    public boolean onLoad() {
-        new DcopCommand();
-        
-        return true;
+    public void onLoad() {
+        command = new DcopCommand();
     }
     
     /** {@inheritDoc}. */
-    public String getVersion() {
-        return "0.2";
-    }
-    
-    /** {@inheritDoc}. */
-    public String getAuthor() {
-        return "Chris <chris@dmdirc.com>";
-    }
-    
-    /** {@inheritDoc}. */
-    public String getDescription() {
-        return "Provides commands to interface with DCOP applications";
+    public void onUnload() {
+        CommandManager.unregisterCommand(command);
     }
     
     /** {@inheritDoc}. */
     public boolean isConfigurable() {
         return false;
-    }
-    
-    /** {@inheritDoc}. */
-    public String toString() {
-        return "DCOP Plugin";
     }
 }

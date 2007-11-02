@@ -26,6 +26,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.plugins.Plugin;
+import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -51,7 +52,7 @@ public final class LoadPlugin extends GlobalCommand implements IntelligentComman
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         if (PluginManager.getPluginManager().addPlugin(args[0])) {
-            PluginManager.getPluginManager().getPlugin(args[0]).setActive(true);
+            PluginManager.getPluginManager().getPluginInfo(args[0]).loadPlugin();
             sendLine(origin, isSilent, FORMAT_OUTPUT, "Plugin loaded.");
         } else {
             sendLine(origin, isSilent, FORMAT_ERROR, "Plugin Loading failed");
@@ -91,8 +92,8 @@ public final class LoadPlugin extends GlobalCommand implements IntelligentComman
         if (arg == 0) {
             res.setIncludeNormal(false);
             
-            for (Plugin possPlugin : PluginManager.getPluginManager().getPossiblePlugins()) {
-                res.add(possPlugin.getClass().getCanonicalName());
+            for (PluginInfo possPlugin : PluginManager.getPluginManager().getPossiblePluginInfos()) {
+                res.add(possPlugin.getFilename());
             }
         }
         

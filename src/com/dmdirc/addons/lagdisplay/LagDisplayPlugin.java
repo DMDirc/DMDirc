@@ -74,34 +74,13 @@ public final class LagDisplayPlugin extends Plugin implements EventPlugin,
     }
     
     /** {@inheritDoc} */
-    public boolean onLoad() {
-        
-        return true;
-    }
-    
-    /** {@inheritDoc} */
-    public void onActivate() {
+    public void onLoad() {
         Main.getUI().getStatusBar().addComponent(panel);
     }
     
     /** {@inheritDoc} */
-    public void onDeactivate() {
+    public void onUnload() {
         Main.getUI().getStatusBar().removeComponent(panel);
-    }
-    
-    /** {@inheritDoc} */
-    public String getVersion() {
-        return "0.2";
-    }
-    
-    /** {@inheritDoc} */
-    public String getAuthor() {
-        return "Chris <chris@dmdirc.com>";
-    }
-    
-    /** {@inheritDoc} */
-    public String getDescription() {
-        return "Displays the server lag in the status bar";
     }
     
     /** {@inheritDoc} */
@@ -111,11 +90,6 @@ public final class LagDisplayPlugin extends Plugin implements EventPlugin,
     
     /** {@inheritDoc} */
     public void showConfig() {
-    }
-    
-    /** {@inheritDoc}. */
-    public String toString() {
-        return "Lag Displayer";
     }
     
     /** {@inheritDoc} */

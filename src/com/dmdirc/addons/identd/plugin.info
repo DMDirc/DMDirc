@@ -1,0 +1,8 @@
+mainclass=com.dmdirc.addons.identd.IdentdPlugin
+version=2
+friendlyversion=0.2
+author=Shane <shane@dmdirc.com>
+description=Answers ident requests from IRC servers
+name=identd
+nicename=Identd Plugin
+minversion=0

@@ -44,37 +44,13 @@ public final class RedirectPlugin extends Plugin {
     }
     
     /** {@inheritDoc} */
-    public boolean onLoad() {
-        return true;
-    }
-    
-    /** {@inheritDoc} */
-    public void onActivate() {
+    public void onLoad() {
         CommandManager.registerCommand(command);
     }
     
     /** {@inheritDoc}. */
-    public void onDeactivate() {
+    public void onUnload() {
         CommandManager.unregisterCommand(command);
     }
     
-    /** {@inheritDoc} */
-    public String getVersion() {
-        return "0.1";
-    }
-    
-    /** {@inheritDoc} */
-    public String getAuthor() {
-        return "Chris <chris@dmdirc.com>";
-    }
-    
-    /** {@inheritDoc} */
-    public String getDescription() {
-        return "Adds commands to redirect command output to channels";
-    }
-    
-    /** {@inheritDoc}. */
-    public String toString() {
-        return "Redirect Plugin";
-    }
 }

@@ -26,6 +26,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.plugins.Plugin;
+import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -49,15 +50,12 @@ public final class ReloadPlugin extends GlobalCommand implements IntelligentComm
     /** {@inheritDoc} */
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
-        Plugin plugin = PluginManager.getPluginManager().getPlugin(args[0]);
+        PluginInfo plugin = PluginManager.getPluginManager().getPluginInfoByName(args[0]);
         if (plugin == null) {
             sendLine(origin, isSilent, FORMAT_ERROR, "Plugin Reloading failed - Plugin not loaded");
         } else {
-            final boolean isActive = plugin.isActive();
-            plugin = null;
-            if (PluginManager.getPluginManager().reloadPlugin(args[0])) {
+            if (PluginManager.getPluginManager().reloadPlugin(plugin.getFilename())) {
                 sendLine(origin, isSilent, FORMAT_OUTPUT, "Plugin Reloaded.");
-                PluginManager.getPluginManager().getPlugin(args[0]).setActive(isActive);
             } else {
                 sendLine(origin, isSilent, FORMAT_ERROR, "Plugin Reloading failed");
             }
@@ -97,8 +95,8 @@ public final class ReloadPlugin extends GlobalCommand implements IntelligentComm
         if (arg == 0) {
             res.setIncludeNormal(false);
             
-            for (Plugin possPlugin : PluginManager.getPluginManager().getPlugins()) {
-                res.add(possPlugin.getClass().getCanonicalName());
+            for (PluginInfo possPlugin : PluginManager.getPluginManager().getPossiblePluginInfos()) {
+                res.add(possPlugin.getName());
             }
         }
         

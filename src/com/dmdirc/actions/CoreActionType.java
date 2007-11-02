@@ -174,11 +174,7 @@ public enum CoreActionType implements ActionType {
     /** Plugin loaded. */
     PLUGIN_LOADED(PluginEvents.PLUGIN_EVENT, "Plugin loaded"),
     /** Plugin unloaded. */
-    PLUGIN_UNLOADED(PluginEvents.PLUGIN_EVENT, "Plugin unloaded"),
-    /** Plugin activated. */
-    PLUGIN_ACTIVATED(PluginEvents.PLUGIN_EVENT, "Plugin activated"),
-    /** Plugin deactivated. */
-    PLUGIN_DEACTIVATED(PluginEvents.PLUGIN_EVENT, "Plugin deactivated");
+    PLUGIN_UNLOADED(PluginEvents.PLUGIN_EVENT, "Plugin unloaded");
     
     /** The type of this action. */
     private final ActionMetaType type;

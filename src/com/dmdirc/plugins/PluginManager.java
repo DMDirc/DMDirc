@@ -24,8 +24,6 @@
 package com.dmdirc.plugins;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -43,7 +41,7 @@ public class PluginManager {
 	/**
 	 * List of known plugins.
 	 */
-	private final Hashtable<String,Plugin> knownPlugins = new Hashtable<String,Plugin>();
+	private final Hashtable<String,PluginInfo> knownPlugins = new Hashtable<String,PluginInfo>();
 	
 	/**
 	 * Directory where plugins are stored.
@@ -72,7 +70,7 @@ public class PluginManager {
 			for (String plugin : autoLoadList) {
 				plugin = plugin.trim();
 				if (!plugin.isEmpty() && plugin.charAt(0) != '#' && addPlugin(plugin)) {
-					getPlugin(plugin).setActive(true);
+					getPluginInfo(plugin).loadPlugin();
 				}
 			}
 		}
@@ -93,21 +91,22 @@ public class PluginManager {
 	/**
 	 * Add a new plugin.
 	 *
-	 * @param className Class Name of Plugin object
+	 * @param filename Filename of Plugin jar
 	 * @return True if loaded, false if failed to load or if already loaded.
 	 */
-	public boolean addPlugin(final String className) {
-		if (knownPlugins.containsKey(className.toLowerCase())) { return false; }
+	public boolean addPlugin(final String filename) {
+		if (knownPlugins.containsKey(filename.toLowerCase())) { return false; }
 		try {
-			final Plugin plugin = loadPlugin(className);
-			if (plugin == null) { return false; }
-			if (plugin.onLoad()) {
-				knownPlugins.put(className.toLowerCase(), plugin);
-				ActionManager.processEvent(CoreActionType.PLUGIN_LOADED, null, plugin);
+			final PluginInfo pluginInfo = new PluginInfo(filename);
+			try {
+				pluginInfo.checkRequirements();
+				knownPlugins.put(filename.toLowerCase(), pluginInfo);
 				return true;
+			} catch (PluginException e) {
+				Logger.userError(ErrorLevel.MEDIUM, "Plugin requirements not met: "+e.getMessage(), e);
 			}
 		} catch (Exception e) {
-			Logger.userError(ErrorLevel.MEDIUM, "Error loading "+className+" - "+e.getMessage());
+			Logger.userError(ErrorLevel.MEDIUM, e.getMessage(), e);
 		}
 		return false;
 	}
@@ -115,36 +114,38 @@ public class PluginManager {
 	/**
 	 * Remove a plugin.
 	 *
-	 * @param className Class name of plugin
+	 * @param filename Filename of Plugin jar
 	 * @return True if removed.
 	 */
-	public boolean delPlugin(final String className) {
-		if (!knownPlugins.containsKey(className.toLowerCase())) { return false; }
-		Plugin plugin = getPlugin(className);
+	public boolean delPlugin(final String filename) {
+		if (!knownPlugins.containsKey(filename.toLowerCase())) { return false; }
+		
+		PluginInfo pluginInfo = getPluginInfo(filename);
 		try {
-			plugin.setActive(false);
-			ActionManager.processEvent(CoreActionType.PLUGIN_UNLOADED, null, plugin);
-			plugin.onUnload();
+			ActionManager.processEvent(CoreActionType.PLUGIN_UNLOADED, null, pluginInfo);
+			pluginInfo.unloadPlugin();
 		} catch (Exception e) {
-			Logger.userError(ErrorLevel.MEDIUM, "Error in onUnload() for '"+className+"' - "+e.getMessage());
+			Logger.userError(ErrorLevel.MEDIUM, e.getMessage(), e);
 		}
-		knownPlugins.remove(className.toLowerCase());
-		plugin = null;
+		knownPlugins.remove(filename.toLowerCase());
+		pluginInfo = null;
 		return true;
 	}
 	
 	/**
 	 * Reload a plugin.
 	 *
-	 * @param className Class name of plugin
+	 * @param filename Filename of Plugin jar
 	 * @return True if reloaded.
 	 */
-	public boolean reloadPlugin(final String className) {
-		if (!knownPlugins.containsKey(className.toLowerCase())) { return false; }
-		final boolean wasActive = getPlugin(className).isActive();
-		delPlugin(className);
-		final boolean result = addPlugin(className);
-		if (result) { getPlugin(className).setActive(wasActive); }
+	public boolean reloadPlugin(final String filename) {
+		if (!knownPlugins.containsKey(filename.toLowerCase())) { return false; }
+		final boolean wasLoaded = getPluginInfo(filename).isLoaded();
+		delPlugin(filename);
+		final boolean result = addPlugin(filename);
+		if (wasLoaded) {
+			getPluginInfo(filename).loadPlugin();
+		}
 		return result;
 		
 	}
@@ -153,7 +154,7 @@ public class PluginManager {
 	 * Reload all plugins.
 	 */
 	public void reloadAllPlugins() {
-		for (String pluginName : getNames()) {
+		for (String pluginName : getFilenames()) {
 			reloadPlugin(pluginName);
 		}
 	}
@@ -161,12 +162,37 @@ public class PluginManager {
 	/**
 	 * Get a plugin instance.
 	 *
-	 * @param className Class name of plugin
-	 * @return Plugin instance, or null
+	 * @param filename File name of plugin jar
+	 * @return PluginInfo instance, or null
 	 */
-	public Plugin getPlugin(final String className) {
-		if (!knownPlugins.containsKey(className.toLowerCase())) { return null; }
-		return knownPlugins.get(className.toLowerCase());
+	public PluginInfo getPluginInfo(final String filename) {
+		if (!knownPlugins.containsKey(filename.toLowerCase())) { return null; }
+		return knownPlugins.get(filename.toLowerCase());
+	}
+	
+	/**
+	 * Get a plugin instance by plugin name.
+	 *
+	 * @param name Name of plugin to find.
+	 * @return PluginInfo instance, or null
+	 */
+	public PluginInfo getPluginInfoByName(final String name) {
+		for (String pluginName : knownPlugins.keySet()) {
+			final PluginInfo pluginInfo = knownPlugins.get(pluginName);
+			if (pluginInfo.getName().equalsIgnoreCase(name)) {
+				return pluginInfo;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Get directory where plugins are stored.
+	 *
+	 * @return Directory where plugins are stored.
+	 */
+	public String getDirectory() {
+		return myDir;
 	}
 	
 	/**
@@ -178,7 +204,36 @@ public class PluginManager {
 		final String[] result = new String[knownPlugins.size()];
 		int i = 0;
 		for (String name : knownPlugins.keySet()) {
-			result[i++] = name;
+			result[i++] = knownPlugins.get(name).getName();
+		}
+		return result;
+	}
+	
+	/**
+	 * Get string[] of known plugin file names.
+	 *
+	 * @return string[] of known plugin file names.
+	 */
+	public String[] getFilenames() {
+		final String[] result = new String[knownPlugins.size()];
+		int i = 0;
+		for (String name : knownPlugins.keySet()) {
+			result[i++] = knownPlugins.get(name).getFilename();
+		}
+		return result;
+	}
+	
+	
+	/**
+	 * Get string[] of known plugin mainclass names.
+	 *
+	 * @return string[] of known plugin mainclass names.
+	 */
+	public String[] getMainClassNames() {
+		final String[] result = new String[knownPlugins.size()];
+		int i = 0;
+		for (String name : knownPlugins.keySet()) {
+			result[i++] = knownPlugins.get(name).getMainClass();
 		}
 		return result;
 	}
@@ -186,12 +241,12 @@ public class PluginManager {
 	/**
 	 * Retrieves a list of all installed plugins.
 	 * Any file under the main plugin directory (~/.DMDirc/plugins or similar)
-	 * that matches *Plugin.class is deemed to be a valid plugin.
+	 * that matches *.jar is deemed to be a valid plugin.
 	 *
 	 * @return A list of all installed plugins
 	 */
-	public List<Plugin> getPossiblePlugins() {
-		final ArrayList<Plugin> res = new ArrayList<Plugin>();
+	public List<PluginInfo> getPossiblePluginInfos() {
+		final ArrayList<PluginInfo> res = new ArrayList<PluginInfo>();
 		
 		final LinkedList<File> dirs = new LinkedList<File>();
 		
@@ -205,18 +260,21 @@ public class PluginManager {
 				for (File file : dir.listFiles()) {
 					dirs.add(file);
 				}
-			} else if (dir.isFile() && dir.getName().matches("^.*Plugin\\.class$")) {
+			} else if (dir.isFile() && dir.getName().matches("^.*\\.jar$")) {
 				String target = dir.getPath();
-				// Remove the plugin dir & .class suffix
-				target = target.substring(myDir.length(), target.length() - 6);
-				// Change / (or \) to .
-				target = target.replace(File.separatorChar, '.');
+//				// Remove the plugin dir & .class suffix
+//				target = target.substring(myDir.length(), target.length() - 6);
+//				// Change / (or \) to .
+//				target = target.replace(File.separatorChar, '.');
+
+				// Remove the plugin dir
+				target = target.substring(myDir.length(), target.length());
 				addPlugin(target);
 			}
 		}
 		
 		for (String name : knownPlugins.keySet()) {
-			res.add(getPlugin(name));
+			res.add(getPluginInfo(name));
 		}
 		
 		return res;
@@ -225,92 +283,47 @@ public class PluginManager {
 	/**
 	 * Update the autoLoadList
 	 *
-	 * @param plugin to add/remove (Decided automatically based on isActive())
+	 * @param plugin to add/remove (Decided automatically based on isLoaded())
 	 */
-	public void updateAutoLoad(final Plugin plugin) {
+	public void updateAutoLoad(final PluginInfo plugin) {
 		if (IdentityManager.getGlobalConfig().hasOption("plugins", "autoload")) {
 			final String[] autoLoadList = IdentityManager.getGlobalConfig().getOption("plugins", "autoload").split("\n");
 			final StringBuffer newAutoLoadList = new StringBuffer();
 			boolean found = false;
 			for (String pluginName : autoLoadList) {
 				pluginName = pluginName.trim();
-				if (pluginName.equals(plugin.getClass().getName())) {
+				if (pluginName.equals(plugin.getFilename())) {
 					found = true;
-					if (plugin.isActive()) {
+					if (plugin.isLoaded()) {
 						newAutoLoadList.append(pluginName+"\n");
 					}
 				} else if (!pluginName.isEmpty()) {
 					newAutoLoadList.append(pluginName+"\n");
 				}
 			}
-			if (!found && plugin.isActive()) {
-				newAutoLoadList.append(plugin.getClass().getName()+"\n");
+			if (!found && plugin.isLoaded()) {
+				newAutoLoadList.append(plugin.getFilename()+"\n");
 			}
 			IdentityManager.getConfigIdentity().setOption("plugins", "autoload", newAutoLoadList.toString());
-		} else if (plugin.isActive()) {
-			IdentityManager.getConfigIdentity().setOption("plugins", "autoload", plugin.getClass().getName());
+		} else if (plugin.isLoaded()) {
+			IdentityManager.getConfigIdentity().setOption("plugins", "autoload", plugin.getFilename());
 		}
 	}
 	
 	/**
-	 * Get Plugin[] of known plugins.
+	 * Get PluginInfo[] of known plugins.
 	 *
-	 * @return Plugin[] of known plugins.
+	 * @return PluginInfo[] of known plugins.
 	 */
-	public Plugin[] getPlugins() {
-		final Plugin[] result = new Plugin[knownPlugins.size()];
+	public PluginInfo[] getPluginInfos() {
+		final PluginInfo[] result = new PluginInfo[knownPlugins.size()];
 		int i = 0;
 		for (String name : knownPlugins.keySet()) {
-			result[i++] = getPlugin(name);
+			result[i++] = getPluginInfo(name);
 		}
 		return result;
 	}
 	
-	
-	/**
-	 * Load a plugin with a given className
-	 *
-	 * @param className Class Name of plugin to load.
-	 * @return Loaded plugin or null
-	 */
-	private Plugin loadPlugin(final String className) {
-		Plugin result;
-		try {
-			final ClassLoader cl = new PluginClassLoader(myDir);
-			
-			final Class<?> c = cl.loadClass(className);
-			final Constructor<?> constructor = c.getConstructor(new Class[] {});
-		
-			final Object temp = constructor.newInstance(new Object[] {});
-			
-			if (temp instanceof Plugin) {
-				result = (Plugin) temp;
-			} else {
-				result = null;
-			}
-		} catch (ClassNotFoundException cnfe) {
-			Logger.userError(ErrorLevel.LOW, "Class not found ('"+className+"')");
-			result = null;
-		} catch (NoSuchMethodException nsme) {
-			Logger.userError(ErrorLevel.LOW, "Constructor missing ('"+className+"')");
-			result = null;
-		} catch (IllegalAccessException iae) {
-			Logger.userError(ErrorLevel.LOW, "Unable to access constructor ('"+className+"')");
-			result = null;
-		} catch (InvocationTargetException ite) {
-			Logger.userError(ErrorLevel.LOW, "Unable to invoke target ('"+className+"')");
-			result = null;
-		} catch (InstantiationException ie) {
-			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+className+"')");
-			result = null;
-		} catch (NoClassDefFoundError ncdf) {
-			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+className+"'): Unable to find class: " + ncdf.getMessage());
-			result = null;
-		}
-		
-		return result;
-	}
-
 	/**
 	 * Send an event of the specified type to plugins.
 	 *
@@ -320,12 +333,15 @@ public class PluginManager {
 	 */
 	public void processEvent(final ActionType type, final StringBuffer format, final Object ... arguments) {
 		for (String pluginName : knownPlugins.keySet()) {
-			final Plugin plugin = knownPlugins.get(pluginName);
-			if (plugin instanceof EventPlugin && plugin.isActive()) {
-				try {
-					((EventPlugin)plugin).processEvent(type, format, arguments);
-				} catch (Exception e) {
-					Logger.userError(ErrorLevel.LOW, "Error with processEvent for "+pluginName+" ("+type+") - "+e.getMessage());
+			final PluginInfo pluginInfo = knownPlugins.get(pluginName);
+			if (pluginInfo.isLoaded()) {
+				final Plugin plugin = pluginInfo.getPlugin();
+				if (plugin instanceof EventPlugin) {
+					try {
+						((EventPlugin)plugin).processEvent(type, format, arguments);
+					} catch (Exception e) {
+						Logger.userError(ErrorLevel.LOW, "Error with processEvent for "+pluginName+" ("+type+") - "+e.getMessage(), e);
+					}
 				}
 			}
 		}
