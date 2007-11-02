@@ -30,6 +30,8 @@ import com.dmdirc.parser.ChannelInfo;
 import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.parser.IRCParser;
 import com.dmdirc.parser.ParserError;
+import com.dmdirc.parser.callbacks.CallbackManager;
+import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.callbacks.interfaces.*;
 
 /**
@@ -57,6 +59,13 @@ public final class ServerEventHandler extends EventHandler
         super();
         
         this.owner = owner;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    protected void addCallback(final CallbackManager cbm, final String name)
+            throws CallbackNotFoundException {
+        cbm.addCallback(name, this);
     }
     
     /** {@inheritDoc} */
@@ -322,4 +331,5 @@ public final class ServerEventHandler extends EventHandler
         
         owner.doNotification("serverError", CoreActionType.SERVER_ERROR, sMessage);
     }
+
 }

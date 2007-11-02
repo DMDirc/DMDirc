@@ -42,14 +42,14 @@ public abstract class EventHandler implements ICallbackInterface {
     /**
      * Registers all callbacks that this event handler implements with the
      * owner's parser.
-     * 
-     * @param cbm The callback manager to register our callbacks with
      */
-    public void registerCallbacks(final CallbackManager cbm) {
+    public void registerCallbacks() {
+        final CallbackManager cbm = getParser().getCallbackManager();
+        
         try {
             for (Class iface : this.getClass().getInterfaces()) {
                 if (iface.getName().startsWith(CALLBACK_PREFIX)) {
-                    cbm.addCallback("on" + iface.getName().substring(CALLBACK_PREFIX.length()), this);
+                    addCallback(cbm, "on" + iface.getName().substring(CALLBACK_PREFIX.length()));
                 }
             }
         } catch (CallbackNotFoundException exception) {
@@ -57,6 +57,9 @@ public abstract class EventHandler implements ICallbackInterface {
                     exception);
         }
     }    
+    
+    protected abstract void addCallback(CallbackManager cbm, String name) 
+            throws CallbackNotFoundException;
     
     /**
      * Retrieves the parser belonging to this EventHandler's owner.

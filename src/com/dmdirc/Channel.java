@@ -34,7 +34,6 @@ import com.dmdirc.parser.ChannelInfo;
 import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.parser.IRCParser;
 import com.dmdirc.parser.callbacks.CallbackManager;
-import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.callbacks.interfaces.IAwayStateOther;
 import com.dmdirc.parser.callbacks.interfaces.IChannelAction;
 import com.dmdirc.parser.callbacks.interfaces.IChannelCTCP;
@@ -83,16 +82,6 @@ public final class Channel extends MessageTarget implements
      */
     private static final long serialVersionUID = 1;
     
-    /**
-     * The callbacks that should be registered for channel instances.
-     */
-    private static final String[] CALLBACKS = {
-        "OnChannelMessage", "OnChannelGotNames", "OnChannelTopic",
-        "OnChannelJoin", "OnChannelPart", "OnChannelKick", "OnChannelQuit",
-        "OnChannelAction", "OnChannelNickChanged", "OnChannelModeChanged",
-        "OnChannelUserModeChanged", "OnChannelCTCP",
-    };
-    
     /** The parser's pChannel class. */
     private transient ChannelInfo channelInfo;
     
@@ -108,9 +97,11 @@ public final class Channel extends MessageTarget implements
     /** The config manager for this channel. */
     private final ConfigManager configManager;
     
-    // TODO: Make this some kind of fixed-length buffer
     /** A list of previous topics we've seen. */
     private final RollingList<Topic> topics;
+    
+    /** Our event handler. */
+    private final ChannelEventHandler eventHandler;
     
     /** Whether we're in this channel or not. */
     private boolean onChannel;
@@ -155,6 +146,8 @@ public final class Channel extends MessageTarget implements
         window.setFrameIcon(icon);
         window.getInputHandler().setTabCompleter(tabCompleter);
         
+        eventHandler = new ChannelEventHandler(this);
+        
         registerCallbacks();
         
         ActionManager.processEvent(CoreActionType.CHANNEL_OPENED, null, this);
@@ -167,16 +160,7 @@ public final class Channel extends MessageTarget implements
      * Registers callbacks with the parser for this channel.
      */
     private void registerCallbacks() {
-        try {
-            final CallbackManager callbackManager = server.getParser().getCallbackManager();
-            final String channel = channelInfo.getName();
-            
-            for (String callback : CALLBACKS) {
-                callbackManager.addCallback(callback, this, channel);
-            }
-        } catch (CallbackNotFoundException ex) {
-            Logger.appError(ErrorLevel.FATAL, "Unable to load channel", ex);
-        }
+        eventHandler.registerCallbacks();
     }
     
     /**
@@ -193,6 +177,7 @@ public final class Channel extends MessageTarget implements
     }
     
     /** {@inheritDoc} */
+    @Override
     public void sendLine(final String line) {
         if (server.getParser().getChannelInfo(channelInfo.getName()) == null) {
             // We're not in the channel
@@ -220,11 +205,13 @@ public final class Channel extends MessageTarget implements
     }
     
     /** {@inheritDoc} */
+    @Override
     public int getMaxLineLength() {
         return server.getParser().getMaxLength("PRIVMSG", getChannelInfo().getName());
     }
     
     /** {@inheritDoc} */
+    @Override
     public void sendAction(final String action) {
         if (server.getParser().getChannelInfo(channelInfo.getName()) == null) {
             // We're not in the channel
@@ -253,6 +240,7 @@ public final class Channel extends MessageTarget implements
      * Returns the server object that this channel belongs to.
      * @return The server object
      */
+    @Override
     public Server getServer() {
         return server;
     }
@@ -280,6 +268,7 @@ public final class Channel extends MessageTarget implements
      * Returns the internal window belonging to this object.
      * @return This object's internal window
      */
+    @Override
     public InputWindow getFrame() {
         return window;
     }
@@ -360,6 +349,7 @@ public final class Channel extends MessageTarget implements
     /**
      * Parts the channel and then closes the window.
      */
+    @Override
     public void close() {
         part(configManager.getOption("general", "partmessage"));
         closeWindow();
@@ -381,9 +371,7 @@ public final class Channel extends MessageTarget implements
         if (server.getParser() != null) {
             final CallbackManager callbackManager = server.getParser().getCallbackManager();
         
-            for (String callback : CALLBACKS) {
-                callbackManager.delCallback(callback, this);
-            }
+            callbackManager.delAllCallback(eventHandler);
         }
         
         ActionManager.processEvent(CoreActionType.CHANNEL_CLOSED, null, this);
@@ -409,6 +397,7 @@ public final class Channel extends MessageTarget implements
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onChannelMessage(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
         
@@ -428,6 +417,7 @@ public final class Channel extends MessageTarget implements
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onChannelAction(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
         final String[] parts = getDetails(cChannelClient);
@@ -445,6 +435,7 @@ public final class Channel extends MessageTarget implements
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onChannelGotNames(final IRCParser tParser, final ChannelInfo cChannel) {
         
         window.updateNames(channelInfo.getChannelClients());
@@ -463,6 +454,7 @@ public final class Channel extends MessageTarget implements
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onChannelTopic(final IRCParser tParser, final ChannelInfo cChannel,
             final boolean bIsJoinTopic) {
         if (bIsJoinTopic) {
@@ -492,6 +484,7 @@ public final class Channel extends MessageTarget implements
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onChannelJoin(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient) {
         final ClientInfo client = cChannelClient.getClient();
@@ -508,6 +501,7 @@ public final class Channel extends MessageTarget implements
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onChannelPart(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sReason) {
         final ClientInfo client = cChannelClient.getClient();
@@ -545,6 +539,7 @@ public final class Channel extends MessageTarget implements
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onChannelKick(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cKickedClient, final ChannelClientInfo cKickedByClient,
             final String sReason, final String sKickedByHost) {
@@ -573,6 +568,7 @@ public final class Channel extends MessageTarget implements
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onChannelQuit(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sReason) {
         final ClientInfo client = cChannelClient.getClient();
@@ -591,6 +587,7 @@ public final class Channel extends MessageTarget implements
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onChannelNickChanged(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sOldNick) {
         final String modes = cChannelClient.getImportantModePrefix();
@@ -613,6 +610,7 @@ public final class Channel extends MessageTarget implements
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onChannelModeChanged(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sHost, final String sModes) {
         if (sHost.isEmpty()) {
@@ -649,6 +647,7 @@ public final class Channel extends MessageTarget implements
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onChannelUserModeChanged(final IRCParser tParser,
             final ChannelInfo cChannel, final ChannelClientInfo cChangedClient,
             final ChannelClientInfo cSetByClient, final String sHost,
@@ -677,6 +676,7 @@ public final class Channel extends MessageTarget implements
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onChannelCTCP(final IRCParser tParser,
             final ChannelInfo cChannel, final ChannelClientInfo cChannelClient,
             final String sType, final String sMessage, final String sHost) {
@@ -693,6 +693,7 @@ public final class Channel extends MessageTarget implements
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onAwayStateOther(final IRCParser tParser,
             final ClientInfo client, final boolean state) {
         final ChannelClientInfo channelClient = channelInfo.getUser(client);
