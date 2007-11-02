@@ -32,7 +32,6 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.util.MapList;
 import com.dmdirc.util.WeakMapList;
 
@@ -349,8 +348,6 @@ public final class ActionManager {
         assert(type != null);
         assert(type.getType() != null);
         assert(type.getType().getArity() == arguments.length);
-                
-        PluginManager.getPluginManager().processEvent(type, format, arguments);
         
         if (listeners.containsKey(type)) {
             for (ActionListener listener : listeners.get(type)) {

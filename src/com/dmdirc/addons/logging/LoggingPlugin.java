@@ -22,9 +22,34 @@
 
 package com.dmdirc.addons.logging;
 
+import com.dmdirc.Channel;
+import com.dmdirc.Main;
+import com.dmdirc.Query;
+import com.dmdirc.Server;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.ActionType;
+import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.config.Identity;
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.ActionListener;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.ChannelInfo;
+import com.dmdirc.parser.ClientInfo;
+import com.dmdirc.parser.IRCParser;
+import com.dmdirc.plugins.Plugin;
+import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.ui.interfaces.PreferencesInterface;
+import com.dmdirc.ui.interfaces.PreferencesPanel;
+import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.ui.messages.Styliser;
+
 import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -33,33 +58,10 @@ import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Stack;
-import java.util.Properties;
 import java.util.Hashtable;
+import java.util.Properties;
+import java.util.Stack;
 
-import com.dmdirc.Channel;
-import com.dmdirc.Main;
-import com.dmdirc.Query;
-import com.dmdirc.Server;
-import com.dmdirc.actions.ActionType;
-import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.config.IdentityManager;
-import com.dmdirc.config.Identity;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
-import com.dmdirc.parser.ChannelClientInfo;
-import com.dmdirc.parser.ChannelInfo;
-import com.dmdirc.parser.ClientInfo;
-import com.dmdirc.parser.IRCParser;
-import com.dmdirc.plugins.Plugin;
-import com.dmdirc.plugins.EventPlugin;
-import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.ui.interfaces.PreferencesInterface;
-import com.dmdirc.ui.interfaces.PreferencesPanel;
-import com.dmdirc.ui.interfaces.Window;
-import com.dmdirc.ui.messages.Styliser;
-import java.io.FileNotFoundException;
 
 /**
  * Adds logging facility to client.
@@ -67,7 +69,7 @@ import java.io.FileNotFoundException;
  * @author Shane 'Dataforce' McCormack
  * @version $Id: LoggingPlugin.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
-public final class LoggingPlugin extends Plugin implements EventPlugin, PreferencesInterface {
+public final class LoggingPlugin extends Plugin implements ActionListener, PreferencesInterface {
 	/** What domain do we store all settings in the global config under. */
 	private static final String MY_DOMAIN = "plugin-Logging";
 	
@@ -85,6 +87,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 	/**
 	 * Called when the plugin is loaded.
 	 */
+        @Override
 	public void onLoad() {
 		// Set defaults
 		Properties defaults = new Properties();
@@ -118,13 +121,28 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 		}
 		
 		command = new LoggingCommand();
+                
+                ActionManager.addListener(this, CoreActionType.SERVER_CONNECTED,
+                        CoreActionType.QUERY_CLOSED, CoreActionType.CHANNEL_CLOSED,
+                        CoreActionType.QUERY_OPENED, CoreActionType.CHANNEL_OPENED,
+                        CoreActionType.QUERY_MESSAGE, CoreActionType.QUERY_SELF_MESSAGE,
+                        CoreActionType.QUERY_ACTION, CoreActionType.QUERY_SELF_ACTION,
+                        CoreActionType.CHANNEL_MESSAGE, CoreActionType.CHANNEL_SELF_MESSAGE,
+                        CoreActionType.CHANNEL_ACTION, CoreActionType.CHANNEL_SELF_ACTION,
+                        CoreActionType.CHANNEL_GOTTOPIC, CoreActionType.CHANNEL_TOPICCHANGE,
+                        CoreActionType.CHANNEL_JOIN, CoreActionType.CHANNEL_PART,
+                        CoreActionType.CHANNEL_QUIT, CoreActionType.CHANNEL_KICK,
+                        CoreActionType.CHANNEL_NICKCHANGE, CoreActionType.CHANNEL_MODECHANGE);
 	}
 	
 	/**
 	 * Called when this plugin is unloaded.
 	 */
+        @Override
 	public void onUnload() {
 		CommandManager.unregisterCommand(command);
+                
+                ActionManager.removeListener(this);
 		
 		BufferedWriter file;
 		synchronized (openFiles) {
@@ -145,11 +163,13 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 	 *
 	 * @return true if the plugin has configuration options via a dialog.
 	 */
+        @Override
 	public boolean isConfigurable() { return true; }
 	
 	/**
 	 * Called to show the Configuration dialog of the plugin if appropriate.
 	 */
+        @Override
 	public void showConfig() {
 		final PreferencesPanel preferencesPanel = Main.getUI().getPreferencesPanel(this, "Logging Plugin - Config");
 		preferencesPanel.addCategory("General", "General configuration for Logging plugin.");
@@ -209,6 +229,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 	 *
 	 * @param properties user preferences
 	 */
+        @Override
 	public void configClosed(final Properties properties) {
 		
 		// Update Config options
@@ -246,6 +267,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 	/**
 	 * Called when the preferences dialog is cancelled.
 	 */
+        @Override
 	public void configCancelled() { }
 	
 	/**
@@ -255,6 +277,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 	 * @param format Format of messages that are about to be sent. (May be null)
 	 * @param arguments The arguments for the event
 	 */
+        @Override
 	public void processEvent(final ActionType type, final StringBuffer format, final Object ... arguments) {
 		if (type instanceof CoreActionType) {
 			final CoreActionType thisType = (CoreActionType) type;

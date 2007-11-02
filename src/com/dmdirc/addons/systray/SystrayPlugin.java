@@ -24,10 +24,10 @@ package com.dmdirc.addons.systray;
 
 import com.dmdirc.IconManager;
 import com.dmdirc.Main;
+import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.plugins.EventPlugin;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.ui.swing.MainFrame;
@@ -49,7 +49,7 @@ import java.awt.event.MouseListener;
  * @author chris
  */
 public final class SystrayPlugin extends Plugin implements ActionListener,
-        MouseListener, EventPlugin {
+        MouseListener, com.dmdirc.interfaces.ActionListener {
     
     /** The command we registered. */
     private PopupCommand command;
@@ -117,12 +117,16 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
         } catch (AWTException ex) {
             // Should probably unload ourself here?
         }
+        
+        ActionManager.addListener(this, CoreActionType.CLIENT_MINIMISED);
     }
     
     /** {@inheritDoc}. */
     public void onUnload() {
         SystemTray.getSystemTray().remove(icon);
         command.unregister();
+        
+        ActionManager.removeListener(this);
     }
     
     /** {@inheritDoc} */

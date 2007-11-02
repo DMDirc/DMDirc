@@ -25,13 +25,14 @@ package com.dmdirc.addons.nickcolours;
 import com.dmdirc.Channel;
 import com.dmdirc.ChannelClientProperty;
 import com.dmdirc.Main;
+import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.parser.ChannelInfo;
 import com.dmdirc.parser.ClientInfo;
-import com.dmdirc.plugins.EventPlugin;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
 import com.dmdirc.ui.interfaces.PreferencesPanel;
@@ -48,7 +49,7 @@ import java.util.Properties;
  *
  * @author chris
  */
-public final class NickColourPlugin extends Plugin implements EventPlugin, PreferencesInterface {
+public final class NickColourPlugin extends Plugin implements ActionListener, PreferencesInterface {
     
     /** The config domain to use for this plugin. */
     private static final String DOMAIN = "plugin-NickColour";
@@ -221,10 +222,14 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
         if (IdentityManager.getGlobalConfig().hasOption(DOMAIN, "randomcolours")) {
             randColours =(String[]) IdentityManager.getGlobalConfig().getOptionList(DOMAIN, "randomcolours").toArray();
         }
+        
+        ActionManager.addListener(this, CoreActionType.CHANNEL_GOTNAMES,
+                CoreActionType.CHANNEL_JOIN);
     }
     
     /** {@inheritDoc} */
     public void onUnload() {
+        ActionManager.removeListener(this);
     }
     
     /** {@inheritDoc} */

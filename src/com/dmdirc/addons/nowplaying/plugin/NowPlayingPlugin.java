@@ -23,13 +23,14 @@
 package com.dmdirc.addons.nowplaying.plugin;
 
 import com.dmdirc.Main;
+import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.addons.nowplaying.MediaSource;
 import com.dmdirc.addons.nowplaying.MediaSourceManager;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.plugins.EventPlugin;
+import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
@@ -41,7 +42,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-public class NowPlayingPlugin extends Plugin implements EventPlugin,
+public class NowPlayingPlugin extends Plugin implements ActionListener,
         PreferencesInterface  {
     
     /** Config domain. */
@@ -69,6 +70,9 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
         
         loadSettings();
         
+        ActionManager.addListener(this, CoreActionType.PLUGIN_LOADED,
+                CoreActionType.PLUGIN_UNLOADED);
+        
         for (PluginInfo target : PluginManager.getPluginManager().getPluginInfos()) {
             if (target.isLoaded()) {
                 addPlugin(target);
@@ -81,6 +85,8 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
     /** {@inheritDoc} */
     public void onUnload() {
         sources.clear();
+        
+        ActionManager.removeListener(this);
         
         CommandManager.unregisterCommand(command);
     }

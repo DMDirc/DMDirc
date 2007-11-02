@@ -22,33 +22,36 @@
 
 package com.dmdirc.addons.windowstatus;
 
+import com.dmdirc.Channel;
+import com.dmdirc.FrameContainer;
+import com.dmdirc.Main;
+import com.dmdirc.Query;
+import com.dmdirc.Server;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.ActionType;
+import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.Identity;
+import com.dmdirc.interfaces.ActionListener;
+import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.ChannelInfo;
+import com.dmdirc.parser.ClientInfo;
+import com.dmdirc.plugins.Plugin;
+import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.ui.interfaces.PreferencesInterface;
+import com.dmdirc.ui.interfaces.PreferencesPanel;
+import com.dmdirc.ui.interfaces.Window;
+
+import net.miginfocom.swing.MigLayout;
+
 import java.util.Hashtable;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.dmdirc.Channel;
-import com.dmdirc.FrameContainer;
-import com.dmdirc.Main;
-import com.dmdirc.Query;
-import com.dmdirc.Server;
-import com.dmdirc.actions.ActionType;
-import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.config.IdentityManager;
-import com.dmdirc.config.Identity;
-import com.dmdirc.parser.ChannelClientInfo;
-import com.dmdirc.parser.ChannelInfo;
-import com.dmdirc.parser.ClientInfo;
-import com.dmdirc.plugins.Plugin;
-import com.dmdirc.plugins.EventPlugin;
-import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.ui.interfaces.PreferencesInterface;
-import com.dmdirc.ui.interfaces.PreferencesPanel;
-import com.dmdirc.ui.interfaces.Window;
-import java.util.Map.Entry;
-import net.miginfocom.swing.MigLayout;
 
 /**
  * Displays information related to the current window in the status bar.
@@ -56,7 +59,7 @@ import net.miginfocom.swing.MigLayout;
  * @author Shane 'Dataforce' McCormack
  * @version $Id: WindowStatusPlugin.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
-public final class WindowStatusPlugin extends Plugin implements EventPlugin, PreferencesInterface {
+public final class WindowStatusPlugin extends Plugin implements ActionListener, PreferencesInterface {
 	/** What domain do we store all settings in the global config under. */
 	private static final String MY_DOMAIN = "plugin-Logging";
 	
@@ -88,6 +91,8 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 		
 		Main.getUI().getStatusBar().addComponent(panel);
 		updateStatus();
+                
+                ActionManager.addListener(this, CoreActionType.CLIENT_FRAME_CHANGED);
 	}
 	
 	/**
@@ -95,6 +100,8 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 	 */
 	public void onUnload() {
 		Main.getUI().getStatusBar().removeComponent(panel);
+                
+                ActionManager.removeListener(this);
 	}
 	
 	/**
@@ -105,15 +112,8 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 	 * @param arguments The arguments for the event
 	 */
 	public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
-		if (type instanceof CoreActionType) {
-			final CoreActionType thisType = (CoreActionType)type;
-			switch (thisType) {
-			case CLIENT_FRAME_CHANGED:
-				updateStatus((FrameContainer)arguments[0]);
-				break;
-			default:
-				break;
-			}
+		if (type.equals(CoreActionType.CLIENT_FRAME_CHANGED)) {
+                        updateStatus((FrameContainer)arguments[0]);
 		}
 	}
 	

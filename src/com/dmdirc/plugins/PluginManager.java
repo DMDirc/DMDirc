@@ -22,9 +22,6 @@
 package com.dmdirc.plugins;
 
 import com.dmdirc.Main;
-import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.ActionType;
-import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.logger.ErrorLevel;
@@ -125,7 +122,6 @@ public class PluginManager {
         PluginInfo pluginInfo = getPluginInfo(filename);
         
         try {
-            ActionManager.processEvent(CoreActionType.PLUGIN_UNLOADED, null, pluginInfo);
             pluginInfo.unloadPlugin();
         } catch (Exception e) {
             Logger.userError(ErrorLevel.MEDIUM, e.getMessage(), e);
@@ -295,32 +291,5 @@ public class PluginManager {
     public Collection<PluginInfo> getPluginInfos() {
         return knownPlugins.values();
     }
-
-    /**
-     * Send an event of the specified type to plugins.
-     *
-     * @param type The type of the event to process
-     * @param format Format of messages that are about to be sent. (May be null)
-     * @param arguments The arguments for the event
-     */
-    public void processEvent(final ActionType type, final StringBuffer format,
-            final Object... arguments) {
-        for (Map.Entry<String, PluginInfo> plugin : knownPlugins.entrySet()) {
-
-            if (plugin.getValue().isLoaded()) {
-                
-                final Plugin myPlugin = plugin.getValue().getPlugin();
-                
-                if (myPlugin instanceof EventPlugin) {
-                    try {
-                        ((EventPlugin) myPlugin).processEvent(type, format, arguments);
-                    } catch (Exception e) {
-                        Logger.userError(ErrorLevel.LOW,
-                                "Error with processEvent for " + plugin.getKey()
-                                + " (" + type + ") - " + e.getMessage(), e);
-                    }
-                }
-            }
-        }
-    }
+    
 }

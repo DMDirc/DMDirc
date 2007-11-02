@@ -25,11 +25,12 @@ package com.dmdirc.addons.lagdisplay;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.Server;
+import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.plugins.EventPlugin;
+import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.interfaces.Window;
 
@@ -46,7 +47,7 @@ import net.miginfocom.swing.MigLayout;
  * Displays the current server's lag in the status bar.
  * @author chris
  */
-public final class LagDisplayPlugin extends Plugin implements EventPlugin,
+public final class LagDisplayPlugin extends Plugin implements ActionListener,
         ConfigChangeListener {
     
     /** The panel we use in the status bar. */
@@ -74,25 +75,35 @@ public final class LagDisplayPlugin extends Plugin implements EventPlugin,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onLoad() {
         Main.getUI().getStatusBar().addComponent(panel);
+        
+        ActionManager.addListener(this, CoreActionType.SERVER_GOTPING,
+                CoreActionType.SERVER_NOPING, CoreActionType.CLIENT_FRAME_CHANGED);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onUnload() {
         Main.getUI().getStatusBar().removeComponent(panel);
+        
+        ActionManager.removeListener(this);
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean isConfigurable() {
         return false;
     }
     
     /** {@inheritDoc} */
+    @Override
     public void showConfig() {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
         if (!useAlternate && type.equals(CoreActionType.SERVER_GOTPING)) {
             final Window active = Main.getUI().getMainWindow().getActiveFrame();
@@ -138,6 +149,7 @@ public final class LagDisplayPlugin extends Plugin implements EventPlugin,
     }
 
     /** {@inheritDoc} */
+    @Override
     public void configChanged(final String domain, final String key) {
         useAlternate = IdentityManager.getGlobalConfig().getOptionBool("plugin-Lagdisplay",
                 "usealternate", false);
