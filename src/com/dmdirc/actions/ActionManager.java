@@ -349,11 +349,13 @@ public final class ActionManager {
         assert(type != null);
         assert(type.getType() != null);
         assert(type.getType().getArity() == arguments.length);
-        
+                
         PluginManager.getPluginManager().processEvent(type, format, arguments);
         
-        for (ActionListener listener : listeners.get(type)) {
-            listener.processEvent(type, format, arguments);
+        if (listeners.containsKey(type)) {
+            for (ActionListener listener : listeners.get(type)) {
+                listener.processEvent(type, format, arguments);
+            }
         }
         
         if (!killSwitch) {
