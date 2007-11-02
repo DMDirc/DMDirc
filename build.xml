@@ -64,6 +64,14 @@
     the compile target as the regular run target does. Again, for a list of available 
     properties which you can use, check the target you are overriding in the
     nbproject/build-impl.xml file. 
-
+<jar compress="${jar.compress}" jarfile="${build.classes.dir}/plugins/">
+            <fileset dir="${build.classes.dir}"/>
+        </jar>
     -->
+    <target name="-post-compile">
+        <exec executable="/bin/bash">
+            <arg value="createAllPluginJar.sh"/>
+            <arg value="${src.dir}/com/dmdirc/addons/"/>
+        </exec>
+    </target>
 </project>
