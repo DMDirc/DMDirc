@@ -178,6 +178,23 @@ public final class FileResourceManager extends ResourceManager {
         return resources;
     }
     
+    /** {@inheritDoc} */
+    @Override
+    public List<String> getResourcesStartingWith(final String resourcesPrefix) {
+        final List<File> files = getFileListing(new File(basePath));
+        final List<String> resources = new ArrayList<String>();
+        
+        for (File file : files) {
+            final String path = file.getPath().substring(basePath.length(),
+                    file.getPath().length());
+            if (path.startsWith(resourcesPrefix)) {
+                resources.add(path);
+            }
+        }
+        
+        return resources;
+    }
+    
     /**
      * Returns a resursive listing of a directory tree.
      *

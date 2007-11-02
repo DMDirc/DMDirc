@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -307,4 +308,14 @@ public abstract class ResourceManager {
      */
     public abstract Map<String, InputStream> getResourcesStartingWithAsInputStreams(
             final String resourcesPrefix);
+    
+    /**
+     * Gets a List of the resources starting with the specified
+     * prefix.
+     *
+     * @param resourcesPrefix Prefix of the resources to return
+     *
+     * @return List of resources found
+     */
+    public abstract List<String> getResourcesStartingWith(final String resourcesPrefix);
 }

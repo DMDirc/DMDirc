@@ -179,5 +179,19 @@ public final class ZipResourceManager extends ResourceManager {
         
         return resources;
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public List<String> getResourcesStartingWith(final String resourcesPrefix) {
+        final List<String> resources = new ArrayList<String>();
+        
+        for (String entry : entries) {
+            if (entry.startsWith(resourcesPrefix)) {
+                resources.add(entry);
+            }
+        }
+        
+        return resources;
+    }
 }
 
