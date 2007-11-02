@@ -29,18 +29,17 @@ import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.actions.wrappers.PerformWrapper;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.util.MapList;
+import com.dmdirc.util.WeakMapList;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Manages all actions for the client.
@@ -77,6 +76,10 @@ public final class ActionManager {
     private final static MapList<String, ActionType> actionTypeGroups
             = new MapList<String, ActionType>();
     
+    /** The listeners that we have registered. */
+    private final static WeakMapList<ActionType, ActionListener> listeners
+            = new WeakMapList<ActionType, ActionListener>();
+    
     /** Indicates whether or not user actions should be killed (not processed). */
     private static boolean killSwitch
             = IdentityManager.getGlobalConfig().getOptionBool("actions", "killswitch", false);
@@ -99,8 +102,11 @@ public final class ActionManager {
         
         IdentityManager.getGlobalConfig().addChangeListener("actions", "killswitch",
                 new ConfigChangeListener() {
+            @Override
             public void configChanged(final String domain, final String key) {
-                killSwitch = IdentityManager.getGlobalConfig().getOptionBool("actions", "killswitch", false);
+                killSwitch
+                        = IdentityManager.getGlobalConfig().getOptionBool(
+                        "actions", "killswitch", false);
             }
         });
     }
@@ -345,6 +351,10 @@ public final class ActionManager {
         assert(type.getType().getArity() == arguments.length);
         
         PluginManager.getPluginManager().processEvent(type, format, arguments);
+        
+        for (ActionListener listener : listeners.get(type)) {
+            listener.processEvent(type, format, arguments);
+        }
         
         if (!killSwitch) {
             triggerActions(type, format, arguments);
@@ -613,4 +623,37 @@ public final class ActionManager {
         
         return null;
     }
+    
+    /**
+     * Adds a new listener for the specified action type.
+     * 
+     * @param types The action types that are to be listened for
+     * @param listener The listener to be added
+     */
+    public static void addListener(final ActionListener listener, final ActionType ... types) {
+        for (ActionType type : types) {
+            listeners.add(type, listener);
+        }
+    }
+    
+    /**
+     * Removes a listener for the specified action type.
+     * 
+     * @param types The action types that were being listened for
+     * @param listener The listener to be removed
+     */
+    public static void removeListener(final ActionListener listener, final ActionType ... types) {
+        for (ActionType type: types) {
+            listeners.remove(type, listener);
+        }
+    }
+    
+    /**
+     * Removes a listener for all action types.
+     * 
+     * @param listener The listener to be removed
+     */
+    public static void removeListener(final ActionListener listener) {
+        listeners.removeFromAll(listener);
+    }    
 }
