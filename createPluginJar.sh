@@ -48,4 +48,6 @@ while [ 1 -eq 1 ]; do
 	fi
 done
 
+mv ${srcdir}/src/${foldername}/${2}.jar ${srcdir}/plugins/
+
 echo "done";
