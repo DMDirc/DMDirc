@@ -787,12 +787,10 @@ public final class MainFrame extends JFrame implements WindowListener,
      * @param menu Menu to populate
      */
     private void populateConfigurePluginsMenu(final JMenu menu) {
-        final PluginInfo[] plugins =
-                PluginManager.getPluginManager().getPluginInfos();
         pluginList.clear();
         menu.removeAll();
 
-        for (PluginInfo pluginInfo : plugins) {
+        for (PluginInfo pluginInfo : PluginManager.getPluginManager().getPluginInfos()) {
             if (pluginInfo.isLoaded()) {
                 Plugin plugin = pluginInfo.getPlugin();
                 if (plugin.isConfigurable()) {
