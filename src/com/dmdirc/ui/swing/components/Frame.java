@@ -574,9 +574,9 @@ public abstract class Frame extends JInternalFrame implements Window,
             //Show channel popup
         } else if (parent != null && parent.getServer() != null) {
             if (parent.getServer().hasChannel(channel)) {
-                parent.getServer().join(channel);
-            } else {
                 parent.getServer().getChannel(channel).activateFrame();
+            } else {
+                parent.getServer().join(channel);
             }
         }
     }
