@@ -80,6 +80,8 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
     private final MapList<Character, ChannelListModeItem> existingListItems;
     /** Mode count label. */
     private final JLabel modeCount;
+    /** Cell renderer. */
+    private final ListModeCellRenderer renderer;
 
     /**
      * Creates a new instance of ChannelListModePane.
@@ -91,6 +93,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
 
         this.channel = channel;
 
+        renderer = new ListModeCellRenderer();
         listModesPanel = new JScrollPane();
         listModesPanels = new ArrayList<JList>();
         listModesArray =
@@ -168,7 +171,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
 
             final JList list =
                     new JList(new DefaultListModel());
-            list.setCellRenderer(new ListModeCellRenderer());
+            list.setCellRenderer(renderer);
             list.setVisibleRowCount(15);
             list.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
             list.addListSelectionListener(this);

@@ -24,7 +24,6 @@ package com.dmdirc.ui.swing.dialogs.serversetting;
 
 import com.dmdirc.Server;
 import com.dmdirc.parser.IRCParser;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -75,26 +74,13 @@ public final class UserModesPane extends JPanel {
 
     /** Initialises the modes panel. */
     private void initModesPanel() {
-        final GridBagConstraints constraints = new GridBagConstraints();
-
         final IRCParser parser = server.getParser();
 
         final String booleanModes = parser.getUserModeString();
         final String ourBooleanModes = parser.getMyself().getUserModeStr();
 
-        setLayout(new GridBagLayout());
-        setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER));
-
         modeCheckBoxes =
                 new Hashtable<String, JCheckBox>();
-
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.anchor = GridBagConstraints.NORTHWEST;
-        constraints.weightx = 1.0;
-        constraints.weighty = 0.0;
 
         // Lay out all the boolean mode checkboxes
         for (int i = 0; i < booleanModes.length();
@@ -126,22 +112,9 @@ public final class UserModesPane extends JPanel {
 
             final JCheckBox checkBox = new JCheckBox(text, state);
             checkBox.setToolTipText(tooltip);
-            checkBox.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0,
-                    0, SMALL_BORDER));
-            add(checkBox, constraints);
-
-            constraints.gridx++;
-            if (constraints.gridx == 2) {
-                constraints.gridy++;
-                constraints.gridx = 0;
-            }
 
             modeCheckBoxes.put(mode, checkBox);
         }
-        
-        constraints.weighty = 1.0;
-        constraints.fill = GridBagConstraints.VERTICAL;
-        add(Box.createVerticalGlue(), constraints);
     }
 
     /**
