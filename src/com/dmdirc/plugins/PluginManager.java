@@ -214,22 +214,6 @@ public class PluginManager {
     }
 
     /**
-     * Get string[] of known plugin mainclass names.
-     *
-     * @return string[] of known plugin mainclass names.
-     * @deprecated Pointless method. Iterate getPluginInfos instead.
-     */
-    @Deprecated
-    public String[] getMainClassNames() {
-        final String[] result = new String[knownPlugins.size()];
-        int i = 0;
-        for (String name : knownPlugins.keySet()) {
-            result[i++] = knownPlugins.get(name).getMainClass();
-        }
-        return result;
-    }
-
-    /**
      * Retrieves a list of all installed plugins.
      * Any file under the main plugin directory (~/.DMDirc/plugins or similar)
      * that matches *.jar is deemed to be a valid plugin.

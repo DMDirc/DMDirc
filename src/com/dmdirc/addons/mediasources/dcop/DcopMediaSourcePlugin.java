@@ -25,10 +25,10 @@ package com.dmdirc.addons.mediasources.dcop;
 import com.dmdirc.addons.nowplaying.MediaSource;
 import com.dmdirc.addons.nowplaying.MediaSourceManager;
 import com.dmdirc.plugins.Plugin;
+import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -52,24 +52,36 @@ public class DcopMediaSourcePlugin extends Plugin
     }
     
     /** {@inheritDoc} */
+    @Override
     public List<MediaSource> getSources() {
         return sources;
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onLoad() {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onUnload() {
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean checkPrerequisites() {
-        if (Arrays.asList(PluginManager.getPluginManager().getMainClassNames()).
-                contains("com.dmdirc.addons.dcop.DcopPlugin")) {
-            return true;
+        PluginManager.getPluginManager().addPlugin("dcop.jar");
+        
+        final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName("dcop");
+        
+        if (pi == null) {
+            return false;
         }
-        return false;
+        
+        if (!pi.isLoaded()) {
+            pi.loadPlugin();
+        }
+
+        return true;
     }
 }
