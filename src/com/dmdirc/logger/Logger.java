@@ -54,6 +54,30 @@ public final class Logger {
      */
     public static void userError(final ErrorLevel level,
             final String message) {
+        userError(level, message, "");
+    }
+    
+    /**
+     * Called when a user correctable error occurs.
+     *
+     * @param level Severity of the error
+     * @param message Brief error description
+     * @param details Verbose description of the error
+     */
+    public static void userError(final ErrorLevel level,
+            final String message, final String details) {
+        error(level, message, null, false);
+    }
+    
+    /**
+     * Called when a user correctable error occurs.
+     *
+     * @param level Severity of the error
+     * @param message Brief error description
+     * @param exception Throwable cause for the error
+     */
+    public static void userError(final ErrorLevel level,
+            final String message, final Throwable exception) {
         error(level, message, null, false);
     }
     
