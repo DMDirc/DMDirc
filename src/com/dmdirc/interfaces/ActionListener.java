@@ -40,6 +40,6 @@ public interface ActionListener {
      * the event
      * @param arguments The arguments for the event
      */
-    void processEvent(ActionType type, final StringBuffer format, final Object ... arguments);
+    void processEvent(ActionType type, StringBuffer format, Object ... arguments);
 
 }

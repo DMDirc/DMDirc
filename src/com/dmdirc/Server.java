@@ -304,7 +304,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             raw.registerCallbacks();
         }
 
-        eventHandler.registerCallbacks();
+        eventHandler.registerCallbacks(parser.getCallbackManager());
 
         for (Query query : queries.values()) {
             query.reregister();

@@ -30,7 +30,6 @@ import com.dmdirc.parser.ChannelInfo;
 import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.parser.IRCParser;
 import com.dmdirc.parser.ParserError;
-import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.callbacks.interfaces.*;
 
 /**
@@ -38,16 +37,15 @@ import com.dmdirc.parser.callbacks.interfaces.*;
  *
  * @author chris
  */
-public final class ServerEventHandler implements IChannelSelfJoin,
-        IPrivateMessage, IPrivateAction, IErrorInfo, IPrivateCTCP,
-        IPrivateCTCPReply, ISocketClosed, IPrivateNotice, IMOTDStart, IMOTDLine,
-        IMOTDEnd, INumeric, IPingFailed, IPingSuccess, IAwayState,
-        IConnectError, IAwayStateOther, INickInUse, IPost005, INoticeAuth,
-        IUnknownNotice, IUserModeChanged, IInvite, IWallop, IWalluser,
-        IWallDesync, INickChanged, IServerError {
+public final class ServerEventHandler extends EventHandler
+        implements IChannelSelfJoin, IPrivateMessage, IPrivateAction, 
+        IErrorInfo, IPrivateCTCP, IPrivateCTCPReply, ISocketClosed, 
+        IPrivateNotice, IMOTDStart, IMOTDLine, IMOTDEnd, INumeric, IPingFailed,
+        IPingSuccess, IAwayState, IConnectError, IAwayStateOther, INickInUse,
+        IPost005, INoticeAuth, IUnknownNotice, IUserModeChanged, IInvite,
+        IWallop, IWalluser, IWallDesync, INickChanged, IServerError {
     
-    private static final String CALLBACK_PREFIX = "com.dmdirc.parser.callbacks.interfaces.I";
-    
+    /** The server instance that owns this event handler. */
     private final Server owner;
     
     /**
@@ -61,37 +59,12 @@ public final class ServerEventHandler implements IChannelSelfJoin,
         this.owner = owner;
     }
     
-    /**
-     * Registers all callbacks that this event handler implements with the
-     * owner's parser.
-     */
-    public void registerCallbacks() {
-        try {
-            for (Class iface : this.getClass().getInterfaces()) {
-                if (iface.getName().startsWith(CALLBACK_PREFIX)) {
-                    owner.getParser().getCallbackManager().addCallback(
-                            "on" + iface.getName().substring(CALLBACK_PREFIX.length()), this);
-                }
-            }
-        } catch (CallbackNotFoundException exception) {
-            Logger.appError(ErrorLevel.FATAL, "Unable to register callbacks",
-                    exception);
-        }
+    /** {@inheritDoc} */
+    @Override
+    protected IRCParser getParser() {
+        return owner.getParser();
     }
-    
-    /**
-     * Checks that the specified parser is the same as the one the server is
-     * currently claiming to be using. If it isn't, we raise an exception to
-     * prevent further (erroneous) processing.
-     */
-    private void checkParser(final IRCParser parser) {
-        if (parser != owner.getParser()) {
-            throw new IllegalArgumentException("Event called from a parser that's not in use."
-                    + "\nActual parser: " + owner.getParser().hashCode()
-                    + "\nPassed parser: " + parser.hashCode());
-        }
-    }
-    
+          
     /** {@inheritDoc} */
     @Override
     public void onChannelSelfJoin(final IRCParser tParser, final ChannelInfo cChannel) {
