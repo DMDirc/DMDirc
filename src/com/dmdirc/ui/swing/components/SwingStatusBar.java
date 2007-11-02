@@ -235,12 +235,14 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         remove(iconLabel);
         add(component, "sgy components, hmax 20, hmin 20");
         add(iconLabel, "sgy components, hmax 20, hmin 20");
+        validate();
     }
     
     /** {@inheritDoc} */
     @Override
     public void removeComponent(final Component component) {
         remove(component);
+        validate();
     }
     
     /** {@inheritDoc} */
