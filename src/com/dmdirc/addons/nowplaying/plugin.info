@@ -1,4 +1,4 @@
-mainclass=com.dmdirc.addons.nowplaying.plugin.NowPlayingPlugin
+mainclass=com.dmdirc.addons.nowplaying.NowPlayingPlugin
 version=3
 friendlyversion=0.3
 author=Chris <chris@dmdirc.com>

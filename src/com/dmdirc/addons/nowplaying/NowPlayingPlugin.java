@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.nowplaying.plugin;
+package com.dmdirc.addons.nowplaying;
 
 import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;

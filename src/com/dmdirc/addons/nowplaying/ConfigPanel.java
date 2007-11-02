@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.nowplaying.plugin;
+package com.dmdirc.addons.nowplaying;
 
 import com.dmdirc.ui.swing.components.reorderablelist.ReorderableJList;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
