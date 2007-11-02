@@ -244,7 +244,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 *
 	 * @return Plugin friendly Version
 	 */
-	public String getFriendlyVersion() { return metaData.getProperty("version",""); }
+	public String getFriendlyVersion() { return metaData.getProperty("friendlyversion",""); }
 	
 	/**
 	 * Get the plugin version
