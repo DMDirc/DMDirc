@@ -30,7 +30,6 @@ import com.dmdirc.config.IdentityManager;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.IllegalFormatConversionException;
-import java.util.List;
 import java.util.Map;
 import java.util.MissingFormatArgumentException;
 import java.util.UnknownFormatConversionException;
@@ -55,7 +54,7 @@ public final class Formatter {
         config.addChangeListener("formatter", new ConfigChangeListener() {
             @Override
             public void configChanged(final String domain, final String key) {
-                Formatter.typeCache.clear();
+                Formatter.typeCache.remove(key);
             }
         });
     }
@@ -180,16 +179,6 @@ public final class Formatter {
     }
     
     /**
-     * Returns a list of the available formatters.
-     *
-     * @return Set of formatters
-     * @deprecated This should be done via a config manager directly
-     */
-    @Deprecated
-    public static List<String> getFormats() {
-        return config.getOptions("formatter");
-    }
-    /**
      * Determines whether the formatter knows of a specific message type.
      * 
      * @param messageType the message type to check
@@ -197,32 +186,6 @@ public final class Formatter {
      */
     public static boolean hasFormat(final String messageType) {
         return config.hasOption("formatter", messageType);
-    }
-    
-    /**
-     * Allows plugins (etc) to register new default formats.
-     * 
-     * @param name The name of the format
-     * @param format The actual format itself
-     * @deprecated This should now be done via the identities system
-     */
-    @Deprecated
-    public static void registerDefault(final String name, final String format) {        
-        typeCache.remove(name);
-        
-        IdentityManager.getConfigIdentity().setOption("formatter", name, format);
-    }
-    
-    /**
-     * Loads the specified file into the formatter.
-     *
-     * @param file File to be loaded
-     * @return True iff the operation succeeeded, false otherwise
-     * @deprecated No longer has any effect
-     */
-    @Deprecated
-    public static boolean loadFile(final String file) {
-        return false;
     }
     
     /**
@@ -236,18 +199,6 @@ public final class Formatter {
     @Deprecated
     public static boolean loadFile(final InputStream stream) {
         return false;
-    }
-    
-    /**
-     * Saves the current formatter into the specified file.
-     * 
-     * @param target The target file
-     * @return True iff the operation succeeded, false otherwise
-     * @deprecated No longer has any effect
-     */
-    @Deprecated
-    public static boolean saveAs(final String target) {
-        return false;        
     }
     
     /**
