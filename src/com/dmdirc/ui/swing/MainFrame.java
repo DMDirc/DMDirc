@@ -754,7 +754,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         final JMenu configureMenu = new JMenu("Configure plugins");
         configureMenu.setMnemonic('c');
         pluginsMenu.add(configureMenu);
-        configureMenu.addMenuListener(new MenuListener() {
+        pluginsMenu.addMenuListener(new MenuListener() {
 
             @Override
             public void menuSelected(final MenuEvent e) {
@@ -771,7 +771,6 @@ public final class MainFrame extends JFrame implements WindowListener,
                 //Ignore
             }
         });
-        pluginsMenu.addMenuListener(configureMenu.getMenuListeners()[0]);
 
         menuBar.add(fileMenu);
         menuBar.add(settingsMenu);
@@ -805,6 +804,8 @@ public final class MainFrame extends JFrame implements WindowListener,
         
         if (menu.getItemCount() == 0) {
             menu.setEnabled(false);
+        } else {
+            menu.setEnabled(true);
         }
     }
 
