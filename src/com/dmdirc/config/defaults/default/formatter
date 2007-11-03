@@ -204,6 +204,7 @@ formatter.numeric_343 = %4$s %6$s %5$s\u000F.
 
 formatter.numeric_401 = 6A7000%4$s\u000F: %5$s
 formatter.numeric_404 = 6A7000%5$s
+formatter.numeric_405 = 6A7000%4$s\u000F: %5$s
 formatter.numeric_421 = 6A7000%4$s\u000F: %5$s
 formatter.numeric_433 = 6A7000%4$s\u000F: %5$s
 formatter.numeric_461 = 6A7000%4$s\u000F: %5$s
