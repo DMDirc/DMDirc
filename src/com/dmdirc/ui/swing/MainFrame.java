@@ -70,6 +70,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
 import java.util.Collection;
@@ -92,6 +93,7 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
+import javax.swing.MenuSelectionManager;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.MenuEvent;
@@ -224,6 +226,22 @@ public final class MainFrame extends JFrame implements WindowListener,
                 getOptionBool("ui", "showversion", false);
         IdentityManager.getGlobalConfig().
                 addChangeListener("ui", "showversion", this);
+        
+        //TODO: Remove me when we switch to java7
+        addWindowFocusListener(new WindowFocusListener() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void windowGainedFocus(WindowEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            /** {@inheritDoc} */
+            @Override
+            public void windowLostFocus(WindowEvent e) {
+                MenuSelectionManager.defaultManager().clearSelectedPath();
+            }
+        });
     }
 
     /** {@inheritDoc}. */
