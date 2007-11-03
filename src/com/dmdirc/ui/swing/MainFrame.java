@@ -233,7 +233,7 @@ public final class MainFrame extends JFrame implements WindowListener,
             /** {@inheritDoc} */
             @Override
             public void windowGainedFocus(WindowEvent e) {
-                throw new UnsupportedOperationException("Not supported yet.");
+                //Ignore
             }
 
             /** {@inheritDoc} */
