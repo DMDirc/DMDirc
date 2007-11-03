@@ -11,6 +11,10 @@ MYDIR="/home/dmdirc/google"
 ANT="/usr/bin/ant"
 # Path to svn binary
 SVN="/usr/bin/svn"
+# Path to zip binary
+ZIP="/usr/bin/zip"
+
+cd ${MYDIR}
 
 /bin/sh $MYDIR/oblong.sh "Nightly Build" "Build Started"
 rm -Rf $MYDIR/dist
@@ -36,14 +40,22 @@ mv ${MYDIR}/src/com/dmdirc/Main.java.tmp ${MYDIR}/src/com/dmdirc/Main.java
 # This makes sure we have a clean build with no stale class files, it just takes longer
 rm -Rf $MYDIR/build $MYDIR/dist
 
+# The date/svn prefix to add to the end of the file names of stuff
+FILEDATA=`date +_%Y%m%d`_${SVNREV}
+
 $ANT -buildfile $MYDIR/build.xml -k
 if [ -f $MYDIR/dist/DMDirc.jar ]; then
-	FILENAME=DMDirc`date +_%Y%m%d`_${SVNREV}.jar
+	FILENAME=DMDirc${FILEDATA}.jar
 	cp $MYDIR/dist/DMDirc.jar /home/dmdirc/www/nightly/$FILENAME
+	${ZIP} -r9 /home/dmdirc/www/nightly/Plugins${FILEDATA}.zip plugins
 	if [ -e $WWWDIR/nightly/DMDirc_latest.jar ]; then
 		rm $WWWDIR/nightly/DMDirc_latest.jar
 	fi
+	if [ -e $WWWDIR/nightly/Plugins_latest.zip ]; then
+		rm $WWWDIR/nightly/Plugins_latest.zip
+	fi
 	ln -s $WWWDIR/nightly/$FILENAME $WWWDIR/nightly/DMDirc_latest.jar
+	ln -s $WWWDIR/nightly/Plugins${FILEDATA}.zip $WWWDIR/nightly/Plugins_latest.zip
 	/bin/sh $MYDIR/oblong.sh "Nightly Build" "Build Successful";
 	/bin/sh $MYDIR/DoReports.sh
 else
