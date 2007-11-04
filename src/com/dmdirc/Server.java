@@ -23,7 +23,6 @@
 package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.CommandManager;
@@ -75,9 +74,6 @@ public final class Server extends WritableFrameContainer implements Serializable
     private static final String DOMAIN_PROFILE = "profile".intern();
     /** The name of the server domain. */
     private static final String DOMAIN_SERVER = "server".intern();
-
-    /** The name of the server notification target. */
-    private static final String NOTIFICATION_SERVER = "server".intern();
 
     /** Open channels that currently exist on the server. */
     private final Map<String, Channel> channels  = new Hashtable<String, Channel>();
@@ -869,120 +865,6 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
 
     /**
-     * Processes and displays a notification.
-     *
-     * @param messageType The name of the formatter to be used for the message
-     * @param actionType The action type to be used
-     * @param args The arguments for the message
-     */
-    public void doNotification(final String messageType,
-            final ActionType actionType, final Object... args) {
-        final List<Object> messageArgs = new ArrayList<Object>();
-        final List<Object> actionArgs = new ArrayList<Object>();
-        final StringBuffer buffer = new StringBuffer(messageType);
-
-        actionArgs.add(this);
-
-        for (Object arg : args) {
-            actionArgs.add(arg);
-
-            if (arg instanceof ClientInfo) {
-                final ClientInfo clientInfo = (ClientInfo) arg;
-                messageArgs.add(clientInfo.getNickname());
-                messageArgs.add(clientInfo.getIdent());
-                messageArgs.add(clientInfo.getHost());
-            } else {
-                messageArgs.add(arg);
-            }
-        }
-
-        ActionManager.processEvent(actionType, buffer, actionArgs.toArray());
-
-        handleNotification(messageType, messageArgs.toArray());
-    }
-
-    /**
-     * Handles general server notifications (i.e., ones note tied to a
-     * specific window). The user can select where the notifications should
-     * go in their config.
-     *
-     * @param messageType The type of message that is being sent
-     * @param args The arguments for the message
-     */
-    public void handleNotification(final String messageType, final Object... args) {
-        String target = configManager.getOption("notifications", messageType,
-                NOTIFICATION_SERVER);
-
-        if (target.startsWith("group:")) {
-            target = configManager.getOption("notifications", target.substring(6),
-                    NOTIFICATION_SERVER);
-        }
-
-        if (NOTIFICATION_SERVER.equals(target)) {
-            addLine(messageType, args);
-        } else if ("all".equals(target)) {
-            addLineToAll(messageType, args);
-        } else if ("active".equals(target)) {
-            addLineToActive(messageType, args);
-        } else if (target.startsWith("window:")) {
-            final String windowName = target.substring(7);
-
-            Window targetWindow = WindowManager.findCustomWindow(getFrame(), windowName);
-
-            if (targetWindow == null) {
-                targetWindow = new CustomWindow(windowName, windowName, getFrame()).getFrame();
-            }
-
-            targetWindow.addLine(messageType, args);
-        } else if (target.startsWith("lastcommand:")) {
-            final Object[] escapedargs = new Object[args.length];
-
-            for (int i = 0; i < args.length; i++) {
-                escapedargs[i] = "\\Q" + args[i] + "\\E";
-            }
-
-            final String command = String.format(target.substring(12), escapedargs);
-
-            WritableFrameContainer best = this;
-            long besttime = 0;
-
-            final List<WritableFrameContainer> containers
-                    = new ArrayList<WritableFrameContainer>();
-            containers.addAll(channels.values());
-            containers.addAll(queries.values());
-
-            if (raw != null) {
-                containers.add(raw);
-            }
-
-            for (WritableFrameContainer container: containers) {
-                final long time
-                        = container.getFrame().getCommandParser().getCommandTime(command);
-                if (time > besttime) {
-                    besttime = time;
-                    best = container;
-                }
-            }
-
-            best.addLine(messageType, args);
-        } else if (target.startsWith("channel:")) {
-           final String channel = String.format(target.substring(8), args);
-
-           if (hasChannel(channel)) {
-               getChannel(channel).addLine(messageType, args);
-           } else {
-               addLine(messageType, args);
-               Logger.userError(ErrorLevel.LOW,
-                       "Invalid notification target for type " + messageType
-                       + ": channel " + channel + " doesn't exist");
-           }
-        } else if (!"none".equals(target)) {
-            Logger.userError(ErrorLevel.MEDIUM,
-                    "Invalid notification target for type " + messageType + ": " + target);
-        }
-    }
-
-    /**
      * Replies to an incoming CTCP message.
      *
      * @param source The source of the message
@@ -1252,6 +1134,24 @@ public final class Server extends WritableFrameContainer implements Serializable
                         + " (" + parser.getIRCD(true) + ")\n\n"));
             }
         }
+    }
+    
+    /**
+     * Retrieves a list of all children of this server instance.
+     * 
+     * @return A list of this server's children
+     */
+    public List<WritableFrameContainer> getChildren() {
+        final List<WritableFrameContainer> res = new ArrayList<WritableFrameContainer>();
+        
+        if (raw != null) {
+            res.add(raw);
+        }
+        
+        res.addAll(channels.values());
+        res.addAll(queries.values());
+        
+        return res;
     }
 
     /**

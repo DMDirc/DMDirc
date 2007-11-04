@@ -27,8 +27,6 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.parser.ChannelInfo;
 import com.dmdirc.parser.ClientInfo;
@@ -36,16 +34,13 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.RollingList;
 
-import java.awt.Color;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The Channel class represents the client's view of the channel. It handles
@@ -671,48 +666,7 @@ public final class Channel extends MessageTarget
             return channelClient.getImportantModePrefix();
         }
     }
-    
-    /**
-     * Returns a string[] containing the nickname/ident/host of the client.
-     * @param client The channel client to check
-     * @return A string[] containing displayable components
-     */
-    private String[] getDetails(final ChannelClientInfo client) {
-        if (client == null) {
-            // WTF?
-            Logger.appError(ErrorLevel.HIGH,
-                    "Channel.getDetails called with null ChannelClientInfo",
-                    new UnsupportedOperationException());
-            return new String[]{"null", "null", "nullity.dmdirc.com"};
-        }
-        
-        final String[] res = new String[3];
-        res[0] = Styliser.CODE_NICKNAME + client.getNickname() + Styliser.CODE_NICKNAME;
-        res[1] = client.getClient().getIdent();
-        res[2] = client.getClient().getHost();
-        
-        if (configManager.getOptionBool("ui", "shownickcoloursintext", false)) {
-            final Map map = client.getMap();
-            String prefix = null;
-            Color colour;
-            
-            if (map.containsKey(ChannelClientProperty.TEXT_FOREGROUND)) {
-                colour = (Color) map.get(ChannelClientProperty.TEXT_FOREGROUND);
-                prefix = Styliser.CODE_HEXCOLOUR + ColourManager.getHex(colour);
-                if (map.containsKey(ChannelClientProperty.TEXT_BACKGROUND)) {
-                    colour = (Color) map.get(ChannelClientProperty.TEXT_BACKGROUND);
-                    prefix = "," + ColourManager.getHex(colour);
-                }
-            }
-            
-            if (prefix != null) {
-                res[0] = prefix + res[0] + Styliser.CODE_HEXCOLOUR;
-            }
-        }
-        
-        return res;
-    }
-    
+       
     /**
      * Retrieve the topics that have been seen on this channel.
      * 

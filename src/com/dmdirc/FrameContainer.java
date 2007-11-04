@@ -120,7 +120,7 @@ public abstract class FrameContainer {
     protected void clearNotification() {
         // TODO: This should default ot something colour independent
         notification = Color.BLACK;
-       
+
         for (NotificationListener listener : listeners.get(NotificationListener.class)) {
                 listener.notificationCleared(getFrame());
         }
@@ -133,11 +133,11 @@ public abstract class FrameContainer {
      */
     public void sendNotification(final Color colour) {
         final Window activeFrame = Main.getUI().getMainWindow().getActiveFrame();
-        
+
         if (activeFrame != null && !activeFrame.equals(getFrame())
                 && !colour.equals(notification)) {
             notification = colour;
-       
+
             for (NotificationListener listener : listeners.get(NotificationListener.class)) {
                 listener.notificationSet(getFrame(), colour);
             }
@@ -210,11 +210,11 @@ public abstract class FrameContainer {
                 Logger.userError(ErrorLevel.LOW, "Unable to maximise window");
             }
         }
-        
+
         for (SelectionListener listener : listeners.get(SelectionListener.class)) {
             listener.selectionChanged(getFrame());
-        }        
-        
+        }
+
         clearNotification();
 
         if (getServer() != null) {
@@ -254,16 +254,16 @@ public abstract class FrameContainer {
             getFrame().addLine(type, args);
         }
     }
-    
+
     /**
      * Informs icon change listeners that this container's icon has changed.
-     * 
+     *
      * @param newIcon This container's new icon
      */
     protected void iconUpdated(final Icon newIcon) {
         for (IconChangeListener listener : listeners.get(IconChangeListener.class)) {
             listener.iconChanged(getFrame(), newIcon);
-        }        
+        }
     }
 
     /**
@@ -283,7 +283,7 @@ public abstract class FrameContainer {
     public void removeNotificationListener(final NotificationListener listener) {
         listeners.remove(NotificationListener.class, listener);
     }
-    
+
     /**
      * Adds a selection listener for this frame container.
      *
@@ -300,8 +300,8 @@ public abstract class FrameContainer {
      */
     public void removeSelectionListener(final SelectionListener listener) {
         listeners.remove(SelectionListener.class, listener);
-    }    
-    
+    }
+
     /**
      * Adds an icon change listener for this frame container.
      *
@@ -318,5 +318,5 @@ public abstract class FrameContainer {
      */
     public void removeIconChangeListener(final IconChangeListener listener) {
         listeners.remove(IconChangeListener.class, listener);
-    }       
+    }
 }
