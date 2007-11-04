@@ -83,6 +83,8 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
             doForceUpdate();
         } else if ("serverinfo".equals(args[0])) {
             doServerInfo(origin, isSilent);
+        } else if ("benchmark".equals(args[0])) {
+            doBenchmark(origin, isSilent);
         } else {
             sendLine(origin, isSilent, FORMAT_ERROR, "Unknown debug action.");
         }
@@ -255,6 +257,32 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
         }
     }
     
+    /**
+     * Benchmarks the textpane.
+     * 
+     * @param origin The window this command was executed in
+     * @param isSilent Whether this command has been silenced or not
+     */
+    private void doBenchmark(final InputWindow origin, final boolean isSilent) {
+        long[] results = new long[10];
+        
+        for (int i = 0; i < results.length; i++) {
+            long start = System.nanoTime();
+            
+            for (int j = 0; j < 5000; j++) {
+                origin.addLine(FORMAT_OUTPUT, "This is a benchmark. Lorem ipsum doler...");
+            }
+            
+            long end = System.nanoTime();
+            
+            results[i] = end - start;
+        }
+        
+        for (int i = 0; i < results.length; i++) {
+            origin.addLine(FORMAT_OUTPUT, "Iteration " + i + ": " + results[i] + " nanoseconds.");
+        }
+    }
+    
     /** {@inheritDoc} */
     @Override
     public String getName() {
@@ -304,6 +332,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
             res.add("globalconfiginfo");
             res.add("forceupdate");
             res.add("serverinfo");
+            res.add("benchmark");
         } else if (arg == 1 && "error".equals(previousArgs.get(0))) {
             res.add("user");
             res.add("app");
