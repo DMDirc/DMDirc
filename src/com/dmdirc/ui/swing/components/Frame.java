@@ -446,8 +446,7 @@ public abstract class Frame extends JInternalFrame implements Window,
      * Not needed for this class. {@inheritDoc}
      */
     public void mouseReleased(final MouseEvent mouseEvent) {
-        if (getConfigManager().getOptionBool("ui", "quickCopy", false)
-        && mouseEvent.getSource() == getTextPane()) {
+        if (quickCopy && mouseEvent.getSource() == getTextPane()) {
             getTextPane().copy();
             getTextPane().clearSelection();
         }
@@ -546,8 +545,7 @@ public abstract class Frame extends JInternalFrame implements Window,
                 getTextPane().setScrollBarPosition(textPane.getNumLines());
             }
         }
-        if (!getConfigManager().getOptionBool("ui", "quickCopy", false)
-        && (event.getModifiers() & KeyEvent.CTRL_MASK) !=  0
+        if (!quickCopy && (event.getModifiers() & KeyEvent.CTRL_MASK) !=  0
                 && event.getKeyCode() == KeyEvent.VK_C) {
             getTextPane().copy();
         }
