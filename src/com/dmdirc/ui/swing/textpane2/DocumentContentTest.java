@@ -26,6 +26,7 @@ public class DocumentContentTest {
         
         for (int i = 0; i <= 1000; i++) {
         tp.getDocument().insertString(tp.getDocument().getLength(), "RAR.... RAR!!!! RARRRR\n", null);
+        Thread.yield();
         }
 
         try {

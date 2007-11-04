@@ -29,7 +29,6 @@ import java.util.Map;
 
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.GapContent;
 import javax.swing.text.Position;
 import javax.swing.text.Segment;
 import javax.swing.undo.UndoableEdit;
@@ -52,8 +51,6 @@ public class DocumentContent implements AbstractDocument.Content {
 
     private final Map<Integer, Integer> offsetCache = new HashMap<Integer, Integer>();
 
-    private GapContent gc = new GapContent();
-
     public DocumentContent() {
         try {
             offsetCache.put(0, 0);
@@ -69,20 +66,14 @@ public class DocumentContent implements AbstractDocument.Content {
     public Position createPosition(final int offset) throws BadLocationException {
         return new Position() {
 
-            private final Position p = gc.createPosition(offset);
             private final int meo = endOffset;
-            private final boolean move = offset == endOffset + 1 || (offset != 0 && offset == endOffset);
+            private final boolean move = offset == endOffset + 1
+                    || (offset != 0 && offset == endOffset);
 
             @Override
             public int getOffset() {
                 int myOffset = move ? 
                     ((offset != 0 && offset == meo) ? endOffset : endOffset + 1) : offset;
-                
-                if (p.getOffset() != myOffset) {
-                    System.out.println("offset wrong! Mine = " + myOffset
-                            + " gc's = " + p.getOffset() + " offset = " + offset
-                            + " move = " + move + " meo = " + meo);
-                }
                 
                 return myOffset;
             }
@@ -94,17 +85,13 @@ public class DocumentContent implements AbstractDocument.Content {
     public int length() {
         int res = endOffset + 1;
 
-        if (res != gc.length()) {
-            throw new UnsupportedOperationException("Length. Me = " + res + " gc = " + gc.length());
-        }
-
         return res;
     }
 
     /** {@inheritDoc} */
     @Override
-    public UndoableEdit insertString(final int where, final String str) throws BadLocationException {
-        gc.insertString(where, str);
+    public UndoableEdit insertString(final int where, final String str)
+            throws BadLocationException {
         if (where == endOffset) {
             final int newOffset = endOffset + str.length();
 
@@ -114,7 +101,6 @@ public class DocumentContent implements AbstractDocument.Content {
             int offset = endOffset / OFFSET_INDEX;
 
             while (newOffset / OFFSET_INDEX > offset) {
-                System.out.println("Adding offset: " + (offset + 1) + " => " + (data.size() - 1));
                 offsetCache.put(++offset, data.size() - 1);
             }
 
@@ -129,18 +115,14 @@ public class DocumentContent implements AbstractDocument.Content {
 
     /** {@inheritDoc} */
     @Override
-    public UndoableEdit remove(int where, int nitems) throws BadLocationException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public UndoableEdit remove(final int where, final int nitems) throws BadLocationException {
+        throw new UnsupportedOperationException("Not supported.");
     }
 
     /** {@inheritDoc} */
     @Override
     public String getString(final int where, final int len) throws BadLocationException {
-        String gcr = gc.getString(where, len);
-
         if (where + len > endOffset + 1 || where < 0 || len < 0) {
-            System.out.println("getString BLE!, Where = " + where + " len = "
-                    + len + " endOffset = " + endOffset + " gcr = " + dump(gcr));
             throw new BadLocationException("Invalid location/length",
                     where < 0 ? where : where + len);
         }
@@ -175,13 +157,6 @@ public class DocumentContent implements AbstractDocument.Content {
             offset++;
         } while (res.length() < len && offset < data.size());
 
-        if (!res.toString().equals(gcr)) {
-            throw new UnsupportedOperationException("getString: Where = "
-                    + where + " Length = " + len + " EndOffset = " + endOffset
-                    + " Me = " + dump(res.toString()) + " (" + res.length()
-                    + ") Gap = " + dump(gcr) + " (" + gcr.length() + ")");
-        }
-
         return res.toString();
     }
 
@@ -200,13 +175,7 @@ public class DocumentContent implements AbstractDocument.Content {
     }
 
     private int findOffset(final int where) {
-        int off = where / OFFSET_INDEX;
-        while (!offsetCache.containsKey(off)) {
-            System.out.println("offsetCache doesn't contain offset " + off + " (where = " + where + ")");
-            off--;
-        }
-        
-        int res = offsetCache.get(off);
+        int res = offsetCache.get(where / OFFSET_INDEX);
 
         while (endOffsets.get(res) < where) {
             res++;
@@ -217,20 +186,10 @@ public class DocumentContent implements AbstractDocument.Content {
 
     /** {@inheritDoc} */
     @Override
-    public void getChars(int where, int len, Segment txt) throws BadLocationException {
+    public void getChars(final int where, final int len, final Segment txt)
+            throws BadLocationException {
         txt.array = getString(where, len).toCharArray();
         txt.offset = 0;
         txt.count = txt.array.length;
-
-        final Segment txt2 = new Segment();
-        gc.getChars(where, len, txt2);
-
-        if (!new String(txt.array).substring(txt.offset, txt.offset + txt.count)
-                .equals(new String(txt2.array).substring(txt2.offset, txt2.offset + txt2.count))) {
-            throw new UnsupportedOperationException("getChars: Me = "
-                    + dump(new String(txt.array).substring(txt.offset, txt.offset + txt.count))
-                    + " Gap = "
-                    + dump(new String(txt2.array).substring(txt2.offset, txt2.offset + txt2.count)));
-        }
     }
 }
