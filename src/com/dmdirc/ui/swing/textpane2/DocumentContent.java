@@ -41,16 +41,38 @@ import javax.swing.undo.UndoableEdit;
  */
 public class DocumentContent implements AbstractDocument.Content {
 
+    /**
+     * The number of characters we should index the offset after. Smaller numbers
+     * mean more memory usage and more CPU time when adding lines, but shorter
+     * lookup times. Larger numbers mean less memory usage and CPU time when
+     * adding, but longer lookup timesb.
+     */
     private static final int OFFSET_INDEX = 5000;
 
+    /** The current end offset. */
     private int endOffset = 0;
 
+    /**
+     * The data belonging to this content. Generally each entry will be a single
+     * line (ending in LF), but there is no reason why this always has to be the
+     * case.
+     */
     private final List<String> data = new LinkedList<String>();
 
+    /** The end offset of each line. */
     private final List<Integer> endOffsets = new LinkedList<Integer>();
 
+    /**
+     * A cache of offsets to their corresponding index in the data/endOffsets
+     * list. A key of n references the (n*OFFSET_INDEX)th character, and the
+     * corresponding value will reference the line where that character
+     * occurs, or the line immediately before it.
+     */
     private final Map<Integer, Integer> offsetCache = new HashMap<Integer, Integer>();
 
+    /**
+     * Creates a new instance of DocumentContent.
+     */
     public DocumentContent() {
         try {
             offsetCache.put(0, 0);
@@ -83,9 +105,7 @@ public class DocumentContent implements AbstractDocument.Content {
     /** {@inheritDoc} */
     @Override
     public int length() {
-        int res = endOffset + 1;
-
-        return res;
+        return endOffset + 1; // The extra 1 is for our phantom LF
     }
 
     /** {@inheritDoc} */
@@ -106,8 +126,8 @@ public class DocumentContent implements AbstractDocument.Content {
 
             endOffset = newOffset;
         } else {
-            System.out.println("insertString BLE! wjere = " + where + " endOffset = " + endOffset);
-            throw new BadLocationException("Insering strings anywhere but the end = bad!", where);
+            throw new BadLocationException("Inserting strings at any offset" +
+                    " except the end of the document is not supported.", where);
         }
 
         return null;
@@ -145,13 +165,7 @@ public class DocumentContent implements AbstractDocument.Content {
             int end = beginning + len - res.length();
 
             if (beginning < part.length()) {
-                try {
-                    res.append(part.substring(beginning, Math.min(part.length(), end)));
-                } catch (StringIndexOutOfBoundsException ex) {
-                    throw new UnsupportedOperationException("Start = "
-                            + beginning + " End = " + end + " Len = " + len
-                            + " Alen = " + res.length(), ex);
-                }
+                res.append(part.substring(beginning, Math.min(part.length(), end)));
             }
 
             offset++;
@@ -160,20 +174,13 @@ public class DocumentContent implements AbstractDocument.Content {
         return res.toString();
     }
 
-    private String dump(final String subject) {
-        final StringBuilder res = new StringBuilder();
-
-        for (char ch : subject.toCharArray()) {
-            res.append((int) ch);
-            res.append('[');
-            res.append(ch == '\n' ? "\\n" : ch);
-            res.append(']');
-            res.append(' ');
-        }
-
-        return res.toString();
-    }
-
+    /**
+     * Looks up the offset of the specified location. Given a character index,
+     * returns the location of the specified character in the data list.
+     * 
+     * @param where The character index to lookup
+     * @return The location of the specified character in the data list
+     */
     private int findOffset(final int where) {
         int res = offsetCache.get(where / OFFSET_INDEX);
 
