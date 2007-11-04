@@ -42,6 +42,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JMenuItem;
+import javax.swing.JScrollPane;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
@@ -134,7 +135,7 @@ public final class ServerFrame extends InputFrame implements ServerWindow,
         constraints.weighty = 1.0;
         constraints.fill = GridBagConstraints.BOTH;
         constraints.insets = new Insets(0, 0, SMALL_BORDER, 0);
-        getContentPane().add(getTextPane(), constraints);
+        getContentPane().add(new JScrollPane(getTextPane()), constraints);
         
         constraints.weighty = 0.0;
         constraints.fill = GridBagConstraints.HORIZONTAL;

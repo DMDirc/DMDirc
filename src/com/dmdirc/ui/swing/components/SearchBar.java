@@ -205,12 +205,7 @@ public final class SearchBar extends JPanel implements ActionListener,
      * Searches the textpane for text.
      */
     public void search() {
-        if (!searchBox.getText().isEmpty()) {
-            if (line == -1) {
-                line = parent.getTextPane().getLastVisibleLine();
-            }
-            search(Direction.UP, searchBox.getText(), caseCheck.isSelected());
-        }
+        //do something
     }
     
     /**
@@ -248,66 +243,7 @@ public final class SearchBar extends JPanel implements ActionListener,
      * @return Whether the specified text was found
      */
     private boolean searchUp(final String text, final boolean caseSensitive) {
-        final TextPane textPane = parent.getTextPane();
-        
-        //check value within bounds
-        if (line > textPane.getNumLines() - 1) {
-            line = textPane.getNumLines() - 1;
-        }
-        if (line < 0) {
-            line = 0;
-        }
-        
-        //loop through lines
-        while (line >= 0) {
-            final String lineText;
-            int position;
-            
-            //get text
-            if (caseSensitive) {
-                lineText = textPane.getTextFromLine(line);
-            } else {
-                lineText = textPane.getTextFromLine(line).toLowerCase(Locale.getDefault());
-            }
-            
-            if (index == 0) {
-                position = lineText.length();
-            } else {
-                position = index;
-            }
-            //loop through the line
-            while (position >= 0) {
-                //check for position
-                if (caseSensitive) {
-                    position = lineText.substring(0, position).lastIndexOf(text);
-                } else {
-                    position = lineText.substring(0, position).lastIndexOf(text.toLowerCase(Locale.getDefault()));
-                }
-                if (position == -1) {
-                    //not found, break look and move to next line
-                    line--;
-                    index = 0;
-                    break;
-                } else {
-                    //found, select and return found
-                    textPane.setScrollBarPosition(line);
-                    textPane.setSelectedTexT(line, position, line, position + text.length());
-                    index = position;
-                    return true;
-                }
-            }
-        }
-        
-        //want to continue?
-        if (JOptionPane.showConfirmDialog((MainFrame) Main.getUI().getMainWindow(),
-                "Do you want to continue searching from the end?",
-                "Beginning reached", JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-            line = parent.getTextPane().getNumLines() - 1;
-            index = 0;
-            return searchUp(text, caseSensitive);
-        }
-        
+        //search
         return false;
     }
     
@@ -320,60 +256,7 @@ public final class SearchBar extends JPanel implements ActionListener,
      * @return Whether the specified text was found
      */
     private boolean searchDown(final String text, final boolean caseSensitive) {
-        final TextPane textPane = parent.getTextPane();
-        
-        //check value within bounds
-        if (line > textPane.getNumLines() - 1) {
-            line = textPane.getNumLines() - 1;
-        }
-        if (line < 0) {
-            line = 0;
-        }
-        
-        //loop through lines
-        while (line < textPane.getNumLines()) {
-            final String lineText;
-            //get text
-            if (caseSensitive) {
-                lineText = textPane.getTextFromLine(line);
-            } else {
-                lineText = textPane.getTextFromLine(line).toLowerCase(Locale.getDefault());
-            }
-            int position = index;
-            //loop through the line
-            while (position < lineText.length()) {
-                //check for position
-                if (caseSensitive) {
-                    position = lineText.indexOf(text, position);
-                } else {
-                    position = lineText.indexOf(text.toLowerCase(Locale.getDefault()), position);
-                }
-                if (position == -1) {
-                    //not found, break look and move to next line
-                    line++;
-                    index = 0;
-                    break;
-                } else {
-                    //found, select and return found
-                    textPane.setScrollBarPosition(line);
-                    textPane.setSelectedTexT(line, position, line, position + text.length());
-                    position = position + text.length();
-                    index = position;
-                    return true;
-                }
-            }
-        }
-        
-        //want to continue?
-        if (JOptionPane.showConfirmDialog((MainFrame) Main.getUI().getMainWindow(),
-                "Do you want to continue searching from the beginning?",
-                "End reached", JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-            line = 0;
-            index = 0;
-            return searchDown(text, caseSensitive);
-        }
-        
+        //search        
         return false;
     }
     
@@ -386,26 +269,8 @@ public final class SearchBar extends JPanel implements ActionListener,
      * @return Whether the text exists
      */
     public boolean checkOccurs(final String text, final boolean caseSensitive) {
-        final TextPane textPane = parent.getTextPane();
-        boolean foundText = false;
-        int i;
-        
-        for (i = textPane.getNumLines() - 1; i >= 0; i--) {
-            final String lineText;
-            final int position;
-            if (caseSensitive) {
-                lineText = textPane.getTextFromLine(i);
-                position = lineText.indexOf(text);
-            } else {
-                lineText = textPane.getTextFromLine(i).toLowerCase(Locale.getDefault());
-                position = lineText.indexOf(text.toLowerCase(Locale.getDefault()));
-            }
-            if (position != -1 && textPane.getSelectedRange()[0] != i) {
-                foundText = true;
-                break;
-            }
-        }
-        return foundText;
+        //check
+        return false;
     }
     
     /** {@inheritDoc}. */
@@ -421,9 +286,6 @@ public final class SearchBar extends JPanel implements ActionListener,
                 close();
             } else if (event.getKeyCode() == KeyEvent.VK_ENTER) {
                 search(Direction.UP, searchBox.getText(), caseCheck.isSelected());
-            } else {
-                line = parent.getTextPane().getLastVisibleLine();
-                index = 0;
             }
         }
     }

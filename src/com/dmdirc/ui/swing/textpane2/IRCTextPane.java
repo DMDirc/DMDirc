@@ -22,11 +22,11 @@
 
 package com.dmdirc.ui.swing.textpane2;
 
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.messages.Styliser;
+import com.dmdirc.ui.swing.components.Frame;
 
 import javax.swing.JTextPane;
-import javax.swing.text.BadLocationException;
+import javax.swing.text.StyledDocument;
 
 /** Text pane designed for IRC. */
 public class IRCTextPane extends JTextPane {
@@ -59,14 +59,7 @@ public class IRCTextPane extends JTextPane {
      * @param strings Unstyled lines to add
      */
     public void addStyledString(final String[] strings) {
-        //Styliser.addStyledString((StyledDocument) getDocument(), string);
-        for (String str : strings) {
-            try {
-                getDocument().insertString(getDocument().getLength(), str, null);
-            } catch (BadLocationException ex) {
-                Logger.appError(ErrorLevel.HIGH, "Adding a line to the document failed.", ex);
-            }
-        }
+        Styliser.addStyledString((StyledDocument) getDocument(), strings);
     }
 
     /**
@@ -78,6 +71,10 @@ public class IRCTextPane extends JTextPane {
         addStyledString(new String[]{string});
     }
 
+    public void addTextPaneListener(Frame aThis) {
+        //do something with this
+    }
+
     /** Clears the textpane. */
     public void clear() {
         setDocument(new IRCDocument());
@@ -85,8 +82,8 @@ public class IRCTextPane extends JTextPane {
 
     /** Clears the selection in the textpane. */
     public void clearSelection() {
-        setSelectionStart(0);
-        setSelectionEnd(0);
+        setSelectionStart(getSelectionEnd());
+        setSelectionEnd(getSelectionStart());
     }
 
     /**

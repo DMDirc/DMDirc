@@ -33,6 +33,7 @@ import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import javax.swing.JScrollPane;
 
 /**
  * The QueryFrame is the MDI window that shows query messages to the user.
@@ -90,7 +91,7 @@ public final class QueryFrame extends InputFrame implements QueryWindow {
         constraints.weighty = 1.0;
         constraints.fill = GridBagConstraints.BOTH;
         constraints.insets = new Insets(0, 0, SMALL_BORDER, 0);
-        getContentPane().add(getTextPane(), constraints);
+        getContentPane().add(new JScrollPane(getTextPane()), constraints);
         
         
         constraints.weighty = 0.0;
