@@ -1,10 +1,23 @@
 /*
- * DocumentContent.java
+ * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
- * Created on 27-Oct-2007, 00:31:23
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package com.dmdirc.ui.swing.textpane2;
@@ -13,7 +26,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Semaphore;
+
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.GapContent;
@@ -22,14 +35,14 @@ import javax.swing.text.Segment;
 import javax.swing.undo.UndoableEdit;
 
 /**
- *
+ * An AbstractDocument.Content implementation that uses linked lists to enable
+ * rapid addition of text to the end of the document.
+ * 
  * @author chris
  */
 public class DocumentContent implements AbstractDocument.Content {
 
     private static final int OFFSET_INDEX = 5000;
-
-    private final Semaphore semaphore = new Semaphore(1, true);
 
     private int endOffset = 0;
 
@@ -43,14 +56,15 @@ public class DocumentContent implements AbstractDocument.Content {
 
     public DocumentContent() {
         try {
-        offsetCache.put(0, 0);
+            offsetCache.put(0, 0);
 
             insertString(0, "");
         } catch (BadLocationException ex) {
             // Something's fucked. Oh well.
-    }
+        }
     }
 
+    /** {@inheritDoc} */
     @Override
     public Position createPosition(final int offset) throws BadLocationException {
         return new Position() {
@@ -59,8 +73,8 @@ public class DocumentContent implements AbstractDocument.Content {
             private final int meo = endOffset;
             private final boolean move = offset == endOffset + 1 || (offset != 0 && offset == endOffset);
 
+            @Override
             public int getOffset() {
-                semaphore.acquireUninterruptibly();
                 int myOffset = move ? 
                     ((offset != 0 && offset == meo) ? endOffset : endOffset + 1) : offset;
                 
@@ -70,17 +84,15 @@ public class DocumentContent implements AbstractDocument.Content {
                             + " move = " + move + " meo = " + meo);
                 }
                 
-                semaphore.release();
                 return myOffset;
             }
         };
     }
 
+    /** {@inheritDoc} */
     @Override
     public int length() {
-        semaphore.acquireUninterruptibly();
         int res = endOffset + 1;
-        semaphore.release();
 
         if (res != gc.length()) {
             throw new UnsupportedOperationException("Length. Me = " + res + " gc = " + gc.length());
@@ -89,11 +101,9 @@ public class DocumentContent implements AbstractDocument.Content {
         return res;
     }
 
+    /** {@inheritDoc} */
     @Override
     public UndoableEdit insertString(final int where, final String str) throws BadLocationException {
-        System.out.println("insertString " + str.length());
-        semaphore.acquireUninterruptibly();
-
         gc.insertString(where, str);
         if (where == endOffset) {
             final int newOffset = endOffset + str.length();
@@ -108,38 +118,31 @@ public class DocumentContent implements AbstractDocument.Content {
             }
 
             endOffset = newOffset;
-            semaphore.release();
         } else {
             System.out.println("insertString BLE! wjere = " + where + " endOffset = " + endOffset);
-            semaphore.release();
             throw new BadLocationException("Insering strings anywhere but the end = bad!", where);
         }
 
-        //System.out.println("Done\n");
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public UndoableEdit remove(int where, int nitems) throws BadLocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getString(final int where, final int len) throws BadLocationException {
         String gcr = gc.getString(where, len);
 
-        semaphore.acquireUninterruptibly();
         if (where + len > endOffset + 1 || where < 0 || len < 0) {
             System.out.println("getString BLE!, Where = " + where + " len = "
                     + len + " endOffset = " + endOffset + " gcr = " + dump(gcr));
-            semaphore.release();
             throw new BadLocationException("Invalid location/length",
                     where < 0 ? where : where + len);
         }
-
-        //System.out.println("\n-------------------------------------------------");
-        //System.out.println("Where = " + where + " len = " + len + " endOffset = "
-        //        + endOffset + " gcr = " + dump(gcr));
 
         final StringBuilder res = new StringBuilder(len);
         int offset = 0; //findOffset(where);
@@ -158,12 +161,9 @@ public class DocumentContent implements AbstractDocument.Content {
             int beginning = Math.max(loc - start, 0);
             int end = beginning + len - res.length();
 
-            //System.out.println("part = " + dump(part) + " start = " + start
-            //        + " beginning = " + beginning + " end = " + end);
             if (beginning < part.length()) {
                 try {
                     res.append(part.substring(beginning, Math.min(part.length(), end)));
-                    //System.out.println("res = " + dump(res.toString())+"\n");
                 } catch (StringIndexOutOfBoundsException ex) {
                     throw new UnsupportedOperationException("Start = "
                             + beginning + " End = " + end + " Len = " + len
@@ -173,8 +173,6 @@ public class DocumentContent implements AbstractDocument.Content {
 
             offset++;
         } while (res.length() < len && offset < data.size());
-
-        semaphore.release();
 
         if (!res.toString().equals(gcr)) {
             throw new UnsupportedOperationException("getString: Where = "
@@ -210,6 +208,7 @@ public class DocumentContent implements AbstractDocument.Content {
         return res;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void getChars(int where, int len, Segment txt) throws BadLocationException {
         txt.array = getString(where, len).toCharArray();
