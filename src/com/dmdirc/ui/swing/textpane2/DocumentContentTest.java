@@ -29,7 +29,7 @@ public class DocumentContentTest {
         //}
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(500);
         } catch (InterruptedException ex) {
             //Ignore
         }
@@ -37,7 +37,7 @@ public class DocumentContentTest {
         tp.getDocument().insertString(tp.getDocument().getLength(), "RAR1\n", null);
         
         try {
-            Thread.sleep(5000);
+            Thread.sleep(500);
         } catch (InterruptedException ex) {
             //Ignore
         }
