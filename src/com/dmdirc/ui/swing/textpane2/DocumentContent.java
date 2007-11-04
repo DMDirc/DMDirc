@@ -113,18 +113,15 @@ public class DocumentContent implements AbstractDocument.Content {
     public UndoableEdit insertString(final int where, final String str)
             throws BadLocationException {
         if (where == endOffset) {
-            final int newOffset = endOffset + str.length();
+            int offset = endOffset / OFFSET_INDEX;
+            endOffset += str.length();
 
             data.add(str);
-            endOffsets.add(newOffset);
+            endOffsets.add(endOffset);
 
-            int offset = endOffset / OFFSET_INDEX;
-
-            while (newOffset / OFFSET_INDEX > offset) {
+            while (endOffset / OFFSET_INDEX > offset) {
                 offsetCache.put(++offset, data.size() - 1);
             }
-
-            endOffset = newOffset;
         } else {
             throw new BadLocationException("Inserting strings at any offset" +
                     " except the end of the document is not supported.", where);
@@ -154,18 +151,19 @@ public class DocumentContent implements AbstractDocument.Content {
         do {
             String part = data.get(offset);
             
-            if (offset == data.size() - 1) {
-                part = part + "\n";
-            }
-            
             int start = endOffsets.get(offset) - part.length();
-            start = offset == data.size() - 1 ? start + 1 : start;
+            
+            if (offset == data.size() - 1) {
+                // Last line - add our phantom LF
+                part = part + "\n";
+                start++;
+            }
 
             int beginning = Math.max(loc - start, 0);
-            int end = beginning + len - res.length();
+            int end = Math.min(part.length(), beginning + len - res.length());
 
             if (beginning < part.length()) {
-                res.append(part.substring(beginning, Math.min(part.length(), end)));
+                res.append(part.substring(beginning, end));
             }
 
             offset++;
