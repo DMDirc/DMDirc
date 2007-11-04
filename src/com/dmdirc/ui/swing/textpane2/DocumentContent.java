@@ -111,10 +111,11 @@ public class DocumentContent implements AbstractDocument.Content {
             data.add(str);
             endOffsets.add(newOffset);
 
-            int offset = 1 + (endOffset % OFFSET_INDEX);
+            int offset = endOffset / OFFSET_INDEX;
 
-            while (newOffset % OFFSET_INDEX > offset) {
-                offsetCache.put(offset++, data.size() - 1);
+            while (newOffset / OFFSET_INDEX > offset) {
+                System.out.println("Adding offset: " + (offset + 1) + " => " + (data.size() - 1));
+                offsetCache.put(++offset, data.size() - 1);
             }
 
             endOffset = newOffset;
@@ -145,8 +146,8 @@ public class DocumentContent implements AbstractDocument.Content {
         }
 
         final StringBuilder res = new StringBuilder(len);
-        int offset = 0; //findOffset(where);
-        int loc = endOffset == 1 ? where : where;
+        int offset = findOffset(where);
+        int loc = where;
 
         do {
             String part = data.get(offset);
@@ -199,12 +200,18 @@ public class DocumentContent implements AbstractDocument.Content {
     }
 
     private int findOffset(final int where) {
-        int res = offsetCache.get(where / OFFSET_INDEX);
+        int off = where / OFFSET_INDEX;
+        while (!offsetCache.containsKey(off)) {
+            System.out.println("offsetCache doesn't contain offset " + off + " (where = " + where + ")");
+            off--;
+        }
+        
+        int res = offsetCache.get(off);
 
         while (endOffsets.get(res) < where) {
             res++;
         }
-
+        
         return res;
     }
 

@@ -24,9 +24,9 @@ public class DocumentContentTest {
         
         frame.setVisible(true);
         
-        //for (int i = 0; i <= 1000; i++) {
-        tp.getDocument().insertString(tp.getDocument().getLength(), "RAR\n", null);
-        //}
+        for (int i = 0; i <= 1000; i++) {
+        tp.getDocument().insertString(tp.getDocument().getLength(), "RAR.... RAR!!!! RARRRR\n", null);
+        }
 
         try {
             Thread.sleep(500);
