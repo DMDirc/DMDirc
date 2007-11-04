@@ -32,13 +32,15 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
+import com.dmdirc.ui.messages.IRCTextAttribute;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.actions.SearchAction;
+import com.dmdirc.ui.swing.textpane.TextPane;
 import com.dmdirc.ui.swing.textpane.TextPaneListener;
-import com.dmdirc.ui.swing.textpane2.IRCTextPane;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
@@ -56,6 +58,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
+import java.text.AttributedCharacterIterator;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
@@ -91,7 +94,7 @@ public abstract class Frame extends JInternalFrame implements Window,
     private final FrameContainer parent;
     
     /** Frame output pane. */
-    private IRCTextPane textPane;
+    private TextPane textPane;
     
     /** Popupmenu for this frame. */
     private JPopupMenu popup;
@@ -191,9 +194,9 @@ public abstract class Frame extends JInternalFrame implements Window,
                     if (timestamp) {
                         getTextPane().addStyledString(new String[]{
                             Formatter.formatMessage("timestamp", new Date()),
-                            myLine + "\n", });
+                            myLine, });
                     } else {
-                        getTextPane().addStyledString(myLine + "\n");
+                        getTextPane().addStyledString(myLine);
                     }
                     if (frameBufferSize > 0) {
                         textPane.trim(frameBufferSize);
@@ -226,7 +229,7 @@ public abstract class Frame extends JInternalFrame implements Window,
      * Initialises the components for this frame.
      */
     private void initComponents() {
-        setTextPane(new IRCTextPane());
+        setTextPane(new TextPane(getContainer()));
         
         getTextPane().addMouseListener(this);
         getTextPane().addKeyListener(this);
@@ -392,7 +395,7 @@ public abstract class Frame extends JInternalFrame implements Window,
      *
      * @return Text pane for this frame
      */
-    public final IRCTextPane getTextPane() {
+    public final TextPane getTextPane() {
         return textPane;
     }
     
@@ -419,7 +422,7 @@ public abstract class Frame extends JInternalFrame implements Window,
      *
      * @param newTextPane new text pane to use
      */
-    protected final void setTextPane(final IRCTextPane newTextPane) {
+    protected final void setTextPane(final TextPane newTextPane) {
         this.textPane = newTextPane;
     }
     
@@ -471,7 +474,33 @@ public abstract class Frame extends JInternalFrame implements Window,
      */
     @Override
     public void processMouseEvent(final MouseEvent e) {
-        //do popups.
+        if (e.isPopupTrigger() && e.getSource() == getTextPane()) {
+            final Point point = getTextPane().getMousePosition();
+            if (point != null) {
+                hyperlinkOpenMI.setActionCommand("");
+                hyperlinkOpenMI.setVisible(false);
+                hyperlinkCopyMI.setVisible(false);
+                final int[] info = textPane.getClickPosition(point);
+                if (info[0] != -1) {
+                    final AttributedCharacterIterator iterator = textPane.getLine(info[0]).getIterator();
+                    iterator.setIndex(info[2]);
+                    final Object linkattr = iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
+                    if (linkattr instanceof String) {
+                        hyperlinkCopyMI.setVisible(true);
+                        hyperlinkOpenMI.setVisible(true);
+                        hyperlinkOpenMI.setActionCommand((String) linkattr);
+                    }
+                }
+                
+                final int[] selection = textPane.getSelectedRange();
+                if ((selection[0] == selection[2] && selection[1] == selection[3])) {
+                    copyMI.setEnabled(false);
+                } else {
+                    copyMI.setEnabled(true);
+                }
+                getPopup().show(this, (int) point.getX(), (int) point.getY());
+            }
+        }
         super.processMouseEvent(e);
     }
     
@@ -503,6 +532,19 @@ public abstract class Frame extends JInternalFrame implements Window,
     
     /** {@inheritDoc} */
     public void keyPressed(final KeyEvent event) {
+        if ((event.getModifiers() & KeyEvent.CTRL_MASK) ==  0) {
+            if (event.getKeyCode() == KeyEvent.VK_PAGE_UP) {
+                getTextPane().pageUp();
+            } else if (event.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
+                getTextPane().pageDown();
+            }
+        } else {
+            if (event.getKeyCode() == KeyEvent.VK_HOME) {
+                getTextPane().setScrollBarPosition(0);
+            } else if (event.getKeyCode() == KeyEvent.VK_END) {
+                getTextPane().setScrollBarPosition(textPane.getNumLines());
+            }
+        }
         if (!quickCopy && (event.getModifiers() & KeyEvent.CTRL_MASK) !=  0
                 && event.getKeyCode() == KeyEvent.VK_C) {
             getTextPane().copy();

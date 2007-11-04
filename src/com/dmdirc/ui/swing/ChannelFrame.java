@@ -204,7 +204,7 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
         getContentPane().add(splitPane, BorderLayout.CENTER);
         getContentPane().add(panel, BorderLayout.PAGE_END);
         
-        splitPane.setLeftComponent(new JScrollPane(getTextPane()));
+        splitPane.setLeftComponent(getTextPane());
         splitPane.setRightComponent(nickScrollPane);
         
         splitPane.setDividerLocation((double) 1);

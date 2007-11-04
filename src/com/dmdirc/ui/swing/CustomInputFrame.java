@@ -31,7 +31,6 @@ import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import javax.swing.JScrollPane;
 
 /**
  * A custom frame that includes an input field (for use with writable
@@ -86,7 +85,7 @@ public class CustomInputFrame extends InputFrame {
         constraints.weighty = 1.0;
         constraints.fill = GridBagConstraints.BOTH;
         constraints.insets = new Insets(0, 0, 0, 0);
-        getContentPane().add(new JScrollPane(getTextPane()), constraints);
+        getContentPane().add(getTextPane(), constraints);
         
         
         constraints.weighty = 0.0;
