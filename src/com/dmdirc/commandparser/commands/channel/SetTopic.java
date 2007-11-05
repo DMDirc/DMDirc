@@ -26,7 +26,6 @@ import com.dmdirc.Channel;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.parser.ChannelInfo;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
@@ -50,35 +49,40 @@ public final class SetTopic extends ChannelCommand {
      * @param isSilent Whether this command is silenced or not
      * @param args The user supplied arguments
      */
+    @Override
     public void execute(final InputWindow origin, final Server server,
             final Channel channel, final boolean isSilent, final String... args) {
-        final ChannelInfo cChannel = channel.getChannelInfo();
         final String newTopic = implodeArgs(args);
         
-        server.getParser().sendLine("TOPIC " + cChannel.getName() + " :" + newTopic);
+        channel.setTopic(newTopic);
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "topic";
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public boolean isPolyadic() {
         return true;
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public int getArity() {
         return 0;
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getHelp() {
         return "topic <new topic> - sets the channel topic to the one specified";
     }

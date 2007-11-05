@@ -99,7 +99,7 @@ public final class TopicPane extends JPanel implements KeyListener,
                 topicLengthMax =
                         Integer.parseInt(iSupport.get("TOPICLEN"));
             } catch (NumberFormatException ex) {
-                topicLengthMax = 250;
+                topicLengthMax = 0;
                 Logger.userError(ErrorLevel.LOW,
                         "IRCD doesnt supply topic length");
             }
@@ -181,13 +181,12 @@ public final class TopicPane extends JPanel implements KeyListener,
     /** Processes the topic and changes it if necessary. */
     protected void setChangedTopic() {
         if (!channel.getChannelInfo().getTopic().equals(topicText.getText())) {
-            channel.getServer().getParser().
-                    sendLine("TOPIC " + channel.getChannelInfo().getName() + ""
-                    + " :" + topicText.getText());
+            channel.setTopic(topicText.getText());
         }
     }
     
     /** {@inheritDoc}. */
+    @Override
     public void keyTyped(final KeyEvent keyEvent) {
         //Ignore
     }
@@ -214,6 +213,7 @@ public final class TopicPane extends JPanel implements KeyListener,
     }
     
     /** {@inheritDoc}. */
+    @Override
     public void keyPressed(final KeyEvent keyEvent) {
         if (keyEvent.getKeyCode() == KeyEvent.VK_ENTER
                 && keyEvent.getSource() == topicText) {
@@ -223,21 +223,25 @@ public final class TopicPane extends JPanel implements KeyListener,
     }
     
     /** {@inheritDoc}. */
+    @Override
     public void keyReleased(final KeyEvent keyEvent) {
         //ignore, unused.
     }
     
     /** {@inheritDoc}. */
+    @Override
     public void insertUpdate(final DocumentEvent e) {
         topicChanged();
     }
     
     /** {@inheritDoc}. */
+    @Override
     public void removeUpdate(final DocumentEvent e) {
         topicChanged();
     }
     
     /** {@inheritDoc}. */
+    @Override
     public void changedUpdate(final DocumentEvent e) {
         //Ignore
     }

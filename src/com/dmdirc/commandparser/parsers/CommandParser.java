@@ -41,6 +41,7 @@ import java.util.Map;
  * Represents a generic command parser. A command parser takes a line of input
  * from the user, determines if it is an attempt at executing a command (based
  * on the character at the start of the string), and handles it appropriately.
+ * 
  * @author chris
  */
 public abstract class CommandParser implements Serializable {
@@ -73,6 +74,7 @@ public abstract class CommandParser implements Serializable {
     
     /**
      * Registers the specified command with this parser.
+     * 
      * @param command Command to be registered
      */
     public final void registerCommand(final Command command) {
@@ -81,6 +83,7 @@ public abstract class CommandParser implements Serializable {
     
     /**
      * Unregisters the specified command with this parser.
+     * 
      * @param command Command to be unregistered
      */
     public final void unregisterCommand(final Command command) {
@@ -89,6 +92,7 @@ public abstract class CommandParser implements Serializable {
     
     /**
      * Parses the specified string as a command.
+     * 
      * @param origin The window in which the command was typed
      * @param line The line to be parsed
      * @param parseChannel Whether or not to try and parse the first argument
@@ -116,8 +120,7 @@ public abstract class CommandParser implements Serializable {
             if (args.length >= 2 && parseChannel && origin != null
                     && origin.getContainer() != null
                     && origin.getContainer().getServer() != null
-                    && origin.getContainer().getServer().getParser() != null
-                    && origin.getContainer().getServer().getParser().isValidChannelName(args[1])
+                    && origin.getContainer().getServer().isValidChannelName(args[1])
                     && CommandManager.isChannelCommand(command)) {
                 final Server server = origin.getContainer().getServer();
                 
@@ -204,6 +207,7 @@ public abstract class CommandParser implements Serializable {
     
     /**
      * Parses the specified string as a command.
+     * 
      * @param origin The window in which the command was typed
      * @param line The line to be parsed
      */
@@ -214,6 +218,7 @@ public abstract class CommandParser implements Serializable {
     
     /**
      * Handles the specified string as a non-command.
+     * 
      * @param origin The window in which the command was typed
      * @param line The line to be parsed
      */
@@ -223,6 +228,7 @@ public abstract class CommandParser implements Serializable {
     
     /**
      * Executes the specified command with the given arguments.
+     * 
      * @param origin The window in which the command was typed
      * @param isSilent Whether the command is being silenced or not
      * @param command The command to be executed
@@ -257,6 +263,7 @@ public abstract class CommandParser implements Serializable {
     /**
      * Called when the input was a line of text that was not a command. This normally
      * means it is sent to the server/channel/user as-is, with no further processing.
+     * 
      * @param origin The window in which the command was typed
      * @param line The line input by the user
      */

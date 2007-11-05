@@ -696,4 +696,16 @@ public final class Channel extends MessageTarget
             showModePrefix = configManager.getOptionBool("channel", "showmodeprefix", false);
         }
     }
+    
+    // ------------------------------------------ PARSER METHOD DELEGATION -----
+    
+    /**
+     * Attempts to set the topic of this channel.
+     * 
+     * @param topic The new topic to be used. An empty string will clear the
+     * current topic
+     */
+    public void setTopic(final String topic) {
+        server.getParser().sendLine("TOPIC " + channelInfo.getName() + " :" + topic);
+    }
 }

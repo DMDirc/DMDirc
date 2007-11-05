@@ -178,13 +178,15 @@ public final class Server extends WritableFrameContainer implements Serializable
                 }
             }
         }, 0, configManager.getOptionInt(DOMAIN_GENERAL, "whotime", 60000));
-        
+
         if (configManager.getOptionBool(DOMAIN_GENERAL, "showrawwindow", false)) {
             addRaw();
-        }        
+        }
 
         connect(server, port, password, ssl, profile);
     }
+
+    // ------------------------ CONNECTION, DISCONNECTION AND RECONNECTION -----
 
     /**
      * Connects to a new server with the specified details.
@@ -202,7 +204,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     public void connect(final String server, final int port, final String password,
             final boolean ssl, final Identity profile) {
         assert(profile != null);
-        
+
         synchronized(myState) {
             switch (myState) {
             case RECONNECT_WAIT:
@@ -267,71 +269,6 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
 
     /**
-     * Updates this server's icon.
-     */
-    private void updateIcon() {
-        icon = IconManager.getIconManager().getIcon(
-                myState == ServerState.CONNECTED ?
-                    serverInfo.getSSL() ? "secure-server" : "server" : "server-disconnected");
-        if (window != null) {
-            window.setFrameIcon(icon);
-
-            iconUpdated(icon);
-        }
-    }
-
-    /**
-     * Retrieves the MyInfo object used for the IRC Parser.
-     *
-     * @return The MyInfo object for our profile
-     */
-    @Precondition("The current profile is not null")
-    private MyInfo getMyInfo() {
-        assert(profile != null);
-        
-        final MyInfo myInfo = new MyInfo();
-        myInfo.setNickname(profile.getOption(DOMAIN_PROFILE, "nickname"));
-        myInfo.setRealname(profile.getOption(DOMAIN_PROFILE, "realname"));
-
-        if (profile.hasOption(DOMAIN_PROFILE, "ident")) {
-            myInfo.setUsername(profile.getOption(DOMAIN_PROFILE, "ident"));
-        }
-
-        return myInfo;
-    }
-
-    /**
-     * Registers callbacks.
-     */
-    private void doCallbacks() {
-        if (raw != null) {
-            raw.registerCallbacks();
-        }
-
-        eventHandler.registerCallbacks();
-
-        for (Query query : queries.values()) {
-            query.reregister();
-        }
-    }
-    
-    /**
-     * Joins the specified channel.
-     * 
-     * @param channel The channel to be joined
-     */
-    @Precondition("This server is connected")
-    public void join(final String channel) {
-        assert(myState == ServerState.CONNECTED);
-        
-        if (hasChannel(channel)) {
-            getChannel(channel).join();
-        } else {
-            parser.joinChannel(channel);
-        }
-    }
-
-    /**
      * Reconnects to the IRC server with a specified reason.
      *
      * @param reason The quit reason to send
@@ -355,38 +292,72 @@ public final class Server extends WritableFrameContainer implements Serializable
         reconnect(configManager.getOption(DOMAIN_GENERAL, "reconnectmessage"));
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void sendLine(final String line) {
+    /**
+     * Disconnects from the server.
+     *
+     * @param reason disconnect reason
+     */
+    public void disconnect(final String reason) {
         synchronized(myState) {
-            if (parser != null && myState == ServerState.CONNECTED) {
-                parser.sendLine(window.getTranscoder().encode(line));
+            switch (myState) {
+            case CLOSING:
+            case DISCONNECTED:
+            case TRANSIENTLY_DISCONNECTED:
+                return;
+            case RECONNECT_WAIT:
+                reconnectTimer.cancel();
+                break;
+            default:
+                break;
+            }
+
+            myState = ServerState.DISCONNECTED;
+        }
+
+        updateIcon();
+
+        if (parser != null && parser.getSocketState() == IRCParser.STATE_OPEN) {
+            parser.disconnect(reason);
+
+            if (configManager.getOptionBool(DOMAIN_GENERAL, "closechannelsonquit", false)) {
+                closeChannels();
+            } else {
+                clearChannels();
+            }
+
+            if (configManager.getOptionBool(DOMAIN_GENERAL, "closequeriesonquit", false)) {
+                closeQueries();
             }
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public int getMaxLineLength() {
-        return IRCParser.MAX_LINELENGTH;
     }
 
     /**
-     * Updates the ignore list for this server.
+     * Schedules a reconnect attempt to be performed after a user-defiend delay.
      */
-    public void updateIgnoreList() {
-        if (parser == null || parser.getIgnoreList() == null) {
-            return;
-        }
+    private void doDelayedReconnect() {
+        final int delay = Math.max(1,
+                configManager.getOptionInt(DOMAIN_GENERAL, "reconnectdelay", 5));
 
-        parser.getIgnoreList().clear();
+        handleNotification("connectRetry", getName(), delay);
 
-        if (configManager.hasOption("network", "ignorelist")) {
-            for (String line : configManager.getOptionList("network", "ignorelist")) {
-                parser.getIgnoreList().add(line);
+        reconnectTimer = new Timer("Server Reconnect Timer");
+        reconnectTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                synchronized(myState) {
+                    if (myState == ServerState.RECONNECT_WAIT) {
+                        myState = ServerState.TRANSIENTLY_DISCONNECTED;
+                        reconnect();
+                    }
+                }
             }
-        }
+        }, delay * 1000);
+
+        myState = ServerState.RECONNECT_WAIT;
+        updateIcon();
     }
+
+    // ------------------------------------------------- CHILDREN HANDLING -----
 
     /**
      * Determines whether the server knows of the specified channel.
@@ -463,7 +434,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public void addRaw() {
         raw = new Raw(this);
-        
+
         if (parser != null) {
             raw.registerCallbacks();
         }
@@ -476,6 +447,216 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public Raw getRaw() {
         return raw;
+    }
+
+    /**
+     * Removes our reference to the raw object (presumably after it has been
+     * closed).
+     */
+    public void delRaw() {
+        WindowManager.removeWindow(raw.getFrame());
+        raw = null; //NOPMD
+    }
+
+    /**
+     * Removes a specific channel and window from this server.
+     *
+     * @param chan channel to remove
+     */
+    public void delChannel(final String chan) {
+        tabCompleter.removeEntry(chan);
+        WindowManager.removeWindow(
+                channels.get(parser.toLowerCase(chan)).getFrame());
+        channels.remove(parser.toLowerCase(chan));
+    }
+
+    /**
+     * Adds a specific channel and window to this server.
+     *
+     * @param chan channel to add
+     */
+    public void addChannel(final ChannelInfo chan) {
+        if (hasChannel(chan.getName())) {
+            getChannel(chan.getName()).setChannelInfo(chan);
+            getChannel(chan.getName()).selfJoin();
+        } else {
+            final Channel newChan = new Channel(this, chan);
+
+            tabCompleter.addEntry(chan.getName());
+            channels.put(parser.toLowerCase(chan.getName()), newChan);
+            newChan.show();
+        }
+    }
+
+    /**
+     * Adds a query to this server.
+     *
+     * @param host host of the remote client being queried
+     */
+    public void addQuery(final String host) {
+        if (!queries.containsKey(parser.toLowerCase(ClientInfo.parseHost(host)))) {
+            final Query newQuery = new Query(this, host);
+
+            tabCompleter.addEntry(ClientInfo.parseHost(host));
+            queries.put(parser.toLowerCase(ClientInfo.parseHost(host)), newQuery);
+        }
+    }
+
+    /**
+     * Deletes a query from this server.
+     *
+     * @param host host of the remote client being queried
+     */
+    public void delQuery(final String host) {
+        tabCompleter.removeEntry(ClientInfo.parseHost(host));
+        WindowManager.removeWindow(
+                queries.get(parser.toLowerCase(ClientInfo.parseHost(host))).getFrame());
+        queries.remove(parser.toLowerCase(ClientInfo.parseHost(host)));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean ownsFrame(final Window target) {
+        // Check if it's our server frame
+        if (window != null && window.equals(target)) { return true; }
+        // Check if it's the raw frame
+        if (raw != null && raw.ownsFrame(target)) { return true; }
+        // Check if it's a channel frame
+        for (Channel channel : channels.values()) {
+            if (channel.ownsFrame(target)) { return true; }
+        }
+        // Check if it's a query frame
+        for (Query query : queries.values()) {
+            if (query.ownsFrame(target)) { return true; }
+        }
+        return false;
+    }
+
+    /**
+     * Sets the specified frame as the most-recently activated.
+     *
+     * @param source The frame that was activated
+     */
+    public void setActiveFrame(final FrameContainer source) {
+        activeFrame = source;
+    }
+
+    /**
+     * Retrieves a list of all children of this server instance.
+     *
+     * @return A list of this server's children
+     */
+    public List<WritableFrameContainer> getChildren() {
+        final List<WritableFrameContainer> res = new ArrayList<WritableFrameContainer>();
+
+        if (raw != null) {
+            res.add(raw);
+        }
+
+        res.addAll(channels.values());
+        res.addAll(queries.values());
+
+        return res;
+    }
+
+    // --------------------------------------------- MISCELLANEOUS METHODS -----
+
+    /**
+     * Updates this server's icon.
+     */
+    private void updateIcon() {
+        icon = IconManager.getIconManager().getIcon(
+                myState == ServerState.CONNECTED ?
+                    serverInfo.getSSL() ? "secure-server" : "server" : "server-disconnected");
+        if (window != null) {
+            window.setFrameIcon(icon);
+
+            iconUpdated(icon);
+        }
+    }
+
+    /**
+     * Retrieves the MyInfo object used for the IRC Parser.
+     *
+     * @return The MyInfo object for our profile
+     */
+    @Precondition("The current profile is not null")
+    private MyInfo getMyInfo() {
+        assert(profile != null);
+
+        final MyInfo myInfo = new MyInfo();
+        myInfo.setNickname(profile.getOption(DOMAIN_PROFILE, "nickname"));
+        myInfo.setRealname(profile.getOption(DOMAIN_PROFILE, "realname"));
+
+        if (profile.hasOption(DOMAIN_PROFILE, "ident")) {
+            myInfo.setUsername(profile.getOption(DOMAIN_PROFILE, "ident"));
+        }
+
+        return myInfo;
+    }
+
+    /**
+     * Registers callbacks.
+     */
+    private void doCallbacks() {
+        if (raw != null) {
+            raw.registerCallbacks();
+        }
+
+        eventHandler.registerCallbacks();
+
+        for (Query query : queries.values()) {
+            query.reregister();
+        }
+    }
+
+    /**
+     * Joins the specified channel.
+     *
+     * @param channel The channel to be joined
+     */
+    @Precondition("This server is connected")
+    public void join(final String channel) {
+        assert(myState == ServerState.CONNECTED);
+
+        if (hasChannel(channel)) {
+            getChannel(channel).join();
+        } else {
+            parser.joinChannel(channel);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void sendLine(final String line) {
+        synchronized(myState) {
+            if (parser != null && myState == ServerState.CONNECTED) {
+                parser.sendLine(window.getTranscoder().encode(line));
+            }
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int getMaxLineLength() {
+        return IRCParser.MAX_LINELENGTH;
+    }
+
+    /**
+     * Updates the ignore list for this server.
+     */
+    public void updateIgnoreList() {
+        if (parser == null || parser.getIgnoreList() == null) {
+            return;
+        }
+
+        parser.getIgnoreList().clear();
+
+        if (configManager.hasOption("network", "ignorelist")) {
+            for (String line : configManager.getOptionList("network", "ignorelist")) {
+                parser.getIgnoreList().add(line);
+            }
+        }
     }
 
     /**
@@ -667,45 +848,6 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
 
     /**
-     * Disconnects from the server.
-     *
-     * @param reason disconnect reason
-     */
-    public void disconnect(final String reason) {
-        synchronized(myState) {
-            switch (myState) {
-            case CLOSING:
-            case DISCONNECTED:
-            case TRANSIENTLY_DISCONNECTED:
-                return;
-            case RECONNECT_WAIT:
-                reconnectTimer.cancel();
-                break;
-            default:
-                break;
-            }
-
-            myState = ServerState.DISCONNECTED;
-        }
-        
-        updateIcon();
-
-        if (parser != null && parser.getSocketState() == IRCParser.STATE_OPEN) {
-            parser.disconnect(reason);
-
-            if (configManager.getOptionBool(DOMAIN_GENERAL, "closechannelsonquit", false)) {
-                closeChannels();
-            } else {
-                clearChannels();
-            }
-
-            if (configManager.getOptionBool(DOMAIN_GENERAL, "closequeriesonquit", false)) {
-                closeQueries();
-            }
-        }
-    }
-
-    /**
      * Closes all open channel windows associated with this server.
      */
     private void closeChannels() {
@@ -736,98 +878,6 @@ public final class Server extends WritableFrameContainer implements Serializable
         }
 
         queries.clear();
-    }
-
-    /**
-     * Removes our reference to the raw object (presumably after it has been
-     * closed).
-     */
-    public void delRaw() {
-        WindowManager.removeWindow(raw.getFrame());
-        raw = null; //NOPMD
-    }
-
-    /**
-     * Removes a specific channel and window from this server.
-     *
-     * @param chan channel to remove
-     */
-    public void delChannel(final String chan) {
-        tabCompleter.removeEntry(chan);
-        WindowManager.removeWindow(
-                channels.get(parser.toLowerCase(chan)).getFrame());
-        channels.remove(parser.toLowerCase(chan));
-    }
-
-    /**
-     * Adds a specific channel and window to this server.
-     *
-     * @param chan channel to add
-     */
-    public void addChannel(final ChannelInfo chan) {
-        if (hasChannel(chan.getName())) {
-            getChannel(chan.getName()).setChannelInfo(chan);
-            getChannel(chan.getName()).selfJoin();
-        } else {
-            final Channel newChan = new Channel(this, chan);
-
-            tabCompleter.addEntry(chan.getName());
-            channels.put(parser.toLowerCase(chan.getName()), newChan);
-            newChan.show();
-        }
-    }
-
-    /**
-     * Adds a query to this server.
-     *
-     * @param host host of the remote client being queried
-     */
-    public void addQuery(final String host) {
-        if (!queries.containsKey(parser.toLowerCase(ClientInfo.parseHost(host)))) {
-            final Query newQuery = new Query(this, host);
-
-            tabCompleter.addEntry(ClientInfo.parseHost(host));
-            queries.put(parser.toLowerCase(ClientInfo.parseHost(host)), newQuery);
-        }
-    }
-
-    /**
-     * Deletes a query from this server.
-     *
-     * @param host host of the remote client being queried
-     */
-    public void delQuery(final String host) {
-        tabCompleter.removeEntry(ClientInfo.parseHost(host));
-        WindowManager.removeWindow(
-                queries.get(parser.toLowerCase(ClientInfo.parseHost(host))).getFrame());
-        queries.remove(parser.toLowerCase(ClientInfo.parseHost(host)));
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean ownsFrame(final Window target) {
-        // Check if it's our server frame
-        if (window != null && window.equals(target)) { return true; }
-        // Check if it's the raw frame
-        if (raw != null && raw.ownsFrame(target)) { return true; }
-        // Check if it's a channel frame
-        for (Channel channel : channels.values()) {
-            if (channel.ownsFrame(target)) { return true; }
-        }
-        // Check if it's a query frame
-        for (Query query : queries.values()) {
-            if (query.ownsFrame(target)) { return true; }
-        }
-        return false;
-    }
-
-    /**
-     * Sets the specified frame as the most-recently activated.
-     *
-     * @param source The frame that was activated
-     */
-    public void setActiveFrame(final FrameContainer source) {
-        activeFrame = source;
     }
 
     /**
@@ -881,6 +931,41 @@ public final class Server extends WritableFrameContainer implements Serializable
             parser.sendCTCPReply(source, "CLIENTINFO", "VERSION PING CLIENTINFO");
         }
     }
+
+    /**
+     * Determines if the specified channel name is valid. A channel name is
+     * valid if we already have an existing Channel with the same name, or
+     * we have a valid parser instance and the parser says it's valid.
+     *
+     * @param channelName The name of the channel to test
+     * @return True if the channel name is valid, false otherwise
+     */
+    public boolean isValidChannelName(String channelName) {
+        return hasChannel(channelName) ||
+                (parser != null && parser.isValidChannelName(channelName));
+    }
+
+    /**
+     * Returns this server's name.
+     *
+     * @return A string representation of this server (i.e., its name)
+     */
+    @Override
+    public String toString() {
+        return getName();
+    }
+
+    /**
+     * Returns the server instance associated with this frame.
+     *
+     * @return the associated server connection
+     */
+    @Override
+    public Server getServer() {
+        return this;
+    }
+
+    // -------------------------------------------------- PARSER CALLBACKS -----
 
     /**
      * Called when the server says that the nickname we're trying to use is
@@ -989,7 +1074,7 @@ public final class Server extends WritableFrameContainer implements Serializable
 
             myState = ServerState.TRANSIENTLY_DISCONNECTED;
         }
-        
+
         updateIcon();
 
         if (configManager.getOptionBool(DOMAIN_GENERAL, "closechannelsondisconnect", false)) {
@@ -1019,7 +1104,7 @@ public final class Server extends WritableFrameContainer implements Serializable
 
             myState = ServerState.TRANSIENTLY_DISCONNECTED;
         }
-        
+
         updateIcon();
 
         String description;
@@ -1049,32 +1134,6 @@ public final class Server extends WritableFrameContainer implements Serializable
         if (configManager.getOptionBool(DOMAIN_GENERAL, "reconnectonconnectfailure", false)) {
             doDelayedReconnect();
         }
-    }
-
-    /**
-     * Schedules a reconnect attempt to be performed after a user-defiend delay.
-     */
-    private void doDelayedReconnect() {
-        final int delay = Math.max(1,
-                configManager.getOptionInt(DOMAIN_GENERAL, "reconnectdelay", 5));
-
-        handleNotification("connectRetry", getName(), delay);
-
-        reconnectTimer = new Timer("Server Reconnect Timer");
-        reconnectTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                synchronized(myState) {
-                    if (myState == ServerState.RECONNECT_WAIT) {
-                        myState = ServerState.TRANSIENTLY_DISCONNECTED;
-                        reconnect();
-                    }
-                }
-            }
-        }, delay * 1000);
-
-        myState = ServerState.RECONNECT_WAIT;
-        updateIcon();
     }
 
     /**
@@ -1135,24 +1194,8 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
         }
     }
-    
-    /**
-     * Retrieves a list of all children of this server instance.
-     * 
-     * @return A list of this server's children
-     */
-    public List<WritableFrameContainer> getChildren() {
-        final List<WritableFrameContainer> res = new ArrayList<WritableFrameContainer>();
-        
-        if (raw != null) {
-            res.add(raw);
-        }
-        
-        res.addAll(channels.values());
-        res.addAll(queries.values());
-        
-        return res;
-    }
+
+    // --------------------------------------------------- INVITE HANDLING -----
 
     /**
      * Adds an invite listener to this server.
@@ -1198,23 +1241,4 @@ public final class Server extends WritableFrameContainer implements Serializable
         }
     }
 
-    /**
-     * Returns this server's name.
-     *
-     * @return A string representation of this server (i.e., its name)
-     */
-    @Override
-    public String toString() {
-        return getName();
-    }
-
-    /**
-     * Returns the server instance associated with this frame.
-     *
-     * @return the associated server connection
-     */
-    @Override
-    public Server getServer() {
-        return this;
-    }
 }
