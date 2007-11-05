@@ -965,6 +965,20 @@ public final class Server extends WritableFrameContainer implements Serializable
         return this;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    protected boolean processNotificationArg(final Object arg, final List<Object> args) {
+        if (arg instanceof ClientInfo) {
+            final ClientInfo clientInfo = (ClientInfo) arg;
+            args.add(clientInfo.getNickname());
+            args.add(clientInfo.getIdent());
+            args.add(clientInfo.getHost());
+            return true;
+        } else {
+            return super.processNotificationArg(arg, args);
+        }
+    }
+
     // -------------------------------------------------- PARSER CALLBACKS -----
 
     /**

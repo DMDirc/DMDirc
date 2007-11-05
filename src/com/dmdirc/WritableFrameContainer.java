@@ -26,17 +26,12 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.parser.ChannelClientInfo;
-import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
-import com.dmdirc.ui.messages.ColourManager;
-import com.dmdirc.ui.messages.Styliser;
-import java.awt.Color;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The writable frame container adds additional methods to the frame container
@@ -113,14 +108,7 @@ public abstract class WritableFrameContainer extends FrameContainer {
         for (Object arg : args) {
             actionArgs.add(arg);
 
-            if (arg instanceof ClientInfo) {
-                final ClientInfo clientInfo = (ClientInfo) arg;
-                messageArgs.add(clientInfo.getNickname());
-                messageArgs.add(clientInfo.getIdent());
-                messageArgs.add(clientInfo.getHost());
-            } else if (arg instanceof ChannelClientInfo) {
-                final ChannelClientInfo channelInfo = (ChannelClientInfo) arg;
-            } else {
+            if (!processNotificationArg(arg, messageArgs)) {
                 messageArgs.add(arg);
             }
         }
@@ -128,7 +116,18 @@ public abstract class WritableFrameContainer extends FrameContainer {
         ActionManager.processEvent(actionType, buffer, actionArgs.toArray());
 
         handleNotification(messageType, messageArgs.toArray());
-    }    
+    } 
+    
+    /**
+     * Allows subclasses to process specific types of notification arguments.
+     * 
+     * @param arg The argument to be processed
+     * @param args The list of arguments that any data should be appended to
+     * @return True if the arg has been processed, false otherwise
+     */
+    protected boolean processNotificationArg(final Object arg, final List<Object> args) {
+        return false;
+    }
     
     /**
      * Handles general server notifications (i.e., ones note tied to a
@@ -223,48 +222,6 @@ public abstract class WritableFrameContainer extends FrameContainer {
             Logger.userError(ErrorLevel.MEDIUM,
                     "Invalid notification target for type " + messageType + ": " + target);
         }
-    }        
-    
-    /**
-     * Returns a string[] containing the nickname/ident/host of a channel client.
-     * 
-     * @param client The channel client to check
-     * @return A string[] containing displayable components
-     */
-    protected String[] getDetails(final ChannelClientInfo client) {
-        if (client == null) {
-            // WTF?
-            Logger.appError(ErrorLevel.HIGH,
-                    "Channel.getDetails called with null ChannelClientInfo",
-                    new UnsupportedOperationException());
-            return new String[]{"null", "null", "nullity.dmdirc.com"};
-        }
-        
-        final String[] res = new String[3];
-        res[0] = Styliser.CODE_NICKNAME + client.getNickname() + Styliser.CODE_NICKNAME;
-        res[1] = client.getClient().getIdent();
-        res[2] = client.getClient().getHost();
-        
-        if (getConfigManager().getOptionBool("ui", "shownickcoloursintext", false)) {
-            final Map map = client.getMap();
-            String prefix = null;
-            Color colour;
-            
-            if (map.containsKey(ChannelClientProperty.TEXT_FOREGROUND)) {
-                colour = (Color) map.get(ChannelClientProperty.TEXT_FOREGROUND);
-                prefix = Styliser.CODE_HEXCOLOUR + ColourManager.getHex(colour);
-                if (map.containsKey(ChannelClientProperty.TEXT_BACKGROUND)) {
-                    colour = (Color) map.get(ChannelClientProperty.TEXT_BACKGROUND);
-                    prefix = "," + ColourManager.getHex(colour);
-                }
-            }
-            
-            if (prefix != null) {
-                res[0] = prefix + res[0] + Styliser.CODE_HEXCOLOUR;
-            }
-        }
-        
-        return res;
-    }    
+    }          
     
 }

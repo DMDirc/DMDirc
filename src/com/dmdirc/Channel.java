@@ -34,13 +34,16 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.RollingList;
 
+import java.awt.Color;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The Channel class represents the client's view of the channel. It handles
@@ -89,6 +92,9 @@ public final class Channel extends MessageTarget
     /** Whether we should show mode prefixes in text. */
     private volatile boolean showModePrefix;
     
+    /** Whether we should show colours in nicks. */
+    private volatile boolean showColours;
+    
     /**
      * Creates a new instance of Channel.
      * @param newServer The server object that this channel belongs to
@@ -105,12 +111,14 @@ public final class Channel extends MessageTarget
                 server.getName(), channelInfo.getName());
                 
         configManager.addChangeListener("channel", this);
+        configManager.addChangeListener("ui", "shownickcoloursintext", this);
         
         topics = new RollingList<Topic>(configManager.getOptionInt("channel",
                 "topichistorysize", 10));
         
         sendWho = configManager.getOptionBool("channel", "sendwho", false);
         showModePrefix = configManager.getOptionBool("channel", "showmodeprefix", false);
+        showColours = configManager.getOptionBool("ui", "shownickcoloursintext", false);
         
         icon = IconManager.getIconManager().getIcon("channel");
         
@@ -163,7 +171,7 @@ public final class Channel extends MessageTarget
         
         final ClientInfo me = server.getParser().getMyself();
         final String modes = getModes(channelInfo.getUser(me));
-        final String[] details = getDetails(channelInfo.getUser(me));
+        final String[] details = getDetails(channelInfo.getUser(me), showColours);
         
         if (line.length() <= getMaxLineLength()) {
             final StringBuffer buff = new StringBuffer("channelSelfMessage");
@@ -379,7 +387,7 @@ public final class Channel extends MessageTarget
             type = "channelSelfExternalMessage";
         }
         
-        final String[] parts = getDetails(cChannelClient);
+        final String[] parts = getDetails(cChannelClient, showColours);
         final String modes = getModes(cChannelClient);
         
         final StringBuffer buff = new StringBuffer(type);
@@ -391,7 +399,7 @@ public final class Channel extends MessageTarget
     
     public void onChannelAction(
             final ChannelClientInfo cChannelClient, final String sMessage) {
-        final String[] parts = getDetails(cChannelClient);
+        final String[] parts = getDetails(cChannelClient, showColours);
         final String modes = getModes(cChannelClient);
         String type = "channelAction";
         if (parts[0].equals(server.getParser().getMyself().getNickname())) {
@@ -502,7 +510,7 @@ public final class Channel extends MessageTarget
     public void onChannelKick(
             final ChannelClientInfo cKickedClient, final ChannelClientInfo cKickedByClient,
             final String sReason) {
-        final String[] kicker = getDetails(cKickedByClient);
+        final String[] kicker = getDetails(cKickedByClient, showColours);
         final String kickermodes = getModes(cKickedByClient);
         final String victim = cKickedClient.getNickname();
         final String victimmodes = cKickedClient.getImportantModePrefix();
@@ -580,7 +588,7 @@ public final class Channel extends MessageTarget
             addLine(buff, sModes, channelInfo.getName());
         } else {
             final String modes = getModes(cChannelClient);
-            final String[] details = getDetails(cChannelClient);
+            final String[] details = getDetails(cChannelClient, showColours);
             final String myNick = server.getParser().getMyself().getNickname();
             
             String type = "channelModeChange";
@@ -605,7 +613,7 @@ public final class Channel extends MessageTarget
         
         if (configManager.getOptionBool("channel", "splitusermodes", false)) {
             final String sourceModes = getModes(cSetByClient);
-            final String[] sourceHost = getDetails(cSetByClient);
+            final String[] sourceHost = getDetails(cSetByClient, showColours);
             final String targetModes = cChangedClient.getImportantModePrefix();
             final String targetNick = cChangedClient.getClient().getNickname();
             final String targetIdent = cChangedClient.getClient().getIdent();
@@ -629,7 +637,7 @@ public final class Channel extends MessageTarget
             final String sType, final String sMessage) {
         
         final String modes = getModes(cChannelClient);
-        final String[] source = getDetails(cChannelClient);
+        final String[] source = getDetails(cChannelClient, showColours);
         
         addLine("channelCTCP", modes, source[0], source[1], source[2],
                 sType, sMessage, channelInfo);
@@ -655,6 +663,7 @@ public final class Channel extends MessageTarget
     
     /**
      * Returns a string containing the most important mode for the specified client.
+     * 
      * @param channelClient The channel client to check.
      * @return A string containing the most important mode, or an empty string
      * if there are no (known) modes.
@@ -694,8 +703,51 @@ public final class Channel extends MessageTarget
             sendWho = configManager.getOptionBool("channel", "sendwho", false);
         } else if ("showmodeprefix".equals(key)) {
             showModePrefix = configManager.getOptionBool("channel", "showmodeprefix", false);
+        } else if ("shownickcoloursintext".equals(key)) {
+            showColours = configManager.getOptionBool("ui", "shownickcoloursintext", false);
         }
     }
+    
+    /**
+     * Returns a string[] containing the nickname/ident/host of a channel client.
+     * 
+     * @param client The channel client to check
+     * @param showColours Whether or not to show colours
+     * @return A string[] containing displayable components
+     */
+    private static String[] getDetails(final ChannelClientInfo client, final boolean showColours) {
+        if (client == null) {
+            // WTF?
+            throw new UnsupportedOperationException("getDetails called with" +
+                    "null ChannelClientInfo");
+        }
+        
+        final String[] res = new String[3];
+        res[0] = Styliser.CODE_NICKNAME + client.getNickname() + Styliser.CODE_NICKNAME;
+        res[1] = client.getClient().getIdent();
+        res[2] = client.getClient().getHost();
+        
+        if (showColours) {
+            final Map map = client.getMap();
+            String prefix = null;
+            Color colour;
+            
+            if (map.containsKey(ChannelClientProperty.TEXT_FOREGROUND)) {
+                colour = (Color) map.get(ChannelClientProperty.TEXT_FOREGROUND);
+                prefix = Styliser.CODE_HEXCOLOUR + ColourManager.getHex(colour);
+                if (map.containsKey(ChannelClientProperty.TEXT_BACKGROUND)) {
+                    colour = (Color) map.get(ChannelClientProperty.TEXT_BACKGROUND);
+                    prefix = "," + ColourManager.getHex(colour);
+                }
+            }
+            
+            if (prefix != null) {
+                res[0] = prefix + res[0] + Styliser.CODE_HEXCOLOUR;
+            }
+        }
+        
+        return res;
+    }    
     
     // ------------------------------------------ PARSER METHOD DELEGATION -----
     
