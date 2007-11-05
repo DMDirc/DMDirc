@@ -51,7 +51,6 @@ import javax.swing.table.DefaultTableModel;
 /**
  * The updater dialog informs the user of the new update that is available,
  * and walks them through the process of downloading the update.
- * @author chris
  */
 public final class SwingUpdaterDialog extends StandardDialog implements
         ActionListener, UpdaterDialog, UpdateListener {
@@ -81,6 +80,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
     
     /**
      * Creates a new instance of the updater dialog.
+     * 
      * @param updates A list of updates that are available.
      */
     private SwingUpdaterDialog(final List<Update> updates) {
@@ -111,6 +111,13 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         me.display();
     }
     
+    /**
+     * Gets the dialog if one doesn't exist.
+     * 
+     * @param updates The updates that are available
+     * 
+     * @return SwingUpdaterDialog instance
+     */
     public static synchronized SwingUpdaterDialog getSwingUpdaterDialog(
             final List<Update> updates) {
         if (me == null) {

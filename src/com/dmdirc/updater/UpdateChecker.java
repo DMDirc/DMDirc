@@ -285,6 +285,15 @@ public final class UpdateChecker implements Runnable {
         return components;
     }
     
+    /**
+     * Retrives a list of available updates from the checker.
+     * 
+     * @return A list of available updates
+     */
+    public static List<Update> getAvailableUpdates() {
+        return updates;
+    }
+    
     
     /**
      * Adds a new status listener to the update checker.
