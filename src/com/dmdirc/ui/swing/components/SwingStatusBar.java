@@ -35,6 +35,7 @@ import com.dmdirc.ui.swing.dialogs.SwingUpdaterDialog;
 import com.dmdirc.ui.swing.dialogs.error.ErrorListDialog;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateChecker.STATE;
+
 import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -42,10 +43,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
 import net.miginfocom.swing.MigLayout;
 
 /** Status bar, shows message and info on the gui. */
@@ -268,9 +271,11 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
             addComponent(updateLabel);
         }
         if (newStatus.equals(STATE.CHECKING)) {
+            updateLabel.setToolTipText("Checking for updates...");
             updateLabel.setIcon(IconManager.getIconManager().
                     getIcon("hourglass"));
         } else if (newStatus.equals(STATE.UPDATES_AVAILABLE)) {
+            updateLabel.setToolTipText("Updates available");
             updateLabel.setIcon(IconManager.getIconManager().getIcon("update"));
         }
     }
