@@ -67,7 +67,7 @@ public class CustomFrame extends Frame {
         constraints.weightx = 1.0;
         constraints.weighty = 1.0;
         constraints.fill = GridBagConstraints.BOTH;
-        constraints.insets = new Insets(0, 0, SMALL_BORDER, 0);
+        constraints.insets = new Insets(0, 0, 0, 0);
         getContentPane().add(getTextPane(), constraints);
         
         

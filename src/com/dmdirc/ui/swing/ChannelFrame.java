@@ -199,7 +199,7 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
         panel.add(getSearchBar(), BorderLayout.PAGE_START);
         panel.add(inputPanel, BorderLayout.PAGE_END);
         
-        getContentPane().setLayout(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
+        getContentPane().setLayout(new BorderLayout());
         
         getContentPane().add(splitPane, BorderLayout.CENTER);
         getContentPane().add(panel, BorderLayout.PAGE_END);

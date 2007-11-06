@@ -28,11 +28,7 @@ import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.actions.SearchAction;
 import com.dmdirc.ui.swing.textpane.TextPane;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
-import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
 
-import java.awt.Dimension;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -46,8 +42,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Status bar, shows message and info on the gui.
@@ -60,7 +57,7 @@ public final class SearchBar extends JPanel implements ActionListener,
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 5;
+    private static final long serialVersionUID = 6;
     
     /** Frame parent. */
     private final Frame parent;
@@ -126,32 +123,19 @@ public final class SearchBar extends JPanel implements ActionListener,
         prevButton.setText("Earlier");
         caseCheck.setText("Case sensitive");
         
-        nextButton.setMargin(new Insets(0, 0, 0, 0));
-        nextButton.setPreferredSize(new Dimension(50, 0));
-        
-        prevButton.setMargin(new Insets(0, 0, 0, 0));
-        prevButton.setPreferredSize(new Dimension(50, 0));
-        
-        caseCheck.setPreferredSize(new Dimension(110, 0));
-        
-        searchBox.setPreferredSize(new Dimension(300, searchBox.getFont().
-                getSize() + SMALL_BORDER + SMALL_BORDER));
-        
         line = -1;
         index = 0;
     }
     
     /** Lays out components. */
     private void layoutComponents() {
-        this.setLayout(new SpringLayout());
+        this.setLayout(new MigLayout("ins rel 0 0 0, fill"));
         
         add(closeButton);
-        add(searchBox);
-        add(prevButton);
-        add(nextButton);
-        add(caseCheck);
-        
-        layoutGrid(this, 1, 5, SMALL_BORDER, 0, SMALL_BORDER, SMALL_BORDER);
+        add(searchBox, "growx, pushx, sgy all");
+        add(prevButton, "sgx button, sgy all");
+        add(nextButton, "sgx button, sgy all");
+        add(caseCheck, "sgy all");
     }
     
     /** Adds listeners to components. */

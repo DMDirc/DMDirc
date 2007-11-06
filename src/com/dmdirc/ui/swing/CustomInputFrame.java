@@ -94,7 +94,7 @@ public class CustomInputFrame extends InputFrame {
         getContentPane().add(getSearchBar(), constraints);
         
         constraints.gridy = 2;
-        constraints.insets = new Insets(SMALL_BORDER, 0, 0, 0);
+        constraints.insets = new Insets(0, 0, 0, 0);
         getContentPane().add(inputPanel, constraints);
         
         pack();
