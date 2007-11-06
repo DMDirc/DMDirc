@@ -22,36 +22,39 @@
 
 package com.dmdirc.ui.swing.textpane;
 
-import java.awt.event.MouseEvent;
-import java.util.EventListener;
+import java.awt.event.ActionEvent;
+import javax.swing.AbstractAction;
 
 /**
- * Interface for events on the TextPane.
+ * Copy action.
  */
-public interface TextPaneListener extends EventListener {
-    
-    /** 
-     * Fired when a hyperlink is clicked. 
-     *
-     * @param url Hyperlink that was clicked on
-     * @param event Triggering Event
-     */
-    void hyperlinkClicked(final String url, final MouseEvent event);
-    
+public class TextPaneCopyAction extends AbstractAction {
+
     /**
-     * Fired when a channel is clicked.
-     *
-     * @param channel Name of the channel clicked on
-     * @param event Triggering Event
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
      */
-    void channelClicked(final String channel, final MouseEvent event);
-    
+    private static final long serialVersionUID = 1;
+    /** TextPane instance. */
+    private TextPane textpane;
+
     /**
-     * Fired when a channel is clicked.
+     * Instantiates a new action.
      *
-     * @param nickname Name of the channel clicked on
-     * @param event Triggering Event
+     * @param textpane Textpane
      */
-    void nickNameClicked(final String nickname, final MouseEvent event);
-    
+    public TextPaneCopyAction(final TextPane textpane) {
+        this.textpane = textpane;
+    }
+
+    /**
+     * {@inheritDoc}.
+     * @param e Action event
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        System.out.println("copy");
+        textpane.copy();
+    }
 }

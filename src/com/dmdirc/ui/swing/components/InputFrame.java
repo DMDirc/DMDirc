@@ -319,6 +319,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
     /** {@inheritDoc} */
     public void keyTyped(final KeyEvent event) {
         //Ignore.
+        super.keyTyped(event);
     }
     
     /** {@inheritDoc} */
@@ -341,6 +342,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
     /** {@inheritDoc} */
     public void keyReleased(final KeyEvent event) {
         //Ignore.
+        super.keyReleased(event);
     }
     
     /**

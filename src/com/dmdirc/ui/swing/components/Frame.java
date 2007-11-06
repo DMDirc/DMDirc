@@ -37,6 +37,9 @@ import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.actions.SearchAction;
 import com.dmdirc.ui.swing.textpane.TextPane;
 import com.dmdirc.ui.swing.textpane.TextPaneListener;
+import com.dmdirc.ui.swing.textpane.TextPaneCopyAction;
+import com.dmdirc.ui.swing.textpane.TextPanePageUpAction;
+import com.dmdirc.ui.swing.textpane.TextPanePageDownAction;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -181,14 +184,17 @@ public abstract class Frame extends JInternalFrame implements Window,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void open() {
         setVisible(true);
     }
     
     /** {@inheritDoc} */
+    @Override
     public final void addLine(final String line, final boolean timestamp) {
         final String encodedLine = transcoder.decode(line);
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 for (String myLine : encodedLine.split("\n")) {
                     if (timestamp) {
@@ -207,6 +213,7 @@ public abstract class Frame extends JInternalFrame implements Window,
     }
     
     /** {@inheritDoc} */
+    @Override
     public final void addLine(final String messageType, final Object... args) {
         if (!messageType.isEmpty()) {
             addLine(Formatter.formatMessage(messageType, args), true);
@@ -214,6 +221,7 @@ public abstract class Frame extends JInternalFrame implements Window,
     }
     
     /** {@inheritDoc} */
+    @Override
     public final void addLine(final StringBuffer messageType, final Object... args) {
         if (messageType != null) {
             addLine(messageType.toString(), args);
@@ -221,6 +229,7 @@ public abstract class Frame extends JInternalFrame implements Window,
     }
     
     /** {@inheritDoc} */
+    @Override
     public final void clear() {
         getTextPane().clear();
     }
@@ -261,12 +270,22 @@ public abstract class Frame extends JInternalFrame implements Window,
         searchBar.setVisible(false);
         
         getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).
+                put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0), 
+                "pageUpAction");
+        
+        getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).
+                put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0), 
+                "pageDownAction");
+        
+        getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).
                 put(KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0), "searchAction");
         
         getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).
                 put(KeyStroke.getKeyStroke(KeyEvent.VK_F,
                 InputEvent.CTRL_DOWN_MASK), "searchAction");
         
+        getActionMap().put("pageUpAction", new TextPanePageUpAction(getTextPane()));
+        getActionMap().put("pageDownAction", new TextPanePageDownAction(getTextPane()));
         getActionMap().put("searchAction", new SearchAction(searchBar));
     }
     
@@ -274,6 +293,7 @@ public abstract class Frame extends JInternalFrame implements Window,
      * Removes and reinserts the border of an internal frame on maximising.
      * {@inheritDoc}
      */
+    @Override
     public final void propertyChange(final PropertyChangeEvent event) {
         if ("maximum".equals(event.getPropertyName())) {
             if (event.getNewValue().equals(Boolean.TRUE)) {
@@ -334,6 +354,7 @@ public abstract class Frame extends JInternalFrame implements Window,
     /**
      * Not needed for this class. {@inheritDoc}
      */
+    @Override
     public void internalFrameOpened(final InternalFrameEvent event) {
         parent.windowOpened();
     }
@@ -341,6 +362,7 @@ public abstract class Frame extends JInternalFrame implements Window,
     /**
      * Not needed for this class. {@inheritDoc}
      */
+    @Override
     public void internalFrameClosing(final InternalFrameEvent event) {
         parent.windowClosing();
     }
@@ -348,6 +370,7 @@ public abstract class Frame extends JInternalFrame implements Window,
     /**
      * Not needed for this class. {@inheritDoc}
      */
+    @Override
     public void internalFrameClosed(final InternalFrameEvent event) {
         parent.windowClosed();
     }
@@ -355,6 +378,7 @@ public abstract class Frame extends JInternalFrame implements Window,
     /**
      * Makes the internal frame invisible. {@inheritDoc}
      */
+    @Override
     public void internalFrameIconified(final InternalFrameEvent event) {
         event.getInternalFrame().setVisible(false);
     }
@@ -362,6 +386,7 @@ public abstract class Frame extends JInternalFrame implements Window,
     /**
      * Not needed for this class. {@inheritDoc}
      */
+    @Override
     public void internalFrameDeiconified(final InternalFrameEvent event) {
         //Ignore.
     }
@@ -369,6 +394,7 @@ public abstract class Frame extends JInternalFrame implements Window,
     /**
      * Activates the input field on frame focus. {@inheritDoc}
      */
+    @Override
     public void internalFrameActivated(final InternalFrameEvent event) {
         parent.windowActivated();
     }
@@ -376,16 +402,19 @@ public abstract class Frame extends JInternalFrame implements Window,
     /**
      * Not needed for this class. {@inheritDoc}
      */
+    @Override
     public void internalFrameDeactivated(final InternalFrameEvent event) {
         parent.windowDeactivated();
     }
     
     /** {@inheritDoc} */
+    @Override
     public FrameContainer getContainer() {
         return parent;
     }
     
     /** {@inheritDoc} */
+    @Override
     public ConfigManager getConfigManager() {
         return getContainer().getConfigManager();
     }
@@ -404,6 +433,7 @@ public abstract class Frame extends JInternalFrame implements Window,
      *
      * @return String transcoder for this frame
      */
+    @Override
     public StringTranscoder getTranscoder() {
         return transcoder;
     }
@@ -429,6 +459,7 @@ public abstract class Frame extends JInternalFrame implements Window,
     /**
      * Checks for url's, channels and nicknames. {@inheritDoc}
      */
+    @Override
     public void mouseClicked(final MouseEvent mouseEvent) {
         if (mouseEvent.getSource() == getTextPane()) {
             processMouseEvent(mouseEvent);
@@ -438,6 +469,7 @@ public abstract class Frame extends JInternalFrame implements Window,
     /**
      * Not needed for this class. {@inheritDoc}
      */
+    @Override
     public void mousePressed(final MouseEvent mouseEvent) {
         processMouseEvent(mouseEvent);
     }
@@ -445,6 +477,7 @@ public abstract class Frame extends JInternalFrame implements Window,
     /**
      * Not needed for this class. {@inheritDoc}
      */
+    @Override
     public void mouseReleased(final MouseEvent mouseEvent) {
         if (quickCopy && mouseEvent.getSource() == getTextPane()) {
             getTextPane().copy();
@@ -456,6 +489,7 @@ public abstract class Frame extends JInternalFrame implements Window,
     /**
      * Not needed for this class. {@inheritDoc}
      */
+    @Override
     public void mouseEntered(final MouseEvent mouseEvent) {
         //Ignore.
     }
@@ -463,6 +497,7 @@ public abstract class Frame extends JInternalFrame implements Window,
     /**
      * Not needed for this class. {@inheritDoc}
      */
+    @Override
     public void mouseExited(final MouseEvent mouseEvent) {
         //Ignore.
     }
@@ -505,6 +540,7 @@ public abstract class Frame extends JInternalFrame implements Window,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void actionPerformed(final ActionEvent actionEvent) {
         if (actionEvent.getSource() == copyMI) {
             getTextPane().copy();
@@ -526,25 +562,14 @@ public abstract class Frame extends JInternalFrame implements Window,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void keyTyped(final KeyEvent event) {
         //Ignore.
     }
     
     /** {@inheritDoc} */
+    @Override
     public void keyPressed(final KeyEvent event) {
-        if ((event.getModifiers() & KeyEvent.CTRL_MASK) ==  0) {
-            if (event.getKeyCode() == KeyEvent.VK_PAGE_UP) {
-                getTextPane().pageUp();
-            } else if (event.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
-                getTextPane().pageDown();
-            }
-        } else {
-            if (event.getKeyCode() == KeyEvent.VK_HOME) {
-                getTextPane().setScrollBarPosition(0);
-            } else if (event.getKeyCode() == KeyEvent.VK_END) {
-                getTextPane().setScrollBarPosition(textPane.getNumLines());
-            }
-        }
         if (!quickCopy && (event.getModifiers() & KeyEvent.CTRL_MASK) !=  0
                 && event.getKeyCode() == KeyEvent.VK_C) {
             getTextPane().copy();
@@ -552,13 +577,15 @@ public abstract class Frame extends JInternalFrame implements Window,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void keyReleased(final KeyEvent event) {
         //Ignore.
     }
     
     /** {@inheritDoc} */
-    public void hyperlinkClicked(final String url, final MouseEvent e) {
-        if (e.isPopupTrigger()) {
+    @Override
+    public void hyperlinkClicked(final String url, final MouseEvent event) {
+        if (event.isPopupTrigger()) {
             //Show hyperlink popup
         } else {
             Main.getUI().getStatusBar().setMessage("Opening: " + url);
@@ -567,8 +594,9 @@ public abstract class Frame extends JInternalFrame implements Window,
     }
     
     /** {@inheritDoc} */
-    public void channelClicked(final String channel, final MouseEvent e) {
-        if (e.isPopupTrigger()) {
+    @Override
+    public void channelClicked(final String channel, final MouseEvent event) {
+        if (event.isPopupTrigger()) {
             //Show channel popup
         } else if (parent != null && parent.getServer() != null) {
             if (parent.getServer().hasChannel(channel)) {
@@ -580,7 +608,8 @@ public abstract class Frame extends JInternalFrame implements Window,
     }
     
     /** {@inheritDoc} */
-    public void nickNameClicked(final String nickname, final MouseEvent e) {
+    @Override
+    public void nickNameClicked(final String nickname, final MouseEvent event) {
         //Ignore
     }
     
@@ -612,6 +641,7 @@ public abstract class Frame extends JInternalFrame implements Window,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void configChanged(final String domain, final String key) {
         if (getConfigManager() == null) {
             return;

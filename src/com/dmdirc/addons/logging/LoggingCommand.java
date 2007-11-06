@@ -58,7 +58,7 @@ public final class LoggingCommand extends ServerCommand implements IntelligentCo
 	 * @param args The user supplied arguments
 	 */
 	public void execute(final InputWindow origin, final Server server, final boolean isSilent, final String... args) {
-		final PluginInfo pluginInfo = PluginManager.getPluginManager().getPluginInfoByName("LoggingPlugin");
+		final PluginInfo pluginInfo = PluginManager.getPluginManager().getPluginInfoByName("logging");
 		if (pluginInfo == null) { 
 			sendLine(origin, isSilent, FORMAT_ERROR, "Logging Plugin is not loaded.");
 			return;

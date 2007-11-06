@@ -250,6 +250,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      */
     public void setScrollEnabled(final boolean enabled) {
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 scrollBar.setEnabled(enabled);
             }
@@ -299,11 +300,13 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     }
     
     /** {@inheritDoc}. */
+    @Override
     public void adjustmentValueChanged(final AdjustmentEvent e) {
         setScrollBarPosition(e.getValue());
     }
     
     /** {@inheritDoc}. */
+    @Override
     public void mouseWheelMoved(final MouseWheelEvent e) {
         if (scrollBar.isEnabled()) {
             if (e.getWheelRotation() > 0) {
@@ -563,17 +566,20 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     }
 
     /** {@inheritDoc}. */
+    @Override
     public void lineAdded(final int line, final int size) {
         setScrollBarMax();
     }
 
     /** {@inheritDoc}. */
+    @Override
     public void trimmed(final int numLines) {
         canvas.clearWrapCache();
         setScrollBarMax();
     }
 
     /** {@inheritDoc}. */
+    @Override
     public void cleared() {
         canvas.clearWrapCache();
     }
