@@ -168,7 +168,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
         
         inputPanel = new JPanel(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
         inputPanel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0, 
-                SMALL_BORDER, 0));
+                0, 0));
         inputPanel.add(awayLabel, BorderLayout.LINE_START);
         inputPanel.add(inputField, BorderLayout.CENTER);
         
