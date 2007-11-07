@@ -173,7 +173,7 @@ public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
                 new WizardDialog(firstRun ? "Setup wizard" : "Migration wizard",
                 steps, this, true, (MainFrame) Main.getUI().getMainWindow());
 
-        wizardDialog.setPreferredSize(new Dimension(400, 350));
+        wizardDialog.pack();
 
         wizardDialog.display();
     }

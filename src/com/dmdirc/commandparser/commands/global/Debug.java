@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
@@ -85,6 +86,10 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
             doServerInfo(origin, isSilent);
         } else if ("benchmark".equals(args[0])) {
             doBenchmark(origin, isSilent);
+        } else if ("firstrun".equals(args[0])) {
+            Main.getUI().showFirstRunWizard();
+        } else if ("migration".equals(args[0])) {
+            Main.getUI().showMigrationWizard();
         } else {
             sendLine(origin, isSilent, FORMAT_ERROR, "Unknown debug action.");
         }
@@ -333,6 +338,8 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
             res.add("forceupdate");
             res.add("serverinfo");
             res.add("benchmark");
+            res.add("firstrun");
+            res.add("migration");
         } else if (arg == 1 && "error".equals(previousArgs.get(0))) {
             res.add("user");
             res.add("app");
