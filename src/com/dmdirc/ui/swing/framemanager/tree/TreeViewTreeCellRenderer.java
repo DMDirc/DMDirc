@@ -113,6 +113,11 @@ public class TreeViewTreeCellRenderer implements TreeCellRenderer,
         final DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
         final JLabel label = manager.getLabelforNode(node);
         
+        if (node == null) {
+            label.setText("null");
+            return label;
+        }
+        
         label.setText(node.toString());
         
         label.setBackground(tree.getBackground());
