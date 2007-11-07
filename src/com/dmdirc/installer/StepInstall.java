@@ -23,9 +23,9 @@
 package com.dmdirc.installer;
 
 import com.dmdirc.installer.Installer.ShortcutType;
-import com.dmdirc.ui.swing.dialogs.wizard.SpecialStep;
-import com.dmdirc.ui.swing.dialogs.wizard.TextStep;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
+import com.dmdirc.ui.swing.dialogs.wizard.StepListener;
+import com.dmdirc.ui.swing.dialogs.wizard.WizardDialog;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
@@ -37,7 +37,7 @@ import javax.swing.JTextArea;
 /**
  * This confirms the settings chosen in the previous step
  */
-public final class StepInstall extends Step implements SpecialStep, TextStep {
+public final class StepInstall extends Step implements StepListener {
 	/**
 	 * A version number for this class. It should be changed whenever the class
 	 * structure is changed (or anything else that would prevent serialized
@@ -49,10 +49,12 @@ public final class StepInstall extends Step implements SpecialStep, TextStep {
 	private JTextArea infoLabel = new JTextArea("Beginning Install");
 	
 	/**
-	 * Creates a new instance of StepInstall.
-	 */
-	public StepInstall() {
+	* Creates a new instance of StepInstall.
+	* @param dialog parent wizard dialog
+	*/
+	public StepInstall(final WizardDialog dialog) {
 		super();
+		dialog.addStepListener(this);
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
 		
@@ -73,16 +75,6 @@ public final class StepInstall extends Step implements SpecialStep, TextStep {
 	 */
 	public synchronized void addText(final String text) {
 		infoLabel.setText(infoLabel.getText() + text +"\n");
-	}
-	
-	/**
-	 * Display Step.
-	 */
-	public void showStep() {
-		Main.getWizardDialog().enableNextStep(false);
-		Main.getWizardDialog().enablePreviousStep(false);
-		Main.getInstaller().setInstallStep(this);
-		Main.getInstaller().start();
 	}
 	
 	/**
@@ -127,5 +119,20 @@ public final class StepInstall extends Step implements SpecialStep, TextStep {
 		addText("");
 		addText("Installation finished\n");
 		Main.getWizardDialog().enableNextStep(true);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void stepAboutToDisplay(final Step step) {
+		Main.getWizardDialog().enableNextStep(false);
+		Main.getWizardDialog().enablePreviousStep(false);
+		Main.getInstaller().setInstallStep(this);
+		Main.getInstaller().start();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void stepHidden(final Step step) {
+		//Ignore
 	}
 }

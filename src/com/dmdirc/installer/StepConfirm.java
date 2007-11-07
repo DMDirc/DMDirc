@@ -23,8 +23,9 @@
 package com.dmdirc.installer;
 
 import com.dmdirc.installer.Installer.ShortcutType;
-import com.dmdirc.ui.swing.dialogs.wizard.SpecialStep;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
+import com.dmdirc.ui.swing.dialogs.wizard.StepListener;
+import com.dmdirc.ui.swing.dialogs.wizard.WizardDialog;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
@@ -36,7 +37,7 @@ import javax.swing.JTextArea;
 /**
  * This confirms the settings chosen in the previous step
  */
-public final class StepConfirm extends Step implements SpecialStep {
+public final class StepConfirm extends Step implements StepListener {
 	/**
 	 * A version number for this class. It should be changed whenever the class
 	 * structure is changed (or anything else that would prevent serialized
@@ -48,10 +49,12 @@ public final class StepConfirm extends Step implements SpecialStep {
 	private JTextArea infoLabel = new JTextArea("");
 	
 	/**
-	 * Creates a new instance of StepConfirm.
-	 */
-	public StepConfirm() {
+	* Creates a new instance of StepConfirm.
+	* @param dialog parent wizard dialog
+	*/
+	public StepConfirm(final WizardDialog dialog) {
 		super();
+		dialog.addStepListener(this);
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
 		
@@ -64,11 +67,10 @@ public final class StepConfirm extends Step implements SpecialStep {
 			
 		add(infoLabel, BorderLayout.CENTER);
 	}
-	
-	/**
-	 * Display Step.
-	 */
-	public void showStep() {
+
+	/** {@inheritDoc} */
+	@Override
+	public void stepAboutToDisplay(final Step step) {
 		String shortcutText = "";
 		
 		StepSettings settings = ((StepSettings) Main.getWizardDialog().getStep(1));
@@ -102,5 +104,11 @@ public final class StepConfirm extends Step implements SpecialStep {
 		                + "    " +((StepSettings) Main.getWizardDialog().getStep(1)).getInstallLocation() + "\n"
 		                + shortcutText + "\n"
 		                + "If these are correct, press Next to begin the installation, else press Previous to change them");
+    }
+
+	/** {@inheritDoc} */
+	@Override
+	public void stepHidden(final Step step ) {
+	//Ignore
 	}
 }

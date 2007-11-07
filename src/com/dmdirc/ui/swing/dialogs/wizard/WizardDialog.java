@@ -24,7 +24,7 @@ package com.dmdirc.ui.swing.dialogs.wizard;
 
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.swing.components.StandardDialog;
-
+import com.dmdirc.util.ListenerList;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -38,9 +38,7 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -55,24 +53,23 @@ import javax.swing.JSeparator;
  */
 public final class WizardDialog extends StandardDialog implements ActionListener,
         Serializable {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
-    
+    private static final long serialVersionUID = 2;
     /** Step panel list. */
-    private final List<Step> steps;
+    private final StepLayout steps;
     /** Wizard title. */
     private final String title;
     /** Wizard. */
     private final transient Wizard wizard;
-    
     /** Parent component. */
     private final Component parent;
-    
+    /** Step panel. */
+    private JPanel stepsPanel;
     /** Button panel. */
     private JPanel buttonsPanel;
     /** Title panel. */
@@ -85,7 +82,9 @@ public final class WizardDialog extends StandardDialog implements ActionListener
     private JButton next;
     /** Progress label. */
     private JLabel progressLabel;
-    
+    /** Step Listeners. */
+    private ListenerList stepListeners;
+
     /**
      * Creates a new instance of WizardFrame that requires a mainframe.
      *
@@ -95,125 +94,139 @@ public final class WizardDialog extends StandardDialog implements ActionListener
      * @param modal Whether the wizard should be modal
      * @param parent Parent component
      */
-    public WizardDialog(final String title, final List<Step> steps,
-            final Wizard wizard, final boolean modal, final Component parent) {
+    public WizardDialog(final String title,
+            final List<Step> steps,
+            final Wizard wizard, final boolean modal,
+            final Component parent) {
         super(null, modal);
-        
+
+        stepListeners = new ListenerList();
+
         this.title = title;
-        this.steps = new ArrayList<Step>(steps);
+        this.steps = new StepLayout();
         this.wizard = wizard;
         this.parent = parent;
-        
+
         initComponents();
         layoutComponents();
+
+        for (Step step : steps) {
+            addStep(step);
+        }
     }
-    
+
     /** Initialises the components. */
     private void initComponents() {
         final JLabel titleLabel = new JLabel(title);
-        
+
         titlePanel = new JPanel();
         titlePanel.setLayout(new BorderLayout());
         titlePanel.setBackground(Color.WHITE);
-        
-        titleLabel.setFont(titleLabel.getFont().deriveFont(
-                (float) (titleLabel.getFont().getSize() * 1.5)));
+        stepsPanel = new JPanel(steps);
+
+        titleLabel.setFont(titleLabel.getFont().
+                deriveFont((float) (titleLabel.getFont().getSize() * 1.5)));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
-        
+
         titlePanel.add(titleLabel, BorderLayout.CENTER);
         titlePanel.add(new JSeparator(), BorderLayout.PAGE_END);
-        
+
         initButtonsPanel();
     }
-    
+
     /** Lays out the components. */
     private void layoutComponents() {
-        this.setLayout(new BorderLayout());
-        
-        
-        this.add(titlePanel, BorderLayout.PAGE_START);
-        this.add(buttonsPanel, BorderLayout.PAGE_END);
+        setLayout(new BorderLayout());
+
+        add(titlePanel, BorderLayout.PAGE_START);
+        add(stepsPanel, BorderLayout.CENTER);
+        add(buttonsPanel, BorderLayout.PAGE_END);
     }
-    
+
     /** Initialises the button panel. */
     private void initButtonsPanel() {
         final JPanel buttonPanel = new JPanel();
         buttonsPanel = new JPanel();
         progressLabel = new JLabel();
-        
+
         orderButtons(new JButton(), new JButton());
         next = new JButton();
         setOkButton(next);
-        
+
         prev = new JButton("<< Previous");
         next.setText("Next >>");
-        
+
         prev.setPreferredSize(new Dimension(110, 30));
         next.setPreferredSize(new Dimension(110, 30));
-        
+
         prev.setMargin(new Insets(prev.getMargin().top, 0,
                 prev.getMargin().bottom, 0));
         next.setMargin(new Insets(next.getMargin().top, 0,
                 next.getMargin().bottom, 0));
-        
+
         getCancelButton().addActionListener(this);
         prev.addActionListener(this);
         next.addActionListener(this);
-        
+
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
-        
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
+
+        buttonPanel.setLayout(new BoxLayout(buttonPanel,
+                BoxLayout.LINE_AXIS));
         buttonPanel.add(progressLabel);
         buttonPanel.add(Box.createHorizontalStrut(SMALL_BORDER));
         buttonPanel.add(Box.createHorizontalGlue());
         buttonPanel.add(prev);
         buttonPanel.add(Box.createHorizontalStrut(SMALL_BORDER));
         buttonPanel.add(next);
-        
+
         buttonsPanel.setLayout(new BorderLayout());
-        
+
         buttonsPanel.add(new JSeparator(), BorderLayout.PAGE_START);
         buttonsPanel.add(buttonPanel, BorderLayout.CENTER);
     }
-    
+
     /** Displays the wizard. */
     public void display() {
         if (!steps.isEmpty()) {
-            
-            add(steps.get(0), BorderLayout.CENTER);
+            steps.first(stepsPanel);
             currentStep = 0;
-            
+
             prev.setEnabled(false);
             if (steps.size() == 1) {
                 next.setText("Finish");
             }
-            
+
             updateProgressLabel();
-            
+
             setTitle(title);
             setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             pack();
-            if (parent == null) {
+            if (parent != null) {
                 setLocationRelativeTo(parent);
             } else {
                 // Position wizard center-screen on the correct monitor of a
                 // multi-monitor system. (See MainFrame constructor for more info)
-                final PointerInfo myPointerInfo = MouseInfo.getPointerInfo();
+                final PointerInfo myPointerInfo =
+                        MouseInfo.getPointerInfo();
                 final GraphicsDevice myDevice = myPointerInfo.getDevice();
-                final GraphicsConfiguration myGraphicsConfig = myDevice.getDefaultConfiguration();
+                final GraphicsConfiguration myGraphicsConfig =
+                        myDevice.getDefaultConfiguration();
                 final Rectangle gcBounds = myGraphicsConfig.getBounds();
-                final int xPos = gcBounds.x + ((gcBounds.width - getWidth()) / 2);
-                final int yPos = gcBounds.y + ((gcBounds.height - getHeight()) / 2);
+                final int xPos =
+                        gcBounds.x + ((gcBounds.width - getWidth()) / 2);
+                final int yPos =
+                        gcBounds.y + ((gcBounds.height - getHeight()) / 2);
                 setLocation(xPos, yPos);
             }
             setResizable(false);
             setVisible(true);
         }
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == next) {
             nextStep();
@@ -223,16 +236,16 @@ public final class WizardDialog extends StandardDialog implements ActionListener
             wizard.wizardCancelled();
         }
     }
-    
+
     /**
      * Adds a step to the wizard.
      *
      * @param step Step to add
      */
     public void addStep(final Step step) {
-        steps.add(step);
+        stepsPanel.add(step, step.toString());
     }
-    
+
     /**
      * Enables or disables the "next step" button.
      *
@@ -241,7 +254,7 @@ public final class WizardDialog extends StandardDialog implements ActionListener
     public void enableNextStep(final boolean newValue) {
         next.setEnabled(newValue);
     }
-    
+
     /**
      * Enables or disables the "previous step" button.
      *
@@ -250,13 +263,14 @@ public final class WizardDialog extends StandardDialog implements ActionListener
     public void enablePreviousStep(final boolean newValue) {
         prev.setEnabled(newValue);
     }
-    
+
     /** Moves to the next step. */
     private void nextStep() {
-        steps.get(currentStep).setVisible(false);
         if ("Next >>".equals(next.getText())) {
-            remove(steps.get(currentStep));
-            add(steps.get(++currentStep), BorderLayout.CENTER);
+            fireStepAboutToBeDisplayed(steps.getStep(currentStep + 1));
+            steps.next(stepsPanel);
+            fireStepHidden(steps.getStep(currentStep));
+            currentStep++;
             prev.setEnabled(true);
             if (currentStep == steps.size() - 1) {
                 next.setText("Finish");
@@ -264,30 +278,25 @@ public final class WizardDialog extends StandardDialog implements ActionListener
             updateProgressLabel();
             wizard.stepChanged(currentStep - 1, currentStep);
         } else if ("Finish".equals(next.getText())) {
-            this.dispose();
+            dispose();
             wizard.wizardFinished();
         }
-        final Step newstep = steps.get(currentStep);
-        if (newstep instanceof SpecialStep) {
-            ((SpecialStep) newstep).showStep();
-        }
-        newstep.setVisible(true);
     }
-    
+
     /** Moves to the previous step. */
     private void prevStep() {
-        steps.get(currentStep).setVisible(false);
-        remove(steps.get(currentStep));
-        add(steps.get(--currentStep), BorderLayout.CENTER);
+        fireStepAboutToBeDisplayed(steps.getStep(currentStep - 1));
+        steps.previous(stepsPanel);
+        fireStepHidden(steps.getStep(currentStep));
+        currentStep--;
         if (currentStep == 0) {
             prev.setEnabled(false);
         }
         next.setText("Next >>");
-        steps.get(currentStep).setVisible(true);
         updateProgressLabel();
         wizard.stepChanged(currentStep + 1, currentStep);
     }
-    
+
     /**
      * Returns the step at the specified index.
      *
@@ -296,9 +305,9 @@ public final class WizardDialog extends StandardDialog implements ActionListener
      * @return Specified step.
      */
     public Step getStep(final int stepNumber) {
-        return steps.get(stepNumber);
+        return steps.getStep(stepNumber);
     }
-    
+
     /**
      * Returns the current step.
      *
@@ -307,9 +316,53 @@ public final class WizardDialog extends StandardDialog implements ActionListener
     public int getCurrentStep() {
         return currentStep;
     }
-    
+
     /** Updates the progress label. */
     private void updateProgressLabel() {
         progressLabel.setText("Step " + (currentStep + 1) + " of " + steps.size());
-    }    
+    }
+
+    /**
+     * Adds a step listener to the list.
+     *
+     * @param listener
+     */
+    public void addStepListener(final StepListener listener) {
+        stepListeners.add(StepListener.class, listener);
+    }
+
+    /**
+     * Removes a step listener from the list.
+     *
+     * @param listener
+     */
+    public void removeStepListener(final StepListener listener) {
+        stepListeners.remove(StepListener.class, listener);
+    }
+
+    /**
+     * Fires step about to be displayed events.
+     *
+     * @param step Step to be displayed
+     */
+    private void fireStepAboutToBeDisplayed(final Step step) {
+        List<StepListener> listeners =
+                stepListeners.get(StepListener.class);
+        for (StepListener listener : listeners) {
+            listener.stepAboutToDisplay(step);
+        }
+    }
+
+    /**
+     * Fires step hidden events.
+     *
+     * @param step step thats been hidden
+     */
+    private void fireStepHidden(final Step step) {
+        List<StepListener> listeners =
+                stepListeners.get(StepListener.class);
+        for (StepListener listener : listeners) {
+            listener.stepHidden(step);
+        }
+    }
 }

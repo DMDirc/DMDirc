@@ -99,8 +99,8 @@ public final class Main implements Wizard {
 			steps.add(new StepError());
 		} else {
 			steps.add(new StepSettings());
-			steps.add(new StepConfirm());
-			steps.add(new StepInstall());
+			steps.add(new StepConfirm(wizardDialog));
+			steps.add(new StepInstall(wizardDialog));
 		}
 		
 		String releaseName = "";

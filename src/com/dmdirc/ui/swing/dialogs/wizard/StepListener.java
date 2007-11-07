@@ -23,11 +23,21 @@
 package com.dmdirc.ui.swing.dialogs.wizard;
 
 /**
- * Wizard step that needs to know when it is about to be displayed.
+ * Step listener interfaces.
  */
-public interface SpecialStep {
+public interface StepListener {
+
     /**
-     * Display Step.
+     * Called just before a step is displayed
+     * 
+     * @param step Step to be displayed
      */
-    void showStep();
+    void stepAboutToDisplay(final Step step);
+
+    /**
+     * Called when a step is hidden.
+     * 
+     * @param step Step thats been hidden
+     */
+    void stepHidden(final Step step);
 }
