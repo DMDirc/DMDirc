@@ -1,0 +1,38 @@
+<project name="DMDirc-Plugins" default="default" basedir=".">
+	<!-- ant-contrib default location (can be overridden in the property files below)-->
+	<property name="libs.antcontrib" value="ant-contrib-1.0b3.jar"/>
+	
+	<!-- Netbeans property files -->
+	<property file="nbproject/project.properties"/>
+	<property file="nbproject/private/private.properties"/>
+	<property file="${user.properties.file}"/>
+	
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<pathelement location="${libs.antcontrib}"/>
+		</classpath>
+	</taskdef>
+	
+	
+	<target name="makepluginjar">
+		<propertyregex property="pluginjar.name" input="${target.file}" regexp=".*[\\/](.*)$" select="\1.jar" casesensitive="false" />
+		<propertyregex property="folder.name" input="${target.file}" regexp=".*${build.classes.dir}/(.*)$" select="\1" casesensitive="false" />
+		<echo message="Building: ${folder.name} to ${pluginjar.name}"/>
+		<delete file="plugins/${pluginjar.name}"/>
+		<jar jarfile="plugins/${pluginjar.name}" basedir="build/classes" includes="${folder.name}/*.class">
+			<metainf file="${target.file}/plugin.info"/>
+		</jar>
+	</target>
+		
+	<target name="build-plugins">
+		<mkdir dir="plugins/"/>
+		<foreach target="makepluginjar" param="target.file">
+			<path>
+				<dirset dir="${build.classes.dir}/com/dmdirc/addons/">
+					<include name="**/*"/>
+					<exclude name="**/*/*/**"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+</project>
