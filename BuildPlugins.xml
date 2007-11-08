@@ -6,6 +6,7 @@
 	<property file="nbproject/project.properties"/>
 	<property file="nbproject/private/private.properties"/>
 	<property file="${user.properties.file}"/>
+	<available file="${libs.antcontrib}" property="has.ant-contrib"/>
 	
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 		<classpath>
@@ -24,7 +25,17 @@
 		</jar>
 	</target>
 		
-	<target name="build-plugins">
+	<target name="build-plugins" depends="build-plugins_bash, build-plugins_ant-contrib"/>
+	
+	<available file="/bin/bash" property="has.bash"/>	
+	<target name="build-plugins_bash" unless="has.ant-contrib" if="has.bash">
+		<exec executable="/bin/bash">
+			<arg value="createAllPluginJar.sh"/>
+			<arg value="${src.dir}/com/dmdirc/addons/"/>
+		</exec>
+	</target>
+	
+	<target name="build-plugins_ant-contrib" if="has.ant-contrib">
 		<mkdir dir="plugins/"/>
 		<foreach target="makepluginjar" param="target.file">
 			<path>

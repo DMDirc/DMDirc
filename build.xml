@@ -4,7 +4,8 @@
 <!-- (If you delete it and reopen the project it will be recreated.) -->
 <project name="DMDirc" default="default" basedir=".">
     <description>Builds, tests, and runs the project DMDirc.</description>
-    <import file="nbproject/build-impl.xml"/>
+		<import file="nbproject/build-impl.xml"/>
+		<import file="BuildPlugins.xml"/>
     <!--
 
     There exist several targets which are by default empty and which can be 
@@ -68,10 +69,5 @@
             <fileset dir="${build.classes.dir}"/>
         </jar>
     -->
-    <target name="-post-compile">
-        <exec executable="/bin/bash">
-            <arg value="createAllPluginJar.sh"/>
-            <arg value="${src.dir}/com/dmdirc/addons/"/>
-        </exec>
-    </target>
+    <target name="-post-compile" depends="build-plugins"/>
 </project>
