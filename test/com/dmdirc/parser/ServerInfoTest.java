@@ -25,7 +25,7 @@ package com.dmdirc.parser;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ServerInfoTest {
+public class ServerInfoTest extends junit.framework.TestCase {
     
     @Test
     public void testHost() {

@@ -30,7 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ColourManagerTest {
+public class ColourManagerTest extends junit.framework.TestCase {
     
     @Before
     public void setUp() throws Exception {

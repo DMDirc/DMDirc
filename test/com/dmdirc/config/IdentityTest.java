@@ -29,7 +29,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class IdentityTest {
+public class IdentityTest extends junit.framework.TestCase {
     
     private Identity myIdent;
     private ConfigTarget target;

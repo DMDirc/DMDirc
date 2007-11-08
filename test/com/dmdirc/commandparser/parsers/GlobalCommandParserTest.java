@@ -27,7 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class GlobalCommandParserTest {
+public class GlobalCommandParserTest extends junit.framework.TestCase {
     
     @Before
     public void setUp() throws Exception {

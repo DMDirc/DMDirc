@@ -27,7 +27,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class WritableFrameContainerTest {
+public class WritableFrameContainerTest extends junit.framework.TestCase {
     
     @Test
     public void testGetNumLines() {

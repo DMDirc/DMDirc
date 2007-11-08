@@ -25,7 +25,7 @@ package com.dmdirc.actions;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ConditionTreeTest {
+public class ConditionTreeTest extends junit.framework.TestCase {
 
     @Test
     public void parseString() {

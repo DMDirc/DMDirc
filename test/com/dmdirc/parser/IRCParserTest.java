@@ -28,7 +28,7 @@ import com.dmdirc.parser.callbacks.interfaces.IAwayState;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class IRCParserTest {
+public class IRCParserTest extends junit.framework.TestCase {
     
     @Test
     public void testIssue042() {

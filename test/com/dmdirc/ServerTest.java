@@ -25,7 +25,7 @@ package com.dmdirc;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ServerTest {
+public class ServerTest extends junit.framework.TestCase {
 
     @Test
     public void getNetworkFromServerName() {

@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class UpdateTest {
+public class UpdateTest extends junit.framework.TestCase {
     
     private final String subject = "outofdate component channel date version url";
     

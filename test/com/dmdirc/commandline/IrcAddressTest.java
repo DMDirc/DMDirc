@@ -25,7 +25,7 @@ package com.dmdirc.commandline;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class IrcAddressTest {
+public class IrcAddressTest extends junit.framework.TestCase {
     
     @Test
     public void testBasic() {

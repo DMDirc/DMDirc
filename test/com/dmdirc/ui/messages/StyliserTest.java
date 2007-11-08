@@ -27,7 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class StyliserTest {
+public class StyliserTest extends junit.framework.TestCase {
     
     @Before
     public void setUp() {
