@@ -124,6 +124,7 @@ public final class StepInstall extends Step implements StepListener {
 	/** {@inheritDoc} */
 	@Override
 	public void stepAboutToDisplay(final Step step) {
+		if (step != this) { return; }
 		Main.getWizardDialog().enableNextStep(false);
 		Main.getWizardDialog().enablePreviousStep(false);
 		Main.getInstaller().setInstallStep(this);

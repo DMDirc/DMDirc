@@ -73,13 +73,13 @@ public final class Main implements Wizard {
 	 */
 	public void wizardCancelled() {	
 		if (wizardDialog.getCurrentStep() != 3
-			&& JOptionPane.showConfirmDialog(wizardDialog, 
-				"Are you sure you want to cancel?",
-				"Cancel confirmation", JOptionPane.YES_NO_OPTION, 
-				JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-			                wizardDialog.dispose();
+		    && JOptionPane.showConfirmDialog(wizardDialog, 
+		    "Are you sure you want to cancel?",
+		    "Cancel confirmation", JOptionPane.YES_NO_OPTION, 
+		    JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+			wizardDialog.dispose();
 		}
-        }
+	}
 
 	/**
 	 * Creates and Displays the Installer wizard.
@@ -91,25 +91,23 @@ public final class Main implements Wizard {
 			//Ignore, revert to default
 		}
 		
-		final List<Step> steps = new ArrayList<Step>();
-		final String osName = System.getProperty("os.name");
-		
-		steps.add(new StepWelcome());
-		if (osName.startsWith("Mac OS")) {
-			steps.add(new StepError());
-		} else {
-			steps.add(new StepSettings());
-			steps.add(new StepConfirm(wizardDialog));
-			steps.add(new StepInstall(wizardDialog));
-		}
-		
 		String releaseName = "";
 		if (cli.getParamNumber("-release") > 0) {
 			releaseName = " "+cli.getParam("-release").getStringValue();
 		}
 		
-		setWizardDialog(new WizardDialog("DMDirc"+releaseName+" Installer", steps, this, false, null));
+		setWizardDialog(new WizardDialog("DMDirc"+releaseName+" Installer", new ArrayList<Step>(), this, false, null));
 		wizardDialog.setPreferredSize(new Dimension(400, 350));
+
+		final String osName = System.getProperty("os.name");
+		wizardDialog.addStep(new StepWelcome());
+		if (osName.startsWith("Mac OS")) {
+			wizardDialog.addStep(new StepError());
+		} else {
+			wizardDialog.addStep(new StepSettings());
+			wizardDialog.addStep(new StepConfirm(wizardDialog));
+			wizardDialog.addStep(new StepInstall(wizardDialog));
+		}
 	}
 	
 	/**

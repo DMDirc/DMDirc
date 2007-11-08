@@ -71,6 +71,7 @@ public final class StepConfirm extends Step implements StepListener {
 	/** {@inheritDoc} */
 	@Override
 	public void stepAboutToDisplay(final Step step) {
+		if (step != this) { return; }
 		String shortcutText = "";
 		
 		StepSettings settings = ((StepSettings) Main.getWizardDialog().getStep(1));
