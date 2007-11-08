@@ -56,7 +56,8 @@ public final class StepError extends Step {
 		infoLabel.setWrapStyleWord(true);
 		infoLabel.setLineWrap(true);
 		infoLabel.setHighlighter(null);
-		infoLabel.setBackground(getBackground());
+		infoLabel.setOpaque(false);
+//		infoLabel.setBackground(getBackground());
 		infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, SMALL_BORDER, 0));
 			
 		add(infoLabel, BorderLayout.CENTER);
