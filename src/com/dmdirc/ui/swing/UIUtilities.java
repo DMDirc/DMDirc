@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.swing;
 
-import com.dmdirc.IconManager;
 import com.dmdirc.ui.swing.actions.RedoAction;
 import com.dmdirc.ui.swing.actions.UndoAction;
 import com.dmdirc.ui.swing.components.DMDircUndoableEditListener;
@@ -199,8 +198,6 @@ public final class UIUtilities {
         UIManager.put("swing.boldMetal", false);
         UIManager.put("InternalFrame.useTaskBar", false);
         UIManager.put("SplitPaneDivider.border", BorderFactory.createEmptyBorder());
-        UIManager.put("Tree.collapsedIcon", IconManager.getIconManager().getIcon("nothing"));
-        UIManager.put("Tree.expandedIcon", IconManager.getIconManager().getIcon("nothing"));
         UIManager.put("Tree.scrollsOnExpand", true);
         UIManager.put("Tree.scrollsHorizontallyAndVertically", true);
     }

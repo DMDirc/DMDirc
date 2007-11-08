@@ -25,6 +25,7 @@ package com.dmdirc.ui.swing;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
@@ -174,6 +175,9 @@ public final class SwingController implements UIController {
                     UIManager.setLookAndFeel(lnfName);
                 }
             }
+            
+            UIManager.put("Tree.collapsedIcon", IconManager.getIconManager().getIcon("nothing"));
+            UIManager.put("Tree.expandedIcon", IconManager.getIconManager().getIcon("nothing"));
             
             //These are likely to change lots, and i cant test them - Greboid
             UIManager.put("apple.awt.showGrowBox", true);
