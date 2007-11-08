@@ -43,25 +43,19 @@ public class ProcessingManager {
 	private final Hashtable<String,IRCProcessor> processHash = new Hashtable<String,IRCProcessor>();
 
 	/**
+	 * Debugging Data to the console.
+	 */
+	private void DoDebug(final String line, final Object... args) {
+		myParser.callDebugInfo(myParser.DEBUG_PROCESSOR, line, args);
+	}
+
+	/**
 	 * Constructor to create a ProcessingManager
 	 *
 	 * @param parser IRCParser that owns this Processing Manager
 	 */
 	public ProcessingManager(IRCParser parser) {
 		myParser = parser;
-	}
-	
-	/**
-	 * Debugging Data to the console.
-	 */
-	private void DoDebug(final String line, final Object... args) {
-		myParser.callDebugInfo(myParser.DEBUG_PROCESSOR, line, args);
-	}
-	
-	/**
-	 * Initialise the ProcessingManager with the default processors
-	 */
-	public void init() {
 		//------------------------------------------------
 		// Add processors
 		//------------------------------------------------
@@ -125,13 +119,6 @@ public class ProcessingManager {
 		addProcessor(new ProcessWallops(myParser, this));
 	}
 	
-	/**
-	 * Remove all processors
-	 */
-	public void empty() {
-		processHash.clear();
-	}
-
 	/**
 	 * Add new Process type.
 	 *

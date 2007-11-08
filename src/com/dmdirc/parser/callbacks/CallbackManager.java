@@ -163,13 +163,6 @@ public final class CallbackManager {
 	}
 	
 	/**
-	 * Remove all callbacks.
-	 */
-	public void clearCallbacks() {
-		callbackHash.clear();
-	}
-	
-	/**
 	 * Add all callbacks.
 	 *
 	 * @param o instance of ICallbackInterface to add.

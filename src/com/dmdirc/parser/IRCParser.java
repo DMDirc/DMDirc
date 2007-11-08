@@ -716,9 +716,6 @@ public final class IRCParser implements Runnable {
 		
 		sendConnectionStrings();
 		
-		// Prepare the ProcessingManager
-		myProcessingManager.init();
-		
 		while (true) {
 			try {
 				lastLine = in.readLine(); // Blocking :/
@@ -727,7 +724,7 @@ public final class IRCParser implements Runnable {
 						currentSocketState = STATE_CLOSED;
 						callSocketClosed();
 					}
-					reset();
+					resetState();
 					break;
 				} else {
 					processLine(lastLine);
@@ -737,7 +734,7 @@ public final class IRCParser implements Runnable {
 					currentSocketState = STATE_CLOSED;
 					callSocketClosed();
 				}
-				reset();
+				resetState();
 				break;
 			}
 		}
@@ -1582,21 +1579,10 @@ public final class IRCParser implements Runnable {
 				currentSocketState = STATE_CLOSED;
 				callSocketClosed();
 			}
-			reset();
+			resetState();
 		}
 	}
 	
-	/**
-	 * Remove all clients/channels/channelclients/callbacks.
-	 */
-	protected synchronized void reset() {
-		resetState();
-		// Empty the processing manager
-		myProcessingManager.empty();
-		// Remove all callbacks
-		myCallbackManager.clearCallbacks();
-	}
-
 	/**
 	 * Check if a channel name is valid.
 	 *
