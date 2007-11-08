@@ -62,12 +62,12 @@ public final class UpdateStep extends StepOne {
         infoLabel = new TextLabel("This version of DMDirc contains an update to "
                 + " the core plugins and actions.\n\nWould you like to extract the"
                 + " core plugins to update them? Note that older plugins may not"
-                + " function correctly with this version of DMDirc.", this);
+                + " function correctly with this version of DMDirc.");
         infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0,
                 SMALL_BORDER, 0));
         
         constraints.weightx = 1.0;
-        constraints.fill = constraints.BOTH;
+        constraints.fill = GridBagConstraints.BOTH;
         constraints.gridx = 0;
         constraints.gridy = 0;
         add(infoLabel, constraints);
@@ -77,7 +77,7 @@ public final class UpdateStep extends StepOne {
         
         infoLabel = new TextLabel("Would you like to extract the default actions"
                 + " to update them? Any changes you have made to the default"
-                + " actions will be lost.", this);
+                + " actions will be lost.");
         infoLabel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0,
                 SMALL_BORDER, 0));
         

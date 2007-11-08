@@ -70,7 +70,7 @@ public final class CreditsPanel extends JPanel implements HyperlinkListener {
                 + "<li><a href=\"http://www.pling.org.uk\">Chris 'laser' Northwood</a></li>"
                 + "<li><a href=\"http://www.zipplet.co.uk\">Michael 'Zipplet' Nixon</a></li>"
                 + "</ul>"
-                + "</div></html>", this);
+                + "</div></html>");
         about.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
         about.addHyperlinkListener(this);

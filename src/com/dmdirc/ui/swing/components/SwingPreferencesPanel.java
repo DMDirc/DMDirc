@@ -388,7 +388,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
                 parent.getChildCount());
         tabList.scrollPathToVisible(new TreePath(newNode.getPath()));
         
-        final TextLabel infoLabel = new TextLabel(blurb, this);
+        final TextLabel infoLabel = new TextLabel(blurb);
         if (blurb.isEmpty()) {
             infoLabel.setVisible(false);
         }

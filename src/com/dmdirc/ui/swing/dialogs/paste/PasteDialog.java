@@ -109,7 +109,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         scrollPane = new JScrollPane();
         textField = new JTextArea(text);
         editButton = new JButton("Edit");
-        infoLabel = new TextLabel(this);
+        infoLabel = new TextLabel();
         
         UIUtilities.addUndoManager(textField);
         

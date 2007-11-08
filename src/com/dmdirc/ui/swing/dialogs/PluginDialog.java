@@ -155,13 +155,13 @@ public final class PluginDialog extends StandardDialog implements
         toggleButton.setEnabled(false);
         
         blurbLabel = new TextLabel("Plugins allow you to extend the functionality of DMDirc."
-                + " Plugins enabled here will also be enabled next time you start the client.", this);
+                + " Plugins enabled here will also be enabled next time you start the client.");
         
         infoLabel = new HTMLLabel("<html><center style='font-family: "
                 + blurbLabel.getFont().getFamily() + "; font-size:"
                 + blurbLabel.getFont().getSize() + "pt;'>You can get "
                 + "more plugins from the <a href=\"http://addons.dmdirc.com/\">"
-                + "Addons site</a></center></html>", this);
+                + "Addons site</a></center></html>");
         
         populateList();
     }

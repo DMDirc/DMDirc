@@ -64,7 +64,7 @@ public final class AboutPanel extends JPanel implements HyperlinkListener {
                 + "<p>Easy to use, cross-platform IRC client.</p>"
                 + "<p>Version: " + Main.VERSION + "</p>"
                 + "<p><a href=\"http://www.dmdirc.com\">www.dmdirc.com</a></p>"
-                + "</center></html>", this);
+                + "</center></html>");
         about.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
         about.addHyperlinkListener(this);

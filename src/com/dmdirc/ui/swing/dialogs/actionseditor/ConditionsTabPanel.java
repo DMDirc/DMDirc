@@ -107,7 +107,7 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
         noConditions = new JLabel("No conditions set.");
         newComparison = new JButton("New");
         infoLabel = new TextLabel("This action will only be executed if the "
-                + "following are true:", this);
+                + "following are true:");
         
         infoLabel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));

@@ -22,64 +22,46 @@
 
 package com.dmdirc.ui.swing.components;
 
-import java.awt.Component;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
 
 /**
  * Dyamnic text label.
  */
-public class TextLabel extends JTextArea implements PropertyChangeListener {
-    
+public class TextLabel extends JTextArea {
+
     /**
      * A version number for this class. It should be changed whenever the
      * class structure is changed (or anything else that would prevent
      * serialized objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
-    /** Parent component. */
-    private final Component comp;
-    
+
     /**
-     * Creates a new instance of TextLabel. 
-     *
-     * @param text Text to display
+     * Creates a new instance of TextLabel.
      */
-    public TextLabel(final Component comp) {
-        this(null, comp);
+    public TextLabel() {
+        this(null);
     }
-    
+
     /**
-     * Creates a new instance of TextLabel. 
+     * Creates a new instance of TextLabel.
      *
      * @param text Text to display
-     * @param comp Parent component
      */
-    public TextLabel(final String text, final Component comp) {
+    public TextLabel(final String text) {
         super(text);
-        
-        this.comp = comp;
-        
+
         init();
     }
-    
+
     /** Initialiases the component. */
     private void init() {
+        setOpaque(false);
         setEditable(false);
         setWrapStyleWord(true);
         setLineWrap(true);
         setHighlighter(null);
-        setBackground(comp.getBackground());
         setFont(UIManager.getFont("TextField.font"));
-        addPropertyChangeListener("UI", this);
     }
-
-    /** {@inheritDoc} */
-    public void propertyChange(final PropertyChangeEvent evt) {
-        init();
-    }
-    
 }

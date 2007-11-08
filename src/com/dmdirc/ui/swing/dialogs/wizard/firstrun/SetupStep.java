@@ -66,7 +66,7 @@ public final class SetupStep extends StepOne {
                 + "functionality such as channel logging to the client. "
                 + "Thse plugins need to be copied into your home directory to"
                 + " be used. If you would like the wizard to copy the core "
-                + "plugins for you, tick the box below.", this);
+                + "plugins for you, tick the box below.");
         infoLabel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0,
                 SMALL_BORDER, 0));
         
@@ -83,7 +83,7 @@ public final class SetupStep extends StepOne {
                 + " 'actions' that serve as examples and add some basic"
                 + " functionality such as highlighting. If you would like"
                 + " the wizard to copy the core actions for you, tick the"
-                + " box below.", this);
+                + " box below.");
         infoLabel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0,
                 SMALL_BORDER, 0));
         

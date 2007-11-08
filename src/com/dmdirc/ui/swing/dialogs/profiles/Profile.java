@@ -208,7 +208,7 @@ public class Profile {
      * @param ident Profile's new ident
      */
     public void setIdent(final String ident) {
-        if (!this.ident.equals(ident)) {
+        if (this.ident == null || !this.ident.equals(ident)) {
             this.ident = ident;
             setModified(true);
         }

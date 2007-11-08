@@ -22,62 +22,44 @@
 
 package com.dmdirc.ui.swing.components;
 
-import java.awt.Component;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import javax.swing.JEditorPane;
 import javax.swing.UIManager;
 
 /**
  * Dyamnic text label with hyperlink support.
  */
-public class HTMLLabel extends JEditorPane implements PropertyChangeListener {
-    
+public class HTMLLabel extends JEditorPane {
+
     /**
      * A version number for this class. It should be changed whenever the
      * class structure is changed (or anything else that would prevent
      * serialized objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
-    /** Parent component. */
-    private final Component comp;
-    
+
     /**
-     * Creates a new instance of TextLabel. 
-     *
-     * @param text Text to display
+     * Creates a new instance of TextLabel.
      */
-    public HTMLLabel(final Component comp) {
-        this(null, comp);
-    }
-    
-    /**
-     * Creates a new instance of TextLabel. 
-     *
-     * @param text Text to display
-     * @param comp Parent component
-     */
-    public HTMLLabel(final String text, final Component comp) {
-        super("text/html", text);
-        
-        this.comp = comp;
-        
-        init();
-    }
-    
-    /** Initialiases the component. */
-    private void init() {
-        setEditable(false);
-        setHighlighter(null);
-        setBackground(comp.getBackground());
-        setFont(UIManager.getFont("TextField.font"));
-        addPropertyChangeListener("UI", this);
+    public HTMLLabel() {
+        this(null);
     }
 
-    /** {@inheritDoc} */
-    public void propertyChange(final PropertyChangeEvent evt) {
+    /**
+     * Creates a new instance of TextLabel.
+     *
+     * @param text Text to display
+     */
+    public HTMLLabel(final String text) {
+        super("text/html", text);
+
         init();
     }
-    
+
+    /** Initialiases the component. */
+    private void init() {
+        setOpaque(false);
+        setEditable(false);
+        setHighlighter(null);
+        setFont(UIManager.getFont("TextField.font"));
+    }
 }

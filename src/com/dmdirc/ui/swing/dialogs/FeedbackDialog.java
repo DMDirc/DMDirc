@@ -117,7 +117,7 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
                 "sending us some feedback fill in the form below, only the " +
                 "feedback field is required, but if you want us to get back " +
                 "to you the email address is pretty vital and the name " +
-                "fairly useful.", this);
+                "fairly useful.");
         name = new JTextField();
         email = new JTextField();
         feedback = new JTextArea();

@@ -107,7 +107,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
     private void initComponents() {
         final JTextArea stacktraceField = new JTextArea();
         
-        messageLabel = new TextLabel(this);
+        messageLabel = new TextLabel();
         infoLabel = new JLabel();
         showMore = new JButton();
         scrollPane = new JScrollPane();
@@ -122,7 +122,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
         
         infoLabel.setIcon(IconManager.getIconManager().getIcon("error"));
         
-        messageLabel = new TextLabel("Description: \n" + error.getMessage(), this);
+        messageLabel.setText("Description: \n" + error.getMessage());
         
         showMore.setText("Show details");
         showMore.addActionListener(this);

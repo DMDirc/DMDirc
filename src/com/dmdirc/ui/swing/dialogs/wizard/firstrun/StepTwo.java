@@ -65,7 +65,7 @@ public final class StepTwo extends Step {
         final TextLabel infoLabel = new TextLabel("DMDirc uses a set of 'profiles' to determine"
                 + " your nickname, realname, etc when connecting to a server. "
                 + "If you would like the wizard to open the profile manager "
-                + "for you, tick the box below.", this);
+                + "for you, tick the box below.");
         infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 
                 SMALL_BORDER, 0));
         

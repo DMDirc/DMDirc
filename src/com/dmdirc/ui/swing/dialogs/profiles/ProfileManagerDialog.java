@@ -137,7 +137,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
                 new TextLabel("Profiles describe information needed to " +
                 "connect to a server.  You can use a different profile for " +
                 "each connection. Profiles are automatically saved when you " +
-                "select another or click OK", this);
+                "select another or click OK");
 
         profileList.setCellRenderer(new ProfileListCellRenderer());
         profileList.setFixedCellWidth(200 -
