@@ -265,6 +265,18 @@ public final class ClientInfo {
 	}
 	
 	/**
+	 * Is this client an oper?
+	 * This is a guess currently based on user-modes and thus only works on the
+	 * parsers own client.
+	 *
+	 * @return True/False if this client appears to be an oper
+	 */
+	public boolean isOper() {
+		final String modestr = getUserModeStr();
+		return (modestr.indexOf('o') > -1) || (modestr.indexOf('O') > -1);
+	}
+	
+	/**
 	 * Add a ChannelClientInfo as a known reference to this client.
 	 *
 	 * @param cci ChannelClientInfo to add as a known reference

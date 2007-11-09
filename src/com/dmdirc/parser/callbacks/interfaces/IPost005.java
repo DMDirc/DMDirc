@@ -31,7 +31,7 @@ import com.dmdirc.parser.IRCParser;
  */
 public interface IPost005 extends ICallbackInterface {
 	/**
-	 * Called after 001.
+	 * Called after 005.
 	 * 
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @see com.dmdirc.parser.Process001#callPost005
