@@ -59,12 +59,11 @@ public class IdentdPlugin extends Plugin implements ActionListener, PreferencesI
 	/**
 	 * Called when the plugin is loaded.
 	 */
-        @Override
+	@Override
 	public void onLoad() {
-            // Add action hooks
-            ActionManager.addListener(this, CoreActionType.SERVER_CONNECTED,
-                    CoreActionType.SERVER_CONNECTING, CoreActionType.SERVER_CONNECTERROR);
-            
+		// Add action hooks
+		ActionManager.addListener(this, CoreActionType.SERVER_CONNECTED, CoreActionType.SERVER_CONNECTING, CoreActionType.SERVER_CONNECTERROR);
+
 		// Set defaults
 		Properties defaults = new Properties();
 		defaults.setProperty(getDomain() + ".general.useUsername", "false");
@@ -91,12 +90,11 @@ public class IdentdPlugin extends Plugin implements ActionListener, PreferencesI
 	/**
 	 * Called when this plugin is unloaded.
 	 */
-        @Override
+	@Override
 	public void onUnload() {
 		myServer.stopServer();
 		servers.clear();
-                
-                ActionManager.removeListener(this);
+		ActionManager.removeListener(this);
 	}
 	
 	/**
@@ -106,7 +104,7 @@ public class IdentdPlugin extends Plugin implements ActionListener, PreferencesI
 	 * @param format Format of messages that are about to be sent. (May be null)
 	 * @param arguments The arguments for the event
 	 */
-        @Override
+	@Override
 	public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
 		if (type == CoreActionType.SERVER_CONNECTING) {
 			synchronized (servers) {
@@ -135,13 +133,13 @@ public class IdentdPlugin extends Plugin implements ActionListener, PreferencesI
 	 *
 	 * @return true if the plugin has configuration options via a dialog.
 	 */
-        @Override
+	@Override
 	public boolean isConfigurable() { return true; }
 	
 	/**
 	 * Called to show the Configuration dialog of the plugin if appropriate.
 	 */
-        @Override
+	@Override
 	public void showConfig() {
 		final PreferencesPanel preferencesPanel = Main.getUI().getPreferencesPanel(this, "Identd Plugin - Config");
 		preferencesPanel.addCategory("General", "General Identd Plugin config ('Lower' options take priority over those above them)");
@@ -198,7 +196,7 @@ public class IdentdPlugin extends Plugin implements ActionListener, PreferencesI
 	 *
 	 * @param properties user preferences
 	 */
-        @Override
+	@Override
 	public void configClosed(final Properties properties) {
 		// Update Config options
 		final int oldPort = IdentityManager.getGlobalConfig().getOptionInt(getDomain(), "advanced.port", 113);
@@ -223,7 +221,7 @@ public class IdentdPlugin extends Plugin implements ActionListener, PreferencesI
 	/**
 	 * Called when the preferences dialog is cancelled.
 	 */
-        @Override
+	@Override
 	public void configCancelled() { }
 	
 }

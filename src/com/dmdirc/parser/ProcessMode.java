@@ -49,13 +49,16 @@ public class ProcessMode extends IRCProcessor {
 			sChannelName = token[3];
 			sModestr = new String[token.length-4];
 			System.arraycopy(token, 4, sModestr, 0, token.length-4);
+		} else if (sParam.equals("221")) {
+			processUserMode(sParam, token, new String[]{token[token.length-1]}, true);
+			return;
 		} else {
 			sChannelName = token[2];
 			sModestr = new String[token.length-3];
 			System.arraycopy(token, 3, sModestr, 0, token.length-3);
 		}
 
-		if (!isValidChannelName(sChannelName)) { processUserMode(sParam, token, sModestr); }
+		if (!isValidChannelName(sChannelName)) { processUserMode(sParam, token, sModestr, false); }
 		else { processChanMode(sParam, token, sModestr, sChannelName); }
 	}
 	
@@ -207,8 +210,9 @@ public class ProcessMode extends IRCProcessor {
 	 *
 	 * @param sParam String representation of parameter to parse
 	 * @param token IRCTokenised Array of the incomming line
+	 * @param clearOldModes Clear old modes before applying these modes (used by 221)
 	 */	
-	private void processUserMode(String sParam, String token[], String sModestr[]) {
+	private void processUserMode(String sParam, String token[], String sModestr[], boolean clearOldModes) {
 		long nCurrent = 0, nValue = 0;
 		boolean bPositive = true;
 		
@@ -217,7 +221,11 @@ public class ProcessMode extends IRCProcessor {
 		iClient = getClientInfo(token[2]);
 		if (iClient == null) { return; }
 		
-		nCurrent = iClient.getUserMode();
+		if (clearOldModes) {
+			nCurrent = 0;
+		} else {
+			nCurrent = iClient.getUserMode();
+		}
 		
 		for (int i = 0; i < sModestr[0].length(); ++i) {
 			Character cMode = sModestr[0].charAt(i);
@@ -298,9 +306,10 @@ public class ProcessMode extends IRCProcessor {
 	 * @return String[] with the names of the tokens we handle.
 	 */
 	public String[] handles() {
-		String[] iHandle = new String[2];
+		String[] iHandle = new String[3];
 		iHandle[0] = "MODE";
 		iHandle[1] = "324";
+		iHandle[2] = "221";
 		return iHandle;
 	} 
 	

@@ -91,8 +91,8 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 		
 		Main.getUI().getStatusBar().addComponent(panel);
 		updateStatus();
-                
-                ActionManager.addListener(this, CoreActionType.CLIENT_FRAME_CHANGED);
+		
+		ActionManager.addListener(this, CoreActionType.CLIENT_FRAME_CHANGED);
 	}
 	
 	/**
@@ -100,8 +100,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 	 */
 	public void onUnload() {
 		Main.getUI().getStatusBar().removeComponent(panel);
-                
-                ActionManager.removeListener(this);
+		ActionManager.removeListener(this);
 	}
 	
 	/**
@@ -113,7 +112,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 	 */
 	public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
 		if (type.equals(CoreActionType.CLIENT_FRAME_CHANGED)) {
-                        updateStatus((FrameContainer)arguments[0]);
+			updateStatus((FrameContainer)arguments[0]);
 		}
 	}
 	

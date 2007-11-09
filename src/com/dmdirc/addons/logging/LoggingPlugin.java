@@ -87,7 +87,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener, Prefe
 	/**
 	 * Called when the plugin is loaded.
 	 */
-        @Override
+	@Override
 	public void onLoad() {
 		// Set defaults
 		Properties defaults = new Properties();
@@ -121,28 +121,16 @@ public final class LoggingPlugin extends Plugin implements ActionListener, Prefe
 		}
 		
 		command = new LoggingCommand();
-                
-                ActionManager.addListener(this, CoreActionType.SERVER_CONNECTED,
-                        CoreActionType.QUERY_CLOSED, CoreActionType.CHANNEL_CLOSED,
-                        CoreActionType.QUERY_OPENED, CoreActionType.CHANNEL_OPENED,
-                        CoreActionType.QUERY_MESSAGE, CoreActionType.QUERY_SELF_MESSAGE,
-                        CoreActionType.QUERY_ACTION, CoreActionType.QUERY_SELF_ACTION,
-                        CoreActionType.CHANNEL_MESSAGE, CoreActionType.CHANNEL_SELF_MESSAGE,
-                        CoreActionType.CHANNEL_ACTION, CoreActionType.CHANNEL_SELF_ACTION,
-                        CoreActionType.CHANNEL_GOTTOPIC, CoreActionType.CHANNEL_TOPICCHANGE,
-                        CoreActionType.CHANNEL_JOIN, CoreActionType.CHANNEL_PART,
-                        CoreActionType.CHANNEL_QUIT, CoreActionType.CHANNEL_KICK,
-                        CoreActionType.CHANNEL_NICKCHANGE, CoreActionType.CHANNEL_MODECHANGE);
+		ActionManager.addListener(this, CoreActionType.SERVER_CONNECTED, CoreActionType.QUERY_CLOSED, CoreActionType.CHANNEL_CLOSED, CoreActionType.QUERY_OPENED, CoreActionType.CHANNEL_OPENED, CoreActionType.QUERY_MESSAGE, CoreActionType.QUERY_SELF_MESSAGE, CoreActionType.QUERY_ACTION, CoreActionType.QUERY_SELF_ACTION, CoreActionType.CHANNEL_MESSAGE, CoreActionType.CHANNEL_SELF_MESSAGE, CoreActionType.CHANNEL_ACTION, CoreActionType.CHANNEL_SELF_ACTION, CoreActionType.CHANNEL_GOTTOPIC, CoreActionType.CHANNEL_TOPICCHANGE, CoreActionType.CHANNEL_JOIN, CoreActionType.CHANNEL_PART, CoreActionType.CHANNEL_QUIT, CoreActionType.CHANNEL_KICK, CoreActionType.CHANNEL_NICKCHANGE, CoreActionType.CHANNEL_MODECHANGE);
 	}
 	
 	/**
 	 * Called when this plugin is unloaded.
 	 */
-        @Override
+	@Override
 	public void onUnload() {
 		CommandManager.unregisterCommand(command);
-                
-                ActionManager.removeListener(this);
+		ActionManager.removeListener(this);
 		
 		BufferedWriter file;
 		synchronized (openFiles) {
@@ -163,13 +151,13 @@ public final class LoggingPlugin extends Plugin implements ActionListener, Prefe
 	 *
 	 * @return true if the plugin has configuration options via a dialog.
 	 */
-        @Override
+	@Override
 	public boolean isConfigurable() { return true; }
 	
 	/**
 	 * Called to show the Configuration dialog of the plugin if appropriate.
 	 */
-        @Override
+	@Override
 	public void showConfig() {
 		final PreferencesPanel preferencesPanel = Main.getUI().getPreferencesPanel(this, "Logging Plugin - Config");
 		preferencesPanel.addCategory("General", "General configuration for Logging plugin.");
@@ -229,7 +217,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener, Prefe
 	 *
 	 * @param properties user preferences
 	 */
-        @Override
+	@Override
 	public void configClosed(final Properties properties) {
 		
 		// Update Config options
@@ -267,7 +255,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener, Prefe
 	/**
 	 * Called when the preferences dialog is cancelled.
 	 */
-        @Override
+	@Override
 	public void configCancelled() { }
 	
 	/**
@@ -277,7 +265,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener, Prefe
 	 * @param format Format of messages that are about to be sent. (May be null)
 	 * @param arguments The arguments for the event
 	 */
-        @Override
+	@Override
 	public void processEvent(final ActionType type, final StringBuffer format, final Object ... arguments) {
 		if (type instanceof CoreActionType) {
 			final CoreActionType thisType = (CoreActionType) type;
@@ -503,7 +491,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener, Prefe
 		final boolean showTimestamp = IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.timestamp");
 		if (frame == null) {
 			Logger.userError(ErrorLevel.LOW, "Given a null frame");
-            return;
+			return;
 		}
 		
 		File testFile = new File(filename);
