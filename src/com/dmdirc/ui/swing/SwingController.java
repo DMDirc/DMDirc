@@ -77,6 +77,7 @@ public final class SwingController implements UIController {
     }
     
     /** {@inheritDoc} */
+    @Override
     public synchronized MainFrame getMainWindow() {
         if (me == null) {
             statusBar = new SwingStatusBar();
@@ -87,6 +88,7 @@ public final class SwingController implements UIController {
     }
     
     /** {@inheritDoc} */
+    @Override
     public synchronized StatusBar getStatusBar() {
         if (statusBar == null)  {
             getMainWindow();
@@ -96,63 +98,75 @@ public final class SwingController implements UIController {
     }
     
     /** {@inheritDoc} */
+    @Override
     public ChannelWindow getChannel(final Channel channel) {
         return new ChannelFrame(channel);
     }
     
     /** {@inheritDoc} */
+    @Override
     public ServerWindow getServer(final Server server) {
         return new ServerFrame(server);
     }
     
     /** {@inheritDoc} */
+    @Override
     public QueryWindow getQuery(final Query query) {
         return new QueryFrame(query);
     }
     
     /** {@inheritDoc} */
+    @Override
     public Window getWindow(final FrameContainer owner) {
         return new CustomFrame(owner);
     }
     
     /** {@inheritDoc} */
+    @Override
     public InputWindow getInputWindow(final WritableFrameContainer owner,
             final CommandParser commandParser) {
         return new CustomInputFrame(owner, commandParser);
     }
     
     /** {@inheritDoc} */
+    @Override
     public PreferencesPanel getPreferencesPanel(
             final PreferencesInterface parent, final String title) {
         return new SwingPreferencesPanel(parent, title);
     }
     
     /** {@inheritDoc} */
+    @Override
     public SwingUpdaterDialog getUpdaterDialog(final List<Update> updates) {
         return SwingUpdaterDialog.getSwingUpdaterDialog(updates);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void showFirstRunWizard() {
         new SwingFirstRunWizard().display();
     }
     
     /** {@inheritDoc} */
+    @Override
     public void showMigrationWizard() {
         new SwingFirstRunWizard(false).display();
     }
     
     /** {@inheritDoc} */
+    @Override
     public void showChannelSettingsDialog(final Channel channel) {
         ChannelSettingsDialog.showChannelSettingsDialog(channel);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void showServerSettingsDialog(final Server server) {
         ServerSettingsDialog.showServerSettingsDialog(server);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void initUISettings() {
         // For this to work it *HAS* to be before anything else UI related.
         if (IdentityManager.getGlobalConfig().hasOption("ui", "antialias")) {
@@ -199,5 +213,21 @@ public final class SwingController implements UIController {
         }
         
         Toolkit.getDefaultToolkit().getSystemEventQueue().push(new DMDircEventQueue());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Window getActiveWindow() {
+        return me.getActiveFrame();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Server getActiveServer() {
+        if (me.getActiveFrame() == null) {
+            return null;
+        } else {
+            return me.getActiveFrame().getContainer().getServer();
+        }
     }
 }

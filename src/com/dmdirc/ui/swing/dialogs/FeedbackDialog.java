@@ -23,25 +23,28 @@
 package com.dmdirc.ui.swing.dialogs;
 
 import com.dmdirc.Main;
+import com.dmdirc.Server;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.TextLabel;
-
+import com.dmdirc.util.Downloader;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
 import net.miginfocom.swing.MigLayout;
 
 /** Feedback form. */
@@ -64,6 +67,10 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
     private JTextField email;
     /** Feedback area. */
     private JTextArea feedback;
+    /** Server info checkbox. */
+    private JCheckBox serverCheckbox;
+    /** Server instance. */
+    private Server server;
 
     /** Instantiates the feedback dialog. */
     private FeedbackDialog() {
@@ -99,6 +106,7 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
     public static synchronized FeedbackDialog getFeedbackDialog() {
         if (me == null) {
             me = new FeedbackDialog();
+            me.serverCheckbox.setEnabled(me.server != null);
         }
 
         return me;
@@ -106,8 +114,9 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
 
     /** Initialises the components. */
     private void initComponents() {
+        server = Main.getUI().getActiveServer();
         orderButtons(new JButton(), new JButton());
-        
+
         getOkButton().setText("Send");
         getOkButton().setActionCommand("Send");
         getOkButton().setEnabled(false);
@@ -121,7 +130,8 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
         name = new JTextField();
         email = new JTextField();
         feedback = new JTextArea();
-        
+        serverCheckbox = new JCheckBox();
+
         UIUtilities.addUndoManager(name);
         UIUtilities.addUndoManager(email);
         UIUtilities.addUndoManager(feedback);
@@ -139,6 +149,9 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
         add(new JLabel("Email: "));
         add(email, "span 2, growx, wrap");
 
+        add(new JLabel("Server related? "));
+        add(serverCheckbox, "span 2, growx, wrap");
+
         add(new JLabel("Feedback: "));
         add(new JScrollPane(feedback), "span 2, grow, pushx, wrap");
 
@@ -146,8 +159,12 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
         add(getOkButton(), "tag ok, sg button");
     }
 
-    /** Lays out the components. */
-    private void layoutComponents2() {
+    /**
+     * Lays out the components.
+     *
+     * @param error Did the submission error?
+     */
+    private void layoutComponents2(final StringBuilder error) {
         getContentPane().setVisible(false);
         getContentPane().removeAll();
         getOkButton().setText("Close");
@@ -155,8 +172,7 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
 
         setLayout(new MigLayout("fill"));
 
-        info.setText("Thank you for your feedback, if you have provided an " +
-                "email address you may receive a response.");
+        info.setText(error.toString());
 
         add(info, "span 3, grow, wrap");
 
@@ -176,32 +192,52 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
         final String nameText = name.getText().trim();
         final String emailText = email.getText().trim();
         final String feedbackText = feedback.getText().trim();
-
+        final StringBuilder sb = new StringBuilder();
         final Map<String, String> postData =
                 new HashMap<String, String>();
+        StringBuilder error = new StringBuilder();
 
-        if (nameText.isEmpty()) {
-            postData.put("name", "Not given");
-        } else {
+        if (serverCheckbox.isSelected()) {
+            sb.append("Name: ").append(server.getName()).append("\n");
+            sb.append("Network: ").append(server.getNetwork()).append("\n");
+            sb.append("IRCD: ").append(server.getIrcd());
+        }
+
+        if (!nameText.isEmpty()) {
             postData.put("name", nameText);
         }
-
-        if (emailText.isEmpty()) {
-            postData.put("email", "Not given");
-        } else {
+        if (!emailText.isEmpty()) {
             postData.put("email", emailText);
         }
-
-        if (feedbackText.isEmpty()) {
-            postData.put("feedback", "Not given");
-        } else {
+        if (!feedbackText.isEmpty()) {
             postData.put("feedback", feedbackText);
         }
+        postData.put("version",
+                Main.VERSION + "(" + Main.RELEASE_DATE + ")");
+        if (serverCheckbox.isSelected()) {
+            postData.put("serverInfo", sb.toString());
+        }
 
-        //Send the data
-        layoutComponents2();
+        try {
+            final List<String> response =
+                    Downloader.getPage("http://www.dmdirc.com/feedback.php",
+                    postData);
+            if (response.size() >= 1) {
+                for (String responseLine : response) {
+                    error.append(responseLine).append("\n");
+                }
+            } else {
+                error.append("Failure: Unknown response from the server.");
+            }
+        } catch (MalformedURLException ex) {
+            error.append("Malformed feedback URL.");
+        } catch (IOException ex) {
+            error.append(ex.getMessage());
+        }
+
+        layoutComponents2(error);
     }
-    
+
     /** Validates the input. */
     private void validateInput() {
         if (feedback.getDocument().getLength() > 0) {

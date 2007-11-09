@@ -144,4 +144,18 @@ public interface UIController {
      */
     void initUISettings();
     
+    /**
+     * Returns the active window.
+     * 
+     * @return Active window or null
+     */
+    Window getActiveWindow();
+    
+    /**
+     * Returns the active server.
+     * 
+     * @return Active server null
+     */
+    Server getActiveServer();
+    
 }

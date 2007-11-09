@@ -59,75 +59,101 @@ public final class DummyController implements UIController {
     }
     
     /** {@inheritDoc} */
+    @Override
     public MainWindow getMainWindow() {
         return mainWindow;
     }
     
     /** {@inheritDoc} */
+    @Override
     public StatusBar getStatusBar() {
         return new DummyStatusBar();
     }
        
     /** {@inheritDoc} */
+    @Override
     public ChannelWindow getChannel(final Channel channel) {
         return new DummyChannelWindow(channel);
     }
     
     /** {@inheritDoc} */
+    @Override
     public ServerWindow getServer(final Server server) {
         return new DummyServerWindow(server);
     }
     
     /** {@inheritDoc} */
+    @Override
     public QueryWindow getQuery(final Query query) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     /** {@inheritDoc} */
+    @Override
     public Window getWindow(final FrameContainer owner) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     /** {@inheritDoc} */
+    @Override
     public InputWindow getInputWindow(final WritableFrameContainer owner, 
             final CommandParser commandParser) {
         return new DummyInputWindow(owner, commandParser);
     }
     
     /** {@inheritDoc} */
+    @Override
     public PreferencesPanel getPreferencesPanel(final PreferencesInterface parent, 
             final String title) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     /** {@inheritDoc} */
+    @Override
     public UpdaterDialog getUpdaterDialog(final List<Update> updates) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     /** {@inheritDoc} */
+    @Override
     public void showFirstRunWizard() {
         System.out.println("DummyController.showFirstRunWizard()");
     }
     
     /** {@inheritDoc} */
+    @Override
     public void showMigrationWizard() {
         System.out.println("DummyController.showMigrationWizard()");
     }    
     
     /** {@inheritDoc} */
+    @Override
     public void showChannelSettingsDialog(final Channel channel) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     /** {@inheritDoc} */
+    @Override
     public void showServerSettingsDialog(final Server server) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     /** {@inheritDoc} */
+    @Override
     public void initUISettings() {
         // Do nothing
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Window getActiveWindow() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Server getActiveServer() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
 }
