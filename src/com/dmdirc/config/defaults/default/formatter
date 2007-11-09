@@ -148,9 +148,13 @@ formatter.connectError = \u00032Error connecting: %2$s
 formatter.connectRetry = \u00032Reconnecting in %2$s seconds...
 formatter.serverConnecting = Connecting to %1$s:%2$s...
 
+# Type: Argless
+formatter.back = \u000314You are no longer marked as away.
+
 # Type: Miscellaneous
 #    1: Miscellaneous data
 formatter.authNotice = \u00035-AUTH- %1$s
+formatter.away = \u000314You are now marked as away (%1$s\u000F\u000314).
 formatter.channelNoTopic = \u00033* There is no topic set for %1$s\u000F.
 formatter.rawCommand = \u000310>>> %1$s
 formatter.unknownCommand = \u000314Unknown command %1$s\u000F.

@@ -28,6 +28,7 @@ import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
+import com.dmdirc.interfaces.AwayStateListener;
 import com.dmdirc.interfaces.InviteListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -1055,26 +1056,6 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
 
     /**
-     * Called when our away state changes.
-     *
-     * @param currentState The new aray state
-     * @param reason Our away reason, if applicable
-     */
-    public void onAwayState(final boolean currentState, final String reason) {
-        if (currentState) {
-            awayMessage = reason;
-
-            ActionManager.processEvent(CoreActionType.SERVER_AWAY, null, this, awayMessage);
-        } else {
-            awayMessage = "";
-
-            ActionManager.processEvent(CoreActionType.SERVER_BACK, null, this);
-        }
-
-        window.setAwayIndicator(isAway());
-    }
-
-    /**
      * Called when the socket has been closed.
      */
     public void onSocketClosed() {
@@ -1252,6 +1233,46 @@ public final class Server extends WritableFrameContainer implements Serializable
 
         for (InviteListener listener : listeners.get(InviteListener.class)) {
             listener.inviteExpired(this, invite);
+        }
+    }
+    
+    // ----------------------------------------------- AWAY STATE HANDLING -----
+    
+    /**
+     * Adds an away state lisener to this server.
+     * 
+     * @param listener The listener to be added
+     */
+    public void addAwayStateListener(final AwayStateListener listener) {
+        listeners.add(AwayStateListener.class, listener);
+    }
+    
+    /**
+     * Removes an away state lisener from this server.
+     * 
+     * @param listener The listener to be removed
+     */
+    public void removeAwayStateListener(final AwayStateListener listener) {
+        listeners.remove(AwayStateListener.class, listener);
+    }
+    
+    /**
+     * Updates our away state and fires the relevant listeners.
+     * 
+     * @param message The away message to use, or an empty string if we're not
+     * away
+     */
+    public void updateAwayState(final String message) {
+        awayMessage = message;
+        
+        if (message.isEmpty()) {
+            for (AwayStateListener listener : listeners.get(AwayStateListener.class)) {
+                listener.onBack();
+            }
+        } else {
+            for (AwayStateListener listener : listeners.get(AwayStateListener.class)) {
+                listener.onAway(message);
+            }            
         }
     }
 

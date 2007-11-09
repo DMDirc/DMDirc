@@ -32,6 +32,8 @@ general.port=7000
 general.password=
 
 notifications.authNotice=server
+notifications.away=server
+notifications.back=server
 notifications.unknownNotice=server
 notifications.connectError=server
 notifications.connectRetry=server

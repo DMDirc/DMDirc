@@ -205,7 +205,14 @@ public final class ServerEventHandler extends EventHandler
     public void onAwayState(final IRCParser tParser, final boolean currentState,
             final String reason) {
         checkParser(tParser);
-        owner.onAwayState(currentState, reason);
+        
+        owner.updateAwayState(currentState ? reason : "");
+        
+        if (currentState) {
+            owner.doNotification("away", CoreActionType.SERVER_AWAY, reason);
+        } else {
+            owner.doNotification("back", CoreActionType.SERVER_BACK);
+        }
     }
     
     /** {@inheritDoc} */
