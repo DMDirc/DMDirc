@@ -214,10 +214,10 @@ public final class IRCParser implements Runnable {
 	/** Ignore List. */
 	RegexStringList myIgnoreList = new RegexStringList();
 
-	/** Reference to the Processing Manager. */
-	ProcessingManager myProcessingManager = new ProcessingManager(this);
 	/** Reference to the callback Manager. */
 	CallbackManager myCallbackManager = new CallbackManager(this);
+	/** Reference to the Processing Manager. */
+	ProcessingManager myProcessingManager = new ProcessingManager(this);
 	
 	/** Should we automatically disconnect on fatal errors?. */
 	private boolean disconnectOnFatal = true;
