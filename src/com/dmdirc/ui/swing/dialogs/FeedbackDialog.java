@@ -43,6 +43,7 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingWorker;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import net.miginfocom.swing.MigLayout;
@@ -164,9 +165,10 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
      *
      * @param error Did the submission error?
      */
-    private void layoutComponents2(final StringBuilder error) {
+    protected void layoutComponents2(final StringBuilder error) {
         getContentPane().setVisible(false);
         getContentPane().removeAll();
+        getOkButton().setEnabled(true);
         getOkButton().setText("Close");
         getOkButton().setActionCommand("Close");
 
@@ -189,53 +191,18 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
 
     /** Checks and sends the feedback. */
     private void send() {
-        final String nameText = name.getText().trim();
-        final String emailText = email.getText().trim();
-        final String feedbackText = feedback.getText().trim();
-        final StringBuilder sb = new StringBuilder();
-        final Map<String, String> postData =
-                new HashMap<String, String>();
-        StringBuilder error = new StringBuilder();
-
+        getOkButton().setEnabled(false);
+        getCancelButton().setEnabled(false);
+        final SendWorker worker;
         if (serverCheckbox.isSelected()) {
-            sb.append("Name: ").append(server.getName()).append("\n");
-            sb.append("Network: ").append(server.getNetwork()).append("\n");
-            sb.append("IRCD: ").append(server.getIrcd());
+            worker =new SendWorker(me, name.getText().trim(),
+                    email.getText().trim(), feedback.getText().trim());
+        } else {
+            worker =new SendWorker(me, name.getText().trim(),
+                    email.getText().trim(), feedback.getText().trim(), true,
+                    server.getName(), server.getNetwork(), server.getIrcd());
         }
-
-        if (!nameText.isEmpty()) {
-            postData.put("name", nameText);
-        }
-        if (!emailText.isEmpty()) {
-            postData.put("email", emailText);
-        }
-        if (!feedbackText.isEmpty()) {
-            postData.put("feedback", feedbackText);
-        }
-        postData.put("version",
-                Main.VERSION + "(" + Main.RELEASE_DATE + ")");
-        if (serverCheckbox.isSelected()) {
-            postData.put("serverInfo", sb.toString());
-        }
-
-        try {
-            final List<String> response =
-                    Downloader.getPage("http://www.dmdirc.com/feedback.php",
-                    postData);
-            if (response.size() >= 1) {
-                for (String responseLine : response) {
-                    error.append(responseLine).append("\n");
-                }
-            } else {
-                error.append("Failure: Unknown response from the server.");
-            }
-        } catch (MalformedURLException ex) {
-            error.append("Malformed feedback URL.");
-        } catch (IOException ex) {
-            error.append(ex.getMessage());
-        }
-
-        layoutComponents2(error);
+        worker.execute();
     }
 
     /** Validates the input. */
@@ -286,5 +253,125 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
     @Override
     public void changedUpdate(DocumentEvent e) {
         //Ignore
+    }
+}
+
+/**
+ * Sends feedback worker thread.
+ */
+class SendWorker extends SwingWorker {
+
+    /** Parent feedback dialog. */
+    private FeedbackDialog dialog;
+    /** Name. */
+    private String name;
+    /** Email. */
+    private String email;
+    /** Feedback. */
+    private String feedback;
+    /** Send server info. */
+    private boolean sendServerInfo;
+    /** Server name. */
+    private String serverName;
+    /** Server network. */
+    private String serverNetwork;
+    /** Server IRCD. */
+    private String serverIRCD;
+    /** Error/Success message. */
+    private StringBuilder error;
+
+    /**
+     * Creates a new send worker to send feedback.
+     * 
+     * @param dialog Parent feedback dialog
+     * @param name Name
+     * @param email Email
+     * @param feedback Feedback
+     */
+    public SendWorker(FeedbackDialog dialog, String name,
+            String email, String feedback) {
+        this(dialog, name, email, feedback, false, "", "", "");
+    }
+
+    /**
+     * Creates a new send worker to send feedback.
+     * 
+     * @param dialog Parent feedback dialog
+     * @param name Name
+     * @param email Email
+     * @param feedback Feedback
+     * @param sendServerInfo Send server info
+     * @param serverName Server name
+     * @param serverNetwork Server network
+     * @param serverIRCD Server IRCD
+     */
+    public SendWorker(FeedbackDialog dialog, String name,
+            String email, String feedback, boolean sendServerInfo,
+            String serverName, String serverNetwork, String serverIRCD) {
+        this.dialog = dialog;
+        this.name = name;
+        this.email = email;
+        this.feedback = feedback;
+        this.sendServerInfo = sendServerInfo;
+        this.serverName = serverName;
+        this.serverNetwork = serverNetwork;
+        this.serverIRCD = serverIRCD;
+
+        error = new StringBuilder();
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @throws java.lang.Exception If unable to return a result
+     */
+    @Override
+    protected Object doInBackground() throws Exception {
+        final Map<String, String> postData =
+                new HashMap<String, String>();
+
+        if (!name.isEmpty()) {
+            postData.put("name", name);
+        }
+        if (!email.isEmpty()) {
+            postData.put("email", email);
+        }
+        if (!feedback.isEmpty()) {
+            postData.put("feedback", feedback);
+        }
+        postData.put("version",
+                Main.VERSION + "(" + Main.RELEASE_DATE + ")");
+        if (sendServerInfo) {
+            final StringBuilder sb = new StringBuilder();
+            sb.append("Name: ").append(serverName).append("\n");
+            sb.append("Network: ").append(serverNetwork).append("\n");
+            sb.append("IRCD: ").append(serverIRCD);
+            postData.put("serverInfo", sb.toString());
+        }
+
+        try {
+            final List<String> response =
+                    Downloader.getPage("http://www.dmdirc.com/feedback.php",
+                    postData);
+            if (response.size() >= 1) {
+                for (String responseLine : response) {
+                    error.append(responseLine).append("\n");
+                }
+            } else {
+                error.append("Failure: Unknown response from the server.");
+            }
+        } catch (MalformedURLException ex) {
+            error.append("Malformed feedback URL.");
+        } catch (IOException ex) {
+            error.append("Failure: " + ex.getMessage());
+        }
+
+        return error;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected void done() {
+        dialog.layoutComponents2(error);
     }
 }
