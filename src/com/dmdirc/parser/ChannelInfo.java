@@ -45,12 +45,15 @@ public final class ChannelInfo {
 	 */
 	private boolean bAddingNames = true;
 	
+	/** Unixtimestamp representing time when the channel was created. */
+	private long nCreateTime = 0;
+	
 	/** Current known topic in the channel. */
 	private String sTopic = "";
 	/** Last known user to set the topic (Full host where possible). */
 	private String sTopicUser = "";
 	/** Unixtimestamp representing time when the topic was set. */
-	private long nTopicTime;
+	private long nTopicTime = 0;
 	
 	/** Known boolean-modes for channel. */
 	private long nModes;
@@ -244,15 +247,28 @@ public final class ChannelInfo {
 	}
 	
 	/**
+	 * Set the create time.
+	 *
+	 * @param nNewTime New unixtimestamp time for the channel creation (Seconds since epoch, not milliseconds)
+	 */
+	protected void setCreateTime(final long nNewTime) { nCreateTime = nNewTime; }
+	/**
+	 * Get the Create time.
+	 *
+	 * @return Unixtimestamp time for the channel creation (Seconds since epoch, not milliseconds)
+	 */
+	public long getCreateTime() { return nCreateTime; }	
+	
+	/**
 	 * Set the topic time.
 	 *
-	 * @param nNewTime New unixtimestamp time for the topic (Seconds sinse epoch, not milliseconds)
+	 * @param nNewTime New unixtimestamp time for the topic (Seconds since epoch, not milliseconds)
 	 */
 	protected void setTopicTime(final long nNewTime) { nTopicTime = nNewTime; }
 	/**
 	 * Get the topic time.
 	 *
-	 * @return Unixtimestamp time for the topic (Seconds sinse epoch, not milliseconds)
+	 * @return Unixtimestamp time for the topic (Seconds since epoch, not milliseconds)
 	 */
 	public long getTopicTime() { return nTopicTime; }	
 	

@@ -38,49 +38,59 @@ public class ProcessJoin extends IRCProcessor {
 	 * @param token IRCTokenised line to process
 	 */
 	public void process(final String sParam, final String[] token) {
-		// :nick!ident@host JOIN (:)#Channel
-		Byte nTemp;
-		if (token.length < 3) { return; }
-		ClientInfo iClient;
-		ChannelInfo iChannel;
-		ChannelClientInfo iChannelClient;
-		
-		iClient = myParser.getClientInfo(token[0]);
-		iChannel = myParser.getChannelInfo(token[token.length-1]);
-		
-		if (iClient == null) { 
-			iClient = new ClientInfo(myParser, token[0]);
-			myParser.addClient(iClient);
-		}
-		// Check to see if we know the host/ident for this client to facilitate dmdirc Formatter
-		if (iClient.getHost().isEmpty()) { iClient.setUserBits(token[0],false); }
-		if (iChannel == null) {
-			if (iClient != myParser.getMyself()) {
-				callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got join for channel ("+token[token.length-1]+") that I am not on. [Me: "+myParser.getMyself()+"]", myParser.getLastLine()));
-			}
-			iChannel = new ChannelInfo(myParser, token[token.length-1]);
-			myParser.addChannel(iChannel);
-			sendString("MODE "+iChannel.getName());
-			
-			// Find out the lists currently in use
-			for (Character cTemp : myParser.hChanModesOther.keySet()) {
-				nTemp = myParser.hChanModesOther.get(cTemp);
-				if (nTemp == myParser.MODE_LIST) { sendString("MODE "+iChannel.getName()+" "+cTemp); }
-			}
-			callChannelSelfJoin(iChannel);
-		} else {
-			if (iClient == myParser.getMyself()) {
+		if (sParam.equals("329")) {
+			if (token.length < 5) { return; }
+			ChannelInfo iChannel = myParser.getChannelInfo(token[3]);
+			if (iChannel != null) {
 				try {
-					myParser.getProcessingManager().process("PART", token);
-					myParser.getProcessingManager().process("JOIN", token);
-				} catch (ProcessorNotFoundException e) { }
-			} else if (iChannel.getUser(iClient) != null) {
-				// Client joined channel that we already know of.
+					iChannel.setCreateTime(Integer.parseInt(token[4]));
+				} catch (NumberFormatException nfe) { /* Oh well, not a normal ircd I guess */ }
+			}
+		} else {
+			// :nick!ident@host JOIN (:)#Channel
+			Byte nTemp;
+			if (token.length < 3) { return; }
+			ClientInfo iClient;
+			ChannelInfo iChannel;
+			ChannelClientInfo iChannelClient;
+			
+			iClient = myParser.getClientInfo(token[0]);
+			iChannel = myParser.getChannelInfo(token[token.length-1]);
+			
+			if (iClient == null) { 
+				iClient = new ClientInfo(myParser, token[0]);
+				myParser.addClient(iClient);
+			}
+			// Check to see if we know the host/ident for this client to facilitate dmdirc Formatter
+			if (iClient.getHost().isEmpty()) { iClient.setUserBits(token[0],false); }
+			if (iChannel == null) {
+				if (iClient != myParser.getMyself()) {
+					callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got join for channel ("+token[token.length-1]+") that I am not on. [Me: "+myParser.getMyself()+"]", myParser.getLastLine()));
+				}
+				iChannel = new ChannelInfo(myParser, token[token.length-1]);
+				myParser.addChannel(iChannel);
+				sendString("MODE "+iChannel.getName());
+				
+				// Find out the lists currently in use
+				for (Character cTemp : myParser.hChanModesOther.keySet()) {
+					nTemp = myParser.hChanModesOther.get(cTemp);
+					if (nTemp == myParser.MODE_LIST) { sendString("MODE "+iChannel.getName()+" "+cTemp); }
+				}
+				callChannelSelfJoin(iChannel);
 			} else {
-				// This is only done if we are already the channel, and it isn't us that
-				// joined.
-				iChannelClient = iChannel.addClient(iClient);
-				callChannelJoin(iChannel, iChannelClient);
+				if (iClient == myParser.getMyself()) {
+					try {
+						myParser.getProcessingManager().process("PART", token);
+						myParser.getProcessingManager().process("JOIN", token);
+					} catch (ProcessorNotFoundException e) { }
+				} else if (iChannel.getUser(iClient) != null) {
+					// Client joined channel that we already know of.
+				} else {
+					// This is only done if we are already the channel, and it isn't us that
+					// joined.
+					iChannelClient = iChannel.addClient(iClient);
+					callChannelJoin(iChannel, iChannelClient);
+				}
 			}
 		}
 	}	
@@ -118,8 +128,9 @@ public class ProcessJoin extends IRCProcessor {
 	 * @return String[] with the names of the tokens we handle.
 	 */
 	public String[] handles() {
-		String[] iHandle = new String[1];
+		String[] iHandle = new String[2];
 		iHandle[0] = "JOIN";
+		iHandle[1] = "329";
 		return iHandle;
 	} 
 	
