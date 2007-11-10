@@ -29,7 +29,9 @@ import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.util.Downloader;
+
 import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -37,6 +39,8 @@ import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.BorderFactory;
+
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -46,6 +50,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
 import net.miginfocom.swing.MigLayout;
 
 /** Feedback form. */
@@ -131,7 +136,7 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
         name = new JTextField();
         email = new JTextField();
         feedback = new JTextArea();
-        serverCheckbox = new JCheckBox();
+        serverCheckbox = new JCheckBox("Check here to include some server information.");
 
         UIUtilities.addUndoManager(name);
         UIUtilities.addUndoManager(email);
@@ -140,6 +145,9 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
 
     /** Lays out the components. */
     private void layoutComponents() {
+        serverCheckbox.setMargin(new Insets(0, 0, 0, 0));
+        serverCheckbox.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        
         setLayout(new MigLayout("fill"));
 
         add(info, "span 3, growx, wrap");
@@ -150,11 +158,9 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
         add(new JLabel("Email: "));
         add(email, "span 2, growx, wrap");
 
-        add(new JLabel("Server related? "));
-        add(serverCheckbox, "span 2, growx, wrap");
-
         add(new JLabel("Feedback: "));
         add(new JScrollPane(feedback), "span 2, grow, pushx, wrap");
+        add(serverCheckbox, "skip 1, span 2, growx, wrap");
 
         add(getCancelButton(), "skip, right, tag cancel, sg button");
         add(getOkButton(), "tag ok, sg button");
