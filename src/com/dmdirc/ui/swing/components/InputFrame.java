@@ -135,7 +135,9 @@ public abstract class InputFrame extends Frame implements InputWindow,
         
         config.addChangeListener("ui", "inputforegroundcolour", this);
         config.addChangeListener("ui", "inputbackgroundcolour", this);
-        getContainer().getServer().addAwayStateListener(this);
+        if (getContainer().getServer() != null) {
+            getContainer().getServer().addAwayStateListener(this);
+        }
     }
     
     /** {@inheritDoc} */
