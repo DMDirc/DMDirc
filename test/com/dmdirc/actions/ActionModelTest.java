@@ -23,6 +23,7 @@
 package com.dmdirc.actions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -56,7 +57,7 @@ public class ActionModelTest extends junit.framework.TestCase {
 
         model.setTriggers(triggers);
 
-        assertEquals(triggers, model.getTriggers());
+        assertEquals(Arrays.asList(triggers), Arrays.asList(model.getTriggers()));
     }
 
     @Test
@@ -84,7 +85,7 @@ public class ActionModelTest extends junit.framework.TestCase {
 
         model.setResponse(newResponse);
 
-        assertEquals(newResponse, model.getResponse());
+        assertEquals(Arrays.asList(newResponse), Arrays.asList(model.getResponse()));
     }
 
     @Test

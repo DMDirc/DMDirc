@@ -25,23 +25,32 @@ package com.dmdirc;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ServerTest extends junit.framework.TestCase {
+
+public class IgnoreListTest extends junit.framework.TestCase {
+    
+    private final String[][] tests = {
+        {"a@b.c", "a@b\\.c"},
+        {"*chris*", ".*chris.*"},
+        {"c???s", "c...s"},
+        {"c*?*", "c.*..*"},
+    };  
+    
+    private final IgnoreList il = new IgnoreList();
 
     @Test
-    public void testGetNetworkFromServerName() {
-        final String[][] tests = {
-            {"foo.com", "foo.com"},
-            {"bar.foo.com", "foo.com"},
-            {"irc.us.foo.com", "foo.com"},
-            {"irc.foo.co.uk", "foo.co.uk"},
-            {"com", "com"},
-            {"localhost", "localhost"},
-            {"foo.de", "foo.de"}
-        };
-        
+    public void testToRegex() {
         for (String[] test : tests) {
-            assertEquals(test[1], Server.getNetworkFromServerName(test[0]));
+            final String convert1 = il.simpleToRegex(test[0]);
+            assertEquals(test[1], convert1);
         }
     }
+    
+    @Test
+    public void testToSimple() {
+        for (String[] test : tests) {
+            final String convert2 = il.regexToSimple(test[1]);
+            assertEquals(test[0], convert2);
+        }
+    }    
     
 }

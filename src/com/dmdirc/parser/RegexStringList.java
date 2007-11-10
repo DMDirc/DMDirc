@@ -25,6 +25,7 @@
 package com.dmdirc.parser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * IRC Parser Ignore list.
@@ -35,7 +36,7 @@ import java.util.ArrayList;
 public class RegexStringList {
 	
 	/** Arraylist storing ignore patterns */
-	private final ArrayList<String> ignoreInfo = new ArrayList<String>();
+	protected final List<String> ignoreInfo = new ArrayList<String>();
 	
 	/**
 	 * Add a new ignore pattern to the ignore list.

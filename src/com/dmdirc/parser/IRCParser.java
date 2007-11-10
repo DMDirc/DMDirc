@@ -389,6 +389,13 @@ public final class IRCParser implements Runnable {
 	 * @return a reference to the ignorelist
 	 */
 	public RegexStringList getIgnoreList() { return myIgnoreList; }
+
+	/**
+	 * Replaces the current ignorelist with a new one.
+	 *
+	 * @param ignoreList Replacement ignorelist
+	 */
+	public void setIgnoreList(final RegexStringList ignoreList) { myIgnoreList = ignoreList; }
 	
 	//---------------------------------------------------------------------------
 	// Start Callbacks

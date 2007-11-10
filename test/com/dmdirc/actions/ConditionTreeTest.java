@@ -28,7 +28,7 @@ import static org.junit.Assert.*;
 public class ConditionTreeTest extends junit.framework.TestCase {
 
     @Test
-    public void parseString() {
+    public void testParseString() {
         String[][] testCases = {
             {"1", "1"},
             {"50", "50"},
@@ -62,7 +62,7 @@ public class ConditionTreeTest extends junit.framework.TestCase {
     }
     
     @Test
-    public void evaluate() {
+    public void testEvaluate() {
         System.out.println();
         
         final String target = "((0&1&2)|3)&(!4)";
@@ -116,7 +116,7 @@ public class ConditionTreeTest extends junit.framework.TestCase {
     }
     
     @Test
-    public void getNumArgs() {
+    public void testGetNumArgs() {
         final String target = "((0&1&2)|3)&(!4)";
         final ConditionTree tree = ConditionTree.parseString(target);
         assertNotNull(tree);        
@@ -125,7 +125,7 @@ public class ConditionTreeTest extends junit.framework.TestCase {
     }
     
     @Test
-    public void createConjunction() {
+    public void testCreateConjunction() {
         final String expected = "(((0&1)&2)&3)";
         final ConditionTree tree = ConditionTree.createConjunction(4);
         
@@ -134,7 +134,7 @@ public class ConditionTreeTest extends junit.framework.TestCase {
     }
     
     @Test
-    public void createDisjunction() {
+    public void testCreateDisjunction() {
         final String expected = "(((0|1)|2)|3)";
         final ConditionTree tree = ConditionTree.createDisjunction(4);
         
