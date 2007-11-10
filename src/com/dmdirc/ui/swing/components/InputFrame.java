@@ -26,6 +26,8 @@ import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.PopupManager;
 import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.AwayStateListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.input.InputHandler;
@@ -71,7 +73,7 @@ import javax.swing.event.InternalFrameListener;
  */
 public abstract class InputFrame extends Frame implements InputWindow,
         InternalFrameListener, MouseListener, ActionListener, KeyListener,
-        Serializable {
+        Serializable, AwayStateListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -133,6 +135,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
         
         config.addChangeListener("ui", "inputforegroundcolour", this);
         config.addChangeListener("ui", "inputbackgroundcolour", this);
+        getContainer().getServer().addAwayStateListener(this);
     }
     
     /** {@inheritDoc} */
@@ -258,11 +261,13 @@ public abstract class InputFrame extends Frame implements InputWindow,
      * @param awayState away state
      */
     public void setAwayIndicator(final boolean awayState) {
-        if (awayState) {
-            inputPanel.add(awayLabel, BorderLayout.LINE_START);
-            awayLabel.setVisible(true);
-        } else {
-            awayLabel.setVisible(false);
+        if (IdentityManager.getGlobalConfig().getOptionBool("ui", "awayindicator", false)) {
+            if (awayState) {
+                inputPanel.add(awayLabel, BorderLayout.LINE_START);
+                awayLabel.setVisible(true);
+            } else {
+                awayLabel.setVisible(false);
+            }
         }
     }
     
@@ -514,6 +519,18 @@ public abstract class InputFrame extends Frame implements InputWindow,
     /** Request input field focus. */
     public void requestInputFieldFocus() {
         inputField.requestFocus();
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void onAway(final String reason) {
+        setAwayIndicator(true);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void onBack() {
+        setAwayIndicator(false);
     }
     
 }

@@ -87,35 +87,6 @@ public final class ServerFrame extends InputFrame implements ServerWindow,
     }
     
     /**
-     * Sets the away status for this and all associated frames.
-     *
-     * @param newAwayState away state
-     */
-    @Override
-    public void setAwayIndicator(final boolean newAwayState) {
-        if (IdentityManager.getGlobalConfig().getOptionBool("ui", "awayindicator", false)) {
-            if (newAwayState) {
-                inputPanel.add(awayLabel, BorderLayout.LINE_START);
-                awayLabel.setVisible(true);
-            } else {
-                awayLabel.setVisible(false);
-            }
-            
-            if (getContainer().getServer().getRaw() != null) {
-                getContainer().getServer().getRaw().getFrame().setAwayIndicator(newAwayState);
-            }
-            
-            for (String channel : getContainer().getServer().getChannels()) {
-                getContainer().getServer().getChannel(channel).getFrame().setAwayIndicator(newAwayState);
-            }
-            
-            for (String query : getContainer().getServer().getQueries()) {
-                getContainer().getServer().getQuery(query).getFrame().setAwayIndicator(newAwayState);
-            }
-        }
-    }
-    
-    /**
      * Initialises components in this frame.
      */
     private void initComponents() {
