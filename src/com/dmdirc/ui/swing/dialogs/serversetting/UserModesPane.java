@@ -25,15 +25,15 @@ package com.dmdirc.ui.swing.dialogs.serversetting;
 import com.dmdirc.Server;
 import com.dmdirc.parser.IRCParser;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.Hashtable;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
+
+import net.miginfocom.swing.MigLayout;
 
 /** User mode panel. */
 public final class UserModesPane extends JPanel {
@@ -46,7 +46,7 @@ public final class UserModesPane extends JPanel {
     private static final long serialVersionUID = 1;
     /** Parent server. */
     private final Server server;
-    /** The checkboxes used for boolean modes. */
+    /** The checkboxes used for user modes. */
     private Map<String, JCheckBox> modeCheckBoxes;
 
     /**
@@ -58,8 +58,9 @@ public final class UserModesPane extends JPanel {
         super();
 
         this.server = server;
-        
+
         initModesPanel();
+        layoutComponents();
 
         setVisible(true);
     }
@@ -76,71 +77,86 @@ public final class UserModesPane extends JPanel {
     private void initModesPanel() {
         final IRCParser parser = server.getParser();
 
-        final String booleanModes = parser.getUserModeString();
-        final String ourBooleanModes = parser.getMyself().getUserModeStr();
+        final String userModes = parser.getUserModeString();
+        final String ourUserModes = parser.getMyself().getUserModeStr();
 
         modeCheckBoxes =
                 new Hashtable<String, JCheckBox>();
 
         // Lay out all the boolean mode checkboxes
-        for (int i = 0; i < booleanModes.length();
+        for (int i = 0; i < userModes.length();
                 i++) {
-            final String mode = booleanModes.substring(i, i + 1);
-            final char modeChar = mode.toCharArray()[0];
+            final String mode = userModes.substring(i, i + 1);
             final boolean state =
-                    ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
+                    ourUserModes.split(" ")[0].contains(mode.subSequence(0, 1));
             String text;
             String tooltip;
 
             if (server.getConfigManager().
                     getOptionBool("server", "friendlymodes", false) &&
-                    server.getConfigManager().hasOption("server", "mode" + mode)) {
+                    server.getConfigManager().hasOption("server", "umode" + mode)) {
                 text =  server.getConfigManager().
-                        getOption("server", "mode" + mode);
+                        getOption("server", "umode" + mode);
             } else {
                 text = "Mode " + mode;
             }
 
-            if (server.getConfigManager().hasOption("server", "mode" + mode)) {
+            if (server.getConfigManager().hasOption("server", "umode" + mode)) {
                 tooltip =
                         "Mode " + mode + ": " +
                         server.getConfigManager().
-                        getOption("server", "mode" + mode);
+                        getOption("server", "umode" + mode);
             } else {
                 tooltip = "Mode " + mode + ": Unknown";
             }
 
             final JCheckBox checkBox = new JCheckBox(text, state);
+            checkBox.setMargin(new Insets(0, 0, 0, 0));
             checkBox.setToolTipText(tooltip);
 
             modeCheckBoxes.put(mode, checkBox);
         }
     }
 
-    /**
-     * Processes the channel settings dialog and constructs a mode string for
-     * changed modes, then sends this to the server.
-     */
-    public void setChangedBooleanModes() {
-        /*boolean changed = false;
-        final IRCParser parser = channel.getServer().getParser();
-        final String booleanModes = parser.getBoolChanModes();
-        final String ourBooleanModes = channel.getChannelInfo().getModeStr();
+    /** Lays out the components. */
+    private void layoutComponents() {
+        final JPanel userModes =
+                new JPanel(new MigLayout("wrap 2, fillx"));
+        for (JCheckBox checkBox : modeCheckBoxes.values()) {
+            userModes.add(checkBox);
+        }
 
-        for (int i = 0; i < booleanModes.length();
+        userModes.setBorder(BorderFactory.createTitledBorder("User modes"));
+        
+        setLayout(new MigLayout("flowy, fillx", "fill", ""));
+        add(userModes);
+    }
+
+    /**
+     * Sends changed modes to the server.
+     */
+    public void save() {
+        boolean changed = false;
+        final IRCParser parser = server.getParser();
+        final String userModes = parser.getUserModeString();
+        final String ourUserModes = parser.getMyself().getUserModeStr();
+
+        for (int i = 0; i < userModes.length();
                 i++) {
-            final String mode = booleanModes.substring(i, i + 1);
+            final String mode = userModes.substring(i, i + 1);
             final boolean state =
-                    ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
+                    ourUserModes.split(" ")[0].contains(mode.subSequence(0, 1));
 
             if (modeCheckBoxes.get(mode) != null &&
                     state != modeCheckBoxes.get(mode).isSelected()) {
                 changed = true;
-                //change the mode
+                server.getParser().getMyself().
+                        alterMode(modeCheckBoxes.get(mode).isSelected(),
+                        mode.toCharArray()[0]);
             }
         }
         if (changed) {
-            //send modes
-        }*/
+            server.getParser().getMyself().sendModes();
+        }
     }
 }

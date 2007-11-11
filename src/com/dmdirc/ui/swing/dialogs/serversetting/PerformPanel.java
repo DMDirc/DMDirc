@@ -107,6 +107,7 @@ public final class PerformPanel extends JPanel implements ActionListener {
         add(target, BorderLayout.NORTH);
         
         textarea = new JTextArea();
+        textarea.setColumns(40);
         
         add(new JScrollPane(textarea));
     }

@@ -33,7 +33,6 @@ import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel.OptionType
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -61,6 +60,8 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
     private final Server server;
     /** Buttons panel. */
     private JPanel buttonsPanel;
+    /** User modes panel. */
+    private UserModesPane modesPanel;
     /** Ignore list panel. */
     private IgnoreListPanel ignoreList;
     /** Perform panel. */
@@ -81,7 +82,6 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
         this.server = server;
 
         setTitle("Server settings");
-        setPreferredSize(new Dimension(400, 400));
         setResizable(false);
 
         initComponents();
@@ -129,6 +129,8 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
 
         tabbedPane.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                 SMALL_BORDER, 0, SMALL_BORDER));
+        
+        modesPanel = new UserModesPane(server);
 
         ignoreList =
                 new IgnoreListPanel(server);
@@ -152,6 +154,7 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
             addSettings();
         }
 
+        tabbedPane.add("User modes", modesPanel);
         tabbedPane.add("Ignore list", ignoreList);
         tabbedPane.add("Perform", performPanel);
         if (settingsPanel != null) {
@@ -259,6 +262,7 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
 
     /** Saves the settings from this dialog. */
     public void saveSettings() {
+        modesPanel.save();
         settingsPanel.save();
         performPanel.savePerforms();
         ignoreList.saveList();
