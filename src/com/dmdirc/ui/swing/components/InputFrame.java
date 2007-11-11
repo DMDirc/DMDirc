@@ -262,8 +262,11 @@ public abstract class InputFrame extends Frame implements InputWindow,
      *
      * @param awayState away state
      */
+    @Override
     public void setAwayIndicator(final boolean awayState) {
-        if (IdentityManager.getGlobalConfig().getOptionBool("ui", "awayindicator", false)) {
+        final boolean awayIndicator = getConfigManager().
+                getOptionBool("ui", "awayindicator", false);
+        if (awayIndicator || !awayState) {
             if (awayState) {
                 inputPanel.add(awayLabel, BorderLayout.LINE_START);
                 awayLabel.setVisible(true);

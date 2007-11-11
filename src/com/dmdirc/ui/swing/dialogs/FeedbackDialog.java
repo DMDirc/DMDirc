@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.dialogs;
 
 import com.dmdirc.Main;
 import com.dmdirc.Server;
+import com.dmdirc.ServerManager;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.components.StandardDialog;
@@ -39,8 +40,8 @@ import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.BorderFactory;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -75,8 +76,6 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
     private JTextArea feedback;
     /** Server info checkbox. */
     private JCheckBox serverCheckbox;
-    /** Server instance. */
-    private Server server;
 
     /** Instantiates the feedback dialog. */
     private FeedbackDialog() {
@@ -112,7 +111,8 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
     public static synchronized FeedbackDialog getFeedbackDialog() {
         if (me == null) {
             me = new FeedbackDialog();
-            me.serverCheckbox.setEnabled(me.server != null);
+            me.serverCheckbox.setEnabled(ServerManager.getServerManager().
+                    numServers() > 0);
         }
 
         return me;
@@ -120,7 +120,6 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
 
     /** Initialises the components. */
     private void initComponents() {
-        server = Main.getUI().getActiveServer();
         orderButtons(new JButton(), new JButton());
 
         getOkButton().setText("Send");
@@ -128,15 +127,19 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
         getOkButton().setEnabled(false);
         getCancelButton().setActionCommand("Close");
 
-        info =  new TextLabel("This is a feedback dialog, if you fancy " +
-                "sending us some feedback fill in the form below, only the " +
-                "feedback field is required, but if you want us to get back " +
-                "to you the email address is pretty vital and the name " +
-                "fairly useful.");
+        info =  new TextLabel("Thank you for using DMDirc. If you have any " +
+                "feedback about the client, such as bug reports or feature " +
+                "requests, please send it to us using the form below.  " +
+                "The name and e-mail address fields are optional if you " +
+                "don't want us to contact you about your feedback.\n\n" +
+                "Please note that this is for feedback such as bug reports " +
+                "and suggestions, not for technical support. For " +
+                "technical support, please join #DMDirc using the button " +
+                "in the help menu.");
         name = new JTextField();
         email = new JTextField();
         feedback = new JTextArea();
-        serverCheckbox = new JCheckBox("Check here to include some server information.");
+        serverCheckbox = new JCheckBox("Include server information.");
 
         UIUtilities.addUndoManager(name);
         UIUtilities.addUndoManager(email);
@@ -147,7 +150,7 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
     private void layoutComponents() {
         serverCheckbox.setMargin(new Insets(0, 0, 0, 0));
         serverCheckbox.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        
+
         setLayout(new MigLayout("fill"));
 
         add(info, "span 3, growx, wrap");
@@ -201,12 +204,29 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
         getCancelButton().setEnabled(false);
         final SendWorker worker;
         if (serverCheckbox.isSelected()) {
-            worker =new SendWorker(me, name.getText().trim(),
-                    email.getText().trim(), feedback.getText().trim());
-        } else {
+            final StringBuilder sb = new StringBuilder();
+            for (Server server : ServerManager.getServerManager().getServers()) {
+                sb.append("Server name: ").append(server.getName()).append("\n");
+                sb.append("Actual name: ").
+                        append(server.getParser().getServerName()).append("\n");
+                sb.append("Network: ").append(server.getNetwork()).append("\n");
+                sb.append("IRCd: ").append(server.getParser().getIRCD(false)).
+                        append(" - ");
+                sb.append(server.getParser().getIRCD(true)).append("\n");
+                sb.append("Modes: ").
+                        append(server.getParser().getBoolChanModes()).
+                        append(" ");
+                sb.append(server.getParser().getListChanModes()).append(" ");
+                sb.append(server.getParser().getSetOnlyChanModes()).append(" ");
+                sb.append(server.getParser().getSetUnsetChanModes()).
+                        append("\n\n");
+            }
             worker =new SendWorker(me, name.getText().trim(),
                     email.getText().trim(), feedback.getText().trim(), true,
-                    server.getName(), server.getNetwork(), server.getIrcd());
+                    sb.substring(0, sb.length() - 2));
+        } else {
+            worker =new SendWorker(me, name.getText().trim(),
+                    email.getText().trim(), feedback.getText().trim());
         }
         worker.execute();
     }
@@ -278,57 +298,48 @@ class SendWorker extends SwingWorker {
     /** Send server info. */
     private boolean sendServerInfo;
     /** Server name. */
-    private String serverName;
-    /** Server network. */
-    private String serverNetwork;
-    /** Server IRCD. */
-    private String serverIRCD;
+    private String serverInfo;
     /** Error/Success message. */
     private StringBuilder error;
 
     /**
      * Creates a new send worker to send feedback.
-     * 
+     *
      * @param dialog Parent feedback dialog
      * @param name Name
      * @param email Email
      * @param feedback Feedback
      */
-    public SendWorker(FeedbackDialog dialog, String name,
-            String email, String feedback) {
-        this(dialog, name, email, feedback, false, "", "", "");
+    public SendWorker(FeedbackDialog dialog, String name, String email,
+            String feedback) {
+        this(dialog, name, email, feedback, false, "");
     }
 
     /**
      * Creates a new send worker to send feedback.
-     * 
+     *
      * @param dialog Parent feedback dialog
      * @param name Name
      * @param email Email
      * @param feedback Feedback
      * @param sendServerInfo Send server info
-     * @param serverName Server name
-     * @param serverNetwork Server network
-     * @param serverIRCD Server IRCD
+     * @param serverInfo serverInfo
      */
-    public SendWorker(FeedbackDialog dialog, String name,
-            String email, String feedback, boolean sendServerInfo,
-            String serverName, String serverNetwork, String serverIRCD) {
+    public SendWorker(FeedbackDialog dialog, String name, String email,
+            String feedback, boolean sendServerInfo, String serverInfo) {
         this.dialog = dialog;
         this.name = name;
         this.email = email;
         this.feedback = feedback;
         this.sendServerInfo = sendServerInfo;
-        this.serverName = serverName;
-        this.serverNetwork = serverNetwork;
-        this.serverIRCD = serverIRCD;
+        this.serverInfo = serverInfo;
 
         error = new StringBuilder();
     }
 
-    /** 
+    /**
      * {@inheritDoc}
-     * 
+     *
      * @throws java.lang.Exception If unable to return a result
      */
     @Override
@@ -348,11 +359,7 @@ class SendWorker extends SwingWorker {
         postData.put("version",
                 Main.VERSION + "(" + Main.RELEASE_DATE + ")");
         if (sendServerInfo) {
-            final StringBuilder sb = new StringBuilder();
-            sb.append("Name: ").append(serverName).append("\n");
-            sb.append("Network: ").append(serverNetwork).append("\n");
-            sb.append("IRCD: ").append(serverIRCD);
-            postData.put("serverInfo", sb.toString());
+            postData.put("serverInfo", serverInfo);
         }
 
         try {
