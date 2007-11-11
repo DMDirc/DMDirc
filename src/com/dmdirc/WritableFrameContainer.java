@@ -132,32 +132,18 @@ public abstract class WritableFrameContainer extends FrameContainer {
     /**
      * Handles general server notifications (i.e., ones note tied to a
      * specific window). The user can select where the notifications should
-     * go in their config. Falls back to "self" target
+     * go in their config.
      *
      * @param messageType The type of message that is being sent
      * @param args The arguments for the message
      */
     public void handleNotification(final String messageType, final Object... args) {
-        handleNotification(messageType, "self", args);
-    }    
-    
-    /**
-     * Handles general server notifications (i.e., ones note tied to a
-     * specific window). The user can select where the notifications should
-     * go in their config.
-     *
-     * @param messageType The type of message that is being sent
-     * @param fallback The notifi cation type to use if none is defined
-     * @param args The arguments for the message
-     */
-    public void handleNotification(final String messageType, final String fallback,
-            final Object... args) {
         String target = getConfigManager().getOption("notifications", messageType,
-                fallback);
+                "self");
 
         if (target.startsWith("group:")) {
             target = getConfigManager().getOption("notifications",
-                    target.substring(6), fallback);
+                    target.substring(6), "self");
         }
 
         if ("self".equals(target)) {
