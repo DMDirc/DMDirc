@@ -54,7 +54,6 @@ public class TextPanePageDownAction extends AbstractAction {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println("page down");
         textpane.pageDown();
     }
 }

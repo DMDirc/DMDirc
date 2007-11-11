@@ -54,7 +54,6 @@ public class TextPaneCopyAction extends AbstractAction {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println("copy");
         textpane.copy();
     }
 }
