@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.components.expandingsettings;
 
 import com.dmdirc.config.Identity;
+import com.dmdirc.ui.swing.components.TextLabel;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.GridBagConstraints;
@@ -34,7 +35,6 @@ import java.util.Map.Entry;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.UIManager;
 
 /**
@@ -69,7 +69,7 @@ public final class SettingsPanel extends JPanel {
     private Map<String, OptionType> types;
     
     /** Info label. */
-    private JTextArea infoLabel;
+    private TextLabel infoLabel;
     
     /** Current options panel. */
     private CurrentOptionsPanel currentOptionsPanel;
@@ -102,12 +102,7 @@ public final class SettingsPanel extends JPanel {
         names = new LinkedHashMap<String, String>();
         types = new LinkedHashMap<String, OptionType>();
         
-        infoLabel = new JTextArea();
-        infoLabel.setText(infoText);
-        infoLabel.setEditable(false);
-        infoLabel.setWrapStyleWord(true);
-        infoLabel.setLineWrap(true);
-        infoLabel.setBackground(getBackground());
+        infoLabel = new TextLabel(infoText);
         
         addOptionPanel =
                 new AddOptionPanel(this);

@@ -146,6 +146,8 @@ public final class UIUtilities {
     /**
      * Adds an undo manager and associated key bindings to the specified text
      * component.
+     * 
+     * @param component component Text component to add an undo manager to
      */
     public static void addUndoManager(final JTextComponent component) {
         final UndoManager undoManager = new UndoManager();
@@ -213,11 +215,17 @@ public final class UIUtilities {
         final StringBuilder classNameBuilder = new StringBuilder();
         
         if (displayName != null && !displayName.isEmpty()) {
-            for (LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
-                if (laf.getName().equals(displayName)) {
-                    classNameBuilder.setLength(0);
-                    classNameBuilder.append(laf.getClassName());
-                    break;
+            if ("Native".equals(displayName)) {
+                classNameBuilder.setLength(0);
+                classNameBuilder.append(
+                                UIManager.getSystemLookAndFeelClassName());
+            } else {
+                for (LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
+                    if (laf.getName().equals(displayName)) {
+                        classNameBuilder.setLength(0);
+                        classNameBuilder.append(laf.getClassName());
+                        break;
+                    }
                 }
             }
         }

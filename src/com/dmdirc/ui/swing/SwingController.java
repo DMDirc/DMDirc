@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.swing;
 
-
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.IconManager;
@@ -53,8 +52,10 @@ import com.dmdirc.ui.swing.dialogs.serversetting.ServerSettingsDialog;
 import com.dmdirc.updater.Update;
 
 import java.awt.Toolkit;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -62,144 +63,176 @@ import javax.swing.UnsupportedLookAndFeelException;
  * Controls the main swing UI.
  */
 public final class SwingController implements UIController {
-    
+
     /**
      * Singleton instance of MainFrame.
      */
     private static MainFrame me;
-    
     /** Status bar. */
     private SwingStatusBar statusBar;
-    
+
     /** Instantiates a new SwingController. */
     public SwingController() {
         //Do nothing
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public synchronized MainFrame getMainWindow() {
         if (me == null) {
-            statusBar = new SwingStatusBar();
-            me = new MainFrame(statusBar);
-            ErrorListDialog.getErrorListDialog();
+            try {
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    /** {@inheritDoc} */
+                    @Override
+                    public void run() {
+                        statusBar =
+                                new SwingStatusBar();
+                    }});
+                    SwingUtilities.invokeAndWait(new Runnable() {
+
+                    /** {@inheritDoc} */
+                    @Override
+                    public void run() {
+                        me = new MainFrame(statusBar);
+                    }});
+                    SwingUtilities.invokeLater(new Runnable() {
+
+                    /** {@inheritDoc} */
+                    @Override
+                    public void run() {
+                        ErrorListDialog.getErrorListDialog();
+                    }
+                });
+            } catch (InterruptedException ex) {
+                //Ignore
+            } catch (InvocationTargetException ex) {
+                //Ignore
+            }
         }
+
         return me;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public synchronized StatusBar getStatusBar() {
-        if (statusBar == null)  {
+        if (statusBar == null) {
             getMainWindow();
         }
-        
+
         return statusBar;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public ChannelWindow getChannel(final Channel channel) {
         return new ChannelFrame(channel);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public ServerWindow getServer(final Server server) {
         return new ServerFrame(server);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public QueryWindow getQuery(final Query query) {
         return new QueryFrame(query);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public Window getWindow(final FrameContainer owner) {
         return new CustomFrame(owner);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public InputWindow getInputWindow(final WritableFrameContainer owner,
             final CommandParser commandParser) {
         return new CustomInputFrame(owner, commandParser);
     }
-    
+
     /** {@inheritDoc} */
     @Override
-    public PreferencesPanel getPreferencesPanel(
-            final PreferencesInterface parent, final String title) {
+    public PreferencesPanel getPreferencesPanel(final PreferencesInterface parent,
+            final String title) {
         return new SwingPreferencesPanel(parent, title);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public SwingUpdaterDialog getUpdaterDialog(final List<Update> updates) {
         return SwingUpdaterDialog.getSwingUpdaterDialog(updates);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void showFirstRunWizard() {
         new SwingFirstRunWizard().display();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void showMigrationWizard() {
         new SwingFirstRunWizard(false).display();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void showChannelSettingsDialog(final Channel channel) {
         ChannelSettingsDialog.showChannelSettingsDialog(channel);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void showServerSettingsDialog(final Server server) {
         ServerSettingsDialog.showServerSettingsDialog(server);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void initUISettings() {
         // For this to work it *HAS* to be before anything else UI related.
         if (IdentityManager.getGlobalConfig().hasOption("ui", "antialias")) {
-            final String aaSetting = IdentityManager.getGlobalConfig().getOption("ui", "antialias");
+            final String aaSetting =
+                    IdentityManager.getGlobalConfig().getOption("ui",
+                    "antialias");
             System.setProperty("awt.useSystemAAFontSettings", aaSetting);
             System.setProperty("swing.aatext", aaSetting);
         } else {
-            IdentityManager.getConfigIdentity().setOption("ui", "antialias", "true");
+            IdentityManager.getConfigIdentity().setOption("ui", "antialias",
+                    "true");
             System.setProperty("awt.useSystemAAFontSettings", "true");
             System.setProperty("swing.aatext", "true");
         }
-        
+
         try {
             UIUtilities.initUISettings();
-            
+
             if (IdentityManager.getGlobalConfig().hasOption("ui", "lookandfeel")) {
-                final String lnfName = UIUtilities.getLookAndFeel(
-                        IdentityManager.getGlobalConfig().getOption("ui", "lookandfeel"));
+                final String lnfName =
+                        UIUtilities.getLookAndFeel(IdentityManager.getGlobalConfig().
+                        getOption("ui", "lookandfeel"));
                 if (!lnfName.isEmpty()) {
                     UIManager.setLookAndFeel(lnfName);
                 }
             }
-            
-            UIManager.put("Tree.collapsedIcon", IconManager.getIconManager().getIcon("nothing"));
-            UIManager.put("Tree.expandedIcon", IconManager.getIconManager().getIcon("nothing"));
-            
+
+            UIManager.put("Tree.collapsedIcon",
+                    IconManager.getIconManager().getIcon("nothing"));
+            UIManager.put("Tree.expandedIcon",
+                    IconManager.getIconManager().getIcon("nothing"));
+
             //These are likely to change lots, and i cant test them - Greboid
             UIManager.put("apple.awt.showGrowBox", true);
             UIManager.put("apple.laf.useScreenMenuBar", true);
-            UIManager.put("com.apple.mrj.application.apple.menu.about.name", "DMDirc: " + Main.VERSION);
+            UIManager.put("com.apple.mrj.application.apple.menu.about.name",
+                    "DMDirc: " + Main.VERSION);
             UIManager.put("com.apple.mrj.application.growbox.intrudes", false);
             UIManager.put("com.apple.mrj.application.live-resize", true);
-            
         } catch (UnsupportedOperationException ex) {
             Logger.userError(ErrorLevel.LOW, "Unable to set UI Settings");
         } catch (UnsupportedLookAndFeelException ex) {
@@ -211,8 +244,9 @@ public final class SwingController implements UIController {
         } catch (ClassNotFoundException ex) {
             Logger.userError(ErrorLevel.LOW, "Unable to set UI Settings");
         }
-        
-        Toolkit.getDefaultToolkit().getSystemEventQueue().push(new DMDircEventQueue());
+
+        Toolkit.getDefaultToolkit().getSystemEventQueue().
+                push(new DMDircEventQueue());
     }
 
     /** {@inheritDoc} */

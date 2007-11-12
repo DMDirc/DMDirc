@@ -282,11 +282,12 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     private void initGUITab() {
         final LookAndFeelInfo[] plaf = UIManager.getInstalledLookAndFeels();
         final String sysLafClass = UIManager.getSystemLookAndFeelClassName();
-        final String[] lafs = new String[plaf.length];
+        final String[] lafs = new String[plaf.length + 1];
         final String tabName = "GUI";
         String sysLafName = "";
         
-        int i = 0;
+        lafs[0] = "Native";
+        int i = 1;
         for (LookAndFeelInfo laf : plaf) {
             lafs[i++] = laf.getName();
             if (laf.getClassName().equals(sysLafClass)) {

@@ -177,7 +177,7 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
      *
      * @return Action name
      */
-    public String getName() {
+    public String getActionName() {
         return name.getText();
     }
     

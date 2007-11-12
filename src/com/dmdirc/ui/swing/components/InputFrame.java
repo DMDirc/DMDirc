@@ -26,7 +26,6 @@ import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.PopupManager;
 import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.AwayStateListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;

@@ -231,7 +231,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
     
     /** Saves this (new|edited) actions. */
     private void saveSettings() {
-        if (((GeneralTabPanel) tabbedPane.getComponentAt(0)).getName().isEmpty()) {
+        if (((GeneralTabPanel) tabbedPane.getComponentAt(0)).getActionName().isEmpty()) {
             showError("Empty name", "The action name must not be empty");
             tabbedPane.setSelectedIndex(0);
             ((GeneralTabPanel) tabbedPane.getComponentAt(0)).requestNameFocus();
@@ -241,7 +241,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
             tabbedPane.setSelectedIndex(0);
             ((GeneralTabPanel) tabbedPane.getComponentAt(0)).requestTriggerFocus();
             return;
-        } else if (checkDuplicateName(((GeneralTabPanel) tabbedPane.getComponentAt(0)).getName())) {
+        } else if (checkDuplicateName(((GeneralTabPanel) tabbedPane.getComponentAt(0)).getActionName())) {
             showError("Duplicates", "Another action already has this name, you will ened to choose another");
             tabbedPane.setSelectedIndex(0);
             ((GeneralTabPanel) tabbedPane.getComponentAt(0)).requestNameFocus();
@@ -249,14 +249,14 @@ public final class ActionsEditorDialog extends StandardDialog implements
         } 
         if (action == null) {
             action = new Action(parent.getSelectedGroup(),
-                    ((GeneralTabPanel) tabbedPane.getComponentAt(0)).getName(),
+                    ((GeneralTabPanel) tabbedPane.getComponentAt(0)).getActionName(),
                     ((GeneralTabPanel) tabbedPane.getComponentAt(0)).getTriggers().toArray(new ActionType[0]),
                     ((ResponseTabPanel) tabbedPane.getComponentAt(2)).getResponses().split("\\n"),
                     ((ConditionsTabPanel) tabbedPane.getComponentAt(1)).getConditions(),
                     ((ResponseTabPanel) tabbedPane.getComponentAt(2)).getFormatter());
         } else {
-            if (!action.getName().equals(((GeneralTabPanel) tabbedPane.getComponentAt(0)).getName())) {
-                action.setName(((GeneralTabPanel) tabbedPane.getComponentAt(0)).getName());
+            if (!action.getName().equals(((GeneralTabPanel) tabbedPane.getComponentAt(0)).getActionName())) {
+                action.setName(((GeneralTabPanel) tabbedPane.getComponentAt(0)).getActionName());
             }
             action.setTriggers(((GeneralTabPanel) tabbedPane.getComponentAt(0)).getTriggers().toArray(new ActionType[0]));
             action.setConditions(((ConditionsTabPanel) tabbedPane.getComponentAt(1)).getConditions());
