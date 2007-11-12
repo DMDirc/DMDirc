@@ -480,6 +480,24 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * @param numLines Number of lines to trim the document to
      */
     public void trim(final int numLines) {
+        if (document.getNumLines() < numLines) {
+            return;
+        }
+        final int trimmedLines = document.getNumLines() - numLines;
+        final int[] selectedRange = getSelectedRange();
+        
+        selectedRange[0] -= trimmedLines;
+        selectedRange[2] -= trimmedLines;
+        
+        if (selectedRange[0] < 0) {
+            selectedRange[0] = 0;
+        }
+        if (selectedRange[2] < 0) {
+            selectedRange[2] = 0;
+        }
+        
+        setSelectedTexT(selectedRange[0], selectedRange[1], 
+                selectedRange[2], selectedRange[3]);
         document.trim(numLines);
     }
     
