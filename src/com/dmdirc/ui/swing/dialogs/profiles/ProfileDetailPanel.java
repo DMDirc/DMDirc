@@ -237,12 +237,6 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
             clearProfile();
             return;
         }
-        name.setEnabled(true);
-        nickname.setEnabled(true);
-        realname.setEnabled(true);
-        ident.setEnabled(true);
-        altNicknames.setEnabled(true);
-        addButton.setEnabled(true);
 
         name.setText(profile.getName());
         nickname.setText(profile.getNickname());
@@ -253,6 +247,13 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
         for (String altNick : profile.getAltNicknames()) {
             ((DefaultListModel) altNicknames.getModel()).addElement(altNick);
         }
+        
+        name.setEnabled(true);
+        nickname.setEnabled(true);
+        realname.setEnabled(true);
+        ident.setEnabled(true);
+        altNicknames.setEnabled(true);
+        addButton.setEnabled(true);
     }
 
     /** Clears this detail panel. */
@@ -271,6 +272,8 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
         addButton.setEnabled(false);
         delButton.setEnabled(false);
         editButton.setEnabled(false);
+        
+        clearErrors();
     }
 
     /** Saves the detail panels details to the profile. */
@@ -290,13 +293,9 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
             profile.addAltNickname((String) enumeration.nextElement());
         }
     }
-
-    /**
-     * Validates the current details.
-     *
-     * @return Validation Result
-     */
-    public ValidationResult validateDetails() {
+    
+    /** Clears error states. */
+    private void clearErrors() {
         nameError.setToolTipText("");
         nicknameError.setToolTipText("");
         realnameError.setToolTipText("");
@@ -308,6 +307,15 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
         realnameError.setIcons(normalIcon);
         identError.setIcons(normalIcon);
         altNicknamesError.setIcons(normalIcon);
+    }
+
+    /**
+     * Validates the current details.
+     *
+     * @return Validation Result
+     */
+    public ValidationResult validateDetails() {
+        clearErrors();
 
         final ValidationResult checkAltNicknames = checkAltNicknames();
         final ValidationResult checkIdent = checkIdent();
@@ -338,7 +346,7 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
      * @return Validation result
      */
     private ValidationResult checkAltNicknames() {
-        if (altNicknames.getModel().getSize() == 0) {
+        if (!altNicknames.isEnabled() || altNicknames.getModel().getSize() == 0) {
             return ValidationResult.PASS;
         }
 
@@ -375,7 +383,9 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
                 ValidationResult.PASS;
         final String identText = ident.getText();
 
-        if (identText.matches(IDENT_REGEX)) {
+        if (!ident.isEnabled()) {
+            returnValue = ValidationResult.PASS;
+        } else if (identText.matches(IDENT_REGEX)) {
             identError.setIcons(errorIcon);
             ident.requestFocus();
             returnValue =
@@ -396,7 +406,9 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
                 ValidationResult.PASS;
         final String realnameText = realname.getText();
 
-        if (realnameText.isEmpty()) {
+        if (!realname.isEnabled()) {
+            returnValue = ValidationResult.PASS;
+        } else if (realnameText.isEmpty()) {
             realnameError.setIcons(errorIcon);
             realname.requestFocus();
             returnValue =
@@ -417,7 +429,9 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
                 ValidationResult.PASS;
         final String nicknameText = nickname.getText();
 
-        if (nicknameText.isEmpty() || nicknameText.matches(NICKNAME_REGEX)) {
+        if (!nickname.isEnabled()) {
+            returnValue = ValidationResult.PASS;
+        } else if (nicknameText.isEmpty() || nicknameText.matches(NICKNAME_REGEX)) {
             nicknameError.setIcons(errorIcon);
             nickname.requestFocus();
             returnValue =
@@ -444,7 +458,9 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
                 ValidationResult.PASS;
         final String nameText = name.getText();
 
-        if (nameText.isEmpty() || nameText.matches(FILENAME_REGEX)) {
+        if (!name.isEnabled()) {
+            returnValue = ValidationResult.PASS;
+        } else if (nameText.isEmpty() || nameText.matches(FILENAME_REGEX)) {
             nameError.setIcons(errorIcon);
             name.requestFocus();
             returnValue = ValidationResult.FAIL;

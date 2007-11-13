@@ -28,27 +28,21 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.TextLabel;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import net.miginfocom.swing.MigLayout;
 
 /** Profile editing dialog. */
 public final class ProfileManagerDialog extends StandardDialog implements ActionListener,
@@ -59,7 +53,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     /** Previously created instance of ProfileEditorDialog. */
     private static ProfileManagerDialog me;
     /** Profile list. */
@@ -70,8 +64,6 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     private ProfileListModel model;
     /** Profile detail panel. */
     private ProfileDetailPanel details;
-    /** Buttons panel. */
-    private JPanel buttonsPanel;
     /** Info label. */
     private TextLabel infoLabel;
     /** Add button. */
@@ -124,9 +116,11 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     private void initComponents() {
         setTitle("Profile Editor");
         setMinimumSize(new Dimension(600, 400));
-        setPreferredSize(new Dimension(600, 400));
+        //setPreferredSize(new Dimension(600, 400));
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
+        
+        orderButtons(new JButton(), new JButton());
 
         model = new ProfileListModel();
         profileList = new JList(model);
@@ -140,78 +134,24 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
                 "select another or click OK");
 
         profileList.setCellRenderer(new ProfileListCellRenderer());
-        profileList.setFixedCellWidth(200 -
-                UIManager.getInt("ScrollBar.width"));
 
-        initButtonsPanel();
         populateList();
-    }
-
-    /** Initialises the buttons panel. */
-    private void initButtonsPanel() {
-        buttonsPanel = new JPanel();
-        orderButtons(new JButton(), new JButton());
     }
 
     /** Lays out the dialog. */
     private void layoutComponents() {
-        layoutButtonsPanel();
+        getContentPane().setLayout(new MigLayout("fill"));
 
-        final GridBagConstraints constraints = new GridBagConstraints();
-        setLayout(new GridBagLayout());
-
-        final JScrollPane sp = new JScrollPane(profileList);
-        sp.setMinimumSize(new Dimension(200, 0));
-        constraints.weighty = 0.0;
-        constraints.weightx = 0.0;
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.gridwidth = 1;
-        constraints.gridheight = 3;
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.insets.set(SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, 0);
-        getContentPane().add(sp, constraints);
-
-        constraints.insets.set(0, SMALL_BORDER, 0, 0);
-        constraints.gridheight = 1;
-        constraints.gridy = 4;
-        getContentPane().add(addButton, constraints);
-
-        constraints.gridy = 5;
-        constraints.insets.set(SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, 0);
-        getContentPane().add(deleteButton, constraints);
-
-        constraints.weightx = 1.0;
-        constraints.weighty = 0.0;
-        constraints.gridx = 1;
-        constraints.gridy = 0;
-        constraints.gridheight = 1;
-        constraints.gridwidth = 2;
-        constraints.insets.set(SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, 0);
-        getContentPane().add(infoLabel, constraints);
-
-        constraints.weighty = 1.0;
-        constraints.gridy = 1;
-        constraints.insets.set(0, SMALL_BORDER, 0, 0);
-        getContentPane().add(details, constraints);
-
-        constraints.gridwidth = 1;
-        constraints.weighty = 0.0;
-        constraints.gridy = 5;
-        constraints.insets.set(0, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
-        getContentPane().add(buttonsPanel, constraints);
+        getContentPane().add(new JScrollPane(profileList), "spany 2, grow, " +
+                "wmax 200, wmin 200");
+        getContentPane().add(infoLabel, "wrap, growx, spanx 2");
+        getContentPane().add(details, "grow, wrap, spanx 2");
+        getContentPane().add(addButton, "wrap, wmax 200, wmin 200");
+        getContentPane().add(deleteButton, "left, wmax 200, wmin 200");
+        getContentPane().add(getLeftButton(), "right, sg button");
+        getContentPane().add(getRightButton(), "right, sg button");
 
         pack();
-    }
-
-    /** Lays out the buttons panel. */
-    private void layoutButtonsPanel() {
-        buttonsPanel.setLayout(new BoxLayout(buttonsPanel,
-                BoxLayout.LINE_AXIS));
-        buttonsPanel.add(Box.createHorizontalGlue());
-        buttonsPanel.add(getLeftButton());
-        buttonsPanel.add(Box.createHorizontalStrut(SMALL_BORDER));
-        buttonsPanel.add(getRightButton());
     }
 
     /** Adds listeners to the components. */
