@@ -126,11 +126,24 @@ public final class ChannelInfo {
 			modecount = Integer.parseInt(myParser.h005Info.get("MODES"));
 		} catch (NumberFormatException e) { /* use default modecount */}
 		
+		final String thisIRCD = myParser.getIRCD(true).toLowerCase();
+		final boolean isFreenode = (thisIRCD.equals("hyperion") || thisIRCD.equals("dancer"));
+		// We are considered opped if we have a mode higher than voice (or if we have any modes if voice doesn't exist)
+		long voiceValue = 0;
+		if (myParser.hPrefixModes.get('v') != null) { voiceValue = myParser.hPrefixModes.get('v');}
+		final boolean isOpped = getUser(myParser.getMyself()).getImportantModeValue() > voiceValue;
+		
 		String listmodes = "";
 		int i = 0;
 		for (Character cTemp : myParser.hChanModesOther.keySet()) {
 			int nTemp = myParser.hChanModesOther.get(cTemp);
 			if (nTemp == myParser.MODE_LIST) {
+				if (isFreenode) {
+					if ((cTemp == 'e' || cTemp == 'I') && !isOpped) {
+						// Freenode doesn't allow non-ops to ask for these modes.
+						continue;
+					}
+				}
 				i++;
 				listmodes = listmodes + cTemp;
 				if (i >= modecount) {

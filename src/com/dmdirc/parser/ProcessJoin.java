@@ -71,9 +71,6 @@ public class ProcessJoin extends IRCProcessor {
 				myParser.addChannel(iChannel);
 				sendString("MODE "+iChannel.getName());
 				
-				if (myParser.getAutoListMode()) {
-					iChannel.requestListModes();
-				}
 				callChannelSelfJoin(iChannel);
 			} else {
 				if (iClient == myParser.getMyself()) {

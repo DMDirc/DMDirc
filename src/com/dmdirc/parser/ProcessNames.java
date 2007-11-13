@@ -45,6 +45,11 @@ public class ProcessNames extends IRCProcessor {
 				iChannel.setAddingNames(false);
 				callChannelGotNames(iChannel);
 			}
+			if (!iChannel.hasAskedForListModes()) {
+				if (myParser.getAutoListMode()) {
+					iChannel.requestListModes();
+				}
+			}
 		} else {
 			// Names
 			
