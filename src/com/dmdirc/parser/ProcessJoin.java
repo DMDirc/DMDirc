@@ -71,10 +71,8 @@ public class ProcessJoin extends IRCProcessor {
 				myParser.addChannel(iChannel);
 				sendString("MODE "+iChannel.getName());
 				
-				// Find out the lists currently in use
-				for (Character cTemp : myParser.hChanModesOther.keySet()) {
-					nTemp = myParser.hChanModesOther.get(cTemp);
-					if (nTemp == myParser.MODE_LIST) { sendString("MODE "+iChannel.getName()+" "+cTemp); }
+				if (myParser.getAutoListMode()) {
+					iChannel.requestListModes();
 				}
 				callChannelSelfJoin(iChannel);
 			} else {
@@ -93,15 +91,16 @@ public class ProcessJoin extends IRCProcessor {
 				}
 			}
 		}
-	}	
+	}
 	
+
 	/**
 	 * Callback to all objects implementing the ChannelJoin Callback.
 	 *
 	 * @see IChannelJoin
 	 * @param cChannel Channel Object
 	 * @param cChannelClient ChannelClient object for new person
-         * @return true if a method was called, false otherwise
+	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelJoin(ChannelInfo cChannel, ChannelClientInfo cChannelClient) {
 		CallbackOnChannelJoin cb = (CallbackOnChannelJoin)getCallbackManager().getCallbackType("OnChannelJoin");

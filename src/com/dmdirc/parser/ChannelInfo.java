@@ -29,6 +29,7 @@ import java.util.Hashtable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 
 /**
  * Contains Channel information.
@@ -77,6 +78,13 @@ public final class ChannelInfo {
 	private LinkedList<String> lModeQueue = new LinkedList<String>();
 	/** A Map to allow applications to attach misc data to this object */
 	private Map myMap;
+	
+	/** Queue of requested list modes */
+	private Queue<Character> listModeQueue = new LinkedList<Character>();
+	/** Listmode Queue Time */
+	private long listModeQueueTime = System.currentTimeMillis();
+	/** Have we asked the server for the list modes for this channel yet? */
+	private boolean askedForListModes = false;
 
 	/**
 	 * Create a new channel object.
@@ -88,6 +96,60 @@ public final class ChannelInfo {
 		myMap = new HashMap<Object, Object>();
 		myParser = tParser;
 		sName = name;
+	}
+	
+	/**
+	 * Get the listModeQueue
+	 *
+	 * @return The listModeQueue
+	 */
+	public Queue<Character> getListModeQueue() {
+		Queue<Character> result = listModeQueue;
+		final long now = System.currentTimeMillis();
+		// Incase of breakage, if getListModeQueue() was last called greater than
+		// 60 seconds ago, we reset the list.
+		if (now-(30*1000) > listModeQueueTime) {
+			result = new LinkedList<Character>();
+			myParser.callDebugInfo(myParser.DEBUG_LMQ, "Resetting LMQ");
+		}
+		listModeQueueTime = now;
+		return result;
+	}
+	
+	/**
+	 * Ask the server for all the list modes for this channel.
+	 */
+	public void requestListModes() {
+		askedForListModes = true;
+		int modecount = 1;
+		try { 
+			modecount = Integer.parseInt(myParser.h005Info.get("MODES"));
+		} catch (NumberFormatException e) { /* use default modecount */}
+		
+		String listmodes = "";
+		int i = 0;
+		for (Character cTemp : myParser.hChanModesOther.keySet()) {
+			int nTemp = myParser.hChanModesOther.get(cTemp);
+			if (nTemp == myParser.MODE_LIST) {
+				i++;
+				listmodes = listmodes + cTemp;
+				if (i >= modecount) {
+					myParser.sendString("MODE "+getName()+" "+listmodes);
+					i = 0;
+					listmodes = "";
+				}
+			}
+		}
+		if (i > 0) { myParser.sendString("MODE "+getName()+" "+listmodes); }
+	}
+	
+	/**
+	 * Have we ever asked the server for this channels listmodes?
+	 *
+	 * @return True if requestListModes() has ever been used, else false
+	 */
+	public boolean hasAskedForListModes() {
+		return askedForListModes;
 	}
 	
 	/**
@@ -379,9 +441,14 @@ public final class ChannelInfo {
 		else if (myParser.hChanModesOther.get(cMode) != myParser.MODE_LIST) { return; }
 		
 		// Hyperion sucks.
-		if (cMode == 'b') {
+		if (cMode == 'b' || cMode == 'q') {
 			final String thisIRCD = myParser.getIRCD(true).toLowerCase();
-			if ((thisIRCD.equals("hyperion") || thisIRCD.equals("dancer")) {
+			if ((thisIRCD.equals("hyperion") || thisIRCD.equals("dancer"))) {
+				if (cMode == 'b' && givenItem.getItem().charAt(0) == '%') {
+					cMode = 'q';
+				} else if (cMode == 'q' && givenItem.getItem().charAt(0) != '%') {
+					cMode = 'b';
+				}
 				if (givenItem.getItem().charAt(0) == '%') {
 					newItem = new ChannelListModeItem(givenItem.getItem().substring(1), givenItem.getOwner(), givenItem.getTime());
 				}

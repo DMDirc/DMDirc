@@ -53,6 +53,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Timer;
+import java.util.Queue;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -76,7 +77,9 @@ public final class IRCParser implements Runnable {
 	public static final int DEBUG_SOCKET = 2;
 	/** Processing Manager Debug Information. */
 	public static final int DEBUG_PROCESSOR = 4;
-//	public static final int DEBUG_SOMETHING = 8; //Next thingy
+	/** List Mode Queue Debug Information. */
+	public static final int DEBUG_LMQ = 8;
+//	public static final int DEBUG_SOMETHING = 16; //Next thingy
 
 	/** Socket is not created yet. */
 	public static final byte STATE_NULL = 0;
@@ -244,6 +247,9 @@ public final class IRCParser implements Runnable {
 	/** Should fake (channel)clients be created for callbacks where they do not exist? */
 	boolean createFake = false;
 	
+	/** Should channels automatically request list modes? */
+	boolean autoListMode = true;
+	
 	/** Should part/quit/kick callbacks be fired before removing the user internally? */
 	boolean removeAfterCallback = true;
 		
@@ -309,6 +315,20 @@ public final class IRCParser implements Runnable {
 	 */
 	public void setCreateFake(final boolean newValue) { createFake = newValue; }
 	
+	/**
+	 * Get the current Value of autoListMode.
+	 *
+	 * @return Value of autoListMode (true if channels automatically ask for list modes on join, else false)
+	 */
+	public boolean getAutoListMode() { return autoListMode; }
+	
+	/**
+	 * Set the current Value of autoListMode.
+	 *
+	 * @param newValue New value to set autoListMode
+	 */
+	public void setAutoListMode(final boolean newValue) { autoListMode = newValue; }
+
 	/**
 	 * Get the current Value of removeAfterCallback.
 	 *
@@ -838,8 +858,10 @@ public final class IRCParser implements Runnable {
 	 * @return ChannelInfo Object for the channel, or null
 	 */
 	public ChannelInfo getChannelInfo(String sWhat) {
-		sWhat = toLowerCase(sWhat);
-		if (hChannelList.containsKey(sWhat)) { return hChannelList.get(sWhat); } else { return null; }
+		synchronized (hChannelList) {
+			sWhat = toLowerCase(sWhat);
+			if (hChannelList.containsKey(sWhat)) { return hChannelList.get(sWhat); } else { return null; }
+		}
 	}
 	
 	/**
@@ -869,6 +891,19 @@ public final class IRCParser implements Runnable {
 		final String[] newLine = tokeniseLine(line);
 		if (newLine[0].equalsIgnoreCase("away") && newLine.length > 1) {
 			cMyself.setAwayReason(newLine[newLine.length-1]);
+		} else if (newLine[0].equalsIgnoreCase("mode") && newLine.length == 3) {
+			ChannelInfo channel = getChannelInfo(newLine[1]);
+			if (channel != null) {
+				Queue<Character> listModeQueue = channel.getListModeQueue();
+				for (int i = 0; i < newLine[2].length() ; ++i) {
+					Character mode = newLine[2].charAt(i);
+					callDebugInfo(DEBUG_LMQ, "Intercepted mode request for "+channel+" for mode "+mode);
+					if (hChanModesOther.containsKey(mode) && hChanModesOther.get(mode) == MODE_LIST) {
+						listModeQueue.offer(mode);
+						callDebugInfo(DEBUG_LMQ, "Added to LMQ");
+					}
+				}
+			}
 		}
 	}
 	
@@ -1932,7 +1967,9 @@ public final class IRCParser implements Runnable {
 	 * @param channel Channel to add
 	 */
 	public void addChannel(final ChannelInfo channel) {
-		hChannelList.put(toLowerCase(channel.getName()), channel);
+		synchronized (hChannelList) {
+			hChannelList.put(toLowerCase(channel.getName()), channel);
+		}
 	}
 
 	/**
@@ -1941,7 +1978,9 @@ public final class IRCParser implements Runnable {
 	 * @param channel Channel to remove
 	 */
 	public void removeChannel(final ChannelInfo channel) {
-		hChannelList.remove(toLowerCase(channel.getName()));
+		synchronized (hChannelList) {
+			hChannelList.remove(toLowerCase(channel.getName()));
+		}
 	}
 
 	/**
@@ -1950,7 +1989,9 @@ public final class IRCParser implements Runnable {
 	 * @return Count of known channel
 	 */
 	public int knownChannels() {
-		return hChannelList.size();
+		synchronized (hChannelList) {
+			return hChannelList.size();
+		}
 	}
 
 	/**
@@ -1959,14 +2000,18 @@ public final class IRCParser implements Runnable {
 	 * @return Known channels as a collection
 	 */
 	public Collection<ChannelInfo> getChannels() {
-		return hChannelList.values();
+		synchronized (hChannelList) {
+			return hChannelList.values();
+		}
 	}
 
 	/**
 	 * Clear the channel list
 	 */
 	public void clearChannels() {
-		hChannelList.clear();
+		synchronized (hChannelList) {
+			hChannelList.clear();
+		}
 	}
 
 	/**

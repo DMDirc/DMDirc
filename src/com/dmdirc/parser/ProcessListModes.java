@@ -24,6 +24,9 @@
 
 package com.dmdirc.parser;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 // import com.dmdirc.parser.callbacks.;
 // import com.dmdirc.parser.callbacks.interfaces.;
 
@@ -34,9 +37,10 @@ public class ProcessListModes extends IRCProcessor {
 	/**
 	 * Process a ListModes.
 	 *
-	 * @param sParam Type of line to process ("348", "349", "346", "347", "367", "368")
+	 * @param sParam Type of line to process ("348", "349", "346", "347", "367", "368", "482")
 	 * @param token IRCTokenised line to process
 	 */
+	@SuppressWarnings("unchecked")
 	public void process(String sParam, String[] token) {
 		ChannelInfo channel = getChannelInfo(token[3]);
 		String thisIRCD = myParser.getIRCD(true).toLowerCase();
@@ -48,6 +52,7 @@ public class ProcessListModes extends IRCProcessor {
 		char mode = 'b';
 		boolean isItem = true; // true if item listing, false if "end of .." item
 		if (channel == null) { return; }
+		
 		if (sParam.equals("367") || sParam.equals("368")) {
 			// Ban List/Item.
 			// (Also used for +d and +q on hyperion... -_-)
@@ -75,8 +80,39 @@ public class ProcessListModes extends IRCProcessor {
 			isCleverMode = true;
 		}
 		
+		final Queue<Character> listModeQueue = channel.getListModeQueue();
+		if (!isCleverMode && listModeQueue != null) {
+			if (sParam.equals("482")) {
+				myParser.callDebugInfo(myParser.DEBUG_LMQ, "Dropped LMQ mode "+listModeQueue.poll());
+			} else {
+				if (listModeQueue.peek() != null) {
+					Character oldMode = mode;
+					mode = listModeQueue.peek();
+					myParser.callDebugInfo(myParser.DEBUG_LMQ, "LMQ says this is "+mode);
+					if (oldMode != mode) {
+						myParser.callDebugInfo(myParser.DEBUG_LMQ, "LMQ disagrees with guess LMQ: "+mode+" Guess: "+oldMode);
+					}
+					if ((thisIRCD.equals("hyperion") || thisIRCD.equals("dancer")) && (mode == 'b' || mode == 'q')) {
+						LinkedList<Character> lmq = (LinkedList<Character>)listModeQueue;
+						if (mode == 'b') {
+							lmq.remove((Character)'q');
+							myParser.callDebugInfo(myParser.DEBUG_LMQ, "Dropping q from list");
+						} else if (mode == 'q') {
+							lmq.remove((Character)'b');
+							myParser.callDebugInfo(myParser.DEBUG_LMQ, "Dropping b from list");
+						}
+					}
+					if (!isItem) {
+						listModeQueue.poll();
+					}
+				}
+			}
+		}
+		
+		if (sParam.equals("482")) { return; }
+		
 		if (isItem) {
-			if ((!isCleverMode) && (thisIRCD.equals("hyperion") || thisIRCD.equals("dancer"))) {
+			if ((!isCleverMode) && listModeQueue == null && (thisIRCD.equals("hyperion") || thisIRCD.equals("dancer"))) {
 				if (token.length > 4) {
 					if (mode == 'b') {
 						// Assume mode is a 'd' mode
@@ -123,7 +159,7 @@ public class ProcessListModes extends IRCProcessor {
 	 * @return String[] with the names of the tokens we handle.
 	 */
 	public String[] handles() {
-		String[] iHandle = new String[9];
+		String[] iHandle = new String[10];
 		int i = 0;
 		// Ban List - All IRCds
 		iHandle[i++] = "367"; // Item
@@ -144,6 +180,10 @@ public class ProcessListModes extends IRCProcessor {
 		// Ex List =- unreal
 		iHandle[i++] = "348"; // Item
 		iHandle[i++] = "349"; // End
+		
+		// "Only operator can do that"
+		// This pops an item off the list mode queue
+		iHandle[i++] = "482"; // End
 		
 		// This is here to allow finding the processor for adding LISTMODE support
 		iHandle[i++] = "__LISTMODE__";
