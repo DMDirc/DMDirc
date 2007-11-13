@@ -368,13 +368,25 @@ public final class ChannelInfo {
 	/**
 	 * Add/Remove a value to a channel list.
 	 *
-	 * @param cMode Character representing mode
+	 * @param givenMode Character representing mode
 	 * @param newItem ChannelListModeItem representing the item
 	 * @param bAdd Add or remove the value. (true for add, false for remove)
 	 */
-	protected void setListModeParam(final Character cMode, final ChannelListModeItem newItem, final boolean bAdd) { 
+	protected void setListModeParam(final Character givenMode, final ChannelListModeItem givenItem, final boolean bAdd) { 
+		Character cMode = givenMode;
+		ChannelListModeItem newItem = givenItem;
 		if (!myParser.hChanModesOther.containsKey(cMode)) { return; }
 		else if (myParser.hChanModesOther.get(cMode) != myParser.MODE_LIST) { return; }
+		
+		// Hyperion sucks.
+		if (cMode == 'b') {
+			final String thisIRCD = myParser.getIRCD(true).toLowerCase();
+			if ((thisIRCD.equals("hyperion") || thisIRCD.equals("dancer")) {
+				if (givenItem.getItem().charAt(0) == '%') {
+					newItem = new ChannelListModeItem(givenItem.getItem().substring(1), givenItem.getOwner(), givenItem.getTime());
+				}
+			}
+		}
 		
 		if (!hListModes.containsKey(cMode)) { 
 			hListModes.put(cMode, new ArrayList<ChannelListModeItem>());	
