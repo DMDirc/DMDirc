@@ -133,6 +133,12 @@ public final class ChannelInfo {
 		if (myParser.hPrefixModes.get('v') != null) { voiceValue = myParser.hPrefixModes.get('v');}
 		final boolean isOpped = getUser(myParser.getMyself()).getImportantModeValue() > voiceValue;
 		
+		// Support for potential future decent mode listing in the protocol
+		//
+		// See my proposal: http://shane.dmdirc.com/listmodes.php
+		// Add listmode handler
+		final boolean supportLISTMODE = myParser.h005Info.containsKey("LISTMODE");
+		
 		String listmodes = "";
 		int i = 0;
 		for (Character cTemp : myParser.hChanModesOther.keySet()) {
@@ -146,14 +152,20 @@ public final class ChannelInfo {
 				}
 				i++;
 				listmodes = listmodes + cTemp;
-				if (i >= modecount) {
+				if (i >= modecount && !supportLISTMODE) {
 					myParser.sendString("MODE "+getName()+" "+listmodes);
 					i = 0;
 					listmodes = "";
 				}
 			}
 		}
-		if (i > 0) { myParser.sendString("MODE "+getName()+" "+listmodes); }
+		if (i > 0) {
+			if (!supportLISTMODE) {
+				myParser.sendString("MODE "+getName()+" "+listmodes);
+			} else {
+				myParser.sendString("LISTMODE "+getName()+" "+listmodes);
+			}
+		}
 	}
 	
 	/**

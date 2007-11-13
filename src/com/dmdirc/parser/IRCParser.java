@@ -892,6 +892,10 @@ public final class IRCParser implements Runnable {
 		if (newLine[0].equalsIgnoreCase("away") && newLine.length > 1) {
 			cMyself.setAwayReason(newLine[newLine.length-1]);
 		} else if (newLine[0].equalsIgnoreCase("mode") && newLine.length == 3) {
+			// This makes sure we don't add the same item to the LMQ twice, even if its requested twice,
+			// as the ircd will only reply once.
+			LinkedList<Character> foundModes = new LinkedList<Character>();
+			
 			ChannelInfo channel = getChannelInfo(newLine[1]);
 			if (channel != null) {
 				Queue<Character> listModeQueue = channel.getListModeQueue();
@@ -899,8 +903,13 @@ public final class IRCParser implements Runnable {
 					Character mode = newLine[2].charAt(i);
 					callDebugInfo(DEBUG_LMQ, "Intercepted mode request for "+channel+" for mode "+mode);
 					if (hChanModesOther.containsKey(mode) && hChanModesOther.get(mode) == MODE_LIST) {
-						listModeQueue.offer(mode);
-						callDebugInfo(DEBUG_LMQ, "Added to LMQ");
+						if (foundModes.contains(mode)) {
+							callDebugInfo(DEBUG_LMQ, "Already added to LMQ");
+						} else {
+							listModeQueue.offer(mode);
+							foundModes.offer(mode);
+							callDebugInfo(DEBUG_LMQ, "Added to LMQ");
+						}
 					}
 				}
 			}

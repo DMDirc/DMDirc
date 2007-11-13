@@ -171,7 +171,7 @@ public final class ChannelClientInfo {
 		if (!sModes.equals("")) { sModes = "" + sModes.charAt(0); }
 		return sModes;
 	}
-
+	
 	/**
 	 * Get the most important prefix this client has (@, + etc).
 	 *
