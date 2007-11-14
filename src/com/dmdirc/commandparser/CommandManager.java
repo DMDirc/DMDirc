@@ -262,7 +262,6 @@ public final class CommandManager {
         new Mode();
         new Part();
         new SetNickColour();
-        new SetTopic();
         new ShowTopic();
         
         // Server commands

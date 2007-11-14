@@ -45,14 +45,18 @@ public final class ShowTopic extends ChannelCommand {
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final Server server,
-            final Channel channel, final boolean isSilent, final String... args) {
-        final ChannelInfo cChannel = channel.getChannelInfo();
-        
-        if (!cChannel.getTopic().isEmpty()) {
-            sendLine(origin, isSilent, "channelJoinTopic", cChannel.getTopic(),
-                    cChannel.getTopicUser(), 1000 * cChannel.getTopicTime(), cChannel);
+            final Channel channel, final boolean isSilent, final String... args) {       
+        if (args.length == 0) {
+            final ChannelInfo cChannel = channel.getChannelInfo();
+            
+            if (!cChannel.getTopic().isEmpty()) {
+                sendLine(origin, isSilent, "channelJoinTopic", cChannel.getTopic(),
+                        cChannel.getTopicUser(), 1000 * cChannel.getTopicTime(), cChannel);
+            } else {
+                sendLine(origin, isSilent, "channelNoTopic", cChannel);
+            }
         } else {
-            sendLine(origin, isSilent, "channelNoTopic", cChannel);
+            channel.setTopic(implodeArgs(args));
         }
     }
     
