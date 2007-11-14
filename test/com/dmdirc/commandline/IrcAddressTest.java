@@ -22,6 +22,8 @@
 
 package com.dmdirc.commandline;
 
+import com.dmdirc.util.InvalidAddressException;
+import com.dmdirc.util.IrcAddress;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
