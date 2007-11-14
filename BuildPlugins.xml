@@ -20,7 +20,7 @@
 		<propertyregex property="folder.name" input="${target.file}" regexp=".*${build.classes.dir}/(.*)$" select="\1" casesensitive="false" />
 		<echo message="Building: ${folder.name} to ${pluginjar.name}"/>
 		<delete file="plugins/${pluginjar.name}"/>
-		<jar jarfile="plugins/${pluginjar.name}" basedir="build/classes" includes="${folder.name}/*.class">
+		<jar jarfile="plugins/${pluginjar.name}" basedir="build/classes" includes="${folder.name}/**/*.class">
 			<metainf file="${target.file}/plugin.info"/>
 		</jar>
 	</target>
