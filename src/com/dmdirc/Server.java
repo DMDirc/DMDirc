@@ -434,10 +434,14 @@ public final class Server extends WritableFrameContainer implements Serializable
      * Adds a raw window to this server.
      */
     public void addRaw() {
-        raw = new Raw(this);
+        if (raw == null) {
+            raw = new Raw(this);
 
-        if (parser != null) {
-            raw.registerCallbacks();
+            if (parser != null) {
+                raw.registerCallbacks();
+            }
+        } else {
+            raw.activateFrame();
         }
     }
 
