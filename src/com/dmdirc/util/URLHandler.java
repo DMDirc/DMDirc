@@ -27,6 +27,7 @@ import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
@@ -73,37 +74,39 @@ public class URLHandler {
         final int end = url.indexOf(':');
         final String protocol = url.substring(0, end);
         final String info = url.substring(end + 3);
-        
-        System.out.println("URL: " + url + " -> " + protocol + " -> " + info);
-        
+
         if (!config.hasOption("protocol", protocol)) {
             Main.getUI().showURLDialog(protocol, info);
             return;
         }
 
         final List<String> app = config.getOptionList("protocol", protocol);
-        
+
         if (app.size() < 1) {
             Main.getUI().showURLDialog(protocol, info);
             return;
         }
-        
+
         final String command = app.get(0);
-        
-        if ("DMDIRC".equals(command)) {
-            System.out.println("handling IRC link internally.");
-        }else if ("BROWSER".equals(command)) {
-            execBrowser(url);
-        } else if ("MAIL".equals(command)) {
-            execMail(url);
-        } else {
-            execApp(app.toArray(new String[app.size()]));
+
+        try {
+            if ("DMDIRC".equals(command)) {
+                //Handle DMDirc link
+            } else if ("BROWSER".equals(command)) {
+                execBrowser(new URI(url));
+            } else if ("MAIL".equals(command)) {
+                execMail(new URI(url));
+            } else {
+                execApp(app.toArray(new String[app.size()]));
+            }
+        } catch (URISyntaxException ex) {
+            Logger.userError(ErrorLevel.LOW, "Invalid URL: " + ex.getMessage());
         }
     }
 
     /**
      * Launches an application.
-     * 
+     *
      * @param application Application and arguments
      */
     private void execApp(final String[] application) {
@@ -114,39 +117,38 @@ public class URLHandler {
                     "Unable to run application: " + ex.getMessage(), ex);
         }
     }
-    
+
     /**
      * Opens the specified URL in the users browser.
-     * 
+     *
      * @param url URL to open
      */
-    private void execBrowser(final String url) {
-        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+    private void execBrowser(final URI url) {
+        if (desktop != null &&
+                desktop.isSupported(Desktop.Action.BROWSE)) {
             try {
-                desktop.browse(new URI(url));
+                desktop.browse(url);
             } catch (IOException ex) {
-                Logger.userError(ErrorLevel.LOW, "Unable to open URL: " + ex.getMessage());
-            } catch (URISyntaxException ex) {
-                Logger.userError(ErrorLevel.LOW, "Invalid URL: " + ex.getMessage());
+                Logger.userError(ErrorLevel.LOW,
+                        "Unable to open URL: " + ex.getMessage());
             }
         } else {
             Logger.userError(ErrorLevel.LOW, "Unable to open your browser.");
         }
     }
-    
+
     /**
      * Opens the specified URL in the users mail client.
-     * 
+     *
      * @param url URL to open
      */
-    private void execMail(final String url) {
+    private void execMail(final URI url) {
         if (desktop != null && desktop.isSupported(Desktop.Action.MAIL)) {
             try {
-                desktop.mail(new URI(url));
+                desktop.mail(url);
             } catch (IOException ex) {
-                Logger.userError(ErrorLevel.LOW, "Unable to open URL: " + ex.getMessage());
-            } catch (URISyntaxException ex) {
-                Logger.userError(ErrorLevel.LOW, "Invalid URL: " + ex.getMessage());
+                Logger.userError(ErrorLevel.LOW,
+                        "Unable to open URL: " + ex.getMessage());
             }
         } else {
             Logger.userError(ErrorLevel.LOW, "Unable to open your mail client.");

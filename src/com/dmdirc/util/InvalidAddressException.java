@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandline;
+package com.dmdirc.util;
 
 /**
  * Thrown to indicate that an invalid IRC address has been used.

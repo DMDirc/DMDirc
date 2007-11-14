@@ -588,9 +588,9 @@ public abstract class Frame extends JInternalFrame implements Window,
         if (event.isPopupTrigger()) {
             //Show hyperlink popup
         } else {
-            Main.getUI().getStatusBar().setMessage("Opening: " + url);
-            BrowserLauncher.openURL(url);
-            //URLHandler.getURLHander().launchApp(url);
+            //Main.getUI().getStatusBar().setMessage("Opening: " + url);
+            //BrowserLauncher.openURL(url);
+            URLHandler.getURLHander().launchApp(url);
         }
     }
     

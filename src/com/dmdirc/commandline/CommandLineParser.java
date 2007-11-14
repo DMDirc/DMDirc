@@ -22,6 +22,8 @@
 
 package com.dmdirc.commandline;
 
+import com.dmdirc.util.InvalidAddressException;
+import com.dmdirc.util.IrcAddress;
 import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.config.IdentityManager;

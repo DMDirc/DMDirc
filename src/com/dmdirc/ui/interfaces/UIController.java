@@ -161,9 +161,9 @@ public interface UIController {
     /**
      * Shows the unknown URL protocol handling dialog for a URL.
      * 
-     * @param procotol URL Protocol
+     * @param protocol URL Protocol
      * @param url full url
      */
-    void showURLDialog(final String procotol, final String url);
+    void showURLDialog(final String protocol, final String url);
     
 }

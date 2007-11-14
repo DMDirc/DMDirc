@@ -45,6 +45,7 @@ import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.components.SwingPreferencesPanel;
 import com.dmdirc.ui.swing.components.SwingStatusBar;
 import com.dmdirc.ui.swing.dialogs.SwingUpdaterDialog;
+import com.dmdirc.ui.swing.dialogs.URLDialog;
 import com.dmdirc.ui.swing.dialogs.channelsetting.ChannelSettingsDialog;
 import com.dmdirc.ui.swing.dialogs.error.ErrorListDialog;
 import com.dmdirc.ui.swing.dialogs.wizard.firstrun.SwingFirstRunWizard;
@@ -268,7 +269,6 @@ public final class SwingController implements UIController {
     /** {@inheritDoc} */
     @Override
     public void showURLDialog(String protocol, String url) {
-        System.out.println("Protocol: " + protocol);
-        System.out.println("URL: " + url);
+        URLDialog.showURLDialog(protocol, url);
     }
 }

@@ -158,7 +158,7 @@ public final class DummyController implements UIController {
 
     /** {@inheritDoc} */
     @Override
-    public void showURLDialog(String procotol, String url) {
+    public void showURLDialog(String protocol, String url) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
