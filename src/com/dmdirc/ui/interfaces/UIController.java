@@ -158,4 +158,12 @@ public interface UIController {
      */
     Server getActiveServer();
     
+    /**
+     * Shows the unknown URL protocol handling dialog for a URL.
+     * 
+     * @param procotol URL Protocol
+     * @param url full url
+     */
+    void showURLDialog(final String procotol, final String url);
+    
 }

@@ -264,4 +264,11 @@ public final class SwingController implements UIController {
             return me.getActiveFrame().getContainer().getServer();
         }
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public void showURLDialog(String protocol, String url) {
+        System.out.println("Protocol: " + protocol);
+        System.out.println("URL: " + url);
+    }
 }

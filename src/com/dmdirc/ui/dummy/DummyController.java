@@ -155,5 +155,11 @@ public final class DummyController implements UIController {
     public Server getActiveServer() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public void showURLDialog(String procotol, String url) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     
 }

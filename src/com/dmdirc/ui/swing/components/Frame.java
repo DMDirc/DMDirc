@@ -37,9 +37,9 @@ import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.actions.SearchAction;
 import com.dmdirc.ui.swing.textpane.TextPane;
 import com.dmdirc.ui.swing.textpane.TextPaneListener;
-import com.dmdirc.ui.swing.textpane.TextPaneCopyAction;
 import com.dmdirc.ui.swing.textpane.TextPanePageUpAction;
 import com.dmdirc.ui.swing.textpane.TextPanePageDownAction;
+import com.dmdirc.util.URLHandler;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -590,6 +590,7 @@ public abstract class Frame extends JInternalFrame implements Window,
         } else {
             Main.getUI().getStatusBar().setMessage("Opening: " + url);
             BrowserLauncher.openURL(url);
+            //URLHandler.getURLHander().launchApp(url);
         }
     }
     
