@@ -121,17 +121,21 @@ public final class ChannelInfo {
 	 */
 	public void requestListModes() {
 		askedForListModes = true;
-		int modecount = 1;
-		try { 
-			modecount = Integer.parseInt(myParser.h005Info.get("MODES"));
-		} catch (NumberFormatException e) { /* use default modecount */}
 		
 		final String thisIRCD = myParser.getIRCD(true).toLowerCase();
 		final boolean isFreenode = (thisIRCD.equals("hyperion") || thisIRCD.equals("dancer"));
+		final boolean isUnreal = thisIRCD.equals("unreal");
 		// We are considered opped if we have a mode higher than voice (or if we have any modes if voice doesn't exist)
 		long voiceValue = 0;
 		if (myParser.hPrefixModes.get('v') != null) { voiceValue = myParser.hPrefixModes.get('v');}
 		final boolean isOpped = getUser(myParser.getMyself()).getImportantModeValue() > voiceValue;
+		
+		int modecount = 1;
+		if (!isUnreal) {
+			try { 
+				modecount = Integer.parseInt(myParser.h005Info.get("MODES"));
+			} catch (NumberFormatException e) { /* use default modecount */}
+		}
 		
 		// Support for potential future decent mode listing in the protocol
 		//
@@ -519,7 +523,9 @@ public final class ChannelInfo {
 	 * @return false if we are not expecting a 367 etc, else true.
 	 */
 	public boolean getAddState(final Character cMode) { 
-		return lAddingModes.contains(cMode);
+		synchronized (lAddingModes) {
+			return lAddingModes.contains(cMode);
+		}
 	}
 	
 	/**
@@ -529,10 +535,21 @@ public final class ChannelInfo {
 	 * @param newState change the value returned by getAddState
 	 */
 	protected void setAddState(final Character cMode, final boolean newState) { 
-		if (newState) {
-			lAddingModes.add(cMode);
-		} else {
-			if (lAddingModes.contains(cMode)) { lAddingModes.remove(cMode); }
+		synchronized (lAddingModes) {
+			if (newState) {
+				lAddingModes.add(cMode);
+			} else {
+				if (lAddingModes.contains(cMode)) { lAddingModes.remove(cMode); }
+			}
+		}
+	}
+	
+	/**
+	 * Reset the "adding state" of *all* list modes.
+	 */
+	protected void resetAddState() {
+		synchronized (lAddingModes) {
+			lAddingModes.clear();
 		}
 	}
 	

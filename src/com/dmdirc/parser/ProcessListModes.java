@@ -133,7 +133,7 @@ public class ProcessListModes extends IRCProcessor {
 			} // End Hyperian stupidness of using the same numeric for 3 different things..
 			
 			if (!channel.getAddState(mode)) {
-				callDebugInfo(myParser.DEBUG_INFO, "New List Mode Batch: Clearing!");
+				callDebugInfo(myParser.DEBUG_INFO, "New List Mode Batch ("+mode+"): Clearing!");
 				channel.getListModeParam(mode).clear();
 				channel.setAddState(mode, true);
 			}
@@ -149,7 +149,8 @@ public class ProcessListModes extends IRCProcessor {
 				channel.setListModeParam(mode, clmi, true);
 			}
 		} else {
-			channel.setAddState(mode, false);
+			callDebugInfo(myParser.DEBUG_INFO, "List Mode Batch over");
+			channel.resetAddState();
 		}
 	}
 	
