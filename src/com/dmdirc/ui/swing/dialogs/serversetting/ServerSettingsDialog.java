@@ -138,17 +138,10 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
         performPanel =
                 new PerformPanel(server);
 
-        if (!server.getNetwork().isEmpty()) {
-            settingsPanel =
-                    new SettingsPanel(IdentityManager.getNetworkConfig(server.getNetwork()),
-                    "network, any settings specified here will overwrite global " +
-                    "settings");
-        } else if (!server.getName().isEmpty()) {
-            settingsPanel =
-                    new SettingsPanel(IdentityManager.getNetworkConfig(server.getName()),
-                    "network, any settings specified here will overwrite global " +
-                    "settings");
-        }
+        settingsPanel =
+                new SettingsPanel(server.getNetworkIdentity(),
+                "network, any settings specified here will overwrite global " +
+                "settings");
 
         if (settingsPanel != null) {
             addSettings();
@@ -267,8 +260,7 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
         performPanel.savePerforms();
         ignoreList.saveList();
 
-        final Identity identity =
-                IdentityManager.getNetworkConfig(server.getNetwork());
+        final Identity identity = server.getNetworkIdentity();
         identity.setOption("dialogstate", "serversettingsdialog",
                 String.valueOf(tabbedPane.getSelectedIndex()));
     }

@@ -166,8 +166,7 @@ public final class IgnoreListPanel extends JPanel implements ActionListener,
             ignoreList.append((String) listModel.getElementAt(i));
         }
 
-        IdentityManager.getNetworkConfig(server.getNetwork()).
-                setOption("network", "ignorelist", ignoreList.toString());
+        server.getNetworkIdentity().setOption("network", "ignorelist", ignoreList.toString());
         
         server.updateIgnoreList();
     }

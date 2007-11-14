@@ -37,6 +37,21 @@ public class RegexStringList {
 	
 	/** Arraylist storing ignore patterns */
 	protected final List<String> ignoreInfo = new ArrayList<String>();
+
+	/**
+	 * Creates a new instance of RegexStringList.
+	 */ 
+	public RegexStringList() {
+		// Do nothing
+	}
+        
+	/**
+	 * Creates a new instance of RegexStringList, with the specified items.
+	 * @param items 
+	 */ 
+	public RegexStringList(final List<String> items) {
+		ignoreInfo.addAll(items);
+	}
 	
 	/**
 	 * Add a new ignore pattern to the ignore list.
@@ -44,12 +59,24 @@ public class RegexStringList {
 	 * @param pattern Regex syntax for the ignore (Pattern is matched case-insensitively as ^pattern$)
 	 */
 	public void add(final String pattern) {
-		for (int i = 0; i < this.count(); ++i) {
-			if (pattern.equalsIgnoreCase(this.get(i))) {
+		for (String target : ignoreInfo) {
+			if (pattern.equalsIgnoreCase(target)) {
 				return;
 			}
 		}
+		
 		ignoreInfo.add(pattern);
+	}
+        
+	/**
+	 * Adds a set of patterns to the list.
+	 *
+	 * @param patterns A list of patterns to be added
+	 */
+	public void addAll(final List<String> patterns) {
+		for (String pattern : patterns) {
+			add(pattern);
+		}
 	}
 	
 	/**

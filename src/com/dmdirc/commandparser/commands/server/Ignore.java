@@ -56,7 +56,7 @@ public final class Ignore extends ServerCommand {
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
         
-        final Identity identity = IdentityManager.getNetworkConfig(server.getNetwork());
+        final Identity identity = server.getNetworkIdentity();
         
         if (args.length == 0 || args[0].toLowerCase().equals("view")) {
             

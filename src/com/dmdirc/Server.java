@@ -28,6 +28,7 @@ import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.AwayStateListener;
 import com.dmdirc.interfaces.InviteListener;
 import com.dmdirc.logger.ErrorLevel;
@@ -117,6 +118,9 @@ public final class Server extends WritableFrameContainer implements Serializable
 
     /** A list of outstanding invites. */
     private final List<Invite> invites = new ArrayList<Invite>();
+    
+    /** Our ignore list. */
+    private IgnoreList ignoreList = new IgnoreList();
 
     /**
      * Creates a new instance of Server.
@@ -249,6 +253,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         parser.setRemoveAfterCallback(true);
         parser.setCreateFake(true);
         parser.setAddLastLine(true);
+        parser.setIgnoreList(ignoreList);
 
         if (configManager.hasOption(DOMAIN_GENERAL, "bindip")) {
             parser.setBindIP(configManager.getOption(DOMAIN_GENERAL, "bindip"));
@@ -265,8 +270,6 @@ public final class Server extends WritableFrameContainer implements Serializable
         } catch (IllegalThreadStateException ex) {
             Logger.appError(ErrorLevel.FATAL, "Unable to start IRC Parser", ex);
         }
-
-        updateIgnoreList();
     }
 
     /**
@@ -645,23 +648,6 @@ public final class Server extends WritableFrameContainer implements Serializable
     @Override
     public int getMaxLineLength() {
         return IRCParser.MAX_LINELENGTH;
-    }
-
-    /**
-     * Updates the ignore list for this server.
-     */
-    public void updateIgnoreList() {
-        if (parser == null || parser.getIgnoreList() == null) {
-            return;
-        }
-
-        parser.getIgnoreList().clear();
-
-        if (configManager.hasOption("network", "ignorelist")) {
-            for (String line : configManager.getOptionList("network", "ignorelist")) {
-                parser.getIgnoreList().add(line);
-            }
-        }
     }
 
     /**
@@ -1194,6 +1180,53 @@ public final class Server extends WritableFrameContainer implements Serializable
                         + " (" + parser.getIRCD(true) + ")\n\n"));
             }
         }
+    }
+   
+    // ---------------------------------------------- IGNORE LIST HANDLING -----
+    
+    /**
+     * Retrieves this server's ignore list.
+     * 
+     * @return This server's ignore list
+     */
+    public IgnoreList getIgnoreList() {
+        return ignoreList;
+    }
+    
+    /**
+     * Updates this server's ignore list to use the entries stored in the
+     * config manager.
+     */
+    public void updateIgnoreList() {
+        ignoreList.clear();
+        ignoreList.addAll(configManager.getOptionList("network", "ignorelist"));
+    }
+    
+    /**
+     * Saves the contents of our ignore list to the network identity.
+     */
+    public void saveIgnoreList() {
+        getNetworkIdentity().setOption("network", "ignorelist", ignoreList.getRegexList());
+    }    
+    
+    // ------------------------------------------------- IDENTITY WRAPPERS -----
+    
+    /**
+     * Retrieves the identity for this server.
+     * 
+     * @return This server's identity
+     */
+    public Identity getServerIdentity() {
+        return IdentityManager.getServerConfig(getName());
+    }
+
+    /**
+     * Retrieves the identity for this server's network.
+     * 
+     * @return This server's network identity
+     */    
+    public Identity getNetworkIdentity() {
+        return IdentityManager.getNetworkConfig(getNetwork());
     }
 
     // --------------------------------------------------- INVITE HANDLING -----

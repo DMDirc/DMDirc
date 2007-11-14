@@ -35,6 +35,31 @@ import java.util.List;
 public class IgnoreList extends RegexStringList {
     
     /**
+     * Creates a new instance of IgnoreList.
+     */
+    public IgnoreList() {
+        super();
+    }
+
+    /**
+     * Creates a new instance of IgnoreList containing the specified items.
+     * 
+     * @param items The items to be added
+     */
+    public IgnoreList(final List<String> items) {
+        super(items);
+    }
+    
+    /**
+     * Adds the specified simple pattern to this ignore list.
+     * 
+     * @param pattern The simple pattern to be added
+     */
+    public void addSimple(final String pattern) {
+        add(simpleToRegex(pattern));
+    }
+    
+    /**
      * Retrieves a list of regular expressions in this ignore list.
      * 
      * @return All expressions in this ignore list
@@ -57,7 +82,7 @@ public class IgnoreList extends RegexStringList {
         }
         
         return res;
-    }    
+    }
     
     /**
      * Converts a regular expression into a simple expression.
@@ -66,7 +91,7 @@ public class IgnoreList extends RegexStringList {
      * @return A simple expression corresponding to the regex
      * @throws UnsupportedOperationException if the regex cannot be converted
      */
-    protected String regexToSimple(final String regex) throws UnsupportedOperationException {
+    protected static String regexToSimple(final String regex) throws UnsupportedOperationException {
         final StringBuilder res = new StringBuilder(regex.length());
         boolean escaped = false;
         boolean inchar = false;
@@ -122,7 +147,7 @@ public class IgnoreList extends RegexStringList {
      * @return A corresponding regular expression
      */
     @SuppressWarnings("fallthrough")
-    protected String simpleToRegex(final String regex) {
+    protected static String simpleToRegex(final String regex) {
         final StringBuilder res = new StringBuilder(regex.length());
         
         for (char part : regex.toCharArray()) {

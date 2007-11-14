@@ -420,4 +420,32 @@ public final class IdentityManager {
         return Identity.buildIdentity(target);
     }
     
+    /**
+     * Retrieves the config for the specified server. The config is
+     * created if it doesn't exist.
+     * 
+     * @param server The name of the server
+     * @return A config source for the server
+     */
+    @Precondition("The specified server is non-null and not empty")
+    public static Identity getServerConfig(final String server) {
+        assert(server != null);
+        assert(!server.isEmpty());
+        
+        final String myTarget = server.toLowerCase();
+        
+        for (Identity identity : identities) {
+            if (identity.getTarget().getType() == ConfigTarget.TYPE.SERVER
+                    && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
+                return identity;
+            }
+        }
+        
+        // We need to create one
+        final ConfigTarget target = new ConfigTarget();
+        target.setServer(myTarget);
+        
+        return Identity.buildIdentity(target);
+    }    
+    
 }

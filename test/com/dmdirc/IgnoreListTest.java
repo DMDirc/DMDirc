@@ -34,13 +34,11 @@ public class IgnoreListTest extends junit.framework.TestCase {
         {"c???s", "c...s"},
         {"c*?*", "c.*..*"},
     };  
-    
-    private final IgnoreList il = new IgnoreList();
 
     @Test
     public void testToRegex() {
         for (String[] test : tests) {
-            final String convert1 = il.simpleToRegex(test[0]);
+            final String convert1 = IgnoreList.simpleToRegex(test[0]);
             assertEquals(test[1], convert1);
         }
     }
@@ -48,7 +46,7 @@ public class IgnoreListTest extends junit.framework.TestCase {
     @Test
     public void testToSimple() {
         for (String[] test : tests) {
-            final String convert2 = il.regexToSimple(test[1]);
+            final String convert2 = IgnoreList.regexToSimple(test[1]);
             assertEquals(test[0], convert2);
         }
     }    
