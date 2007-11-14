@@ -42,14 +42,8 @@ public final class Mode extends ChannelCommand {
         CommandManager.registerCommand(this);
     }
     
-    /**
-     * Executes this command.
-     * @param origin The frame in which this command was issued
-     * @param server The server object that this command is associated with
-     * @param channel The channel object that this command is associated with
-     * @param isSilent Whether this command is silenced or not
-     * @param args The user supplied arguments
-     */
+    /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final Server server,
             final Channel channel, final boolean isSilent, final String... args) {
         final ChannelInfo cChannel = channel.getChannelInfo();
@@ -61,27 +55,20 @@ public final class Mode extends ChannelCommand {
         }
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "mode";
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
-    /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return true;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getHelp() {
         return "mode [changes] - displays or changes the current channel modes";
     }

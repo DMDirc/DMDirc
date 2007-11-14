@@ -76,16 +76,6 @@ public final class Ctcp extends ServerCommand implements IntelligentCommand {
     }
     
     /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return true;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc}. */
     public String getHelp() {
         return "ctcp <target> <type> [arguments] - sends a CTCP message";
     }

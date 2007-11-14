@@ -26,7 +26,6 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
-import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -52,6 +51,7 @@ public final class Ifplugin extends GlobalCommand implements IntelligentCommand 
     }
     
     /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         if (args.length <= 1) {
@@ -73,46 +73,43 @@ public final class Ifplugin extends GlobalCommand implements IntelligentCommand 
         
         if (result != negative) {
             if (origin == null) {
-                GlobalCommandParser.getGlobalCommandParser().parseCommand(null, implodeArgs(1, args));
+                GlobalCommandParser.getGlobalCommandParser().parseCommand(null,
+                        implodeArgs(1, args));
             } else {
                 origin.getCommandParser().parseCommand(origin, implodeArgs(1, args));
             }
         }
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "ifplugin";
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
-    /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return true;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getHelp() {
-        return "ifplugin <[!]plugin> <command> - executes a command if the specified plugin is/isn't loaded";
+        return "ifplugin <[!]plugin> <command> - executes a command if the " +
+                "specified plugin is/isn't loaded";
     }
 
     /** {@inheritDoc} */
+    @Override
     public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
         if (arg == 0) {
             res.setIncludeNormal(false);
 
-            for (PluginInfo possPlugin : PluginManager.getPluginManager().getPossiblePluginInfos()) {
+            for (PluginInfo possPlugin
+                    : PluginManager.getPluginManager().getPossiblePluginInfos()) {
                 res.add(possPlugin.getName());
                 res.add("!" + possPlugin.getName());
             }            

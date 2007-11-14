@@ -42,13 +42,8 @@ public final class Message extends ServerCommand {
         CommandManager.registerCommand(this);
     }
     
-    /**
-     * Executes this command.
-     * @param origin The frame in which this command was issued
-     * @param server The server object that this command is associated with
-     * @param isSilent Whether this command is silenced or not
-     * @param args The user supplied arguments
-     */
+    /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
         if (args.length < 2) {
@@ -61,27 +56,20 @@ public final class Message extends ServerCommand {
     }
     
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "msg";
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
-    /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return true;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getHelp() {
         return "msg <target> <message> - sends a private message";
     }

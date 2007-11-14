@@ -61,16 +61,6 @@ public final class ReloadActions extends GlobalCommand {
     }
     
     /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return false;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc}. */
     public String getHelp() {
         return "reloadactions - reloads actions from disk";
     }

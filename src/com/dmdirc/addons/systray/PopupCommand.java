@@ -50,32 +50,26 @@ public final class PopupCommand extends ServerCommand {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String ... args) {
         parent.notify("DMDirc", implodeArgs(args));
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "popup";
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return true;
     }
 
     /** {@inheritDoc} */
-    public boolean isPolyadic() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    public int getArity() {
-        return 0;
-    }
-
-    /** {@inheritDoc} */
+    @Override
     public String getHelp() {
         return "popup <message> - shows the message as a system tray popup";
     }

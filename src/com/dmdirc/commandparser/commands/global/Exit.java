@@ -45,6 +45,7 @@ public final class Exit extends GlobalCommand {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {                
         Main.quit(args.length > 0 ? implodeArgs(args)
@@ -53,26 +54,19 @@ public final class Exit extends GlobalCommand {
     
     
     /** {@inheritDoc}. */
+    @Override
     public String getName() {
         return "exit";
     }
     
     /** {@inheritDoc}. */
+    @Override
     public boolean showInHelp() {
         return true;
     }
-    
+        
     /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return true;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc}. */
+    @Override
     public String getHelp() {
         return "exit [reason] - exits the client";
     }

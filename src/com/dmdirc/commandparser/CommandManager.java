@@ -253,7 +253,6 @@ public final class CommandManager {
     public static void initCommands() {
         // Chat commands
         new Me();
-        new MeEmpty();
         
         // Channel commands
         new Ban();
@@ -331,11 +330,11 @@ public final class CommandManager {
      * @param parser The parser to load commands into
      */
     public static void loadChannelCommands(final CommandParser parser) {
-        for (Command com : getCommands(CommandType.TYPE_CHANNEL, null, null)) {
+        for (Command com : getCommands(CommandType.TYPE_CHANNEL, null)) {
             parser.registerCommand(com);
         }
         
-        for (Command com : getCommands(CommandType.TYPE_CHAT, null, null)) {
+        for (Command com : getCommands(CommandType.TYPE_CHAT, null)) {
             parser.registerCommand(com);
         }
         
@@ -348,7 +347,7 @@ public final class CommandManager {
      * @param parser The parser to load commands into
      */
     public static void loadServerCommands(final CommandParser parser) {
-        for (Command command : getCommands(CommandType.TYPE_SERVER, null, null)) {
+        for (Command command : getCommands(CommandType.TYPE_SERVER, null)) {
             parser.registerCommand(command);
         }
         
@@ -361,7 +360,7 @@ public final class CommandManager {
      * @param parser The parser to load commands into
      */
     public static void loadGlobalCommands(final CommandParser parser) {
-        for (Command com : getCommands(CommandType.TYPE_GLOBAL, null, null)) {
+        for (Command com : getCommands(CommandType.TYPE_GLOBAL, null)) {
             parser.registerCommand(com);
         }
         
@@ -374,11 +373,11 @@ public final class CommandManager {
      * @param parser The parser to load commands into
      */
     public static void loadQueryCommands(final CommandParser parser) {
-        for (Command com : getCommands(CommandType.TYPE_QUERY, null, null)) {
+        for (Command com : getCommands(CommandType.TYPE_QUERY, null)) {
             parser.registerCommand(com);
         }
         
-        for (Command com : getCommands(CommandType.TYPE_CHAT, null, null)) {
+        for (Command com : getCommands(CommandType.TYPE_CHAT, null)) {
             parser.registerCommand(com);
         }
         
@@ -393,12 +392,11 @@ public final class CommandManager {
      * @return A command with a matching signature, or null if none were found
      */
     public static Command getCommand(final String name) {
-        return getCommand(null, name, null);
+        return getCommand(null, name);
     }
     
-    public static Command getCommand(final CommandType type, final String name,
-            final String signature) {
-        final List<Command> res = getCommands(type, name, signature);
+    public static Command getCommand(final CommandType type, final String name) {
+        final List<Command> res = getCommands(type, name);
         
         return res.isEmpty() ? null : res.get(0);
     }    
@@ -410,14 +408,14 @@ public final class CommandManager {
      * @return True iff the command is a channel command, false otherwise
      */
     public static boolean isChannelCommand(final String command) {
-        return getCommand(CommandType.TYPE_CHANNEL, command, null) != null
-                || getCommand(CommandType.TYPE_CHAT, command, null) != null;
+        return getCommand(CommandType.TYPE_CHANNEL, command) != null
+                || getCommand(CommandType.TYPE_CHAT, command) != null;
     }
        
     public static List<String> getCommandNames(final CommandType type) {
         final List<String> res = new ArrayList<String>();
         
-        for (Command command : getCommands(type, null, null)) {
+        for (Command command : getCommands(type)) {
             res.add(getCommandChar() + command.getName());
         }
         
@@ -425,17 +423,16 @@ public final class CommandManager {
     }
     
     public static List<Command> getCommands(final CommandType type) {    
-        return getCommands(type, null, null);
+        return getCommands(type, null);
     }
     
     private static List<Command> getCommands(final CommandType type,
-            final String name, final String signature) {
+            final String name) {
         final List<Command> res = new ArrayList<Command>();
         
         for (Map.Entry<CommandInfo, Command> entry : commands.entrySet()) {
             if ((type == null || type.equals(entry.getKey().getType()))
-                    && (name == null || name.equals(entry.getKey().getName()))
-                    && (signature == null || signature.equals(entry.getKey().getSignature()))) {
+                    && (name == null || name.equals(entry.getKey().getName()))) {
                 res.add(entry.getValue());
             }
         }

@@ -97,7 +97,7 @@ public abstract class Command extends CommandInfo implements Comparable<Command>
     /** {@inheritDoc} */
     @Override
     public final int compareTo(final Command o) {
-        return getSignature().compareTo(o.getSignature());
+        return getName().compareTo(o.getName());
     }
 
     /** {@inheritDoc} */

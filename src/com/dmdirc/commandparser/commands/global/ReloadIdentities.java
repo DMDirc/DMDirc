@@ -63,18 +63,6 @@ public class ReloadIdentities extends GlobalCommand {
 
     /** {@inheritDoc} */
     @Override
-    public boolean isPolyadic() {
-        return false;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public int getArity() {
-        return 0;
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public String getHelp() {
         return "reloadidentities - reloads user identities (configuration files)";
     }

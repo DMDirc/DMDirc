@@ -119,16 +119,6 @@ public final class SetNickColour extends ChannelCommand {
     }
     
     /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return true;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc}. */
     public String getHelp() {
         return "setnickcolour [--nicklist|--text] <nick> [colour] - set the specified person's display colour";
     }

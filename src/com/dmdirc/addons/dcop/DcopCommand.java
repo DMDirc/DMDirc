@@ -53,6 +53,11 @@ public final class DcopCommand extends ServerCommand {
      */
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
+        if (args.length != 3) {
+            showUsage(origin, isSilent, "dcop", "<app> <object> <function>");
+            return;
+        }
+        
         final List<String> res = DcopPlugin.getDcopResult("dcop " + implodeArgs(args));
         for (String line : res) {
             sendLine(origin, isSilent, FORMAT_OUTPUT, line);
@@ -68,16 +73,6 @@ public final class DcopCommand extends ServerCommand {
     /** {@inheritDoc}. */
     public boolean showInHelp() {
         return true;
-    }
-    
-    /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return false;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 3;
     }
     
     /** {@inheritDoc}. */

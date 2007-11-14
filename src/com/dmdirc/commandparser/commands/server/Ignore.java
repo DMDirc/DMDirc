@@ -52,6 +52,7 @@ public final class Ignore extends ServerCommand {
      * @param isSilent Whether this command is silenced or not
      * @param args The user supplied arguments
      */
+    @Override
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
         
@@ -133,27 +134,20 @@ public final class Ignore extends ServerCommand {
         
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "ignore";
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
-    /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return true;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getHelp() {
         return "ignore <add|remove|view> [host] - manages the network's ignore list";
     }

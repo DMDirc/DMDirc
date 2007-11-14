@@ -68,16 +68,6 @@ public final class Back extends ServerCommand {
     }
     
     /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return false;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc}. */
     public String getHelp() {
         return "back - unsets your away status";
     }

@@ -25,15 +25,16 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
-import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
+
 import java.util.List;
 
 /**
  * Allows the user to reload a plugin.
+ * 
  * @author chris
  */
 public final class ReloadPlugin extends GlobalCommand implements IntelligentCommand {
@@ -48,8 +49,14 @@ public final class ReloadPlugin extends GlobalCommand implements IntelligentComm
     }
     
     /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
+        if (args.length == 0) {
+            showUsage(origin, isSilent, "reloadplugin", "<plugin>");
+            return;
+        }
+        
         PluginInfo plugin = PluginManager.getPluginManager().getPluginInfoByName(args[0]);
         if (plugin == null) {
             sendLine(origin, isSilent, FORMAT_ERROR, "Plugin Reloading failed - Plugin not loaded");
@@ -63,32 +70,26 @@ public final class ReloadPlugin extends GlobalCommand implements IntelligentComm
         }
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "reloadplugin";
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
-    /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return false;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 1;
-    }
-    
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getHelp() {
-        return "Reloadplugin <class> - Reloads the specified plugin";
+        return "Reloadplugin <plugin> - Reloads the specified plugin";
     }
 
     /** {@inheritDoc} */
+    @Override
     public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
         

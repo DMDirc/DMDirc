@@ -63,16 +63,6 @@ public final class SaveConfig extends GlobalCommand {
     }
     
     /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return false;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc}. */
     public String getHelp() {
         return "saveconfig - force the client to save its configuration to disk";
     }

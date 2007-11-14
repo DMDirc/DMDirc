@@ -66,16 +66,6 @@ public final class Cycle extends ChannelCommand {
     }
     
     /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return false;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc}. */
     public String getHelp() {
         return "cycle - parts and rejoins the channel";
     }

@@ -71,18 +71,6 @@ public final class SetTopic extends ChannelCommand {
     
     /** {@inheritDoc} */
     @Override
-    public boolean isPolyadic() {
-        return true;
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc} */
-    @Override
     public String getHelp() {
         return "topic <new topic> - sets the channel topic to the one specified";
     }

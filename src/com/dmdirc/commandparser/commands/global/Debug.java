@@ -302,18 +302,6 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
     
     /** {@inheritDoc} */
     @Override
-    public boolean isPolyadic() {
-        return true;
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc} */
-    @Override
     public String getHelp() {
         return null;
     }

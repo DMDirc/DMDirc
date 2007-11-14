@@ -111,16 +111,6 @@ public final class Help extends ServerCommand {
     }
     
     /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return false;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc}. */
     public String getHelp() {
         return "help - shows all available client commands";
     }

@@ -45,16 +45,8 @@ public final class Echo extends GlobalCommand {
         CommandManager.registerCommand(this);
     }
 
-    /**
-     * Executes this command.
-     * 
-     * @param origin
-     *            The frame in which this command was issued
-     * @param isSilent
-     *            Whether this command is silenced or not
-     * @param args
-     *            The user supplied arguments
-     */
+    /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         if (args.length > 0 && args[0].equalsIgnoreCase("--active")) {
@@ -88,27 +80,20 @@ public final class Echo extends GlobalCommand {
         }
     }
 
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "echo";
     }
 
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return true;
     }
 
-    /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return true;
-    }
-
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 0;
-    }
-
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getHelp() {
         return "echo [--active|--target <window>] <line> "
                 + "- echos the specified line to the window";

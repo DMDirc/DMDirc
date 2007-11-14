@@ -66,16 +66,6 @@ public final class Active extends GlobalCommand {
     }
     
     /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return true;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc}. */
     public String getHelp() {
         return "active <command> - executes the command as though it had been typed in the active window";
     }

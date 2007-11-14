@@ -53,6 +53,10 @@ public final class Ban extends ChannelCommand {
      */
     public void execute(final InputWindow origin, final Server server,
             final Channel channel, final boolean isSilent, final String... args) {
+        if (args.length == 0) {
+            showUsage(origin, isSilent, "ban", "<user|host>");
+            return;
+        }
         
         String host = args[0];
         final ChannelClientInfo user = channel.getChannelInfo().getUser(args[0]);
@@ -72,16 +76,6 @@ public final class Ban extends ChannelCommand {
     /** {@inheritDoc}. */
     public boolean showInHelp() {
         return true;
-    }
-    
-    /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return false;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 1;
     }
     
     /** {@inheritDoc}. */

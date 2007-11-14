@@ -51,33 +51,27 @@ public final class RawServerCommand extends ServerCommand {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
         server.getParser().sendLine(myName.toUpperCase() + " " + implodeArgs(args));
     }
     
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getName() {
         return myName;
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
-    /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return true;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getHelp() {
         return myName + " [arguments] - sends a " + myName + " command to the server";
     }

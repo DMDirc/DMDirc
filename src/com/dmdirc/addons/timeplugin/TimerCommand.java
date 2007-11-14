@@ -83,16 +83,6 @@ public final class TimerCommand extends GlobalCommand {
     }
     
     /** {@inheritDoc} */
-    public boolean isPolyadic() {
-        return true;
-    }
-    
-    /** {@inheritDoc} */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc} */
     public String getHelp() {
         return "timer <repetitions> <interval> <command> - schedules a command to be executed after a certain time";
     }

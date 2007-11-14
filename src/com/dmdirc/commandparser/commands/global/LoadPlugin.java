@@ -51,6 +51,11 @@ public final class LoadPlugin extends GlobalCommand implements IntelligentComman
     /** {@inheritDoc} */
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
+        if (args.length == 0) {
+            showUsage(origin, isSilent, "loadplugin", "<plugin>");
+            return;
+        }
+        
         if (PluginManager.getPluginManager().addPlugin(args[0])) {
             PluginManager.getPluginManager().getPluginInfo(args[0]).loadPlugin();
             sendLine(origin, isSilent, FORMAT_OUTPUT, "Plugin loaded.");
@@ -71,18 +76,8 @@ public final class LoadPlugin extends GlobalCommand implements IntelligentComman
     }
     
     /** {@inheritDoc} */
-    public boolean isPolyadic() {
-        return false;
-    }
-    
-    /** {@inheritDoc} */
-    public int getArity() {
-        return 1;
-    }
-    
-    /** {@inheritDoc} */
     public String getHelp() {
-        return "loadplugin <class> - loads the specified class as a plugin";
+        return "loadplugin <plugin> - loads the specified class as a plugin";
     }
     
     /** {@inheritDoc} */

@@ -56,16 +56,6 @@ public class RedirectCommand extends ChatCommand {
     }
     
     /** {@inheritDoc} */
-    public boolean isPolyadic() {
-        return true;
-    }
-    
-    /** {@inheritDoc} */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc} */
     public String getHelp() {
         return "redirect <command> - sends the output of the command to a channel or query window";
     }

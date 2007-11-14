@@ -42,6 +42,7 @@ public final class AllServers extends GlobalCommand {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         final String command = implodeArgs(args);
@@ -54,27 +55,20 @@ public final class AllServers extends GlobalCommand {
     }
     
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "allservers";
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
-    /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return true;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getHelp() {
         return "allservers <command> - executes the command as though it had been entered on all servers";
     }

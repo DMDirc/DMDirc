@@ -51,6 +51,11 @@ public final class Nick extends ServerCommand {
      */
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
+        if (args.length == 0) {
+            showUsage(origin, isSilent, "nick", "<new nickname>");
+            return;
+        }
+        
         server.getParser().setNickname(args[0]);
     }
     
@@ -63,16 +68,6 @@ public final class Nick extends ServerCommand {
     /** {@inheritDoc}. */
     public boolean showInHelp() {
         return true;
-    }
-    
-    /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return false;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 1;
     }
     
     /** {@inheritDoc}. */

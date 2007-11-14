@@ -42,32 +42,30 @@ public final class Me extends ChatCommand {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final Server server,
             final MessageTarget target, final boolean isSilent, final String... args) {
-        target.sendAction(implodeArgs(args));
+        if (args.length == 0) {
+            showUsage(origin, isSilent, "me", "<action>");
+        } else {
+            target.sendAction(implodeArgs(args));
+        }
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "me";
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
-    /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return true;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getHelp() {
         return "me <action> - sends the specified action";
     }

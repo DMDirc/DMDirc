@@ -70,16 +70,6 @@ public final class Raw extends ServerCommand {
     }
     
     /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return true;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc}. */
     public String getHelp() {
         return "raw <text> - sends the specified text directly to the server";
     }

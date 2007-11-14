@@ -74,16 +74,6 @@ public final class Disconnect extends ServerCommand {
     }
     
     /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return true;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc}. */
     public String getHelp() {
         return "disconnect [reason] - disconnect from this server";
     }

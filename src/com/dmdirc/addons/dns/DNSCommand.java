@@ -44,6 +44,11 @@ public final class DNSCommand extends GlobalCommand {
     /** {@inheritDoc} */
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
+        if (args.length == 0) {
+            showUsage(origin, isSilent, "dns", "<IP|hostname>");
+            return;
+        }
+        
         sendLine(origin, isSilent, FORMAT_OUTPUT, "Resolving: " + args[0]);
         new Timer("DNS Command Timer").schedule(new TimerTask() {
             public void run() {
@@ -64,16 +69,6 @@ public final class DNSCommand extends GlobalCommand {
     /** {@inheritDoc} */
     public boolean showInHelp() {
         return true;
-    }
-    
-    /** {@inheritDoc} */
-    public boolean isPolyadic() {
-        return false;
-    }
-    
-    /** {@inheritDoc} */
-    public int getArity() {
-        return 1;
     }
     
     /** {@inheritDoc} */

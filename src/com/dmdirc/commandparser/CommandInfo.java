@@ -27,21 +27,7 @@ package com.dmdirc.commandparser;
  * @author chris
  */
 public abstract class CommandInfo {
-    
-    /**
-     * Returns the signature of this command. For polyadic commands, the signature
-     * is simply the name. For other commands, the signature is a concatenation of
-     * the name, a literal "/", and the arity.
-     * @return The signature of this command
-     */
-    public final String getSignature() {
-        if (isPolyadic()) {
-            return getName();
-        } else {
-            return getName() + "/" + getArity();
-        }
-    }
-        
+          
     /**
      * Returns this command's name.
      * @return The name of this command
@@ -53,18 +39,6 @@ public abstract class CommandInfo {
      * @return True iff the command should be shown, false otherwise
      */
     public abstract boolean showInHelp();
-    
-    /**
-     * Indicates whether this command is polyadic or not.
-     * @return True iff this command is polyadic, false otherwise
-     */
-    public abstract boolean isPolyadic();
-    
-    /**
-     * Returns the arity of this command.
-     * @return This command's arity
-     */
-    public abstract int getArity();
     
     /**
      * Returns a string representing the help message for this command.

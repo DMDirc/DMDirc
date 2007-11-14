@@ -44,6 +44,7 @@ public final class Query extends ServerCommand {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
         if (args.length == 0) {
@@ -63,27 +64,20 @@ public final class Query extends ServerCommand {
     }
     
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "query";
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
-    /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return true;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getHelp() {
         return "query <user> [message] - opens a query with the specified user";
     }

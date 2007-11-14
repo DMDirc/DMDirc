@@ -205,18 +205,6 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
     
     /** {@inheritDoc} */
     @Override
-    public boolean isPolyadic() {
-        return true;
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc} */
-    @Override
     public String getHelp() {
         return "set [domain [option [newvalue]]] - inspect or change configuration settings"
                 + "\nset --append <domain> <option> <data> - appends data to the specified option"

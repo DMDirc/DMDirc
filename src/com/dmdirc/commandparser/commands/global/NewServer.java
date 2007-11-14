@@ -98,16 +98,6 @@ public final class NewServer extends GlobalCommand {
     }
     
     /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return true;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc}. */
     public String getHelp() {
         return "newserver [--ssl] <host[:port]> [password] - connect to a new server";
     }

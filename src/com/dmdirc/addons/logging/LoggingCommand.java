@@ -133,20 +133,6 @@ public final class LoggingCommand extends ServerCommand implements IntelligentCo
 	public boolean showInHelp() { return true; }
 	
 	/**
-	 * Indicates whether this command is polyadic or not.
-	 *
-	 * @return True iff this command is polyadic, false otherwise
-	 */
-	public boolean isPolyadic() { return true; }
-	
-	/**
-	 * Returns the arity of this command.
-	 *
-	 * @return This command's arity
-	 */
-	public int getArity() { return 0; }
-	
-	/**
 	 * Returns a string representing the help message for this command.
 	 *
 	 * @return the help message for this command

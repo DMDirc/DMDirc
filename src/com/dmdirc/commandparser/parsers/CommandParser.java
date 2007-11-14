@@ -78,7 +78,7 @@ public abstract class CommandParser implements Serializable {
      * @param command Command to be registered
      */
     public final void registerCommand(final Command command) {
-        commands.put(command.getSignature().toLowerCase(), command);
+        commands.put(command.getName().toLowerCase(), command);
     }
     
     /**
@@ -87,7 +87,7 @@ public abstract class CommandParser implements Serializable {
      * @param command Command to be unregistered
      */
     public final void unregisterCommand(final Command command) {
-        commands.remove(command.getSignature().toLowerCase());
+        commands.remove(command.getName().toLowerCase());
     }
     
     /**
@@ -145,18 +145,12 @@ public abstract class CommandParser implements Serializable {
             
             System.arraycopy(args, 1, comargs, 0, args.length - 1);
             
-            final String signature = command + "/" + (comargs.length);
+            final String signature = command;
             
-            // Check the specific signature first, so that polyadic commands can
-            // have error handlers if there are too few arguments (e.g., msg/0 and
-            // msg/1 would return errors, so msg only gets called with 2+ args).
             if (commands.containsKey(signature.toLowerCase())) {
                 addHistory(command, comargs);
                 executeCommand(origin, silent, commands.get(signature.toLowerCase()), comargs);
-            } else if (commands.containsKey(command.toLowerCase())) {
-                addHistory(command, comargs);
-                executeCommand(origin, silent, commands.get(command.toLowerCase()), comargs);
-            } else {
+           } else {
                 handleInvalidCommand(origin, command, comargs);
             }
         } else {
@@ -256,7 +250,7 @@ public abstract class CommandParser implements Serializable {
             ActionManager.processEvent(CoreActionType.UNKNOWN_COMMAND, buff,
                     origin.getContainer(), command, args);
             
-            origin.addLine(buff, command + "/" + args.length);
+            origin.addLine(buff, command);
         }
     }
     

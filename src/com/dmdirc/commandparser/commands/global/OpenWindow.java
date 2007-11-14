@@ -93,12 +93,6 @@ public class OpenWindow extends GlobalCommand {
 
     /** {@inheritDoc} */
     @Override
-    public int getArity() {
-        return 0;
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public String getHelp() {
         return "openwindow [--server|--child] <name> [title] "
                 + "- opens a window with the specified name and title";
@@ -108,12 +102,6 @@ public class OpenWindow extends GlobalCommand {
     @Override
     public String getName() {
         return "openwindow";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isPolyadic() {
-        return true;
     }
 
     /** {@inheritDoc} */

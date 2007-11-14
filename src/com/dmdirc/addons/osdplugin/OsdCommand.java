@@ -42,32 +42,26 @@ public final class OsdCommand extends GlobalCommand {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         new OsdWindow(implodeArgs(args), false);
     }
     
     /** {@inheritDoc}. */
+    @Override
     public String getName() {
         return "osd";
     }
     
     /** {@inheritDoc}. */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
     /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return true;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc}. */
+    @Override
     public String getHelp() {
         return "osd <message> - show the specified message in an OSD window";
     }

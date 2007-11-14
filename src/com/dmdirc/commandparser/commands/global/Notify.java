@@ -46,15 +46,15 @@ public final class Notify extends GlobalCommand {
         CommandManager.registerCommand(this);
     }
     
-    /**
-     * Executes this command.
-     * 
-     * @param origin The frame in which this command was issued
-     * @param isSilent Whether this command is silenced or not
-     * @param args The user supplied arguments
-     */
+    /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
+        if (args.length == 0) {
+            showUsage(origin, isSilent, "notify", "<colour>");
+            return;
+        }
+        
         final Color colour = ColourManager.parseColour(args[0], null);
         
         if (colour == null) {
@@ -67,27 +67,20 @@ public final class Notify extends GlobalCommand {
         }
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "notify";
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return false;
     }
     
-    /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return false;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 1;
-    }
-    
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getHelp() {
         return "notify <colour> - sets the notification colour for this window";
     }

@@ -149,16 +149,6 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
     }
     
     /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return true;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc}. */
     public String getHelp() {
         return "nowplaying [--sources|--source <source>] - tells the channel the song you're currently playing";
     }
