@@ -25,6 +25,7 @@ package com.dmdirc.addons.lagdisplay;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.Server;
+import com.dmdirc.ServerState;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
@@ -80,7 +81,8 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
         Main.getUI().getStatusBar().addComponent(panel);
         
         ActionManager.addListener(this, CoreActionType.SERVER_GOTPING,
-                CoreActionType.SERVER_NOPING, CoreActionType.CLIENT_FRAME_CHANGED);
+                CoreActionType.SERVER_NOPING, CoreActionType.CLIENT_FRAME_CHANGED,
+                CoreActionType.SERVER_DISCONNECTED);
     }
     
     /** {@inheritDoc} */
@@ -104,7 +106,8 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
     
     /** {@inheritDoc} */
     @Override
-    public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
+    public void processEvent(final ActionType type, final StringBuffer format,
+            final Object... arguments) {
         if (!useAlternate && type.equals(CoreActionType.SERVER_GOTPING)) {
             final Window active = Main.getUI().getMainWindow().getActiveFrame();
             final String value = formatTime(arguments[1]);
@@ -123,12 +126,23 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
             if (((Server) arguments[0]).ownsFrame(active)) {
                 label.setText(value);
             }
+        } else if (type.equals(CoreActionType.SERVER_DISCONNECTED)) {
+            final Window active = Main.getUI().getMainWindow().getActiveFrame();
+            
+            if (((Server) arguments[0]).ownsFrame(active)) {
+                label.setText("Not connected");
+                pings.remove(arguments[0]);
+            }            
         } else if (type.equals(CoreActionType.CLIENT_FRAME_CHANGED)) {
             final FrameContainer source = (FrameContainer) arguments[0];
-            if (source.getServer() == null || !pings.containsKey(source.getServer())) {
+            if (source.getServer() == null) {
                 label.setText("Unknown");
-            } else {
+            } else if (source.getServer().getState() != ServerState.CONNECTED) {
+                label.setText("Not connected");
+            } else if (pings.containsKey(source.getServer())) {
                 label.setText(pings.get(source.getServer()));
+            } else {
+                label.setText("Unknown");
             }
         }
     }
