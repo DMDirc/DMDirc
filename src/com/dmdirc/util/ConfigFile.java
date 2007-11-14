@@ -37,21 +37,38 @@ import java.util.Map;
  */
 public class ConfigFile {
 
+    /** A list of domains in this config file. */
     private final List<String> domains = new ArrayList<String>();
 
+    /** The values associated with each flat domain. */
     private final MapList<String, String> flatdomains = new MapList<String, String>();
 
+    /** The key/value sets associated with each key domain. */
     private final Map<String, Map<String, String>> keydomains
             = new HashMap<String, Map<String, String>>();
 
+    /** The text file we're reading. */
     private final TextFile file;
 
+    /**
+     * Creates a new instance of ConfigFile.
+     * 
+     * @param file The path of the file to be loaded
+     * @throws FileNotFoundException if the file is not found
+     * @throws IOException if an i/o exception occured when reading
+     */
     public ConfigFile(final String file) throws FileNotFoundException, IOException {
         this.file = new TextFile(file);
 
         read();
     }
 
+    /**
+     * Reads the data from the file.
+     * 
+     * @throws FileNotFoundException if the file is not found
+     * @throws IOException if an i/o exception occured when reading
+     */
     public void read() throws FileNotFoundException, IOException {
         String domain = null;
         boolean keydomain = false;
@@ -80,6 +97,11 @@ public class ConfigFile {
         }
     }
 
+    /**
+     * Writes the contents of this ConfigFile to disk.
+     * 
+     * @throws IOException if the write operation fails
+     */
     public void write() throws IOException {
         final List<String> lines = new ArrayList<String>();
 
@@ -111,6 +133,11 @@ public class ConfigFile {
         file.writeLines(lines);
     }
 
+    /**
+     * Appends the meta-data (keysections) to the specified list of lines.
+     * 
+     * @param lines The set of lines to be appended to
+     */
     private void writeMeta(final List<String> lines) {
         lines.add("");
         lines.add("# This section indicates which sections below take key/value");
@@ -127,15 +154,55 @@ public class ConfigFile {
         }
     }
     
+    /**
+     * Retrieves the key/values of the specified key domain.
+     * 
+     * @param domain The domain to be retrieved
+     * @return A map of keys to values in the specified domain
+     */
     public Map<String, String> getKeyDomain(final String domain) {
         return keydomains.get(domain);
     }
     
-    public List<String> getListDomain(final String domain) {
+    /**
+     * Retrieves the content of the specified flat domain.
+     * 
+     * @param domain The domain to be retrieved
+     * @return A list of lines in the specified domain
+     */
+    public List<String> getFlatDomain(final String domain) {
         return flatdomains.get(domain);
     }
     
+    /**
+     * Determines if this config file has the specified domain.
+     * 
+     * @param domain The domain to check for
+     * @return True if the domain is known, false otherwise
+     */
     public boolean hasDomain(final String domain) {
         return keydomains.containsKey(domain) || flatdomains.containsKey(domain);
+    }
+
+    /**
+     * Determines if this config file has the specified domain, and the domain
+     * is a key domain.
+     * 
+     * @param domain The domain to check for
+     * @return True if the domain is known and keyed, false otherwise
+     */
+    public boolean isKeyDomain(final String domain) {
+        return keydomains.containsKey(domain);
+    }
+
+    /**
+     * Determines if this config file has the specified domain, and the domain
+     * is a flat domain.
+     * 
+     * @param domain The domain to check for
+     * @return True if the domain is known and flat, false otherwise
+     */
+    public boolean isFlatDomain(final String domain) {
+        return flatdomains.containsKey(domain);
     }
 }

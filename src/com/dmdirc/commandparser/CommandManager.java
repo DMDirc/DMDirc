@@ -313,6 +313,7 @@ public final class CommandManager {
         new RawServerCommand("invite");
         new RawServerCommand("join");
         new RawServerCommand("lusers");
+        new RawServerCommand("map");
         new RawServerCommand("motd");
         registerPopupCommand(new RawServerCommand("whois"));
         new RawServerCommand("who");
