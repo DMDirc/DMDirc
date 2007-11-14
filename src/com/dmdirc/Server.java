@@ -1064,6 +1064,8 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public void onSocketClosed() {
         handleNotification("socketClosed", getName());
+        
+        ActionManager.processEvent(CoreActionType.SERVER_DISCONNECTED, null, this);        
 
         synchronized(myState) {
             if (myState == ServerState.CLOSING || myState == ServerState.DISCONNECTED) {
