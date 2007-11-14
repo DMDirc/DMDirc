@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.ClientInfo;
@@ -96,8 +97,8 @@ public final class Query extends MessageTarget implements
         }
         
         tabCompleter = new TabCompleter(server.getTabCompleter());
-        tabCompleter.addEntries(CommandManager.getQueryCommandNames());
-        tabCompleter.addEntries(CommandManager.getChatCommandNames());
+        tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_QUERY));
+        tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_CHAT));
         window.getInputHandler().setTabCompleter(tabCompleter);
         
         reregister();

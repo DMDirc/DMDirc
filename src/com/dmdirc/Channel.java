@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.parser.ChannelClientInfo;
@@ -123,8 +124,8 @@ public final class Channel extends MessageTarget
         icon = IconManager.getIconManager().getIcon("channel");
         
         tabCompleter = new TabCompleter(server.getTabCompleter());
-        tabCompleter.addEntries(CommandManager.getChannelCommandNames());
-        tabCompleter.addEntries(CommandManager.getChatCommandNames());
+        tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_CHANNEL));
+        tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_CHAT));
         
         window = Main.getUI().getChannel(Channel.this);
         WindowManager.addWindow(server.getFrame(), window);
@@ -424,8 +425,8 @@ public final class Channel extends MessageTarget
         }
         
         tabCompleter.replaceEntries(names);
-        tabCompleter.addEntries(CommandManager.getChannelCommandNames());
-        tabCompleter.addEntries(CommandManager.getChatCommandNames());
+        tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_CHANNEL));
+        tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_CHAT));
         
         ActionManager.processEvent(CoreActionType.CHANNEL_GOTNAMES, null, this);
     }

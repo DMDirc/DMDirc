@@ -26,6 +26,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
@@ -170,8 +171,8 @@ public final class Server extends WritableFrameContainer implements Serializable
 
         window.open();
 
-        tabCompleter.addEntries(CommandManager.getServerCommandNames());
-        tabCompleter.addEntries(CommandManager.getGlobalCommandNames());
+        tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_SERVER));
+        tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_GLOBAL));
 
         this.autochannels = autochannels;
 

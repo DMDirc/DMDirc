@@ -53,13 +53,17 @@ public final class KickReason extends ChannelCommand {
      */
     public void execute(final InputWindow origin, final Server server,
             final Channel channel, final boolean isSilent, final String... args) {
+        if (args.length == 0) {
+            showUsage(origin, isSilent, "kick", "<user> [reason]");
+            return;
+        }
         
         final ChannelClientInfo victim = channel.getChannelInfo().getUser(args[0]);
         
         if (victim == null) {
             sendLine(origin, isSilent, FORMAT_ERROR, "User not found: " + args[0]);
         } else {
-            victim.kick(implodeArgs(1, args));
+            victim.kick(args.length > 1 ? implodeArgs(1, args) : origin.getConfigManager().getOption("general", "kickmessage"));
         }
     }
     
@@ -85,7 +89,7 @@ public final class KickReason extends ChannelCommand {
     
     /** {@inheritDoc}. */
     public String getHelp() {
-        return "kick <user> <reason> - kicks the specified user from the channel";
+        return "kick <user> [reason] - kicks the specified user from the channel";
     }
     
 }

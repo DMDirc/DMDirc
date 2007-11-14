@@ -25,6 +25,7 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -61,22 +62,22 @@ public final class Help extends ServerCommand {
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
         sendLine(origin, isSilent, FORMAT_OUTPUT, "-- Global commands ----------------------------------");
-        showCommands(CommandManager.getGlobalCommands(), origin, isSilent);
+        showCommands(CommandManager.getCommands(CommandType.TYPE_GLOBAL), origin, isSilent);
         
         if (origin instanceof ServerWindow || origin instanceof ChannelWindow
                 || origin instanceof QueryWindow) {
             sendLine(origin, isSilent, FORMAT_OUTPUT, "-- Server commands ----------------------------------");
-            showCommands(CommandManager.getServerCommands(), origin, isSilent);
+            showCommands(CommandManager.getCommands(CommandType.TYPE_SERVER), origin, isSilent);
         }
         
             if (origin instanceof ChannelWindow) {
             sendLine(origin, isSilent, FORMAT_OUTPUT, "-- Channel commands ---------------------------------");
-            showCommands(CommandManager.getChannelCommands(), origin, isSilent);
+            showCommands(CommandManager.getCommands(CommandType.TYPE_CHANNEL), origin, isSilent);
         }
         
         if (origin instanceof QueryWindow) {
             sendLine(origin, isSilent, FORMAT_OUTPUT, "-- Query commands -----------------------------------");
-            showCommands(CommandManager.getQueryCommands(), origin, isSilent);
+            showCommands(CommandManager.getCommands(CommandType.TYPE_QUERY), origin, isSilent);
             
         }
         

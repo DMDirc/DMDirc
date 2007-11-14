@@ -51,7 +51,8 @@ public final class Part extends ChannelCommand {
      */
     public void execute(final InputWindow origin, final Server server,
             final Channel channel, final boolean isSilent, final String... args) {
-        channel.part(implodeArgs(args));
+        channel.part(args.length > 0 ? implodeArgs(args)
+                : origin.getConfigManager().getOption("general", "partmessage"));
         channel.closeWindow();
     }
     

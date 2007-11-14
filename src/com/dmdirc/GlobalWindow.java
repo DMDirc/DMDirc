@@ -23,6 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
@@ -45,7 +46,7 @@ public class GlobalWindow extends WritableFrameContainer {
         super();
         
         final TabCompleter tabCompleter = new TabCompleter();
-        tabCompleter.addEntries(CommandManager.getGlobalCommandNames());
+        tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_GLOBAL));
         
         window = Main.getUI().getInputWindow(this, GlobalCommandParser.getGlobalCommandParser());
         

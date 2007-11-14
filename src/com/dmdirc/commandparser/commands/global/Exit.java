@@ -46,8 +46,9 @@ public final class Exit extends GlobalCommand {
     
     /** {@inheritDoc} */
     public void execute(final InputWindow origin, final boolean isSilent,
-            final String... args) {
-        Main.quit(implodeArgs(args));
+            final String... args) {                
+        Main.quit(args.length > 0 ? implodeArgs(args)
+                : origin.getConfigManager().getOption("general", "closemessage"));
     }
     
     
@@ -73,7 +74,7 @@ public final class Exit extends GlobalCommand {
     
     /** {@inheritDoc}. */
     public String getHelp() {
-        return "exit <reason> - exits the client with the specified reason";
+        return "exit [reason] - exits the client";
     }
     
 }

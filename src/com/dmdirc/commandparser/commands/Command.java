@@ -22,65 +22,23 @@
 
 package com.dmdirc.commandparser.commands;
 
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * Represents a generic command.
  * @author chris
  */
-public abstract class Command implements Comparable<Command> {
+public abstract class Command extends CommandInfo implements Comparable<Command> {
     
     /** The format name used for command output. */
     protected static final String FORMAT_OUTPUT = "commandOutput";
     
     /** The format name used for command errors. */
     protected static final String FORMAT_ERROR = "commandError";
-            
-    /**
-     * Returns the signature of this command. For polyadic commands, the signature
-     * is simply the name. For other commands, the signature is a concatenation of
-     * the name, a literal "/", and the arity.
-     * @return The signature of this command
-     */
-    public final String getSignature() {
-        if (isPolyadic()) {
-            return getName();
-        } else {
-            return getName() + "/" + getArity();
-        }
-    }
-        
-    /**
-     * Returns this command's name.
-     * @return The name of this command
-     */
-    public abstract String getName();
-    
-    /**
-     * Returns whether or not this command should be shown in help messages.
-     * @return True iff the command should be shown, false otherwise
-     */
-    public abstract boolean showInHelp();
-    
-    /**
-     * Indicates whether this command is polyadic or not.
-     * @return True iff this command is polyadic, false otherwise
-     */
-    public abstract boolean isPolyadic();
-    
-    /**
-     * Returns the arity of this command.
-     * @return This command's arity
-     */
-    public abstract int getArity();
-    
-    /**
-     * Returns a string representing the help message for this command.
-     * @return the help message for this command
-     */
-    public abstract String getHelp();
-    
+               
     /**
      * Implodes the given list of arguments.
      * @param offset The index to start at
@@ -137,7 +95,15 @@ public abstract class Command implements Comparable<Command> {
     }    
     
     /** {@inheritDoc} */
+    @Override
     public final int compareTo(final Command o) {
         return getSignature().compareTo(o.getSignature());
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.fromCommand(this);
+    }
+
 }
