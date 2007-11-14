@@ -48,6 +48,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         switch (args.length) {
@@ -63,6 +64,8 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
         default:
             if (args[0].equalsIgnoreCase("--unset")) {
                 doUnsetOption(origin, isSilent, args[1], args[2]);
+            } else if (args[0].equalsIgnoreCase("--append") && args.length > 3) {
+                doAppendOption(origin, isSilent, args[1], args[2], implodeArgs(3, args));
             } else {
                 doSetOption(origin, isSilent, args[0], args[1], implodeArgs(2, args));
             }
@@ -153,7 +156,24 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
             final String newvalue) {
         IdentityManager.getConfigIdentity().setOption(domain, option, newvalue);
         
-        sendLine(origin, isSilent, FORMAT_OUTPUT, domain + "." + option + " has been set to: " + newvalue);
+        sendLine(origin, isSilent, FORMAT_OUTPUT, domain + "." + option +
+                " has been set to: " + newvalue);
+    }
+    
+    /**
+     * Appends data to the specified option.
+     *
+     * @param origin The window the command was issued from
+     * @param isSilent Whether or not the command is being silenced or not
+     * @param domain The domain of the option
+     * @param option The name of the option
+     * @param data The data to be appended
+     */
+    private void doAppendOption(final InputWindow origin,
+            final boolean isSilent, final String domain, final String option,
+            final String data) {
+        doSetOption(origin, isSilent, domain, option,
+                IdentityManager.getGlobalConfig().getOption(domain, option, "") + data);
     }
     
     /**
@@ -172,47 +192,57 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
     }
     
     /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "set";
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean isPolyadic() {
         return true;
     }
     
     /** {@inheritDoc} */
+    @Override
     public int getArity() {
         return 0;
     }
     
     /** {@inheritDoc} */
+    @Override
     public String getHelp() {
         return "set [domain [option [newvalue]]] - inspect or change configuration settings"
+                + "\nset --append <domain> <option> <data> - appends data to the specified option"
                 + "\nset --unset <domain> <option> - unset the specified option";
     }
     
     /** {@inheritDoc} */
+    @Override
     public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
         if (arg == 0) {
             res.addAll(IdentityManager.getGlobalConfig().getDomains());
             res.add("--unset");
+            res.add("--append");
             res.setIncludeNormal(false);
         } else if (arg == 1 && previousArgs.size() >= 1) {
-            if (previousArgs.get(0).equalsIgnoreCase("--unset")) {
+            if (previousArgs.get(0).equalsIgnoreCase("--unset")
+                    || previousArgs.get(0).equalsIgnoreCase("--append")) {
                 res.addAll(IdentityManager.getGlobalConfig().getDomains());
             } else {
                 res.addAll(IdentityManager.getGlobalConfig().getOptions(previousArgs.get(0)));
             }
             res.setIncludeNormal(false);
-        } else if (arg == 2 && previousArgs.get(0).equalsIgnoreCase("--unset")) {
+        } else if (arg == 2 && (previousArgs.get(0).equalsIgnoreCase("--unset")
+                || previousArgs.get(0).equalsIgnoreCase("--append"))) {
             res.addAll(IdentityManager.getGlobalConfig().getOptions(previousArgs.get(1)));
             res.setIncludeNormal(false);
         }

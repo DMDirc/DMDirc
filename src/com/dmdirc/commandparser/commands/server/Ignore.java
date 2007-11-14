@@ -26,7 +26,6 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.config.Identity;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.util.List;

@@ -24,7 +24,6 @@ package com.dmdirc.ui.swing.dialogs.serversetting;
 
 import com.dmdirc.Server;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.IdentityManager;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.Dimension;
