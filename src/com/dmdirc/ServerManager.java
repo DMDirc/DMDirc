@@ -179,6 +179,24 @@ public final class ServerManager {
     }
     
     /**
+     * Retrieves a list of servers connected to the specified address.
+     * 
+     * @param address The address to search for
+     * @return A list of servers connected to the network
+     */
+    public List<Server> getServersByAddress(final String address) {
+        final List<Server> res = new ArrayList<Server>();
+        
+        for (Server server : servers) {
+            if (server.getName().equalsIgnoreCase(address)) {
+                res.add(server);
+            }
+        }
+        
+        return res;
+    }
+    
+    /**
      * Connects the user to Quakenet if neccessary and joins #DMDirc.
      */
     public void joinDevChat() {

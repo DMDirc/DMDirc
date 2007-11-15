@@ -28,6 +28,7 @@ import com.dmdirc.ui.swing.components.ExecutableFileFilter;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URI;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -50,21 +51,17 @@ public class URLDialog extends StandardDialog implements ActionListener {
     private JButton showFileChooser;
     /** Info label. */
     private JLabel infoLabel;
-    /** Protocol. */
-    private final String protocol;
     /** URL. */
-    private final String url;
+    private final URI url;
 
     /**
      * Instantiates the URLDialog.
      *
-     * @param protocol Protocol to add
      * @param url URL to open once added
      */
-    private URLDialog(final String protocol, final String url) {
+    private URLDialog(final URI url) {
         super((MainFrame) Main.getUI().getMainWindow(), false);
 
-        this.protocol = protocol;
         this.url = url;
         
         initComponents();
@@ -79,12 +76,10 @@ public class URLDialog extends StandardDialog implements ActionListener {
     /**
      * Creates the new URLDialog if one doesn't exist, and displays it.
      *
-     * @param protocol Protocol to add
      * @param url URL to open once added
      */
-    public static synchronized void showURLDialog(final String protocol,
-            final String url) {
-        me = getURLDialog(protocol, url);
+    public static synchronized void showURLDialog(final URI url) {
+        me = getURLDialog(url);
 
         me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         me.setVisible(true);
@@ -94,15 +89,13 @@ public class URLDialog extends StandardDialog implements ActionListener {
     /**
      * Returns the current instance of the URLDialog.
      *
-     * @param protocol Protocol to add
      * @param url URL to open once added
      *
      * @return The current URLDialog instance
      */
-    public static synchronized URLDialog getURLDialog(final String protocol,
-            final String url) {
+    public static synchronized URLDialog getURLDialog(final URI url) {
         if (me == null) {
-            me = new URLDialog(protocol, url);
+            me = new URLDialog(url);
         }
 
         return me;
@@ -118,7 +111,7 @@ public class URLDialog extends StandardDialog implements ActionListener {
         fileChooser.addChoosableFileFilter(new ExecutableFileFilter());
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         showFileChooser.setText("Browse");
-        infoLabel.setText("/set protocol " + protocol + " [DMDIRC|BROWSER|MAIL|some kind of list]");
+        infoLabel.setText("/set protocol " + url.getScheme() + " [DMDIRC|BROWSER|MAIL|some kind of list]");
     }
 
     /** Lays out the components. */

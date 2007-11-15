@@ -22,6 +22,10 @@
 
 package com.dmdirc.util;
 
+import com.dmdirc.Server;
+import com.dmdirc.ServerManager;
+import com.dmdirc.config.IdentityManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,19 +36,15 @@ import java.util.List;
  * @author Chris
  */
 public class IrcAddress {
-    
+
     /** Whether or not this address uses SSL. */
     private boolean usesSSL;
-    
     /** The server name for this address. */
     private String server;
-    
     /** The port number for this address. */
     private int port = 6667;
-    
     /** A list of channels to auto-connect to. */
     private List<String> channels = new ArrayList<String>();
-    
     /** The password for this address. */
     private String pass = "";
 
@@ -56,7 +56,7 @@ public class IrcAddress {
      */
     public IrcAddress(final String address) throws InvalidAddressException {
         StringBuilder builder;
-        
+
         if (address.toLowerCase().startsWith("ircs://")) {
             usesSSL = true;
             builder = new StringBuilder(address.substring(7));
@@ -66,28 +66,28 @@ public class IrcAddress {
         } else {
             throw new InvalidAddressException("Invalid protocol specified");
         }
-        
+
         final int atIndex = builder.indexOf("@");
         if (atIndex > -1) {
             doPass(builder.substring(0, atIndex));
             builder.delete(0, atIndex + 1);
         }
-        
+
         final int slashIndex = builder.indexOf("/");
         if (slashIndex > -1) {
             doChannels(builder.substring(slashIndex + 1));
             builder.delete(slashIndex, builder.length());
         }
-        
+
         final int colonIndex = builder.indexOf(":");
         if (colonIndex > -1) {
             doPort(builder.substring(colonIndex + 1));
             builder.delete(colonIndex, builder.length());
         }
-        
+
         doServer(builder.toString());
     }
-    
+
     /**
      * Processes the password part of this address.
      *
@@ -101,43 +101,43 @@ public class IrcAddress {
      * Processes the channels part of this address.
      *
      * @param channels The channels part of this address
-     */    
+     */
     private void doChannels(final String channels) {
         for (String channel : channels.split(",")) {
             this.channels.add(channel);
         }
     }
-    
+
     /**
      * Processes the port part of this address.
      *
      * @param port The port part of this address
      * @throws InvalidAddressException if the port is non-numeric
-     */    
+     */
     private void doPort(final String port) throws InvalidAddressException {
         String actualPort = port;
-        
+
         if (port.charAt(0) == '+') {
             usesSSL = true;
             actualPort = port.substring(1);
         }
-        
+
         try {
             this.port = Integer.valueOf(actualPort);
         } catch (NumberFormatException ex) {
             throw new InvalidAddressException("Invalid port number", ex);
         }
     }
-    
+
     /**
      * Processes the server part of this address.
      *
      * @param server The server part of this address
-     */    
+     */
     private void doServer(final String server) {
         this.server = server;
     }
-    
+
     /**
      * Determines if this address requires the use of SSL or not.
      *
@@ -146,7 +146,7 @@ public class IrcAddress {
     public boolean isSSL() {
         return usesSSL;
     }
-    
+
     /**
      * Retrieves the server from this address.
      *
@@ -155,7 +155,7 @@ public class IrcAddress {
     public String getServer() {
         return server;
     }
-    
+
     /**
      * Retrieves the port used for this address.
      *
@@ -164,7 +164,7 @@ public class IrcAddress {
     public int getPort() {
         return port;
     }
-    
+
     /**
      * Retrieves the password used for this address.
      *
@@ -173,7 +173,7 @@ public class IrcAddress {
     public String getPassword() {
         return pass;
     }
-    
+
     /**
      * Retrieves the list of channels for this address.
      *
@@ -181,5 +181,22 @@ public class IrcAddress {
      */
     public List<String> getChannels() {
         return channels;
+    }
+
+    /**
+     * Connects to a server represented by this address.
+     */
+    public void connect() {
+        final List<Server> servers = ServerManager.getServerManager().
+                getServersByAddress(getServer());
+        if (servers.isEmpty()) {
+            new Server(getServer(), getPort(), getPassword(), isSSL(), 
+                    IdentityManager.getProfiles().get(0), getChannels());
+        } else {
+            final Server thisServer = servers.get(0);
+            for (String channel : getChannels()) {
+                thisServer.join(channel);
+            }
+        }
     }
 }

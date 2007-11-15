@@ -32,7 +32,7 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
+import java.util.logging.Level;
 
 /** Handles URLs. */
 public class URLHandler {
@@ -68,50 +68,124 @@ public class URLHandler {
     /**
      * Launches an application for a given url.
      *
-     * @param url URL to parse
+     * @param urlString URL to parse
      */
-    public void launchApp(final String url) {
-        final int end = url.indexOf(':');
-        final String protocol = url.substring(0, end);
-        final String info = url.substring(end + 3);
-
-        if (!config.hasOption("protocol", protocol)) {
-            Main.getUI().showURLDialog(protocol, info);
-            return;
-        }
-
-        final List<String> app = config.getOptionList("protocol", protocol);
-
-        if (app.size() < 1) {
-            Main.getUI().showURLDialog(protocol, info);
-            return;
-        }
-
-        final String command = app.get(0);
-
+    public void launchApp(final String urlString) {
+        final URI uri;
         try {
-            if ("DMDIRC".equals(command)) {
-                //Handle DMDirc link
-            } else if ("BROWSER".equals(command)) {
-                execBrowser(new URI(url));
-            } else if ("MAIL".equals(command)) {
-                execMail(new URI(url));
-            } else {
-                execApp(app.toArray(new String[app.size()]));
-            }
+            uri = new URI(urlString);
         } catch (URISyntaxException ex) {
             Logger.userError(ErrorLevel.LOW, "Invalid URL: " + ex.getMessage());
+            return;
         }
+
+        if (!config.hasOption("protocol", uri.getScheme())) {
+            Main.getUI().showURLDialog(uri);
+            return;
+        }
+
+        final String command =
+                config.getOption("protocol", uri.getScheme(), "");
+
+        if (command.isEmpty()) {
+            Main.getUI().showURLDialog(uri);
+            return;
+        }
+
+        if ("DMDIRC".equals(command)) {
+            try {
+                new IrcAddress(uri.toString()).connect();
+            } catch (InvalidAddressException ex) {
+                Logger.userError(ErrorLevel.LOW, "Invalid IRC Address: " + ex.getMessage());
+            }
+        } else if ("BROWSER".equals(command)) {
+            execBrowser(uri);
+        } else if ("MAIL".equals(command)) {
+            execMail(uri);
+        } else {
+            execApp(substituteParams(uri, command));
+        }
+    }
+
+    /**
+     * Substitutes variables into a command
+     * 
+     * @param url data url
+     * @param command command to be substituted
+     * 
+     * @return Substituted command
+     */
+    private String substituteParams(final URI url, final String command) {
+        final String userInfo = url.getUserInfo();
+        String fragment = "";
+        String host = "";
+        String path = "";
+        String protocol = "";
+        String query = "";
+        String username = "";
+        String password = "";
+        String newCommand = command;
+
+        if (url.getFragment() != null) {
+            fragment = url.getFragment();
+        }
+
+        if (url.getHost() != null) {
+            host = url.getHost();
+        }
+
+        if (url.getPath() != null) {
+            path = url.getPath();
+        }
+
+        if (url.getScheme() != null) {
+            protocol = url.getScheme();
+        }
+
+        if (url.getQuery() != null) {
+            query = url.getQuery();
+        }
+
+        if (userInfo != null && !userInfo.isEmpty()) {
+            if (userInfo.indexOf(':') == -1) {
+                username = userInfo;
+            } else {
+                final int pos = userInfo.indexOf(':');
+                username = userInfo.substring(0, pos);
+                password = userInfo.substring(pos + 1);
+            }
+        }
+
+        newCommand = newCommand.replaceAll("\\$url", url.toString());
+        newCommand = newCommand.replaceAll("\\$fragment", fragment);
+        newCommand = newCommand.replaceAll("\\$host", host);
+        newCommand = newCommand.replaceAll("\\$path", path);
+        newCommand = newCommand.replaceAll("\\$port",
+                String.valueOf(url.getPort()));
+        newCommand = newCommand.replaceAll("\\$query", query);
+        newCommand = newCommand.replaceAll("\\$protocol", protocol);
+        newCommand = newCommand.replaceAll("\\$username", username);
+        newCommand = newCommand.replaceAll("\\$password", password);
+
+        return newCommand;
     }
 
     /**
      * Launches an application.
      *
-     * @param application Application and arguments
+     * @param command Application and arguments
      */
-    private void execApp(final String[] application) {
+    private void execApp(final String command) {
+        String[] commandLine;
+
+        if (System.getProperty("os.name").startsWith("Windows")) {
+            commandLine = new String[]{"cmd.exe", command};
+        } else {
+            commandLine = new String[]{"/bin/sh", "-c", command};
+        }
+
         try {
-            Runtime.getRuntime().exec(application);
+            Runtime.getRuntime().exec(commandLine);
         } catch (IOException ex) {
             Logger.userError(ErrorLevel.LOW,
                     "Unable to run application: " + ex.getMessage(), ex);

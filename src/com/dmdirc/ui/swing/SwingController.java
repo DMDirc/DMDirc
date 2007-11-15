@@ -54,6 +54,7 @@ import com.dmdirc.updater.Update;
 
 import java.awt.Toolkit;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.util.List;
 
 import javax.swing.SwingUtilities;
@@ -268,7 +269,7 @@ public final class SwingController implements UIController {
 
     /** {@inheritDoc} */
     @Override
-    public void showURLDialog(String protocol, String url) {
-        URLDialog.showURLDialog(protocol, url);
+    public void showURLDialog(final URI url) {
+        URLDialog.showURLDialog(url);
     }
 }

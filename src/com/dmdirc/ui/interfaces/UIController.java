@@ -30,6 +30,7 @@ import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.updater.Update;
 
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -161,9 +162,8 @@ public interface UIController {
     /**
      * Shows the unknown URL protocol handling dialog for a URL.
      * 
-     * @param protocol URL Protocol
      * @param url full url
      */
-    void showURLDialog(final String protocol, final String url);
+    void showURLDialog(final URI url);
     
 }

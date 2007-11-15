@@ -298,9 +298,7 @@ public class CommandLineParser {
      */
     public void processArguments() {
         for (IrcAddress address : addresses)  {
-            new Server(address.getServer(), address.getPort(), address.getPassword(),
-                    address.isSSL(), IdentityManager.getProfiles().get(0),
-                    address.getChannels());
+            address.connect();
         }
     }
     

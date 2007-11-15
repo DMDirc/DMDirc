@@ -41,6 +41,7 @@ import com.dmdirc.ui.interfaces.UpdaterDialog;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.updater.Update;
 
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -158,7 +159,7 @@ public final class DummyController implements UIController {
 
     /** {@inheritDoc} */
     @Override
-    public void showURLDialog(String protocol, String url) {
+    public void showURLDialog(final URI url) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
