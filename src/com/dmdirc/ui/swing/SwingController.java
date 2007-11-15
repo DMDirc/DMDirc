@@ -52,6 +52,7 @@ import com.dmdirc.ui.swing.dialogs.wizard.firstrun.SwingFirstRunWizard;
 import com.dmdirc.ui.swing.dialogs.serversetting.ServerSettingsDialog;
 import com.dmdirc.updater.Update;
 
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
@@ -75,7 +76,7 @@ public final class SwingController implements UIController {
 
     /** Instantiates a new SwingController. */
     public SwingController() {
-        //Do nothing
+    //Do nothing
     }
 
     /** {@inheritDoc} */
@@ -90,15 +91,17 @@ public final class SwingController implements UIController {
                     public void run() {
                         statusBar =
                                 new SwingStatusBar();
-                    }});
-                    SwingUtilities.invokeAndWait(new Runnable() {
+                    }
+                });
+                SwingUtilities.invokeAndWait(new Runnable() {
 
                     /** {@inheritDoc} */
                     @Override
                     public void run() {
                         me = new MainFrame(statusBar);
-                    }});
-                    SwingUtilities.invokeLater(new Runnable() {
+                    }
+                });
+                SwingUtilities.invokeLater(new Runnable() {
 
                     /** {@inheritDoc} */
                     @Override
@@ -107,9 +110,11 @@ public final class SwingController implements UIController {
                     }
                 });
             } catch (InterruptedException ex) {
-                //Ignore
+            //Ignore
             } catch (InvocationTargetException ex) {
-                //Ignore
+                Logger.appError(ErrorLevel.HIGH, "Unable to create MainFrame",
+                        ex.getCause());
+            //Ignore
             }
         }
 
@@ -221,6 +226,15 @@ public final class SwingController implements UIController {
                 if (!lnfName.isEmpty()) {
                     UIManager.setLookAndFeel(lnfName);
                 }
+            }
+
+            final Font defaultFont = new Font(Font.DIALOG, Font.TRUETYPE_FONT,
+                    12);
+            if (UIManager.getFont("TextField.font") == null) {
+                UIManager.put("TextField.font", defaultFont);
+            }
+            if (UIManager.getFont("TextPane.font") == null) {
+                UIManager.put("TextPane.font", defaultFont);
             }
 
             UIManager.put("Tree.collapsedIcon",

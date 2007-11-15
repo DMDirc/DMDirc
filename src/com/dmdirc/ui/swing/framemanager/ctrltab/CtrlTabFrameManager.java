@@ -38,6 +38,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
@@ -92,14 +94,18 @@ public final class CtrlTabFrameManager implements FrameManager,
                 new TreeScroller(model, selectionModel);
         selectionModel.addTreeSelectionListener(this);
 
-        SwingUtilities.getUIInputMap(desktopPane,
-                JDesktopPane.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).
-                put(KeyStroke.getKeyStroke("ctrl shift pressed TAB"),
-                "selectPreviousFrame");
+        InputMap inputMap = SwingUtilities.getUIInputMap(desktopPane,
+                JDesktopPane.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        if (inputMap == null) {
+            inputMap = desktopPane.getInputMap(JDesktopPane.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        }
+        inputMap.put(KeyStroke.getKeyStroke("ctrl shift pressed TAB"), "selectPreviousFrame");
 
-        SwingUtilities.getUIActionMap(desktopPane).
-                put("selectNextFrame",
-                new AbstractAction("selectNextFrame") {
+        ActionMap actionMap = SwingUtilities.getUIActionMap(desktopPane);
+        if (actionMap == null) {
+            actionMap = desktopPane.getActionMap();
+        }
+        actionMap.put("selectNextFrame", new AbstractAction("selectNextFrame") {
 
             private static final long serialVersionUID = 1;
 
