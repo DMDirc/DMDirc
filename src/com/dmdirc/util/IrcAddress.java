@@ -24,6 +24,7 @@ package com.dmdirc.util;
 
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
+import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 
 import java.util.ArrayList;
@@ -182,16 +183,25 @@ public class IrcAddress {
     public List<String> getChannels() {
         return channels;
     }
-
+    
     /**
      * Connects to a server represented by this address.
      */
     public void connect() {
+        connect(IdentityManager.getProfiles().get(0));
+    }
+
+    /**
+     * Connects to a server represented by this address.
+     * 
+     * @param profile Profile to use when connecting
+     */
+    public void connect(final Identity profile) {
         final List<Server> servers = ServerManager.getServerManager().
                 getServersByAddress(getServer());
         if (servers.isEmpty()) {
             new Server(getServer(), getPort(), getPassword(), isSSL(), 
-                    IdentityManager.getProfiles().get(0), getChannels());
+                    profile, getChannels());
         } else {
             final Server thisServer = servers.get(0);
             for (String channel : getChannels()) {
