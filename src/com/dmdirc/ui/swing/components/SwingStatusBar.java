@@ -155,7 +155,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         setMessage(DEFAULT_MESSAGE);
     }
 
-    /** {@inheritDoc} */
+    /** Clears the error. */
     public void clearError() {
         errorLabel.setIcon(DEFAULT_ICON);
         errorLevel = null;

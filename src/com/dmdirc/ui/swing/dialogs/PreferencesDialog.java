@@ -538,7 +538,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
         
     }
     
-    /** {@inheritDoc} */
+    /** Disposes of this prefs dialog. */
     public void dispose() {
         synchronized (me) {
             preferencesPanel = null;
@@ -547,6 +547,9 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
         }
     }
     
+    /**
+     * Map entry renderer.
+     */
     private class MapEntryRenderer extends DefaultListCellRenderer {
         
         /**
@@ -560,9 +563,9 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
         @Override
         public Component getListCellRendererComponent(final JList list,
                 final Object value, final int index, final boolean isSelected,
-                final boolean hasFocus) {
+                final boolean cellHasFocus) {
         
-            super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         
             if (value == null) {
                 setText("Any");
