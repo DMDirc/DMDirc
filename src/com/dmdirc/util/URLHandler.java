@@ -32,7 +32,6 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
 
 /** Handles URLs. */
 public class URLHandler {
@@ -71,9 +70,12 @@ public class URLHandler {
      * @param urlString URL to parse
      */
     public void launchApp(final String urlString) {
-        final URI uri;
+        URI uri;
         try {
             uri = new URI(urlString);
+            if (uri.getScheme() == null) {
+                uri = new URI("http://" + urlString);
+            }
         } catch (URISyntaxException ex) {
             Logger.userError(ErrorLevel.LOW, "Invalid URL: " + ex.getMessage());
             return;
