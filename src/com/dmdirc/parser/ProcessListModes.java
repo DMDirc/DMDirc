@@ -27,7 +27,7 @@ package com.dmdirc.parser;
 import java.util.LinkedList;
 import java.util.Queue;
 
-// import com.dmdirc.parser.callbacks.;
+import com.dmdirc.parser.callbacks.CallbackOnChannelGotListModes;
 // import com.dmdirc.parser.callbacks.interfaces.;
 
 /**
@@ -151,6 +151,11 @@ public class ProcessListModes extends IRCProcessor {
 		} else {
 			callDebugInfo(myParser.DEBUG_INFO, "List Mode Batch over");
 			channel.resetAddState();
+			if (isCleverMode || listModeQueue == null || ((LinkedList<Character>)listModeQueue).size() == 0) {
+				callDebugInfo(myParser.DEBUG_INFO, "Calling GotListModes");
+				channel.setHasGotListModes(true);
+				callChannelGotListModes(channel);
+			}
 		}
 	}
 	
@@ -189,7 +194,20 @@ public class ProcessListModes extends IRCProcessor {
 		// This is here to allow finding the processor for adding LISTMODE support
 		iHandle[i++] = "__LISTMODE__";
 		return iHandle;
-	} 
+	}
+	
+	/**
+	 * Callback to all objects implementing the ChannelGotListModes Callback.
+	 *
+	 * @see IChannelGotListModes
+	 * @param cChannel Channel which the ListModes reply is for
+	 * @return true if a method was called, false otherwise
+	 */
+	protected boolean callChannelGotListModes(ChannelInfo cChannel) {
+		CallbackOnChannelGotListModes cb = (CallbackOnChannelGotListModes)getCallbackManager().getCallbackType("OnChannelGotListModes");
+		if (cb != null) { return cb.call(cChannel); }
+		return false;
+	}
 	
 	/**
 	 * Create a new instance of the IRCProcessor Object

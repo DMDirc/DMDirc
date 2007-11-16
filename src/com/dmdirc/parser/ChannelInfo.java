@@ -85,6 +85,8 @@ public final class ChannelInfo {
 	private long listModeQueueTime = System.currentTimeMillis();
 	/** Have we asked the server for the list modes for this channel yet? */
 	private boolean askedForListModes = false;
+	/** Has OnChannelGotListModes ever been called for this channel? */
+	private boolean hasGotListModes = false;
 
 	/**
 	 * Create a new channel object.
@@ -179,6 +181,24 @@ public final class ChannelInfo {
 	 */
 	public boolean hasAskedForListModes() {
 		return askedForListModes;
+	}
+	
+	/**
+	 * Returns true if OnChannelGotListModes ever been called for this channel.
+	 *
+	 * @return True if OnChannelGotListModes ever been called for this channel.
+	 */
+	public boolean hasGotListModes() {
+		return hasGotListModes;
+	}
+	
+	/**
+	 * Set if OnChannelGotListModes ever been called for this channel.
+	 *
+	 * @param newValue new value for if OnChannelGotListModes ever been called for this channel.
+	 */
+	protected void setHasGotListModes(final boolean newValue) {
+		hasGotListModes = newValue;
 	}
 	
 	/**

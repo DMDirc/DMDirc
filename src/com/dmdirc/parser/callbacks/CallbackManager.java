@@ -57,6 +57,7 @@ public final class CallbackManager {
 		addCallbackType(new CallbackOnChannelAction(myParser, this));
 		addCallbackType(new CallbackOnChannelCTCP(myParser, this));
 		addCallbackType(new CallbackOnChannelCTCPReply(myParser, this));
+		addCallbackType(new CallbackOnChannelGotListModes(myParser, this));
 		addCallbackType(new CallbackOnChannelGotNames(myParser, this));
 		addCallbackType(new CallbackOnChannelJoin(myParser, this));
 		addCallbackType(new CallbackOnChannelKick(myParser, this));
