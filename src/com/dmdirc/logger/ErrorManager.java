@@ -34,13 +34,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Error manager.
  */
-public final class ErrorManager implements Serializable {
+public final class ErrorManager implements Serializable, Runnable {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -49,8 +47,17 @@ public final class ErrorManager implements Serializable {
      */
     private static final long serialVersionUID = 4;
     
+    /** Time to wait between error submissions. */
+    private static final int SLEEP_TIME = 20000;
+    
     /** Previously instantiated instance of ErrorManager. */
     private static ErrorManager me = new ErrorManager();
+    
+    /** Queue of errors to be reported. */
+    private final List<ProgramError> reportQueue = new ArrayList<ProgramError>();
+    
+    /** Thread used for sending errors. */
+    private volatile Thread reportThread;
     
     /** Error list. */
     private final Map<Integer, ProgramError> errors;
@@ -155,14 +162,29 @@ public final class ErrorManager implements Serializable {
      *
      * @param error error to be sent
      */
-    public static void sendError(final ProgramError error) {
-        new Timer("ErrorManager Timer").schedule(new TimerTask() {
-            @Override
-            public void run() {
-                getErrorManager().sendErrorInternal(error);
-            }
-        }, 0);
+    public void sendError(final ProgramError error) {
+        reportQueue.add(error);
+        
+        if (reportThread == null || !reportThread.isAlive()) {
+            reportThread = new Thread(this, "Error reporting thread");
+            reportThread.start();
+        }
     }
+    
+
+    /** {@inheritDoc} */
+    @Override
+    public void run() {
+        while (reportQueue.size() > 0) {
+            sendErrorInternal(reportQueue.remove(0));
+            
+            try {
+                Thread.sleep(SLEEP_TIME);
+            } catch (InterruptedException ex) {
+                // Do nothing
+            }
+        }
+    }    
     
     /**
      * Sends an error to the developers.

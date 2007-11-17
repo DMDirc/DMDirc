@@ -115,7 +115,7 @@ public final class Logger {
         }
         
         if (sendable && report) {
-            ErrorManager.sendError(error);
+            ErrorManager.getErrorManager().sendError(error);
         }
         
         if (level == ErrorLevel.FATAL && !report) {

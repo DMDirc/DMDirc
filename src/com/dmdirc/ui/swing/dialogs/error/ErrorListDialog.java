@@ -251,7 +251,7 @@ public final class ErrorListDialog extends StandardDialog implements
                     table.getRowSorter().convertRowIndexToModel(
                     table.getSelectedRow())));
         } else if (e.getSource() == sendButton) {
-            ErrorManager.sendError(tableModel.getError(
+            ErrorManager.getErrorManager().sendError(tableModel.getError(
                     table.getRowSorter().convertRowIndexToModel(
                     table.getSelectedRow())));
         } else if (e.getSource() == deleteAllButton) {
