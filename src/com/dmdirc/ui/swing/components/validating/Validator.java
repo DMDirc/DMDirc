@@ -1,5 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
  * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,32 +23,18 @@
 package com.dmdirc.ui.swing.components.validating;
 
 /**
- * Validating JTextfield, validates using supplied regex.
+ * Validator interface.
+ * 
+ * @param V Type to validate
  */
-public class RegexValidatingJTextField extends ValidatingJTextField {
-    
-    /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
-     */
-    private static final long serialVersionUID = 1;
-    /** Validating regex. */
-    private final String validatingRegex;
+public interface Validator<V> {
 
     /**
-     * Instantiates a new Validating text field.
+     * Validates the object.
      * 
-     * @param validatingRegex Regex to validate text
+     * @param object Object to validate
+     * 
+     * @return true iif the object is correct
      */
-    public RegexValidatingJTextField(final String validatingRegex) {
-        this.validatingRegex = validatingRegex;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean validateText() {
-        return getText().matches(validatingRegex);
-    }
-
+    boolean validate(final V object);
 }

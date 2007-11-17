@@ -28,9 +28,10 @@ import com.dmdirc.ServerManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.Window;
-import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
+import com.dmdirc.ui.swing.components.validating.RegexValidator;
+import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
 import com.dmdirc.ui.swing.dialogs.profiles.ProfileManagerDialog;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
@@ -49,12 +50,11 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
 import javax.swing.WindowConstants;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 /**
  * Dialog that allows the user to enter details of a new server to connect to.
@@ -96,7 +96,7 @@ public final class NewServerDialog extends StandardDialog {
     private JTextField serverField;
     
     /** text field. */
-    private JTextField portField;
+    private JSpinner portField;
     
     /** text field. */
     private JTextField passwordField;
@@ -160,7 +160,7 @@ public final class NewServerDialog extends StandardDialog {
     /** Updates the values to defaults. */
     private void update() {
         serverField.setText(IdentityManager.getGlobalConfig().getOption("general", "server"));
-        portField.setText(IdentityManager.getGlobalConfig().getOption("general", "port"));
+        portField.setValue(IdentityManager.getGlobalConfig().getOptionInt("general", "port", 6667));
         passwordField.setText(IdentityManager.getGlobalConfig().getOption("general", "password"));
         sslCheck.setSelected(false);
         newServerWindowCheck.setEnabled(false);
@@ -191,16 +191,7 @@ public final class NewServerDialog extends StandardDialog {
             public void actionPerformed(final ActionEvent actionEvent) {
                 final String host = serverField.getText();
                 final String pass = passwordField.getText();
-                int port;
-                if (verifyPort(portField.getText())) {
-                    port = Integer.parseInt(portField.getText());
-                } else {
-                    portField.setBackground(ColourManager.getColour("ff0000"));
-                    portField.requestFocus();
-                    portField.setSelectionStart(0);
-                    portField.setSelectionEnd(portField.getDocument().getLength());
-                    return;
-                }
+                int port = (Integer) portField.getValue();
                 
                 NewServerDialog.this.dispose();
                 
@@ -243,7 +234,7 @@ public final class NewServerDialog extends StandardDialog {
         serverLabel = new JLabel();
         serverField = new JTextField();
         portLabel = new JLabel();
-        portField = new JTextField();
+        portField = new JSpinner(new SpinnerNumberModel());
         passwordLabel = new JLabel();
         passwordField = new JPasswordField();
         newServerWindowCheck = new JCheckBox();
@@ -264,23 +255,6 @@ public final class NewServerDialog extends StandardDialog {
         
         portLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         portLabel.setText("Port:");
-        
-        portField.getDocument().addDocumentListener(
-                new DocumentListener() {
-            public void insertUpdate(final DocumentEvent e) {
-                portField.setBackground(UIManager.getColor("TextField.background"));
-            }
-            
-            public void removeUpdate(final DocumentEvent e) {
-                portField.setBackground(UIManager.getColor("TextField.background"));
-            }
-            
-            public void changedUpdate(final DocumentEvent e) {
-                //Ignore
-            }
-            
-        }
-        );
         
         passwordLabel.setText("Password:");
         
@@ -344,7 +318,8 @@ public final class NewServerDialog extends StandardDialog {
         constraints.gridwidth = 3;
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.weightx = 1.0;
-        getContentPane().add(serverField, constraints);
+        getContentPane().add(new ValidatingJTextField(serverField, 
+                new RegexValidator("^[^\\s]+$+")), constraints);
         
         constraints.insets = new Insets(SMALL_BORDER, LARGE_BORDER,
                 SMALL_BORDER, SMALL_BORDER);
@@ -445,22 +420,6 @@ public final class NewServerDialog extends StandardDialog {
         getContentPane().add(getRightButton(), constraints);
         
         pack();
-    }
-    
-    /**
-     * Verifies that the number specified in the textfield is a valid port.
-     *
-     * @param port Port to be tested
-     *
-     * @return true iff the number is a valid port, false otherwise
-     */
-    public boolean verifyPort(final String port) {
-        try {
-            final int portInt = Integer.parseInt(port);
-            return portInt > MIN_PORT && portInt <= MAX_PORT;
-        } catch (NumberFormatException e) {
-            return false;
-        }
     }
     
     /** {@inheritDoc} */

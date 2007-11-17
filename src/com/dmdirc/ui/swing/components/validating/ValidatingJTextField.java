@@ -1,5 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
  * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,6 +23,7 @@
 package com.dmdirc.ui.swing.components.validating;
 
 import com.dmdirc.IconManager;
+
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -31,23 +31,46 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
  * Validating Text field.
  */
-public abstract class ValidatingJTextField extends JComponent implements DocumentListener {
+public class ValidatingJTextField extends JComponent implements DocumentListener {
 
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
     /** TextField. */
     private final JTextField textField;
+    /** Validator. */
+    private Validator validator;
     /** Error icon. */
     private final JLabel errorIcon;
 
     /**
      * Instantiates a new Validating text field.
+     * 
+     * @param validator Validator instance
      */
-    public ValidatingJTextField() {
-        textField = new JTextField();
+    public ValidatingJTextField(final Validator validator) {
+        this(new JTextField(), validator);
+    }
+    
+    /**
+     * Instantiates a new Validating text field.
+     * 
+     * @param textField JTextField to wrap
+     * @param validator Validator instance
+     */
+    public ValidatingJTextField(final JTextField textField, 
+            final Validator validator) {
+        this.textField = textField;
+        this.validator = validator;
         errorIcon =
                 new JLabel(IconManager.getIconManager().getIcon("input-error"));
 
@@ -67,18 +90,13 @@ public abstract class ValidatingJTextField extends JComponent implements Documen
     }
 
     /**
-     * Validates the text in the textfield.
-     * 
-     * @return true iif the text is correct
-     */
-    public abstract boolean validateText();
-
-    /**
      * Checks the text for errors and sets the error state accordingly.
      */
     private void checkError() {
         if (isEnabled()) {
-            errorIcon.setVisible(!validateText());
+            errorIcon.setVisible(!validator.validate(textField.getText()));
+        } else {
+            errorIcon.setVisible(false);
         }
     }
 
@@ -98,23 +116,5 @@ public abstract class ValidatingJTextField extends JComponent implements Documen
     @Override
     public void removeUpdate(final DocumentEvent e) {
         checkError();
-    }
-
-    /**
-     * @see javax.swing.JTextField#setText(String t)
-     * 
-     * @param t Text to set
-     */
-    public void setText(final String t) {
-        textField.setText(t);
-    }
-
-    /**
-     * @see javax.swing.JTextField#getText()
-     * 
-     * @return Textfield text
-     */
-    public String getText() {
-        return textField.getText();
     }
 }
