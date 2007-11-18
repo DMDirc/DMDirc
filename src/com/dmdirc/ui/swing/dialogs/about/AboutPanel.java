@@ -22,18 +22,16 @@
 
 package com.dmdirc.ui.swing.dialogs.about;
 
-import com.dmdirc.util.BrowserLauncher;
-import com.dmdirc.Main;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.swing.components.HTMLLabel;
+import com.dmdirc.util.BrowserLauncher;
 
-import java.awt.BorderLayout;
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkEvent.EventType;
 import javax.swing.event.HyperlinkListener;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * About DMDirc panel.
@@ -62,16 +60,13 @@ public final class AboutPanel extends JPanel implements HyperlinkListener {
                 + UIManager.getFont("TextField.font").getSize() + "pt;'>"
                 + "<h1>DMDirc</h1>"
                 + "<p>Easy to use, cross-platform IRC client.</p>"
-                + "<p>Version: " + Main.VERSION + "</p>"
                 + "<p><a href=\"http://www.dmdirc.com\">www.dmdirc.com</a></p>"
                 + "</center></html>");
-        about.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
         about.addHyperlinkListener(this);
         
-        setLayout(new BorderLayout());
+        setLayout(new MigLayout("ins rel, fill"));
         
-        add(about, BorderLayout.CENTER);
+        add(about, "align center");
     }
     
     /** {@inheritDoc} */

@@ -25,18 +25,15 @@ package com.dmdirc.ui.swing.dialogs.about;
 import com.dmdirc.Main;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * About dialog.
@@ -84,11 +81,9 @@ public final class AboutDialog extends StandardDialog implements
     
     /** Initialises the main UI components. */
     private void initComponents() {
-        final GridBagConstraints constraints = new GridBagConstraints();
         final JTabbedPane tabbedPane = new JTabbedPane();
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        getContentPane().setLayout(new GridBagLayout());
         setTitle("About DMDirc");
         setResizable(false);
         
@@ -100,32 +95,11 @@ public final class AboutDialog extends StandardDialog implements
         tabbedPane.add("About", new AboutPanel());
         tabbedPane.add("Credits", new CreditsPanel());
         tabbedPane.add("License", new LicensePanel());
+        tabbedPane.add("Information", new InfoPanel());
         
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.gridwidth = 3;
-        constraints.weightx = 1.0;
-        constraints.weighty = 1.0;
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.insets = new Insets(SMALL_BORDER, SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER);
-        getContentPane().add(tabbedPane, constraints);
-        
-        constraints.weighty = 0.0;
-        constraints.gridx = 0;
-        constraints.gridy = 3;
-        constraints.gridwidth = 1;
-        constraints.insets = new Insets(0, 0,
-                0, 0);
-        getContentPane().add(Box.createHorizontalGlue(), constraints);
-        
-        constraints.weightx = 0.0;
-        constraints.weighty = 0.0;
-        constraints.fill = GridBagConstraints.NONE;
-        constraints.gridx = 2;
-        constraints.insets = new Insets(0, SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER);
-        getContentPane().add(getOkButton(), constraints);
+        getContentPane().setLayout(new MigLayout("ins rel, wrap 1, fill"));
+        getContentPane().add(tabbedPane, "grow");
+        getContentPane().add(getOkButton(), "right");
         
         pack();
     }

@@ -23,16 +23,16 @@
 package com.dmdirc.ui.swing.dialogs.about;
 
 import com.dmdirc.util.BrowserLauncher;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.swing.components.HTMLLabel;
 
-import java.awt.BorderLayout;
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkEvent.EventType;
 import javax.swing.event.HyperlinkListener;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Authors Panel.
@@ -44,7 +44,7 @@ public final class CreditsPanel extends JPanel implements HyperlinkListener {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /** Creates a new instance of CreditsPanel. */
     public CreditsPanel() {
@@ -71,13 +71,11 @@ public final class CreditsPanel extends JPanel implements HyperlinkListener {
                 + "<li><a href=\"http://www.zipplet.co.uk\">Michael 'Zipplet' Nixon</a></li>"
                 + "</ul>"
                 + "</div></html>");
-        about.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
         about.addHyperlinkListener(this);
         
-        setLayout(new BorderLayout());
+        setLayout(new MigLayout("ins rel, fill"));
         
-        add(about, BorderLayout.CENTER);
+        add(new JScrollPane(about), "grow");
     }
     
     /** {@inheritDoc} */
