@@ -23,16 +23,11 @@
 package com.dmdirc.ui.swing.dialogs.wizard.firstrun;
 
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
-import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.swing.components.TextLabel;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.JCheckBox;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Queries the user for which core actions they wish to extract.
@@ -44,7 +39,7 @@ public final class StepTwo extends Step {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /** Profile manager checkbox. */
     private final JCheckBox profile;
@@ -54,11 +49,7 @@ public final class StepTwo extends Step {
      */
     public StepTwo() {
         super();
-        
-        final GridBagConstraints constraints = new GridBagConstraints();
-        setLayout(new GridBagLayout());
-        setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER,
-                SMALL_BORDER, LARGE_BORDER));
+        setLayout(new MigLayout("fillx, wrap 1"));
         
         profile = new JCheckBox("Launch profile manager?");
         
@@ -66,21 +57,9 @@ public final class StepTwo extends Step {
                 + " your nickname, realname, etc when connecting to a server. "
                 + "If you would like the wizard to open the profile manager "
                 + "for you, tick the box below.");
-        infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 
-                SMALL_BORDER, 0));
         
-        constraints.weightx = 1.0;
-        constraints.fill = constraints.BOTH;
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        add(infoLabel, constraints);
-        
-        constraints.gridy = 1;
-        add(profile, constraints);
-        
-        constraints.weighty = 1.0;
-        constraints.gridy = 2;
-        add(Box.createVerticalGlue(), constraints);
+        add(infoLabel, "growx, pushx");
+        add(profile, "");
     }
     
     /**

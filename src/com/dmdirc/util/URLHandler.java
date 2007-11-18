@@ -96,15 +96,20 @@ public class URLHandler {
 
         if ("DMDIRC".equals(command)) {
             try {
+                Main.getUI().getStatusBar().setMessage("Connecting to: " +
+                        uri.toString());
                 new IrcAddress(uri.toString()).connect();
             } catch (InvalidAddressException ex) {
-                Logger.userError(ErrorLevel.LOW, "Invalid IRC Address: " + ex.getMessage());
+                Logger.userError(ErrorLevel.LOW, "Invalid IRC Address: " +
+                        ex.getMessage());
             }
         } else if ("BROWSER".equals(command)) {
+            Main.getUI().getStatusBar().setMessage("Opening: " + uri.toString());
             execBrowser(uri);
         } else if ("MAIL".equals(command)) {
             execMail(uri);
         } else {
+            Main.getUI().getStatusBar().setMessage("Opening: " + uri.toString());
             execApp(substituteParams(uri, command));
         }
     }

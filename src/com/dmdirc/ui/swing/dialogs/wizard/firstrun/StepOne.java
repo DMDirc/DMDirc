@@ -46,6 +46,9 @@ public abstract class StepOne extends Step {
         initComponents();
     }
     
+    /**
+     * Initialises the components.
+     */
     protected abstract void initComponents();
     
     /**

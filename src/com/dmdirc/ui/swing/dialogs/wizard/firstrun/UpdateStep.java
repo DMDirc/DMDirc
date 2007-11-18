@@ -22,15 +22,9 @@
 
 package com.dmdirc.ui.swing.dialogs.wizard.firstrun;
 
-import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.swing.components.TextLabel;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Queries the user for which core actions they wish to extract.
@@ -42,7 +36,7 @@ public final class UpdateStep extends StepOne {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /**
      * Creates a new instance of StepOne.
@@ -51,11 +45,10 @@ public final class UpdateStep extends StepOne {
         super();
     }
     
+    /** {@inheritDoc} */
+    @Override
     protected void initComponents() {
-        final GridBagConstraints constraints = new GridBagConstraints();
-        setLayout(new GridBagLayout());
-        setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER,
-                SMALL_BORDER, LARGE_BORDER));
+        setLayout(new MigLayout("fillx, wrap 1"));
         
         TextLabel infoLabel;
         
@@ -63,33 +56,14 @@ public final class UpdateStep extends StepOne {
                 + " the core plugins and actions.\n\nWould you like to extract the"
                 + " core plugins to update them? Note that older plugins may not"
                 + " function correctly with this version of DMDirc.");
-        infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0,
-                SMALL_BORDER, 0));
-        
-        constraints.weightx = 1.0;
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        add(infoLabel, constraints);
-        
-        constraints.gridy = 1;
-        add(plugins, constraints);
+        add(infoLabel, "growx, pushx");
+        add(plugins, "");
         
         infoLabel = new TextLabel("Would you like to extract the default actions"
                 + " to update them? Any changes you have made to the default"
                 + " actions will be lost.");
-        infoLabel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0,
-                SMALL_BORDER, 0));
-        
-        constraints.gridy = 2;
-        add(infoLabel, constraints);
-        
-        constraints.gridy = 3;
-        add(actions, constraints);
-        
-        constraints.weighty = 1.0;
-        constraints.gridy = 4;
-        add(Box.createVerticalGlue(), constraints);
+        add(infoLabel, "growx, pushx");
+        add(actions, "");
     }
     
 }

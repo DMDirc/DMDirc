@@ -22,15 +22,9 @@
 
 package com.dmdirc.ui.swing.dialogs.wizard.firstrun;
 
-import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.swing.components.TextLabel;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Queries the user for which core actions they wish to extract.
@@ -42,7 +36,7 @@ public final class SetupStep extends StepOne {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /**
      * Creates a new instance of SetupStep.
@@ -51,11 +45,10 @@ public final class SetupStep extends StepOne {
         super();
     }
     
+    /** {@inheritDoc} */
+    @Override
     protected void initComponents() {
-        final GridBagConstraints constraints = new GridBagConstraints();
-        setLayout(new GridBagLayout());
-        setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER,
-                SMALL_BORDER, LARGE_BORDER));
+        setLayout(new MigLayout("fillx, wrap 1"));
         
         TextLabel infoLabel;
         
@@ -67,34 +60,14 @@ public final class SetupStep extends StepOne {
                 + "Thse plugins need to be copied into your home directory to"
                 + " be used. If you would like the wizard to copy the core "
                 + "plugins for you, tick the box below.");
-        infoLabel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0,
-                SMALL_BORDER, 0));
-        
-        constraints.weightx = 1.0;
-        constraints.fill = constraints.BOTH;
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        add(infoLabel, constraints);
-        
-        constraints.gridy = 1;
-        add(plugins, constraints);
-        
+        add(infoLabel, "growx, pushx");
+        add(plugins, "");
         infoLabel = new TextLabel("DMDirc also comes with a set of core"
                 + " 'actions' that serve as examples and add some basic"
                 + " functionality such as highlighting. If you would like"
                 + " the wizard to copy the core actions for you, tick the"
                 + " box below.");
-        infoLabel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0,
-                SMALL_BORDER, 0));
-        
-        constraints.gridy = 2;
-        add(infoLabel, constraints);
-        
-        constraints.gridy = 3;
-        add(actions, constraints);
-        
-        constraints.weighty = 1.0;
-        constraints.gridy = 4;
-        add(Box.createVerticalGlue(), constraints);
+        add(infoLabel, "growx, pushx");
+        add(actions, "");
     }
 }
