@@ -93,7 +93,7 @@ public final class NewServerDialog extends StandardDialog {
     private JLabel passwordLabel;
     
     /** text field. */
-    private JTextField serverField;
+    private ValidatingJTextField serverField;
     
     /** text field. */
     private JSpinner portField;
@@ -189,6 +189,11 @@ public final class NewServerDialog extends StandardDialog {
         });
         getOkButton().addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent actionEvent) {
+                if (!serverField.validateText()) {
+                    serverField.requestFocus();
+                    return;
+                }
+                
                 final String host = serverField.getText();
                 final String pass = passwordField.getText();
                 int port = (Integer) portField.getValue();
@@ -232,7 +237,7 @@ public final class NewServerDialog extends StandardDialog {
         final JButton button2 = new JButton();
         
         serverLabel = new JLabel();
-        serverField = new JTextField();
+        serverField = new ValidatingJTextField(new RegexValidator("^[^\\s]+$+"));
         portLabel = new JLabel();
         portField = new JSpinner(new SpinnerNumberModel());
         passwordLabel = new JLabel();
@@ -318,8 +323,7 @@ public final class NewServerDialog extends StandardDialog {
         constraints.gridwidth = 3;
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.weightx = 1.0;
-        getContentPane().add(new ValidatingJTextField(serverField, 
-                new RegexValidator("^[^\\s]+$+")), constraints);
+        getContentPane().add(serverField, constraints);
         
         constraints.insets = new Insets(SMALL_BORDER, LARGE_BORDER,
                 SMALL_BORDER, SMALL_BORDER);

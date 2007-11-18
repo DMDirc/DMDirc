@@ -532,13 +532,13 @@ public final class CC implements Externalizable {
         return pushX(weightX).pushY(weightY);
     }
 
-    /** Same functionality as {@link #setPushY(Float))} which means this cell will push the rest of the column.
+    /** Same functionality as {@link #setPushY(Float)} which means this cell will push the rest of the column.
      * This method returns <code>this</code> for chaining multiple calls.
      * <p>
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
-     * @see #setPushY(Float)
-     * @see #pushY()
+     * @see net.miginfocom.layout.CC#setPushY(Float)
+     * @see net.miginfocom.layout.CC#pushY(Float)
      */
     public final CC pushY() {
         return pushY(ResizeConstraint.WEIGHT_100);
@@ -549,7 +549,7 @@ public final class CC implements Externalizable {
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @param weight The weight used in the push.
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
-     * @see #setPushY(Float)
+     * @see net.miginfocom.layout.CC#setPushY(Float)
      */
     public final CC pushY(Float weight) {
         setPushY(weight);
@@ -561,8 +561,8 @@ public final class CC implements Externalizable {
      * <p>
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
-     * @see #setPushX(Float)
-     * @see #pushX()
+     * @see net.miginfocom.layout.CC#setPushX(Float)
+     * @see net.miginfocom.layout.CC#pushX()
      */
     public final CC pushX() {
         return pushX(ResizeConstraint.WEIGHT_100);
@@ -573,7 +573,7 @@ public final class CC implements Externalizable {
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @param weight The weight used in the push.
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
-     * @see #setPushY(Float)
+     * @see net.miginfocom.layout.CC#setPushY(Float)
      */
     public final CC pushX(Float weight) {
         setPushX(weight);
@@ -585,7 +585,7 @@ public final class CC implements Externalizable {
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @param parts The number of parts (i.e. component slots) the cell should be divided into.
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-     * @see #setSplit(int)
+     * @see net.miginfocom.layout.CC#setSplit(int)
      */
     public final CC split(int parts) {
         setSplit(parts);
@@ -597,7 +597,7 @@ public final class CC implements Externalizable {
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @param cells How many cells in the grid that should be skipped <b>before</b> the component that this constraint belongs to
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-     * @see #setSkip(int)
+     * @see net.miginfocom.layout.CC#setSkip(int)
      */
     public final CC skip(int cells) {
         setSkip(cells);
@@ -608,7 +608,7 @@ public final class CC implements Externalizable {
      * <p>
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-     * @see #setExternal(boolean)
+     * @see net.miginfocom.layout.CC#setExternal(boolean)
      */
     public final CC external() {
         setExternal(true);
@@ -619,7 +619,7 @@ public final class CC implements Externalizable {
      * <p>
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-     * @see #setFlowX(Boolean)
+     * @see net.miginfocom.layout.CC#setFlowX(Boolean)
      */
     public final CC flowX() {
         setFlowX(Boolean.TRUE);
@@ -630,7 +630,7 @@ public final class CC implements Externalizable {
      * <p>
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-     * @see #setFlowX(Boolean)
+     * @see net.miginfocom.layout.CC#setFlowX(Boolean)
      */
     public final CC flowY() {
         setFlowX(Boolean.FALSE);
@@ -641,8 +641,8 @@ public final class CC implements Externalizable {
      * <p>
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-     * @see #growX()
-     * @see #growY()
+     * @see net.miginfocom.layout.CC#growX()
+     * @see net.miginfocom.layout.CC#growY()
      */
     public final CC grow() {
         growX();
@@ -654,21 +654,21 @@ public final class CC implements Externalizable {
      * <p>
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-     * @see #setNewline(boolean)
+     * @see net.miginfocom.layout.CC#setNewline(boolean)
      */
     public final CC newline() {
         setNewline(true);
         return this;
     }
 
-    /** Same functionality as {@link #setNewlineGapSize(BoundString)} only this method returns <code>this</code> for chaining multiple calls.
+    /** Same functionality as {@link #setNewlineGapSize(BoundSize)} only this method returns <code>this</code> for chaining multiple calls.
      * <p>
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @param gapSize The gap size that will override the gap size in the row/colum constraints if <code>!= null</code>. E.g. "5px" or "unrel".
      * If <code>null</code> or <code>""</code> the newline size will be set to the default size and turned on. This is different compared to
-     * {@link #setNewlineGapSize(BoundString)}.
+     * {@link #setNewlineGapSize(BoundSize)}.
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-     * @see #setNewlineGapSize(BoundSize)
+     * @see net.miginfocom.layout.CC#setNewlineGapSize(BoundSize)
      */
     public final CC newline(String gapSize) {
         BoundSize bs =
@@ -686,21 +686,21 @@ public final class CC implements Externalizable {
      * <p>
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-     * @see #setWrap(boolean)
+     * @see net.miginfocom.layout.CC#setWrap(boolean)
      */
     public final CC wrap() {
         setWrap(true);
         return this;
     }
 
-    /** Same functionality as {@link #setWrapGapSize(BoundString)} only this method returns <code>this</code> for chaining multiple calls.
+    /** Same functionality as {@link #setWrapGapSize(BoundSize)} only this method returns <code>this</code> for chaining multiple calls.
      * <p>
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @param gapSize The gap size that will override the gap size in the row/colum constraints if <code>!= null</code>. E.g. "5px" or "unrel".
      * If <code>null</code> or <code>""</code> the wrap size will be set to the default size and turned on. This is different compared to
-     * {@link #setWrapGapSize(BoundString)}.
+     * {@link net.miginfocom.layout.CC#setWrapGapSize(BoundSize)}.
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-     * @see #setWrapGapSize(BoundSize)
+     * @see net.miginfocom.layout.CC#setWrapGapSize(BoundSize)
      */
     public final CC wrap(String gapSize) {
         BoundSize bs =
@@ -718,7 +718,7 @@ public final class CC implements Externalizable {
      * <p>
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-     * @see #setDockSide(int)
+     * @see net.miginfocom.layout.CC#setDockSide(int)
      */
     public final CC dockNorth() {
         setDockSide(0);
@@ -729,7 +729,7 @@ public final class CC implements Externalizable {
      * <p>
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-     * @see #setDockSide(int)
+     * @see net.miginfocom.layout.CC#setDockSide(int)
      */
     public final CC dockWest() {
         setDockSide(1);
@@ -740,7 +740,7 @@ public final class CC implements Externalizable {
      * <p>
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-     * @see #setDockSide(int)
+     * @see net.miginfocom.layout.CC#setDockSide(int)
      */
     public final CC dockSouth() {
         setDockSide(2);
@@ -751,7 +751,7 @@ public final class CC implements Externalizable {
      * <p>
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-     * @see #setDockSide(int)
+     * @see net.miginfocom.layout.CC#setDockSide(int)
      */
     public final CC dockEast() {
         setDockSide(3);
@@ -764,8 +764,8 @@ public final class CC implements Externalizable {
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @param x The x position as a UnitValue. E.g. "10" or "40mm" or "container.x+10".
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-     * @see #setPos(UnitValue[])
-     * @see #setBoundsInGrid(boolean)
+     * @see net.miginfocom.layout.CC#setPos(UnitValue[])
+     * @see net.miginfocom.layout.CC#setBoundsInGrid(boolean)
      */
     public final CC x(String x) {
         return corrPos(x, 0);
@@ -777,8 +777,8 @@ public final class CC implements Externalizable {
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @param y The y position as a UnitValue. E.g. "10" or "40mm" or "container.x+10".
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-     * @see #setPos(UnitValue[])
-     * @see #setBoundsInGrid(boolean)
+     * @see net.miginfocom.layout.CC#setPos(UnitValue[])
+     * @see net.miginfocom.layout.CC#setBoundsInGrid(boolean)
      */
     public final CC y(String y) {
         return corrPos(y, 1);
@@ -790,8 +790,8 @@ public final class CC implements Externalizable {
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @param x2 The x2 side's position as a UnitValue. E.g. "10" or "40mm" or "container.x2 - 10".
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-     * @see #setPos(UnitValue[])
-     * @see #setBoundsInGrid(boolean)
+     * @see net.miginfocom.layout.CC#setPos(UnitValue[])
+     * @see net.miginfocom.layout.CC#setBoundsInGrid(boolean)
      */
     public final CC x2(String x2) {
         return corrPos(x2, 2);
@@ -803,8 +803,8 @@ public final class CC implements Externalizable {
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @param y2 The y2 side's position as a UnitValue. E.g. "10" or "40mm" or "container.x2 - 10".
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-     * @see #setPos(UnitValue[])
-     * @see #setBoundsInGrid(boolean)
+     * @see net.miginfocom.layout.CC#setPos(UnitValue[])
+     * @see net.miginfocom.layout.CC#setBoundsInGrid(boolean)
      */
     public final CC y2(String y2) {
         return corrPos(y2, 3);
@@ -828,7 +828,7 @@ public final class CC implements Externalizable {
      * @param x The x position as a UnitValue. E.g. "10" or "40mm" or "container.x+10".
      * @param y The y position as a UnitValue. E.g. "10" or "40mm" or "container.x+10".
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-     * @see #setPos(UnitValue[])
+     * @see net.miginfocom.layout.CC#setPos(UnitValue[])
      */
     public final CC pos(String x, String y) {
         UnitValue[] b = getPos();
@@ -851,7 +851,7 @@ public final class CC implements Externalizable {
      * @param x2 The x2 side's position as a UnitValue. E.g. "10" or "40mm" or "container.x2 - 10".
      * @param y2 The y2 side's position as a UnitValue. E.g. "10" or "40mm" or "container.x2 - 10".
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-     * @see #setPos(UnitValue[])
+     * @see net.miginfocom.layout.CC#setPos(UnitValue[])
      */
     public final CC pos(String x, String y, String x2, String y2) {
         setPos(new UnitValue[]{ConstraintParser.parseUnitValue(x, true),
@@ -870,7 +870,7 @@ public final class CC implements Externalizable {
      * @param bottom The top padding that will be added to the y2 coordinate at the last stage in the layout.
      * @param right The top padding that will be added to the x2 coordinate at the last stage in the layout.
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-     * @see #setTag(String)
+     * @see net.miginfocom.layout.CC#setTag(String)
      */
     public final CC pad(int top, int left, int bottom, int right) {
         setPadding(new UnitValue[]{new UnitValue(top),
@@ -884,7 +884,7 @@ public final class CC implements Externalizable {
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @param pad The string to parse. E.g. "10 10 10 10" or "20". If less than 4 groups the last will be used for the missing.
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new ComponentConstraint().noGrid().gap().fill()</code>.
-     * @see #setTag(String)
+     * @see net.miginfocom.layout.CC#setTag(String)
      */
     public final CC pad(String pad) {
         setPadding(pad != null

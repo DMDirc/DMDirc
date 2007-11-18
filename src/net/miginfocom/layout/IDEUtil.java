@@ -36,7 +36,7 @@ package net.miginfocom.layout;
 
 /** This class contains static methods to be used by IDE vendors to convert to and from String/API constraints.
  * <p>
- * <b>Note that {@link LayoutUtil#setDesignTime(boolean)} should be set to <code>true</code> for this class'
+ * <b>Note that {@link LayoutUtil#setDesignTime(ContainerWrapper, boolean)} should be set to <code>true</code> for this class'
  * methods to work.</b>
  */
 public class IDEUtil {
@@ -79,12 +79,11 @@ public class IDEUtil {
      * <code>[left inset][row size 1][gap 1][row size 2][gap 2][row size n][right inset]</code>.
      * <p>
      * The returned sizes will be the ones calculated in the last layout cycle.
-     * @param parentContainer The container to retuern the row sizes and gaps for. In Swing it will be a {@link java.awt.Container} and
-     * in SWT it will be a {@link org.eclipse.swt.widgets.Composite}.
-     * @return The sizes or <code>null</code> if {@link LayoutUtil#isDesignTime()} is <code>false</code> or
+     * @param parentContainer The container to retuern the row sizes and gaps for. In Swing it will be a {@link java.awt.Container}
+     * @return The sizes or <code>null</code> if {@link LayoutUtil#isDesignTime(ContainerWrapper)} is <code>false</code> or
      * <code>parentContainer</code> does not have a MigLayout layout manager.
      * The returned sizes will be the ones calculated in the last layout cycle.
-     * @see LayoutUtil#isDesignTime()
+     * @see LayoutUtil#isDesignTime(ContainerWrapper)
      */
     public static int[][] getRowSizes(Object parentContainer) {
         return Grid.getSizesAndIndexes(parentContainer, true);
@@ -101,12 +100,11 @@ public class IDEUtil {
      * <code>[top inset][column size 1][gap 1][column size 2][gap 2][column size n][bottom inset]</code>.
      * <p>
      * The returned sizes will be the ones calculated in the last layout cycle.
-     * @param parentContainer The container to retuern the column sizes and gaps for. In Swing it will be a {@link java.awt.Container} and
-     * in SWT it will be a {@link org.eclipse.swt.widgets.Composite}.
-     * @return The sizes and indexes or <code>null</code> if {@link LayoutUtil#isDesignTime()} is <code>false</code> or
+     * @param parentContainer The container to retuern the column sizes and gaps for. In Swing it will be a {@link java.awt.Container}
+     * @return The sizes and indexes or <code>null</code> if {@link LayoutUtil#isDesignTime(ContainerWrapper)} is <code>false</code> or
      * <code>parentContainer</code> does not have a MigLayout layout manager.
      * The returned sizes will be the ones calculated in the last layout cycle.
-     * @see LayoutUtil#isDesignTime()
+     * @see LayoutUtil#isDesignTime(ContainerWrapper)
      */
     public static int[][] getColumnSizes(Object parentContainer) {
         return Grid.getSizesAndIndexes(parentContainer, false);
