@@ -32,6 +32,20 @@ formatter.channelSelfExternalAction = \u00036* %1$s%2$s %5$s
 #    7: Channel name
 formatter.channelCTCP = \u00034-!- CTCP %5$S from %1$s%2$s
 
+# Type: Channel Event with possible reason
+#    1: User mode prefixes
+#    2: User nickname
+#    3: User ident
+#    4: User host
+#    5: Reason/message
+#    6: Channel name
+formatter.channelPart = \u00033* %1$s%2$s (%3$s@%4$s) has left %6$s\u000F.
+formatter.channelPartReason = \u00033* %1$s%2$s (%3$s@%4$s) has left %6$s (%5$s\u000F).
+formatter.channelQuit = \u00032* %1$s%2$s (%3$s@%4$s) has quit IRC.
+formatter.channelQuitReason = \u00032* %1$s%2$s (%3$s@%4$s) has quit IRC (%5$s\u000F).
+formatter.channelSelfPart = \u00033* You have left the channel.
+formatter.channelSelfPartReason = \u00033* You have left the channel.
+
 # Type: Channel Event
 #    1: User mode prefixes
 #    2: User nickname
@@ -39,10 +53,7 @@ formatter.channelCTCP = \u00034-!- CTCP %5$S from %1$s%2$s
 #    4: User host
 #    5: Channel name
 formatter.channelJoin = \u00033* %2$s (%3$s@%4$s) has joined %5$s\u000F.
-formatter.channelPart = \u00033* %1$s%2$s (%3$s@%4$s) has left %5$s\u000F.
-formatter.channelQuit = \u00032* %1$s%2$s (%3$s@%4$s) has quit IRC.
 formatter.channelSelfJoin = \u00033* You are now talking in %5$s\u000F.
-formatter.channelSelfPart = \u00033* You have left the channel.
 
 # Type: Channel Event with content
 #    1: User mode prefixes
@@ -51,14 +62,11 @@ formatter.channelSelfPart = \u00033* You have left the channel.
 #    4: User host
 #    5: Channel name
 #    6: Content
-formatter.channelPartReason = \u00033* %1$s%2$s (%3$s@%4$s) has left %5$s (%6$s\u000F).
-formatter.channelQuitReason = \u00032* %1$s%2$s (%3$s@%4$s) has quit IRC (%6$s\u000F).
 formatter.channelTopicChange = \u00033* %1$s%2$s has changed the topic to '%6$s\u000F'.
 formatter.channelNickChange = \u00033* %1$s%2$s is now know as %6$s\u000F.
 formatter.channelModeChange = \u00033* %1$s%2$s sets mode: %6$s\u000F.
 formatter.channelSelfNickChange = \u00033* You are now know as %6$s\u000F.
 formatter.channelSelfModeChange = \u00033* You set mode: %6$s\u000F.
-formatter.channelSelfPartReason = \u00033* You have left the channel.
 
 # Type: Binary Channel Event
 #    1: Source user mode prefixes
@@ -81,9 +89,9 @@ formatter.channelKick = \u00033* %1$s%2$s has kicked %5$s%6$s from %9$s\u000F.
 #    6: Target user nickname
 #    7: Target user ident
 #    8: Target user host
-#    9: Channel name
-#   10: Content
-formatter.channelKickReason = \u00033* %1$s%2$s has kicked %5$s%6$s from %9$s (%10$s\u000F).
+#    9: Content
+#   10: Channel name
+formatter.channelKickReason = \u00033* %1$s%2$s has kicked %5$s%6$s from %10$s (%9$s\u000F).
 formatter.channelUserMode_default = \u00033* %1$s%2$s sets mode %10$s on %6$s\u000F.
 
 # Type: Channel topic sync

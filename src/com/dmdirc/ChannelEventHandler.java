@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.parser.ChannelInfo;
 import com.dmdirc.parser.ClientInfo;
@@ -59,6 +60,10 @@ public final class ChannelEventHandler extends EventHandler implements
     protected IRCParser getParser() {
         return owner.getServer().getParser();
     }
+    
+    protected boolean isMyself(final ChannelClientInfo client) {
+        return client.getClient().equals(owner.getServer().getParser().getMyself());
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -66,7 +71,10 @@ public final class ChannelEventHandler extends EventHandler implements
             final ChannelInfo cChannel, final ChannelClientInfo cChannelClient,
             final String sMessage, final String sHost) {
         checkParser(tParser);
-        owner.onChannelMessage(cChannelClient, sMessage);
+
+        owner.doNotification(
+                isMyself(cChannelClient) ? "channelMessage" : "channelSelfExternalMessage",
+                CoreActionType.CHANNEL_MESSAGE, cChannelClient, sMessage);
     }
 
     /** {@inheritDoc} */
@@ -89,7 +97,9 @@ public final class ChannelEventHandler extends EventHandler implements
     public void onChannelJoin(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient) {
         checkParser(tParser);
-        owner.onChannelJoin(cChannelClient);
+
+        owner.doNotification("channelJoin", CoreActionType.CHANNEL_JOIN, cChannelClient);        
+        owner.addClient(cChannelClient);
     }
 
     /** {@inheritDoc} */
@@ -97,7 +107,12 @@ public final class ChannelEventHandler extends EventHandler implements
     public void onChannelPart(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sReason) {
         checkParser(tParser);
-        owner.onChannelPart(cChannelClient, sReason);
+        
+        owner.doNotification("channel"
+                + (isMyself(cChannelClient) ? "Self" : "") + "Part"
+                + (sReason.isEmpty() ? "" : "Reason"), CoreActionType.CHANNEL_PART,
+                cChannelClient, sReason);
+        owner.removeClient(cChannelClient);
     }
 
     /** {@inheritDoc} */
@@ -106,7 +121,10 @@ public final class ChannelEventHandler extends EventHandler implements
             final ChannelClientInfo cKickedClient, final ChannelClientInfo cKickedByClient,
             final String sReason, final String sKickedByHost) {
         checkParser(tParser);
-        owner.onChannelKick(cKickedClient, cKickedByClient, sReason);
+        
+        owner.doNotification("channelKick" + (sReason.isEmpty() ? "" : "Reason"),
+                CoreActionType.CHANNEL_KICK, cKickedByClient, cKickedClient, sReason);
+        owner.removeClient(cKickedClient);
     }
 
     /** {@inheritDoc} */
@@ -114,7 +132,10 @@ public final class ChannelEventHandler extends EventHandler implements
     public void onChannelQuit(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sReason) {
         checkParser(tParser);
-        owner.onChannelQuit(cChannelClient, sReason);
+        
+        owner.doNotification("channelQuit" + (sReason.isEmpty() ? "" : "Reason"),
+                CoreActionType.CHANNEL_QUIT, cChannelClient, sReason);
+        owner.removeClient(cChannelClient);
     }
 
     /** {@inheritDoc} */
@@ -122,7 +143,10 @@ public final class ChannelEventHandler extends EventHandler implements
     public void onChannelAction(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
         checkParser(tParser);
-        owner.onChannelAction(cChannelClient, sMessage);
+
+        owner.doNotification(
+                isMyself(cChannelClient) ? "channelAction" : "channelSelfExternalAction",
+                CoreActionType.CHANNEL_ACTION, cChannelClient, sMessage);        
     }
 
     /** {@inheritDoc} */

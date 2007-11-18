@@ -112,11 +112,24 @@ public abstract class WritableFrameContainer extends FrameContainer {
                 messageArgs.add(arg);
             }
         }
+        
+        modifyNotificationArgs(actionArgs, messageArgs);
 
         ActionManager.processEvent(actionType, buffer, actionArgs.toArray());
 
         handleNotification(messageType, messageArgs.toArray());
     } 
+    
+    /**
+     * Allows subclasses to modify the lists of arguments for notifications.
+     * 
+     * @param actionArgs The list of arguments to be passed to the actions system
+     * @param messageArgs The list of arguments to be passed to the formatter
+     */
+    protected void modifyNotificationArgs(final List<Object> actionArgs,
+            final List<Object> messageArgs) {
+        // Do nothing
+    }
     
     /**
      * Allows subclasses to process specific types of notification arguments.

@@ -43,6 +43,7 @@ import com.dmdirc.util.RollingList;
 import java.awt.Color;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -380,38 +381,18 @@ public final class Channel extends MessageTarget
         }
     }
     
-    public void onChannelMessage(
-            final ChannelClientInfo cChannelClient, final String sMessage) {
-        
-        String type = "channelMessage";
-        if (cChannelClient.getClient().equals(server.getParser().getMyself())) {
-            type = "channelSelfExternalMessage";
-        }
-        
-        final String[] parts = getDetails(cChannelClient, showColours);
-        final String modes = getModes(cChannelClient);
-        
-        final StringBuffer buff = new StringBuffer(type);
-        
-        ActionManager.processEvent(CoreActionType.CHANNEL_MESSAGE, buff, this, cChannelClient, sMessage);
-        
-        addLine(buff, modes, parts[0], parts[1], parts[2], sMessage, channelInfo);
+    public void addClient(final ChannelClientInfo client) {
+        window.addName(client);
+        tabCompleter.addEntry(client.getNickname());   
     }
     
-    public void onChannelAction(
-            final ChannelClientInfo cChannelClient, final String sMessage) {
-        final String[] parts = getDetails(cChannelClient, showColours);
-        final String modes = getModes(cChannelClient);
-        String type = "channelAction";
-        if (parts[0].equals(server.getParser().getMyself().getNickname())) {
-            type = "channelSelfExternalAction";
+    public void removeClient(final ChannelClientInfo client) {
+        window.removeName(client);
+        tabCompleter.removeEntry(client.getNickname());
+        
+        if (client.getClient().equals(server.getParser().getMyself())) {
+            resetWindow();
         }
-        
-        final StringBuffer buff = new StringBuffer(type);
-        
-        ActionManager.processEvent(CoreActionType.CHANNEL_ACTION, buff, this, cChannelClient, sMessage);
-        
-        addLine(buff, modes, parts[0], parts[1], parts[2], sMessage, channelInfo);
     }
     
     public void onChannelGotNames() {
@@ -457,101 +438,7 @@ public final class Channel extends MessageTarget
         
         updateTitle();
     }
-    
-    public void onChannelJoin(final ChannelClientInfo cChannelClient) {
-        final ClientInfo client = cChannelClient.getClient();
-        
-        final StringBuffer buff = new StringBuffer("channelJoin");
-        
-        ActionManager.processEvent(CoreActionType.CHANNEL_JOIN, buff, this, cChannelClient);
-        
-        addLine(buff, "", client.getNickname(), client.getIdent(),
-                client.getHost(), channelInfo);
-        
-        window.addName(cChannelClient);
-        tabCompleter.addEntry(cChannelClient.getNickname());
-    }
-    
-    public void onChannelPart(
-            final ChannelClientInfo cChannelClient, final String sReason) {
-        final ClientInfo client = cChannelClient.getClient();
-        final String nick = cChannelClient.getNickname();
-        final String ident = client.getIdent();
-        final String host = client.getHost();
-        final String modes = cChannelClient.getImportantModePrefix();
-        
-        String type;
-        
-        if (nick.equals(server.getParser().getMyself().getNickname())) {
-            if (sReason.isEmpty()) {
-                type = "channelSelfPart";
-            } else {
-                type = "channelSelfPartReason";
-            }
-            resetWindow();
-        } else {
-            if (sReason.isEmpty()) {
-                type = "channelPart";
-            } else {
-                type = "channelPartReason";
-            }
-        }
-        
-        final StringBuffer buff = new StringBuffer(type);
-        
-        ActionManager.processEvent(CoreActionType.CHANNEL_PART, buff, this, cChannelClient, sReason);
-        
-        addLine(buff, modes, nick, ident, host, channelInfo, sReason);
-        
-        window.removeName(cChannelClient);
-        
-        tabCompleter.removeEntry(cChannelClient.getNickname());
-    }
-    
-    public void onChannelKick(
-            final ChannelClientInfo cKickedClient, final ChannelClientInfo cKickedByClient,
-            final String sReason) {
-        final String[] kicker = getDetails(cKickedByClient, showColours);
-        final String kickermodes = getModes(cKickedByClient);
-        final String victim = cKickedClient.getNickname();
-        final String victimmodes = cKickedClient.getImportantModePrefix();
-        final String victimident = cKickedClient.getClient().getIdent();
-        final String victimhost = cKickedClient.getClient().getHost();
-        
-        final StringBuffer buff = new StringBuffer(sReason.isEmpty() ? "channelKick" : "channelKickReason");
-        
-        ActionManager.processEvent(CoreActionType.CHANNEL_KICK, buff, this,
-                cKickedByClient, cKickedClient, sReason);
-        
-        addLine(buff, kickermodes, kicker[0], kicker[1], kicker[2], victimmodes,
-                victim, victimident, victimhost, channelInfo.getName(), sReason);
-        
-        window.removeName(cKickedClient);
-        
-        tabCompleter.removeEntry(cKickedClient.getNickname());
-        
-        if (cKickedClient.getClient().equals(server.getParser().getMyself())) {
-            resetWindow();
-        }
-    }
-    
-    public void onChannelQuit(
-            final ChannelClientInfo cChannelClient, final String sReason) {
-        final ClientInfo client = cChannelClient.getClient();
-        final String source = cChannelClient.getNickname();
-        final String modes = cChannelClient.getImportantModePrefix();
-        
-        final StringBuffer buff = new StringBuffer(sReason.isEmpty() ? "channelQuit" : "channelQuitReason");
-        
-        ActionManager.processEvent(CoreActionType.CHANNEL_QUIT, buff, this, cChannelClient, sReason);
-        
-        addLine(buff, modes, source, client.getIdent(),
-                client.getHost(), channelInfo, sReason);
-        
-        window.removeName(cChannelClient);
-        tabCompleter.removeEntry(cChannelClient.getNickname());
-    }
-    
+
     public void onChannelNickChanged(
             final ChannelClientInfo cChannelClient, final String sOldNick) {
         final String modes = cChannelClient.getImportantModePrefix();
@@ -749,6 +636,32 @@ public final class Channel extends MessageTarget
         
         return res;
     }    
+    
+    /** {@inheritDoc} */
+    @Override
+    protected boolean processNotificationArg(final Object arg, final List<Object> args) {
+        if (arg instanceof ClientInfo) {
+            final ClientInfo clientInfo = (ClientInfo) arg;
+            args.add(clientInfo.getNickname());
+            args.add(clientInfo.getIdent());
+            args.add(clientInfo.getHost());
+            return true;
+        } else if (arg instanceof ChannelClientInfo) {
+            final ChannelClientInfo clientInfo = (ChannelClientInfo) arg;
+            args.add(getModes(clientInfo));
+            args.addAll(Arrays.asList(getDetails(clientInfo, showColours)));
+            return true;            
+        } else {
+            return super.processNotificationArg(arg, args);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected void modifyNotificationArgs(final List<Object> actionArgs,
+            final List<Object> messageArgs) {
+        messageArgs.add(channelInfo.getName());
+    }
     
     // ------------------------------------------ PARSER METHOD DELEGATION -----
     
