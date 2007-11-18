@@ -30,18 +30,15 @@ import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel.OptionType;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Allows the user to modify channel settings (modes, topics, etc).
@@ -120,47 +117,18 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
 
     /** Initialises the main UI components. */
     private void initComponents() {
-        final GridBagConstraints constraints = new GridBagConstraints();
         tabbedPane = new JTabbedPane();
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        getContentPane().setLayout(new GridBagLayout());
         setTitle("Channel settings for " + channel);
         setResizable(false);
 
-        final JButton button1 = new JButton();
-        final JButton button2 = new JButton();
+        orderButtons(new JButton(), new JButton());
 
-        orderButtons(button1, button2);
-
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.gridwidth = 3;
-        constraints.weightx = 1.0;
-        constraints.weighty = 1.0;
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.insets =
-                new Insets(SMALL_BORDER, SMALL_BORDER, SMALL_BORDER,
-                SMALL_BORDER);
-        getContentPane().add(tabbedPane, constraints);
-
-        constraints.weighty = 0.0;
-        constraints.gridx = 0;
-        constraints.gridy = 1;
-        constraints.gridwidth = 1;
-        getContentPane().add(Box.createHorizontalGlue(), constraints);
-
-        constraints.weightx = 0.0;
-        constraints.insets.set(0, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
-        constraints.gridx = 1;
-        constraints.gridy = 1;
-        constraints.anchor = GridBagConstraints.EAST;
-        constraints.fill = GridBagConstraints.NONE;
-        getContentPane().add(getLeftButton(), constraints);
-
-        constraints.gridx = 2;
-        constraints.insets.set(0, 0, SMALL_BORDER, SMALL_BORDER);
-        getContentPane().add(getRightButton(), constraints);
+        getContentPane().setLayout(new MigLayout("fill, wrap 1, ins panel"));
+        getContentPane().add(tabbedPane, "grow");
+        getContentPane().add(getLeftButton(), "split 3, right");
+        getContentPane().add(getRightButton(), "right");
         
         initTopicTab();
 
