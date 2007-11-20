@@ -26,10 +26,13 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The new server command allows users to open a new server window.
+ * 
  * @author chris
  */
 public final class NewServer extends GlobalCommand {
@@ -44,10 +47,11 @@ public final class NewServer extends GlobalCommand {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         if (args.length == 0) {
-            showUsage(origin, isSilent, "newserver", "[--ssl] <host[:port]> [password]");
+            showUsage(origin, isSilent, "newserver", "<host[:[+]port]> [password]");
             return;
         }
         
@@ -59,6 +63,10 @@ public final class NewServer extends GlobalCommand {
         
         // Check for SSL
         if (args[offset].equalsIgnoreCase("--ssl")) {
+            Logger.userError(ErrorLevel.LOW, 
+                    "Using /newserver --ssl is deprecated, and may be removed in the future."
+                    + " Use /newserver <host>:+<port> instead.");
+            
             ssl = true;
             offset++;
         }
@@ -67,6 +75,12 @@ public final class NewServer extends GlobalCommand {
         if (args[offset].indexOf(':') > -1) {
             final String[] parts = args[offset].split(":");
             host = parts[0];
+            
+            if (parts[1].length() > 0 && parts[1].charAt(0) == '+') {
+                ssl = true;
+                parts[1] = parts[1].substring(1);
+            }
+            
             try {
                 port = Integer.parseInt(parts[1]);
             } catch (NumberFormatException ex) {
@@ -88,18 +102,21 @@ public final class NewServer extends GlobalCommand {
     
     
     /** {@inheritDoc}. */
+    @Override
     public String getName() {
         return "newserver";
     }
     
     /** {@inheritDoc}. */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
     /** {@inheritDoc}. */
+    @Override
     public String getHelp() {
-        return "newserver [--ssl] <host[:port]> [password] - connect to a new server";
+        return "newserver <host[:[+]port]> [password] - connect to a new server";
     }
     
 }

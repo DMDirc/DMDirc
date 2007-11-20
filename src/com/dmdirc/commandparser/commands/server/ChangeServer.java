@@ -25,10 +25,13 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ServerCommand;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The /server command allows the user to connect to a new server.
+ * 
  * @author chris
  */
 public final class ChangeServer extends ServerCommand {
@@ -47,7 +50,7 @@ public final class ChangeServer extends ServerCommand {
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
         if (args.length == 0) {
-            showUsage(origin, isSilent, "server", "[--ssl] <host[:port]> [password]");
+            showUsage(origin, isSilent, "server", "<host[:[+]port]> [password]");
             return;
         }
         
@@ -59,6 +62,10 @@ public final class ChangeServer extends ServerCommand {
         
         // Check for SSL
         if (args[offset].equalsIgnoreCase("--ssl")) {
+            Logger.userError(ErrorLevel.LOW,
+                    "Using /server --ssl is deprecated, and may be removed in the future."
+                    + " Use /server <host>:+<port> instead.");
+            
             ssl = true;
             offset++;
         }
@@ -67,6 +74,12 @@ public final class ChangeServer extends ServerCommand {
         if (args[offset].indexOf(':') > -1) {
             final String[] parts = args[offset].split(":");
             host = parts[0];
+            
+            if (parts[1].length() > 0 && parts[1].charAt(0) == '+') {
+                ssl = true;
+                parts[1] = parts[1].substring(1);
+            }            
+            
             try {
                 port = Integer.parseInt(parts[1]);
             } catch (NumberFormatException ex) {
@@ -100,7 +113,7 @@ public final class ChangeServer extends ServerCommand {
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
-        return "server [--ssl] <host[:port]> [password] - connect to a different server";
+        return "server <host[:[+]port]> [password] - connect to a different server";
     }
     
 }
