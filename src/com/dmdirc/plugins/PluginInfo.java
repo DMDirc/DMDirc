@@ -37,7 +37,7 @@ import java.util.Properties;
 
 public class PluginInfo implements Comparable<PluginInfo> {
 	/** Plugin Meta Data */
-	private Properties metaData = new Properties();
+	private Properties metaData = null;
 	/** File that this plugin was loaded from */
 	private final String filename;
 	/** The actual Plugin from this jar */
@@ -54,17 +54,31 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 * @throws PluginException if there is an error loading the Plugin
 	 */
 	public PluginInfo(final String filename) throws PluginException {
+		this(filename, true);
+	}
+	
+	/**
+	 * Create a new PluginInfo.
+	 *
+	 * @param filename File that this plugin is stored in.
+	 * @param load Should this plugin be loaded, or is this just a placeholder? (true for load, false for placeholder)
+	 * @throws PluginException if there is an error loading the Plugin
+	 */
+	public PluginInfo(final String filename, final boolean load) throws PluginException {
 		this.filename = filename;
+		
+		if (!load) { return; }
 		
 		ResourceManager res;
 		try {
 			res = getResourceManager();
 		} catch (IOException ioe) {
-			throw new PluginException("Plugin "+filename+" failed to load, error with resourcemanager", ioe);
+			throw new PluginException("Plugin "+filename+" failed to load, error with resourcemanager: "+ioe.getMessage(), ioe);
 		}
 		
 		try {
 			if (res.resourceExists("META-INF/plugin.info")) {
+				metaData = new Properties();
 				metaData.load(res.getResourceInputStream("META-INF/plugin.info"));
 			} else {
 				throw new PluginException("Plugin "+filename+" failed to load, plugin.info doesn't exist in jar");
@@ -149,7 +163,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			}
 			
 		} catch (IOException ioe) {
-			throw new PluginException("Plugin "+filename+" failed to load, error with resourcemanager", ioe);
+			throw new PluginException("Plugin "+filename+" failed to entirely load, error with resourcemanager: "+ioe.getMessage(), ioe);
 		}
 		myResourceManager = null;
 	}
@@ -158,7 +172,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 * Load the plugin files.
 	 */
 	public void loadPlugin() {
-		if (isLoaded()) {
+		if (isLoaded() || metaData == null) {
 			return;
 		}
 		loadClass(getMainClass());
@@ -252,7 +266,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 */
 	public int getVersion() {
 		try {
-			return Integer.parseInt(metaData.getProperty("version",""));
+			return Integer.parseInt(metaData.getProperty("version","0"));
 		} catch (NumberFormatException nfe) {
 			return -1;
 		}

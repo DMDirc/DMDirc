@@ -25,7 +25,6 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
-import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -34,61 +33,71 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import java.util.List;
 
 /**
- * Allows the user to load a plugin.
+ * Allows the user to unload a plugin.
+ * 
  * @author chris
  */
-public final class LoadPlugin extends GlobalCommand implements IntelligentCommand {
+public final class UnloadPlugin extends GlobalCommand implements IntelligentCommand {
     
     /**
-     * Creates a new instance of LoadPlugin.
+     * Creates a new instance of UnloadPlugin.
      */
-    public LoadPlugin() {
+    public UnloadPlugin() {
         super();
         
         CommandManager.registerCommand(this);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         if (args.length == 0) {
-            showUsage(origin, isSilent, "loadplugin", "<plugin>");
+            showUsage(origin, isSilent, "unloadplugin", "<plugin>");
             return;
         }
         
-        if (PluginManager.getPluginManager().addPlugin(args[0])) {
-            PluginManager.getPluginManager().getPluginInfo(args[0]).loadPlugin();
-            sendLine(origin, isSilent, FORMAT_OUTPUT, "Plugin loaded.");
+        PluginInfo plugin = PluginManager.getPluginManager().getPluginInfoByName(args[0]);
+        if (plugin == null) {
+            sendLine(origin, isSilent, FORMAT_ERROR, "Plugin unloading failed - Plugin not loaded");
         } else {
-            sendLine(origin, isSilent, FORMAT_ERROR, "Plugin Loading failed");
+            if (PluginManager.getPluginManager().delPlugin(plugin.getFilename())) {
+                sendLine(origin, isSilent, FORMAT_OUTPUT, "Plugin Unloaded.");
+            } else {
+                sendLine(origin, isSilent, FORMAT_ERROR, "Plugin Unloading failed");
+            }
+            
         }
     }
     
-    
     /** {@inheritDoc} */
+    @Override
     public String getName() {
-        return "loadplugin";
+        return "unloadplugin";
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
     /** {@inheritDoc} */
+    @Override
     public String getHelp() {
-        return "loadplugin <plugin> - loads the specified class as a plugin";
+        return "UnloadPlugin <plugin> - Unloads the specified plugin";
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
         if (arg == 0) {
             res.setIncludeNormal(false);
             
-            for (PluginInfo possPlugin : PluginManager.getPluginManager().getPossiblePluginInfos(false)) {
-                res.add(possPlugin.getFilename());
+            for (PluginInfo possPlugin : PluginManager.getPluginManager().getPluginInfos()) {
+                res.add(possPlugin.getName());
             }
         }
         

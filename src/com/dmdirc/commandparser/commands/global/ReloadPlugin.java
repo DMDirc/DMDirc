@@ -96,7 +96,7 @@ public final class ReloadPlugin extends GlobalCommand implements IntelligentComm
         if (arg == 0) {
             res.setIncludeNormal(false);
             
-            for (PluginInfo possPlugin : PluginManager.getPluginManager().getPossiblePluginInfos()) {
+            for (PluginInfo possPlugin : PluginManager.getPluginManager().getPluginInfos()) {
                 res.add(possPlugin.getName());
             }
         }

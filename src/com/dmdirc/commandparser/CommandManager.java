@@ -301,6 +301,7 @@ public final class CommandManager {
         new NewServer();
         new Notify();
         new LoadPlugin();
+        new UnloadPlugin();
         new OpenWindow();
         new ReloadActions();
         new ReloadIdentities();

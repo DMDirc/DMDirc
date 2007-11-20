@@ -145,7 +145,7 @@ public class PluginManager {
 		
 		if (wasLoaded) {
 			getPluginInfo(filename).loadPlugin();
-			}
+		}
 		
 		return result;
 	}
@@ -214,9 +214,10 @@ public class PluginManager {
 	 * Any file under the main plugin directory (~/.DMDirc/plugins or similar)
 	 * that matches *.jar is deemed to be a valid plugin.
 	 *
+	 * @param addPlugins Should all found plugins be automatically have addPlugin() called?
 	 * @return A list of all installed plugins
 	 */
-	public List<PluginInfo> getPossiblePluginInfos() {
+	public List<PluginInfo> getPossiblePluginInfos(final boolean addPlugins) {
 		final ArrayList<PluginInfo> res = new ArrayList<PluginInfo>();
 
 		final LinkedList<File> dirs = new LinkedList<File>();
@@ -234,12 +235,20 @@ public class PluginManager {
 				
 				// Remove the plugin dir
 				target = target.substring(myDir.length(), target.length());
-				addPlugin(target);
+				if (addPlugins) {
+					addPlugin(target);
+				} else {
+					try {
+						res.add(new PluginInfo(target, false));
+					} catch (PluginException pe) { /* This can not be thrown when the second param is false */}
+				}
 			}
 		}
 
-		for (String name : knownPlugins.keySet()) {
-			res.add(getPluginInfo(name));
+		if (addPlugins) {
+			for (String name : knownPlugins.keySet()) {
+				res.add(getPluginInfo(name));
+			}
 		}
 
 		return res;
