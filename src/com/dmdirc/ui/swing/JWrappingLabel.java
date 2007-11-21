@@ -26,9 +26,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.font.LineMetrics;
+import java.util.ArrayList;
 
 import javax.swing.JLabel;
-import javax.swing.Icon;
+import javax.swing.SwingConstants;
 
 /**
  * JLabel that wraps automatically.
@@ -44,6 +45,11 @@ public class JWrappingLabel extends JLabel {
 	/** {@inheritDoc} */
 	public JWrappingLabel(final String text) {
 		super(text);
+	}
+	
+	/** {@inheritDoc} */
+	public JWrappingLabel(final String text, final int horizontalAlignment) {
+		super(text, horizontalAlignment);
 	}
 	
 	/** {@inheritDoc} */
@@ -67,14 +73,17 @@ public class JWrappingLabel extends JLabel {
 		// The width of a space
 		int spaceWidth = (int)g.getFont().getStringBounds(" ", g2.getFontRenderContext()).getWidth();
 		
+		// Store each line to draw afterwards (allows for alignment)
+		ArrayList<String> lines = new ArrayList<String>();
+		// The line we have atm
+		StringBuilder line = new StringBuilder();
+		
 		// Now loop through the words
 		for (String bit : bits) {
 			// Get the sizes of this word
 			Rectangle2D bounds = g.getFont().getStringBounds(bit, g2.getFontRenderContext());
 			LineMetrics metrics = g.getFont().getLineMetrics(bit, g2.getFontRenderContext());
 			
-			// Approx height of this word (total letter height minus overhang).
-			int y = top + (int)Math.round(bounds.getHeight() - metrics.getDescent());
 			// Width of this word
 			int thisWidth = (int)bounds.getWidth();
 			
@@ -88,22 +97,48 @@ public class JWrappingLabel extends JLabel {
 			// If there are no other words on this line, we assume the word fits
 			// (Thus long words don't get split up)
 			if (thisWidth+left > getWidth() && thisWidth != 0) {
-				// It doesn't so we need to move down a line.
+				// It doesn't fit so we need to move down a line.
+				
 				// This stops us leaving a blank line at the very top if the first
 				// word is too big.
 				if (!isFirst) {
 					top = top + height;
 					height = 0;
+					lines.add(line.toString());
+					line = new StringBuilder();
 				}
-				// Change of plans, draw in this location instead!
-				y = top + (int)Math.round(bounds.getHeight() - metrics.getDescent());
 				left = 0;
 			}
-			// Draw the word
-			g.drawString(bit, left, y);
 			left = left+thisWidth+spaceWidth;
+			line.append(bit+" ");
 			// And thats that!
 			isFirst = false;
+		}
+		if (line.length() > 0) { lines.add(line.toString()); }
+		
+		// Now draw
+		top = 0;
+		for (String drawLine : lines) {
+			Rectangle2D bounds = g.getFont().getStringBounds(drawLine, g2.getFontRenderContext());
+			LineMetrics metrics = g.getFont().getLineMetrics(drawLine, g2.getFontRenderContext());
+			
+			// However, we need to take into account the overhang in characters like y and g
+			int y = top + (int)Math.round(bounds.getHeight() - metrics.getDescent());
+			
+			// Now to get where the left should go.
+			int x;
+			int alignment = getHorizontalAlignment();
+			if (alignment == SwingConstants.CENTER) {
+				x = (int)((getWidth()/2) - (bounds.getWidth()/2));
+			} else if (alignment == SwingConstants.RIGHT) {
+				x = (int)(getWidth() - bounds.getWidth());
+			} else {
+				x = 0;
+			}
+			
+			// And finally actually draw the word
+			g.drawString(drawLine, x, y);
+			top = (int)(top + bounds.getHeight());
 		}
 		
 		// Update component height.
