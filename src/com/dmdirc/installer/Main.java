@@ -27,12 +27,11 @@ import com.dmdirc.installer.cliparser.BooleanParam;
 import com.dmdirc.installer.cliparser.StringParam;
 import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
-import com.dmdirc.ui.swing.dialogs.wizard.Wizard;
+import com.dmdirc.ui.swing.dialogs.wizard.WizardListener;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardDialog;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -41,7 +40,7 @@ import javax.swing.JOptionPane;
  *
  * @author Shane Mc Cormack
  */
-public final class Main implements Wizard {
+public final class Main implements WizardListener {
 	/** Wizard dialog. */
 	private static WizardDialog wizardDialog;
 	
@@ -98,6 +97,7 @@ public final class Main implements Wizard {
 		
 		setWizardDialog(new WizardDialog("DMDirc"+releaseName+" Installer", new ArrayList<Step>(), this, false, null));
 		wizardDialog.setPreferredSize(new Dimension(400, 350));
+		wizardDialog.addWizardListener(this);
 
 		final String osName = System.getProperty("os.name");
 		wizardDialog.addStep(new StepWelcome());

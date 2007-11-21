@@ -22,8 +22,8 @@
 
 package com.dmdirc.ui.swing.dialogs.wizard.firstrun;
 
-import com.dmdirc.ui.swing.components.TextLabel;
 
+import com.dmdirc.ui.swing.JWrappingLabel;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -50,16 +50,16 @@ public final class UpdateStep extends StepOne {
     protected void initComponents() {
         setLayout(new MigLayout("fillx, wrap 1"));
         
-        TextLabel infoLabel;
+        JWrappingLabel infoLabel;
         
-        infoLabel = new TextLabel("This version of DMDirc contains an update to "
+        infoLabel = new JWrappingLabel("This version of DMDirc contains an update to "
                 + " the core plugins and actions.\n\nWould you like to extract the"
                 + " core plugins to update them? Note that older plugins may not"
                 + " function correctly with this version of DMDirc.");
         add(infoLabel, "growx, pushx");
         add(plugins, "");
         
-        infoLabel = new TextLabel("Would you like to extract the default actions"
+        infoLabel = new JWrappingLabel("Would you like to extract the default actions"
                 + " to update them? Any changes you have made to the default"
                 + " actions will be lost.");
         add(infoLabel, "growx, pushx");

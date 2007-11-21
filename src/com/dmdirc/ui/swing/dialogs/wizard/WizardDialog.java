@@ -22,16 +22,13 @@
 
 package com.dmdirc.ui.swing.dialogs.wizard;
 
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.util.ListenerList;
-import java.awt.BorderLayout;
+
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
-import java.awt.Insets;
 import java.awt.MouseInfo;
 import java.awt.PointerInfo;
 import java.awt.Rectangle;
@@ -39,14 +36,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.List;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Basic wizard container.
@@ -65,15 +62,13 @@ public final class WizardDialog extends StandardDialog implements ActionListener
     /** Wizard title. */
     private final String title;
     /** Wizard. */
-    private final transient Wizard wizard;
+    private final transient WizardListener wizard;
     /** Parent component. */
     private final Component parent;
     /** Step panel. */
     private JPanel stepsPanel;
-    /** Button panel. */
-    private JPanel buttonsPanel;
     /** Title panel. */
-    private JPanel titlePanel;
+    private JLabel titleLabel;
     /** Current step. */
     private int currentStep;
     /** Prevous step button. */
@@ -96,7 +91,7 @@ public final class WizardDialog extends StandardDialog implements ActionListener
      */
     public WizardDialog(final String title,
             final List<Step> steps,
-            final Wizard wizard, final boolean modal,
+            final WizardListener wizard, final boolean modal,
             final Component parent) {
         super(null, modal);
 
@@ -117,37 +112,12 @@ public final class WizardDialog extends StandardDialog implements ActionListener
 
     /** Initialises the components. */
     private void initComponents() {
-        final JLabel titleLabel = new JLabel(title);
-
-        titlePanel = new JPanel();
-        titlePanel.setLayout(new BorderLayout());
-        titlePanel.setBackground(Color.WHITE);
+        titleLabel = new JLabel(title);
         stepsPanel = new JPanel(steps);
 
         titleLabel.setFont(titleLabel.getFont().
                 deriveFont((float) (titleLabel.getFont().getSize() * 1.5)));
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
-
-        titlePanel.add(titleLabel, BorderLayout.CENTER);
-        titlePanel.add(new JSeparator(), BorderLayout.PAGE_END);
-
-        initButtonsPanel();
-    }
-
-    /** Lays out the components. */
-    private void layoutComponents() {
-        setLayout(new BorderLayout());
-
-        add(titlePanel, BorderLayout.PAGE_START);
-        add(stepsPanel, BorderLayout.CENTER);
-        add(buttonsPanel, BorderLayout.PAGE_END);
-    }
-
-    /** Initialises the button panel. */
-    private void initButtonsPanel() {
-        final JPanel buttonPanel = new JPanel();
-        buttonsPanel = new JPanel();
+        
         progressLabel = new JLabel();
 
         orderButtons(new JButton(), new JButton());
@@ -156,35 +126,29 @@ public final class WizardDialog extends StandardDialog implements ActionListener
 
         prev = new JButton("<< Previous");
         next.setText("Next >>");
-
-        prev.setPreferredSize(new Dimension(110, 30));
-        next.setPreferredSize(new Dimension(110, 30));
-
-        prev.setMargin(new Insets(prev.getMargin().top, 0,
-                prev.getMargin().bottom, 0));
-        next.setMargin(new Insets(next.getMargin().top, 0,
-                next.getMargin().bottom, 0));
-
-        getCancelButton().addActionListener(this);
-        prev.addActionListener(this);
+        
         next.addActionListener(this);
+        prev.addActionListener(this);
+    }
 
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
-
-        buttonPanel.setLayout(new BoxLayout(buttonPanel,
-                BoxLayout.LINE_AXIS));
-        buttonPanel.add(progressLabel);
-        buttonPanel.add(Box.createHorizontalStrut(SMALL_BORDER));
-        buttonPanel.add(Box.createHorizontalGlue());
-        buttonPanel.add(prev);
-        buttonPanel.add(Box.createHorizontalStrut(SMALL_BORDER));
-        buttonPanel.add(next);
-
-        buttonsPanel.setLayout(new BorderLayout());
-
-        buttonsPanel.add(new JSeparator(), BorderLayout.PAGE_START);
-        buttonsPanel.add(buttonPanel, BorderLayout.CENTER);
+    /** Lays out the components. */
+    private void layoutComponents() {
+        final JPanel titlePanel = new JPanel(new MigLayout("fill"));
+        titlePanel.add(titleLabel, "growx, wrap");
+        titlePanel.add(new JSeparator(), "growx, pad 0");
+        titlePanel.setBackground(Color.WHITE);
+        
+        final JPanel progressPanel = new JPanel(new MigLayout("fill"));
+        progressPanel.add(new JSeparator(), "span 3, growx, pad 0, wrap");
+        progressPanel.add(progressLabel, "growx");
+        progressPanel.add(prev, "sg button");
+        progressPanel.add(next, "sg button");
+        progressPanel.setBackground(Color.WHITE);
+        
+        setLayout(new MigLayout("fill, wrap 1, ins 0"));
+        add(titlePanel, "growx");
+        add(stepsPanel, "grow");
+        add(progressPanel, "growx");        
     }
 
     /** Displays the wizard. */
@@ -225,7 +189,11 @@ public final class WizardDialog extends StandardDialog implements ActionListener
         }
     }
 
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Action event
+     */
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == next) {
@@ -233,7 +201,7 @@ public final class WizardDialog extends StandardDialog implements ActionListener
         } else if (e.getSource() == prev) {
             prevStep();
         } else if (e.getSource() == getCancelButton()) {
-            wizard.wizardCancelled();
+            fireWizardCancelled();
         }
     }
 
@@ -276,10 +244,9 @@ public final class WizardDialog extends StandardDialog implements ActionListener
                 next.setText("Finish");
             }
             updateProgressLabel();
-            wizard.stepChanged(currentStep - 1, currentStep);
         } else if ("Finish".equals(next.getText())) {
             dispose();
-            wizard.wizardFinished();
+            fireWizardFinished();
         }
     }
 
@@ -294,7 +261,6 @@ public final class WizardDialog extends StandardDialog implements ActionListener
         }
         next.setText("Next >>");
         updateProgressLabel();
-        wizard.stepChanged(currentStep + 1, currentStep);
     }
 
     /**
@@ -339,6 +305,24 @@ public final class WizardDialog extends StandardDialog implements ActionListener
     public void removeStepListener(final StepListener listener) {
         stepListeners.remove(StepListener.class, listener);
     }
+    
+    /**
+     * Adds a wizard listener to the list.
+     *
+     * @param listener
+     */
+    public void addWizardListener(final WizardListener listener) {
+        stepListeners.add(WizardListener.class, listener);
+    }
+
+    /**
+     * Removes a wizard listener from the list.
+     *
+     * @param listener
+     */
+    public void removeWizardListener(final WizardListener listener) {
+        stepListeners.remove(WizardListener.class, listener);
+    }
 
     /**
      * Fires step about to be displayed events.
@@ -363,6 +347,28 @@ public final class WizardDialog extends StandardDialog implements ActionListener
                 stepListeners.get(StepListener.class);
         for (StepListener listener : listeners) {
             listener.stepHidden(step);
+        }
+    }
+    
+    /**
+     * Fires wizard finished events.
+     */
+    private void fireWizardFinished() {
+        List<WizardListener> listeners =
+                stepListeners.get(WizardListener.class);
+        for (WizardListener listener : listeners) {
+            listener.wizardFinished();
+        }
+    }
+    
+    /**
+     * Fires wizard cancelled events.
+     */
+    private void fireWizardCancelled() {
+        List<WizardListener> listeners =
+                stepListeners.get(WizardListener.class);
+        for (WizardListener listener : listeners) {
+            listener.wizardCancelled();
         }
     }
 }

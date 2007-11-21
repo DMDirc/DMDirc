@@ -25,15 +25,7 @@ package com.dmdirc.ui.swing.dialogs.wizard;
 /**
  * Wizard interface, notifications on change of step and closing.
  */
-public interface Wizard {
-    
-    /** 
-     * Notification of step change. 
-     *
-     * @param oldStep the step that just stopped being displayed
-     * @param newStep the step now being displayed
-     */
-    void stepChanged(final int oldStep, final int newStep);
+public interface WizardListener {
     
     /** 
      * Called when the wizard finishes. 

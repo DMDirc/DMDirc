@@ -22,8 +22,8 @@
 
 package com.dmdirc.ui.swing.dialogs.wizard.firstrun;
 
-import com.dmdirc.ui.swing.components.TextLabel;
 
+import com.dmdirc.ui.swing.JWrappingLabel;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -50,9 +50,9 @@ public final class SetupStep extends StepOne {
     protected void initComponents() {
         setLayout(new MigLayout("fillx, wrap 1"));
         
-        TextLabel infoLabel;
+        JWrappingLabel infoLabel;
         
-        infoLabel = new TextLabel("It appears that this is the first time "
+        infoLabel = new JWrappingLabel("It appears that this is the first time "
                 + "that you have run DMDirc. "
                 + "This short wizard will help you setup DMDirc.\n\n"
                 + "DMDirc comes with a set of core plugins that add "
@@ -62,7 +62,7 @@ public final class SetupStep extends StepOne {
                 + "plugins for you, tick the box below.");
         add(infoLabel, "growx, pushx");
         add(plugins, "");
-        infoLabel = new TextLabel("DMDirc also comes with a set of core"
+        infoLabel = new JWrappingLabel("DMDirc also comes with a set of core"
                 + " 'actions' that serve as examples and add some basic"
                 + " functionality such as highlighting. If you would like"
                 + " the wizard to copy the core actions for you, tick the"

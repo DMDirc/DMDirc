@@ -31,10 +31,11 @@ import com.dmdirc.ui.interfaces.FirstRunWizard;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.dialogs.profiles.ProfileManagerDialog;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
-import com.dmdirc.ui.swing.dialogs.wizard.Wizard;
+import com.dmdirc.ui.swing.dialogs.wizard.WizardListener;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardDialog;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
+import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /** First run wizard, used to initially setup the client for the user. */
-public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
+public final class SwingFirstRunWizard implements WizardListener, FirstRunWizard {
 
     /** Wizard dialog. */
     private WizardDialog wizardDialog;
@@ -61,12 +62,6 @@ public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
      */
     public SwingFirstRunWizard(final boolean firstRun) {
         this.firstRun = firstRun;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void stepChanged(final int oldStep, final int newStep) {
-        //Ignore
     }
 
     /** {@inheritDoc} */
@@ -171,9 +166,7 @@ public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
         wizardDialog =
                 new WizardDialog(firstRun ? "Setup wizard" : "Migration wizard",
                 steps, this, true, (MainFrame) Main.getUI().getMainWindow());
-
-        wizardDialog.pack();
-
-        wizardDialog.display();
+        wizardDialog.addWizardListener(this);
+        wizardDialog.display(500);
     }
 }

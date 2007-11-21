@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Vector;
 
 /**
- *
+ * Adjusted Card layout.
  */
 public class StepLayout extends CardLayout {
 
@@ -38,12 +38,22 @@ public class StepLayout extends CardLayout {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 2;
+    /** Cards vector. */
     Vector elements = null;
 
+    /**
+     * Instantiates a new step layout.
+     */
     public StepLayout() {
         this(0, 0);
     }
 
+    /**
+     * Instantiates a new step layout with the specified gaps.
+     * 
+     * @param hgap Horizontal gap
+     * @param vgap Vertical gap
+     */
     public StepLayout(final int hgap, final int vgap) {
         super(hgap, vgap);
         elements = new Vector<Object>();
@@ -62,14 +72,31 @@ public class StepLayout extends CardLayout {
         }
     }
 
+    /**
+     * Returns the number of steps in the layout.
+     * 
+     * @return number of steps >= 0
+     */
     public int size() {
         return elements.size();
     }
 
+    /**
+     * Checks if the layout is empty
+     * 
+     * @return true iif the layout has no steps
+     */
     public boolean isEmpty() {
         return elements.isEmpty();
     }
 
+    /**
+     * Returns the specified step from the layout.
+     * 
+     * @param index Step to retrieve
+     * 
+     * @return Step
+     */
     public Step getStep(final int index) {
         try {
             Field f = elements.get(index).getClass().getDeclaredField("comp");
@@ -88,6 +115,11 @@ public class StepLayout extends CardLayout {
         return null;
     }
 
+    /**
+     * Returns the step list.
+     * 
+     * @return List of steps
+     */
     public List getSteps() {
         return elements;
     }
