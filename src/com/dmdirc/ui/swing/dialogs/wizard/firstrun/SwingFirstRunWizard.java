@@ -35,7 +35,6 @@ import com.dmdirc.ui.swing.dialogs.wizard.WizardListener;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardDialog;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
-import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -167,6 +166,6 @@ public final class SwingFirstRunWizard implements WizardListener, FirstRunWizard
                 new WizardDialog(firstRun ? "Setup wizard" : "Migration wizard",
                 steps, this, true, (MainFrame) Main.getUI().getMainWindow());
         wizardDialog.addWizardListener(this);
-        wizardDialog.display(500);
+        wizardDialog.display();
     }
 }
