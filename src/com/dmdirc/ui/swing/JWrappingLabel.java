@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
@@ -57,6 +58,13 @@ public class JWrappingLabel extends JLabel {
 	public void paint(final Graphics g) {
 		// Get a decent graphics object
 		final Graphics2D g2 = (Graphics2D)g;
+		
+		if (isOpaque()) {
+			Color oldColor = g.getColor();
+			g.setColor(getBackground());
+			g.fillRect(0, 0, getWidth(), getHeight());
+			g.setColor(oldColor);
+		}
 		
 		// Split the text
 		final String[] bits = getText().split(" ");
@@ -142,6 +150,6 @@ public class JWrappingLabel extends JLabel {
 		}
 		
 		// Update component height.
-		setSize(getWidth(), top+height);
+		setSize(getWidth(), top);
 	}
 }
