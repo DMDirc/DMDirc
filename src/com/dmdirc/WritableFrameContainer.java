@@ -117,7 +117,7 @@ public abstract class WritableFrameContainer extends FrameContainer {
 
         ActionManager.processEvent(actionType, buffer, actionArgs.toArray());
 
-        handleNotification(messageType, messageArgs.toArray());
+        handleNotification(buffer.toString(), messageArgs.toArray());
     } 
     
     /**
