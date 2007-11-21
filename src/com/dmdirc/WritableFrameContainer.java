@@ -150,33 +150,55 @@ public abstract class WritableFrameContainer extends FrameContainer {
      * @param messageType The type of message that is being sent
      * @param args The arguments for the message
      */
-    public void handleNotification(final String messageType, final Object... args) {
-        String target = getConfigManager().getOption("notifications", messageType,
-                "self");
+    public void handleNotification(final String messageType, final Object... args) {        
+        despatchNotification(messageType, 
+                getConfigManager().getOption("notifications", messageType, "self"), args);
+    }
+    
+    protected void despatchNotification(final String messageType,
+            final String messageTarget, final Object... args) {
+        
+        String target = messageTarget;
+        String format = messageType;
+        
+        if (target.startsWith("format:")) {
+            format = target.substring(7);
+            format = format.substring(0, format.indexOf(':'));
+            target = target.substring(8 + format.length());
+        }
 
         if (target.startsWith("group:")) {
             target = getConfigManager().getOption("notifications",
                     target.substring(6), "self");
         }
+        
+        if (target.startsWith("fork:")) {
+            for (String newtarget : target.substring(5).split("\\|")) {
+                despatchNotification(format, newtarget, args);
+            }
+            
+            return;
+        }
 
         if ("self".equals(target)) {
-            addLine(messageType, args);
+            addLine(format, args);
         }  else if (NOTIFICATION_SERVER.equals(target)) {
-            getServer().addLine(messageType, args);
+            getServer().addLine(format, args);
         } else if ("all".equals(target)) {
-            getServer().addLineToAll(messageType, args);
+            getServer().addLineToAll(format, args);
         } else if ("active".equals(target)) {
-            getServer().addLineToActive(messageType, args);
+            getServer().addLineToActive(format, args);
         } else if (target.startsWith("window:")) {
             final String windowName = target.substring(7);
 
             Window targetWindow = WindowManager.findCustomWindow(getServer().getFrame(), windowName);
 
             if (targetWindow == null) {
-                targetWindow = new CustomWindow(windowName, windowName, getFrame()).getFrame();
+                targetWindow = new CustomWindow(windowName, windowName,
+                        getServer().getFrame()).getFrame();
             }
 
-            targetWindow.addLine(messageType, args);
+            targetWindow.addLine(format, args);
         } else if (target.startsWith("lastcommand:")) {
             final Object[] escapedargs = new Object[args.length];
 
@@ -204,20 +226,20 @@ public abstract class WritableFrameContainer extends FrameContainer {
                 }
             }
 
-            best.addLine(messageType, args);
+            best.addLine(format, args);
         } else if (target.startsWith(NOTIFICATION_CHANNEL + ":")) {
            final String channel = String.format(target.substring(8), args);
 
            if (getServer().hasChannel(channel)) {
                getServer().getChannel(channel).addLine(messageType, args);
            } else {
-               addLine(messageType, args);
+               addLine(format, args);
                Logger.userError(ErrorLevel.LOW,
                        "Invalid notification target for type " + messageType
                        + ": channel " + channel + " doesn't exist");
            }
         } else if (!"none".equals(target)) {
-            addLine(messageType, args);
+            addLine(format, args);
             Logger.userError(ErrorLevel.MEDIUM,
                     "Invalid notification target for type " + messageType + ": " + target);
         }
