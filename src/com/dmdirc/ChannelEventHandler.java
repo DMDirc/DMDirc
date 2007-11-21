@@ -73,7 +73,7 @@ public final class ChannelEventHandler extends EventHandler implements
         checkParser(tParser);
 
         owner.doNotification(
-                isMyself(cChannelClient) ? "channelMessage" : "channelSelfExternalMessage",
+                isMyself(cChannelClient) ? "channelSelfExternalMessage" : "channelMessage",
                 CoreActionType.CHANNEL_MESSAGE, cChannelClient, sMessage);
     }
 
