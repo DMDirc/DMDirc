@@ -154,7 +154,11 @@ public final class ChannelEventHandler extends EventHandler implements
     public void onChannelNickChanged(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sOldNick) {
         checkParser(tParser);
-        owner.onChannelNickChanged(cChannelClient, sOldNick);
+        
+        owner.doNotification(
+                isMyself(cChannelClient) ? "channelSelfNickChange" : "channelNickChange",
+                CoreActionType.CHANNEL_NICKCHANGE, cChannelClient, sOldNick);
+        owner.renameClient(sOldNick, cChannelClient.getNickname());
     }
 
     /** {@inheritDoc} */

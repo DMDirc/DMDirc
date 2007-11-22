@@ -45,6 +45,8 @@ formatter.channelQuit = \u00032* %1$s%2$s (%3$s@%4$s) has quit IRC.
 formatter.channelQuitReason = \u00032* %1$s%2$s (%3$s@%4$s) has quit IRC (%5$s\u000F).
 formatter.channelSelfPart = \u00033* You have left the channel.
 formatter.channelSelfPartReason = \u00033* You have left the channel.
+formatter.channelNickChange = \u00033* %1$s%5$s is now know as %2$s\u000F.
+formatter.channelSelfNickChange = \u00033* You are now know as %2$s\u000F.
 
 # Type: Channel Event
 #    1: User mode prefixes
@@ -63,9 +65,7 @@ formatter.channelSelfJoin = \u00033* You are now talking in %5$s\u000F.
 #    5: Channel name
 #    6: Content
 formatter.channelTopicChange = \u00033* %1$s%2$s has changed the topic to '%6$s\u000F'.
-formatter.channelNickChange = \u00033* %1$s%2$s is now know as %6$s\u000F.
 formatter.channelModeChange = \u00033* %1$s%2$s sets mode: %6$s\u000F.
-formatter.channelSelfNickChange = \u00033* You are now know as %6$s\u000F.
 formatter.channelSelfModeChange = \u00033* You set mode: %6$s\u000F.
 
 # Type: Binary Channel Event

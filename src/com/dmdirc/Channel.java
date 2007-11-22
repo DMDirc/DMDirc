@@ -395,6 +395,16 @@ public final class Channel extends MessageTarget
         }
     }
     
+    public void renameClient(final String oldName, final String newName) {
+        tabCompleter.removeEntry(oldName);
+        tabCompleter.addEntry(newName);        
+        refreshClients();
+    }
+    
+    public void refreshClients() {
+        window.updateNames();
+    }
+   
     public void onChannelGotNames() {
         
         window.updateNames(channelInfo.getChannelClients());
@@ -437,27 +447,6 @@ public final class Channel extends MessageTarget
                 channelInfo.getTopicUser(), channelInfo.getTopicTime()));
         
         updateTitle();
-    }
-
-    public void onChannelNickChanged(
-            final ChannelClientInfo cChannelClient, final String sOldNick) {
-        final String modes = cChannelClient.getImportantModePrefix();
-        final String nick = cChannelClient.getNickname();
-        final String ident = cChannelClient.getClient().getIdent();
-        final String host = cChannelClient.getClient().getHost();
-        String type = "channelNickChange";
-        if (nick.equals(server.getParser().getMyself().getNickname())) {
-            type = "channelSelfNickChange";
-        }
-        tabCompleter.removeEntry(sOldNick);
-        tabCompleter.addEntry(nick);
-        
-        final StringBuffer buff = new StringBuffer(type);
-        
-        ActionManager.processEvent(CoreActionType.CHANNEL_NICKCHANGE, buff, this, cChannelClient, sOldNick);
-        
-        addLine(buff, modes, sOldNick, ident, host, channelInfo, nick);
-        window.updateNames();
     }
     
     public void onChannelModeChanged(

@@ -85,7 +85,7 @@ public final class Formatter {
             return "<No format string for message type " + messageType + ">";
         } else {
             try {
-                final Object[] newArgs = castArguments(res, arguments);
+                final Object[] newArgs = castArguments(messageType, res, arguments);
                 return String.format(res, newArgs);
             } catch (IllegalFormatConversionException ex) {
                 return "<Invalid format string for message type " + messageType
@@ -104,22 +104,24 @@ public final class Formatter {
      * Casts the specified arguments to the relevant classes, based on the
      * format type cache.
      *
+     * @param formatName The name of the format to be used
      * @param format The format to be used
      * @param args The arguments to be casted
      * @return A new set of arguments of appropriate types
      */
     @Precondition("The specified format is not null")
-    private static Object[] castArguments(final String format, final Object[] args) {
+    private static Object[] castArguments(final String formatName,
+            final String format, final Object[] args) {
         assert(format != null);
         
-        if (!typeCache.containsKey(format)) {
-            analyseFormat(format, args);
+        if (!typeCache.containsKey(formatName)) {
+            analyseFormat(formatName, format, args);
         }
         
         final Object[] res = new Object[args.length];
         
         int i = 0;
-        for (Character chr : typeCache.get(format)) {
+        for (Character chr : typeCache.get(formatName)) {
             switch (chr) {
             case 'b': case 'B': case 'h': case 'H': case 's': case 'S':
                 // General (strings)
@@ -159,10 +161,12 @@ public final class Formatter {
     /**
      * Analyses the specified format string and fills in the format type cache.
      *
+     * @param formatName The name of the format to use
      * @param format The format to analyse
      * @param args The raw arguments
      */
-    private static void analyseFormat(final String format, final Object[] args) {
+    private static void analyseFormat(final String formatName, 
+            final String format, final Object[] args) {
         final Character[] types = new Character[args.length];
         
         for (int i = 0; i < args.length; i++) {
@@ -175,7 +179,7 @@ public final class Formatter {
             }
         }
         
-        typeCache.put(format, types);
+        typeCache.put(formatName, types);
     }
     
     /**
