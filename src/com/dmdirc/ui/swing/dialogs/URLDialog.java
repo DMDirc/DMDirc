@@ -26,12 +26,15 @@ import com.dmdirc.Main;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.ExecutableFileFilter;
 import com.dmdirc.ui.swing.components.StandardDialog;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URI;
+
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+
 import net.miginfocom.swing.MigLayout;
 
 /** URL Protocol dialog. */
@@ -63,7 +66,7 @@ public class URLDialog extends StandardDialog implements ActionListener {
         super((MainFrame) Main.getUI().getMainWindow(), false);
 
         this.url = url;
-        
+
         initComponents();
         layoutComponents();
         addListeners();
@@ -107,17 +110,26 @@ public class URLDialog extends StandardDialog implements ActionListener {
         fileChooser = new JFileChooser();
         showFileChooser = new JButton();
         infoLabel = new JLabel();
-        
+
         fileChooser.addChoosableFileFilter(new ExecutableFileFilter());
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         showFileChooser.setText("Browse");
-        infoLabel.setText("/set protocol " + url.getScheme() + " [DMDIRC|BROWSER|MAIL|some kind of list]");
+        infoLabel.setText("<html><p>/set protocol " + url.getScheme() +
+                " [command - [command] may be one of</p>" +
+                "<ul>" +
+                "<li>DMDirc - Opened by DMDirc (only IRC links atm)</li>" + 
+                "<li>BROWSER - Opened with the browser, or registered handlers</li>" + 
+                "<li>MAIL - Opened with your mail client</li>" + 
+                "<li>command - opened using the specified command</li>" + 
+                "</ul>" +
+                "<p>$url, $fragment, $path, $port, $query, $protocol, $username" +
+                ", $password all substituted.</p></html>");
     }
 
     /** Lays out the components. */
     private void layoutComponents() {
         setLayout(new MigLayout("fill"));
-        
+
         add(infoLabel, "grow");
     }
 
