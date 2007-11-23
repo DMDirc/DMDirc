@@ -22,9 +22,8 @@
 
 package com.dmdirc.ui.swing.dialogs.about;
 
-import com.dmdirc.util.BrowserLauncher;
 import com.dmdirc.ui.swing.components.HTMLLabel;
-
+import com.dmdirc.util.URLHandler;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
@@ -81,7 +80,7 @@ public final class CreditsPanel extends JPanel implements HyperlinkListener {
     /** {@inheritDoc} */
     public void hyperlinkUpdate(final HyperlinkEvent e) {
         if (e.getEventType() == EventType.ACTIVATED) {
-            BrowserLauncher.openURL(e.getURL());
+            URLHandler.getURLHander().launchApp(e.getURL());
         }
     }
     

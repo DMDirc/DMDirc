@@ -32,6 +32,8 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Date;
 
 /** Handles URLs. */
 public class URLHandler {
@@ -42,6 +44,8 @@ public class URLHandler {
     private static final URLHandler me = new URLHandler();
     /** Desktop handler. */
     private final Desktop desktop;
+    /** The time a browser was last launched. */
+    private static Date lastLaunch;
 
     /** Instantiates a new URL Handler. */
     private URLHandler() {
@@ -79,6 +83,48 @@ public class URLHandler {
         } catch (URISyntaxException ex) {
             Logger.userError(ErrorLevel.LOW, "Invalid URL: " + ex.getMessage());
             return;
+        }
+
+        launchApp(uri);
+    }
+
+    /**
+     * Launches an application for a given url.
+     *
+     * @param url URL to parse
+     */
+    public void launchApp(final URL url) {
+        URI uri;
+        try {
+            uri = url.toURI();
+            if (uri.getScheme() == null) {
+                uri = new URI("http://" + url.toString());
+            }
+        } catch (URISyntaxException ex) {
+            Logger.userError(ErrorLevel.LOW, "Invalid URL: " + ex.getMessage());
+            return;
+        }
+
+        launchApp(uri);
+    }
+
+    /**
+     * Launches an application for a given url.
+     *
+     * @param uri URL to parse
+     */
+    public void launchApp(final URI uri) {
+        final Date oldLaunch = lastLaunch;
+        lastLaunch = new Date();
+
+        if (IdentityManager.getGlobalConfig().getOptionBool("browser",
+                "uselaunchdelay", false) && oldLaunch != null) {
+            final Long diff = lastLaunch.getTime() - oldLaunch.getTime();
+
+            if (diff < IdentityManager.getGlobalConfig().getOptionInt("browser",
+                    "launchdelay", 500)) {
+                return;
+            }
         }
 
         if (!config.hasOption("protocol", uri.getScheme())) {

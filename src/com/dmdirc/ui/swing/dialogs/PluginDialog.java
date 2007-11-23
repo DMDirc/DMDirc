@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.swing.dialogs;
 
-import com.dmdirc.util.BrowserLauncher;
 import com.dmdirc.Main;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginInfo;
@@ -34,6 +33,7 @@ import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.swing.components.HTMLLabel;
 import com.dmdirc.ui.swing.components.TextLabel;
+import com.dmdirc.util.URLHandler;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -299,7 +299,7 @@ public final class PluginDialog extends StandardDialog implements
     /** {@inheritDoc}. */
     public void hyperlinkUpdate(final HyperlinkEvent e) {
         if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-            BrowserLauncher.openURL(e.getURL());
+            URLHandler.getURLHander().launchApp(e.getURL());
         }
     }
     

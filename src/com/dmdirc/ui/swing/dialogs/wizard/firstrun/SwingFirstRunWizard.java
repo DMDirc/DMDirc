@@ -35,6 +35,7 @@ import com.dmdirc.ui.swing.dialogs.wizard.WizardListener;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardDialog;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
+import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;

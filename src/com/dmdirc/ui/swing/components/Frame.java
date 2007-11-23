@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.swing.components;
 
-import com.dmdirc.util.BrowserLauncher;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.util.StringTranscoder;
@@ -548,7 +547,7 @@ public abstract class Frame extends JInternalFrame implements Window,
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
                     new StringSelection(hyperlinkOpenMI.getActionCommand()), null);
         } else if (actionEvent.getSource() == hyperlinkOpenMI) {
-            BrowserLauncher.openURL(hyperlinkOpenMI.getActionCommand());
+            URLHandler.getURLHander().launchApp(hyperlinkOpenMI.getActionCommand());
         }
     }
     

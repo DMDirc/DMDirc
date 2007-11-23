@@ -60,14 +60,14 @@ public final class SetupStep extends StepOne {
                 + "Thse plugins need to be copied into your home directory to"
                 + " be used. If you would like the wizard to copy the core "
                 + "plugins for you, tick the box below.");
-        add(infoLabel, "growx, pushx");
+        add(infoLabel, "growx, pushx, wmax 400");
         add(plugins, "");
         infoLabel = new JWrappingLabel("DMDirc also comes with a set of core"
                 + " 'actions' that serve as examples and add some basic"
                 + " functionality such as highlighting. If you would like"
                 + " the wizard to copy the core actions for you, tick the"
                 + " box below.");
-        add(infoLabel, "growx, pushx");
+        add(infoLabel, "growx, pushx, wmax 400");
         add(actions, "");
     }
 }

@@ -56,13 +56,13 @@ public final class UpdateStep extends StepOne {
                 + " the core plugins and actions.\n\nWould you like to extract the"
                 + " core plugins to update them? Note that older plugins may not"
                 + " function correctly with this version of DMDirc.");
-        add(infoLabel, "growx, pushx");
+        add(infoLabel, "growx, pushx, wmax 400");
         add(plugins, "");
         
         infoLabel = new JWrappingLabel("Would you like to extract the default actions"
                 + " to update them? Any changes you have made to the default"
                 + " actions will be lost.");
-        add(infoLabel, "growx, pushx");
+        add(infoLabel, "growx, pushx, wmax 400");
         add(actions, "");
     }
     

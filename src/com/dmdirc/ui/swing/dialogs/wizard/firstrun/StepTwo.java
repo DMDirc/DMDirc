@@ -58,7 +58,7 @@ public final class StepTwo extends Step {
                 + "If you would like the wizard to open the profile manager "
                 + "for you, tick the box below.");
         
-        add(infoLabel, "growx, pushx");
+        add(infoLabel, "growx, pushx, wmax 400");
         add(profile, "");
     }
     
