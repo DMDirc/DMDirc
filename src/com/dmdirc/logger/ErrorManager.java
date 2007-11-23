@@ -163,11 +163,16 @@ public final class ErrorManager implements Serializable, Runnable {
      * @param error error to be sent
      */
     public void sendError(final ProgramError error) {
-        reportQueue.add(error);
+        if (!errors.containsValue(error)) {
+            reportQueue.add(error);
         
-        if (reportThread == null || !reportThread.isAlive()) {
-            reportThread = new Thread(this, "Error reporting thread");
-            reportThread.start();
+            if (reportThread == null || !reportThread.isAlive()) {
+                reportThread = new Thread(this, "Error reporting thread");
+                reportThread.start();
+            }
+        } else {
+            error.setReportStatus(ErrorReportStatus.FINISHED);
+            error.setFixedStatus(ErrorFixedStatus.UNREPORTED);
         }
     }
     
@@ -226,7 +231,12 @@ public final class ErrorManager implements Serializable, Runnable {
         checkResponses(error, response);
     }
     
-    /** Checks the responses and sets status accordingly. */
+    /** 
+     * Checks the responses and sets status accordingly.
+     * 
+     * @param error Error to check response
+     * @param response Response to check
+     */
     private static void checkResponses(final ProgramError error,
             final List<String> response) {
         if (!response.isEmpty() || response.get(response.size() - 1).

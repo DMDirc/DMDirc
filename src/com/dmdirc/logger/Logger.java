@@ -112,6 +112,7 @@ public final class Logger {
         
         if (!sendable) {
             error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
+            error.setFixedStatus(ErrorFixedStatus.UNREPORTED);
         }
         
         if (sendable && report) {

@@ -187,5 +187,39 @@ public final class ProgramError implements Serializable {
         return "ID" + id + " Level: " + getLevel() + " Status: " + getReportStatus()
         + " Message: '" + getMessage() + "'";
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ProgramError other = (ProgramError) obj;
+        if (this.level != other.level) {
+            return false;
+        }
+        if (this.message == null || !this.message.equals(other.message)) {
+            return false;
+        }
+        if (this.trace == null || !Arrays.equals(this.trace, other.trace)) {
+            return false;
+        }
+        return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 67 * hash + (this.level != null ? this.level.hashCode() : 0);
+        hash = 67 * hash + (this.message != null ? this.message.hashCode() : 0);
+        hash = 67 * hash + (this.trace != null ? this.trace.hashCode() : 0);
+        return hash;
+    }
+    
+    
     
 }

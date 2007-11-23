@@ -34,6 +34,8 @@ public enum ErrorFixedStatus {
     FIXED("Fixed"), 
     /** Waiting state. */
     INVALID("Invalid bug"),
+    /** Unreported. */
+    UNREPORTED("Unreported"),
     /** Unknown state. */
     UNKNOWN("Unknown status");
     
