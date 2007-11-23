@@ -139,7 +139,7 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
         name = new JTextField();
         email = new JTextField();
         feedback = new JTextArea();
-        serverCheckbox = new JCheckBox("Include server information.");
+        serverCheckbox = new JCheckBox("Include information about connected servers.");
 
         UIUtilities.addUndoManager(name);
         UIUtilities.addUndoManager(email);
@@ -153,7 +153,7 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
 
         setLayout(new MigLayout("fill"));
 
-        add(info, "span 3, growx, wrap");
+        add(info, "span 3, growx, wrap, gapbottom unrel");
 
         add(new JLabel("Name: "));
         add(name, "span 2, growx, wrap");
