@@ -67,16 +67,23 @@ begin
 		// Vista Sucks.
 		hK32 := GetModuleHandle('kernel32');
 		if GetProcAddress(hK32, 'GetLocaleInfoEx') <> nil then begin
-			errorMessage := 'An update to DMDirc has been previously downloaded.';
-			errorMessage := errorMessage+#13#10;
-			errorMessage := errorMessage+#13#10+'As you are running Windows Vista, DMDirc requires administer access to';
-			errorMessage := errorMessage+#13#10+'complete the update.';
-			errorMessage := errorMessage+#13#10;
-			errorMessage := errorMessage+#13#10+'Please click ''Allow'' on the UAC prompt to complete the update, or click no';
-			errorMessage := errorMessage+#13#10+'here to continue without updating.';
-			if MessageBox(0, PChar(errorMessage), 'Windows Vista', MB_YESNO) = IDYES then begin
-				ExecAndWait('DMDircUpdater.exe '+directory+'\.DMDirc.jar');
-			end;
+			// Vista >.<
+			// Try and delete the old file, if it fails then the user needs to give
+			// us permission to delete the file (UAC), otherwise we can just go ahead
+			// and run the updater.
+			if not DeleteFile('DMDirc.jar') then begin
+				errorMessage := 'An update to DMDirc has been previously downloaded.';
+				errorMessage := errorMessage+#13#10;
+				errorMessage := errorMessage+#13#10+'As you are running Windows Vista, DMDirc requires administer access to';
+				errorMessage := errorMessage+#13#10+'complete the update.';
+				errorMessage := errorMessage+#13#10;
+				errorMessage := errorMessage+#13#10+'Please click ''Allow'' on the UAC prompt to complete the update, or click no';
+				errorMessage := errorMessage+#13#10+'here to continue without updating.';
+				if MessageBox(0, PChar(errorMessage), 'Windows Vista', MB_YESNO) = IDYES then begin
+					ExecAndWait('DMDircUpdater.exe '+directory+'\.DMDirc.jar');
+				end;
+			end
+			else ExecAndWait('DMDircUpdater.exe '+directory+'\.DMDirc.jar');
 		end
 		else ExecAndWait('DMDircUpdater.exe '+directory+'\.DMDirc.jar');
 	end;
