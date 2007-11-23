@@ -2,6 +2,9 @@ program DMDirc;
 {$MODE Delphi}
 {$APPTYPE GUI}
 
+{$R icon.rc}
+{$R version.rc}
+
 uses Windows, SysUtils, classes;
 
 // Run an application and wait for it to finish.

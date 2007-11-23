@@ -12,7 +12,7 @@ var
 begin
 	if ParamCount > 0 then begin
 		for i := 1 to ParamCount do begin
-			updateFile := updateFile+paramstr(i);
+			updateFile := updateFile+' '+paramstr(i);
 		end;
 
 		if FileExists('DMDirc.jar') then begin
@@ -20,7 +20,7 @@ begin
 				MessageBox(0, 'Unable to delete DMDirc.jar', 'Update Failed', MB_ICONSTOP);
 			end;
 		end;
-		if MoveFile(pchar(updateFile), 'DMDirc.jar') then begin
+		if MoveFile(pchar(trim(updateFile)), 'DMDirc.jar') then begin
 			MessageBox(0, 'Client update was successful.', 'Update Completed', MB_OK);
 		end
 		else begin
