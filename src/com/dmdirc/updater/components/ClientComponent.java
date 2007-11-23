@@ -25,6 +25,8 @@ package com.dmdirc.updater.components;
 import com.dmdirc.Main;
 import com.dmdirc.updater.UpdateComponent;
 
+import java.io.File;
+
 /**
  * Represents the client component, which covers the core client resources.
  * 
@@ -39,15 +41,20 @@ public class ClientComponent implements UpdateComponent {
     }
 
     /** {@inheritDoc} */
-    @Override    
+    @Override
     public int getVersion() {
         return Main.RELEASE_DATE;
     }
 
     /** {@inheritDoc} */
-    @Override    
+    @Override
     public void doInstall(final String path) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        final File tmpFile = new File(path);
+        final File targetFile = new File(tmpFile.getParent()+File.pathSeparator+".DMDirc.jar");
+        if (targetFile.exists()) {
+            targetFile.delete();
+        }
+        tmpFile.renameTo(targetFile);
     }
 
 }

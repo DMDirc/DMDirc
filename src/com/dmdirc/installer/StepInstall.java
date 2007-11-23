@@ -117,6 +117,11 @@ public final class StepInstall extends Step implements StepListener {
 			}
 		}
 		
+		if (Main.getInstaller().supportsShortcut(ShortcutType.UNINSTALLER)) {
+			addText("Creating uninstaller");
+			myInstaller.setupShortcut(location, ShortcutType.UNINSTALLER);
+		}
+		
 		addText("");
 		addText("Installation finished\n");
 		Main.getWizardDialog().enableNextStep(true);

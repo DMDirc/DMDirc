@@ -77,7 +77,8 @@ public class WindowsInstaller extends Installer {
 				return !(System.getProperty("os.name").indexOf("95") >= 0);
 			case DESKTOP:
 			case MENU:
-				// All versions of windows have desktop and menu
+			case UNINSTALLER:
+				// All versions of windows have desktop, menu and uninstaller
 				return true;
 			default:
 				// Anything else that gets added should be false until the relevent
@@ -130,6 +131,55 @@ public class WindowsInstaller extends Installer {
 					}
 					break;
 					
+				case UNINSTALLER:
+					// Registry hax!
+					
+					final String[] addKey = new String[] {
+					                      "reg.exe",
+					                      "add",
+					                      "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DMDirc"
+					                      };
+					final String[] displayName = new String[] {
+					                      "reg.exe",
+					                      "add",
+					                      "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DMDirc",
+					                      "/v",
+					                      "DisplayName",
+					                      "/t",
+					                      "REG_SZ",
+					                      "/d",
+					                      "DMDirc IRC Client"
+					                      };
+					final String[] uninstaller = new String[] {
+					                      "reg.exe",
+					                      "add",
+					                      "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DMDirc",
+					                      "/v",
+					                      "UninstallString",
+					                      "/t",
+					                      "REG_SZ",
+					                      "/d",
+					                      location+"\\Uninstall.exe"
+					                      };
+					try {
+						final Process keyProcess = Runtime.getRuntime().exec(addKey);
+						new StreamReader(keyProcess.getInputStream()).start();
+						new StreamReader(keyProcess.getErrorStream()).start();
+						keyProcess.waitFor();
+						
+						final Process displayNameProcess = Runtime.getRuntime().exec(displayName);
+						new StreamReader(displayNameProcess.getInputStream()).start();
+						new StreamReader(displayNameProcess.getErrorStream()).start();
+						displayNameProcess.waitFor();
+						
+						final Process uninstallerProcess = Runtime.getRuntime().exec(uninstaller);
+						new StreamReader(uninstallerProcess.getInputStream()).start();
+						new StreamReader(uninstallerProcess.getErrorStream()).start();
+						uninstallerProcess.waitFor();
+					} catch (Exception e) {
+						step.addText(" - Error adding registry entries: "+e.getMessage());
+					}
+					break;
 				default:
 					step.addText(" - Error creating shortcut. Not applicable to this Operating System");
 					return;

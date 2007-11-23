@@ -1,0 +1,481 @@
+#!/bin/sh
+#
+# This script generates a .run file that will install DMDirc
+#
+# DMDirc - Open Source IRC Client
+# Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+# Final Name of the installer (without file extention)
+INSTALLERNAME=DMDirc-Setup
+# Location of .run stub start
+STARTLINE=`grep -n "^###START INCLUDE###$" $0`
+STARTLINE=$((${STARTLINE%%:*} + 1))
+# full name of the file to output to
+RUNNAME="${PWD}/${INSTALLERNAME}.run"
+
+# Compress stuff!
+compress() {
+	tar cvfh - $@ | gzip - 2>/dev/null >>${RUNNAME} || {
+		echo "Compression failed."
+		kill -15 $$;
+	};
+}
+
+# Go!
+echo "-----------"
+if [ -e "${RUNNAME}" ]; then
+	echo "Removing existing .run file"
+	rm -Rf ./*.run
+fi
+
+showHelp() {
+	echo "This will generate a DMDirc installer for a unix based system."
+	echo "The following command line arguments are known:"
+	echo "---------------------"
+	echo "-h, --help                Help information"
+	echo "-r, --release [version]   Generate a file based on an svn tag (or branch with -b aswell)"
+	echo "-b, --branch              Release in -r is a branch "
+	echo "-c, --compile             Recompile the .jar file"
+	echo "-t, --tag [tag]           Tag to add to final exe name to distinguish this build from a standard build"
+	echo "-k, --keep                Keep the existing source tree when compiling"
+	echo "                          (don't svn update beforehand)"
+	echo "---------------------"
+	exit 0;
+}
+
+# Check for some CLI params
+compileJar="false"
+updateSVN="true"
+isRelease=""
+finalTag=""
+BRANCH="0"
+location="../../../"
+while test -n "$1"; do
+	case "$1" in
+		--compile|-c)
+			compileJar="true"
+			;;
+		--release|-r)
+			shift
+			isRelease=${1}
+			;;
+		--tag|-t)
+			shift
+			RUNNAME="${PWD}/${INSTALLERNAME}-${1}.run"
+			;;
+		--keep|-k)
+			updateSVN="false"
+			;;
+		--help|-h)
+			showHelp;
+			;;
+		--branch|-b)
+			BRANCH="1"
+			;;
+	esac
+	shift
+done
+
+jarPath="${location}trunk"
+if [ "${isRelease}" != "" ]; then
+	if [ "${BRANCH}" != "0" ]; then
+		if [ -e "${location}branches/"${isRelease} ]; then
+			jarPath="${location}branches/"${isRelease}
+		else
+			echo "Branch "${isRelease}" not found."
+			exit 1;
+		fi
+	else
+		if [ -e "${location}tags/"${isRelease} ]; then
+			jarPath="${location}tags/"${isRelease}
+		else
+			echo "Tag "${isRelease}" not found."
+			exit 1;
+		fi
+	fi
+fi
+
+if [ ! -e ${jarPath}"/dist/DMDirc.jar" -o "${compileJar}" = "true" ]; then
+	echo "Creating jar.."
+	OLDPWD=${PWD}
+	cd ${jarPath}
+	if [ "${updateSVN}" = "true" ]; then
+		svn update
+	fi
+	rm -Rf build dist
+	ant jar
+	if [ ! -e "dist/DMDirc.jar" ]; then
+		echo "There was an error creating the .jar file. Aborting."
+		exit 0;
+	fi;
+	cd ${OLDPWD}
+fi;
+
+echo "Linking jar.."
+ln -s ${jarPath}"/dist/DMDirc.jar" "./DMDirc.jar"
+
+echo "Creating .run file"
+echo "Adding stub.."
+tail -n +${STARTLINE} $0 > ${RUNNAME}
+
+# Add release info.
+awk '{gsub(/###ADDITIONAL_STUFF###/,"isRelease=\"'${isRelease}'\"");print}' ${RUNNAME} > ${RUNNAME}.tmp
+mv ${RUNNAME}.tmp ${RUNNAME}
+
+FILES="DMDirc.jar";
+echo "Compressing files.."
+if [ -e "setup.sh" ]; then
+	FILES="${FILES} setup.sh"
+else
+	echo "[WARNING] Creating setup-less archive. This will just extract and immediately delete the .jar file unless the -e flag is used"
+fi 
+
+if [ -e "../common/installer.jar" ]; then
+	ln -s ../common/installer.jar ./installer.jar
+	FILES="${FILES} installer.jar"
+else
+	echo "[WARNING] Creating installer-less archive - relying on setup.sh"
+fi 
+
+if [ -e ${jarPath}"/src/com/dmdirc/res/logo.svg" ]; then
+	ln -s ${jarPath}"/src/com/dmdirc/res/logo.svg" ./icon.svg
+	FILES="${FILES} icon.svg"
+fi
+
+if [ "${isRelease}" != "" ]; then
+	DOCSDIR=${jarPath}
+else
+	DOCSDIR="../common"
+fi
+
+if [ -e "${DOCSDIR}/README.TXT" ]; then
+	ln -s "${DOCSDIR}/README.TXT" .
+	FILES="${FILES} README.TXT"
+fi
+
+if [ -e "${DOCSDIR}/CHANGES.TXT" ]; then
+	ln -s "${DOCSDIR}/CHANGES.TXT" .
+	FILES="${FILES} CHANGES.TXT"
+elif [ -e "${DOCSDIR}/CHANGELOG.TXT" ]; then
+	ln -s "${DOCSDIR}/CHANGELOG.TXT" .
+	FILES="${FILES} CHANGELOG.TXT"
+fi
+
+compress $FILES
+
+MD5BIN=`which md5sum`
+AWK=`which awk`
+getMD5() {
+	# Everything below the MD5SUM Line
+	MD5LINE=`grep -na "^MD5=\".*\"$" ${1}`
+	MD5LINE=$((${MD5LINE%%:*} + 1))
+
+	MD5SUM=`tail -n +${MD5LINE} "${1}" | ${MD5BIN} - | ${AWK} '{print $1}'`
+	return;
+}
+
+if [ "${MD5BIN}" != "" -a "${AWK}" != "" ]; then
+	echo "Adding MD5.."
+	
+	MD5SUM=""
+	getMD5 ${RUNNAME} ${MD5SUM}
+	
+	echo "SUM obtained is: ${MD5SUM}"
+	
+	LINENUM=`grep -na "^MD5=\"\"$" ${RUNNAME}`
+	LINENUM=${LINENUM%%:*}
+	
+	head -n $((${LINENUM} -1)) ${RUNNAME} > ${RUNNAME}.tmp
+	echo 'MD5="'${MD5SUM}'"' >> ${RUNNAME}.tmp
+	tail -n +$((${LINENUM} +1)) ${RUNNAME} >> ${RUNNAME}.tmp
+	mv ${RUNNAME}.tmp ${RUNNAME}
+else
+	echo "Not Adding MD5.."
+fi;
+
+echo "Chmodding"
+chmod a+x ${RUNNAME}
+
+if [ "${isRelease}" != "" ]; then
+	mv ${RUNNAME} ../output/DMDirc-${isRelease}-Setup.run
+else
+	mv ${RUNNAME} ../output/
+fi;
+mv setup.sh setup.sh.tmp
+rm -f ${FILES}
+mv setup.sh.tmp setup.sh
+
+echo "-----------"
+echo "Done."
+echo "-----------"
+
+# and Done \o
+exit 0;
+### Everything below here is part of the .run stub.
+###START INCLUDE###
+#!/bin/sh
+#
+# This script installs dmdirc
+#
+# DMDirc - Open Source IRC Client
+# Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+MD5=""
+
+# Check the which command exists
+WHICH=`which`
+if [ "" != "${WHICH}" ]; then
+	echo "which command not found. Aborting.";
+	exit 0;
+fi
+
+
+###ADDITIONAL_STUFF###
+
+# Location of .run stub end
+ENDLINE=`grep -na "^###END INCLUDE###$" $0`
+ENDLINE=$((${ENDLINE%%:*} + 1))
+
+if [ "" = "${ENDLINE}" ]; then
+	echo "End of stub not found. Aborting.";
+	exit 0;
+fi
+
+# Attempt to get a name for a random dir in /tmp
+random() {
+	# First off, lets try mktemp.
+	MKTEMP=`which mktemp`
+	if [ "" != "${MKTEMP}" ]; then
+		# mktemp exists \o
+		DIR=`${MKTEMP} -d`
+		eval "$1=${DIR}"
+		return;
+	fi
+	
+	TMPDIR=${TMPDIR:=/tmp}
+	BASEDIR=${TMPDIR}dmdirc_`whoami`_
+	DIR=${PWD}
+	while [ -d "${DIR}" ]; do
+		if [ "" != "${RANDOM}" ]; then
+			# Bash has a psuedo random number generator that can be accessed
+			# using ${RANDOM}
+			RND=${RANDOM}${RANDOM}${RANDOM}
+		else
+			# Dash (the ubuntu default sh) however does not.
+			# od and awk however usually exist, and we can get a random number
+			# from /dev/urandom or /dev/random
+			OD=`which od`
+			AWK=`which awk`
+			RND=""
+			if [ "" != "$OD" -a "" != "$AWK" ]; then
+				# Try /dev/urandom first
+				RAND=/dev/urandom
+				# If it doesn't exist try /dev/random
+				if [ ! -e "${RAND}" ]; then
+					RAND=/dev/urandom;
+				fi
+				# This makes sure we only try to read if one exists
+				if [ ! -e "${RAND}" ]; then
+					RND=$(head -1 ${RAND} | od -N 3 -t u | awk '{ print $2 }')
+				fi;
+			fi;
+			
+			# No random number was generated, getting to here means that
+			# ${RANDOM} doesn't exist, /dev/random doesn't exist, /dev/urandom doesn't exist
+			# or that od/awk don't exist. Annoying.
+			# Try using this processes PID instead!
+			if [ "${RND}" = "" ]; then
+				RND=$$
+				DIR=${BASEDIR}${RND}
+				if [ -e "${DIR}" ]; then
+					# Lets hope this never happens.
+					echo "Unable to create random directory";
+					exit 0;
+				fi;
+			fi;
+		fi;
+		DIR=${BASEDIR}${RND}
+	done
+	mkdir ${DIR}
+	eval "$1=${DIR}"
+}
+
+uncompress() {
+	tail -n +${ENDLINE} "${OLDPWD}/$0" | gzip -cd | tar -xvf - 2>/dev/null || {
+		echo "Decompression failed."
+		kill -15 $$;
+	};
+}
+
+showHelp() {
+	echo "This will install DMDirc on a unix based system."
+	echo "The following command line arguments are known:"
+	echo "---------------------"
+	echo "-h, --help        Help information"
+	echo "-e, --extract     Extract .run file only, do not run setup.sh"
+	echo "-s, --script      Don't use installer.jar (not implemented yet)"
+	echo "---------------------"
+	exit 0;
+}
+
+# Defaults
+extractOnly="false"
+setupParams=""
+skipMD5="false"
+
+# Begin
+echo "---------------------"
+echo "DMDirc Unix Setup"
+if [ "${isRelease}" != "" ]; then
+	echo "Version: "${isRelease};
+	setupParams="${setupParams} --release "${isRelease}
+fi;
+echo "---------------------"
+# Check for cmdline args
+while test -n "$1"; do
+	case "$1" in
+		--help|-h)
+			showHelp
+			;;
+		--extract|-e)
+			extractOnly="true"
+			;;
+		--script|-s)
+			setupParams="${setupParams} --script"
+			;;
+		--nomd5)
+			skipMD5="true"
+			;;
+	esac
+	shift
+done
+
+MD5BIN=`which md5sum`
+AWK=`which awk`
+getMD5() {
+	# Everything below the MD5SUM Line
+	MD5LINE=`grep -na "^MD5=\".*\"$" ${1}`
+	MD5LINE=$((${MD5LINE%%:*} + 1))
+
+	MD5SUM=`tail -n +${MD5LINE} "${1}" | ${MD5BIN} - | ${AWK} '{print $1}'`
+	return;
+}
+
+if [ "${MD5BIN}" != "" ]; then
+	if [ ${skipMD5} != "true" ]; then
+		if [ -e "${0}.md5"  ]; then
+			echo "Checking MD5 using ${0}.md5.."
+			${MD5BIN} --check --status ${0}.md5
+			if [ $? = 0 ]; then
+				echo "MD5 Check Passed!"
+			else
+				echo ""
+				echo "MD5 Check Failed!"
+				echo "--------------------------"
+				echo "This copy of the DMDirc installer appears to be damaged and will now exit.";
+				echo "You may choose to skip this check and run it anyway by passing the --nomd5 parameter";
+				exit 1;
+			fi
+		elif [ "${MD5}" != ""  ]; then
+			echo "Checking MD5 using built in hash.."
+			if [ "${AWK}" != "" ]; then
+				MD5SUM=""
+				getMD5 ${0} ${MD5SUM}
+			
+				echo "SUM obtained is: ${MD5SUM}"
+				echo "SUM expected is: ${MD5}"
+				if [ "${MD5SUM}" = "${MD5}" ]; then
+					echo "MD5 Check Passed!"
+				else
+					echo ""
+					echo "MD5 Check Failed!"
+					echo "--------------------------"
+					echo "This copy of the DMDirc installer appears to be damaged and will now exit.";
+					echo "You may choose to skip this check and run it anyway by passing the --nomd5 parameter";
+					exit 1;
+				fi;
+			else
+				echo "MD5 Check skipped (awk not found).."
+			fi;
+		else
+			if [ "${MD5BIN}" = "" ]; then
+				echo "MD5 Check skipped (md5sum not found).."
+			else
+				echo "MD5 Check skipped (No MD5 hash found to compare against).."
+			fi
+		fi;
+	else
+		echo "MD5 Check skipped (Requested).."
+	fi
+fi;
+
+OLDPWD=${PWD}
+echo "Getting Temp Dir"
+random TEMPDIR
+echo "Got Temp Dir: ${TEMPDIR}"
+cd ${TEMPDIR}
+echo "Uncompressing to temp dir.."
+uncompress
+echo "Done."
+# Check if extract only was wanted.
+if [ "${extractOnly}" = "true" ]; then
+	echo "Extracted. (Files can be found in: ${TEMPDIR})"
+	exit 0;
+fi
+
+if [ -e "${TEMPDIR}/setup.sh" ]; then
+	echo "Running setup.."
+	chmod a+x ${TEMPDIR}/setup.sh
+	${TEMPDIR}/setup.sh ${setupParams}
+	echo ""
+	if [ $? -eq 0 ]; then
+		echo "Setup completed."
+	else
+		echo "Setup failed."
+	fi
+else
+	echo "No setup.sh found. This was pointless?"
+fi
+echo "Removing temp dir"
+cd ${OLDPWD}
+rm -Rf ${TEMPDIR}
+echo "Installation Completed."
+# Job Done!
+exit 0;
+###END INCLUDE###

@@ -52,6 +52,11 @@ public class JWrappingLabel extends JLabel {
 	/** My prefered width. */
 	private int myPreferredWidth = 0;
 
+	/** Is this label in debugging mode? */
+	private boolean debug = false;
+	/** Enable debugging mode */
+	public void setDebug() { debug = true; }
+
 	/** {@inheritDoc} */
 	public JWrappingLabel() {
 		super();
@@ -83,7 +88,7 @@ public class JWrappingLabel extends JLabel {
 			return new Dimension(myPreferredWidth, myPreferredHeight);
 		}
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public void paint(final Graphics g) {
