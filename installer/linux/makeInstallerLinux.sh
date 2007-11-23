@@ -155,8 +155,8 @@ else
 	echo "[WARNING] Creating installer-less archive - relying on setup.sh"
 fi 
 
-if [ -e ${jarPath}"/src/com/dmdirc/res/logo.svg" ]; then
-	ln -s ${jarPath}"/src/com/dmdirc/res/logo.svg" ./icon.svg
+if [ -e ${jarPath}"/src/com/dmdirc/res/source/logo.svg" ]; then
+	ln -s ${jarPath}"/src/com/dmdirc/res/source/logo.svg" ./icon.svg
 	FILES="${FILES} icon.svg"
 fi
 
@@ -177,6 +177,11 @@ if [ -e "${DOCSDIR}/CHANGES.TXT" ]; then
 elif [ -e "${DOCSDIR}/CHANGELOG.TXT" ]; then
 	ln -s "${DOCSDIR}/CHANGELOG.TXT" .
 	FILES="${FILES} CHANGELOG.TXT"
+fi
+
+if [ -e "${jarPath}/launcher/linux" ]; then
+	ln -s ${jarPath}/launcher/linux/DMDirc.sh .
+	FILES="${FILES} DMDirc.sh"
 fi
 
 compress $FILES

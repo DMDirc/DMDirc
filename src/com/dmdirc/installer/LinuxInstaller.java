@@ -154,7 +154,8 @@ public class LinuxInstaller extends Installer {
 		writer.println("Categories=Network;IRCClient;");
 		writer.println("Comment=DMDirc IRC Client");
 		writer.println("Encoding=UTF-8");
-		writer.println("Exec=java -jar "+location+"/DMDirc.jar");
+//		writer.println("Exec=java -jar "+location+"/DMDirc.jar");
+		writer.println("Exec="+location+"/DMDirc.sh");
 		writer.println("GenericName=IRC Client");
 		writer.println("Icon="+location+"/icon.svg");
 		if (isRoot()) {
