@@ -48,7 +48,7 @@ program Setup;
 	{$ENDIF}
 {$ENDIF}
 
-uses Windows, SysUtils, classes;
+uses Windows, SysUtils, classes, registry;
 
 // This is also part of the above work-around.
 {$IFDEF APP_CONSOLE}
@@ -119,6 +119,9 @@ end;
 var
 	errorMessage: String;
 	javaCommand: String = 'javaw.exe';
+	params: String = '';
+	dir: String = '';
+	Reg: TRegistry;
 begin
 	// Nice and simple
 		
@@ -155,7 +158,17 @@ begin
 				write('Starting installer.jar.. ');
 				javaCommand := 'java.exe';
 			end;
-			if (ExecAndWait(javaCommand+' -jar installer.jar') <> 0) then begin
+			Reg := TRegistry.Create;
+			Reg.RootKey := HKEY_LOCAL_MACHINE;
+			if Reg.OpenKey('SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DMDirc', false) then begin
+				dir := Reg.ReadString('InstallDir');
+				if (dir <> '') then begin
+					params := params+' --directory "'+dir+'"';
+				end;
+			end;
+			Reg.CloseKey;
+			Reg.Free;
+			if (ExecAndWait(javaCommand+' -jar installer.jar'+params) <> 0) then begin
 				dowriteln('Failed!');
 				errorMessage := errorMessage+'The currently installed version of java is not compatible with DMDirc.';
 				errorMessage := errorMessage+#13#10;

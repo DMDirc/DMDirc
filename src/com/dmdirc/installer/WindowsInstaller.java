@@ -22,6 +22,7 @@
 
 package com.dmdirc.installer;
 
+import com.dmdirc.installer.cliparser.CLIParser;
 import java.io.File;
 
 /**
@@ -34,15 +35,19 @@ public class WindowsInstaller extends Installer {
 	 * Get the default install location
 	 */
 	public String defaultInstallLocation() {
-		String filename = System.getenv("PROGRAMFILES");
-		if (filename == null) {
-			if (isVista()) {
-				filename = System.getProperty("user.home")+"\\Desktop\\DMDirc";
-			} else {
-				filename = "C:\\Program Files";
+		if (CLIParser.getCLIParser().getParamNumber("-directory") > 0) {
+			return CLIParser.getCLIParser().getParam("-directory").getStringValue();
+		} else {
+			String filename = System.getenv("PROGRAMFILES");
+			if (filename == null) {
+				if (isVista()) {
+					filename = System.getProperty("user.home")+"\\Desktop\\DMDirc";
+				} else {
+					filename = "C:\\Program Files";
+				}
 			}
+			return filename+"\\DMDirc";
 		}
-		return filename+"\\DMDirc";
 	}
 	
 	/**
@@ -84,6 +89,66 @@ public class WindowsInstaller extends Installer {
 				// Anything else that gets added should be false until the relevent
 				// code is added
 				return false;
+		}
+	}
+	
+	/**
+	 * Add a registry key.
+	 *
+	 * @param key Key to add.
+	 */
+	public void addRegistryKey(final String key) {
+		step.addText(" - Adding Key: "+key);
+		final String[] addKey = new String[] {
+		                      "reg.exe",
+		                      "add",
+		                      key,
+		                      "/f"
+		                      };
+		try {
+			final Process registryProcess = Runtime.getRuntime().exec(addKey);
+			new StreamReader(registryProcess.getInputStream()).start();
+			new StreamReader(registryProcess.getErrorStream()).start();
+			registryProcess.waitFor();
+			if (registryProcess.exitValue() != 0) {
+				step.addText(" - Error adding key: Unknown Reason");
+			}
+		} catch (Exception e) {
+			step.addText(" - Error adding registry key: "+e.getMessage());
+		}
+	}
+	
+	/**
+	 * Modify a registry value.
+	 *
+	 * @param key Key to use.
+	 * @param value Value to modify.
+	 * @param data Data for key.
+	 */
+	public void editRegistryValue(final String key, final String value, final String data) {
+		step.addText(" - Editing value: "+value);
+		final String[] editKey = new String[] {
+		                      "reg.exe",
+		                      "add",
+		                      key,
+		                      "/f",
+		                      "/v",
+		                      value,
+		                      "/t",
+		                      "REG_SZ",
+		                      "/d",
+		                      data
+		                      };
+		try {
+			final Process registryProcess = Runtime.getRuntime().exec(editKey);
+			new StreamReader(registryProcess.getInputStream()).start();
+			new StreamReader(registryProcess.getErrorStream()).start();
+			registryProcess.waitFor();
+			if (registryProcess.exitValue() != 0) {
+				step.addText(" - Error editing value: Unknown Reason");
+			}
+		} catch (Exception e) {
+			step.addText(" - Error editing registry key: "+e.getMessage());
 		}
 	}
 	
@@ -133,53 +198,17 @@ public class WindowsInstaller extends Installer {
 					
 				case UNINSTALLER:
 					// Registry hax!
-					
-					final String[] addKey = new String[] {
-					                      "reg.exe",
-					                      "add",
-					                      "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DMDirc"
-					                      };
-					final String[] displayName = new String[] {
-					                      "reg.exe",
-					                      "add",
-					                      "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DMDirc",
-					                      "/v",
-					                      "DisplayName",
-					                      "/t",
-					                      "REG_SZ",
-					                      "/d",
-					                      "DMDirc IRC Client"
-					                      };
-					final String[] uninstaller = new String[] {
-					                      "reg.exe",
-					                      "add",
-					                      "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DMDirc",
-					                      "/v",
-					                      "UninstallString",
-					                      "/t",
-					                      "REG_SZ",
-					                      "/d",
-					                      location+"\\Uninstall.exe"
-					                      };
-					try {
-						final Process keyProcess = Runtime.getRuntime().exec(addKey);
-						new StreamReader(keyProcess.getInputStream()).start();
-						new StreamReader(keyProcess.getErrorStream()).start();
-						keyProcess.waitFor();
-						
-						final Process displayNameProcess = Runtime.getRuntime().exec(displayName);
-						new StreamReader(displayNameProcess.getInputStream()).start();
-						new StreamReader(displayNameProcess.getErrorStream()).start();
-						displayNameProcess.waitFor();
-						
-						final Process uninstallerProcess = Runtime.getRuntime().exec(uninstaller);
-						new StreamReader(uninstallerProcess.getInputStream()).start();
-						new StreamReader(uninstallerProcess.getErrorStream()).start();
-						uninstallerProcess.waitFor();
-					} catch (Exception e) {
-						step.addText(" - Error adding registry entries: "+e.getMessage());
-					}
-					break;
+					final String key = "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DMDirc";
+					addRegistryKey(key);
+					editRegistryValue(key, "Comments", "DMDirc IRC Client");
+					editRegistryValue(key, "DisplayName", "DMDirc IRC Client");
+					editRegistryValue(key, "DisplayIcon", location+"\\icon.ico");
+					editRegistryValue(key, "UninstallString", location+"\\Uninstaller.exe");
+					editRegistryValue(key, "Publisher", "DMDirc.com");
+					editRegistryValue(key, "URLInfoAbout", "http://www.DMDirc.com/");
+					editRegistryValue(key, "URLUpdateInfo", "http://www.DMDirc.com/");
+					editRegistryValue(key, "InstallDir", location);
+					return;
 				default:
 					step.addText(" - Error creating shortcut. Not applicable to this Operating System");
 					return;
@@ -206,8 +235,9 @@ public class WindowsInstaller extends Installer {
 				                      "/F:"+filename+"\\DMDirc.lnk",
 				                      "/A:C",
 //				                      "/T:"+location+"\\DMDirc.bat",
-				                      "/T:javaw.exe",
-				                      "/P:-jar DMDirc.jar",
+//				                      "/T:javaw.exe",
+//				                      "/P:-jar DMDirc.jar",
+				                      "/T:"+location+"\\DMDirc.exe",
 				                      "/W:"+location,
 				                      "/I:"+location+"\\icon.ico",
 				                      "/D:DMDirc IRC Client"

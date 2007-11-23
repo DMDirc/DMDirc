@@ -33,6 +33,7 @@ import java.awt.BorderLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.JTextArea;
+import javax.swing.JScrollPane;
 
 /**
  * This confirms the settings chosen in the previous step
@@ -47,6 +48,9 @@ public final class StepInstall extends Step implements StepListener {
 	
 	/** Text area showing the install information */
 	private JTextArea infoLabel = new JTextArea("Beginning Install");
+	
+	/** Scroll pane holding text area */
+	final JScrollPane scrollPane;
 	
 	/**
 	* Creates a new instance of StepInstall.
@@ -66,7 +70,8 @@ public final class StepInstall extends Step implements StepListener {
 //		infoLabel.setBackground(getBackground());
 		infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, SMALL_BORDER, 0));
 			
-		add(infoLabel, BorderLayout.CENTER);
+		scrollPane = new JScrollPane(infoLabel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		add(scrollPane, BorderLayout.CENTER);
 	}
 	
 	/**
@@ -76,6 +81,7 @@ public final class StepInstall extends Step implements StepListener {
 	 */
 	public synchronized void addText(final String text) {
 		infoLabel.setText(infoLabel.getText() + text +"\n");
+		infoLabel.setCaretPosition(infoLabel.getText().length());
 	}
 	
 	/**

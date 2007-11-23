@@ -31,8 +31,11 @@ public class StreamReader extends Thread {
 	/** This is the Input Stream we are reading */
 	private InputStream stream;
 	
-	/** This is the Input Stream we are reading */
+	/** This is the output Prefix */
 	private String prefix = null;
+	
+	/** This is the Step we are outputting to, */
+	private StepInstall step = null;
 	
 	/**
 	 * Create a new Stream Reader
@@ -44,14 +47,22 @@ public class StreamReader extends Thread {
 	}
 	
 	/**
-	 * Create a new Stream Reader that outputs to the console
+	 * Create a new Stream Reader that outputs what it reads
 	 *
 	 * @param stream The stream to read
 	 * @param prefix Prefix of outputed messages
+	 * @param step Step to output to (null = console)
 	 */
-	public StreamReader(final InputStream stream, final String prefix) {
+	public StreamReader(final InputStream stream, final String prefix, final StepInstall step) {
 		this.stream = stream;
 		this.prefix = prefix;
+		this.step = step;
+		
+		if (step != null) {
+			step.addText(String.format(" - -[%s] Started", prefix));
+		} else {
+			System.out.printf("[%s] Started%n", prefix);
+		}
 	}
 
 	public void run() {
@@ -60,7 +71,11 @@ public class StreamReader extends Thread {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				if (prefix != null) {
-					System.out.printf("[%s] %s%n", prefix, line);
+					if (step != null) {
+						step.addText(String.format(" - -[%s] %s", prefix, line));
+					} else {
+						System.out.printf("[%s] %s%n", prefix, line);
+					}
 				}
 			}
 		} catch (IOException e) {

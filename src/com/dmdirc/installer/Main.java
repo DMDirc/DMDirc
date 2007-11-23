@@ -136,6 +136,7 @@ public final class Main implements WizardListener {
 		cli.clear();
 		cli.add(new BooleanParam((char)0, "isroot", "Installing as Root"));
 		cli.add(new StringParam('r', "release", "Release Name"));
+		cli.add(new StringParam('d', "directory", "Default install directory"));
 	}
 	
 	/**

@@ -44,10 +44,14 @@ public class LinuxInstaller extends Installer {
 	 * Get the default install location
 	 */
 	public String defaultInstallLocation() {
-		if (isRoot()) {
-			return "/usr/local/DMDirc";
+		if (CLIParser.getCLIParser().getParamNumber("-directory") > 0) {
+			return CLIParser.getCLIParser().getParam("-directory").getStringValue();
 		} else {
-			return System.getProperty("user.home") + "/DMDirc";
+			if (isRoot()) {
+				return "/usr/local/DMDirc";
+			} else {
+				return System.getProperty("user.home") + "/DMDirc";
+			}
 		}
 	}
 	
