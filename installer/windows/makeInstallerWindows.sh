@@ -280,6 +280,113 @@ if [ -e "${jarPath}/launcher/windows" ]; then
 	done
 fi
 
+# Icon Res file
+echo "icon.ico ICON icon.ico" > icon.rc
+
+# Other resources
+echo "extractor RCDATA extractor.exe" > files.rc
+
+COMPILER_IS_BROKEN="0";
+
+# Version Numbers
+if [ "" = "${1}" ]; then
+	MAJORVER="0"
+	MINORVER="0"
+	RELEASE="0"
+	TEXTVER="Trunk"
+	PRIVATE="1"
+	USER=`whoami`
+	HOST=`hostname`
+	DATE=`date`
+else
+	MAJORVER=${1%%.*}
+	SUBVER=${1#*.}
+	DOT=`expr index "${SUBVER}" .`
+	if [ "${DOT}" = "0" ]; then
+		MINORVER=${SUBVER}
+		RELEASE="0"
+	else
+		MINORVER=${SUBVER%%.*}
+		RELEASE=${SUBVER##*.}
+	fi
+	TEXTVER=$1
+	PRIVATE="0"
+fi;
+
+# Information for the below section:
+#
+# http://support.microsoft.com/kb/139491
+# http://msdn2.microsoft.com/en-us/library/aa381049.aspx
+# http://courses.cs.vt.edu/~cs3304/FreePascal/doc/prog/node14.html#SECTION001440000000000000000
+# http://tortoisesvn.tigris.org/svn/tortoisesvn/trunk/src/Resources/TortoiseShell.rc2
+
+echo "1 VERSIONINFO" > version.rc.1
+echo "FILEVERSION 1, 0, 0, 0" >> version.rc.1
+echo "PRODUCTVERSION ${MAJORVER}, ${MINORVER}, ${RELEASE}, 0" >> version.rc.1
+if [ "${PRIVATE}" = "1" ]; then
+	if [ "${COMPILER_IS_BROKEN}" = "0" ]; then
+		echo "FILEFLAGSMASK 0x000A" >> version.rc.1
+		echo "FILEFLAGS 0x3f" >> version.rc.1
+	else
+		echo "FILEFLAGS 0x000A" >> version.rc.1
+	fi;
+else
+	echo "FILEFLAGSMASK 0" >> version.rc.1
+fi;
+echo "FILEOS 0x40004" >> version.rc.1
+echo "FILETYPE 1" >> version.rc.1
+echo "BEGIN" >> version.rc.1
+echo "	BLOCK \"StringFileInfo\"" >> version.rc.1
+echo "	BEGIN" >> version.rc.1
+echo "		BLOCK \"040004E4\"" >> version.rc.1
+echo "		BEGIN" >> version.rc.1
+echo "			VALUE \"Comments\", \"http://www.dmdirc.com/\"" >> version.rc.1
+echo "			VALUE \"CompanyName\", \"DMDirc\"" >> version.rc.1
+cat version.rc.1 > version.rc
+cat version.rc.1 > uninstallversion.rc
+rm version.rc.1
+echo "			VALUE \"FileDescription\", \"Installer for DMDirc ${TEXTVER}\"" >> version.rc
+echo "			VALUE \"FileDescription\", \"Uninstaller for DMDirc\"" >> uninstallversion.rc
+
+echo "			VALUE \"FileVersion\", \"2.0\"" > version.rc.2
+echo "			VALUE \"InternalName\", \"DMDirc.jar\"" >> version.rc.2
+echo "			VALUE \"LegalCopyright\", \"Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes\"" >> version.rc.2
+echo "			VALUE \"OriginalFilename\", \"$2\"" >> version.rc.2
+echo "			VALUE \"ProductName\", \"DMDirc\"" >> version.rc.2
+echo "			VALUE \"ProductVersion\", \"${TEXTVER}\"" >> version.rc.2
+if [ "${PRIVATE}" = "1" ]; then
+	echo "			VALUE \"PrivateBuild\", \"Build by ${USER}@${HOST} on ${DATE}\"" >> version.rc.2
+fi;
+echo "		END" >> version.rc.2
+echo "	END" >> version.rc.2
+echo "	BLOCK \"VarFileInfo\"" >> version.rc.2
+echo "	BEGIN" >> version.rc.2
+echo "		VALUE \"Translation\", 0x400, 1252" >> version.rc.2
+echo "	END" >> version.rc.2
+echo "END" >> version.rc.2
+
+
+cat version.rc.2 >> version.rc
+cat version.rc.2 >> uninstallversion.rc
+rm version.rc.2
+
+echo "1 24 \"UAC.manifest\"" > UAC.rc
+
+# Build res files
+#windres -F pe-i386 -i version.rc -o version.res
+#windres -F pe-i386 -i files.rc -o files.res
+#windres -F pe-i386 -i icon.rc -o icon.res
+
+cat UAC.rc > uninstall.rc
+cat uninstallversion.rc >> all.rc
+cat icon.rc >> uninstall.rc
+windres -F pe-i386 -i uninstall.rc -o uninstall.res
+
+${FPC} -Sd -Twin32 ${3}Uninstaller.dpr
+if [ -e "Uninstaller.exe" ]; then
+	FILES="${FILES} Uninstaller.exe"
+fi
+
 compress $FILES
 
 echo "Creating config.."
@@ -311,10 +418,58 @@ else
 fi;
 
 echo "Building launcher";
-sh makeLauncher.sh "${isRelease}" "${ORIGNAME}" "${compilerFlags}"
-if [ $? -ne 0 ]; then
-	exit 1;
+
+MD5BIN=`which md5sum`
+AWK=`which awk`
+MD5SUM=""
+if [ "${MD5BIN}" != "" -a "${AWK}" != "" ]; then
+	MD5SUM=`${MD5BIN} extractor.exe | ${AWK} '{print $1}'`
 fi
+echo "const" > consts.inc
+echo "	MD5SUM: String = '${MD5SUM}';" >> consts.inc
+
+# Code to extract and launch resource
+echo "ExtractResource('extractor', 'dmdirc_extractor.exe', TempDir);" > ExtractCode.inc
+if [ "${MD5SUM}" != "" ]; then
+	echo "if FindCmdLineSwitch('-nomd5') or FindCmdLineSwitch('nomd5') or checkMD5(TempDir+'dmdirc_extractor.exe') then begin" >> ExtractCode.inc
+	echo -n "	"; # Oh so important for code formatting!
+fi;
+echo "Launch(TempDir+'dmdirc_extractor.exe');" >> ExtractCode.inc
+if [ "${MD5SUM}" != "" ]; then
+	echo "end" >> ExtractCode.inc
+	echo "else begin" >> ExtractCode.inc
+	echo "	ErrorMessage := 'This copy of the DMDirc installer appears to be damaged and will now exit';" >> ExtractCode.inc
+	echo "	ErrorMessage := ErrorMessage+#13#10+'You may choose to skip this check and run it anyway by passing the /nomd5 parameter';" >> ExtractCode.inc
+	echo "	ErrorMessage := ErrorMessage+#13#10+'';" >> ExtractCode.inc
+	echo "	ErrorMessage := ErrorMessage+#13#10;" >> ExtractCode.inc
+	echo "	ErrorMessage := ErrorMessage+#13#10+'If you feel this is incorrect, or you require some further assistance,';" >> ExtractCode.inc
+	echo "	ErrorMessage := ErrorMessage+#13#10+'please feel free to contact us.';" >> ExtractCode.inc
+	echo "	" >> ExtractCode.inc
+	echo "	MessageBox(0, PChar(ErrorMessage), 'Sorry, setup is unable to continue', MB_OK + MB_ICONSTOP);" >> ExtractCode.inc
+	echo "end;" >> ExtractCode.inc	
+fi
+
+cat UAC.rc > all.rc
+cat version.rc >> all.rc
+cat files.rc >> all.rc
+cat icon.rc >> all.rc
+windres -F pe-i386 -i all.rc -o all.res
+
+${FPC} -Sd -Twin32 ${3}Launcher.dpr
+if [ $? -ne 0 ]; then
+	if [ -e "Launcher.exe" ]; then
+		echo "Unable to compile Launcher.exe, using existing version."
+	else
+		echo "Unable to compile Launcher.exe, terminating."
+		exit 1;
+	fi
+fi
+
+rm -f *.res
+rm -f *.rc
+rm -f *.inc
+rm -f *.ppu
+
 FULLINSTALLER="${PWD}/${INSTALLNAME}${finalTag}.exe"
 mv Launcher.exe ${FULLINSTALLER}
 

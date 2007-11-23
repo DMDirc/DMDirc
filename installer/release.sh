@@ -81,8 +81,8 @@ ${JAVAC} -d ./build com/dmdirc/ui/swing/components/StandardDialog.java
 ${JAVAC} -d ./build com/dmdirc/util/ListenerList.java
 ${JAVAC} -d ./build com/dmdirc/util/WeakMapList.java
 ${JAVAC} -d ./build com/dmdirc/util/WeakList.java
-#${JAVAC} -d ./build net/miginfocom/layout/*.java
-#${JAVAC} -d ./build net/miginfocom/swing/*.java
+${JAVAC} -d ./build net/miginfocom/layout/*.java
+${JAVAC} -d ./build net/miginfocom/swing/*.java
 if [ $? -ne 0 ]; then
 	echo "================================================================"
 	echo "Building installer failed."
@@ -97,7 +97,7 @@ echo "Created-By: DMDirc Installer" >> manifest.txt
 echo "Main-Class: com.dmdirc.installer.Main" >> manifest.txt
 echo "Class-Path: " >> manifest.txt
 echo "" >> manifest.txt
-${JAR} cmf manifest.txt installer.jar com #net
+${JAR} cmf manifest.txt installer.jar com net
 if [ $? -ne 0 ]; then
 	echo "================================================================"
 	echo "Building installer failed."
