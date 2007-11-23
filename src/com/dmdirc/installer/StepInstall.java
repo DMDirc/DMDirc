@@ -127,6 +127,15 @@ public final class StepInstall extends Step implements StepListener {
 			addText("Creating uninstaller");
 			myInstaller.setupShortcut(location, ShortcutType.UNINSTALLER);
 		}
+
+		if (Main.getInstaller().supportsShortcut(ShortcutType.PROTOCOL)) {
+			if (settings.getShortcutProtocolState()) {
+				addText("Setting up irc:// handler");
+				myInstaller.setupShortcut(location, ShortcutType.PROTOCOL);
+			} else {
+				addText("Not setting up irc:// handler");
+			}
+		}
 		
 		addText("");
 		addText("Installation finished\n");

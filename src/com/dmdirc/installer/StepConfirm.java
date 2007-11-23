@@ -101,6 +101,16 @@ public final class StepConfirm extends Step implements StepListener {
 			}
 		}
 		
+		if (Main.getInstaller().supportsShortcut(ShortcutType.PROTOCOL)) {
+			if (settings.getShortcutProtocolState()) {
+				shortcutText = shortcutText + " - Do set up DMDirc to handle irc:// links"+ "\n";
+			} else {
+				shortcutText = shortcutText + " - Do not set up DMDirc to handle irc:// links"+ "\n";
+			}
+		}
+		
+		
+		
 		infoLabel.setText("Please check that these settings are correct:\n\n"
 		                + " - Install Location:\n"
 		                + "    " +((StepSettings) Main.getWizardDialog().getStep(1)).getInstallLocation() + "\n"

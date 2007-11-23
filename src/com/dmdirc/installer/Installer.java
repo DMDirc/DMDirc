@@ -36,7 +36,7 @@ import java.nio.channels.FileChannel;
  */
 public abstract class Installer extends Thread {
 	/** Types of shortcut */
-	public static enum ShortcutType { DESKTOP, MENU, QUICKLAUNCH, UNINSTALLER; }
+	public static enum ShortcutType { DESKTOP, MENU, QUICKLAUNCH, UNINSTALLER, PROTOCOL; }
 	
 	/** Step where things happen. */
 	protected StepInstall step = null;

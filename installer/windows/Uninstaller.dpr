@@ -66,12 +66,15 @@ var
 	hK32: THandle;
 	i: Integer;
 	Reg: TRegistry;
+	handlerInfo: String;
+	deleteProtocol: boolean;
 begin
 	if (ParamCount > 0) then begin
 		for i := 1 to ParamCount do begin
 			InstallDir := InstallDir+' '+paramstr(i);
 		end;
-		KillDir(trim(InstallDir));
+		InstallDir := trim(InstallDir);
+		KillDir(InstallDir);
 		hK32 := GetModuleHandle('kernel32');
 		if GetProcAddress(hK32, 'GetLocaleInfoEx') <> nil then begin
 			// Vista
@@ -85,12 +88,38 @@ begin
 			DeleteFile(GetEnvironmentVariable('USERPROFILE')+'\Application DataMicrosoft\Internet Explorer\Quick Launch\DMDirc.lnk');
 			DeleteFile(GetEnvironmentVariable('USERPROFILE')+'\Desktop\DMDirc.lnk');
 		end;
+		// Remove irc:// handler if it is us.
+		deleteProtocol := false;
+		Reg := TRegistry.Create;
+		Reg.RootKey := HKEY_CLASSES_ROOT;
+		if Reg.OpenKey('irc\Shell\open\command', false) then begin
+			handlerInfo := Reg.ReadString('');
+			if (handlerInfo = '"'+InstallDir+'DMDirc.exe" -c %1') then begin
+				deleteProtocol := true;
+			end
+		end;
+		Reg.CloseKey;
+		Reg.Free;
+		
+		if deleteProtocol then begin
+			Reg := TRegistry.Create;
+			Reg.RootKey := HKEY_CLASSES_ROOT;
+			Reg.DeleteKey('irc\Shell\open\command');
+			Reg.DeleteKey('irc\Shell\open');
+			Reg.DeleteKey('irc\Shell');
+			Reg.DeleteKey('irc\DefaultIcon');
+			Reg.DeleteKey('irc');
+			Reg.CloseKey;
+			Reg.Free;
+		end;
+			
 		Reg := TRegistry.Create;
 		Reg.RootKey := HKEY_LOCAL_MACHINE;
 		Reg.DeleteKey('SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DMDirc');
 		Reg.CloseKey;
 		Reg.Free;
-		MessageBox(0, PChar('DMDirc has been uninstalled.'), 'DMDirc Uninstaller', MB_OK);
+		
+		MessageBox(0, PChar('DMDirc has been uninstalled from "'+InstallDir+'".'), 'DMDirc Uninstaller', MB_OK);
 	end
 	else begin
 		TempDir := GetTempDirectory;

@@ -52,11 +52,14 @@ var
 	directory: String = '';
 	i: integer;
 	hK32: THandle;
+	jarName: String;
 begin
+	jarName := ExtractFileDir(paramstr(0))+'\DMDirc.jar';
+	
 	directory := GetEnvironmentVariable('APPDATA')+'\DMDirc';
 	if ParamCount > 0 then begin
 		for i := 1 to ParamCount do begin
-			cliParams := cliParams+paramstr(i);
+			cliParams := cliParams+' '+paramstr(i);
 			if (paramstr(i) = '-d') or (paramstr(i) = '--directory') then begin
 				if ParamCount > i then begin
 					directory := paramstr(i+1);
@@ -74,7 +77,7 @@ begin
 			// Try and delete the old file, if it fails then the user needs to give
 			// us permission to delete the file (UAC), otherwise we can just go ahead
 			// and run the updater.
-			if not DeleteFile('DMDirc.jar') then begin
+			if not DeleteFile(pchar(jarName)) then begin
 				errorMessage := 'An update to DMDirc has been previously downloaded.';
 				errorMessage := errorMessage+#13#10;
 				errorMessage := errorMessage+#13#10+'As you are running Windows Vista, DMDirc requires administer access to';
@@ -106,8 +109,8 @@ begin
 	// Else try and run client. (This only asks for help output to check that client
 	// runs on this OS, otherwise later segfaults or so would cause the error to
 	// appear
-	else if FileExists('DMDirc.jar') then begin
-		if (ExecAndWait(javaCommand+' -jar DMDirc.jar --help') <> 0) then begin
+	else if FileExists(jarName) then begin
+		if (ExecAndWait(javaCommand+' -jar "'+jarName+'" --help') <> 0) then begin
 			errorMessage := 'The currently installed version of java is not compatible with DMDirc.';
 			errorMessage := errorMessage+#13#10;
 			errorMessage := errorMessage+#13#10+'DMDirc requires a 1.6.0 compatible JVM, you can get one from:';
@@ -119,7 +122,7 @@ begin
 			MessageBox(0, PChar(errorMessage), 'Sorry, DMDirc is unable to continue', MB_OK + MB_ICONSTOP);
 		end
 		else begin
-			Launch(javaCommand+' -jar DMDirc.jar '+cliParams)
+			Launch(javaCommand+' -jar "'+jarName+'"'+cliParams)
 		end;
 	end
 	else begin

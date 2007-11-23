@@ -55,6 +55,8 @@ public final class StepSettings extends Step {
 	private final JCheckBox shortcutDesktop = new JCheckBox("Setup Desktop shortcut to DMDirc?");
 	/** Quick-Launch Shorcuts checkbox. */
 	private final JCheckBox shortcutQuick = new JCheckBox("Setup Quick Launch shortcut to DMDirc?");
+	/** Register IRC:// protocol. */
+	private final JCheckBox shortcutProtocol = new JCheckBox("Setup DMDirc to handle irc:// links?");
 	/** Install Location input. */
 	private final JTextField location = new JTextField(Main.getInstaller().defaultInstallLocation(), 20);
 	
@@ -80,6 +82,7 @@ public final class StepSettings extends Step {
 		shortcutMenu.setSelected(true);
 		shortcutDesktop.setSelected(true);
 		shortcutQuick.setSelected(true);
+		shortcutProtocol.setSelected(true);
 			
 		constraints.weightx = 1.0;
 		constraints.fill = constraints.BOTH;
@@ -116,6 +119,11 @@ public final class StepSettings extends Step {
 			add(shortcutQuick, constraints);
 		}
 		
+		if (Main.getInstaller().supportsShortcut(ShortcutType.PROTOCOL)) {
+			constraints.gridy = (constraints.gridy + 1);
+			add(shortcutProtocol, constraints);
+		}
+		
 		constraints.gridy = (constraints.gridy + 1);
 		constraints.weighty = 1.0;
 		constraints.fill = constraints.BOTH;
@@ -147,6 +155,15 @@ public final class StepSettings extends Step {
 	 */
 	public boolean getShortcutQuickState() {
 		return shortcutQuick.isSelected();
+	}
+	
+	/**
+	 * Returns the state of the shortcutProtocol checkbox.
+	 *
+	 * @return shortcutDesktop checkbox state
+	 */
+	public boolean getShortcutProtocolState() {
+		return shortcutProtocol.isSelected();
 	}
 	
 	/**

@@ -24,6 +24,7 @@ package com.dmdirc.installer;
 
 import com.dmdirc.installer.cliparser.CLIParser;
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Installs DMDirc on windows
@@ -83,7 +84,8 @@ public class WindowsInstaller extends Installer {
 			case DESKTOP:
 			case MENU:
 			case UNINSTALLER:
-				// All versions of windows have desktop, menu and uninstaller
+			case PROTOCOL:
+				// All versions of windows have desktop, menu, uninstaller and protocol
 				return true;
 			default:
 				// Anything else that gets added should be false until the relevent
@@ -99,12 +101,7 @@ public class WindowsInstaller extends Installer {
 	 */
 	public void addRegistryKey(final String key) {
 		step.addText(" - Adding Key: "+key);
-		final String[] addKey = new String[] {
-		                      "reg.exe",
-		                      "add",
-		                      key,
-		                      "/f"
-		                      };
+		final String[] addKey = new String[] {"reg.exe", "add", key, "/f"};
 		try {
 			final Process registryProcess = Runtime.getRuntime().exec(addKey);
 			new StreamReader(registryProcess.getInputStream()).start();
@@ -126,21 +123,39 @@ public class WindowsInstaller extends Installer {
 	 * @param data Data for key.
 	 */
 	public void editRegistryValue(final String key, final String value, final String data) {
-		step.addText(" - Editing value: "+value);
-		final String[] editKey = new String[] {
-		                      "reg.exe",
-		                      "add",
-		                      key,
-		                      "/f",
-		                      "/v",
-		                      value,
-		                      "/t",
-		                      "REG_SZ",
-		                      "/d",
-		                      data
-		                      };
+		editRegistryValue(key, value, "REG_SZ", data);
+	}
+	
+	/**
+	 * Modify a registry value.
+	 *
+	 * @param key Key to use.
+	 * @param value Value to modify.
+	 * @param type Type of data.
+	 * @param data Data for key.
+	 */
+	public void editRegistryValue(final String key, final String value, final String type, final String data) {
+		final ArrayList<String> params = new ArrayList<String>();
+		step.addText(" - Editing value: "+key+"\\"+value);
+		params.add("reg.exe");
+		params.add("add");
+		params.add(key);
+		params.add("/f");
+		if (value != "") {
+			params.add("/v");
+			params.add(value);
+		} else {
+			params.add("/ve");
+		}
+		params.add("/t");
+		params.add(type);
+		if (data != "") {
+			params.add("/d");
+			params.add(data);
+		}
+		
 		try {
-			final Process registryProcess = Runtime.getRuntime().exec(editKey);
+			final Process registryProcess = Runtime.getRuntime().exec(params.toArray(new String[0]));
 			new StreamReader(registryProcess.getInputStream()).start();
 			new StreamReader(registryProcess.getErrorStream()).start();
 			registryProcess.waitFor();
@@ -209,6 +224,22 @@ public class WindowsInstaller extends Installer {
 					editRegistryValue(key, "URLUpdateInfo", "http://www.DMDirc.com/");
 					editRegistryValue(key, "InstallDir", location);
 					return;
+					
+				case PROTOCOL:
+					// Add needed keys.
+					addRegistryKey("HKCR\\irc");
+					addRegistryKey("HKCR\\irc\\DefaultIcon");
+					addRegistryKey("HKCR\\irc\\Shell");
+					addRegistryKey("HKCR\\irc\\Shell\\open");
+					addRegistryKey("HKCR\\irc\\Shell\\open\\command");
+					// Now the values
+					editRegistryValue("HKCR\\irc", "", "URL:IRC Protocol");
+					editRegistryValue("HKCR\\irc", "URL Protocol", "");
+					editRegistryValue("HKCR\\irc", "EditFlags", "REG_BINARY", "02000000");
+					editRegistryValue("HKCR\\irc\\DefaultIcon", "", location+"\\icon.ico");
+					editRegistryValue("HKCR\\irc\\Shell\\open\\command", "", "\\\""+location+"\\DMDirc.exe\\\" -c %1");
+					return;
+					
 				default:
 					step.addText(" - Error creating shortcut. Not applicable to this Operating System");
 					return;
