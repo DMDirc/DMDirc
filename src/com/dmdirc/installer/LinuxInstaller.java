@@ -24,6 +24,7 @@ package com.dmdirc.installer;
 
 import com.dmdirc.installer.cliparser.CLIParser;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.io.IOException;
 
@@ -68,8 +69,9 @@ public class LinuxInstaller extends Installer {
 			case DESKTOP:
 				// No desktop for root
 				return !isRoot();
+			case UNINSTALLER:
 			case MENU:
-				// Both root and non-root have a menu
+				// Both root and non-root have a menu and uninstaller
 				return true;
 			default:
 				// Anything else that gets added should be false until the relevent
@@ -106,6 +108,24 @@ public class LinuxInstaller extends Installer {
 						filename = System.getProperty("user.home")+"/.local/share/applications/DMDirc.desktop";
 					}
 					break;
+					
+				case UNINSTALLER:
+					writer = new PrintWriter(location+"/uninstall.sh");
+					writer.println("#!/bin/sh");
+					writer.println("echo \"Uninstalling dmdirc\"");
+					writer.println("echo \"Removing Shortcuts..\"");
+					if (CLIParser.getCLIParser().getParamNumber("-isroot") > 0) {
+						writer.println("rm -Rfv /usr/share/applications/DMDirc.desktop");
+					} else {
+						writer.println("rm -Rfv "+System.getProperty("user.home")+"/.local/share/applications/DMDirc.desktop");
+						writer.println("rm -Rfv "+System.getProperty("user.home")+"/Desktop/DMDirc.desktop");
+					}
+					writer.println("echo \"Removing Installation Directory\"");
+					writer.println("rm -Rfv "+location);
+					writer.println("echo \"Done.\"");
+					
+					(new File(location+"/uninstall.sh")).setExecutable(true);
+					return;
 					
 				default:
 					step.addText(" - Error creating shortcut. Not applicable to this Operating System");
