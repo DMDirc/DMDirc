@@ -27,6 +27,9 @@ import com.dmdirc.util.resourcemanager.ResourceManager;
 
 import java.io.IOException;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
+
 public class PluginClassLoader extends ClassLoader {
 	/** The plugin Info object for the plugin we are loading */
 	final PluginInfo pluginInfo;
@@ -61,7 +64,16 @@ public class PluginClassLoader extends ClassLoader {
 		final String fileName = name.replace('.', '/')+".class";
 		try {
 			if (pluginInfo.isPersistant(name) || !res.resourceExists(fileName)) {
-				return getParent().loadClass(name);
+				if (!pluginInfo.isPersistant(name)) {
+					return getParent().loadClass(name);
+				} else {
+					// Try to load class from previous load.
+					try {
+						return getParent().loadClass(name);
+					} catch (Exception e) {
+						/* Class doesn't exist, we load it outself below */
+					}
+				}
 			}
 		} catch (NoClassDefFoundError e) {
 			throw new ClassNotFoundException("Error loading '"+name+"' (wanted by "+pluginInfo.getName()+") -> "+e.getMessage(), e);
@@ -82,7 +94,19 @@ public class PluginClassLoader extends ClassLoader {
 		}
 		
 		try {
-			loadedClass = defineClass(name, data, 0, data.length);
+			if (pluginInfo.isPersistant(name)) {
+				final Method method = ClassLoader.class.getDeclaredMethod("defineClass", String.class, byte[].class, int.class, int.class);
+				method.setAccessible(true);
+				loadedClass = (Class)method.invoke(getParent(), name, data, 0, data.length);
+			} else {
+				loadedClass = defineClass(name, data, 0, data.length);
+			}
+		} catch (NoSuchMethodException e) {
+			throw new ClassNotFoundException(e.getMessage(), e);
+		} catch (InvocationTargetException e) {
+			throw new ClassNotFoundException(e.getMessage(), e);
+		} catch (IllegalAccessException e) {
+			throw new ClassNotFoundException(e.getMessage(), e);
 		} catch (NoClassDefFoundError e) {
 			throw new ClassNotFoundException(e.getMessage(), e);
 		}
