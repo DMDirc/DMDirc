@@ -27,6 +27,7 @@ import com.dmdirc.ServerManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,9 @@ import java.util.List;
  * 
  * @author Chris
  */
-public class IrcAddress {
+public class IrcAddress implements Serializable {
+    
+    private final static long serialVersionUID = 1;
 
     /** Whether or not this address uses SSL. */
     private boolean usesSSL;

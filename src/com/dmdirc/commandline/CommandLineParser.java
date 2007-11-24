@@ -27,6 +27,7 @@ import com.dmdirc.util.IrcAddress;
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.util.resourcemanager.ResourceManager;
+import java.rmi.RemoteException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,7 @@ public class CommandLineParser {
     private static final Object[][] ARGUMENTS = new Object[][]{
         {'c', "connect", "Connect to the specified server", Boolean.TRUE},
         {'d', "directory", "Use the specified configuration directory", Boolean.TRUE},
+        {'e', "existing", "Try to use an existing instance of DMDirc (use with -c)", Boolean.FALSE},
         {'h', "help", "Show command line options and exit", Boolean.FALSE},
         {'p', "portable", "Enable portable mode", Boolean.FALSE},
         {'r', "disable-reporting", "Disable automatic error reporting", Boolean.FALSE},
@@ -57,6 +59,9 @@ public class CommandLineParser {
     
     /** Whether to disable error reporting or not. */
     private boolean disablereporting = false;
+    
+    /** Whether or not to try and use an existing client. */
+    private boolean useExisting = false;
     
     /**
      * Creates a new instance of CommandLineParser.
@@ -87,6 +92,21 @@ public class CommandLineParser {
         if (inArg) {
             doUnknownArg("Missing parameter for argument: " + previousArg);
         }
+        
+        if (useExisting) {
+            final RemoteInterface server = RemoteServer.getServer();
+            
+            if (server != null) {
+                try {
+                    server.connect(addresses);
+                    System.exit(0);
+                } catch (RemoteException ex) {
+                    // Do nothing
+                }
+            }
+        }
+        
+        RemoteServer.bind();
     }
     
     /**
@@ -167,6 +187,9 @@ public class CommandLineParser {
             break;
         case 'd':
             doDirectory(param);
+            break;
+        case 'e':
+            useExisting = true;
             break;
         case 'h':
             doHelp();
