@@ -52,7 +52,11 @@ public final class ChannelEventHandler extends EventHandler implements
     @Override
     protected void addCallback(final CallbackManager cbm, final String name)
             throws CallbackNotFoundException {
-        cbm.addCallback(name, this, owner.getChannelInfo().getName());
+        if (name.equals("OnAwayStateOther")) {
+            cbm.addCallback(name, this);
+        } else {
+            cbm.addCallback(name, this, owner.getChannelInfo().getName());
+        }
     }    
 
     /** {@inheritDoc} */
