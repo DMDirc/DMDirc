@@ -24,7 +24,6 @@ package com.dmdirc.addons.nowplaying;
 
 import com.dmdirc.MessageTarget;
 import com.dmdirc.Server;
-import com.dmdirc.addons.nowplaying.MediaSource;
 import com.dmdirc.commandparser.commands.ChatCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -57,6 +56,7 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
     }
     
     /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final Server server,
             final MessageTarget target, final boolean isSilent, final String ... args) {
         if (args.length > 0 && args[0].equalsIgnoreCase("--sources")) {
@@ -76,7 +76,8 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
                     }
                 }
             } else {
-                sendLine(origin, isSilent, FORMAT_ERROR, "You must specify a source when using --source.");
+                sendLine(origin, isSilent, FORMAT_ERROR,
+                        "You must specify a source when using --source.");
             }
         } else {
             if (parent.hasRunningSource()) {
@@ -99,23 +100,33 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
         if (sources.isEmpty()) {
             sendLine(origin, isSilent, FORMAT_ERROR, "No media sources available.");
         } else {
-            String status;
+            final String[] headers = {"Source", "Status", "Information"};
+            final String[][] data = new String[sources.size()][3];
+            int i = 0;
             
             for (MediaSource source : sources) {
+                data[i][0] = source.getAppName();
+                
                 if (source.isRunning()) {
                     if (source.isPlaying()) {
-                        status = "playing: " + getInformation(source);
+                        data[i][1] = "playing";
                     } else {
-                        status = "paused: " + getInformation(source);
+                        data[i][1] = "paused";
                     }
+                    
+                    data[i][2] = getInformation(source);
                 } else {
-                    status = "not running";
+                    data[i][1] = "not running";
+                    data[i][2] = "-";
                 }
-                sendLine(origin, isSilent, FORMAT_OUTPUT, source.getAppName() + ": " + status);
+                
+                i++;
             }
+            
+            sendLine(origin, isSilent, FORMAT_OUTPUT, doTable(headers, data));
         }
     }
-    
+       
     /**
      * Returns a formatted information string from the requested soruce.
      *
@@ -139,21 +150,26 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
     }
     
     /** {@inheritDoc}. */
+    @Override
     public String getName() {
         return "nowplaying";
     }
     
     /** {@inheritDoc}. */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
     /** {@inheritDoc}. */
+    @Override
     public String getHelp() {
-        return "nowplaying [--sources|--source <source>] - tells the channel the song you're currently playing";
+        return "nowplaying [--sources|--source <source>] - " +
+                "tells the channel the song you're currently playing";
     }
     
     /** {@inheritDoc} */
+    @Override
     public AdditionalTabTargets getSuggestions(final int arg, 
             final List<String> previousArgs) {
         final AdditionalTabTargets res = new AdditionalTabTargets();

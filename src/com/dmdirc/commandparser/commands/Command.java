@@ -26,6 +26,7 @@ import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.ui.messages.Styliser;
 
 /**
  * Represents a generic command.
@@ -92,6 +93,61 @@ public abstract class Command extends CommandInfo implements Comparable<Command>
             final boolean isSilent, final String name, final String args) {
         sendLine(target, isSilent, "commandUsage", CommandManager.getCommandChar(),
                 name, args);
+    }    
+    
+    /**
+     * Formats the specified data into a table suitable for output in the
+     * textpane. It is expected that each String[] in data has the same number
+     * of elements as the headers array.
+     * 
+     * @param headers The headers of the table.
+     * @param data The contents of the table.
+     * @return A string containing an ASCII table
+     */
+    protected static String doTable(final String[] headers, final String[][] data) {
+        StringBuilder res = new StringBuilder();
+        res.append(Styliser.CODE_FIXED);
+        res.append(Styliser.CODE_BOLD);
+        
+        int[] maxsizes = new int[headers.length];
+        
+        for (int i = 0; i < headers.length; i++) {
+            maxsizes[i] = headers[i].length() + 3;
+            
+            for (int j = 0; j < data.length; j++) {
+                maxsizes[i] = Math.max(maxsizes[i], data[j][i].length() + 3);
+            }
+            
+            doPadding(res, headers[i], maxsizes[i]);
+        }
+                
+        for (String[] source : data) {
+            res.append('\n');
+            res.append(Styliser.CODE_FIXED);
+            
+            for (int i = 0; i < source.length; i++) {
+                doPadding(res, source[i], maxsizes[i]);
+            }
+        }
+        
+        return res.toString();
+    }
+    
+    /**
+     * Adds the specified data to the stringbuilder, padding with spaces to
+     * the specified size.
+     * 
+     * @param builder The stringbuilder to append data to
+     * @param data The data to be added
+     * @param size The minimum size that should be used
+     */
+    private static void doPadding(final StringBuilder builder, final String data,
+            final int size) {
+        builder.append(data);
+        
+        for (int i = 0; i < size - data.length(); i++) {
+            builder.append(' ');
+        }
     }    
     
     /** {@inheritDoc} */

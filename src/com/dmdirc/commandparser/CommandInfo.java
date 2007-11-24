@@ -46,6 +46,10 @@ public abstract class CommandInfo {
      */
     public abstract String getHelp();
     
+    /**
+     * Retrieves the type of this command.
+     * @return This command's type
+     */
     public abstract CommandType getType();
 
 }
