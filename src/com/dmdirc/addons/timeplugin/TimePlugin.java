@@ -88,8 +88,10 @@ public final class TimePlugin  extends Plugin {
     
     /** {@inheritDoc} */
     public void onUnload() {
-        timer.cancel();
-        timer = null;
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
         
         CommandManager.unregisterCommand(command);
     }
