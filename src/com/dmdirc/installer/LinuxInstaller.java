@@ -171,7 +171,7 @@ public class LinuxInstaller extends Installer {
 					writer.println("TOOL=`which gconftool-2`");
 					writer.println("if [ \"${TOOL}\" != \"\" ]; then");
 					writer.println("\tCURRENT=`"+command+" --get /desktop/gnome/url-handlers/irc/command`");
-					writer.println("\tif [ \"${CURRENT}\" = \"\\\""+location+"/DMDirc.sh\\\" -c %s\" ]; then");
+					writer.println("\tif [ \"${CURRENT}\" = \"\\\""+location+"/DMDirc.sh\\\" -e -c %s\" ]; then");
 					writer.println("\t\techo \"Removing Gnome Protocol Handler\"");
 					writer.println("\t\t"+command+" --unset /desktop/gnome/url-handlers/irc/enabled");
 					writer.println("\t\t"+command+" --unset /desktop/gnome/url-handlers/irc/command");
@@ -218,12 +218,12 @@ public class LinuxInstaller extends Installer {
 					writer.println("TOOL=`which gconftool-2`");
 					writer.println("if [ \"${TOOL}\" != \"\" ]; then");
 					writer.println("\t"+command+" --set --type=bool /desktop/gnome/url-handlers/irc/enabled true");
-					writer.println("\t"+command+" --set --type=string /desktop/gnome/url-handlers/irc/command \"\\\""+location+"/DMDirc.sh\\\" -c %s\"");
+					writer.println("\t"+command+" --set --type=string /desktop/gnome/url-handlers/irc/command \"\\\""+location+"/DMDirc.sh\\\" -e -c %s\"");
 					writer.println("\t"+command+" --set --type=bool /desktop/gnome/url-handlers/irc/need-terminal false");
 					writer.println("fi");
 					writer.println("if [ -e \""+filename+"\" ]; then");
 					writer.println("\techo \"[Protocol]\" > "+filename+"irc.protocol");
-					writer.println("\techo \"exec=\""+location+"/DMDirc.sh\" -c %u\" >> "+filename+"irc.protocol");
+					writer.println("\techo \"exec=\""+location+"/DMDirc.sh\" -e -c %u\" >> "+filename+"irc.protocol");
 					writer.println("\techo \"protocol=irc\" >> "+filename+"irc.protocol");
 					writer.println("\techo \"input=none\" >> "+filename+"irc.protocol");
 					writer.println("\techo \"output=none\" >> "+filename+"irc.protocol");

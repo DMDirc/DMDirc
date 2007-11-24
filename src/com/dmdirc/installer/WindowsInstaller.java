@@ -237,7 +237,7 @@ public class WindowsInstaller extends Installer {
 					editRegistryValue("HKCR\\irc", "URL Protocol", "");
 					editRegistryValue("HKCR\\irc", "EditFlags", "REG_BINARY", "02000000");
 					editRegistryValue("HKCR\\irc\\DefaultIcon", "", location+"\\icon.ico");
-					editRegistryValue("HKCR\\irc\\Shell\\open\\command", "", "\\\""+location+"\\DMDirc.exe\\\" -c %1");
+					editRegistryValue("HKCR\\irc\\Shell\\open\\command", "", "\\\""+location+"\\DMDirc.exe\\\" -e -c %1");
 					return;
 					
 				default:
