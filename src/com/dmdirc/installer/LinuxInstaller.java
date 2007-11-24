@@ -210,7 +210,7 @@ public class LinuxInstaller extends Installer {
 						filename = "/usr/share/services/";
 					} else {
 						command = "${TOOL}";
-						filename = "~/.kde/share/services/";
+						filename = "${HOME}/.kde/share/services/";
 					}
 					
 					writer = new PrintWriter(location+"/protocolHandlers.sh");
@@ -219,6 +219,20 @@ public class LinuxInstaller extends Installer {
 					writer.println("if [ \"${TOOL}\" != \"\" ]; then");
 					writer.println("\t"+command+" --set --type=bool /desktop/gnome/url-handlers/irc/enabled true");
 					writer.println("\t"+command+" --set --type=string /desktop/gnome/url-handlers/irc/command \"\\\""+location+"/DMDirc.sh\\\" -c %s\"");
+					writer.println("\t"+command+" --set --type=bool /desktop/gnome/url-handlers/irc/need-terminal false");
+					writer.println("fi");
+					writer.println("if [ -e \""+filename+"\" ]; then");
+					writer.println("\techo \"[Protocol]\" > "+filename+"irc.protocol");
+					writer.println("\techo \"exec=\""+location+"/DMDirc.sh\" -c %u\" >> "+filename+"irc.protocol");
+					writer.println("\techo \"protocol=irc\" >> "+filename+"irc.protocol");
+					writer.println("\techo \"input=none\" >> "+filename+"irc.protocol");
+					writer.println("\techo \"output=none\" >> "+filename+"irc.protocol");
+					writer.println("\techo \"helper=true\" >> "+filename+"irc.protocol");
+					writer.println("\techo \"listing=false\" >> "+filename+"irc.protocol");
+					writer.println("\techo \"reading=false\" >> "+filename+"irc.protocol");
+					writer.println("\techo \"writing=false\" >> "+filename+"irc.protocol");
+					writer.println("\techo \"makedir=false\" >> "+filename+"irc.protocol");
+					writer.println("\techo \"deleting=false\" >> "+filename+"irc.protocol");
 					writer.println("fi");
 					writer.println("exit 0;");
 					writer.close();
@@ -230,26 +244,9 @@ public class LinuxInstaller extends Installer {
 						new StreamReader(gconfProcess.getInputStream()).start();
 						new StreamReader(gconfProcess.getErrorStream()).start();
 						gconfProcess.waitFor();
-						(new File(location+"/protocolHandlers.sh")).delete();
+						// (new File(location+"/protocolHandlers.sh")).delete();
 					} catch (Exception e) {
 						step.addText(" - Error adding gnome Protocol Handler: "+e.getMessage());
-					}
-					
-					if (filename != "") {
-						if ((new File(filename)).exists()) {
-							writer = new PrintWriter(filename+"irc.protocol");
-							writer.println("[Protocol]");
-							writer.println("Exec="+location+"/DMDirc.sh -c %u");
-							writer.println("protocol=irc");
-							writer.println("input=none");
-							writer.println("output=none");
-							writer.println("helper=true");
-							writer.println("listing=false");
-							writer.println("reading=false");
-							writer.println("writing=false");
-							writer.println("makedir=false");
-							writer.println("deleting=false");
-						}
 					}
 					return;
 					
