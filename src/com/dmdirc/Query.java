@@ -114,6 +114,7 @@ public final class Query extends MessageTarget implements
     }
     
     /** {@inheritDoc} */
+    @Override
     public InputWindow getFrame() {
         return window;
     }
@@ -128,7 +129,16 @@ public final class Query extends MessageTarget implements
     }
     
     /** {@inheritDoc} */
+    @Override
     public void sendLine(final String line) {
+        if (line.indexOf('\n') > -1) {
+            for (String part : line.split("\n")) {
+                sendLine(part);
+            }
+            
+            return;
+        }
+
         final ClientInfo client = server.getParser().getMyself();
         
         if (line.length() <= getMaxLineLength()) {
@@ -147,6 +157,7 @@ public final class Query extends MessageTarget implements
     }
     
     /** {@inheritDoc} */
+    @Override
     public int getMaxLineLength() {
         return server.getParser().getMaxLength("PRIVMSG", host);
     }
@@ -156,6 +167,7 @@ public final class Query extends MessageTarget implements
      *
      * @param action action text to send
      */
+    @Override
     public void sendAction(final String action) {
         final ClientInfo client = server.getParser().getMyself();
         final int maxLineLength = server.getParser().getMaxLength("PRIVMSG", host);
@@ -181,6 +193,7 @@ public final class Query extends MessageTarget implements
      * @param message message received
      * @param remoteHost remote user host
      */
+    @Override
     public void onPrivateMessage(final IRCParser parser, final String message,
             final String remoteHost) {
         final String[] parts = ClientInfo.parseHostFull(remoteHost);
@@ -199,6 +212,7 @@ public final class Query extends MessageTarget implements
      * @param message message received
      * @param remoteHost remote host
      */
+    @Override
     public void onPrivateAction(final IRCParser parser, final String message,
             final String remoteHost) {
         final String[] parts = ClientInfo.parseHostFull(host);
@@ -240,6 +254,7 @@ public final class Query extends MessageTarget implements
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onNickChanged(final IRCParser tParser, final ClientInfo cClient,
             final String sOldNick) {
         if (sOldNick.equals(ClientInfo.parseHost(host))) {
@@ -267,6 +282,7 @@ public final class Query extends MessageTarget implements
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onQuit(final IRCParser tParser, final ClientInfo cClient,
             final String sReason) {
         if (cClient.getNickname().equals(ClientInfo.parseHost(host))) {
@@ -285,6 +301,7 @@ public final class Query extends MessageTarget implements
      *
      * @return asscoaited Server
      */
+    @Override
     public Server getServer() {
         return server;
     }
@@ -292,6 +309,7 @@ public final class Query extends MessageTarget implements
     /**
      * Closes the query and associated window.
      */
+    @Override
     public void close() {
         close(true);
     }
@@ -328,6 +346,7 @@ public final class Query extends MessageTarget implements
      *
      * @return A string representation of this query (i.e., the user's name)
      */
+    @Override
     public String toString() {
         return ClientInfo.parseHost(host);
     }

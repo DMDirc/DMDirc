@@ -169,6 +169,12 @@ public final class Channel extends MessageTarget
         if (server.getParser().getChannelInfo(channelInfo.getName()) == null) {
             // We're not in the channel
             return;
+        } else if (line.indexOf('\n') > -1) {
+            for (String part : line.split("\n")) {
+                sendLine(part);
+            }
+            
+            return;
         }
         
         final ClientInfo me = server.getParser().getMyself();
