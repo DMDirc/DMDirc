@@ -60,7 +60,8 @@ public class ThemeIdentity extends Identity {
     @Override
     public boolean hasOption(final String domain, final String option) {
         if (domain.equalsIgnoreCase("ui") || domain.equalsIgnoreCase("identity")
-                || domain.equalsIgnoreCase("icon")  || domain.equalsIgnoreCase("theme")) {
+                || domain.equalsIgnoreCase("icon")  || domain.equalsIgnoreCase("theme")
+                || domain.equalsIgnoreCase("formatter")) {
             return super.hasOption(domain, option);
         } else {
             return false;

@@ -64,7 +64,8 @@ public class Theme {
         try {
             rm = ZipResourceManager.getInstance(file.getCanonicalPath());
         } catch (IOException ex) {
-            Logger.userError(ErrorLevel.MEDIUM, "I/O error when loading theme: " + file.getAbsolutePath() + ": " + ex.getMessage());
+            Logger.userError(ErrorLevel.MEDIUM, "I/O error when loading theme: "
+                    + file.getAbsolutePath() + ": " + ex.getMessage());
             
             return false;
         }
@@ -81,21 +82,17 @@ public class Theme {
         }
         
         final InputStream identity = rm.getResourceInputStream("config");
-        final InputStream format = rm.getResourceInputStream("format");
         
         if (identity != null) {
             try {
                 IdentityManager.addIdentity(new ThemeIdentity(identity));
             } catch (InvalidIdentityFileException ex) {
-                Logger.userError(ErrorLevel.MEDIUM, "Error loading theme identity file: " + ex.getMessage());
+                Logger.userError(ErrorLevel.MEDIUM, "Error loading theme identity file: "
+                        + ex.getMessage());
             } catch (IOException ex) {
-                Logger.userError(ErrorLevel.MEDIUM, "Error loading theme identity file: " + ex.getMessage());
+                Logger.userError(ErrorLevel.MEDIUM, "Error loading theme identity file: "
+                        + ex.getMessage());
             }
-        }
-        
-        if (format != null) {
-            Formatter.reload();
-            Formatter.loadFile(format);
         }
     }
     

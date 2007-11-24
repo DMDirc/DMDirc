@@ -191,27 +191,5 @@ public final class Formatter {
     public static boolean hasFormat(final String messageType) {
         return config.hasOption("formatter", messageType);
     }
-    
-    /**
-     * Reads the specified input stream as a properties file and loads the
-     * contained formatter settings into the formatter.
-     *
-     * @param stream The stream to be read
-     * @return True iff the operation succeeded, false otherwise
-     * @deprecated No longer has any effect
-     */
-    @Deprecated
-    public static boolean loadFile(final InputStream stream) {
-        return false;
-    }
-    
-    /**
-     * Reloads the formatter.
-     * 
-     * @deprecated No longer has any effct
-     */
-    @Deprecated
-    public static void reload() {
 
-    }
 }
