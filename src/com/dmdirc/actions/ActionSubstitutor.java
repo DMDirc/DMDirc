@@ -106,12 +106,14 @@ public class ActionSubstitutor {
     private void doComponentSubstitutions(final StringBuilder target, final Object ... args) {
         int i = 0;
         for (Class myClass : type.getType().getArgTypes()) {
-            for (ActionComponent comp : ActionManager.getCompatibleComponents(myClass)) {
-                final String needle = "${" + i + "." + comp.toString() + "}";
-                final Object replacement = comp.get(args[i]);
-                
-                if (replacement != null) {
-                    doReplacement(target, needle, replacement.toString());
+            if (args[i] != null) {
+                for (ActionComponent comp : ActionManager.getCompatibleComponents(myClass)) {
+                    final String needle = "${" + i + "." + comp.toString() + "}";
+                    final Object replacement = comp.get(args[i]);
+
+                    if (replacement != null) {
+                        doReplacement(target, needle, replacement.toString());
+                    }
                 }
             }
             
