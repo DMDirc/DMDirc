@@ -64,7 +64,7 @@ public final class Main {
      * A revision number for actions and core plugins. If this is increased,
      * users will be prompted to re-extract them.
      */
-    private static final int ADDON_REVISION = 5;
+    private static final int ADDON_REVISION = 6;
     
     /**
      * The UI to use for the client.

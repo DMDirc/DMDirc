@@ -37,7 +37,9 @@ public enum ClientEvents implements ActionMetaType {
     /** Client event type. */
     CLIENT_EVENT(new String[]{}),
     /** Client event type, with a frame argument. */
-    CLIENT_EVENT_WITH_FRAME(new String[]{"frame"}, FrameContainer.class),
+    WINDOW_EVENT(new String[]{"window"}, FrameContainer.class),
+    /** Client event with frame and message. */
+    WINDOW_EVENT_WITH_MESSAGE(new String[]{"window", "message"}, FrameContainer.class, String.class),
     /** Client event type, with a key argument. */
     CLIENT_EVENT_WITH_KEY(new String[]{"key event"}, KeyStroke.class),
     /** Client event with an origin and editable buffer. */

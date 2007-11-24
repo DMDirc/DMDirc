@@ -23,6 +23,7 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.Channel;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.logger.ErrorLevel;
@@ -311,6 +312,18 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return ((Query) argument).getNotification(); }
         /** {@inheritDoc} */
         public Class appliesTo() { return Query.class; }
+        /** {@inheritDoc} */
+        public Class getType() { return Color.class; }
+        /** {@inheritDoc} */
+        public String getName() { return "notification colour"; }
+    },
+    
+    /** Returns the notification colour of the window. */
+    WINDOW_COLOUR {
+        /** {@inheritDoc} */
+        public Object get(final Object argument) { return ((FrameContainer) argument).getNotification(); }
+        /** {@inheritDoc} */
+        public Class appliesTo() { return FrameContainer.class; }
         /** {@inheritDoc} */
         public Class getType() { return Color.class; }
         /** {@inheritDoc} */

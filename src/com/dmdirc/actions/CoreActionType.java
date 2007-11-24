@@ -47,9 +47,11 @@ public enum CoreActionType implements ActionType {
     CLIENT_FKEY_PRESSED(ClientEvents.CLIENT_EVENT_WITH_KEY, "Function key pressed"),
     
     /** Frame changed. */
-    CLIENT_FRAME_CHANGED(ClientEvents.CLIENT_EVENT_WITH_FRAME, "Frame changed"),
+    CLIENT_FRAME_CHANGED(ClientEvents.WINDOW_EVENT, "Frame changed"),
     /** User input. */
     CLIENT_USER_INPUT(ClientEvents.CLIENT_EVENT_WITH_BUFFER, "User input"),
+    /** Line added. */
+    CLIENT_LINE_ADDED(ClientEvents.WINDOW_EVENT_WITH_MESSAGE, "Line added to a window"),
     
     /** Unknown command. */
     UNKNOWN_COMMAND(ClientEvents.UNKNOWN_COMMAND, "Unknown command entered"),
@@ -198,11 +200,13 @@ public enum CoreActionType implements ActionType {
     }
     
     /** {@inheritDoc} */
+    @Override
     public ActionMetaType getType() {
         return type;
     }
     
     /** {@inheritDoc} */
+    @Override
     public String getName() {
         return name;
     }

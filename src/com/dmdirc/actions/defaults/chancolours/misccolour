@@ -1,0 +1,19 @@
+trigger=CLIENT_LINE_ADDED
+conditions=3
+
+condition0-arg=0
+condition0-component=WINDOW_COLOUR
+condition0-comparison=COLOUR_NEQUALS
+condition0-target=$highlightcolour
+
+condition1-arg=0
+condition1-component=WINDOW_COLOUR
+condition1-comparison=COLOUR_NEQUALS
+condition1-target=$textcolour
+
+condition2-arg=0
+condition2-component=WINDOW_COLOUR
+condition2-comparison=COLOUR_NEQUALS
+condition2-target=$eventcolour
+
+response=/notify $misccolour

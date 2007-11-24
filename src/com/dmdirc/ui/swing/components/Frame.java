@@ -24,6 +24,8 @@ package com.dmdirc.ui.swing.components;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.util.StringTranscoder;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
@@ -203,6 +205,10 @@ public abstract class Frame extends JInternalFrame implements Window,
                     } else {
                         getTextPane().addStyledString(myLine);
                     }
+                    
+                    ActionManager.processEvent(CoreActionType.CLIENT_LINE_ADDED,
+                            null, getContainer(), myLine);
+                    
                     if (frameBufferSize > 0) {
                         textPane.trim(frameBufferSize);
                     }
