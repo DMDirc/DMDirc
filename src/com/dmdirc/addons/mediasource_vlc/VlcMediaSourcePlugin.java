@@ -22,9 +22,12 @@
 
 package com.dmdirc.addons.mediasource_vlc;
 
+import com.dmdirc.Main;
 import com.dmdirc.addons.nowplaying.MediaSource;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.plugins.Plugin;
+import com.dmdirc.ui.interfaces.PreferencesInterface;
+import com.dmdirc.ui.interfaces.PreferencesPanel;
 import com.dmdirc.util.Downloader;
 
 import java.io.IOException;
@@ -32,13 +35,16 @@ import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Retrieves information from VLC using its HTTP interface.
  * 
  * @author chris
  */
-public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
+public class VlcMediaSourcePlugin extends Plugin implements MediaSource, PreferencesInterface {
+    
+    private InstructionsPanel configPanel;
     
     private final Map<String, String> information
             = new HashMap<String, String>();
@@ -123,6 +129,43 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
     public void onUnload() {
         // Do nothing
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isConfigurable() {
+        return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void showConfig() {
+        final PreferencesPanel preferencesPanel
+                = Main.getUI().getPreferencesPanel(this, "VLC Media Source - Config");
+        
+        configPanel = new InstructionsPanel();
+        
+        preferencesPanel.addCategory("Setup", "Setup instructions");
+        preferencesPanel.replaceOptionPanel("Setup", configPanel);
+        preferencesPanel.addCategory("Configuration", "Advanced configuration settings");
+        preferencesPanel.addTextfieldOption("Configuration", "host",
+                "Hostname and port", "The host and port that VLC listens on for" +
+                " web connections", IdentityManager.getGlobalConfig().getOption("plugin-vlc",
+                    "host", "localhost:8082"));
+        preferencesPanel.display();
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void configClosed(final Properties properties) {
+        IdentityManager.getConfigIdentity().setOption("plugin-vlc", "host",
+                properties.getProperty("host"));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void configCancelled() {
+        // Do nothing
+    }    
     
     private boolean getInformation() {
         information.clear();
