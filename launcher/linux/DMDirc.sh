@@ -37,6 +37,29 @@ while test -n "$1"; do
 	shift
 done
 
+errordialog() {
+	# Send message to console.
+	echo ""
+	echo "-----------------------------------------------------------------------"
+	echo "Error: ${1}"
+	echo "-----------------------------------------------------------------------"
+	echo "${2}"
+	echo "-----------------------------------------------------------------------"
+
+	# Now try to use the GUI Dialogs.
+	ISKDE=`pidof -x -s kdeinit`
+	KDIALOG=`which kdialog`
+	ISGNOME=`pidof -x -s gnome-panel`
+	ZENITY=`which zenity`
+	if [ "" != "${ISKDE}" -a "" != "${KDIALOG}" -a "" != "${DISPLAY}" ]; then
+		echo "Dialog on Display: ${DISPLAY}"
+		${KDIALOG} --title "DMDirc: ${1}" --error "${1}\n\n${2}"
+	elif [ "" != "${ISGNOME}" -a "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then
+		echo "Dialog on Display: ${DISPLAY}"
+		${ZENITY} --error --title "DMDirc: ${1}" --text "${1}\n\n${2}"
+	fi
+}
+
 jar=`dirname $0`/DMDirc.jar
 
 echo "---------------------"
@@ -65,15 +88,11 @@ if [ "" != "${JAVA}" ]; then
 else
 	echo "Failed!"
 	# This should in future offer to download and install the JVM automatically.
-	echo ""
-	echo "-----------------------------------------------------------------------"
-	echo "Unable to launch dmdirc!"
-	echo "-----------------------------------------------------------------------"
-	echo "Sorry, java is not installed on this machine."
-	echo ""
-	echo "DMDirc requires a 1.6.0 compatible JVM, you can get one from:"
-	echo "http://jdl.sun.com/webapps/getjava/BrowserRedirect"
-	echo "-----------------------------------------------------------------------"
+	ERROR="Sorry, java is not installed on this machine.";
+	ERROR=${ERROR}"\n"
+	ERROR=${ERROR}"\nDMDirc requires a 1.6.0 compatible JVM, you can get one from:";
+	ERROR=${ERROR}"\nhttp://jdl.sun.com/webapps/getjava/BrowserRedirect";
+	errordialog "Unable to launch dmdirc!" "${ERROR}";
 	exit 1;
 fi
 
@@ -85,16 +104,12 @@ if [ -e "${jar}" ]; then
 	${JAVA} -jar ${jar} --help >/dev/null 2>&1
 	if [ $? -ne 0 ]; then
 		echo "Failed."
-		echo ""
-		echo "-----------------------------------------------------------------------"
-		echo "Unable to launch DMDirc!"
-		echo "-----------------------------------------------------------------------"
-		echo "Sorry, the currently installed version of java is not compatible with"
-		echo "DMDirc."
-		echo ""
-		echo "DMDirc requires a 1.6.0 compatible JVM, you can get one from:"
-		echo "http://jdl.sun.com/webapps/getjava/BrowserRedirect"
-		echo "-----------------------------------------------------------------------"
+		ERROR="Sorry, the currently installed version of java is not compatible with";
+		ERROR=${ERROR}"\nDMDirc.";
+		ERROR=${ERROR}"\n";
+		ERROR=${ERROR}"\nDMDirc requires a 1.6.0 compatible JVM, you can get one from:";
+		ERROR=${ERROR}"\nhttp://jdl.sun.com/webapps/getjava/BrowserRedirect";
+		errordialog "Unable to launch dmdirc!" "${ERROR}";
 		exit 1;
 	fi
 	
@@ -103,5 +118,6 @@ if [ -e "${jar}" ]; then
 	${JAVA} -jar ${jar} ${params}
 	exit $?;
 else 
-	echo "Failed: No jar file found!"
+	echo "Failed.";
+	errordialog "Unable to launch dmdirc!" "No jar file found";
 fi

@@ -273,12 +273,35 @@ fi
 
 ###ADDITIONAL_STUFF###
 
+errordialog() {
+	# Send message to console.
+	echo ""
+	echo "-----------------------------------------------------------------------"
+	echo "Error: ${1}"
+	echo "-----------------------------------------------------------------------"
+	echo "${2}"
+	echo "-----------------------------------------------------------------------"
+
+	# Now try to use the GUI Dialogs.
+	ISKDE=`pidof -x -s kdeinit`
+	KDIALOG=`which kdialog`
+	ISGNOME=`pidof -x -s gnome-panel`
+	ZENITY=`which zenity`
+	if [ "" != "${ISKDE}" -a "" != "${KDIALOG}" -a "" != "${DISPLAY}" ]; then
+		echo "Dialog on Display: ${DISPLAY}"
+		${KDIALOG} --title "DMDirc: ${1}" --error "${1}\n\n${2}"
+	elif [ "" != "${ISGNOME}" -a "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then
+		echo "Dialog on Display: ${DISPLAY}"
+		${ZENITY} --error --title "DMDirc: ${1}" --text "${1}\n\n${2}"
+	fi
+}
+
 # Location of .run stub end
 ENDLINE=`grep -na "^###END INCLUDE###$" $0`
 ENDLINE=$((${ENDLINE%%:*} + 1))
 
 if [ "" = "${ENDLINE}" ]; then
-	echo "End of stub not found. Aborting.";
+	errordialog "DMDirc Setup" "End of stub not found. Aborting.";
 	exit 0;
 fi
 
@@ -330,7 +353,7 @@ random() {
 				DIR=${BASEDIR}${RND}
 				if [ -e "${DIR}" ]; then
 					# Lets hope this never happens.
-					echo "Unable to create random directory";
+					errordialog "DMDirc Setup" "Unable to create random directory";
 					exit 0;
 				fi;
 			fi;
@@ -410,11 +433,9 @@ if [ "${MD5BIN}" != "" ]; then
 			if [ $? = 0 ]; then
 				echo "MD5 Check Passed!"
 			else
-				echo ""
-				echo "MD5 Check Failed!"
-				echo "--------------------------"
-				echo "This copy of the DMDirc installer appears to be damaged and will now exit.";
-				echo "You may choose to skip this check and run it anyway by passing the --nomd5 parameter";
+				ERROR="This copy of the DMDirc installer appears to be damaged and will now exit.";
+				ERROR=${ERROR}"\nYou may choose to skip this check and run it anyway by passing the --nomd5 parameter";
+				errordialog "DMDirc Setup: MD5 Check Failed!" "${ERROR}";
 				exit 1;
 			fi
 		elif [ "${MD5}" != ""  ]; then
@@ -428,11 +449,9 @@ if [ "${MD5BIN}" != "" ]; then
 				if [ "${MD5SUM}" = "${MD5}" ]; then
 					echo "MD5 Check Passed!"
 				else
-					echo ""
-					echo "MD5 Check Failed!"
-					echo "--------------------------"
-					echo "This copy of the DMDirc installer appears to be damaged and will now exit.";
-					echo "You may choose to skip this check and run it anyway by passing the --nomd5 parameter";
+					ERROR="This copy of the DMDirc installer appears to be damaged and will now exit.";
+					ERROR=${ERROR}"\nYou may choose to skip this check and run it anyway by passing the --nomd5 parameter";
+					errordialog "DMDirc Setup: MD5 Check Failed!" "${ERROR}";
 					exit 1;
 				fi;
 			else

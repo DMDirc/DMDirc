@@ -137,6 +137,8 @@ public final class StepInstall extends Step implements StepListener {
 			}
 		}
 		
+		myInstaller.postInstall(location);
+		
 		addText("");
 		addText("Installation finished\n");
 		Main.getWizardDialog().enableNextStep(true);

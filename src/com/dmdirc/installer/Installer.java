@@ -146,4 +146,12 @@ public abstract class Installer extends Thread {
 			throw new IOException(srcFile+" does not exist.");
 		}
 	}
+	
+	
+	/**
+	 * Any post-install tasks should be done here.
+	 *
+	 * @param location Location where app was installed to.
+	 */
+	public void postInstall(final String location) { }
 }

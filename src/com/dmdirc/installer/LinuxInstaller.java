@@ -69,9 +69,10 @@ public class LinuxInstaller extends Installer {
 			case DESKTOP:
 				// No desktop for root
 				return !isRoot();
+			case PROTOCOL:
 			case UNINSTALLER:
 			case MENU:
-				// Both root and non-root have a menu and uninstaller
+				// Both root and non-root have a menu, uninstaller, and protocol
 				return true;
 			default:
 				// Anything else that gets added should be false until the relevent
@@ -94,7 +95,8 @@ public class LinuxInstaller extends Installer {
 		
 		PrintWriter writer = null;
 		try {
-			String filename;
+			String filename = "";
+			String command = "";
 
 			switch (shortcutType) {
 				case DESKTOP:
@@ -102,7 +104,7 @@ public class LinuxInstaller extends Installer {
 					break;
 					
 				case MENU:
-					if (CLIParser.getCLIParser().getParamNumber("-isroot") > 0) {
+					if (isRoot()) {
 						filename = "/usr/share/applications/DMDirc.desktop";
 					} else {
 						filename = System.getProperty("user.home")+"/.local/share/applications/DMDirc.desktop";
@@ -112,19 +114,143 @@ public class LinuxInstaller extends Installer {
 				case UNINSTALLER:
 					writer = new PrintWriter(location+"/uninstall.sh");
 					writer.println("#!/bin/sh");
+					writer.println("# DMDirc Uninstaller");
+					writer.println("ISKDE=`pidof -x -s kdeinit`");
+					writer.println("KDIALOG=`which kdialog`");
+					writer.println("ISGNOME=`pidof -x -s gnome-panel`");
+					writer.println("ZENITY=`which zenity`");
+					writer.println("DIALOG=`which dialog`");
+					
+					if (isRoot()) {
+						writer.println("USER=`whoami`");
+						writer.println("if [ \"${USER}\" != \"root\" ]; then");
+						writer.println("if [ ${result} -eq 1 ]; then");
+						writer.println("\t\tif [ \"\" != \"${ISKDE}\" -a \"\" != \"${KDIALOG}\" -a \"\" != \"${DISPLAY}\" ]; then");
+						writer.println("\t\t	${KDIALOG} --title \"DMDirc Uninstaller\" --error \"Uninstall Aborted. Only root can use this script\"");
+						writer.println("\t\telif [ \"\" != \"${ISGNOME}\" -a \"\" != \"${ZENITY}\" -a \"\" != \"${DISPLAY}\" ]; then");
+						writer.println("\t\t	${ZENITY} --info --title \"DMDirc Uninstaller\" --text \"Uninstall Aborted. Only root can use this script\"");
+						writer.println("\t\tfi");
+						writer.println("\t\techo \"Uninstall Aborted. Only root can use this script\"");
+						writer.println("\tfi");
+						writer.println("exit 1;");
+						writer.println("fi");
+					}
+					
+					writer.println("if [ \"\" != \"${ISKDE}\" -a \"\" != \"${KDIALOG}\" -a \"\" != \"${DISPLAY}\" ]; then");
+					writer.println("	echo \"Dialog Prompt on: ${DISPLAY}\"");
+					writer.println("	${KDIALOG} --title \"DMDirc Uninstaller\" --yesno \"Are you sure you want to uninstall DMDirc?\"");
+					writer.println("elif [ \"\" != \"${ISGNOME}\" -a \"\" != \"${ZENITY}\" -a \"\" != \"${DISPLAY}\" ]; then");
+					writer.println("	echo \"Dialog Prompt on: ${DISPLAY}\"");
+					writer.println("	${ZENITY} --question --title \"DMDirc Uninstaller\" --text \"Are you sure you want to uninstall DMDirc?\"");
+					writer.println("elif [ \"\" != \"${DIALOG}\" ]; then");
+					writer.println("	${DIALOG} --title \"DMDirc Uninstaller\" --yesno \"Are you sure you want to uninstall DMDirc?\" 8 40");
+					writer.println("fi");
+					
+					writer.println("if [ $? -ne 0 ]; then");
+					writer.println("\tif [ \"\" != \"${ISKDE}\" -a \"\" != \"${KDIALOG}\" -a \"\" != \"${DISPLAY}\" ]; then");
+					writer.println("\t	${KDIALOG} --title \"DMDirc Uninstaller\" --msgbox \"Uninstall Aborted\"");
+					writer.println("\telif [ \"\" != \"${ISGNOME}\" -a \"\" != \"${ZENITY}\" -a \"\" != \"${DISPLAY}\" ]; then");
+					writer.println("\t	${ZENITY} --info --title \"DMDirc Uninstaller\" --text \"Uninstall Aborted\"");
+					writer.println("\tfi");
+					writer.println("\techo \"Uninstall Aborted\"");
+					writer.println("\texit 1;");
+					writer.println("fi");
+					
 					writer.println("echo \"Uninstalling dmdirc\"");
 					writer.println("echo \"Removing Shortcuts..\"");
-					if (CLIParser.getCLIParser().getParamNumber("-isroot") > 0) {
+					if (isRoot()) {
+						command = "${TOOL} --config-source=`${TOOL} --get-default-source`";
+						filename = "/usr/share/services/irc.protocol";
 						writer.println("rm -Rfv /usr/share/applications/DMDirc.desktop");
 					} else {
+						command = "${TOOL}";
+						filename = "~/.kde/share/services/irc.protocol";
 						writer.println("rm -Rfv "+System.getProperty("user.home")+"/.local/share/applications/DMDirc.desktop");
 						writer.println("rm -Rfv "+System.getProperty("user.home")+"/Desktop/DMDirc.desktop");
 					}
+					writer.println("TOOL=`which gconftool-2`");
+					writer.println("if [ \"${TOOL}\" != \"\" ]; then");
+					writer.println("\tCURRENT=`"+command+" --get /desktop/gnome/url-handlers/irc/command`");
+					writer.println("\tif [ \"${CURRENT}\" = \"\\\""+location+"/DMDirc.sh\\\" -c %s\" ]; then");
+					writer.println("\t\techo \"Removing Gnome Protocol Handler\"");
+					writer.println("\t\t"+command+" --unset /desktop/gnome/url-handlers/irc/enabled");
+					writer.println("\t\t"+command+" --unset /desktop/gnome/url-handlers/irc/command");
+					writer.println("\telse");
+					writer.println("\t\techo \"Not Removing Gnome Protocol Handler\"");
+					writer.println("\tfi");
+					writer.println("fi");
+					
+					writer.println("if [ -e \""+filename+"\" ]; then");
+					writer.println("\tCURRENT=`grep DMDirc "+filename+"`");
+					writer.println("\tif [ \"\" != \"${CURRENT}\" ]; then");
+					writer.println("\t\techo \"Removing KDE Protocol Handler\"");
+					writer.println("\t\trm -Rfv "+filename);
+					writer.println("\telse");
+					writer.println("\t\techo \"Not Removing KDE Protocol Handler\"");
+					writer.println("\tfi");
+					writer.println("fi");
+					
 					writer.println("echo \"Removing Installation Directory\"");
-					writer.println("rm -Rfv "+location);
+					writer.println("rm -Rfv \""+location+"\"");
+
+					writer.println("if [ \"\" != \"${ISKDE}\" -a \"\" != \"${KDIALOG}\" -a \"\" != \"${DISPLAY}\" ]; then");
+					writer.println("	${KDIALOG} --title \"DMDirc Uninstaller\" --msgbox \"DMDirc Uninstalled Successfully\"");
+					writer.println("elif [ \"\" != \"${ISGNOME}\" -a \"\" != \"${ZENITY}\" -a \"\" != \"${DISPLAY}\" ]; then");
+					writer.println("	${ZENITY} --info --title \"DMDirc Uninstaller\" --text \"DMDirc Uninstalled Successfully\"");
+					writer.println("fi");
+					
 					writer.println("echo \"Done.\"");
 					
 					(new File(location+"/uninstall.sh")).setExecutable(true);
+					return;
+				
+				case PROTOCOL:
+					if (isRoot()) {
+						command = "${TOOL} --config-source=`${TOOL} --get-default-source`";
+						filename = "/usr/share/services/";
+					} else {
+						command = "${TOOL}";
+						filename = "~/.kde/share/services/";
+					}
+					
+					writer = new PrintWriter(location+"/protocolHandlers.sh");
+					writer.println("#!/bin/sh");
+					writer.println("TOOL=`which gconftool-2`");
+					writer.println("if [ \"${TOOL}\" != \"\" ]; then");
+					writer.println("\t"+command+" --set --type=bool /desktop/gnome/url-handlers/irc/enabled true");
+					writer.println("\t"+command+" --set --type=string /desktop/gnome/url-handlers/irc/command \"\\\""+location+"/DMDirc.sh\\\" -c %s\"");
+					writer.println("fi");
+					writer.println("exit 0;");
+					writer.close();
+					
+					(new File(location+"/protocolHandlers.sh")).setExecutable(true);
+					
+					try {
+						final Process gconfProcess = Runtime.getRuntime().exec(new String[]{"/bin/sh", location+"/protocolHandlers.sh"});
+						new StreamReader(gconfProcess.getInputStream()).start();
+						new StreamReader(gconfProcess.getErrorStream()).start();
+						gconfProcess.waitFor();
+						(new File(location+"/protocolHandlers.sh")).delete();
+					} catch (Exception e) {
+						step.addText(" - Error adding gnome Protocol Handler: "+e.getMessage());
+					}
+					
+					if (filename != "") {
+						if ((new File(filename)).exists()) {
+							writer = new PrintWriter(filename+"irc.protocol");
+							writer.println("[Protocol]");
+							writer.println("Exec="+location+"/DMDirc.sh -c %u");
+							writer.println("protocol=irc");
+							writer.println("input=none");
+							writer.println("output=none");
+							writer.println("helper=true");
+							writer.println("listing=false");
+							writer.println("reading=false");
+							writer.println("writing=false");
+							writer.println("makedir=false");
+							writer.println("deleting=false");
+						}
+					}
 					return;
 					
 				default:
@@ -167,5 +293,14 @@ public class LinuxInstaller extends Installer {
 		writer.println("Terminal=false");
 		writer.println("TerminalOptions=");
 		writer.println("Type=Application");
+	}
+	
+	/**
+	 * Any post-install tasks should be done here.
+	 *
+	 * @param location Location where app was installed to.
+	 */
+	public void postInstall(final String location) {
+		(new File(location+"/DMDirc.sh")).setExecutable(true);
 	}
 }
