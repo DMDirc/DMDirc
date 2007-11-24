@@ -34,7 +34,9 @@ import com.dmdirc.parser.ChannelClientInfo;
 public enum ChannelEvents implements ActionMetaType {
     
     /** Channel event type. */
-    CHANNEL_EVENT(new String[]{"channel"}, Channel.class),    
+    CHANNEL_EVENT(new String[]{"channel"}, Channel.class),  
+    /** Channel CTCP type. */
+    CHANNEL_CTCP(new String[]{"channel", "user", "type", "content"}, Channel.class, ChannelClientInfo.class, String.class, String.class),
     /** Channel event with source. */
     CHANNEL_SOURCED_EVENT(new String[]{"channel", "user"}, Channel.class, ChannelClientInfo.class),
     /** Chanel event with source and argument. */

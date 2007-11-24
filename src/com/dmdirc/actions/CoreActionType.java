@@ -131,6 +131,9 @@ public enum CoreActionType implements ActionType {
     /** Channel actions received. */
     CHANNEL_ACTION(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Channel action received"),
     
+    /** Channel CTCP received. */
+    CHANNEL_CTCP(ChannelEvents.CHANNEL_CTCP, "Channel CTCP received"),
+    
     /** Someone joined a channel. */
     CHANNEL_JOIN(ChannelEvents.CHANNEL_SOURCED_EVENT, "Someone joined a channel"),
     /** Someone left a channel. */

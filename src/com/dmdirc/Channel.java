@@ -516,20 +516,6 @@ public final class Channel extends MessageTarget
                 this, cSetByClient, cChangedClient, sMode);
     }
     
-    public void onChannelCTCP(final ChannelClientInfo cChannelClient,
-            final String sType, final String sMessage) {
-        
-        final String modes = getModes(cChannelClient);
-        final String[] source = getDetails(cChannelClient, showColours);
-        
-        addLine("channelCTCP", modes, source[0], source[1], source[2],
-                sType, sMessage, channelInfo);
-        
-        server.sendCTCPReply(source[0], sType, sMessage);
-        
-        // TODO: Action hook
-    }
-    
     public void onAwayStateOther(final ClientInfo client, final boolean state) {
         final ChannelClientInfo channelClient = channelInfo.getUser(client);
         

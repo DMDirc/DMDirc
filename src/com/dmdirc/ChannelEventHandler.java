@@ -188,7 +188,10 @@ public final class ChannelEventHandler extends EventHandler implements
             final ChannelClientInfo cChannelClient, final String sType, 
             final String sMessage, final String sHost) {
         checkParser(tParser);
-        owner.onChannelCTCP(cChannelClient, sType, sMessage);
+        
+        owner.doNotification("channelCTCP", CoreActionType.CHANNEL_CTCP, 
+                cChannelClient, sType, sMessage);
+        owner.getServer().sendCTCPReply(cChannelClient.getNickname(), sType, sMessage);
     }
 
     /** {@inheritDoc} */
