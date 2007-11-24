@@ -33,11 +33,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URI;
 
-import javax.swing.DefaultComboBoxModel;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -63,7 +63,15 @@ public class URLDialog extends StandardDialog implements ActionListener,
     /** Command text field. */
     private JTextField commandPath;
     /** Option selection. */
-    private JComboBox optionType;
+    private ButtonGroup optionType;
+    /** DMDirc choice. */
+    private JRadioButton dmdirc;
+    /** Browser choice. */
+    private JRadioButton browser;
+    /** Mail choice. */
+    private JRadioButton mail;
+    /** Custom command choice. */
+    private JRadioButton custom;
     /** Blurb label. */
     private JLabel blurbLabel;
     /** Substitutions label */
@@ -127,31 +135,31 @@ public class URLDialog extends StandardDialog implements ActionListener,
         showFileChooser = new JButton();
         blurbLabel = new JLabel();
         commandPath = new JTextField();
-        optionType = new JComboBox(new DefaultComboBoxModel(new String[]{
-            "Handle internally (irc links only)",
-            "Use browser (or registered handler)",
-            "Use mail client",
-            "Custom command"
-        
-           
-           
-        ,
-        }));
+        optionType = new ButtonGroup();
+        dmdirc = new JRadioButton("Handle internally (irc links only)");
+        browser = new JRadioButton("Use browser (or registered handler)");
+        mail = new JRadioButton("Use mail client");
+        custom = new JRadioButton("Custom command");
         subsLabel = new JLabel();
         exampleLabel = new JLabel();
 
-        commandPath.setVisible(false);
-        showFileChooser.setVisible(false);
-        subsLabel.setVisible(false);
-        exampleLabel.setVisible(false);
+        commandPath.setEnabled(false);
+        showFileChooser.setEnabled(false);
+        subsLabel.setEnabled(false);
+        exampleLabel.setEnabled(false);
+
+        optionType.add(dmdirc);
+        optionType.add(browser);
+        optionType.add(mail);
+        optionType.add(custom);
 
         fileChooser.addChoosableFileFilter(new ExecutableFileFilter());
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         showFileChooser.setText("Browse");
-        blurbLabel.setText("<html><p>Use this dialog to add support for a " +
-                "new protocol.</p></html>");
-        subsLabel.setText("<html><p>$url, $fragment, $path, $port, $query, " +
-                "$protocol, $username and $password all substituted.</p></html>");
+        blurbLabel.setText("Use this dialog to add support for a " +
+                "new protocol.");
+        subsLabel.setText("$url, $fragment, $path, $port, $query, " +
+                "$protocol, $username and $password all substituted.");
         updateExample();
     }
 
@@ -160,11 +168,16 @@ public class URLDialog extends StandardDialog implements ActionListener,
         setLayout(new MigLayout("fill, wrap 1, hidemode 3"));
 
         add(blurbLabel, "grow");
-        add(optionType, "growx");
+        add(dmdirc, "growx");
+        add(browser, "growx");
+        add(mail, "growx");
+        add(custom, "growx");
         add(commandPath, "split 2, growx, pushx");
         add(showFileChooser, "");
         add(subsLabel, "growx");
         add(exampleLabel, "growx");
+        add(getLeftButton(), "split 2, right");
+        add(getRightButton(), "right");
     }
 
     /** Adds listeners to the components. */
@@ -172,20 +185,23 @@ public class URLDialog extends StandardDialog implements ActionListener,
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
         showFileChooser.addActionListener(this);
-        optionType.addActionListener(this);
+        dmdirc.addActionListener(this);
+        browser.addActionListener(this);
+        mail.addActionListener(this);
+        custom.addActionListener(this);
         commandPath.getDocument().addDocumentListener(this);
     }
 
     /** Saves the settings. */
     private void save() {
         final String value;
-        if (optionType.getSelectedIndex() == 0) {
+        if (optionType.getSelection() == dmdirc) {
             value = "DMDIRC";
-        } else if (optionType.getSelectedIndex() == 1) {
+        } else if (optionType.getSelection() == browser) {
             value = "BROWSER";
-        } else if (optionType.getSelectedIndex() == 2) {
+        } else if (optionType.getSelection() == mail) {
             value = "MAIL";
-        } else if (optionType.getSelectedIndex() == 3) {
+        } else if (optionType.getSelection() == custom) {
             value = commandPath.getText();
         } else {
             value = "";
@@ -212,20 +228,7 @@ public class URLDialog extends StandardDialog implements ActionListener,
      */
     @Override
     public void actionPerformed(final ActionEvent e) {
-        if (e.getSource() == optionType) {
-            if (optionType.getSelectedIndex() == 3) {
-                commandPath.setVisible(true);
-                showFileChooser.setVisible(true);
-                subsLabel.setVisible(true);
-                exampleLabel.setVisible(true);
-            } else {
-                commandPath.setVisible(false);
-                showFileChooser.setVisible(false);
-                subsLabel.setVisible(false);
-                exampleLabel.setVisible(false);
-            }
-            pack();
-        } else if (e.getSource() == getOkButton()) {
+        if (e.getSource() == getOkButton()) {
             save();
         } else if (e.getSource() == getCancelButton()) {
             dispose();
@@ -234,6 +237,19 @@ public class URLDialog extends StandardDialog implements ActionListener,
                     JFileChooser.APPROVE_OPTION) {
                 commandPath.setText(fileChooser.getSelectedFile().toString());
             }
+        } else {
+            if (optionType.getSelection() == custom.getModel()) {
+                commandPath.setEnabled(true);
+                showFileChooser.setEnabled(true);
+                subsLabel.setEnabled(true);
+                exampleLabel.setEnabled(true);
+            } else {
+                commandPath.setEnabled(false);
+                showFileChooser.setEnabled(false);
+                subsLabel.setEnabled(false);
+                exampleLabel.setEnabled(false);
+            }
+            pack();
         }
     }
 
