@@ -52,13 +52,13 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
     /** {@inheritDoc} */
     @Override    
     public boolean isPlaying() {
-        return true;
+        return information.get("state").equalsIgnoreCase("playing");
     }
 
     /** {@inheritDoc} */
     @Override    
     public String getAppName() {
-        return "vlc";
+        return "VLC";
     }
 
     /** {@inheritDoc} */
@@ -85,14 +85,17 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
     /** {@inheritDoc} */
     @Override    
     public String getLength() {
-        return information.containsKey("duration") ? information.get("duration")
+        // This is just seconds, could do with formatting.
+        return information.containsKey("length") ? information.get("length")
                 : "unknown";
     }
 
     /** {@inheritDoc} */
     @Override    
     public String getTime() {
-        return "unknown";
+        // This is just seconds, could do with formatting.
+        return information.containsKey("time") ? information.get("time")
+                : "unknown";
     }
 
     /** {@inheritDoc} */
@@ -124,11 +127,15 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
     private boolean getInformation() {
         information.clear();
         List<String> res;
+        List<String> res2;
         
         try {
             res = Downloader.getPage("http://" +
                     IdentityManager.getGlobalConfig().getOption("plugin-vlc",
                     "host", "localhost:8082") + "/old/info.html");
+            res2 = Downloader.getPage("http://" +
+                    IdentityManager.getGlobalConfig().getOption("plugin-vlc",
+                    "host", "localhost:8082") + "/old/");
         } catch (MalformedURLException ex) {
             return false;
         } catch (IOException ex) {
@@ -144,6 +151,19 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
                 final String value = tline.substring(colon + 1, tline.length() - 5).trim();
                 
                 information.put(key, value);
+            }
+        }
+        
+        for (String line : res2) {
+            final String tline = line.trim();
+            
+            if (tline.startsWith("State:")) {
+                information.put("state", tline.substring(6, tline.indexOf('<')).trim());
+            } else if (tline.startsWith("got_")) {
+                final int equals = tline.indexOf('=');
+                
+                information.put(tline.substring(4, equals).trim(),
+                        tline.substring(equals + 1, tline.length() - 1).trim());
             }
         }
         

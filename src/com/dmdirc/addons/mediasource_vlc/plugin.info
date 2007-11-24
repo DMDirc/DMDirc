@@ -1,6 +1,6 @@
 mainclass=com.dmdirc.addons.mediasource_vlc.VlcMediaSourcePlugin
-version=1
-friendlyversion=0.1
+version=2
+friendlyversion=0.2
 author=Chris <chris@dmdirc.com>
 description=Provides VLC nowplaying information
 name=vlcmediasource
