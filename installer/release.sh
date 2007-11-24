@@ -1,14 +1,26 @@
 #!/bin/sh
 
+# Jar names of plugins to add to ALL installers. (* means all)
+plugins=""
+
+# Additional Jar names of plugins to add to only Windows installers. (* means all)
+plugins_windows=""
+
+# Additional Jar names of plugins to add to only linux installers. (* means all)
+plugins_linux=""
+
 showHelp() {
 	echo "This will generate the different DMDirc installers."
 	echo "Usage: ${0} [params] <release>"
 	echo "Release can be either 'trunk', a valid tag, or a branch (if -b is passed)"
 	echo "The following params are known:"
 	echo "---------------------"
-	echo "-b, --branch              <release> is a branch"
-	echo "-h, --help                Help information"
-	echo "-o, --opt [options]       Additional options to pass to the make*Installer.sh files"
+	echo "-b, --branch                       <release> is a branch"
+	echo "-p, --plugins <plugins>            Plugins to add to all the jars."
+	echo "-pl, --plugins-linux <plugins>     Plugins to linux installer."
+	echo "-pw, --plugins-windows <plugins>   Plugins to linux installer."
+	echo "-h, --help                         Help information"
+	echo "-o, --opt <options>                Additional options to pass to the make*Installer.sh files"
 	echo "---------------------"
 	exit 0;
 }
@@ -20,6 +32,18 @@ BRANCH=""
 while test -n "$1"; do
 	LAST=${1}
 	case "$1" in
+		--plugins|-p)
+			shift
+			plugins="${1}"
+			;;
+		--plugins-linux|-pl)
+			shift
+			plugins_linux="${1}"
+			;;
+		--plugins-windows|-pw)
+			shift
+			plugins_windows="${1}"
+			;;
 		--opt|-o)
 			shift
 			OPT="${1} "
@@ -33,6 +57,17 @@ while test -n "$1"; do
 	esac
 	shift
 done
+
+if [ "${plugins}" = "*" -o "${plugins_linux}" = "*" -o "${plugins_windows}" = "*" ]; then
+	echo "Something is all.";
+	allPlugins=""
+	for thisfile in `ls -1 ../plugins/*.jar`; do
+		allPlugins=${allPlugins}" ${thisfile##*/}"
+	done
+	if [ "${plugins}" = "*" ]; then plugins=${allPlugins}; fi
+	if [ "${plugins_linux}" = "*" ]; then plugins_linux=${allPlugins}; fi
+	if [ "${plugins_windows}" = "*" ]; then plugins_windows=${allPlugins}; fi
+fi;
 
 if [ "${LAST}" != "" ]; then
 	if [ "${LAST}" = "trunk" ]; then
@@ -112,18 +147,19 @@ fi
 
 cd ${THISDIR}
 rm -Rf installer_temp
+
 echo "================================================================"
 echo "Building linux installer"
 echo "================================================================"
 cd linux
-./makeInstallerLinux.sh ${OPT}-c -k ${BRANCH}${RELEASE}
+./makeInstallerLinux.sh ${OPT}-c -k ${BRANCH}${RELEASE} -p "${plugins} ${plugins_linux}"
 cd ${THISDIR}
 
 echo "================================================================"
 echo "Building Windows installer"
 echo "================================================================"
 cd windows
-./makeInstallerWindows.sh ${OPT}-k -s ${BRANCH}${RELEASE}
+./makeInstallerWindows.sh ${OPT}-k -s ${BRANCH}${RELEASE} -p "${plugins} ${plugins_windows}"
 cd ${THISDIR}
 
 MD5BIN=`which md5sum`

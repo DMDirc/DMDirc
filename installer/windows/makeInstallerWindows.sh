@@ -94,6 +94,7 @@ finalTag=""
 signEXE="true"
 compilerFlags=""
 BRANCH="0"
+plugins=""
 location="../../../"
 
 showHelp() {
@@ -101,14 +102,15 @@ showHelp() {
 	echo "The following command line arguments are known:"
 	echo "---------------------"
 	echo "-h, --help                Help information"
-	echo "-r, --release [version]   Generate a file based on an svn tag (or branch with -b aswell)"
+	echo "-r, --release <version>   Generate a file based on an svn tag (or branch with -b aswell)"
 	echo "-b, --branch              Release in -r is a branch "
 	echo "-s, --setup               Recompile the .exe file"
 	echo "-e,                       If setup.exe compile fails, use old version"
+	echo "-p, --plugins <plugins>   What plugins to add to the jar file"
 	echo "-c, --compile             Recompile the .jar file"
 	echo "-u, --unsigned            Don't sign the exe"
-	echo "-t, --tag [tag]           Tag to add to final exe name to distinguish this build from a standard build"
-	echo "-f, --flags [flags]       Extra flags to pass to the compiler"	
+	echo "-t, --tag <tag>           Tag to add to final exe name to distinguish this build from a standard build"
+	echo "-f, --flags <flags>       Extra flags to pass to the compiler"	
 # This is not in the help cos its crappy really, and makes little/no difference to the
 # exe size unless debugging information is added using --flags, in which case the person
 # probably is Dataforce and knows about this flag anyway
@@ -122,6 +124,10 @@ showHelp() {
 
 while test -n "$1"; do
 	case "$1" in
+		--plugins|-p)
+			shift
+			plugins=${1}
+			;;
 		--compile|-c)
 			compileJar="true"
 			;;
@@ -197,8 +203,22 @@ if [ ! -e ${jarPath}"/dist/DMDirc.jar" -o "${compileJar}" = "true" ]; then
 	cd ${OLDPWD}
 fi;
 
-echo "Linking jar.."
-ln -s ${jarPath}"/dist/DMDirc.jar" "./DMDirc.jar"
+if [ "" = "${plugins}" ]; then
+	echo "Linking jar.."
+	ln -s ${jarPath}"/dist/DMDirc.jar" "./DMDirc.jar"
+else
+	echo "Copying jar.."
+	cp ${jarPath}"/dist/DMDirc.jar" "./DMDirc.jar"
+	
+	echo "Adding plugins to jar"
+	ln -s ${jarPath}"/plugins"
+	pluginList=""
+	for plugin in ${plugins}; do
+		pluginList=${pluginList}" plugins/${plugin}"
+	done
+	jar -uvf "DMDirc.jar" ${pluginList}
+	rm -Rf plugins;
+fi
 
 FILES="DMDirc.jar Setup.exe";
 if [ ! -e "Setup.exe"  -o "${compileSetup}" = "true" ]; then

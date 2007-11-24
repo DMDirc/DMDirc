@@ -51,10 +51,11 @@ showHelp() {
 	echo "The following command line arguments are known:"
 	echo "---------------------"
 	echo "-h, --help                Help information"
-	echo "-r, --release [version]   Generate a file based on an svn tag (or branch with -b aswell)"
+	echo "-r, --release <version>   Generate a file based on an svn tag (or branch with -b aswell)"
 	echo "-b, --branch              Release in -r is a branch "
+	echo "-p, --plugins <plugins>   What plugins to add to the jar file"
 	echo "-c, --compile             Recompile the .jar file"
-	echo "-t, --tag [tag]           Tag to add to final exe name to distinguish this build from a standard build"
+	echo "-t, --tag <tag>           Tag to add to final exe name to distinguish this build from a standard build"
 	echo "-k, --keep                Keep the existing source tree when compiling"
 	echo "                          (don't svn update beforehand)"
 	echo "---------------------"
@@ -67,9 +68,14 @@ updateSVN="true"
 isRelease=""
 finalTag=""
 BRANCH="0"
+plugins=""
 location="../../../"
 while test -n "$1"; do
 	case "$1" in
+		--plugins|-p)
+			shift
+			plugins=${1}
+			;;
 		--compile|-c)
 			compileJar="true"
 			;;
@@ -129,8 +135,22 @@ if [ ! -e ${jarPath}"/dist/DMDirc.jar" -o "${compileJar}" = "true" ]; then
 	cd ${OLDPWD}
 fi;
 
-echo "Linking jar.."
-ln -s ${jarPath}"/dist/DMDirc.jar" "./DMDirc.jar"
+if [ "" = "${plugins}" ]; then
+	echo "Linking jar.."
+	ln -s ${jarPath}"/dist/DMDirc.jar" "./DMDirc.jar"
+else
+	echo "Copying jar.."
+	cp ${jarPath}"/dist/DMDirc.jar" "./DMDirc.jar"
+	
+	echo "Adding plugins to jar"
+	ln -s ${jarPath}"/plugins"
+	pluginList=""
+	for plugin in ${plugins}; do
+		pluginList=${pluginList}" plugins/${plugin}"
+	done
+	jar -uvf "DMDirc.jar" ${pluginList}
+	rm -Rf plugins;
+fi
 
 echo "Creating .run file"
 echo "Adding stub.."
