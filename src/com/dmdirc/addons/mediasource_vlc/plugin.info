@@ -1,0 +1,8 @@
+mainclass=com.dmdirc.addons.mediasource_vlc.VlcMediaSourcePlugin
+version=1
+friendlyversion=0.1
+author=Chris <chris@dmdirc.com>
+description=Provides VLC nowplaying information
+name=vlcmediasource
+nicename=VLC Media Sources
+minversion=0
