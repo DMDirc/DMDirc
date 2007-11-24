@@ -168,7 +168,7 @@ public class URLHandler {
      * 
      * @return Substituted command
      */
-    private String substituteParams(final URI url, final String command) {
+    public String substituteParams(final URI url, final String command) {
         final String userInfo = url.getUserInfo();
         String fragment = "";
         String host = "";
