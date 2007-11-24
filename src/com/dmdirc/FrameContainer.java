@@ -23,6 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.IconChangeListener;
 import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.SelectionListener;
@@ -101,7 +102,10 @@ public abstract class FrameContainer {
      */
     public ConfigManager getConfigManager() {
         if (getServer() == null) {
-            return null;
+            Logger.appError(ErrorLevel.LOW, "getConfigManager() called when" +
+                    "getServer() = null", new UnsupportedOperationException(
+                    "My name: " + toString()));
+            return IdentityManager.getGlobalConfig();
         } else {
             return getServer().getConfigManager();
         }
