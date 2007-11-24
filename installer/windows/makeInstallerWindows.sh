@@ -221,6 +221,7 @@ else
 fi
 
 FILES="DMDirc.jar Setup.exe";
+DELETEFILES=${FILES}
 if [ ! -e "Setup.exe"  -o "${compileSetup}" = "true" ]; then
 	echo "Setup.exe does not exist. Lets try and compile it."	
 	FPC=`which fpc`
@@ -251,6 +252,7 @@ echo "Compressing files.."
 if [ -e "../common/installer.jar" ]; then
 	ln -s ../common/installer.jar ./installer.jar
 	FILES="${FILES} installer.jar"
+	DELETEFILES="${DELETEFILES} installer.jar"
 else
 	echo "[WARNING] Creating installer-less archive - relying on Setup.exe"
 fi 
@@ -258,6 +260,7 @@ fi
 if [ -e ${jarPath}"/src/com/dmdirc/res/icon.ico" ]; then
 	ln -s ${jarPath}"/src/com/dmdirc/res/icon.ico" ./icon.ico
 	FILES="${FILES} icon.ico"
+	DELETEFILES="${DELETEFILES} icon.ico"
 fi
 
 # Shortcut.exe is from http://www.optimumx.com/download/#Shortcut
@@ -267,6 +270,7 @@ if [ ! -e Shortcut.exe ]; then
 	rm Shortcut.zip
 fi
 FILES="${FILES} Shortcut.exe"
+DELETEFILES="${DELETEFILES} Shortcut.exe"
 
 if [ "${isRelease}" != "" ]; then
 	DOCSDIR=${jarPath}
@@ -277,14 +281,17 @@ fi
 if [ -e "${DOCSDIR}/README.TXT" ]; then
 	ln -s "${DOCSDIR}/README.TXT" .
 	FILES="${FILES} README.TXT"
+	DELETEFILES="${DELETEFILES} README.TXT"
 fi
 
 if [ -e "${DOCSDIR}/CHANGES.TXT" ]; then
 	ln -s "${DOCSDIR}/CHANGES.TXT" .
 	FILES="${FILES} CHANGES.TXT"
+	DELETEFILES="${DELETEFILES} CHANGES.TXT"
 elif [ -e "${DOCSDIR}/CHANGELOG.TXT" ]; then
 	ln -s "${DOCSDIR}/CHANGELOG.TXT" .
 	FILES="${FILES} CHANGELOG.TXT"
+	DELETEFILES="${DELETEFILES} CHANGELOG.TXT"
 fi
 
 if [ -e "${jarPath}/launcher/windows" ]; then
@@ -405,6 +412,7 @@ windres -F pe-i386 -i uninstall.rc -o uninstall.res
 ${FPC} -Sd -Twin32 ${3}Uninstaller.dpr
 if [ -e "Uninstaller.exe" ]; then
 	FILES="${FILES} Uninstaller.exe"
+	DELETEFILES="${DELETEFILES} Uninstaller.exe"
 fi
 
 compress $FILES
@@ -519,7 +527,7 @@ mv ${FULLINSTALLER} ../output/${ORIGNAME}
 mv Setup.exe Setup.exe.tmp
 mv Shortcut.exe Shortcut.exe.tmp
 
-rm -f ${FILES}
+rm -f ${DELETEFILES}
 rm -f ./7zip.conf
 rm -f ./*.o
 rm -f ./*.or
