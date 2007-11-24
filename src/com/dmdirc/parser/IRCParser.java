@@ -1407,8 +1407,19 @@ public final class IRCParser implements Runnable {
 	 * @param sChannelName Name of channel to join
 	 */
 	public void joinChannel(final String sChannelName) {
-		if (!isValidChannelName(sChannelName)) { return; }
-		sendString("JOIN " + sChannelName);
+		joinChannel(sChannelName, "", false);
+	}
+	
+	/**
+	 * Join a Channel.
+	 *
+	 * @param sChannelName Name of channel to join
+	 * @param autoPrefix Automatically prepend the first channel prefix defined
+	 *                   in 005 if sChannelName is an invalid channel.
+	 *                   **This only applies to the first channel if given a list**
+	 */
+	public void joinChannel(final String sChannelName, final boolean autoPrefix) {
+		joinChannel(sChannelName, "", autoPrefix);
 	}
 	
 	/**
@@ -1418,8 +1429,43 @@ public final class IRCParser implements Runnable {
 	 * @param sKey Key to use to try and join the channel
 	 */
 	public void joinChannel(final String sChannelName, final String sKey) {
-		if (!isValidChannelName(sChannelName)) { return; }
-		sendString("JOIN " + sChannelName + " " + sKey);
+		joinChannel(sChannelName, sKey, false);
+	}
+	
+	/**
+	 * Join a Channel with a key.
+	 *
+	 * @param sChannelName Name of channel to join
+	 * @param sKey Key to use to try and join the channel
+	 * @param autoPrefix Automatically prepend the first channel prefix defined
+	 *                   in 005 if sChannelName is an invalid channel.
+	 *                   **This only applies to the first channel if given a list**
+	 */
+	public void joinChannel(final String sChannelName, final String sKey, final boolean autoPrefix) {
+		final String channelName;
+		if (!isValidChannelName(sChannelName)) {
+			if (autoPrefix) {
+				if (h005Info.containsKey("CHANTYPES")) {
+					final String chantypes = h005Info.get("CHANTYPES");
+					if (!chantypes.isEmpty()) {
+						channelName = chantypes.charAt(0)+sChannelName;
+					} else {
+						return;
+					}
+				} else {
+					return;
+				}
+			} else {
+				return;
+			}
+		} else {
+			channelName = sChannelName;
+		}
+		if (sKey.isEmpty()) {
+			sendString("JOIN " + channelName);
+		} else {
+			sendString("JOIN " + channelName + " " + sKey);
+		}
 	}	
 	
 	/**
@@ -1723,8 +1769,9 @@ public final class IRCParser implements Runnable {
 				else if (version.matches("(?i).*austirc.*")) { return "austirc"; }
 				else if (version.matches("(?i).*ratbox.*")) { return "ratbox"; }
 				else {
-					// Stupid networks go here...
+					// Stupid networks/ircds go here...
 					if (sNetworkName.equalsIgnoreCase("ircnet")) { return "ircnet"; }
+					else if (sNetworkName.equalsIgnoreCase("starchat")) { return "starchat"; }
 					else { return "generic"; }
 				}
 			} else {
