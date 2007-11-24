@@ -224,7 +224,11 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 */
 	public void unloadPlugin() {
 		if (!isPersistant() && isLoaded()) {
-			plugin.onUnload();
+			try {
+				plugin.onUnload();
+			} catch (Exception e) {
+				Logger.userError(ErrorLevel.MEDIUM, "Error in onUnload for "+getName()+":"+e.getMessage(), e);
+			}
 			ActionManager.processEvent(CoreActionType.PLUGIN_UNLOADED, null, this);
 			plugin = null;
 			classloader = null;
@@ -283,6 +287,25 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	}
 	
 	/**
+	 * Does this plugin contain any persistant classes?
+	 *
+	 * @return true if this plugin contains any persistant classes, else false
+	 */
+	public boolean hasPersistant() {
+		final String persistance = metaData.getProperty("persistant","no");
+		if (persistance.equalsIgnoreCase("true")) {
+			return true;
+		} else {
+			for (Object keyObject : metaData.keySet()) {
+				if (keyObject.toString().toLowerCase().startsWith("persistant-")) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
 	 * Is this a persistant class?
 	 *
 	 * @param classname class to check persistance of
@@ -303,6 +326,13 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 * @return Filename of plugin
 	 */
 	public String getFilename() { return filename; }
+	
+	/**
+	 * Get the full plugin Filename (inc dirname)
+	 *
+	 * @return Filename of plugin
+	 */
+	public String getFullFilename() { return PluginManager.getPluginManager().getDirectory()+filename; }
 	
 	/**
 	 * Get the plugin Author.
