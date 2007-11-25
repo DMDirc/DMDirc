@@ -218,7 +218,7 @@ public class JWrappingLabel extends JLabel {
 				}
 				top = (int)(top + bounds.getHeight());
 				// If we are going to start trying to draw higher than allowed, stop.
-				if (top >= getMaximumSize().height()) { break; }
+				if (top >= getMaximumSize().height() && getMaximumSize().height() != 0) { break; }
 			}
 		}
 		
