@@ -486,10 +486,10 @@ public final class ActionManager {
      * @param type The name of the action comparison to try and find
      * @return The actioncomparison with the specified name, or null on failure
      */
-    @Precondition("The specified type is non-null and not empty")
     public static ActionType getActionType(final String type) {
-        assert(type != null);
-        assert(!type.isEmpty());
+        if (type == null || type.isEmpty()) {
+            return null;
+        }
         
         for (ActionType target : actionTypes) {
             if (((Enum) target).name().equals(type)) {

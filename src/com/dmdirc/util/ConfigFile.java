@@ -54,13 +54,9 @@ public class ConfigFile {
      * Creates a new instance of ConfigFile.
      * 
      * @param file The path of the file to be loaded
-     * @throws FileNotFoundException if the file is not found
-     * @throws IOException if an i/o exception occured when reading
      */
-    public ConfigFile(final String file) throws FileNotFoundException, IOException {
+    public ConfigFile(final String file) {
         this.file = new TextFile(file);
-
-        read();
     }
 
     /**
@@ -68,8 +64,9 @@ public class ConfigFile {
      * 
      * @throws FileNotFoundException if the file is not found
      * @throws IOException if an i/o exception occured when reading
+     * @throws InvalidConfigFileException if the config file isn't valid
      */
-    public void read() throws FileNotFoundException, IOException {
+    public void read() throws FileNotFoundException, IOException, InvalidConfigFileException {
         String domain = null;
         boolean keydomain = false;
         int offset;
@@ -77,10 +74,10 @@ public class ConfigFile {
         for (String line : file.getLines()) {
             final String tline = line.trim();
 
-            if (tline.indexOf('#') == 0) {
+            if (tline.indexOf('#') == 0 || tline.isEmpty()) {
                 continue;
             } else if (tline.endsWith(":") && tline.indexOf('=') == -1) {
-                domain = tline.substring(1, tline.length() - 1);
+                domain = tline.substring(0, tline.length() - 1);
 
                 domains.add(domain);
 
@@ -93,6 +90,9 @@ public class ConfigFile {
                 keydomains.get(domain).put(key, value);
             } else if (domain != null && !keydomain) {
                 flatdomains.add(domain, tline);
+            } else {
+                throw new InvalidConfigFileException("Unknown or unexpected" +
+                        " line encountered: " + tline);
             }
         }
     }

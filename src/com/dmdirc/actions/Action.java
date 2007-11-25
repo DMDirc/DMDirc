@@ -24,6 +24,8 @@ package com.dmdirc.actions;
 
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.util.ConfigFile;
+import com.dmdirc.util.InvalidConfigFileException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,6 +34,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -50,6 +53,9 @@ public class Action extends ActionModel implements Serializable {
        
     /** The file containing this action. */
     private File file;
+    
+    /** The config file we're using. */
+    private ConfigFile config;
     
     /** The properties read for this action. */
     private Properties properties;
@@ -70,17 +76,35 @@ public class Action extends ActionModel implements Serializable {
         file = new File(location);
         
         try {
+            config = new ConfigFile(location);
+            config.read();
+            loadActionFromConfig();
+        } catch (InvalidConfigFileException ex) {
+            // This isn't a valid config file. Maybe it's a properties file?
+            
+            loadProperties();
+        } catch (IOException ex) {
+            Logger.userError(ErrorLevel.HIGH, "I/O error when loading action: "
+                    + group + "/" + name + ": " + ex.getMessage());            
+        }
+    }
+    
+    /**
+     * Loads this action from a properties file.
+     */
+    private void loadProperties() {
+        try {
             final FileInputStream inputStream = new FileInputStream(file);
             
             properties = new Properties();
             properties.load(inputStream);
-            loadAction();
+            loadActionFromProperties();
             
             inputStream.close();
         } catch (IOException ex) {
             Logger.userError(ErrorLevel.HIGH, "I/O error when loading action: "
                     + group + "/" + name + ": " + ex.getMessage());
-        }
+        }        
     }
     
     /**
@@ -130,31 +154,87 @@ public class Action extends ActionModel implements Serializable {
         ActionManager.registerAction(this);
     }
     
+    /**
+     * Loads this action from the config instance.
+     */
+    private void loadActionFromConfig() {
+        if (config.isFlatDomain("triggers")) {
+            if (!loadTriggers(config.getFlatDomain("triggers"))) {
+                return;
+            }
+        } else {
+            error("No trigger specified");
+            return;
+        }
+        
+        if (config.isFlatDomain("response")) {
+            response = new String[config.getFlatDomain("response").size()];
+            
+            int i = 0;
+            for (String line: config.getFlatDomain("response")) {
+                response[i++] = line;
+            }
+        } else {
+            error("No response specified");
+            return;
+        }
+        
+        if (config.isFlatDomain("format")) {
+            newFormat = config.getFlatDomain("format").get(0);
+        }
+        
+        for (int cond = 0; config.isKeyDomain("condition " + cond); cond++) {
+            if (!readCondition(config.getKeyDomain("condition " + cond))) {
+                return;
+            }
+        }
+        
+        if (config.isFlatDomain("conditiontree")) {
+            conditionTree = ConditionTree.parseString(config.getFlatDomain("conditiontree").get(0));
+            
+            if (conditionTree == null) {
+                error("Unable to parse condition tree");
+                return;
+            }
+            
+            if (conditionTree.getMaximumArgument() >= conditions.size()) {
+                error("Condition tree references condition "
+                        + conditionTree.getMaximumArgument() + " but there are"
+                        + " only " + conditions.size() + " conditions");
+                return;
+            }
+        }
+        
+        ActionManager.registerAction(this);        
+    }
+    
+    private boolean loadTriggers(final List<String> newTriggers) {
+        triggers = new ActionType[newTriggers.size()];
+
+        for (int i = 0; i < triggers.length; i++) {
+            triggers[i] = ActionManager.getActionType(newTriggers.get(i));
+
+            if (triggers[i] == null) {
+                error("Invalid trigger specified: " + newTriggers.get(i));
+                return false;
+            } else if (i != 0 && !triggers[i].getType().equals(triggers[0].getType())) {
+                error("Triggers are not compatible");
+                return false;
+            }
+        }
+        
+        return true;
+    }
     
     /**
      * Loads the various attributes of this action from the properties instance.
      */
-    private void loadAction() {
+    private void loadActionFromProperties() {
         // Read the triggers
         if (properties.containsKey("trigger")) {
             final String[] triggerStrings = properties.getProperty("trigger").split("\\|");
                         
-            triggers = new ActionType[triggerStrings.length];
-            
-            for (int i = 0; i < triggerStrings.length; i++) {
-                triggers[i] = ActionManager.getActionType(triggerStrings[i]);
-                
-                if (triggers[i] == null) {
-                    error("Invalid trigger specified");
-                    return;
-                } else {
-                    if (i != 0 && !triggers[i].getType().equals(triggers[0].getType())) {
-                        error("Triggers are not compatible");
-                        return;
-                    }
-                }
-            }
-            
+            loadTriggers(Arrays.asList(triggerStrings));
         } else {
             error("No trigger specified");
             return;
@@ -272,6 +352,88 @@ public class Action extends ActionModel implements Serializable {
         }
     }
     
+    private boolean readCondition(final Map<String,String> data) {
+        int arg = 0;
+        ActionComponent component = null;
+        ActionComparison comparison = null;
+        String target = "";
+        
+        // ------ Read the argument
+        
+        try {
+            arg = Integer.parseInt(data.get("argument"));
+        } catch (NumberFormatException ex) {
+            error("Invalid argument number specified: " + data.get("argument"));
+            return false;
+        }
+        
+        if (arg < 0 || arg >= triggers[0].getType().getArity()) {
+            error("Invalid argument number specified: " + arg);
+            return false;
+        }
+        
+        // ------ Read the component
+        
+        component = readComponent(data, arg);
+        if (component == null) {
+            return false;
+        }
+        
+        // ------ Read the comparison
+        
+        comparison = ActionManager.getActionComparison(data.get("comparison"));
+        if (comparison == null) {
+            error("Invalid comparison specified: " + data.get("comparison"));
+            return false;
+        }
+            
+        if (!comparison.appliesTo().equals(component.getType())) {
+            error("Comparison cannot be applied to specified component: " + data.get("comparison"));
+            return false;
+        }
+        
+        // ------ Read the target
+        
+        target = data.get("target");
+
+        if (target == null) {
+            error("No target specified for condition");
+            return false;
+        }
+        
+        conditions.add(new ActionCondition(arg, component, comparison, target));
+        return true;        
+    }
+    
+    private ActionComponent readComponent(final Map<String, String> data, final int arg) {
+        final String componentName = data.get("component");
+        ActionComponent component;
+            
+        if (componentName.indexOf('.') == -1) {
+            component = ActionManager.getActionComponent(componentName);
+        } else {
+            try {
+                component = new ActionComponentChain(triggers[0].getType().getArgTypes()[arg],
+                        componentName);
+            } catch (IllegalArgumentException iae) {
+                error(iae.getMessage());
+                return null;
+            }
+        }
+            
+        if (component == null) {
+            error("Unknown component: " + componentName);
+            return null;
+        }
+            
+        if (!component.appliesTo().equals(triggers[0].getType().getArgTypes()[arg])) {
+            error("Component cannot be applied to specified arg in condition: " + componentName);
+            return null;
+        }
+        
+        return component;
+    }
+    
     /**
      * Reads the specified condition.
      *
@@ -304,7 +466,7 @@ public class Action extends ActionModel implements Serializable {
             final String componentName = properties.getProperty("condition" + condition + "-component");
             
             if (componentName.indexOf('.') == -1) {
-            component = ActionManager.getActionComponent(componentName);
+                component = ActionManager.getActionComponent(componentName);
             } else {
                 try {
                     component = new ActionComponentChain(triggers[0].getType().getArgTypes()[arg],
