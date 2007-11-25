@@ -90,6 +90,9 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
             Main.getUI().showFirstRunWizard();
         } else if ("migration".equals(args[0])) {
             Main.getUI().showMigrationWizard();
+        } else if ("notify".equals(args[0])) {
+            sendLine(origin, isSilent, FORMAT_OUTPUT, "Current notification colour is: "
+                    + origin.getContainer().getNotification());
         } else {
             sendLine(origin, isSilent, FORMAT_ERROR, "Unknown debug action.");
         }
@@ -328,6 +331,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
             res.add("benchmark");
             res.add("firstrun");
             res.add("migration");
+            res.add("notify");
         } else if (arg == 1 && "error".equals(previousArgs.get(0))) {
             res.add("user");
             res.add("app");
