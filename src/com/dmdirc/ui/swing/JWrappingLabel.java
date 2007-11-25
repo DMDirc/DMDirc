@@ -35,6 +35,7 @@ import javax.swing.SwingConstants;
 
 /**
  * JLabel that wraps automatically.
+ * Wrapping occurs on newlines and spaces.
  *
  * @author Shane Mc Cormack
  */
@@ -161,7 +162,7 @@ public class JWrappingLabel extends JLabel {
 				// If there are no other words on this line, we assume the word fits
 				// (Thus long words don't get split up)
 				if ((isPreferredSizeSet() || myPreferredWidth > 0) && getWidth() > 0) {
-					needNewLine = (thisWidth+left > getWidth() && thisWidth != 0);
+					needNewLine = ((thisWidth+left > getWidth() || thisWidth+left > getMaximumSize().width()) && thisWidth != 0);
 				} else {
 					// If no preferred width is set, we assume we can draw as wide as we
 					// want!
@@ -216,6 +217,8 @@ public class JWrappingLabel extends JLabel {
 					g.drawString(drawLine, x, y);
 				}
 				top = (int)(top + bounds.getHeight());
+				// If we are going to start trying to draw higher than allowed, stop.
+				if (top >= getMaximumSize().height()) { break; }
 			}
 		}
 		
