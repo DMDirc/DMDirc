@@ -1,10 +1,23 @@
-trigger=QUERY_MESSAGE
-conditions=1
+# This is a DMDirc configuration file.
+# Written on: Sun Nov 25 13:32:18 GMT 2007
 
-condition0-arg=1
-condition0-component=STRING_STRING
-condition0-comparison=STRING_CONTAINS
-condition0-target=${SERVER_MYNICKNAME}
+# This section indicates which sections below take key/value
+# pairs, rather than a simple list. It should be placed above
+# any sections that take key/values.
+keysections:
+  condition 0
 
-response=/notify $highlightcolour
-format=queryMessageHighlight
+triggers:
+  QUERY_MESSAGE
+
+response:
+  /notify $highlightcolour
+
+format:
+  queryMessageHighlight
+
+condition 0:
+  argument=1
+  component=STRING_STRING
+  target=${SERVER_MYNICKNAME}
+  comparison=STRING_CONTAINS

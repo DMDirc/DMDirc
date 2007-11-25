@@ -1,19 +1,34 @@
-trigger=CLIENT_LINE_ADDED
-conditions=3
+# This is a DMDirc configuration file.
+# Written on: Sun Nov 25 13:32:18 GMT 2007
 
-condition0-arg=0
-condition0-component=WINDOW_COLOUR
-condition0-comparison=COLOUR_NEQUALS
-condition0-target=$highlightcolour
+# This section indicates which sections below take key/value
+# pairs, rather than a simple list. It should be placed above
+# any sections that take key/values.
+keysections:
+  condition 0
+  condition 1
+  condition 2
 
-condition1-arg=0
-condition1-component=WINDOW_COLOUR
-condition1-comparison=COLOUR_NEQUALS
-condition1-target=$textcolour
+triggers:
+  CLIENT_LINE_ADDED
 
-condition2-arg=0
-condition2-component=WINDOW_COLOUR
-condition2-comparison=COLOUR_NEQUALS
-condition2-target=$eventcolour
+response:
+  /notify $misccolour
 
-response=/notify $misccolour
+condition 0:
+  argument=0
+  component=WINDOW_COLOUR
+  target=$highlightcolour
+  comparison=COLOUR_NEQUALS
+
+condition 1:
+  argument=0
+  component=WINDOW_COLOUR
+  target=$textcolour
+  comparison=COLOUR_NEQUALS
+
+condition 2:
+  argument=0
+  component=WINDOW_COLOUR
+  target=$eventcolour
+  comparison=COLOUR_NEQUALS

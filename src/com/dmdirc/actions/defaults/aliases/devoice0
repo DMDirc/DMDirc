@@ -1,20 +1,37 @@
-trigger=UNKNOWN_COMMAND
-conditions=3
+# This is a DMDirc configuration file.
+# Written on: Sun Nov 25 13:32:17 GMT 2007
 
-condition2-arg=2
-condition2-component=STRINGARRAY_LENGTH
-condition2-comparison=INT_LESS
-condition2-target=16
+# This section indicates which sections below take key/value
+# pairs, rather than a simple list. It should be placed above
+# any sections that take key/values.
+keysections:
+  condition 0
+  condition 1
+  condition 2
 
-condition1-arg=2
-condition1-component=STRINGARRAY_LENGTH
-condition1-comparison=INT_GREATER
-condition1-target=0
+triggers:
+  UNKNOWN_COMMAND
 
-condition0-arg=1
-condition0-component=STRING_STRING
-condition0-comparison=STRING_EQUALS
-condition0-target=devoice
+response:
+  /mode -vvvvvvvvvvvvvvv $1-
 
-response=/mode -vvvvvvvvvvvvvvv $1-
-format=
+format:
+
+
+condition 0:
+  argument=1
+  component=STRING_STRING
+  target=devoice
+  comparison=STRING_EQUALS
+
+condition 1:
+  argument=2
+  component=STRINGARRAY_LENGTH
+  target=0
+  comparison=INT_GREATER
+
+condition 2:
+  argument=2
+  component=STRINGARRAY_LENGTH
+  target=16
+  comparison=INT_LESS
