@@ -1170,9 +1170,9 @@ public final class Server extends WritableFrameContainer implements Serializable
         // Check we have mode aliases
         final String modes = parser.getBoolChanModes() + parser.getListChanModes()
                 + parser.getSetOnlyChanModes() + parser.getSetUnsetChanModes();
+        final String umodes = parser.getUserModeString();
 
-        for (int i = 0; i < modes.length(); i++) {
-            final char mode = modes.charAt(i);
+        for (char mode : modes.toCharArray()) {
             if (!configManager.hasOption(DOMAIN_SERVER, "mode" + mode)) {
                 Logger.appError(ErrorLevel.LOW, "No mode alias for mode +" + mode,
                         new Exception("No mode alias for mode +" + mode + "\n" // NOPMD
@@ -1181,6 +1181,16 @@ public final class Server extends WritableFrameContainer implements Serializable
                         + " (" + parser.getIRCD(true) + ")\n\n"));
             }
         }
+        
+        for (char mode : umodes.toCharArray()) {
+            if (!configManager.hasOption(DOMAIN_SERVER, "umode" + mode)) {
+                Logger.appError(ErrorLevel.LOW, "No user mode alias for mode +" + mode,
+                        new Exception("No user mode alias for mode +" + mode + "\n" // NOPMD
+                        + "Network: " + parser.getNetworkName() + "\n"
+                        + "IRCd: " + parser.getIRCD(false)
+                        + " (" + parser.getIRCD(true) + ")\n\n"));
+            }
+        }        
     }
    
     // ---------------------------------------------- IGNORE LIST HANDLING -----
