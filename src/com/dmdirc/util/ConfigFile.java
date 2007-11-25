@@ -83,6 +83,12 @@ public class ConfigFile {
 
                 keydomain = keydomains.containsKey(domain)
                         || flatdomains.containsValue("keysections", domain);
+                
+                if (keydomain && !keydomains.containsKey(domain)) {
+                    keydomains.put(domain, new HashMap<String, String>());
+                } else if (!keydomain && !flatdomains.containsKey(domain)) {
+                    flatdomains.add(domain);
+                }
             } else if (domain != null && keydomain && (offset = tline.indexOf('=')) != -1) {
                 final String key = tline.substring(0, offset);
                 final String value = tline.substring(offset + 1);
@@ -204,5 +210,27 @@ public class ConfigFile {
      */
     public boolean isFlatDomain(final String domain) {
         return flatdomains.containsKey(domain);
+    }
+    
+    /**
+     * Adds a new flat domain to this config file.
+     * 
+     * @param name The name of the domain to be added
+     * @param data The content of the domain
+     */
+    public void addDomain(final String name, final List<String> data) {
+        domains.add(name);
+        flatdomains.add(name, data);
+    }
+
+    /**
+     * Adds a new key domain to this config file.
+     * 
+     * @param name The name of the domain to be added
+     * @param data The content of the domain
+     */    
+    public void addDomain(final String name, final Map<String, String> data) {
+        domains.add(name);
+        keydomains.put(name, data);
     }
 }

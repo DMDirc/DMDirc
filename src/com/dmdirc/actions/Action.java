@@ -32,7 +32,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -54,6 +56,9 @@ public class Action extends ActionModel implements Serializable {
     /** The file containing this action. */
     private File file;
     
+    /** The location of the file we're reading/saving. */
+    private String location;
+    
     /** The config file we're using. */
     private ConfigFile config;
     
@@ -71,7 +76,7 @@ public class Action extends ActionModel implements Serializable {
         super(group, name);
         
         final String fs = System.getProperty("file.separator");
-        final String location = ActionManager.getDirectory() + group + fs + name;
+        location = ActionManager.getDirectory() + group + fs + name;
         
         file = new File(location);
         
@@ -145,7 +150,7 @@ public class Action extends ActionModel implements Serializable {
         
         final String fs = System.getProperty("file.separator");
         final String dir = ActionManager.getDirectory() + group + fs;
-        final String location = dir + name;
+        location = dir + name;
         
         new File(dir).mkdirs();
         
@@ -180,7 +185,8 @@ public class Action extends ActionModel implements Serializable {
         }
         
         if (config.isFlatDomain("format")) {
-            newFormat = config.getFlatDomain("format").get(0);
+            newFormat = config.getFlatDomain("format").size() == 0 ? "" :
+                config.getFlatDomain("format").get(0);
         }
         
         for (int cond = 0; config.isKeyDomain("condition " + cond); cond++) {
@@ -292,15 +298,17 @@ public class Action extends ActionModel implements Serializable {
         }
         
         ActionManager.registerAction(this);
+        save();
     }
     
     /**
      * Called to save the action.
      */
     public void save() {
-        final Properties properties = new Properties();
-        final StringBuffer triggerString = new StringBuffer();
-        final StringBuffer responseString = new StringBuffer();
+        config = new ConfigFile(location);
+
+        final List<String> triggerNames = new ArrayList<String>();
+        final List<String> responseLines = new ArrayList<String>();
         
         for (ActionType trigger : triggers) {
             if (trigger == null) {
@@ -310,40 +318,41 @@ public class Action extends ActionModel implements Serializable {
                 continue;
             }
             
-            triggerString.append('|');
-            triggerString.append(trigger.toString());
+            triggerNames.add(trigger.toString());
         }
         
         for (String line : response) {
-            responseString.append('\n');
-            responseString.append(line);
+            responseLines.add(line);
         }
         
-        properties.setProperty("trigger", triggerString.substring(1));
-        properties.setProperty("conditions", "" + conditions.size());
-        properties.setProperty("response", responseString.substring(1));
+        config.addDomain("triggers", triggerNames);
+        config.addDomain("response", responseLines);
         
         if (conditionTree != null) {
-            properties.setProperty("conditiontree", conditionTree.toString());
+            config.addDomain("conditiontree", new ArrayList<String>());
+            config.getFlatDomain("conditiontree").add(conditionTree.toString());
         }
         
         if (newFormat != null) {
-            properties.setProperty("format", newFormat);
+            config.addDomain("format", new ArrayList<String>());
+            config.getFlatDomain("format").add(newFormat.toString());
         }
         
         int i = 0;
         for (ActionCondition condition : conditions) {
-            properties.setProperty("condition" + i + "-arg", "" + condition.getArg());
-            properties.setProperty("condition" + i + "-component", condition.getComponent().toString());
-            properties.setProperty("condition" + i + "-comparison", condition.getComparison().toString());
-            properties.setProperty("condition" + i + "-target", condition.getTarget());
+            final Map<String, String> data = new HashMap<String, String>();
+            
+            data.put("argument", String.valueOf(condition.getArg()));
+            data.put("component", condition.getComponent().toString());
+            data.put("comparison", condition.getComparison().toString());
+            data.put("target", condition.getTarget());
+            
+            config.addDomain("condition " + i, data);
             i++;
         }
         
         try {
-            final FileOutputStream outputStream = new FileOutputStream(file);
-            properties.store(outputStream, "Created by GUI actions editor");
-            outputStream.close();
+            config.write();
             
             resetModified();
         } catch (IOException ex) {
@@ -546,7 +555,7 @@ public class Action extends ActionModel implements Serializable {
         super.setGroup(newGroup);
         
         final String fs = System.getProperty("file.separator");
-        final String location = ActionManager.getDirectory() + group + fs + name;
+        location = ActionManager.getDirectory() + group + fs + name;
         
         file.delete();
         file = new File(location);

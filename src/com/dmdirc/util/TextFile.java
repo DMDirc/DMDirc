@@ -39,12 +39,25 @@ import java.util.List;
  */
 public class TextFile {
     
+    /** The file we're dealing with. */
     private final File file;
     
+    /**
+     * Creates a new instance of TextFile for the specified file.
+     * 
+     * @param filename The file to be read/written
+     */
     public TextFile(final String filename) {
         file = new File(filename);
     }
     
+    /**
+     * Retrieves the contents of the file as a list of lines.
+     * 
+     * @return A list of lines in the file
+     * @throws FileNotFoundException if the file isn't found
+     * @throws IOException if an I/O exception occurs
+     */
     public List<String> getLines() throws FileNotFoundException, IOException {
         final BufferedReader reader = new BufferedReader(new FileReader(file));
         final List<String> res = new ArrayList<String>();
@@ -60,6 +73,12 @@ public class TextFile {
         return res;
     }
     
+    /**
+     * Writes the specified list of lines to the file.
+     * 
+     * @param lines The lines to be written
+     * @throws IOException if an I/O exception occurs
+     */
     public void writeLines(final List<String> lines) throws IOException {
         final BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         
@@ -67,6 +86,8 @@ public class TextFile {
             writer.write(line);
             writer.newLine();
         }
+        
+        writer.close();
     }
 
 }
