@@ -162,7 +162,7 @@ public abstract class ConfigSource {
         int res;
 
         try {
-            res = Integer.parseInt(getOption(domain, option));
+            res = Integer.parseInt(getOption(domain, option).trim());
         } catch (NumberFormatException ex) {
             Logger.userError(ErrorLevel.MEDIUM,
                     "Invalid number format for " + domain + "." + option);
