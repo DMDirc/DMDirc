@@ -48,7 +48,7 @@ public final class ErrorManager implements Serializable, Runnable {
     private static final long serialVersionUID = 4;
     
     /** Time to wait between error submissions. */
-    private static final int SLEEP_TIME = 20000;
+    private static final int SLEEP_TIME = 5000;
     
     /** Previously instantiated instance of ErrorManager. */
     private static ErrorManager me = new ErrorManager();
