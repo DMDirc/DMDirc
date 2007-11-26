@@ -25,6 +25,7 @@ package com.dmdirc.ui.swing.dialogs.wizard.firstrun;
 import com.dmdirc.ui.swing.JWrappingLabel;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 
+import java.awt.Dimension;
 import javax.swing.JCheckBox;
 
 import net.miginfocom.swing.MigLayout;
@@ -57,7 +58,7 @@ public final class StepTwo extends Step {
                 + " your nickname, realname, etc when connecting to a server. "
                 + "If you would like the wizard to open the profile manager "
                 + "for you, tick the box below.");
-        
+        infoLabel.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
         add(infoLabel, "growx, pushx, wmax 400");
         add(profile, "");
     }

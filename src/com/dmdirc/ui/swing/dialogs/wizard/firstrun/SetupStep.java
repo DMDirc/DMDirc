@@ -63,7 +63,6 @@ public final class SetupStep extends StepOne {
                 + "plugins for you, tick the box below.");
         infoLabel.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
         add(infoLabel, "growx, pushx");
-        //add(infoLabel, "growx, pushx, wmax 400");
         add(plugins, "");
         infoLabel = new JWrappingLabel("DMDirc also comes with a set of core"
                 + " 'actions' that serve as examples and add some basic"
@@ -72,7 +71,6 @@ public final class SetupStep extends StepOne {
                 + " box below.");
         infoLabel.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
         add(infoLabel, "growx, pushx");
-        //add(infoLabel, "growx, pushx, wmax 400");
         add(actions, "");
     }
 }

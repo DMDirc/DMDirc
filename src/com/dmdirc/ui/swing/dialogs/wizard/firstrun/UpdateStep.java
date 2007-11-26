@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.dialogs.wizard.firstrun;
 
 
 import com.dmdirc.ui.swing.JWrappingLabel;
+import java.awt.Dimension;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -56,12 +57,14 @@ public final class UpdateStep extends StepOne {
                 + " the core plugins and actions.\n\nWould you like to extract the"
                 + " core plugins to update them? Note that older plugins may not"
                 + " function correctly with this version of DMDirc.");
+        infoLabel.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
         add(infoLabel, "growx, pushx, wmax 400");
         add(plugins, "");
         
         infoLabel = new JWrappingLabel("Would you like to extract the default actions"
                 + " to update them? Any changes you have made to the default"
                 + " actions will be lost.");
+        infoLabel.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
         add(infoLabel, "growx, pushx, wmax 400");
         add(actions, "");
     }
