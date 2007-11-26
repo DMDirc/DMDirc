@@ -40,6 +40,7 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.QueryWindow;
+import java.awt.Toolkit;
 
 import java.io.Serializable;
 
@@ -131,6 +132,11 @@ public final class Query extends MessageTarget implements
     /** {@inheritDoc} */
     @Override
     public void sendLine(final String line) {
+        if (server.getState() != ServerState.CONNECTED) {
+            Toolkit.getDefaultToolkit().beep();
+            return;
+        }
+        
         if (line.indexOf('\n') > -1) {
             for (String part : line.split("\n")) {
                 sendLine(part);
@@ -169,6 +175,11 @@ public final class Query extends MessageTarget implements
      */
     @Override
     public void sendAction(final String action) {
+        if (server.getState() != ServerState.CONNECTED) {
+            Toolkit.getDefaultToolkit().beep();
+            return;
+        }
+        
         final ClientInfo client = server.getParser().getMyself();
         final int maxLineLength = server.getParser().getMaxLength("PRIVMSG", host);
         
