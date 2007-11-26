@@ -46,7 +46,7 @@ import com.dmdirc.ui.swing.components.SwingStatusBar;
 import com.dmdirc.ui.swing.dialogs.FeedbackDialog;
 import com.dmdirc.ui.swing.dialogs.NewServerDialog;
 import com.dmdirc.ui.swing.dialogs.PluginDialog;
-import com.dmdirc.ui.swing.dialogs.PreferencesDialog;
+import com.dmdirc.ui.swing.dialogs.prefs.PreferencesDialog;
 import com.dmdirc.ui.swing.dialogs.about.AboutDialog;
 import com.dmdirc.ui.swing.dialogs.actionseditor.ActionsManagerDialog;
 import com.dmdirc.ui.swing.dialogs.aliases.AliasManagerDialog;

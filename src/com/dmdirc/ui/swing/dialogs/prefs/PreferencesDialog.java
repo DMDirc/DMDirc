@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs;
+package com.dmdirc.ui.swing.dialogs.prefs;
 
 import com.dmdirc.Main;
 import com.dmdirc.interfaces.ConfigChangeListener;
@@ -34,7 +34,6 @@ import com.dmdirc.themes.ThemeManager;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.SwingPreferencesPanel;
-import java.awt.Component;
 import java.util.AbstractMap.SimpleImmutableEntry;
 
 import java.util.HashMap;
@@ -42,8 +41,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 
 import javax.swing.UIManager;
@@ -59,7 +56,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 8;
+    private static final long serialVersionUID = 9;
     
     /** The global config manager. */
     private final ConfigManager config = IdentityManager.getGlobalConfig();
@@ -545,38 +542,5 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
             IdentityManager.getGlobalConfig().removeListener(this);
             me = null;
         }
-    }
-    
-    /**
-     * Map entry renderer.
-     */
-    private class MapEntryRenderer extends DefaultListCellRenderer {
-        
-        /**
-        * A version number for this class. It should be changed whenever the class
-        * structure is changed (or anything else that would prevent serialized
-        * objects being unserialized with the new class).
-        */
-        private static final long serialVersionUID = 1;
-        
-        /** {@inheritDoc} */
-        @Override
-        public Component getListCellRendererComponent(final JList list,
-                final Object value, final int index, final boolean isSelected,
-                final boolean cellHasFocus) {
-        
-            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        
-            if (value == null) {
-                setText("Any");
-            } else if (value instanceof Entry) {
-                setText((String) ((Entry) value).getKey());
-            } else {
-                setText(value.toString());
-            }
-        
-            return this;
-        }
-        
     }
 }

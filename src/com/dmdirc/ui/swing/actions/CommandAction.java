@@ -46,7 +46,7 @@ public class CommandAction extends AbstractAction {
     private final CommandParser parser;
     
     /** Input window. */
-    private final InputWindow window;
+    private final transient InputWindow window;
     
     /** Command character. */
     private final String commandChar;
