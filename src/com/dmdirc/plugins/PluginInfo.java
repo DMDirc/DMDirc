@@ -34,6 +34,8 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
+import java.util.List;
+import java.util.ArrayList;
 
 public class PluginInfo implements Comparable<PluginInfo> {
 	/** Plugin Meta Data */
@@ -46,6 +48,8 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	private PluginClassLoader classloader = null;
 	/** The resource manager used by this pluginInfo */
 	private ResourceManager myResourceManager = null;
+	/** List of classes this plugin has */
+	private List<String> myClasses = new ArrayList<String>();
 	
 	/**
 	 * Create a new PluginInfo.
@@ -104,6 +108,14 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			throw new PluginException("Plugin "+filename+" failed to load, main class file ("+mainClass+") not found in jar.");
 		}
 		
+		for (final String classfilename : res.getResourcesStartingWith("")) {
+			String classname = classfilename.replace('/', '.');
+			if (classname.matches("^.*\\.class$")) {
+				classname = classname.replaceAll("\\.class$", "");
+				myClasses.add(classname);
+			}
+		}
+		
 		if (isPersistant()) { loadEntirePlugin(); }
 		
 		myResourceManager = null;
@@ -151,19 +163,8 @@ public class PluginInfo implements Comparable<PluginInfo> {
 		loadPlugin();
 
 		// Now load all the rest.
-		try {
-			ResourceManager res = getResourceManager();
-			
-			for (final String filename : res.getResourcesStartingWith("")) {
-				String classname = filename.replace('.', '/');
-				if (classname.matches("^.*\\.class$")) {
-					classname = classname.replaceAll("\\.class$", "");
-					loadClass(classname);
-				}
-			}
-			
-		} catch (IOException ioe) {
-			throw new PluginException("Plugin "+filename+" failed to entirely load, error with resourcemanager: "+ioe.getMessage(), ioe);
+		for (String classname : myClasses) {
+			loadClass(classname);
 		}
 		myResourceManager = null;
 	}
@@ -236,6 +237,15 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	}
 	
 	/**
+	 * Get the list of Classes
+	 *
+	 * @return Classes this plugin has
+	 */
+	public List<String> getClassList() {
+		return myClasses;
+	}
+	
+	/**
 	 * Get the main Class
 	 *
 	 * @return Main Class to begin loading.
@@ -254,7 +264,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 *
 	 * @return PluginClassLoader
 	 */
-	private PluginClassLoader getPluginClassLoader() { return classloader; }	
+	protected PluginClassLoader getPluginClassLoader() { return classloader; }	
 	
 	/**
 	 * Get the plugin friendly version
@@ -303,6 +313,38 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Get a list of all persistant classes in this plugin
+	 *
+	 * @return List of all persistant classes in this plugin
+	 */
+	public List<String> getPersistantClasses() {
+		final List<String> result = new ArrayList<String>();
+		final String persistance = metaData.getProperty("persistant","no");
+		if (persistance.equalsIgnoreCase("true")) {
+			try {
+				ResourceManager res = getResourceManager();
+				
+				for (final String filename : res.getResourcesStartingWith("")) {
+					String classname = filename.replace('.', '/');
+					if (classname.matches("^.*\\.class$")) {
+						classname = classname.replaceAll("\\.class$", "");
+						result.add(classname);
+					}
+				}
+			} catch (IOException e) {
+				// Jar no longer exists?
+			}
+		} else {
+			for (Object keyObject : metaData.keySet()) {
+				if (keyObject.toString().toLowerCase().startsWith("persistant-")) {
+					result.add(keyObject.toString().substring(11));
+				}
+			}
+		}
+		return result;
 	}
 	
 	/**

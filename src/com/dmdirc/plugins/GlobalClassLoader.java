@@ -30,36 +30,34 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-public class PersistantClassLoader extends ClassLoader {
-	/** Singleton instance of the PersistantClassLoader. */
-	private static PersistantClassLoader me;
+/**
+ * This classloader knows about plugins and is used to store persistant classes
+ */
+public class GlobalClassLoader extends ClassLoader {
+	/** Singleton instance of the GlobalClassLoader. */
+	private static GlobalClassLoader me;
 	
-	/** Arraylist containing potential sources of persistant class files */
-	private ArrayList<String> resourcesList = new ArrayList<String>();
-	
-	/**
-	 * Last Resource looked in. 
-	 * (Usually this is the one with the file we want so we check it first)
-	 */
-	private String lastResource = "";
+	/** HashMap containing sources of Global class files */
+	private HashMap<String,String> resourcesList = new HashMap<String,String>();
 
 	/**
-	 * Create a new PersistantClassLoader.
+	 * Create a new GlobalClassLoader.
 	 */
-	private PersistantClassLoader() {
+	private GlobalClassLoader() {
 		super();
 	}
 	
 	/**
-	 * Retrieves the singleton instance of the PersistantClassLoader.
+	 * Retrieves the singleton instance of the GlobalClassLoader.
 	 *
-	 * @return A singleton instance of PersistantClassLoader.
+	 * @return A singleton instance of GlobalClassLoader.
 	 */
-	public static final synchronized PersistantClassLoader getPersistantClassLoader() {
+	public static final synchronized GlobalClassLoader getGlobalClassLoader() {
 		if (me == null) {
-			me = new PersistantClassLoader();
+			me = new GlobalClassLoader();
 		}
 		
 		return me;
@@ -74,11 +72,10 @@ public class PersistantClassLoader extends ClassLoader {
 	 * @throws ClassNotFoundException if the class to be loaded could not be found.
 	 */
 	public Class< ? > loadClass(final String name, final PluginInfo pi) throws ClassNotFoundException {
-		if (pi.hasPersistant()) {
-			final String jarfile = pi.getFullFilename();
-			if (!resourcesList.contains(jarfile)) {
-				lastResource = jarfile;
-				resourcesList.add(jarfile);
+		for (String classname : pi.getPersistantClasses()) {
+			if (!resourcesList.containsKey(classname)) {
+				System.out.println(classname+" is in "+pi.getFullFilename());
+				resourcesList.put(classname, pi.getFullFilename());
 			}
 		}
 		return loadClass(name);
@@ -95,11 +92,25 @@ public class PersistantClassLoader extends ClassLoader {
 		try {
 			return super.loadClass(name);
 		} catch (Exception e) {
-			byte[] data = getClassData(name.replace('.', '/')+".class");
+			byte[] data = getClassData(name);
 			if (data != null) {
 				return defineClass(name, data);
 			}
 		}
+		
+		// Check the other plugins.
+		for (PluginInfo pi : PluginManager.getPluginManager().getPluginInfos()) {
+			List<String> classList = pi.getClassList();
+			System.out.println("PI: "+pi+" might have: "+name);
+			for (String cn : classList) {
+				System.out.println("PI: "+pi+" CN: "+cn);
+			}
+			if (classList.contains(name)) {
+				System.out.println("PI: "+pi+" has class: "+name);
+				return pi.getPluginClassLoader().loadClass(name);
+			}
+		}
+		
 		return null;
 	}
 	
@@ -114,34 +125,23 @@ public class PersistantClassLoader extends ClassLoader {
 	}
 	
 	/**
-	 * Look in all known sources of persisant classes for file asked for.
+	 * Get the requested class from its plugin jar.
 	 *
-	 * @param filename File to look for.
+	 * @param classname Class to look for.
 	 */
-	private byte[] getClassData(final String filename) {
-		// Try last resource first
+	private byte[] getClassData(final String classname) {
 		try {
-			ResourceManager rm = ResourceManager.getResourceManager("jar://"+lastResource);
-			if (rm.resourceExists(filename)) {
-				return rm.getResourceBytes(filename);
+			final String jarname = resourcesList.get(classname);
+			System.out.println("Looking for: "+classname+" in "+jarname);
+			if (jarname != null) {
+				ResourceManager rm = ResourceManager.getResourceManager("jar://"+jarname);
+				final String filename = classname.replace('.', '/')+".class";
+				if (rm.resourceExists(filename)) {
+					return rm.getResourceBytes(filename);
+				}
 			}
 		} catch (IOException e) {
 			// File might have been deleted, oh well.
-		}
-		
-		// Now try others.
-		for (String resource : resourcesList) {
-			// See if we have already tried this one
-			if (resource.equals(lastResource)) { continue; }
-			try {
-				ResourceManager rm = ResourceManager.getResourceManager("jar://"+resource);
-				if (rm.resourceExists(filename)) {
-					lastResource = resource;
-					return rm.getResourceBytes(filename);
-				}
-			} catch (IOException e) {
-				// File might have been deleted, oh well.
-			}
 		}
 		return null;
 	}

@@ -65,11 +65,11 @@ public class PluginClassLoader extends ClassLoader {
 		try {
 			if (pluginInfo.isPersistant(name) || !res.resourceExists(fileName)) {
 				if (!pluginInfo.isPersistant(name)) {
-					return PersistantClassLoader.getPersistantClassLoader().loadClass(name);
+					return GlobalClassLoader.getGlobalClassLoader().loadClass(name);
 				} else {
 					// Try to load class from previous load.
 					try {
-						return PersistantClassLoader.getPersistantClassLoader().loadClass(name, pluginInfo);
+						return GlobalClassLoader.getGlobalClassLoader().loadClass(name, pluginInfo);
 					} catch (Exception e) {
 						/* Class doesn't exist, we load it outself below */
 					}
@@ -95,19 +95,10 @@ public class PluginClassLoader extends ClassLoader {
 		
 		try {
 			if (pluginInfo.isPersistant(name)) {
-/*				final Method method = ClassLoader.class.getDeclaredMethod("defineClass", String.class, byte[].class, int.class, int.class);
-				method.setAccessible(true);
-				loadedClass = (Class)method.invoke(PersistantClassLoader.getPersistantClassLoader(), name, data, 0, data.length); */
-				PersistantClassLoader.getPersistantClassLoader().defineClass(name, data);
+				GlobalClassLoader.getGlobalClassLoader().defineClass(name, data);
 			} else {
 				loadedClass = defineClass(name, data, 0, data.length);
 			}
-//		} catch (NoSuchMethodException e) {
-//			throw new ClassNotFoundException(e.getMessage(), e);
-//		} catch (InvocationTargetException e) {
-//			throw new ClassNotFoundException(e.getMessage(), e);
-//		} catch (IllegalAccessException e) {
-//			throw new ClassNotFoundException(e.getMessage(), e);
 		} catch (NoClassDefFoundError e) {
 			throw new ClassNotFoundException(e.getMessage(), e);
 		}
