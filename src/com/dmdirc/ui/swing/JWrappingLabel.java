@@ -131,6 +131,7 @@ public class JWrappingLabel extends JComponent {
 	}
 	
 	/** {@inheritDoc} */
+	@Override
 	public Dimension getPreferredSize() {
 		if (isPreferredSizeSet()) {
 			return super.getPreferredSize();
@@ -139,11 +140,6 @@ public class JWrappingLabel extends JComponent {
 			return new Dimension(myPreferredWidth, myPreferredHeight);
 		}
 	}
-	
-	public void setBounds(int x, int y, int width, int height) {
-		super.setBounds(x, y, width, height);
-	}
-	
 	/** {@inheritDoc} */
 	@Override
 	public void paint(final Graphics g) {
