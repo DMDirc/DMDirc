@@ -12,7 +12,7 @@ plugins_linux=""
 showHelp() {
 	echo "This will generate the different DMDirc installers."
 	echo "Usage: ${0} [params] <release>"
-	echo "Release can be either 'trunk', a valid tag, or a branch (if -b is passed)"
+	echo "Release can be either 'trunk', 'this', a valid tag, or a branch (if -b is passed)"
 	echo "The following params are known:"
 	echo "---------------------"
 	echo "-b, --branch                       <release> is a branch"
@@ -72,6 +72,30 @@ fi;
 if [ "${LAST}" != "" ]; then
 	if [ "${LAST}" = "trunk" ]; then
 		RELEASE=""
+	elif [ "${LAST}" = "this" ]; then
+		# Work out what type of build this is!
+		thisDIR=${PWD}
+		cd ..
+		tempDIR=${PWD##*/}
+		if [ "${tempDIR}" = "trunk" ]; then
+			echo "This is a trunk release.";
+		else
+			echo "This is not a trunk release.";
+			version=${tempDIR}
+			cd ..
+			tempDIR=${PWD##*/}
+			if [ "${tempDIR}" = "tags" ]; then
+				echo "Release of tag "${version}
+			elif [ "${tempDIR}" = "branches" ]; then
+				echo "Release of branch "${version}
+				BRANCH="-b "
+			else
+				echo "Unknown release target."
+				exit 0;
+			fi
+			RELEASE="-r "${version}
+		fi;
+		cd ${thisDIR}
 	elif [ "${BRANCH}" != "" -a ! -e "../../branches/"${LAST} ]; then
 		echo "Branch '"${LAST}"' not found."
 		exit 1;
@@ -83,7 +107,7 @@ if [ "${LAST}" != "" ]; then
 	fi
 else
 	echo "Usage: ${0} [params] <release>"
-	echo "Release can be either 'trunk' or a valid tag. (see ${0} --help for further information)"
+	echo "Release can be either 'this', 'trunk' or a valid tag. (see ${0} --help for further information)"
 	exit 1;
 fi
 
