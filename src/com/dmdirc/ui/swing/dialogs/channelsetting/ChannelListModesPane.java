@@ -23,10 +23,12 @@
 package com.dmdirc.ui.swing.dialogs.channelsetting;
 
 import com.dmdirc.Channel;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.parser.ChannelListModeItem;
 import com.dmdirc.util.MapList;
 
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -36,9 +38,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -81,6 +85,8 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
     private final JLabel modeCount;
     /** Cell renderer. */
     private ListCellRenderer renderer;
+    /** Extended info toggle. */
+    private JCheckBox toggle;
 
     /**
      * Creates a new instance of ChannelListModePane.
@@ -92,7 +98,8 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
 
         this.channel = channel;
 
-        if (channel.getConfigManager().getOptionBool("general", "extendedListModes", false)) {
+        if (channel.getConfigManager().getOptionBool("general",
+                "extendedListModes", false)) {
             renderer = new ExtendedListModeCellRenderer();
         } else {
             renderer = new ListModeCellRenderer();
@@ -109,6 +116,11 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
         removeListModeButton = new JButton("Remove");
         removeListModeButton.setEnabled(false);
         modeCount = new JLabel();
+        toggle = new JCheckBox("Show extended information",
+                channel.getConfigManager().getOptionBool("general",
+                "extendedListModes", false));
+        toggle.setMargin(new Insets(0, 0, 0, 0));
+        toggle.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
         initListModesPanel();
         initListeners();
@@ -195,6 +207,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
 
         setLayout(new MigLayout("fill, wrap 1"));
 
+        add(toggle, "alignx center");
         add(listModesMenu, "growx");
         add(listModesPanel, "grow");
         add(modeCount, "growx, pushx");
@@ -210,6 +223,10 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
         addListModeButton.addActionListener(this);
         removeListModeButton.addActionListener(this);
         listModesMenu.addActionListener(this);
+        toggle.addActionListener(this);
+        channel.getConfigManager().addChangeListener("general",
+                "extendedListModes", this);
+
     }
 
     /** Sends the list modes to the server. */
@@ -306,6 +323,10 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
             addListMode();
         } else if (removeListModeButton.equals(event.getSource())) {
             removeListMode();
+        } else if (toggle.equals(event.getSource())) {
+            IdentityManager.getChannelConfig(channel.getServer().getNetwork(),
+                    channel.toString()).setOption("general", "extendedListModes",
+                    !toggle.isSelected());
         }
     }
 
@@ -351,7 +372,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
     /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
-        if (channel.getConfigManager().getOptionBool("general", 
+        if (channel.getConfigManager().getOptionBool("general",
                 "extendedListModes", false)) {
             renderer = new ListModeCellRenderer();
         } else {
