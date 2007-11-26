@@ -26,11 +26,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import java.awt.font.LineMetrics;
 import java.util.ArrayList;
 
-import javax.swing.JLabel;
+import javax.swing.JComponent;
 import javax.swing.SwingConstants;
 
 /**
@@ -39,7 +40,7 @@ import javax.swing.SwingConstants;
  *
  * @author Shane Mc Cormack
  */
-public class JWrappingLabel extends JLabel {
+public class JWrappingLabel extends JComponent {
 	/**
 	 * A version number for this class.
 	 * It should be changed whenever the class structure is changed (or anything
@@ -52,32 +53,81 @@ public class JWrappingLabel extends JLabel {
 	private int myPreferredHeight = 0;
 	/** My prefered width. */
 	private int myPreferredWidth = 0;
+	
+	/** My Text */
+	private String text;
+	/** My Horizontal Alignment */
+	private int horizontalAlignment;
+	
 
-	/** Is this label in debugging mode? */
-	private boolean debug = false;
-	/** Enable debugging mode */
-	public void setDebug() { debug = true; }
-
-	/** {@inheritDoc} */
+	/**
+	 * Create a new Default JWrappingLabel
+	 */
 	public JWrappingLabel() {
-		super();
+		this("", SwingConstants.LEFT);
 	}
 	
-	/** {@inheritDoc} */
+	/**
+	 * Create a new JWrappingLabel with some initial text
+	 *
+	 * @param text Text to use on the label
+	 */
 	public JWrappingLabel(final String text) {
-		super(text);
+		this(text, SwingConstants.LEFT);
 	}
 	
-	/** {@inheritDoc} */
+	/**
+	 * Create a new JWrappingLabel with some initial text and a Horizontal Alignment
+	 *
+	 * @param text Text to use on the label
+	 * @param horizontalAlignment Horizontal Alignment to use. (SwingConstants CENTER LEFT or RIGHT)
+	 */
 	public JWrappingLabel(final String text, final int horizontalAlignment) {
-		super(text, horizontalAlignment);
+		super();
+		this.text = text;
+		this.horizontalAlignment = horizontalAlignment;
 	}
 	
-	/** {@inheritDoc} */
+	
+	/**
+	 * Get the Horizontal Alignment of this label
+	 *
+	 * @return the Text of this label
+	 */
+	public int getHorizontalAlignment() {
+		return horizontalAlignment;
+	}
+	
+	
+	/**
+	 * Set the Horizontal Alignment of this label
+	 *
+	 * @param horizontalAlignment The new Horizontal Alignment of this label
+	 */
+	public void setHorizontalAlignment(final int horizontalAlignment) {
+		this.horizontalAlignment = horizontalAlignment;
+		repaint();
+	}
+	
+	/**
+	 * Get the text of this label
+	 *
+	 * @return the Text of this label
+	 */
+	public String getText() {
+		return text;
+	}
+
+	/**
+	 * Set the text of this label
+	 *
+	 * @param text the new Text of this label
+	 */
 	public void setText(final String text) {
-		super.setText(text);
+		this.text = text;
 		myPreferredHeight = 0;
 		myPreferredWidth = 0;
+		repaint();
 	}
 	
 	/** {@inheritDoc} */
@@ -89,7 +139,11 @@ public class JWrappingLabel extends JLabel {
 			return new Dimension(myPreferredWidth, myPreferredHeight);
 		}
 	}
-
+	
+	public void setBounds(int x, int y, int width, int height) {
+		super.setBounds(x, y, width, height);
+	}
+	
 	/** {@inheritDoc} */
 	@Override
 	public void paint(final Graphics g) {
@@ -161,13 +215,15 @@ public class JWrappingLabel extends JLabel {
 				// Check if this word fits on the current line or not.
 				// If there are no other words on this line, we assume the word fits
 				// (Thus long words don't get split up)
+				int totalWidth = thisWidth+left;
 				if ((isPreferredSizeSet() || myPreferredWidth > 0) && getWidth() > 0) {
-					needNewLine = ((thisWidth+left > getWidth() || thisWidth+left > getMaximumSize().getWidth()) && thisWidth != 0);
+					needNewLine = ((totalWidth > getWidth() || (totalWidth > getMaximumSize().getWidth() && isMaximumSizeSet())) && thisWidth != 0);
 				} else {
 					// If no preferred width is set, we assume we can draw as wide as we
 					// want, unless we have a maximum width.
-					needNewLine = (thisWidth+left > getMaximumSize().getWidth());
+					needNewLine = (totalWidth > getMaximumSize().getWidth());
 				}
+				
 				if (needNewLine) {
 					// It doesn't fit so we need to move down a line.
 					
@@ -218,7 +274,7 @@ public class JWrappingLabel extends JLabel {
 				}
 				top = (int)(top + bounds.getHeight());
 				// If we are going to start trying to draw higher than allowed, stop.
-				if (top >= getMaximumSize().getHeight() && getMaximumSize().getHeight() != 0) { break; }
+				if (top >= getMaximumSize().getHeight() && getMaximumSize().getHeight() != 0 && isMaximumSizeSet()) { break; }
 			}
 		}
 		
