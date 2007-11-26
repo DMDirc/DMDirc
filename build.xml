@@ -70,4 +70,28 @@
         </jar>
     -->
     <target name="-post-compile" depends="build-plugins"/>
+
+    <available file="/bin/bash" property="has.bash"/>	
+
+    <target name="installer" depends="installer-nobuild, installer-build"/>
+    
+    <target name="installer-build" if="has.bash">
+        <exec executable="/bin/bash" dir="installer" resultproperty="installer.result">
+            <arg value="release.sh"/>
+            <arg value="this"/>
+        </exec>
+
+        <condition property="installer.success">
+            <equals arg1="${installer.result}" arg2="0" />
+        </condition>
+
+        <echo message="Installer build finished."/>
+        <echo message="Completed build files can be found in:"/>
+        <echo message="    ${installer.output.dir}"/>
+        <echo message=""/>
+    </target>
+    
+    <target name="installer-nobuild" unless="has.bash">
+        <echo message="This task only works on linux"/>
+    </target>
 </project>
