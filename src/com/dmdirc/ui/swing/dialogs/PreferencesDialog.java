@@ -238,7 +238,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
                     new SimpleImmutableEntry<String, String>("Active", "active"), 
                     new SimpleImmutableEntry<String, String>("Server", "server"), 
                     new SimpleImmutableEntry<String, String>("Source of command", 
-                            "lastcommand:whois %4$s( %4$s)"),
+                            "lastcommand:whois %4$s( %4$s)?"),
                     new SimpleImmutableEntry<String, String>("None", "none  "), 
         };
         
