@@ -74,7 +74,6 @@ public class GlobalClassLoader extends ClassLoader {
 	public Class< ? > loadClass(final String name, final PluginInfo pi) throws ClassNotFoundException {
 		for (String classname : pi.getPersistantClasses()) {
 			if (!resourcesList.containsKey(classname)) {
-				System.out.println(classname+" is in "+pi.getFullFilename());
 				resourcesList.put(classname, pi.getFullFilename());
 			}
 		}
@@ -101,12 +100,7 @@ public class GlobalClassLoader extends ClassLoader {
 		// Check the other plugins.
 		for (PluginInfo pi : PluginManager.getPluginManager().getPluginInfos()) {
 			List<String> classList = pi.getClassList();
-			System.out.println("PI: "+pi+" might have: "+name);
-			for (String cn : classList) {
-				System.out.println("PI: "+pi+" CN: "+cn);
-			}
 			if (classList.contains(name)) {
-				System.out.println("PI: "+pi+" has class: "+name);
 				return pi.getPluginClassLoader().loadClass(name);
 			}
 		}
@@ -132,7 +126,6 @@ public class GlobalClassLoader extends ClassLoader {
 	private byte[] getClassData(final String classname) {
 		try {
 			final String jarname = resourcesList.get(classname);
-			System.out.println("Looking for: "+classname+" in "+jarname);
 			if (jarname != null) {
 				ResourceManager rm = ResourceManager.getResourceManager("jar://"+jarname);
 				final String filename = classname.replace('.', '/')+".class";
