@@ -26,7 +26,6 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.swing.components.PackingTable;
 import com.dmdirc.ui.swing.components.URLProtocolPanel;
 
-import java.awt.Component;
 import java.net.URI;
 
 import java.net.URISyntaxException;
@@ -35,11 +34,9 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import net.miginfocom.swing.MigLayout;
 
@@ -89,7 +86,7 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener {
             public TableCellRenderer getCellRenderer(final int row, final int column) {
                 switch (column) {
                     case 0:
-                        return new URICellRenderer();
+                        return new URISchemeCellRenderer();
                     default:
                         return super.getCellRenderer(row, column);
                 }
@@ -149,41 +146,6 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener {
                 layoutComponents();
             }
             setVisible(true);
-        }
-    }
-
-    /**
-     * URI Cell renderer.
-     */
-    private class URICellRenderer extends DefaultTableCellRenderer {
-
-        /**
-         * A version number for this class. It should be changed whenever the class
-         * structure is changed (or anything else that would prevent serialized
-         * objects being unserialized with the new class).
-         */
-        private static final long serialVersionUID = 1;
-
-        /** Creates a new instance of URICellRenderer. */
-        public URICellRenderer() {
-            super();
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public Component getTableCellRendererComponent(final JTable table,
-                final Object value, final boolean isSelected,
-                final boolean hasFocus, final int row, final int column) {
-            super.getTableCellRendererComponent(table, value, isSelected,
-                    hasFocus, row, column);
-
-            if ((value instanceof URI)) {
-                setValue(((URI) value).getScheme());
-            } else {
-                setValue(value.toString());
-            }
-
-            return this;
         }
     }
 
