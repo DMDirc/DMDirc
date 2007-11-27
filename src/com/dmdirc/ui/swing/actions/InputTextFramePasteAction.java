@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.swing.actions;
 
-import com.dmdirc.ui.swing.components.InputFrame;
+import com.dmdirc.ui.swing.components.InputTextFrame;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
@@ -33,7 +33,7 @@ import javax.swing.AbstractAction;
 /**
  * Paste action for input frames.
  */
-public final class InputFramePasteAction extends AbstractAction {
+public final class InputTextFramePasteAction extends AbstractAction {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -43,14 +43,14 @@ public final class InputFramePasteAction extends AbstractAction {
     private static final long serialVersionUID = 1;
     
     /** Text component to be acted upon. */
-    private final InputFrame inputFrame;
+    private final InputTextFrame inputFrame;
     
     /**
      * Instantiates a new paste action.
      *
      * @param inputFrame Component to be acted upon
      */
-    public InputFramePasteAction(final InputFrame inputFrame) {
+    public InputTextFramePasteAction(final InputTextFrame inputFrame) {
         super("Paste");
         
         this.inputFrame = inputFrame;

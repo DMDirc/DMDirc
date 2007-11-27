@@ -26,8 +26,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.swing.JWrappingLabel;
 import com.dmdirc.ui.WindowManager;
-import com.dmdirc.Main;
-import com.dmdirc.ui.swing.components.Frame;
+import com.dmdirc.ui.swing.components.TextFrame;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -63,7 +62,7 @@ public final class DCCPlugin extends Plugin {
 	protected void createContainer() {
 		container = new DCCFrame(this, "DCCs"){};
 		JWrappingLabel label = new JWrappingLabel("This is a placeholder window to group DCCs together", SwingConstants.CENTER);
-		((Frame)container.getFrame()).getContentPane().add(label);
+		((TextFrame)container.getFrame()).getContentPane().add(label);
 		WindowManager.addWindow(container.getFrame());
 	}
 	

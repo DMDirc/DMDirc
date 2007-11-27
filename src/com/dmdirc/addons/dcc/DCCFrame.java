@@ -23,7 +23,7 @@
 package com.dmdirc.addons.dcc;
 
 import com.dmdirc.WritableFrameContainer;
-import com.dmdirc.ui.swing.components.InputFrame;
+import com.dmdirc.ui.swing.components.InputTextFrame;
 import com.dmdirc.Main;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
@@ -35,7 +35,6 @@ import com.dmdirc.IconManager;
 import com.dmdirc.Server;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.ui.swing.components.Frame;
 
 /**
  * This class links DCC objects to a window.
@@ -47,7 +46,7 @@ public abstract class DCCFrame extends WritableFrameContainer {
 	/**
 	 * Empty Frame.
 	 */
-	private class EmptyFrame extends InputFrame {
+	private class EmptyFrame extends InputTextFrame {
 			/** A version number for this class. */
 			private static final long serialVersionUID = 200711271;
 			

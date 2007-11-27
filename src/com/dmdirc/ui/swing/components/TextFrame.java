@@ -82,7 +82,7 @@ import javax.swing.plaf.synth.SynthLookAndFeel;
 /**
  * Implements a generic (internal) frame.
  */
-public abstract class Frame extends JInternalFrame implements Window,
+public abstract class TextFrame extends JInternalFrame implements Window,
         PropertyChangeListener, InternalFrameListener,
         MouseListener, ActionListener, KeyListener, TextPaneListener,
         ConfigChangeListener {
@@ -135,7 +135,7 @@ public abstract class Frame extends JInternalFrame implements Window,
      *
      * @param owner FrameContainer owning this frame.
      */
-    public Frame(final FrameContainer owner) {
+    public TextFrame(final FrameContainer owner) {
         super();
         final ConfigManager config = owner.getConfigManager();
         final Boolean pref = config.getOptionBool("ui", "maximisewindows", false);

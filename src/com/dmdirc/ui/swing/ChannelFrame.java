@@ -29,7 +29,7 @@ import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.ChannelWindow;
-import com.dmdirc.ui.swing.components.InputFrame;
+import com.dmdirc.ui.swing.components.InputTextFrame;
 import com.dmdirc.ui.swing.dialogs.channelsetting.ChannelSettingsDialog;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
@@ -56,7 +56,7 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
 /**
  * The channel frame is the GUI component that represents a channel to the user.
  */
-public final class ChannelFrame extends InputFrame implements MouseListener,
+public final class ChannelFrame extends InputTextFrame implements MouseListener,
         ActionListener, ChannelWindow {
     
     /**

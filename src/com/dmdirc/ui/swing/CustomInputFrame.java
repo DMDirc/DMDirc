@@ -25,7 +25,7 @@ package com.dmdirc.ui.swing;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.ui.input.InputHandler;
-import com.dmdirc.ui.swing.components.InputFrame;
+import com.dmdirc.ui.swing.components.InputTextFrame;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.GridBagConstraints;
@@ -38,7 +38,7 @@ import java.awt.Insets;
  * 
  * @author chris
  */
-public class CustomInputFrame extends InputFrame {
+public class CustomInputFrame extends InputTextFrame {
     
     /**
      * A version number for this class. It should be changed whenever the class

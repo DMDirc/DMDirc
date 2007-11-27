@@ -23,7 +23,7 @@
 package com.dmdirc.ui.swing;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.ui.swing.components.Frame;
+import com.dmdirc.ui.swing.components.TextFrame;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.GridBagConstraints;
@@ -35,7 +35,7 @@ import java.awt.Insets;
  * 
  * @author chris
  */
-public class CustomFrame extends Frame {
+public class CustomFrame extends TextFrame {
     
     /**
      * A version number for this class. It should be changed whenever the class

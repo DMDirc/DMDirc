@@ -27,7 +27,7 @@ import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.QueryCommandParser;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.QueryWindow;
-import com.dmdirc.ui.swing.components.InputFrame;
+import com.dmdirc.ui.swing.components.InputTextFrame;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.GridBagConstraints;
@@ -37,7 +37,7 @@ import java.awt.Insets;
 /**
  * The QueryFrame is the MDI window that shows query messages to the user.
  */
-public final class QueryFrame extends InputFrame implements QueryWindow {
+public final class QueryFrame extends InputTextFrame implements QueryWindow {
     
     /**
      * A version number for this class. It should be changed whenever the class

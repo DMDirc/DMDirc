@@ -60,7 +60,7 @@ public final class SearchBar extends JPanel implements ActionListener,
     private static final long serialVersionUID = 6;
     
     /** Frame parent. */
-    private final Frame parent;
+    private final TextFrame parent;
     
     /** Close button. */
     private ImageButton closeButton;
@@ -94,7 +94,7 @@ public final class SearchBar extends JPanel implements ActionListener,
      * Creates a new instance of StatusBar.
      * @param newParent parent frame for the dialog
      */
-    public SearchBar(final Frame newParent) {
+    public SearchBar(final TextFrame newParent) {
         super();
         
         this.parent = newParent;
@@ -175,8 +175,8 @@ public final class SearchBar extends JPanel implements ActionListener,
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 setVisible(false);
-                if (parent instanceof InputFrame) {
-                    ((InputFrame) parent).getInputField().requestFocus();
+                if (parent instanceof InputTextFrame) {
+                    ((InputTextFrame) parent).getInputField().requestFocus();
                 } else {
                     parent.requestFocus();
                 }

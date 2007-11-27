@@ -25,7 +25,7 @@ package com.dmdirc.ui.swing.dialogs.paste;
 import com.dmdirc.Main;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.UIUtilities;
-import com.dmdirc.ui.swing.components.InputFrame;
+import com.dmdirc.ui.swing.components.InputTextFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import com.dmdirc.ui.swing.components.TextLabel;
@@ -72,7 +72,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
     private JTextArea textField;
     
     /** Parent frame. */
-    private final InputFrame parent;
+    private final InputTextFrame parent;
     
     /** Edit button. */
     private JButton editButton;
@@ -82,7 +82,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
      * @param newParent The frame that owns this dialog
      * @param text text to show in the paste dialog
      */
-    public PasteDialog(final InputFrame newParent, final String text) {
+    public PasteDialog(final InputTextFrame newParent, final String text) {
         super((MainFrame) Main.getUI().getMainWindow(), false);
         
         this.parent = newParent;

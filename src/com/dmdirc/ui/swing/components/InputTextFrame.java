@@ -34,7 +34,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.actions.CopyAction;
 import com.dmdirc.ui.swing.actions.CutAction;
-import com.dmdirc.ui.swing.actions.InputFramePasteAction;
+import com.dmdirc.ui.swing.actions.InputTextFramePasteAction;
 import com.dmdirc.ui.swing.dialogs.paste.PasteDialog;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.swing.actions.CommandAction;
@@ -70,7 +70,7 @@ import javax.swing.event.InternalFrameListener;
 /**
  * Frame with an input field.
  */
-public abstract class InputFrame extends Frame implements InputWindow,
+public abstract class InputTextFrame extends TextFrame implements InputWindow,
         InternalFrameListener, MouseListener, ActionListener, KeyListener,
         Serializable, AwayStateListener {
     
@@ -110,7 +110,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
      *
      * @param owner WritableFrameContainer owning this frame.
      */
-    public InputFrame(final WritableFrameContainer owner) {
+    public InputTextFrame(final WritableFrameContainer owner) {
         super(owner);
         
         parent = owner;
@@ -185,7 +185,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
         
         inputFieldPopup.add(new CutAction(getInputField()));
         inputFieldPopup.add(new CopyAction(getInputField()));
-        inputFieldPopup.add(new InputFramePasteAction(this));
+        inputFieldPopup.add(new InputTextFramePasteAction(this));
         inputFieldPopup.setOpaque(true);
         inputFieldPopup.setLightWeightPopupEnabled(true);
     }
@@ -196,7 +196,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
     private void initInputField() {
         UIUtilities.addUndoManager(getInputField());
         
-        getInputField().getActionMap().put("PasteAction", new InputFramePasteAction(this));
+        getInputField().getActionMap().put("PasteAction", new InputTextFramePasteAction(this));
         getInputField().getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("shift INSERT"), "PasteAction");
         getInputField().getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("ctrl V"), "PasteAction");
     }

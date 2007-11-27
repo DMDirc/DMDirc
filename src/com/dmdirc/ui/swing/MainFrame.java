@@ -40,8 +40,8 @@ import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.FramemanagerPosition;
 import com.dmdirc.ui.interfaces.MainWindow;
 import com.dmdirc.ui.interfaces.Window;
-import com.dmdirc.ui.swing.components.Frame;
-import com.dmdirc.ui.swing.components.InputFrame;
+import com.dmdirc.ui.swing.components.TextFrame;
+import com.dmdirc.ui.swing.components.InputTextFrame;
 import com.dmdirc.ui.swing.components.SwingStatusBar;
 import com.dmdirc.ui.swing.dialogs.FeedbackDialog;
 import com.dmdirc.ui.swing.dialogs.NewServerDialog;
@@ -300,8 +300,8 @@ public final class MainFrame extends JFrame implements WindowListener,
             ActionManager.processEvent(CoreActionType.CLIENT_FRAME_CHANGED, null,
                     frame.getContainer());
         }
-        if (frame instanceof InputFrame) {
-            ((InputFrame) frame).requestInputFieldFocus();
+        if (frame instanceof InputTextFrame) {
+            ((InputTextFrame) frame).requestInputFieldFocus();
         }
     }
 
@@ -959,9 +959,9 @@ public final class MainFrame extends JFrame implements WindowListener,
         } else if (e.getActionCommand().equals("Aliases")) {
             AliasManagerDialog.showAliasManagerDialog();
         } else if (e.getActionCommand().equals("Minimise")) {
-            ((Frame) Main.getUI().getMainWindow().getActiveFrame()).minimise();
+            ((TextFrame) Main.getUI().getMainWindow().getActiveFrame()).minimise();
         } else if (e.getActionCommand().equals("Close")) {
-            ((Frame) Main.getUI().getMainWindow().getActiveFrame()).close();
+            ((TextFrame) Main.getUI().getMainWindow().getActiveFrame()).close();
         } else if (e.getActionCommand().equals("JoinDevChat")) {
             ServerManager.getServerManager().joinDevChat();
         } else if (e.getActionCommand().equals("configurePlugin")) {

@@ -30,7 +30,7 @@ import com.dmdirc.commandparser.parsers.ServerCommandParser;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.ServerWindow;
-import com.dmdirc.ui.swing.components.InputFrame;
+import com.dmdirc.ui.swing.components.InputTextFrame;
 import com.dmdirc.ui.swing.dialogs.serversetting.ServerSettingsDialog;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
@@ -48,7 +48,7 @@ import javax.swing.event.PopupMenuListener;
 /**
  * The ServerFrame is the MDI window that shows server messages to the user.
  */
-public final class ServerFrame extends InputFrame implements ServerWindow,
+public final class ServerFrame extends InputTextFrame implements ServerWindow,
         ActionListener, PopupMenuListener {
     
     /**
