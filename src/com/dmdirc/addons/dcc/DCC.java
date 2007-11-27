@@ -22,6 +22,11 @@
 
 package com.dmdirc.addons.dcc;
 
+import java.net.Socket;
+import java.net.ServerSocket;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.io.IOException;
 /**
  * This class handles the main "grunt work" of DCC, subclasses process the data
  * received by this class.
@@ -29,12 +34,201 @@ package com.dmdirc.addons.dcc;
  * @author Shane 'Dataforce' McCormack
  * @version $Id: DCC.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
-public abstract class DCC {
+public abstract class DCC implements Runnable {
+	/** Address */
+	protected long address = 0;
+	/** Port */
+	protected int port = 0;
+	/** Socket used to communicate with */
+	protected Socket socket;
+	/** The Thread in use for this */
+	private volatile Thread myThread = null;
+	/** The current socket in use is this is a listen socket */
+	private ServerSocket serverSocket;
+	/** Are we already running? */
+	protected boolean running = false;
+	/** Are we a listen socket? */
+	protected boolean listen = false;
 	
 	/**
 	 * Creates a new instance of DCC.
 	 */
 	public DCC() {
 		super();
+	}
+	
+	/**
+	 * Connect this dcc.
+	 */
+	public void connect() {
+		myThread = new Thread(this);
+		myThread.start();
+	}
+	
+	/**
+	 * Start a listen socket rather than a connect socket.
+	 */
+	public void listen() {
+		listen = true;
+		connect();
+	}
+	
+	/**
+	 * This handles the socket to keep it out of the main thread
+	 */
+	public void run() {
+		if (running) { return; }
+		running = true;
+		try {
+			if (listen) {
+				// serverSocket = new ServerSocket(0, 1, InetAddress.getByName(longToIP(bindIP)));
+				serverSocket = new ServerSocket(0, 1, InetAddress.getLocalHost());
+				address = ipToLong(InetAddress.getLocalHost().getHostAddress());
+				port = serverSocket.getLocalPort();
+			} else {
+				// socket = new Socket(longToIP(address), port, bindIP, 0);
+				socket = new Socket(longToIP(address), port);
+				socketOpened();
+			}
+		} catch (UnknownHostException uhe) {
+			running = false;
+			return;
+		} catch (IOException uhe) {
+			running = false;
+			return;
+		}
+		// handleSocket is implemented by sub classes, and should return false
+		// when the socket is closed.
+		Thread thisThread = Thread.currentThread();
+		while (myThread == thisThread) {
+			if (serverSocket != null) {
+				try {
+					socket = serverSocket.accept();
+					serverSocket.close();
+					socketOpened();
+				} catch (IOException ioe) {
+					break;
+				}
+				serverSocket = null;
+			} else {
+				if (!handleSocket()) {
+					break;
+				}
+			}
+		}
+		// Socket closed
+		
+		thisThread = null;
+		running = false;
+	}
+	
+	/**
+	 * Called to close the socket
+	 */
+	protected void close() {
+		if (serverSocket != null) {
+			try {
+				if (!serverSocket.isClosed()) {
+					serverSocket.close();
+				}
+			} catch (IOException ioe) { }
+			serverSocket = null;
+		}
+		if (socket != null) {
+			try {
+				if (!socket.isClosed()) {
+					socket.close();
+				}
+			} catch (IOException ioe) { }
+			socketClosed();
+			socket = null;
+		}
+	}
+	
+	/**
+	 * Called when the socket is first opened, before any data is handled.
+	 */
+	protected void socketOpened() { }
+	
+	/**
+	 * Called when the socket is closed, before the thread terminates.
+	 */
+	protected void socketClosed() { }
+	
+	/**
+	 * Check if this socket can be written to
+	 */
+	public boolean isWriteable() {
+		return false;
+	}
+	
+	/**
+	 * Handle the socket.
+	 *
+	 * @return false when socket is closed, true will cause the method to be
+	 *         called again.
+	 */
+	protected abstract boolean handleSocket();
+	
+	/**
+	 * Set the address to connect to for this DCC
+	 *
+	 * @param address Address as an int (Network Byte Order, as specified in the DCC CTCP)
+	 * @param port Port to connect to
+	 */
+	public void setAddress(final long address, final int port) {
+		this.address = address;
+		this.port = port;
+	}
+	
+	/**
+	 * Is this a listening socket
+	 *
+	 * @return True if this is a listening socket
+	 */
+	public boolean isListenSocket() {
+		return listen;
+	}
+	
+	/**
+	 * Get the host this socket is listening on/connecting to
+	 *
+	 * @return The IP that this socket is listening on/connecting to.
+	 */
+	public String getHost() {
+		return longToIP(address);
+	}
+	
+	/**
+	 * Get the port this socket is listening on/connecting to
+	 *
+	 * @return The port that this socket is listening on/connecting to.
+	 */
+	public int getPort() {
+		return port;
+	}
+	
+	/**
+	 * Convert the given IP Address to a long
+	 *
+	 * @param ip Input IP Address
+	 * @return ip as a long
+	 */
+	public static long ipToLong(final String ip) {
+		String bits[] = ip.split("\\.");
+		if (bits.length > 3) {
+			return (Long.parseLong(bits[0]) << 24) + (Long.parseLong(bits[1]) << 16) + (Long.parseLong(bits[2]) << 8) + Long.parseLong(bits[3]);
+		}
+		return 0;
+	}
+	
+	/**
+	 * Convert the given long to an IP Address
+	 *
+	 * @param in Input long
+	 * @return long as an IP
+	 */
+	public static String longToIP(final long in) {
+		return ((in & 0xff000000) >> 24)+"."+((in & 0x00ff0000) >> 16)+"."+((in & 0x0000ff00) >> 8)+"."+(in & 0x000000ff);
 	}
 }

@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.dcc;
 
+import java.net.Socket;
 /**
  * This class handles a DCC Send
  *
@@ -29,11 +30,20 @@ package com.dmdirc.addons.dcc;
  * @version $Id: DCCSend.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public class DCCSend extends DCC {
-	
 	/**
 	 * Creates a new instance of DCCSend.
 	 */
 	public DCCSend() {
 		super();
+	}
+	
+	/**
+	 * Handle the socket.
+	 *
+	 * @return false when socket is closed, true will cause the method to be
+	 *         called again.
+	 */
+	protected boolean handleSocket() {
+		return false;
 	}
 }

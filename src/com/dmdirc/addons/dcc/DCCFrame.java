@@ -58,7 +58,6 @@ public abstract class DCCFrame extends WritableFrameContainer {
 			public EmptyFrame(final WritableFrameContainer owner) {
 					super(owner);
 					setTextPane(null);
-					setInputField(null);
 					pack();
 			}
 			

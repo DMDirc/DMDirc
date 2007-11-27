@@ -33,7 +33,7 @@ import com.dmdirc.config.IdentityManager;
  * @author Shane 'Dataforce' McCormack
  * @version $Id: DCC.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
-public class DCCChatWindow extends DCCFrame {
+public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 	/** The DCCChat object we are a window for */
 	private final DCCChat dcc;
 	
@@ -55,6 +55,7 @@ public class DCCChatWindow extends DCCFrame {
 	public DCCChatWindow(final DCCPlugin plugin, final DCCChat dcc, final String title, final String nick, final String targetNick) {
 		super(plugin, title, false);
 		this.dcc = dcc;
+		dcc.setHandler(this);
 		nickname = nick;
 		otherNickname = targetNick;
 		
@@ -72,7 +73,48 @@ public class DCCChatWindow extends DCCFrame {
 	 * @param line The line to be sent
 	 */
 	public void sendLine(final String line) {
-		myWindow.addLine(line, false);
+		if (dcc.isWriteable()) {
+			myWindow.addLine("OUT<< "+line, false);
+			dcc.sendLine(line);
+		} else {
+			myWindow.addLine("<<ERROR>> Socket is closed.", false);
+		}
 		return;
+	}
+	
+	/**
+	 * Handle a recieved message
+	 *
+	 * @param dcc The DCCChat that this message is from
+	 * @param message The message
+	 */
+	public void handleChatMessage(final DCCChat dcc, final String message) {
+		myWindow.addLine(" IN>> "+message, false);
+	}
+	
+	/**
+	 * Called when the socket is closed
+	 *
+	 * @param dcc The DCCChat that this message is from
+	 */
+	public void socketClosed(final DCCChat dcc) {
+		myWindow.addLine(" -- Socket closed -- ", false);
+	}
+	
+	/**
+	 * Called when the socket is opened
+	 *
+	 * @param dcc The DCCChat that this message is from
+	 */
+	public void socketOpened(final DCCChat dcc) {
+		myWindow.addLine(" ++ Socket opened ++ ", false);
+	}
+	
+	/**
+	 * Closes this container (and it's associated frame).
+	 */
+	public void close() {
+		dcc.close();
+		super.close();
 	}
 }

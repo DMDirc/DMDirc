@@ -28,10 +28,20 @@ import com.dmdirc.ui.swing.JWrappingLabel;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.swing.components.TextFrame;
 
+import com.dmdirc.parser.ClientInfo;
+import com.dmdirc.Server;
+import com.dmdirc.Main;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.ActionType;
+import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.interfaces.ActionListener;
+
 import java.util.List;
 import java.util.ArrayList;
 
 import javax.swing.SwingConstants;
+import javax.swing.JOptionPane;
+import javax.swing.JFrame;
 
 /**
  * This plugin adds DCC to dmdirc
@@ -39,7 +49,7 @@ import javax.swing.SwingConstants;
  * @author Shane 'Dataforce' McCormack
  * @version $Id: DCCPlugin.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
-public final class DCCPlugin extends Plugin {
+public final class DCCPlugin extends Plugin implements ActionListener {
 	/** The DCCCommand we created */
 	private DCCCommand command = null;
 	
@@ -57,11 +67,42 @@ public final class DCCPlugin extends Plugin {
 	}
 	
 	/**
+	 * Process an event of the specified type.
+	 *
+	 * @param type The type of the event to process
+	 * @param format Format of messages that are about to be sent. (May be null)
+	 * @param arguments The arguments for the event
+	 */
+	@Override
+	public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
+		if (type == CoreActionType.SERVER_CTCP) {
+			final String ctcpType = (String)arguments[2];
+			final String[] ctcpData = ((String)arguments[3]).split(" ");
+			if (ctcpType.equalsIgnoreCase("DCC")) {
+				if (ctcpData[0].equalsIgnoreCase("chat") && ctcpData.length > 3) {
+					final String nickname = ((ClientInfo)arguments[1]).getNickname();
+					int result = JOptionPane.showConfirmDialog((JFrame)Main.getUI().getMainWindow(), "User "+nickname+" on "+((Server)arguments[0]).toString()+" would like to start a DCC Chat with you.\n\nDo you want to continue?", "DCC Chat Request", JOptionPane.YES_NO_OPTION);
+					if (result == JOptionPane.YES_OPTION) {
+						DCCChat chat = new DCCChat();
+						try {
+							chat.setAddress(Integer.parseInt(ctcpData[2]), Integer.parseInt(ctcpData[3]));
+						} catch (NumberFormatException nfe) { return; }
+						String myNickname = ((Server)arguments[0]).getParser().getMyNickname();
+						new DCCChatWindow(this, chat, "Chat: "+nickname, myNickname, nickname);
+						chat.connect();
+					}
+				}
+			}
+		}
+	}
+	
+	/**
 	 * Create the container window
 	 */
 	protected void createContainer() {
 		container = new DCCFrame(this, "DCCs"){};
-		JWrappingLabel label = new JWrappingLabel("This is a placeholder window to group DCCs together", SwingConstants.CENTER);
+		JWrappingLabel label = new JWrappingLabel("This is a placeholder window to group DCCs together.", SwingConstants.CENTER);
+		label.setText(label.getText()+"\n\nClosing this window will close all the active DCCs");
 		((TextFrame)container.getFrame()).getContentPane().add(label);
 		WindowManager.addWindow(container.getFrame());
 	}
@@ -109,6 +150,7 @@ public final class DCCPlugin extends Plugin {
 	@Override
 	public void onLoad() {
 		command = new DCCCommand(this);
+		ActionManager.addListener(this, CoreActionType.SERVER_CTCP);
 	}
 	
 	/**
@@ -118,6 +160,7 @@ public final class DCCPlugin extends Plugin {
 	public void onUnload() {
 		CommandManager.unregisterCommand(command);
 		container.close();
+		ActionManager.removeListener(this);
 	}
 	
 	/**

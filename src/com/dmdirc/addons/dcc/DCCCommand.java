@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.dcc;
 
+import com.dmdirc.parser.IRCParser;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -55,10 +56,24 @@ public final class DCCCommand extends GlobalCommand {
 	 */
 	@Override
 	public void execute(final InputWindow origin, final boolean isSilent, final String... args) {
-		try {
-			String nickname = origin.getContainer().getServer().getParser().getMyNickname();
-			new DCCChatWindow(myPlugin, new DCCChat(), "Chat: Foo", nickname, "Foo");
-		} catch (Exception e) { }
+		if (args.length > 1) {
+			final String type = args[0];
+			final String target = args[1];
+			if (type.equalsIgnoreCase("chat")) {
+				final IRCParser parser = origin.getContainer().getServer().getParser();
+				final String myNickname = parser.getMyNickname();
+				DCCChat chat = new DCCChat();
+				chat.listen();
+				DCCChatWindow window = new DCCChatWindow(myPlugin, chat, "*Chat: "+target, myNickname, target);
+				parser.sendCTCP(target, "DCC", "CHAT chat "+DCC.ipToLong(chat.getHost())+" "+chat.getPort());
+				sendLine(origin, isSilent, FORMAT_OUTPUT, "Starting DCC Chat with: "+target+" on "+chat.getHost()+":"+chat.getPort());
+				sendLine((InputWindow)window, false, FORMAT_OUTPUT, "Starting DCC Chat with: "+target+" on "+chat.getHost()+":"+chat.getPort());
+			} else {
+				sendLine(origin, isSilent, FORMAT_ERROR, "Unknown DCC Type: '"+type+"'");
+			}
+		} else {
+			sendLine(origin, isSilent, FORMAT_ERROR, "Syntax: dcc <type> <target> [params]");
+		}
 	}
 
 	/**
