@@ -122,7 +122,7 @@ begin
 			MessageBox(0, PChar(errorMessage), 'Sorry, DMDirc is unable to continue', MB_OK + MB_ICONSTOP);
 		end
 		else begin
-			Launch(javaCommand+' -jar "'+jarName+'"'+cliParams)
+			Launch(javaCommand+' -ea -jar "'+jarName+'"'+cliParams)
 		end;
 	end
 	else begin

@@ -115,7 +115,7 @@ if [ -e "${jar}" ]; then
 	
 	# Now we can run the client for real, this allows stderr/stdout output
 	# to be seen, and the shell script exits with the correct exit code.
-	${JAVA} -jar ${jar} ${params}
+	${JAVA} -ea -jar ${jar} ${params}
 	exit $?;
 else 
 	echo "Failed.";
