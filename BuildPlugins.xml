@@ -18,11 +18,19 @@
 	<target name="makepluginjar">
 		<propertyregex property="pluginjar.name" input="${target.file}" regexp=".*[\\/](.*)$" select="\1.jar" casesensitive="false" />
 		<propertyregex property="folder.name" input="${target.file}" regexp=".*${build.classes.dir}/(.*)$" select="\1" casesensitive="false" />
-		<echo message="Building: ${folder.name} to ${pluginjar.name}"/>
-		<delete file="plugins/${pluginjar.name}"/>
-		<jar jarfile="plugins/${pluginjar.name}" basedir="build/classes" includes="${folder.name}/**/*.class">
-			<metainf file="${target.file}/plugin.info"/>
-		</jar>
+		<if>
+			<available file="${build.classes.dir}/${folder.name}/.ignore"/>
+			<then>
+					<echo message="Not building: ${folder.name}" />
+			</then>
+			<else>
+				<echo message="Building: ${folder.name} to ${pluginjar.name}"/>
+				<delete file="plugins/${pluginjar.name}"/>
+				<jar jarfile="plugins/${pluginjar.name}" basedir="build/classes" includes="${folder.name}/**/*.class">
+					<metainf file="${target.file}/plugin.info"/>
+				</jar>
+			</else>
+		</if>
 	</target>
 		
 	<target name="build-plugins" depends="build-plugins_bash, build-plugins_ant-contrib"/>

@@ -4,6 +4,12 @@
 
 if [ ${?} = "0" ]; then
 	for dir in `ls -1 src/com/dmdirc/addons`; do
-		./createPluginJar.sh com.dmdirc.addons.${dir} ${dir}
+		if [ -e "src/com/dmdirc/addons/${dir}/.ignore" ]; then
+			echo "------"
+			echo "Not building: ${dir}"
+			echo "------"
+		else
+			./createPluginJar.sh com.dmdirc.addons.${dir} ${dir}
+		fi
 	done
 fi
