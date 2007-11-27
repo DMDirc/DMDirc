@@ -62,9 +62,9 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener {
     /** Protocol config panel. */
     private Map<URI, URLProtocolPanel> details;
     /** Empty info panel. */
-    private JPanel empty;
+    private URLProtocolPanel empty;
     /** Current component. */
-    private JComponent activeComponent;
+    private URLProtocolPanel activeComponent;
 
     /**
      * Instantiates a new URL config panel.
@@ -85,7 +85,7 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener {
         list.setLayoutOrientation(JList.VERTICAL);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         details = new HashMap<URI, URLProtocolPanel>();
-        empty = new JPanel();
+        empty = new URLProtocolPanel(null, true);
         activeComponent = empty;
 
         final List<String> options = IdentityManager.getGlobalConfig().
@@ -100,9 +100,6 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener {
             //Ignore wont happen
             }
         }
-
-        empty.setLayout(new MigLayout("fill"));
-        empty.add(new JLabel("No protocol selected."));
     }
 
     /**
@@ -133,7 +130,7 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener {
                 layoutComponents();
             } else {
                 activeComponent = details.get(list.getSelectedValue());
-                ((URLProtocolPanel) activeComponent).updateSelection();
+                activeComponent.updateSelection();
                 layoutComponents();
             }
             setVisible(true);

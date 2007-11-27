@@ -23,13 +23,14 @@
 package com.dmdirc.ui.swing.components;
 
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.swing.components.ExecutableFileFilter;
 import com.dmdirc.util.URLHandler;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URI;
 
+import java.util.Enumeration;
+import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -78,7 +79,7 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
     private URI uri;
     /** Show insets? */
     private final boolean useInsets;
-    
+
     /**
      * Instantiates the URLDialog.
      *
@@ -177,6 +178,7 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
      */
     private void updateExample() {
         if (uri == null) {
+            setEnabled(false);
             exampleLabel.setText("Example: ");
         } else {
             exampleLabel.setText("Example: " + URLHandler.getURLHander().
@@ -188,8 +190,8 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
      * Updates the selection.
      */
     public void updateSelection() {
-        if (IdentityManager.getGlobalConfig().hasOption("protocol",
-                uri.getScheme())) {
+        if (uri != null && IdentityManager.getGlobalConfig().hasOption(
+                "protocol", uri.getScheme())) {
             final String option =
                     IdentityManager.getGlobalConfig().getOption("protocol",
                     uri.getScheme());
@@ -211,6 +213,16 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
         }
 
         updateExample();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setEnabled(final boolean enabled) {
+        super.setEnabled(enabled);
+        final Enumeration<AbstractButton> buttons = optionType.getElements();
+        while (buttons.hasMoreElements()) {
+            buttons.nextElement().setEnabled(enabled);
+        }
     }
 
     /**
@@ -243,19 +255,19 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
 
     /** {@inheritDoc} */
     @Override
-    public void insertUpdate(DocumentEvent e) {
+    public void insertUpdate(final DocumentEvent e) {
         updateExample();
     }
 
     /** {@inheritDoc} */
     @Override
-    public void removeUpdate(DocumentEvent e) {
+    public void removeUpdate(final DocumentEvent e) {
         updateExample();
     }
 
     /** {@inheritDoc} */
     @Override
-    public void changedUpdate(DocumentEvent e) {
+    public void changedUpdate(final DocumentEvent e) {
     //Ignore
     }
 }
