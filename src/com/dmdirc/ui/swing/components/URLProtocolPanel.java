@@ -70,24 +70,26 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
     private JRadioButton mail;
     /** Custom command choice. */
     private JRadioButton custom;
-    /** Blurb label. */
-    private JLabel blurbLabel;
     /** Substitutions label */
     private JLabel subsLabel;
     /** example label. */
     private JLabel exampleLabel;
     /** URL. */
-    private final URI url;
-
+    private URI uri;
+    /** Show insets? */
+    private final boolean useInsets;
+    
     /**
      * Instantiates the URLDialog.
      *
      * @param url URL to open once added
+     * @param useInsets Show insets?
      */
-    public URLProtocolPanel(final URI url) {
+    public URLProtocolPanel(final URI url, final boolean useInsets) {
         super();
 
-        this.url = url;
+        this.uri = url;
+        this.useInsets = useInsets;
 
         initComponents();
         layoutComponents();
@@ -98,7 +100,6 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
     private void initComponents() {
         fileChooser = new JFileChooser();
         showFileChooser = new JButton();
-        blurbLabel = new JLabel();
         commandPath = new JTextField();
         optionType = new ButtonGroup();
         dmdirc = new JRadioButton("Handle internally (irc links only)");
@@ -121,18 +122,17 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
         fileChooser.addChoosableFileFilter(new ExecutableFileFilter());
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         showFileChooser.setText("Browse");
-        blurbLabel.setText("Use this dialog to add support for a " +
-                "new protocol.");
-        subsLabel.setText("$url, $fragment, $path, $port, $query, " +
-                "$protocol, $username and $password all substituted.");
-        updateExample();
+        updateSelection();
     }
 
     /** Lays out the components. */
     private void layoutComponents() {
-        setLayout(new MigLayout("fill, wrap 1, hidemode 3"));
+        if (useInsets) {
+            setLayout(new MigLayout("fill, wrap 1, hidemode 3"));
+        } else {
+            setLayout(new MigLayout("ins 0, fill, wrap 1, hidemode 3"));
+        }
 
-        add(blurbLabel, "grow");
         add(dmdirc, "growx");
         add(browser, "growx");
         add(mail, "growx");
@@ -169,15 +169,48 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
         }
 
         IdentityManager.getConfigIdentity().setOption("protocol",
-                url.getScheme(), value);
+                uri.getScheme(), value);
     }
 
     /**
      * Updates the example label.
      */
     private void updateExample() {
-        exampleLabel.setText("Example: " + URLHandler.getURLHander().
-                substituteParams(url, commandPath.getText()));
+        if (uri == null) {
+            exampleLabel.setText("Example: ");
+        } else {
+            exampleLabel.setText("Example: " + URLHandler.getURLHander().
+                    substituteParams(uri, commandPath.getText()));
+        }
+    }
+
+    /**
+     * Updates the selection.
+     */
+    public void updateSelection() {
+        if (IdentityManager.getGlobalConfig().hasOption("protocol",
+                uri.getScheme())) {
+            final String option =
+                    IdentityManager.getGlobalConfig().getOption("protocol",
+                    uri.getScheme());
+
+            if ("DMDIRC".equals(option)) {
+                optionType.setSelected(dmdirc.getModel(), true);
+            } else if ("BROWSER".equals(option)) {
+                optionType.setSelected(browser.getModel(), true);
+            } else if ("MAIL".equals(option)) {
+                optionType.setSelected(mail.getModel(), true);
+            } else {
+                optionType.setSelected(custom.getModel(), true);
+                commandPath.setText(option);
+                actionPerformed(null);
+            }
+        } else {
+            optionType.clearSelection();
+            commandPath.setText("");
+        }
+
+        updateExample();
     }
 
     /**
@@ -187,7 +220,7 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
      */
     @Override
     public void actionPerformed(final ActionEvent e) {
-        if (e.getSource() == showFileChooser) {
+        if (e != null && e.getSource() == showFileChooser) {
             if (fileChooser.showDialog(this, "Select") ==
                     JFileChooser.APPROVE_OPTION) {
                 commandPath.setText(fileChooser.getSelectedFile().toString());

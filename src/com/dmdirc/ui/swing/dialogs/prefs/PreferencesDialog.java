@@ -107,6 +107,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
         initThemesTab();
         initNicklistTab();
         initTreeviewTab();
+        initURLTab();
         initAdvancedTab();
         
         preferencesPanel.display();
@@ -475,6 +476,17 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
                 "Frame buffer size: ", "Sets the maximum number of lines in the frame buffer.",
                 config.getOptionInt("ui", "frameBufferSize", Integer.MAX_VALUE),
                 1, Integer.MAX_VALUE, 1);
+    }
+    
+    /**
+     * Initialises the URL tab.
+     */
+    private void initURLTab() {
+        final String tabName = "URL Protocols";
+        preferencesPanel.addCategory(tabName, "Use this panel to adjust the" +
+                "URL handling options.");
+        
+        preferencesPanel.replaceOptionPanel(tabName, new URLConfigPanel());
     }
     
     /** {@inheritDoc}. */
