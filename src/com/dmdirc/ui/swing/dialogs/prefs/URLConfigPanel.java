@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.dialogs.prefs;
 
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.swing.components.PackingTable;
 import com.dmdirc.ui.swing.components.URLProtocolPanel;
 
 import java.awt.Component;
@@ -32,17 +33,14 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.DefaultListModel;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
+import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -58,7 +56,11 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener {
      */
     private static final long serialVersionUID = 1;
     /** Protocol list. */
-    private JList list;
+    private PackingTable table;
+    /** Table mode. */
+    private URLHandlerTableModel model;
+    /** Table scrollpane. */
+    private JScrollPane tableScrollPane;
     /** Protocol config panel. */
     private Map<URI, URLProtocolPanel> details;
     /** Empty info panel. */
@@ -79,14 +81,26 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener {
      * Initialises the components.
      */
     private void initComponents() {
-        list = new JList(new DefaultListModel());
-        list.setCellRenderer(new URICellRenderer());
-        list.setVisibleRowCount(5);
-        list.setLayoutOrientation(JList.VERTICAL);
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tableScrollPane = new JScrollPane();
+        model = new URLHandlerTableModel();
+        table = new PackingTable(model, false, tableScrollPane) {
+            private static final long serialVersionUID = 1;
+            @Override
+            public TableCellRenderer getCellRenderer(final int row, final int column) {
+                switch (column) {
+                    case 0:
+                        return new URICellRenderer();
+                    default:
+                        return super.getCellRenderer(row, column);
+                }
+            }
+        };
+        
         details = new HashMap<URI, URLProtocolPanel>();
         empty = new URLProtocolPanel(null, true);
         activeComponent = empty;
+
+        tableScrollPane.setViewportView(table);
 
         final List<String> options = IdentityManager.getGlobalConfig().
                 getOptions("protocol");
@@ -94,7 +108,7 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener {
         for (String option : options) {
             try {
                 final URI uri = new URI(option + "://example.test.com");
-                ((DefaultListModel) list.getModel()).addElement(uri);
+                model.addURI(uri);
                 details.put(uri, new URLProtocolPanel(uri, true));
             } catch (URISyntaxException ex) {
             //Ignore wont happen
@@ -106,7 +120,7 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener {
      * Adds listeners.
      */
     private void addListeners() {
-        list.addListSelectionListener(this);
+        table.getSelectionModel().addListSelectionListener(this);
     }
 
     /**
@@ -116,7 +130,7 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener {
         removeAll();
         setLayout(new MigLayout("ins 0, wrap 1"));
 
-        add(new JScrollPane(list), "grow, pushy");
+        add(tableScrollPane, "grow, pushy");
         add(activeComponent, "growx, pushx");
     }
 
@@ -125,11 +139,12 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener {
     public void valueChanged(final ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
             setVisible(false);
-            if (list.getSelectedIndex() == -1) {
+            if (table.getSelectedRow() == -1) {
                 activeComponent = empty;
                 layoutComponents();
             } else {
-                activeComponent = details.get(list.getSelectedValue());
+                activeComponent =
+                        details.get(model.getValueAt(table.getSelectedRow(), 0));
                 activeComponent.updateSelection();
                 layoutComponents();
             }
@@ -140,7 +155,7 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener {
     /**
      * URI Cell renderer.
      */
-    private class URICellRenderer extends DefaultListCellRenderer {
+    private class URICellRenderer extends DefaultTableCellRenderer {
 
         /**
          * A version number for this class. It should be changed whenever the class
@@ -156,16 +171,16 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener {
 
         /** {@inheritDoc} */
         @Override
-        public Component getListCellRendererComponent(final JList list,
-                final Object value, final int index, final boolean isSelected,
-                final boolean cellHasFocus) {
-            super.getListCellRendererComponent(list, value, index, isSelected,
-                    cellHasFocus);
+        public Component getTableCellRendererComponent(final JTable table,
+                final Object value, final boolean isSelected,
+                final boolean hasFocus, final int row, final int column) {
+            super.getTableCellRendererComponent(table, value, isSelected,
+                    hasFocus, row, column);
 
             if ((value instanceof URI)) {
-                setText(((URI) value).getScheme());
+                setValue(((URI) value).getScheme());
             } else {
-                setText(value.toString());
+                setValue(value.toString());
             }
 
             return this;
