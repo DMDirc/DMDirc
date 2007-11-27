@@ -47,15 +47,14 @@ public class URLHandlerTableModel extends AbstractTableModel {
             IdentityManager.getGlobalConfig();
     /** Data list. */
     private List<URI> uris;
-    
-    
+
     /**
      * Instantiates a new table model.
      */
     public URLHandlerTableModel() {
         this(new ArrayList<URI>());
     }
-    
+
     /**
      * Instantiates a new table model.
      * 
@@ -119,13 +118,21 @@ public class URLHandlerTableModel extends AbstractTableModel {
             case 0:
                 return uris.get(rowIndex);
             case 1:
-                final String handler;
+                String handler;
                 if (config.hasOption("protocol", uris.get(rowIndex).getScheme())) {
                     handler = config.getOption("protocol", uris.get(rowIndex).
                             getScheme());
-
+                    if ("DMDIRC".equals(handler)) {
+                        handler = "Handle internally (irc links only).";
+                    } else if ("BROWSER".equals(handler)) {
+                        handler = "Use browser (or system registered handler).";
+                    } else if ("MAIL".equals(handler)) {
+                        handler = "Use mail client.";
+                    } else {
+                        handler = "Custom command: " + handler;
+                    }
                 } else {
-                    handler = "";
+                    handler = "No handler.";
                 }
                 return handler;
             default:
@@ -133,7 +140,7 @@ public class URLHandlerTableModel extends AbstractTableModel {
                         columnIndex);
         }
     }
-    
+
     /**
      * Adds a URI to the model.
      * 
@@ -143,7 +150,7 @@ public class URLHandlerTableModel extends AbstractTableModel {
         uris.add(uri);
         fireTableRowsInserted(uris.size() - 1, uris.size() - 1);
     }
-    
+
     /**
      * Removes a URI to the model.
      * 

@@ -484,7 +484,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     private void initURLTab() {
         final String tabName = "URL Handlers";
         preferencesPanel.addCategory(tabName, "Use this panel to adjust the" +
-                "URL handling options.");
+                " URL handling options.");
         
         preferencesPanel.replaceOptionPanel(tabName, new URLConfigPanel());
     }
