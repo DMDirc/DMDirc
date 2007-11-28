@@ -62,7 +62,8 @@ public final class InfoPanel extends JPanel implements ActionListener {
      */
     private String getJavaVersion() {
         return System.getProperty("java.vm.name", "unknown") + " " 
-                + System.getProperty("java.vm.version", "unknown");
+                + System.getProperty("java.vm.version", "unknown") + " ["
+                + System.getProperty("java.vm.vendor", "uknown") + "]";
     }
 
     /**
