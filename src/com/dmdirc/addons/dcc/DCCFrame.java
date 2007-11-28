@@ -35,8 +35,6 @@ import com.dmdirc.commandparser.commands.GlobalCommand;
 
 import com.dmdirc.IconManager;
 import com.dmdirc.Server;
-import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
