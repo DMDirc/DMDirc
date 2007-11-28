@@ -23,6 +23,8 @@
 package com.dmdirc.addons.dcc;
 
 import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.swing.components.InputTextFrame;
 import com.dmdirc.Main;
 import com.dmdirc.commandparser.CommandManager;
@@ -167,6 +169,7 @@ public abstract class DCCFrame extends WritableFrameContainer {
 	 *
 	 * @param line The line to be sent
 	 */
+	@Override
 	public void sendLine(final String line) {
 		return;
 	}
@@ -177,6 +180,7 @@ public abstract class DCCFrame extends WritableFrameContainer {
 	 *
 	 * @return The maximum line length for this container
 	 */
+	@Override
 	public int getMaxLineLength() {
 		return 512;
 	}
@@ -186,6 +190,7 @@ public abstract class DCCFrame extends WritableFrameContainer {
 	 *
 	 * @return The internal frame associated with this object
 	 */
+	@Override
 	public InputWindow getFrame() {
 		return myWindow;
 	}
@@ -195,8 +200,19 @@ public abstract class DCCFrame extends WritableFrameContainer {
 	 *
 	 * @return String identifier
 	 */
+	@Override
 	public String toString() {
 		return title;
+	}
+	
+	/**
+	 * Retrieves the config manager for this command window.
+	 *
+	 * @return This window's config manager
+	 */
+	@Override
+	public ConfigManager getConfigManager() {
+		return IdentityManager.getGlobalConfig();
 	}
 	
 	/**
@@ -204,6 +220,7 @@ public abstract class DCCFrame extends WritableFrameContainer {
 	 *
 	 * @return the associated server connection
 	 */
+	@Override
 	public Server getServer() {
 		return null;
 	}
@@ -211,6 +228,7 @@ public abstract class DCCFrame extends WritableFrameContainer {
 	/**
 	 * Closes this container (and it's associated frame).
 	 */
+	@Override
 	public void close() {
 		plugin.delWindow(this);
 		myWindow.setVisible(false);
