@@ -156,21 +156,30 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
 
     /** Saves the settings. */
     public void save() {
+        IdentityManager.getConfigIdentity().setOption("protocol",
+                uri.getScheme(), getSelection());
+    }
+    
+    /**
+     * Returns the selected value.
+     * 
+     * @return Selected value
+     */
+    public String getSelection() {
         final String value;
-        if (optionType.getSelection() == dmdirc) {
+        if (optionType.getSelection() == dmdirc.getModel()) {
             value = "DMDIRC";
-        } else if (optionType.getSelection() == browser) {
+        } else if (optionType.getSelection() == browser.getModel()) {
             value = "BROWSER";
-        } else if (optionType.getSelection() == mail) {
+        } else if (optionType.getSelection() == mail.getModel()) {
             value = "MAIL";
-        } else if (optionType.getSelection() == custom) {
+        } else if (optionType.getSelection() == custom.getModel()) {
             value = commandPath.getText();
         } else {
             value = "";
         }
-
-        IdentityManager.getConfigIdentity().setOption("protocol",
-                uri.getScheme(), value);
+        
+        return value;
     }
 
     /**

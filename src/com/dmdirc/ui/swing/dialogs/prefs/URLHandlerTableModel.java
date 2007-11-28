@@ -27,8 +27,10 @@ import com.dmdirc.config.IdentityManager;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import java.util.Map;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -47,21 +49,26 @@ public class URLHandlerTableModel extends AbstractTableModel {
             IdentityManager.getGlobalConfig();
     /** Data list. */
     private List<URI> uris;
+    /** Handlers list. */
+    private List<String> handlers;
 
     /**
      * Instantiates a new table model.
      */
     public URLHandlerTableModel() {
-        this(new ArrayList<URI>());
+        this(new ArrayList<URI>(), new ArrayList<String>());
     }
 
     /**
      * Instantiates a new table model.
      * 
      * @param uris URIs to show
+     * @param handlers Handlers to show
      */
-    public URLHandlerTableModel(final List<URI> uris) {
+    public URLHandlerTableModel(final List<URI> uris,
+            final List<String> handlers) {
         this.uris = uris;
+        this.handlers = handlers;
     }
 
     /** {@inheritDoc} */
@@ -118,27 +125,41 @@ public class URLHandlerTableModel extends AbstractTableModel {
             case 0:
                 return uris.get(rowIndex);
             case 1:
-                String handler;
-                if (config.hasOption("protocol", uris.get(rowIndex).getScheme())) {
-                    handler = config.getOption("protocol", uris.get(rowIndex).
-                            getScheme());
-                    if ("DMDIRC".equals(handler)) {
-                        handler = "Handle internally (irc links only).";
-                    } else if ("BROWSER".equals(handler)) {
-                        handler = "Use browser (or system registered handler).";
-                    } else if ("MAIL".equals(handler)) {
-                        handler = "Use mail client.";
-                    } else {
-                        handler = "Custom command: " + handler;
-                    }
-                } else {
-                    handler = "No handler.";
-                }
-                return handler;
+                return handlers.get(rowIndex);
             default:
                 throw new IllegalArgumentException("Unknown column: " +
                         columnIndex);
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        if (uris.size() <= rowIndex) {
+            throw new IndexOutOfBoundsException(rowIndex + " >= " +
+                    uris.size());
+        }
+        if (rowIndex < 0) {
+            throw new IllegalArgumentException("Must specify a positive integer");
+        }
+        switch (columnIndex) {
+            case 0:
+                if (!(aValue instanceof URI)) {
+                    throw new IllegalArgumentException("Value must be a URI");
+                }
+                uris.set(rowIndex, (URI) aValue);
+                break;
+            case 1:
+                if (!(aValue instanceof String)) {
+                    throw new IllegalArgumentException("Value must be a String");
+                }
+                handlers.set(rowIndex, (String) aValue);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown column: " +
+                        columnIndex);
+        }
+        fireTableCellUpdated(rowIndex, columnIndex);
     }
 
     /**
@@ -147,7 +168,14 @@ public class URLHandlerTableModel extends AbstractTableModel {
      * @param uri URI to add
      */
     public void addURI(final URI uri) {
+        final String handler;
+        if (IdentityManager.getGlobalConfig().hasOption("protocol", uri.getScheme())) {
+            handler = IdentityManager.getGlobalConfig().getOption("protocol", uri.getScheme());
+        } else {
+            handler = "";
+        }
         uris.add(uri);
+        handlers.add(handler);
         fireTableRowsInserted(uris.size() - 1, uris.size() - 1);
     }
 
@@ -157,7 +185,34 @@ public class URLHandlerTableModel extends AbstractTableModel {
      * @param uri URI to remove
      */
     public void removeURI(final URI uri) {
-        uris.remove(uri);
-        fireTableRowsDeleted(uris.size(), uris.size());
+        removeURI(uris.indexOf(uri));
+    }
+
+    /**
+     * Removes a URI to the model.
+     * 
+     * @param index Index of the URI to remove
+     */
+    public void removeURI(final int index) {
+        if (index != -1) {
+            uris.remove(index);
+            handlers.remove(index);
+            fireTableRowsDeleted(index, index);
+        }
+    }
+    
+    /**
+     * Returns a map of the URL handlers in this model.
+     * 
+     * @return URL Handler map
+     */
+    public Map<URI, String> getURLHandlers() {
+        final Map<URI, String> urlHandlers = new HashMap<URI, String>();
+        
+        for (int i = 0; i < uris.size(); i++) {
+            urlHandlers.put(uris.get(i), handlers.get(i));
+        }
+        
+        return urlHandlers;
     }
 }

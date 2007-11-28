@@ -72,6 +72,8 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     
     /** restart warning issued. */
     private boolean restartNeeded;
+    /** URL Config panel. */
+    private URLConfigPanel urlConfigPanel;
     
     /**
      * Creates a new instance of PreferencesDialog.
@@ -485,13 +487,15 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
         final String tabName = "URL Handlers";
         preferencesPanel.addCategory(tabName, "Use this panel to adjust the" +
                 " URL handling options.");
-        
-        preferencesPanel.replaceOptionPanel(tabName, new URLConfigPanel());
+        urlConfigPanel = new URLConfigPanel();
+        preferencesPanel.replaceOptionPanel(tabName, urlConfigPanel);
     }
     
     /** {@inheritDoc}. */
     @Override
     public void configClosed(final Properties properties) {
+        urlConfigPanel.save();
+        
         final Identity identity = IdentityManager.getConfigIdentity();
         for (Map.Entry<Object, Object> entry : properties.entrySet()) {
             final String[] args = ((String) entry.getKey()).split("\\.");

@@ -26,12 +26,17 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.swing.components.PackingTable;
 import com.dmdirc.ui.swing.components.URLProtocolPanel;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.URI;
 
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionEvent;
@@ -44,7 +49,8 @@ import net.miginfocom.swing.MigLayout;
  * URL Config panel. List all known url protocols and allows them to be 
  * configured.
  */
-public class URLConfigPanel extends JPanel implements ListSelectionListener {
+public class URLConfigPanel extends JPanel implements ListSelectionListener,
+        ActionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -64,6 +70,12 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener {
     private URLProtocolPanel empty;
     /** Current component. */
     private URLProtocolPanel activeComponent;
+    /** Add button. */
+    private JButton add;
+    /** Removed button. */
+    private JButton remove;
+    /** Selected row. */
+    private int selectedRow;
 
     /**
      * Instantiates a new URL config panel.
@@ -72,6 +84,7 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener {
         initComponents();
         addListeners();
         layoutComponents();
+        selectedRow = -1;
     }
 
     /**
@@ -81,21 +94,29 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener {
         tableScrollPane = new JScrollPane();
         model = new URLHandlerTableModel();
         table = new PackingTable(model, false, tableScrollPane) {
+
             private static final long serialVersionUID = 1;
+
+            /** {@inheritDoc} */
             @Override
-            public TableCellRenderer getCellRenderer(final int row, final int column) {
+            public TableCellRenderer getCellRenderer(final int row,
+                    final int column) {
                 switch (column) {
                     case 0:
                         return new URISchemeCellRenderer();
+                    case 1:
+                        return new URIHandlerCellRenderer();
                     default:
                         return super.getCellRenderer(row, column);
                 }
             }
         };
-        
+
         details = new HashMap<URI, URLProtocolPanel>();
         empty = new URLProtocolPanel(null, true);
         activeComponent = empty;
+        add = new JButton("Add");
+        remove = new JButton("Remove");
 
         tableScrollPane.setViewportView(table);
 
@@ -118,6 +139,8 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener {
      */
     private void addListeners() {
         table.getSelectionModel().addListSelectionListener(this);
+        add.addActionListener(this);
+        remove.addActionListener(this);
     }
 
     /**
@@ -128,7 +151,33 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener {
         setLayout(new MigLayout("ins 0, wrap 1"));
 
         add(tableScrollPane, "grow, pushy");
+        add(add, "split 2, growx");
+        add(remove, "growx");
         add(activeComponent, "growx, pushx");
+    }
+
+    /**
+     * Saves the changes.
+     */
+    public void save() {
+        final Map<URI, String> handlers = model.getURLHandlers();
+        final List<String> protocols = IdentityManager.getGlobalConfig().
+                getOptions("protocol");
+        for (String protocol : protocols) {
+            URI uri;
+            try {
+                uri = new URI(protocol + "://example.test.com");
+            } catch (URISyntaxException ex) {
+                uri = null;
+            }
+            if (uri != null && handlers.containsKey(uri)) {
+                IdentityManager.getConfigIdentity().setOption("protocol",
+                        protocol, handlers.get(uri));
+            } else {
+                IdentityManager.getConfigIdentity().unsetOption("protocol",
+                        protocol);
+            }
+        }
     }
 
     /** {@inheritDoc} */
@@ -136,17 +185,39 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener {
     public void valueChanged(final ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
             setVisible(false);
+            if (selectedRow != -1 && selectedRow < model.getRowCount()) {
+                final URLProtocolPanel panel =
+                        details.get(model.getValueAt(selectedRow, 0));
+                model.setValueAt(panel.getSelection(), selectedRow, 1);
+            }
             if (table.getSelectedRow() == -1) {
                 activeComponent = empty;
                 layoutComponents();
+                add.setEnabled(false);
+                remove.setEnabled(false);
             } else {
                 activeComponent =
                         details.get(model.getValueAt(table.getSelectedRow(), 0));
-                activeComponent.updateSelection();
                 layoutComponents();
+                add.setEnabled(true);
+                remove.setEnabled(true);
             }
+            selectedRow = table.getSelectedRow();
             setVisible(true);
         }
     }
 
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Action event
+     */
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+        if (e.getSource() == add) {
+
+        } else if (e.getSource() == remove) {
+            model.removeURI(table.getSelectedRow());
+        }
+    }
 }
