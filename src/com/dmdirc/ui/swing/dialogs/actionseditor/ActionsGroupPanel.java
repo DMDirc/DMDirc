@@ -97,7 +97,7 @@ public final class ActionsGroupPanel extends JPanel
     private String implode(final Object[] args) {
         final StringBuffer res = new StringBuffer();
         
-        if (args == null) {
+        if (args == null || args.length == 0) {
             return "";
         }
         
