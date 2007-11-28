@@ -23,6 +23,12 @@
 package com.dmdirc.addons.dcc;
 
 import java.net.Socket;
+import java.io.File;
+import java.io.IOException;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 /**
  * This class handles a DCC Send
  *
@@ -30,11 +36,103 @@ import java.net.Socket;
  * @version $Id: DCCSend.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public class DCCSend extends DCC {
+	/** File Transfer Types */
+	private enum TransferType { SEND, RECIEVE; }
+	/** The File transfer type for this file */
+	private TransferType transferType = TransferType.RECIEVE;
+	/** The handler for this DCCSend */
+	private DCCSendInterface handler = null;
+	/** Used to send data out the socket */
+	private DataOutputStream out;
+	/** Used to read data from the socket */
+	private DataInputStream in;
+	/** File we are using */
+	private File transferFile;
+	/** Used to write data to the file */
+	private DataOutputStream fileOut;
+	/** Used to read data from the file */
+	private DataInputStream fileIn;
+	/** Where are we starting from? */
+	private long startpos = 0;
+	/** How big is this file? */
+	private long size = -1;
+	/** What is the name of the file? */
+	private String filename = "";
+	/** Block Size */
+	private int blockSize = 1024;
+	
+	/**
+	 * Set the filename of this file
+	 *
+	 * @param filename Filename
+	 */
+	public void setFileName(final String filename) {
+		this.filename = filename;
+	}
+	
+	/**
+	 * Set the size of the file
+	 *
+	 * @param size File size
+	 */
+	public void setFileSize(final long size) {
+		this.size = size;
+	}
+	
+	/**
+	 * Set the starting position of the file
+	 *
+	 * @param startpos Starting position
+	 */
+	public void setFileStart(final long startpos) {
+		this.startpos = startpos;
+	}
+	
 	/**
 	 * Creates a new instance of DCCSend.
 	 */
 	public DCCSend() {
 		super();
+	}
+	
+	/**
+	 * Change the handler for this DCC Send
+	 *
+	 * @param handler A class implementing DCCSendInterface
+	 */
+	public void setHandler(final DCCSendInterface handler) {
+		this.handler = handler;
+	}
+	
+	/**
+	 * Called when the socket is first opened, before any data is handled.
+	 */
+	protected void socketOpened() {
+		try {
+			transferFile = new File(filename);
+			if (transferType == TransferType.RECIEVE) {
+				fileOut = new DataOutputStream(new FileOutputStream(transferFile.getName()));
+			} else if (transferType == TransferType.SEND) {
+				fileIn = new DataInputStream(new FileInputStream(transferFile.getName()));
+			}
+			
+			out = new DataOutputStream(socket.getOutputStream());
+			in = new DataInputStream(socket.getInputStream());
+			if (handler != null) {
+				handler.socketOpened(this);
+			}
+		} catch (IOException ioe) { }
+	}
+	
+	/**
+	 * Called when the socket is closed, before the thread terminates.
+	 */
+	protected void socketClosed() {
+		out = null;
+		in = null;
+		if (handler != null) {
+			handler.socketClosed(this);
+		}
 	}
 	
 	/**
@@ -44,6 +142,38 @@ public class DCCSend extends DCC {
 	 *         called again.
 	 */
 	protected boolean handleSocket() {
+		if (out == null || in == null) { return false; }	
+		if (transferType == TransferType.RECIEVE) {
+			return handleRecieve();
+		} else {
+			return false;
+		}
+	}
+	
+	
+	/**
+	 * Handle the socket as a RECEIVE.
+	 *
+	 * @return false when socket is closed, true will cause the method to be
+	 *         called again.
+	 */
+	protected boolean handleRecieve() {
+		try {
+			byte[] data = new byte[blockSize];
+			int bytesRead = in.read(data);
+			
+			if (bytesRead > 0) {
+				fileOut.write(data, 0, bytesRead);
+				out.writeInt(bytesRead);
+				out.flush();
+				return true;
+			} else if (bytesRead < 0) {
+				fileOut.close();
+				return false;
+			}
+		} catch (IOException e) {
+			return false;
+		}
 		return false;
 	}
 }

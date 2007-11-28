@@ -28,6 +28,7 @@ import com.dmdirc.ui.swing.JWrappingLabel;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.swing.components.TextFrame;
 
+import com.dmdirc.parser.IRCParser;
 import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.Server;
 import com.dmdirc.Main;
@@ -38,6 +39,8 @@ import com.dmdirc.interfaces.ActionListener;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 import javax.swing.SwingConstants;
 import javax.swing.JOptionPane;
@@ -58,6 +61,9 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	
 	/** Child Frames */
 	private List<DCCFrame> childFrames = new ArrayList<DCCFrame>();
+	
+//	/** Pending Sends (This uses DCCFrame not DCCSend so we can check if the window was closed or not) */
+//	private Map<String, DCCFrame> pendingSends = new HashMap<String, DCCFrame>();
 	
 	/**
 	 * Creates a new instance of the DCC Plugin.
@@ -85,11 +91,75 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 					if (result == JOptionPane.YES_OPTION) {
 						DCCChat chat = new DCCChat();
 						try {
-							chat.setAddress(Integer.parseInt(ctcpData[2]), Integer.parseInt(ctcpData[3]));
+							chat.setAddress(Long.parseLong(ctcpData[2]), Integer.parseInt(ctcpData[3]));
 						} catch (NumberFormatException nfe) { return; }
 						String myNickname = ((Server)arguments[0]).getParser().getMyNickname();
 						new DCCChatWindow(this, chat, "Chat: "+nickname, myNickname, nickname);
 						chat.connect();
+					}
+				} else if (ctcpData[0].equalsIgnoreCase("send") && ctcpData.length > 3) {
+					final String nickname = ((ClientInfo)arguments[1]).getNickname();
+					final String filename;
+					// Clients tend to put files with spaces in the name in "" so lets look for that.
+					final StringBuilder filenameBits = new StringBuilder();
+					int i;
+					boolean quoted = ctcpData[1].startsWith("\"");
+					if (quoted) {
+						for (i = 1; i < ctcpData.length; i++) {
+							String bit = ctcpData[i];
+							if (i == 1) { bit = bit.substring(1); }
+							if (bit.endsWith("\"")) {
+								filenameBits.append(" "+bit.substring(bit.length()));
+								return;
+							} else {
+								filenameBits.append(" "+bit);
+							}
+						}
+						filename = filenameBits.toString().trim();
+					} else {
+						filename = ctcpData[1];
+						i = 1;
+					}
+					
+					final String ip = ctcpData[++i];
+					final String port = ctcpData[++i];
+					long size;
+					long startpos;
+					if (ctcpData.length > i) {
+						try {
+							size = Long.parseLong(ctcpData[++i]);
+						} catch (NumberFormatException nfe) { size = -1; }
+					} else { size = -1; }
+					// Add support for resume later
+					startpos = 0;
+					
+					int result = JOptionPane.showConfirmDialog((JFrame)Main.getUI().getMainWindow(), "User "+nickname+" on "+((Server)arguments[0]).toString()+" would like to send you a file over DCC.\n\nFile: "+filename+"\n\nDo you want to continue?", "DCC Chat Request", JOptionPane.YES_NO_OPTION);
+					if (result == JOptionPane.YES_OPTION) {
+						DCCSend send = new DCCSend();
+						try {
+							if (!port.equals("0")) {
+								send.setAddress(Long.parseLong(ip), Integer.parseInt(port));
+							}
+						} catch (NumberFormatException nfe) { return; }
+						send.setFileName(filename);
+						send.setFileSize(size);
+						send.setFileStart(startpos);
+						String myNickname = ((Server)arguments[0]).getParser().getMyNickname();
+						final String token;
+						if (port.equals("0")) {
+							if (ctcpData.length > i) {
+								IRCParser parser = ((Server)arguments[0]).getParser();
+								token = ctcpData[++i];
+								new DCCSendWindow(this, send, "*Recieve: "+nickname, myNickname, nickname);
+								send.listen();
+								String sendFilename = filename;
+								if (quoted) { sendFilename = "\""+sendFilename+"\""; }
+								parser.sendCTCP(nickname, "DCC", "SEND "+sendFilename+" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+size+" "+token);
+							}
+						} else {
+							new DCCSendWindow(this, send, "Recieve: "+nickname, myNickname, nickname);
+							send.connect();
+						}
 					}
 				}
 			}

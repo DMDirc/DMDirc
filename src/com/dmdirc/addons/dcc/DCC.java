@@ -61,6 +61,22 @@ public abstract class DCC implements Runnable {
 	 * Connect this dcc.
 	 */
 	public void connect() {
+		try {
+			if (listen) {
+				// serverSocket = new ServerSocket(0, 1, InetAddress.getByName(longToIP(bindIP)));
+				serverSocket = new ServerSocket(0, 1, InetAddress.getLocalHost());
+				address = ipToLong(InetAddress.getLocalHost().getHostAddress());
+				port = serverSocket.getLocalPort();
+			} else {
+				// socket = new Socket(longToIP(address), port, bindIP, 0);
+				socket = new Socket(longToIP(address), port);
+				socketOpened();
+			}
+		} catch (UnknownHostException uhe) {
+			return;
+		} catch (IOException uhe) {
+			return;
+		}
 		myThread = new Thread(this);
 		myThread.start();
 	}
@@ -79,24 +95,6 @@ public abstract class DCC implements Runnable {
 	public void run() {
 		if (running) { return; }
 		running = true;
-		try {
-			if (listen) {
-				// serverSocket = new ServerSocket(0, 1, InetAddress.getByName(longToIP(bindIP)));
-				serverSocket = new ServerSocket(0, 1, InetAddress.getLocalHost());
-				address = ipToLong(InetAddress.getLocalHost().getHostAddress());
-				port = serverSocket.getLocalPort();
-			} else {
-				// socket = new Socket(longToIP(address), port, bindIP, 0);
-				socket = new Socket(longToIP(address), port);
-				socketOpened();
-			}
-		} catch (UnknownHostException uhe) {
-			running = false;
-			return;
-		} catch (IOException uhe) {
-			running = false;
-			return;
-		}
 		// handleSocket is implemented by sub classes, and should return false
 		// when the socket is closed.
 		Thread thisThread = Thread.currentThread();
