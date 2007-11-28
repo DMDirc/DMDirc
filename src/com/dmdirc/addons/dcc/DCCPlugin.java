@@ -229,8 +229,10 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	@Override
 	public void onUnload() {
 		CommandManager.unregisterCommand(command);
-		container.close();
 		ActionManager.removeListener(this);
+		if (container != null) {
+			container.close();
+		}
 	}
 	
 	/**
