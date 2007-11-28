@@ -100,16 +100,7 @@ public abstract class FrameContainer {
      *
      * @return the associated config manager
      */
-    public ConfigManager getConfigManager() {
-        if (getServer() == null) {
-            Logger.appError(ErrorLevel.LOW, "getConfigManager() called when" +
-                    "getServer() = null", new UnsupportedOperationException(
-                    "My name: " + toString()));
-            return IdentityManager.getGlobalConfig();
-        } else {
-            return getServer().getConfigManager();
-        }
-    }
+    public abstract ConfigManager getConfigManager();
 
     /**
      * Requests that this object's frame be activated.

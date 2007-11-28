@@ -35,6 +35,8 @@ import com.dmdirc.commandparser.commands.GlobalCommand;
 
 import com.dmdirc.IconManager;
 import com.dmdirc.Server;
+import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
@@ -234,5 +236,5 @@ public abstract class DCCFrame extends WritableFrameContainer {
 		myWindow.setVisible(false);
 		Main.getUI().getMainWindow().delChild(myWindow);
 		WindowManager.removeWindow(myWindow);
-	}
+	}   
 }

@@ -26,6 +26,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.ClientInfo;
@@ -384,5 +385,11 @@ public final class Query extends MessageTarget implements
         
         Main.getUI().getMainWindow().setActiveFrame(window);
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public ConfigManager getConfigManager() {
+        return server.getConfigManager();
+    }    
     
 }

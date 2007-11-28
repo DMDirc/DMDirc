@@ -26,6 +26,7 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.Server;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.Window;
@@ -99,4 +100,10 @@ public class HistoryWindow extends FrameContainer {
     public Server getServer() {
         return parent.getContainer().getServer();
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public ConfigManager getConfigManager() {
+        return parent.getConfigManager();
+    }    
 }
