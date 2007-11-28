@@ -110,6 +110,7 @@ public abstract class DCC implements Runnable {
 				serverSocket = null;
 			} else {
 				if (!handleSocket()) {
+					close();
 					break;
 				}
 			}

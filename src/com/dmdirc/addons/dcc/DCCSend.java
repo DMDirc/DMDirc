@@ -56,6 +56,8 @@ public class DCCSend extends DCC {
 	private long startpos = 0;
 	/** How big is this file? */
 	private long size = -1;
+	/** How much of this file have we read so far? */
+	private long readSize = 0;
 	/** What is the name of the file? */
 	private String filename = "";
 	/** Block Size */
@@ -128,6 +130,9 @@ public class DCCSend extends DCC {
 	 * Called when the socket is closed, before the thread terminates.
 	 */
 	protected void socketClosed() {
+		// Try to close both, even if one fails.
+		try { out.close(); } catch (IOException ioe) { }
+		try { in.close(); } catch (IOException ioe) { }
 		out = null;
 		in = null;
 		if (handler != null) {
@@ -154,19 +159,25 @@ public class DCCSend extends DCC {
 	/**
 	 * Handle the socket as a RECEIVE.
 	 *
-	 * @return false when socket is closed, true will cause the method to be
+	 * @return false when socket is closed (or should be closed), true will cause the method to be
 	 *         called again.
 	 */
 	protected boolean handleRecieve() {
 		try {
 			byte[] data = new byte[blockSize];
 			int bytesRead = in.read(data);
+			readSize = readSize + bytesRead;
 			
 			if (bytesRead > 0) {
 				fileOut.write(data, 0, bytesRead);
 				out.writeInt(bytesRead);
 				out.flush();
-				return true;
+				if (readSize == size) {
+					fileOut.close();
+					return false;
+				} else {
+					return true;
+				}
 			} else if (bytesRead < 0) {
 				fileOut.close();
 				return false;
