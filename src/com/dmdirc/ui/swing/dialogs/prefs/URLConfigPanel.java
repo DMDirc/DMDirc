@@ -22,10 +22,14 @@
 
 package com.dmdirc.ui.swing.dialogs.prefs;
 
+import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.PackingTable;
+import com.dmdirc.ui.swing.components.StandardInputDialog;
 import com.dmdirc.ui.swing.components.URLProtocolPanel;
 
+import com.dmdirc.ui.swing.components.validating.Validator;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URI;
@@ -34,6 +38,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -115,6 +120,7 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
         activeComponent = empty;
         add = new JButton("Add");
         remove = new JButton("Remove");
+        remove.setEnabled(false);
 
         tableScrollPane.setViewportView(table);
 
@@ -169,13 +175,33 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
                 uri = null;
             }
             if (uri != null && handlers.containsKey(uri)) {
-                IdentityManager.getConfigIdentity().setOption("protocol",
-                        protocol, handlers.get(uri));
+                saveHandler(protocol, handlers.get(uri));
             } else {
-                IdentityManager.getConfigIdentity().unsetOption("protocol",
-                        protocol);
+                saveHandler(protocol, "");
             }
+            handlers.remove(uri);
         }
+        for (Entry<URI, String> entry : handlers.entrySet()) {
+            saveHandler(entry.getKey().getScheme(), entry.getValue());
+        }
+    }
+
+    /**
+     * Saves or updates a handler to the config.
+     * 
+     * @param protocol Protocol for the handler
+     * @param handler Handler for the protocol
+     */
+    private void saveHandler(final String protocol, final String handler) {
+        if (handler.isEmpty()) {
+            IdentityManager.getConfigIdentity().unsetOption("protocol",
+                    protocol);
+        } else {
+            IdentityManager.getConfigIdentity().setOption("protocol",
+                    protocol, handler);
+
+        }
+
     }
 
     /** {@inheritDoc} */
@@ -213,9 +239,59 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == add) {
+            new StandardInputDialog((MainFrame) Main.getUI().getMainWindow(),
+                    false, "DMDIRC: New URL handler",
+                    "Please enter the name of the new protocol.",
+                    new URLProtocolValidator()) {
+
+                /**
+                 * A version number for this class. It should be changed whenever the
+                 * class structure is changed (or anything else that would prevent
+                 * serialized objects being unserialized with the new class).
+                 */
+                private static final long serialVersionUID = 1;
+
+                /** {@inheritDoc} */
+                @Override
+                public boolean save() {
+                    try {
+                        final URI uri = new URI(getText() +
+                                "://example.test.com");
+                        model.addURI(uri);
+                        details.put(uri, new URLProtocolPanel(uri, true));
+                        return true;
+                    } catch (URISyntaxException ex) {
+                        return false;
+                    }
+                }
+
+                /** {@inheritDoc} */
+                @Override
+                public void cancelled() {
+                //Ignore
+                }
+            }.display();
 
         } else if (e.getSource() == remove) {
             model.removeURI(table.getSelectedRow());
         }
     }
+
+    /**
+     * Input dialog validator.
+     */
+    private static class URLProtocolValidator implements Validator<String> {
+
+        /** {@inheritDoc} */
+        @Override
+        public boolean validate(String object) {
+            if (object != null && !object.isEmpty()) {
+                return !IdentityManager.getGlobalConfig().hasOption("protocol",
+                        object);
+            } else {
+                return false;
+            }
+        }
+    }
+
 }
