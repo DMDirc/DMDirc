@@ -73,6 +73,30 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	}
 	
 	/**
+	 * Ask a question, if the answer is the answer required, then recall handleProcessEvent
+	 *
+	 * @param question Question to ask
+	 * @param title Title of question dialog
+	 * @param desiredAnswer Answer required
+	 * @param type Actiontype to pass back
+	 * @param format StringBuffer to pass back
+	 * @param arguments arguments to pass back
+	 */
+	public void askQuestion(final String question, final String title, final int desiredAnswer, final ActionType type, final StringBuffer format, final Object... arguments) {
+		// New thread to ask the question in to stop us locking the UI
+		Thread questionThread = new Thread(new Runnable() {
+			public void run() {
+				int result = JOptionPane.showConfirmDialog((JFrame)Main.getUI().getMainWindow(), question, title, JOptionPane.YES_NO_OPTION);
+				if (result == desiredAnswer) {
+					handleProcessEvent(type, format, true, arguments);
+				}
+			}
+		}, "QuestionThread: "+title);
+		// Start the thread
+		questionThread.start();
+	}
+	
+	/**
 	 * Process an event of the specified type.
 	 *
 	 * @param type The type of the event to process
@@ -81,14 +105,28 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 */
 	@Override
 	public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
+		handleProcessEvent(type, format, false, arguments);
+	}
+	
+	/**
+	 * Process an event of the specified type.
+	 *
+	 * @param type The type of the event to process
+	 * @param format Format of messages that are about to be sent. (May be null)
+	 * @param dontAsk Don't ask any questions, assume yes.
+	 * @param arguments The arguments for the event
+	 */
+	public void handleProcessEvent(final ActionType type, final StringBuffer format, final boolean dontAsk, final Object... arguments) {
 		if (type == CoreActionType.SERVER_CTCP) {
 			final String ctcpType = (String)arguments[2];
 			final String[] ctcpData = ((String)arguments[3]).split(" ");
 			if (ctcpType.equalsIgnoreCase("DCC")) {
 				if (ctcpData[0].equalsIgnoreCase("chat") && ctcpData.length > 3) {
 					final String nickname = ((ClientInfo)arguments[1]).getNickname();
-					int result = JOptionPane.showConfirmDialog((JFrame)Main.getUI().getMainWindow(), "User "+nickname+" on "+((Server)arguments[0]).toString()+" would like to start a DCC Chat with you.\n\nDo you want to continue?", "DCC Chat Request", JOptionPane.YES_NO_OPTION);
-					if (result == JOptionPane.YES_OPTION) {
+					if (!dontAsk) {
+						askQuestion("User "+nickname+" on "+((Server)arguments[0]).toString()+" would like to start a DCC Chat with you.\n\nDo you want to continue?", "DCC Chat Request", JOptionPane.YES_OPTION, type, format, arguments);
+						return;
+					} else {
 						DCCChat chat = new DCCChat();
 						try {
 							chat.setAddress(Long.parseLong(ctcpData[2]), Integer.parseInt(ctcpData[3]));
@@ -133,8 +171,10 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 					// Add support for resume later
 					startpos = 0;
 					
-					int result = JOptionPane.showConfirmDialog((JFrame)Main.getUI().getMainWindow(), "User "+nickname+" on "+((Server)arguments[0]).toString()+" would like to send you a file over DCC.\n\nFile: "+filename+"\n\nDo you want to continue?", "DCC Chat Request", JOptionPane.YES_NO_OPTION);
-					if (result == JOptionPane.YES_OPTION) {
+					if (!dontAsk) {
+						askQuestion("User "+nickname+" on "+((Server)arguments[0]).toString()+" would like to send you a file over DCC.\n\nFile: "+filename+"\n\nDo you want to continue?", "DCC Chat Request", JOptionPane.YES_OPTION, type, format, arguments);
+						return;
+					} else {
 						DCCSend send = new DCCSend();
 						try {
 							if (!port.equals("0")) {
