@@ -37,9 +37,9 @@ public class PopupMenuItem {
         divider = true;
     }
     
-    public PopupMenuItem(final String name) {
+    public PopupMenuItem(final String name, final PopupMenu submenu) {
         this.name = name;
-        this.submenu = new PopupMenu();
+        this.submenu = submenu;
     }
     
     public PopupMenuItem(final String name, final String command) {

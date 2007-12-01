@@ -90,4 +90,56 @@ public class PopupManager {
         return res;
     }
     
+    /**
+     * Returns the popup menu that should be used for the specified type.
+     * Configuration data is read from the specified config manager.
+     * 
+     * @param menuType The type of the menu that is needed
+     * @param configManager The config manager to be used for the mnenu
+     * @return The PopupMenu that should be displayed
+     */
+    public static PopupMenu getMenu(final PopupType menuType, final ConfigManager configManager) {
+        return getMenu(menuType.toString(), configManager);
+    }
+    
+    private static PopupMenu getMenu(final String menuName, final ConfigManager configManager) {
+        final PopupMenu res = new PopupMenu();
+        
+        for (String item : configManager.getOptionList("popups", menuName)) {
+            if (item.length() > 0 && item.charAt(0) == '<') {
+                res.addAll(getMenu(item.substring(1), configManager).getItems());
+            } else {
+                res.add(getItem(item, configManager));
+            }
+        }
+        
+        return res;
+    }
+    
+    private static PopupMenuItem getItem(final String item, final ConfigManager configManager) {
+        PopupMenuItem res;
+        
+        if ("-".equals(item)) {
+            res = new PopupMenuItem();
+        } else {
+            final int colon = item.indexOf(':');
+            
+            if (colon == -1) {
+                throw new IllegalArgumentException("Invalid popup menu item: "
+                        + item);
+            }
+            
+            final String name = item.substring(0, colon);
+            final String command = item.substring(colon);
+            
+            if (command.length() > 0 && command.charAt(0) == '<') {
+                res = new PopupMenuItem(name, getMenu(command.substring(1), configManager));
+            } else {
+                res = new PopupMenuItem(name, command);
+            }
+        }
+        
+        return res;
+    }
+    
 }
