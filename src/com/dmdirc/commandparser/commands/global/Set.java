@@ -25,6 +25,8 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -51,23 +53,37 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
     @Override
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
-        switch (args.length) {
+        int i = 0;
+        
+        Identity identity = IdentityManager.getConfigIdentity();
+        ConfigManager manager = IdentityManager.getGlobalConfig();
+        
+        if (args.length > 0 && "--server".equalsIgnoreCase(args[0]) && origin != null
+                && origin.getContainer().getServer() != null) {
+            i = 1;
+            identity = origin.getContainer().getServer().getServerIdentity();
+            manager = origin.getContainer().getServer().getConfigManager();
+        }
+        
+        switch (args.length - i) {
         case 0:
-            doDomainList(origin, isSilent);
+            doDomainList(origin, isSilent, manager);
             break;
         case 1:
-            doOptionsList(origin, isSilent, args[0]);
+            doOptionsList(origin, isSilent, manager, args[i]);
             break;
         case 2:
-            doShowOption(origin, isSilent, args[0], args[1]);
+            doShowOption(origin, isSilent, manager, args[i], args[1 + i]);
             break;
         default:
-            if (args[0].equalsIgnoreCase("--unset")) {
-                doUnsetOption(origin, isSilent, args[1], args[2]);
-            } else if (args[0].equalsIgnoreCase("--append") && args.length > 3) {
-                doAppendOption(origin, isSilent, args[1], args[2], implodeArgs(3, args));
+            if (args[i].equalsIgnoreCase("--unset")) {
+                doUnsetOption(origin, isSilent, identity, args[1 + i], args[2 + i]);
+            } else if (args[i].equalsIgnoreCase("--append") && args.length > 3 + i) {
+                doAppendOption(origin, isSilent, identity, manager, args[1 + i], args[2 + i],
+                        implodeArgs(3 + i, args));
             } else {
-                doSetOption(origin, isSilent, args[0], args[1], implodeArgs(2, args));
+                doSetOption(origin, isSilent, identity, args[i], args[1 + i],
+                        implodeArgs(2 + i, args));
             }
         }
     }
@@ -77,15 +93,17 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
      *
      * @param origin The window the command was issued from
      * @param isSilent Whether or not the command is being silenced or not
+     * @param manager The config manager to use to retrieve data
      */
-    private void doDomainList(final InputWindow origin, final boolean isSilent) {
+    private void doDomainList(final InputWindow origin, final boolean isSilent,
+            final ConfigManager manager) {
         final StringBuffer output = new StringBuffer(67);
         
         output.append("Valid domains (use ");
         output.append(CommandManager.getCommandChar());
         output.append("set <domain> to see options within a domain): ");
         
-        for (String domain : IdentityManager.getGlobalConfig().getDomains()) {
+        for (String domain : manager.getDomains()) {
             output.append(domain);
             output.append(", ");
         }
@@ -98,10 +116,11 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
      *
      * @param origin The window the command was issued from
      * @param isSilent Whether or not the command is being silenced or not
+     * @param manager The config manager to use to retrieve data
      * @param domain The domain to be inspected
      */
     private void doOptionsList(final InputWindow origin,
-            final boolean isSilent, final String domain) {
+            final boolean isSilent, final ConfigManager manager, final String domain) {
         final StringBuffer output = new StringBuffer(24);
         
         output.append("Options in domain '");
@@ -110,7 +129,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
         
         boolean found = false;
         
-        for (String option : IdentityManager.getGlobalConfig().getOptions(domain)) {
+        for (String option : manager.getOptions(domain)) {
             output.append(option);
             output.append(", ");
             found = true;
@@ -129,14 +148,16 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
      *
      * @param origin The window the command was issued from
      * @param isSilent Whether or not the command is being silenced or not
+     * @param manager The config manager to use to retrieve data
      * @param domain The domain of the option
      * @param option The name of the option
      */
     private void doShowOption(final InputWindow origin,
-            final boolean isSilent, final String domain, final String option) {
-        if (IdentityManager.getGlobalConfig().hasOption(domain, option)) {
-            sendLine(origin, isSilent, FORMAT_OUTPUT, "The current value of " + domain + "." + option
-                    + " is: " + IdentityManager.getGlobalConfig().getOption(domain, option));
+            final boolean isSilent, final ConfigManager manager,
+            final String domain, final String option) {
+        if (manager.hasOption(domain, option)) {
+            sendLine(origin, isSilent, FORMAT_OUTPUT, "The current value of "
+                    + domain + "." + option + " is: " + manager.getOption(domain, option));
         } else {
             sendLine(origin, isSilent, FORMAT_ERROR, "Option not found: " + domain + "." + option);
         }
@@ -147,14 +168,15 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
      *
      * @param origin The window the command was issued from
      * @param isSilent Whether or not the command is being silenced or not
+     * @param identity The identity to use to set data
      * @param domain The domain of the option
      * @param option The name of the option
      * @param newvalue The value the option should be set to
      */
     private void doSetOption(final InputWindow origin,
-            final boolean isSilent, final String domain, final String option,
-            final String newvalue) {
-        IdentityManager.getConfigIdentity().setOption(domain, option, newvalue);
+            final boolean isSilent, final Identity identity,
+            final String domain, final String option, final String newvalue) {
+        identity.setOption(domain, option, newvalue);
         
         sendLine(origin, isSilent, FORMAT_OUTPUT, domain + "." + option +
                 " has been set to: " + newvalue);
@@ -165,15 +187,17 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
      *
      * @param origin The window the command was issued from
      * @param isSilent Whether or not the command is being silenced or not
+     * @param identity The identity to use to set data
+     * @param manager The config manager to use to retrieve data
      * @param domain The domain of the option
      * @param option The name of the option
      * @param data The data to be appended
      */
     private void doAppendOption(final InputWindow origin,
-            final boolean isSilent, final String domain, final String option,
-            final String data) {
-        doSetOption(origin, isSilent, domain, option,
-                IdentityManager.getGlobalConfig().getOption(domain, option, "") + data);
+            final boolean isSilent, final Identity identity, final ConfigManager manager,
+            final String domain,final String option, final String data) {
+        doSetOption(origin, isSilent, identity, domain, option,
+                manager.getOption(domain, option, "") + data);
     }
     
     /**
@@ -181,12 +205,14 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
      *
      * @param origin The window the command was issued from
      * @param isSilent Whether or not the command is being silenced or not
+     * @param identity The identity to use to set data
      * @param domain The domain of the option
      * @param option The name of the option
      */
     private void doUnsetOption(final InputWindow origin,
-            final boolean isSilent, final String domain, final String option) {
-        IdentityManager.getConfigIdentity().unsetOption(domain, option);
+            final boolean isSilent, final Identity identity, final String domain,
+            final String option) {
+        identity.unsetOption(domain, option);
         
         sendLine(origin, isSilent, FORMAT_OUTPUT, domain + "." + option + " has been unset.");
     }
@@ -206,9 +232,9 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
-        return "set [domain [option [newvalue]]] - inspect or change configuration settings"
-                + "\nset --append <domain> <option> <data> - appends data to the specified option"
-                + "\nset --unset <domain> <option> - unset the specified option";
+        return "set [--server] [domain [option [newvalue]]] - inspect or change configuration settings"
+                + "\nset [--server] --append <domain> <option> <data> - appends data to the specified option"
+                + "\nset [--server] --unset <domain> <option> - unsets the specified option";
     }
     
     /** {@inheritDoc} */
@@ -220,17 +246,20 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
             res.addAll(IdentityManager.getGlobalConfig().getDomains());
             res.add("--unset");
             res.add("--append");
+            res.add("--server");
             res.setIncludeNormal(false);
         } else if (arg == 1 && previousArgs.size() >= 1) {
             if (previousArgs.get(0).equalsIgnoreCase("--unset")
-                    || previousArgs.get(0).equalsIgnoreCase("--append")) {
+                    || previousArgs.get(0).equalsIgnoreCase("--append")
+                    || previousArgs.get(0).equalsIgnoreCase("--server")) {
                 res.addAll(IdentityManager.getGlobalConfig().getDomains());
             } else {
                 res.addAll(IdentityManager.getGlobalConfig().getOptions(previousArgs.get(0)));
             }
             res.setIncludeNormal(false);
         } else if (arg == 2 && (previousArgs.get(0).equalsIgnoreCase("--unset")
-                || previousArgs.get(0).equalsIgnoreCase("--append"))) {
+                || previousArgs.get(0).equalsIgnoreCase("--append")
+                || previousArgs.get(0).equalsIgnoreCase("--server"))) {
             res.addAll(IdentityManager.getGlobalConfig().getOptions(previousArgs.get(1)));
             res.setIncludeNormal(false);
         }
