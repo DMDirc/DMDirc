@@ -167,6 +167,16 @@ public final class ErrorManager implements Serializable, Runnable {
      * @param error error to be sent
      */
     public void sendError(final ProgramError error) {
+        for (String line : error.getTrace()) {
+            if (line.startsWith("com.dmdirc.ui.swing.DMDircEventQueue")) {
+                error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
+                error.setFixedStatus(ErrorFixedStatus.INVALID);
+                return;
+            } else if (line.startsWith("com.dmdirc")) {
+                break;
+            }
+        }
+        
         if (!errors.containsValue(error)) {
             reportQueue.add(error);
         
