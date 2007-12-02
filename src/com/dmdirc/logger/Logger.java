@@ -190,7 +190,7 @@ public final class Logger {
      */
     @SuppressWarnings("PMD.SystemPrintln")
     private static synchronized OutputStream createNewErrorFile(final ProgramError error) {
-        if (errorDir == null) {
+        if (errorDir == null || !errorDir.exists()) {
             errorDir = new File(Main.getConfigDir() + "errors");
             if (!errorDir.exists()) {
                 errorDir.mkdirs();
