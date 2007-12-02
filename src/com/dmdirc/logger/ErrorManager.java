@@ -116,7 +116,9 @@ public final class ErrorManager implements Serializable, Runnable {
      * @return Error list
      */
     public Map<Integer, ProgramError> getErrorList() {
-        return new HashMap<Integer, ProgramError>(errors);
+        synchronized (errors) {
+            return new HashMap<Integer, ProgramError>(errors);
+        }
     }
     
     /**
@@ -154,7 +156,9 @@ public final class ErrorManager implements Serializable, Runnable {
      * @return Program error list
      */
     public List<ProgramError> getErrors() {
-        return new ArrayList<ProgramError>(errors.values());
+        synchronized (errors) {
+            return new ArrayList<ProgramError>(errors.values());
+        }
     }
     
     /**

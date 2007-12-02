@@ -554,6 +554,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     /** Disposes of this prefs dialog. */
     public void dispose() {
         synchronized (me) {
+            urlConfigPanel = null;
             preferencesPanel = null;
             IdentityManager.getGlobalConfig().removeListener(this);
             me = null;

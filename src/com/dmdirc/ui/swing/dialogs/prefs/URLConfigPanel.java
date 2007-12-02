@@ -42,6 +42,7 @@ import java.util.Map.Entry;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -114,7 +115,16 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
                 }
             }
         };
-
+        table.setAutoCreateRowSorter(true);
+        table.setAutoCreateColumnsFromModel(true);
+        table.setColumnSelectionAllowed(false);
+        table.setCellSelectionEnabled(false);
+        table.setDragEnabled(false);
+        table.setFillsViewportHeight(false);
+        table.setRowSelectionAllowed(true);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.getRowSorter().toggleSortOrder(0);
+        table.getTableHeader().setReorderingAllowed(false);
         details = new HashMap<URI, URLProtocolPanel>();
         empty = new URLProtocolPanel(null, true);
         activeComponent = empty;
@@ -164,6 +174,7 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
      * Saves the changes.
      */
     public void save() {
+        valueChanged(null);
         final Map<URI, String> handlers = model.getURLHandlers();
         final List<String> protocols = IdentityManager.getGlobalConfig().
                 getOptions("protocol");
@@ -207,7 +218,7 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
     /** {@inheritDoc} */
     @Override
     public void valueChanged(final ListSelectionEvent e) {
-        if (!e.getValueIsAdjusting()) {
+        if (e == null || !e.getValueIsAdjusting()) {
             setVisible(false);
             if (selectedRow != -1 && selectedRow < model.getRowCount()) {
                 final URLProtocolPanel panel =
