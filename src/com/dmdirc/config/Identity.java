@@ -74,6 +74,8 @@ public class Identity extends ConfigSource implements Serializable,
     /** The configuration details for this identity. */
     protected final Properties properties;
     
+    protected ConfigManager globalConfig;
+    
     /** The config change listeners for this source. */
     protected final List<ConfigChangeListener> listeners
             = new WeakList<ConfigChangeListener>();
@@ -95,7 +97,7 @@ public class Identity extends ConfigSource implements Serializable,
     }
     
     /**
-     * Creates a new identity with the specified properties and targets#.
+     * Creates a new identity with the specified properties and target.
      * Saving is not supported using this method (i.e., it should only be used
      * for defaults).
      *
@@ -284,6 +286,26 @@ public class Identity extends ConfigSource implements Serializable,
             final String value) {
         final String oldValue = getOption(domain, option);
         
+        if (myTarget.getType() == ConfigTarget.TYPE.GLOBAL) {
+            // If we're the global config, don't set useless settings that are
+            // covered by global defaults.
+
+            if (globalConfig == null) {
+                globalConfig = new ConfigManager("", "", "");
+                globalConfig.removeIdentity(this);                
+            }
+            
+            if (globalConfig.hasOption(domain, option)
+                    && globalConfig.getOption(domain, option).equals(value)) {
+                if (oldValue == null) {
+                    return;
+                } else {
+                    unsetOption(domain, option);
+                    return;
+                }
+            }
+        }
+        
         if ((oldValue == null && value != null)
                 || (oldValue != null && !oldValue.equals(value))) {
             properties.setProperty(domain + "." + option, value);
@@ -376,8 +398,10 @@ public class Identity extends ConfigSource implements Serializable,
                 // If we're the global config, unset useless settings that are
                 // covered by global defaults.
                 
-                final ConfigManager globalConfig = new ConfigManager("", "", "");
-                globalConfig.removeIdentity(this);
+                if (globalConfig == null) {
+                    globalConfig = new ConfigManager("", "", "");
+                    globalConfig.removeIdentity(this);                
+                }
                 
                 for (Object key : new HashSet<Object>(properties.keySet())) {
                     final String skey = (String) key;
