@@ -1167,30 +1167,50 @@ public final class Server extends WritableFrameContainer implements Serializable
             parser.joinChannel(channel);
         }
 
+        checkModeAliases();
+    }
+    
+    private void checkModeAliases() {
         // Check we have mode aliases
         final String modes = parser.getBoolChanModes() + parser.getListChanModes()
                 + parser.getSetOnlyChanModes() + parser.getSetUnsetChanModes();
         final String umodes = parser.getUserModeString();
 
+        final StringBuffer missingModes = new StringBuffer();
+        final StringBuffer missingUmodes = new StringBuffer();
+
         for (char mode : modes.toCharArray()) {
             if (!configManager.hasOption(DOMAIN_SERVER, "mode" + mode)) {
-                Logger.appError(ErrorLevel.LOW, "No mode alias for mode +" + mode,
-                        new Exception("No mode alias for mode +" + mode + "\n" // NOPMD
-                        + "Network: " + parser.getNetworkName() + "\n"
-                        + "IRCd: " + parser.getIRCD(false)
-                        + " (" + parser.getIRCD(true) + ")\n\n"));
+                missingModes.append(mode);
             }
         }
         
         for (char mode : umodes.toCharArray()) {
             if (!configManager.hasOption(DOMAIN_SERVER, "umode" + mode)) {
-                Logger.appError(ErrorLevel.LOW, "No user mode alias for mode +" + mode,
-                        new Exception("No user mode alias for mode +" + mode + "\n" // NOPMD
-                        + "Network: " + parser.getNetworkName() + "\n"
-                        + "IRCd: " + parser.getIRCD(false)
-                        + " (" + parser.getIRCD(true) + ")\n\n"));
+                missingUmodes.append(mode);
             }
-        }        
+        }
+        
+        if (missingModes.length() + missingUmodes.length() > 0) {
+            final StringBuffer missing = new StringBuffer("Missing mode aliases: ");
+            
+            if (missingModes.length() > 0) {
+                missing.append("channel: +");
+                missing.append(missingModes);
+            }
+            
+            if (missingUmodes.length() > 0) {
+                missing.append("user: +");
+                missing.append(missingUmodes);
+            }
+            
+            Logger.appError(ErrorLevel.LOW, missing.toString() + " ["
+                    + parser.getNetworkName() + "]",
+                    new Exception(missing.toString() + "\n" // NOPMD
+                    + "Network: " + parser.getNetworkName() + "\n"
+                    + "IRCd: " + parser.getIRCD(false)
+                    + " (" + parser.getIRCD(true) + ")\n\n"));            
+        }
     }
    
     // ---------------------------------------------- IGNORE LIST HANDLING -----
