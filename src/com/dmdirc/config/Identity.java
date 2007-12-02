@@ -292,8 +292,9 @@ public class Identity extends ConfigSource implements Serializable,
 
             if (globalConfig == null) {
                 globalConfig = new ConfigManager("", "", "");
-                globalConfig.removeIdentity(this);                
             }
+            
+            globalConfig.removeIdentity(this);
             
             if (globalConfig.hasOption(domain, option)
                     && globalConfig.getOption(domain, option).equals(value)) {
@@ -400,8 +401,9 @@ public class Identity extends ConfigSource implements Serializable,
                 
                 if (globalConfig == null) {
                     globalConfig = new ConfigManager("", "", "");
-                    globalConfig.removeIdentity(this);                
                 }
+                
+                globalConfig.removeIdentity(this);
                 
                 for (Object key : new HashSet<Object>(properties.keySet())) {
                     final String skey = (String) key;
