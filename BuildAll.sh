@@ -38,7 +38,7 @@ awk '{gsub(/int RELEASE_DATE = 0/,"int RELEASE_DATE = '`date +%Y%m%d`'");print}'
 mv ${MYDIR}/src/com/dmdirc/Main.java.tmp ${MYDIR}/src/com/dmdirc/Main.java
 
 # The date/svn prefix to add to the end of the file names of stuff
-FILEDATA=`date +_%Y%m%d`_${SVNREV}
+FILEDATA=`date +%Y%m%d`_${SVNREV}
 
 # Build plugins/jar
 $ANT -buildfile $MYDIR/build.xml -k clean jar
@@ -51,11 +51,11 @@ if [ -e "$MYDIR/dist/DMDirc.jar" ]; then
 fi;
 
 if [ -f $MYDIR/dist/DMDirc.jar ]; then
-	FILENAME=DMDirc${FILEDATA}.jar
+	FILENAME=DMDirc_${FILEDATA}.jar
 	mv "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.exe" "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.exe"
 	mv "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.run" "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.run"
 	cp $MYDIR/dist/DMDirc.jar /home/dmdirc/www/nightly/$FILENAME
-	${ZIP} -r9 /home/dmdirc/www/nightly/Plugins${FILEDATA}.zip plugins
+	${ZIP} -r9 /home/dmdirc/www/nightly/Plugins_${FILEDATA}.zip plugins
 	if [ -e $WWWDIR/nightly/DMDirc_latest.jar ]; then
 		rm $WWWDIR/nightly/DMDirc_latest.jar
 	fi
@@ -69,7 +69,7 @@ if [ -f $MYDIR/dist/DMDirc.jar ]; then
 		rm $WWWDIR/nightly/DMDirc-Setup_latest.run
 	fi
 	ln -s $WWWDIR/nightly/$FILENAME $WWWDIR/nightly/DMDirc_latest.jar
-	ln -s $WWWDIR/nightly/Plugins${FILEDATA}.zip $WWWDIR/nightly/Plugins_latest.zip
+	ln -s $WWWDIR/nightly/Plugins_${FILEDATA}.zip $WWWDIR/nightly/Plugins_latest.zip
 	ln -s "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.run" $WWWDIR/nightly/DMDirc-Setup_latest.run
 	ln -s "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.exe" $WWWDIR/nightly/DMDirc-Setup_latest.exe
 	cd ${MYDIR}
