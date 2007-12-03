@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 import org.junit.Test;
@@ -80,6 +81,10 @@ class BasicWritableFrameContainer extends WritableFrameContainer {
     }
     
     public Server getServer() {
+        return null;
+    }
+
+    public ConfigManager getConfigManager() {
         return null;
     }
 }
