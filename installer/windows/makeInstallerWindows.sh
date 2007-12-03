@@ -193,6 +193,7 @@ if [ "${isRelease}" != "" ]; then
 fi
 
 if [ "" == ${jarfile} ]; then
+	jarfile=${jarPath}"/dist/DMDirc.jar"
 	if [ ! -e ${jarPath}"/dist/DMDirc.jar" -o "${compileJar}" = "true" ]; then
 		echo "Creating jar.."
 		OLDPWD=${PWD}
@@ -208,7 +209,6 @@ if [ "" == ${jarfile} ]; then
 		fi;
 		cd ${OLDPWD}
 	fi;
-	jarfile=${jarPath}"/dist/DMDirc.jar"
 elif [ ! -e ${jarfile} ]; then
 	echo "Requested Jar file (${jarfile}) does not exist."
 	exit 1;
