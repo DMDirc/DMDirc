@@ -54,24 +54,14 @@ if [ -f $MYDIR/dist/DMDirc.jar ]; then
 	FILENAME=DMDirc_${FILEDATA}.jar
 	mv "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.exe" "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.exe"
 	mv "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.run" "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.run"
+	rm -Rf "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.*.md5"
 	cp $MYDIR/dist/DMDirc.jar /home/dmdirc/www/nightly/$FILENAME
 	${ZIP} -r9 /home/dmdirc/www/nightly/Plugins_${FILEDATA}.zip plugins
-	if [ -e $WWWDIR/nightly/DMDirc_latest.jar ]; then
-		rm $WWWDIR/nightly/DMDirc_latest.jar
-	fi
-	if [ -e $WWWDIR/nightly/Plugins_latest.zip ]; then
-		rm $WWWDIR/nightly/Plugins_latest.zip
-	fi
-	if [ -e $WWWDIR/nightly/DMDirc-Setup_latest.exe ]; then
-		rm $WWWDIR/nightly/DMDirc-Setup_latest.exe
-	fi
-	if [ -e $WWWDIR/nightly/DMDirc-Setup_latest.run ]; then
-		rm $WWWDIR/nightly/DMDirc-Setup_latest.run
-	fi
-	ln -s $WWWDIR/nightly/$FILENAME $WWWDIR/nightly/DMDirc_latest.jar
-	ln -s $WWWDIR/nightly/Plugins_${FILEDATA}.zip $WWWDIR/nightly/Plugins_latest.zip
-	ln -s "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.run" $WWWDIR/nightly/DMDirc-Setup_latest.run
-	ln -s "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.exe" $WWWDIR/nightly/DMDirc-Setup_latest.exe
+	
+	ln -sf $WWWDIR/nightly/$FILENAME $WWWDIR/nightly/DMDirc_latest.jar
+	ln -sf $WWWDIR/nightly/Plugins_${FILEDATA}.zip $WWWDIR/nightly/Plugins_latest.zip
+	ln -sf "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.run" $WWWDIR/nightly/DMDirc-Setup_latest.run
+	ln -sf "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.exe" $WWWDIR/nightly/DMDirc-Setup_latest.exe
 	cd ${MYDIR}
 	/bin/sh $MYDIR/oblong.sh "Nightly Build" "Build Successful";
 	/bin/sh $MYDIR/DoReports.sh
