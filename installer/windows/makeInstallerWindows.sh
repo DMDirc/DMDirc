@@ -192,7 +192,7 @@ if [ "${isRelease}" != "" ]; then
 	fi
 fi
 
-if [ "" == ${jarfile} ]; then
+if [ "" == "${jarfile}" ]; then
 	jarfile=${jarPath}"/dist/DMDirc.jar"
 	if [ ! -e ${jarPath}"/dist/DMDirc.jar" -o "${compileJar}" = "true" ]; then
 		echo "Creating jar.."
@@ -209,16 +209,16 @@ if [ "" == ${jarfile} ]; then
 		fi;
 		cd ${OLDPWD}
 	fi;
-elif [ ! -e ${jarfile} ]; then
+elif [ ! -e "${jarfile}" ]; then
 	echo "Requested Jar file (${jarfile}) does not exist."
 	exit 1;
 fi;
 
 if [ "" = "${plugins}" ]; then
-	echo "Linking jar.."
+	echo "Linking jar (${jarfile}).."
 	ln -s ${jarfile} "./DMDirc.jar"
 else
-	echo "Copying jar.."
+	echo "Copying jar (${jarfile}).."
 	cp ${jarfile} "./DMDirc.jar"
 	
 	echo "Adding plugins to jar"
