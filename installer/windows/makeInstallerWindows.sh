@@ -53,7 +53,6 @@ SIGNCODE=`which signcode`
 
 if [ "" = "${SIGNCODE}" ]; then
 	echo "Signcode not found. EXE's will not be digitally signed."
-	exit 1;
 fi
 
 # Sign stuff!
