@@ -125,7 +125,7 @@ if [ "${isRelease}" != "" ]; then
 	fi
 fi
 
-if [ "" == "${jarfile}" ]; then
+if [ "" = "${jarfile}" ]; then
 	jarfile=${jarPath}"/dist/DMDirc.jar"
 	if [ ! -e ${jarPath}"/dist/DMDirc.jar" -o "${compileJar}" = "true" ]; then
 		echo "Creating jar.."
