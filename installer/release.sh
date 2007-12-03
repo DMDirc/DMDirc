@@ -135,19 +135,22 @@ ln -s ../../src/net
 # I don't know why, but -d doesn't nicely put ALL generated class files here,
 # just those that were in the dir of the java file that was requested for compile
 # So we specify each of the different ones we want built into the jar file here.
-${JAVAC} -d ./build com/dmdirc/installer/*.java
-${JAVAC} -d ./build com/dmdirc/installer/cliparser/*.java
-${JAVAC} -d ./build com/dmdirc/ui/swing/dialogs/wizard/*.java
-${JAVAC} -d ./build com/dmdirc/ui/interfaces/MainWindow.java
-${JAVAC} -d ./build com/dmdirc/ui/swing/MainFrame.java
-${JAVAC} -d ./build com/dmdirc/ui/swing/UIUtilities.java
-${JAVAC} -d ./build com/dmdirc/ui/swing/UIUtilities.java
-${JAVAC} -d ./build com/dmdirc/ui/swing/components/StandardDialog.java
-${JAVAC} -d ./build com/dmdirc/util/ListenerList.java
-${JAVAC} -d ./build com/dmdirc/util/WeakMapList.java
-${JAVAC} -d ./build com/dmdirc/util/WeakList.java
-${JAVAC} -d ./build net/miginfocom/layout/*.java
-${JAVAC} -d ./build net/miginfocom/swing/*.java
+FILELIST="com/dmdirc/installer/*.java"
+FILELIST=${FILELIST}" com/dmdirc/installer/cliparser/*.java"
+FILELIST=${FILELIST}" com/dmdirc/ui/swing/dialogs/wizard/*.java"
+FILELIST=${FILELIST}" com/dmdirc/ui/interfaces/MainWindow.java"
+FILELIST=${FILELIST}" com/dmdirc/ui/swing/MainFrame.java"
+FILELIST=${FILELIST}" com/dmdirc/ui/swing/UIUtilities.java"
+FILELIST=${FILELIST}" com/dmdirc/ui/swing/UIUtilities.java"
+FILELIST=${FILELIST}" com/dmdirc/ui/swing/components/StandardDialog.java"
+FILELIST=${FILELIST}" com/dmdirc/util/ListenerList.java"
+FILELIST=${FILELIST}" com/dmdirc/util/WeakMapList.java"
+FILELIST=${FILELIST}" com/dmdirc/util/WeakList.java"
+FILELIST=${FILELIST}" net/miginfocom/layout/*.java"
+FILELIST=${FILELIST}" net/miginfocom/swing/*.java"
+
+${JAVAC} -d ./build ${FILELIST}
+
 if [ $? -ne 0 ]; then
 	echo "================================================================"
 	echo "Building installer failed."
