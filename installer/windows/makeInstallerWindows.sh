@@ -95,6 +95,7 @@ compilerFlags=""
 BRANCH="0"
 plugins=""
 location="../../../"
+jarfile=""
 
 showHelp() {
 	echo "This will generate a DMDirc installer for a windows based system."
@@ -110,6 +111,7 @@ showHelp() {
 	echo "-u, --unsigned            Don't sign the exe"
 	echo "-t, --tag <tag>           Tag to add to final exe name to distinguish this build from a standard build"
 	echo "-f, --flags <flags>       Extra flags to pass to the compiler"	
+	echo "    --jar <file>          use <file> as DMDirc.jar"
 # This is not in the help cos its crappy really, and makes little/no difference to the
 # exe size unless debugging information is added using --flags, in which case the person
 # probably is Dataforce and knows about this flag anyway
@@ -126,6 +128,10 @@ while test -n "$1"; do
 		--plugins|-p)
 			shift
 			plugins=${1}
+			;;
+		--jar)
+			shift
+			jarfile=${1}
 			;;
 		--compile|-c)
 			compileJar="true"
@@ -186,28 +192,34 @@ if [ "${isRelease}" != "" ]; then
 	fi
 fi
 
-if [ ! -e ${jarPath}"/dist/DMDirc.jar" -o "${compileJar}" = "true" ]; then
-	echo "Creating jar.."
-	OLDPWD=${PWD}
-	cd ${jarPath}
-	if [ "${updateSVN}" = "true" ]; then
-		svn update
-	fi
-	rm -Rf build dist
-	ant jar
-	if [ ! -e "dist/DMDirc.jar" ]; then
-		echo "There was an error creating the .jar file. Aborting."
-		exit 0;
+if [ "" == ${jarfile} ]; then
+	if [ ! -e ${jarPath}"/dist/DMDirc.jar" -o "${compileJar}" = "true" ]; then
+		echo "Creating jar.."
+		OLDPWD=${PWD}
+		cd ${jarPath}
+		if [ "${updateSVN}" = "true" ]; then
+			svn update
+		fi
+		rm -Rf build dist
+		ant jar
+		if [ ! -e "dist/DMDirc.jar" ]; then
+			echo "There was an error creating the .jar file. Aborting."
+			exit 0;
+		fi;
+		cd ${OLDPWD}
 	fi;
-	cd ${OLDPWD}
+	jarfile=${jarPath}"/dist/DMDirc.jar"
+elif [ ! -e ${jarfile} ]; then
+	echo "Requested Jar file (${jarfile}) does not exist."
+	exit 1;
 fi;
 
 if [ "" = "${plugins}" ]; then
 	echo "Linking jar.."
-	ln -s ${jarPath}"/dist/DMDirc.jar" "./DMDirc.jar"
+	ln -s ${jarfile} "./DMDirc.jar"
 else
 	echo "Copying jar.."
-	cp ${jarPath}"/dist/DMDirc.jar" "./DMDirc.jar"
+	cp ${jarfile} "./DMDirc.jar"
 	
 	echo "Adding plugins to jar"
 	ln -s ${jarPath}"/plugins"

@@ -16,6 +16,7 @@ showHelp() {
 	echo "The following params are known:"
 	echo "---------------------"
 	echo "-b, --branch                       <release> is a branch"
+	echo "    --jar <file>                   Use <file> instead of compiling a jar."
 	echo "-p, --plugins <plugins>            Plugins to add to all the jars."
 	echo "-pl, --plugins-linux <plugins>     Plugins to linux installer."
 	echo "-pw, --plugins-windows <plugins>   Plugins to linux installer."
@@ -29,12 +30,17 @@ showHelp() {
 LAST=""
 OPT=""
 BRANCH=""
+JARFILE=""
 while test -n "$1"; do
 	LAST=${1}
 	case "$1" in
 		--plugins|-p)
 			shift
 			plugins="${1}"
+			;;
+		--jar)
+			shift
+			JARFILE="${1} "
 			;;
 		--plugins-linux|-pl)
 			shift
@@ -176,14 +182,14 @@ echo "================================================================"
 echo "Building linux installer"
 echo "================================================================"
 cd linux
-./makeInstallerLinux.sh ${OPT}-c -k ${BRANCH}${RELEASE} -p "${plugins} ${plugins_linux}"
+./makeInstallerLinux.sh ${OPT}${JARFILE}-c -k ${BRANCH}${RELEASE} -p "${plugins} ${plugins_linux}"
 cd ${THISDIR}
 
 echo "================================================================"
 echo "Building Windows installer"
 echo "================================================================"
 cd windows
-./makeInstallerWindows.sh ${OPT}-k -s ${BRANCH}${RELEASE} -p "${plugins} ${plugins_windows}"
+./makeInstallerWindows.sh ${OPT}${JARFILE}-k -s ${BRANCH}${RELEASE} -p "${plugins} ${plugins_windows}"
 cd ${THISDIR}
 
 MD5BIN=`which md5sum`

@@ -55,6 +55,7 @@ showHelp() {
 	echo "-b, --branch              Release in -r is a branch "
 	echo "-p, --plugins <plugins>   What plugins to add to the jar file"
 	echo "-c, --compile             Recompile the .jar file"
+	echo "    --jar <file>          use <file> as DMDirc.jar"
 	echo "-t, --tag <tag>           Tag to add to final exe name to distinguish this build from a standard build"
 	echo "-k, --keep                Keep the existing source tree when compiling"
 	echo "                          (don't svn update beforehand)"
@@ -70,11 +71,16 @@ finalTag=""
 BRANCH="0"
 plugins=""
 location="../../../"
+jarfile=""
 while test -n "$1"; do
 	case "$1" in
 		--plugins|-p)
 			shift
 			plugins=${1}
+			;;
+		--jar)
+			shift
+			jarfile=${1}
 			;;
 		--compile|-c)
 			compileJar="true"
@@ -119,28 +125,34 @@ if [ "${isRelease}" != "" ]; then
 	fi
 fi
 
-if [ ! -e ${jarPath}"/dist/DMDirc.jar" -o "${compileJar}" = "true" ]; then
-	echo "Creating jar.."
-	OLDPWD=${PWD}
-	cd ${jarPath}
-	if [ "${updateSVN}" = "true" ]; then
-		svn update
-	fi
-	rm -Rf build dist
-	ant jar
-	if [ ! -e "dist/DMDirc.jar" ]; then
-		echo "There was an error creating the .jar file. Aborting."
-		exit 0;
+if [ "" == ${jarfile} ]; then
+	if [ ! -e ${jarPath}"/dist/DMDirc.jar" -o "${compileJar}" = "true" ]; then
+		echo "Creating jar.."
+		OLDPWD=${PWD}
+		cd ${jarPath}
+		if [ "${updateSVN}" = "true" ]; then
+			svn update
+		fi
+		rm -Rf build dist
+		ant jar
+		if [ ! -e "dist/DMDirc.jar" ]; then
+			echo "There was an error creating the .jar file. Aborting."
+			exit 0;
+		fi;
+		cd ${OLDPWD}
 	fi;
-	cd ${OLDPWD}
+	jarfile=${jarPath}"/dist/DMDirc.jar"
+elif [ ! -e ${jarfile} ]; then
+	echo "Requested Jar file (${jarfile}) does not exist."
+	exit 1;
 fi;
 
 if [ "" = "${plugins}" ]; then
 	echo "Linking jar.."
-	ln -s ${jarPath}"/dist/DMDirc.jar" "./DMDirc.jar"
+	ln -s ${jarfile} "./DMDirc.jar"
 else
 	echo "Copying jar.."
-	cp ${jarPath}"/dist/DMDirc.jar" "./DMDirc.jar"
+	cp ${jarfile} "./DMDirc.jar"
 	
 	echo "Adding plugins to jar"
 	ln -s ${jarPath}"/plugins"
