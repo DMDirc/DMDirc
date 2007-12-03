@@ -108,9 +108,11 @@ public final class ConfigManager extends ConfigSource implements Serializable,
     public String getOption(final String domain, final String option) {
         doStats(domain, option);
         
-        for (Identity source : sources) {
-            if (source.hasOption(domain, option)) {
-                return source.getOption(domain, option);
+        synchronized (sources) {
+            for (Identity source : sources) {
+                if (source.hasOption(domain, option)) {
+                    return source.getOption(domain, option);
+                }
             }
         }
         
@@ -122,9 +124,11 @@ public final class ConfigManager extends ConfigSource implements Serializable,
     public boolean hasOption(final String domain, final String option) {
         doStats(domain, option);
         
-        for (Identity source : sources) {
-            if (source.hasOption(domain, option)) {
-                return true;
+        synchronized (sources) {
+            for (Identity source : sources) {
+                if (source.hasOption(domain, option)) {
+                    return true;
+                }
             }
         }
         
@@ -139,9 +143,11 @@ public final class ConfigManager extends ConfigSource implements Serializable,
     public Set<String> getOptions() {
         final HashSet<String> res = new HashSet<String>();
         
-        for (Identity source : sources) {
-            for (String key : source.getOptions()) {
-                res.add(key);
+        synchronized (sources) {
+            for (Identity source : sources) {
+                for (String key : source.getOptions()) {
+                    res.add(key);
+                }
             }
         }
         
@@ -173,7 +179,9 @@ public final class ConfigManager extends ConfigSource implements Serializable,
      * @param identity The identity to be removed
      */
     public void removeIdentity(final Identity identity) {
-        sources.remove(identity);
+        synchronized (sources) {
+            sources.remove(identity);
+        }
     }
     
     /**
@@ -207,9 +215,11 @@ public final class ConfigManager extends ConfigSource implements Serializable,
         }
         
         if (comp != null && comp.equalsIgnoreCase(identity.getTarget().getData())) {
-            sources.add(identity);
-            identity.addListener(this);
-            Collections.sort(sources);
+            synchronized (sources) {
+                sources.add(identity);
+                identity.addListener(this);
+                Collections.sort(sources);
+            }
         }
     }
     
@@ -237,7 +247,7 @@ public final class ConfigManager extends ConfigSource implements Serializable,
      * @return This config manager's sources.
      */
     public List<Identity> getSources() {
-        return sources;
+        return new ArrayList<Identity>(sources);
     }
     
     /**
