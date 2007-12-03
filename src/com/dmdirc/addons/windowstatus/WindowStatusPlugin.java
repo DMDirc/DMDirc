@@ -201,6 +201,8 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 					}
 				}
 			}
+		} else {
+			textString.append("???");
 		}
 		label.setText(textString.toString());
 	}
