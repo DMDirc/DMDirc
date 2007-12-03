@@ -43,9 +43,20 @@ rm -Rf $MYDIR/build $MYDIR/dist
 # The date/svn prefix to add to the end of the file names of stuff
 FILEDATA=`date +_%Y%m%d`_${SVNREV}
 
+# Build plugins/jar
 $ANT -buildfile $MYDIR/build.xml -k
+
+# Build installers
+if [ -e "$MYDIR/dist/DMDirc.jar" ]; then
+	cd "${MYDIR}/installer"
+	./release.sh --jar "${MYDIR}/dist/DMDirc.jar" --opt "--tag ${FILEDATA}" trunk
+	cd "${MYDIR}"
+fi;
+
 if [ -f $MYDIR/dist/DMDirc.jar ]; then
 	FILENAME=DMDirc${FILEDATA}.jar
+	mv "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.exe" "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.exe"
+	mv "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.run" "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.run"
 	cp $MYDIR/dist/DMDirc.jar /home/dmdirc/www/nightly/$FILENAME
 	${ZIP} -r9 /home/dmdirc/www/nightly/Plugins${FILEDATA}.zip plugins
 	if [ -e $WWWDIR/nightly/DMDirc_latest.jar ]; then
@@ -54,8 +65,17 @@ if [ -f $MYDIR/dist/DMDirc.jar ]; then
 	if [ -e $WWWDIR/nightly/Plugins_latest.zip ]; then
 		rm $WWWDIR/nightly/Plugins_latest.zip
 	fi
+	if [ -e $WWWDIR/nightly/DMDirc-Setup_latest.exe ]; then
+		rm $WWWDIR/nightly/DMDirc-Setup_latest.exe
+	fi
+	if [ -e $WWWDIR/nightly/DMDirc-Setup_latest.run ]; then
+		rm $WWWDIR/nightly/DMDirc-Setup_latest.run
+	fi
 	ln -s $WWWDIR/nightly/$FILENAME $WWWDIR/nightly/DMDirc_latest.jar
 	ln -s $WWWDIR/nightly/Plugins${FILEDATA}.zip $WWWDIR/nightly/Plugins_latest.zip
+	ln -s "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.run" $WWWDIR/nightly/DMDirc-Setup_latest.run
+	ln -s "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.exe" $WWWDIR/nightly/DMDirc-Setup_latest.exe
+	cd ${MYDIR}
 	/bin/sh $MYDIR/oblong.sh "Nightly Build" "Build Successful";
 	/bin/sh $MYDIR/DoReports.sh
 else
