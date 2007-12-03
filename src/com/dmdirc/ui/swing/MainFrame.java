@@ -145,19 +145,19 @@ public final class MainFrame extends JFrame implements WindowListener,
     private final Map<JMenuItem, String> pluginList;
     /** Show version? */
     private boolean showVersion;
+    /** Status bar. */
+    private SwingStatusBar statusBar;
 
     /**
      * Creates new form MainFrame.
-     *
-     * @param statusBar The status bar to use.
      */
-    protected MainFrame(final SwingStatusBar statusBar) {
+    protected MainFrame() {
         super();
 
         pluginList =
                 new HashMap<JMenuItem, String>();
         
-        initComponents(statusBar);
+        initComponents();
         initKeyHooks();
 
         setTitle(getTitlePrefix());
@@ -403,6 +403,15 @@ public final class MainFrame extends JFrame implements WindowListener,
     public JDesktopPane getDesktopPane() {
         return desktopPane;
     }
+    
+    /**
+     * Returns the status bar for the frame.
+     * 
+     * @return Status bar.
+     */
+    public SwingStatusBar getStatusBar() {
+        return statusBar;
+    }
 
     /**
      * Checks the current state of the internal frames, and configures the
@@ -491,16 +500,15 @@ public final class MainFrame extends JFrame implements WindowListener,
 
     /**
      * Initialises the components for this frame.
-     *
-     * @param statusBar The status bar to use
      */
-    private void initComponents(final SwingStatusBar statusBar) {
+    private void initComponents() {
         final JSplitPane mainSplitPane = new JSplitPane();
         final JPanel panel = new JPanel();
         
         frameManagerPanel = new JPanel();
         desktopPane = new JDesktopPane();
         desktopPane.setBackground(new Color(238, 238, 238));
+        statusBar = new SwingStatusBar();
         
         initFrameManagers();
 

@@ -970,6 +970,15 @@ public final class Server extends WritableFrameContainer implements Serializable
             return super.processNotificationArg(arg, args);
         }
     }
+    
+    /**
+     * Retusnt the list of invites for this server.
+     * 
+     * @return Invite list
+     */
+    public List<Invite> getInvites() {
+        return invites;
+    }
 
     // -------------------------------------------------- PARSER CALLBACKS -----
 

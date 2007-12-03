@@ -39,6 +39,7 @@ import com.dmdirc.updater.UpdateChecker.STATE;
 import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -78,6 +79,8 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     private transient TimerTask messageTimer;
     /** Currently showing error level. */
     private ErrorLevel errorLevel;
+    /** Invite label. */
+    private InviteLabel inviteLabel;
 
     /**
      * Creates a new instance of SwingStatusBar.
@@ -88,6 +91,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         messageLabel = new JLabel(DEFAULT_MESSAGE);
         errorLabel = new JLabel(DEFAULT_ICON);
         updateLabel = new JLabel();
+        inviteLabel = new InviteLabel();
 
         messageLabel.setBorder(BorderFactory.createEtchedBorder());
         errorLabel.setBorder(BorderFactory.createEtchedBorder());
@@ -170,7 +174,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     /** {@inheritDoc} */
     @Override
     public void fatalError(final ProgramError error) {
-        //Ignore
+    //Ignore
     }
 
     /** {@inheritDoc} */
@@ -182,7 +186,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     /** {@inheritDoc} */
     @Override
     public void errorStatusChanged(final ProgramError error) {
-        //Ignore
+    //Ignore
     }
 
     /** Checks all the errors for the most significant error. */
@@ -207,25 +211,25 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     /** {@inheritDoc} */
     @Override
     public void mousePressed(final MouseEvent mouseEvent) {
-        //Ignore.
+    //Ignore.
     }
 
     /** {@inheritDoc} */
     @Override
     public void mouseReleased(final MouseEvent mouseEvent) {
-        //Ignore.
+    //Ignore.
     }
 
     /** {@inheritDoc} */
     @Override
     public void mouseEntered(final MouseEvent mouseEvent) {
-        //Ignore.
+    //Ignore.
     }
 
     /** {@inheritDoc} */
     @Override
     public void mouseExited(final MouseEvent mouseEvent) {
-        //Ignore.
+    //Ignore.
     }
 
     /** {@inheritDoc} */
@@ -243,10 +247,14 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     /** {@inheritDoc} */
     @Override
     public void addComponent(final Component component) {
-        remove(errorLabel);
-        add(component, "sgy components, hmax 20, hmin 20");
-        add(errorLabel, "sgy components, hmax 20, hmin 20");
-        validate();
+        if (!Arrays.asList(getComponents()).contains(component)) {
+            remove(errorLabel);
+            remove(inviteLabel);
+            add(component, "sgy components, hmax 20, hmin 20");
+            add(inviteLabel, "sgy components, hmax 20, hmin 20");
+            add(errorLabel, "sgy components, hmax 20, hmin 20");
+            validate();
+        }
     }
 
     /** {@inheritDoc} */

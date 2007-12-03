@@ -68,9 +68,7 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public final class SwingController implements UIController {
 
-    /**
-     * Singleton instance of MainFrame.
-     */
+    /** Singleton instance of MainFrame. */
     private static MainFrame me;
     /** Status bar. */
     private SwingStatusBar statusBar;
@@ -85,21 +83,13 @@ public final class SwingController implements UIController {
     public synchronized MainFrame getMainWindow() {
         if (me == null) {
             try {
-                SwingUtilities.invokeLater(new Runnable() {
-
-                    /** {@inheritDoc} */
-                    @Override
-                    public void run() {
-                        statusBar =
-                                new SwingStatusBar();
-                    }
-                });
                 SwingUtilities.invokeAndWait(new Runnable() {
 
                     /** {@inheritDoc} */
                     @Override
                     public void run() {
-                        me = new MainFrame(statusBar);
+                        me = new MainFrame();
+                        statusBar = me.getStatusBar();
                     }
                 });
                 SwingUtilities.invokeLater(new Runnable() {
@@ -269,12 +259,18 @@ public final class SwingController implements UIController {
     /** {@inheritDoc} */
     @Override
     public Window getActiveWindow() {
+        if (me == null) {
+            return null;
+        }
         return me.getActiveFrame();
     }
 
     /** {@inheritDoc} */
     @Override
     public Server getActiveServer() {
+        if (me == null) {
+            return null;
+        }
         if (me.getActiveFrame() == null) {
             return null;
         } else {
