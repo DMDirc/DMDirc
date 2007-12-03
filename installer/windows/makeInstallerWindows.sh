@@ -216,13 +216,13 @@ fi;
 
 if [ "" = "${plugins}" ]; then
 	echo "Linking jar (${jarfile}).."
-	ln -s ${jarfile} "./DMDirc.jar"
+	ln -sf ${jarfile} "./DMDirc.jar"
 else
 	echo "Copying jar (${jarfile}).."
 	cp ${jarfile} "./DMDirc.jar"
 	
 	echo "Adding plugins to jar"
-	ln -s ${jarPath}"/plugins"
+	ln -sf ${jarPath}"/plugins"
 	pluginList=""
 	for plugin in ${plugins}; do
 		pluginList=${pluginList}" plugins/${plugin}"
@@ -261,7 +261,7 @@ fi
 echo "Compressing files.."
 
 if [ -e "../common/installer.jar" ]; then
-	ln -s ../common/installer.jar ./installer.jar
+	ln -sf ../common/installer.jar ./installer.jar
 	FILES="${FILES} installer.jar"
 	DELETEFILES="${DELETEFILES} installer.jar"
 else
@@ -269,7 +269,7 @@ else
 fi 
 
 if [ -e ${jarPath}"/src/com/dmdirc/res/icon.ico" ]; then
-	ln -s ${jarPath}"/src/com/dmdirc/res/icon.ico" ./icon.ico
+	ln -sf ${jarPath}"/src/com/dmdirc/res/icon.ico" ./icon.ico
 	FILES="${FILES} icon.ico"
 	DELETEFILES="${DELETEFILES} icon.ico"
 fi
@@ -290,17 +290,17 @@ else
 fi
 
 if [ -e "${DOCSDIR}/README.TXT" ]; then
-	ln -s "${DOCSDIR}/README.TXT" .
+	ln -sf "${DOCSDIR}/README.TXT" .
 	FILES="${FILES} README.TXT"
 	DELETEFILES="${DELETEFILES} README.TXT"
 fi
 
 if [ -e "${DOCSDIR}/CHANGES.TXT" ]; then
-	ln -s "${DOCSDIR}/CHANGES.TXT" .
+	ln -sf "${DOCSDIR}/CHANGES.TXT" .
 	FILES="${FILES} CHANGES.TXT"
 	DELETEFILES="${DELETEFILES} CHANGES.TXT"
 elif [ -e "${DOCSDIR}/CHANGELOG.TXT" ]; then
-	ln -s "${DOCSDIR}/CHANGELOG.TXT" .
+	ln -sf "${DOCSDIR}/CHANGELOG.TXT" .
 	FILES="${FILES} CHANGELOG.TXT"
 	DELETEFILES="${DELETEFILES} CHANGELOG.TXT"
 fi
@@ -313,7 +313,7 @@ if [ -e "${jarPath}/launcher/windows" ]; then
 	cd ${olddir}
 	# Now add to file list.
 	for thisfile in `ls -1 ${jarPath}/launcher/windows/*.exe`; do
-		ln -s "${jarPath}/launcher/windows/"${thisfile} .
+		ln -sf "${jarPath}/launcher/windows/"${thisfile} .
 		FILES="${FILES} ${thisfile}"
 	done
 fi
