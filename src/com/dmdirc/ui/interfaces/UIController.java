@@ -166,4 +166,9 @@ public interface UIController {
      */
     void showURLDialog(final URI url);
     
+    /**
+     * Show feedback nag.
+     */
+    void showFeedbackNag();
+    
 }

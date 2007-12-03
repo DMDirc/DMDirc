@@ -37,6 +37,8 @@ import com.dmdirc.updater.UpdateChannel;
 import com.dmdirc.updater.UpdateChecker;
 
 import java.awt.GraphicsEnvironment;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Main class, handles initialisation.
@@ -65,6 +67,11 @@ public final class Main {
      * users will be prompted to re-extract them.
      */
     private static final int ADDON_REVISION = 6;
+    
+    /**
+     * Feedback nag delay.
+     */
+    private static final int FEEDBACK_DELAY = 30 * 60 * 1000;
     
     /**
      * The UI to use for the client.
@@ -110,11 +117,18 @@ public final class Main {
         
         getUI().getMainWindow();
         
-        if (!IdentityManager.getGlobalConfig().hasOption("general", "firstRun")
-        || IdentityManager.getGlobalConfig().getOptionBool("general", "firstRun", false)) {
+        if (IdentityManager.getGlobalConfig().getOptionBool("general", "firstRun", true)) {
             IdentityManager.getConfigIdentity().setOption("general", "firstRun", "false");
             IdentityManager.getConfigIdentity().setOption("general", "addonrevision", ADDON_REVISION);
             getUI().showFirstRunWizard();
+            new Timer().schedule(new TimerTask(){
+
+                /** {@inheritDoc} */
+                @Override
+                public void run() {
+                    getUI().showFeedbackNag();
+                }
+            }, FEEDBACK_DELAY);
         } else if (IdentityManager.getGlobalConfig().getOptionInt("general", "addonrevision", -1) < ADDON_REVISION) {
             IdentityManager.getConfigIdentity().setOption("general", "addonrevision", ADDON_REVISION);
             getUI().showMigrationWizard();

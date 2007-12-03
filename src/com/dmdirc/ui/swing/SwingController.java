@@ -42,6 +42,7 @@ import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.interfaces.StatusBar;
 import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.ui.swing.components.FeedbackNag;
 import com.dmdirc.ui.swing.components.SwingPreferencesPanel;
 import com.dmdirc.ui.swing.components.SwingStatusBar;
 import com.dmdirc.ui.swing.dialogs.SwingUpdaterDialog;
@@ -285,5 +286,18 @@ public final class SwingController implements UIController {
     @Override
     public void showURLDialog(final URI url) {
         URLDialog.showURLDialog(url);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void showFeedbackNag() {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                new FeedbackNag();
+            }
+        });
     }
 }

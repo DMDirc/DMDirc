@@ -162,5 +162,11 @@ public final class DummyController implements UIController {
     public void showURLDialog(final URI url) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public void showFeedbackNag() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     
 }
