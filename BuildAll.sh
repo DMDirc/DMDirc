@@ -37,14 +37,11 @@ mv ${MYDIR}/src/com/dmdirc/Main.java.tmp ${MYDIR}/src/com/dmdirc/Main.java
 awk '{gsub(/int RELEASE_DATE = 0/,"int RELEASE_DATE = '`date +%Y%m%d`'");print}' ${MYDIR}/src/com/dmdirc/Main.java > ${MYDIR}/src/com/dmdirc/Main.java.tmp
 mv ${MYDIR}/src/com/dmdirc/Main.java.tmp ${MYDIR}/src/com/dmdirc/Main.java
 
-# This makes sure we have a clean build with no stale class files, it just takes longer
-rm -Rf $MYDIR/build $MYDIR/dist
-
 # The date/svn prefix to add to the end of the file names of stuff
 FILEDATA=`date +_%Y%m%d`_${SVNREV}
 
 # Build plugins/jar
-$ANT -buildfile $MYDIR/build.xml -k
+$ANT -buildfile $MYDIR/build.xml -k clean jar
 
 # Build installers
 if [ -e "$MYDIR/dist/DMDirc.jar" ]; then
