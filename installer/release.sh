@@ -40,7 +40,7 @@ while test -n "$1"; do
 			;;
 		--jar)
 			shift
-			JARFILE="${1} "
+			JARFILE="--jar ${1} "
 			;;
 		--plugins-linux|-pl)
 			shift
