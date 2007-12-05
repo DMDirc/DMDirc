@@ -71,59 +71,62 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource, Prefere
     /** {@inheritDoc} */
     @Override    
     public String getArtist() {
-        String result = information.containsKey("artist") ? information.get("artist")
-                : "unknown";
+        return information.containsKey("artist") ? information.get("artist") :
+                getFallbackArtist();
+    }
+     
+    private String getFallbackArtist() {
+        String result = "unknown";
         
-        // Artist is unknown, lets guess using the filename
-        if (result.equals("unknown") && information.containsKey("playlist_current")) {
+        if (information.containsKey("playlist_current")) {
             try {
                 final int item = Integer.parseInt(information.get("playlist_current"));
-                String[] bits = information.get("playlist_item_"+item).split(File.separator);
+                String[] bits = information.get("playlist_item_" + item).split(File.separator);
                 result = bits[bits.length-1];
                 bits = result.split("-");
                 if (bits.length > 1) {
                     result = bits[0];
                 } else {
                     // Whole filename is the title, so no artist is known.
-                    result = "";
+                    result = "unknown";
                 }
             } catch (NumberFormatException nfe) {
+                // DO nothing
             }
         }
+        
         return result;
     }
 
     /** {@inheritDoc} */
     @Override    
     public String getTitle() {
-        String result = information.containsKey("title") ? information.get("title")
-                : "unknown";
+        return information.containsKey("title") ? information.get("title")
+                : getFallbackTitle();
+    }
+    
+    private String getFallbackTitle() {
+        String result = "unknown";
         
         // Title is unknown, lets guess using the filename
-        if (result.equals("unknown") && information.containsKey("playlist_current")) {
+        if (information.containsKey("playlist_current")) {
             try {
                 final int item = Integer.parseInt(information.get("playlist_current"));
-                String[] bits = information.get("playlist_item_"+item).split(File.separator);
-                result = bits[bits.length-1];
-                bits = result.split("-");
-                if (bits.length > 1) {
-                    result = bits[1];
-                } else {
-                    // Whole filename is the title, so result is already correct
+                result = information.get("playlist_item_" + item);
+                result = result.substring(result.lastIndexOf(File.separatorChar),
+                        result.lastIndexOf('.'));
+                // The above will break for file names that don't contain full
+                // stops. Blame Dataforce.
+                
+                int offset = result.indexOf('-');
+                if (offset > -1) {
+                    result = result.substring(result.indexOf('-') + 1).trim();
                 }
-                // Now to remove the file extension
-                bits = result.split("\\.");
-                StringBuilder res = new StringBuilder();
-                for (int i = 0; i < bits.length-1; i++) {
-                    if (res.length() > 0) {
-                        res.append(".");
-                    }
-                    res.append(bits[i]);
-                }
-                result = res.toString();
             } catch (NumberFormatException nfe) {
+                // Do nothing
             }
         }
+        
         return result;
     }
 
