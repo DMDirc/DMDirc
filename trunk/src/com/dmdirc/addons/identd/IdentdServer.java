@@ -1,0 +1,150 @@
+/*
+ * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package com.dmdirc.addons.identd;
+
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.logger.ErrorLevel;
+
+import java.net.Socket;
+import java.net.ServerSocket;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * The IdentdServer watches over the ident port when required
+ *
+ * @author Shane "Dataforce" Mc Cormack
+ * @version $Id: IdentdServer.java 969 2007-04-30 18:38:20Z ShaneMcC $
+ */
+public final class IdentdServer implements Runnable {
+	/** The IdentdPlugin that owns this Server */
+	private final IdentdPlugin myIdentdPlugin;
+	/** The Thread in use for this server */
+	private volatile Thread myThread = null;
+	/** The current socket in use for this server */
+	private ServerSocket serverSocket;
+	/** Arraylist of all the clients we have */
+	private final List<IdentClient> clientList = new ArrayList<IdentClient>();
+	
+	/**
+	 * Create the IdentdServer
+	 *
+	 * @param plugin The plugin that owns this Server
+	 */
+	public IdentdServer(final IdentdPlugin plugin) {
+		myIdentdPlugin = plugin;
+	}
+	
+	/**
+	 * Run this IdentdServer
+	 */
+	public void run() {
+		Thread thisThread = Thread.currentThread();
+		while (myThread == thisThread) {
+			try {
+				Socket clientSocket = serverSocket.accept();
+				IdentClient client = new IdentClient(this, clientSocket);
+				addClient(client);
+			} catch (IOException e) {
+				if (myThread == thisThread) {
+					Logger.userError(ErrorLevel.HIGH ,"Accepting client failed: "+e.getMessage());
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Add an IdentClient to the clientList
+	 *
+	 * @param client Client to add
+	 */
+	public void addClient(final IdentClient client) {
+		synchronized (clientList) {
+			clientList.add(client);
+		}
+	}
+	
+	/**
+	 * Remove an IdentClient from the clientList
+	 *
+	 * @param client Client to remove
+	 */
+	public void delClient(final IdentClient client) {
+		synchronized (clientList) {
+			for (int i = 0; i < clientList.size() ; ++i) {
+				if (clientList.get(i) == client) {
+					clientList.remove(i);
+					break;
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Check if the server is currently running
+	 *
+	 * @return True if the server is running
+	 */
+	public boolean isRunning() {
+		return (myThread != null);
+	}
+	
+	/**
+	 * Start the ident server
+	 */
+	public void startServer() {
+		if (myThread == null) {
+			try {
+				final int identPort = IdentityManager.getGlobalConfig().getOptionInt(IdentdPlugin.getDomain(), "advanced.port", 113);
+				serverSocket = new ServerSocket(identPort);
+				myThread = new Thread(this);
+				myThread.start();
+			} catch (IOException e) {
+				Logger.userError(ErrorLevel.MEDIUM ,"Unable to start identd server: "+e.getMessage());
+			}
+		}
+	}
+	
+	/**
+	 * Stop the ident server
+	 */
+	public void stopServer() {
+		if (myThread != null) {
+			Thread tmpThread = myThread;
+			myThread = null;
+			if (tmpThread != null) { tmpThread.interrupt(); }
+			try { serverSocket.close(); } catch (IOException e) { }
+			
+			synchronized (clientList) {
+				for (int i = 0; i < clientList.size() ; ++i) {
+					clientList.get(i).close();
+				}
+				clientList.clear();
+			}
+		}
+	}
+	
+}
+

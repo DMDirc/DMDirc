@@ -1,0 +1,14 @@
+# Default mode settings for Asuka
+# b,k,l,imnpstrDdcCNu
+
+identity.name = Asuka mode aliases
+identity.ircd = asuka
+
+server.modeD = Auditorium mode
+server.moded = Auditorium mode
+server.modeC = No channel CTCPs
+server.modeN = No channel notices
+server.modeu = No quit messages
+
+server.umodex = Hide hostname
+server.umodeR = Only registered users may query

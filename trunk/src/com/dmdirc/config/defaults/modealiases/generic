@@ -1,0 +1,46 @@
+# RFC-specified channel modes
+
+identity.name = Generic mode aliases
+identity.globaldefault = true
+identity.modealiasversion = 2
+
+# -- 1459 --
+server.modeb = Ban
+server.modei = Invite only
+server.modek = Channel key
+server.model = User limit
+server.modem = Moderated
+server.moden = No external messages
+server.modep = Private
+server.modes = Secret
+server.modet = Only ops can set topic
+
+# -- 2811 --
+server.modea = Anonymous chat
+server.modee = Exception
+server.modeI = Invite
+server.modeq = Quiet
+#server.moder = Reop users
+
+# Standard user modes, I can't believe they're not in the RFCs. Maybe I missed them.
+server.modeo = Op
+server.modeh = Half-op
+server.modev = Voice
+
+# Defacto standards
+server.modec = No formatting
+server.modeM = Mute non-registered users
+server.modeO = IRCops only
+server.moder = Registered users only
+server.modeR = Registered users only
+server.modez = SSL users only
+
+# Umodes
+server.umodea = Away
+server.umoded = Deaf
+server.umodei = Invisible
+server.umodes = Receive server notices
+server.umodew = Receive wallops
+server.umodeo = IRC Operator
+server.umodeO = Local IRC Operator
+server.umoder = Restricted connection
