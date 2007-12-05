@@ -19,7 +19,7 @@
 		<propertyregex property="pluginjar.name" input="${target.file}" regexp=".*[\\/](.*)$" select="\1.jar" casesensitive="false" />
 		<propertyregex property="folder.name" input="${target.file}" regexp=".*${build.classes.dir}/(.*)$" select="\1" casesensitive="false" />
 		<if>
-			<available file="${build.classes.dir}/${folder.name}/.ignore"/>
+			<available file="${src.dir}/${folder.name}/.ignore"/>
 			<then>
 					<echo message="Not building: ${folder.name}" />
 			</then>
