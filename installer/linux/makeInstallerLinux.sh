@@ -149,13 +149,13 @@ fi;
 
 if [ "" = "${plugins}" ]; then
 	echo "Linking jar (${jarfile}).."
-	ln -s ${jarfile} "./DMDirc.jar"
+	ln -sf ${jarfile} "./DMDirc.jar"
 else
 	echo "Copying jar (${jarfile}).."
 	cp ${jarfile} "./DMDirc.jar"
 	
 	echo "Adding plugins to jar"
-	ln -s ${jarPath}"/plugins"
+	ln -sf ${jarPath}"/plugins"
 	pluginList=""
 	for plugin in ${plugins}; do
 		pluginList=${pluginList}" plugins/${plugin}"
@@ -181,14 +181,14 @@ else
 fi 
 
 if [ -e "../common/installer.jar" ]; then
-	ln -s ../common/installer.jar ./installer.jar
+	ln -sf ../common/installer.jar ./installer.jar
 	FILES="${FILES} installer.jar"
 else
 	echo "[WARNING] Creating installer-less archive - relying on setup.sh"
 fi 
 
 if [ -e ${jarPath}"/src/com/dmdirc/res/source/logo.svg" ]; then
-	ln -s ${jarPath}"/src/com/dmdirc/res/source/logo.svg" ./icon.svg
+	ln -sf ${jarPath}"/src/com/dmdirc/res/source/logo.svg" ./icon.svg
 	FILES="${FILES} icon.svg"
 fi
 
@@ -199,20 +199,20 @@ else
 fi
 
 if [ -e "${DOCSDIR}/README.TXT" ]; then
-	ln -s "${DOCSDIR}/README.TXT" .
+	ln -sf "${DOCSDIR}/README.TXT" .
 	FILES="${FILES} README.TXT"
 fi
 
 if [ -e "${DOCSDIR}/CHANGES.TXT" ]; then
-	ln -s "${DOCSDIR}/CHANGES.TXT" .
+	ln -sf "${DOCSDIR}/CHANGES.TXT" .
 	FILES="${FILES} CHANGES.TXT"
 elif [ -e "${DOCSDIR}/CHANGELOG.TXT" ]; then
-	ln -s "${DOCSDIR}/CHANGELOG.TXT" .
+	ln -sf "${DOCSDIR}/CHANGELOG.TXT" .
 	FILES="${FILES} CHANGELOG.TXT"
 fi
 
 if [ -e "${jarPath}/launcher/linux" ]; then
-	ln -s ${jarPath}/launcher/linux/DMDirc.sh .
+	ln -sf ${jarPath}/launcher/linux/DMDirc.sh .
 	FILES="${FILES} DMDirc.sh"
 fi
 

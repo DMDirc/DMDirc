@@ -130,8 +130,8 @@ echo "Building Installer JAR "
 echo "================================================================"
 mkdir -p installer_temp/build
 cd installer_temp
-ln -s ../../src/com
-ln -s ../../src/net
+ln -sf ../../src/com
+ln -sf ../../src/net
 # I don't know why, but -d doesn't nicely put ALL generated class files here,
 # just those that were in the dir of the java file that was requested for compile
 # So we specify each of the different ones we want built into the jar file here.
