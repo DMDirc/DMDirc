@@ -22,12 +22,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
 
 /**
  * Invite label.
@@ -47,6 +49,8 @@ public class InviteLabel extends JLabel implements InviteListener,
     private final MapList<Server, Invite> inviteList;
     /** Invite popup menu. */
     private JPopupMenu menu;
+    /** Dismiss invites menu item. */
+    private JMenuItem dismiss;
 
     /**
      * Instantiates a new invite label.
@@ -59,6 +63,20 @@ public class InviteLabel extends JLabel implements InviteListener,
 
         inviteList = new MapList<Server, Invite>();
         menu = new JPopupMenu();
+        dismiss = new JMenuItem("Dismiss all invites");
+        dismiss.addActionListener(new java.awt.event.ActionListener() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                for (Server server : inviteList.keySet()) {
+                    final List<Invite> invites = new ArrayList<Invite>(inviteList.values(server));
+                    for (Invite invite : invites) {
+                        invite.getServer().removeInvite(invite);
+                    }
+                }
+            }
+        });
 
         for (Server server : ServerManager.getServerManager().getServers()) {
             inviteList.add(server, server.getInvites());
@@ -81,6 +99,8 @@ public class InviteLabel extends JLabel implements InviteListener,
         for (Invite invite : invites) {
             menu.add(new JMenuItem(new InviteAction(invite)));
         }
+        menu.add(new JSeparator());
+        menu.add(dismiss);
     }
 
     /**
