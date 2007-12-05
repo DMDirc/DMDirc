@@ -26,11 +26,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.geom.Rectangle2D;
 import java.awt.font.LineMetrics;
 import java.util.ArrayList;
 
+import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.SwingConstants;
 
@@ -250,7 +251,11 @@ public class JWrappingLabel extends JComponent {
 				// otherwise we just update top
 				if (!getPreferred) {
 					LineMetrics metrics = g.getFont().getLineMetrics(drawLine, g2.getFontRenderContext());
-				
+
+					final Map desktopHints = (Map) Toolkit.getDefaultToolkit().getDesktopProperty("awt.font.desktophints");
+					if (desktopHints != null) {
+						g2.addRenderingHints(desktopHints);
+					}
 					// However, we need to take into account the overhang in characters like y and g
 					int y = top + (int)Math.round(bounds.getHeight() - metrics.getDescent());
 					
