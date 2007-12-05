@@ -148,7 +148,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 							if (i == 1) { bit = bit.substring(1); }
 							if (bit.endsWith("\"")) {
 								filenameBits.append(" "+bit.substring(bit.length()));
-								return;
+								break;
 							} else {
 								filenameBits.append(" "+bit);
 							}
