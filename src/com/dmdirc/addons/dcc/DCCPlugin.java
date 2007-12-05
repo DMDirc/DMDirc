@@ -147,8 +147,8 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 							String bit = ctcpData[i];
 							if (i == 1) { bit = bit.substring(1); }
 							if (bit.endsWith("\"")) {
-								filenameBits.append(" "+bit.substring(bit.length()));
-								return;
+								filenameBits.append(" "+bit.substring(0, bit.length()-1));
+								break;
 							} else {
 								filenameBits.append(" "+bit);
 							}

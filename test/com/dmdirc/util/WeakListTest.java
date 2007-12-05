@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,28 +20,31 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.components.validating;
+package com.dmdirc.util;
 
-/**
- * Validator interface.
- * 
- * @param V Type to validate
- */
-public interface Validator<V> {
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-    /**
-     * Validates the object.
-     * 
-     * @param object Object to validate
-     * 
-     * @return true iif the object is correct
-     */
-    boolean validate(final V object);
-    
-    /**
-     * Returns the reason the validation failed.
-     * 
-     * @return Reason for validation failure
-     */
-    String getFailureReason();
+public class WeakListTest extends junit.framework.TestCase {
+
+    @Test
+    public void testBasics() {
+        final WeakList<String> test = new WeakList<String>();
+        assertTrue(test.isEmpty());
+        
+        test.add("abcdef");
+        test.add("123");
+        
+        assertEquals(2, test.size());
+        assertTrue(test.get(0).equals("abcdef"));
+        assertTrue(test.contains("123"));
+        assertFalse(test.isEmpty());
+        
+        test.remove("abcdef");
+        assertFalse(test.contains("abcdef"));
+        
+        test.remove("123");
+        assertTrue(test.isEmpty());
+    }
+
 }

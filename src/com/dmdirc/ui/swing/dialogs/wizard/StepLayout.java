@@ -22,15 +22,19 @@
 
 package com.dmdirc.ui.swing.dialogs.wizard;
 
-import java.awt.CardLayout;
-import java.lang.reflect.Field;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.awt.LayoutManager2;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Adjusted Card layout.
  */
-public class StepLayout extends CardLayout {
+public class StepLayout implements LayoutManager2, Serializable {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -38,8 +42,16 @@ public class StepLayout extends CardLayout {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 2;
+    /** Parent container. */
+    private Container parent;
     /** Cards vector. */
-    Vector elements = null;
+    private final List<Step> steps;
+    /** Current step. */
+    private int currentStep;
+    /** Vertical gap. */
+    private int vGap;
+    /** Horiontal gap. */
+    private int hGap;
 
     /**
      * Instantiates a new step layout.
@@ -47,29 +59,42 @@ public class StepLayout extends CardLayout {
     public StepLayout() {
         this(0, 0);
     }
+    
+    /**
+     * Instantiates a new step layout.
+     * 
+     * @param parent Parent component
+     */
+    public StepLayout(final Container parent) {
+        this(0, 0, parent);
+    }
+    
+    /**
+     * Instantiates a new step layout with the specified gaps.
+     * 
+     * @param hGap Horizontal gap
+     * @param vGap Vertical gap
+     */
+    public StepLayout(final int hGap, final int vGap) {
+        steps = new ArrayList<Step>();
+        currentStep = -1;
+        this.hGap = hGap;
+        this.vGap = vGap;
+    }
 
     /**
      * Instantiates a new step layout with the specified gaps.
      * 
-     * @param hgap Horizontal gap
-     * @param vgap Vertical gap
+     * @param hGap Horizontal gap
+     * @param vGap Vertical gap
+     * @param parent Parent component
      */
-    public StepLayout(final int hgap, final int vgap) {
-        super(hgap, vgap);
-        elements = new Vector<Object>();
-        try {
-            Field f = CardLayout.class.getDeclaredField("vector");
-            f.setAccessible(true);
-            f.set(this, elements);
-        } catch (IllegalArgumentException ex) {
-            //Ignore, wont happen
-        } catch (IllegalAccessException ex) {
-            //Ignore, wont happen
-        } catch (NoSuchFieldException ex) {
-            //Ignore, wont happen
-        } catch (SecurityException ex) {
-            //Ignore, wont happen
-        }
+    public StepLayout(final int hGap, final int vGap, final Container parent) {
+        steps = new ArrayList<Step>();
+        currentStep = -1;
+        this.hGap = hGap;
+        this.vGap = vGap;
+        this.parent = parent;
     }
 
     /**
@@ -78,7 +103,7 @@ public class StepLayout extends CardLayout {
      * @return number of steps >= 0
      */
     public int size() {
-        return elements.size();
+        return steps.size();
     }
 
     /**
@@ -87,7 +112,7 @@ public class StepLayout extends CardLayout {
      * @return true iif the layout has no steps
      */
     public boolean isEmpty() {
-        return elements.isEmpty();
+        return steps.isEmpty();
     }
 
     /**
@@ -98,21 +123,7 @@ public class StepLayout extends CardLayout {
      * @return Step
      */
     public Step getStep(final int index) {
-        try {
-            Field f = elements.get(index).getClass().getDeclaredField("comp");
-            f.setAccessible(true);
-
-            return (Step) f.get(elements.get(index));
-        } catch (IllegalArgumentException ex) {
-            //Ignore, wont happen
-        } catch (IllegalAccessException ex) {
-            //Ignore, wont happen
-        } catch (NoSuchFieldException ex) {
-            //Ignore, wont happen
-        } catch (SecurityException ex) {
-            //Ignore, wont happen
-        }
-        return null;
+        return steps.get(index);
     }
 
     /**
@@ -121,6 +132,266 @@ public class StepLayout extends CardLayout {
      * @return List of steps
      */
     public List getSteps() {
-        return elements;
+        return steps;
+    }
+
+    /**
+     * Show the first step.
+     * 
+     * @param parent Parent container
+     */
+    public void first(final Container parent) {
+        show(0, parent);
+    }
+
+    /**
+     * Show the last step.
+     * 
+     * @param parent Parent container
+     */
+    public void last(final Container parent) {
+        show(parent.getComponentCount() - 1, parent);
+    }
+
+    /**
+     * Show the next step.
+     * 
+     * @param parent Parent container
+     */
+    public void next(final Container parent) {
+        show(currentStep + 1, parent);
+    }
+
+    /** 
+     * Show the previous step.
+     * 
+     * @param parent Parent container
+     */
+    public void previous(final Container parent) {
+        show(currentStep - 1, parent);
+    }
+
+    /**
+     * Show the specified step.
+     * 
+     * @param step Step to show
+     * @param parent Parent container
+     */
+    public void show(final Step step, final Container parent) {
+        show(steps.indexOf(step), parent);
+    }
+
+    /**
+     * Show the step at the specified index.
+     * 
+     * @param step Step to show
+     * @param parent Parent container
+     */
+    public void show(final int step, final Container parent) {
+        int stepNumber = step;
+        if (stepNumber == -1) {
+            if (stepNumber >= steps.size()) {
+                stepNumber = steps.size() - 1;
+            } else {
+                stepNumber = 0;
+            }
+        }
+        synchronized (parent.getTreeLock()) {
+            int componentCount = parent.getComponentCount();
+            for (int i = 0; i < componentCount; i++) {
+                Component comp = parent.getComponent(i);
+                if (comp.isVisible()) {
+                    comp.setVisible(false);
+                    break;
+                }
+            }
+            if (componentCount > 0) {
+                currentStep = stepNumber;
+                parent.getComponent(currentStep).setVisible(true);
+                parent.validate();
+            }
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void addLayoutComponent(final Component comp,
+            final Object constraints) {
+        if (!(comp instanceof Step)) {
+            throw new IllegalArgumentException("Component must be an instance of Step");
+        }
+        addLayoutComponent((Step) comp);
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @deprecated Use addLayoutComponent(Component, Object) or 
+     * addLayoutComponent(Component)
+     * 
+     * @see addLayoutComponent(Component)
+     * @see addLayoutComponent(Component, Object)
+     */
+    @Override
+    @Deprecated
+    public void addLayoutComponent(final String name, final Component comp) {
+        if (!(comp instanceof Step)) {
+            throw new IllegalArgumentException("Component must be an instance of Step");
+        }
+        addLayoutComponent((Step) comp);
+    }
+
+    /**
+     * Adds a component to the layout.
+     * 
+     * @param step Component to add
+     */
+    public void addLayoutComponent(final Step step) {
+        synchronized (step.getTreeLock()) {
+            if (!steps.isEmpty()) {
+                step.setVisible(false);
+            }
+            steps.add(step);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeLayoutComponent(final Component comp) {
+        synchronized (comp.getTreeLock()) {
+            if (comp.isVisible()) {
+                comp.setVisible(false);
+            }
+            next(comp.getParent());
+            steps.remove(comp);
+        }
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @return Returns the preferred size of the container
+     */
+    @Override
+    public Dimension preferredLayoutSize(final Container parent) {
+        synchronized (parent.getTreeLock()) {
+            Insets insets = parent.getInsets();
+            int componentCount = parent.getComponentCount();
+            int width = 0;
+            int height = 0;
+
+            for (int i = 0; i < componentCount; i++) {
+                Component comp = parent.getComponent(i);
+                Dimension preferredDimension = comp.getPreferredSize();
+                if (preferredDimension.width > width) {
+                    width = preferredDimension.width;
+                }
+                if (preferredDimension.height > height) {
+                    height = preferredDimension.height;
+                }
+            }
+            return new Dimension(insets.left + insets.right + width + hGap * 2,
+                    insets.top + insets.bottom + height + vGap * 2);
+        }
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @return Returns the minimum size of the container
+     */
+    @Override
+    public Dimension minimumLayoutSize(final Container parent) {
+        synchronized (parent.getTreeLock()) {
+            Insets insets = parent.getInsets();
+            int componentCount = parent.getComponentCount();
+            int width = 0;
+            int height = 0;
+
+            for (int i = 0; i < componentCount; i++) {
+                Component comp = parent.getComponent(i);
+                Dimension minimumDimension = comp.getMinimumSize();
+                if (minimumDimension.width > width) {
+                    width = minimumDimension.width;
+                }
+                if (minimumDimension.height > height) {
+                    height = minimumDimension.height;
+                }
+            }
+            return new Dimension(insets.left + insets.right + width + hGap * 2,
+                    insets.top + insets.bottom + height + vGap * 2);
+        }
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param parent Container to get the size for
+     * 
+     * @return Returns the maximum size of the container
+     */
+    @Override
+    public Dimension maximumLayoutSize(final Container parent) {
+        return new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE);
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param target Container to get the alignment from
+     * 
+     * @return Alignment
+     */
+    @Override
+    public float getLayoutAlignmentX(final Container target) {
+        return 0.5f;
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param target Container to get the alignment from
+     * 
+     * @return Alignment
+     */
+    @Override
+    public float getLayoutAlignmentY(final Container target) {
+        return 0.5f;
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param target  Container to invalidate
+     */
+    @Override
+    public void invalidateLayout(final Container target) {
+    //Ignore
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void layoutContainer(final Container parent) {
+        synchronized (parent.getTreeLock()) {
+            Insets insets = parent.getInsets();
+            int componentCount = parent.getComponentCount();
+            Component comp = null;
+            boolean currentFound = false;
+
+            for (int i = 0; i < componentCount; i++) {
+                comp = parent.getComponent(i);
+                comp.setBounds(hGap + insets.left, vGap + insets.top,
+                        parent.getWidth() - (hGap * 2 + insets.left +
+                        insets.right), parent.getHeight() - (vGap * 2 +
+                        insets.top + insets.bottom));
+                if (comp.isVisible()) {
+                    currentFound = true;
+                }
+            }
+
+            if (!currentFound && componentCount > 0) {
+                parent.getComponent(0).setVisible(true);
+            }
+        }
     }
 }

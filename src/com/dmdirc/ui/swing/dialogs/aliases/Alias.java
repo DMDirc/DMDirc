@@ -119,7 +119,17 @@ public final class Alias implements Serializable {
         if (condition == null) {
             return command + "-Any";
         } else {
-            return command + condition.getTarget();
+            final String comparison;
+            if (condition.getComparison().equals(CoreActionComparison.INT_EQUALS)) {
+                comparison = "equals";
+            } else if (condition.getComparison().equals(CoreActionComparison.INT_GREATER)) {
+                comparison = "greater";
+            } else if (condition.getComparison().equals(CoreActionComparison.INT_LESS)) {
+                comparison = "less";
+            } else {
+                comparison = condition.getComparison().toString();
+            }
+            return command + "-" + comparison + "-" + condition.getTarget();
         }
     }
     
@@ -203,10 +213,12 @@ public final class Alias implements Serializable {
      * @return true iif the alias matches this one
      */
     public boolean matches(final Alias alias) {
-        return alias.getCommand().equalsIgnoreCase(command) && alias.getArguments().equals(arguments);
+        return alias.getCommand().equalsIgnoreCase(command) 
+                && alias.getArguments().equals(arguments);
     }
     
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return "[name=aliases/" + getName() + ", triggers="
                 + "[UNKNOWN_COMMAND], response="

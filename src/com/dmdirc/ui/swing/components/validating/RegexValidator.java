@@ -29,19 +29,29 @@ public class RegexValidator implements Validator<String> {
 
     /** Regex. */
     private final String regex;
+    /** Failure reason. */
+    private final String failedReason;
 
     /**
      * Instantiates a new regex validator.
      * 
      * @param regex Regex to validate text against
+     * @param failedReason Reason for validation failure
      */
-    public RegexValidator(final String regex) {
+    public RegexValidator(final String regex, final String failedReason) {
         this.regex = regex;
+        this.failedReason = failedReason;
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean validate(final String object) {
         return object.matches(regex);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getFailureReason() {
+        return failedReason;
     }
 }

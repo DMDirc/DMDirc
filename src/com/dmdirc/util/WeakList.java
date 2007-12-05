@@ -67,7 +67,7 @@ public class WeakList<T> implements List<T> {
         final Collection<WeakReference<T>> res = new ArrayList<WeakReference<T>>();
 
         for (Object item : c) {
-            res.add(new WeakReference(item));
+            res.add(new EquatableWeakReference(item));
         }
 
         return res;
@@ -90,9 +90,9 @@ public class WeakList<T> implements List<T> {
     }
 
     /** {@inheritDoc} */
-    @Override @SuppressWarnings(value = "unchecked")
+    @Override @SuppressWarnings("unchecked")
     public boolean contains(Object o) {
-        return list.contains(new WeakReference(o));
+        return list.contains(new EquatableWeakReference(o));
     }
 
     /** {@inheritDoc} */
@@ -116,13 +116,13 @@ public class WeakList<T> implements List<T> {
     /** {@inheritDoc} */
     @Override
     public boolean add(T e) {
-        return list.add(new WeakReference<T>(e));
+        return list.add(new EquatableWeakReference<T>(e));
     }
 
     /** {@inheritDoc} */
     @Override @SuppressWarnings(value = "unchecked")
     public boolean remove(Object o) {
-        return list.remove(new WeakReference(o));
+        return list.remove(new EquatableWeakReference(o));
     }
 
     /** {@inheritDoc} */
@@ -172,7 +172,7 @@ public class WeakList<T> implements List<T> {
     /** {@inheritDoc} */
     @Override
     public T set(int index, T element) {
-        list.set(index, new WeakReference<T>(element));
+        list.set(index, new EquatableWeakReference<T>(element));
 
         return element;
     }
@@ -180,7 +180,7 @@ public class WeakList<T> implements List<T> {
     /** {@inheritDoc} */
     @Override
     public void add(int index, T element) {
-        list.add(index, new WeakReference<T>(element));
+        list.add(index, new EquatableWeakReference<T>(element));
     }
 
     /** {@inheritDoc} */
@@ -194,7 +194,7 @@ public class WeakList<T> implements List<T> {
     public int indexOf(Object o) {
         cleanUp();
 
-        return list.indexOf(new WeakReference(o));
+        return list.indexOf(o);
     }
 
     /** {@inheritDoc} */
@@ -202,7 +202,7 @@ public class WeakList<T> implements List<T> {
     public int lastIndexOf(Object o) {
         cleanUp();
 
-        return list.lastIndexOf(new WeakReference(o));
+        return list.lastIndexOf(o);
     }
 
     /** {@inheritDoc} */
