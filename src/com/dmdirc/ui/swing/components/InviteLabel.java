@@ -55,7 +55,7 @@ public class InviteLabel extends JLabel implements InviteListener,
         super();
 
         setBorder(BorderFactory.createEtchedBorder());
-        setIcon(IconManager.getIconManager().getIcon("icon"));
+        setIcon(IconManager.getIconManager().getIcon("invite"));
 
         inviteList = new MapList<Server, Invite>();
         menu = new JPopupMenu();
