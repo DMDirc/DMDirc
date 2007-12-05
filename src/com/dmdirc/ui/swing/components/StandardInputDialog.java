@@ -67,8 +67,14 @@ public abstract class StandardInputDialog extends StandardDialog {
 
             /** {@inheritDoc} */
             @Override
-            public boolean validate(String object) {
+            public boolean validate(final String object) {
                 return true;
+            }
+
+            /** {@inheritDoc} */
+            @Override
+            public String getFailureReason() {
+                return "";
             }
         });
     }
@@ -209,5 +215,14 @@ public abstract class StandardInputDialog extends StandardDialog {
      */
     public final String getText() {
         return textField.getText();
+    }
+    
+    /**
+     * Sets the dialogs text to the specified text.
+     * 
+     * @param text New test
+     */
+    public final void setText(final String text) {
+        textField.setText(text);
     }
 }

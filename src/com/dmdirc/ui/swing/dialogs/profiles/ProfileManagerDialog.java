@@ -25,9 +25,9 @@ package com.dmdirc.ui.swing.dialogs.profiles;
 import com.dmdirc.Main;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.swing.JWrappingLabel;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
-import com.dmdirc.ui.swing.components.TextLabel;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -42,6 +42,7 @@ import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
 import net.miginfocom.swing.MigLayout;
 
 /** Profile editing dialog. */
@@ -65,7 +66,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     /** Profile detail panel. */
     private ProfileDetailPanel details;
     /** Info label. */
-    private TextLabel infoLabel;
+    private JWrappingLabel infoLabel;
     /** Add button. */
     private JButton addButton;
     /** Delete button. */
@@ -94,6 +95,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     public static synchronized void showProfileManagerDialog() {
         me = getProfileManagerDialog();
 
+        me.pack();
         me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         me.setVisible(true);
         me.requestFocus();
@@ -115,8 +117,6 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     /** Initialises the components. */
     private void initComponents() {
         setTitle("Profile Editor");
-        setMinimumSize(new Dimension(600, 400));
-        //setPreferredSize(new Dimension(600, 400));
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
         
@@ -128,7 +128,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
         addButton = new JButton("Add");
         deleteButton = new JButton("Delete");
         infoLabel =
-                new TextLabel("Profiles describe information needed to " +
+                new JWrappingLabel("Profiles describe information needed to " +
                 "connect to a server.  You can use a different profile for " +
                 "each connection. Profiles are automatically saved when you " +
                 "select another or click OK");
@@ -142,6 +142,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     private void layoutComponents() {
         getContentPane().setLayout(new MigLayout("fill"));
 
+        infoLabel.setMaximumSize(new Dimension(400, 0));
         getContentPane().add(new JScrollPane(profileList), "spany 2, grow, " +
                 "wmax 200, wmin 200");
         getContentPane().add(infoLabel, "wrap, growx, spanx 2");
@@ -182,7 +183,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
 
     /** Saves the profile list. */
     private void save() {
-        if (!details.validateDetails().equals(ValidationResult.FAIL)) {
+        if (details.validateDetails()) {
             details.save();
             final Iterator<Profile> it = model.iterator();
 
@@ -194,7 +195,11 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
         }
     }
 
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Action event
+     */
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource().equals(getOkButton())) {
@@ -219,7 +224,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     @Override
     public void valueChanged(final ListSelectionEvent e) {
         if (e.getValueIsAdjusting()) {
-            if (details.validateDetails().equals(ValidationResult.FAIL)) {
+            if (!details.validateDetails()) {
                 profileList.setSelectedIndex(selectedIndex);
             }
         }

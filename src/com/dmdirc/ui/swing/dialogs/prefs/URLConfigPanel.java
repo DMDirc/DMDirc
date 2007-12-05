@@ -303,6 +303,12 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
                 return false;
             }
         }
+
+        /** {@inheritDoc} */
+        @Override
+        public String getFailureReason() {
+            return "Cannot be an empty string, and must not already exist";
+        }
     }
 
 }

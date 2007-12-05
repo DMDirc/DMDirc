@@ -24,6 +24,8 @@ package com.dmdirc.ui.swing.components.validating;
 
 import com.dmdirc.IconManager;
 
+import java.awt.Font;
+
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -31,9 +33,9 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -75,6 +77,7 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
         this.validator = validator;
         errorIcon =
                 new JLabel(IconManager.getIconManager().getIcon("input-error"));
+        errorIcon.setToolTipText(validator.getFailureReason());
 
         if (!"javax.swing.plaf.synth.SynthLookAndFeel".equals(UIManager.get("TextFieldUI"))) {
             setBorder(textField.getBorder());
@@ -86,7 +89,7 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
         add(textField, "grow, pushx");
         add(errorIcon);
 
-        errorIcon.setVisible(false);
+        checkError();
 
         textField.getDocument().addDocumentListener(this);
     }
@@ -332,5 +335,15 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
      */
     public void copy() {
         textField.copy();
+    }
+
+    /**
+     * Returns the font for the textfield.
+     * 
+     * @see javax.swing.JTextField#copy()
+     */
+    @Override
+    public Font getFont() {
+        return textField.getFont();
     }
 }

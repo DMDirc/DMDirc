@@ -23,21 +23,20 @@
 package com.dmdirc.ui.swing.dialogs.profiles;
 
 import com.dmdirc.IconManager;
+import com.dmdirc.Main;
+import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.ImageButton;
-import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.swing.components.StandardInputDialog;
+import com.dmdirc.ui.swing.components.validating.NotEmptyValidator;
+import com.dmdirc.ui.swing.components.validating.RegexValidator;
+import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
 
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
-import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -46,76 +45,52 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.SpringLayout;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.text.Document;
+
+import net.miginfocom.swing.MigLayout;
 
 /** Profile detail panel. */
 public class ProfileDetailPanel extends JPanel implements ActionListener,
-        ListSelectionListener, DocumentListener,
-        ListDataListener {
+        ListSelectionListener, ListDataListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
-    /** Invalid filename characters. */
-    private static final String FILENAME_REGEX = ".*[^\\w ].*";
-    /** Invalid nickname characters. */
-    private static final String NICKNAME_REGEX = ".*[\\a\\v\\s].*";
-    /** Invalid ident characters. */
-    private static final String IDENT_REGEX = ".*[\\a\\v\\s].*";
+    private static final long serialVersionUID = 2;
+    /** Nickname regex. */
+    private static final String NICKNAME_REGEX =
+            "[A-Za-z0-9\\[\\]{|}\\-\\^\\\\]+";
+    /** Filename regex. */
+    private static final String FILENAME_REGEX = "[A-Za-z0-9]+";
     /** Displayed profile. */
     private Profile profile;
     /** Name text field. */
-    private JTextField name;
+    private ValidatingJTextField name;
     /** Nick name text field. */
-    private JTextField nickname;
+    private ValidatingJTextField nickname;
     /** Realname text field. */
-    private JTextField realname;
+    private ValidatingJTextField realname;
     /** Ident text field. */
-    private JTextField ident;
+    private ValidatingJTextField ident;
     /** Alternate nicknames list. */
     private JList altNicknames;
-    /** Buttons panel. */
-    private JPanel buttonsPanel;
     /** Add button. */
     private JButton addButton;
     /** Delete button. */
     private JButton delButton;
     /** Edit button. */
     private JButton editButton;
-    /** name error. */
-    private ImageButton nameError;
-    /** nick error. */
-    private ImageButton nicknameError;
-    /** real name error. */
-    private ImageButton realnameError;
-    /** ident error. */
-    private ImageButton identError;
     /** Alt nicknames error. */
     private ImageButton altNicknamesError;
-    /** Document -> Component map. */
-    private Map<Document, Component> map;
-    /** Error icon. */
-    private Icon errorIcon;
-    /** Warning icon. */
-    private Icon warningIcon;
-    /** Transparent icon. */
-    private Icon normalIcon;
 
     /** Creates a new profile detail panel. */
     public ProfileDetailPanel() {
         initMainComponents();
-        initButtonsPanel();
         layoutComponents();
 
         clearProfile();
@@ -123,39 +98,19 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
 
     /** Initialises the components in the main panel. */
     private void initMainComponents() {
-        map =   new HashMap<Document, Component>();
-
-        errorIcon =
-                IconManager.getIconManager().getIcon("input-error");
-        warningIcon = IconManager.getIconManager().getIcon("warning");
-        normalIcon = IconManager.getIconManager().getIcon("nothing");
-
-        name = new JTextField();
-        nickname = new JTextField();
-        realname = new JTextField();
-        ident = new JTextField();
+        name = new ValidatingJTextField(new RegexValidator(FILENAME_REGEX,
+                "Name must only contain letters and numbers."));
+        nickname =
+                new ValidatingJTextField(new RegexValidator(NICKNAME_REGEX,
+                "Nickname must only contain letters, numbers and []{}|-^\\."));
+        realname = new ValidatingJTextField(new NotEmptyValidator());
+        ident = new ValidatingJTextField(new RegexValidator(NICKNAME_REGEX,
+                "Ident must only contain letters, numbers and []{}|-^\\."));
         altNicknames = new JList(new DefaultListModel());
 
-        nameError =
-                new ImageButton("nicknameError", normalIcon);
-        nicknameError =
-                new ImageButton("nicknameError", normalIcon);
-        realnameError =
-                new ImageButton("realnameError", normalIcon);
-        identError = new ImageButton("identError", normalIcon);
-        altNicknamesError =
-                new ImageButton("altNicknamesError", normalIcon);
-
-        nameError.setFocusable(false);
-        nicknameError.setFocusable(false);
-        realnameError.setFocusable(false);
-        identError.setFocusable(false);
-        altNicknamesError.setFocusable(false);
-
-        map.put(name.getDocument(), nameError);
-        map.put(nickname.getDocument(), nicknameError);
-        map.put(realname.getDocument(), realnameError);
-        map.put(ident.getDocument(), identError);
+        addButton = new JButton("Add");
+        delButton = new JButton("Delete");
+        editButton = new JButton("Edit");
 
         name.setPreferredSize(new Dimension(0, name.getFont().getSize()));
         nickname.setPreferredSize(new Dimension(0, nickname.getFont().getSize()));
@@ -163,21 +118,8 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
         ident.setPreferredSize(new Dimension(0, nickname.getFont().getSize()));
         altNicknames.setVisibleRowCount(3);
 
-        name.getDocument().addDocumentListener(this);
-        nickname.getDocument().addDocumentListener(this);
-        realname.getDocument().addDocumentListener(this);
-        ident.getDocument().addDocumentListener(this);
         altNicknames.addListSelectionListener(this);
         altNicknames.getModel().addListDataListener(this);
-    }
-
-    /** Initialiases the components in the buttons panel. */
-    private void initButtonsPanel() {
-        buttonsPanel =
-                new JPanel(new GridLayout(1, 3, SMALL_BORDER, SMALL_BORDER));
-        addButton = new JButton("Add");
-        delButton = new JButton("Delete");
-        editButton = new JButton("Edit");
 
         addButton.addActionListener(this);
         delButton.addActionListener(this);
@@ -186,38 +128,26 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
 
     /** Lays out the components in the panel. */
     private void layoutComponents() {
-        buttonsPanel.add(addButton);
-        buttonsPanel.add(editButton);
-        buttonsPanel.add(delButton);
-
-        setLayout(new SpringLayout());
+        setLayout(new MigLayout("fill"));
 
         add(new JLabel("Name:"));
-        add(nameError);
-        add(name);
+        add(name, "growx, pushx, wrap");
 
         add(new JLabel("Nickname:"));
-        add(nicknameError);
-        add(nickname);
+        add(nickname, "growx, pushx, wrap");
 
         add(new JLabel("Realname:"));
-        add(realnameError);
-        add(realname);
+        add(realname, "growx, pushx, wrap");
 
         add(new JLabel("Ident:"));
-        add(identError);
-        add(ident);
+        add(ident, "growx, pushx, wrap");
 
         add(new JLabel("Alternate nicknames:"));
-        add(altNicknamesError);
-        add(new JScrollPane(altNicknames));
+        add(new JScrollPane(altNicknames), "growx, pushx, wrap");
 
-        add(Box.createHorizontalGlue());
-        add(Box.createHorizontalGlue());
-        add(buttonsPanel);
-
-        layoutGrid(this, 6, 3, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER,
-                SMALL_BORDER);
+        add(addButton, "skip 1, split 3, sg button, growx");
+        add(editButton, "sg button, growx");
+        add(delButton, "sg button, growx");
     }
 
     /**
@@ -247,7 +177,7 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
         for (String altNick : profile.getAltNicknames()) {
             ((DefaultListModel) altNicknames.getModel()).addElement(altNick);
         }
-        
+
         name.setEnabled(true);
         nickname.setEnabled(true);
         realname.setEnabled(true);
@@ -272,8 +202,6 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
         addButton.setEnabled(false);
         delButton.setEnabled(false);
         editButton.setEnabled(false);
-        
-        clearErrors();
     }
 
     /** Saves the detail panels details to the profile. */
@@ -293,205 +221,85 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
             profile.addAltNickname((String) enumeration.nextElement());
         }
     }
-    
-    /** Clears error states. */
-    private void clearErrors() {
-        nameError.setToolTipText("");
-        nicknameError.setToolTipText("");
-        realnameError.setToolTipText("");
-        identError.setToolTipText("");
-        altNicknamesError.setToolTipText("");
-        
-        nameError.setIcons(normalIcon);
-        nicknameError.setIcons(normalIcon);
-        realnameError.setIcons(normalIcon);
-        identError.setIcons(normalIcon);
-        altNicknamesError.setIcons(normalIcon);
-    }
 
     /**
      * Validates the current details.
      *
      * @return Validation Result
      */
-    public ValidationResult validateDetails() {
-        clearErrors();
-
-        final ValidationResult checkAltNicknames = checkAltNicknames();
-        final ValidationResult checkIdent = checkIdent();
-        final ValidationResult checkRealname = checkRealname();
-        final ValidationResult checkNickname = checkNickname();
-        final ValidationResult checkName = checkName();
-
-        if (checkAltNicknames.equals(ValidationResult.FAIL) ||
-                checkIdent.equals(ValidationResult.FAIL) ||
-                checkRealname.equals(ValidationResult.FAIL) ||
-                checkNickname.equals(ValidationResult.FAIL) || 
-                checkName.equals(ValidationResult.FAIL)) {
-            return ValidationResult.FAIL;
-        } else if (checkAltNicknames.equals(ValidationResult.WARNING) ||
-                checkIdent.equals(ValidationResult.WARNING) ||
-                checkRealname.equals(ValidationResult.WARNING) ||
-                checkNickname.equals(ValidationResult.WARNING) ||
-                checkName.equals(ValidationResult.WARNING)) {
-            return ValidationResult.WARNING;
-        } else {
-            return ValidationResult.PASS;
+    public boolean validateDetails() {
+        if (!ident.validateText() || !realname.validateText() ||
+                !nickname.validateText() || !name.validateText()) {
+            return false;
         }
+        return true;
     }
 
-    /**
-     * Validates the alternate nicknames.
-     *
-     * @return Validation result
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Action event
      */
-    private ValidationResult checkAltNicknames() {
-        if (!altNicknames.isEnabled() || altNicknames.getModel().getSize() == 0) {
-            return ValidationResult.PASS;
-        }
-
-        ValidationResult returnValue =
-                ValidationResult.PASS;
-        final Enumeration<?> enumeration =
-                ((DefaultListModel) altNicknames.getModel()).elements();
-        while (enumeration.hasMoreElements()) {
-            final String altNickname =
-                    (String) enumeration.nextElement();
-            if (altNickname.isEmpty() || altNickname.matches(NICKNAME_REGEX)) {
-                altNicknamesError.setIcons(errorIcon);
-                altNicknamesError.setToolTipText("Your nickname cannot be blank.");
-                return ValidationResult.FAIL;
-            } else if (altNickname.length() <= 1 || altNickname.length() > 9) {
-                altNicknamesError.setIcons(warningIcon);
-                returnValue =
-                        ValidationResult.WARNING;
-                altNicknamesError.setToolTipText("Some servers may not allow nicknames this "
-                    + (altNickname.length() <= 1 ? "short" : "long") + ".");
-            }
-        }
-
-        return returnValue;
-    }
-
-    /**
-     * Validates the ident.
-     *
-     * @return Validation result
-     */
-    private ValidationResult checkIdent() {
-        ValidationResult returnValue =
-                ValidationResult.PASS;
-        final String identText = ident.getText();
-
-        if (!ident.isEnabled()) {
-            returnValue = ValidationResult.PASS;
-        } else if (identText.matches(IDENT_REGEX)) {
-            identError.setIcons(errorIcon);
-            ident.requestFocus();
-            returnValue =
-                    ValidationResult.FAIL;
-            identError.setToolTipText("Your ident cannot be blank.");
-        }
-
-        return returnValue;
-    }
-
-    /**
-     * Validates the realname.
-     *
-     * @return Validation result
-     */
-    private ValidationResult checkRealname() {
-        ValidationResult returnValue =
-                ValidationResult.PASS;
-        final String realnameText = realname.getText();
-
-        if (!realname.isEnabled()) {
-            returnValue = ValidationResult.PASS;
-        } else if (realnameText.isEmpty()) {
-            realnameError.setIcons(errorIcon);
-            realname.requestFocus();
-            returnValue =
-                    ValidationResult.FAIL;
-            realnameError.setToolTipText("Your realname cannot be blank.");
-        }
-
-        return returnValue;
-    }
-
-    /**
-     * Validates the nickname.
-     *
-     * @return Validation result
-     */
-    private ValidationResult checkNickname() {
-        ValidationResult returnValue =
-                ValidationResult.PASS;
-        final String nicknameText = nickname.getText();
-
-        if (!nickname.isEnabled()) {
-            returnValue = ValidationResult.PASS;
-        } else if (nicknameText.isEmpty() || nicknameText.matches(NICKNAME_REGEX)) {
-            nicknameError.setIcons(errorIcon);
-            nickname.requestFocus();
-            returnValue =
-                    ValidationResult.FAIL;
-            nicknameError.setToolTipText("Your nickname cannot be blank.");
-        } else if (nicknameText.length() <= 1 || nicknameText.length() > 9) {
-            nicknameError.setIcons(warningIcon);
-            returnValue =
-                    ValidationResult.WARNING;
-            nicknameError.setToolTipText("Some servers may not allow nicknames this "
-                    + (nicknameText.length() <= 1 ? "short" : "long") + ".");
-        }
-
-        return returnValue;
-    }
-
-    /**
-     * Validates the name.
-     *
-     * @return Validation result
-     */
-    private ValidationResult checkName() {
-        ValidationResult returnValue =
-                ValidationResult.PASS;
-        final String nameText = name.getText();
-
-        if (!name.isEnabled()) {
-            returnValue = ValidationResult.PASS;
-        } else if (nameText.isEmpty() || nameText.matches(FILENAME_REGEX)) {
-            nameError.setIcons(errorIcon);
-            name.requestFocus();
-            returnValue = ValidationResult.FAIL;
-            nameError.setToolTipText("The profile name "
-                    + (nameText.isEmpty() ? "must not be blank." :
-                        "may only contain letters, numbers, underscores and spaces."));
-        }
-
-        return returnValue;
-    }
-
-    /** {@inheritDoc} */
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == addButton) {
-            final String newName =
-                    JOptionPane.showInputDialog(this,
+            new StandardInputDialog((MainFrame) Main.getUI().getMainWindow(),
+                    false, "New Alternate Nickname",
                     "Please enter the name for alternate nickname",
-                    "New Alternate Nickname");
-            if (newName != null && !newName.isEmpty()) {
-                ((DefaultListModel) altNicknames.getModel()).addElement(newName);
-            }
+                    new RegexValidator(NICKNAME_REGEX,
+                    "Ident must only contain letters, numbers and []{}|-^\\.")) {
+
+                /**
+                 * A version number for this class. It should be changed whenever the class
+                 * structure is changed (or anything else that would prevent serialized
+                 * objects being unserialized with the new class).
+                 */
+                private static final long serialVersionUID = 2;
+
+                /** {@inheritDoc} */
+                @Override
+                public boolean save() {
+                    ((DefaultListModel) altNicknames.getModel()).addElement(getText());
+                    return true;
+                }
+
+                /** {@inheritDoc} */
+                @Override
+                public void cancelled() {
+                //Ignore
+                }
+            }.display();
         } else if (e.getSource() == editButton) {
-            final String newName =
-                    JOptionPane.showInputDialog(this,
-                    "Please enter the new nickname for the alternate nickname",
-                    altNicknames.getSelectedValue());
-            if (newName != null && !newName.isEmpty()) {
-                ((DefaultListModel) altNicknames.getModel()).setElementAt(newName,
-                        altNicknames.getSelectedIndex());
-            }
+            final StandardInputDialog dialog = new StandardInputDialog(
+                    (MainFrame) Main.getUI().getMainWindow(),
+                    false, "New Alternate Nickname",
+                    "Please enter the name for alternate nickname",
+                    new RegexValidator(NICKNAME_REGEX,
+                    "Ident must only contain letters, numbers and []{}|-^\\.")) {
+
+                /**
+                 * A version number for this class. It should be changed whenever the class
+                 * structure is changed (or anything else that would prevent serialized
+                 * objects being unserialized with the new class).
+                 */
+                private static final long serialVersionUID = 2;
+
+                /** {@inheritDoc} */
+                @Override
+                public boolean save() {
+                    ((DefaultListModel) altNicknames.getModel()).setElementAt(
+                            getText(), altNicknames.getSelectedIndex());
+                    return true;
+                }
+
+                /** {@inheritDoc} */
+                @Override
+                public void cancelled() {
+                //Ignore
+                }
+            };
+            dialog.setText((String) altNicknames.getSelectedValue());
+            dialog.display();
         } else if (e.getSource() == delButton) {
             if (JOptionPane.showConfirmDialog(this,
                     "Are you sure you want to delete this nickname?",
@@ -512,24 +320,6 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
             editButton.setEnabled(true);
             delButton.setEnabled(true);
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void insertUpdate(final DocumentEvent e) {
-        validateDetails();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void removeUpdate(final DocumentEvent e) {
-        validateDetails();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void changedUpdate(final DocumentEvent e) {
-        //Ignore
     }
 
     /** {@inheritDoc} */

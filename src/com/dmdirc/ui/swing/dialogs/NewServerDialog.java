@@ -237,7 +237,7 @@ public final class NewServerDialog extends StandardDialog {
         final JButton button2 = new JButton();
         
         serverLabel = new JLabel();
-        serverField = new ValidatingJTextField(new RegexValidator("^[^\\s]+$+"));
+        serverField = new ValidatingJTextField(new RegexValidator("^[^\\s]+$+", "Cannot contain spaces."));
         portLabel = new JLabel();
         portField = new JSpinner(new SpinnerNumberModel());
         passwordLabel = new JLabel();
