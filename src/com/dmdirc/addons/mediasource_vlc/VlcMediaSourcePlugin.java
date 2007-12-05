@@ -31,6 +31,7 @@ import com.dmdirc.ui.interfaces.PreferencesPanel;
 import com.dmdirc.util.Downloader;
 
 import java.io.IOException;
+import java.io.File;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.List;
@@ -70,15 +71,60 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource, Prefere
     /** {@inheritDoc} */
     @Override    
     public String getArtist() {
-        return information.containsKey("artist") ? information.get("artist")
+        String result = information.containsKey("artist") ? information.get("artist")
                 : "unknown";
+        
+        // Artist is unknown, lets guess using the filename
+        if (result.equals("unknown") && information.containsKey("playlist_current")) {
+            try {
+                final int item = Integer.parseInt(information.get("playlist_current"));
+                String[] bits = information.get("playlist_item_"+item).split(File.separator);
+                result = bits[bits.length-1];
+                bits = result.split("-");
+                if (bits.length > 1) {
+                    result = bits[0];
+                } else {
+                    // Whole filename is the title, so no artist is known.
+                    result = "";
+                }
+            } catch (NumberFormatException nfe) {
+            }
+        }
+        return result;
     }
 
     /** {@inheritDoc} */
     @Override    
     public String getTitle() {
-        return information.containsKey("title") ? information.get("title")
+        String result = information.containsKey("title") ? information.get("title")
                 : "unknown";
+        
+        // Title is unknown, lets guess using the filename
+        if (result.equals("unknown") && information.containsKey("playlist_current")) {
+            try {
+                final int item = Integer.parseInt(information.get("playlist_current"));
+                String[] bits = information.get("playlist_item_"+item).split(File.separator);
+                result = bits[bits.length-1];
+                bits = result.split("-");
+                if (bits.length > 1) {
+                    result = bits[1];
+                } else {
+                    // Whole filename is the title, so result is already correct
+                }
+                // Now to remove the file extension
+                bits = result.split("\\.");
+                StringBuilder res = new StringBuilder();
+                for (int i = 0; i < bits.length-1; i++) {
+                    if (res.length() > 0) {
+                        res.append(".");
+                    }
+                    res.append(bits[i]);
+                }
+                result = res.toString();
+            } catch (NumberFormatException nfe) {
+            }
+        }
+        return result;
     }
 
     /** {@inheritDoc} */
@@ -197,10 +243,39 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource, Prefere
             }
         }
         
+        boolean isPlaylist = false;
+        boolean isCurrent = false;
+        boolean isItem = false;
+        int playlistItem = 0;
         for (String line : res2) {
             final String tline = line.trim();
             
-            if (tline.startsWith("State:")) {
+            if (isPlaylist) {
+                if (tline.startsWith("</ul>")) {
+                    isPlaylist = false;
+                    information.put("playlist_items", Integer.toString(playlistItem));
+                } else if (tline.equalsIgnoreCase("<strong>")) {
+                    isCurrent = true;
+                } else if (tline.equalsIgnoreCase("</strong>")) {
+                    isCurrent = false;
+                } else if (tline.startsWith("<a href=\"?control=play&amp")) {
+                    isItem = true;
+                } else if (isItem) {
+                    String itemname = tline;
+                    if (itemname.endsWith("</a>")) {
+                        itemname = itemname.substring(0, itemname.length()-4);
+                    }
+                    if (!itemname.equals("")) {
+                        if (isCurrent) {
+                            information.put("playlist_current", Integer.toString(playlistItem));
+                        }
+                        information.put("playlist_item_"+Integer.toString(playlistItem++), itemname);
+                    }
+                    isItem = false;
+                }
+            } else if (tline.equalsIgnoreCase("<!-- Playlist -->")) {
+                isPlaylist = true;
+            } else if (tline.startsWith("State:")) {
                 information.put("state", tline.substring(6, tline.indexOf('<')).trim());
             } else if (tline.startsWith("got_")) {
                 final int equals = tline.indexOf('=');
