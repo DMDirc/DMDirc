@@ -1,8 +1,0 @@
-mainclass=com.dmdirc.addons.dcc.DCCPlugin
-version=1
-friendlyversion=0.1
-author=Shane <shane@dmdirc.com>
-description=Adds DCC Support to dmdirc
-name=dcc
-nicename=DCC Plugin
-minversion=0

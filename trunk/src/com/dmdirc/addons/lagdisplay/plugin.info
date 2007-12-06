@@ -1,8 +1,0 @@
-mainclass=com.dmdirc.addons.lagdisplay.LagDisplayPlugin
-version=3
-friendlyversion=0.3
-author=Chris <chris@dmdirc.com>
-description=Displays the server lag in the status bar
-name=laddisplay
-nicename=Lag Displayer
-minversion=0
