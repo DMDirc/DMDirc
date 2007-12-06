@@ -169,25 +169,53 @@ public final class SwingController implements UIController {
     /** {@inheritDoc} */
     @Override
     public void showFirstRunWizard() {
-        new SwingFirstRunWizard().display();
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                new SwingFirstRunWizard().display();
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public void showMigrationWizard() {
-        new SwingFirstRunWizard(false).display();
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                new SwingFirstRunWizard(false).display();
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public void showChannelSettingsDialog(final Channel channel) {
-        ChannelSettingsDialog.showChannelSettingsDialog(channel);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                ChannelSettingsDialog.showChannelSettingsDialog(channel);
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public void showServerSettingsDialog(final Server server) {
-        ServerSettingsDialog.showServerSettingsDialog(server);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                ServerSettingsDialog.showServerSettingsDialog(server);
+            }
+        });
     }
 
     /** {@inheritDoc} */
@@ -281,7 +309,15 @@ public final class SwingController implements UIController {
     /** {@inheritDoc} */
     @Override
     public void showURLDialog(final URI url) {
-        URLDialog.showURLDialog(url);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                URLDialog.showURLDialog(url);
+
+            }
+        });
     }
 
     /** {@inheritDoc} */
