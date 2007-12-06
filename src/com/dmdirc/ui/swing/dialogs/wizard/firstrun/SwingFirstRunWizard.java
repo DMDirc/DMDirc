@@ -35,7 +35,6 @@ import com.dmdirc.ui.swing.dialogs.wizard.WizardListener;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardDialog;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
-import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -97,15 +96,38 @@ public final class SwingFirstRunWizard implements WizardListener, FirstRunWizard
 
     /** Extracts the core plugins. */
     public static void extractCorePlugins() {
-        //Copy plugins
-        try {
-            ResourceManager.getResourceManager().
-                    extractResources("com/dmdirc/addons",
-                    Main.getConfigDir() + "plugins");
-            PluginManager.getPluginManager().reloadAllPlugins();
-        } catch (IOException ex) {
-            Logger.userError(ErrorLevel.LOW, "Failed to extract plugins");
+        //Copy actions
+        final Map<String, byte[]> resources =
+                ResourceManager.getResourceManager().
+                getResourcesStartingWithAsBytes("plugins");
+        for (Entry<String, byte[]> resource : resources.entrySet()) {
+            try {
+                final String resourceName =
+                        Main.getConfigDir() + "plugins" +
+                        resource.getKey().
+                        substring(7, resource.getKey().length());
+                final File newDir =
+                        new File(resourceName.substring(0,
+                        resourceName.lastIndexOf('/')) + "/");
+
+                if (!newDir.exists()) {
+                    newDir.mkdirs();
+                }
+
+                final File newFile =
+                        new File(newDir,
+                        resourceName.substring(resourceName.lastIndexOf('/') + 1,
+                        resourceName.length()));
+
+                if (!newFile.isDirectory()) {
+                    ResourceManager.getResourceManager().
+                            resourceToFile(resource.getValue(), newFile);
+                }
+            } catch (IOException ex) {
+                Logger.userError(ErrorLevel.LOW, "Failed to extract actions");
+            }
         }
+        ActionManager.loadActions();
     }
 
     /** {@inheritDoc} */

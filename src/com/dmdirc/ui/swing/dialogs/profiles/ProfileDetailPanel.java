@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.swing.dialogs.profiles;
 
-import com.dmdirc.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.ImageButton;
@@ -38,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 
 import javax.swing.DefaultListModel;
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -66,7 +64,7 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
     private static final String NICKNAME_REGEX =
             "[A-Za-z0-9\\[\\]{|}\\-\\^\\\\]+";
     /** Filename regex. */
-    private static final String FILENAME_REGEX = "[A-Za-z0-9]+";
+    private static final String FILENAME_REGEX = "[A-Za-z0-9 ]+";
     /** Displayed profile. */
     private Profile profile;
     /** Name text field. */

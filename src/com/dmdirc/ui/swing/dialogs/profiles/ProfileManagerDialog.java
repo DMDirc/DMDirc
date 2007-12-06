@@ -119,7 +119,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
         setTitle("Profile Editor");
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
-        
+
         orderButtons(new JButton(), new JButton());
 
         model = new ProfileListModel();
@@ -142,16 +142,15 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     private void layoutComponents() {
         getContentPane().setLayout(new MigLayout("fill"));
 
-        infoLabel.setMaximumSize(new Dimension(400, 0));
-        getContentPane().add(new JScrollPane(profileList), "spany 2, grow, " +
-                "wmax 200, wmin 200");
+        infoLabel.setMaximumSize(new Dimension(600, 0));
         getContentPane().add(infoLabel, "wrap, growx, spanx 2");
-        getContentPane().add(details, "grow, wrap, spanx 2");
-        getContentPane().add(addButton, "wrap, wmax 200, wmin 200");
-        getContentPane().add(deleteButton, "left, wmax 200, wmin 200");
-        getContentPane().add(getLeftButton(), "right, sg button");
+        getContentPane().add(new JScrollPane(profileList), "growy, w 200");
+        getContentPane().add(details, "grow, wrap");
+        getContentPane().add(addButton, "wrap, w 200");
+        getContentPane().add(deleteButton, "left, w 200");
+        getContentPane().add(getLeftButton(), "split, right, sg button");
         getContentPane().add(getRightButton(), "right, sg button");
-
+        
         pack();
     }
 
