@@ -74,6 +74,8 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     private boolean restartNeeded;
     /** URL Config panel. */
     private URLConfigPanel urlConfigPanel;
+    /** Update Config panel. */
+    private UpdateConfigPanel updateConfigPanel;
     
     /**
      * Creates a new instance of PreferencesDialog.
@@ -110,6 +112,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
         initNicklistTab();
         initTreeviewTab();
         initURLTab();
+        initUpdateTab();
         initAdvancedTab();
         
         preferencesPanel.display();
@@ -491,10 +494,22 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
         preferencesPanel.replaceOptionPanel(tabName, urlConfigPanel);
     }
     
+    /**
+     * Initialises the Update tab.
+     */
+    private void initUpdateTab() {
+        final String tabName = "Updates";
+        preferencesPanel.addCategory(tabName, "Use this panel to adjust the" +
+                " update checking for DMDirc.");
+        updateConfigPanel = new UpdateConfigPanel();
+        preferencesPanel.replaceOptionPanel(tabName, updateConfigPanel);
+    }
+    
     /** {@inheritDoc}. */
     @Override
     public void configClosed(final Properties properties) {
         urlConfigPanel.save();
+        updateConfigPanel.save();   
         
         final Identity identity = IdentityManager.getConfigIdentity();
         for (Map.Entry<Object, Object> entry : properties.entrySet()) {
@@ -555,6 +570,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     public void dispose() {
         synchronized (me) {
             urlConfigPanel = null;
+            updateConfigPanel = null;
             preferencesPanel = null;
             IdentityManager.getGlobalConfig().removeListener(this);
             me = null;

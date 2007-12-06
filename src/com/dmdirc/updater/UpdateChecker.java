@@ -332,5 +332,17 @@ public final class UpdateChecker implements Runnable, UpdateListener {
             listener.statusChanged(newStatus);
         }
     }
+    
+    /**
+     * Checks is a specified component is enabled.
+     * 
+     * @param component Update component to check state
+     * 
+     * @return true iif the update component is enabled
+     */
+    public static boolean isEnabled(final UpdateComponent component) {
+        return IdentityManager.getGlobalConfig().getOptionBool("updater", 
+                component.getName(), true);
+    }
 
 }

@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.swing.dialogs.prefs;
 
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 
 import java.net.URI;
@@ -44,9 +43,6 @@ public class URLHandlerTableModel extends AbstractTableModel {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 3;
-    /** Config. */
-    private static final ConfigManager config =
-            IdentityManager.getGlobalConfig();
     /** Data list. */
     private List<URI> uris;
     /** Handlers list. */
