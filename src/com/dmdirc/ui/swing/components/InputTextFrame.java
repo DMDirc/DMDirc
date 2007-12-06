@@ -62,7 +62,6 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
@@ -94,7 +93,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     private InputHandler inputHandler;
     
     /** Frame input field. */
-    private JTextField inputField;
+    private SwingInputField inputField;
     
     /** Popupmenu for this frame. */
     private JPopupMenu inputFieldPopup;
@@ -140,6 +139,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void open() {
         if (getConfigManager().getOptionBool("ui", "awayindicator", false)
                 && getContainer().getServer() != null) {
@@ -154,7 +154,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
      * Initialises the components for this frame.
      */
     private void initComponents() {
-        setInputField(new JTextField());
+        setInputField(new SwingInputField());
         getInputField().setBorder(
                 BorderFactory.createCompoundBorder(
                 getInputField().getBorder(),
@@ -216,6 +216,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
      *
      * @return Input handlers for this frame
      */
+    @Override
     public final InputHandler getInputHandler() {
         return inputHandler;
     }
@@ -232,9 +233,9 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     /**
      * Returns the input field for this frame.
      *
-     * @return JTextField input field for the frame.
+     * @return SwingInputField input field for the frame.
      */
-    public final JTextField getInputField() {
+    public final SwingInputField getInputField() {
         return inputField;
     }
     
@@ -243,7 +244,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
      *
      * @param newInputField new input field to use
      */
-    protected final void setInputField(final JTextField newInputField) {
+    protected final void setInputField(final SwingInputField newInputField) {
         this.inputField = newInputField;
     }
     
@@ -279,6 +280,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     /**
      * Not needed for this class. {@inheritDoc}
      */
+    @Override
     public void internalFrameOpened(final InternalFrameEvent event) {
         super.internalFrameOpened(event);
     }
@@ -286,6 +288,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     /**
      * Not needed for this class. {@inheritDoc}
      */
+    @Override
     public void internalFrameClosing(final InternalFrameEvent event) {
         super.internalFrameClosing(event);
     }
@@ -293,6 +296,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     /**
      * Not needed for this class. {@inheritDoc}
      */
+    @Override
     public void internalFrameClosed(final InternalFrameEvent event) {
         super.internalFrameClosed(event);
     }
@@ -300,6 +304,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     /**
      * Makes the internal frame invisible. {@inheritDoc}
      */
+    @Override
     public void internalFrameIconified(final InternalFrameEvent event) {
         super.internalFrameIconified(event);
     }
@@ -307,6 +312,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     /**
      * Not needed for this class. {@inheritDoc}
      */
+    @Override
     public void internalFrameDeiconified(final InternalFrameEvent event) {
         super.internalFrameDeiconified(event);
     }
@@ -314,6 +320,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     /**
      * Activates the input field on frame focus. {@inheritDoc}
      */
+    @Override
     public void internalFrameActivated(final InternalFrameEvent event) {
         super.internalFrameActivated(event);
     }
@@ -321,17 +328,20 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     /**
      * Not needed for this class. {@inheritDoc}
      */
+    @Override
     public void internalFrameDeactivated(final InternalFrameEvent event) {
         super.internalFrameDeactivated(event);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void keyTyped(final KeyEvent event) {
         //Ignore.
         super.keyTyped(event);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void keyPressed(final KeyEvent event) {
         if (event.getSource() == getTextPane()
         && (getConfigManager().getOptionBool("ui", "quickCopy", false)
@@ -349,6 +359,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void keyReleased(final KeyEvent event) {
         //Ignore.
         super.keyReleased(event);
@@ -357,6 +368,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     /**
      * Checks for url's, channels and nicknames. {@inheritDoc}
      */
+    @Override
     public void mouseClicked(final MouseEvent mouseEvent) {
         if (mouseEvent.getSource() == getTextPane()) {
             processMouseEvent(mouseEvent);
@@ -367,6 +379,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     /**
      * Not needed for this class. {@inheritDoc}
      */
+    @Override
     public void mousePressed(final MouseEvent mouseEvent) {
         processMouseEvent(mouseEvent);
         super.mousePressed(mouseEvent);
@@ -375,6 +388,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     /**
      * Not needed for this class. {@inheritDoc}
      */
+    @Override
     public void mouseReleased(final MouseEvent mouseEvent) {
         processMouseEvent(mouseEvent);
         super.mouseReleased(mouseEvent);
@@ -383,6 +397,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     /**
      * Not needed for this class. {@inheritDoc}
      */
+    @Override
     public void mouseEntered(final MouseEvent mouseEvent) {
         //Ignore.
     }
@@ -390,6 +405,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     /**
      * Not needed for this class. {@inheritDoc}
      */
+    @Override
     public void mouseExited(final MouseEvent mouseEvent) {
         //Ignore.
     }
@@ -489,6 +505,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void nickNameClicked(final String nickname, final MouseEvent e) {
         if (e.isPopupTrigger()) {
             final Point point = getMousePosition();

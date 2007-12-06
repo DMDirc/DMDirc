@@ -38,7 +38,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.Icon;
-import javax.swing.JTextField;
 
 /**
  * Dummy channel window, used for testing.
@@ -89,7 +88,7 @@ public final class DummyChannelWindow implements ChannelWindow {
 
     /** {@inheritDoc} */
     public InputHandler getInputHandler() {
-        return new InputHandler(new JTextField(), getCommandParser(), this);
+        return new InputHandler(new DummyInputField(), getCommandParser(), this);
     }
 
     /** {@inheritDoc} */

@@ -36,7 +36,6 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import javax.swing.Icon;
-import javax.swing.JTextField;
 
 /**
  * Dummy input window, used for testing.
@@ -70,7 +69,7 @@ public final class DummyInputWindow implements InputWindow {
     
     /** {@inheritDoc} */
     public InputHandler getInputHandler() {
-        return new InputHandler(new JTextField(), null, this);
+        return new InputHandler(new DummyInputField(), null, this);
     }
     
     /** {@inheritDoc} */
