@@ -176,15 +176,15 @@ done
 jarPath="${location}trunk"
 if [ "${isRelease}" != "" ]; then
 	if [ "${BRANCH}" != "0" ]; then
-		if [ -e "${location}branches/"${isRelease} ]; then
-			jarPath="${location}branches/"${isRelease}
+		if [ -e "${location}/${isRelease}" ]; then
+			jarPath="${location}/${isRelease}"
 		else
 			echo "Branch "${isRelease}" not found."
 			exit 1;
 		fi
 	else
-		if [ -e "${location}tags/"${isRelease} ]; then
-			jarPath="${location}tags/"${isRelease}
+		if [ -e "${location}/${isRelease}" ]; then
+			jarPath="${location}/${isRelease}"
 		else
 			echo "Tag "${isRelease}" not found."
 			exit 1;
