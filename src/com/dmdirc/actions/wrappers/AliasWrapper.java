@@ -111,6 +111,7 @@ public final class AliasWrapper extends ActionWrapper {
     }
     
     /** {@inheritDoc} */
+    @Override
     public String getGroupName() {
         return "aliases";
     }
@@ -121,7 +122,7 @@ public final class AliasWrapper extends ActionWrapper {
      * @param action The action whose name is to be determined
      * @return The command name for the specified alias
      */
-    private String getCommandName(final Action action) {
+    public static String getCommandName(final Action action) {
         for (ActionCondition condition : action.getConditions()) {
             if (condition.getArg() == 1) {
                 return CommandManager.getCommandChar() + condition.getTarget();

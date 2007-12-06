@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.aliases;
 
+import com.dmdirc.actions.wrappers.Alias;
 import com.dmdirc.Main;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionCondition;
@@ -365,13 +366,7 @@ public final class AliasManagerDialog extends StandardDialog implements
      */
     private void saveNewAliases(final List<Alias> aliases) {
         for (Alias alias : aliases) {
-            new Action(
-                    AliasWrapper.getAliasWrapper().getGroupName(),
-                    alias.getName(),
-                    new ActionType[] {CoreActionType.UNKNOWN_COMMAND, },
-                    alias.getResponse(),
-                    alias.getArguments(),
-                    "").save();
+            alias.createAction().save();
         }
     }
     

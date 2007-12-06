@@ -292,6 +292,7 @@ public final class CommandManager {
         
         // Global commands
         new Active();
+        new AliasCommand();
         new AllServers();
         new Clear();
         new Debug();

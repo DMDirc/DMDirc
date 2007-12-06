@@ -20,11 +20,14 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs.aliases;
+package com.dmdirc.actions.wrappers;
 
+import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionCondition;
+import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
+import com.dmdirc.actions.CoreActionType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -215,6 +218,21 @@ public final class Alias implements Serializable {
     public boolean matches(final Alias alias) {
         return alias.getCommand().equalsIgnoreCase(command) 
                 && alias.getArguments().equals(arguments);
+    }
+    
+    /**
+     * Creates an action corresponding to this alias.
+     * 
+     * @return A new action for this alias.
+     */
+    public Action createAction() {
+        return new Action(
+                AliasWrapper.getAliasWrapper().getGroupName(),
+                getName(),
+                new ActionType[] {CoreActionType.UNKNOWN_COMMAND, },
+                getResponse(),
+                getArguments(),
+                "");
     }
     
     /** {@inheritDoc} */
