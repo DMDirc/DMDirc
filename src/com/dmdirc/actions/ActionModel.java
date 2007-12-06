@@ -135,7 +135,7 @@ public class ActionModel {
 
         final Window active = Main.getUI().getMainWindow().getActiveFrame();
         InputWindow cw;
-        CommandParser cp = null;
+        CommandParser cp;
 
         if (arguments.length > 0 && arguments[0] instanceof WritableFrameContainer) {
             cw = ((WritableFrameContainer) arguments[0]).getFrame();
@@ -145,10 +145,11 @@ public class ActionModel {
             cw = ServerManager.getServerManager().getServers().get(0).getFrame();
         } else {
             cw = null;
-            cp = GlobalCommandParser.getGlobalCommandParser();
         }
 
-        if (cw != null) {
+        if (cw == null) {
+            cp = GlobalCommandParser.getGlobalCommandParser();
+        } else {
             cp = cw.getCommandParser();
         }
 
