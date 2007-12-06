@@ -407,6 +407,12 @@ public class Identity extends ConfigSource implements Serializable,
                 
                 for (Object key : new HashSet<Object>(properties.keySet())) {
                     final String skey = (String) key;
+                    
+                    // Hack for malformed files
+                    if (skey.indexOf('.') == -1) {
+                        continue;
+                    }
+                    
                     final String domain = skey.substring(0, skey.indexOf('.'));
                     final String option = skey.substring(1 + skey.indexOf('.'));
                     final String global = globalConfig.getOption(domain, option, null);
