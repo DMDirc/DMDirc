@@ -96,6 +96,7 @@ BRANCH="0"
 plugins=""
 location="../../../"
 jarfile=""
+current=""
 
 showHelp() {
 	echo "This will generate a DMDirc installer for a windows based system."
@@ -112,6 +113,7 @@ showHelp() {
 	echo "-t, --tag <tag>           Tag to add to final exe name to distinguish this build from a standard build"
 	echo "-f, --flags <flags>       Extra flags to pass to the compiler"	
 	echo "    --jar <file>          use <file> as DMDirc.jar"
+	echo "    --current             Use the current folder as the base for the build"
 # This is not in the help cos its crappy really, and makes little/no difference to the
 # exe size unless debugging information is added using --flags, in which case the person
 # probably is Dataforce and knows about this flag anyway
@@ -132,6 +134,10 @@ while test -n "$1"; do
 		--jar)
 			shift
 			jarfile=${1}
+			;;
+		--current)
+			location="../../"
+			current="1"
 			;;
 		--compile|-c)
 			compileJar="true"
@@ -173,7 +179,11 @@ while test -n "$1"; do
 	shift	
 done
 
-jarPath="${location}trunk"
+if [ "" = "${current}" ]; then
+	jarPath="${location}trunk"
+else
+	jarPath="${location}"
+fi
 if [ "${isRelease}" != "" ]; then
 	if [ "${BRANCH}" != "0" ]; then
 		if [ -e "${location}/${isRelease}" ]; then

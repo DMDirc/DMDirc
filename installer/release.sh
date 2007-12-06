@@ -92,14 +92,15 @@ if [ "${LAST}" != "" ]; then
 			tempDIR=${PWD##*/}
 			if [ "${tempDIR}" = "tags" ]; then
 				echo "Release of tag "${version}
+				RELEASE="-r "${version}
 			elif [ "${tempDIR}" = "branches" ]; then
 				echo "Release of branch "${version}
 				BRANCH="-b "
+				RELEASE="-r "${version}
 			else
-				echo "Unknown release target."
-				exit 0;
+				echo "Unknown release target - Building as trunk build"
+				OPT="--current ${OPT}"
 			fi
-			RELEASE="-r "${version}
 		fi;
 		cd ${thisDIR}
 	elif [ "${BRANCH}" != "" -a ! -e "../../branches/"${LAST} ]; then

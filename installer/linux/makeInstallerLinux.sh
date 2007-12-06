@@ -56,6 +56,7 @@ showHelp() {
 	echo "-p, --plugins <plugins>   What plugins to add to the jar file"
 	echo "-c, --compile             Recompile the .jar file"
 	echo "    --jar <file>          use <file> as DMDirc.jar"
+	echo "    --current             Use the current folder as the base for the build"
 	echo "-t, --tag <tag>           Tag to add to final exe name to distinguish this build from a standard build"
 	echo "-k, --keep                Keep the existing source tree when compiling"
 	echo "                          (don't svn update beforehand)"
@@ -72,6 +73,7 @@ BRANCH="0"
 plugins=""
 location="../../../"
 jarfile=""
+current=""
 while test -n "$1"; do
 	case "$1" in
 		--plugins|-p)
@@ -81,6 +83,10 @@ while test -n "$1"; do
 		--jar)
 			shift
 			jarfile=${1}
+			;;
+		--current)
+			location="../../"
+			current="1"
 			;;
 		--compile|-c)
 			compileJar="true"
@@ -105,8 +111,11 @@ while test -n "$1"; do
 	esac
 	shift
 done
-
-jarPath="${location}trunk"
+if [ "" = "${current}" ]; then
+	jarPath="${location}trunk"
+else
+	jarPath="${location}"
+fi
 if [ "${isRelease}" != "" ]; then
 	if [ "${BRANCH}" != "0" ]; then
 		if [ -e "${location}/${isRelease}" ]; then
