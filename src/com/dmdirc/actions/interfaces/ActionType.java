@@ -20,39 +20,23 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.actions;
+package com.dmdirc.actions.interfaces;
 
 /**
- * The ActionComponent interface describes the methods that action components
- * are required to implement. Components are objects that allow the user to
- * pull a specific piece of information from a certain type of argument.
+ * Encapsulates the methods that all actions are required to implement.
  * @author chris
  */
-public interface ActionComponent {
+public interface ActionType {
     
     /**
-     * Retrieves the component of the specified argument that this enum
-     * represents.
-     * @param argument The object to retrieve the component from
-     * @return The relevant component of the object
-     */    
-    Object get(Object argument);
-    
-    /**
-     * Retrieves the type of class that this component applies to.
-     * @return The Class that this component can be applied to
+     * Retrieves the type of this action.
+     * @return This action's type
      */
-    Class appliesTo();
+    ActionMetaType getType();
     
     /**
-     * Retrieves the type of this component.
-     * @return The Class of this component.
-     */
-    Class getType();
-    
-    /**
-     * Retrives a friendly name for this component.
-     * @return This component's name
+     * Retrieves this type's name.
+     * @return The name of this type
      */
     String getName();
     

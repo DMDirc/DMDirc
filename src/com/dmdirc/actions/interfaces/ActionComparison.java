@@ -20,53 +20,35 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.actions.metatypes;
-
-import com.dmdirc.actions.interfaces.ActionMetaType;
-import com.dmdirc.plugins.PluginInfo;
+package com.dmdirc.actions.interfaces;
 
 /**
- * Defines plugin-related events.
- *
- * @author Chris
+ * Describes the methods that must be implemented by an action comparison.
+ * Action comparisons allow the user to compare an action component to a
+ * string they entered.
+ * @author chris
  */
-public enum PluginEvents implements ActionMetaType {
-    
-    /** Plugin event type. */
-    PLUGIN_EVENT(new String[]{"plugin"}, PluginInfo.class);
-    
-    private String[] argNames;
-    private Class[] argTypes;
+public interface ActionComparison {
     
     /**
-     * Creates a new instance of this meta-type.
-     *
-     * @param argNames The names of the meta-type's arguments
-     * @param argTypes The types of the meta-type's arguments
+     * Tests the specified arguments against each other.
+     * @param arg1 The first argument
+     * @param arg2 The second argument
+     * @return True iff the comparison between the args succeeds, false
+     * otherwise
      */
-    PluginEvents(final String[] argNames, final Class ... argTypes) {
-        this.argNames = argNames;
-        this.argTypes = argTypes;
-    }
+    boolean test(final Object arg1, final Object arg2);
     
-    /** {@inheritDoc} */
-    public int getArity() {
-        return argNames.length;
-    }
+    /**
+     * Returns the class that this comparison deals with.
+     * @return The Class that this comparison can compare
+     */
+    Class appliesTo();
     
-    /** {@inheritDoc} */
-    public Class[] getArgTypes() {
-        return argTypes;
-    }
-    
-    /** {@inheritDoc} */
-    public String[] getArgNames() {
-        return argNames;
-    }
-    
-    /** {@inheritDoc} */
-    public String getGroup() {
-        return "Plugin Events";
-    }    
+    /**
+     * Returns a friendly name for this comparison.
+     * @return This comparion's name
+     */
+    String getName();
     
 }

@@ -23,9 +23,9 @@
 package com.dmdirc.actions.wrappers;
 
 import com.dmdirc.actions.Action;
-import com.dmdirc.actions.ActionComponent;
+import com.dmdirc.actions.interfaces.ActionComponent;
 import com.dmdirc.actions.ActionCondition;
-import com.dmdirc.actions.ActionType;
+import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
 import com.dmdirc.actions.CoreActionType;

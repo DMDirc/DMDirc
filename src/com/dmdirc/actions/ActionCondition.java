@@ -22,6 +22,9 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.actions.interfaces.ActionComparison;
+import com.dmdirc.actions.interfaces.ActionComponent;
+
 /**
  * An action condition represents one condition within an action.
  * @author chris
@@ -57,6 +60,8 @@ public class ActionCondition {
     
     /**
      * Tests to see if this condition holds.
+     * 
+     * @param sub The substitutor to use for this
      * @param args The event arguments to be tested
      * @return True if the condition holds, false otherwise
      */
@@ -137,6 +142,7 @@ public class ActionCondition {
     }
     
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return "[ arg=" + arg + ", component=" + component + ", comparison=" 
                 + comparison + ", target=" + target + "]";

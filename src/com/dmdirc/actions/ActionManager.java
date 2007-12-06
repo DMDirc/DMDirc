@@ -22,6 +22,9 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.actions.interfaces.ActionComponent;
+import com.dmdirc.actions.interfaces.ActionComparison;
 import com.dmdirc.Main;
 import com.dmdirc.Precondition;
 import com.dmdirc.actions.wrappers.ActionWrapper;

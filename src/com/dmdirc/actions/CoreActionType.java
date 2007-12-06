@@ -22,6 +22,8 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.actions.interfaces.ActionMetaType;
 import com.dmdirc.actions.metatypes.ChannelEvents;
 import com.dmdirc.actions.metatypes.ClientEvents;
 import com.dmdirc.actions.metatypes.PluginEvents;

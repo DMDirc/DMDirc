@@ -22,6 +22,10 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.actions.ActionCondition;
+import com.dmdirc.actions.interfaces.ActionComponent;
+import com.dmdirc.actions.interfaces.ActionComparison;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.util.ConfigFile;

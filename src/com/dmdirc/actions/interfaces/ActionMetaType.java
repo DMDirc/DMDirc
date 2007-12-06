@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.actions;
+package com.dmdirc.actions.interfaces;
 
 /**
  * Encapsulates the methods that all action types are required to implement.

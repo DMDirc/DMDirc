@@ -20,55 +20,53 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.actions.metatypes;
+package com.dmdirc.actions;
 
-import com.dmdirc.Query;
-import com.dmdirc.actions.interfaces.ActionMetaType;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Defines query-related events.
  *
- * @author Chris
+ * @author chris
  */
-public enum QueryEvents implements ActionMetaType {
+public class ActionGroup extends ArrayList<Action> {
     
-    /** Query event type. */
-    QUERY_EVENT(new String[]{"query"}, Query.class),
-    /** Query event with argument. */
-    QUERY_EVENT_WITH_ARG(new String[]{"query", "message"}, Query.class, String.class);
+    private String name;
     
-    private String[] argNames;
-    private Class[] argTypes;
+    private String description;
     
-    /**
-     * Creates a new instance of this meta-type.
-     *
-     * @param argNames The names of the meta-type's arguments
-     * @param argTypes The types of the meta-type's arguments
-     */
-    QueryEvents(final String[] argNames, final Class ... argTypes) {
-        this.argNames = argNames;
-        this.argTypes = argTypes;
+    private String author;
+    
+    private final List<ActionSetting> settings = new ArrayList<ActionSetting>();
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<ActionSetting> getSettings() {
+        return settings;
     }
     
-    /** {@inheritDoc} */
-    public int getArity() {
-        return argNames.length;
-    }
     
-    /** {@inheritDoc} */
-    public Class[] getArgTypes() {
-        return argTypes;
-    }
-    
-    /** {@inheritDoc} */
-    public String[] getArgNames() {
-        return argNames;
-    }
-    
-    /** {@inheritDoc} */
-    public String getGroup() {
-        return "Query Events";
-    }    
-    
+
 }

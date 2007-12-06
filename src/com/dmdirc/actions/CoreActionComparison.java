@@ -22,6 +22,7 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.actions.interfaces.ActionComparison;
 import com.dmdirc.ui.messages.ColourManager;
 
 import java.awt.Color;

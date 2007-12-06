@@ -23,32 +23,15 @@
 package com.dmdirc.actions;
 
 /**
- * Describes the methods that must be implemented by an action comparison.
- * Action comparisons allow the user to compare an action component to a
- * string they entered.
+ *
  * @author chris
  */
-public interface ActionComparison {
+public class ActionSetting {
     
-    /**
-     * Tests the specified arguments against each other.
-     * @param arg1 The first argument
-     * @param arg2 The second argument
-     * @return True iff the comparison between the args succeeds, false
-     * otherwise
-     */
-    boolean test(final Object arg1, final Object arg2);
+    private String setting;
     
-    /**
-     * Returns the class that this comparison deals with.
-     * @return The Class that this comparison can compare
-     */
-    Class appliesTo();
+    private String title;
     
-    /**
-     * Returns a friendly name for this comparison.
-     * @return This comparion's name
-     */
-    String getName();
-    
+    private String fallback;
+
 }

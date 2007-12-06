@@ -23,7 +23,7 @@
 package com.dmdirc.actions.metatypes;
 
 import com.dmdirc.Channel;
-import com.dmdirc.actions.ActionMetaType;
+import com.dmdirc.actions.interfaces.ActionMetaType;
 import com.dmdirc.parser.ChannelClientInfo;
 
 /**

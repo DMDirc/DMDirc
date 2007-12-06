@@ -23,7 +23,7 @@
 package com.dmdirc.actions.metatypes;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.actions.ActionMetaType;
+import com.dmdirc.actions.interfaces.ActionMetaType;
 
 import javax.swing.KeyStroke;
 

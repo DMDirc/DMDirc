@@ -22,6 +22,8 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.Main;
 import com.dmdirc.Precondition;
 import com.dmdirc.ServerManager;
