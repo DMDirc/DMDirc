@@ -539,7 +539,9 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     
     /** Request input field focus. */
     public void requestInputFieldFocus() {
-        inputField.requestFocus();
+        if (inputField != null) {
+            inputField.requestFocus();
+        }
     }
     
     /** {@inheritDoc} */

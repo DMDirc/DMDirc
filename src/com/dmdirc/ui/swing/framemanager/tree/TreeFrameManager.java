@@ -270,7 +270,11 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
         nodes.put(window, node);
         labels.put(node, new JLabel());
         node.setUserObject(window);
-        model.insertNodeInto(node, parent);
+        if (parent == null) {
+            model.insertNodeInto(node, root);
+        } else {
+            model.insertNodeInto(node, parent);
+        }
         tree.expandPath(new TreePath(node.getPath()).getParentPath());
         final Rectangle view = tree.getRowBounds(tree.getRowForPath(new TreePath(node.getPath())));
         tree.scrollRectToVisible(new Rectangle(0, (int) view.getY(), 0, 0));

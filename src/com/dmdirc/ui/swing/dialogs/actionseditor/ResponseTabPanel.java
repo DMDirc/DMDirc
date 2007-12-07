@@ -24,7 +24,6 @@ package com.dmdirc.ui.swing.dialogs.actionseditor;
 
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.messages.Formatter;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
@@ -114,17 +113,14 @@ public final class ResponseTabPanel extends JPanel implements
             return;
         }
         
+        final StringBuilder sb = new StringBuilder();
         for (String response : owner.getAction().getResponse()) {
-            responses.setText(responses.getText() + '\n' + response);
+            sb.append(response).append('\n');
         }
         
-        try {
-            responses.setText(responses.getText(1, responses.getText().length()));
-        } catch (BadLocationException ex) {
-            responses.setText(responses.getText());
+        if (sb.length() > 0) {
+            responses.setText(sb.substring(0, sb.length() -1));
         }
-        
-        responses.setText(responses.getText().substring(0, responses.getText().length() - 1));
         
         if (owner.getAction().getNewFormat() == null) {
             formatter.setSelectedIndex(0);
