@@ -1299,6 +1299,12 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @param invite The invite to be added
      */
     public void addInvite(final Invite invite) {
+        for (Invite oldInvite : new ArrayList<Invite>(invites)) {
+            if (oldInvite.getChannel().equals(invite.getChannel())) {
+                removeInvite(oldInvite);
+            }
+        }
+        
         invites.add(invite);
 
         for (InviteListener listener : listeners.get(InviteListener.class)) {
