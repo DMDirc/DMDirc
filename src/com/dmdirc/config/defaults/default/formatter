@@ -227,6 +227,7 @@ formatter.numeric_474 = 6A7000%4$s\u000F: %5$s
 formatter.numeric_475 = 6A7000%4$s\u000F: %5$s
 formatter.numeric_479 = 6A7000%4$s\u000F: %5$s
 formatter.numeric_482 = 6A7000%4$s\u000F: %5$s
+formatter.numeric_501 = 6A7000%4$s\u000F: %5$s
 formatter.numeric_524 = 6A7000%4$s\u000F: %5$s
 
 formatter.numeric_671 = %4$s %5$s.

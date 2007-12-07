@@ -79,6 +79,7 @@ notifications.numeric_475=server
 notifications.numeric_479=server
 notifications.numeric_482=channel:%4$s
 
+notifications.numeric_501=server
 notifications.numeric_524=server
 
 notifications.numeric_671=group:whois
