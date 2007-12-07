@@ -260,6 +260,7 @@ public final class CommandManager {
         new Cycle();
         new KickReason();
         new Mode();
+        new Names();
         new Part();
         new SetNickColour();
         new ShowTopic();
@@ -279,6 +280,7 @@ public final class CommandManager {
         new Query();
         new Raw();
         new Reconnect();
+        new Umode();
         
         new RawServerCommand("invite");
         new RawServerCommand("join");
