@@ -148,6 +148,10 @@ public final class IconManager implements ConfigChangeListener {
             imageURL = defaultURL;
         }
         
+        if (imageURL == null) {
+            imageURL = cldr.getResource("com/dmdirc/res/icon.png");
+        }
+        
         return imageURL;
     }
 
