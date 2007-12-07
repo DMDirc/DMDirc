@@ -28,10 +28,35 @@ package com.dmdirc.actions;
  */
 public class ActionSetting {
     
+    public static enum TYPE {
+        TEXT,
+        COLOUR,
+        NUMBER,
+        BOOLEAN
+    }
+    
+    private TYPE type;
+    
     private String setting;
     
     private String title;
     
     private String fallback;
 
+    public String getFallback() {
+        return fallback;
+    }
+
+    public String getSetting() {
+        return setting;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public TYPE getType() {
+        return type;
+    }
+    
 }
