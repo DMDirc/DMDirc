@@ -22,6 +22,8 @@
 
 package com.dmdirc.ui.swing.dialogs.aliases;
 
+import com.dmdirc.ui.swing.components.renderers.ArrayCellRenderer;
+import com.dmdirc.ui.swing.components.renderers.ActionConditionCellRenderer;
 import com.dmdirc.actions.wrappers.Alias;
 import com.dmdirc.Main;
 import com.dmdirc.actions.Action;

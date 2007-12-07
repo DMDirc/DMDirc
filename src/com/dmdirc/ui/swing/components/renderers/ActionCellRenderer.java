@@ -20,21 +20,21 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs.actionseditor;
+package com.dmdirc.ui.swing.components.renderers;
 
+import com.dmdirc.actions.interfaces.ActionComparison;
+import com.dmdirc.actions.interfaces.ActionComponent;
 import com.dmdirc.actions.interfaces.ActionType;
 
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Font;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 
 /**
- * Displays actions types and headers in a pretty fashion.
+ * Displays actions using getName not toString.
  */
-public final class ActionTypeRenderer extends DefaultListCellRenderer {
+public final class ActionCellRenderer extends DefaultListCellRenderer {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -44,26 +44,29 @@ public final class ActionTypeRenderer extends DefaultListCellRenderer {
     private static final long serialVersionUID = 1;
     
     /**
-     * Creates a new instance of ActionTypeRenderer.
+     * Creates a new instance of ActionCellRenderer.
      */
-    public ActionTypeRenderer() {
+    public ActionCellRenderer() {
         super();
     }
     
     /** {@inheritDoc} */
+    @Override
     public Component getListCellRendererComponent(final JList list,
             final Object value, final int index, final boolean isSelected,
             final boolean cellHasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         
-        if (value == null) {
-            setText("");
-        } else if (value instanceof String && !((String) value).isEmpty()) {
-            setBackground(Color.GRAY);
-            setFont(getFont().deriveFont(Font.BOLD));
-            setText(value.toString());
+        if (value instanceof ActionComparison) {
+            setText(((ActionComparison) value).getName());
+        } else if (value instanceof ActionComponent) {
+            setText(((ActionComponent) value).getName());
         } else if (value instanceof ActionType) {
             setText(((ActionType) value).getName());
+        } else if (value instanceof Class) {
+            setText(((Class) value).getSimpleName());
+        } else if (value == null) {
+            setText("");
         } else {
             setText(value.toString());
         }

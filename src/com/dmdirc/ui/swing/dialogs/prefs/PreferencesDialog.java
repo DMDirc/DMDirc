@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.prefs;
 
+import com.dmdirc.ui.swing.components.renderers.MapEntryRenderer;
 import com.dmdirc.Main;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;

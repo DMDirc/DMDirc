@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing.framemanager.tree;
 
+import com.dmdirc.ui.swing.components.renderers.TreeViewTreeCellRenderer;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;

@@ -22,6 +22,8 @@
 
 package com.dmdirc.ui.swing.dialogs.channelsetting;
 
+import com.dmdirc.ui.swing.components.renderers.ListModeCellRenderer;
+import com.dmdirc.ui.swing.components.renderers.ExtendedListModeCellRenderer;
 import com.dmdirc.Channel;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;

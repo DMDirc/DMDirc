@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.channelsetting;
 
+import com.dmdirc.ui.swing.components.renderers.TopicCellRenderer;
 import com.dmdirc.Channel;
 import com.dmdirc.Topic;
 

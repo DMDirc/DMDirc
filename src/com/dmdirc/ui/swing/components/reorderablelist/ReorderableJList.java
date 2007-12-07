@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.components.reorderablelist;
 
 
+import com.dmdirc.ui.swing.components.renderers.ReorderableJListCellRenderer;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 

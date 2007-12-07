@@ -22,6 +22,8 @@
 
 package com.dmdirc.ui.swing.dialogs.prefs;
 
+import com.dmdirc.ui.swing.components.renderers.URISchemeCellRenderer;
+import com.dmdirc.ui.swing.components.renderers.URIHandlerCellRenderer;
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.swing.MainFrame;

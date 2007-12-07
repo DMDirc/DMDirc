@@ -22,6 +22,8 @@
 
 package com.dmdirc.ui.swing.dialogs.error;
 
+import com.dmdirc.ui.swing.components.renderers.ErrorLevelIconCellRenderer;
+import com.dmdirc.ui.swing.components.renderers.DateCellRenderer;
 import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorListener;
 import com.dmdirc.logger.ErrorManager;

@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,17 +20,25 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs.prefs;
+package com.dmdirc.ui.swing.components.renderers;
+
+import com.dmdirc.parser.ChannelListModeItem;
 
 import java.awt.Component;
-import java.util.Map.Entry;
-import javax.swing.DefaultListCellRenderer;
+import java.util.Date;
+
+import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.ListCellRenderer;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
- * Map entry renderer.
+ * Extended list mode cell renderer.
  */
-public final class MapEntryRenderer extends DefaultListCellRenderer {
+public class ExtendedListModeCellRenderer extends JPanel implements ListCellRenderer {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -39,21 +47,26 @@ public final class MapEntryRenderer extends DefaultListCellRenderer {
      */
     private static final long serialVersionUID = 1;
 
+    /** {@inheritDoc} */
     @Override
-    public Component getListCellRendererComponent(final JList list,
-            final Object value, final int index, final boolean isSelected,
-            final boolean cellHasFocus) {
-
-        super.getListCellRendererComponent(list, value, index, isSelected,
-                cellHasFocus);
-        if (value == null) {
-            setText("Any");
-        } else if (value instanceof Entry) {
-            setText((String) ((Entry) value).getKey());
+    public Component getListCellRendererComponent(JList list, Object value,
+            int index, boolean isSelected, boolean cellHasFocus) {
+        final ChannelListModeItem listMode = (ChannelListModeItem) value;
+        
+        removeAll();
+        setLayout(new MigLayout("fill, ins 0"));
+        
+        if (isSelected) {
+            setBackground(list.getSelectionBackground());
         } else {
-            setText(value.toString());
+            setBackground(list.getBackground());
         }
-
+        
+        add(new JLabel(listMode.getItem()), "split 2, growx, pushx");
+        add(new JLabel(new Date(listMode.getTime() / 1000).toString()), "right, wrap");
+        add(new JLabel(listMode.getOwner()), "growx, pushx, wrap");
+        add(new JSeparator(), "growx, pushx");
+        
         return this;
     }
 }

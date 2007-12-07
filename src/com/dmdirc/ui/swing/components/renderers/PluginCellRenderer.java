@@ -20,9 +20,8 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.components;
+package com.dmdirc.ui.swing.components.renderers;
 
-import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginInfo;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
@@ -51,6 +50,7 @@ public final class PluginCellRenderer implements ListCellRenderer {
     }
     
     /** {@inheritDoc} */
+    @Override
     public Component getListCellRendererComponent(final JList list,
             final Object value, final int index, final boolean isSelected,
             final boolean cellHasFocus) {

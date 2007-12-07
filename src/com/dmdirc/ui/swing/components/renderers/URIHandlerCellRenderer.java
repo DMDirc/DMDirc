@@ -20,64 +20,59 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.components.expandingsettings;
+package com.dmdirc.ui.swing.components.renderers;
 
 import java.awt.Component;
 
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.ListCellRenderer;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 
 /**
- * Add option combo box cell renderer.
+ * URI Scheme cell renderer.
  */
-public final class AddOptionCellRenderer extends JLabel
-        implements ListCellRenderer {
-    
+public class URIHandlerCellRenderer extends DefaultTableCellRenderer {
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
-    /** Settings panel parent. */
-    private final SettingsPanel parent;
-    
+
     /**
-     * Instantiates the renderer.
-     *
-     * @param parent Parent settings panel
+     * Instantiates a new URICellRenderer.
      */
-    public AddOptionCellRenderer(final SettingsPanel parent) {
+    public URIHandlerCellRenderer() {
         super();
-        
-        this.parent = parent;
-        
-        setOpaque(true);
-        setVerticalAlignment(CENTER);
     }
-    
-    /** {@inheritDoc} */
-    public Component getListCellRendererComponent(
-            final JList list,
-            final Object value,
-            final int index,
-            final boolean isSelected,
-            final boolean cellHasFocus) {
-        final String selected = (String) value;
-        
-        if (isSelected) {
-            setBackground(list.getSelectionBackground());
-            setForeground(list.getSelectionForeground());
+
+    @Override
+    public Component getTableCellRendererComponent(final JTable table,
+            final Object value, final boolean isSelected,
+            final boolean hasFocus,
+            final int row, final int column) {
+        super.getTableCellRendererComponent(table, value, isSelected, hasFocus,
+                row, column);
+        if (!(value instanceof String)) {
+            setValue(value.toString());
+            return this;
+        }
+
+        String handler = (String) value;
+        if ("DMDIRC".equals(handler)) {
+            handler = "Handle internally (irc links only).";
+        } else if ("BROWSER".equals(handler)) {
+            handler = "Use browser (or system registered handler).";
+        } else if ("MAIL".equals(handler)) {
+            handler = "Use mail client.";
+        } else if ("".equals(handler)) {
+            handler = "No handler.";
         } else {
-            setBackground(list.getBackground());
-            setForeground(list.getForeground());
+            handler = "Custom command: " + handler;
         }
         
-        setText(parent.getOptionName(selected));
-        setFont(list.getFont());
-        
+        setValue(handler);
+
         return this;
     }
 }

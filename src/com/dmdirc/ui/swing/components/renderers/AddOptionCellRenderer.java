@@ -20,19 +20,21 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs.aliases;
+package com.dmdirc.ui.swing.components.renderers;
 
-import com.dmdirc.actions.interfaces.ActionComparison;
+import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel;
 
 import java.awt.Component;
 
-import javax.swing.DefaultListCellRenderer;
+import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 
 /**
- * Renders an action comparison in plain english.
+ * Add option combo box cell renderer.
  */
-public final class ActionComparisonCellRenderer extends DefaultListCellRenderer {
+public final class AddOptionCellRenderer extends JLabel
+        implements ListCellRenderer {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -41,25 +43,44 @@ public final class ActionComparisonCellRenderer extends DefaultListCellRenderer 
      */
     private static final long serialVersionUID = 1;
     
-    /** Creates a new instance of ActionComparisonCellRenderer. */
-    public ActionComparisonCellRenderer() {
+    /** Settings panel parent. */
+    private final SettingsPanel parent;
+    
+    /**
+     * Instantiates the renderer.
+     *
+     * @param parent Parent settings panel
+     */
+    public AddOptionCellRenderer(final SettingsPanel parent) {
         super();
+        
+        this.parent = parent;
+        
+        setOpaque(true);
+        setVerticalAlignment(CENTER);
     }
     
     /** {@inheritDoc} */
-    public Component getListCellRendererComponent(final JList list,
-            final Object value, final int index, final boolean isSelected,
-            final boolean hasFocus) {
+    @Override
+    public Component getListCellRendererComponent(
+            final JList list,
+            final Object value,
+            final int index,
+            final boolean isSelected,
+            final boolean cellHasFocus) {
+        final String selected = (String) value;
         
-        super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
-        
-        if (value == null) {
-            setText("Any");
+        if (isSelected) {
+            setBackground(list.getSelectionBackground());
+            setForeground(list.getSelectionForeground());
         } else {
-            setText(((ActionComparison) value).getName());
+            setBackground(list.getBackground());
+            setForeground(list.getForeground());
         }
+        
+        setText(parent.getOptionName(selected));
+        setFont(list.getFont());
         
         return this;
     }
-    
 }

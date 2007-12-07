@@ -20,45 +20,54 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs.channelsetting;
+package com.dmdirc.ui.swing.components.renderers;
 
-import com.dmdirc.parser.ChannelListModeItem;
+import java.util.Date;
 
-import java.awt.Component;
+import javax.swing.table.DefaultTableCellRenderer;
 
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JList;
-
-/** List mode cell renderer. */
-class ListModeCellRenderer extends DefaultListCellRenderer {
-
+/**
+ * List cell renderer for dates.
+ */
+public final class DateCellRenderer extends DefaultTableCellRenderer {
+    
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-
-    /** Instantiates a new list mode cell renderer. */
-    public ListModeCellRenderer() {
+    
+    /** Creates a new instance of DateCellRenderer. */
+    public DateCellRenderer() {
         super();
     }
-
+    
     /** {@inheritDoc} */
     @Override
-    public Component getListCellRendererComponent(final JList list,
-            final Object value, final int index, final boolean isSelected,
-            final boolean cellHasFocus) {
-        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+    public void setValue(final Object value) {
+        setText("" + duration((new Date().getTime() - ((Date) value).getTime()) / 1000));
+    }
+    
+    /**
+     * Get the duration in seconds as a string.
+     *
+     * @param secondsInput to get duration for
+     *
+     * @return Duration as a string
+     */
+    private String duration(final long secondsInput) {
+        final StringBuilder result = new StringBuilder();
+        final long hours = secondsInput / 3600;
+        final long minutes = secondsInput / 60 % 60;
+        //final long seconds = secondsInput % 60;
         
-        if (value == null) {
-            setText("");
-        } else if (value instanceof ChannelListModeItem) {
-            setText(((ChannelListModeItem) value).getItem());
-        } else {
-            setText(value.toString());
+        if (hours > 0) { 
+            result.append(hours).append("h ");
         }
         
-        return this;
+        result.append(minutes).append("m");
+        
+        return result.toString();
     }
 }

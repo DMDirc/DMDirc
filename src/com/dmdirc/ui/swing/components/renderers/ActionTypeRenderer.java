@@ -20,16 +20,21 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs.error;
+package com.dmdirc.ui.swing.components.renderers;
 
-import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.actions.interfaces.ActionType;
 
-import javax.swing.JLabel;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
 
-import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
 
-/** List cell renderer for dates. */
-public final class ErrorLevelIconCellRenderer extends DefaultTableCellRenderer {
+/**
+ * Displays actions types and headers in a pretty fashion.
+ */
+public final class ActionTypeRenderer extends DefaultListCellRenderer {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -38,15 +43,33 @@ public final class ErrorLevelIconCellRenderer extends DefaultTableCellRenderer {
      */
     private static final long serialVersionUID = 1;
     
-    /** Creates a new instance of ErrorLevelIconCellRenderer. */
-    public ErrorLevelIconCellRenderer() {
+    /**
+     * Creates a new instance of ActionTypeRenderer.
+     */
+    public ActionTypeRenderer() {
         super();
     }
     
     /** {@inheritDoc} */
     @Override
-    public void setValue(final Object value) {
-        setHorizontalAlignment(JLabel.CENTER);
-        setIcon(((ErrorLevel) value).getIcon());
+    public Component getListCellRendererComponent(final JList list,
+            final Object value, final int index, final boolean isSelected,
+            final boolean cellHasFocus) {
+        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        
+        if (value == null) {
+            setText("");
+        } else if (value instanceof String && !((String) value).isEmpty()) {
+            setBackground(Color.GRAY);
+            setFont(getFont().deriveFont(Font.BOLD));
+            setText(value.toString());
+        } else if (value instanceof ActionType) {
+            setText(((ActionType) value).getName());
+        } else {
+            setText(value.toString());
+        }
+        
+        return this;
     }
+    
 }

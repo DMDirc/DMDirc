@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.actionseditor;
 
+import com.dmdirc.ui.swing.components.renderers.ActionSubstititionRenderer;
 import com.dmdirc.actions.ActionSubstitutor;
 import com.dmdirc.actions.interfaces.ActionType;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;

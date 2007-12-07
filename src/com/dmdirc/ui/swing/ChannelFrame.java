@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing;
 
+import com.dmdirc.ui.swing.components.renderers.NicklistRenderer;
 import com.dmdirc.Channel;
 import com.dmdirc.Main;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;

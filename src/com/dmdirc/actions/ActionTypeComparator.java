@@ -20,33 +20,39 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs.aliases;
+package com.dmdirc.actions;
 
-import java.util.Arrays;
+import com.dmdirc.actions.interfaces.ActionType;
 
-import javax.swing.table.DefaultTableCellRenderer;
+import java.io.Serializable;
+
+import java.util.Comparator;
 
 /**
- * Renders an array as an inline string.
+ * Implements a comparator for action types that compares their names.
+ * 
+ * @author Chris
  */
-public final class ArrayCellRenderer extends DefaultTableCellRenderer {
-    
+public final class ActionTypeComparator implements Comparator<ActionType>, Serializable {
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 1;        
     
-    /** Creates a new instance of ArrayCellRenderer. */
-    public ArrayCellRenderer() {
-        super();
+    /**
+     * Creates a new instance of ActionTypeComparator.
+     */
+    public ActionTypeComparator() {
+        // Do nothing
     }
-    
+
     /** {@inheritDoc} */
-    public void setValue(final Object value) {
-        final String response = Arrays.toString((String[]) value);
-        setText(response.substring(1, response.length() - 1));
+    @Override
+    public int compare(final ActionType o1, final ActionType o2) {
+        return o1.getName().compareTo(o2.getName());
     }
-    
+
 }

@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.framemanager.tree;
+package com.dmdirc.ui.swing.components.renderers;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.IconManager;
@@ -28,6 +28,7 @@ import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.messages.ColourManager;
+import com.dmdirc.ui.swing.framemanager.tree.TreeFrameManager;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.Color;
@@ -106,6 +107,7 @@ public class TreeViewTreeCellRenderer implements TreeCellRenderer,
      *
      * @return RendererComponent for this node.
      */
+    @Override
     public final Component getTreeCellRendererComponent(final JTree tree,
             final Object value, final boolean sel, final boolean expanded,
             final boolean leaf, final int row, final boolean hasFocus) {
@@ -183,6 +185,7 @@ public class TreeViewTreeCellRenderer implements TreeCellRenderer,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void configChanged(final String domain, final String key) {
         if (("ui".equals(domain) || "treeview".equals(domain)) &&
                 ("treeviewRolloverColour".equals(key) ||

@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing.components.expandingsettings;
 
+import com.dmdirc.ui.swing.components.renderers.AddOptionCellRenderer;
 import com.dmdirc.ui.swing.components.ColourChooser;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel.OptionType;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;

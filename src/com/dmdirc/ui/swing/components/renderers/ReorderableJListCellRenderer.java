@@ -20,7 +20,9 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.components.reorderablelist;
+package com.dmdirc.ui.swing.components.renderers;
+
+import com.dmdirc.ui.swing.components.reorderablelist.ReorderableJList;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -35,7 +37,7 @@ import javax.swing.UIManager;
 /**
  * Renderer for the reorderable JList, procides visual clues to DnD.
  */
-class ReorderableJListCellRenderer implements ListCellRenderer {
+public class ReorderableJListCellRenderer implements ListCellRenderer {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -59,9 +61,10 @@ class ReorderableJListCellRenderer implements ListCellRenderer {
     }
     
     /** {@inheritDoc} */
+    @Override
     public Component getListCellRendererComponent(final JList list,
             final Object value, final int index, final boolean isSelected,
-            final boolean hasFocus) {
+            final boolean cellHasFocus) {
         final JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         final boolean isTargetCell = value == parent.getTargetCell();

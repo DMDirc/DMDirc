@@ -22,6 +22,8 @@
 
 package com.dmdirc.ui.swing.dialogs.actionseditor;
 
+import com.dmdirc.ui.swing.components.renderers.ActionTypeRenderer;
+import com.dmdirc.ui.swing.components.renderers.ActionCellRenderer;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;

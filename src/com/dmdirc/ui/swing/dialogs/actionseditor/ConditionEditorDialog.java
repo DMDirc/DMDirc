@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.actionseditor;
 
+import com.dmdirc.ui.swing.components.renderers.ActionCellRenderer;
 import com.dmdirc.Main;
 import com.dmdirc.actions.interfaces.ActionComparison;
 import com.dmdirc.actions.interfaces.ActionComponent;

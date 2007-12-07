@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,58 +20,47 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs.channelsetting;
+package com.dmdirc.ui.swing.components.renderers;
 
-import com.dmdirc.Topic;
-import com.dmdirc.ui.swing.JWrappingLabel;
+import com.dmdirc.actions.interfaces.ActionComparison;
+
 import java.awt.Component;
-import java.awt.Dimension;
-import java.util.Date;
-import javax.swing.JLabel;
+
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.ListCellRenderer;
-import net.miginfocom.swing.MigLayout;
 
 /**
- * Topic list cell renderer.
+ * Renders an action comparison in plain english.
  */
-public class TopicCellRenderer extends JPanel implements ListCellRenderer {
-
+public final class ActionComparisonCellRenderer extends DefaultListCellRenderer {
+    
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-
+    
+    /** Creates a new instance of ActionComparisonCellRenderer. */
+    public ActionComparisonCellRenderer() {
+        super();
+    }
+    
     /** {@inheritDoc} */
     @Override
-    public Component getListCellRendererComponent(JList list, Object value,
-            int index, boolean isSelected, boolean cellHasFocus) {
-        removeAll();
-        setLayout(new MigLayout("ins 0, wrap 1"));
-
-        if (isSelected) {
-            setBackground(list.getSelectionBackground());
+    public Component getListCellRendererComponent(final JList list,
+            final Object value, final int index, final boolean isSelected,
+            final boolean cellHasFocus) {
+        
+        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        
+        if (value == null) {
+            setText("Any");
         } else {
-            setBackground(list.getBackground());
+            setText(((ActionComparison) value).getName());
         }
-
-        if (value instanceof Topic) {
-            final Topic topic = (Topic) value;
-
-            final JWrappingLabel label = new JWrappingLabel(topic.getTopic());
-            label.setMaximumSize(new Dimension(list.getWidth(), 0));
-            add(label, "growx");
-            add(new JLabel(new Date(topic.getTime() * 1000).toString()),
-                    "split 2");
-            add(new JLabel(topic.getClient()), "growx, pushx");
-        } else {
-            add(new JLabel(value.toString()), "grow");
-        }
-        add(new JSeparator(), "growx, pushx");
+        
         return this;
     }
+    
 }

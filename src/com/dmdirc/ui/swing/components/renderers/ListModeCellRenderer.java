@@ -20,18 +20,17 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs.prefs;
+package com.dmdirc.ui.swing.components.renderers;
+
+import com.dmdirc.parser.ChannelListModeItem;
 
 import java.awt.Component;
-import java.net.URI;
 
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
 
-/**
- * URI Scheme cell renderer.
- */
-class URISchemeCellRenderer extends DefaultTableCellRenderer {
+/** List mode cell renderer. */
+public class ListModeCellRenderer extends DefaultListCellRenderer {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -40,26 +39,26 @@ class URISchemeCellRenderer extends DefaultTableCellRenderer {
      */
     private static final long serialVersionUID = 1;
 
-    /**
-     * Instantiates a new URICellRenderer.
-     */
-    public URISchemeCellRenderer() {
+    /** Instantiates a new list mode cell renderer. */
+    public ListModeCellRenderer() {
         super();
     }
 
+    /** {@inheritDoc} */
     @Override
-    public Component getTableCellRendererComponent(final JTable table,
-            final Object value, final boolean isSelected,
-            final boolean hasFocus,
-            final int row, final int column) {
-        super.getTableCellRendererComponent(table, value, isSelected, hasFocus,
-                row, column);
-        if (value instanceof URI) {
-            setValue(((URI) value).getScheme());
+    public Component getListCellRendererComponent(final JList list,
+            final Object value, final int index, final boolean isSelected,
+            final boolean cellHasFocus) {
+        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        
+        if (value == null) {
+            setText("");
+        } else if (value instanceof ChannelListModeItem) {
+            setText(((ChannelListModeItem) value).getItem());
         } else {
-            setValue(value.toString());
+            setText(value.toString());
         }
-
+        
         return this;
     }
 }

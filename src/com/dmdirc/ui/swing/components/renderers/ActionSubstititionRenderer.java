@@ -20,46 +20,44 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs.aliases;
+package com.dmdirc.ui.swing.components.renderers;
 
-import com.dmdirc.actions.ActionCondition;
-import com.dmdirc.actions.CoreActionComparison;
 
-import javax.swing.table.DefaultTableCellRenderer;
+import com.dmdirc.ui.swing.dialogs.actionseditor.ActionSubstitution;
+import java.awt.Component;
+
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
 
 /**
- * Renders an action condition in plain english.
+ * Displays actions using getName not toString.
  */
-public final class ActionConditionCellRenderer extends DefaultTableCellRenderer {
+public final class ActionSubstititionRenderer extends DefaultListCellRenderer {
     
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 1;
     
-    /** Creates a new instance of ActionConditionCellRenderer. */
-    public ActionConditionCellRenderer() {
+    /**
+     * Creates a new instance of ActionSubstititionRenderer.
+     */
+    public ActionSubstititionRenderer() {
         super();
     }
     
     /** {@inheritDoc} */
-    public void setValue(final Object aValue) {
-        if (aValue == null) {
-            setText("Any");
-            return;
-        }
+    @Override
+    public Component getListCellRendererComponent(final JList list,
+            final Object value, final int index, final boolean isSelected,
+            final boolean cellHasFocus) {
+        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         
-        final ActionCondition value = (ActionCondition) aValue;
+        setText(((ActionSubstitution) value).getValue());
         
-        if (value.getComparison() == CoreActionComparison.INT_EQUALS 
-                || value.getComparison() == CoreActionComparison.INT_GREATER 
-                || value.getComparison() == CoreActionComparison.INT_LESS) {
-            setText(value.getComparison().getName() + " " + value.getTarget());
-        } else {
-            setText(value.toString());
-        }
+        return this;
     }
     
 }

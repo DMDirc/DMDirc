@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.profiles;
 
+import com.dmdirc.ui.swing.components.renderers.ProfileListCellRenderer;
 import com.dmdirc.Main;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;

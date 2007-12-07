@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs.prefs;
+package com.dmdirc.ui.swing.components.renderers;
 
 import java.awt.Component;
 import java.net.URI;
@@ -31,7 +31,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 /**
  * URI Scheme cell renderer.
  */
-class URIHandlerCellRenderer extends DefaultTableCellRenderer {
+public class URISchemeCellRenderer extends DefaultTableCellRenderer {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -43,7 +43,7 @@ class URIHandlerCellRenderer extends DefaultTableCellRenderer {
     /**
      * Instantiates a new URICellRenderer.
      */
-    public URIHandlerCellRenderer() {
+    public URISchemeCellRenderer() {
         super();
     }
 
@@ -54,25 +54,11 @@ class URIHandlerCellRenderer extends DefaultTableCellRenderer {
             final int row, final int column) {
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus,
                 row, column);
-        if (!(value instanceof String)) {
-            setValue(value.toString());
-            return this;
-        }
-
-        String handler = (String) value;
-        if ("DMDIRC".equals(handler)) {
-            handler = "Handle internally (irc links only).";
-        } else if ("BROWSER".equals(handler)) {
-            handler = "Use browser (or system registered handler).";
-        } else if ("MAIL".equals(handler)) {
-            handler = "Use mail client.";
-        } else if ("".equals(handler)) {
-            handler = "No handler.";
+        if (value instanceof URI) {
+            setValue(((URI) value).getScheme());
         } else {
-            handler = "Custom command: " + handler;
+            setValue(value.toString());
         }
-        
-        setValue(handler);
 
         return this;
     }

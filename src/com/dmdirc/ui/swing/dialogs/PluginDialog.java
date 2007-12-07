@@ -27,7 +27,7 @@ import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.swing.MainFrame;
-import com.dmdirc.ui.swing.components.PluginCellRenderer;
+import com.dmdirc.ui.swing.components.renderers.PluginCellRenderer;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;

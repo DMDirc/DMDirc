@@ -246,7 +246,7 @@ public final class SettingsPanel extends JPanel {
      *
      * @return Display name for a specified option
      */
-    protected String getOptionName(final String optionName) {
+    public String getOptionName(final String optionName) {
         return names.get(optionName);
     }
     
@@ -257,7 +257,7 @@ public final class SettingsPanel extends JPanel {
      *
      * @return Option type for a specified option
      */
-    protected OptionType getOptionType(final String optionName) {
+    public OptionType getOptionType(final String optionName) {
         return types.get(optionName);
     }
 }

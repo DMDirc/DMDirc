@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.actionseditor;
 
+import com.dmdirc.actions.ActionTypeComparator;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.util.MapList;
 

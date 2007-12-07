@@ -20,42 +20,44 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs.actionseditor;
+package com.dmdirc.ui.swing.components.renderers;
 
+import com.dmdirc.ui.swing.dialogs.profiles.Profile;
 
 import java.awt.Component;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 
-/**
- * Displays actions using getName not toString.
- */
-public final class ActionSubstititionRenderer extends DefaultListCellRenderer {
-    
+/** Profile list renderer. */
+public class ProfileListCellRenderer extends DefaultListCellRenderer {
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
-    /**
-     * Creates a new instance of ActionSubstititionRenderer.
-     */
-    public ActionSubstititionRenderer() {
+
+    /** Creates a new instance of ActionCellRenderer. */
+    public ProfileListCellRenderer() {
         super();
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public Component getListCellRendererComponent(final JList list,
             final Object value, final int index, final boolean isSelected,
             final boolean cellHasFocus) {
-        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        
-        setText(((ActionSubstitution) value).getValue());
-        
+        super.getListCellRendererComponent(list, value, index, isSelected,
+                cellHasFocus);
+
+        if (!(value instanceof Profile)) {
+            setText("");
+        } else {
+            setText(((Profile) value).getName());
+        }
+
         return this;
     }
-    
 }

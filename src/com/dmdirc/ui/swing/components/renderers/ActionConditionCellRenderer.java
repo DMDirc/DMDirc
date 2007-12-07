@@ -20,53 +20,47 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs.error;
+package com.dmdirc.ui.swing.components.renderers;
 
-import java.util.Date;
+import com.dmdirc.actions.ActionCondition;
+import com.dmdirc.actions.CoreActionComparison;
 
 import javax.swing.table.DefaultTableCellRenderer;
 
 /**
- * List cell renderer for dates.
+ * Renders an action condition in plain english.
  */
-public final class DateCellRenderer extends DefaultTableCellRenderer {
+public final class ActionConditionCellRenderer extends DefaultTableCellRenderer {
     
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
-    /** Creates a new instance of DateCellRenderer. */
-    public DateCellRenderer() {
+    /** Creates a new instance of ActionConditionCellRenderer. */
+    public ActionConditionCellRenderer() {
         super();
     }
     
     /** {@inheritDoc} */
+    @Override
     public void setValue(final Object value) {
-        setText("" + duration((new Date().getTime() - ((Date) value).getTime()) / 1000));
-    }
-    
-    /**
-     * Get the duration in seconds as a string.
-     *
-     * @param secondsInput to get duration for
-     *
-     * @return Duration as a string
-     */
-    private String duration(final long secondsInput) {
-        final StringBuilder result = new StringBuilder();
-        final long hours = secondsInput / 3600;
-        final long minutes = secondsInput / 60 % 60;
-        //final long seconds = secondsInput % 60;
-        
-        if (hours > 0) { 
-            result.append(hours).append("h ");
+        if (value == null) {
+            setText("Any");
+            return;
         }
         
-        result.append(minutes).append("m");
+        final ActionCondition condition = (ActionCondition) value;
         
-        return result.toString();
+        if (condition.getComparison() == CoreActionComparison.INT_EQUALS 
+                || condition.getComparison() == CoreActionComparison.INT_GREATER 
+                || condition.getComparison() == CoreActionComparison.INT_LESS) {
+            setText(condition.getComparison().getName() + " " + condition.getTarget());
+        } else {
+            setText(value.toString());
+        }
     }
+    
 }
