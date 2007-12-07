@@ -29,6 +29,8 @@ import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.plugins.Plugin;
+import com.dmdirc.ui.interfaces.PreferencesInterface;
+import com.dmdirc.ui.interfaces.PreferencesPanel;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.ui.swing.MainFrame;
 
@@ -42,6 +44,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Properties;
 
 /**
  * The Systray plugin shows DMDirc in the user's system tray, and allows
@@ -49,7 +52,7 @@ import java.awt.event.MouseListener;
  * @author chris
  */
 public final class SystrayPlugin extends Plugin implements ActionListener,
-        MouseListener, com.dmdirc.interfaces.ActionListener {
+        MouseListener, com.dmdirc.interfaces.ActionListener, PreferencesInterface {
     
     /** The command we registered. */
     private PopupCommand command;
@@ -96,6 +99,7 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getActionCommand().equals("Show/hide")) {
             Main.getUI().getMainWindow().setVisible(!Main.getUI().getMainWindow().isVisible());
@@ -105,11 +109,13 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean checkPrerequisites() {
         return SystemTray.isSupported();
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onLoad() {
         try {
             SystemTray.getSystemTray().add(icon);
@@ -121,15 +127,38 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
         ActionManager.addListener(this, CoreActionType.CLIENT_MINIMISED);
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public void onUnload() {
         SystemTray.getSystemTray().remove(icon);
         command.unregister();
         
         ActionManager.removeListener(this);
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isConfigurable() {
+        return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void showConfig() {
+        final PreferencesPanel preferencesPanel
+                = Main.getUI().getPreferencesPanel(this, "Systray Plugin - Config");
+        preferencesPanel.addCategory("General", "General configuration settings");
+        preferencesPanel.addCheckboxOption("General", "autominimise", 
+                "Auto-hide DMDirc when minimised", 
+                "If this option is enabled, the systray plugin will hide DMDirc " +
+                "to the system tray whenever DMDirc is minimised",
+                IdentityManager.getGlobalConfig().getOptionBool("plugin-systray",
+                "autominimise", false));
+        preferencesPanel.display();
+    }
     
     /** {@inheritDoc} */
+    @Override
     public void mouseClicked(final MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
             if (Main.getUI().getMainWindow().isVisible()) {               
@@ -143,32 +172,51 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void mousePressed(final MouseEvent e) {
         //Ignore
     }
     
     /** {@inheritDoc} */
+    @Override
     public void mouseReleased(final MouseEvent e) {
         //Ignore
     }
     
     /** {@inheritDoc} */
+    @Override
     public void mouseEntered(final MouseEvent e) {
         //Ignore
     }
     
     /** {@inheritDoc} */
+    @Override
     public void mouseExited(final MouseEvent e) {
         //Ignore
     }
     
     /** {@inheritDoc} */
+    @Override
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {
         if (type == CoreActionType.CLIENT_MINIMISED
-                && IdentityManager.getGlobalConfig().getOptionBool("plugin-systray", "autominimise", false)) {
+                && IdentityManager.getGlobalConfig().getOptionBool("plugin-systray",
+                "autominimise", false)) {
             Main.getUI().getMainWindow().setVisible(false);
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override    
+    public void configClosed(final Properties properties) {
+        IdentityManager.getConfigIdentity().setOption("plugin-systray", 
+                "autominimise", properties.getProperty("autominimise"));
+    }
+
+    /** {@inheritDoc} */
+    @Override    
+    public void configCancelled() {
+        // Do nothing
     }
     
 }

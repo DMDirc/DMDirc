@@ -27,7 +27,6 @@ import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.IllegalFormatConversionException;
 import java.util.Map;

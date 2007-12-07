@@ -3,6 +3,6 @@ version=2
 friendlyversion=0.2
 author=Chris <chris@dmdirc.com>
 description=Adds a system tray icon
-name=systram
+name=systray
 nicename=Systray Plugin
 minversion=0
