@@ -815,16 +815,19 @@ public final class IRCParser implements Runnable {
 		if (line == null) {
 			return new String[]{"", }; // Return empty string[]
 		}
-		String[] params = null;
-		String[] tokens = null;
-		params = line.split(" :", 2);
-		tokens = params[0].split(" ");
-		if (params.length == 2) {
-			final String[] temp = new String[tokens.length + 1];
-			System.arraycopy(tokens, 0, temp, 0, tokens.length);
-			tokens = temp;
-			tokens[tokens.length - 1] = params[1];
+
+		final int lastarg = line.indexOf(" :");
+		String[] tokens;
+
+		if (lastarg > -1) {
+			final String[] temp = line.substring(0, lastarg).split(" ");
+			tokens = new String[temp.length + 1];
+			System.arraycopy(temp, 0, tokens, 0, temp.length);
+			tokens[temp.length] = line.substring(lastarg + 2);
+		} else {
+			tokens = line.split(" ");
 		}
+
 		return tokens;
 	}
 	
