@@ -44,6 +44,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Semaphore;
 
 /**
  * The update checker contacts the DMDirc website to check to see if there
@@ -62,6 +63,9 @@ public final class UpdateChecker implements Runnable, UpdateListener {
         /** New updates are available. */
         UPDATES_AVAILABLE
     }
+    
+    /** Semaphore used to prevent multiple invocations. */
+    private static final Semaphore mutex = new Semaphore(1);
 
     /** A list of components that we're to check. */
     private static final List<UpdateComponent> components
@@ -95,6 +99,12 @@ public final class UpdateChecker implements Runnable, UpdateListener {
     /** {@inheritDoc} */
     @Override
     public void run() {
+        if (!mutex.tryAcquire()) {
+            // Duplicate invocation
+            
+            return;
+        }
+        
         final ConfigManager config = IdentityManager.getGlobalConfig();
 
         if (!config.getOptionBool("updater", "enable", true)) {
@@ -144,6 +154,8 @@ public final class UpdateChecker implements Runnable, UpdateListener {
         } else {
             setStatus(STATE.UPDATES_AVAILABLE);
         }
+        
+        mutex.release();
 
         UpdateChecker.init();
 
@@ -331,6 +343,18 @@ public final class UpdateChecker implements Runnable, UpdateListener {
         for (UpdateCheckerListener listener : listeners.get(UpdateCheckerListener.class)) {
             listener.statusChanged(newStatus);
         }
+    }
+    
+    /**
+     * Checks is a specified component is enabled.
+     * 
+     * @param component Update component to check state
+     * 
+     * @return true iif the update component is enabled
+     */
+    public static boolean isEnabled(final UpdateComponent component) {
+        return IdentityManager.getGlobalConfig().getOptionBool("updater", 
+                component.getName(), true);
     }
 
 }
