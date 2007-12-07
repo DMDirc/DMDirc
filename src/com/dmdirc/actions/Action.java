@@ -54,6 +54,12 @@ public class Action extends ActionModel implements Serializable {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    
+    private static final String DOMAIN_CONDITIONTREE = "conditiontree".intern();
+    private static final String DOMAIN_FORMAT = "format".intern();
+    private static final String DOMAIN_METADATA = "metadata".intern();
+    private static final String DOMAIN_RESPONSE = "response".intern();
+    private static final String DOMAIN_TRIGGERS = "triggers".intern();
        
     /** The file containing this action. */
     private File file;
@@ -77,8 +83,7 @@ public class Action extends ActionModel implements Serializable {
     public Action(final String group, final String name) {
         super(group, name);
         
-        final String fs = System.getProperty("file.separator");
-        location = ActionManager.getDirectory() + group + fs + name;
+        location = ActionManager.getDirectory() + group + File.separator + name;
         
         file = new File(location);
         
@@ -150,8 +155,7 @@ public class Action extends ActionModel implements Serializable {
             final ConditionTree conditionTree, final String newFormat) {
         super(group, name, triggers, response, conditions, conditionTree, newFormat);
         
-        final String fs = System.getProperty("file.separator");
-        final String dir = ActionManager.getDirectory() + group + fs;
+        final String dir = ActionManager.getDirectory() + group + File.separator;
         location = dir + name;
         
         new File(dir).mkdirs();
@@ -165,8 +169,8 @@ public class Action extends ActionModel implements Serializable {
      * Loads this action from the config instance.
      */
     private void loadActionFromConfig() {
-        if (config.isFlatDomain("triggers")) {
-            if (!loadTriggers(config.getFlatDomain("triggers"))) {
+        if (config.isFlatDomain(DOMAIN_TRIGGERS)) {
+            if (!loadTriggers(config.getFlatDomain(DOMAIN_TRIGGERS))) {
                 return;
             }
         } else {
@@ -174,11 +178,11 @@ public class Action extends ActionModel implements Serializable {
             return;
         }
         
-        if (config.isFlatDomain("response")) {
-            response = new String[config.getFlatDomain("response").size()];
+        if (config.isFlatDomain(DOMAIN_RESPONSE)) {
+            response = new String[config.getFlatDomain(DOMAIN_RESPONSE).size()];
             
             int i = 0;
-            for (String line: config.getFlatDomain("response")) {
+            for (String line: config.getFlatDomain(DOMAIN_RESPONSE)) {
                 response[i++] = line;
             }
         } else {
@@ -186,9 +190,9 @@ public class Action extends ActionModel implements Serializable {
             return;
         }
         
-        if (config.isFlatDomain("format")) {
-            newFormat = config.getFlatDomain("format").size() == 0 ? "" :
-                config.getFlatDomain("format").get(0);
+        if (config.isFlatDomain(DOMAIN_FORMAT)) {
+            newFormat = config.getFlatDomain(DOMAIN_FORMAT).size() == 0 ? "" :
+                config.getFlatDomain(DOMAIN_FORMAT).get(0);
         }
         
         for (int cond = 0; config.isKeyDomain("condition " + cond); cond++) {
@@ -197,8 +201,9 @@ public class Action extends ActionModel implements Serializable {
             }
         }
         
-        if (config.isFlatDomain("conditiontree")) {
-            conditionTree = ConditionTree.parseString(config.getFlatDomain("conditiontree").get(0));
+        if (config.isFlatDomain(DOMAIN_CONDITIONTREE)) {
+            conditionTree = ConditionTree.parseString(
+                    config.getFlatDomain(DOMAIN_CONDITIONTREE).get(0));
             
             if (conditionTree == null) {
                 error("Unable to parse condition tree");
@@ -223,9 +228,9 @@ public class Action extends ActionModel implements Serializable {
      * the group as appropriate.
      */
     private void checkMetaData() {
-        if (config.isKeyDomain("metadata")) {
+        if (config.isKeyDomain(DOMAIN_METADATA)) {
             final ActionGroup myGroup = ActionManager.getGroup(group);
-            final Map<String, String> data = config.getKeyDomain("metadata");
+            final Map<String, String> data = config.getKeyDomain(DOMAIN_METADATA);
             
             if (data.containsKey("description")) {
                 myGroup.setDescription(data.get("description"));
@@ -270,16 +275,16 @@ public class Action extends ActionModel implements Serializable {
         }
         
         // Read the response
-        if (properties.containsKey("response")) {
-            response = properties.getProperty("response").split("\n");
+        if (properties.containsKey(DOMAIN_RESPONSE)) {
+            response = properties.getProperty(DOMAIN_RESPONSE).split("\n");
         } else {
             error("No response specified");
             return;
         }
         
         // Read the format change
-        if (properties.containsKey("format")) {
-            newFormat = properties.getProperty("format");
+        if (properties.containsKey(DOMAIN_FORMAT)) {
+            newFormat = properties.getProperty(DOMAIN_FORMAT);
         }
         
         // Read the conditions
@@ -304,8 +309,8 @@ public class Action extends ActionModel implements Serializable {
             return;
         }
         
-        if (properties.containsKey("conditiontree")) {
-            conditionTree = ConditionTree.parseString(properties.getProperty("conditiontree"));
+        if (properties.containsKey(DOMAIN_CONDITIONTREE)) {
+            conditionTree = ConditionTree.parseString(properties.getProperty(DOMAIN_CONDITIONTREE));
             
             if (conditionTree == null) {
                 error("Unable to parse condition tree");
@@ -348,17 +353,17 @@ public class Action extends ActionModel implements Serializable {
             responseLines.add(line);
         }
         
-        newConfig.addDomain("triggers", triggerNames);
-        newConfig.addDomain("response", responseLines);
+        newConfig.addDomain(DOMAIN_TRIGGERS, triggerNames);
+        newConfig.addDomain(DOMAIN_RESPONSE, responseLines);
         
         if (conditionTree != null) {
-            newConfig.addDomain("conditiontree", new ArrayList<String>());
-            newConfig.getFlatDomain("conditiontree").add(conditionTree.toString());
+            newConfig.addDomain(DOMAIN_CONDITIONTREE, new ArrayList<String>());
+            newConfig.getFlatDomain(DOMAIN_CONDITIONTREE).add(conditionTree.toString());
         }
         
         if (newFormat != null) {
-            newConfig.addDomain("format", new ArrayList<String>());
-            newConfig.getFlatDomain("format").add(newFormat.toString());
+            newConfig.addDomain(DOMAIN_FORMAT, new ArrayList<String>());
+            newConfig.getFlatDomain(DOMAIN_FORMAT).add(newFormat.toString());
         }
         
         int i = 0;
@@ -375,8 +380,8 @@ public class Action extends ActionModel implements Serializable {
         }
         
         // Preserve any meta-data
-        if (config.isKeyDomain("metadata")) {
-            newConfig.addDomain("metadata", config.getKeyDomain("metadata"));
+        if (config.isKeyDomain(DOMAIN_METADATA)) {
+            newConfig.addDomain(DOMAIN_METADATA, config.getKeyDomain(DOMAIN_METADATA));
         }
         
         try {
@@ -500,7 +505,8 @@ public class Action extends ActionModel implements Serializable {
         }
         
         if (properties.containsKey("condition" + condition + "-component")) {
-            final String componentName = properties.getProperty("condition" + condition + "-component");
+            final String componentName = properties.getProperty("condition"
+                    + condition + "-component");
             
             if (componentName.indexOf('.') == -1) {
                 component = ActionManager.getActionComponent(componentName);
@@ -529,14 +535,16 @@ public class Action extends ActionModel implements Serializable {
         }
         
         if (properties.containsKey("condition" + condition + "-comparison")) {
-            comparison = ActionManager.getActionComparison(properties.getProperty("condition" + condition + "-comparison"));
+            comparison = ActionManager.getActionComparison(
+                    properties.getProperty("condition" + condition + "-comparison"));
             if (comparison == null) {
                 error("Invalid comparison for condition " + condition);
                 return false;
             }
             
             if (!comparison.appliesTo().equals(component.getType())) {
-                error("Comparison cannot be applied to specified component in condition " + condition);
+                error("Comparison cannot be applied to specified component in condition "
+                        + condition);
                 return false;
             }
         } else {
@@ -582,8 +590,7 @@ public class Action extends ActionModel implements Serializable {
     public void setGroup(final String newGroup) {
         super.setGroup(newGroup);
         
-        final String fs = System.getProperty("file.separator");
-        location = ActionManager.getDirectory() + group + fs + name;
+        location = ActionManager.getDirectory() + group + File.separator + name;
         
         file.delete();
         file = new File(location);
