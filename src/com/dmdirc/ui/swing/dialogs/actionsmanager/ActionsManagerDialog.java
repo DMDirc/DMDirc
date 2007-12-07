@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs.actionseditor;
+package com.dmdirc.ui.swing.dialogs.actionsmanager;
 
 import com.dmdirc.Main;
 import com.dmdirc.actions.ActionGroup;
@@ -28,6 +28,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 
+import com.dmdirc.ui.swing.dialogs.actionseditor.ActionsEditorDialog;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;

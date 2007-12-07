@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.actionseditor;
 
+import com.dmdirc.ui.swing.dialogs.actionsmanager.ActionsManagerDialog;
 import com.dmdirc.Main;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionManager;

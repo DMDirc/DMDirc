@@ -20,11 +20,12 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs.actionseditor;
+package com.dmdirc.ui.swing.dialogs.actionsmanager;
 
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.ui.swing.components.PackingTable;
+import com.dmdirc.ui.swing.dialogs.actionseditor.ActionsEditorDialog;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;

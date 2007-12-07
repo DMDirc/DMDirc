@@ -48,7 +48,7 @@ import com.dmdirc.ui.swing.dialogs.NewServerDialog;
 import com.dmdirc.ui.swing.dialogs.PluginDialog;
 import com.dmdirc.ui.swing.dialogs.prefs.PreferencesDialog;
 import com.dmdirc.ui.swing.dialogs.about.AboutDialog;
-import com.dmdirc.ui.swing.dialogs.actionseditor.ActionsManagerDialog;
+import com.dmdirc.ui.swing.dialogs.actionsmanager.ActionsManagerDialog;
 import com.dmdirc.ui.swing.dialogs.aliases.AliasManagerDialog;
 import com.dmdirc.ui.swing.dialogs.profiles.ProfileManagerDialog;
 import com.dmdirc.ui.swing.framemanager.buttonbar.ButtonBar;
