@@ -15,5 +15,11 @@ server.modeu = No quit mesages
 server.enablemodeu = true
 server.modeT = No multi-target messages
 
-server.umodex = Hide hostname
+server.umodeg = Receive debug information
+server.umodeI = Hide idle time
+server.umodek = Services operator
+server.umoden = Hide channel list
+server.umpdeP = Paranoid
 server.umodeR = Only registered users may query
+server.umodex = Hide hostname
+server.umodeX = Extended operator

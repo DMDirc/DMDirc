@@ -10,5 +10,5 @@ server.modeC = No channel CTCPs
 server.modeN = No channel notices
 server.modeu = No quit messages
 
-server.umodex = Hide hostname
-server.umodeR = Only registered users may query
+server.umodek = Services operator
+server.umodeg = Receive debug information
