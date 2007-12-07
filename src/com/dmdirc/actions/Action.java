@@ -23,7 +23,6 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.actions.interfaces.ActionType;
-import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.interfaces.ActionComponent;
 import com.dmdirc.actions.interfaces.ActionComparison;
 import com.dmdirc.logger.ErrorLevel;
@@ -33,7 +32,6 @@ import com.dmdirc.util.InvalidConfigFileException;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -215,7 +213,28 @@ public class Action extends ActionModel implements Serializable {
             }
         }
         
-        ActionManager.registerAction(this);        
+        ActionManager.registerAction(this);
+        
+        checkMetaData();
+    }
+    
+    /**
+     * Checks to see if this action contains group meta-data, and adds it to
+     * the group as appropriate.
+     */
+    private void checkMetaData() {
+        if (config.isKeyDomain("metadata")) {
+            final ActionGroup myGroup = ActionManager.getGroup(group);
+            final Map<String, String> data = config.getKeyDomain("metadata");
+            
+            if (data.containsKey("description")) {
+                myGroup.setDescription(data.get("description"));
+            }
+            
+            if (data.containsKey("author")) {
+                myGroup.setAuthor(data.get("author"));
+            }
+        }
     }
     
     private boolean loadTriggers(final List<String> newTriggers) {
@@ -309,7 +328,7 @@ public class Action extends ActionModel implements Serializable {
      * Called to save the action.
      */
     public void save() {
-        config = new ConfigFile(location);
+        final ConfigFile newConfig = new ConfigFile(location);
 
         final List<String> triggerNames = new ArrayList<String>();
         final List<String> responseLines = new ArrayList<String>();
@@ -329,17 +348,17 @@ public class Action extends ActionModel implements Serializable {
             responseLines.add(line);
         }
         
-        config.addDomain("triggers", triggerNames);
-        config.addDomain("response", responseLines);
+        newConfig.addDomain("triggers", triggerNames);
+        newConfig.addDomain("response", responseLines);
         
         if (conditionTree != null) {
-            config.addDomain("conditiontree", new ArrayList<String>());
-            config.getFlatDomain("conditiontree").add(conditionTree.toString());
+            newConfig.addDomain("conditiontree", new ArrayList<String>());
+            newConfig.getFlatDomain("conditiontree").add(conditionTree.toString());
         }
         
         if (newFormat != null) {
-            config.addDomain("format", new ArrayList<String>());
-            config.getFlatDomain("format").add(newFormat.toString());
+            newConfig.addDomain("format", new ArrayList<String>());
+            newConfig.getFlatDomain("format").add(newFormat.toString());
         }
         
         int i = 0;
@@ -351,12 +370,17 @@ public class Action extends ActionModel implements Serializable {
             data.put("comparison", condition.getComparison().toString());
             data.put("target", condition.getTarget());
             
-            config.addDomain("condition " + i, data);
+            newConfig.addDomain("condition " + i, data);
             i++;
         }
         
+        // Preserve any meta-data
+        if (config.isKeyDomain("metadata")) {
+            newConfig.addDomain("metadata", config.getKeyDomain("metadata"));
+        }
+        
         try {
-            config.write();
+            newConfig.write();
             
             resetModified();
         } catch (IOException ex) {

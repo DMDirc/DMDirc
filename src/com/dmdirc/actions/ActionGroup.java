@@ -71,10 +71,6 @@ public class ActionGroup extends ArrayList<Action> {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public List<ActionSetting> getSettings() {
         return settings;
     }
