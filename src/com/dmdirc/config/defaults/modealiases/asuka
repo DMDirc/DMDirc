@@ -10,5 +10,8 @@ server.modeC = No channel CTCPs
 server.modeN = No channel notices
 server.modeu = No quit messages
 
+server.umodeI = Hide idle time
 server.umodek = Services operator
+server.umoden = Hide channel list
 server.umodeg = Receive debug information
+server.umodeX = Extended operator
