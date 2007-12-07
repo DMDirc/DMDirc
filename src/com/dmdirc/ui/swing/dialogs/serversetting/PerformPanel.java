@@ -149,7 +149,7 @@ public final class PerformPanel extends JPanel implements ActionListener {
             res.append(line);
         }
         
-        return res.substring(1);
+        return res.length() == 0 ? "" : res.substring(1);
     }
     
     /** Populates the perform text area. */

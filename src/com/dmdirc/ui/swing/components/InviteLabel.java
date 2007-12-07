@@ -12,7 +12,7 @@ import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.ActionType;
+import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.InviteListener;
@@ -155,7 +155,11 @@ public class InviteLabel extends JLabel implements InviteListener,
     @Override
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {
-        update(((FrameContainer) arguments[0]).getServer());
+        if (arguments[0] == null) {
+            update((Server) null);
+        } else {
+            update(((FrameContainer) arguments[0]).getServer());
+        }
     }
 
     /** 
