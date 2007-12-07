@@ -24,6 +24,8 @@ package com.dmdirc.ui;
 
 import com.dmdirc.CustomWindow;
 import com.dmdirc.Precondition;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.util.MapList;
@@ -162,9 +164,17 @@ public class WindowManager {
         } else {
             final Window parent = getParent(window);
 
-            childWindows.remove(parent, window);
+            if (parent == null) {
+                Logger.appError(ErrorLevel.MEDIUM, "Invalid window removed",
+                        new IllegalArgumentException("Tried to remove a" +
+                        " non-root window that has no known parent.\nWindow:" +
+                        " " + window.getTitle()));
+                return;
+            } else {
+                childWindows.remove(parent, window);
 
-            fireDeleteWindow(parent, window);
+                fireDeleteWindow(parent, window);
+            }
         }
     }
 
