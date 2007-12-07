@@ -27,6 +27,7 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.ClientInfo;
@@ -389,6 +390,12 @@ public final class Query extends MessageTarget implements
     /** {@inheritDoc} */
     @Override
     public ConfigManager getConfigManager() {
+        if (server == null) {
+            Logger.appError(ErrorLevel.LOW, "Tried to retrieve config manager" +
+                    " from a query with no server", new IllegalStateException("My host: " + host));
+            return IdentityManager.getGlobalConfig();
+        }
+        
         return server.getConfigManager();
     }    
     
