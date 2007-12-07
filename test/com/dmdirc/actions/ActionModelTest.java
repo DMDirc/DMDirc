@@ -22,6 +22,8 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.actions.ActionCondition;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
