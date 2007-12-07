@@ -26,10 +26,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Represents a group of actions, along with their meta-data.
+ * 
  * @author chris
  */
 public class ActionGroup extends ArrayList<Action> {
+    
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;    
     
     private String name;
     
@@ -38,6 +46,10 @@ public class ActionGroup extends ArrayList<Action> {
     private String author;
     
     private final List<ActionSetting> settings = new ArrayList<ActionSetting>();
+
+    public ActionGroup(String name) {
+        this.name = name;
+    }
 
     public String getAuthor() {
         return author;
@@ -66,7 +78,5 @@ public class ActionGroup extends ArrayList<Action> {
     public List<ActionSetting> getSettings() {
         return settings;
     }
-    
-    
 
 }

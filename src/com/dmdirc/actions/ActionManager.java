@@ -41,7 +41,9 @@ import com.dmdirc.util.WeakMapList;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Manages all actions for the client.
@@ -71,8 +73,8 @@ public final class ActionManager {
             = new MapList<ActionType, Action>();
     
     /** A map linking groups and a list of actions that're in them. */
-    private final static MapList<String, Action> groups
-            = new MapList<String, Action>();
+    private final static Map<String, ActionGroup> groups
+            = new HashMap<String, ActionGroup>();
     
     /** A map of the action type groups to the action types within. */
     private final static MapList<String, ActionType> actionTypeGroups
@@ -178,7 +180,7 @@ public final class ActionManager {
      *
      * @return a map of groups to action lists
      */
-    public static MapList<String, Action> getGroups() {
+    public static Map<String, ActionGroup> getGroups() {
         return groups;
     }
     
@@ -291,8 +293,23 @@ public final class ActionManager {
         if (isWrappedGroup(action.getGroup())) {
             getWrapper(action.getGroup()).registerAction(action);
         } else {
-            groups.add(action.getGroup(), action);
+            getGroup(action.getGroup()).add(action);
         }
+    }
+    
+    /**
+     * Retrieves the action group with the specified name. A new group is
+     * created if it doesn't already exist.
+     * 
+     * @param name The name of the group to retrieve
+     * @return The corresponding ActionGroup
+     */
+    public static ActionGroup getGroup(final String name) {
+        if (!groups.containsKey(name)) {
+            groups.put(name, new ActionGroup(name));
+        }
+        
+        return groups.get(name);
     }
     
     /**
@@ -305,7 +322,7 @@ public final class ActionManager {
         assert(action != null);
         
         actions.removeFromAll(action);
-        groups.removeFromAll(action);
+        getGroup(action.getGroup()).remove(action);
     }
     
     /**
@@ -407,7 +424,7 @@ public final class ActionManager {
         assert(!groups.containsKey(group));
         
         if (new File(getDirectory() + group).mkdir()) {
-            groups.add(group);
+            groups.put(group, new ActionGroup(group));
         }
     }
     
@@ -423,7 +440,7 @@ public final class ActionManager {
     public static void removeGroup(final String group) {
         assert(group != null);
         assert(!group.isEmpty());
-        assert(groups.containsKey(group));        
+        assert(groups.containsKey(group));
         
         for (Action action : new ArrayList<Action>(groups.get(group))) {
             unregisterAction(action);
@@ -474,10 +491,10 @@ public final class ActionManager {
         
         for (Action action : groups.get(oldName)) {
             action.setGroup(newName);
-            groups.add(newName, action);
+            getGroup(newName).add(action);
         }
         
-        groups.clear(oldName);
+        groups.remove(oldName);
         
         removeGroup(oldName);
     }

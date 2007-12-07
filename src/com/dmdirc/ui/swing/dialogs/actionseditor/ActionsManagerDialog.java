@@ -23,17 +23,17 @@
 package com.dmdirc.ui.swing.dialogs.actionseditor;
 
 import com.dmdirc.Main;
-import com.dmdirc.actions.Action;
+import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
-import com.dmdirc.util.MapList;
 
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -199,7 +199,7 @@ public final class ActionsManagerDialog extends StandardDialog
 
         groups.removeAll();
 
-        final MapList<String, Action> actionGroups = ActionManager.getGroups();
+        final Map<String, ActionGroup> actionGroups = ActionManager.getGroups();
 
         if (actionGroups == null) {
             return;
