@@ -1209,6 +1209,10 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
             
             if (missingUmodes.length() > 0) {
+                if (missingModes.length() > 0) {
+                    missing.append(' ');
+                }
+                
                 missing.append("user: +");
                 missing.append(missingUmodes);
             }
