@@ -6,6 +6,7 @@
 # any sections that take key/values.
 keysections:
   condition 0
+  metadata
 
 triggers:
   QUERY_ACTION
@@ -18,3 +19,8 @@ condition 0:
   component=QUERY_COLOUR
   target=$highlightcolour
   comparison=COLOUR_NEQUALS
+
+metadata:
+  description=Changes the colour of query window names in the treeview (or other frame manager) when events occur.
+  author=Shane <shane@dmdirc.com>
+  version=1

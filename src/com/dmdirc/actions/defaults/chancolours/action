@@ -6,6 +6,7 @@
 # any sections that take key/values.
 keysections:
   condition 0
+  metadata
 
 triggers:
   CHANNEL_ACTION
@@ -18,3 +19,8 @@ condition 0:
   component=CHANNEL_COLOUR
   target=$highlightcolour
   comparison=COLOUR_NEQUALS
+
+metadata:
+  description=Changes the colour of channel window names in the treeview (or other frame manager) when events occur.
+  author=Chris <chris@dmdirc.com>
+  version=5
