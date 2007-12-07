@@ -127,6 +127,7 @@ public final class ChannelInfo {
 		final String thisIRCD = myParser.getIRCD(true).toLowerCase();
 		final boolean isFreenode = (thisIRCD.equals("hyperion") || thisIRCD.equals("dancer"));
 		final boolean isUnreal = thisIRCD.equals("unreal");
+		final boolean isStarChat = thisIRCD.equals("starchat");
 		// We are considered opped if we have a mode higher than voice (or if we have any modes if voice doesn't exist)
 		long voiceValue = 0;
 		if (myParser.hPrefixModes.get('v') != null) { voiceValue = myParser.hPrefixModes.get('v');}
@@ -153,6 +154,11 @@ public final class ChannelInfo {
 				if (isFreenode) {
 					if ((cTemp == 'e' || cTemp == 'I') && !isOpped) {
 						// Freenode doesn't allow non-ops to ask for these modes.
+						continue;
+					}
+				} else if (isStarChat) {
+					if (cTemp == 'H') {
+						// The ircd denies teh existance of thie mode
 						continue;
 					}
 				}
