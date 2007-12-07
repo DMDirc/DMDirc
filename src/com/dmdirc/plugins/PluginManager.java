@@ -89,7 +89,7 @@ public class PluginManager {
 			return false;
 		}
 		
-		if (!(new File(filename)).exists()) {
+		if (!(new File(getDirectory() + filename)).exists()) {
 			Logger.userError(ErrorLevel.MEDIUM, "Error loading plugin " + filename + ": File does not exist");
 			return false;
 		}
