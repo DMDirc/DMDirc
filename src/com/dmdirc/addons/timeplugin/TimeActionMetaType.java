@@ -22,7 +22,7 @@
 
 package com.dmdirc.addons.timeplugin;
 
-import com.dmdirc.actions.ActionMetaType;
+import com.dmdirc.actions.interfaces.ActionMetaType;
 
 import java.util.Calendar;
 

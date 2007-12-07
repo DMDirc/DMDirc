@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.actionseditor;
 
-import com.dmdirc.actions.ActionType;
+import com.dmdirc.actions.interfaces.ActionType;
 
 import java.io.Serializable;
 

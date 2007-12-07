@@ -23,7 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.ActionType;
+import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.WindowManager;

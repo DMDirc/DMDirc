@@ -23,7 +23,7 @@
 package com.dmdirc.addons.urlcatcher;
 
 import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.ActionType;
+import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.interfaces.ActionListener;

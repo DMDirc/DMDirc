@@ -24,7 +24,7 @@
 package com.dmdirc.plugins;
 
 import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.ActionType;
+import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 import com.dmdirc.logger.Logger;

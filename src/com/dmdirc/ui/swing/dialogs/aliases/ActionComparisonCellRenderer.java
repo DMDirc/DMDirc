@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.aliases;
 
-import com.dmdirc.actions.ActionComparison;
+import com.dmdirc.actions.interfaces.ActionComparison;
 
 import java.awt.Component;
 

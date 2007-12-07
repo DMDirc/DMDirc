@@ -22,9 +22,9 @@
 
 package com.dmdirc.ui.swing.dialogs.actionseditor;
 
-import com.dmdirc.actions.ActionComparison;
-import com.dmdirc.actions.ActionComponent;
-import com.dmdirc.actions.ActionType;
+import com.dmdirc.actions.interfaces.ActionComparison;
+import com.dmdirc.actions.interfaces.ActionComponent;
+import com.dmdirc.actions.interfaces.ActionType;
 
 import java.awt.Component;
 

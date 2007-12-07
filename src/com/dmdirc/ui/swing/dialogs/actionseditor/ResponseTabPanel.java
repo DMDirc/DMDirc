@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.actionseditor;
 
-import com.dmdirc.actions.ActionType;
+import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.messages.Formatter;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;

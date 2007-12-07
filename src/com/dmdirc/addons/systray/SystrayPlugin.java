@@ -25,7 +25,7 @@ package com.dmdirc.addons.systray;
 import com.dmdirc.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.ActionType;
+import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.plugins.Plugin;

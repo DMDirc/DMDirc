@@ -23,7 +23,7 @@
 package com.dmdirc.ui.swing.dialogs.actionseditor;
 
 import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.ActionType;
+import com.dmdirc.actions.interfaces.ActionType;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
 import com.dmdirc.ui.swing.actions.SanitisedFilenamePasteAction;

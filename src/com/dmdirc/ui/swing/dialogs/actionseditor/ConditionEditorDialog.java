@@ -23,11 +23,11 @@
 package com.dmdirc.ui.swing.dialogs.actionseditor;
 
 import com.dmdirc.Main;
-import com.dmdirc.actions.ActionComparison;
-import com.dmdirc.actions.ActionComponent;
+import com.dmdirc.actions.interfaces.ActionComparison;
+import com.dmdirc.actions.interfaces.ActionComponent;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.ActionType;
+import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;

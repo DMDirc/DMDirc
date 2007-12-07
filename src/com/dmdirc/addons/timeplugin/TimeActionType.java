@@ -22,8 +22,8 @@
 
 package com.dmdirc.addons.timeplugin;
 
-import com.dmdirc.actions.ActionMetaType;
-import com.dmdirc.actions.ActionType;
+import com.dmdirc.actions.interfaces.ActionMetaType;
+import com.dmdirc.actions.interfaces.ActionType;
 
 /**
  * Lists the actions that the time plugin will raise.
