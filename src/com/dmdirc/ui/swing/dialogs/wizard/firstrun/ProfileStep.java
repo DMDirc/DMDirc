@@ -22,51 +22,54 @@
 
 package com.dmdirc.ui.swing.dialogs.wizard.firstrun;
 
+import com.dmdirc.ui.swing.JWrappingLabel;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 
+import java.awt.Dimension;
 import javax.swing.JCheckBox;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Queries the user for which core actions they wish to extract.
  */
-public abstract class StepOne extends Step {
+public final class ProfileStep extends Step {
     
-    /** Plugins checkbox. */
-    protected final JCheckBox plugins;
-    /** Actions checkbox. */
-    protected final JCheckBox actions;
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 2;
     
-    /** Creates a new instance of StepOne. */
-    public StepOne() {
+    /** Profile manager checkbox. */
+    private final JCheckBox profile;
+    
+    /**
+     * Creates a new instance of StepOne.
+     */
+    public ProfileStep() {
         super();
+        setLayout(new MigLayout("fillx, wrap 1"));
         
-        plugins = new JCheckBox("Install core plugins?");
-        actions = new JCheckBox("Install core actions?");
+        profile = new JCheckBox("Launch profile manager?");
         
-        initComponents();
+        final JWrappingLabel infoLabel = new JWrappingLabel("DMDirc uses a set of 'profiles' to determine"
+                + " your nickname, realname, etc when connecting to a server. "
+                + "If you would like the wizard to open the profile manager "
+                + "for you, tick the box below.");
+        infoLabel.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
+        add(infoLabel, "growx, pushx, wmax 400");
+        add(profile, "");
     }
     
     /**
-     * Initialises the components.
-     */
-    protected abstract void initComponents();
-    
-    /**
-     * Returns the state of the plugins checkbox.
+     * Returns the state of the profile manager checkbox.
      *
-     * @return Plugins checkbox state
+     * @return Profile manager checkbox state
      */
-    public final boolean getPluginsState() {
-        return plugins.isSelected();
-    }
-
-    /**
-     * Returns the state of the actions checkbox.
-     *
-     * @return Actions checkbox state
-     */
-    public final boolean getActionsState() {
-        return actions.isSelected();
+    public boolean getProfileManagerState() {
+        return profile.isSelected();
     }
     
 }
