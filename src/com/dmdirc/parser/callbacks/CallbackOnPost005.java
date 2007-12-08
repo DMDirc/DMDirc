@@ -53,7 +53,7 @@ public final class CallbackOnPost005 extends CallbackObject {
 			try {
 				((IPost005) callbackInfo.get(i)).onPost005(myParser);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onPost005", myParser.getLastLine());
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onPost005 ("+e.getMessage()+")", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

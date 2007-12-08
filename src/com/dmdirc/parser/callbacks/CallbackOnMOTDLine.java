@@ -54,7 +54,7 @@ public final class CallbackOnMOTDLine extends CallbackObject {
 			try {
 				((IMOTDLine) callbackInfo.get(i)).onMOTDLine(myParser, data);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onMOTDLine", myParser.getLastLine());
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onMOTDLine ("+e.getMessage()+")", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

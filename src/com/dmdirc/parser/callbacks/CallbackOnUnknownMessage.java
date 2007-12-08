@@ -56,7 +56,7 @@ public final class CallbackOnUnknownMessage extends CallbackObject {
 			try {
 				((IUnknownMessage) callbackInfo.get(i)).onUnknownMessage(myParser, sMessage, sTarget, sHost);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onUnknownMessage", myParser.getLastLine());
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onUnknownMessage ("+e.getMessage()+")", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

@@ -53,7 +53,7 @@ public final class CallbackOnPingSuccess extends CallbackObject {
 			try {
 				((IPingSuccess) callbackInfo.get(i)).onPingSuccess(myParser);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onPingSuccess", myParser.getLastLine());
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onPingSuccess ("+e.getMessage()+")", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

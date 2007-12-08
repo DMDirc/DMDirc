@@ -56,7 +56,7 @@ public final class CallbackOnGotNetwork extends CallbackObject {
 			try {
 				((IGotNetwork) callbackInfo.get(i)).onGotNetwork(myParser, networkName, ircdVersion, ircdType);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onGotNetwork", myParser.getLastLine());
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onGotNetwork ("+e.getMessage()+")", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

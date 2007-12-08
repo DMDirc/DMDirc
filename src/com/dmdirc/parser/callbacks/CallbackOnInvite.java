@@ -55,7 +55,7 @@ public final class CallbackOnInvite extends CallbackObject {
 			try {
 				((IInvite) callbackInfo.get(i)).onInvite(myParser, userHost, channel);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onInvite", myParser.getLastLine());
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onInvite ("+e.getMessage()+")", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

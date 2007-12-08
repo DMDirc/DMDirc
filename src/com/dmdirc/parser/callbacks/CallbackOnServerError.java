@@ -54,7 +54,7 @@ public final class CallbackOnServerError extends CallbackObject {
 			try {
 				((IServerError) callbackInfo.get(i)).onServerError(myParser, message);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onServerError", myParser.getLastLine());
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onServerError ("+e.getMessage()+")", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

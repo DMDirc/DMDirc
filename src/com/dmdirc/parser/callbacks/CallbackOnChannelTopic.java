@@ -59,7 +59,7 @@ public final class CallbackOnChannelTopic extends CallbackObjectSpecific {
 			try {
 				eMethod.onChannelTopic(myParser, cChannel, bIsJoinTopic);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onChannelTopic", myParser.getLastLine());
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onChannelTopic ("+e.getMessage()+")", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

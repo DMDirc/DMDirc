@@ -58,7 +58,7 @@ public final class CallbackOnChannelGotListModes extends CallbackObjectSpecific 
 			try {
 				eMethod.onChannelGotListModes(myParser, cChannel);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onChannelGotListModes", myParser.getLastLine());
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onChannelGotListModes ("+e.getMessage()+")", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
