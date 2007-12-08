@@ -41,15 +41,15 @@ FILEDATA=`date +%Y%m%d`_${SVNREV}
 # Build plugins/jar
 $ANT -buildfile $MYDIR/build.xml -k clean jar
 
-# Add plugins to jar
-$JAR -uvf "dist/DMDirc.jar" plugins
-
 # Build installers
 if [ -e "$MYDIR/dist/DMDirc.jar" ]; then
 	cd "${MYDIR}/installer"
 	./release.sh --jar "${MYDIR}/dist/DMDirc.jar" --opt "--tag ${FILEDATA}" trunk
 	cd "${MYDIR}"
 fi;
+
+# Add plugins to jar
+$JAR -uvf "dist/DMDirc.jar" plugins
 
 if [ -f $MYDIR/dist/DMDirc.jar ]; then
 	FILENAME=DMDirc_${FILEDATA}.jar
