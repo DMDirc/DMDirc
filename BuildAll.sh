@@ -17,8 +17,6 @@ JAR="/usr/bin/jar"
 cd ${MYDIR}
 
 /bin/sh $MYDIR/oblong.sh "Nightly Build" "Build Started"
-rm -Rf $MYDIR/dist
-rm -Rf $MYDIR/build
 
 cd $MYDIR/
 $SVN update
@@ -44,7 +42,7 @@ FILEDATA=`date +%Y%m%d`_${SVNREV}
 $ANT -buildfile $MYDIR/build.xml -k clean jar
 
 # Add plugins to jar
-$JAR -uvf "DMDirc.jar" plugins
+$JAR -uvf "dist/DMDirc.jar" plugins
 
 # Build installers
 if [ -e "$MYDIR/dist/DMDirc.jar" ]; then
