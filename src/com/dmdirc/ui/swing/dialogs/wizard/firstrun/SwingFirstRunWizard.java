@@ -124,10 +124,10 @@ public final class SwingFirstRunWizard implements WizardListener, FirstRunWizard
                             resourceToFile(resource.getValue(), newFile);
                 }
             } catch (IOException ex) {
-                Logger.userError(ErrorLevel.LOW, "Failed to extract actions");
+                Logger.userError(ErrorLevel.LOW, "Failed to extract plugins");
             }
         }
-        ActionManager.loadActions();
+        PluginManager.getPluginManager().reloadAllPlugins();
     }
 
     /** {@inheritDoc} */
