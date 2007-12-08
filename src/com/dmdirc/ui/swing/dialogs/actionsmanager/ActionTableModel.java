@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.dialogs.actionsmanager;
 
 import com.dmdirc.actions.Action;
+import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.interfaces.ActionType;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class ActionTableModel extends AbstractTableModel {
      */
     private static final long serialVersionUID = 1;
     /** Action list. */
-    private final List<Action> actions;
+    private List<Action> actions;
 
     /**
      * Instantiates a new table model.
@@ -57,7 +58,11 @@ public class ActionTableModel extends AbstractTableModel {
      * @param actions Actions to show
      */
     public ActionTableModel(final List<Action> actions) {
-        this.actions = actions;
+        if (actions == null) {
+            this.actions = new ArrayList<Action>();
+        } else {
+            this.actions = actions;
+        }
     }
 
     /** {@inheritDoc} */
@@ -125,6 +130,16 @@ public class ActionTableModel extends AbstractTableModel {
                 throw new IllegalArgumentException("Unknown column: " +
                         columnIndex);
         }
+    }
+    
+    /**
+     * Replaces the model data with the specified action group.
+     * 
+     * @param group New Action group
+     */
+    public void setActionGroup(final ActionGroup group) {
+        this.actions = group;
+        fireTableDataChanged();
     }
 
     /**

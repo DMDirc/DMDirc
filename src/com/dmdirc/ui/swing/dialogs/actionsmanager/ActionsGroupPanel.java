@@ -22,14 +22,32 @@
 
 package com.dmdirc.ui.swing.dialogs.actionsmanager;
 
+import com.dmdirc.actions.ActionGroup;
+import com.dmdirc.ui.swing.components.PackingTable;
+import com.dmdirc.ui.swing.components.renderers.ActionTypeTableCellRenderer;
+import com.dmdirc.ui.swing.components.renderers.ArrayCellRenderer;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableCellRenderer;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * The actions group panel is the control displayed within the tabbed control
  * of the actions manager dialog. It shows the user all actions belonging to
  * a particular group.
  */
-public final class ActionsGroupPanel extends JPanel {
+public final class ActionsGroupPanel extends JPanel implements ActionListener,
+        ListSelectionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -37,10 +55,30 @@ public final class ActionsGroupPanel extends JPanel {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** Table scrollpane. */
+    private JScrollPane scrollPane;
+    /** Actions table. */
+    private PackingTable table;
+    /** Table mode. */
+    private ActionTableModel model;
+    /** Add button. */
+    private JButton add;
+    /** Edit button. */
+    private JButton edit;
+    /** Delete button. */
+    private JButton delete;
+    /** Action group. */
+    private ActionGroup group;
 
-    /** Creates a new instance of ActionsManagerDialog. */
-    private ActionsGroupPanel() {
+    /** 
+     * Creates a new instance of ActionsManagerDialog.
+     * 
+     * @param group Action group to display
+     */
+    public ActionsGroupPanel(final ActionGroup group) {
         super();
+
+        this.group = group;
 
         initComponents();
         addListeners();
@@ -51,20 +89,111 @@ public final class ActionsGroupPanel extends JPanel {
      * Initialises the components.
      */
     private void initComponents() {
+        scrollPane = new JScrollPane();
+        model = new ActionTableModel(group);
+        table = new PackingTable(model, false, scrollPane) {
 
+            /**
+             * A version number for this class. It should be changed whenever the class
+             * structure is changed (or anything else that would prevent serialized
+             * objects being unserialized with the new class).
+             */
+            private static final long serialVersionUID = 1;
+            /** Action type renderer. */
+            private final ActionTypeTableCellRenderer typeRenderer =
+                    new ActionTypeTableCellRenderer();
+            /** Action response renrderer. */
+            private final ArrayCellRenderer arrayRenderer =
+                    new ArrayCellRenderer();
+
+            /** {@inheritDoc} */
+            @Override
+            public TableCellRenderer getCellRenderer(int row, int column) {
+                switch (column) {
+                    case 1:
+                        return typeRenderer;
+                    case 2:
+                        return arrayRenderer;
+                    default:
+                        return super.getCellRenderer(row, column);
+                }
+            }
+        };
+        add = new JButton("Add");
+        edit = new JButton("Edit");
+        delete = new JButton("Delete");
+
+        scrollPane.setViewportView(table);
+
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        edit.setEnabled(false);
+        delete.setEnabled(false);
     }
 
     /**
      * Adds listeners.
      */
     private void addListeners() {
-
+        add.addActionListener(this);
+        edit.addActionListener(this);
+        delete.addActionListener(this);
+        table.getSelectionModel().addListSelectionListener(this);
     }
 
     /**
      * Lays out the components.
      */
     private void layoutComponents() {
+        setLayout(new MigLayout("fill"));
 
+        add(scrollPane, "grow, span 3, wrap");
+        add(add, "right, sgx button");
+        add(edit, "right, sgx button");
+        add(delete, "right, sgx button");
+    }
+
+    /**
+     * Sets the action group for the panel.
+     * 
+     * @param group New action group
+     */
+    public void setActionGroup(final ActionGroup group) {
+        this.group = group;
+
+        model.setActionGroup(group);
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Action event
+     */
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+        if (e.getSource() == add) {
+            JOptionPane.showMessageDialog(this, "Adding an action");
+        } else if (e.getSource() == edit) {
+            JOptionPane.showMessageDialog(this, "Editing an action: " +
+                    model.getValueAt(table.getSelectedRow(), 0));
+        } else if (e.getSource() == delete) {
+            JOptionPane.showMessageDialog(this, "Deleting an action: " +
+                    model.getValueAt(table.getSelectedRow(), 0));
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void valueChanged(final ListSelectionEvent e) {
+        if (e.getValueIsAdjusting()) {
+            return;
+        }
+
+        if (table.getSelectedRow() == -1) {
+            edit.setEnabled(false);
+            delete.setEnabled(false);
+        } else {
+            edit.setEnabled(true);
+            delete.setEnabled(true);
+        }
     }
 }

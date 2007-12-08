@@ -165,6 +165,10 @@ public class JWrappingLabel extends JComponent {
 			g.fillRect(0, 0, getWidth(), getHeight());
 			g.setColor(oldColor);
 		}
+                
+                if (getText() == null) {
+                    return;
+                }
 		
 		// Split the lines
 		final String[] allLines = getText().split("\n");

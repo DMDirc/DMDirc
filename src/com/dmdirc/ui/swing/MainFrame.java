@@ -963,7 +963,8 @@ public final class MainFrame extends JFrame implements WindowListener,
         } else if (e.getActionCommand().equals("ManagePlugins")) {
             PluginDialog.showPluginDialog();
         } else if (e.getActionCommand().equals("Actions")) {
-            ActionsManagerDialog.showActionsManagerDialog();
+            //ActionsManagerDialog.showActionsManagerDialog();
+            com.dmdirc.ui.swing.dialogs.actionsmanager.ActionsManagerDialog.showActionsManagerDialog();
         } else if (e.getActionCommand().equals("Aliases")) {
             AliasManagerDialog.showAliasManagerDialog();
         } else if (e.getActionCommand().equals("Minimise")) {

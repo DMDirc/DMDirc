@@ -27,6 +27,7 @@ import com.dmdirc.util.ListenerList;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Frame;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.MouseInfo;
@@ -93,7 +94,7 @@ public final class WizardDialog extends StandardDialog implements ActionListener
             final List<Step> steps,
             final WizardListener wizard, final boolean modal,
             final Component parent) {
-        super(null, modal);
+        super((Frame) null, modal);
 
         stepListeners = new ListenerList();
 

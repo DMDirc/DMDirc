@@ -5,7 +5,15 @@
 
 package com.dmdirc.ui.swing.dialogs.actionsmanager;
 
+import com.dmdirc.actions.ActionGroup;
+import com.dmdirc.ui.swing.JWrappingLabel;
+
+import java.awt.Dimension;
+
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Action group information panel.
@@ -18,4 +26,77 @@ public class ActionGroupInformationPanel extends JPanel {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** Action group. */
+    private ActionGroup group;
+    /** Description field. */
+    private JWrappingLabel infoLabel;
+    /** Version label. */
+    private JLabel version;
+    /** Author label. */
+    private JLabel author;
+
+    /**
+     * Initialises a new action group information panel.
+     * 
+     * @param group Action group
+     */
+    public ActionGroupInformationPanel(final ActionGroup group) {
+        this.group = group;
+
+        initComponents();
+        addListeners();
+        layoutComponents();
+    }
+
+    /**
+     * Initialises the components.
+     */
+    private void initComponents() {
+        infoLabel = new JWrappingLabel();
+        version = new JLabel();
+        author = new JLabel();
+        
+        setActionGroup(group);
+    }
+
+    /**
+     * Adds listeners.
+     */
+    private void addListeners() {
+        //Empty
+    }
+
+    /**
+     * Lays out the components.
+     */
+    private void layoutComponents() {
+        setLayout(new MigLayout("fill, wrap 2"));
+        
+        infoLabel.setMaximumSize(new Dimension(200, 0));
+        
+        add(infoLabel, "grow, wrap, gap 4*unrel");
+        add(new JLabel("Author: "), "");
+        add(author, "growx");
+        add(new JLabel("Version: "), "");
+        add(version, "growx");
+    }
+    
+    /**
+     * Sets the action group for the panel.
+     * 
+     * @param group New action group
+     */
+    public void setActionGroup(final ActionGroup group) {
+        this.group = group;
+        
+        if (group == null || group.getDescription() == null) {
+            setVisible(false);
+            return;
+        }
+        setVisible(true);
+        
+        infoLabel.setText(group.getDescription());
+        author.setText(group.getAuthor());
+        version.setText("");
+    }
 }

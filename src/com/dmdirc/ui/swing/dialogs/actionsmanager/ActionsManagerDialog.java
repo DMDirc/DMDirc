@@ -23,13 +23,33 @@
 package com.dmdirc.ui.swing.dialogs.actionsmanager;
 
 import com.dmdirc.Main;
+import com.dmdirc.actions.ActionGroup;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.ui.swing.JWrappingLabel;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
+
+import com.dmdirc.ui.swing.components.renderers.ActionGroupListCellRenderer;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JList;
+
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Allows the user to manage actions.
  */
-public final class ActionsManagerDialog extends StandardDialog {
+public final class ActionsManagerDialog extends StandardDialog implements ActionListener,
+        ListSelectionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -39,6 +59,22 @@ public final class ActionsManagerDialog extends StandardDialog {
     private static final long serialVersionUID = 1;
     /** Previously created instance of ActionsManagerDialog. */
     private static ActionsManagerDialog me;
+    /** Info label. */
+    private JWrappingLabel infoLabel;
+    /** Group list. */
+    private JList groups;
+    /** Add button. */
+    private JButton add;
+    /** Edit button. */
+    private JButton edit;
+    /** Delete button. */
+    private JButton delete;
+    /** Info panel. */
+    private ActionGroupInformationPanel info;
+    /** Actions panel. */
+    private ActionsGroupPanel actions;
+    /** Settings panel. */
+    private ActionGroupSettingsPanel settings;
 
     /** Creates a new instance of ActionsManagerDialog. */
     private ActionsManagerDialog() {
@@ -57,6 +93,7 @@ public final class ActionsManagerDialog extends StandardDialog {
     public static synchronized void showActionsManagerDialog() {
         me = getActionsManagerDialog();
 
+        me.pack();
         me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         me.setVisible(true);
         me.requestFocus();
@@ -76,33 +113,129 @@ public final class ActionsManagerDialog extends StandardDialog {
 
         return me;
     }
-    
+
     /**
      * Initialises the components.
      */
     private void initComponents() {
-        
+        orderButtons(new JButton(), new JButton());
+        infoLabel = new JWrappingLabel("Actions allow you to automate many " +
+                "aspects of DMDirc, they alow you to intelligently respond " +
+                "to different events.");
+        groups = new JList(new DefaultListModel());
+        actions = new ActionsGroupPanel(null);
+        info = new ActionGroupInformationPanel(null);
+        settings = new ActionGroupSettingsPanel(null);
+        add = new JButton("Add");
+        edit = new JButton("Edit");
+        delete = new JButton("Delete");
+
+        groups.setCellRenderer(new ActionGroupListCellRenderer());
+        groups.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        edit.setEnabled(false);
+        delete.setEnabled(false);
+
+        reloadGroups();
     }
-    
+
     /**
      * Adds listeners.
      */
     private void addListeners() {
-        
+        getOkButton().addActionListener(this);
+        add.addActionListener(this);
+        edit.addActionListener(this);
+        delete.addActionListener(this);
+        groups.getSelectionModel().addListSelectionListener(this);
     }
-    
+
     /**
      * Lays out the components.
      */
     private void layoutComponents() {
-        
+        final JPanel groupPanel = new JPanel();
+
+        groupPanel.setLayout(new MigLayout("fill, wrap 1"));
+
+        groupPanel.add(new JScrollPane(groups), "growy, w 200");
+        groupPanel.add(add, "sgx button, w 200");
+        groupPanel.add(edit, "sgx button, w 200");
+        groupPanel.add(delete, "sgx button, w 200");
+
+        setLayout(new MigLayout("fill, wrap 2, hidemode 2"));
+
+        groupPanel.setBorder(BorderFactory.createTitledBorder(groupPanel.getBorder(),
+                "Groups"));
+        info.setBorder(BorderFactory.createTitledBorder(info.getBorder(),
+                "Information"));
+        actions.setBorder(BorderFactory.createTitledBorder(actions.getBorder(),
+                "Actions"));
+        settings.setBorder(BorderFactory.createTitledBorder(settings.getBorder(),
+                "Settings"));
+
+        add(infoLabel, "spanx 2");
+        add(groupPanel, "grow, spany 3");
+        add(info, "grow");
+        add(actions, "grow");
+        add(settings, "grow");
+        add(getRightButton(), "skip, right, sgx button");
     }
-    
+
     /**
      * Reloads the action groups.
      */
     private void reloadGroups() {
-        
+        for (ActionGroup group : ActionManager.getGroups().values()) {
+            ((DefaultListModel) groups.getModel()).addElement(group);
+        }
+    }
+    
+    /**
+     * Changes the active group.
+     * 
+     * @param group New group
+     */
+    private void changeActiveGroup(final ActionGroup group) {
+        info.setActionGroup(group);
+        actions.setActionGroup(group);
+        settings.setActionGroup(group);
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Action event
+     */
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+        if (e.getSource() == add) {
+            JOptionPane.showMessageDialog(this, "Adding an action group");
+        } else if (e.getSource() == edit) {
+            JOptionPane.showMessageDialog(this, "Editing an action group: " +
+                    ((ActionGroup) groups.getSelectedValue()).getName());
+        } else if (e.getSource() == delete) {
+            JOptionPane.showMessageDialog(this, "Deleting an action group: " +
+                    ((ActionGroup) groups.getSelectedValue()).getName());
+        } else if (e.getSource() == getOkButton()) {
+            dispose();
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        if (e.getValueIsAdjusting()) {
+            return;
+        }
+
+        if (groups.getSelectedIndex() == -1) {
+            edit.setEnabled(false);
+            delete.setEnabled(false);
+        } else {
+            edit.setEnabled(true);
+            delete.setEnabled(true);
+        }
+        changeActiveGroup((ActionGroup) groups.getSelectedValue());
     }
 
     /** {@inheritDoc} */
