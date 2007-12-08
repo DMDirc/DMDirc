@@ -12,7 +12,7 @@ import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.InviteListener;
