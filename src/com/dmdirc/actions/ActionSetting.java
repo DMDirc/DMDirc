@@ -34,12 +34,22 @@ public class ActionSetting {
         NUMBER,
         BOOLEAN
     }
+
+    public ActionSetting(TYPE type, String setting, String title, String tooltip, String fallback) {
+        this.type = type;
+        this.setting = setting;
+        this.title = title;
+        this.tooltip = tooltip;
+        this.fallback = fallback;
+    }
     
     private TYPE type;
     
     private String setting;
     
     private String title;
+    
+    private String tooltip;
     
     private String fallback;
 
@@ -53,6 +63,10 @@ public class ActionSetting {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getTooltip() {
+        return tooltip;
     }
 
     public TYPE getType() {

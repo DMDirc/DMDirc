@@ -45,6 +45,8 @@ public class ActionGroup extends ArrayList<Action> {
     
     private String author;
     
+    private int version;
+    
     private final List<ActionSetting> settings = new ArrayList<ActionSetting>();
 
     public ActionGroup(String name) {
@@ -75,4 +77,12 @@ public class ActionGroup extends ArrayList<Action> {
         return settings;
     }
 
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+    
 }

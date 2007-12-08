@@ -7,6 +7,10 @@
 keysections:
   condition 0
   metadata
+  setting 0
+  setting 1
+  setting 2
+  setting 3
 
 triggers:
   CHANNEL_ACTION
@@ -24,3 +28,31 @@ metadata:
   description=Changes the colour of channel window names in the treeview (or other frame manager) when events occur.
   author=Chris <chris@dmdirc.com>
   version=5
+
+setting 0:
+  type=COLOUR
+  setting=highlightcolour
+  title=Highlight colour
+  tooltip=Colour to use when you have been highlighted
+  default=4
+
+setting 1:
+  type=COLOUR
+  setting=textcolour
+  title=Text colour
+  tooltip=Colour to use when someone speaks or sends an action
+  default=12
+
+setting 2:
+  type=COLOUR
+  setting=eventcolour
+  title=Event colour
+  tooltip=Colour to use when someone joins, parts, quits, etc
+  default=3
+
+setting 3:
+  type=COLOUR
+  setting=misccolour
+  title=Misc. colour
+  tooltip=Colour to use for other miscellaneous lines
+  default=2
