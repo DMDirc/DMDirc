@@ -76,19 +76,20 @@ public final class SwingFirstRunWizard implements WizardListener, FirstRunWizard
         if (((ExtractionStep) wizardDialog.getStep(0)).getActionsState()) {
             extractActions();
         }
-
-        if (firstRun &&
-                ((ProfileStep) wizardDialog.getStep(1)).getProfileManagerState()) {
-            ProfileManagerDialog.showProfileManagerDialog();
-        }
         
-        if (firstRun && !((CommunicationStep) wizardDialog.getStep(2)).checkUpdates()) {
+        if (firstRun && !((CommunicationStep) wizardDialog.getStep(1)).checkUpdates()) {
             IdentityManager.getConfigIdentity().setOption("updater", "enable", false);
         }
         
-        if (firstRun && !((CommunicationStep) wizardDialog.getStep(2)).checkErrors()) {
+        if (firstRun && !((CommunicationStep) wizardDialog.getStep(1)).checkErrors()) {
             IdentityManager.getConfigIdentity().setOption("general", "submitErrors", false);
         }
+        
+        if (firstRun &&
+                ((ProfileStep) wizardDialog.getStep(2)).getProfileManagerState()) {
+            ProfileManagerDialog.showProfileManagerDialog();
+        }
+        wizardDialog.dispose();
     }
 
     /** {@inheritDoc} */
@@ -197,7 +198,7 @@ public final class SwingFirstRunWizard implements WizardListener, FirstRunWizard
 
         wizardDialog =
                 new WizardDialog(firstRun ? "Setup wizard" : "Migration wizard",
-                steps, this, true, (MainFrame) Main.getUI().getMainWindow());
+                steps, this, (MainFrame) Main.getUI().getMainWindow());
         wizardDialog.addWizardListener(this);
         wizardDialog.display();
     }

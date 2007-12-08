@@ -28,8 +28,8 @@ import com.dmdirc.installer.cliparser.StringParam;
 import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardListener;
-import com.dmdirc.ui.swing.dialogs.wizard.WizardDialog;
 
+import com.dmdirc.ui.swing.dialogs.wizard.WizardFrame;
 import java.awt.Dimension;
 import java.util.ArrayList;
 
@@ -42,7 +42,7 @@ import javax.swing.JOptionPane;
  */
 public final class Main implements WizardListener {
 	/** Wizard dialog. */
-	private static WizardDialog wizardDialog;
+	private static WizardFrame wizardDialog;
 	
 	/** Installer. */
 	private static Installer myInstaller;
@@ -65,6 +65,7 @@ public final class Main implements WizardListener {
 		Thread temp = myInstaller;
 		myInstaller = null;
 		if (temp != null) { temp.interrupt(); }
+                wizardDialog.dispose();
 	}
 	
 	/**
@@ -95,7 +96,7 @@ public final class Main implements WizardListener {
 			releaseName = " "+cli.getParam("-release").getStringValue();
 		}
 		
-		setWizardDialog(new WizardDialog("DMDirc"+releaseName+" Installer", new ArrayList<Step>(), this, false, null));
+		setWizardFrame(new WizardFrame("DMDirc"+releaseName+" Installer", new ArrayList<Step>(), this));
 		wizardDialog.setPreferredSize(new Dimension(400, 350));
 		wizardDialog.addWizardListener(this);
 
@@ -140,11 +141,11 @@ public final class Main implements WizardListener {
 	}
 	
 	/**
-	 * Get the WizardDialog
+	 * Get the WizardFrame
 	 *
 	 * @return The current wizardDialog
 	 */
-	public static synchronized WizardDialog getWizardDialog() {
+	public static synchronized WizardFrame getWizardFrame() {
 		if (wizardDialog == null) {
 			new Main();
 		}
@@ -152,11 +153,11 @@ public final class Main implements WizardListener {
 	}
 	
 	/**
-	 * Set the WizardDialog
+	 * Set the WizardFrame
 	 *
 	 * @return Set the current wizardDialog to the given one
 	 */
-	private static void setWizardDialog(final WizardDialog dialog) {
+	private static void setWizardFrame(final WizardFrame dialog) {
 		wizardDialog = dialog;
 	}
 
@@ -166,6 +167,6 @@ public final class Main implements WizardListener {
 	public static void main (String[] args) {
 		setupCLIParser();
 		cli.parseArgs(args, false);
-		getWizardDialog().display();
+		getWizardFrame().display();
 	}
 }

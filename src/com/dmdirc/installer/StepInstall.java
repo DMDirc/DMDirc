@@ -25,7 +25,7 @@ package com.dmdirc.installer;
 import com.dmdirc.installer.Installer.ShortcutType;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.dialogs.wizard.StepListener;
-import com.dmdirc.ui.swing.dialogs.wizard.WizardDialog;
+import com.dmdirc.ui.swing.dialogs.wizard.WizardFrame;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
@@ -56,7 +56,7 @@ public final class StepInstall extends Step implements StepListener {
 	* Creates a new instance of StepInstall.
 	* @param dialog parent wizard dialog
 	*/
-	public StepInstall(final WizardDialog dialog) {
+	public StepInstall(final WizardFrame dialog) {
 		super();
 		dialog.addStepListener(this);
 		setLayout(new BorderLayout());
@@ -89,12 +89,12 @@ public final class StepInstall extends Step implements StepListener {
 	 */
 	public void performInstall(final Installer myInstaller) {
 		infoLabel.setText("Beginning Install..\n");
-		final String location = ((StepSettings) Main.getWizardDialog().getStep(1)).getInstallLocation();
+		final String location = ((StepSettings) Main.getWizardFrame().getStep(1)).getInstallLocation();
 		
 		addText("Installing files to: "+location);
 		myInstaller.doSetup(location);
 		
-		StepSettings settings = ((StepSettings) Main.getWizardDialog().getStep(1));
+		StepSettings settings = ((StepSettings) Main.getWizardFrame().getStep(1));
 		
 		if (Main.getInstaller().supportsShortcut(ShortcutType.MENU)) {
 			if (settings.getShortcutMenuState()) {
@@ -141,15 +141,15 @@ public final class StepInstall extends Step implements StepListener {
 		
 		addText("");
 		addText("Installation finished\n");
-		Main.getWizardDialog().enableNextStep(true);
+		Main.getWizardFrame().enableNextStep(true);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void stepAboutToDisplay(final Step step) {
 		if (step != this) { return; }
-		Main.getWizardDialog().enableNextStep(false);
-		Main.getWizardDialog().enablePreviousStep(false);
+		Main.getWizardFrame().enableNextStep(false);
+		Main.getWizardFrame().enablePreviousStep(false);
 		Main.getInstaller().setInstallStep(this);
 		Main.getInstaller().start();
 	}

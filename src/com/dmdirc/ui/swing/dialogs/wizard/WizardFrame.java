@@ -22,25 +22,20 @@
 
 package com.dmdirc.ui.swing.dialogs.wizard;
 
-import com.dmdirc.ui.swing.components.StandardDialog;
-
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.MouseInfo;
 import java.awt.PointerInfo;
 import java.awt.Rectangle;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 import java.util.List;
 
-import javax.swing.JButton;
-
+import javax.swing.JFrame;
 
 /**
  * Basic wizard container.
  */
-public final class WizardDialog extends StandardDialog implements ActionListener {
+public final class WizardFrame extends JFrame {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -50,8 +45,6 @@ public final class WizardDialog extends StandardDialog implements ActionListener
     private static final long serialVersionUID = 2;
     /** Wizard. */
     private final WizardPanel wizard;
-    /** Parent container. */
-    private Window parentWindow;
 
     /**
      * Creates a new instance of WizardFrame that requires a mainframe.
@@ -59,17 +52,14 @@ public final class WizardDialog extends StandardDialog implements ActionListener
      * @param title Title for the wizard
      * @param steps Steps for the wizard
      * @param wizard Wizard to inform of changes
-     * @param parentWindow Parent component
      */
-    public WizardDialog(final String title, final List<Step> steps,
-            final WizardListener wizard, final Window parentWindow) {
-        super(parentWindow, ModalityType.MODELESS);
+    public WizardFrame(final String title, final List<Step> steps,
+            final WizardListener wizard) {
+        super();
 
         setTitle(title);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        orderButtons(new JButton(), new JButton());
         this.wizard = new WizardPanel(title, steps, wizard);
-        this.parentWindow = parentWindow;
         layoutComponents();
     }
 
@@ -82,50 +72,32 @@ public final class WizardDialog extends StandardDialog implements ActionListener
     public void display() {
         wizard.display();
         pack();
-        if (parentWindow != null) {
-            setLocationRelativeTo(parentWindow);
-        } else {
-            // Position wizard center-screen on the correct monitor of a
-            // multi-monitor system. (See MainFrame constructor for more info)
-            final PointerInfo myPointerInfo =
-                    MouseInfo.getPointerInfo();
-            final GraphicsDevice myDevice = myPointerInfo.getDevice();
-            final GraphicsConfiguration myGraphicsConfig =
-                    myDevice.getDefaultConfiguration();
-            final Rectangle gcBounds = myGraphicsConfig.getBounds();
-            final int xPos =
-                    gcBounds.x + ((gcBounds.width - getWidth()) / 2);
-            final int yPos =
-                    gcBounds.y + ((gcBounds.height - getHeight()) / 2);
-            setLocation(xPos, yPos);
-        }
+        // Position wizard center-screen on the correct monitor of a
+        // multi-monitor system. (See MainFrame constructor for more info)
+        final PointerInfo myPointerInfo =
+                MouseInfo.getPointerInfo();
+        final GraphicsDevice myDevice = myPointerInfo.getDevice();
+        final GraphicsConfiguration myGraphicsConfig =
+                myDevice.getDefaultConfiguration();
+        final Rectangle gcBounds = myGraphicsConfig.getBounds();
+        final int xPos =
+                gcBounds.x + ((gcBounds.width - getWidth()) / 2);
+        final int yPos =
+                gcBounds.y + ((gcBounds.height - getHeight()) / 2);
+        setLocation(xPos, yPos);
         setResizable(false);
         setVisible(true);
     }
 
-    /** 
-     * {@inheritDoc}
-     * 
-     * @param e Action event
-     */
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-        if (e.getSource() == getOkButton()) {
-            wizard.nextStep();
-        } else if (e.getSource() == getCancelButton()) {
-            wizard.fireWizardCancelled();
-        }
-    }
-    
     /**
      * Adds a step to the wizard.
      *
      * @param step Step to add
      */
     public void addStep(final Step step) {
-        wizard.add(step);
+        wizard.addStep(step);
     }
-    
+
     /**
      * Returns the step at the specified index.
      *
@@ -136,7 +108,7 @@ public final class WizardDialog extends StandardDialog implements ActionListener
     public Step getStep(final int stepNumber) {
         return wizard.getStep(stepNumber);
     }
-    
+
     /**
      * Returns the current step.
      *
@@ -145,7 +117,7 @@ public final class WizardDialog extends StandardDialog implements ActionListener
     public int getCurrentStep() {
         return wizard.getCurrentStep();
     }
-    
+
     /**
      * Enables or disables the "next step" button.
      *
