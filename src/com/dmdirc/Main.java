@@ -66,7 +66,7 @@ public final class Main {
      * A revision number for actions and core plugins. If this is increased,
      * users will be prompted to re-extract them.
      */
-    private static final int ADDON_REVISION = 6;
+    private static final int ADDON_REVISION = 7;
     
     /**
      * Feedback nag delay.

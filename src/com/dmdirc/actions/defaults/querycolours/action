@@ -7,6 +7,8 @@
 keysections:
   condition 0
   metadata
+  setting 0
+  setting 1
 
 triggers:
   QUERY_ACTION
@@ -24,3 +26,17 @@ metadata:
   description=Changes the colour of query window names in the treeview (or other frame manager) when events occur.
   author=Shane <shane@dmdirc.com>
   version=1
+
+setting 0:
+  type=COLOUR
+  setting=highlightcolour
+  title=Highlight colour
+  tooltip=Colour to use when you have been highlighted
+  default=4
+
+setting 1:
+  type=COLOUR
+  setting=textcolour
+  title=Text colour
+  tooltip=Colour to use when someone speaks or sends an action
+  default=12
