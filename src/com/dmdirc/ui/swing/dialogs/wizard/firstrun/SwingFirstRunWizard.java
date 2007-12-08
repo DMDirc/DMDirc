@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.dialogs.wizard.firstrun;
 
 import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.PluginManager;
@@ -69,17 +70,26 @@ public final class SwingFirstRunWizard implements WizardListener, FirstRunWizard
         if (ResourceManager.getResourceManager() == null) {
             return;
         }
-        if (((StepOne) wizardDialog.getStep(0)).getPluginsState()) {
+        if (((ExtractionStep) wizardDialog.getStep(0)).getPluginsState()) {
             extractPlugins();
         }
-        if (((StepOne) wizardDialog.getStep(0)).getActionsState()) {
+        if (((ExtractionStep) wizardDialog.getStep(0)).getActionsState()) {
             extractActions();
         }
-
+        
+        if (firstRun && !((CommunicationStep) wizardDialog.getStep(1)).checkUpdates()) {
+            IdentityManager.getConfigIdentity().setOption("updater", "enable", false);
+        }
+        
+        if (firstRun && !((CommunicationStep) wizardDialog.getStep(1)).checkErrors()) {
+            IdentityManager.getConfigIdentity().setOption("general", "submitErrors", false);
+        }
+        
         if (firstRun &&
-                ((StepTwo) wizardDialog.getStep(1)).getProfileManagerState()) {
+                ((ProfileStep) wizardDialog.getStep(2)).getProfileManagerState()) {
             ProfileManagerDialog.showProfileManagerDialog();
         }
+        wizardDialog.dispose();
     }
 
     /** {@inheritDoc} */
@@ -179,15 +189,16 @@ public final class SwingFirstRunWizard implements WizardListener, FirstRunWizard
                 new ArrayList<Step>();
 
         if (firstRun) {
-            steps.add(new SetupStep());
-            steps.add(new StepTwo());
+            steps.add(new FirstRunExtractionStep());
+            steps.add(new CommunicationStep());
+            steps.add(new ProfileStep());
         } else {
-            steps.add(new UpdateStep());
+            steps.add(new MigrationExtrationStep());
         }
 
         wizardDialog =
                 new WizardDialog(firstRun ? "Setup wizard" : "Migration wizard",
-                steps, this, true, (MainFrame) Main.getUI().getMainWindow());
+                steps, this, (MainFrame) Main.getUI().getMainWindow());
         wizardDialog.addWizardListener(this);
         wizardDialog.display();
     }

@@ -25,7 +25,7 @@ package com.dmdirc.installer;
 import com.dmdirc.installer.Installer.ShortcutType;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.dialogs.wizard.StepListener;
-import com.dmdirc.ui.swing.dialogs.wizard.WizardDialog;
+import com.dmdirc.ui.swing.dialogs.wizard.WizardFrame;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
@@ -52,7 +52,7 @@ public final class StepConfirm extends Step implements StepListener {
 	* Creates a new instance of StepConfirm.
 	* @param dialog parent wizard dialog
 	*/
-	public StepConfirm(final WizardDialog dialog) {
+	public StepConfirm(final WizardFrame dialog) {
 		super();
 		dialog.addStepListener(this);
 		setLayout(new BorderLayout());
@@ -75,7 +75,7 @@ public final class StepConfirm extends Step implements StepListener {
 		if (step != this) { return; }
 		String shortcutText = "";
 		
-		StepSettings settings = ((StepSettings) Main.getWizardDialog().getStep(1));
+		StepSettings settings = ((StepSettings) Main.getWizardFrame().getStep(1));
 		
 		if (Main.getInstaller().supportsShortcut(ShortcutType.MENU)) {
 			if (settings.getShortcutMenuState()) {
@@ -113,7 +113,7 @@ public final class StepConfirm extends Step implements StepListener {
 		
 		infoLabel.setText("Please check that these settings are correct:\n\n"
 		                + " - Install Location:\n"
-		                + "    " +((StepSettings) Main.getWizardDialog().getStep(1)).getInstallLocation() + "\n"
+		                + "    " +((StepSettings) Main.getWizardFrame().getStep(1)).getInstallLocation() + "\n"
 		                + shortcutText + "\n"
 		                + "If these are correct, press Next to begin the installation, else press Previous to change them");
     }
