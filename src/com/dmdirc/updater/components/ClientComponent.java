@@ -50,7 +50,7 @@ public class ClientComponent implements UpdateComponent {
     @Override
     public void doInstall(final String path) {
         final File tmpFile = new File(path);
-        final File targetFile = new File(tmpFile.getParent()+File.pathSeparator+".DMDirc.jar");
+        final File targetFile = new File(tmpFile.getParent() + File.separator + ".DMDirc.jar");
         if (targetFile.exists()) {
             targetFile.delete();
         }
