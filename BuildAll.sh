@@ -11,8 +11,8 @@ MYDIR="/home/dmdirc/google"
 ANT="/usr/bin/ant"
 # Path to svn binary
 SVN="/usr/bin/svn"
-# Path to zip binary
-ZIP="/usr/bin/zip"
+# Path to jar binary
+JAR="/usr/bin/jar"
 
 cd ${MYDIR}
 
@@ -43,6 +43,9 @@ FILEDATA=`date +%Y%m%d`_${SVNREV}
 # Build plugins/jar
 $ANT -buildfile $MYDIR/build.xml -k clean jar
 
+# Add plugins to jar
+$JAR -uvf "DMDirc.jar" plugins
+
 # Build installers
 if [ -e "$MYDIR/dist/DMDirc.jar" ]; then
 	cd "${MYDIR}/installer"
@@ -56,10 +59,8 @@ if [ -f $MYDIR/dist/DMDirc.jar ]; then
 	mv "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.run" "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.run"
 	rm -Rf "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.*.md5"
 	cp $MYDIR/dist/DMDirc.jar /home/dmdirc/www/nightly/$FILENAME
-	${ZIP} -r9 /home/dmdirc/www/nightly/Plugins_${FILEDATA}.zip plugins
 	
 	ln -sf $WWWDIR/nightly/$FILENAME $WWWDIR/nightly/DMDirc_latest.jar
-	ln -sf $WWWDIR/nightly/Plugins_${FILEDATA}.zip $WWWDIR/nightly/Plugins_latest.zip
 	ln -sf "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.run" $WWWDIR/nightly/DMDirc-Setup_latest.run
 	ln -sf "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.exe" $WWWDIR/nightly/DMDirc-Setup_latest.exe
 	cd ${MYDIR}
