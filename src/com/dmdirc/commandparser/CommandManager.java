@@ -287,6 +287,7 @@ public final class CommandManager {
         new RawServerCommand("lusers");
         new RawServerCommand("map");
         new RawServerCommand("motd");
+        new RawServerCommand("oper");
         registerPopupCommand(new RawServerCommand("whois"));
         new RawServerCommand("who");
         
