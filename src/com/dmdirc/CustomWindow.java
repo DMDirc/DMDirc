@@ -97,6 +97,7 @@ public class CustomWindow extends FrameContainer {
         window.setVisible(false);
 
         WindowManager.removeWindow(window);
+        Main.getUI().getMainWindow().delChild(window);
     }
 
     /** {@inheritDoc} */
