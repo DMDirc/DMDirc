@@ -30,7 +30,7 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Queries the user for which core actions they wish to extract.
  */
-public final class SetupStep extends StepOne {
+public final class MigrationExtrationStep extends ExtractionStep {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -40,9 +40,9 @@ public final class SetupStep extends StepOne {
     private static final long serialVersionUID = 2;
     
     /**
-     * Creates a new instance of SetupStep.
+     * Creates a new instance of StepOne.
      */
-    public SetupStep() {
+    public MigrationExtrationStep() {
         super();
     }
     
@@ -53,24 +53,20 @@ public final class SetupStep extends StepOne {
         
         JWrappingLabel infoLabel;
         
-        infoLabel = new JWrappingLabel("It appears that this is the first time "
-                + "that you have run DMDirc. "
-                + "This short wizard will help you setup DMDirc.\n\n"
-                + "DMDirc comes with a set of core plugins that add "
-                + "functionality such as channel logging to the client. "
-                + "Thse plugins need to be copied into your home directory to"
-                + " be used. If you would like the wizard to copy the core "
-                + "plugins for you, tick the box below.");
+        infoLabel = new JWrappingLabel("This version of DMDirc contains an update to "
+                + " the core plugins and actions.\n\nWould you like to extract the"
+                + " core plugins to update them? Note that older plugins may not"
+                + " function correctly with this version of DMDirc.");
         infoLabel.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
-        add(infoLabel, "growx, pushx");
+        add(infoLabel, "growx, pushx, wmax 400");
         add(plugins, "");
-        infoLabel = new JWrappingLabel("DMDirc also comes with a set of core"
-                + " 'actions' that serve as examples and add some basic"
-                + " functionality such as highlighting. If you would like"
-                + " the wizard to copy the core actions for you, tick the"
-                + " box below.");
+        
+        infoLabel = new JWrappingLabel("Would you like to extract the default actions"
+                + " to update them? Any changes you have made to the default"
+                + " actions will be lost.");
         infoLabel.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
-        add(infoLabel, "growx, pushx");
+        add(infoLabel, "growx, pushx, wmax 400");
         add(actions, "");
     }
+    
 }

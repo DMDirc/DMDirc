@@ -22,18 +22,15 @@
 
 package com.dmdirc.ui.swing.dialogs.wizard.firstrun;
 
+
 import com.dmdirc.ui.swing.JWrappingLabel;
-import com.dmdirc.ui.swing.dialogs.wizard.Step;
-
 import java.awt.Dimension;
-import javax.swing.JCheckBox;
-
 import net.miginfocom.swing.MigLayout;
 
 /**
  * Queries the user for which core actions they wish to extract.
  */
-public final class StepTwo extends Step {
+public final class FirstRunExtractionStep extends ExtractionStep {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -42,34 +39,38 @@ public final class StepTwo extends Step {
      */
     private static final long serialVersionUID = 2;
     
-    /** Profile manager checkbox. */
-    private final JCheckBox profile;
-    
     /**
-     * Creates a new instance of StepOne.
+     * Creates a new instance of SetupStep.
      */
-    public StepTwo() {
+    public FirstRunExtractionStep() {
         super();
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    protected void initComponents() {
         setLayout(new MigLayout("fillx, wrap 1"));
         
-        profile = new JCheckBox("Launch profile manager?");
+        JWrappingLabel infoLabel;
         
-        final JWrappingLabel infoLabel = new JWrappingLabel("DMDirc uses a set of 'profiles' to determine"
-                + " your nickname, realname, etc when connecting to a server. "
-                + "If you would like the wizard to open the profile manager "
-                + "for you, tick the box below.");
+        infoLabel = new JWrappingLabel("It appears that this is the first time "
+                + "that you have run DMDirc. "
+                + "This short wizard will help you setup DMDirc.\n\n"
+                + "DMDirc comes with a set of core plugins that add "
+                + "functionality such as channel logging to the client. "
+                + "Thse plugins need to be copied into your home directory to"
+                + " be used. If you would like the wizard to copy the core "
+                + "plugins for you, tick the box below.");
         infoLabel.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
-        add(infoLabel, "growx, pushx, wmax 400");
-        add(profile, "");
+        add(infoLabel, "growx, pushx");
+        add(plugins, "");
+        infoLabel = new JWrappingLabel("DMDirc also comes with a set of core"
+                + " 'actions' that serve as examples and add some basic"
+                + " functionality such as highlighting. If you would like"
+                + " the wizard to copy the core actions for you, tick the"
+                + " box below.");
+        infoLabel.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
+        add(infoLabel, "growx, pushx");
+        add(actions, "");
     }
-    
-    /**
-     * Returns the state of the profile manager checkbox.
-     *
-     * @return Profile manager checkbox state
-     */
-    public boolean getProfileManagerState() {
-        return profile.isSelected();
-    }
-    
 }
