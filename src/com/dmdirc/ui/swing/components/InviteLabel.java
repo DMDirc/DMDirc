@@ -169,7 +169,10 @@ public class InviteLabel extends JLabel implements InviteListener,
      */
     @Override
     public void mouseClicked(final MouseEvent e) {
-        checkMouseEvent(e);
+        popuplateMenu();
+        if (menu.getComponentCount() > 0) {
+            menu.show(this, e.getX(), e.getY());
+        }
     }
 
     /** 
@@ -179,7 +182,7 @@ public class InviteLabel extends JLabel implements InviteListener,
      */
     @Override
     public void mousePressed(final MouseEvent e) {
-        checkMouseEvent(e);
+        //Ignore
     }
 
     /** 
@@ -189,7 +192,7 @@ public class InviteLabel extends JLabel implements InviteListener,
      */
     @Override
     public void mouseReleased(final MouseEvent e) {
-        checkMouseEvent(e);
+        //Ignore
     }
 
     /** 
@@ -199,7 +202,7 @@ public class InviteLabel extends JLabel implements InviteListener,
      */
     @Override
     public void mouseEntered(final MouseEvent e) {
-        checkMouseEvent(e);
+        //Ignore
     }
 
     /** 
@@ -209,21 +212,7 @@ public class InviteLabel extends JLabel implements InviteListener,
      */
     @Override
     public void mouseExited(final MouseEvent e) {
-        checkMouseEvent(e);
-    }
-
-    /** 
-     * Checks a mouse event for a popup trigger.
-     * 
-     * @param e Mouse event
-     */
-    private void checkMouseEvent(final MouseEvent e) {
-        if (e.isPopupTrigger()) {
-            popuplateMenu();
-            if (menu.getComponentCount() > 0) {
-                menu.show(this, e.getX(), e.getY());
-            }
-        }
+        //Ignore
     }
 }
 
