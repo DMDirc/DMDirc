@@ -52,7 +52,7 @@ import java.util.concurrent.Semaphore;
  *
  * @author chris
  */
-public final class UpdateChecker implements Runnable, UpdateListener {
+public final class UpdateChecker implements Runnable {
 
     /** The possible states for the checker. */
     public static enum STATE {
@@ -82,6 +82,17 @@ public final class UpdateChecker implements Runnable, UpdateListener {
 
     /** Our current state. */
     private static STATE status = STATE.IDLE;
+    
+    /** A reference to the listener we use for update status changes. */
+    private static final UpdateListener listener = new UpdateListener() {
+        @Override
+        public void updateStatusChange(final Update update, final STATUS status) {
+            if (status == Update.STATUS.INSTALLED
+                || status == Update.STATUS.ERROR) {
+                removeUpdate(update);
+            }
+        }
+    };
 
     static {
         components.add(new ClientComponent());
@@ -191,16 +202,7 @@ public final class UpdateChecker implements Runnable, UpdateListener {
         final Update update = new Update(line);
 
         updates.add(update);
-        update.addUpdateListener(this);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateStatusChange(final Update update, final STATUS status) {
-        if (status == Update.STATUS.INSTALLED
-                || status == Update.STATUS.ERROR) {
-            removeUpdate(update);
-        }
+        update.addUpdateListener(listener);
     }
 
     /**
@@ -340,8 +342,8 @@ public final class UpdateChecker implements Runnable, UpdateListener {
     private static void setStatus(final STATE newStatus) {
         status = newStatus;
 
-        for (UpdateCheckerListener listener : listeners.get(UpdateCheckerListener.class)) {
-            listener.statusChanged(newStatus);
+        for (UpdateCheckerListener myListener : listeners.get(UpdateCheckerListener.class)) {
+            myListener.statusChanged(newStatus);
         }
     }
     
