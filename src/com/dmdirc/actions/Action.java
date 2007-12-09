@@ -260,6 +260,7 @@ public class Action extends ActionModel implements Serializable {
                         ActionSetting.TYPE.valueOf(data.get("type")),
                         data.get("setting"), data.get("title"), 
                         data.get("tooltip"), data.get("default")));
+                ActionManager.registerDefault(data.get("setting"), data.get("default"));
             }
         }
     }

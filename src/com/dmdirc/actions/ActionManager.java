@@ -30,6 +30,8 @@ import com.dmdirc.Precondition;
 import com.dmdirc.actions.wrappers.ActionWrapper;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.actions.wrappers.PerformWrapper;
+import com.dmdirc.config.ConfigTarget;
+import com.dmdirc.config.Identity;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionListener;
@@ -44,6 +46,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Manages all actions for the client.
@@ -84,9 +87,21 @@ public final class ActionManager {
     private final static WeakMapList<ActionType, ActionListener> listeners
             = new WeakMapList<ActionType, ActionListener>();
     
+    /** The identity we're using for action defaults. */
+    private static Identity defaultsIdentity;
+    
     /** Indicates whether or not user actions should be killed (not processed). */
     private static boolean killSwitch
             = IdentityManager.getGlobalConfig().getOptionBool("actions", "killswitch", false);
+    
+    static {
+        final ConfigTarget target = new ConfigTarget();
+        final Properties properties = new Properties();
+        target.setGlobalDefault();
+        target.setOrder(500000);
+        properties.setProperty("identity.name", "Action defaults");
+        defaultsIdentity = new Identity(properties, target);
+    }
    
     /** Creates a new instance of ActionManager. */
     private ActionManager() {
@@ -113,6 +128,16 @@ public final class ActionManager {
                         "actions", "killswitch", false);
             }
         });
+    }
+    
+    /**
+     * Registers the specified default setting for actions.
+     * 
+     * @param name The name of the setting to be registered
+     * @param value The default value for the setting
+     */
+    public static void registerDefault(final String name, final String value) {
+        defaultsIdentity.setOption("actions", name, value);
     }
     
     /**
