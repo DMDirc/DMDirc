@@ -27,14 +27,12 @@ import com.dmdirc.Server;
 import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.swing.components.InputTextFrame;
 import com.dmdirc.ui.swing.dialogs.serversetting.ServerSettingsDialog;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
-import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -82,6 +80,7 @@ public final class ServerFrame extends InputTextFrame implements ServerWindow,
      * Retrieves the command Parser for this command window.
      * @return This window's command Parser
      */
+    @Override
     public CommandParser getCommandParser() {
         return commandParser;
     }
@@ -120,6 +119,7 @@ public final class ServerFrame extends InputTextFrame implements ServerWindow,
     }
     
     /** {@inheritDoc}. */
+    @Override
     public void actionPerformed(final ActionEvent actionEvent) {
         super.actionPerformed(actionEvent);
         if (actionEvent.getSource() == settingsMI) {
@@ -128,6 +128,7 @@ public final class ServerFrame extends InputTextFrame implements ServerWindow,
     }
 
     /** {@inheritDoc}. */
+    @Override
     public void popupMenuWillBecomeVisible(final PopupMenuEvent e) {
         if (getContainer().getServer().getState().equals(ServerState.CONNECTED)) {
             settingsMI.setEnabled(true);
@@ -137,11 +138,13 @@ public final class ServerFrame extends InputTextFrame implements ServerWindow,
     }
 
     /** {@inheritDoc}. */
+    @Override
     public void popupMenuWillBecomeInvisible(final PopupMenuEvent e) {
         //Ignore
     }
 
     /** {@inheritDoc}. */
+    @Override
     public void popupMenuCanceled(final PopupMenuEvent e) {
         //Ignore
     }

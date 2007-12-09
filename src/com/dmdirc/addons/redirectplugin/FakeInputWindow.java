@@ -56,93 +56,117 @@ public class FakeInputWindow implements InputWindow {
     }
 
     /** {@inheritDoc} */
+    @Override
     public CommandParser getCommandParser() {
         return target.getFrame().getCommandParser();
     }
 
     /** {@inheritDoc} */
+    @Override
     public InputHandler getInputHandler() {
         return target.getFrame().getInputHandler();
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setAwayIndicator(final boolean isAway) {
         // Do nothing
     }
 
     /** {@inheritDoc} */
+    @Override
     public void addLine(final String messageType, final Object... args) {
         target.sendLine(Formatter.formatMessage(messageType, args));
     }
 
     /** {@inheritDoc} */
+    @Override
     public void addLine(final StringBuffer messageType, final Object... args) {
         addLine(messageType.toString(), args);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void addLine(final String line, final boolean timestamp) {
         target.sendLine(line);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void clear() {
         // Do nothing
     }
 
     /** {@inheritDoc} */
+    @Override
     public ConfigManager getConfigManager() {
         return target.getFrame().getConfigManager();
     }
 
     /** {@inheritDoc} */
+    @Override
     public FrameContainer getContainer() {
         return target;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isVisible() {
         return false;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setVisible(final boolean isVisible) {
         // Do nothing
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getTitle() {
         return "Fake window";
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isMaximum() {
         return false;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setMaximum(final boolean b) throws PropertyVetoException {
         // Do nothing
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setTitle(final String title) {
         // Do nothing
     }
 
     /** {@inheritDoc} */
+    @Override
     public void open() {
         // Do nothing
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setFrameIcon(final Icon icon) {
         // Do nothing
     }
 
     /** {@inheritDoc} */
+    @Override
     public StringTranscoder getTranscoder() {
         return new StringTranscoder(Charset.defaultCharset());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void close() {
+        /// Do nothing
     }
 
 }

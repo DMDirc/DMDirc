@@ -39,7 +39,7 @@ public class CustomWindow extends FrameContainer {
     /** This custom window's title. */
     private final String title;
 
-    private final Window window;
+    private Window window;
 
     private Window parent = null;
 
@@ -98,6 +98,9 @@ public class CustomWindow extends FrameContainer {
 
         WindowManager.removeWindow(window);
         Main.getUI().getMainWindow().delChild(window);
+        
+        window.close();
+        window = null; // NOPMD
     }
 
     /** {@inheritDoc} */

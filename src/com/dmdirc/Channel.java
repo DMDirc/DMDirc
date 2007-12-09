@@ -373,6 +373,8 @@ public final class Channel extends MessageTarget
         
         window.setVisible(false);
         Main.getUI().getMainWindow().delChild(window);
+        WindowManager.removeWindow(window);
+        window.close();
         window = null;
         server = null;
     }

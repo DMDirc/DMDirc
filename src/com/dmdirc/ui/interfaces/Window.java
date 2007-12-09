@@ -113,7 +113,7 @@ public interface Window {
      * Sets the maximised state of this window.
      * 
      * @param b true if the frame should be maximised, false otherwise
-     * @throws PropertyVetoException if the change is vetoed
+     * @throws java.beans.PropertyVetoException if the change is vetoed
      */
     void setMaximum(boolean b) throws PropertyVetoException;
     
@@ -142,5 +142,8 @@ public interface Window {
      * @return This window's transcoder
      */
     StringTranscoder getTranscoder();
+    
+    /** Closes this window. */
+    void close();
     
 }

@@ -71,7 +71,9 @@ public class GlobalWindow extends WritableFrameContainer {
 
     public void close() {
         window.setVisible(false);
+        window.close();
         WindowManager.removeWindow(window);
+        Main.getUI().getMainWindow().delChild(window);
     }
 
     public Server getServer() {

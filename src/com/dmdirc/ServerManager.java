@@ -86,8 +86,6 @@ public final class ServerManager {
         if (!closing) {
             servers.remove(server);
         }
-        
-        WindowManager.removeWindow(server.getFrame());
     }
     
     /**

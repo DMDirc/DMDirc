@@ -349,6 +349,8 @@ public final class Query extends MessageTarget implements
         }
         
         Main.getUI().getMainWindow().delChild(window);
+        WindowManager.removeWindow(window);
+        window.close();
         
         window = null;
         server = null;

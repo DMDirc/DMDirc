@@ -555,5 +555,15 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     public void onBack() {
         setAwayIndicator(false);
     }
-    
+
+    /** {@inheritDoc} */
+    @Override
+    public void close() {
+        super.close();
+        
+        if (getContainer() != null && getContainer().getServer() != null) {
+            getContainer().getServer().removeAwayStateListener(this);
+        }
+    }
+
 }

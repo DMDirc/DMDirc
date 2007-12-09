@@ -234,5 +234,7 @@ public abstract class DCCFrame extends WritableFrameContainer {
 		myWindow.setVisible(false);
 		Main.getUI().getMainWindow().delChild(myWindow);
 		WindowManager.removeWindow(myWindow);
+                myWindow.close();
+                myWindow = null;
 	}   
 }

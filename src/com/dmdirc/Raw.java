@@ -55,6 +55,8 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
     /** An InputWindow used for displaying the raw data.*/
     private InputWindow window;
     
+    private boolean isClosing = false;
+    
     /**
      * Creates a new instance of Raw.
      *
@@ -101,7 +103,7 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
         Main.getUI().getMainWindow().delChild(window);
         
         server.delRaw();
-        
+        window.close();
         window = null;
         server = null;
     }

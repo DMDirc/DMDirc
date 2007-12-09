@@ -130,6 +130,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     /** Quick copy? */
     private boolean quickCopy;
     
+    private boolean closing = false;
+    
     /**
      * Creates a new instance of Frame.
      *
@@ -629,7 +631,13 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     }
     
     /** Closes this frame. */
+    @Override
     public void close() {
+        if (closing) {
+            return;
+        }
+        closing = true;
+        
         try {
             setClosed(true);
         } catch (PropertyVetoException ex) {

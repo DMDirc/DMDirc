@@ -39,8 +39,6 @@ import com.dmdirc.interfaces.ActionListener;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
 
 import javax.swing.SwingConstants;
 import javax.swing.JOptionPane;

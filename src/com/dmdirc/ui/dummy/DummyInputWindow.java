@@ -151,5 +151,11 @@ public final class DummyInputWindow implements InputWindow {
     public StringTranscoder getTranscoder() {
         return new StringTranscoder(Charset.defaultCharset());
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public void close() {
+        // Do nothing
+    }
     
 }

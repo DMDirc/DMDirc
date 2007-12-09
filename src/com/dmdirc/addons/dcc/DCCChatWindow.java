@@ -22,11 +22,8 @@
 
 package com.dmdirc.addons.dcc;
 
-import com.dmdirc.WritableFrameContainer;
-import com.dmdirc.IconManager;
 import com.dmdirc.Main;
-import com.dmdirc.Server;
-import com.dmdirc.config.IdentityManager;
+
 /**
  * This class links DCC Chat objects to a window.
  *

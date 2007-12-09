@@ -138,16 +138,18 @@ public class WindowManager {
     /**
      * Removes a window from the Window Manager. If the specified window
      * has child windows, they are recursively removed before the target window.
+     * If the window hasn't previously been added, the reques to remove it is
+     * ignored.
      *
      * @param window The window to be removed
      */
-    @Precondition({
-        "The specified Window is not null",
-        "The specified Window has already been added and not removed"
-    })
+    @Precondition("The specified Window is not null")
     public static void removeWindow(final Window window) {
         assert(window != null);
-        assert(childWindows.containsKey(window));
+        
+        if (!childWindows.containsKey(window)) {
+            return;
+        }
 
         if (childWindows.get(window) != null && !childWindows.get(window).isEmpty()) {
             for (Window child : new ArrayList<Window>(childWindows.get(window))) {

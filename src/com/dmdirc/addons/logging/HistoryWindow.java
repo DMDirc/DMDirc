@@ -44,7 +44,7 @@ public class HistoryWindow extends FrameContainer {
     private final String title;
        
     /** The window we're using. */
-    private final Window myWindow;
+    private Window myWindow;
     
     /** Our parent window. */
     private final Window parent;
@@ -94,6 +94,8 @@ public class HistoryWindow extends FrameContainer {
         myWindow.setVisible(false);
         Main.getUI().getMainWindow().delChild(myWindow);
         WindowManager.removeWindow(myWindow);
+        myWindow.close();
+        myWindow = null;
     }
     
     /** {@inheritDoc} */

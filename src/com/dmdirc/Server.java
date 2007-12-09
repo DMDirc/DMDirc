@@ -463,7 +463,6 @@ public final class Server extends WritableFrameContainer implements Serializable
      * closed).
      */
     public void delRaw() {
-        WindowManager.removeWindow(raw.getFrame());
         raw = null; //NOPMD
     }
 
@@ -474,8 +473,6 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public void delChannel(final String chan) {
         tabCompleter.removeEntry(chan);
-        WindowManager.removeWindow(
-                channels.get(parser.toLowerCase(chan)).getFrame());
         channels.remove(parser.toLowerCase(chan));
     }
 
@@ -518,8 +515,6 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public void delQuery(final String host) {
         tabCompleter.removeEntry(ClientInfo.parseHost(host));
-        WindowManager.removeWindow(
-                queries.get(parser.toLowerCase(ClientInfo.parseHost(host))).getFrame());
         queries.remove(parser.toLowerCase(ClientInfo.parseHost(host)));
     }
 
@@ -820,12 +815,15 @@ public final class Server extends WritableFrameContainer implements Serializable
         if (raw != null) {
             raw.close();
         }
+        
         // Unregister ourselves with the server manager
         ServerManager.getServerManager().unregisterServer(this);
 
         if (window != null) {
             window.setVisible(false);
+            WindowManager.removeWindow(window);
             Main.getUI().getMainWindow().delChild(window);
+            window.close();
             window = null; //NOPMD
         }
 
