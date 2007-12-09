@@ -22,6 +22,8 @@
 
 package com.dmdirc;
 
+import com.dmdirc.parser.ClientInfo;
+
 import java.util.Date;
 
 /**
@@ -85,12 +87,12 @@ public class Invite {
     }
 
     /**
-     * Retrieves the source of this invite.
+     * Retrieves the nickname, ident and hostname of this invite's source.
      * 
      * @return This invite's source
      */
-    public String getSource() {
-        return source;
+    public String[] getSource() {
+        return ClientInfo.parseHostFull(source);
     }
     
     /**
