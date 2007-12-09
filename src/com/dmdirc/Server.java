@@ -841,8 +841,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      * Closes all open channel windows associated with this server.
      */
     private void closeChannels() {
-        for (Channel channel : channels.values()) {
-            WindowManager.removeWindow(channel.getFrame());
+        for (Channel channel : new ArrayList<Channel>(channels.values())) {
             channel.closeWindow(false);
         }
 
