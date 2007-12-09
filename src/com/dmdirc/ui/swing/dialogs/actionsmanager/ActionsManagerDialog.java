@@ -134,6 +134,9 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         groups.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         edit.setEnabled(false);
         delete.setEnabled(false);
+        
+        info.setVisible(false);
+        settings.setVisible(false);
 
         reloadGroups();
     }
@@ -174,7 +177,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
                 "Settings"));
 
         add(infoLabel, "spanx 2");
-        add(groupPanel, "grow, spany 3");
+        add(groupPanel, "growy, spany 3");
         add(info, "grow");
         add(actions, "grow");
         add(settings, "grow");
@@ -199,6 +202,9 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         info.setActionGroup(group);
         actions.setActionGroup(group);
         settings.setActionGroup(group);
+        
+        info.setVisible(info.shouldDisplay());
+        settings.setVisible(settings.shouldDisplay());
     }
 
     /** 

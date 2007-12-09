@@ -95,12 +95,19 @@ public class ActionGroupSettingsPanel extends JPanel {
         this.group = group;
         if (group == null || group.getSettings().isEmpty()) {
             this.settings = new ArrayList<ActionSetting>();
-            setVisible(false);
         } else {
             this.settings = group.getSettings();
-            setVisible(true);
         }
         
         layoutComponents();
+    }
+    
+    /**
+     * Should the settings panel be shown?
+     * 
+     * @return true iif the panel should be shown
+     */
+    public boolean shouldDisplay() {
+        return !settings.isEmpty();
     }
 }

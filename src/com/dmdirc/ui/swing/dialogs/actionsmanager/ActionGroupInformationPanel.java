@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.ui.swing.dialogs.actionsmanager;
 
 import com.dmdirc.actions.ActionGroup;
@@ -71,7 +72,7 @@ public class ActionGroupInformationPanel extends JPanel {
         infoLabel = new JWrappingLabel();
         version = new JLabel();
         author = new JLabel();
-        
+
         setActionGroup(group);
     }
 
@@ -79,7 +80,7 @@ public class ActionGroupInformationPanel extends JPanel {
      * Adds listeners.
      */
     private void addListeners() {
-        //Empty
+    //Empty
     }
 
     /**
@@ -87,16 +88,16 @@ public class ActionGroupInformationPanel extends JPanel {
      */
     private void layoutComponents() {
         setLayout(new MigLayout("fill, wrap 2"));
-        
-        infoLabel.setMaximumSize(new Dimension(200, 0));
-        
-        add(infoLabel, "grow, wrap, gap 4*unrel");
+
+        infoLabel.setMaximumSize(new Dimension(400, 0));
+
+        add(infoLabel, "span 2, grow");
         add(new JLabel("Author: "), "");
-        add(author, "growx");
+        add(author, "growx, pushx");
         add(new JLabel("Version: "), "");
-        add(version, "growx");
+        add(version, "growx, pushx");
     }
-    
+
     /**
      * Sets the action group for the panel.
      * 
@@ -104,15 +105,25 @@ public class ActionGroupInformationPanel extends JPanel {
      */
     public void setActionGroup(final ActionGroup group) {
         this.group = group;
-        
+
         if (group == null || group.getDescription() == null) {
-            setVisible(false);
-            return;
+            infoLabel.setText("");
+            author.setText("");
+            version.setText("");
+        } else {
+
+            infoLabel.setText(group.getDescription());
+            author.setText(group.getAuthor());
+            version.setText("" + group.getVersion());
         }
-        setVisible(true);
-        
-        infoLabel.setText(group.getDescription());
-        author.setText(group.getAuthor());
-        version.setText("");
+    }
+    
+    /**
+     * Should the info panel be shown?
+     * 
+     * @return true iif the panel should be shown
+     */
+    public boolean shouldDisplay() {
+        return group != null && group.getDescription() != null;
     }
 }

@@ -138,7 +138,11 @@ public class ActionTableModel extends AbstractTableModel {
      * @param group New Action group
      */
     public void setActionGroup(final ActionGroup group) {
-        this.actions = group;
+        if (group == null) {
+            actions = new ArrayList<Action>();
+        } else {
+            actions = group;
+        }
         fireTableDataChanged();
     }
 
@@ -148,6 +152,9 @@ public class ActionTableModel extends AbstractTableModel {
      * @param action Action to add
      */
     public void add(final Action action) {
+        if (action == null) {
+            return;
+        }
         actions.add(action);
         fireTableRowsInserted(actions.size() - 1, actions.size() - 1);
     }
@@ -158,6 +165,9 @@ public class ActionTableModel extends AbstractTableModel {
      * @param action Action to remove
      */
     public void remove(final Action action) {
+        if (action == null) {
+            return;
+        }
         remove(actions.indexOf(action));
     }
 
