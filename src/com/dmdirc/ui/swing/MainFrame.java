@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.swing;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
@@ -32,29 +31,16 @@ import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.plugins.Plugin;
-import com.dmdirc.plugins.PluginInfo;
-import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.FramemanagerPosition;
 import com.dmdirc.ui.interfaces.MainWindow;
 import com.dmdirc.ui.interfaces.Window;
-import com.dmdirc.ui.swing.components.TextFrame;
 import com.dmdirc.ui.swing.components.InputTextFrame;
 import com.dmdirc.ui.swing.components.SwingStatusBar;
-import com.dmdirc.ui.swing.dialogs.FeedbackDialog;
-import com.dmdirc.ui.swing.dialogs.NewServerDialog;
-import com.dmdirc.ui.swing.dialogs.PluginDialog;
-import com.dmdirc.ui.swing.dialogs.prefs.PreferencesDialog;
-import com.dmdirc.ui.swing.dialogs.about.AboutDialog;
-import com.dmdirc.ui.swing.dialogs.actionseditor.ActionsManagerDialog;
-import com.dmdirc.ui.swing.dialogs.aliases.AliasManagerDialog;
-import com.dmdirc.ui.swing.dialogs.profiles.ProfileManagerDialog;
 import com.dmdirc.ui.swing.framemanager.buttonbar.ButtonBar;
 import com.dmdirc.ui.swing.framemanager.ctrltab.CtrlTabFrameManager;
 import com.dmdirc.ui.swing.framemanager.tree.TreeFrameManager;
-import com.dmdirc.ui.swing.framemanager.windowmenu.WindowMenuFrameManager;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
@@ -65,18 +51,12 @@ import java.awt.GraphicsDevice;
 import java.awt.MouseInfo;
 import java.awt.PointerInfo;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -85,25 +65,20 @@ import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.MenuSelectionManager;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 
 /**
  * The main application frame.
  */
 public final class MainFrame extends JFrame implements WindowListener,
-        ActionListener, MainWindow, ConfigChangeListener {
+        MainWindow, ConfigChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -127,26 +102,16 @@ public final class MainFrame extends JFrame implements WindowListener,
     private FrameManager mainFrameManager;
     /** Dekstop pane. */
     private JDesktopPane desktopPane;
-    /** Plugin menu item. */
-    private JMenu pluginsMenu;
-    /** Windows menu item. */
-    private JMenu windowsMenu;
     /** Main panel. */
     private JPanel frameManagerPanel;
-    /** Add server menu item. */
-    private JMenuItem miAddServer;
-    /** Preferences menu item. */
-    private JMenuItem miPreferences;
-    /** Toggle state menu item. */
-    private JMenuItem toggleStateMenuItem;
     /** Frame manager position. */
     private FramemanagerPosition position;
-    /** Plugins list. */
-    private final Map<JMenuItem, String> pluginList;
     /** Show version? */
     private boolean showVersion;
     /** Status bar. */
     private SwingStatusBar statusBar;
+    /** Menu bar. */
+    private MenuBar menu;
 
     /**
      * Creates new form MainFrame.
@@ -154,9 +119,6 @@ public final class MainFrame extends JFrame implements WindowListener,
     protected MainFrame() {
         super();
 
-        pluginList =
-                new HashMap<JMenuItem, String>();
-        
         initComponents();
         initKeyHooks();
 
@@ -186,54 +148,21 @@ public final class MainFrame extends JFrame implements WindowListener,
 
         setVisible(true);
 
-        miAddServer.addActionListener(new ActionListener() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void actionPerformed(final ActionEvent actionEvent) {
-                NewServerDialog.showNewServerDialog();
-            }
-        });
-
-        miPreferences.addActionListener(new ActionListener() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void actionPerformed(final ActionEvent actionEvent) {
-                PreferencesDialog.showPreferencesDialog();
-            }
-        });
-
-        toggleStateMenuItem.addActionListener(new ActionListener() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void actionPerformed(final ActionEvent actionEvent) {
-                try {
-                    getActiveFrame().setMaximum(!getActiveFrame().isMaximum());
-                } catch (PropertyVetoException ex) {
-                    Logger.userError(ErrorLevel.LOW, "Unable to maximise window");
-                }
-            }
-        });
-
         addWindowListener(this);
-
-        checkWindowState();
 
         showVersion =
                 IdentityManager.getGlobalConfig().
                 getOptionBool("ui", "showversion", false);
         IdentityManager.getGlobalConfig().
                 addChangeListener("ui", "showversion", this);
-        
+
         //TODO: Remove me when we switch to java7
         addWindowFocusListener(new WindowFocusListener() {
 
             /** {@inheritDoc} */
             @Override
             public void windowGainedFocus(WindowEvent e) {
-                //Ignore
+            //Ignore
             }
 
             /** {@inheritDoc} */
@@ -338,22 +267,13 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void addPluginMenu(final JMenuItem menuItem) {
-        if (pluginsMenu.getComponents().length == 1) {
-            final JSeparator seperator = new JSeparator();
-            pluginsMenu.add(seperator);
-        }
-
-        pluginsMenu.add(menuItem);
+        menu.addPluginMenu(menuItem);
     }
 
     /** {@inheritDoc}. */
     @Override
     public void removePluginMenu(final JMenuItem menuItem) {
-        pluginsMenu.remove(menuItem);
-
-        if (pluginsMenu.getComponents().length == 2) {
-            pluginsMenu.remove(2);
-        }
+        menu.removePluginMenu(menuItem);
     }
 
     /** {@inheritDoc}. */
@@ -375,8 +295,6 @@ public final class MainFrame extends JFrame implements WindowListener,
                 }
             }
         }
-
-        checkWindowState();
     }
 
     /** {@inheritDoc}. */
@@ -394,7 +312,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     public boolean getMaximised() {
         return maximised;
     }
-    
+
     /**
      * Returns the desktop pane for the frame.
      * 
@@ -403,7 +321,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     public JDesktopPane getDesktopPane() {
         return desktopPane;
     }
-    
+
     /**
      * Returns the status bar for the frame.
      * 
@@ -413,32 +331,10 @@ public final class MainFrame extends JFrame implements WindowListener,
         return statusBar;
     }
 
-    /**
-     * Checks the current state of the internal frames, and configures the
-     * window menu to behave appropriately.
-     */
-    private void checkWindowState() {
-        if (getActiveFrame() == null) {
-            toggleStateMenuItem.setEnabled(false);
-        } else {
-            toggleStateMenuItem.setEnabled(true);
-        }
-
-        if (maximised) {
-            toggleStateMenuItem.setText("Restore");
-            toggleStateMenuItem.setMnemonic('r');
-            toggleStateMenuItem.invalidate();
-        } else {
-            toggleStateMenuItem.setText("Maximise");
-            toggleStateMenuItem.setMnemonic('m');
-            toggleStateMenuItem.invalidate();
-        }
-    }
-
     /** {@inheritDoc}. */
     @Override
     public void windowOpened(final WindowEvent windowEvent) {
-        //ignore
+    //ignore
     }
 
     /** {@inheritDoc} */
@@ -450,7 +346,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void windowClosed(final WindowEvent windowEvent) {
-        //ignore
+    //ignore
     }
 
     /** {@inheritDoc}. */
@@ -468,13 +364,13 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void windowActivated(final WindowEvent windowEvent) {
-        //ignore
+    //ignore
     }
 
     /** {@inheritDoc}. */
     @Override
     public void windowDeactivated(final WindowEvent windowEvent) {
-        //ignore
+    //ignore
     }
 
     /** Initialiases the frame managers. */
@@ -495,7 +391,6 @@ public final class MainFrame extends JFrame implements WindowListener,
         frameManager.setParent(frameManagerPanel);
 
         WindowManager.addFrameManager(new CtrlTabFrameManager(desktopPane));
-        WindowManager.addFrameManager(new WindowMenuFrameManager());
     }
 
     /**
@@ -504,26 +399,27 @@ public final class MainFrame extends JFrame implements WindowListener,
     private void initComponents() {
         final JSplitPane mainSplitPane = new JSplitPane();
         final JPanel panel = new JPanel();
-        
+
         frameManagerPanel = new JPanel();
         desktopPane = new JDesktopPane();
         desktopPane.setBackground(new Color(238, 238, 238));
         statusBar = new SwingStatusBar();
-        
+
         initFrameManagers();
 
         initSplitPane(mainSplitPane);
 
-        initMenuBar();
+        menu = new MenuBar();
+        setJMenuBar(menu);
 
         setPreferredSize(new Dimension(800, 600));
 
         panel.setLayout(new BorderLayout());
         panel.add(mainSplitPane, BorderLayout.CENTER);
         panel.add(statusBar, BorderLayout.SOUTH);
-        
+
         getContentPane().setLayout(new BorderLayout(0, 0));
-        
+
         getContentPane().add(panel, BorderLayout.CENTER);
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -668,244 +564,21 @@ public final class MainFrame extends JFrame implements WindowListener,
                     new AbstractAction(KeyEvent.getKeyText(keyStroke.getKeyCode()) +
                     "Action") {
 
-                private static final long serialVersionUID = 5;
+                        private static final long serialVersionUID = 5;
 
-                /** {@inheritDoc} */
-                @Override
-                public void actionPerformed(final ActionEvent evt) {
-                    ActionManager.processEvent(CoreActionType.CLIENT_FKEY_PRESSED,
-                            null,
-                            KeyStroke.getKeyStroke(keyStroke.getKeyCode(),
-                            evt.getModifiers()));
-                }
-            });
+                        /** {@inheritDoc} */
+                        @Override
+                        public void actionPerformed(final ActionEvent evt) {
+                            ActionManager.processEvent(CoreActionType.CLIENT_FKEY_PRESSED,
+                                    null,
+                                    KeyStroke.getKeyStroke(keyStroke.getKeyCode(),
+                                    evt.getModifiers()));
+                        }
+                    });
             getRootPane().
                     getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).
                     put(KeyStroke.getKeyStroke(keyStroke.getKeyCode(), 0),
                     KeyEvent.getKeyText(keyStroke.getKeyCode()) + "Action");
-        }
-    }
-
-    /** Initialises the menu bar. */
-    private void initMenuBar() {
-        final JMenuBar menuBar = new JMenuBar();
-        JMenuItem menuItem;
-
-        final JMenu fileMenu = new JMenu();
-        miAddServer = new JMenuItem();
-        miPreferences = new JMenuItem();
-        final JMenu settingsMenu = new JMenu();
-        final JMenu helpMenu = new JMenu();
-        toggleStateMenuItem = new JMenuItem();
-
-        settingsMenu.setText("Settings");
-        settingsMenu.setMnemonic('e');
-
-        fileMenu.setMnemonic('s');
-        fileMenu.setText("Server");
-
-        miAddServer.setText("New Server...");
-        miAddServer.setMnemonic('n');
-        fileMenu.add(miAddServer);
-
-        miPreferences.setText("Preferences");
-        miPreferences.setMnemonic('p');
-        settingsMenu.add(miPreferences);
-
-        menuItem = new JMenuItem();
-        menuItem.setMnemonic('m');
-        menuItem.setText("Profile Manager");
-        menuItem.setActionCommand("Profile");
-        menuItem.addActionListener(this);
-        settingsMenu.add(menuItem);
-
-        menuItem = new JMenuItem();
-        menuItem.setMnemonic('a');
-        menuItem.setText("Actions Manager");
-        menuItem.setActionCommand("Actions");
-        menuItem.addActionListener(this);
-        settingsMenu.add(menuItem);
-
-        menuItem = new JMenuItem();
-        menuItem.setMnemonic('l');
-        menuItem.setText("Alias Manager");
-        menuItem.setActionCommand("Aliases");
-        menuItem.addActionListener(this);
-        settingsMenu.add(menuItem);
-
-        menuItem = new JMenuItem();
-        menuItem.setMnemonic('x');
-        menuItem.setText("Exit");
-        menuItem.setActionCommand("Exit");
-        menuItem.addActionListener(this);
-        fileMenu.add(menuItem);
-
-        populateWindowMenu(new HashMap<FrameContainer, JMenuItem>());
-
-        helpMenu.setMnemonic('h');
-        helpMenu.setText("Help");
-
-        menuItem = new JMenuItem();
-        menuItem.setMnemonic('a');
-        menuItem.setText("About");
-        menuItem.setActionCommand("About");
-        menuItem.addActionListener(this);
-        helpMenu.add(menuItem);
-
-        menuItem = new JMenuItem();
-        menuItem.setMnemonic('j');
-        menuItem.setText("Join Dev channel");
-        menuItem.setActionCommand("JoinDevChat");
-        menuItem.addActionListener(this);
-        helpMenu.add(menuItem);
-        
-        menuItem = new JMenuItem();
-        menuItem.setMnemonic('f');
-        menuItem.setText("Send Feedback");
-        menuItem.setActionCommand("feedback");
-        menuItem.addActionListener(this);
-        helpMenu.add(menuItem);
-
-        pluginsMenu = new JMenu("Plugins");
-        pluginsMenu.setMnemonic('p');
-        settingsMenu.add(pluginsMenu);
-
-        menuItem = new JMenuItem();
-        menuItem.setMnemonic('m');
-        menuItem.setText("Manage plugins");
-        menuItem.setActionCommand("ManagePlugins");
-        menuItem.addActionListener(this);
-        pluginsMenu.add(menuItem);
-
-        final JMenu configureMenu = new JMenu("Configure plugins");
-        configureMenu.setMnemonic('c');
-        pluginsMenu.add(configureMenu);
-        pluginsMenu.addMenuListener(new MenuListener() {
-
-            @Override
-            public void menuSelected(final MenuEvent e) {
-                populateConfigurePluginsMenu(configureMenu);
-            }
-
-            @Override
-            public void menuDeselected(final MenuEvent e) {
-                //Ignore
-            }
-
-            @Override
-            public void menuCanceled(final MenuEvent e) {
-                //Ignore
-            }
-        });
-
-        menuBar.add(fileMenu);
-        menuBar.add(settingsMenu);
-        menuBar.add(windowsMenu);
-        menuBar.add(helpMenu);
-
-        setJMenuBar(menuBar);
-    }
-
-    /**
-     * Populated the configure plugin menu.
-     *
-     * @param menu Menu to populate
-     */
-    private void populateConfigurePluginsMenu(final JMenu menu) {
-        pluginList.clear();
-        menu.removeAll();
-
-        for (PluginInfo pluginInfo : PluginManager.getPluginManager().getPluginInfos()) {
-            if (pluginInfo.isLoaded()) {
-                Plugin plugin = pluginInfo.getPlugin();
-                if (plugin.isConfigurable()) {
-                    final JMenuItem mi = new JMenuItem(pluginInfo.getNiceName());
-                    mi.setActionCommand("configurePlugin");
-                    mi.addActionListener(this);
-                    menu.add(mi);
-                    pluginList.put(mi, pluginInfo.getFilename());
-                }
-            }
-        }
-        
-        if (menu.getItemCount() == 0) {
-            menu.setEnabled(false);
-        } else {
-            menu.setEnabled(true);
-        }
-    }
-
-    /**
-     * Initialises the window menu.
-     *
-     * @param windows Map of windows
-     */
-    public void populateWindowMenu(final Map<FrameContainer, JMenuItem> windows) {
-        if (windowsMenu == null) {
-            windowsMenu = new JMenu();
-        }
-        if (windowsMenu.isShowing()) {
-            windowsMenu.setSelected(false);
-            windowsMenu.setPopupMenuVisible(false);
-        }
-        windowsMenu.removeAll();
-
-        JMenuItem menuItem;
-        final Collection<JMenuItem> values = windows.values();
-
-        windowsMenu.setMnemonic('w');
-        windowsMenu.setText("Window");
-
-        if (values.isEmpty()) {
-            final JMenuItem mi = new JMenuItem("No windows");
-            mi.setEnabled(false);
-            windowsMenu.add(mi);
-            return;
-        }
-
-        checkWindowState();
-        windowsMenu.add(toggleStateMenuItem);
-
-        menuItem = new JMenuItem();
-        menuItem.setMnemonic('n');
-        menuItem.setText("Minimise");
-        menuItem.setActionCommand("Minimise");
-        menuItem.addActionListener(this);
-        windowsMenu.add(menuItem);
-
-        menuItem = new JMenuItem();
-        menuItem.setMnemonic('c');
-        menuItem.setText("Close");
-        menuItem.setActionCommand("Close");
-        menuItem.addActionListener(this);
-        windowsMenu.add(menuItem);
-
-        windowsMenu.addSeparator();
-
-        addToMenu(windowsMenu, values.iterator(),
-                (int) (windowsMenu.getX()
-        + windowsMenu.getPreferredSize().getHeight()
-        + windowsMenu.getPopupMenu().getPreferredSize().getHeight()));
-    }
-
-    /**
-     * Adds the JMenuItems in the Iterator to the JMenu specified.
-     *
-     * @param menu Menu to add items to
-     * @param it JMenuItem iterator
-     * @param location X Location of the menu on screen
-     */
-    private void addToMenu(final JMenu menu,
-            final Iterator<JMenuItem> it, final int location) {
-        while (it.hasNext()) {
-            if (location + menu.getPopupMenu().getPreferredSize().getHeight() >
-                    Toolkit.getDefaultToolkit().getScreenSize().getHeight()) {
-                final JMenu subMenu = new JMenu("More ->");
-                menu.add(subMenu);
-                addToMenu(subMenu, it, 0);
-                break;
-            }
-            menu.add(it.next());
         }
     }
 
@@ -949,37 +622,6 @@ public final class MainFrame extends JFrame implements WindowListener,
     public void setTitle(final String newTitle) {
         //NOPMD
         super.setTitle(newTitle);
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-        if (e.getActionCommand().equals("About")) {
-            AboutDialog.showAboutDialog();
-        } else if (e.getActionCommand().equals("Profile")) {
-            ProfileManagerDialog.showProfileManagerDialog();
-        } else if (e.getActionCommand().equals("Exit")) {
-            quit();
-        } else if (e.getActionCommand().equals("ManagePlugins")) {
-            PluginDialog.showPluginDialog();
-        } else if (e.getActionCommand().equals("Actions")) {
-            ActionsManagerDialog.showActionsManagerDialog();
-            //com.dmdirc.ui.swing.dialogs.actionsmanager.ActionsManagerDialog.showActionsManagerDialog();
-        } else if (e.getActionCommand().equals("Aliases")) {
-            AliasManagerDialog.showAliasManagerDialog();
-        } else if (e.getActionCommand().equals("Minimise")) {
-            ((TextFrame) Main.getUI().getMainWindow().getActiveFrame()).minimise();
-        } else if (e.getActionCommand().equals("Close")) {
-            ((TextFrame) Main.getUI().getMainWindow().getActiveFrame()).close();
-        } else if (e.getActionCommand().equals("JoinDevChat")) {
-            ServerManager.getServerManager().joinDevChat();
-        } else if (e.getActionCommand().equals("configurePlugin")) {
-            PluginManager.getPluginManager().
-                    getPluginInfo(pluginList.get(e.getSource())).getPlugin().
-                    showConfig();
-        } else if (e.getActionCommand().equals("feedback")) {
-            FeedbackDialog.showFeedbackDialog();
-        }
     }
 
     /** {@inheritDoc} */

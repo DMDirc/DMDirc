@@ -48,6 +48,7 @@ public final class DMDircEventQueue extends EventQueue {
     }
     
     /** {@inheritDoc} */
+    @Override
     protected void dispatchEvent(final AWTEvent event) {
         super.dispatchEvent(event);
         

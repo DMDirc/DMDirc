@@ -283,12 +283,11 @@ public class JWrappingLabel extends JComponent {
 			}
 		}
 		
-		if (!getPreferred) {
+		if (getPreferred) {
 			// Update component height.
 			setSize(getWidth(), top);
-		} else {
-			// Update prefered sizes
-			myPreferredHeight = top;
+                        // Update prefered sizes
+                        myPreferredHeight = top;
 			myPreferredWidth = maxLeft;
 		}
 	}
