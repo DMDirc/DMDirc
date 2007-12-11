@@ -28,6 +28,7 @@ import com.dmdirc.plugins.PluginManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
@@ -48,7 +49,7 @@ public class PluginsMenu extends JMenu implements ActionListener {
     /** Configure plugins menu. */
     private JMenu configure;
     /** Plugins list. */
-    private HashMap<JMenuItem, String> pluginList;
+    private Map<JMenuItem, String> pluginList;
 
     /**
      * Instantiates a new plugins menu.
@@ -56,6 +57,8 @@ public class PluginsMenu extends JMenu implements ActionListener {
     public PluginsMenu() {
         setText("Plugins");
         setMnemonic('p');
+        
+        pluginList = new HashMap<JMenuItem, String>();
 
         JMenuItem manage = new JMenuItem("Manage Plugins");
         manage.setMnemonic('m');
