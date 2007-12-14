@@ -62,6 +62,8 @@ public class DCCSend extends DCC {
 	private String filename = "";
 	/** Block Size */
 	private int blockSize = 1024;
+	/** Is this a turbo dcc? */
+	private boolean turbo = false;
 	
 	/**
 	 * Set the filename of this file
@@ -73,12 +75,50 @@ public class DCCSend extends DCC {
 	}
 	
 	/**
+	 * Get the filename of this file
+	 *
+	 * @return Filename
+	 */
+	public String getFileName() {
+		return filename;
+	}
+	
+	/**
+	 * Set turbo mode on/off.
+	 * Turbo mode doesn't wait for ack packets. Only relevent when sending.
+	 *
+	 * @param turbo True for turbo dcc, else false
+	 */
+	public void setTurbo(final boolean turbo) {
+		this.turbo = turbo;
+	}
+	
+	/**
+	 * Is turbo mode on/off.
+	 * Turbo mode doesn't wait for ack packets. Only relevent when sending.
+	 *
+	 * @return True for turbo dcc, else false
+	 */
+	public boolean getTurbo() {
+		return turbo;
+	}
+	
+	/**
 	 * Set the size of the file
 	 *
 	 * @param size File size
 	 */
 	public void setFileSize(final long size) {
 		this.size = size;
+	}
+	
+	/**
+	 * Get the expected size of the file
+	 *
+	 * @return The expected File size (-1 if unknown)
+	 */
+	public long getFileSize() {
+		return size;
 	}
 	
 	/**
@@ -151,7 +191,7 @@ public class DCCSend extends DCC {
 		if (transferType == TransferType.RECIEVE) {
 			return handleRecieve();
 		} else {
-			return false;
+			return handleSend();
 		}
 	}
 	
@@ -172,6 +212,44 @@ public class DCCSend extends DCC {
 				fileOut.write(data, 0, bytesRead);
 				out.writeInt(bytesRead);
 				out.flush();
+				if (readSize == size) {
+					fileOut.close();
+					return false;
+				} else {
+					return true;
+				}
+			} else if (bytesRead < 0) {
+				fileOut.close();
+				return false;
+			}
+		} catch (IOException e) {
+			return false;
+		}
+		return false;
+	}
+	
+	/**
+	 * Handle the socket as a SEND.
+	 *
+	 * @return false when socket is closed (or should be closed), true will cause the method to be
+	 *         called again.
+	 */
+	protected boolean handleSend() {
+		try {
+			byte[] data = new byte[blockSize];
+			int bytesRead = fileIn.read(data);
+			readSize = readSize + bytesRead;
+			
+			if (bytesRead > 0) {
+				out.write(data, 0, bytesRead);
+				out.flush();
+				
+				if (!turbo) {
+					while (bytesRead > 0) {
+						bytesRead = bytesRead - in.readInt();
+					}
+				}
+				
 				if (readSize == size) {
 					fileOut.close();
 					return false;

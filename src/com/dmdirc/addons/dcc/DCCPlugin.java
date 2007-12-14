@@ -27,7 +27,10 @@ import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.swing.JWrappingLabel;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.swing.components.TextFrame;
-
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.Identity;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.IRCParser;
 import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.Server;
@@ -37,11 +40,16 @@ import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.interfaces.ActionListener;
 
+import java.io.File;
+import java.io.IOException;
+
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import javax.swing.SwingConstants;
 import javax.swing.JOptionPane;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
 /**
@@ -56,6 +64,9 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	
 	/** Our DCC Container window. */
 	private DCCFrame container;
+	
+	/** What domain do we store all settings in the global config under. */
+	private static final String MY_DOMAIN = "plugin-DCC";
 	
 	/** Child Frames */
 	private List<DCCFrame> childFrames = new ArrayList<DCCFrame>();
@@ -92,6 +103,42 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		}, "QuestionThread: "+title);
 		// Start the thread
 		questionThread.start();
+	}
+	
+	/**
+	 * Ask the location to save a file, then start the download.
+	 *
+	 * @param nickname Person this dcc is from.
+	 * @param send The DCCSend to save for.
+	 * @param parser The parser this send was received on
+	 * @param reverse Is this a reverse dcc?
+	 * @param token Token used in reverse dcc.
+	 */
+	public void saveFile(final String nickname, final DCCSend send, final IRCParser parser, final boolean reverse, final String sendFilename, final String token) {
+		// New thread to ask the user where to save in to stop us locking the UI
+		Thread dccThread = new Thread(new Runnable() {
+			public void run() {
+				final JFileChooser jc = new JFileChooser(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "recieve.savelocation"));
+				jc.setDialogTitle("Save "+sendFilename+" As - DMDirc ");
+				jc.setFileSelectionMode(jc.FILES_AND_DIRECTORIES);
+				jc.setMultiSelectionEnabled(false);
+				jc.setSelectedFile(new File(send.getFileName()));
+				int result = jc.showSaveDialog((JFrame)Main.getUI().getMainWindow());
+				if (result == JFileChooser.APPROVE_OPTION) {
+					send.setFileName(jc.getSelectedFile().getPath());
+					if (reverse && !token.isEmpty()) {
+						new DCCSendWindow(DCCPlugin.this, send, "*Recieve: "+nickname, parser.getMyNickname(), nickname);
+						send.listen();
+						parser.sendCTCP(nickname, "DCC", "SEND "+sendFilename+" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+send.getFileSize()+" "+token);
+					} else {
+						new DCCSendWindow(DCCPlugin.this, send, "Recieve: "+nickname, parser.getMyNickname(), nickname);
+						send.connect();
+					}
+				}
+			}
+		}, "saveFileThread: "+sendFilename);
+		// Start the thread
+		dccThread.start();
 	}
 	
 	/**
@@ -161,7 +208,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 					final String port = ctcpData[++i];
 					long size;
 					long startpos;
-					if (ctcpData.length > i) {
+					if (ctcpData.length+1 > i) {
 						try {
 							size = Long.parseLong(ctcpData[++i]);
 						} catch (NumberFormatException nfe) { size = -1; }
@@ -182,22 +229,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 						send.setFileName(filename);
 						send.setFileSize(size);
 						send.setFileStart(startpos);
-						String myNickname = ((Server)arguments[0]).getParser().getMyNickname();
-						final String token;
-						if (port.equals("0")) {
-							if (ctcpData.length > i) {
-								IRCParser parser = ((Server)arguments[0]).getParser();
-								token = ctcpData[++i];
-								new DCCSendWindow(this, send, "*Recieve: "+nickname, myNickname, nickname);
-								send.listen();
-								String sendFilename = filename;
-								if (quoted) { sendFilename = "\""+sendFilename+"\""; }
-								parser.sendCTCP(nickname, "DCC", "SEND "+sendFilename+" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+size+" "+token);
-							}
-						} else {
-							new DCCSendWindow(this, send, "Recieve: "+nickname, myNickname, nickname);
-							send.connect();
-						}
+						saveFile(nickname, send, ((Server)arguments[0]).getParser(), port.equals("0"), (quoted) ? "\""+filename+"\"" : filename, (ctcpData.length-1 > i) ? ctcpData[++i] : "");
 					}
 				}
 			}
@@ -257,6 +289,25 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 */
 	@Override
 	public void onLoad() {
+		Properties defaults = new Properties();
+		defaults.setProperty(MY_DOMAIN + ".recieve.savelocation", Main.getConfigDir() + "downloads" + System.getProperty("file.separator"));
+		defaults.setProperty("identity.name", "DCC Plugin Defaults");
+		IdentityManager.addIdentity(new Identity(defaults));
+	
+		final File dir = new File(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "recieve.savelocation"));
+		if (!dir.exists()) {
+			try {
+				dir.mkdirs();
+				dir.createNewFile();
+			} catch (IOException ex) {
+				Logger.userError(ErrorLevel.LOW, "Unable to create download dir");
+			}
+		} else {
+			if (!dir.isDirectory()) {
+				Logger.userError(ErrorLevel.LOW, "Unable to create download dir (file exists instead)");
+			}
+		}
+	
 		command = new DCCCommand(this);
 		ActionManager.addListener(this, CoreActionType.SERVER_CTCP);
 	}
