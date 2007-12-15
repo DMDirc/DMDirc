@@ -132,7 +132,7 @@ public class PopupManager {
             }
             
             final String name = item.substring(0, colon);
-            final String command = item.substring(colon);
+            final String command = item.substring(colon + 1);
             
             if (command.length() > 0 && command.charAt(0) == '<') {
                 res = new PopupMenuItem(name, getMenu(command.substring(1), configManager));

@@ -23,7 +23,6 @@
 package com.dmdirc.ui.swing.actions;
 
 import com.dmdirc.commandparser.parsers.CommandParser;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.awt.event.ActionEvent;
@@ -40,16 +39,13 @@ public class CommandAction extends AbstractAction {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /** Command parser. */
     private final CommandParser parser;
     
     /** Input window. */
     private final transient InputWindow window;
-    
-    /** Command character. */
-    private final String commandChar;
     
     /** Command. */
     private final String command;
@@ -59,6 +55,8 @@ public class CommandAction extends AbstractAction {
      *
      * @param parser Command parser
      * @param window Input window
+     * @param name Command name
+     * @param command Command to execute
      */
     public CommandAction(final CommandParser parser, final InputWindow window,
             final String name, final String command) {
@@ -67,14 +65,16 @@ public class CommandAction extends AbstractAction {
         this.parser = parser;
         this.window = window;
         this.command = command;
-        
-        commandChar = IdentityManager.getGlobalConfig().
-                getOption("general", "commandchar");    
     }
 
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Action event
+     */
+    @Override
     public void actionPerformed(final ActionEvent e) {
-        parser.parseCommand(window, commandChar + command);
+        parser.parseCommand(window, command);
     }
     
 }
