@@ -52,6 +52,7 @@ public class PopupManager {
      * @param menuType The type of menu that is being built
      * @param configManager The config manager for the current context
      * @param arguments Any arguments appropriate for the menuType
+     * @deprecated in favour of getMenu
      * 
      * @return A map of "friendly names" to commands (without command characters)
      */
@@ -59,6 +60,7 @@ public class PopupManager {
         "The specified PopupType is not null",
         "The specified ConfigManager is not null"
     })
+    @Deprecated
     public static Map<String, String> getMenuItems(final PopupType menuType,
             final ConfigManager configManager, final Object ... arguments) {
         assert(menuType != null);

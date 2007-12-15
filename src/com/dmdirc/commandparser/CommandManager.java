@@ -233,7 +233,9 @@ public final class CommandManager {
      * Registers a command for use in the nicklist popup.
      * 
      * @param command The command to be registered
+     * @deprecated Should be done via the new popup config instead
      */
+    @Deprecated
     public static void registerPopupCommand(final Command command) {
         channelPopupCommands.add(command);
     }
@@ -242,7 +244,9 @@ public final class CommandManager {
      * Retrieves the commands for use in the nicklist popup.
      * 
      * @return A list of commands suitable for use in the nicklist popup
+     * @deprecated Should be done via the new popup config instead
      */
+    @Deprecated
     public static List<Command> getNicklistCommands() {
         return channelPopupCommands;
     }
