@@ -463,7 +463,6 @@ public final class Server extends WritableFrameContainer implements Serializable
      * closed).
      */
     public void delRaw() {
-        WindowManager.removeWindow(raw.getFrame());
         raw = null; //NOPMD
     }
 

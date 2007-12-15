@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.components;
 
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -62,6 +63,15 @@ public class StandardDialog extends JDialog  {
      * @param modal Whether to display modally or not
      */
     public StandardDialog(final Frame owner, final boolean modal) {
+        super(owner, modal);
+    }
+
+    /**
+     * Creates a new instance of StandardDialog.
+     * @param owner The frame that owns this dialog
+     * @param modal Whether to display modally or not
+     */
+    public StandardDialog(final Window owner, final ModalityType modal) {
         super(owner, modal);
     }
     
