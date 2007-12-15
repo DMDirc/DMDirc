@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing;
 
 import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
+import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.components.TextFrame;
 import com.dmdirc.ui.swing.dialogs.FeedbackDialog;
 import com.dmdirc.ui.swing.dialogs.NewServerDialog;
@@ -40,11 +41,13 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
 /**
  * DMDirc menu bar.
  */
-public class MenuBar extends JMenuBar implements ActionListener {
+public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -54,6 +57,10 @@ public class MenuBar extends JMenuBar implements ActionListener {
     private static final long serialVersionUID = 1;
     /** Plugins menu. */
     private PluginsMenu plugins;
+    /** CSD. */
+    private JMenuItem csd;
+    /** SSD. */
+    private JMenuItem ssd;
 
     /**
      * Instantiates a new menu bar.
@@ -96,6 +103,7 @@ public class MenuBar extends JMenuBar implements ActionListener {
         JMenuItem menuItem;
         final JMenu menu = new JMenu("Settings");
         menu.setMnemonic('e');
+        menu.addMenuListener(this);
         add(menu);
 
         menuItem = new JMenuItem();
@@ -125,7 +133,21 @@ public class MenuBar extends JMenuBar implements ActionListener {
         menuItem.setActionCommand("Aliases");
         menuItem.addActionListener(this);
         menu.add(menuItem);
-        
+
+        ssd = new JMenuItem();
+        ssd.setMnemonic('l');
+        ssd.setText("Server settings");
+        ssd.setActionCommand("ServerSettings");
+        ssd.addActionListener(this);
+        menu.add(ssd);
+
+        csd = new JMenuItem();
+        csd.setMnemonic('l');
+        csd.setText("Channel Settings");
+        csd.setActionCommand("ChannelSettings");
+        csd.addActionListener(this);
+        menu.add(csd);
+
         plugins = new PluginsMenu();
         menu.add(plugins);
     }
@@ -211,6 +233,41 @@ public class MenuBar extends JMenuBar implements ActionListener {
             ServerManager.getServerManager().joinDevChat();
         } else if (e.getActionCommand().equals("feedback")) {
             FeedbackDialog.showFeedbackDialog();
+        } else if (e.getActionCommand().equals("ChannelSettings")) {
+            final Window activeWindow = Main.getUI().getActiveWindow();
+            if (activeWindow != null && activeWindow instanceof ChannelFrame) {
+                Main.getUI().showChannelSettingsDialog(((ChannelFrame) activeWindow).getChannel());
+            }
+        } else if (e.getActionCommand().equals("ServerSettings")) {
+            Main.getUI().showServerSettingsDialog(Main.getUI().getActiveServer());
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void menuSelected(final MenuEvent e) {
+        ssd.setEnabled(false);
+        csd.setEnabled(false);
+        final Window activeWindow = Main.getUI().getActiveWindow();
+        if (activeWindow != null) {
+            if (activeWindow instanceof ChannelFrame) {
+                csd.setEnabled(true);
+            }
+            if (activeWindow.getContainer().getServer() != null) {
+                ssd.setEnabled(true);
+            }
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void menuDeselected(final MenuEvent e) {
+    //Ignore
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void menuCanceled(final MenuEvent e) {
+    //Ignore
     }
 }

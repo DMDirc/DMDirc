@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.interfaces;
 
+import com.dmdirc.Channel;
 import com.dmdirc.parser.ChannelClientInfo;
 
 import java.util.List;
@@ -59,5 +60,12 @@ public interface ChannelWindow extends InputWindow {
      * clients, to take into account mode or nickname changes.
      */
     void updateNames();
+    
+    /**
+     * Returns the channel associated with this window.
+     * 
+     * @return Associated Channel
+     */
+    Channel getChannel();
 
 }

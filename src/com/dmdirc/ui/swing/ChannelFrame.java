@@ -162,6 +162,12 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
         return nickList;
     }
     
+    /** {@inheritDoc} */
+    @Override
+    public Channel getChannel() {
+        return parent;
+    }
+    
     /**
      * Initialises the compoents in this frame.
      */
