@@ -247,6 +247,10 @@ public class Action extends ActionModel implements Serializable {
                     // Do nothing
                 }
             }
+            
+            if (data.containsKey("component")) {
+                myGroup.setComponent(data.get("component"));
+            }
         }
 
         for (int i = 0; config.isKeyDomain("setting " + i); i++) {
