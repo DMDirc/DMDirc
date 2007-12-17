@@ -81,6 +81,18 @@ public enum CoreActionComponent implements ActionComponent {
         public String getName() { return "away reason"; }
     },
     
+    /** Returns the channel umodes for the server. */
+    SERVER_CHANNELUMODES {
+        /** {@inheritDoc} */
+        public Object get(final Object argument) { return ((Server) argument).getParser().getUserModeString(); }
+        /** {@inheritDoc} */
+        public Class appliesTo() { return Server.class; }
+        /** {@inheritDoc} */
+        public Class getType() { return String.class; }
+        /** {@inheritDoc} */
+        public String getName() { return "list of channel usermodes"; }
+    },    
+    
     /** Returns the nickname for the server. */
     SERVER_MYNICKNAME {
         /** {@inheritDoc} */
