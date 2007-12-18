@@ -746,13 +746,6 @@ public final class MainFrame extends JFrame implements WindowListener,
         helpMenu.setText("Help");
 
         menuItem = new JMenuItem();
-        menuItem.setMnemonic('a');
-        menuItem.setText("About");
-        menuItem.setActionCommand("About");
-        menuItem.addActionListener(this);
-        helpMenu.add(menuItem);
-
-        menuItem = new JMenuItem();
         menuItem.setMnemonic('j');
         menuItem.setText("Join Dev channel");
         menuItem.setActionCommand("JoinDevChat");
@@ -763,6 +756,13 @@ public final class MainFrame extends JFrame implements WindowListener,
         menuItem.setMnemonic('f');
         menuItem.setText("Send Feedback");
         menuItem.setActionCommand("feedback");
+        menuItem.addActionListener(this);
+        helpMenu.add(menuItem);
+
+        menuItem = new JMenuItem();
+        menuItem.setMnemonic('a');
+        menuItem.setText("About");
+        menuItem.setActionCommand("About");
         menuItem.addActionListener(this);
         helpMenu.add(menuItem);
 
