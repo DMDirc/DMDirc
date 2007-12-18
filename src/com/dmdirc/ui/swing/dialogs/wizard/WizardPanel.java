@@ -30,10 +30,10 @@ import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -118,15 +118,17 @@ public class WizardPanel extends JPanel implements ActionListener,
     private void layoutComponents() {
         final JPanel titlePanel = new JPanel(new MigLayout("fill"));
         titlePanel.add(titleLabel, "growx, wrap");
-        titlePanel.add(new JSeparator(), "growx, pad 0");
         titlePanel.setBackground(Color.WHITE);
+        titlePanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, 
+                Color.BLUE));
 
         final JPanel progressPanel = new JPanel(new MigLayout("fill"));
-        progressPanel.add(new JSeparator(), "span 3, growx, pad 0, wrap");
         progressPanel.add(progressLabel, "growx");
         progressPanel.add(prev, "sg button");
         progressPanel.add(next, "sg button");
         progressPanel.setBackground(Color.WHITE);
+        progressPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, 
+                Color.BLUE));
 
         setLayout(new MigLayout("fill, wrap 1, ins 0"));
         add(titlePanel, "growx");

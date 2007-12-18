@@ -162,13 +162,6 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         add(menu);
 
         menuItem = new JMenuItem();
-        menuItem.setMnemonic('a');
-        menuItem.setText("About");
-        menuItem.setActionCommand("About");
-        menuItem.addActionListener(this);
-        menu.add(menuItem);
-
-        menuItem = new JMenuItem();
         menuItem.setMnemonic('j');
         menuItem.setText("Join Dev channel");
         menuItem.setActionCommand("JoinDevChat");
@@ -179,6 +172,13 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         menuItem.setMnemonic('f');
         menuItem.setText("Send Feedback");
         menuItem.setActionCommand("feedback");
+        menuItem.addActionListener(this);
+        menu.add(menuItem);
+        
+        menuItem = new JMenuItem();
+        menuItem.setMnemonic('a');
+        menuItem.setText("About");
+        menuItem.setActionCommand("About");
         menuItem.addActionListener(this);
         menu.add(menuItem);
     }

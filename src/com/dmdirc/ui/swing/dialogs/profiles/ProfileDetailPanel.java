@@ -24,7 +24,6 @@ package com.dmdirc.ui.swing.dialogs.profiles;
 
 import com.dmdirc.Main;
 import com.dmdirc.ui.swing.MainFrame;
-import com.dmdirc.ui.swing.components.ImageButton;
 import com.dmdirc.ui.swing.components.StandardInputDialog;
 import com.dmdirc.ui.swing.components.validating.NotEmptyValidator;
 import com.dmdirc.ui.swing.components.validating.RegexValidator;
@@ -63,6 +62,9 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
     /** Nickname regex. */
     private static final String NICKNAME_REGEX =
             "[A-Za-z0-9\\[\\]{|}\\-\\^\\\\]+";
+    /** Ident regex. */
+    private static final String IDENT_REGEX =
+            "[A-Za-z0-9\\[\\]{|}\\-\\^\\\\]*";
     /** Filename regex. */
     private static final String FILENAME_REGEX = "[A-Za-z0-9 ]+";
     /** Displayed profile. */
@@ -83,8 +85,6 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
     private JButton delButton;
     /** Edit button. */
     private JButton editButton;
-    /** Alt nicknames error. */
-    private ImageButton altNicknamesError;
 
     /** Creates a new profile detail panel. */
     public ProfileDetailPanel() {
@@ -102,7 +102,7 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
                 new ValidatingJTextField(new RegexValidator(NICKNAME_REGEX,
                 "Nickname must only contain letters, numbers and []{}|-^\\."));
         realname = new ValidatingJTextField(new NotEmptyValidator());
-        ident = new ValidatingJTextField(new RegexValidator(NICKNAME_REGEX,
+        ident = new ValidatingJTextField(new RegexValidator(IDENT_REGEX,
                 "Ident must only contain letters, numbers and []{}|-^\\."));
         altNicknames = new JList(new DefaultListModel());
 
