@@ -623,8 +623,11 @@ public final class Server extends WritableFrameContainer implements Serializable
     public void join(final String channel) {
         assert(myState == ServerState.CONNECTED);
 
+        removeInvites(channel);
+        
         if (hasChannel(channel)) {
             getChannel(channel).join();
+            getChannel(channel).activateFrame();
         } else {
             parser.joinChannel(channel);
         }
@@ -1306,6 +1309,19 @@ public final class Server extends WritableFrameContainer implements Serializable
 
         for (InviteListener listener : listeners.get(InviteListener.class)) {
             listener.inviteReceived(this, invite);
+        }
+    }
+    
+    /**
+     * Removes all invites for the specified channel.
+     * 
+     * @param channel The channel to remove invites for
+     */
+    public void removeInvites(final String channel) {
+        for (Invite invite : new ArrayList<Invite>(invites)) {
+            if (invite.getChannel().equals(channel)) {
+                removeInvite(invite);
+            }
         }
     }
 

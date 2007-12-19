@@ -285,7 +285,9 @@ public final class Channel extends MessageTarget
                 me.getHost(), channelInfo.getName());
         
         icon = IconManager.getIconManager().getIcon("channel");
-        iconUpdated(icon);        
+        iconUpdated(icon);
+        
+        server.removeInvites(channelInfo.getName());
     }
     
     /**
