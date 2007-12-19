@@ -263,15 +263,17 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
      */
     @Override
     public void setAwayIndicator(final boolean awayState) {
-        final boolean awayIndicator = getConfigManager().
-                getOptionBool("ui", "awayindicator", false);
-        if (awayIndicator || !awayState) {
-            if (awayState) {
-                inputPanel.add(awayLabel, BorderLayout.LINE_START);
-                awayLabel.setVisible(true);
-            } else {
-                awayLabel.setVisible(false);
-            }
+        if (getConfigManager() != null) {
+          final boolean awayIndicator = getConfigManager().
+                  getOptionBool("ui", "awayindicator", false);
+          if (awayIndicator || !awayState) {
+              if (awayState) {
+                  inputPanel.add(awayLabel, BorderLayout.LINE_START);
+                  awayLabel.setVisible(true);
+              } else {
+                  awayLabel.setVisible(false);
+              }
+          }
         }
     }
     

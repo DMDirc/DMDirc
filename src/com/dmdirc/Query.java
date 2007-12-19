@@ -389,7 +389,11 @@ public final class Query extends MessageTarget implements
     /** {@inheritDoc} */
     @Override
     public ConfigManager getConfigManager() {
-        return server.getConfigManager();
+        if (server != null) {
+          return server.getConfigManager();
+        } else {
+          return null;
+        }
     }    
     
 }

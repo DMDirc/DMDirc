@@ -30,6 +30,7 @@ import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
