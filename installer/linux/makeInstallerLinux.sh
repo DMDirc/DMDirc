@@ -468,18 +468,19 @@ getMD5() {
 
 if [ "${MD5BIN}" != "" ]; then
 	if [ ${skipMD5} != "true" ]; then
-		if [ -e "${0}.md5"  ]; then
-			echo "Checking MD5 using ${0}.md5.."
-			${MD5BIN} --check --status ${0}.md5
-			if [ $? = 0 ]; then
-				echo "MD5 Check Passed!"
-			else
-				ERROR="This copy of the DMDirc installer appears to be damaged and will now exit.";
-				ERROR=${ERROR}"\nYou may choose to skip this check and run it anyway by passing the --nomd5 parameter";
-				errordialog "DMDirc Setup: MD5 Check Failed!" "${ERROR}";
-				exit 1;
-			fi
-		elif [ "${MD5}" != ""  ]; then
+		#if [ -e "${0}.md5"  ]; then
+		#	echo "Checking MD5 using ${0}.md5.."
+		#	${MD5BIN} --check --status ${0}.md5
+		#	if [ $? = 0 ]; then
+		#		echo "MD5 Check Passed!"
+		#	else
+		#		ERROR="This copy of the DMDirc installer appears to be damaged and will now exit.";
+		#		ERROR=${ERROR}"\nYou may choose to skip this check and run it anyway by passing the --nomd5 parameter";
+		#		errordialog "DMDirc Setup: MD5 Check Failed!" "${ERROR}";
+		#		exit 1;
+		#	fi
+		#elif [ "${MD5}" != ""  ]; then
+		if [ "${MD5}" != ""  ]; then
 			echo "Checking MD5 using built in hash.."
 			if [ "${AWK}" != "" ]; then
 				MD5SUM=""
@@ -499,11 +500,11 @@ if [ "${MD5BIN}" != "" ]; then
 				echo "MD5 Check skipped (awk not found).."
 			fi;
 		else
-			if [ "${MD5BIN}" = "" ]; then
-				echo "MD5 Check skipped (md5sum not found).."
-			else
+			#if [ "${MD5BIN}" = "" ]; then
+			#	echo "MD5 Check skipped (md5sum not found).."
+			#else
 				echo "MD5 Check skipped (No MD5 hash found to compare against).."
-			fi
+			#fi
 		fi;
 	else
 		echo "MD5 Check skipped (Requested).."
