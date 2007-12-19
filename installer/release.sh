@@ -196,22 +196,22 @@ cd windows
 ./makeInstallerWindows.sh ${OPT}${JARFILE}-k -s ${BRANCH}${RELEASE} -p "${plugins} ${plugins_windows}"
 cd ${THISDIR}
 
-MD5BIN=`which md5sum`
-if [ "${MD5BIN}" != "" ]; then
-	echo "================================================================"
-	echo "Creating MD5SUM files"
-	echo "================================================================"
-	cd output
-	for outputFile in *; do
-		if [ "${outputFile##*.}" != "md5" ]; then
-			if [ -e "${outputFile}.md5" ]; then
-				rm -f "${outputFile}.md5"
-			fi
-			${MD5BIN} "${outputFile}" > "${outputFile}.md5"
-		fi
-	done
-	cd ${THISDIR}
-fi
+#MD5BIN=`which md5sum`
+#if [ "${MD5BIN}" != "" ]; then
+#	echo "================================================================"
+#	echo "Creating MD5SUM files"
+#	echo "================================================================"
+#	cd output
+#	for outputFile in *; do
+#		if [ "${outputFile##*.}" != "md5" ]; then
+#			if [ -e "${outputFile}.md5" ]; then
+#				rm -f "${outputFile}.md5"
+#			fi
+#			${MD5BIN} "${outputFile}" > "${outputFile}.md5"
+#		fi
+#	done
+#	cd ${THISDIR}
+#fi
 
 echo "================================================================"
 echo "Release ready - see output folder"
