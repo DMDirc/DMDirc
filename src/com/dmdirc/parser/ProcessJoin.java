@@ -63,30 +63,30 @@ public class ProcessJoin extends IRCProcessor {
 			}
 			// Check to see if we know the host/ident for this client to facilitate dmdirc Formatter
 			if (iClient.getHost().isEmpty()) { iClient.setUserBits(token[0],false); }
-			if (iChannel == null) {
-				if (iClient != myParser.getMyself()) {
-					callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got join for channel ("+token[token.length-1]+") that I am not on. [Me: "+myParser.getMyself()+"]", myParser.getLastLine()));
-				}
-				iChannel = new ChannelInfo(myParser, token[token.length-1]);
-				myParser.addChannel(iChannel);
-				sendString("MODE "+iChannel.getName());
-				
-				callChannelSelfJoin(iChannel);
-			} else {
+			if (iChannel != null) {
 				if (iClient == myParser.getMyself()) {
 					try {
 						myParser.getProcessingManager().process("PART", token);
-						myParser.getProcessingManager().process("JOIN", token);
 					} catch (ProcessorNotFoundException e) { }
 				} else if (iChannel.getUser(iClient) != null) {
 					// Client joined channel that we already know of.
+					return;
 				} else {
 					// This is only done if we are already the channel, and it isn't us that
 					// joined.
 					iChannelClient = iChannel.addClient(iClient);
 					callChannelJoin(iChannel, iChannelClient);
+					return;
 				}
 			}
+			if (iClient != myParser.getMyself()) {
+				callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got join for channel ("+token[token.length-1]+") that I am not on. [Me: "+myParser.getMyself()+"]", myParser.getLastLine()));
+			}
+			iChannel = new ChannelInfo(myParser, token[token.length-1]);
+			myParser.addChannel(iChannel);
+			sendString("MODE "+iChannel.getName());
+			
+			callChannelSelfJoin(iChannel);
 		}
 	}
 	
