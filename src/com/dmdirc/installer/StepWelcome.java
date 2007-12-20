@@ -45,15 +45,15 @@ public final class StepWelcome extends Step {
 	/**
 	 * Creates a new instance of StepWelcome.
 	 */
-	public StepWelcome() {
+	public StepWelcome(final String releaseName) {
 		super();
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
 		
 		JWrappingLabel infoLabel;
-		infoLabel = new JWrappingLabel("Welcome to the DMDirc installer. This program will install DMDirc on this computer.\n\n"
-		                        + "DMDirc is a cross-platform IRC client developed by Chris Smith, Shane Mc Cormack and"
-		                        + "Gregory Holmes. DMDirc is released for free under the MIT license; for more information,"
+		infoLabel = new JWrappingLabel("Welcome to the "+releaseName+" installer. This program will install DMDirc on this computer.\n\n"
+		                        + "DMDirc is a cross-platform IRC client developed by Chris Smith, Shane Mc Cormack and "
+		                        + "Gregory Holmes. DMDirc is released for free under the MIT license; for more information, "
 		                        + "please visit www.DMDirc.com.\n\n"
 		                        + "Click \"Next\" to continue, or close this program to cancel the installation.");
 //		infoLabel.setEditable(false);

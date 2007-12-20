@@ -79,14 +79,14 @@ public final class StepConfirm extends Step implements StepListener {
 		
 		if (Main.getInstaller().supportsShortcut(ShortcutType.MENU)) {
 			if (settings.getShortcutMenuState()) {
-				shortcutText = shortcutText + " - Create Menu shortcut"+ "\n";
+				shortcutText = shortcutText + " - Create menu shortcut"+ "\n";
 		
 			}
 		}
 		
 		if (Main.getInstaller().supportsShortcut(ShortcutType.DESKTOP)) {
 			if (settings.getShortcutDesktopState()) {
-				shortcutText = shortcutText + " - Create Desktop shortcut"+ "\n";
+				shortcutText = shortcutText + " - Create desktop shortcut"+ "\n";
 			}
 		}
 		
