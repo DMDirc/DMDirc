@@ -89,7 +89,7 @@ public final class Main implements WizardListener {
 		
 		String releaseName = "DMDirc";
 		if (cli.getParamNumber("-release") > 0) {
-			releaseName = " "+cli.getParam("-release").getStringValue();
+			releaseName = releaseName+" "+cli.getParam("-release").getStringValue();
 		}
 		
 		setWizardFrame(new WizardFrame(releaseName+" Installer", new ArrayList<Step>(), this));
