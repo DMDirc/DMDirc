@@ -209,7 +209,7 @@ public final class ServerManager {
                 connectedServer = server;
                 
                 if (server.hasChannel("#DMDirc")) {
-                    server.getChannel("#DMDirc").activateFrame();
+                    server.join("#DMDirc");
                     return;
                 }
             }
