@@ -23,13 +23,13 @@
 package com.dmdirc.installer;
 
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
+import com.dmdirc.ui.swing.JWrappingLabel;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
 
 import javax.swing.BorderFactory;
-import javax.swing.JTextArea;
 
 /**
  * Tells the user what this application does
@@ -50,15 +50,16 @@ public final class StepWelcome extends Step {
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
 		
-		JTextArea infoLabel;
-		infoLabel = new JTextArea("This application will install DMDirc on this computer.\n\n"
-		                        + "DMDirc is Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack and Gregory Holmes.\n\n"
-		                        + "DMDirc is released under the MIT License, more information is available at http://www.dmdirc.com\n\n"
-		                        + "Please click Next to continue, or close if you do not wish to install DMDirc at this time.");
-		infoLabel.setEditable(false);
-		infoLabel.setWrapStyleWord(true);
-		infoLabel.setLineWrap(true);
-		infoLabel.setHighlighter(null);
+		JWrappingLabel infoLabel;
+		infoLabel = new JWrappingLabel("Welcome to the DMDirc installer. This program will install DMDirc on this computer.\n\n"
+		                        + "DMDirc is a cross-platform IRC client developed by Chris Smith, Shane Mc Cormack and"
+		                        + "Gregory Holmes. DMDirc is released for free under the MIT license; for more information,"
+		                        + "please visit www.DMDirc.com.\n\n"
+		                        + "Click \"Next\" to continue, or close this program to cancel the installation.");
+//		infoLabel.setEditable(false);
+//		infoLabel.setWrapStyleWord(true);
+//		infoLabel.setLineWrap(true);
+//		infoLabel.setHighlighter(null);
 		infoLabel.setOpaque(false);
 //		infoLabel.setBackground(getBackground());
 		infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, SMALL_BORDER, 0));

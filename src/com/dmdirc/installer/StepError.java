@@ -23,13 +23,13 @@
 package com.dmdirc.installer;
 
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
+import com.dmdirc.ui.swing.JWrappingLabel;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
 
 import javax.swing.BorderFactory;
-import javax.swing.JTextArea;
 
 /**
  * This step shows an unable to install error
@@ -50,12 +50,12 @@ public final class StepError extends Step {
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
 		
-		JTextArea infoLabel;
-		infoLabel = new JTextArea("Sorry, it is not possible to install DMDirc on this system at this time.\n\n");
-		infoLabel.setEditable(false);
-		infoLabel.setWrapStyleWord(true);
-		infoLabel.setLineWrap(true);
-		infoLabel.setHighlighter(null);
+		JWrappingLabel infoLabel;
+		infoLabel = new JWrappingLabel("Sorry, it is not possible to install DMDirc on this system at this time.\n\n");
+//		infoLabel.setEditable(false);
+//		infoLabel.setWrapStyleWord(true);
+//		infoLabel.setLineWrap(true);
+//		infoLabel.setHighlighter(null);
 		infoLabel.setOpaque(false);
 //		infoLabel.setBackground(getBackground());
 		infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, SMALL_BORDER, 0));

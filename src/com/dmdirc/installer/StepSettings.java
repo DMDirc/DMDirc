@@ -24,6 +24,7 @@ package com.dmdirc.installer;
 
 import com.dmdirc.installer.Installer.ShortcutType;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
+import com.dmdirc.ui.swing.JWrappingLabel;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
@@ -35,7 +36,6 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 /**
@@ -50,13 +50,13 @@ public final class StepSettings extends Step {
 	private static final long serialVersionUID = 3;
 	
 	/** Menu Shorcuts checkbox. */
-	private final JCheckBox shortcutMenu = new JCheckBox("Setup Menu shortcut to DMDirc?");
+	private final JCheckBox shortcutMenu = new JCheckBox("Create Menu shortcut");
 	/** Desktop Shorcuts checkbox. */
-	private final JCheckBox shortcutDesktop = new JCheckBox("Setup Desktop shortcut to DMDirc?");
+	private final JCheckBox shortcutDesktop = new JCheckBox("Create Desktop shortcut");
 	/** Quick-Launch Shorcuts checkbox. */
-	private final JCheckBox shortcutQuick = new JCheckBox("Setup Quick Launch shortcut to DMDirc?");
+	private final JCheckBox shortcutQuick = new JCheckBox("Create Quick Launch shortcut");
 	/** Register IRC:// protocol. */
-	private final JCheckBox shortcutProtocol = new JCheckBox("Setup DMDirc to handle irc:// links?");
+	private final JCheckBox shortcutProtocol = new JCheckBox("Make DMDirc handle irc:// links");
 	/** Install Location input. */
 	private final JTextField location = new JTextField(Main.getInstaller().defaultInstallLocation(), 20);
 	
@@ -69,12 +69,12 @@ public final class StepSettings extends Step {
 		setLayout(new GridBagLayout());
 		setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
 		
-		JTextArea infoLabel;
-		infoLabel = new JTextArea("Here you can choose options for the install.\n");
-		infoLabel.setEditable(false);
-		infoLabel.setWrapStyleWord(true);
-		infoLabel.setLineWrap(true);
-		infoLabel.setHighlighter(null);
+		JWrappingLabel infoLabel;
+		infoLabel = new JWrappingLabel("Here you can choose options for the install.\n");
+//		infoLabel.setEditable(false);
+//		infoLabel.setWrapStyleWord(true);
+//		infoLabel.setLineWrap(true);
+//		infoLabel.setHighlighter(null);
 		infoLabel.setOpaque(false);
 //		infoLabel.setBackground(getBackground());
 		infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, SMALL_BORDER, 0));
@@ -95,6 +95,7 @@ public final class StepSettings extends Step {
 		constraints.gridwidth = 1;
 		constraints.gridy = 1;
 		constraints.fill = constraints.NONE;
+		constraints.insets = new Insets(LARGE_BORDER, 0, 0, 0);
 		add(new JLabel("Install Location: "), constraints);
 		constraints.fill = constraints.HORIZONTAL;
 		constraints.gridx = 1;
