@@ -406,13 +406,15 @@ public class Action extends ActionModel implements Serializable {
             i++;
         }
 
-        // Preserve any meta-data
-        if (config.isKeyDomain(DOMAIN_METADATA)) {
-            newConfig.addDomain(DOMAIN_METADATA, config.getKeyDomain(DOMAIN_METADATA));
-        }
-        
-        for (i = 0; config.isKeyDomain("setting " + i); i++) {
-            newConfig.addDomain("setting " + i, config.getKeyDomain("setting " + i));
+        if (config != null) {
+            // Preserve any meta-data
+            if (config.isKeyDomain(DOMAIN_METADATA)) {
+                newConfig.addDomain(DOMAIN_METADATA, config.getKeyDomain(DOMAIN_METADATA));
+            }
+
+            for (i = 0; config.isKeyDomain("setting " + i); i++) {
+                newConfig.addDomain("setting " + i, config.getKeyDomain("setting " + i));
+            }
         }
 
         try {
