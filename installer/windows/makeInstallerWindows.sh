@@ -241,6 +241,9 @@ else
 	rm -Rf plugins;
 fi
 
+
+echo "	ReleaseNumber: String = '${isRelease}';" > SetupConsts.inc
+
 FILES="DMDirc.jar Setup.exe";
 DELETEFILES=${FILES}
 if [ ! -e "Setup.exe"  -o "${compileSetup}" = "true" ]; then

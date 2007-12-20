@@ -50,12 +50,12 @@ program Setup;
 
 uses Windows, SysUtils, classes, registry;
 
+const
+{$I SetupConsts.inc}
 // This is also part of the above work-around.
 {$IFDEF APP_CONSOLE}
-const
 	IsConsole: boolean = true;
 {$ELSE}
-const
 	IsConsole: boolean = false;
 {$ENDIF}
 
@@ -168,6 +168,9 @@ begin
 			end;
 			Reg.CloseKey;
 			Reg.Free;
+			if (ReleaseNumber <> '') then begin
+				params := params+' --release '+ReleaseNumber;
+			end;
 			if (ExecAndWait(javaCommand+' -jar installer.jar'+params) <> 0) then begin
 				dowriteln('Failed!');
 				errorMessage := errorMessage+'The currently installed version of java is not compatible with DMDirc.';
