@@ -607,11 +607,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         if (event.isPopupTrigger()) {
             //Show channel popup
         } else if (parent != null && parent.getServer() != null) {
-            if (parent.getServer().hasChannel(channel)) {
-                parent.getServer().getChannel(channel).activateFrame();
-            } else {
-                parent.getServer().join(channel);
-            }
+            parent.getServer().join(channel);
         }
     }
     
