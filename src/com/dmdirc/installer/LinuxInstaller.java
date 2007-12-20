@@ -254,6 +254,10 @@ public class LinuxInstaller extends Installer {
 					step.addText(" - Error creating shortcut. Not applicable to this Operating System");
 					return;
 			}
+			File temp = new File(filename);
+			if (!temp.getParentFile().exists()) {
+				temp.getParentFile().mkdir();
+			}
 			writer = new PrintWriter(filename);
 			writeFile(writer, location);
 		} catch (Exception e) {

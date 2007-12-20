@@ -23,6 +23,7 @@
 package com.dmdirc.installer;
 
 import com.dmdirc.installer.Installer.ShortcutType;
+import com.dmdirc.ui.swing.JWrappingLabel;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.dialogs.wizard.StepListener;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardFrame;
@@ -32,7 +33,6 @@ import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import java.awt.BorderLayout;
 
 import javax.swing.BorderFactory;
-import javax.swing.JTextArea;
 
 /**
  * This confirms the settings chosen in the previous step
@@ -46,7 +46,7 @@ public final class StepConfirm extends Step implements StepListener {
 	private static final long serialVersionUID = 2;
 	
 	/** Text area showing the install information */
-	private JTextArea infoLabel = new JTextArea("");
+	private JWrappingLabel infoLabel = new JWrappingLabel("");
 	
 	/**
 	* Creates a new instance of StepConfirm.
@@ -58,10 +58,10 @@ public final class StepConfirm extends Step implements StepListener {
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
 		
-		infoLabel.setEditable(false);
-		infoLabel.setWrapStyleWord(true);
-		infoLabel.setLineWrap(true);
-		infoLabel.setHighlighter(null);
+//		infoLabel.setEditable(false);
+//		infoLabel.setWrapStyleWord(true);
+//		infoLabel.setLineWrap(true);
+//		infoLabel.setHighlighter(null);
 		infoLabel.setOpaque(false);
 //		infoLabel.setBackground(getBackground());
 		infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, SMALL_BORDER, 0));
@@ -79,43 +79,37 @@ public final class StepConfirm extends Step implements StepListener {
 		
 		if (Main.getInstaller().supportsShortcut(ShortcutType.MENU)) {
 			if (settings.getShortcutMenuState()) {
-				shortcutText = shortcutText + " - Do set up Menu shortcuts"+ "\n";
-			} else {
-				shortcutText = shortcutText + " - Do not set up Menu shortcuts"+ "\n";
+				shortcutText = shortcutText + " - Create menu shortcut"+ "\n";
+		
 			}
 		}
 		
 		if (Main.getInstaller().supportsShortcut(ShortcutType.DESKTOP)) {
 			if (settings.getShortcutDesktopState()) {
-				shortcutText = shortcutText + " - Do set up Desktop shortcuts"+ "\n";
-			} else {
-				shortcutText = shortcutText + " - Do not set up Desktop shortcuts"+ "\n";
+				shortcutText = shortcutText + " - Create desktop shortcut"+ "\n";
 			}
 		}
 		
 		if (Main.getInstaller().supportsShortcut(ShortcutType.QUICKLAUNCH)) {
 			if (settings.getShortcutQuickState()) {
-				shortcutText = shortcutText + " - Do set up Quick Launch shortcuts"+ "\n";
-			} else {
-				shortcutText = shortcutText + " - Do not set up Quick Launch shortcuts"+ "\n";
+				shortcutText = shortcutText + " - Create Quick Launch shortcut"+ "\n";
 			}
 		}
 		
 		if (Main.getInstaller().supportsShortcut(ShortcutType.PROTOCOL)) {
 			if (settings.getShortcutProtocolState()) {
-				shortcutText = shortcutText + " - Do set up DMDirc to handle irc:// links"+ "\n";
-			} else {
-				shortcutText = shortcutText + " - Do not set up DMDirc to handle irc:// links"+ "\n";
+				shortcutText = shortcutText + " - Make DMDirc handle irc:// links"+ "\n";
 			}
 		}
 		
 		
 		
-		infoLabel.setText("Please check that these settings are correct:\n\n"
+		infoLabel.setText("Please review your chosen settings:\n\n"
 		                + " - Install Location:\n"
 		                + "    " +((StepSettings) Main.getWizardFrame().getStep(1)).getInstallLocation() + "\n"
 		                + shortcutText + "\n"
-		                + "If these are correct, press Next to begin the installation, else press Previous to change them");
+		                + "If you wish to change any of these settings, press the \"Previous\" button,"
+		                + "otherwise click \"Next\" to begin the installation");
     }
 
 	/** {@inheritDoc} */
