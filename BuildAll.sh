@@ -38,8 +38,25 @@ mv ${MYDIR}/src/com/dmdirc/Main.java.tmp ${MYDIR}/src/com/dmdirc/Main.java
 # The date/svn prefix to add to the end of the file names of stuff
 FILEDATA=`date +%Y%m%d`_${SVNREV}
 
+# Copy default settings from www to trunk for compile (if they exist)
+REVERTLIST=""
+if [ -e "${HOME}/www/updates/" ]; then
+	for updatedir in `ls -1 src/com/dmdirc/config/defaults/`; do
+		src="${HOME}/www/updates/${updatedir}"
+		if [ -e ${src} ]; then
+			REVERTLIST=${REVERTLIST}" src/com/dmdirc/config/defaults/${updatedir}/"
+			cp -Rfv ${src}/* src/com/dmdirc/config/defaults/${updatedir}/
+		fi;
+	done
+fi;
+
 # Build plugins/jar
 $ANT -buildfile $MYDIR/build.xml -k clean jar
+
+# Now revert the trunk so as not to break updates.
+for updatedir in ${REVERTLIST}; do
+	${SVN} revert ${updatedir}/*
+done;
 
 # Build installers
 if [ -e "$MYDIR/dist/DMDirc.jar" ]; then
