@@ -234,12 +234,12 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
                 remove.setEnabled(false);
             } else {
                 activeComponent =
-                        details.get(model.getValueAt(table.getSelectedRow(), 0));
+                        details.get(model.getValueAt(table.getRowSorter().convertRowIndexToModel(table.getSelectedRow()), 0));
                 layoutComponents();
                 add.setEnabled(true);
                 remove.setEnabled(true);
             }
-            selectedRow = table.getSelectedRow();
+            selectedRow = table.getRowSorter().convertRowIndexToModel(table.getSelectedRow());
             setVisible(true);
         }
     }
