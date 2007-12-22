@@ -15,13 +15,15 @@ showHelp() {
 	echo "Release can be either 'trunk', 'this', a valid tag, or a branch (if -b is passed)"
 	echo "The following params are known:"
 	echo "---------------------"
-	echo "-b, --branch                       <release> is a branch"
-	echo "    --jar <file>                   Use <file> instead of compiling a jar."
-	echo "-p, --plugins <plugins>            Plugins to add to all the jars."
-	echo "-pl, --plugins-linux <plugins>     Plugins to linux installer."
-	echo "-pw, --plugins-windows <plugins>   Plugins to linux installer."
-	echo "-h, --help                         Help information"
-	echo "-o, --opt <options>                Additional options to pass to the make*Installer.sh files"
+	echo "-b,  --branch                       <release> is a branch"
+	echo "     --jar <file>                   Use <file> instead of compiling a jar."
+	echo "     --jre                          Include a jre in the installers."
+	echo "     --jre64                        Include a 64bit jre in the installers."
+	echo "-p,  --plugins <plugins>            Plugins to add to all the jars."
+	echo "-pl, --plugins-linux <plugins>      Plugins to linux installer."
+	echo "-pw, --plugins-windows <plugins>    Plugins to linux installer."
+	echo "-h,  --help                         Help information"
+	echo "-o,  --opt <options>                Additional options to pass to the make*Installer.sh files"
 	echo "---------------------"
 	exit 0;
 }
@@ -31,6 +33,7 @@ LAST=""
 OPT=""
 BRANCH=""
 JARFILE=""
+JRE=""
 while test -n "$1"; do
 	LAST=${1}
 	case "$1" in
@@ -41,6 +44,9 @@ while test -n "$1"; do
 		--jar)
 			shift
 			JARFILE="--jar ${1} "
+			;;
+		--jre|--jre64)
+			JRE="${1} "
 			;;
 		--plugins-linux|-pl)
 			shift
@@ -164,7 +170,7 @@ fi
 # Copy default settings from www to trunk for compile (if they exist, and we are
 # building a new jar)
 REVERTLIST=""
-if [ "" != ${JARFILE} ]; then
+if [ "" != "${JARFILE}" ]; then
 	if [ -e "${HOME}/www/updates/" ]; then
 		echo "================================================================"
 		echo "Applying settings update"
@@ -205,14 +211,14 @@ echo "================================================================"
 echo "Building linux installer"
 echo "================================================================"
 cd linux
-./makeInstallerLinux.sh ${OPT}${JARFILE}-c -k ${BRANCH}${RELEASE} -p "${plugins} ${plugins_linux}"
+./makeInstallerLinux.sh ${OPT}${JARFILE}${JRE}-c -k ${BRANCH}${RELEASE} -p "${plugins} ${plugins_linux}"
 cd ${THISDIR}
 
 echo "================================================================"
 echo "Building Windows installer"
 echo "================================================================"
 cd windows
-./makeInstallerWindows.sh ${OPT}${JARFILE}-k -s ${BRANCH}${RELEASE} -p "${plugins} ${plugins_windows}"
+./makeInstallerWindows.sh ${OPT}${JARFILE}${JRE}-k -s ${BRANCH}${RELEASE} -p "${plugins} ${plugins_windows}"
 cd ${THISDIR}
 
 

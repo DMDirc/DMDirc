@@ -246,9 +246,9 @@ echo "	ReleaseNumber: String = '${isRelease}';" > SetupConsts.inc
 
 FILES="DMDirc.jar Setup.exe";
 DELETEFILES=${FILES}
+FPC=`which fpc`
 if [ ! -e "Setup.exe"  -o "${compileSetup}" = "true" ]; then
 	echo "Setup.exe does not exist. Lets try and compile it."	
-	FPC=`which fpc`
 	if [ "${FPC}" = "" ]; then
 		echo "FPC Compiler not found, Setup.exe can not be built."
 		exit 1;

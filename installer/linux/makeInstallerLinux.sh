@@ -55,6 +55,8 @@ showHelp() {
 	echo "-b, --branch              Release in -r is a branch "
 	echo "-p, --plugins <plugins>   What plugins to add to the jar file"
 	echo "-c, --compile             Recompile the .jar file"
+	echo "    --jre                 Include the JRE in this installer"
+	echo "    --jre64               Include the 64-Bit JRE in this installer"
 	echo "    --jar <file>          use <file> as DMDirc.jar"
 	echo "    --current             Use the current folder as the base for the build"
 	echo "-t, --tag <tag>           Tag to add to final exe name to distinguish this build from a standard build"
@@ -74,6 +76,8 @@ plugins=""
 location="../../../"
 jarfile=""
 current=""
+jre=""
+jrename="jre" # Filename for JRE without the .bin
 while test -n "$1"; do
 	case "$1" in
 		--plugins|-p)
@@ -83,6 +87,13 @@ while test -n "$1"; do
 		--jar)
 			shift
 			jarfile=${1}
+			;;
+		--jre)
+			jre="http://www.dmdirc.com/getjava/linux/i686"
+			;;
+		--jre64)
+			jre="http://www.dmdirc.com/getjava/linux/x86_64"
+			jrename="jre64"
 			;;
 		--current)
 			location="../../"
@@ -183,6 +194,21 @@ mv ${RUNNAME}.tmp ${RUNNAME}
 
 FILES="DMDirc.jar";
 echo "Compressing files.."
+for FILE in "getjre.sh" "installjre.sh" "progressbar.sh"; do
+	if [ -e "${FILE}" ]; then
+		FILES="${FILES} ${FILE}"
+	fi
+done;
+
+if [ "" != "${jre}" ]; then
+	if [ ! -e "../common/${jrename}.bin" ]; then
+		echo "Downloading JRE to include in installer"
+		wget ${jre} -O ../common/${jrename}.bin
+	fi
+	ln -sf ../common/${jrename}.bin ${jrename}.bin
+	FILES="${FILES} ${jrename}.bin"
+fi;
+
 if [ -e "setup.sh" ]; then
 	FILES="${FILES} setup.sh"
 else
@@ -260,14 +286,27 @@ fi;
 echo "Chmodding"
 chmod a+x ${RUNNAME}
 
+
 if [ "${isRelease}" != "" ]; then
-	mv ${RUNNAME} ../output/DMDirc-${isRelease}-Setup.run
+	finalname=DMDirc-${isRelease}-Setup.run
 else
-	mv ${RUNNAME} ../output/
+	finalname=${RUNNAME##*/}
 fi;
+
+if [ "" != "${jre}" ]; then
+	finalname=`echo ${finalname} | sed "s/.run$/.${jrename}.run/"`
+fi;
+
+mv ${RUNNAME} ../output/${finalname}
 mv setup.sh setup.sh.tmp
+mv getjre.sh getjre.sh.tmp
+mv installjre.sh installjre.sh.tmp
+mv progressbar.sh progressbar.sh.tmp
 rm -f ${FILES}
 mv setup.sh.tmp setup.sh
+mv getjre.sh.tmp getjre.sh
+mv installjre.sh.tmp installjre.sh
+mv progressbar.sh.tmp progressbar.sh
 
 echo "-----------"
 echo "Done."

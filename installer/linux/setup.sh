@@ -23,6 +23,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+ISKDE=`pidof -x -s kdeinit`
+KDIALOG=`which kdialog`
+ISGNOME=`pidof -x -s gnome-panel`
+ZENITY=`which zenity`
+
 errordialog() {
 	# Send message to console.
 	echo ""
@@ -33,16 +38,12 @@ errordialog() {
 	echo "-----------------------------------------------------------------------"
 
 	# Now try to use the GUI Dialogs.
-	ISKDE=`pidof -x -s kdeinit`
-	KDIALOG=`which kdialog`
-	ISGNOME=`pidof -x -s gnome-panel`
-	ZENITY=`which zenity`
 	if [ "" != "${ISKDE}" -a "" != "${KDIALOG}" -a "" != "${DISPLAY}" ]; then
 		echo "Dialog on Display: ${DISPLAY}"
-		${KDIALOG} --title "DMDirc: ${1}" --error "${1}\n\n${2}"
+		${KDIALOG} --title "DMDirc: ${1}" --error "${2}"
 	elif [ "" != "${ISGNOME}" -a "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then
 		echo "Dialog on Display: ${DISPLAY}"
-		${ZENITY} --error --title "DMDirc: ${1}" --text "${1}\n\n${2}"
+		${ZENITY} --error --title "DMDirc: ${1}" --text "${2}"
 	fi
 }
 
@@ -53,17 +54,49 @@ echo "---------------------"
 echo -n "Looking for java.. ";
 JAVA=`which java`
 
+installjre() {
+	result=1
+	if [ -e "jre64.bin" ]; then
+		mv jre64.bin jre.bin
+	fi;
+	if [ ! -e "jre.bin" ]; then
+		message="Would you like to download and install java?"
+		if [ "install" != "${1}" ]; then
+			message="Java was not detected on your machine. Would you like to download and install it now?" 
+		elif [ "upgrade" != "${1}" ]; then
+			message="The version of java detected on your machine is not compatible with DMDirc. Would you like to download and install a compatible version now?"
+		fi;
+		/bin/sh getjre.sh "${message}"
+		if [ $? -eq 0 ]; then
+			/bin/sh installjre.sh
+			result=$?
+		fi;
+	else
+		message="Would you like to install java?"
+		if [ "install" != "${1}" ]; then
+			message="Java was not detected on your machine. Would you like to install it now?" 
+		elif [ "upgrade" != "${1}" ]; then
+			message="The version of java detected on your machine is not compatible with DMDirc. Would you like to install a compatible version now?"
+		fi;
+		/bin/sh installjre.sh  "${message}"
+		result=$?
+	fi;
+	if [ ${result} -ne 0 ]; then
+		errordialog "DMDirc Setup" "Sorry, DMDirc setup can not continue without java."
+		exit 1;
+	else
+		if [ -e ".jrepath" ]; then
+			. .jrepath
+			JAVA=`which java`
+		fi;
+	fi;
+}
+
 if [ "" != "${JAVA}" ]; then
 	echo "Success!"
 else
 	echo "Failed!"
-	# This should in future offer to download and install the JVM automatically.
-	ERROR="Sorry, java is not installed on this machine.";
-	ERROR=${ERROR}"\n"
-	ERROR=${ERROR}"\nDMDirc requires a 1.6.0 compatible JVM, you can get one from:";
-	ERROR=${ERROR}"\nhttp://jdl.sun.com/webapps/getjava/BrowserRedirect";
-	errordialog "Unable to complete setup!" "${ERROR}";
-	exit 1;
+	installjre "install"
 fi
 
 echo "Success!"
@@ -121,13 +154,12 @@ if [ -e "installer.jar" ]; then
 		echo "Running installer.."
 		${JAVA} -cp DMDirc.jar -jar installer.jar ${isRoot}${isRelease}
 		if [ $? -ne 0 ]; then
-			ERROR="Sorry, the currently installed version of java is not compatible with";
-			ERROR=${ERROR}"\nDMDirc.";
-			ERROR=${ERROR}"\n";
-			ERROR=${ERROR}"\nDMDirc requires a 1.6.0 compatible JVM, you can get one from:";
-			ERROR=${ERROR}"\nhttp://jdl.sun.com/webapps/getjava/BrowserRedirect";
-			errordialog "Unable to complete setup!" "${ERROR}";
-			exit 1;
+			installjre "upgrade"
+			echo "Trying to run installer again.."
+			${JAVA} -cp DMDirc.jar -jar installer.jar ${isRoot}${isRelease}
+			if [ $? -ne 0 ]; then
+				exit 1;
+			fi;
 		fi
 		exit 0;
 	fi

@@ -80,6 +80,11 @@ else
 	echo "Not found.";
 fi;
 
+# Add local jre to path if it exists
+if [ -e ~/jre ]; then
+	export PATH=~/jre/bin:"${PATH}"
+fi;
+
 echo -n "Looking for java - ";
 JAVA=`which java`
 
