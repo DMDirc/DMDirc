@@ -106,6 +106,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         setLayout(new MigLayout("ins rel, hidemode 3"));
 
         add(messageLabel, "growx, pushx, sgy components, hmax 20, hmin 20");
+        add(inviteLabel, "sgy components, hmax 20, hmin 20");
         add(errorLabel, "sgy components, hmax 20, hmin 20");
 
         checkErrors();
