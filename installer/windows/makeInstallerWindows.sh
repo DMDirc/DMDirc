@@ -70,18 +70,6 @@ return;
 	fi
 }
 
-# Go!
-echo "-----------"
-if [ -e "${RUNNAME}" ]; then
-	echo "Removing existing .exe file"
-	rm -Rf "${RUNNAME}"
-fi
-if [ -e "${INTNAME}" ]; then
-	echo "Removing existing .7z file"
-	rm -Rf "${INTNAME}"
-fi
-echo "Creating .7z file"
-
 # Check for some CLI params
 compileJar="false"
 updateSVN="true"
@@ -97,6 +85,8 @@ plugins=""
 location="../../../"
 jarfile=""
 current=""
+jre=""
+jrename="jre" # Filename for JRE without the .exe
 
 showHelp() {
 	echo "This will generate a DMDirc installer for a windows based system."
@@ -107,11 +97,12 @@ showHelp() {
 	echo "-b, --branch              Release in -r is a branch "
 	echo "-s, --setup               Recompile the .exe file"
 	echo "-e,                       If setup.exe compile fails, use old version"
-	echo "-p, --plugins <plugins>   What plugins to add to the jar file"
+	echo "-p, --plugins <plugins>   What plugins to add to the jar file"o.0
 	echo "-c, --compile             Recompile the .jar file"
 	echo "-u, --unsigned            Don't sign the exe"
 	echo "-t, --tag <tag>           Tag to add to final exe name to distinguish this build from a standard build"
 	echo "-f, --flags <flags>       Extra flags to pass to the compiler"	
+	echo "    --jre                 Include the JRE in this installer"
 	echo "    --jar <file>          use <file> as DMDirc.jar"
 	echo "    --current             Use the current folder as the base for the build"
 # This is not in the help cos its crappy really, and makes little/no difference to the
@@ -134,6 +125,14 @@ while test -n "$1"; do
 		--jar)
 			shift
 			jarfile=${1}
+			;;
+		--jre)
+			jre="http://www.dmdirc.com/getjava/windows/all"
+			;;
+		--jre64)
+			# No specific jre64 for windows.
+			echo "No specific 64ibt JRE for windows, exiting"
+			exit 0;
 			;;
 		--current)
 			location="../../"
@@ -178,6 +177,18 @@ while test -n "$1"; do
 	esac
 	shift	
 done
+
+# Go!
+echo "-----------"
+if [ -e "${RUNNAME}" ]; then
+	echo "Removing existing .exe file"
+	rm -Rf "${RUNNAME}"
+fi
+if [ -e "${INTNAME}" ]; then
+	echo "Removing existing .7z file"
+	rm -Rf "${INTNAME}"
+fi
+echo "Creating .7z file"
 
 if [ "" = "${current}" ]; then
 	jarPath="${location}trunk"
@@ -245,6 +256,14 @@ fi
 echo "	ReleaseNumber: String = '${isRelease}';" > SetupConsts.inc
 
 FILES="DMDirc.jar Setup.exe";
+if [ "" != "${jre}" ]; then
+	if [ ! -e "../common/${jrename}.exe" ]; then
+		echo "Downloading JRE to include in installer"
+		wget ${jre} -O ../common/${jrename}.exe
+	fi
+	ln -sf ../common/${jrename}.exe jre.exe
+	FILES="${FILES} jre.exe"
+fi;
 DELETEFILES=${FILES}
 FPC=`which fpc`
 if [ ! -e "Setup.exe"  -o "${compileSetup}" = "true" ]; then
@@ -326,7 +345,7 @@ if [ -e "${jarPath}/launcher/windows" ]; then
 	cd ${olddir}
 	# Now add to file list.
 	for thisfile in `ls -1 ${jarPath}/launcher/windows/*.exe`; do
-		ln -sf "${jarPath}/launcher/windows/"${thisfile} .
+		ln -sf ${thisfile} .
 		FILES="${FILES} ${thisfile}"
 	done
 fi
@@ -439,6 +458,13 @@ if [ -e "Uninstaller.exe" ]; then
 	DELETEFILES="${DELETEFILES} Uninstaller.exe"
 fi
 
+# Add wget to allow downloading jre
+if [ ! -e "wget.exe" ]; then
+	wget "http://users.ugent.be/~bpuype/cgi-bin/fetch.pl?dl=wget/wget.exe"
+fi;
+
+FILES="${FILES} wget.exe"
+
 compress $FILES
 
 echo "Creating config.."
@@ -455,9 +481,9 @@ echo ";!@InstallEnd@!" >> 7zip.conf
 
 if [ ! -e "7zS.sfx" ]; then
 	echo "Obtaining sfx stub.."
-	wget http://kent.dl.sourceforge.net/sourceforge/sevenzip/7z447_extra.tar.bz2
-	tar -jxvf 7z447_extra.tar.bz2 7zS.sfx
-	rm 7z447_extra.tar.bz2
+	wget http://downloads.sourceforge.net/sevenzip/7z452_extra.tar.bz2 -O 7zextra.tar.bz2
+	tar -jxvf 7zextra.tar.bz2 7zS.sfx
+	rm 7zextra.tar.bz2
 fi
 
 echo "Creating .exe"
@@ -543,6 +569,10 @@ if [ "${signEXE}" = "true" ]; then
 	signexe ${FULLINSTALLER}
 else
 	echo "Not Signing.."
+fi;
+
+if [ "" != "${jre}" ]; then
+	ORIGNAME=`echo ${ORIGNAME} | sed "s/.exe$/.${jrename}.exe/"`
 fi;
 
 mv ${FULLINSTALLER} ../output/${ORIGNAME}

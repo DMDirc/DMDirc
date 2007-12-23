@@ -56,9 +56,6 @@ JAVA=`which java`
 
 installjre() {
 	result=1
-	if [ -e "jre64.bin" ]; then
-		mv jre64.bin jre.bin
-	fi;
 	if [ ! -e "jre.bin" ]; then
 		message="Would you like to download and install java?"
 		if [ "install" != "${1}" ]; then
@@ -82,7 +79,11 @@ installjre() {
 		result=$?
 	fi;
 	if [ ${result} -ne 0 ]; then
-		errordialog "DMDirc Setup" "Sorry, DMDirc setup can not continue without java."
+		if [ "upgrade" != "${1}" ]; then
+			errordialog "DMDirc Setup" "Sorry, DMDirc setup can not continue without an updated version of java."
+		else
+			errordialog "DMDirc Setup" "Sorry, DMDirc setup can not continue without java."
+		fi;
 		exit 1;
 	else
 		if [ -e ".jrepath" ]; then

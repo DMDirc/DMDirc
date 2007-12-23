@@ -48,7 +48,7 @@ program Setup;
 	{$ENDIF}
 {$ENDIF}
 
-uses Windows, SysUtils, classes, registry;
+uses Windows, SysUtils, classes, registry, strutils;
 
 const
 {$I SetupConsts.inc}
@@ -59,20 +59,78 @@ const
 	IsConsole: boolean = false;
 {$ENDIF}
 
+function askQuestion(Question: String): boolean;
+begin
+	Result := MessageBox(0, PChar(Question), 'DMDirc Setup', MB_YESNO or MB_ICONQUESTION) = IDYES;
+end;
+
+procedure showError(ErrorMessage: String; addFooter: boolean = true);
+begin
+	if IsConsole then begin
+		writeln('');
+		writeln('-----------------------------------------------------------------------');
+		writeln('Sorry, setup is unable to continue.!');
+		writeln('-----------------------------------------------------------------------');
+		writeln('Reason:');
+		writeln('----------');
+		writeln(ErrorMessage);
+		if addFooter then begin
+			writeln('-----------------------------------------------------------------------');
+			writeln('If you feel this is incorrect, or you require some further assistance,');
+			writeln('please feel free to contact us.');
+		end;
+		writeln('-----------------------------------------------------------------------');
+		readln();
+	end
+	else begin
+		if addFooter then begin
+			ErrorMessage := ErrorMessage+#13#10;
+			ErrorMessage := ErrorMessage+#13#10+'If you feel this is incorrect, or you require some further assistance,';
+			ErrorMessage := ErrorMessage+#13#10+'please feel free to contact us.';
+		end;
+		
+		MessageBox(0, PChar(ErrorMessage), 'Sorry, setup is unable to continue', MB_OK + MB_ICONSTOP);
+	end;
+end;
+
+procedure showmessage(message: String);
+begin
+	if IsConsole then begin
+		writeln('');
+		writeln('-----------------------------------------------------------------------');
+		writeln('Information:!');
+		writeln('-----------------------------------------------------------------------');
+		writeln(message);
+		writeln('-----------------------------------------------------------------------');
+		readln();
+	end
+	else begin
+		MessageBox(0, PChar(message), 'DMDirc Setup', MB_OK + MB_ICONINFORMATION);
+	end;
+end;
+
 // Run an application and wait for it to finish.
-function ExecAndWait(sProgramToRun: String): Longword;
+function Launch(sProgramToRun: String; hide: boolean = false): TProcessInformation;
 var
 	StartupInfo: TStartupInfo;
-	ProcessInfo: TProcessInformation;
 begin
 	FillChar(StartupInfo, SizeOf(TStartupInfo), 0);
 	with StartupInfo do begin
 		cb := SizeOf(TStartupInfo);
 		dwFlags := STARTF_USESHOWWINDOW;
-		wShowWindow := SW_SHOWNORMAL;
+		if hide then wShowWindow := SW_HIDE
+		else wShowWindow := SW_SHOWNORMAL;
 	end;
 
-	CreateProcess(nil, PChar(sProgramToRun), nil, nil, False, NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo, ProcessInfo);
+	CreateProcess(nil, PChar(sProgramToRun), nil, nil, False, NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo, Result);
+end;
+
+// Run an application and wait for it to finish.
+function ExecAndWait(sProgramToRun: String; hide: boolean = false): Longword;
+var
+	ProcessInfo: TProcessInformation;
+begin
+	ProcessInfo := Launch(sProgramToRun, hide);
 	getExitCodeProcess(ProcessInfo.hProcess, Result);
 
 	while Result=STILL_ACTIVE do begin
@@ -91,29 +149,84 @@ begin
 	if IsConsole then write(line);
 end;
 
-procedure showError(ErrorMessage: String);
+function downloadJRE(message: String = 'Would you like to download the java JRE?'): boolean;
+var
+	ProcessInfo: TProcessInformation;
+	processResult: Longword;
+	url: String;
+	dir: String;
+	line: String;
+	f: TextFile;
+	bits: TStringList;
+	match: boolean;
 begin
-	if IsConsole then begin
-		writeln('');
-		writeln('-----------------------------------------------------------------------');
-		writeln('Sorry, setup is unable to continue.!');
-		writeln('-----------------------------------------------------------------------');
-		writeln('Reason:');
-		writeln('----------');
-		writeln(ErrorMessage);
-		writeln('-----------------------------------------------------------------------');
-		writeln('If you feel this is incorrect, or you require some further assistance,');
-		writeln('please feel free to contact us.');
-		writeln('-----------------------------------------------------------------------');
-		readln();
+	dir := IncludeTrailingPathDelimiter(ExtractFileDir(paramstr(0)));
+	url := 'http://www.dmdirc.com/getjava/windows/all';
+	Result := false;
+	ExecAndWait('wget.exe -o '+dir+'wgetoutput --spider '+url, true);
+	
+	AssignFile(f, dir+'wgetoutput');
+	Reset(f);
+	line := '';
+	match := false;
+	while not Eof(f) do begin
+		ReadLn(f, line);
+		match := IsWild(line,'Length:*',True);
+		if match then break;
+	end;
+	if match then begin
+		bits := TStringList.create;
+		try
+			bits.Clear;
+			bits.Delimiter := ' ';
+			bits.DelimitedText := line;
+			if askQuestion(message+' (Download Size: '+AnsiMidStr(bits[2], 2, length(bits[2])-2)+')') then begin
+				ProcessInfo := Launch('wget.exe '+url+' -O jre.exe');
+				getExitCodeProcess(ProcessInfo.hProcess, processResult);
+			
+				while processResult=STILL_ACTIVE do begin
+					// Update progress bar.
+					sleep(1000);
+					GetExitCodeProcess(ProcessInfo.hProcess, processResult);
+				end;
+				Result := processResult = 0;
+			end;
+		finally
+			bits.free;
+		end;
+	end;
+end;
+
+function installJRE(isUpgrade: boolean): boolean;
+var
+	question: String;
+	needDownload: boolean;
+	canContinue: boolean;
+begin
+	Result := false;
+	needDownload := not FileExists(IncludeTrailingPathDelimiter(ExtractFileDir(paramstr(0)))+'jre.exe');
+	if needDownload then begin
+		if not isUpgrade then question := 'Java was not detected on your machine. Would you like to download and install it now?'
+		else question := 'The version of java detected on your machine is not compatible with DMDirc. Would you like to download and install a compatible version now?';
 	end
 	else begin
-		ErrorMessage := ErrorMessage+#13#10;
-		ErrorMessage := ErrorMessage+#13#10+'If you feel this is incorrect, or you require some further assistance,';
-		ErrorMessage := ErrorMessage+#13#10+'please feel free to contact us.';
-		
-		MessageBox(0, PChar(ErrorMessage), 'Sorry, setup is unable to continue', MB_OK + MB_ICONSTOP);
+		if not isUpgrade then question := 'Java was not detected on your machine. Would you like to install it now?'
+		else question := 'The version of java detected on your machine is not compatible with DMDirc. Would you like to install a compatible version now?';
 	end;
+	
+	canContinue := true;
+	if (needDownload) then begin
+		canContinue := downloadJRE(question);
+	end;
+	
+	if canContinue then begin
+		// Final result of this function is the return value of installing java.
+		if needDownload or askQuestion(question) then begin
+			showmessage('The Java installer will now run. Please follow the instructions given.'+#13#10+'The DMDirc installation will continue afterwards.');
+			Result := (ExecAndWait('jre.exe') = 0);
+		end;
+	end
+	else showError('Downloading JRE Failed', false);
 end;
 
 var
@@ -147,10 +260,10 @@ begin
 		dowrite('Checking for JVM.. ');
 		if (ExecAndWait(javaCommand+' -version') <> 0) then begin
 			dowriteln('Failed!');
-			errorMessage := errorMessage+'No JVM is currently installed.';
-			errorMessage := errorMessage+#13#10;
-			errorMessage := errorMessage+#13#10+'DMDirc requires a 1.6.0 compatible JVM, you can get one from:';
-			errorMessage := errorMessage+#13#10+'http://jdl.sun.com/webapps/getjava/BrowserRedirect';
+			if not installJRE(false) then begin
+				showError('Sorry, DMDirc setup can not continue without java', false);
+				exit;
+			end;
 		end
 		else begin
 			if IsConsole then begin
@@ -158,29 +271,33 @@ begin
 				write('Starting installer.jar.. ');
 				javaCommand := 'java.exe';
 			end;
-			Reg := TRegistry.Create;
-			Reg.RootKey := HKEY_LOCAL_MACHINE;
-			if Reg.OpenKey('SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DMDirc', false) then begin
-				dir := Reg.ReadString('InstallDir');
-				if (dir <> '') then begin
-					params := params+' --directory "'+dir+'"';
-				end;
-			end;
-			Reg.CloseKey;
-			Reg.Free;
-			if (ReleaseNumber <> '') then begin
-				params := params+' --release '+ReleaseNumber;
-			end;
-			if (ExecAndWait(javaCommand+' -jar installer.jar'+params) <> 0) then begin
-				dowriteln('Failed!');
-				errorMessage := errorMessage+'The currently installed version of java is not compatible with DMDirc.';
-				errorMessage := errorMessage+#13#10;
-				errorMessage := errorMessage+#13#10+'DMDirc requires a 1.6.0 compatible JVM, you can get one from:';
-				errorMessage := errorMessage+#13#10+'http://jdl.sun.com/webapps/getjava/BrowserRedirect';
-				showError(errorMessage);
+		end;
+		
+		Reg := TRegistry.Create;
+		Reg.RootKey := HKEY_LOCAL_MACHINE;
+		if Reg.OpenKey('SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DMDirc', false) then begin
+			dir := Reg.ReadString('InstallDir');
+			if (dir <> '') then begin
+				params := params+' --directory "'+dir+'"';
 			end;
 		end;
-	end
+		Reg.CloseKey;
+		Reg.Free;
+		if (ReleaseNumber <> '') then begin
+			params := params+' --release '+ReleaseNumber;
+		end;
+		if (ExecAndWait(javaCommand+' -jar installer.jar'+params) <> 0) then begin
+			dowriteln('Failed!');
+			if not installJRE(true) then begin
+				showError('Sorry, DMDirc setup can not continue without an updated version of java', false);
+				exit;
+			end
+			else begin
+				// Try again now that java is installed.
+				ExecAndWait(javaCommand+' -jar installer.jar'+params);
+			end;
+		end;
+end
 	else begin
 		dowriteln('Failed!');
 		errorMessage := errorMessage+'installer.jar was not found.';

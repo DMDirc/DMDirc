@@ -205,8 +205,8 @@ if [ "" != "${jre}" ]; then
 		echo "Downloading JRE to include in installer"
 		wget ${jre} -O ../common/${jrename}.bin
 	fi
-	ln -sf ../common/${jrename}.bin ${jrename}.bin
-	FILES="${FILES} ${jrename}.bin"
+	ln -sf ../common/${jrename}.bin jre.bin
+	FILES="${FILES} jre.bin"
 fi;
 
 if [ -e "setup.sh" ]; then
