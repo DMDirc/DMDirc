@@ -266,13 +266,21 @@ if [ "" != "${jre}" ]; then
 fi;
 DELETEFILES=${FILES}
 FPC=`which fpc`
+compilerFlags="-Sd -Twin32";
 if [ ! -e "Setup.exe"  -o "${compileSetup}" = "true" ]; then
 	echo "Setup.exe does not exist. Lets try and compile it."	
 	if [ "${FPC}" = "" ]; then
 		echo "FPC Compiler not found, Setup.exe can not be built."
 		exit 1;
 	else
-		${FPC} -Sd -Twin32 ${compilerFlags}Setup.dpr
+		echo "Building Setup.exe..."
+		extraFlags=""
+		if [ -e "/usr/lib/lazarus/lcl" ]; then
+			echo "Using Lazarus"
+			mkdir -p ${PWD}/lazarus-build
+			extraFlags="-dLAZARUS -FU${PWD}/lazarus-build -Fu${PWD}/lazarus-build -Fu/usr/lib/lazarus/lcl/widgetset/ -Fu/usr/lib/lazarus/lcl/interfaces/win32/ -Fu/usr/lib/lazarus/lcl/ -Fi/usr/lib/lazarus/lcl/include/"
+		fi;
+		${FPC} ${compilerFlags} ${extraFlags} Setup.dpr
 		if [ $? -ne 0 ]; then
 			if [ -e "Setup.exe" -a "${useOldSetup}" = "true" ]; then
 				echo "Unable to compile Setup.exe, using existing version."
@@ -452,7 +460,7 @@ cat uninstallversion.rc >> all.rc
 cat icon.rc >> uninstall.rc
 windres -F pe-i386 -i uninstall.rc -o uninstall.res
 
-${FPC} -Sd -Twin32 ${3}Uninstaller.dpr
+${FPC} ${compilerFlags} ${3}Uninstaller.dpr
 if [ -e "Uninstaller.exe" ]; then
 	FILES="${FILES} Uninstaller.exe"
 	DELETEFILES="${DELETEFILES} Uninstaller.exe"
@@ -533,7 +541,7 @@ cat files.rc >> all.rc
 cat icon.rc >> all.rc
 windres -F pe-i386 -i all.rc -o all.res
 
-${FPC} -Sd -Twin32 ${3}Launcher.dpr
+${FPC} ${compilerFlags} ${3}Launcher.dpr
 if [ $? -ne 0 ]; then
 	if [ -e "Launcher.exe" ]; then
 		echo "Unable to compile Launcher.exe, using existing version."

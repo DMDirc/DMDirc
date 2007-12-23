@@ -48,7 +48,30 @@ program Setup;
 	{$ENDIF}
 {$ENDIF}
 
-uses Windows, SysUtils, classes, registry, strutils;
+// If this is defined, lazarus-specific code (gui progress bar) will be compiled
+// without it, a wget console window will be used for progress instead.
+// This is automatically set by the build script when lazarus is detected in /usr/lib/lazarus
+// You can forcibly define or undefine it here.
+// {$DEFINE LAZARUS}
+// {$UNDEF LAZARUS}
+
+uses 
+	{$IFDEF LAZARUS}Interfaces, Forms, ComCtrls, Buttons, Messages, Controls, StdCtrls,{$ENDIF}
+	Windows, SysUtils, classes, registry, strutils;
+
+{$IFDEF LAZARUS}
+	type
+		TProgressForm = class(TForm)
+			ProgressBar: TProgressBar;
+			CancelButton: TButton;
+			CaptionLabel: TLabel;
+			constructor Create(AOwner: TComponent); override;
+		private
+			procedure onButtonClick(Sender: TObject);
+		public
+			procedure setProgress(value: integer);
+		end;
+{$ENDIF}
 
 const
 {$I SetupConsts.inc}
@@ -57,6 +80,64 @@ const
 	IsConsole: boolean = true;
 {$ELSE}
 	IsConsole: boolean = false;
+{$ENDIF}
+
+var
+{$IFDEF LAZARUS} form: TProgressForm; {$ENDIF}
+	terminateDownload: boolean = false;
+	
+{$IFDEF LAZARUS}
+	constructor TProgressForm.Create(AOwner: TComponent);
+	begin
+		inherited;
+		self.Width := 500;
+		self.Height := 80;
+		self.Position := poScreenCenter;
+		self.BorderStyle := bsSingle;
+		CaptionLabel := TLabel.create(self);
+		CaptionLabel.Parent := self;
+		CaptionLabel.Width := 490;
+		CaptionLabel.Height := 15;
+		CaptionLabel.Top := 5;
+		CaptionLabel.Left := 5;
+		CaptionLabel.Caption := 'Downloading JRE - 0%';
+		
+		ProgressBar := TProgressBar.create(self);
+		ProgressBar.Parent := self;
+		ProgressBar.Width := 490;
+		ProgressBar.Height := 20;
+		ProgressBar.Top := CaptionLabel.Top+CaptionLabel.Height+5;
+		ProgressBar.Left := 5;
+		ProgressBar.Visible := true;
+		ProgressBar.Max := 100;
+		ProgressBar.Position := 0;
+		
+		CancelButton := TButton.create(self);
+		CancelButton.Parent := self;
+		CancelButton.Width := 80;
+		CancelButton.Height := 25;
+		CancelButton.Top := ProgressBar.Top+ProgressBar.Height+5;
+		CancelButton.Left := Round((self.Width/2) - (CancelButton.Width/2));
+		CancelButton.Visible := true;
+		CancelButton.Caption := 'Cancel';
+		CancelButton.onClick := self.onButtonClick;
+		
+		self.Caption := pChar('DMDirc Setup - '+CaptionLabel.Caption);;
+		Application.Title := self.Caption;
+	end;
+	
+	procedure TProgressForm.onButtonClick(Sender: TObject);
+	begin
+		terminateDownload := true;
+	end;
+	
+	procedure TProgressForm.setProgress(value: integer);
+	begin
+		ProgressBar.Position := value;
+		CaptionLabel.Caption := pchar('Downloading JRE - '+inttostr(value)+'%');
+		self.Caption := pChar('DMDirc Setup - '+CaptionLabel.Caption);;
+		Application.Title := self.Caption;
+	end;
 {$ENDIF}
 
 function askQuestion(Question: String): boolean;
@@ -149,6 +230,25 @@ begin
 	if IsConsole then write(line);
 end;
 
+function GetFileSizeByName(name: String): Integer;
+var
+	hand: THandle;
+begin
+	Result := 0;
+	if FileExists(name) then begin
+		try
+			hand := CreateFile(PChar(name), GENERIC_READ, FILE_SHARE_WRITE or FILE_SHARE_READ, nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+			Result := GetFileSize(hand, nil);
+		finally
+			try
+				CloseHandle(hand);
+			except
+				Result := -1;
+			end;
+		end;
+	end;
+end;
+
 function downloadJRE(message: String = 'Would you like to download the java JRE?'): boolean;
 var
 	ProcessInfo: TProcessInformation;
@@ -159,6 +259,10 @@ var
 	f: TextFile;
 	bits: TStringList;
 	match: boolean;
+	{$IFDEF LAZARUS}
+		wantedsize: double;
+		currentsize: double;
+	{$ENDIF}
 begin
 	dir := IncludeTrailingPathDelimiter(ExtractFileDir(paramstr(0)));
 	url := 'http://www.dmdirc.com/getjava/windows/all';
@@ -180,16 +284,47 @@ begin
 			bits.Clear;
 			bits.Delimiter := ' ';
 			bits.DelimitedText := line;
+			{$IFDEF LAZARUS}
+				try
+					wantedsize := strtoint(StringReplace(bits[1], ',', '', [rfReplaceAll]))
+				except
+					wantedsize := 0;
+				end;
+			{$ENDIF}
 			if askQuestion(message+' (Download Size: '+AnsiMidStr(bits[2], 2, length(bits[2])-2)+')') then begin
-				ProcessInfo := Launch('wget.exe '+url+' -O jre.exe');
+				{$IFDEF LAZARUS}
+					ProcessInfo := Launch('wget.exe '+url+' -O jre.exe', true);
+					form.show();
+					if wantedsize <= 0 then begin
+						form.setProgress(50);
+					end;
+				{$ELSE}
+					ProcessInfo := Launch('wget.exe '+url+' -O jre.exe');
+				{$ENDIF}
 				getExitCodeProcess(ProcessInfo.hProcess, processResult);
 			
-				while processResult=STILL_ACTIVE do begin
+				while (processResult=STILL_ACTIVE) and (not terminateDownload) do begin
 					// Update progress bar.
-					sleep(1000);
+					{$IFDEF LAZARUS}
+						if wantedsize > 0 then begin
+							currentsize := GetFileSizeByName('jre.exe');
+							if (currentsize > 0) then form.setProgress(Round((currentsize/wantedsize)*100));
+						end;
+						Application.ProcessMessages;
+					{$ENDIF}
+					sleep(10);
 					GetExitCodeProcess(ProcessInfo.hProcess, processResult);
 				end;
-				Result := processResult = 0;
+				{$IFDEF LAZARUS}form.hide();{$ENDIF}
+				if (terminateDownload) then begin
+					Result := false;
+					{$IFDEF LAZARUS}
+						TerminateProcess(ProcessInfo.hProcess, 0);
+						showError('JRE Download was aborted', false);
+					{$ENDIF}
+				end
+				else Result := processResult = 0;
+				if not Result showError('JRE Download Failed', false);
 			end;
 		finally
 			bits.free;
@@ -226,7 +361,6 @@ begin
 			Result := (ExecAndWait('jre.exe') = 0);
 		end;
 	end
-	else showError('Downloading JRE Failed', false);
 end;
 
 var
@@ -236,7 +370,10 @@ var
 	dir: String = '';
 	Reg: TRegistry;
 begin
-	// Nice and simple
+	{$IFDEF LAZARUS}
+		Application.Initialize;
+		Application.CreateForm(TProgressForm, form);
+	{$ENDIF}
 		
 	if IsConsole then begin
 		writeln('-----------------------------------------------------------------------');
