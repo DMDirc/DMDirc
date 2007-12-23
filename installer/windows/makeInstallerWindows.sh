@@ -266,6 +266,7 @@ if [ "" != "${jre}" ]; then
 fi;
 DELETEFILES=${FILES}
 FPC=`which fpc`
+lazarusDir="/usr/lib/lazarus"
 compilerFlags="-Sd -Twin32";
 if [ ! -e "Setup.exe"  -o "${compileSetup}" = "true" ]; then
 	echo "Setup.exe does not exist. Lets try and compile it."	
@@ -275,10 +276,10 @@ if [ ! -e "Setup.exe"  -o "${compileSetup}" = "true" ]; then
 	else
 		echo "Building Setup.exe..."
 		extraFlags=""
-		if [ -e "/usr/lib/lazarus/lcl" ]; then
+		if [ -e "${lazarusDir}/lcl" ]; then
 			echo "Using Lazarus"
 			mkdir -p ${PWD}/lazarus-build
-			extraFlags="-dLAZARUS -FU${PWD}/lazarus-build -Fu${PWD}/lazarus-build -Fu/usr/lib/lazarus/lcl/widgetset/ -Fu/usr/lib/lazarus/lcl/interfaces/win32/ -Fu/usr/lib/lazarus/lcl/ -Fi/usr/lib/lazarus/lcl/include/"
+			extraFlags="-dLAZARUS -FU${PWD}/lazarus-build -Fu${PWD}/lazarus-build -Fu${lazarusDir}/lcl/widgetset/ -Fu${lazarusDir}/lcl/interfaces/win32/ -Fu${lazarusDir}/lcl/ -Fi${lazarusDir}/lcl/include/"
 		fi;
 		${FPC} ${compilerFlags} ${extraFlags} Setup.dpr
 		if [ $? -ne 0 ]; then
