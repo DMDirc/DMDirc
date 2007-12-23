@@ -70,7 +70,7 @@ echo -n "Checking for updates in ${profiledir} - ";
 if [ -e "${profiledir}/.DMDirc.jar" ]; then
 	echo "Found!";
 	echo "Attempting to update..";
-	mv -Rfv ${profiledir}/.DMDirc.jar ${jar}
+	mv -fv ${profiledir}/.DMDirc.jar ${jar}
 	if [ $? -eq 0 ]; then
 		echo "Update successful."
 	else
