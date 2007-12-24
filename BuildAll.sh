@@ -35,6 +35,15 @@ mv ${MYDIR}/src/com/dmdirc/Main.java.tmp ${MYDIR}/src/com/dmdirc/Main.java
 awk '{gsub(/int RELEASE_DATE = 0/,"int RELEASE_DATE = '`date +%Y%m%d`'");print}' ${MYDIR}/src/com/dmdirc/Main.java > ${MYDIR}/src/com/dmdirc/Main.java.tmp
 mv ${MYDIR}/src/com/dmdirc/Main.java.tmp ${MYDIR}/src/com/dmdirc/Main.java
 
+# Archive old nightlies
+if [ `date +%d` = "01" ]; then
+	echo "Archiving Last Months Nightlies"
+	OLDDIR=${WWWDIR}/nightly/old/`date -d yesterday +%B%y | tr "[:upper:]" "[:lower:]"`
+	mkdir -p ${OLDDIR}
+	mv -fv ${WWWDIR}/nightly/*_`date -d yesterday +%Y%m`??_* ${OLDDIR}
+	mv -fv ${WWWDIR}/nightly/*_latest* ${OLDDIR}
+fi
+
 # The date/svn prefix to add to the end of the file names of stuff
 FILEDATA=`date +%Y%m%d`_${SVNREV}
 
