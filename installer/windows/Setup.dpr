@@ -324,7 +324,7 @@ begin
 					{$ENDIF}
 				end
 				else Result := processResult = 0;
-				if not Result showError('JRE Download Failed', false);
+				if not Result then showError('JRE Download Failed', false);
 			end;
 		finally
 			bits.free;
