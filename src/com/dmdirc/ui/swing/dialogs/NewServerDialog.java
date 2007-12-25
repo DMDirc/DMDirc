@@ -156,6 +156,15 @@ public final class NewServerDialog extends StandardDialog {
         return me;
     }
     
+    /**
+     * Is the new server dialog showing?
+     * 
+     * @return true iif the NSD is showing
+     */
+    public static synchronized boolean isNewServerDialogShowing() {
+        return me != null;
+    }
+    
     /** Updates the values to defaults. */
     private void update() {
         serverField.setText(IdentityManager.getGlobalConfig().getOption("general", "server", ""));

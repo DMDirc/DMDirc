@@ -178,7 +178,9 @@ public final class AliasPanel extends JPanel implements ActionListener {
         for (String line : alias.getResponse()) {
             sb.append(line).append('\n');
         }
-        response.setText(sb.substring(0, sb.length() - 1));
+        if (sb.length() > 1) {
+          response.setText(sb.substring(0, sb.length() - 1));
+        }
     }
     
     /** {@inheritDoc}. */
