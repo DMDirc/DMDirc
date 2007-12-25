@@ -39,7 +39,7 @@ public final class ProgramError implements Serializable {
     private static final long serialVersionUID = 3;
     
     /** Error ID. */
-    private final int id;
+    private final long id;
     
     /** Error icon. */
     private final ErrorLevel level;
@@ -68,7 +68,7 @@ public final class ProgramError implements Serializable {
      * @param trace Error trace
      * @param date Error time and date
      */
-    public ProgramError(final int id, final ErrorLevel level,
+    public ProgramError(final long id, final ErrorLevel level,
             final String message, final String[] trace, final Date date) {
         if (id < 0) {
             throw new IllegalArgumentException("ID must be a positive integer: " + id);
@@ -177,7 +177,7 @@ public final class ProgramError implements Serializable {
      *
      * @return Error ID
      */
-    public int getID() {
+    public long getID() {
         return id;
     }
     

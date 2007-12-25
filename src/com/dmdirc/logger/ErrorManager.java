@@ -60,17 +60,17 @@ public final class ErrorManager implements Serializable, Runnable {
     private volatile Thread reportThread;
     
     /** Error list. */
-    private final Map<Integer, ProgramError> errors;
+    private final Map<Long, ProgramError> errors;
     
     /** Listener list. */
     private final ListenerList errorListeners = new ListenerList();
     
     /** Next error ID. */
-    private int nextErrorID;
+    private long nextErrorID;
     
     /** Creates a new instance of ErrorListDialog. */
     private ErrorManager() {
-        errors = new HashMap<Integer, ProgramError>();
+        errors = new HashMap<Long, ProgramError>();
         nextErrorID = 0;
     }
     
@@ -115,9 +115,9 @@ public final class ErrorManager implements Serializable, Runnable {
      *
      * @return Error list
      */
-    public Map<Integer, ProgramError> getErrorList() {
+    public Map<Long, ProgramError> getErrorList() {
         synchronized (errors) {
-            return new HashMap<Integer, ProgramError>(errors);
+            return new HashMap<Long, ProgramError>(errors);
         }
     }
     
@@ -135,7 +135,7 @@ public final class ErrorManager implements Serializable, Runnable {
      *
      * @return Next error ID
      */
-    public int getNextErrorID() {
+    public long getNextErrorID() {
         return nextErrorID++;
     }
     
