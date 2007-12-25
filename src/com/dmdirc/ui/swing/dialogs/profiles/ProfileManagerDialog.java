@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.profiles;
 
+import com.dmdirc.ui.swing.components.renderers.ProfileListCellRenderer;
 import com.dmdirc.Main;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
@@ -29,6 +30,7 @@ import com.dmdirc.ui.swing.JWrappingLabel;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 
+import com.dmdirc.ui.swing.dialogs.NewServerDialog;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -191,6 +193,9 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
             }
 
             dispose();
+        }
+        if (NewServerDialog.isNewServerDialogShowing()) {
+            NewServerDialog.getNewServerDialog().populateProfiles();
         }
     }
 

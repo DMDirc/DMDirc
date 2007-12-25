@@ -32,6 +32,7 @@ import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.validating.RegexValidator;
 import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
+import com.dmdirc.ui.swing.components.validating.Validator;
 import com.dmdirc.ui.swing.dialogs.profiles.ProfileManagerDialog;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
@@ -50,9 +51,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
-import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
@@ -69,7 +68,7 @@ public final class NewServerDialog extends StandardDialog {
     private static final long serialVersionUID = 8;
     
     /** The minimum port number. */
-    private static final int MIN_PORT = 0;
+    private static final int MIN_PORT = 1;
     
     /** The maximum port number. */
     private static final int MAX_PORT = 65535;
@@ -96,7 +95,7 @@ public final class NewServerDialog extends StandardDialog {
     private ValidatingJTextField serverField;
     
     /** text field. */
-    private JSpinner portField;
+    private ValidatingJTextField portField;
     
     /** text field. */
     private JTextField passwordField;
@@ -157,11 +156,20 @@ public final class NewServerDialog extends StandardDialog {
         return me;
     }
     
+    /**
+     * Is the new server dialog showing?
+     * 
+     * @return true iif the NSD is showing
+     */
+    public static synchronized boolean isNewServerDialogShowing() {
+        return me != null;
+    }
+    
     /** Updates the values to defaults. */
     private void update() {
-        serverField.setText(IdentityManager.getGlobalConfig().getOption("general", "server"));
-        portField.setValue(IdentityManager.getGlobalConfig().getOptionInt("general", "port", 6667));
-        passwordField.setText(IdentityManager.getGlobalConfig().getOption("general", "password"));
+        serverField.setText(IdentityManager.getGlobalConfig().getOption("general", "server", ""));
+        portField.setText(IdentityManager.getGlobalConfig().getOption("general", "port", "6667"));
+        passwordField.setText(IdentityManager.getGlobalConfig().getOption("general", "password", ""));
         sslCheck.setSelected(false);
         newServerWindowCheck.setEnabled(false);
         
@@ -196,7 +204,7 @@ public final class NewServerDialog extends StandardDialog {
                 
                 final String host = serverField.getText();
                 final String pass = passwordField.getText();
-                int port = (Integer) portField.getValue();
+                int port = Integer.parseInt(portField.getText());
                 
                 NewServerDialog.this.dispose();
                 
@@ -239,7 +247,29 @@ public final class NewServerDialog extends StandardDialog {
         serverLabel = new JLabel();
         serverField = new ValidatingJTextField(new RegexValidator("^[^\\s]+$+", "Cannot contain spaces."));
         portLabel = new JLabel();
-        portField = new JSpinner(new SpinnerNumberModel());
+        portField = new ValidatingJTextField(new Validator<String>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public boolean validate(final String object) {
+                int port;
+                try {
+                    port = Integer.parseInt(object);
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+                if (port >= MIN_PORT && port <= MAX_PORT) {
+                    return true;
+                }
+                return false;
+            }
+
+            /** {@inheritDoc} */
+            @Override
+            public String getFailureReason() {
+                return "Must be a valid port (1-65535)";
+            }
+        });
         passwordLabel = new JLabel();
         passwordField = new JPasswordField();
         newServerWindowCheck = new JCheckBox();

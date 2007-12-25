@@ -22,6 +22,8 @@
 
 package com.dmdirc.ui.swing.dialogs.prefs;
 
+import com.dmdirc.ui.swing.components.renderers.URISchemeCellRenderer;
+import com.dmdirc.ui.swing.components.renderers.URIHandlerCellRenderer;
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.swing.MainFrame;
@@ -230,14 +232,15 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
                 layoutComponents();
                 add.setEnabled(false);
                 remove.setEnabled(false);
+                selectedRow = -1;
             } else {
                 activeComponent =
                         details.get(model.getValueAt(table.getRowSorter().convertRowIndexToModel(table.getSelectedRow()), 0));
                 layoutComponents();
                 add.setEnabled(true);
                 remove.setEnabled(true);
+                selectedRow = table.getRowSorter().convertRowIndexToModel(table.getSelectedRow());
             }
-            selectedRow = table.getRowSorter().convertRowIndexToModel(table.getSelectedRow());
             setVisible(true);
         }
     }
