@@ -28,6 +28,9 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.DataLine;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.applet.AudioClip;
+import java.applet.Applet;
 
 /**
  * The AudioPlayer handles the playing of the audio
@@ -35,7 +38,7 @@ import java.io.File;
  * @author Shane "Dataforce" Mc Cormack
  * @version $Id: AudioPlayer.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
-public final class AudioPlayer extends Thread {
+public final class AudioPlayer implements Runnable {
 	/** The AudioType enum */
 	private enum AudioType { WAV, OTHER; }
 	
@@ -52,7 +55,14 @@ public final class AudioPlayer extends Thread {
 	}
 	
 	/**
-	 * Run this AudioPlayer
+	 * Play this AudioPlayer.
+	 */
+	public void play() {
+		new Thread(this).start();
+	}
+	
+	/**
+	 * Run this AudioPlayer (Should not be invoked directly).
 	 */
 	public void run() {
 		final AudioType type = getAudioType(myFile);
@@ -93,19 +103,31 @@ public final class AudioPlayer extends Thread {
 		return type;
 	}
 	
+	
+	/**
+	 * Play the file as a wav file, using the Applet class.
+	 * (This code seems to work better than the non-applet version, but can't play
+	 * streams)
+	 */
+	private void playWav() {
+		try {
+			final AudioClip ac = (new Applet()).newAudioClip(myFile.toURI().toURL());
+			if (ac != null) { ac.play(); }
+		} catch (Exception e) { /* Bad File, can't play */ }
+	}
+	
 	/**
 	 * Play the file as a wav file.
 	 * Based on http://www.anyexample.com/programming/java/java_play_wav_sound_file.xml
-	 *
 	 */
-	private void playWav() {
+	private void oldPlayWav() {
 		final int EXTERNAL_BUFFER_SIZE = 524288; // 128Kb
 		AudioInputStream audioInputStream = null;
 		try {
 			audioInputStream = AudioSystem.getAudioInputStream(myFile);
 		} catch (Exception e) { return; }
-		
 		AudioFormat format = audioInputStream.getFormat();
+		
 		SourceDataLine auline = null;
 		DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
 		
@@ -117,12 +139,13 @@ public final class AudioPlayer extends Thread {
 		auline.start();
 		int nBytesRead = 0;
 		byte[] abData = new byte[EXTERNAL_BUFFER_SIZE];
- 
+		
 		try {
 			while (nBytesRead != -1) {
 				nBytesRead = audioInputStream.read(abData, 0, abData.length);
-				if (nBytesRead >= 0) {
-					auline.write(abData, 0, nBytesRead);
+				int offset = 0;
+				while (offset < nBytesRead) {
+					offset += auline.write(abData, offset, nBytesRead-offset);
 				}
 			}
 		} catch (Exception e) {
@@ -136,4 +159,3 @@ public final class AudioPlayer extends Thread {
 		} catch (Exception e) { }
 	}
 }
-

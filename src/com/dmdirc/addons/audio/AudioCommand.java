@@ -57,7 +57,7 @@ public final class AudioCommand extends GlobalCommand {
 		final File file = new File(filename);
 		if (file.exists()) {
 			if (AudioPlayer.isValid(file)) {
-				new AudioPlayer(file).start();
+				new AudioPlayer(file).play();
 			} else {
 				sendLine(origin, isSilent, FORMAT_ERROR, "Invalid file type");
 			}
