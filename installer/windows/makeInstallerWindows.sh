@@ -97,11 +97,11 @@ showHelp() {
 	echo "-b, --branch              Release in -r is a branch "
 	echo "-s, --setup               Recompile the .exe file"
 	echo "-e,                       If setup.exe compile fails, use old version"
-	echo "-p, --plugins <plugins>   What plugins to add to the jar file"o.0
+	echo "-p, --plugins <plugins>   What plugins to add to the jar file"
 	echo "-c, --compile             Recompile the .jar file"
 	echo "-u, --unsigned            Don't sign the exe"
 	echo "-t, --tag <tag>           Tag to add to final exe name to distinguish this build from a standard build"
-	echo "-f, --flags <flags>       Extra flags to pass to the compiler"	
+	echo "-f, --flags <flags>       Extra flags to pass to the compiler"
 	echo "    --jre                 Include the JRE in this installer"
 	echo "    --jar <file>          use <file> as DMDirc.jar"
 	echo "    --current             Use the current folder as the base for the build"
@@ -132,7 +132,7 @@ while test -n "$1"; do
 		--jre64)
 			# No specific jre64 for windows.
 			echo "No specific 64ibt JRE for windows, exiting"
-			exit 0;
+			exit 1;
 			;;
 		--current)
 			location="../../"
@@ -164,7 +164,7 @@ while test -n "$1"; do
 			;;
 		--unsigned|-u)
 			signEXE="false"
-			;;			
+			;;
 		--keep|-k)
 			updateSVN="false"
 			;;
@@ -175,7 +175,7 @@ while test -n "$1"; do
 			BRANCH="1"
 			;;
 	esac
-	shift	
+	shift
 done
 
 # Go!
@@ -226,7 +226,7 @@ if [ "" = "${jarfile}" ]; then
 		ant jar
 		if [ ! -e "dist/DMDirc.jar" ]; then
 			echo "There was an error creating the .jar file. Aborting."
-			exit 0;
+			exit 1;
 		fi;
 		cd ${OLDPWD}
 	fi;
@@ -241,7 +241,7 @@ if [ "" = "${plugins}" ]; then
 else
 	echo "Copying jar (${jarfile}).."
 	cp ${jarfile} "./DMDirc.jar"
-	
+
 	echo "Adding plugins to jar"
 	ln -sf ${jarPath}"/plugins"
 	pluginList=""
@@ -269,7 +269,7 @@ FPC=`which fpc`
 lazarusDir="/usr/lib/lazarus"
 compilerFlags="-Sd -Twin32";
 if [ ! -e "Setup.exe"  -o "${compileSetup}" = "true" ]; then
-	echo "Setup.exe does not exist. Lets try and compile it."	
+	echo "Setup.exe does not exist. Lets try and compile it."
 	if [ "${FPC}" = "" ]; then
 		echo "FPC Compiler not found, Setup.exe can not be built."
 		exit 1;
@@ -307,7 +307,7 @@ if [ -e "../common/installer.jar" ]; then
 	DELETEFILES="${DELETEFILES} installer.jar"
 else
 	echo "[WARNING] Creating installer-less archive - relying on Setup.exe"
-fi 
+fi
 
 if [ -e ${jarPath}"/src/com/dmdirc/res/icon.ico" ]; then
 	ln -sf ${jarPath}"/src/com/dmdirc/res/icon.ico" ./icon.ico
@@ -499,7 +499,12 @@ echo "Creating .exe"
 cat 7zS.sfx 7zip.conf "${INTNAME}" > "${RUNNAME}"
 
 if [ "${isRelease}" != "" ]; then
-	ORIGNAME="DMDirc-${isRelease}-Setup${finalTag}.exe"
+	if [ ${Branch} != "" ]; then
+		releaseTag=branch-${isRelease}
+	else
+		releaseTag=${isRelease};
+	fi;
+	ORIGNAME="DMDirc-${releaseTag}-Setup${finalTag}.exe"
 else
 	ORIGNAME="${INSTALLNAME}${finalTag}.exe"
 fi;
@@ -533,7 +538,7 @@ if [ "${MD5SUM}" != "" ]; then
 	echo "	ErrorMessage := ErrorMessage+#13#10+'please feel free to contact us.';" >> ExtractCode.inc
 	echo "	" >> ExtractCode.inc
 	echo "	MessageBox(0, PChar(ErrorMessage), 'Sorry, setup is unable to continue', MB_OK + MB_ICONSTOP);" >> ExtractCode.inc
-	echo "end;" >> ExtractCode.inc	
+	echo "end;" >> ExtractCode.inc
 fi
 
 cat UAC.rc > all.rc
@@ -562,7 +567,7 @@ mv Launcher.exe ${FULLINSTALLER}
 
 if [ "${useUPX}" = "true" ]; then
 	UPX=`which upx`
-	if [ "${UPX}" != "" ]; then	
+	if [ "${UPX}" != "" ]; then
 		if [ "${signEXE}" = "true" ]; then
 			${UPX} -4 ${FULLINSTALLER}
 		else
