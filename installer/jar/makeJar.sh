@@ -164,6 +164,9 @@ if [ "${isRelease}" != "" ]; then
 	if [ "${Branch}" != "" ]; then
 		isRelease=branch-${isRelease}
 	fi;
+	if [ "" != "${finalTag}" ]; then
+		finalTag="-${finalTag}"
+	fi;
 	finalname=DMDirc-${isRelease}-Setup${finalTag}.jar
 else
 	finalname=${RUNNAME##*/}
