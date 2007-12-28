@@ -201,7 +201,8 @@ public class Action extends ActionModel implements Serializable {
             }
         }
 
-        if (config.isFlatDomain(DOMAIN_CONDITIONTREE)) {
+        if (config.isFlatDomain(DOMAIN_CONDITIONTREE)
+                && config.getFlatDomain(DOMAIN_CONDITIONTREE).size() > 0) {
             conditionTree = ConditionTree.parseString(
                     config.getFlatDomain(DOMAIN_CONDITIONTREE).get(0));
 
