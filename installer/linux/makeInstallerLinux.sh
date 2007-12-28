@@ -289,7 +289,7 @@ chmod a+x ${RUNNAME}
 
 
 if [ "${isRelease}" != "" ]; then
-	if [ ${Branch} != "" ]; then
+	if [ "${Branch}" != "" ]; then
 		isRelease=branch-${isRelease}
 	fi;
 	finalname=DMDirc-${isRelease}-Setup${finalTag}.run
