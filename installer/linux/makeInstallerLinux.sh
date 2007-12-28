@@ -97,6 +97,7 @@ while test -n "$1"; do
 			;;
 		--tag|-t)
 			shift
+			finalTag=${1}
 			RUNNAME="${PWD}/${INSTALLERNAME}-${1}.run"
 			;;
 		--keep|-k)
@@ -147,7 +148,7 @@ if [ "" = "${jarfile}" ]; then
 		ant jar
 		if [ ! -e "dist/DMDirc.jar" ]; then
 			echo "There was an error creating the .jar file. Aborting."
-			exit 0;
+			exit 1;
 		fi;
 		cd ${OLDPWD}
 	fi;
@@ -162,7 +163,7 @@ if [ "" = "${plugins}" ]; then
 else
 	echo "Copying jar (${jarfile}).."
 	cp ${jarfile} "./DMDirc.jar"
-	
+
 	echo "Adding plugins to jar"
 	ln -sf ${jarPath}"/plugins"
 	pluginList=""
@@ -187,14 +188,14 @@ if [ -e "setup.sh" ]; then
 	FILES="${FILES} setup.sh"
 else
 	echo "[WARNING] Creating setup-less archive. This will just extract and immediately delete the .jar file unless the -e flag is used"
-fi 
+fi
 
 if [ -e "../common/installer.jar" ]; then
 	ln -sf ../common/installer.jar ./installer.jar
 	FILES="${FILES} installer.jar"
 else
 	echo "[WARNING] Creating installer-less archive - relying on setup.sh"
-fi 
+fi
 
 if [ -e ${jarPath}"/src/com/dmdirc/res/source/logo.svg" ]; then
 	ln -sf ${jarPath}"/src/com/dmdirc/res/source/logo.svg" ./icon.svg
@@ -240,15 +241,15 @@ getMD5() {
 
 if [ "${MD5BIN}" != "" -a "${AWK}" != "" ]; then
 	echo "Adding MD5.."
-	
+
 	MD5SUM=""
 	getMD5 ${RUNNAME} ${MD5SUM}
-	
+
 	echo "SUM obtained is: ${MD5SUM}"
-	
+
 	LINENUM=`grep -na "^MD5=\"\"$" ${RUNNAME}`
 	LINENUM=${LINENUM%%:*}
-	
+
 	head -n $((${LINENUM} -1)) ${RUNNAME} > ${RUNNAME}.tmp
 	echo 'MD5="'${MD5SUM}'"' >> ${RUNNAME}.tmp
 	tail -n +$((${LINENUM} +1)) ${RUNNAME} >> ${RUNNAME}.tmp
@@ -261,10 +262,14 @@ echo "Chmodding"
 chmod a+x ${RUNNAME}
 
 if [ "${isRelease}" != "" ]; then
+	if [ "${BRANCH}" = "1" ]; then
+		isRelease=branch-${isRelease}
+	fi;
 	mv ${RUNNAME} ../output/DMDirc-${isRelease}-Setup.run
 else
 	mv ${RUNNAME} ../output/
 fi;
+
 mv setup.sh setup.sh.tmp
 rm -f ${FILES}
 mv setup.sh.tmp setup.sh
@@ -356,7 +361,7 @@ random() {
 		eval "$1=${DIR}"
 		return;
 	fi
-	
+
 	TMPDIR=${TMPDIR:=/tmp}
 	BASEDIR=${TMPDIR}dmdirc_`whoami`_
 	DIR=${PWD}
@@ -384,7 +389,7 @@ random() {
 					RND=$(head -1 ${RAND} | od -N 3 -t u | awk '{ print $2 }')
 				fi;
 			fi;
-			
+
 			# No random number was generated, getting to here means that
 			# ${RANDOM} doesn't exist, /dev/random doesn't exist, /dev/urandom doesn't exist
 			# or that od/awk don't exist. Annoying.
@@ -485,7 +490,7 @@ if [ "${MD5BIN}" != "" ]; then
 			if [ "${AWK}" != "" ]; then
 				MD5SUM=""
 				getMD5 ${0} ${MD5SUM}
-			
+
 				echo "SUM obtained is: ${MD5SUM}"
 				echo "SUM expected is: ${MD5}"
 				if [ "${MD5SUM}" = "${MD5}" ]; then

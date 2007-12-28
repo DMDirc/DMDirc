@@ -164,7 +164,7 @@ fi
 # Copy default settings from www to trunk for compile (if they exist, and we are
 # building a new jar)
 REVERTLIST=""
-if [ "" != ${JARFILE} ]; then
+if [ "" != "${JARFILE}" ]; then
 	if [ -e "${HOME}/www/updates/" ]; then
 		echo "================================================================"
 		echo "Applying settings update"
@@ -191,7 +191,7 @@ if [ $? -ne 0 ]; then
 	echo "Building installer failed."
 	echo "================================================================"
 	cd ${THISDIR}
-	rm -Rf installer_temp	
+	rm -Rf installer_temp
 	exit 1;
 else
 	rm -Rf ${THISDIR}/common/installer.jar
@@ -202,17 +202,33 @@ cd ${THISDIR}
 rm -Rf installer_temp
 
 echo "================================================================"
+echo "Building Release Jar"
+echo "================================================================"
+cd jar
+./makeJar.sh ${OPT}${JARFILE}${JRE}-c -k -s ${BRANCH}${RELEASE} -p "${plugins}"
+RESULT=${?}
+cd ${THISDIR}
+
+if [ ${RESULT} -eq 0 ]; then
+	JARNAME=`ls -1 output | grep jar$ | tail -n 1`
+	JARFILE="--jar ../output/${JARNAME} "
+else
+	echo "Failed to build release jar, aborting."
+	exit 1;
+fi;
+
+echo "================================================================"
 echo "Building linux installer"
 echo "================================================================"
 cd linux
-./makeInstallerLinux.sh ${OPT}${JARFILE}-c -k ${BRANCH}${RELEASE} -p "${plugins} ${plugins_linux}"
+./makeInstallerLinux.sh ${OPT}${JARFILE}-k ${BRANCH}${RELEASE} -p "${plugins_linux}"
 cd ${THISDIR}
 
 echo "================================================================"
 echo "Building Windows installer"
 echo "================================================================"
 cd windows
-./makeInstallerWindows.sh ${OPT}${JARFILE}-k -s ${BRANCH}${RELEASE} -p "${plugins} ${plugins_windows}"
+./makeInstallerWindows.sh ${OPT}${JARFILE}-k -s ${BRANCH}${RELEASE} -p "${plugins_windows}"
 cd ${THISDIR}
 
 #MD5BIN=`which md5sum`

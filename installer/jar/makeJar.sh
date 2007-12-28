@@ -161,10 +161,13 @@ jar -uvf "DMDirc.jar" ${pluginList}
 rm -Rf plugins;
 
 if [ "${isRelease}" != "" ]; then
-	if [ ${Branch} != "" ]; then
+	if [ "${BRANCH}" = "1" ]; then
 		isRelease=branch-${isRelease}
 	fi;
-	finalname=DMDirc-${isRelease}-Setup${finalTag}.run
+	if [ "" != "${finalTag}" ]; then
+		finalTag="-${finalTag}"
+	fi;
+	finalname=DMDirc-${isRelease}${finalTag}.jar
 else
 	finalname=${RUNNAME##*/}
 fi;
