@@ -499,7 +499,7 @@ echo "Creating .exe"
 cat 7zS.sfx 7zip.conf "${INTNAME}" > "${RUNNAME}"
 
 if [ "${isRelease}" != "" ]; then
-	if [ ${Branch} != "" ]; then
+	if [ "${BRANCH}" = "1" ]; then
 		releaseTag=branch-${isRelease}
 	else
 		releaseTag=${isRelease};
