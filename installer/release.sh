@@ -17,6 +17,7 @@ showHelp() {
 	echo "---------------------"
 	echo "-b,  --branch                       <release> is a branch"
 	echo "     --jar <file>                   Use <file> instead of compiling a jar."
+	echo "     --fulljar <file>               Use <file> instead of compiling a jar, and don't run makeJar on it."
 	echo "     --jre                          Include a jre in the installers."
 	echo "     --jre64                        Include a 64bit jre in the installers."
 	echo "-p,  --plugins <plugins>            Plugins to add to all the jars."
@@ -34,6 +35,7 @@ OPT=""
 BRANCH=""
 JARFILE=""
 JRE=""
+FULLJAR=""
 while test -n "$1"; do
 	LAST=${1}
 	case "$1" in
@@ -44,6 +46,11 @@ while test -n "$1"; do
 		--jar)
 			shift
 			JARFILE="--jar ${1} "
+			;;
+		--fulljar)
+			shift
+			JARFILE="--jar ${1} "
+			FULLJAR="1"
 			;;
 		--jre|--jre64)
 			JRE="${1} "
@@ -207,20 +214,22 @@ fi
 cd ${THISDIR}
 rm -Rf installer_temp
 
-echo "================================================================"
-echo "Building Release Jar"
-echo "================================================================"
-cd jar
-./makeJar.sh ${OPT}${JARFILE}${JRE}-c -k -s ${BRANCH}${RELEASE} -p "${plugins}"
-RESULT=${?}
-cd ${THISDIR}
+if [ "" = "${FULLJAR}" ]; then
+	echo "================================================================"
+	echo "Building Release Jar"
+	echo "================================================================"
+	cd jar
+	./makeJar.sh ${OPT}${JARFILE}${JRE}-c -k -s ${BRANCH}${RELEASE} -p "${plugins}"
+	RESULT=${?}
+	cd ${THISDIR}
 
-if [ ${RESULT} -eq 0 ]; then
-	JARNAME=`ls -1 output | grep jar$ | tail -n 1`
-	JARFILE="--jar ../output/${JARNAME} "
-else
-	echo "Failed to build release jar, aborting."
-	exit 1;
+	if [ ${RESULT} -eq 0 ]; then
+		JARNAME=`ls -1 output | grep jar$ | tail -n 1`
+		JARFILE="--jar ../output/${JARNAME} "
+	else
+		echo "Failed to build release jar, aborting."
+		exit 1;
+	fi;
 fi;
 
 echo "================================================================"
