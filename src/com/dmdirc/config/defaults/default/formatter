@@ -202,6 +202,10 @@ formatter.numeric_007= \u0011%4$s
 formatter.numeric_015= \u0011%4$s
 formatter.numeric_017= \u0011%4$s
 
+formatter.numeric_290 = \u0002%4$s
+formatter.numeric_292 = %4$s
+formatter.numeric_294 = %4$s
+
 formatter.numeric_301 = %4$s is away: %5$s
 formatter.numeric_307 = %4$s %5$s.
 formatter.numeric_311 = -\n%4$s is %5$s@%6$s (%8$s\u000F).
@@ -228,6 +232,8 @@ formatter.numeric_475 = 6A7000%4$s\u000F: %5$s
 formatter.numeric_479 = 6A7000%4$s\u000F: %5$s
 formatter.numeric_482 = 6A7000%4$s\u000F: %5$s
 formatter.numeric_486 = 6A7000%4$s\u000F: %5$s
+formatter.numeric_unreal_486 = 6A7000%4$s
+formatter.numeric_499 = 6A7000%4$s\u000F: %5$s
 formatter.numeric_501 = 6A7000%4$s\u000F: %5$s
 formatter.numeric_524 = 6A7000%4$s\u000F: %5$s
 

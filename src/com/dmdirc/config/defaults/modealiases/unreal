@@ -24,6 +24,7 @@ server.umodeA = Server Admin
 server.umodea = Services Admin
 server.umodeB = Bot
 server.umodeC = Co-Admin
+server.umodeD = No private messages
 server.umodeG = Filter bad words
 server.umodeg = Send/receive globops/locops
 server.umodeH = Hide IRCop status

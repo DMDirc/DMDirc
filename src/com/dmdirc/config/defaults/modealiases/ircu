@@ -4,5 +4,12 @@
 identity.name = IRCu mode aliases
 identity.ircd = ircu
 
+server.modeC = No channel CTCPs
+server.enablemodeC = true
 server.modeD = Auditorium mode
 server.moded = Auditorium mode
+server.modeS = Strip all colours
+server.modeT = No multi-target messages
+
+server.umodeg = Receive debug information
+server.umodek = Services operator

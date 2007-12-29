@@ -53,6 +53,10 @@ notifications.numeric_007=group:map
 notifications.numeric_015=group:map
 notifications.numeric_017=group:map
 
+notifications.numeric_290=server
+notifications.numeric_292=server
+notifications.numeric_294=server
+
 notifications.numeric_301=group:whois
 notifications.numeric_307=group:whois
 notifications.numeric_311=group:whois
@@ -79,6 +83,7 @@ notifications.numeric_475=server
 notifications.numeric_479=server
 notifications.numeric_482=channel:%4$s
 notifications.numeric_486=lastcommand:msg %4$s .*
+notifications.numeric_499=channel:%4$s
 
 notifications.numeric_501=server
 notifications.numeric_524=server
