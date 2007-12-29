@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -71,7 +71,7 @@ public class WizardPanel extends JPanel implements ActionListener,
     private ListenerList stepListeners;
 
     /**
-     * Creates a new instance of WizardPanel.   
+     * Creates a new instance of WizardPanel.
      *
      * @param title Title for the wizard
      * @param steps Steps for the wizard
@@ -119,7 +119,7 @@ public class WizardPanel extends JPanel implements ActionListener,
         final JPanel titlePanel = new JPanel(new MigLayout("fill"));
         titlePanel.add(titleLabel, "growx, wrap");
         titlePanel.setBackground(Color.WHITE);
-        titlePanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, 
+        titlePanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0,
                 Color.BLACK));
 
         final JPanel progressPanel = new JPanel(new MigLayout("fill"));
@@ -127,7 +127,7 @@ public class WizardPanel extends JPanel implements ActionListener,
         progressPanel.add(prev, "sg button");
         progressPanel.add(next, "sg button");
         progressPanel.setBackground(Color.WHITE);
-        progressPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, 
+        progressPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0,
                 Color.BLACK));
 
         setLayout(new MigLayout("fill, wrap 1, ins 0"));
@@ -151,9 +151,9 @@ public class WizardPanel extends JPanel implements ActionListener,
         }
     }
 
-    /** 
+    /**
      * {@inheritDoc}
-     * 
+     *
      * @param e Action event
      */
     @Override
@@ -195,11 +195,11 @@ public class WizardPanel extends JPanel implements ActionListener,
     /** Moves to the next step. */
     protected void nextStep() {
         if ("Next >>".equals(next.getText())) {
+            prev.setEnabled(true);
             fireStepAboutToBeDisplayed(steps.getStep(currentStep + 1));
             steps.next(stepsPanel);
             fireStepHidden(steps.getStep(currentStep));
             currentStep++;
-            prev.setEnabled(true);
             if (currentStep == steps.size() - 1) {
                 next.setText("Finish");
             }
