@@ -32,7 +32,7 @@ RUNNAME="${PWD}/${FILENAME}.jar"
 echo "-----------"
 if [ -e "${RUNNAME}" ]; then
 	echo "Removing existing file"
-	rm -Rf ./*.jar
+	rm -Rf ${RUNNAME}
 fi
 
 showHelp() {
@@ -135,8 +135,7 @@ if [ "" = "${jarfile}" ]; then
 		if [ "${updateSVN}" = "true" ]; then
 			svn update
 		fi
-		rm -Rf build dist
-		ant jar
+		ant clean jar
 		if [ ! -e "dist/DMDirc.jar" ]; then
 			echo "There was an error creating the .jar file. Aborting."
 			exit 1;
@@ -149,7 +148,7 @@ elif [ ! -e "${jarfile}" ]; then
 fi;
 
 echo "Copying jar (${jarfile}).."
-cp ${jarfile} "./DMDirc.jar"
+cp ${jarfile} ${RUNNAME}
 
 echo "Adding plugins to jar"
 ln -sf ${jarPath}"/plugins"
@@ -157,7 +156,7 @@ pluginList=""
 for plugin in ${plugins}; do
 	pluginList=${pluginList}" plugins/${plugin}"
 done
-jar -uvf "DMDirc.jar" ${pluginList}
+jar -uvf "${RUNNAME}" ${pluginList}
 rm -Rf plugins;
 
 if [ "${isRelease}" != "" ]; then
@@ -167,7 +166,7 @@ if [ "${isRelease}" != "" ]; then
 	if [ "" != "${finalTag}" ]; then
 		finalTag="-${finalTag}"
 	fi;
-	finalname=DMDirc-${isRelease}${finalTag}.jar
+	finalname=DMDirc-${isRelease}-Setup${finalTag}.jar
 else
 	finalname=${RUNNAME##*/}
 fi;
