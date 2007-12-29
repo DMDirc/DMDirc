@@ -139,8 +139,9 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
 
         settingsPanel =
                 new SettingsPanel(server.getNetworkIdentity(),
+                "These settings are specific to this " +
                 "network, any settings specified here will overwrite global " +
-                "settings");
+                "settings", 500);
 
         if (settingsPanel != null) {
             addSettings();

@@ -23,7 +23,8 @@
 package com.dmdirc.ui.swing.components.expandingsettings;
 
 import com.dmdirc.config.Identity;
-import com.dmdirc.ui.swing.components.TextLabel;
+import com.dmdirc.ui.swing.JWrappingLabel;
+import java.awt.Dimension;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.GridBagConstraints;
@@ -69,7 +70,7 @@ public final class SettingsPanel extends JPanel {
     private Map<String, OptionType> types;
     
     /** Info label. */
-    private TextLabel infoLabel;
+    private JWrappingLabel infoLabel;
     
     /** Current options panel. */
     private CurrentOptionsPanel currentOptionsPanel;
@@ -83,14 +84,16 @@ public final class SettingsPanel extends JPanel {
      *
      * @param config Config to use
      * @param infoText Info blurb.
+     * @param size Maximum width of the layout
      */
-    public SettingsPanel(final Identity config, final String infoText) {
+    public SettingsPanel(final Identity config, final String infoText, 
+            final int size) {
         super();
         
         this.config = config;
         
         initComponents(infoText);
-        layoutComponents();
+        layoutComponents(size);
     }
     
     /**
@@ -102,7 +105,7 @@ public final class SettingsPanel extends JPanel {
         names = new LinkedHashMap<String, String>();
         types = new LinkedHashMap<String, OptionType>();
         
-        infoLabel = new TextLabel(infoText);
+        infoLabel = new JWrappingLabel(infoText);
         
         addOptionPanel =
                 new AddOptionPanel(this);
@@ -121,8 +124,12 @@ public final class SettingsPanel extends JPanel {
                 SMALL_BORDER, SMALL_BORDER)));
     }
     
-    /** Lays out the components. */
-    private void layoutComponents() {
+    /** 
+     * Lays out the components.
+     * 
+     * @param size Maximum width of the layout
+     */
+    private void layoutComponents(final int size) {
         final GridBagConstraints constraints = new GridBagConstraints();
         
         setLayout(new GridBagLayout());
@@ -132,6 +139,7 @@ public final class SettingsPanel extends JPanel {
         constraints.weightx = 1.0;
         constraints.weighty = 0.0;
         constraints.fill = GridBagConstraints.HORIZONTAL;
+        infoLabel.setMaximumSize(new Dimension(size, 0));
         add(infoLabel, constraints);
         
         constraints.gridy = 1;
