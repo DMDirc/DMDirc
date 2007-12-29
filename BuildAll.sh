@@ -82,7 +82,7 @@ if [ -f $MYDIR/dist/DMDirc.jar ]; then
 	rm -Rf "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.*.md5"
 	cp $MYDIR/dist/DMDirc.jar /home/dmdirc/www/nightly/$FILENAME
 	${ZIP} -r9 /home/dmdirc/www/nightly/Plugins_${FILEDATA}.zip plugins
-	
+
 	ln -sf $WWWDIR/nightly/$FILENAME $WWWDIR/nightly/DMDirc_latest.jar
 	ln -sf $WWWDIR/nightly/Plugins_${FILEDATA}.zip $WWWDIR/nightly/Plugins_latest.zip
 	ln -sf "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.run" $WWWDIR/nightly/DMDirc-Setup_latest.run
