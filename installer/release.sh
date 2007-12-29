@@ -167,13 +167,13 @@ REVERTLIST=""
 if [ "" != "${JARFILE}" ]; then
 	if [ -e "${HOME}/www/updates/" ]; then
 		echo "================================================================"
-		echo "Applying settings update"
+		echo "Applying settings update to this source"
 		echo "================================================================"
-		for updatedir in `ls -1 src/com/dmdirc/config/defaults/`; do
+		for updatedir in `ls -1 ../src/com/dmdirc/config/defaults/`; do
 			src="${HOME}/www/updates/${updatedir}"
 			if [ -e ${src} ]; then
-				REVERTLIST=${REVERTLIST}" src/com/dmdirc/config/defaults/${updatedir}/"
-				cp -Rfv ${src}/* src/com/dmdirc/config/defaults/${updatedir}/
+				REVERTLIST=${REVERTLIST}" ../src/com/dmdirc/config/defaults/${updatedir}/"
+				cp -Rfv ${src}/* ../src/com/dmdirc/config/defaults/${updatedir}/
 			fi;
 		done
 	fi;
@@ -210,7 +210,7 @@ RESULT=${?}
 cd ${THISDIR}
 
 if [ ${RESULT} -eq 0 ]; then
-	JARNAME=`ls -1 output | grep jar$ | tail -n 1`
+	JARNAME=`ls -1tr output | grep jar$ | tail -n 1`
 	JARFILE="--jar ../output/${JARNAME} "
 else
 	echo "Failed to build release jar, aborting."
