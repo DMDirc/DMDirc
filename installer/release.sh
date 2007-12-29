@@ -224,7 +224,7 @@ if [ "" = "${FULLJAR}" ]; then
 	cd ${THISDIR}
 
 	if [ ${RESULT} -eq 0 ]; then
-		JARNAME=`ls -1 output | grep jar$ | tail -n 1`
+		JARNAME=`ls -1tr output | grep jar$ | tail -n 1`
 		JARFILE="--jar ../output/${JARNAME} "
 	else
 		echo "Failed to build release jar, aborting."
