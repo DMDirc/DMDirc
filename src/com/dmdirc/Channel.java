@@ -56,47 +56,47 @@ import java.util.Map;
  */
 public final class Channel extends MessageTarget
         implements ConfigChangeListener, Serializable {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
+
     /** The parser's pChannel class. */
     private transient ChannelInfo channelInfo;
-    
+
     /** The server this channel is on. */
     private Server server;
-    
+
     /** The ChannelWindow used for this channel. */
     private ChannelWindow window;
-    
+
     /** The tabcompleter used for this channel. */
     private final TabCompleter tabCompleter;
-    
+
     /** The config manager for this channel. */
     private final ConfigManager configManager;
-    
+
     /** A list of previous topics we've seen. */
     private final RollingList<Topic> topics;
-    
+
     /** Our event handler. */
     private final ChannelEventHandler eventHandler;
-    
+
     /** Whether we're in this channel or not. */
     private boolean onChannel;
-    
+
     /** Whether we should send WHO requests for this channel. */
     private volatile boolean sendWho;
-    
+
     /** Whether we should show mode prefixes in text. */
     private volatile boolean showModePrefix;
-    
+
     /** Whether we should show colours in nicks. */
     private volatile boolean showColours;
-    
+
     /**
      * Creates a new instance of Channel.
      * @param newServer The server object that this channel belongs to
@@ -105,64 +105,64 @@ public final class Channel extends MessageTarget
      */
     public Channel(final Server newServer, final ChannelInfo newChannelInfo) {
         super();
-        
+
         channelInfo = newChannelInfo;
         server = newServer;
-        
+
         configManager = new ConfigManager(server.getIrcd(), server.getNetwork(),
                 server.getName(), channelInfo.getName());
-                
+
         configManager.addChangeListener("channel", this);
         configManager.addChangeListener("ui", "shownickcoloursintext", this);
-        
+
         topics = new RollingList<Topic>(configManager.getOptionInt("channel",
                 "topichistorysize", 10));
-        
+
         sendWho = configManager.getOptionBool("channel", "sendwho", false);
         showModePrefix = configManager.getOptionBool("channel", "showmodeprefix", false);
         showColours = configManager.getOptionBool("ui", "shownickcoloursintext", false);
-        
+
         icon = IconManager.getIconManager().getIcon("channel");
-        
+
         tabCompleter = new TabCompleter(server.getTabCompleter());
         tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_CHANNEL));
         tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_CHAT));
-        
+
         window = Main.getUI().getChannel(Channel.this);
         WindowManager.addWindow(server.getFrame(), window);
         window.setFrameIcon(icon);
         window.getInputHandler().setTabCompleter(tabCompleter);
-        
+
         eventHandler = new ChannelEventHandler(this);
-        
+
         registerCallbacks();
-        
+
         ActionManager.processEvent(CoreActionType.CHANNEL_OPENED, null, this);
-        
+
         updateTitle();
         selfJoin();
     }
-    
+
     /**
      * Registers callbacks with the parser for this channel.
      */
     private void registerCallbacks() {
         eventHandler.registerCallbacks();
     }
-    
+
     /**
      * Shows this channel's window.
      */
     public void show() {
         window.open();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public ConfigManager getConfigManager() {
         return configManager;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void sendLine(final String line) {
@@ -173,36 +173,36 @@ public final class Channel extends MessageTarget
             for (String part : line.split("\n")) {
                 sendLine(part);
             }
-            
+
             return;
         }
-        
+
         final ClientInfo me = server.getParser().getMyself();
         final String modes = getModes(channelInfo.getUser(me));
         final String[] details = getDetails(channelInfo.getUser(me), showColours);
-        
+
         if (line.length() <= getMaxLineLength()) {
             final StringBuffer buff = new StringBuffer("channelSelfMessage");
-            
+
             ActionManager.processEvent(CoreActionType.CHANNEL_SELF_MESSAGE, buff,
                     this, channelInfo.getUser(me), line);
-            
+
             addLine(buff, modes, details[0], details[1], details[2],
                     window.getTranscoder().encode(line), channelInfo);
-            
+
             channelInfo.sendMessage(window.getTranscoder().encode(line));
         } else {
             sendLine(line.substring(0, getMaxLineLength()));
             sendLine(line.substring(getMaxLineLength()));
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public int getMaxLineLength() {
         return server.getParser().getMaxLength("PRIVMSG", getChannelInfo().getName());
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void sendAction(final String action) {
@@ -210,25 +210,25 @@ public final class Channel extends MessageTarget
             // We're not in the channel
             return;
         }
-        
+
         final ClientInfo me = server.getParser().getMyself();
         final String modes = channelInfo.getUser(me).getImportantModePrefix();
-        
+
         if (server.getParser().getMaxLength("PRIVMSG", getChannelInfo().getName()) <= action.length()) {
             addLine("actionTooLong", action.length());
         } else {
             final StringBuffer buff = new StringBuffer("channelSelfAction");
-            
+
             ActionManager.processEvent(CoreActionType.CHANNEL_SELF_ACTION, buff,
                     this, channelInfo.getUser(me), action);
-            
+
             addLine(buff, modes, me.getNickname(), me.getIdent(),
                     me.getHost(), window.getTranscoder().encode(action), channelInfo);
-            
+
             channelInfo.sendAction(window.getTranscoder().encode(action));
         }
     }
-    
+
     /**
      * Returns the server object that this channel belongs to.
      * @return The server object
@@ -237,7 +237,7 @@ public final class Channel extends MessageTarget
     public Server getServer() {
         return server;
     }
-    
+
     /**
      * Returns the parser's ChannelInfo object that this object is associated with.
      * @return The ChannelInfo object associated with this object
@@ -245,7 +245,7 @@ public final class Channel extends MessageTarget
     public ChannelInfo getChannelInfo() {
         return channelInfo;
     }
-    
+
     /**
      * Sets this object's ChannelInfo reference to the one supplied. This only needs
      * to be done if the channel window (and hence this channel object) has stayed
@@ -256,7 +256,7 @@ public final class Channel extends MessageTarget
         channelInfo = newChannelInfo;
         registerCallbacks();
     }
-    
+
     /**
      * Returns the internal window belonging to this object.
      * @return This object's internal window
@@ -265,7 +265,7 @@ public final class Channel extends MessageTarget
     public InputWindow getFrame() {
         return window;
     }
-    
+
     /**
      * Returns the tab completer for this channel.
      * @return This channel's tab completer
@@ -273,52 +273,51 @@ public final class Channel extends MessageTarget
     public TabCompleter getTabCompleter() {
         return tabCompleter;
     }
-    
+
     /**
      * Called when we join this channel. Just needs to output a message.
      */
     public void selfJoin() {
         onChannel = true;
-        
+
         final ClientInfo me = server.getParser().getMyself();
         addLine("channelSelfJoin", "", me.getNickname(), me.getIdent(),
                 me.getHost(), channelInfo.getName());
-        
+
         icon = IconManager.getIconManager().getIcon("channel");
-        iconUpdated(icon);        
+        iconUpdated(icon);
     }
-    
+
     /**
      * Updates the title of the channel window, and of the main window if appropriate.
      */
     private void updateTitle() {
         String temp = Styliser.stipControlCodes(channelInfo.getName());
-        
+
         if (!channelInfo.getTopic().isEmpty()) {
             temp = temp + " - " + Styliser.stipControlCodes(channelInfo.getTopic());
         }
-        
+
         window.setTitle(temp);
-        
+
         if (window.isMaximum() && window.equals(Main.getUI().getMainWindow().getActiveFrame())) {
             Main.getUI().getMainWindow().setTitle(
                     Main.getUI().getMainWindow().getTitlePrefix() + " - " + temp);
         }
     }
-    
+
     /**
      * Joins the specified channel. This only makes sense if used after a call to
      * part().
      */
     public void join() {
-        if (server.getParser().getChannelInfo(channelInfo.getName()) == null) {
-            server.getParser().joinChannel(channelInfo.getName());
-        }
-        
+        server.getParser().joinChannel(channelInfo.getName());
+        activateFrame();
+
         icon = IconManager.getIconManager().getIcon("channel");
-        iconUpdated(icon);        
+        iconUpdated(icon);
     }
-    
+
     /**
      * Parts this channel with the specified message. Parting does NOT close the
      * channel window.
@@ -328,19 +327,19 @@ public final class Channel extends MessageTarget
         server.getParser().partChannel(channelInfo.getName(), reason);
         resetWindow();
     }
-    
+
     /**
      * Resets the window state after the client has left a channel.
      */
     public void resetWindow() {
         onChannel = false;
-        
+
         icon = IconManager.getIconManager().getIcon("channel-inactive");
         iconUpdated(icon);
-        
+
         window.updateNames(new ArrayList<ChannelClientInfo>());
     }
-    
+
     /**
      * Parts the channel and then closes the window.
      */
@@ -349,14 +348,14 @@ public final class Channel extends MessageTarget
         part(configManager.getOption("general", "partmessage"));
         closeWindow();
     }
-    
+
     /**
      * Closes the window without parting the channel.
      */
     public void closeWindow() {
         closeWindow(true);
     }
-    
+
     /**
      * Closes the window without parting the channel.
      *
@@ -366,19 +365,19 @@ public final class Channel extends MessageTarget
         if (server.getParser() != null) {
             server.getParser().getCallbackManager().delAllCallback(eventHandler);
         }
-        
+
         ActionManager.processEvent(CoreActionType.CHANNEL_CLOSED, null, this);
-        
+
         if (shouldRemove) {
             server.delChannel(channelInfo.getName());
         }
-        
+
         window.setVisible(false);
         Main.getUI().getMainWindow().delChild(window);
         window = null;
         server = null;
     }
-    
+
     /**
      * Called every {general.whotime} seconds to check if the channel needs
      * to send a who request.
@@ -388,54 +387,54 @@ public final class Channel extends MessageTarget
             server.getParser().sendLine("WHO :" + channelInfo.getName());
         }
     }
-    
+
     public void addClient(final ChannelClientInfo client) {
         window.addName(client);
-        tabCompleter.addEntry(client.getNickname());   
+        tabCompleter.addEntry(client.getNickname());
     }
-    
+
     public void removeClient(final ChannelClientInfo client) {
         window.removeName(client);
         tabCompleter.removeEntry(client.getNickname());
-        
+
         if (client.getClient().equals(server.getParser().getMyself())) {
             resetWindow();
         }
     }
-    
+
     public void renameClient(final String oldName, final String newName) {
         tabCompleter.removeEntry(oldName);
-        tabCompleter.addEntry(newName);        
+        tabCompleter.addEntry(newName);
         refreshClients();
     }
-    
+
     public void refreshClients() {
         window.updateNames();
     }
-   
+
     public void onChannelGotNames() {
-        
+
         window.updateNames(channelInfo.getChannelClients());
-        
+
         final ArrayList<String> names = new ArrayList<String>();
-        
+
         for (ChannelClientInfo channelClient : channelInfo.getChannelClients()) {
             names.add(channelClient.getNickname());
         }
-        
+
         tabCompleter.replaceEntries(names);
         tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_CHANNEL));
         tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_CHAT));
-        
+
         ActionManager.processEvent(CoreActionType.CHANNEL_GOTNAMES, null, this);
     }
-    
+
     public void onChannelTopic(final boolean bIsJoinTopic) {
         if (bIsJoinTopic) {
             final StringBuffer buff = new StringBuffer("channelJoinTopic");
-            
+
             ActionManager.processEvent(CoreActionType.CHANNEL_GOTTOPIC, buff, this);
-            
+
             addLine(buff, channelInfo.getTopic(), channelInfo.getTopicUser(),
                     1000 * channelInfo.getTopicTime(), channelInfo);
         } else {
@@ -443,59 +442,59 @@ public final class Channel extends MessageTarget
             final String[] parts = ClientInfo.parseHostFull(channelInfo.getTopicUser());
             final String modes = getModes(user);
             final String topic = channelInfo.getTopic();
-            
+
             final StringBuffer buff = new StringBuffer("channelTopicChange");
-            
+
             ActionManager.processEvent(CoreActionType.CHANNEL_TOPICCHANGE, buff, this, user, topic);
-            
+
             addLine(buff, modes, parts[0], parts[1], parts[2], channelInfo, topic);
         }
-        
-        topics.add(new Topic(channelInfo.getTopic(), 
+
+        topics.add(new Topic(channelInfo.getTopic(),
                 channelInfo.getTopicUser(), channelInfo.getTopicTime()));
-        
+
         updateTitle();
     }
-    
+
     public void onChannelModeChanged(
             final ChannelClientInfo cChannelClient, final String sHost, final String sModes) {
         if (sHost.isEmpty()) {
             final StringBuffer buff = new StringBuffer(21);
-            
+
             if (sModes.length() <= 1) {
                 buff.append("channelNoModes");
             } else {
                 buff.append("channelModeDiscovered");
             }
-            
+
             ActionManager.processEvent(CoreActionType.CHANNEL_MODECHANGE, buff, this, cChannelClient, sModes);
-            
+
             addLine(buff, sModes, channelInfo.getName());
         } else {
             final String modes = getModes(cChannelClient);
             final String[] details = getDetails(cChannelClient, showColours);
             final String myNick = server.getParser().getMyself().getNickname();
-            
+
             String type = "channelModeChange";
             if (myNick.equals(cChannelClient.getNickname())) {
                 type = "channelSelfModeChange";
             }
-            
+
             final StringBuffer buff = new StringBuffer(type);
-            
+
             ActionManager.processEvent(CoreActionType.CHANNEL_MODECHANGE, buff, this, cChannelClient, sModes);
-            
+
             addLine(type,  modes, details[0], details[1],
                     details[2], channelInfo.getName(), sModes);
         }
-        
+
         window.updateNames();
     }
-    
+
     public void onChannelUserModeChanged(
             final ChannelClientInfo cChangedClient,
             final ChannelClientInfo cSetByClient, final String sMode) {
-        
+
         if (configManager.getOptionBool("channel", "splitusermodes", false)) {
             final String sourceModes = getModes(cSetByClient);
             final String[] sourceHost = getDetails(cSetByClient, showColours);
@@ -503,24 +502,24 @@ public final class Channel extends MessageTarget
             final String targetNick = cChangedClient.getClient().getNickname();
             final String targetIdent = cChangedClient.getClient().getIdent();
             final String targetHost = cChangedClient.getClient().getHost();
-            
+
             String format = "channelUserMode_" + sMode;
             if (!Formatter.hasFormat(format)) {
                 format = "channelUserMode_default";
             }
-            
+
             addLine(format, sourceModes, sourceHost[0], sourceHost[1],
                     sourceHost[2], targetModes, targetNick, targetIdent,
                     targetHost, channelInfo, sMode);
         }
-        
+
         ActionManager.processEvent(CoreActionType.CHANNEL_USERMODECHANGE, null,
                 this, cSetByClient, cChangedClient, sMode);
     }
-    
+
     public void onAwayStateOther(final ClientInfo client, final boolean state) {
         final ChannelClientInfo channelClient = channelInfo.getUser(client);
-        
+
         if (channelClient != null) {
             if (state) {
                 ActionManager.processEvent(CoreActionType.CHANNEL_USERAWAY,
@@ -531,10 +530,10 @@ public final class Channel extends MessageTarget
             }
         }
     }
-    
+
     /**
      * Returns a string containing the most important mode for the specified client.
-     * 
+     *
      * @param channelClient The channel client to check.
      * @return A string containing the most important mode, or an empty string
      * if there are no (known) modes.
@@ -546,20 +545,20 @@ public final class Channel extends MessageTarget
             return channelClient.getImportantModePrefix();
         }
     }
-       
+
     /**
      * Retrieve the topics that have been seen on this channel.
-     * 
+     *
      * @return A list of topics that have been seen on this channel, including
      * the current one.
      */
     public List<Topic> getTopics() {
         return topics.getList();
     }
-    
+
     /**
      * Returns this channel's name.
-     * 
+     *
      * @return A string representation of this channel (i.e., its name)
      */
     @Override
@@ -578,10 +577,10 @@ public final class Channel extends MessageTarget
             showColours = configManager.getOptionBool("ui", "shownickcoloursintext", false);
         }
     }
-    
+
     /**
      * Returns a string[] containing the nickname/ident/host of a channel client.
-     * 
+     *
      * @param client The channel client to check
      * @param showColours Whether or not to show colours
      * @return A string[] containing displayable components
@@ -592,17 +591,17 @@ public final class Channel extends MessageTarget
             throw new UnsupportedOperationException("getDetails called with" +
                     "null ChannelClientInfo");
         }
-        
+
         final String[] res = new String[3];
         res[0] = Styliser.CODE_NICKNAME + client.getNickname() + Styliser.CODE_NICKNAME;
         res[1] = client.getClient().getIdent();
         res[2] = client.getClient().getHost();
-        
+
         if (showColours) {
             final Map map = client.getMap();
             String prefix = null;
             Color colour;
-            
+
             if (map.containsKey(ChannelClientProperty.TEXT_FOREGROUND)) {
                 colour = (Color) map.get(ChannelClientProperty.TEXT_FOREGROUND);
                 prefix = Styliser.CODE_HEXCOLOUR + ColourManager.getHex(colour);
@@ -611,15 +610,15 @@ public final class Channel extends MessageTarget
                     prefix = "," + ColourManager.getHex(colour);
                 }
             }
-            
+
             if (prefix != null) {
                 res[0] = prefix + res[0] + Styliser.CODE_HEXCOLOUR;
             }
         }
-        
+
         return res;
-    }    
-    
+    }
+
     /** {@inheritDoc} */
     @Override
     protected boolean processNotificationArg(final Object arg, final List<Object> args) {
@@ -633,7 +632,7 @@ public final class Channel extends MessageTarget
             final ChannelClientInfo clientInfo = (ChannelClientInfo) arg;
             args.add(getModes(clientInfo));
             args.addAll(Arrays.asList(getDetails(clientInfo, showColours)));
-            return true;            
+            return true;
         } else {
             return super.processNotificationArg(arg, args);
         }
@@ -645,12 +644,12 @@ public final class Channel extends MessageTarget
             final List<Object> messageArgs) {
         messageArgs.add(channelInfo.getName());
     }
-    
+
     // ------------------------------------------ PARSER METHOD DELEGATION -----
-    
+
     /**
      * Attempts to set the topic of this channel.
-     * 
+     *
      * @param topic The new topic to be used. An empty string will clear the
      * current topic
      */
