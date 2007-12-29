@@ -26,9 +26,10 @@ import com.dmdirc.util.InvalidAddressException;
 import com.dmdirc.util.IrcAddress;
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.updater.components.LauncherComponent;
 import com.dmdirc.util.resourcemanager.ResourceManager;
-import java.rmi.RemoteException;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +50,7 @@ public class CommandLineParser {
         {'d', "directory", "Use the specified configuration directory", Boolean.TRUE},
         {'e', "existing", "Try to use an existing instance of DMDirc (use with -c)", Boolean.FALSE},
         {'h', "help", "Show command line options and exit", Boolean.FALSE},
+        {'l', "launcher", "Specifies the version of DMDirc's launcher", Boolean.TRUE},
         {'p', "portable", "Enable portable mode", Boolean.FALSE},
         {'r', "disable-reporting", "Disable automatic error reporting", Boolean.FALSE},
         {'v', "version", "Display client version and exit", Boolean.FALSE},
@@ -62,6 +64,9 @@ public class CommandLineParser {
     
     /** Whether or not to try and use an existing client. */
     private boolean useExisting = false;
+    
+    /** The version string passed for the launcher. */
+    private String launcherVersion = "";
     
     /**
      * Creates a new instance of CommandLineParser.
@@ -194,6 +199,9 @@ public class CommandLineParser {
         case 'h':
             doHelp();
             break;
+        case 'l':
+            launcherVersion = param;
+            break;
         case 'p':
             doDirectory(ResourceManager.getCurrentWorkingDirectory());
             break;
@@ -311,6 +319,10 @@ public class CommandLineParser {
     public void applySettings() {
         if (disablereporting) {
             IdentityManager.getConfigIdentity().setOption("temp", "noerrorreporting", true);
+        }
+        
+        if (!launcherVersion.isEmpty()) {
+            LauncherComponent.setLauncherInfo(launcherVersion);
         }
     }
     
