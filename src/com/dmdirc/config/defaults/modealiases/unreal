@@ -15,14 +15,16 @@ server.modeN = No nick changes
 server.modeq = Channel owner
 server.modeQ = Only servers can kick
 server.moder = Registered
-server.modeS = Strip all colours
+server.modeS = Strip colours
 server.modeT = No channel notices
 server.modeu = Auditorium
+server.modeU = Strip all formatting
 server.modeV = Disable /invite
 
 server.umodeA = Server Admin
 server.umodea = Services Admin
 server.umodeB = Bot
+server.umodec = Strip colours in queries
 server.umodeC = Co-Admin
 server.umodeD = No private messages
 server.umodeG = Filter bad words

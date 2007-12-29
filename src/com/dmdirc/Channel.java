@@ -313,9 +313,8 @@ public final class Channel extends MessageTarget
      * part().
      */
     public void join() {
-        if (server.getParser().getChannelInfo(channelInfo.getName()) == null) {
-            server.getParser().joinChannel(channelInfo.getName());
-        }
+        server.getParser().joinChannel(channelInfo.getName());
+        activateFrame();
         
         icon = IconManager.getIconManager().getIcon("channel");
         iconUpdated(icon);        
