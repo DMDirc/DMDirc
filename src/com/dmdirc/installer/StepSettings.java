@@ -48,7 +48,7 @@ public final class StepSettings extends Step {
 	 * objects being unserialized with the new class).
 	 */
 	private static final long serialVersionUID = 3;
-	
+
 	/** Menu Shorcuts checkbox. */
 	private final JCheckBox shortcutMenu = new JCheckBox("Create menu shortcut");
 	/** Desktop Shorcuts checkbox. */
@@ -59,7 +59,7 @@ public final class StepSettings extends Step {
 	private final JCheckBox shortcutProtocol = new JCheckBox("Make DMDirc handle irc:// links");
 	/** Install Location input. */
 	private final JTextField location = new JTextField(Main.getInstaller().defaultInstallLocation(), 20);
-	
+
 	/**
 	 * Creates a new instance of StepSettings.
 	 */
@@ -68,7 +68,7 @@ public final class StepSettings extends Step {
 		final GridBagConstraints constraints = new GridBagConstraints();
 		setLayout(new GridBagLayout());
 		setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
-		
+
 		JWrappingLabel infoLabel;
 		infoLabel = new JWrappingLabel("Here you can choose options for the install.\n");
 //		infoLabel.setEditable(false);
@@ -78,12 +78,12 @@ public final class StepSettings extends Step {
 		infoLabel.setOpaque(false);
 //		infoLabel.setBackground(getBackground());
 		infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, SMALL_BORDER, 0));
-		
+
 		shortcutMenu.setSelected(true);
 		shortcutDesktop.setSelected(true);
 		shortcutQuick.setSelected(true);
 		shortcutProtocol.setSelected(true);
-			
+
 		constraints.weightx = 1.0;
 		constraints.fill = constraints.BOTH;
 		constraints.gridx = 0;
@@ -100,37 +100,37 @@ public final class StepSettings extends Step {
 		constraints.fill = constraints.HORIZONTAL;
 		constraints.gridx = 1;
 		add(location, constraints);
-		
+
 		constraints.gridwidth = 2;
 		constraints.gridx = 0;
 		constraints.insets = new Insets(SMALL_BORDER, 0, 0, 0);
-		
+
 		if (Main.getInstaller().supportsShortcut(ShortcutType.MENU)) {
 			constraints.gridy = (constraints.gridy + 1);
 			add(shortcutMenu, constraints);
 		}
-		
+
 		if (Main.getInstaller().supportsShortcut(ShortcutType.DESKTOP)) {
 			constraints.gridy = (constraints.gridy + 1);
 			add(shortcutDesktop, constraints);
 		}
-		
+
 		if (Main.getInstaller().supportsShortcut(ShortcutType.QUICKLAUNCH)) {
 			constraints.gridy = (constraints.gridy + 1);
 			add(shortcutQuick, constraints);
 		}
-		
+
 		if (Main.getInstaller().supportsShortcut(ShortcutType.PROTOCOL)) {
 			constraints.gridy = (constraints.gridy + 1);
 			add(shortcutProtocol, constraints);
 		}
-		
+
 		constraints.gridy = (constraints.gridy + 1);
 		constraints.weighty = 1.0;
 		constraints.fill = constraints.BOTH;
 		add(Box.createVerticalGlue(), constraints);
 	}
-	
+
 	/**
 	 * Returns the state of the shortcutMenu checkbox.
 	 *
@@ -139,7 +139,7 @@ public final class StepSettings extends Step {
 	public boolean getShortcutMenuState() {
 		return shortcutMenu.isSelected();
 	}
-	
+
 	/**
 	 * Returns the state of the shortcutDesktop checkbox.
 	 *
@@ -148,7 +148,7 @@ public final class StepSettings extends Step {
 	public boolean getShortcutDesktopState() {
 		return shortcutDesktop.isSelected();
 	}
-	
+
 	/**
 	 * Returns the state of the shortcutDesktop checkbox.
 	 *
@@ -157,7 +157,7 @@ public final class StepSettings extends Step {
 	public boolean getShortcutQuickState() {
 		return shortcutQuick.isSelected();
 	}
-	
+
 	/**
 	 * Returns the state of the shortcutProtocol checkbox.
 	 *
@@ -166,14 +166,14 @@ public final class StepSettings extends Step {
 	public boolean getShortcutProtocolState() {
 		return shortcutProtocol.isSelected();
 	}
-	
+
 	/**
 	 * Returns the location chosen for installation.
 	 *
 	 * @return location chosen for installation.
 	 */
 	public String getInstallLocation() {
-		return location.getText();
+		return location.getText().trim();
 	}
-	
+
 }

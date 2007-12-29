@@ -36,9 +36,11 @@ public class WindowsInstaller extends Installer {
 	 * Get the default install location
 	 */
 	public String defaultInstallLocation() {
+		String result = "";
 		if (CLIParser.getCLIParser().getParamNumber("-directory") > 0) {
-			return CLIParser.getCLIParser().getParam("-directory").getStringValue();
-		} else {
+			result = CLIParser.getCLIParser().getParam("-directory").getStringValue();
+		}
+		if (result.isEmpty()) {
 			String filename = System.getenv("PROGRAMFILES");
 			if (filename == null) {
 				if (isVista()) {
@@ -47,10 +49,11 @@ public class WindowsInstaller extends Installer {
 					filename = "C:\\Program Files";
 				}
 			}
-			return filename+"\\DMDirc";
+			result = filename+"\\DMDirc";
 		}
+		return result;
 	}
-	
+
 	/**
 	 * Are we running vista? -_-
 	 *
@@ -59,7 +62,7 @@ public class WindowsInstaller extends Installer {
 	public boolean isVista() {
 		return System.getProperty("os.name").indexOf("Vista") >= 0;
 	}
-	
+
 	/**
 	 * Are we running NT?
 	 *
@@ -69,7 +72,7 @@ public class WindowsInstaller extends Installer {
 		final String osName = System.getProperty("os.name");
 		return (osName.indexOf("NT") >= 0  || osName.indexOf("2000") >= 0 || osName.indexOf("2003") >= 0 || osName.indexOf("XP") >= 0);
 	}
-	
+
 	/**
 	 * Check if this OS supports a given shortcut Type
 	 *
@@ -93,7 +96,7 @@ public class WindowsInstaller extends Installer {
 				return false;
 		}
 	}
-	
+
 	/**
 	 * Add a registry key.
 	 *
@@ -114,7 +117,7 @@ public class WindowsInstaller extends Installer {
 			step.addText(" - Error adding registry key: "+e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Modify a registry value.
 	 *
@@ -125,7 +128,7 @@ public class WindowsInstaller extends Installer {
 	public void editRegistryValue(final String key, final String value, final String data) {
 		editRegistryValue(key, value, "REG_SZ", data);
 	}
-	
+
 	/**
 	 * Modify a registry value.
 	 *
@@ -153,7 +156,7 @@ public class WindowsInstaller extends Installer {
 			params.add("/d");
 			params.add(data);
 		}
-		
+
 		try {
 			final Process registryProcess = Runtime.getRuntime().exec(params.toArray(new String[0]));
 			new StreamReader(registryProcess.getInputStream()).start();
@@ -166,7 +169,7 @@ public class WindowsInstaller extends Installer {
 			step.addText(" - Error editing registry key: "+e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Setup shortcut
 	 *
@@ -175,16 +178,16 @@ public class WindowsInstaller extends Installer {
 	 */
 	public void setupShortcut(final String location, final ShortcutType shortcutType) {
 		// Shortcut.exe is from http://www.optimumx.com/download/#Shortcut
-		
+
 		if (!supportsShortcut(shortcutType)) {
 			step.addText(" - Error creating shortcut. Not applicable to this Operating System");
 			return;
 		}
-		
+
 		if (new File("Shortcut.exe").exists()) {
 			String filename = "";
 			File dir;
-			
+
 			switch (shortcutType) {
 				case DESKTOP:
 					if (isNT() || isVista()) {
@@ -193,7 +196,7 @@ public class WindowsInstaller extends Installer {
 						filename = System.getenv("WINDIR")+"\\Desktop";
 					}
 					break;
-					
+
 				case MENU:
 					if (isVista()) {
 						filename = System.getenv("APPDATA")+"\\Microsoft\\Windows";
@@ -202,7 +205,7 @@ public class WindowsInstaller extends Installer {
 					}
 					filename = filename+"\\Start Menu\\Programs\\DMDirc";
 					break;
-					
+
 				case QUICKLAUNCH:
 					if (isVista()) {
 						filename = System.getProperty("user.home")+"\\AppData\\Roaming\\Microsoft\\Internet Explorer\\Quick Launch";
@@ -210,7 +213,7 @@ public class WindowsInstaller extends Installer {
 						filename = System.getProperty("user.home")+"\\Application Data\\Microsoft\\Internet Explorer\\Quick Launch";
 					}
 					break;
-					
+
 				case UNINSTALLER:
 					// Registry hax!
 					final String key = "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DMDirc";
@@ -224,7 +227,7 @@ public class WindowsInstaller extends Installer {
 					editRegistryValue(key, "URLUpdateInfo", "http://www.DMDirc.com/");
 					editRegistryValue(key, "InstallDir", location);
 					return;
-					
+
 				case PROTOCOL:
 					// Add needed keys.
 					addRegistryKey("HKCR\\irc");
@@ -239,25 +242,25 @@ public class WindowsInstaller extends Installer {
 					editRegistryValue("HKCR\\irc\\DefaultIcon", "", location+"\\icon.ico");
 					editRegistryValue("HKCR\\irc\\Shell\\open\\command", "", "\\\""+location+"\\DMDirc.exe\\\" -e -c %1");
 					return;
-					
+
 				default:
 					step.addText(" - Error creating shortcut. Not applicable to this Operating System");
 					return;
 			}
-			
+
 			if (filename.length() == 0) {
 				step.addText(" - Error creating shortcut. Not applicable to this System");
 				return;
 			}
-			
+
 			// Check the dir exists
 			dir = new File(filename);
 			if (!dir.exists()) { dir.mkdir(); }
-			
+
 			// Delete an older shortcut
 			File oldFile = new File(filename+"\\DMDirc.lnk");
 			if (oldFile.exists()) { oldFile.delete(); }
-			
+
 			try {
 //				final String thisDirName = new File("").getAbsolutePath();
 					final String[] command = new String[] {

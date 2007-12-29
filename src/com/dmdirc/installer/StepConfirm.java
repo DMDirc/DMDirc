@@ -44,10 +44,10 @@ public final class StepConfirm extends Step implements StepListener {
 	 * objects being unserialized with the new class).
 	 */
 	private static final long serialVersionUID = 2;
-	
+
 	/** Text area showing the install information */
 	private JWrappingLabel infoLabel = new JWrappingLabel("");
-	
+
 	/**
 	* Creates a new instance of StepConfirm.
 	* @param dialog parent wizard dialog
@@ -57,15 +57,10 @@ public final class StepConfirm extends Step implements StepListener {
 		dialog.addStepListener(this);
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
-		
-//		infoLabel.setEditable(false);
-//		infoLabel.setWrapStyleWord(true);
-//		infoLabel.setLineWrap(true);
-//		infoLabel.setHighlighter(null);
+
 		infoLabel.setOpaque(false);
-//		infoLabel.setBackground(getBackground());
 		infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, SMALL_BORDER, 0));
-			
+
 		add(infoLabel, BorderLayout.CENTER);
 	}
 
@@ -74,43 +69,51 @@ public final class StepConfirm extends Step implements StepListener {
 	public void stepAboutToDisplay(final Step step) {
 		if (step != this) { return; }
 		String shortcutText = "";
-		
+
 		StepSettings settings = ((StepSettings) Main.getWizardFrame().getStep(1));
-		
+
 		if (Main.getInstaller().supportsShortcut(ShortcutType.MENU)) {
 			if (settings.getShortcutMenuState()) {
 				shortcutText = shortcutText + " - Create menu shortcut"+ "\n";
-		
+
 			}
 		}
-		
+
 		if (Main.getInstaller().supportsShortcut(ShortcutType.DESKTOP)) {
 			if (settings.getShortcutDesktopState()) {
 				shortcutText = shortcutText + " - Create desktop shortcut"+ "\n";
 			}
 		}
-		
+
 		if (Main.getInstaller().supportsShortcut(ShortcutType.QUICKLAUNCH)) {
 			if (settings.getShortcutQuickState()) {
 				shortcutText = shortcutText + " - Create Quick Launch shortcut"+ "\n";
 			}
 		}
-		
+
 		if (Main.getInstaller().supportsShortcut(ShortcutType.PROTOCOL)) {
 			if (settings.getShortcutProtocolState()) {
 				shortcutText = shortcutText + " - Make DMDirc handle irc:// links"+ "\n";
 			}
 		}
-		
-		
-		
-		infoLabel.setText("Please review your chosen settings:\n\n"
-		                + " - Install Location:\n"
-		                + "    " +((StepSettings) Main.getWizardFrame().getStep(1)).getInstallLocation() + "\n"
-		                + shortcutText + "\n"
-		                + "If you wish to change any of these settings, press the \"Previous\" button,"
-		                + "otherwise click \"Next\" to begin the installation");
-    }
+
+		final String installLocation = ((StepSettings)Main.getWizardFrame().getStep(1)).getInstallLocation();
+
+
+		if (installLocation.isEmpty()) {
+			infoLabel.setText("You have chosen an invalid install location\n\n"
+			                + "Please press the \"Previous\" button to go back and correct it.");
+			Main.getWizardFrame().enableNextStep(false);
+		} else {
+			infoLabel.setText("Please review your chosen settings:\n\n"
+			                + " - Install Location:\n"
+			                + "    " +installLocation+"\n"
+			                + shortcutText + "\n"
+			                + "If you wish to change any of these settings, press the \"Previous\" button,"
+			                + "otherwise click \"Next\" to begin the installation");
+			Main.getWizardFrame().enableNextStep(true);
+		}
+	}
 
 	/** {@inheritDoc} */
 	@Override
