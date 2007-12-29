@@ -316,6 +316,24 @@ public class Profile {
             profile.setOption(profileString, "altnicks", altNicknames);
         }
     }
+    
+    /** Deletes the profile. */
+    public void delete() {
+            final List<Identity> identities = IdentityManager.getProfiles();
+            Identity profile = null;
+
+            for (Identity identity : identities) {
+                if (identity.getName().equals(name)) {
+                    profile = identity;
+                    break;
+                }
+            }
+
+            if (profile == null) {
+                return;
+            }
+            profile.delete();
+    }
 
     /** {@inheritDoc} */
     @Override

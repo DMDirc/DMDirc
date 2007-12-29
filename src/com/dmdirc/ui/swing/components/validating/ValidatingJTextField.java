@@ -98,7 +98,7 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
      * Checks the text for errors and sets the error state accordingly.
      */
     private void checkError() {
-        if (isEnabled()) {
+        if (textField.isEnabled()) {
             errorIcon.setVisible(!validator.validate(textField.getText()));
         } else {
             errorIcon.setVisible(false);
@@ -113,7 +113,11 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
      * @return true iif the text validates
      */
     public boolean validateText() {
-        return validator.validate(getText());
+        if (textField.isEnabled()) {
+            return validator.validate(getText());
+        } else {
+            return true;
+        }
     }
 
     /** {@inheritDoc} */
@@ -144,6 +148,7 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
     @Override
     public void setEnabled(boolean enabled) {
         textField.setEnabled(enabled);
+        checkError();
     }
     
     /** {@inheritDoc} */

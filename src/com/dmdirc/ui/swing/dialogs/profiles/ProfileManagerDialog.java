@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.profiles;
 
+import com.dmdirc.ui.swing.components.renderers.ProfileListCellRenderer;
 import com.dmdirc.Main;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
@@ -33,6 +34,7 @@ import com.dmdirc.ui.swing.dialogs.NewServerDialog;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -74,10 +76,13 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     private JButton deleteButton;
     /** Selected index. */
     private int selectedIndex;
+    /** Deleted profiles. */
+    private List<Profile> deletedProfiles;
 
     /** Creates a new instance of ProfileEditorDialog. */
     private ProfileManagerDialog() {
         super((MainFrame) Main.getUI().getMainWindow(), false);
+        deletedProfiles = new ArrayList<Profile>();
 
         initComponents();
 
@@ -183,12 +188,21 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
 
     /** Saves the profile list. */
     private void save() {
+        if (model.getSize() == 0) {
+            JOptionPane.showMessageDialog(this, "There must be at least one profile", 
+                    "DMDirc: Profile error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         if (details.validateDetails()) {
             details.save();
             final Iterator<Profile> it = model.iterator();
 
             while (it.hasNext()) {
                 it.next().save();
+            }
+            
+            for (Profile profile : deletedProfiles) {
+                profile.delete();
             }
 
             dispose();
@@ -218,6 +232,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
                     "Are you sure you want to delete this profile?",
                     "Delete Confirmaton", JOptionPane.YES_NO_OPTION) ==
                     JOptionPane.YES_OPTION) {
+                deletedProfiles.add((Profile) profileList.getSelectedValue());
                 model.remove((Profile) profileList.getSelectedValue());
             }
         }
