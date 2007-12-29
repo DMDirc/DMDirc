@@ -45,13 +45,13 @@ public final class StepInstall extends Step implements StepListener {
 	 * objects being unserialized with the new class).
 	 */
 	private static final long serialVersionUID = 2;
-	
+
 	/** Text area showing the install information */
 	private JTextArea infoLabel = new JTextArea("Beginning Install");
-	
+
 	/** Scroll pane holding text area */
 	final JScrollPane scrollPane;
-	
+
 	/**
 	* Creates a new instance of StepInstall.
 	* @param dialog parent wizard dialog
@@ -61,7 +61,7 @@ public final class StepInstall extends Step implements StepListener {
 		dialog.addStepListener(this);
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
-		
+
 		infoLabel.setEditable(false);
 		infoLabel.setWrapStyleWord(true);
 		infoLabel.setLineWrap(true);
@@ -69,11 +69,11 @@ public final class StepInstall extends Step implements StepListener {
 		infoLabel.setOpaque(false);
 //		infoLabel.setBackground(getBackground());
 		infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, SMALL_BORDER, 0));
-			
+
 		scrollPane = new JScrollPane(infoLabel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(scrollPane, BorderLayout.CENTER);
 	}
-	
+
 	/**
 	 * Add text to the infolabel.
 	 *
@@ -83,19 +83,24 @@ public final class StepInstall extends Step implements StepListener {
 		infoLabel.setText(infoLabel.getText() + text +"\n");
 		infoLabel.setCaretPosition(infoLabel.getText().length());
 	}
-	
+
 	/**
 	 * Perform the installation.
 	 */
 	public void performInstall(final Installer myInstaller) {
 		infoLabel.setText("Beginning Install..\n");
 		final String location = ((StepSettings) Main.getWizardFrame().getStep(1)).getInstallLocation();
-		
+
 		addText("Installing files to: "+location);
-		myInstaller.doSetup(location);
-		
+		if (!myInstaller.doSetup(location)) {
+			addText("");
+			addText("Installation failed\n");
+			Main.getWizardFrame().enableNextStep(true);
+			return;
+		}
+
 		StepSettings settings = ((StepSettings) Main.getWizardFrame().getStep(1));
-		
+
 		if (Main.getInstaller().supportsShortcut(ShortcutType.MENU)) {
 			if (settings.getShortcutMenuState()) {
 				addText("Setting up Menu shortcut");
@@ -104,7 +109,7 @@ public final class StepInstall extends Step implements StepListener {
 				addText("Not setting up Menu shortcut");
 			}
 		}
-		
+
 		if (Main.getInstaller().supportsShortcut(ShortcutType.DESKTOP)) {
 			if (settings.getShortcutDesktopState()) {
 				addText("Setting up Desktop shortcut");
@@ -113,7 +118,7 @@ public final class StepInstall extends Step implements StepListener {
 				addText("Not setting up Desktop shortcut");
 			}
 		}
-		
+
 		if (Main.getInstaller().supportsShortcut(ShortcutType.QUICKLAUNCH)) {
 			if (settings.getShortcutQuickState()) {
 				addText("Setting up Quick Launch shortcut");
@@ -122,7 +127,7 @@ public final class StepInstall extends Step implements StepListener {
 				addText("Not setting up Quick Launch shortcut");
 			}
 		}
-		
+
 		if (Main.getInstaller().supportsShortcut(ShortcutType.UNINSTALLER)) {
 			addText("Creating uninstaller");
 			myInstaller.setupShortcut(location, ShortcutType.UNINSTALLER);
@@ -136,9 +141,9 @@ public final class StepInstall extends Step implements StepListener {
 				addText("Not setting up irc:// handler");
 			}
 		}
-		
+
 		myInstaller.postInstall(location);
-		
+
 		addText("");
 		addText("Installation finished\n");
 		Main.getWizardFrame().enableNextStep(true);

@@ -45,17 +45,20 @@ public class LinuxInstaller extends Installer {
 	 * Get the default install location
 	 */
 	public String defaultInstallLocation() {
+		String result = "";
 		if (CLIParser.getCLIParser().getParamNumber("-directory") > 0) {
 			return CLIParser.getCLIParser().getParam("-directory").getStringValue();
-		} else {
+		}
+		if (result.isEmpty()) {
 			if (isRoot()) {
-				return "/usr/local/DMDirc";
+				result = "/usr/local/DMDirc";
 			} else {
-				return System.getProperty("user.home") + "/DMDirc";
+				result = System.getProperty("user.home") + "/DMDirc";
 			}
 		}
+		return result;
 	}
-	
+
 	/**
 	 * Check if this OS supports a given shortcut Type
 	 *
@@ -92,7 +95,7 @@ public class LinuxInstaller extends Installer {
 			step.addText(" - Error creating shortcut. Not applicable to this Operating System");
 			return;
 		}
-		
+
 		PrintWriter writer = null;
 		try {
 			String filename = "";
@@ -102,7 +105,7 @@ public class LinuxInstaller extends Installer {
 				case DESKTOP:
 					filename = System.getProperty("user.home")+"/Desktop/DMDirc.desktop";
 					break;
-					
+
 				case MENU:
 					if (isRoot()) {
 						filename = "/usr/share/applications/DMDirc.desktop";
@@ -110,7 +113,7 @@ public class LinuxInstaller extends Installer {
 						filename = System.getProperty("user.home")+"/.local/share/applications/DMDirc.desktop";
 					}
 					break;
-					
+
 				case UNINSTALLER:
 					writer = new PrintWriter(location+"/uninstall.sh");
 					writer.println("#!/bin/sh");
@@ -120,7 +123,7 @@ public class LinuxInstaller extends Installer {
 					writer.println("ISGNOME=`pidof -x -s gnome-panel`");
 					writer.println("ZENITY=`which zenity`");
 					writer.println("DIALOG=`which dialog`");
-					
+
 					if (isRoot()) {
 						writer.println("USER=`whoami`");
 						writer.println("if [ \"${USER}\" != \"root\" ]; then");
@@ -135,7 +138,7 @@ public class LinuxInstaller extends Installer {
 						writer.println("exit 1;");
 						writer.println("fi");
 					}
-					
+
 					writer.println("if [ \"\" != \"${ISKDE}\" -a \"\" != \"${KDIALOG}\" -a \"\" != \"${DISPLAY}\" ]; then");
 					writer.println("	echo \"Dialog Prompt on: ${DISPLAY}\"");
 					writer.println("	${KDIALOG} --title \"DMDirc Uninstaller\" --yesno \"Are you sure you want to uninstall DMDirc?\"");
@@ -145,7 +148,7 @@ public class LinuxInstaller extends Installer {
 					writer.println("elif [ \"\" != \"${DIALOG}\" ]; then");
 					writer.println("	${DIALOG} --title \"DMDirc Uninstaller\" --yesno \"Are you sure you want to uninstall DMDirc?\" 8 40");
 					writer.println("fi");
-					
+
 					writer.println("if [ $? -ne 0 ]; then");
 					writer.println("\tif [ \"\" != \"${ISKDE}\" -a \"\" != \"${KDIALOG}\" -a \"\" != \"${DISPLAY}\" ]; then");
 					writer.println("\t	${KDIALOG} --title \"DMDirc Uninstaller\" --msgbox \"Uninstall Aborted\"");
@@ -155,7 +158,7 @@ public class LinuxInstaller extends Installer {
 					writer.println("\techo \"Uninstall Aborted\"");
 					writer.println("\texit 1;");
 					writer.println("fi");
-					
+
 					writer.println("echo \"Uninstalling dmdirc\"");
 					writer.println("echo \"Removing Shortcuts..\"");
 					if (isRoot()) {
@@ -179,7 +182,7 @@ public class LinuxInstaller extends Installer {
 					writer.println("\t\techo \"Not Removing Gnome Protocol Handler\"");
 					writer.println("\tfi");
 					writer.println("fi");
-					
+
 					writer.println("if [ -e \""+filename+"\" ]; then");
 					writer.println("\tCURRENT=`grep DMDirc "+filename+"`");
 					writer.println("\tif [ \"\" != \"${CURRENT}\" ]; then");
@@ -189,7 +192,7 @@ public class LinuxInstaller extends Installer {
 					writer.println("\t\techo \"Not Removing KDE Protocol Handler\"");
 					writer.println("\tfi");
 					writer.println("fi");
-					
+
 					writer.println("echo \"Removing Installation Directory\"");
 					writer.println("rm -Rfv \""+location+"\"");
 
@@ -198,12 +201,12 @@ public class LinuxInstaller extends Installer {
 					writer.println("elif [ \"\" != \"${ISGNOME}\" -a \"\" != \"${ZENITY}\" -a \"\" != \"${DISPLAY}\" ]; then");
 					writer.println("	${ZENITY} --info --title \"DMDirc Uninstaller\" --text \"DMDirc Uninstalled Successfully\"");
 					writer.println("fi");
-					
+
 					writer.println("echo \"Done.\"");
-					
+
 					(new File(location+"/uninstall.sh")).setExecutable(true);
 					return;
-				
+
 				case PROTOCOL:
 					if (isRoot()) {
 						command = "${TOOL} --config-source=`${TOOL} --get-default-source`";
@@ -212,7 +215,7 @@ public class LinuxInstaller extends Installer {
 						command = "${TOOL}";
 						filename = "${HOME}/.kde/share/services/";
 					}
-					
+
 					writer = new PrintWriter(location+"/protocolHandlers.sh");
 					writer.println("#!/bin/sh");
 					writer.println("TOOL=`which gconftool-2`");
@@ -236,9 +239,9 @@ public class LinuxInstaller extends Installer {
 					writer.println("fi");
 					writer.println("exit 0;");
 					writer.close();
-					
+
 					(new File(location+"/protocolHandlers.sh")).setExecutable(true);
-					
+
 					try {
 						final Process gconfProcess = Runtime.getRuntime().exec(new String[]{"/bin/sh", location+"/protocolHandlers.sh"});
 						new StreamReader(gconfProcess.getInputStream()).start();
@@ -249,7 +252,7 @@ public class LinuxInstaller extends Installer {
 						step.addText(" - Error adding gnome Protocol Handler: "+e.getMessage());
 					}
 					return;
-					
+
 				default:
 					step.addText(" - Error creating shortcut. Not applicable to this Operating System");
 					return;
@@ -268,7 +271,7 @@ public class LinuxInstaller extends Installer {
 			}
 		}
 	}
-	
+
 	/**
 	 * Write the .desktop file
 	 *
@@ -295,7 +298,7 @@ public class LinuxInstaller extends Installer {
 		writer.println("TerminalOptions=");
 		writer.println("Type=Application");
 	}
-	
+
 	/**
 	 * Any post-install tasks should be done here.
 	 *
