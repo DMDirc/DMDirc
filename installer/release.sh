@@ -174,24 +174,6 @@ if [ $? -ne 0 ]; then
 	exit 1;
 fi
 
-# Copy default settings from www to trunk for compile (if they exist, and we are
-# building a new jar)
-REVERTLIST=""
-if [ "" != "${JARFILE}" ]; then
-	if [ -e "${HOME}/www/updates/" ]; then
-		echo "================================================================"
-		echo "Applying settings update to this source"
-		echo "================================================================"
-		for updatedir in `ls -1 ../src/com/dmdirc/config/defaults/`; do
-			src="${HOME}/www/updates/${updatedir}"
-			if [ -e ${src} ]; then
-				REVERTLIST=${REVERTLIST}" ../src/com/dmdirc/config/defaults/${updatedir}/"
-				cp -Rfv ${src}/* ../src/com/dmdirc/config/defaults/${updatedir}/
-			fi;
-		done
-	fi;
-fi;
-
 cd build
 echo "Manifest-Version: 1.0" > manifest.txt
 echo "Created-By: DMDirc Installer" >> manifest.txt
@@ -213,6 +195,24 @@ fi
 
 cd ${THISDIR}
 rm -Rf installer_temp
+
+# Copy default settings from www to trunk for compile (if they exist, and we are
+# building a new jar)
+REVERTLIST=""
+if [ "" != "${JARFILE}" ]; then
+	if [ -e "${HOME}/www/updates/" ]; then
+		echo "================================================================"
+		echo "Applying settings update to this source"
+		echo "================================================================"
+		for updatedir in `ls -1 ../src/com/dmdirc/config/defaults/`; do
+			src="${HOME}/www/updates/${updatedir}"
+			if [ -e ${src} ]; then
+				REVERTLIST=${REVERTLIST}" ../src/com/dmdirc/config/defaults/${updatedir}/"
+				cp -Rfv ${src}/* ../src/com/dmdirc/config/defaults/${updatedir}/
+			fi;
+		done
+	fi;
+fi;
 
 if [ "" = "${FULLJAR}" ]; then
 	echo "================================================================"
