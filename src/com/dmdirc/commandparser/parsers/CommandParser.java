@@ -172,11 +172,14 @@ public abstract class CommandParser implements Serializable {
             builder.append(arg);
         }
         
-        history.add(new PreviousCommand(builder.toString()));
-        
-        while (history.size() >
-                IdentityManager.getGlobalConfig().getOptionInt("general", "commandhistory", 10)) {
-            history.remove(0);
+        synchronized(history) {
+            history.add(new PreviousCommand(builder.toString()));
+
+            int historysize = IdentityManager.getGlobalConfig().getOptionInt("general",
+                    "commandhistory", 10);
+            while (history.size() > historysize) {
+                history.remove(0);
+            }
         }
     }
     
@@ -189,10 +192,12 @@ public abstract class CommandParser implements Serializable {
      */
     public long getCommandTime(final String command) {
         long res = 0;
-        
-        for (PreviousCommand pc : history) {
-            if (pc.getLine().matches("(?i)" + command)) {
-                res = Math.max(res, pc.getTime());
+
+        synchronized(history) {
+            for (PreviousCommand pc : history) {
+                if (pc.getLine().matches("(?i)" + command)) {
+                    res = Math.max(res, pc.getTime());
+                }
             }
         }
         
