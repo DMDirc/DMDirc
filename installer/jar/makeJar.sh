@@ -171,7 +171,7 @@ else
 	finalname=${RUNNAME##*/}
 fi;
 
-echo mv ${RUNNAME} ../output/${finalname}
+mv ${RUNNAME} ../output/${finalname}
 echo "-----------"
 echo "Done."
 echo "-----------"
