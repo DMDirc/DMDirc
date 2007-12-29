@@ -34,10 +34,14 @@ public class NotEmptyValidator implements Validator<String> {
      */
     private static final long serialVersionUID = 1;
 
+    /** {@inheritDoc} */
+    @Override
     public boolean validate(String object) {
         return !object.isEmpty();
     }
 
+    /** {@inheritDoc} */
+    @Override
     public String getFailureReason() {
         return "Cannot be an empty string.";
     }
