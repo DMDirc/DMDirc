@@ -47,7 +47,8 @@ public final class Update {
         DOWNLOADING,
         INSTALLING,
         INSTALLED,
-        ERROR
+        ERROR,
+        RESTART_NEEDED
     }
 
     /** Update component. */
@@ -191,9 +192,14 @@ public final class Update {
                 setStatus(STATUS.INSTALLING);
 
                 try {
-                    UpdateChecker.findComponent(getComponent()).doInstall(path);
+                    final boolean restart = UpdateChecker.findComponent(getComponent()).doInstall(path);
 
-                    setStatus(STATUS.INSTALLED);
+                    if (restart) {
+                        setStatus(STATUS.RESTART_NEEDED);
+                        UpdateChecker.removeComponent(getComponent());
+                    } else {
+                        setStatus(STATUS.INSTALLED);
+                    }
                 } catch (Throwable ex) {
                     setStatus(STATUS.ERROR);
                     Logger.appError(ErrorLevel.MEDIUM,

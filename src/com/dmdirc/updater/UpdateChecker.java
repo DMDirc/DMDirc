@@ -63,7 +63,7 @@ public final class UpdateChecker implements Runnable {
         /** New updates are available. */
         UPDATES_AVAILABLE
     }
-    
+
     /** Semaphore used to prevent multiple invocations. */
     private static final Semaphore mutex = new Semaphore(1);
 
@@ -82,7 +82,7 @@ public final class UpdateChecker implements Runnable {
 
     /** Our current state. */
     private static STATE status = STATE.IDLE;
-    
+
     /** A reference to the listener we use for update status changes. */
     private static final UpdateListener listener = new UpdateListener() {
         @Override
@@ -112,10 +112,10 @@ public final class UpdateChecker implements Runnable {
     public void run() {
         if (!mutex.tryAcquire()) {
             // Duplicate invocation
-            
+
             return;
         }
-        
+
         final ConfigManager config = IdentityManager.getGlobalConfig();
 
         if (!config.getOptionBool("updater", "enable", true)) {
@@ -165,7 +165,7 @@ public final class UpdateChecker implements Runnable {
         } else {
             setStatus(STATE.UPDATES_AVAILABLE);
         }
-        
+
         mutex.release();
 
         UpdateChecker.init();
@@ -253,6 +253,25 @@ public final class UpdateChecker implements Runnable {
      */
     public static void registerComponent(final UpdateComponent component) {
         components.add(component);
+    }
+
+    /**
+     * Unregisters an update component with the specified name.
+     *
+     * @param name The name of the component to be removed
+     */
+    public static void removeComponent(final String name) {
+        UpdateComponent target = null;
+
+        for (UpdateComponent component : components) {
+            if (name.equals(component.getName())) {
+                target = component;
+            }
+        }
+
+        if (target != null) {
+            components.remove(target);
+        }
     }
 
     /**
@@ -346,16 +365,16 @@ public final class UpdateChecker implements Runnable {
             myListener.statusChanged(newStatus);
         }
     }
-    
+
     /**
      * Checks is a specified component is enabled.
-     * 
+     *
      * @param component Update component to check state
-     * 
+     *
      * @return true iif the update component is enabled
      */
     public static boolean isEnabled(final UpdateComponent component) {
-        return IdentityManager.getGlobalConfig().getOptionBool("updater", 
+        return IdentityManager.getGlobalConfig().getOptionBool("updater",
                 component.getName(), true);
     }
 

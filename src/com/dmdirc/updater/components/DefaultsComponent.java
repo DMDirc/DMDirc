@@ -61,7 +61,7 @@ public class DefaultsComponent implements UpdateComponent {
      * @throws java.io.IOException On i/o exception when reading zip file
      */
     @Override
-    public void doInstall(final String path) throws IOException {
+    public boolean doInstall(final String path) throws IOException {
         final ZipResourceManager ziprm = ZipResourceManager.getInstance(path);
         
         ziprm.extractResources("", IdentityManager.getDirectory());
@@ -69,6 +69,8 @@ public class DefaultsComponent implements UpdateComponent {
         IdentityManager.loadUser();
         
         new File(path).delete();
+        
+        return false;
     }
 
 }

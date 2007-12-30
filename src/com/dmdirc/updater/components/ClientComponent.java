@@ -25,6 +25,7 @@ package com.dmdirc.updater.components;
 import com.dmdirc.Main;
 import com.dmdirc.updater.UpdateComponent;
 
+import com.dmdirc.util.resourcemanager.ResourceManager;
 import java.io.File;
 
 /**
@@ -48,13 +49,29 @@ public class ClientComponent implements UpdateComponent {
 
     /** {@inheritDoc} */
     @Override
-    public void doInstall(final String path) {
+    public boolean doInstall(final String path) {
         final File tmpFile = new File(path);
         final File targetFile = new File(tmpFile.getParent() + File.separator + ".DMDirc.jar");
+        
         if (targetFile.exists()) {
             targetFile.delete();
         }
+        
         tmpFile.renameTo(targetFile);
+        
+        if (!LauncherComponent.isUsingLauncher()) {
+            Main.getUI().showMessageDialog("Client update downloaded", 
+                    "A new version of DMDirc has been downloaded, but as you\n"
+                    + "do not seem to be using the DMDirc launcher, it will\n"
+                    + "not be installed automatically.\n\n"
+                    + "To install this update manually, please replaces the\n"
+                    + "existing DMDirc.jar file, located at:\n"
+                    + "  " + ResourceManager.getJarPath() + "\n"
+                    + "with the following file:\n"
+                    + "  " + targetFile.getAbsolutePath());
+        }
+        
+        return true;
     }
 
 }

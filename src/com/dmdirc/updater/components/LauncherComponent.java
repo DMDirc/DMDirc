@@ -59,6 +59,15 @@ public class LauncherComponent implements UpdateComponent {
         
         UpdateChecker.registerComponent(new LauncherComponent());
     }
+    
+    /**
+     * Determines if the client has been run using the launcher.
+     * 
+     * @return True if the launcher has been used, false otherwise
+     */
+    public static boolean isUsingLauncher() {
+        return version != -1;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -74,7 +83,7 @@ public class LauncherComponent implements UpdateComponent {
 
     /** {@inheritDoc} */
     @Override
-    public void doInstall(final String path) throws Throwable {
+    public boolean doInstall(final String path) throws Throwable {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
