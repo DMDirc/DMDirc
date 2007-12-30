@@ -60,6 +60,8 @@ public final class Styliser {
     public static final char CODE_NICKNAME = 16;
     /** The character used for marking up fixed pitch text. */
     public static final char CODE_FIXED = 17;
+    /** The character used for negating control codes. */
+    public static final char CODE_NEGATE = 18;    
     /** The character used for marking up italic text. */
     public static final char CODE_ITALIC = 29;
     /** The character used for marking up underlined text. */
@@ -71,7 +73,7 @@ public final class Styliser {
     /** Regexp to match characters which shouldn't be used in channel links. */
     private static final String RESERVED_CHARS = "[^\\s" + CODE_BOLD + CODE_COLOUR
             + CODE_STOP + CODE_HEXCOLOUR + CODE_FIXED + CODE_ITALIC
-            + CODE_UNDERLINE + CODE_CHANNEL + CODE_NICKNAME + "\"]";
+            + CODE_UNDERLINE + CODE_CHANNEL + CODE_NICKNAME + CODE_NEGATE + "\"]";
     
     /** Defines all characters allowed in URLs per W3 specs. */
     private static final String URL_CHARS = "[a-z0-9$\\-_@\\.&\\+!\\*\"'\\(\\),=;/#\\?:%~]";
@@ -252,6 +254,7 @@ public final class Styliser {
         pos = checkChar(pos, input.indexOf(CODE_HYPERLINK));
         pos = checkChar(pos, input.indexOf(CODE_NICKNAME));
         pos = checkChar(pos, input.indexOf(CODE_CHANNEL));
+        pos = checkChar(pos, input.indexOf(CODE_NEGATE));
         
         return input.substring(0, pos);
     }
@@ -278,27 +281,40 @@ public final class Styliser {
      */
     private static int readControlChars(final String string,
             final SimpleAttributeSet attribs, final boolean isStart) {
+        boolean isNegated = attribs.containsAttribute("NegateControl", Boolean.TRUE);
+        
         // Bold
         if (string.charAt(0) == CODE_BOLD) {
-            toggleAttribute(attribs, StyleConstants.FontConstants.Bold);
+            if (!isNegated) {
+                toggleAttribute(attribs, StyleConstants.FontConstants.Bold);
+            }
+            
             return 1;
         }
         
         // Underline
         if (string.charAt(0) == CODE_UNDERLINE) {
-            toggleAttribute(attribs, StyleConstants.FontConstants.Underline);
+            if (!isNegated) {
+                toggleAttribute(attribs, StyleConstants.FontConstants.Underline);
+            }
+            
             return 1;
         }
         
         // Italic
         if (string.charAt(0) == CODE_ITALIC) {
-            toggleAttribute(attribs, StyleConstants.FontConstants.Italic);
+            if (!isNegated) {
+                toggleAttribute(attribs, StyleConstants.FontConstants.Italic);
+            }
+            
             return 1;
         }
         
         // Hyperlinks
         if (string.charAt(0) == CODE_HYPERLINK) {
-            toggleLink(attribs);
+            if (!isNegated) {
+                toggleLink(attribs);
+            }
             
             if (attribs.getAttribute(IRCTextAttribute.HYPERLINK) == null) {
                 attribs.addAttribute(IRCTextAttribute.HYPERLINK,
@@ -335,18 +351,24 @@ public final class Styliser {
         
         // Fixed pitch
         if (string.charAt(0) == CODE_FIXED) {
-            if (attribs.containsAttribute(StyleConstants.FontConstants.FontFamily, "monospaced")) {
-                attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
-            } else {
-                attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
-                attribs.addAttribute(StyleConstants.FontConstants.FontFamily, "monospaced");
+            if (!isNegated) {
+                if (attribs.containsAttribute(StyleConstants.FontConstants.FontFamily, "monospaced")) {
+                    attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
+                } else {
+                    attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
+                    attribs.addAttribute(StyleConstants.FontConstants.FontFamily, "monospaced");
+                }
             }
+            
             return 1;
         }
         
         // Stop formatting
         if (string.charAt(0) == CODE_STOP) {
-            resetAttributes(attribs);
+            if (!isNegated) {
+                resetAttributes(attribs);
+            }
+            
             return 1;
         }
         
@@ -362,9 +384,12 @@ public final class Styliser {
                     count++;
                 }
                 foreground = foreground % 16;
-                setForeground(attribs, String.valueOf(foreground));
-                if (isStart) {
-                    setDefaultForeground(attribs, String.valueOf(foreground));
+                
+                if (!isNegated) {
+                    setForeground(attribs, String.valueOf(foreground));
+                    if (isStart) {
+                        setDefaultForeground(attribs, String.valueOf(foreground));
+                    }
                 }
                 
                 // Now background
@@ -378,12 +403,15 @@ public final class Styliser {
                         count++;
                     }
                     background = background % 16;
-                    setBackground(attribs, String.valueOf(background));
-                    if (isStart) {
-                        setDefaultBackground(attribs, String.valueOf(background));
+                    
+                    if (!isNegated) {
+                        setBackground(attribs, String.valueOf(background));
+                        if (isStart) {
+                            setDefaultBackground(attribs, String.valueOf(background));
+                        }
                     }
                 }
-            } else {
+            } else if (!isNegated) {
                 resetColour(attribs);
             }
             return count;
@@ -393,26 +421,39 @@ public final class Styliser {
         if (string.charAt(0) == CODE_HEXCOLOUR) {
             int count = 1;
             if (hasHexString(string, 1)) {
-                setForeground(attribs, string.substring(1, 7).toUpperCase());
-                if (isStart) {
-                    setDefaultForeground(attribs, string.substring(1, 7).toUpperCase());
+                if (!isNegated) {
+                    setForeground(attribs, string.substring(1, 7).toUpperCase());
+                    if (isStart) {
+                        setDefaultForeground(attribs, string.substring(1, 7).toUpperCase());
+                    }
                 }
+                
                 count = count + 6;
                 
                 // Now for background
                 if (string.charAt(count) == ',' && hasHexString(string, count + 1)) {
                     count++;
-                    setBackground(attribs, string.substring(count, count + 6).toUpperCase());
-                    if (isStart) {
-                        setDefaultBackground(attribs, 
-                                string.substring(count, count + 6).toUpperCase());
+                    
+                    if (!isNegated) {
+                        setBackground(attribs, string.substring(count, count + 6).toUpperCase());
+                        if (isStart) {
+                            setDefaultBackground(attribs, 
+                                    string.substring(count, count + 6).toUpperCase());
+                        }
                     }
+                    
                     count += 6;
                 }
-            } else {
+            } else if (!isNegated) {
                 resetColour(attribs);
             }
             return count;
+        }
+        
+        // Control code negation
+        if (string.charAt(0) == CODE_NEGATE) {
+            toggleAttribute(attribs, "NegateControl");
+            return 1;
         }
         
         return 0;
