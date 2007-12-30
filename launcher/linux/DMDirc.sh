@@ -23,6 +23,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+LAUNCHERVERSION="1"
+
 params="${@}"
 
 # Check for some CLI params
@@ -37,6 +39,12 @@ while test -n "$1"; do
 	shift
 done
 
+ISKDE=`pidof -x -s kdeinit`
+KDIALOG=`which kdialog`
+KSUDO=`which kdesudo`
+ISGNOME=`pidof -x -s gnome-panel`
+ZENITY=`which zenity`
+GSUDO=`which gksudo`
 errordialog() {
 	# Send message to console.
 	echo ""
@@ -46,11 +54,6 @@ errordialog() {
 	echo "${2}"
 	echo "-----------------------------------------------------------------------"
 
-	# Now try to use the GUI Dialogs.
-	ISKDE=`pidof -x -s kdeinit`
-	KDIALOG=`which kdialog`
-	ISGNOME=`pidof -x -s gnome-panel`
-	ZENITY=`which zenity`
 	if [ "" != "${ISKDE}" -a "" != "${KDIALOG}" -a "" != "${DISPLAY}" ]; then
 		echo "Dialog on Display: ${DISPLAY}"
 		${KDIALOG} --title "DMDirc: ${1}" --error "${1}\n\n${2}"
@@ -60,21 +63,151 @@ errordialog() {
 	fi
 }
 
-jar=`dirname $0`/DMDirc.jar
+messagedialog() {
+	# Send message to console.
+	echo ""
+	echo "-----------------------------------------------------------------------"
+	echo "Info: ${1}"
+	echo "-----------------------------------------------------------------------"
+	echo "${2}"
+	echo "-----------------------------------------------------------------------"
 
+	if [ "" != "${ISKDE}" -a "" != "${KDIALOG}" -a "" != "${DISPLAY}" ]; then
+		echo "Dialog on Display: ${DISPLAY}"
+		${KDIALOG} --title "DMDirc: ${1}" --msgbox "${1}\n\n${2}"
+	elif [ "" != "${ISGNOME}" -a "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then
+		echo "Dialog on Display: ${DISPLAY}"
+		${ZENITY} --info --title "DMDirc: ${1}" --text "${1}\n\n${2}"
+	fi
+}
+
+jar=`dirname $0`/DMDirc.jar
+launcherUpdater=${profiledir}/updateLauncher.sh
 echo "---------------------"
 echo "DMDirc - Open Source IRC Client"
+echo "Launcher Version: ${LAUNCHERVERSION}"
 echo "Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes"
 echo "---------------------"
-echo -n "Checking for updates in ${profiledir} - ";
+
+echo -n "Checking for launcher updates in ${profiledir} - ";
+if [ -e "${profiledir}/.launcher.sh.ignore" ]; then
+	rm -Rf "${profiledir}/.launcher.sh.ignore"
+	echo "Ignoring!";
+elif [ -e "${profiledir}/.launcher.sh" ]; then
+	echo "Found!";
+	echo "Attempting to update..";
+
+	cat <<EOF> ${launcherUpdater}
+		cd `dirname $0`
+		errordialog() {
+			# Send message to console.
+			echo ""
+			echo "-----------------------------------------------------------------------"
+			echo "Error: \${1}"
+			echo "-----------------------------------------------------------------------"
+			echo "\${2}"
+			echo "-----------------------------------------------------------------------"
+
+			if [ "" != "${ISKDE}" -a "" != "${KDIALOG}" -a "" != "${DISPLAY}" ]; then
+				echo "Dialog on Display: ${DISPLAY}"
+				${KDIALOG} --title "DMDirc: \${1}" --error "\${1}\n\n\${2}"
+			elif [ "" != "${ISGNOME}" -a "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then
+				echo "Dialog on Display: ${DISPLAY}"
+				${ZENITY} --error --title "DMDirc: \${1}" --text "\${1}\n\n\${2}"
+			fi
+		}
+
+		messagedialog() {
+			# Send message to console.
+			echo ""
+			echo "-----------------------------------------------------------------------"
+			echo "Info: \${1}"
+			echo "----------------------------------------------------------------------"
+			echo "\${2}"
+			echo "-----------------------------------------------------------------------"
+
+			if [ "" != "${ISKDE}" -a "" != "${KDIALOG}" -a "" != "${DISPLAY}" ]; then
+				echo "Dialog on Display: ${DISPLAY}"
+				${KDIALOG} --title "DMDirc: \${1}" --msgbox "\${1}\n\n\${2}"
+			elif [ "" != "${ISGNOME}" -a "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then
+				echo "Dialog on Display: ${DISPLAY}"
+				${ZENITY} --info --title "DMDirc: \${1}" --text "\${1}\n\n\${2}"
+			fi
+		}
+
+		mv -fv ${profiledir}/.launcher.sh ${0}
+		if [ ! -e "${profiledir}/.launcher.sh" ]; then
+			echo "Launcher Update successful."
+			messagedialog "Launcher Update" "Launcher Update successful"
+		else
+			if [ "${UID}" = "" ]; then
+				UID=`id -u`;
+			fi
+			if [ "0" != "${UID}" ]; then
+				if [ "" != "${ISKDE}" -a "" != "${KSUDO}" -a "" != "${DISPLAY}" ]; then
+					echo "Password dialog on ${DISPLAY}"
+					${KSUDO} --comment "DMDirc Client Updater requires root access to modify the global installation" -- mv -fv "${profiledir}/.launcher.sh" "${0}"
+				elif [ "" != "${ISGNOME}" -a "" != "${GSUDO}" -a "" != "${DISPLAY}" ]; then
+					echo "Password dialog on ${DISPLAY}"
+					${GSUDO} -k --message "DMDirc Client Updater requires root access to modify the global installation" -- mv -fv "${profiledir}/.launcher.sh" "${0}"
+				else
+					echo "DMDirc Client Updater requires root access to modify the global installation"
+					sudo mv -fv "${profiledir}/.launcher.sh" "${0}"
+				fi;
+			fi
+			if [ ! -e "${profiledir}/.DMDirc.jar" ]; then
+				echo "Update successful."
+				messagedialog "Launcher Update" "Launcher Update successful"
+			else
+				echo "Launcher failed."
+				errordialog "Launcher Update" "Launcher Update failed, using old version"
+				touch ${profiledir}/.launcher.sh.ignore
+			fi;
+		fi;
+		sh ${0} ${params}
+EOF
+	chmod a+x ${launcherUpdater}
+	${launcherUpdater}
+	exit 0;
+else
+	echo "Not found.";
+fi;
+
+if [ -e "${launcherUpdater}" ]; then
+	rm -Rf "${launcherUpdater}"
+fi;
+
+echo -n "Checking for client updates in ${profiledir} - ";
 if [ -e "${profiledir}/.DMDirc.jar" ]; then
 	echo "Found!";
 	echo "Attempting to update..";
 	mv -fv ${profiledir}/.DMDirc.jar ${jar}
-	if [ $? -eq 0 ]; then
+	if [ ! -e "${profiledir}/.DMDirc.jar" ]; then
 		echo "Update successful."
+		messagedialog "Client Update" "Client Update successful"
 	else
-		echo "Update failed."
+		if [ "${UID}" = "" ]; then
+			UID=`id -u`;
+		fi
+		if [ "0" != "${UID}" ]; then
+			if [ "" != "${ISKDE}" -a "" != "${KSUDO}" -a "" != "${DISPLAY}" ]; then
+				echo "Password dialog on ${DISPLAY}"
+				${KSUDO} --comment "DMDirc Client Updater requires root access to modify the global installation" mv -fv "${profiledir}/.DMDirc.jar" "${jar}"
+			elif [ "" != "${ISGNOME}" -a "" != "${GSUDO}" -a "" != "${DISPLAY}" ]; then
+				echo "Password dialog on ${DISPLAY}"
+				${GSUDO} -k --message "DMDirc Client Updater requires root access to modify the global installation" mv -fv "${profiledir}/.DMDirc.jar" "${jar}"
+			else
+				echo "DMDirc Client Updater requires root access to modify the global installation"
+				sudo mv -fv "${profiledir}/.DMDirc.jar" "${jar}"
+			fi;
+		fi
+		if [ ! -e "${profiledir}/.DMDirc.jar" ]; then
+			echo "Update successful."
+			messagedialog "Client Update" "Client Update successful"
+		else
+			echo "Update failed."
+			errordialog "Client Update" "Client Update failed, using old version"
+		fi;
 	fi
 else
 	echo "Not found.";
@@ -112,12 +245,12 @@ if [ -e "${jar}" ]; then
 		errordialog "Unable to launch dmdirc!" "${ERROR}";
 		exit 1;
 	fi
-	
+
 	# Now we can run the client for real, this allows stderr/stdout output
 	# to be seen, and the shell script exits with the correct exit code.
-	${JAVA} -ea -jar ${jar} ${params}
+	${JAVA} -ea -jar ${jar} -l linux-${LAUNCHERVERSION} ${params}
 	exit $?;
-else 
+else
 	echo "Failed.";
 	errordialog "Unable to launch dmdirc!" "No jar file found";
 fi
