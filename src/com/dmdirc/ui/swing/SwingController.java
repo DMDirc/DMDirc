@@ -59,6 +59,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.List;
 
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -329,6 +330,20 @@ public final class SwingController implements UIController {
             @Override
             public void run() {
                 new FeedbackNag();
+            }
+        });
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void showMessageDialog(final String title, final String message) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                JOptionPane.showMessageDialog(null, message, title,
+                        JOptionPane.PLAIN_MESSAGE);
             }
         });
     }

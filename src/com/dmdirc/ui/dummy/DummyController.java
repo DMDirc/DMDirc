@@ -169,4 +169,10 @@ public final class DummyController implements UIController {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
+    /** {@inheritDoc} */
+    @Override
+    public void showMessageDialog(final String title, final String message) {
+        System.out.println(message);
+    }
+    
 }

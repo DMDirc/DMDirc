@@ -171,4 +171,12 @@ public interface UIController {
      */
     void showFeedbackNag();
     
+    /**
+     * Shows a message dialog to the user
+     * 
+     * @param title Dialog title
+     * @param message Message to display
+     */
+    void showMessageDialog(final String title, final String message);
+    
 }
