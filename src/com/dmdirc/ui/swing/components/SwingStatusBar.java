@@ -50,6 +50,7 @@ import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import javax.swing.SwingUtilities;
 import net.miginfocom.swing.MigLayout;
 
 /** Status bar, shows message and info on the gui. */
@@ -132,26 +133,36 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     @Override
     public synchronized void setMessage(final String newMessage,
             final StatusMessageNotifier newNotifier, final int timeout) {
-        messageLabel.setText(newMessage);
-        messageNotifier = newNotifier;
+        SwingUtilities.invokeLater(new Runnable() {
 
-        if (messageTimer != null &&
-                (System.currentTimeMillis() -
-                messageTimer.scheduledExecutionTime()) <= 0) {
-            messageTimer.cancel();
-        }
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                messageLabel.setText(newMessage);
+                messageNotifier = newNotifier;
 
-        if (!DEFAULT_MESSAGE.equals(newMessage)) {
-            messageTimer = new TimerTask() {
-
-                @Override
-                public void run() {
-                    clearMessage();
+                if (messageTimer != null &&
+                        (System.currentTimeMillis() -
+                        messageTimer.scheduledExecutionTime()) <= 0) {
+                    messageTimer.cancel();
                 }
-            };
-            new Timer("SwingStatusBar messageTimer").schedule(messageTimer,
-                    new Date(System.currentTimeMillis() + 250 + timeout * 1000L));
-        }
+
+                if (!DEFAULT_MESSAGE.equals(newMessage)) {
+                    messageTimer = new TimerTask() {
+
+                        /** {@inheritDoc} */
+                        @Override
+                        public void run() {
+                            clearMessage();
+                        }
+                    };
+                    new Timer("SwingStatusBar messageTimer").schedule(messageTimer,
+                            new Date(System.currentTimeMillis() + 250 +
+                            timeout * 1000L));
+                }
+            }
+        });
+
     }
 
     /** {@inheritDoc} */
@@ -162,8 +173,15 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
 
     /** Clears the error. */
     public void clearError() {
-        errorLabel.setIcon(DEFAULT_ICON);
-        errorLevel = null;
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                errorLabel.setIcon(DEFAULT_ICON);
+                errorLevel = null;
+            }
+        });
     }
 
     /** {@inheritDoc} */
@@ -192,21 +210,28 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
 
     /** Checks all the errors for the most significant error. */
     private void checkErrors() {
-        clearError();
-        final List<ProgramError> errors =
-                ErrorManager.getErrorManager().getErrors();
-        if (errors.size() > 0) {
-            for (ProgramError error : errors) {
-                if (errorLevel == null ||
-                        error.getLevel().moreImportant(errorLevel)) {
-                    errorLevel = error.getLevel();
-                    errorLabel.setIcon(errorLevel.getIcon());
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                clearError();
+                final List<ProgramError> errors =
+                        ErrorManager.getErrorManager().getErrors();
+                if (errors.size() > 0) {
+                    for (ProgramError error : errors) {
+                        if (errorLevel == null ||
+                                error.getLevel().moreImportant(errorLevel)) {
+                            errorLevel = error.getLevel();
+                            errorLabel.setIcon(errorLevel.getIcon());
+                        }
+                    }
+                    errorLabel.setVisible(true);
+                } else {
+                    errorLabel.setVisible(false);
                 }
             }
-            errorLabel.setVisible(true);
-        } else {
-            errorLabel.setVisible(false);
-        }
+        });
     }
 
     /** {@inheritDoc} */
