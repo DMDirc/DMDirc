@@ -25,38 +25,40 @@ package com.dmdirc.updater.components;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateComponent;
 
+import java.io.File;
+
 /**
  * Component for updates of DMDirc's launcher.
- * 
+ *
  * @author chris
  */
 public class LauncherComponent implements UpdateComponent {
-    
+
     /** The platform of our current launcher. */
     private static String platform = "";
-    
+
     /** The version of our current launcher. */
     private static int version = -1;
-    
+
     /**
      * Parses the specified launcher information.
-     * 
+     *
      * @param info The platform and version of the launcher, separated by '-'.
      */
     public static void setLauncherInfo(final String info) {
         final int hpos = info.indexOf('-');
-        
+
         if (hpos == -1) {
             return;
         }
-        
+
         try {
             platform = info.substring(0, hpos);
             version = Integer.parseInt(info.substring(hpos + 1));
         } catch (NumberFormatException ex) {
             return;
         }
-        
+
         UpdateChecker.registerComponent(new LauncherComponent());
     }
 
@@ -75,7 +77,18 @@ public class LauncherComponent implements UpdateComponent {
     /** {@inheritDoc} */
     @Override
     public void doInstall(final String path) throws Throwable {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (platform.equalsIgnoreCase("Linux")) {
+            final File tmpFile = new File(path);
+            final File targetFile = new File(tmpFile.getParent() + File.separator + ".launcher.sh");
+
+            if (targetFile.exists()) {
+                targetFile.delete();
+            }
+
+            tmpFile.renameTo(targetFile);
+        } else {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
     }
 
 }
