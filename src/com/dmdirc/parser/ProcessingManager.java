@@ -38,7 +38,7 @@ import java.util.Hashtable;
 public class ProcessingManager {
 	/** Reference to the parser object that owns this ProcessingManager */
 	IRCParser myParser = null;
-	
+
 	/** Hashtable used to store the different types of IRCProcessor known. */
 	private final Hashtable<String,IRCProcessor> processHash = new Hashtable<String,IRCProcessor>();
 
@@ -118,27 +118,27 @@ public class ProcessingManager {
 		// WALLOPS
 		addProcessor(new ProcessWallops(myParser, this));
 	}
-	
+
 	/**
 	 * Add new Process type.
 	 *
 	 * @param processor IRCProcessor subclass for the processor.
 	 */
-	public void addProcessor(final IRCProcessor processor) {	
+	public void addProcessor(final IRCProcessor processor) {
 		// handles() returns a String array of all the tokens
 		// that this processor will parse.
 		addProcessor(processor.handles(), processor);
 	}
-	
+
 	/**
 	 * Add a processor to tokens not-specified in the handles() reply.
 	 *
 	 * @param processor IRCProcessor subclass for the processor.
 	 * @param handles String Array of tokens to add this processor as a hadler for
 	 */
-	public void addProcessor(final String[] handles, final IRCProcessor processor) {	
+	public void addProcessor(final String[] handles, final IRCProcessor processor) {
 		DoDebug("Adding processor: "+processor.getName());
-		
+
 		try {
 			for (int i = 0; i < handles.length; ++i) {
 				if (processHash.containsKey(handles[i].toLowerCase())) {
@@ -153,13 +153,13 @@ public class ProcessingManager {
 			delProcessor(processor);
 		}
 	}
-		
+
 	/**
 	 * Remove a Process type.
 	 *
 	 * @param processor IRCProcessor subclass for the processor.
 	 */
-	public void delProcessor(final IRCProcessor processor) {	
+	public void delProcessor(final IRCProcessor processor) {
 		IRCProcessor testProcessor;
 		DoDebug("Deleting processor: "+processor.getName());
 		for (String elementName : processHash.keySet()) {
@@ -171,7 +171,7 @@ public class ProcessingManager {
 			}
 		}
 	}
-	
+
 	/**
 	 * Get the processor used for a specified token.
 	 *
@@ -185,7 +185,7 @@ public class ProcessingManager {
 			throw new ProcessorNotFoundException("No processors will handle "+sParam);
 		}
 	}
-	
+
 	/**
 	 * Process a Line.
 	 *
@@ -201,9 +201,7 @@ public class ProcessingManager {
 		} catch (ProcessorNotFoundException p) {
 			throw p;
 		} catch (Exception e) {
-			final StringBuilder line = new StringBuilder();
-			for (int i = 0; i < token.length; ++i ) { line.append(" ").append(token[i]); }
-			final ParserError ei = new ParserError(ParserError.ERROR_WARNING,"Exception in Parser. [Param: "+sParam+"] [Processor: "+messageProcessor+"]", line.toString().trim());
+			final ParserError ei = new ParserError(ParserError.ERROR_WARNING,"Exception in Parser. [Param: "+sParam+"] [Processor: "+messageProcessor+"] [Line: "+myParser,getLastLine()+"]", myParser,getLastLine());
 			ei.setException(e);
 			myParser.callErrorInfo(ei);
 		} finally {
@@ -211,7 +209,7 @@ public class ProcessingManager {
 			// integer param, hense the empty catch
 			try {
 				callNumeric(Integer.parseInt(sParam), token);
-			} catch (NumberFormatException e) { }	
+			} catch (NumberFormatException e) { }
 		}
 	}
 
@@ -229,12 +227,12 @@ public class ProcessingManager {
 		return false;
 	}
 
-	
+
 	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo () { return "$Id$"; }
 }
 
