@@ -71,7 +71,7 @@ public final class IRCParser implements Runnable {
 
 	/** Max length an outgoing line should be (NOT including \r\n). */
 	public static final int MAX_LINELENGTH = 510;
-	
+
 	/** General Debug Information. */
 	public static final int DEBUG_INFO = 1;
 	/** Socket Debug Information. */
@@ -98,7 +98,7 @@ public final class IRCParser implements Runnable {
 	static final byte MODE_SET = 2;
 	/** Byte used to show that a non-boolean mode is not a list, and requires a parameter to unset (k). */
 	static final byte MODE_UNSET = 4;
-	
+
 	/**
 	 * This is what the user wants settings to be.
 	 * Nickname here is *not* always accurate.<br><br>
@@ -107,7 +107,7 @@ public final class IRCParser implements Runnable {
 	public MyInfo me = new MyInfo();
 	/**	Server Info requested by user. */
 	public ServerInfo server = new ServerInfo();
-	
+
 	/** Timer for server ping. */
 	private Timer pingTimer = null;
 	/** Length of time to wait between ping stuff. */
@@ -120,7 +120,7 @@ public final class IRCParser implements Runnable {
 	private long serverLag;
 	/** Last value sent as a ping argument. */
 	private String lastPingValue = "";
-	
+
 	/**
 	 * Count down to next ping.
 	 * The timer fires every 10 seconds, this value is decreased every time the
@@ -140,7 +140,7 @@ public final class IRCParser implements Runnable {
 
 	/** Name the server calls itself. */
 	String sServerName;
-	
+
 	/** Network name. This is "" if no network name is provided */
 	String sNetworkName;
 
@@ -149,7 +149,7 @@ public final class IRCParser implements Runnable {
 
 	/** When using inbuilt pre-001 NickInUse handler, have we tried our AltNick. */
 	boolean triedAlt;
-	
+
 	/** Have we recieved the 001. */
 	boolean got001;
 	/** Have we fired post005? */
@@ -158,7 +158,7 @@ public final class IRCParser implements Runnable {
 	boolean hasBegan;
 	/** Is this line the first line we have seen? */
 	boolean isFirst = true;
-	
+
 	/** Hashtable storing known prefix modes (ohv). */
 	Hashtable<Character, Long> hPrefixModes = new Hashtable<Character, Long>();
 	/**
@@ -182,9 +182,9 @@ public final class IRCParser implements Runnable {
 	 */
 	Hashtable<Character, Long> hChanModesBool = new Hashtable<Character, Long>();
 	/** Integer representing the next avaliable integer value of a Boolean mode. */
-	
+
 	long nNextKeyCMBool = 1;
-	
+
 	/**
 	 * Hashtable storing known non-boolean chan modes (klbeI etc).
 	 * Non Boolean Modes (for Channels) are stored together in this hashtable, the value param
@@ -195,12 +195,12 @@ public final class IRCParser implements Runnable {
 	 * see MODE_UNSET<br>
 	 */
 	Hashtable<Character, Byte> hChanModesOther = new Hashtable<Character, Byte>();
-	
+
 	/** The last line of input recieved from the server */
 	String lastLine = "";
 	/** Should the lastline (where given) be appended to the "data" part of any onErrorInfo call? */
 	boolean addLastLine = false;
-	
+
 	/**
 	* Channel Prefixes (ie # + etc).
 	* The "value" for these is always true.
@@ -222,13 +222,13 @@ public final class IRCParser implements Runnable {
 	CallbackManager myCallbackManager = new CallbackManager(this);
 	/** Reference to the Processing Manager. */
 	ProcessingManager myProcessingManager = new ProcessingManager(this);
-	
+
 	/** Should we automatically disconnect on fatal errors?. */
 	private boolean disconnectOnFatal = true;
 
 	/** Current Socket State. */
 	private byte currentSocketState;
-	
+
 	/** This is the socket used for reading from/writing to the IRC server. */
 	private Socket socket;
 	/** Used for writing to the server. */
@@ -244,22 +244,22 @@ public final class IRCParser implements Runnable {
 			public void checkServerTrusted(final X509Certificate[] certs, final String authType) { }
 		},
 	};
-	
+
 	/** Should fake (channel)clients be created for callbacks where they do not exist? */
 	boolean createFake = false;
-	
+
 	/** Should channels automatically request list modes? */
 	boolean autoListMode = true;
-	
+
 	/** Should part/quit/kick callbacks be fired before removing the user internally? */
 	boolean removeAfterCallback = true;
-		
+
 	/** This is the TrustManager used for SSL Sockets. */
 	private TrustManager[] myTrustManager = trustAllCerts;
-	
+
 	/** This is the IP we want to bind to. */
 	private String bindIP = "";
-	
+
 	/**
 	 * Default constructor, ServerInfo and MyInfo need to be added separately (using IRC.me and IRC.server).
 	 */
@@ -287,42 +287,42 @@ public final class IRCParser implements Runnable {
 		if (serverDetails != null) { this.server = serverDetails; }
 		resetState();
 	}
-	
+
 	/**
 	 * Get the current Value of bindIP.
 	 *
 	 * @return Value of bindIP ("" for default IP)
 	 */
 	public String getBindIP() { return bindIP; }
-	
+
 	/**
 	 * Set the current Value of bindIP.
 	 *
 	 * @param newValue New value to set bindIP
 	 */
 	public void setBindIP(final String newValue) { bindIP = newValue; }
-	
+
 	/**
 	 * Get the current Value of createFake.
 	 *
 	 * @return Value of createFake (true if fake clients will be added for callbacks, else false)
 	 */
 	public boolean getCreateFake() { return createFake; }
-	
+
 	/**
 	 * Set the current Value of createFake.
 	 *
 	 * @param newValue New value to set createFake
 	 */
 	public void setCreateFake(final boolean newValue) { createFake = newValue; }
-	
+
 	/**
 	 * Get the current Value of autoListMode.
 	 *
 	 * @return Value of autoListMode (true if channels automatically ask for list modes on join, else false)
 	 */
 	public boolean getAutoListMode() { return autoListMode; }
-	
+
 	/**
 	 * Set the current Value of autoListMode.
 	 *
@@ -336,14 +336,14 @@ public final class IRCParser implements Runnable {
 	 * @return Value of removeAfterCallback (true if kick/part/quit callbacks are fired before internal removal)
 	 */
 	public boolean getRemoveAfterCallback() { return removeAfterCallback; }
-	
+
 	/**
 	 * Get the current Value of removeAfterCallback.
 	 *
 	 * @param newValue New value to set removeAfterCallback
 	 */
 	public void setRemoveAfterCallback(final boolean newValue) { removeAfterCallback = newValue; }
-	
+
 	/**
 	 * Get the current Value of addLastLine.
 	 *
@@ -352,7 +352,7 @@ public final class IRCParser implements Runnable {
 	 *         isn't handled any other way.
 	 */
 	public boolean getAddLastLine() { return addLastLine; }
-	
+
 	/**
 	 * Get the current Value of addLastLine.
 	 * This returns "this" and thus can be used in the construction line.
@@ -360,50 +360,50 @@ public final class IRCParser implements Runnable {
 	 * @param newValue New value to set addLastLine
 	 */
 	public void setAddLastLine(final boolean newValue) { addLastLine = newValue; }
-	
-	
+
+
 	/**
 	 * Get the current socket State.
 	 *
 	 * @return Current SocketState (STATE_NULL, STATE_CLOSED or STATE_OPEN)
 	 */
 	public byte getSocketState() { return currentSocketState; }
-	
+
 	/**
 	 * Get a reference to the Processing Manager.
 	 *
 	 * @return Reference to the CallbackManager
 	 */
 	public ProcessingManager getProcessingManager() { return myProcessingManager;	}
-	
+
 	/**
 	 * Get a reference to the CallbackManager.
 	 *
 	 * @return Reference to the CallbackManager
 	 */
 	public CallbackManager getCallbackManager() { return myCallbackManager;	}
-	
+
 	/**
 	 * Get a reference to the default TrustManager for SSL Sockets.
 	 *
 	 * @return a reference to trustAllCerts
 	 */
 	public TrustManager[] getDefaultTrustManager() { return trustAllCerts; }
-	
+
 	/**
 	 * Get a reference to the current TrustManager for SSL Sockets.
 	 *
 	 * @return a reference to myTrustManager;
 	 */
 	public TrustManager[] getTrustManager() { return myTrustManager; }
-	
+
 	/**
 	 * Replace the current TrustManager for SSL Sockets with a new one.
 	 *
 	 * @param newTrustManager Replacement TrustManager for SSL Sockets.
 	 */
 	public void setTrustManager(final TrustManager[] newTrustManager) { myTrustManager = newTrustManager; }
-	
+
 	/**
 	 * Get a reference to the ignorelist.
 	 *
@@ -417,11 +417,11 @@ public final class IRCParser implements Runnable {
 	 * @param ignoreList Replacement ignorelist
 	 */
 	public void setIgnoreList(final RegexStringList ignoreList) { myIgnoreList = ignoreList; }
-	
+
 	//---------------------------------------------------------------------------
 	// Start Callbacks
 	//---------------------------------------------------------------------------
-	
+
 	/**
 	 * Callback to all objects implementing the ServerError Callback.
 	 *
@@ -434,7 +434,7 @@ public final class IRCParser implements Runnable {
 		if (cb != null) { return cb.call(message); }
 		return false;
 	}
-	
+
 	/**
 	 * Callback to all objects implementing the DataIn Callback.
 	 *
@@ -500,7 +500,7 @@ public final class IRCParser implements Runnable {
 		if (cb != null) { return cb.call(errorInfo); }
 		return false;
 	}
-	
+
 	/**
 	 * Callback to all objects implementing the IConnectError Interface.
 	 *
@@ -525,7 +525,7 @@ public final class IRCParser implements Runnable {
 		if (cb != null) { return cb.call(); }
 		return false;
 	}
-	
+
 	/**
 	 * Callback to all objects implementing the PingFailed Callback.
 	 *
@@ -537,7 +537,7 @@ public final class IRCParser implements Runnable {
 		if (cb != null) { return cb.call(); }
 		return false;
 	}
-	
+
 	/**
 	 * Callback to all objects implementing the PingSent Callback.
 	 *
@@ -549,7 +549,7 @@ public final class IRCParser implements Runnable {
 		if (cb != null) { return cb.call(); }
 		return false;
 	}
-	
+
 	/**
 	 * Callback to all objects implementing the PingSuccess Callback.
 	 *
@@ -561,7 +561,7 @@ public final class IRCParser implements Runnable {
 		if (cb != null) { return cb.call(); }
 		return false;
 	}
-	
+
 	/**
 	 * Callback to all objects implementing the Post005 Callback.
 	 *
@@ -574,11 +574,11 @@ public final class IRCParser implements Runnable {
 		if (cb != null) { return cb.call(); }
 		return false;
 	}
-	
+
 	//---------------------------------------------------------------------------
 	// End Callbacks
 	//---------------------------------------------------------------------------
-	
+
 	/** Reset internal state (use before connect). */
 	private void resetState() {
 		// Reset General State info
@@ -625,21 +625,21 @@ public final class IRCParser implements Runnable {
 			disconnect("Fatal Parser Error");
 		}
 	}
-	
+
 	/**
 	 * Get the current Value of disconnectOnFatal.
 	 *
 	 * @return Value of disconnectOnFatal (true if the parser automatically disconnects on fatal errors, else false)
 	 */
 	public boolean getDisconnectOnFatal() { return disconnectOnFatal; }
-	
+
 	/**
 	 * Set the current Value of disconnectOnFatal.
 	 *
 	 * @param newValue New value to set disconnectOnFatal
 	 */
 	public void setDisconnectOnFatal(final boolean newValue) { disconnectOnFatal = newValue; }
-		
+
 	/**
 	 * Connect to IRC.
 	 *
@@ -651,7 +651,7 @@ public final class IRCParser implements Runnable {
 	private void connect() throws UnknownHostException, IOException, NoSuchAlgorithmException, KeyManagementException {
 			resetState();
 			callDebugInfo(DEBUG_SOCKET, "Connecting to " + server.getHost() + ":" + server.getPort());
-			
+
 			if (server.getUseSocks()) {
 				callDebugInfo(DEBUG_SOCKET, "Using Proxy");
 				if (bindIP != null && bindIP != "") {
@@ -659,7 +659,7 @@ public final class IRCParser implements Runnable {
 				}
 				final Proxy.Type proxyType = Proxy.Type.SOCKS;
 				socket = new Socket(new Proxy(proxyType, new InetSocketAddress(server.getProxyHost(), server.getProxyPort())));
-				
+
 				socket.connect(new InetSocketAddress(server.getHost(), server.getPort()));
 			} else {
 				callDebugInfo(DEBUG_SOCKET, "Not using Proxy");
@@ -677,15 +677,15 @@ public final class IRCParser implements Runnable {
 					}
 				}
 			}
-			
+
 			if (server.getSSL()) {
 				callDebugInfo(DEBUG_SOCKET, "Server is SSL.");
-				
+
 				if (myTrustManager == null) { myTrustManager = trustAllCerts; }
-				
+
 				final SSLContext sc = SSLContext.getInstance("SSL");
 				sc.init(null, myTrustManager, new java.security.SecureRandom());
-				
+
 				final SSLSocketFactory socketFactory = sc.getSocketFactory();
 				if (server.getUseSocks()) {
 					socket = socketFactory.createSocket(socket, server.getHost(), server.getPort(), false);
@@ -703,7 +703,7 @@ public final class IRCParser implements Runnable {
 					}
 				}
 			}
-			
+
 			callDebugInfo(DEBUG_SOCKET, "\t-> Opening socket output stream PrintWriter");
 			out = new PrintWriter(socket.getOutputStream(), true);
 			currentSocketState = STATE_OPEN;
@@ -711,7 +711,7 @@ public final class IRCParser implements Runnable {
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			callDebugInfo(DEBUG_SOCKET, "\t-> Socket Opened");
 	}
-	
+
 	/**
 	 * Send server connection strings (NICK/USER/PASS).
 	 */
@@ -723,7 +723,7 @@ public final class IRCParser implements Runnable {
 		sendString("USER " + toLowerCase(me.getUsername()) + " * * :" + me.getRealname());
 		isFirst = false;
 	}
-	
+
 	/**
 	 * Begin execution.
 	 * Connect to server, and start parsing incomming lines
@@ -739,16 +739,16 @@ public final class IRCParser implements Runnable {
 			callConnectError(ei);
 			return;
 		}
-		
+
 		callDebugInfo(DEBUG_SOCKET, "Socket Connected");
-		
+
 		sendConnectionStrings();
-		
+
 		while (true) {
 			try {
 				lastLine = in.readLine(); // Blocking :/
 				if (lastLine == null) {
-					if (currentSocketState != STATE_CLOSED) { 
+					if (currentSocketState != STATE_CLOSED) {
 						currentSocketState = STATE_CLOSED;
 						callSocketClosed();
 					}
@@ -758,7 +758,7 @@ public final class IRCParser implements Runnable {
 					processLine(lastLine);
 				}
 			} catch (IOException e) {
-				if (currentSocketState != STATE_CLOSED) { 
+				if (currentSocketState != STATE_CLOSED) {
 					currentSocketState = STATE_CLOSED;
 					callSocketClosed();
 				}
@@ -768,7 +768,7 @@ public final class IRCParser implements Runnable {
 		}
 		callDebugInfo(DEBUG_INFO, "End Thread Execution");
 	}
-	
+
 	/**
 	 * Get the current local port number.
 	 *
@@ -781,7 +781,7 @@ public final class IRCParser implements Runnable {
 			return 0;
 		}
 	}
-	
+
 	/** Close socket on destroy. */
 	protected void finalize() throws Throwable {
 		try { socket.close(); }
@@ -803,7 +803,7 @@ public final class IRCParser implements Runnable {
 		params = line.split(" :", 2);
 		return params[params.length - 1];
 	}
-	
+
 	/**
 	 * Tokenise a line.
 	 * splits by " " up to the first " :" everything after this is a single token
@@ -830,7 +830,7 @@ public final class IRCParser implements Runnable {
 
 		return tokens;
 	}
-	
+
 	/**
 	 * Get the ClientInfo object for a person.
 	 *
@@ -842,7 +842,7 @@ public final class IRCParser implements Runnable {
 		if (hClientList.containsKey(sWho)) { return hClientList.get(sWho); }
 		else { return null; }
 	}
-	
+
 	/**
 	 * Get the ClientInfo object for a person, or create a fake client info object.
 	 *
@@ -854,7 +854,7 @@ public final class IRCParser implements Runnable {
 		if (hClientList.containsKey(sWho)) { return hClientList.get(sWho); }
 		else { return new ClientInfo(this, sHost).setFake(true); }
 	}
-	
+
 	/**
 	 * Get the ChannelInfo object for a channel.
 	 *
@@ -867,21 +867,21 @@ public final class IRCParser implements Runnable {
 			if (hChannelList.containsKey(sWhat)) { return hChannelList.get(sWhat); } else { return null; }
 		}
 	}
-	
+
 	/**
 	 * Send a line to the server.
 	 *
 	 * @param line Line to send (\r\n termination is added automatically)
 	 */
 	public void sendLine(final String line) { doSendString(line, false); }
-	
+
 	/**
 	 * Send a line to the server and add proper line ending.
 	 *
 	 * @param line Line to send (\r\n termination is added automatically)
 	 */
 	protected void sendString(final String line) { doSendString(line, true); }
-	
+
 	/**
 	 * Send a line to the server and add proper line ending.
 	 *
@@ -899,7 +899,7 @@ public final class IRCParser implements Runnable {
 			// This makes sure we don't add the same item to the LMQ twice, even if its requested twice,
 			// as the ircd will only reply once.
 			LinkedList<Character> foundModes = new LinkedList<Character>();
-			
+
 			ChannelInfo channel = getChannelInfo(newLine[1]);
 			if (channel != null) {
 				Queue<Character> listModeQueue = channel.getListModeQueue();
@@ -919,7 +919,7 @@ public final class IRCParser implements Runnable {
 			}
 		}
 	}
-	
+
 	/**
 	 * Get the network name given in 005.
 	 *
@@ -928,7 +928,7 @@ public final class IRCParser implements Runnable {
 	public String getNetworkName() {
 		return sNetworkName;
 	}
-	
+
 	/**
 	 * Get the server name given in 001.
 	 *
@@ -937,7 +937,7 @@ public final class IRCParser implements Runnable {
 	public String getServerName() {
 		return sServerName;
 	}
-	
+
 	/**
 	 * Get the last line of input recieved from the server.
 	 *
@@ -946,7 +946,7 @@ public final class IRCParser implements Runnable {
 	public String getLastLine() {
 		return lastLine;
 	}
-	
+
 	/**
 	 * Process a line and call relevent methods for handling.
 	 *
@@ -954,12 +954,12 @@ public final class IRCParser implements Runnable {
 	 */
 	private void processLine(final String line) {
 		callDataIn(line);
-		
+
 		final String[] token = tokeniseLine(line);
 		int nParam;
 		setPingNeeded(false);
 //		pingCountDown = pingCountDownLength;
-		
+
 		if (token.length < 2) {
 			return;
 		}
@@ -1015,21 +1015,21 @@ public final class IRCParser implements Runnable {
 			callErrorInfo(ei);
 		}
 	}
-	
+
 	/** Characters to use when converting tolowercase. */
 	private char[] lowercase;
 	/** Characters to use when converting touppercase. */
 	private char[] uppercase;
 	/** Previous char array limit */
 	private byte lastLimit = (byte)3;
-	
+
 	/**
 	 * Get last used chararray limit.
 	 *
 	 * @return last used chararray limit
 	 */
 	protected int getLastLimit() { return lastLimit; }
-	
+
 	/**
 	 * Update the character arrays
 	 *
@@ -1049,14 +1049,14 @@ public final class IRCParser implements Runnable {
 			lowercase[i] = i;
 			uppercase[i] = i;
 		}
-		
+
 		// Replace the uppercase chars with lowercase
 		for (char i = 65; i <= (90 + limit); ++i) {
 			lowercase[i] = (char)(i + 32);
 			uppercase[i + 32] = i;
 		}
 	}
-	
+
 	/**
 	 * Get the lowercase version of a String for this Server
 	 *
@@ -1069,7 +1069,7 @@ public final class IRCParser implements Runnable {
 		}
 		return new String(result);
 	}
-	
+
 	/**
 	 * Get the uppercase version of a String for this Server
 	 *
@@ -1082,7 +1082,7 @@ public final class IRCParser implements Runnable {
 		}
 		return new String(result);
 	}
-	
+
 	/**
 	 * Check if 2 strings are qqual to ignore ignoring case.
 	 *
@@ -1100,10 +1100,10 @@ public final class IRCParser implements Runnable {
 				if (!result) { break; }
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Get the known boolean chanmodes in 005 order.
 	 * Modes are returned in the order that the ircd specifies the modes in 005
@@ -1121,7 +1121,7 @@ public final class IRCParser implements Runnable {
 		final char[] modes = new char[hChanModesBool.size()];
 		long nTemp;
 		double pos;
-		
+
 		for (char cTemp : hChanModesBool.keySet()) {
 			nTemp = hChanModesBool.get(cTemp);
 			// nTemp should never be less than 0
@@ -1140,7 +1140,7 @@ public final class IRCParser implements Runnable {
 		}
 		return new String(modes);
 	}
-	
+
 	/**
 	 * Process CHANMODES from 005.
 	 */
@@ -1178,19 +1178,19 @@ public final class IRCParser implements Runnable {
 			h005Info.put("CHANMODES", modeStr);
 			bits = modeStr.split(",", 5);
 		}
-		
+
 		// resetState
 		hChanModesOther.clear();
 		hChanModesBool.clear();
 		nNextKeyCMBool = 1;
-		
+
 		// List modes.
 		for (int i = 0; i < bits[0].length(); ++i) {
 			final Character cMode = bits[0].charAt(i);
 			callDebugInfo(DEBUG_INFO, "Found List Mode: %c", cMode);
 			if (!hChanModesOther.containsKey(cMode)) { hChanModesOther.put(cMode, MODE_LIST); }
 		}
-		
+
 		// Param for Set and Unset.
 		final Byte nBoth = MODE_SET + MODE_UNSET;
 		for (int i = 0; i < bits[1].length(); ++i) {
@@ -1198,14 +1198,14 @@ public final class IRCParser implements Runnable {
 			callDebugInfo(DEBUG_INFO, "Found Set/Unset Mode: %c", cMode);
 			if (!hChanModesOther.containsKey(cMode)) { hChanModesOther.put(cMode, nBoth); }
 		}
-		
+
 		// Param just for Set
 		for (int i = 0; i < bits[2].length(); ++i) {
 			final Character cMode = bits[2].charAt(i);
 			callDebugInfo(DEBUG_INFO, "Found Set Only Mode: %c", cMode);
 			if (!hChanModesOther.containsKey(cMode)) { hChanModesOther.put(cMode, MODE_SET); }
 		}
-		
+
 		// Boolean Mode
 		for (int i = 0; i < bits[3].length(); ++i) {
 			final Character cMode = bits[3].charAt(i);
@@ -1216,7 +1216,7 @@ public final class IRCParser implements Runnable {
 			}
 		}
 	}
-	
+
 	/**
 	 * Get the known boolean chanmodes in alphabetical order.
 	 * Modes are returned in alphabetic order
@@ -1233,7 +1233,7 @@ public final class IRCParser implements Runnable {
 		Arrays.sort(modes);
 		return new String(modes);
 	}
-	
+
 	/**
 	 * Get the known List chanmodes.
 	 * Modes are returned in alphabetical order
@@ -1243,7 +1243,7 @@ public final class IRCParser implements Runnable {
 	public String getListChanModes() {
 		return getOtherModeString(MODE_LIST);
 	}
-	
+
 	/**
 	 * Get the known Set-Only chanmodes.
 	 * Modes are returned in alphabetical order
@@ -1253,7 +1253,7 @@ public final class IRCParser implements Runnable {
 	public String getSetOnlyChanModes() {
 		return getOtherModeString(MODE_SET);
 	}
-	
+
 	/**
 	 * Get the known Set-Unset chanmodes.
 	 * Modes are returned in alphabetical order
@@ -1283,7 +1283,7 @@ public final class IRCParser implements Runnable {
 		Arrays.sort(modes);
 		return new String(modes).trim();
 	}
-	
+
 	/**
 	 * Get the known usermodes.
 	 * Modes are returned in the order specified by the ircd.
@@ -1297,7 +1297,7 @@ public final class IRCParser implements Runnable {
 			return "";
 		}
 	}
-	
+
 	/**
 	 * Process USERMODES from 004.
 	 */
@@ -1310,11 +1310,11 @@ public final class IRCParser implements Runnable {
 			modeStr = sDefaultModes;
 			h005Info.put("USERMODES", sDefaultModes);
 		}
-		
+
 		// resetState
 		hUserModes.clear();
 		nNextKeyUser = 1;
-		
+
 		// Boolean Mode
 		for (int i = 0; i < modeStr.length(); ++i) {
 			final Character cMode = modeStr.charAt(i);
@@ -1325,7 +1325,7 @@ public final class IRCParser implements Runnable {
 			}
 		}
 	}
-	
+
 	/**
 	 * Process CHANTYPES from 005.
 	 */
@@ -1338,10 +1338,10 @@ public final class IRCParser implements Runnable {
 			modeStr = sDefaultModes;
 			h005Info.put("CHANTYPES", sDefaultModes);
 		}
-		
+
 		// resetState
 		hChanPrefix.clear();
-		
+
 		// Boolean Mode
 		for (int i = 0; i < modeStr.length(); ++i) {
 			final Character cMode = modeStr.charAt(i);
@@ -1349,7 +1349,7 @@ public final class IRCParser implements Runnable {
 			if (!hChanPrefix.containsKey(cMode)) { hChanPrefix.put(cMode, true); }
 		}
 	}
-	
+
 	/**
 	 * Process PREFIX from 005.
 	 */
@@ -1368,7 +1368,7 @@ public final class IRCParser implements Runnable {
 			modeStr = sDefaultModes.substring(1);
 			h005Info.put("PREFIX", sDefaultModes);
 		}
-		
+
 		bits = modeStr.split("\\)", 2);
 		if (bits.length != 2 || bits[0].length() != bits[1].length()) {
 			modeStr = sDefaultModes;
@@ -1394,16 +1394,16 @@ public final class IRCParser implements Runnable {
 				nNextKeyPrefix = nNextKeyPrefix * 2;
 			}
 		}
-		
+
 	}
-	
+
 	/**
 	 * Check if server is ready.
 	 *
 	 * @return true if 001 has been recieved, false otherwise.
 	 */
 	public boolean isReady() { return got001; }
-	
+
 	/**
 	 * Join a Channel.
 	 *
@@ -1412,7 +1412,7 @@ public final class IRCParser implements Runnable {
 	public void joinChannel(final String sChannelName) {
 		joinChannel(sChannelName, "", false);
 	}
-	
+
 	/**
 	 * Join a Channel.
 	 *
@@ -1424,7 +1424,7 @@ public final class IRCParser implements Runnable {
 	public void joinChannel(final String sChannelName, final boolean autoPrefix) {
 		joinChannel(sChannelName, "", autoPrefix);
 	}
-	
+
 	/**
 	 * Join a Channel with a key.
 	 *
@@ -1434,7 +1434,7 @@ public final class IRCParser implements Runnable {
 	public void joinChannel(final String sChannelName, final String sKey) {
 		joinChannel(sChannelName, sKey, false);
 	}
-	
+
 	/**
 	 * Join a Channel with a key.
 	 *
@@ -1469,8 +1469,8 @@ public final class IRCParser implements Runnable {
 		} else {
 			sendString("JOIN " + channelName + " " + sKey);
 		}
-	}	
-	
+	}
+
 	/**
 	 * Leave a Channel.
 	 *
@@ -1485,7 +1485,7 @@ public final class IRCParser implements Runnable {
 			sendString("PART " + sChannelName + " :" + sReason);
 		}
 	}
-	
+
 	/**
 	 * Set Nickname.
 	 *
@@ -1502,7 +1502,7 @@ public final class IRCParser implements Runnable {
 		}
 		sThinkNickname = sNewNickName;
 	}
-	
+
 	/**
 	 * Get the max length a message can be.
 	 *
@@ -1520,7 +1520,7 @@ public final class IRCParser implements Runnable {
 		if (sTarget != null) { length = length + sTarget.length(); }
 		return getMaxLength(length);
 	}
-	
+
 	/**
 	 * Get the max length a message can be.
 	 *
@@ -1536,7 +1536,7 @@ public final class IRCParser implements Runnable {
 			return MAX_LINELENGTH - cMyself.toString().length() - nLength - lineLint;
 		}
 	}
-	
+
 	/**
 	 * Get the max number of list modes.
 	 *
@@ -1558,8 +1558,8 @@ public final class IRCParser implements Runnable {
 			callDebugInfo(DEBUG_INFO, "Found maxlist ("+maxlist+")");
 			final String[] bits = maxlist.split(",");
 			for (String bit : bits) {
-				final String[] parts = maxlist.split(":", 2);
-				callDebugInfo(DEBUG_INFO, "Bit: "+bit+" | parts.length = "+parts.length+" ("+parts[0].indexOf(mode)+")");
+				final String[] parts = bit.split(":", 2);
+				callDebugInfo(DEBUG_INFO, "Bit: "+bit+" | parts.length = "+parts.length+" ("+parts[0]+" -> "+parts[0].indexOf(mode)+")");
 				if (parts.length == 2 && parts[0].indexOf(mode) > -1) {
 					callDebugInfo(DEBUG_INFO, "parts[0] = '"+parts[0]+"' | parts[1] = '"+parts[1]+"'");
 					try {
@@ -1569,7 +1569,7 @@ public final class IRCParser implements Runnable {
 				}
 			}
 		}
-		
+
 		// If not in max list, try MAXBANS
 		if (result == -2 && h005Info.get("MAXBANS") != null) {
 			callDebugInfo(DEBUG_INFO, "Trying max bans");
@@ -1584,7 +1584,7 @@ public final class IRCParser implements Runnable {
 		callDebugInfo(DEBUG_INFO, "Result: "+result);
 		return result;
 	}
-	
+
 	/**
 	 * Send a private message to a target.
 	 *
@@ -1594,10 +1594,10 @@ public final class IRCParser implements Runnable {
 	public void sendMessage(final String sTarget, final String sMessage) {
 		if (sTarget == null || sMessage == null) { return; }
 		if (sTarget.isEmpty()/* || sMessage.isEmpty()*/) { return; }
-		
+
 		sendString("PRIVMSG " + sTarget + " :" + sMessage);
 	}
-	
+
 	/**
 	 * Send a notice message to a target.
 	 *
@@ -1607,7 +1607,7 @@ public final class IRCParser implements Runnable {
 	public void sendNotice(final String sTarget, final String sMessage) {
 		if (sTarget == null || sMessage == null) { return; }
 		if (sTarget.isEmpty()/* || sMessage.isEmpty()*/) { return; }
-		
+
 		sendString("NOTICE " + sTarget + " :" + sMessage);
 	}
 
@@ -1620,7 +1620,7 @@ public final class IRCParser implements Runnable {
 	public void sendAction(final String sTarget, final String sMessage) {
 		sendCTCP(sTarget, "ACTION", sMessage);
 	}
-	
+
 	/**
 	 * Send a CTCP to a target.
 	 *
@@ -1634,7 +1634,7 @@ public final class IRCParser implements Runnable {
 		final char char1 = (char) 1;
 		sendString("PRIVMSG " + sTarget + " :" + char1 + sType.toUpperCase() + " " + sMessage + char1);
 	}
-	
+
 	/**
 	 * Send a CTCPReply to a target.
 	 *
@@ -1648,7 +1648,7 @@ public final class IRCParser implements Runnable {
 		final char char1 = (char) 1;
 		sendString("NOTICE " + sTarget + " :" + char1 + sType.toUpperCase() + " " + sMessage + char1);
 	}
-	
+
 	/**
 	 * Quit IRC.
 	 * This method will wait for the server to close the socket.
@@ -1676,14 +1676,14 @@ public final class IRCParser implements Runnable {
 		} catch (Exception e) {
 			/* Do Nothing */
 		} finally {
-			if (currentSocketState != STATE_CLOSED) { 
+			if (currentSocketState != STATE_CLOSED) {
 				currentSocketState = STATE_CLOSED;
 				callSocketClosed();
 			}
 			resetState();
 		}
 	}
-	
+
 	/**
 	 * Check if a channel name is valid.
 	 *
@@ -1712,7 +1712,7 @@ public final class IRCParser implements Runnable {
 		// first character of the channel name is a valid channel prefix.
 		return hChanPrefix.containsKey(sChannelName.charAt(0)) || sChannelName.equals("0");
 	}
-	
+
 	/**
 	 * Check if a given chanmode is user settable.
 	 *
@@ -1728,14 +1728,14 @@ public final class IRCParser implements Runnable {
 		}
 		return validmodes.matches(".*" + mode + ".*");
 	}
-	
+
 	/**
 	 * Get the 005 info.
 	 *
 	 * @return 005Info hashtable.
 	 */
 	public Hashtable<String, String> get005() { return h005Info; }
-	
+
 	/**
 	 * Get the name of the ircd.
 	 *
@@ -1785,8 +1785,8 @@ public final class IRCParser implements Runnable {
 			else { return ""; }
 		}
 	}
-	
-	
+
+
 	/**
 	 * Get the time used for the ping Timer.
 	 *
@@ -1794,7 +1794,7 @@ public final class IRCParser implements Runnable {
 	 * @see setPingCountDownLength
 	 */
 	public long getPingTimerLength() { return pingTimerLength; }
-	
+
 	/**
 	 * Set the time used for the ping Timer.
 	 * This will also reset the pingTimer.
@@ -1806,7 +1806,7 @@ public final class IRCParser implements Runnable {
 		pingTimerLength = newValue;
 		startPingTimer();
 	}
-	
+
 	/**
 	 * Get the time used for the pingCountdown.
 	 *
@@ -1814,7 +1814,7 @@ public final class IRCParser implements Runnable {
 	 * @see setPingCountDownLength
 	 */
 	public byte getPingCountDownLength() { return pingCountDownLength; }
-	
+
 	/**
 	 * Set the time used for the ping countdown.
 	 * The pingTimer fires every pingTimerLength seconds, whenever a line of data
@@ -1841,7 +1841,7 @@ public final class IRCParser implements Runnable {
 	public void setPingCountDownLength(final byte newValue) {
 		pingCountDownLength = newValue;
 	}
-	
+
 	/**
 	 * Start the pingTimer.
 	 */
@@ -1852,7 +1852,7 @@ public final class IRCParser implements Runnable {
 		pingTimer.schedule(new PingTimer(this, pingTimer), 0, pingTimerLength);
 		pingCountDown = 1;
 	}
-	
+
 	/**
 	 * This is called when the ping Timer has been executed.
 	 * As the timer is restarted on every incomming message, this will only be
@@ -1879,7 +1879,7 @@ public final class IRCParser implements Runnable {
 			}
 		}
 	}
-	
+
 	/**
 	 * Get the current server lag.
 	 *
@@ -1888,7 +1888,7 @@ public final class IRCParser implements Runnable {
 	public long getServerLag() {
 		return serverLag;
 	}
-	
+
 	/**
 	 * Get the current server lag.
 	 *
@@ -1912,7 +1912,7 @@ public final class IRCParser implements Runnable {
 			pingNeeded = newStatus;
 		}
 	}
-	
+
 	/**
 	 * Get if a ping is needed or not.
 	 *
@@ -1924,7 +1924,7 @@ public final class IRCParser implements Runnable {
 			return pingNeeded;
 		}
 	}
-	
+
 	/**
 	 * Get a reference to the cMyself object.
 	 *
@@ -1938,7 +1938,7 @@ public final class IRCParser implements Runnable {
 	 * @param client new "myself" client
 	 */
 	public void setMyself(final ClientInfo client) { cMyself = client; }
-	
+
 	/**
 	 * Get the current nickname.
 	 * If after 001 this returns the exact same as getMyself.getNickname();
@@ -1953,7 +1953,7 @@ public final class IRCParser implements Runnable {
 			return cMyself.getNickname();
 		}
 	}
-	
+
 	/**
 	 * Get the current username (Specified in MyInfo on construction).
 	 * Get the username given in MyInfo
@@ -1984,7 +1984,7 @@ public final class IRCParser implements Runnable {
 			forceRemoveClient(client);
 		}
 	}
-	
+
 	/**
 	 * Remove a client from the ClientList.
 .	 * This WILL allow cMyself to be removed from the list
