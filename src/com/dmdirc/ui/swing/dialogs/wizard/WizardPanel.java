@@ -22,6 +22,8 @@
 
 package com.dmdirc.ui.swing.dialogs.wizard;
 
+import com.dmdirc.ui.swing.components.EtchedLineBorder;
+import com.dmdirc.ui.swing.components.EtchedLineBorder.BorderSide;
 import com.dmdirc.util.ListenerList;
 
 import java.awt.Color;
@@ -35,10 +37,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import javax.swing.border.EtchedBorder;
 import net.miginfocom.swing.MigLayout;
 
 /**
- *
+ * Wizard panel.
  */
 public class WizardPanel extends JPanel implements ActionListener,
         Serializable {
@@ -121,14 +124,15 @@ public class WizardPanel extends JPanel implements ActionListener,
         titlePanel.setBackground(Color.WHITE);
         titlePanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0,
                 Color.BLACK));
+        titlePanel.setBorder(new EtchedLineBorder(EtchedBorder.LOWERED, BorderSide.BOTTOM));
 
         final JPanel progressPanel = new JPanel(new MigLayout("fill"));
         progressPanel.add(progressLabel, "growx");
         progressPanel.add(prev, "sg button");
         progressPanel.add(next, "sg button");
-        progressPanel.setBackground(Color.WHITE);
         progressPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0,
                 Color.BLACK));
+        progressPanel.setBorder(new EtchedLineBorder(EtchedBorder.LOWERED, BorderSide.TOP));
 
         setLayout(new MigLayout("fill, wrap 1, ins 0"));
         add(titlePanel, "growx");

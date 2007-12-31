@@ -433,26 +433,17 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     /** Checks and pastes text. */
     public void doPaste() {
         String clipboard = null;
-        String[] clipboardLines = new String[]{"",
-         } 
-            ;
-
-
-
-
-
-
-
-        
-         
-               
-              
-            
-             if (!Toolkit.getDefaultToolkit().getSystemClipboard().
-                isDataFlavorAvailable(DataFlavor.stringFlavor)) {
+        String[] clipboardLines = new String[1];
+        try {
+            if (!Toolkit.getDefaultToolkit().getSystemClipboard().
+                    isDataFlavorAvailable(DataFlavor.stringFlavor)) {
+                return;
+            }
+        } catch (IllegalStateException ex) {
+            Logger.userError(ErrorLevel.LOW, "Unable to paste from clipboard.");
             return;
         }
-        
+
         try {
             //get the contents of the input field and combine it with the clipboard
             clipboard = (String) Toolkit.getDefaultToolkit().
@@ -546,8 +537,8 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     protected final void popuplateNicklistPopup(final String nickname) {
         final PopupMenu popups = PopupManager.getMenu(PopupType.CHAN_NICKLIST,
                 getConfigManager());
-        
-        nickPopup = (JPopupMenu) populatePopupMenu(new JPopupMenu(), popups, 
+
+        nickPopup = (JPopupMenu) populatePopupMenu(new JPopupMenu(), popups,
                 nickname);
     }
 
@@ -560,16 +551,16 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
      * 
      * @return Populated popup
      */
-    private JComponent populatePopupMenu(final JComponent menu, final PopupMenu popup, 
-            final Object... arguments) {
+    private JComponent populatePopupMenu(final JComponent menu,
+            final PopupMenu popup, final Object... arguments) {
         for (PopupMenuItem menuItem : popup.getItems()) {
             if (menuItem.isDivider()) {
                 menu.add(new JSeparator());
             } else if (menuItem.isSubMenu()) {
-                menu.add(populatePopupMenu(new JMenu(menuItem.getName()), 
+                menu.add(populatePopupMenu(new JMenu(menuItem.getName()),
                         menuItem.getSubMenu(), arguments));
             } else {
-                menu.add(new JMenuItem(new CommandAction(getCommandParser(), 
+                menu.add(new JMenuItem(new CommandAction(getCommandParser(),
                         this, menuItem.getName(), menuItem.getCommand(arguments))));
             }
         }

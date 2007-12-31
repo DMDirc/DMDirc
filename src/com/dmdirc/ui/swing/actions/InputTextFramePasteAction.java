@@ -34,17 +34,16 @@ import javax.swing.AbstractAction;
  * Paste action for input frames.
  */
 public final class InputTextFramePasteAction extends AbstractAction {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
     /** Text component to be acted upon. */
     private final InputTextFrame inputFrame;
-    
+
     /**
      * Instantiates a new paste action.
      *
@@ -52,18 +51,28 @@ public final class InputTextFramePasteAction extends AbstractAction {
      */
     public InputTextFramePasteAction(final InputTextFrame inputFrame) {
         super("Paste");
-        
+
         this.inputFrame = inputFrame;
     }
-    
-    /** {@inheritDoc} */
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Action event
+     */
+    @Override
     public void actionPerformed(final ActionEvent e) {
         inputFrame.doPaste();
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public boolean isEnabled() {
-        return Toolkit.getDefaultToolkit().getSystemClipboard().
-                isDataFlavorAvailable(DataFlavor.stringFlavor);
+        try {
+            return Toolkit.getDefaultToolkit().getSystemClipboard().
+                    isDataFlavorAvailable(DataFlavor.stringFlavor);
+        } catch (IllegalStateException ex) {
+            return false;
+        }
     }
 }

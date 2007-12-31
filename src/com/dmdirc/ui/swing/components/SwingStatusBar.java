@@ -173,15 +173,8 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
 
     /** Clears the error. */
     public void clearError() {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                errorLabel.setIcon(DEFAULT_ICON);
-                errorLevel = null;
-            }
-        });
+        errorLabel.setIcon(DEFAULT_ICON);
+        errorLevel = null;
     }
 
     /** {@inheritDoc} */
@@ -210,28 +203,21 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
 
     /** Checks all the errors for the most significant error. */
     private void checkErrors() {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                clearError();
-                final List<ProgramError> errors =
-                        ErrorManager.getErrorManager().getErrors();
-                if (errors.size() > 0) {
-                    for (ProgramError error : errors) {
-                        if (errorLevel == null ||
-                                error.getLevel().moreImportant(errorLevel)) {
-                            errorLevel = error.getLevel();
-                            errorLabel.setIcon(errorLevel.getIcon());
-                        }
-                    }
-                    errorLabel.setVisible(true);
-                } else {
-                    errorLabel.setVisible(false);
+        clearError();
+        final List<ProgramError> errors =
+                ErrorManager.getErrorManager().getErrors();
+        if (errors.size() > 0) {
+            for (ProgramError error : errors) {
+                if (errorLevel == null ||
+                        error.getLevel().moreImportant(errorLevel)) {
+                    errorLevel = error.getLevel();
+                    errorLabel.setIcon(errorLevel.getIcon());
                 }
             }
-        });
+            errorLabel.setVisible(true);
+        } else {
+            errorLabel.setVisible(false);
+        }
     }
 
     /** {@inheritDoc} */
