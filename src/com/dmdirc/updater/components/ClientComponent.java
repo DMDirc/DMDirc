@@ -60,15 +60,35 @@ public class ClientComponent implements UpdateComponent {
         tmpFile.renameTo(targetFile);
         
         if (!LauncherComponent.isUsingLauncher()) {
-            Main.getUI().showMessageDialog("Client update downloaded", 
-                    "A new version of DMDirc has been downloaded, but as you\n"
+            final ResourceManager.Type type = ResourceManager.getResourceManagerType();
+            final String message;
+            if (type == ResourceManager.Type.JAR) {
+                message = "A new version of DMDirc has been downloaded, but as you\n"
                     + "do not seem to be using the DMDirc launcher, it will\n"
                     + "not be installed automatically.\n\n"
-                    + "To install this update manually, please replaces the\n"
+                    + "To install this update manually, please replace the\n"
                     + "existing DMDirc.jar file, located at:\n"
-                    + "  " + ResourceManager.getJarPath() + "\n"
+                    + " " + ResourceManager.getCurrentWorkingDirectory() + "\n"
                     + "with the following file:\n"
-                    + "  " + targetFile.getAbsolutePath());
+                    + "  " + targetFile.getAbsolutePath();
+            } else if (type == ResourceManager.Type.FILE) {
+                message = "A new version of DMDirc has been downloaded, but as you\n"
+                    + "do not seem to be using the DMDirc launcher, it will\n"
+                    + "not be installed automatically.\n\n"
+                    + "To install this update manually, please extract the\n"
+                    + "new DMDirc.jar file, located at:\n"
+                    + " " + targetFile.getAbsolutePath() + "\n"
+                    + "over your existing DMDirc install located in:\n"
+                    + "  " + ResourceManager.getCurrentWorkingDirectory();
+            } else {
+                message = "A new version of DMDirc has been downloaded, but as you\n"
+                    + "do not seem to be using the DMDirc launcher, it will\n"
+                    + "not be installed automatically.\n\n"
+                    + "To install this update manually, please place the\n"
+                    + targetFile.getAbsolutePath() + " wherever you wish to\n"
+                    + " run DMDirc from and update your shortcuts accordingly.";
+            }
+            Main.getUI().showMessageDialog("Client update downloaded", message);
         }
         
         return true;

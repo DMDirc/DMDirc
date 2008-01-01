@@ -92,15 +92,6 @@ public abstract class ResourceManager {
     }
     
     /**
-     * Determines the path of DMDirc's .jar file, if possible.
-     * 
-     * @return The path to DMDirc's .jar file.
-     */
-    public static String getJarPath() {
-        return "<unknown location>";
-    }
-    
-    /**
      * Returns an appropriate instance of ResourceManager for the specified url string.
      *
      * @param type  file://path/to/base
@@ -160,8 +151,11 @@ public abstract class ResourceManager {
      *
      * @return ResourceManager Type
      */
-    public final Type getResourceManagerType() {
-        getResourceManager();
+    public static final synchronized Type getResourceManagerType() {
+        if (me == null) {
+            getResourceManager();
+        }
+        
         if (me instanceof ZipResourceManager) {
             return Type.JAR;
         } else if (me instanceof FileResourceManager) {
