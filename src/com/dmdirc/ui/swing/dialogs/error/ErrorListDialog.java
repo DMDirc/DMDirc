@@ -123,6 +123,10 @@ public final class ErrorListDialog extends StandardDialog implements
     public static synchronized ErrorListDialog getErrorListDialog() {
         if (me == null) {
             me = new ErrorListDialog();
+        } else if (me.tableModel.getRowCount() != me.errorManager.getErrorCount()) {
+            me.tableModel = new ErrorTableModel(new ArrayList<ProgramError>(
+                    me.errorManager.getErrorList().values()));
+            me.table.setModel(me.tableModel);
         }
         
         return me;
@@ -243,7 +247,11 @@ public final class ErrorListDialog extends StandardDialog implements
         }
     }
     
-    /** {@inheritDoc}. */
+    /** 
+     * {@inheritDoc}.
+     * 
+     * @param e Action event
+     */
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == getCancelButton()) {
