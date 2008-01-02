@@ -85,7 +85,6 @@ public class ActionCondition {
         
         if (arg == -1) { 
             final String thisStarget = sub.doSubstitution(starget, args);
-            System.out.printf("%s - %s\n", thisStarget, thisTarget);
             return getComparison().test(thisStarget, thisTarget);
         } else {
             return getComparison().test(getComponent().get(args[getArg()]), thisTarget);
