@@ -50,7 +50,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	private ResourceManager myResourceManager = null;
 	/** List of classes this plugin has */
 	private List<String> myClasses = new ArrayList<String>();
-	
+
 	/**
 	 * Create a new PluginInfo.
 	 *
@@ -60,7 +60,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	public PluginInfo(final String filename) throws PluginException {
 		this(filename, true);
 	}
-	
+
 	/**
 	 * Create a new PluginInfo.
 	 *
@@ -70,16 +70,16 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 */
 	public PluginInfo(final String filename, final boolean load) throws PluginException {
 		this.filename = filename;
-		
+
 		if (!load) { return; }
-		
+
 		ResourceManager res;
 		try {
 			res = getResourceManager();
 		} catch (IOException ioe) {
 			throw new PluginException("Plugin "+filename+" failed to load, error with resourcemanager: "+ioe.getMessage(), ioe);
 		}
-		
+
 		try {
 			if (res.resourceExists("META-INF/plugin.info")) {
 				metaData = new Properties();
@@ -90,7 +90,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 		} catch (Exception e) {
 			throw new PluginException("Plugin "+filename+" failed to load, plugin.info failed to open - "+e.getMessage(), e);
 		}
-		
+
 		if (getVersion() < 0) {
 			throw new PluginException("Plugin "+filename+" failed to load, incomplete plugin.info (Missing or invalid 'version')");
 		} else if(getAuthor().equals("")) {
@@ -102,12 +102,12 @@ public class PluginInfo implements Comparable<PluginInfo> {
 		} else if(getMainClass().equals("")) {
 			throw new PluginException("Plugin "+filename+" failed to load, incomplete plugin.info (Missing 'mainclass')");
 		}
-		
+
 		final String mainClass = getMainClass().replace('.', '/')+".class";
 		if (!res.resourceExists(mainClass)) {
 			throw new PluginException("Plugin "+filename+" failed to load, main class file ("+mainClass+") not found in jar.");
 		}
-		
+
 		for (final String classfilename : res.getResourcesStartingWith("")) {
 			String classname = classfilename.replace('/', '.');
 			if (classname.matches("^.*\\.class$")) {
@@ -115,9 +115,9 @@ public class PluginInfo implements Comparable<PluginInfo> {
 				myClasses.add(classname);
 			}
 		}
-		
+
 		if (isPersistant()) { loadEntirePlugin(); }
-		
+
 		myResourceManager = null;
 	}
 
@@ -133,7 +133,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 		}
 		return myResourceManager;
 	}
-	
+
 	/**
 	 * Are the requirements for this plugin met?
 	 *
@@ -144,14 +144,14 @@ public class PluginInfo implements Comparable<PluginInfo> {
 		// syntax.
 		// Also needs to check min/max version.
 	}
-	
+
 	/**
 	 * Is this plugin loaded?
 	 */
 	public boolean isLoaded() {
 		return (plugin != null);
 	}
-	
+
 	/**
 	 * Load entire plugin.
 	 * This loads all files in the jar immediately.
@@ -168,7 +168,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 		}
 		myResourceManager = null;
 	}
-	
+
 	/**
 	 * Load the plugin files.
 	 */
@@ -182,7 +182,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 		}
 		myResourceManager = null;
 	}
-	
+
 	/**
 	 * Load the given classname.
 	 *
@@ -191,12 +191,12 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	private void loadClass(final String classname) {
 		try {
 			classloader = new PluginClassLoader(this);
-			
+
 			final Class<?> c = classloader.loadClass(classname);
 			final Constructor<?> constructor = c.getConstructor(new Class[] {});
-		
+
 			final Object temp = constructor.newInstance(new Object[] {});
-			
+
 			if (temp instanceof Plugin) {
 				if (((Plugin) temp).checkPrerequisites()) {
 					plugin = (Plugin) temp;
@@ -219,7 +219,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+filename+":"+getMainClass()+"'): Unable to find class: " + ncdf.getMessage(), ncdf);
 		}
 	}
-	
+
 	/**
 	 * Unload the plugin if possible.
 	 */
@@ -235,7 +235,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			classloader = null;
 		}
 	}
-	
+
 	/**
 	 * Get the list of Classes
 	 *
@@ -244,35 +244,35 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	public List<String> getClassList() {
 		return myClasses;
 	}
-	
+
 	/**
 	 * Get the main Class
 	 *
 	 * @return Main Class to begin loading.
 	 */
 	public String getMainClass() { return metaData.getProperty("mainclass",""); }
-	
+
 	/**
 	 * Get the Plugin for this plugin.
 	 *
 	 * @return Plugin
 	 */
 	public Plugin getPlugin() { return plugin; }
-	
+
 	/**
 	 * Get the PluginClassLoader for this plugin.
 	 *
 	 * @return PluginClassLoader
 	 */
-	protected PluginClassLoader getPluginClassLoader() { return classloader; }	
-	
+	protected PluginClassLoader getPluginClassLoader() { return classloader; }
+
 	/**
 	 * Get the plugin friendly version
 	 *
 	 * @return Plugin friendly Version
 	 */
 	public String getFriendlyVersion() { return metaData.getProperty("friendlyversion",""); }
-	
+
 	/**
 	 * Get the plugin version
 	 *
@@ -285,7 +285,26 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			return -1;
 		}
 	}
-	
+
+	/**
+	 * Get the id for this plugin on the addons site.
+	 * If a plugin has been submitted to addons.dmdirc.com, and plugin.info
+	 * contains a property addonid then this will return it.
+	 * This is used along with the version property to allow the auto-updater to
+	 * update the addon if the author submits a new version to the addons site.
+	 *
+	 * @return Addon Site ID number
+	 *         -1 If not present
+	 *         -2 If non-integer
+	 */
+	public int getAddonID() {
+		try {
+			return Integer.parseInt(metaData.getProperty("addonid","-1"));
+		} catch (NumberFormatException nfe) {
+			return -2;
+		}
+	}
+
 	/**
 	 * Is this a persistant plugin?
 	 *
@@ -295,7 +314,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 		final String persistance = metaData.getProperty("persistant","no");
 		return persistance.equalsIgnoreCase("true") || persistance.equalsIgnoreCase("yes");
 	}
-	
+
 	/**
 	 * Does this plugin contain any persistant classes?
 	 *
@@ -314,7 +333,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Get a list of all persistant classes in this plugin
 	 *
@@ -326,7 +345,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 		if (persistance.equalsIgnoreCase("true")) {
 			try {
 				ResourceManager res = getResourceManager();
-				
+
 				for (final String filename : res.getResourcesStartingWith("")) {
 					String classname = filename.replace('.', '/');
 					if (classname.matches("^.*\\.class$")) {
@@ -346,7 +365,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Is this a persistant class?
 	 *
@@ -361,70 +380,70 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			return persistance.equalsIgnoreCase("true") || persistance.equalsIgnoreCase("yes");
 		}
 	}
-	
+
 	/**
 	 * Get the plugin Filename.
 	 *
 	 * @return Filename of plugin
 	 */
 	public String getFilename() { return filename; }
-	
+
 	/**
 	 * Get the full plugin Filename (inc dirname)
 	 *
 	 * @return Filename of plugin
 	 */
 	public String getFullFilename() { return PluginManager.getPluginManager().getDirectory()+filename; }
-	
+
 	/**
 	 * Get the plugin Author.
 	 *
 	 * @return Author of plugin
 	 */
 	public String getAuthor() { return getMetaInfo("author",""); }
-	
+
 	/**
 	 * Get the plugin Description.
 	 *
 	 * @return Description of plugin
 	 */
 	public String getDescription() { return getMetaInfo("description",""); }
-	
+
 	/**
 	 * Get the minimum dmdirc version required to run the plugin.
 	 *
 	 * @return minimum dmdirc version required to run the plugin.
 	 */
 	public String getMinVersion() { return getMetaInfo("minversion",""); }
-	
+
 	/**
 	 * Get the (optional) maximum dmdirc version on which this plugin can run
 	 *
 	 * @return optional maximum dmdirc version on which this plugin can run
 	 */
 	public String getMaxVersion() { return getMetaInfo("maxversion",""); }
-	
+
 	/**
 	 * Get the name of the plugin. (Used to identify the plugin)
 	 *
 	 * @return Name of plugin
 	 */
 	public String getName() { return getMetaInfo("name",""); }
-	
+
 	/**
 	 * Get the nice name of the plugin. (Displayed to users)
 	 *
 	 * @return Nice Name of plugin
 	 */
 	public String getNiceName() { return getMetaInfo("nicename",getName()); }
-	
+
 	/**
 	 * String Representation of this plugin
 	 *
 	 * @return String Representation of this plugin
 	 */
 	public String toString() { return getNiceName()+" - "+filename; }
-	
+
 	/**
 	 * Get misc meta-information
 	 *
@@ -432,7 +451,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 * @return Misc Meta Info (or "" if not found);
 	 */
 	public String getMetaInfo(final String metainfo) { return metaData.getProperty(metainfo,""); }
-	
+
 	/**
 	 * Get misc meta-information
 	 *
@@ -441,7 +460,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 * @return Misc Meta Info (or fallback if not found);
 	 */
 	public String getMetaInfo(final String metainfo, final String fallback) { return metaData.getProperty(metainfo,fallback); }
-	
+
 	/**
 	 * Compares this object with the specified object for order.
 	 * Returns a negative integer, zero, or a positive integer as per String.compareTo();
