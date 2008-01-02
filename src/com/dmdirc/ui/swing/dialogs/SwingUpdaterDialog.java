@@ -29,6 +29,7 @@ import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.updater.Update;
 import com.dmdirc.updater.Update.STATUS;
 import com.dmdirc.interfaces.UpdateListener;
+import com.dmdirc.updater.UpdateChecker;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
@@ -191,7 +192,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         final String[][] tableData = new String[updates.size()][4];
         
         for (int i = 0; i < updates.size(); i++) {
-            tableData[i][0] = updates.get(i).getComponent();
+            tableData[i][0] = UpdateChecker.findComponent(updates.get(i).getComponent()).getFriendlyName();
             tableData[i][1] = updates.get(i).getRemoteVersion();
             tableData[i][2] = updates.get(i).getStatus().toString();
         }
