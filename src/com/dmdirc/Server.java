@@ -864,8 +864,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      * Closes all open query windows associated with this server.
      */
     private void closeQueries() {
-        for (Query query : queries.values()) {
-            WindowManager.removeWindow(query.getFrame());
+        for (Query query : new ArrayList<Query>(queries.values())) {
             query.close(false);
         }
 
