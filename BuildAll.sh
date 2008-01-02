@@ -41,6 +41,7 @@ if [ `date +%d` = "01" ]; then
 	OLDDIR=${WWWDIR}/nightly/old/`date -d yesterday +%B%y | tr "[:upper:]" "[:lower:]"`
 	mkdir -p ${OLDDIR}
 	mv -fv ${WWWDIR}/nightly/*_`date -d yesterday +%Y%m`??_* ${OLDDIR}
+	mv -fv ${WWWDIR}/nightly/*-`date -d yesterday +%Y%m`??_* ${OLDDIR}
 	mv -fv ${WWWDIR}/nightly/*_latest* ${OLDDIR}
 fi
 
@@ -83,7 +84,7 @@ if [ -f $MYDIR/dist/DMDirc.jar ]; then
 	mv "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.run" "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.run"
 	rm -Rf "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.*.md5"
 	cp $MYDIR/dist/DMDirc.jar /home/dmdirc/www/nightly/$FILENAME
-	
+
 	if [ -e "${WWWDIR}/nightly/${FILENAME}" ]; then
 		ln -sf ${WWWDIR}/nightly/${FILENAME} $WWWDIR/nightly/DMDirc_latest.jar
 	fi;
