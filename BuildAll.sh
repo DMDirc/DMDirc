@@ -42,7 +42,7 @@ if [ `date +%d` = "01" ]; then
 	mkdir -p ${OLDDIR}
 	mv -fv ${WWWDIR}/nightly/*_`date -d yesterday +%Y%m`??_* ${OLDDIR}
 	mv -fv ${WWWDIR}/nightly/*-`date -d yesterday +%Y%m`??_* ${OLDDIR}
-	mv -fv ${WWWDIR}/nightly/*_latest* ${OLDDIR}
+	rm -Rf ${WWWDIR}/nightly/*_latest*
 fi
 
 # The date/svn prefix to add to the end of the file names of stuff
