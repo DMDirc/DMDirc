@@ -119,6 +119,9 @@ public final class UpdateChecker implements Runnable {
         final ConfigManager config = IdentityManager.getGlobalConfig();
 
         if (!config.getOptionBool("updater", "enable", true)) {
+            IdentityManager.getConfigIdentity().setOption("updater",
+                    "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
+        
             init();
             return;
         }
