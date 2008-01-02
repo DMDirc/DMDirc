@@ -3,7 +3,7 @@ identity.globaldefault = true
 identity.order = 100000
 identity.defaultsversion = 0
 
-general.submitErrors=true
+general.submitErrors=false
 
 general.commandchar=/
 general.silencechar=.
@@ -129,7 +129,7 @@ server.pingtimeout=60000
 
 updater.frequency=86400
 updater.lastcheck=0
-updater.enable=true
+updater.enable=false
 
 actions.textcolour=12
 actions.eventcolour=3
