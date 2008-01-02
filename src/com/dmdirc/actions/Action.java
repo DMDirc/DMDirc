@@ -403,7 +403,13 @@ public class Action extends ActionModel implements Serializable {
             final Map<String, String> data = new HashMap<String, String>();
 
             data.put("argument", String.valueOf(condition.getArg()));
-            data.put("component", condition.getComponent().toString());
+            
+            if (condition.getArg() == -1) {
+                data.put("starget", condition.getStarget());
+            } else {
+                data.put("component", condition.getComponent().toString());
+            }
+            
             data.put("comparison", condition.getComparison().toString());
             data.put("target", condition.getTarget());
 
@@ -437,6 +443,7 @@ public class Action extends ActionModel implements Serializable {
         ActionComponent component = null;
         ActionComparison comparison = null;
         String target = "";
+        String starget = null;
 
         // ------ Read the argument
 
@@ -447,16 +454,25 @@ public class Action extends ActionModel implements Serializable {
             return false;
         }
 
-        if (arg < 0 || arg >= triggers[0].getType().getArity()) {
+        if (arg < -1 || arg >= triggers[0].getType().getArity()) {
             error("Invalid argument number specified: " + arg);
             return false;
         }
 
-        // ------ Read the component
+        // ------ Read the component or the source
 
-        component = readComponent(data, arg);
-        if (component == null) {
-            return false;
+        if (arg == -1) {
+            starget = data.get("starget");
+            
+            if (starget == null) {
+                error("No starget specified");
+                return false;
+            }
+        } else {
+            component = readComponent(data, arg);
+            if (component == null) {
+                return false;
+            }            
         }
 
         // ------ Read the comparison
@@ -467,7 +483,8 @@ public class Action extends ActionModel implements Serializable {
             return false;
         }
 
-        if (!comparison.appliesTo().equals(component.getType())) {
+        if ((arg != -1 && !comparison.appliesTo().equals(component.getType())) 
+            || (arg == -1 && !comparison.appliesTo().equals(String.class))) {
             error("Comparison cannot be applied to specified component: " + data.get("comparison"));
             return false;
         }
@@ -481,7 +498,12 @@ public class Action extends ActionModel implements Serializable {
             return false;
         }
 
-        conditions.add(new ActionCondition(arg, component, comparison, target));
+        if (arg == -1) {
+            conditions.add(new ActionCondition(starget, comparison, target));
+        } else {
+            conditions.add(new ActionCondition(arg, component, comparison, target));
+        }
+        
         return true;
     }
 

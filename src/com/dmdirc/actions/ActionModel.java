@@ -31,6 +31,7 @@ import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

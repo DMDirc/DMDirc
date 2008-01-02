@@ -43,6 +43,9 @@ public class ActionCondition {
     /** The target of the comparison for this condition. */
     private String target;
     
+    /** The source target for this comparison. */
+    private String starget;
+    
     /**
      * Creates a new instance of ActionCondition.
      * @param arg The argument number to be tested
@@ -52,8 +55,20 @@ public class ActionCondition {
      */
     public ActionCondition(final int arg, final ActionComponent component,
             final ActionComparison comparison, final String target) {
+        super();
+        
         this.arg = arg;
         this.component = component;
+        this.comparison = comparison;
+        this.target = target;
+    }
+    
+    public ActionCondition(final String starget, final ActionComparison comparison,
+            final String target) {
+        super();
+        
+        this.arg = -1;
+        this.starget = starget;
         this.comparison = comparison;
         this.target = target;
     }
@@ -67,7 +82,14 @@ public class ActionCondition {
      */
     public boolean test(final ActionSubstitutor sub, final Object ... args) {
         final String thisTarget = sub.doSubstitution(getTarget(), args);
-        return getComparison().test(getComponent().get(args[getArg()]), thisTarget);
+        
+        if (arg == -1) { 
+            final String thisStarget = sub.doSubstitution(starget, args);
+            System.out.printf("%s - %s\n", thisStarget, thisTarget);
+            return getComparison().test(thisStarget, thisTarget);
+        } else {
+            return getComparison().test(getComponent().get(args[getArg()]), thisTarget);
+        }
     }
     
     /**
@@ -140,6 +162,14 @@ public class ActionCondition {
     public void setTarget(final String target) {
         this.target = target;
     }
+
+    public String getStarget() {
+        return starget;
+    }
+
+    public void setStarget(final String starget) {
+        this.starget = starget;
+    }
     
     /** {@inheritDoc} */
     @Override
@@ -151,10 +181,7 @@ public class ActionCondition {
     /** {@inheritDoc} */
     @Override
     public boolean equals(final Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof ActionCondition)) {
+        if (obj == null || !(obj instanceof ActionCondition)) {
             return false;
         }
         
