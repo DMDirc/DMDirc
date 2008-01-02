@@ -39,19 +39,19 @@ public class ActionGroup extends ArrayList<Action> {
      */
     private static final long serialVersionUID = 1;    
     
-    private String name;
+    private String name = null;
     
-    private String description;
+    private String description = null;
     
-    private String author;
+    private String author = null;
     
-    private String component;
+    private int component = -1;
     
-    private int version;
+    private int version = -1;
     
     private final List<ActionSetting> settings = new ArrayList<ActionSetting>();
 
-    public ActionGroup(String name) {
+    public ActionGroup(final String name) {
         this.name = name;
     }
 
@@ -59,7 +59,7 @@ public class ActionGroup extends ArrayList<Action> {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(final String author) {
         this.author = author;
     }
 
@@ -67,7 +67,7 @@ public class ActionGroup extends ArrayList<Action> {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
@@ -83,15 +83,15 @@ public class ActionGroup extends ArrayList<Action> {
         return version;
     }
 
-    public void setVersion(int version) {
+    public void setVersion(final int version) {
         this.version = version;
     }
 
-    public String getComponent() {
+    public int getComponent() {
         return component;
     }
 
-    public void setComponent(String component) {
+    public void setComponent(final int component) {
         this.component = component;
     }
 

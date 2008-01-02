@@ -26,7 +26,7 @@ metadata:
   description=Changes the colour of query window names in the treeview (or other frame manager) when events occur.
   author=Shane <shane@dmdirc.com>
   version=1
-  component=querycolours
+  component=11
 
 setting 0:
   type=COLOUR

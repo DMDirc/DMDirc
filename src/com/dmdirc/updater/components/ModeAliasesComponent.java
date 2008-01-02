@@ -26,8 +26,8 @@ import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.util.resourcemanager.ZipResourceManager;
-import java.io.File;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -42,6 +42,12 @@ public class ModeAliasesComponent implements UpdateComponent {
     public String getName() {
         return "modealiases";
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public String getFriendlyName() {
+        return "Mode aliases";
+    }    
 
     /** {@inheritDoc} */
     @Override    

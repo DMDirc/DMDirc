@@ -37,6 +37,13 @@ public interface UpdateComponent {
      * @return This component's name
      */
     String getName();
+    
+    /**
+     * A user-friendly name displayed for the component.
+     * 
+     * @return This component's user-friendly name
+     */
+    String getFriendlyName();
 
     /**
      * Retrieves the currently installed version number of this component.

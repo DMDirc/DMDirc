@@ -76,6 +76,12 @@ public class LauncherComponent implements UpdateComponent {
     public String getName() {
         return "launcher-" + platform;
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public String getFriendlyName() {
+        return "Launcher";
+    }    
 
     /** {@inheritDoc} */
     @Override

@@ -27,8 +27,8 @@ condition 0:
 metadata:
   description=Changes the colour of channel window names in the treeview (or other frame manager) when events occur.
   author=Chris <chris@dmdirc.com>
-  version=5
-  component=chancolours
+  version=6
+  component=7
 
 setting 0:
   type=COLOUR

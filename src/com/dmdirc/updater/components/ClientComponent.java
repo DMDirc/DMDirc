@@ -24,8 +24,8 @@ package com.dmdirc.updater.components;
 
 import com.dmdirc.Main;
 import com.dmdirc.updater.UpdateComponent;
-
 import com.dmdirc.util.resourcemanager.ResourceManager;
+
 import java.io.File;
 
 /**
@@ -39,6 +39,12 @@ public class ClientComponent implements UpdateComponent {
     @Override
     public String getName() {
         return "client";
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public String getFriendlyName() {
+        return "DMDirc client";
     }
 
     /** {@inheritDoc} */

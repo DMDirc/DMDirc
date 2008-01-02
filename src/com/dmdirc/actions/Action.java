@@ -250,7 +250,11 @@ public class Action extends ActionModel implements Serializable {
             }
             
             if (data.containsKey("component")) {
-                myGroup.setComponent(data.get("component"));
+                try {
+                    myGroup.setComponent(Integer.parseInt(data.get("component")));
+                } catch (NumberFormatException ex) {
+                    // Do nothing
+                }
             }
         }
 

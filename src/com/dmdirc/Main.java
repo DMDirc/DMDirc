@@ -65,8 +65,11 @@ public final class Main {
     /**
      * A revision number for actions and core plugins. If this is increased,
      * users will be prompted to re-extract them.
+     * 
+     * @Deprecated No longer needed, remove post-0.6
      */
-    private static final int ADDON_REVISION = 8;
+    @Deprecated
+    private static final int ADDON_REVISION = 9;
     
     /**
      * Feedback nag delay.

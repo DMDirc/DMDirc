@@ -37,9 +37,11 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.updater.components.ActionGroupComponent;
 import com.dmdirc.util.MapList;
 import com.dmdirc.util.WeakMapList;
 
+import com.dmdirc.util.resourcemanager.ZipResourceManager;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -249,6 +251,17 @@ public final class ActionManager {
                     loadActions(file);
                 }
             }
+        }
+        
+        registerComponents();
+    }
+    
+    /**
+     * Creates new ActionGroupComponents for each action group.
+     */
+    private static void registerComponents() {
+        for (ActionGroup group : groups.values()) {
+            new ActionGroupComponent(group);
         }
     }
     
@@ -666,6 +679,22 @@ public final class ActionManager {
         }
         
         return null;
+    }
+    
+    /**
+     * Installs an action pack located at the specified path.
+     * 
+     * @param path The full path of the action pack .zip.
+     * @throws IOException If the zip cannot be extracted
+     */
+    public static void installActionPack(final String path) throws IOException {
+        final ZipResourceManager ziprm = ZipResourceManager.getInstance(path);
+        
+        ziprm.extractResources("", getDirectory());
+        
+        loadActions();
+        
+        new File(path).delete();        
     }
     
     /**

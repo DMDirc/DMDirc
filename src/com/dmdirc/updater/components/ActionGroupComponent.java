@@ -22,60 +22,56 @@
 
 package com.dmdirc.updater.components;
 
-import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.actions.ActionGroup;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateComponent;
-import com.dmdirc.util.resourcemanager.ZipResourceManager;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
- * Represents the default identities.
+ * Update component for action groups.
  * 
  * @author chris
  */
-public class DefaultsComponent implements UpdateComponent {
+public class ActionGroupComponent implements UpdateComponent {
+    
+    private ActionGroup group;
+    
+    /**
+     * Creates a new ActionGroupComponent for the specified action group.
+     * 
+     * @param group The action group this component is for
+     */
+    public ActionGroupComponent(final ActionGroup group) {
+        this.group = group;
+        
+        if (group.getComponent() != -1 && group.getVersion() != -1) {
+            UpdateChecker.removeComponent(getName());
+            UpdateChecker.registerComponent(this);
+        }
+    }
 
     /** {@inheritDoc} */
     @Override
     public String getName() {
-        return "defaultsettings";
+        return "addon-" + group.getComponent();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getFriendlyName() {
-        return "Default settings";
-    }    
-
-    /** {@inheritDoc} */
-    @Override    
-    public int getVersion() {
-        final ConfigManager globalConfig = IdentityManager.getGlobalConfig();
-        
-        if (!globalConfig.hasOption("identity", "defaultsversion")) {
-            return -1;
-        } else {
-            return globalConfig.getOptionInt("identity", "defaultsversion", -2);
-        }
+        return "Action pack: " + group.getName();
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws java.io.IOException On i/o exception when reading zip file
-     */
+    /** {@inheritDoc} */
     @Override
-    public boolean doInstall(final String path) throws IOException {
-        final ZipResourceManager ziprm = ZipResourceManager.getInstance(path);
-        
-        ziprm.extractResources("", IdentityManager.getDirectory());
-        
-        IdentityManager.loadUser();
-        
-        new File(path).delete();
-        
+    public int getVersion() {
+        return group.getVersion();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean doInstall(final String path) throws Throwable {
+        ActionManager.installActionPack(path);
         return false;
     }
 
