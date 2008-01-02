@@ -189,7 +189,12 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     /** {@inheritDoc} */
     @Override
     public void open() {
-        setVisible(true);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                setVisible(true);
+            }
+        });
     }
     
     /** {@inheritDoc} */
@@ -629,25 +634,35 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     /** Closes this frame. */
     @Override
     public void close() {
-        if (closing) {
-            return;
-        }
-        closing = true;
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                if (closing) {
+                    return;
+                }
+                closing = true;
         
-        try {
-            setClosed(true);
-        } catch (PropertyVetoException ex) {
-            Logger.userError(ErrorLevel.LOW, "Unable to close frame");
-        }
+                try {
+                    setClosed(true);
+                } catch (PropertyVetoException ex) {
+                    Logger.userError(ErrorLevel.LOW, "Unable to close frame");
+                }
+            }
+        });
     }
     
     /** Minimises the frame. */
     public void minimise() {
-        try {
-            setIcon(true);
-        } catch (PropertyVetoException ex) {
-            Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
-        }
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    setIcon(true);
+                } catch (PropertyVetoException ex) {
+                    Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
+                }
+            }
+        });
     }
     
     /** {@inheritDoc} */
