@@ -1218,6 +1218,19 @@ public final class IRCParser implements Runnable {
 	}
 
 	/**
+	 * Get the known prefixmodes in priority order.
+	 *
+	 * @return All the currently known usermodes
+	 */
+	public String getPrefixModes() {
+		if (h005Info.containsKey("PREFIXSTRING")) {
+			return h005Info.get("PREFIXSTRING");
+		} else {
+			return ""
+		}
+	}
+
+	/**
 	 * Get the known boolean chanmodes in alphabetical order.
 	 * Modes are returned in alphabetic order
 	 *
@@ -1392,9 +1405,11 @@ public final class IRCParser implements Runnable {
 				hPrefixMap.put(cMode, cPrefix);
 				hPrefixMap.put(cPrefix, cMode);
 				nNextKeyPrefix = nNextKeyPrefix * 2;
+				prefixString.append(cMode);
 			}
 		}
 
+		h005Info.put("PREFIXSTRING", bits[0]);
 	}
 
 	/**
