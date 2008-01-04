@@ -30,6 +30,7 @@ import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
+import javax.swing.UIManager;
 
 import javax.swing.BorderFactory;
 import javax.swing.JTextArea;
@@ -67,6 +68,7 @@ public final class StepInstall extends Step implements StepListener {
 		infoLabel.setLineWrap(true);
 		infoLabel.setHighlighter(null);
 		infoLabel.setOpaque(false);
+		infoLabel.setFont(UIManager.getFont("TextField.font"));
 //		infoLabel.setBackground(getBackground());
 		infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, SMALL_BORDER, 0));
 
