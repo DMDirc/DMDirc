@@ -1226,7 +1226,7 @@ public final class IRCParser implements Runnable {
 		if (h005Info.containsKey("PREFIXSTRING")) {
 			return h005Info.get("PREFIXSTRING");
 		} else {
-			return ""
+			return "";
 		}
 	}
 
