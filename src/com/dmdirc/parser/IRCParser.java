@@ -1405,7 +1405,6 @@ public final class IRCParser implements Runnable {
 				hPrefixMap.put(cMode, cPrefix);
 				hPrefixMap.put(cPrefix, cMode);
 				nNextKeyPrefix = nNextKeyPrefix * 2;
-				prefixString.append(cMode);
 			}
 		}
 
