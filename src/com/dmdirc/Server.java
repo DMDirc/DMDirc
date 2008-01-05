@@ -521,6 +521,12 @@ public final class Server extends WritableFrameContainer implements Serializable
                 queries.get(parser.toLowerCase(ClientInfo.parseHost(host))).getFrame());
         queries.remove(parser.toLowerCase(ClientInfo.parseHost(host)));
     }
+    
+    public void renameQuery(String oldNick, String newNick) {
+        final Query query = queries.get(parser.toLowerCase(oldNick));
+        queries.remove(parser.toLowerCase(oldNick));
+        queries.put(parser.toLowerCase(newNick), query);
+    }
 
     /** {@inheritDoc} */
     @Override
