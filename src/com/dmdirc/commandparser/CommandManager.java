@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser;
 
+import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.commands.ChannelCommand;
@@ -203,8 +204,8 @@ public final class CommandManager {
             }
             
             if (command instanceof QueryCommand || command instanceof ChatCommand) {
-                for (String queryName : server.getQueries()) {
-                    registerCommandName(server.getQuery(queryName).getTabCompleter(),
+                for (Query query : server.getQueries()) {
+                    registerCommandName(query.getTabCompleter(),
                             commandName, register);
                 }
             }
@@ -281,7 +282,7 @@ public final class CommandManager {
         new Message();
         new Nick();
         new Notice();
-        new Query();
+        new OpenQuery();
         new Raw();
         new Reconnect();
         new Umode();

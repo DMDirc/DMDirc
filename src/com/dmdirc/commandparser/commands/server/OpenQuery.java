@@ -31,12 +31,12 @@ import com.dmdirc.ui.interfaces.InputWindow;
  * Allows the user to open a query dialog with another user.
  * @author chris
  */
-public final class Query extends ServerCommand {
+public final class OpenQuery extends ServerCommand {
     
     /**
      * Creates a new instance of Query.
      */
-    public Query() {
+    public OpenQuery() {
         super();
         
         CommandManager.registerCommand(this);
@@ -51,11 +51,11 @@ public final class Query extends ServerCommand {
             showUsage(origin, isSilent, "query", "<target> <message>");
         }
         if (args.length >= 1) {
-            if (server.getQuery(args[0]) == null) {
-                server.addQuery(args[0]);
-                server.getQuery(args[0]).show();
-            } else {
+            if (server.hasQuery(args[0])) {
                 server.getQuery(args[0]).activateFrame();
+            } else {
+                server.addQuery(args[0]);
+                server.getQuery(args[0]).show();                
             }
         }
         if (args.length > 1) {

@@ -287,6 +287,9 @@ public final class Query extends MessageTarget implements
             
             ActionManager.processEvent(CoreActionType.QUERY_NICKCHANGE, format, this, sOldNick);
             
+            server.getTabCompleter().removeEntry(sOldNick);
+            server.getTabCompleter().addEntry(cClient.getNickname());
+            
             addLine(format, sOldNick, cClient.getIdent(),
                     cClient.getHost(), cClient.getNickname());
             host = cClient.getNickname() + "!" + cClient.getIdent() + "@" + cClient.getHost();
@@ -333,7 +336,7 @@ public final class Query extends MessageTarget implements
      * @param shouldRemove Whether or not we should remove the window from the server.
      */
     public void close(final boolean shouldRemove) {
-        if (server.getParser() != null) {
+        if (server != null && server.getParser() != null) {
             server.getParser().getCallbackManager().delCallback("onPrivateAction", this);
             server.getParser().getCallbackManager().delCallback("onPrivateMessage", this);
             server.getParser().getCallbackManager().delCallback("onNickChanged", this);
@@ -342,15 +345,16 @@ public final class Query extends MessageTarget implements
         
         ActionManager.processEvent(CoreActionType.QUERY_CLOSED, null, this);
         
-        window.setVisible(false);
-        
-        if (shouldRemove) {
-            server.delQuery(host);
+        if (server != null && shouldRemove) {
+            server.delQuery(this);
         }
         
-        Main.getUI().getMainWindow().delChild(window);
-        WindowManager.removeWindow(window);
-        window.close();
+        if (window != null) {
+            Main.getUI().getMainWindow().delChild(window);
+            WindowManager.removeWindow(window);
+            window.close();
+            window.setVisible(false);
+        }
         
         window = null;
         server = null;
@@ -373,6 +377,15 @@ public final class Query extends MessageTarget implements
      */
     public String getHost() {
         return host;
+    }
+    
+    /**
+     * Returns the current nickname of the user that this query is with.
+     * 
+     * @return The nickname of this query's user
+     */
+    public String getNickname() {
+        return ClientInfo.parseHost(host);
     }
     
     /** {@inheritDoc} */

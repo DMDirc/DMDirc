@@ -81,7 +81,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     /** Open channels that currently exist on the server. */
     private final Map<String, Channel> channels  = new Hashtable<String, Channel>();
     /** Open query windows on the server. */
-    private final Map<String, Query> queries = new Hashtable<String, Query>();
+    private final List<Query> queries = new ArrayList<Query>();
 
     /** The IRC Parser instance handling this server. */
     private transient IRCParser parser;
@@ -402,21 +402,33 @@ public final class Server extends WritableFrameContainer implements Serializable
     /**
      * Determines whether the server knows of the specified query.
      *
-     * @param query The query to be checked
+     * @param host The host of the query to look for
      * @return True iff the query is known, false otherwise
      */
-    public boolean hasQuery(final String query) {
-        return queries.containsKey(parser.toLowerCase(query));
+    public boolean hasQuery(final String host) {
+        for (Query query : queries) {
+            if (parser.equalsIgnoreCase(query.getHost(), host)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
     /**
      * Retrieves the specified query belonging to this server.
      *
-     * @param query The query to be retrieved
+     * @param host The host of the query to look for
      * @return The appropriate query object
      */
-    public Query getQuery(final String query) {
-        return queries.get(parser.toLowerCase(query));
+    public Query getQuery(final String host) {
+        for (Query query : queries) {
+            if (parser.equalsIgnoreCase(query.getHost(), host)) {
+                return query;
+            }
+        }
+        
+        throw new IllegalArgumentException("No such query: " + host);
     }
 
     /**
@@ -424,14 +436,8 @@ public final class Server extends WritableFrameContainer implements Serializable
      *
      * @return list of queries belonging to this server
      */
-    public List<String> getQueries() {
-        final ArrayList<String> res = new ArrayList<String>();
-
-        for (String query : queries.keySet()) {
-            res.add(query);
-        }
-
-        return res;
+    public List<Query> getQueries() {
+        return new ArrayList<Query>(queries);
     }
 
     /**
@@ -500,22 +506,22 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @param host host of the remote client being queried
      */
     public void addQuery(final String host) {
-        if (!queries.containsKey(parser.toLowerCase(ClientInfo.parseHost(host)))) {
+        if (!hasQuery(host)) {
             final Query newQuery = new Query(this, host);
 
             tabCompleter.addEntry(ClientInfo.parseHost(host));
-            queries.put(parser.toLowerCase(ClientInfo.parseHost(host)), newQuery);
+            queries.add(newQuery);
         }
     }
 
     /**
      * Deletes a query from this server.
      *
-     * @param host host of the remote client being queried
+     * @param query The query that should be removed.
      */
-    public void delQuery(final String host) {
-        tabCompleter.removeEntry(ClientInfo.parseHost(host));
-        queries.remove(parser.toLowerCase(ClientInfo.parseHost(host)));
+    public void delQuery(final Query query) {
+        tabCompleter.removeEntry(query.getNickname());
+        queries.remove(query);
     }
 
     /** {@inheritDoc} */
@@ -530,7 +536,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             if (channel.ownsFrame(target)) { return true; }
         }
         // Check if it's a query frame
-        for (Query query : queries.values()) {
+        for (Query query : queries) {
             if (query.ownsFrame(target)) { return true; }
         }
         return false;
@@ -558,7 +564,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         }
 
         res.addAll(channels.values());
-        res.addAll(queries.values());
+        res.addAll(queries);
 
         return res;
     }
@@ -609,7 +615,7 @@ public final class Server extends WritableFrameContainer implements Serializable
 
         eventHandler.registerCallbacks();
 
-        for (Query query : queries.values()) {
+        for (Query query : queries) {
             query.reregister();
         }
     }
@@ -864,7 +870,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      * Closes all open query windows associated with this server.
      */
     private void closeQueries() {
-        for (Query query : new ArrayList<Query>(queries.values())) {
+        for (Query query : new ArrayList<Query>(queries)) {
             query.close(false);
         }
 
@@ -898,7 +904,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             channel.getFrame().addLine(messageType, args);
         }
 
-        for (Query query : queries.values()) {
+        for (Query query : queries) {
             query.getFrame().addLine(messageType, args);
         }
 
