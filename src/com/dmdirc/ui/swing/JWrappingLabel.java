@@ -54,12 +54,11 @@ public class JWrappingLabel extends JComponent {
 	private int myPreferredHeight = 0;
 	/** My prefered width. */
 	private int myPreferredWidth = 0;
-	
+
 	/** My Text */
 	private String text;
 	/** My Horizontal Alignment */
 	private int horizontalAlignment;
-	
 
 	/**
 	 * Create a new Default JWrappingLabel
@@ -67,7 +66,7 @@ public class JWrappingLabel extends JComponent {
 	public JWrappingLabel() {
 		this("", SwingConstants.LEFT);
 	}
-	
+
 	/**
 	 * Create a new JWrappingLabel with some initial text
 	 *
@@ -76,7 +75,7 @@ public class JWrappingLabel extends JComponent {
 	public JWrappingLabel(final String text) {
 		this(text, SwingConstants.LEFT);
 	}
-	
+
 	/**
 	 * Create a new JWrappingLabel with some initial text and a Horizontal Alignment
 	 *
@@ -88,8 +87,8 @@ public class JWrappingLabel extends JComponent {
 		this.text = text;
 		this.horizontalAlignment = horizontalAlignment;
 	}
-	
-	
+
+
 	/**
 	 * Get the Horizontal Alignment of this label
 	 *
@@ -98,8 +97,8 @@ public class JWrappingLabel extends JComponent {
 	public int getHorizontalAlignment() {
 		return horizontalAlignment;
 	}
-	
-	
+
+
 	/**
 	 * Set the Horizontal Alignment of this label
 	 *
@@ -109,7 +108,7 @@ public class JWrappingLabel extends JComponent {
 		this.horizontalAlignment = horizontalAlignment;
 		repaint();
 	}
-	
+
 	/**
 	 * Get the text of this label
 	 *
@@ -126,11 +125,14 @@ public class JWrappingLabel extends JComponent {
 	 */
 	public void setText(final String text) {
 		this.text = text;
-		myPreferredHeight = 0;
-		myPreferredWidth = 0;
 		repaint();
 	}
-	
+
+	/** {@inheritDoc} */
+	public Dimension getMinimumSize() {
+		return getPreferredSize();
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public Dimension getPreferredSize() {
@@ -141,12 +143,13 @@ public class JWrappingLabel extends JComponent {
 			return new Dimension(myPreferredWidth, myPreferredHeight);
 		}
 	}
+
 	/** {@inheritDoc} */
 	@Override
 	public void paint(final Graphics g) {
 		doPaint(g, false);
 	}
-	
+
 	/**
 	 * This method handles painting.
 	 *
@@ -156,62 +159,60 @@ public class JWrappingLabel extends JComponent {
 	 *                     myPreferredHeight and myPreferredWidth
 	 */
 	private void doPaint(final Graphics g, final boolean getPreferred) {
+		if (g == null || getText() == null) { return; }
+
 		// Get a decent graphics object
 		final Graphics2D g2 = (Graphics2D)g;
-		
+
 		if (!getPreferred && isOpaque()) {
 			Color oldColor = g.getColor();
 			g.setColor(getBackground());
 			g.fillRect(0, 0, getWidth(), getHeight());
 			g.setColor(oldColor);
 		}
-                
-                if (getText() == null) {
-                    return;
-                }
-		
+
 		// Split the lines
 		final String[] allLines = getText().split("\n");
-		
+
 		// Current drawing positions
 		int top = 0;
 		int height = 0;
 		int maxLeft = 0;
 		// The width of a space
 		int spaceWidth = (int)g.getFont().getStringBounds(" ", g2.getFontRenderContext()).getWidth();
-		
+
 		for (String thisLine : allLines) {
 			int left = 0;
 			// Top of this block of lines
 			int startTop = top;
 			// Split the text
 			final String[] bits = thisLine.split(" ");
-			
+
 			// This is used to make sure we don't draw a blank line at the top if the
 			// first word is too long.
 			boolean isFirst = true;
-			
+
 			// Store each line to draw afterwards (allows for alignment)
 			ArrayList<String> lines = new ArrayList<String>();
 			// The line we have atm
 			StringBuilder line = new StringBuilder();
-			
+
 			// Now loop through the words
 			for (String bit : bits) {
 				// Get the sizes of this word
 				Rectangle2D bounds = g.getFont().getStringBounds(bit, g2.getFontRenderContext());
 				LineMetrics metrics = g.getFont().getLineMetrics(bit, g2.getFontRenderContext());
-				
+
 				// Width of this word
 				int thisWidth = (int)bounds.getWidth();
-				
+
 				// Update line height so we know how far to drop down when drawing the
 				// next line
 				if (height < bounds.getHeight()) {
 					height = (int)bounds.getHeight();
 				}
-				
-				
+
+
 				boolean needNewLine;
 				// Check if this word fits on the current line or not.
 				// If there are no other words on this line, we assume the word fits
@@ -224,10 +225,10 @@ public class JWrappingLabel extends JComponent {
 					// want, unless we have a maximum width.
 					needNewLine = (totalWidth > getMaximumSize().getWidth());
 				}
-				
+
 				if (needNewLine) {
 					// It doesn't fit so we need to move down a line.
-					
+
 					// This stops us leaving a blank line at the very top if the first
 					// word is too big.
 					if (!isFirst) {
@@ -245,12 +246,12 @@ public class JWrappingLabel extends JComponent {
 				isFirst = false;
 			}
 			if (line.length() > 0) { lines.add(line.toString()); }
-			
+
 			// Now draw
 			top = startTop;
 			for (String drawLine : lines) {
 				Rectangle2D bounds = g.getFont().getStringBounds(drawLine, g2.getFontRenderContext());
-				
+
 				// Only draw if we are not just trying to get the preferred size.
 				// otherwise we just update top
 				if (!getPreferred) {
@@ -262,7 +263,7 @@ public class JWrappingLabel extends JComponent {
 					}
 					// However, we need to take into account the overhang in characters like y and g
 					int y = top + (int)Math.round(bounds.getHeight() - metrics.getDescent());
-					
+
 					// Now to get where the left should go.
 					int x;
 					int alignment = getHorizontalAlignment();
@@ -273,7 +274,7 @@ public class JWrappingLabel extends JComponent {
 					} else {
 						x = 0;
 					}
-				
+
 					// And finally actually draw the word
 					g.drawString(drawLine, x, y);
 				}
@@ -282,12 +283,12 @@ public class JWrappingLabel extends JComponent {
 				if (top >= getMaximumSize().getHeight() && getMaximumSize().getHeight() != 0 && isMaximumSizeSet()) { break; }
 			}
 		}
-		
+
 		if (getPreferred) {
 			// Update component height.
 			setSize(getWidth(), top);
-                        // Update prefered sizes
-                        myPreferredHeight = top;
+			// Update prefered sizes
+			myPreferredHeight = top;
 			myPreferredWidth = maxLeft;
 		}
 	}
