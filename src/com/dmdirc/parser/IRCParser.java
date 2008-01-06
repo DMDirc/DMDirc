@@ -1092,9 +1092,10 @@ public final class IRCParser implements Runnable {
 	}
 
 	/**
-	 * Check if 2 strings are qqual to ignore ignoring case.
+	 * Check if 2 strings are equal to each other ignoring case.
 	 *
-	 * @param sInputString String to uppercase
+	 * @param first First string to check
+	 * @param second Second string to check
 	 */
 	public boolean equalsIgnoreCase(final String first, final String second) {
 		if (first == null && second == null) { return true; }
@@ -1104,7 +1105,11 @@ public final class IRCParser implements Runnable {
 			final char[] firstChar = first.toCharArray();
 			final char[] secondChar = second.toCharArray();
 			for (int i = 0; i < first.length(); ++i) {
-				result = (lowercase[firstChar[i]] == lowercase[secondChar[i]]);
+				if (firstChar[i] < lowercase.length && secondChar[i] < lowercase.length) {
+					result = (lowercase[firstChar[i]] == lowercase[secondChar[i]]);
+				} else {
+					result = firstChar[i] == secondChar[i];
+				}
 				if (!result) { break; }
 			}
 		}
