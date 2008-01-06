@@ -1042,10 +1042,10 @@ public final class IRCParser implements Runnable {
 		// If limit is out side the boundries, use rfc1459
 		if (limit > 4 || limit < 0 ) { updateCharArrays((byte)3); return; }
 		lastLimit = limit;
-		lowercase = new char[255];
-		uppercase = new char[255];
+		lowercase = new char[127];
+		uppercase = new char[127];
 		// Normal Chars
-		for (char i = 0; i < 255; ++i) {
+		for (char i = 0; i < lowercase.length; ++i) {
 			lowercase[i] = i;
 			uppercase[i] = i;
 		}
@@ -1065,7 +1065,11 @@ public final class IRCParser implements Runnable {
 	public String toLowerCase(final String input) {
 		final char[] result = input.toCharArray();
 		for (int i = 0; i < input.length(); ++i) {
-			result[i] = lowercase[result[i]];
+			if (result[i] >= 0 && result[i] < lowercase.length) {
+				result[i] = lowercase[result[i]];
+			} else {
+				result[i] = result[i];
+			}
 		}
 		return new String(result);
 	}
@@ -1078,7 +1082,11 @@ public final class IRCParser implements Runnable {
 	public String toUpperCase(final String input) {
 		final char[] result = input.toCharArray();
 		for (int i = 0; i < input.length(); ++i) {
-			result[i] = uppercase[result[i]];
+			if (result[i] >= 0 && result[i] < uppercase.length) {
+				result[i] = uppercase[result[i]];
+			} else {
+				result[i] = result[i];
+			}
 		}
 		return new String(result);
 	}
