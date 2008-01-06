@@ -44,10 +44,10 @@ public class HistoryWindow extends FrameContainer {
     private final String title;
        
     /** The window we're using. */
-    private Window myWindow;
+    private Window window;
     
     /** Our parent window. */
-    private final Window parent;
+    private Window parent;
     
     /**
      * Creates a new HistoryWindow.
@@ -64,41 +64,55 @@ public class HistoryWindow extends FrameContainer {
         
         icon = IconManager.getIconManager().getIcon("raw");
         
-        myWindow = Main.getUI().getWindow(this);
+        window = Main.getUI().getWindow(this);
         
-        WindowManager.addWindow(parent, myWindow);
+        WindowManager.addWindow(parent, window);
         
-        myWindow.setTitle(title);
-        myWindow.setFrameIcon(icon);
-        myWindow.setVisible(true);
+        window.setTitle(title);
+        window.setFrameIcon(icon);
+        window.setVisible(true);
         
         final Stack<String> lines = reader.getLines(
-                IdentityManager.getGlobalConfig().getOptionInt("plugin-Logging", "history.lines", 50000));
+                IdentityManager.getGlobalConfig().getOptionInt("plugin-Logging",
+                "history.lines", 50000));
         while (lines.size() > 0) {
-            myWindow.addLine(lines.pop(), false);
+            window.addLine(lines.pop(), false);
         }
     }
     
     /** {@inheritDoc} */
+    @Override
     public Window getFrame() {
-        return myWindow;
+        return window;
     }
     
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return title;
     }
     
     /** {@inheritDoc} */
-    public void close() {
-        myWindow.setVisible(false);
-        Main.getUI().getMainWindow().delChild(myWindow);
-        WindowManager.removeWindow(myWindow);
-        myWindow.close();
-        myWindow = null;
+    @Override
+    public void windowClosing() {
+        // 1: Make the window non-visible
+        window.setVisible(false);
+        
+        // 2: Remove any callbacks or listeners
+        // 3: Trigger any actions neccessary
+        // 4: Trigger action for the window closing
+        // 5: Inform any parents that the window is closing
+        
+        // 6: Remove the window from the window manager
+        WindowManager.removeWindow(window);
+        
+        // 7: Remove any references to the window and parents
+        window = null; // NOPMD
+        parent = null; // NOPMD
     }
     
     /** {@inheritDoc} */
+    @Override
     public Server getServer() {
         return parent.getContainer().getServer();
     }

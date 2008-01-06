@@ -77,7 +77,13 @@ public abstract class FrameContainer {
     /**
      * Closes this container (and it's associated frame).
      */
-    public abstract void close();
+    public final void close() {
+        if (getFrame() == null) {
+            throw new IllegalStateException("No frame associated with this container!");
+        } else {
+            getFrame().close();
+        }
+    }
 
     /**
      * Returns the server instance associated with this container.
@@ -179,9 +185,7 @@ public abstract class FrameContainer {
     /**
      * Invoked when our window is closing.
      */
-    public void windowClosing() {
-        close();
-    }
+    public abstract void windowClosing();
 
     /**
      * Invoked when our window has been closed.

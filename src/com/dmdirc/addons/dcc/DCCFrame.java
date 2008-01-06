@@ -22,21 +22,19 @@
 
 package com.dmdirc.addons.dcc;
 
-import com.dmdirc.WritableFrameContainer;
-import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.swing.components.InputTextFrame;
-import com.dmdirc.Main;
-import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.parsers.GlobalCommandParser;
-import com.dmdirc.commandparser.parsers.CommandParser;
-import com.dmdirc.commandparser.commands.Command;
-import com.dmdirc.commandparser.commands.GlobalCommand;
-
 import com.dmdirc.IconManager;
 import com.dmdirc.Server;
+import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.commandparser.parsers.GlobalCommandParser;
+import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.ui.swing.components.InputTextFrame;
 
 /**
  * This class links DCC objects to a window.
@@ -81,6 +79,7 @@ public abstract class DCCFrame extends WritableFrameContainer {
 		private static final long serialVersionUID = 200711271;
 		
 		/** Loads the relevant commands into the parser. */
+        @Override
 		protected void loadCommands() { CommandManager.loadGlobalCommands(this); }
 		
 		/**
@@ -91,6 +90,7 @@ public abstract class DCCFrame extends WritableFrameContainer {
 		 * @param command The command to be executed
 		 * @param args The arguments to the command
 		 */
+        @Override
 		protected void executeCommand(final InputWindow origin, final boolean isSilent, final Command command, final String... args) {
 			((GlobalCommand) command).execute(origin, isSilent, args);
 		}
@@ -103,6 +103,7 @@ public abstract class DCCFrame extends WritableFrameContainer {
 		 * @param origin The window in which the command was typed
 		 * @param line The line input by the user
 		 */
+        @Override
 		protected void handleNonCommand(final InputWindow origin, final String line) {
 			if (origin.getContainer() instanceof WritableFrameContainer) {
 				((WritableFrameContainer)origin.getContainer()).sendLine(line);
@@ -225,16 +226,23 @@ public abstract class DCCFrame extends WritableFrameContainer {
 		return null;
 	}
 	
-	/**
-	 * Closes this container (and it's associated frame).
-	 */
+	/** {@inheritDoc} */
 	@Override
-	public void close() {
-		plugin.delWindow(this);
-		myWindow.setVisible(false);
-		Main.getUI().getMainWindow().delChild(myWindow);
-		WindowManager.removeWindow(myWindow);
-                myWindow.close();
-                myWindow = null;
+	public void windowClosing() {
+                // 1: Make the window non-visible
+                myWindow.setVisible(false);
+
+                // 2: Remove any callbacks or listeners
+                // 3: Trigger any actions neccessary
+                // 4: Trigger action for the window closing
+                
+                // 5: Inform any parents that the window is closing
+                plugin.delWindow(this);
+
+                // 6: Remove the window from the window manager
+                WindowManager.removeWindow(myWindow);
+
+                // 7: Remove any references to the window and parents
+                myWindow = null; // NOPMD
 	}   
 }

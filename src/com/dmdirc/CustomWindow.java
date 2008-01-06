@@ -93,14 +93,21 @@ public class CustomWindow extends FrameContainer {
 
     /** {@inheritDoc} */
     @Override
-    public void close() {
+    public void windowClosing() {
+        // 1: Make the window non-visible
         window.setVisible(false);
-
-        WindowManager.removeWindow(window);
-        Main.getUI().getMainWindow().delChild(window);
         
-        window.close();
+        // 2: Remove any callbacks or listeners
+        // 3: Trigger any actions neccessary
+        // 4: Trigger action for the window closing
+        // 5: Inform any parents that the window is closing
+        
+        // 6: Remove the window from the window manager
+        WindowManager.removeWindow(window);
+        
+        // 7: Remove any references to the window and parents
         window = null; // NOPMD
+        parent = null; // NOPMD
     }
 
     /** {@inheritDoc} */

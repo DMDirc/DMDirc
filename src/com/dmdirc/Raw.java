@@ -92,54 +92,68 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
     
     /** {@inheritDoc} */
     @Override
-    public void close() {
-        if (server.getParser() != null) {
-            server.getParser().getCallbackManager().delCallback("OnDataIn", this);
-            server.getParser().getCallbackManager().delCallback("OnDataOut", this);
+    public void windowClosing() {
+        // 1: Make the window non-visible
+        window.setVisible(false);
+        
+        // 2: Remove any callbacks or listeners
+        if (server != null && server.getParser() != null) {
+            server.getParser().getCallbackManager().delAllCallback(this);
         }
         
-        window.setVisible(false);
-        WindowManager.removeWindow(window);
-        Main.getUI().getMainWindow().delChild(window);
+        // 3: Trigger any actions neccessary
+        // 4: Trigger action for the window closing
         
+        // 5: Inform any parents that the window is closing
         server.delRaw();
-        window.close();
+        
+        // 6: Remove the window from the window manager
+        WindowManager.removeWindow(window);
+        
+        // 7: Remove any references to the window and parents
         window = null;
         server = null;
     }
     
     /** {@inheritDoc} */
+    @Override
     public InputWindow getFrame() {
         return window;
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onDataIn(final IRCParser tParser, final String sData) {
         addLine("rawIn", sData);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onDataOut(final IRCParser tParser, final String sData,
             final boolean bFromParser) {
         addLine("rawOut", sData);
     }
     
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return "Raw";
     }
     
     /** {@inheritDoc} */
+    @Override
     public Server getServer() {
         return server;
     }
     
     /** {@inheritDoc} */
+    @Override
     public void sendLine(final String line) {
         server.sendLine(window.getTranscoder().encode(line));
     }
     
     /** {@inheritDoc} */
+    @Override
     public int getMaxLineLength() {
         return server.getMaxLineLength();
     }

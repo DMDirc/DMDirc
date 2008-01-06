@@ -110,8 +110,9 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 	/**
 	 * Closes this container (and it's associated frame).
 	 */
-	public void close() {
+        @Override
+	public void windowClosing() {
 		dcc.close();
-		super.close();
+		super.windowClosing();
 	}
 }

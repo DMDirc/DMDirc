@@ -342,44 +342,33 @@ public final class Channel extends MessageTarget
         window.updateNames(new ArrayList<ChannelClientInfo>());
     }
     
-    /**
-     * Parts the channel and then closes the window.
-     */
+    /** {@inheritDoc} */
     @Override
-    public void close() {
+    public void windowClosing() {
+        // 1: Make the window non-visible
+        window.setVisible(false);
+        
+        // 2: Remove any callbacks or listeners
+        eventHandler.unregisterCallbacks();
+        
+        // 3: Trigger any actions neccessary
         part(configManager.getOption("general", "partmessage"));
-        closeWindow();
-    }
-    
-    /**
-     * Closes the window without parting the channel.
-     */
-    public void closeWindow() {
-        closeWindow(true);
-    }
-    
-    /**
-     * Closes the window without parting the channel.
-     *
-     * @param shouldRemove Whether we should remove the window from the server
-     */
-    public void closeWindow(final boolean shouldRemove) {
+        
+        // 4: Trigger action for the window closing
+        ActionManager.processEvent(CoreActionType.CHANNEL_CLOSED, null, this);
+        
+        // 5: Inform any parents that the window is closing
+        server.delChannel(channelInfo.getName());
+        
+        // 6: Remove the window from the window manager
+        WindowManager.removeWindow(window);
         if (server.getParser() != null) {
             server.getParser().getCallbackManager().delAllCallback(eventHandler);
         }
         
-        ActionManager.processEvent(CoreActionType.CHANNEL_CLOSED, null, this);
-        
-        if (shouldRemove) {
-            server.delChannel(channelInfo.getName());
-        }
-        
-        window.setVisible(false);
-        Main.getUI().getMainWindow().delChild(window);
-        WindowManager.removeWindow(window);
-        window.close();
-        window = null;
-        server = null;
+        // 7: Remove any references to the window and parents
+        window = null; // NOPMD
+        server = null; // NOPMD
     }
     
     /**

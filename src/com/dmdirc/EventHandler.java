@@ -56,7 +56,14 @@ public abstract class EventHandler implements ICallbackInterface {
             Logger.appError(ErrorLevel.FATAL, "Unable to register callbacks",
                     exception);
         }
-    }    
+    }
+    
+    /**
+     * Unregisters all callbacks that have been registered by this event handler.
+     */
+    public void unregisterCallbacks() {
+        getParser().getCallbackManager().delAllCallback(this);
+    }
     
     /**
      * Adds a callback to this event handler.

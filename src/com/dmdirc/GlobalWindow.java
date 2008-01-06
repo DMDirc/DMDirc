@@ -61,34 +61,55 @@ public class GlobalWindow extends WritableFrameContainer {
         window.open();
     }
 
+    /** {@inheritDoc} */
+    @Override    
     public InputWindow getFrame() {
         return window;
     }
 
+    /** {@inheritDoc} */
+    @Override
     public String toString() {
         return "Global";
     }
 
-    public void close() {
+    /** {@inheritDoc} */
+    @Override    
+    public void windowClosing() {
+        // 1: Make the window non-visible
         window.setVisible(false);
-        window.close();
+        
+        // 2: Remove any callbacks or listeners
+        // 3: Trigger any actions neccessary
+        // 4: Trigger action for the window closing
+        // 5: Inform any parents that the window is closing
+        
+        // 6: Remove the window from the window manager
         WindowManager.removeWindow(window);
-        Main.getUI().getMainWindow().delChild(window);
+        
+        // 7: Remove any references to the window and parents        
     }
 
+    /** {@inheritDoc} */
+    @Override    
     public Server getServer() {
         return null;
     }
 
+    /** {@inheritDoc} */
+    @Override    
     public void sendLine(final String line) {
         GlobalCommandParser.getGlobalCommandParser().parseCommand(window, 
                 CommandManager.getCommandChar() + line);
     }
 
+    /** {@inheritDoc} */
+    @Override    
     public int getMaxLineLength() {
         return 0;
     }
     
+    /** {@inheritDoc} */
     @Override
     public ConfigManager getConfigManager() {
         return IdentityManager.getGlobalConfig();

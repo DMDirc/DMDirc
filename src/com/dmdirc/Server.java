@@ -296,6 +296,13 @@ public final class Server extends WritableFrameContainer implements Serializable
     public void reconnect() {
         reconnect(configManager.getOption(DOMAIN_GENERAL, "reconnectmessage"));
     }
+    
+    /**
+     * Disconnects from the server with the default quit message.
+     */
+    public void disconnect() {
+        disconnect(configManager.getOption(DOMAIN_GENERAL, "quitmessage"));
+    }
 
     /**
      * Disconnects from the server.
@@ -800,50 +807,41 @@ public final class Server extends WritableFrameContainer implements Serializable
         return myState;
     }
 
-    /**
-     * Closes this server connection and associated windows.
-     *
-     * @param reason reason for closing
-     */
-    public void close(final String reason) {
+    /** {@inheritDoc} */
+    @Override
+    public void windowClosing() {
+        // 1: Make the window non-visible
+        window.setVisible(false);
+        
+        // 2: Remove any callbacks or listeners
         if (parser != null) {
-            // Unregister parser callbacks
             parser.getCallbackManager().delAllCallback(eventHandler);
         }
-
-        // Disconnect from the server
-        disconnect(reason);
-
+        
+        // 3: Trigger any actions neccessary
+        if (parser != null && parser.isReady()) {
+            disconnect();
+        }
+        
         myState = ServerState.CLOSING;
-
-        // Close all channel windows
         closeChannels();
-        // Close all query windows
         closeQueries();
-        // Close the raw window
+
         if (raw != null) {
             raw.close();
         }
         
-        // Unregister ourselves with the server manager
+        
+        // 4: Trigger action for the window closing
+        // 5: Inform any parents that the window is closing
         ServerManager.getServerManager().unregisterServer(this);
-
-        if (window != null) {
-            window.setVisible(false);
-            WindowManager.removeWindow(window);
-            Main.getUI().getMainWindow().delChild(window);
-            window.close();
-            window = null; //NOPMD
-        }
-
-        // Ditch the parser
+        
+        // 6: Remove the window from the window manager
+        WindowManager.removeWindow(window);
+        
+        // 7: Remove any references to the window and parents
+        window = null; //NOPMD
         parser = null; //NOPMD
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void close() {
-        close(configManager.getOption(DOMAIN_GENERAL, "quitmessage"));
     }
 
     /**
@@ -851,10 +849,8 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     private void closeChannels() {
         for (Channel channel : new ArrayList<Channel>(channels.values())) {
-            channel.closeWindow(false);
+            channel.close();
         }
-
-        channels.clear();
     }
 
     /**
@@ -871,10 +867,8 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     private void closeQueries() {
         for (Query query : new ArrayList<Query>(queries)) {
-            query.close(false);
+            query.close();
         }
-
-        queries.clear();
     }
 
     /**

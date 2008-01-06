@@ -47,7 +47,7 @@ public final class Part extends ChannelCommand {
             final Channel channel, final boolean isSilent, final String... args) {
         channel.part(args.length > 0 ? implodeArgs(args)
                 : origin.getConfigManager().getOption("general", "partmessage"));
-        channel.closeWindow();
+        channel.close();
     }
     
     /** {@inheritDoc} */

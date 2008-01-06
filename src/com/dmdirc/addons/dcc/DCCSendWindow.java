@@ -22,14 +22,11 @@
 
 package com.dmdirc.addons.dcc;
 
-import com.dmdirc.WritableFrameContainer;
-import com.dmdirc.IconManager;
-import com.dmdirc.Main;
-import com.dmdirc.Server;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.swing.JWrappingLabel;
 import com.dmdirc.ui.swing.components.TextFrame;
+
 import javax.swing.SwingConstants;
+
 /**
  * This class links DCC Send objects to a window.
  *
@@ -89,8 +86,8 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface {
 	/**
 	 * Closes this container (and it's associated frame).
 	 */
-	public void close() {
+	public void windowClosing() {
 		dcc.close();
-		super.close();
+		super.windowClosing();
 	}
 }

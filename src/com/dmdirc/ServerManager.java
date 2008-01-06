@@ -23,7 +23,6 @@
 package com.dmdirc;
 
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.Window;
 
 import java.util.ArrayList;
@@ -39,12 +38,6 @@ public final class ServerManager {
     
     /** Singleton instance of ServerManager. */
     private static ServerManager me;
-    
-    /**
-     * Indicates that the server manager is in the process of closing all
-     * servers. Used to prevent concurrent access to the servers property.
-     */
-    private boolean closing;
     
     /** All servers that currently exist. */
     private final List<Server> servers = new ArrayList<Server>();
@@ -83,9 +76,7 @@ public final class ServerManager {
      * @param server The server to be unregistered
      */
     public void unregisterServer(final Server server) {
-        if (!closing) {
-            servers.remove(server);
-        }
+        servers.remove(server);
     }
     
     /**
@@ -112,12 +103,10 @@ public final class ServerManager {
      * Closes all servers with a default quit message.
      */
     public void closeAll() {
-        closing = true;
-        for (Server server : servers) {
-            server.close(server.getConfigManager().getOption("general", "quitmessage"));
+        for (Server server : new ArrayList<Server>(servers)) {
+            server.disconnect();
+            server.close();
         }
-        closing = false;
-        servers.clear();
     }
     
     /**
@@ -126,12 +115,10 @@ public final class ServerManager {
      * @param message The quit message to send to the IRC servers
      */
     public void closeAll(final String message) {
-        closing = true;
-        for (Server server : servers) {
-            server.close(message);
+        for (Server server : new ArrayList<Server>(servers)) {
+            server.disconnect(message);
+            server.close();
         }
-        closing = false;
-        servers.clear();
     }
     
     /**
@@ -155,6 +142,7 @@ public final class ServerManager {
                 return server;
             }
         }
+        
         return null;
     }
     
