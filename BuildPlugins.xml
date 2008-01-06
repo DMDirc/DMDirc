@@ -1,6 +1,6 @@
 <project name="DMDirc-Plugins" default="default" basedir=".">
 	<!-- ant-contrib default location (can be overridden in the property files below)-->
-	<property name="libs.antcontrib" value="ant-contrib-1.0b3.jar"/>
+	<property name="libs.antcontrib" value="/usr/share/java/ant-contrib.jar"/>
 	
 	<!-- Netbeans property files -->
 	<property file="nbproject/project.properties"/>
