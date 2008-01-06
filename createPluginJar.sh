@@ -17,12 +17,10 @@ if [ ! -e src/${foldername}/plugin.info ]; then
 	exit 0;
 fi
 
-echo "Building dmdirc"
-
-echo "looking for classes"
+#echo "looking for classes"
 srcdir=${PWD}
 TMPDIR=`mktemp -d`
-echo "Using temp dir: ${TMPDIR}"
+#echo "Using temp dir: ${TMPDIR}"
 cd $TMPDIR
 
 mkdir META-INF
@@ -34,20 +32,20 @@ ln -s ${srcdir}/build/classes/${foldername} .
 cd $TMPDIR
 mkdir -p ${srcdir}/plugins/
 rm -Rf ${srcdir}/plugins/${2}.jar
-jar -cvf ${srcdir}/src/${foldername}/${2}.jar META-INF/plugin.info
+jar -cvf ${srcdir}/src/${foldername}/${2}.jar META-INF/plugin.info >/dev/null
 bit=""
 while [ 1 -eq 1 ]; do
 	bit=${bit}/*
-	ls ${foo}${bit}/*
+	ls ${foo}${bit}/* >/dev/null 2>&1
 	if [ ${?} -ne 0 ]; then
 		break;
 	else
 		for thisfile in `ls -1 ${foo}${bit}/*.class`; do
-			jar -uvf ${srcdir}/src/${foldername}/${2}.jar ${thisfile}
+			jar -uvf ${srcdir}/src/${foldername}/${2}.jar ${thisfile} >/dev/null
 		done
 	fi
 done
 
 mv ${srcdir}/src/${foldername}/${2}.jar ${srcdir}/plugins/
 
-echo "done";
+#echo "done";
