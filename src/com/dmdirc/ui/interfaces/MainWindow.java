@@ -31,20 +31,6 @@ import javax.swing.JMenuItem;
 public interface MainWindow {
     
     /**
-     * Adds the specified window as a child of the main frame.
-     *
-     * @param window the window to be added
-     */
-    void addChild(final Window window);
-    
-    /**
-     * Removes the specified window from our desktop pane.
-     *
-     * @param window The window to be removed
-     */
-    void delChild(final Window window);
-    
-    /**
      * Sets the active internal frame to the one specified.
      *
      * @param frame The frame to be activated

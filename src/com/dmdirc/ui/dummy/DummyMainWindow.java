@@ -55,16 +55,6 @@ public final class DummyMainWindow implements MainWindow {
     }
     
     /** {@inheritDoc} */
-    public void addChild(final Window window) {
-        windows.add(window);
-    }
-    
-    /** {@inheritDoc} */
-    public void delChild(final Window window) {
-        windows.add(window);
-    }
-    
-    /** {@inheritDoc} */
     public void setActiveFrame(final Window frame) {
         active = frame;
     }

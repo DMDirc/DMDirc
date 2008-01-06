@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
@@ -78,7 +79,7 @@ import javax.swing.WindowConstants;
  * The main application frame.
  */
 public final class MainFrame extends JFrame implements WindowListener,
-        MainWindow, ConfigChangeListener {
+        MainWindow, ConfigChangeListener, FrameManager {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -171,42 +172,6 @@ public final class MainFrame extends JFrame implements WindowListener,
                 MenuSelectionManager.defaultManager().clearSelectedPath();
             }
         });
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public void addChild(final Window window) {
-        final JInternalFrame frame = (JInternalFrame) window;
-
-        // Add the frame
-        desktopPane.add(frame);
-
-        // Make sure it'll fit with our offsets
-        if (frame.getWidth() + xOffset > desktopPane.getWidth()) {
-            xOffset = 0;
-        }
-        if (frame.getHeight() + yOffset > desktopPane.getHeight()) {
-            yOffset = 0;
-        }
-
-        // Position the frame
-        frame.setLocation(xOffset, yOffset);
-        frame.moveToFront();
-
-        // Increase the offsets
-        xOffset += FRAME_OPENING_OFFSET;
-        yOffset += FRAME_OPENING_OFFSET;
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public void delChild(final Window window) {
-        if (desktopPane.getAllFrames().length == 1) {
-            setTitle(getTitlePrefix());
-        } else {
-            setActiveFrame((Window) desktopPane.selectFrame(true));
-        }
-        desktopPane.remove((JInternalFrame) window);
     }
 
     /** {@inheritDoc}. */
@@ -391,6 +356,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         frameManager.setParent(frameManagerPanel);
 
         WindowManager.addFrameManager(new CtrlTabFrameManager(desktopPane));
+        WindowManager.addFrameManager(this);
     }
 
     /**
@@ -630,5 +596,95 @@ public final class MainFrame extends JFrame implements WindowListener,
         showVersion =
                 IdentityManager.getGlobalConfig().
                 getOptionBool("ui", "showversion", false);
+    }
+
+    /** {@inheritDoc}. */
+    @Override
+    public void setParent(final JComponent parent) {
+        //Ignore
+    }
+
+    /** {@inheritDoc}. */
+    @Override
+    public boolean canPositionVertically() {
+        return true;
+    }
+
+    /** {@inheritDoc}. */
+    @Override
+    public boolean canPositionHorizontally() {
+        return true;
+    }
+
+    /** {@inheritDoc}. */
+    @Override
+    public void setSelected(final FrameContainer source) {
+        //Ignore
+    }
+
+    /** {@inheritDoc}. */
+    @Override
+    public void showNotification(final FrameContainer source, final Color colour) {
+        //Ignore
+    }
+
+    /** {@inheritDoc}. */
+    @Override
+    public void clearNotification(final FrameContainer source) {
+        //Ignore
+    }
+
+    /** {@inheritDoc}. */
+    @Override
+    public void addWindow(final FrameContainer window) {
+        final JInternalFrame frame = (JInternalFrame) window.getFrame();
+
+        // Add the frame
+        desktopPane.add(frame);
+
+        // Make sure it'll fit with our offsets
+        if (frame.getWidth() + xOffset > desktopPane.getWidth()) {
+            xOffset = 0;
+        }
+        if (frame.getHeight() + yOffset > desktopPane.getHeight()) {
+            yOffset = 0;
+        }
+
+        // Position the frame
+        frame.setLocation(xOffset, yOffset);
+        frame.moveToFront();
+
+        // Increase the offsets
+        xOffset += FRAME_OPENING_OFFSET;
+        yOffset += FRAME_OPENING_OFFSET;
+    }
+
+    /** {@inheritDoc}. */
+    @Override
+    public void delWindow(FrameContainer window) {
+        if (desktopPane.getAllFrames().length == 1) {
+            setTitle(getTitlePrefix());
+        } else {
+            setActiveFrame((Window) desktopPane.selectFrame(true));
+        }
+        desktopPane.remove((JInternalFrame) window.getFrame());
+    }
+
+    /** {@inheritDoc}. */
+    @Override
+    public void addWindow(final FrameContainer parent, final FrameContainer window) {
+        addWindow(window);
+    }
+
+    /** {@inheritDoc}. */
+    @Override
+    public void delWindow(final FrameContainer parent, final FrameContainer window) {
+        delWindow(window);
+    }
+
+    /** {@inheritDoc}. */
+    @Override
+    public void iconUpdated(final FrameContainer window) {
+        //Ignore
     }
 }
