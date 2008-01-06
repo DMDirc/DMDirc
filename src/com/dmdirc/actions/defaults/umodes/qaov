@@ -6,22 +6,15 @@
 # any sections that take key/values.
 keysections:
   condition 0
-  metadata
 
 triggers:
   SERVER_CONNECTED
 
 response:
-  /.set --server popup umodes <umodes-op\n<umodes-voice
+  /.set --server popup umodes <umodes-op\n<umodes-voice\n-\n<umodes-admin\n<umodes-owner
 
 condition 0:
   argument=0
   component=SERVER_CHANNELUMODES
-  target=ov
+  target=qaov
   comparison=STRING_EQUALS
-
-metadata:
-  description=Automatically sets the popup.umodes setting when connecting to a server, so that the correct user modes appear in the nicklist popup.
-  author=Chris <chris@dmdirc.com>
-  version=2
-  component=umodes

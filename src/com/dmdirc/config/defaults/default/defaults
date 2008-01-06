@@ -143,6 +143,8 @@ popups.umodes=<umodes-op\n<umodes-voice
 popups.umodes-op=Op:mode +o %1$s\nDeop:mode -o %1$s
 popups.umodes-hop=Half-Op:mode +h %1$s\nDehalf-op:mode -o %1$s
 popups.umodes-voice=Voice:mode +v %1$s\nDevoice:mode -v %1$s
+popups.umodes-admin=Make admin:mode +a %1$s\nRemove admin:mode -a %1$s
+popups.umodes-owner=Make owner:mode +q %1$s\nRemove owner:mode -q %1$s
 
 popups.CHAN_NICKLIST=<nick\n-\nModes:<umodes\n<chan-nick
 popups.CHAN_CHAN=

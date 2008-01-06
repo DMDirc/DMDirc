@@ -84,7 +84,7 @@ public enum CoreActionComponent implements ActionComponent {
     /** Returns the channel umodes for the server. */
     SERVER_CHANNELUMODES {
         /** {@inheritDoc} */
-        public Object get(final Object argument) { return ((Server) argument).getParser().getUserModeString(); }
+        public Object get(final Object argument) { return ((Server) argument).getParser().getPrefixModes(); }
         /** {@inheritDoc} */
         public Class appliesTo() { return Server.class; }
         /** {@inheritDoc} */
