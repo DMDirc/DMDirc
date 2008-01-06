@@ -76,7 +76,7 @@ class BasicWritableFrameContainer extends WritableFrameContainer {
         return null;
     }
     
-    public void close() {
+    public void windowClosing() {
         // Do nothing
     }
     
