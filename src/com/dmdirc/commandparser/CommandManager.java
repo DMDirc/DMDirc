@@ -65,12 +65,6 @@ public final class CommandManager {
     /** A list of command parsers that have been instansiated. */
     private static final MapList<CommandType, CommandParser> parsers
             = new MapList<CommandType, CommandParser>();
-           
-    /**
-     * Channel commands that have been registered to appear in the nicklist
-     * popup.
-     */
-    private static List<Command> channelPopupCommands = new WeakList<Command>();
     
     /** The command char we're using. */
     private static char commandChar = IdentityManager.getGlobalConfig()
@@ -229,29 +223,7 @@ public final class CommandManager {
             completer.removeEntry(name);
         }
     }
-    
-    /**
-     * Registers a command for use in the nicklist popup.
-     * 
-     * @param command The command to be registered
-     * @deprecated Should be done via the new popup config instead
-     */
-    @Deprecated
-    public static void registerPopupCommand(final Command command) {
-        channelPopupCommands.add(command);
-    }
-    
-    /**
-     * Retrieves the commands for use in the nicklist popup.
-     * 
-     * @return A list of commands suitable for use in the nicklist popup
-     * @deprecated Should be done via the new popup config instead
-     */
-    @Deprecated
-    public static List<Command> getNicklistCommands() {
-        return channelPopupCommands;
-    }
-    
+        
     /**
      * Instansiates the default commands.
      */
@@ -293,7 +265,7 @@ public final class CommandManager {
         new RawServerCommand("map");
         new RawServerCommand("motd");
         new RawServerCommand("oper");
-        registerPopupCommand(new RawServerCommand("whois"));
+        new RawServerCommand("whois");
         new RawServerCommand("who");
         
         // Query commands

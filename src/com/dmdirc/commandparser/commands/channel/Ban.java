@@ -31,6 +31,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The kick command bans a specified user or host from the channel.
+ * 
  * @author chris
  */
 public final class Ban extends ChannelCommand {
@@ -40,17 +41,10 @@ public final class Ban extends ChannelCommand {
         super();
         
         CommandManager.registerCommand(this);
-        CommandManager.registerPopupCommand(this);
     }
     
-    /**
-     * Executes this command.
-     * @param origin The frame in which this command was issued
-     * @param server The server object that this command is associated with
-     * @param channel The channel object that this command is associated with
-     * @param isSilent Whether this command is silenced or not
-     * @param args The user supplied arguments
-     */
+    /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final Server server,
             final Channel channel, final boolean isSilent, final String... args) {
         if (args.length == 0) {
@@ -68,17 +62,20 @@ public final class Ban extends ChannelCommand {
         server.getParser().sendLine("MODE " + channel + " +b " + host);
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "ban";
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getHelp() {
         return "ban <user|host> - bans the specified user or host from the channel.";
     }

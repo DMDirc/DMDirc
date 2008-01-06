@@ -46,53 +46,6 @@ public class PopupManager {
     }
     
     /**
-     * Retrieves a map of the menu items that should be in a certain menu type.
-     * If the command is equal to "-", the entry should be treated as a divider.
-     *
-     * @param menuType The type of menu that is being built
-     * @param configManager The config manager for the current context
-     * @param arguments Any arguments appropriate for the menuType
-     * @deprecated in favour of getMenu
-     * 
-     * @return A map of "friendly names" to commands (without command characters)
-     */
-    @Precondition({
-        "The specified PopupType is not null",
-        "The specified ConfigManager is not null"
-    })
-    @Deprecated
-    public static Map<String, String> getMenuItems(final PopupType menuType,
-            final ConfigManager configManager, final Object ... arguments) {
-        assert(menuType != null);
-        assert(configManager != null);
-        
-        final Map<String, String> res = new LinkedHashMap<String, String>();
-        
-        int dividerCount = 0;
-        
-        for (String domain : menuType.getDomains()) {
-            final List<String> commands = configManager.getOptionList("popups", domain);
-            
-            for (String command : commands) {
-                if ("-".equals(command)) {
-                    res.put("divider" + (++dividerCount), "-");
-                } else if (command.indexOf(':') > 0) {
-                    final String name = command.substring(0, command.indexOf(':'));
-                    final String value = command.substring(command.indexOf(':') + 1);
-                    
-                    res.put(name, String.format(value, arguments));
-                } else if (!command.isEmpty()) {
-                    Logger.userError(ErrorLevel.LOW, "Invalid command in "
-                            + "popup menu configuration. Menu: " + domain
-                            + ", Command: " + command);
-                }
-            }
-        }
-        
-        return res;
-    }
-    
-    /**
      * Returns the popup menu that should be used for the specified type.
      * Configuration data is read from the specified config manager.
      * 

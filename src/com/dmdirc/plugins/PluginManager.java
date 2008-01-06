@@ -159,8 +159,8 @@ public class PluginManager {
 	 * Reload all plugins.
 	 */
 	public void reloadAllPlugins() {
-		for (String pluginName : getFilenames()) {
-			reloadPlugin(pluginName);
+		for (PluginInfo pluginInfo : getPluginInfos()) {
+			reloadPlugin(pluginInfo.getFilename());
 		}
 	}
 
@@ -196,22 +196,6 @@ public class PluginManager {
 	 */
 	public String getDirectory() {
 		return myDir;
-	}
-
-	/**
-	 * Get string[] of known plugin file names.
-	 *
-	 * @return string[] of known plugin file names.
-	 * @deprecated Pointless method. Iterate getPluginInfos instead.
-	 */
-	@Deprecated
-	public String[] getFilenames() {
-		final String[] result = new String[knownPlugins.size()];
-		int i = 0;
-		for (String name : knownPlugins.keySet()) {
-			result[i++] = knownPlugins.get(name).getFilename();
-		}
-		return result;
 	}
 
 	/**

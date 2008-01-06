@@ -40,7 +40,6 @@ public final class OpenQuery extends ServerCommand {
         super();
         
         CommandManager.registerCommand(this);
-        CommandManager.registerPopupCommand(this);
     }
     
     /** {@inheritDoc} */
