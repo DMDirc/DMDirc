@@ -156,7 +156,7 @@ public final class DummyServerWindow implements ServerWindow {
     /** {@inheritDoc} */
     @Override
     public void close() {
-        // Do nothing
+        parent.windowClosing();
     }    
     
 }

@@ -24,7 +24,6 @@ package com.dmdirc.ui.dummy;
 
 import com.dmdirc.ui.interfaces.InputField;
 
-import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 
@@ -35,26 +34,26 @@ public class DummyInputField implements InputField {
 
     /** {@inheritDoc} */
     @Override
-    public void addActionListener(ActionListener listener) {
+    public void addActionListener(final ActionListener listener) {
+        // Do nothing
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void addKeyListener(final KeyListener listener) {
+        // Do nothing
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeActionListener(final ActionListener listener) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /** {@inheritDoc} */
     @Override
-    public void addKeyListener(KeyListener listener) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void removeActionListener(ActionListener listener) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void removeKeyListener(KeyListener listener) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void removeKeyListener(final KeyListener listener) {
+        // Do nothing
     }
 
     /** {@inheritDoc} */

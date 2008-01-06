@@ -155,7 +155,7 @@ public final class DummyInputWindow implements InputWindow {
     /** {@inheritDoc} */
     @Override
     public void close() {
-        // Do nothing
+        container.windowClosing();
     }
     
 }

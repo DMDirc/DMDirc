@@ -174,7 +174,7 @@ public final class DummyChannelWindow implements ChannelWindow {
     /** {@inheritDoc} */
     @Override
     public void close() {
-        // Do nothing
+        parent.windowClosing();
     }
 
     /** {@inheritDoc} */
