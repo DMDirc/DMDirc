@@ -24,4 +24,4 @@ metadata:
   description=Automatically sets the popup.umodes setting when connecting to a server, so that the correct user modes appear in the nicklist popup.
   author=Chris <chris@dmdirc.com>
   version=2
-  component=umodes
+  component=19

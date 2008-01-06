@@ -103,7 +103,10 @@ public class Action extends ActionModel implements Serializable {
 
     /**
      * Loads this action from a properties file.
+     * 
+     * @Deprecated Remove post 0.6
      */
+    @Deprecated
     private void loadProperties() {
         try {
             final FileInputStream inputStream = new FileInputStream(file);
@@ -294,7 +297,10 @@ public class Action extends ActionModel implements Serializable {
 
     /**
      * Loads the various attributes of this action from the properties instance.
+     * 
+     * @Deprecated Remove post-0.6
      */
+    @Deprecated
     private void loadActionFromProperties() {
         // Read the triggers
         if (properties.containsKey("trigger")) {
@@ -358,6 +364,7 @@ public class Action extends ActionModel implements Serializable {
         }
 
         ActionManager.registerAction(this);
+        modified = true;
         save();
     }
 
@@ -365,6 +372,10 @@ public class Action extends ActionModel implements Serializable {
      * Called to save the action.
      */
     public void save() {
+        if (!isModified()) {
+            return;
+        }
+        
         final ConfigFile newConfig = new ConfigFile(location);
 
         final List<String> triggerNames = new ArrayList<String>();
@@ -541,7 +552,9 @@ public class Action extends ActionModel implements Serializable {
      *
      * @param condition Condition number to read
      * @return True if the condition was read successfully.
+     * @deprecated Remove post-0.6
      */
+    @Deprecated
     private boolean readCondition(final int condition) {
         // It may help to close your eyes while reading this method.
 

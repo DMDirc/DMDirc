@@ -69,7 +69,7 @@ public final class Main {
      * @Deprecated No longer needed, remove post-0.6
      */
     @Deprecated
-    private static final int ADDON_REVISION = 9;
+    private static final int ADDON_REVISION = 10;
     
     /**
      * Feedback nag delay.

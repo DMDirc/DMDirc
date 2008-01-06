@@ -22,26 +22,25 @@
 
 package com.dmdirc.actions;
 
-import com.dmdirc.actions.interfaces.ActionType;
-import com.dmdirc.actions.interfaces.ActionComponent;
-import com.dmdirc.actions.interfaces.ActionComparison;
 import com.dmdirc.Main;
 import com.dmdirc.Precondition;
+import com.dmdirc.actions.interfaces.ActionComparison;
+import com.dmdirc.actions.interfaces.ActionComponent;
+import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.wrappers.ActionWrapper;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.actions.wrappers.PerformWrapper;
 import com.dmdirc.config.ConfigTarget;
 import com.dmdirc.config.Identity;
-import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionListener;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.components.ActionGroupComponent;
 import com.dmdirc.util.MapList;
-import com.dmdirc.util.WeakMapList;
-
 import com.dmdirc.util.resourcemanager.ZipResourceManager;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,60 +55,51 @@ import java.util.Properties;
  * @author chris
  */
 public final class ActionManager {
-    
+
     /** A list of registered action types. */
     private final static List<ActionType> actionTypes
             = new ArrayList<ActionType>();
-    
+
     /** A list of registered action components. */
     private final static List<ActionComponent> actionComponents
             = new ArrayList<ActionComponent>();
-    
+
     /** A list of registered action comparisons. */
     private final static List<ActionComparison> actionComparisons
             = new ArrayList<ActionComparison>();
-    
+
     /** A list of all action wrappers that have registered with us. */
     private final static List<ActionWrapper> actionWrappers
             = new ArrayList<ActionWrapper>();
-    
+
     /** A map linking types and a list of actions that're registered for them. */
     private final static MapList<ActionType, Action> actions
             = new MapList<ActionType, Action>();
-    
+
     /** A map linking groups and a list of actions that're in them. */
     private final static Map<String, ActionGroup> groups
             = new HashMap<String, ActionGroup>();
-    
+
     /** A map of the action type groups to the action types within. */
     private final static MapList<String, ActionType> actionTypeGroups
             = new MapList<String, ActionType>();
-    
+
     /** The listeners that we have registered. */
-    private final static WeakMapList<ActionType, ActionListener> listeners
-            = new WeakMapList<ActionType, ActionListener>();
-    
+    private final static MapList<ActionType, ActionListener> listeners
+            = new MapList<ActionType, ActionListener>();
+
     /** The identity we're using for action defaults. */
     private static Identity defaultsIdentity;
-    
+
     /** Indicates whether or not user actions should be killed (not processed). */
     private static boolean killSwitch
             = IdentityManager.getGlobalConfig().getOptionBool("actions", "killswitch", false);
-    
-    static {
-        final ConfigTarget target = new ConfigTarget();
-        final Properties properties = new Properties();
-        target.setGlobalDefault();
-        target.setOrder(500000);
-        properties.setProperty("identity.name", "Action defaults");
-        defaultsIdentity = new Identity(properties, target);
-    }
-   
+
     /** Creates a new instance of ActionManager. */
     private ActionManager() {
         // Shouldn't be instansiated
     }
-    
+
     /**
      * Initialises the action manager.
      */
@@ -117,12 +107,32 @@ public final class ActionManager {
         registerActionTypes(CoreActionType.values());
         registerActionComparisons(CoreActionComparison.values());
         registerActionComponents(CoreActionComponent.values());
-        
+
         registerWrapper(AliasWrapper.getAliasWrapper());
         registerWrapper(PerformWrapper.getPerformWrapper());
+
+        // Set up the identity used for our defaults
+        final ConfigTarget target = new ConfigTarget();
+        final Properties properties = new Properties();
+        target.setGlobalDefault();
+        target.setOrder(500000);
+        properties.setProperty("identity.name", "Action defaults");
+        defaultsIdentity = new Identity(properties, target);
         
+        // Register a listener for the closing event, so we can save actions
+        addListener(new ActionListener() {
+            /** {@inheritDoc} */
+            @Override
+            public void processEvent(final ActionType type, final StringBuffer format,
+                    final Object... arguments) {
+                saveActions();
+            }
+        }, CoreActionType.CLIENT_CLOSED);
+
+        // Make sure we listen for the killswitch
         IdentityManager.getGlobalConfig().addChangeListener("actions", "killswitch",
                 new ConfigChangeListener() {
+            /** {@inheritDoc} */
             @Override
             public void configChanged(final String domain, final String key) {
                 killSwitch
@@ -133,15 +143,26 @@ public final class ActionManager {
     }
     
     /**
+     * Saves all actions.
+     */
+    public static void saveActions() {
+        for (ActionGroup group : groups.values()) {
+            for (Action action : group) {
+                action.save();
+            }
+        }
+    }
+
+    /**
      * Registers the specified default setting for actions.
-     * 
+     *
      * @param name The name of the setting to be registered
      * @param value The default value for the setting
      */
     public static void registerDefault(final String name, final String value) {
         defaultsIdentity.setOption("actions", name, value);
     }
-    
+
     /**
      * Registers the specified action wrapper with the manager.
      *
@@ -155,10 +176,10 @@ public final class ActionManager {
         assert(wrapper != null);
         assert(wrapper.getGroupName() != null);
         assert(!wrapper.getGroupName().isEmpty());
-        
+
         actionWrappers.add(wrapper);
     }
-    
+
     /**
      * Registers a set of actiontypes with the manager.
      *
@@ -168,12 +189,12 @@ public final class ActionManager {
     public static void registerActionTypes(final ActionType[] types) {
         for (ActionType type : types) {
             assert(type != null);
-            
+
             actionTypes.add(type);
             actionTypeGroups.add(type.getType().getGroup(), type);
         }
     }
-    
+
     /**
      * Registers a set of action components with the manager.
      *
@@ -183,11 +204,11 @@ public final class ActionManager {
     public static void registerActionComponents(final ActionComponent[] comps) {
         for (ActionComponent comp : comps) {
             assert(comp != null);
-            
+
             actionComponents.add(comp);
         }
     }
-    
+
     /**
      * Registers a set of action comparisons with the manager.
      *
@@ -197,11 +218,11 @@ public final class ActionManager {
     public static void registerActionComparisons(final ActionComparison[] comps) {
         for (ActionComparison comp : comps) {
             assert(comp != null);
-            
+
             actionComparisons.add(comp);
         }
     }
-    
+
     /**
      * Returns a map of groups to action lists.
      *
@@ -210,7 +231,7 @@ public final class ActionManager {
     public static Map<String, ActionGroup> getGroups() {
         return groups;
     }
-    
+
     /**
      * Returns a map of type groups to types.
      *
@@ -219,20 +240,20 @@ public final class ActionManager {
     public static MapList<String, ActionType> getTypeGroups() {
         return actionTypeGroups;
     }
-    
+
     /**
      * Loads actions from the user's directory.
      */
     public static void loadActions() {
         actions.clear();
         groups.clear();
-        
+
         for (ActionWrapper wrapper : actionWrappers) {
             wrapper.clearActions();
         }
-        
+
         final File dir = new File(getDirectory());
-        
+
         if (!dir.exists()) {
             try {
                 dir.mkdirs();
@@ -242,20 +263,20 @@ public final class ActionManager {
                         + ex.getMessage());
             }
         }
-        
+
         if (dir.listFiles() == null) {
             Logger.userError(ErrorLevel.MEDIUM, "Unable to load user action files");
         } else {
             for (File file : dir.listFiles()) {
-                if (file.isDirectory()) {                    
+                if (file.isDirectory()) {
                     loadActions(file);
                 }
             }
         }
-        
+
         registerComponents();
     }
-    
+
     /**
      * Creates new ActionGroupComponents for each action group.
      */
@@ -264,7 +285,7 @@ public final class ActionManager {
             new ActionGroupComponent(group);
         }
     }
-    
+
     /**
      * Retrieves the action wrapper with the specified group name.
      *
@@ -275,16 +296,16 @@ public final class ActionManager {
     private static ActionWrapper getWrapper(final String name) {
         assert(name != null);
         assert(!name.isEmpty());
-        
+
         for (ActionWrapper wrapper : actionWrappers) {
             if (name.equals(wrapper.getGroupName())) {
                 return wrapper;
             }
         }
-        
+
         return null;
     }
-    
+
     /**
      * Determines whether the specified group name is one used by an action
      * wrapper.
@@ -296,10 +317,10 @@ public final class ActionManager {
     private static boolean isWrappedGroup(final String name) {
         assert(name != null);
         assert(!name.isEmpty());
-        
+
         return getWrapper(name) != null;
     }
-    
+
     /**
      * Loads action files from a specified group directory.
      *
@@ -309,12 +330,12 @@ public final class ActionManager {
     private static void loadActions(final File dir) {
         assert(dir != null);
         assert(dir.isDirectory());
-        
+
         for (File file : dir.listFiles()) {
             new Action(dir.getName(), file.getName());
         }
     }
-    
+
     /**
      * Registers an action with the manager.
      *
@@ -323,22 +344,22 @@ public final class ActionManager {
     @Precondition("The specified action is not null")
     public static void registerAction(final Action action) {
         assert(action != null);
-        
+
         for (ActionType trigger : action.getTriggers()) {
             actions.add(trigger, action);
         }
-        
+
         if (isWrappedGroup(action.getGroup())) {
             getWrapper(action.getGroup()).registerAction(action);
         } else {
             getGroup(action.getGroup()).add(action);
         }
     }
-    
+
     /**
      * Retrieves the action group with the specified name. A new group is
      * created if it doesn't already exist.
-     * 
+     *
      * @param name The name of the group to retrieve
      * @return The corresponding ActionGroup
      */
@@ -346,10 +367,10 @@ public final class ActionManager {
         if (!groups.containsKey(name)) {
             groups.put(name, new ActionGroup(name));
         }
-        
+
         return groups.get(name);
     }
-    
+
     /**
      * Unregisters an action with the manager.
      *
@@ -358,22 +379,22 @@ public final class ActionManager {
     @Precondition("The specified action is not null")
     public static void unregisterAction(final Action action) {
         assert(action != null);
-        
+
         actions.removeFromAll(action);
         getGroup(action.getGroup()).remove(action);
     }
-    
+
     /**
      * Reregisters the specified action. Should be used when the action's
      * triggers change.
-     * 
+     *
      * @param action The action to be reregistered
      */
     public static void reregisterAction(final Action action) {
         unregisterAction(action);
         reregisterAction(action);
     }
-    
+
     /**
      * Deletes the specified action.
      *
@@ -382,12 +403,12 @@ public final class ActionManager {
     @Precondition("The specified Action is not null")
     public static void deleteAction(final Action action) {
         assert(action != null);
-        
+
         unregisterAction(action);
-        
+
         action.delete();
     }
-    
+
     /**
      * Processes an event of the specified type.
      *
@@ -406,18 +427,18 @@ public final class ActionManager {
         assert(type != null);
         assert(type.getType() != null);
         assert(type.getType().getArity() == arguments.length);
-        
+
         if (listeners.containsKey(type)) {
             for (ActionListener listener : listeners.get(type)) {
                 listener.processEvent(type, format, arguments);
             }
         }
-        
+
         if (!killSwitch) {
             triggerActions(type, format, arguments);
         }
     }
-    
+
     /**
      * Triggers actions that respond to the specified type.
      *
@@ -430,14 +451,14 @@ public final class ActionManager {
     private static void triggerActions(final ActionType type,
             final StringBuffer format, final Object ... arguments) {
         assert(type != null);
-        
+
         if (actions.containsKey(type)) {
             for (Action action : actions.get(type)) {
                 action.trigger(format, arguments);
             }
         }
     }
-    
+
     /**
      * Returns the directory that should be used to store actions.
      *
@@ -446,7 +467,7 @@ public final class ActionManager {
     public static String getDirectory() {
         return Main.getConfigDir() + "actions" + System.getProperty("file.separator");
     }
-    
+
     /**
      * Creates a new group with the specified name.
      *
@@ -460,12 +481,12 @@ public final class ActionManager {
         assert(group != null);
         assert(!group.isEmpty());
         assert(!groups.containsKey(group));
-        
+
         if (new File(getDirectory() + group).mkdir()) {
             groups.put(group, new ActionGroup(group));
         }
     }
-    
+
     /**
      * Removes the group with the specified name.
      *
@@ -474,18 +495,18 @@ public final class ActionManager {
     @Precondition({
         "The specified group is non-null and not empty",
         "The specified group is an existing group"
-    })    
+    })
     public static void removeGroup(final String group) {
         assert(group != null);
         assert(!group.isEmpty());
         assert(groups.containsKey(group));
-        
+
         for (Action action : new ArrayList<Action>(groups.get(group))) {
             unregisterAction(action);
         }
-        
+
         final File dir = new File(getDirectory() + group);
-        
+
         for (File file : dir.listFiles()) {
             if (!file.delete()) {
                 Logger.userError(ErrorLevel.MEDIUM, "Unable to remove file: "
@@ -493,16 +514,16 @@ public final class ActionManager {
                 return;
             }
         }
-        
+
         if (!dir.delete()) {
             Logger.userError(ErrorLevel.MEDIUM, "Unable to remove directory: "
                     + dir.getAbsolutePath());
             return;
         }
-        
+
         groups.remove(group);
     }
-    
+
     /**
      * Renames the specified group.
      *
@@ -515,7 +536,7 @@ public final class ActionManager {
         "The new name is non-null and not empty",
         "The new name is not an existing group",
         "The old name does not equal the new name"
-    })    
+    })
     public static void renameGroup(final String oldName, final String newName) {
         assert(oldName != null);
         assert(!oldName.isEmpty());
@@ -524,19 +545,19 @@ public final class ActionManager {
         assert(groups.containsKey(oldName));
         assert(!groups.containsKey(newName));
         assert(!newName.equals(oldName));
-        
+
         makeGroup(newName);
-        
+
         for (Action action : groups.get(oldName)) {
             action.setGroup(newName);
             getGroup(newName).add(action);
         }
-        
+
         groups.remove(oldName);
-        
+
         removeGroup(oldName);
     }
-    
+
     /**
      * Returns the action comparison specified by the given string, or null if it
      * doesn't match a valid registered action comparison.
@@ -548,16 +569,16 @@ public final class ActionManager {
         if (type == null || type.isEmpty()) {
             return null;
         }
-        
+
         for (ActionType target : actionTypes) {
             if (((Enum) target).name().equals(type)) {
                 return target;
             }
         }
-        
+
         return null;
     }
-    
+
     /**
      * Returns a list of action types that are compatible with the one
      * specified.
@@ -568,17 +589,17 @@ public final class ActionManager {
     @Precondition("The specified type is not null")
     public static List<ActionType> getCompatibleTypes(final ActionType type) {
         assert(type != null);
-        
+
         final List<ActionType> res = new ArrayList<ActionType>();
         for (ActionType target : actionTypes) {
             if (!target.equals(type) && target.getType().equals(type.getType())) {
                 res.add(target);
             }
         }
-        
+
         return res;
     }
-    
+
     /**
      * Returns a list of action components that are compatible with the
      * specified class.
@@ -589,17 +610,17 @@ public final class ActionManager {
     @Precondition("The specified target is not null")
     public static List<ActionComponent> getCompatibleComponents(final Class target) {
         assert(target != null);
-        
+
         final List<ActionComponent> res = new ArrayList<ActionComponent>();
         for (ActionComponent subject : actionComponents) {
             if (subject.appliesTo().equals(target)) {
                 res.add(subject);
             }
         }
-        
+
         return res;
     }
-    
+
     /**
      * Returns a list of action comparisons that are compatible with the
      * specified class.
@@ -610,17 +631,17 @@ public final class ActionManager {
     @Precondition("The specified target is not null")
     public static List<ActionComparison> getCompatibleComparisons(final Class target) {
         assert(target != null);
-        
+
         final List<ActionComparison> res = new ArrayList<ActionComparison>();
         for (ActionComparison subject : actionComparisons) {
             if (subject.appliesTo().equals(target)) {
                 res.add(subject);
             }
         }
-        
+
         return res;
     }
-    
+
     /**
      * Returns a list of all the action types registered by this manager.
      *
@@ -629,7 +650,7 @@ public final class ActionManager {
     public static List<ActionType> getTypes() {
         return actionTypes;
     }
-    
+
     /**
      * Returns a list of all the action types registered by this manager.
      *
@@ -638,7 +659,7 @@ public final class ActionManager {
     public static List<ActionComparison> getComparisons() {
         return actionComparisons;
     }
-    
+
     /**
      * Returns the action component specified by the given string, or null if it
      * doesn't match a valid registered action component.
@@ -650,16 +671,16 @@ public final class ActionManager {
     public static ActionComponent getActionComponent(final String type) {
         assert(type != null);
         assert(!type.isEmpty());
-        
+
         for (ActionComponent target : actionComponents) {
             if (((Enum) target).name().equals(type)) {
                 return target;
             }
         }
-        
+
         return null;
     }
-    
+
     /**
      * Returns the action type specified by the given string, or null if it
      * doesn't match a valid registered action type.
@@ -671,35 +692,35 @@ public final class ActionManager {
     public static ActionComparison getActionComparison(final String type) {
         assert(type != null);
         assert(!type.isEmpty());
-        
+
         for (ActionComparison target : actionComparisons) {
             if (((Enum) target).name().equals(type)) {
                 return target;
             }
         }
-        
+
         return null;
     }
-    
+
     /**
      * Installs an action pack located at the specified path.
-     * 
+     *
      * @param path The full path of the action pack .zip.
      * @throws IOException If the zip cannot be extracted
      */
     public static void installActionPack(final String path) throws IOException {
         final ZipResourceManager ziprm = ZipResourceManager.getInstance(path);
-        
+
         ziprm.extractResources("", getDirectory());
-        
+
         loadActions();
-        
-        new File(path).delete();        
+
+        new File(path).delete();
     }
-    
+
     /**
      * Adds a new listener for the specified action type.
-     * 
+     *
      * @param types The action types that are to be listened for
      * @param listener The listener to be added
      */
@@ -708,10 +729,10 @@ public final class ActionManager {
             listeners.add(type, listener);
         }
     }
-    
+
     /**
      * Removes a listener for the specified action type.
-     * 
+     *
      * @param types The action types that were being listened for
      * @param listener The listener to be removed
      */
@@ -720,13 +741,13 @@ public final class ActionManager {
             listeners.remove(type, listener);
         }
     }
-    
+
     /**
      * Removes a listener for all action types.
-     * 
+     *
      * @param listener The listener to be removed
      */
     public static void removeListener(final ActionListener listener) {
         listeners.removeFromAll(listener);
-    }    
+    }
 }
