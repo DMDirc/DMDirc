@@ -471,10 +471,31 @@ is divided into following sections:
             </fileset>
         </javadoc>
     </target>
+
+    <target depends="init,-doccheck-check" name="-doccheck-build" if="doccheck.run">
+        <mkdir dir="${doccheck.dir}"/>
+        <javadoc additionalparam="-doclet com.sun.tools.doclets.doccheck.DocCheck -docletpath ${doccheck.path} -skipPkg net.miginfocom.*" author="${javadoc.author}" destdir="${doccheck.dir}" failonerror="true" private="${javadoc.private}" source="${javac.source}" sourcepath="${src.dir}" useexternalfile="true" version="${javadoc.version}">
+            <classpath>
+                <path path="${javac.classpath}"/>
+            </classpath>
+        </javadoc>
+    </target>
+
+    <target name="-doccheck-check">
+        <condition property="doccheck.run">
+            <and>
+                <isset property="doccheck.path"/>
+                <isset property="doccheck.dir"/>
+                <available file="${doccheck.path}"/>
+            </and>
+        </condition>
+    </target>
+
     <target depends="init,-javadoc-build" if="netbeans.home" name="-javadoc-browse" unless="no.javadoc.preview">
         <nbbrowse file="${dist.javadoc.dir}/index.html"/>
     </target>
-    <target depends="init,-javadoc-build,-javadoc-browse" description="Build Javadoc." name="javadoc"/>
+    <target depends="init,-javadoc-build,-javadoc-browse,-doccheck-build" description="Build Javadoc." name="javadoc"/>
+    <target depends="-doccheck-build" description="Build Javadoc error report (doccheck)." name="doccheck"/>
     <!--
                 =========================
                 JUNIT COMPILATION SECTION
