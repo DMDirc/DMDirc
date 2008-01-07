@@ -48,7 +48,10 @@ public final class IconManager implements ConfigChangeListener {
     /** Previously created IconManager instance. */
     private static final IconManager me = new IconManager();
         
+    /** A map of existing icons. */
     private final Map<String, Icon> icons;
+    
+    /** A map of existing images. */
     private final Map<String, Image> images;
     
     /** Creates a new instance of IconManager. */

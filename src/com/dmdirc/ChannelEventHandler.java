@@ -42,8 +42,14 @@ public final class ChannelEventHandler extends EventHandler implements
         IChannelNickChanged, IChannelModeChanged, IChannelUserModeChanged,
         IChannelCTCP, IAwayStateOther {
     
+    /** The channel that owns this event handler. */
     private final Channel owner;
     
+    /**
+     * Creates a new instance of ChannelEventHandler.
+     * 
+     * @param owner The channel that owns this event handler.
+     */
     public ChannelEventHandler(final Channel owner) {
         this.owner = owner;
     }
@@ -65,6 +71,12 @@ public final class ChannelEventHandler extends EventHandler implements
         return owner.getServer().getParser();
     }
     
+    /**
+     * Determines if the specified client represents us.
+     * 
+     * @param client The client to be tested
+     * @return True if the client is ourself, false otherwise.
+     */
     protected boolean isMyself(final ChannelClientInfo client) {
         return client.getClient().equals(owner.getServer().getParser().getMyself());
     }

@@ -23,6 +23,7 @@
 package com.dmdirc.actions.wrappers;
 
 import com.dmdirc.actions.Action;
+
 import java.util.ArrayList;
 import java.util.List;
 

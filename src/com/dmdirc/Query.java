@@ -42,8 +42,8 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.QueryWindow;
-import java.awt.Toolkit;
 
+import java.awt.Toolkit;
 import java.io.Serializable;
 
 /**

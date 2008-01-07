@@ -381,11 +381,21 @@ public final class Channel extends MessageTarget
         }
     }
     
+    /**
+     * Adds a ChannelClient to this Channel.
+     * 
+     * @param client The client to be added
+     */
     public void addClient(final ChannelClientInfo client) {
         window.addName(client);
         tabCompleter.addEntry(client.getNickname());   
     }
     
+    /**
+     * Removes the specified ChannelClient from this channel.
+     * 
+     * @param client The client to be removed
+     */
     public void removeClient(final ChannelClientInfo client) {
         window.removeName(client);
         tabCompleter.removeEntry(client.getNickname());
@@ -395,12 +405,22 @@ public final class Channel extends MessageTarget
         }
     }
     
+    /**
+     * Renames a client that is in this channel.
+     * 
+     * @param oldName The old nickname of the client
+     * @param newName The new nickname of the client
+     */
     public void renameClient(final String oldName, final String newName) {
         tabCompleter.removeEntry(oldName);
         tabCompleter.addEntry(newName);        
         refreshClients();
     }
     
+    /**
+     * Refreshes the list of clients stored by this channel. Should be called
+     * when (visible) user modes or nicknames change.
+     */
     public void refreshClients() {
         window.updateNames();
     }

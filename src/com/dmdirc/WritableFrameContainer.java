@@ -143,7 +143,7 @@ public abstract class WritableFrameContainer extends FrameContainer {
     }
     
     /**
-     * Handles general server notifications (i.e., ones note tied to a
+     * Handles general server notifications (i.e., ones not tied to a
      * specific window). The user can select where the notifications should
      * go in their config.
      *
@@ -155,6 +155,13 @@ public abstract class WritableFrameContainer extends FrameContainer {
                 getConfigManager().getOption("notifications", messageType, "self"), args);
     }
     
+    /**
+     * Despatches a notification of the specified type to the specified target.
+     * 
+     * @param messageType The type of the message that is being sent
+     * @param messageTarget The target of the message
+     * @param args The arguments for the message
+     */
     protected void despatchNotification(final String messageType,
             final String messageTarget, final Object... args) {
         

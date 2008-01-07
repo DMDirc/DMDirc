@@ -23,7 +23,6 @@
 package com.dmdirc;
 
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.IconChangeListener;
 import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.SelectionListener;

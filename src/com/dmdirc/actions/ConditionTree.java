@@ -33,18 +33,39 @@ import java.util.Deque;
  */
 public class ConditionTree {
 
+    /** The possible operations on a condition tree. */
     public static enum OPERATION {
-        AND, OR, VAR, NOT, NOOP
+        /** Only passes if both subtrees are true. */
+        AND,
+        /** Passes if either of the subtrees are true. */
+        OR,
+        /** Passes if the specified argument is true. */
+        VAR,
+        /** Only passes iof the left subtree fails to pass. */
+        NOT,
+        /** Doesn't do anything (an empty tree). */
+        NOOP
     }
        
+    /** The left subtree of this tree. */
     private ConditionTree leftArg = null;
 
+    /** The right subtree of this tree. */
     private ConditionTree rightArg = null;
 
+    /** The argument of this tree (only used for VAR ops). */
     private int argument = -1;
 
+    /** The operation that this tree performs. */
     private OPERATION op;
     
+    /**
+     * Creates a new ConditionTree for a binary operation.
+     * 
+     * @param op The binary operation to perform
+     * @param leftArg The left argument/subtree
+     * @param rightArg The right argument/subtree
+     */
     private ConditionTree(final OPERATION op, final ConditionTree leftArg,
             final ConditionTree rightArg) {
         assert(op != OPERATION.VAR);
@@ -57,6 +78,12 @@ public class ConditionTree {
         this.rightArg = rightArg;
     }
     
+    /**
+     * Creates a new ConditionTree for a unary operation.
+     * 
+     * @param op
+     * @param argument
+     */
     private ConditionTree(final OPERATION op, final ConditionTree argument) {
         assert(op == OPERATION.NOT);
         
@@ -64,11 +91,20 @@ public class ConditionTree {
         this.leftArg = argument;
     }    
     
+    /**
+     * Creates a new ConditionTree for a VAR operation with the specified
+     * argument number.
+     * 
+     * @param argument The number of the argument that's to be tested.
+     */
     private ConditionTree(final int argument) {
         this.op = OPERATION.VAR;
         this.argument = argument;
     }
     
+    /**
+     * Creates a new ConditionTree for a NOOP operation.
+     */
     private ConditionTree() {
         this.op = OPERATION.NOOP;
     }
@@ -143,7 +179,7 @@ public class ConditionTree {
      * Parses the specified string into a condition tree.
      * 
      * @param string The string to be parsed
-     * @return The corresponding condition tree, or null if there as an error
+     * @return The corresponding condition tree, or null if there was an error
      * while parsing the data
      */
     public static ConditionTree parseString(final String string) {
@@ -169,6 +205,14 @@ public class ConditionTree {
         return parseStack(stack);
     }
     
+    /**
+     * Parses the specified stack of elements, and returns a corresponding
+     * ConditionTree.
+     * 
+     * @param stack The stack to be read.
+     * @return The corresponding condition tree, or null if there was an error
+     * while parsing the data.
+     */
     @SuppressWarnings("fallthrough")
     private static ConditionTree parseStack(final Deque<Object> stack) {
         final Deque<Object> myStack = new ArrayDeque<Object>();
@@ -236,6 +280,13 @@ public class ConditionTree {
         return new ConditionTree();
     }
     
+    /**
+     * Reads and returns a single term from the specified stack.
+     * 
+     * @param stack The stack to be read
+     * @return The ConditionTree representing the last element on the stack,
+     * or null if it was not possible to create one.
+     */
     private static ConditionTree readTerm(final Deque<Object> stack) {
         final Object first = stack.pollFirst();
         
@@ -254,6 +305,14 @@ public class ConditionTree {
         }
     }
     
+    /**
+     * Pops elements off of the end of the specified stack until an opening
+     * bracket is reached, and then returns the parsed content of the bracket.
+     * 
+     * @param stack The stack to be read for the bracket
+     * @return The parsed contents of the bracket, or null if the brackets were
+     * mismatched.
+     */
     private static ConditionTree readBracket(final Deque<Object> stack) {
         final Deque<Object> tempStack = new ArrayDeque<Object>();
         boolean found = false;
@@ -275,6 +334,12 @@ public class ConditionTree {
         }
     }
     
+    /**
+     * Determines if the specified character represents a single digit.
+     * 
+     * @param target The character to be tested
+     * @return True if the character is a digit, false otherwise
+     */
     private static boolean isInt(final char target) {
         return target >= '0' && target <= '9';
     }

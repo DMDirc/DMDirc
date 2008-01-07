@@ -37,7 +37,9 @@ public enum QueryEvents implements ActionMetaType {
     /** Query event with argument. */
     QUERY_EVENT_WITH_ARG(new String[]{"query", "message"}, Query.class, String.class);
     
+    /** The names of the arguments for this meta type. */
     private String[] argNames;
+    /** The classes of the arguments for this meta type. */
     private Class[] argTypes;
     
     /**

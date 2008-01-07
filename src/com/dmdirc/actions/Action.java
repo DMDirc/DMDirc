@@ -55,10 +55,15 @@ public class Action extends ActionModel implements Serializable {
      */
     private static final long serialVersionUID = 1;
 
+    /** The domain name for condition trees. */
     private static final String DOMAIN_CONDITIONTREE = "conditiontree".intern();
+    /** The domain name for format changes. */
     private static final String DOMAIN_FORMAT = "format".intern();
+    /** The domain name for meta-data. */
     private static final String DOMAIN_METADATA = "metadata".intern();
+    /** The domain name for response information. */
     private static final String DOMAIN_RESPONSE = "response".intern();
+    /** The domain name for triggers. */
     private static final String DOMAIN_TRIGGERS = "triggers".intern();
 
     /** The file containing this action. */
@@ -277,6 +282,12 @@ public class Action extends ActionModel implements Serializable {
         }
     }
 
+    /**
+     * Loads a list of triggers with the specified names.
+     * 
+     * @param newTriggers A list of trigger names
+     * @return True if all triggers are valid and compatible, false otherwise.
+     */
     private boolean loadTriggers(final List<String> newTriggers) {
         triggers = new ActionType[newTriggers.size()];
 
@@ -449,6 +460,12 @@ public class Action extends ActionModel implements Serializable {
         }
     }
 
+    /**
+     * Reads a condition from the specified configuration section.
+     * 
+     * @param data The relevant section of the action configuration
+     * @return True if the condition is valid, false otherwise
+     */
     private boolean readCondition(final Map<String,String> data) {
         int arg = 0;
         ActionComponent component = null;
@@ -518,6 +535,14 @@ public class Action extends ActionModel implements Serializable {
         return true;
     }
 
+    /**
+     * Reads a component from the specified data section for the specified argument.
+     * 
+     * @param data The relevant section of the action configuration
+     * @param arg The argument number that the component should apply to
+     * @return The corresponding ActionComponent, or null if the specified
+     * component is invalid.
+     */
     private ActionComponent readComponent(final Map<String, String> data, final int arg) {
         final String componentName = data.get("component");
         ActionComponent component;

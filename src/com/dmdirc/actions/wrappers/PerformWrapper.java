@@ -42,6 +42,7 @@ import java.util.List;
  */
 public class PerformWrapper extends ActionWrapper {
     
+    /** A singleton instance of the Perform Wrapper. */
     private static PerformWrapper me = new PerformWrapper();
     
     /**

@@ -47,7 +47,9 @@ public class ActionCondition {
     private String starget;
     
     /**
-     * Creates a new instance of ActionCondition.
+     * Creates a new instance of ActionCondition that compares the output of
+     * a component to a string.
+     * 
      * @param arg The argument number to be tested
      * @param component The component to be tested
      * @param comparison The comparison to be used
@@ -63,6 +65,13 @@ public class ActionCondition {
         this.target = target;
     }
     
+    /**
+     * Creates a new instance of ActionCondition that compares two strings.
+     * 
+     * @param starget The first target for comparison.
+     * @param comparison The comparison to be used
+     * @param target The second target for the comparison
+     */
     public ActionCondition(final String starget, final ActionComparison comparison,
             final String target) {
         super();
@@ -162,10 +171,20 @@ public class ActionCondition {
         this.target = target;
     }
 
+    /**
+     * Retrieves the starget of this condition.
+     * 
+     * @return This condition's starget, or null if none was set.
+     */
     public String getStarget() {
         return starget;
     }
 
+    /**
+     * Sets the starget for this condition.
+     * 
+     * @param starget The new starget for this condition.
+     */
     public void setStarget(final String starget) {
         this.starget = starget;
     }

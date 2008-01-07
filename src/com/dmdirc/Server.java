@@ -1178,6 +1178,9 @@ public final class Server extends WritableFrameContainer implements Serializable
         checkModeAliases();
     }
     
+    /**
+     * Checks that we have the neccessary mode aliases for this server.
+     */
     private void checkModeAliases() {
         // Check we have mode aliases
         final String modes = parser.getBoolChanModes() + parser.getListChanModes()

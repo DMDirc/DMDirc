@@ -55,8 +55,6 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
     /** An InputWindow used for displaying the raw data.*/
     private InputWindow window;
     
-    private boolean isClosing = false;
-    
     /**
      * Creates a new instance of Raw.
      *
