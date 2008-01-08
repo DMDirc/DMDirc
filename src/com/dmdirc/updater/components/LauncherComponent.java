@@ -24,6 +24,7 @@ package com.dmdirc.updater.components;
 
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateComponent;
+import com.dmdirc.util.resourcemanager.ZipResourceManager;
 
 import java.io.File;
 
@@ -76,7 +77,7 @@ public class LauncherComponent implements UpdateComponent {
 
     /** {@inheritDoc} */
     @Override
-    public boolean doInstall(final String path) throws Throwable {
+    public void doInstall(final String path) throws Throwable {
         final File tmpFile = new File(path);
         if (platform.equalsIgnoreCase("Linux")) {
             final File targetFile = new File(tmpFile.getParent() + File.separator + ".launcher.sh");
@@ -86,12 +87,10 @@ public class LauncherComponent implements UpdateComponent {
             }
 
             tmpFile.renameTo(targetFile);
-            return true;
         } else {
             final ZipResourceManager ziprm = ZipResourceManager.getInstance(path);
             ziprm.extractResources("", tmpFile.getParent()+ File.separator);
             new File(path).delete();
-            return false;
         }
     }
 
