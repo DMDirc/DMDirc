@@ -5,7 +5,7 @@ program DMDirc;
 {$R icon.rc}
 {$R version.rc}
 
-uses Windows, SysUtils, classes;
+uses Windows, SysUtils, classes, StrUtils;
 
 // Run an application and wait for it to finish.
 function ExecAndWait(sProgramToRun: String): Longword;
@@ -41,10 +41,18 @@ begin
 		dwFlags := STARTF_USESHOWWINDOW;
 		wShowWindow := SW_SHOWNORMAL;
 	end;
-
+	
 	CreateProcess(nil, PChar(sProgramToRun), nil, nil, False, NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo, ProcessInfo);
 end;
 
+procedure RunProgram(sProgramToRun: String; wait: boolean);
+begin
+	if wait then ExecAndWait(sProgramToRun)
+	else Launch(sProgramToRun);
+end;
+
+const
+	launcherVersion: String = '1';
 var
 	errorMessage: String;
 	javaCommand: String = 'javaw.exe';
@@ -53,13 +61,15 @@ var
 	i: integer;
 	hK32: THandle;
 	jarName: String;
+	launcherUpdate: boolean = false;
 begin
 	jarName := ExtractFileDir(paramstr(0))+'\DMDirc.jar';
 	
 	directory := GetEnvironmentVariable('APPDATA')+'\DMDirc';
 	if ParamCount > 0 then begin
 		for i := 1 to ParamCount do begin
-			cliParams := cliParams+' '+paramstr(i);
+			if AnsiContainsStr(cliParams, ' ') then cliParams := cliParams+' "'+paramstr(i)+'"'
+			else cliParams := cliParams+' '+paramstr(i);
 			if (paramstr(i) = '-d') or (paramstr(i) = '--directory') then begin
 				if ParamCount > i then begin
 					directory := paramstr(i+1);
@@ -69,7 +79,8 @@ begin
 	end;
 
 	// Update if needed.
-	if FileExists(directory+'\.DMDirc.jar') then begin
+	launcherUpdate := FileExists(directory+'\.DMDirc.exe') and FileExists(directory+'\.DMDircUpdater.exe');
+	if FileExists(directory+'\.DMDirc.jar') or launcherUpdate then begin
 		// Vista Sucks.
 		hK32 := GetModuleHandle('kernel32');
 		if GetProcAddress(hK32, 'GetLocaleInfoEx') <> nil then begin
@@ -86,32 +97,18 @@ begin
 				errorMessage := errorMessage+#13#10+'Please click ''Allow'' on the UAC prompt to complete the update, or click no';
 				errorMessage := errorMessage+#13#10+'here to continue without updating.';
 				if MessageBox(0, PChar(errorMessage), 'Windows Vista', MB_YESNO) = IDYES then begin
-					ExecAndWait('DMDircUpdater.exe '+directory+'\.DMDirc.jar');
+					RunProgram('"'+ExtractFileDir(paramstr(0))+'\DMDircUpdater.exe" --UpdateSourceDir "'+directory+'"', not launcherUpdate);
 				end;
 			end
-			else ExecAndWait('DMDircUpdater.exe '+directory+'\.DMDirc.jar');
+			else RunProgram('"'+ExtractFileDir(paramstr(0))+'\DMDircUpdater.exe" --UpdateSourceDir "'+directory+'"', not launcherUpdate);
 		end
-		else ExecAndWait('DMDircUpdater.exe '+directory+'\.DMDirc.jar');
+		else RunProgram('"'+ExtractFileDir(paramstr(0))+'\DMDircUpdater.exe" --UpdateSourceDir "'+directory+'"', not launcherUpdate);
 	end;
 	
-	// Check JVM
-	if (ExecAndWait(javaCommand+' -version') <> 0) then begin
-		errorMessage := 'No JVM is currently installed.';
-		errorMessage := errorMessage+#13#10;
-		errorMessage := errorMessage+#13#10+'DMDirc requires a 1.6.0 compatible JVM, you can get one from:';
-		errorMessage := errorMessage+#13#10+'http://jdl.sun.com/webapps/getjava/BrowserRedirect';
-		errorMessage := errorMessage+#13#10;
-		errorMessage := errorMessage+#13#10+'If you feel this is incorrect, or you require some further assistance,';
-		errorMessage := errorMessage+#13#10+'please feel free to contact us.';
-		
-		MessageBox(0, PChar(errorMessage), 'Sorry, DMDirc is unable to continue', MB_OK + MB_ICONSTOP);
-	end
-	// Else try and run client. (This only asks for help output to check that client
-	// runs on this OS, otherwise later segfaults or so would cause the error to
-	// appear
-	else if FileExists(jarName) then begin
-		if (ExecAndWait(javaCommand+' -jar "'+jarName+'" --help') <> 0) then begin
-			errorMessage := 'The currently installed version of java is not compatible with DMDirc.';
+	if not launcherUpdate then begin
+		// Check JVM
+		if (ExecAndWait(javaCommand+' -version') <> 0) then begin
+			errorMessage := 'No JVM is currently installed.';
 			errorMessage := errorMessage+#13#10;
 			errorMessage := errorMessage+#13#10+'DMDirc requires a 1.6.0 compatible JVM, you can get one from:';
 			errorMessage := errorMessage+#13#10+'http://jdl.sun.com/webapps/getjava/BrowserRedirect';
@@ -121,12 +118,28 @@ begin
 			
 			MessageBox(0, PChar(errorMessage), 'Sorry, DMDirc is unable to continue', MB_OK + MB_ICONSTOP);
 		end
+		// Else try and run client. (This only asks for help output to check that client
+		// runs on this OS, otherwise later segfaults or so would cause the error to
+		// appear
+		else if FileExists(jarName) then begin
+			if (ExecAndWait(javaCommand+' -jar "'+jarName+'" --help') <> 0) then begin
+				errorMessage := 'The currently installed version of java is not compatible with DMDirc.';
+				errorMessage := errorMessage+#13#10;
+				errorMessage := errorMessage+#13#10+'DMDirc requires a 1.6.0 compatible JVM, you can get one from:';
+				errorMessage := errorMessage+#13#10+'http://jdl.sun.com/webapps/getjava/BrowserRedirect';
+				errorMessage := errorMessage+#13#10;
+				errorMessage := errorMessage+#13#10+'If you feel this is incorrect, or you require some further assistance,';
+				errorMessage := errorMessage+#13#10+'please feel free to contact us.';
+				
+				MessageBox(0, PChar(errorMessage), 'Sorry, DMDirc is unable to continue', MB_OK + MB_ICONSTOP);
+			end
+			else begin
+				Launch(javaCommand+' -ea -jar "'+jarName+'"'+' -l windows-'+launcherVersion+' '+cliParams)
+			end;
+		end
 		else begin
-			Launch(javaCommand+' -ea -jar "'+jarName+'"'+cliParams)
+			errorMessage := 'Your DMDirc installation has been broken. DMDirc.jar no longer exists.';
+			MessageBox(0, PChar(errorMessage), 'Sorry, DMDirc is unable to continue', MB_OK + MB_ICONSTOP);
 		end;
-	end
-	else begin
-		errorMessage := 'Your DMDirc installation has been broken. DMDirc.jar no longer exists.';
-		MessageBox(0, PChar(errorMessage), 'Sorry, DMDirc is unable to continue', MB_OK + MB_ICONSTOP);
 	end;
 end.
