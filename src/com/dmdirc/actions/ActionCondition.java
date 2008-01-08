@@ -41,10 +41,10 @@ public class ActionCondition {
     private ActionComparison comparison;
     
     /** The target of the comparison for this condition. */
-    private String target;
+    private String target = "";
     
     /** The source target for this comparison. */
-    private String starget;
+    private String starget = "";
     
     /**
      * Creates a new instance of ActionCondition that compares the output of
@@ -193,7 +193,7 @@ public class ActionCondition {
     @Override
     public String toString() {
         return "[ arg=" + arg + ", component=" + component + ", comparison=" 
-                + comparison + ", target=" + target + "]";
+                + comparison + ", target=" + target + ", starget=" + starget + " ]";
     }
 
     /** {@inheritDoc} */
@@ -206,13 +206,15 @@ public class ActionCondition {
         final ActionCondition o = (ActionCondition) obj;
         
         return arg == o.getArg() && component == o.getComponent()
-                && comparison == o.getComparison() && target.equals(o.getTarget());
+                && comparison == o.getComparison() && target.equals(o.getTarget())
+                && starget.equals(o.getStarget());
     }
     
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
-        return arg & component.hashCode() & comparison.hashCode() & target.hashCode();
+        return arg + 100 * (arg == -1 ? starget.hashCode() : component.hashCode())
+                + 10000 * comparison.hashCode() + 100000 * target.hashCode();
     }
     
 }
