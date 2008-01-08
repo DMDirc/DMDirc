@@ -197,10 +197,16 @@ formatter.unknownNotice = \u00035-[%1$s:%2$s]- %3$s
 formatter.commandUsage = \u00037Usage: %1$s%2$s %3$s
 
 # Type: Numerical data
-formatter.numeric_006= \u0011%4$s
-formatter.numeric_007= \u0011%4$s
-formatter.numeric_015= \u0011%4$s
-formatter.numeric_017= \u0011%4$s
+formatter.numeric_006 = \u0011%4$s
+formatter.numeric_007 = \u0011%4$s
+formatter.numeric_015 = \u0011%4$s
+formatter.numeric_017 = \u0011%4$s
+
+formatter.numeric_261 = \u000310%4$s
+formatter.numeric_262 = \u000310%4$s %5$s
+formatter.numeric_263 = \u000310%4$s %5$s
+formatter.numeric_264 = \u000310%4$s %5$s
+formatter.numeric_265 = \u000310%4$s
 
 formatter.numeric_290 = \u0002%4$s
 formatter.numeric_292 = %4$s
