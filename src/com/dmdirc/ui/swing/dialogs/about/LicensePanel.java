@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -59,7 +59,7 @@ public final class LicensePanel extends JPanel {
         license.setText("Most of DMDirc is licensed under the MIT license, " 
                 + "however some portions (MigLayout) are licensed under the " 
                 + "BSD license, see below for details of both.\n\nMIT License."
-                + "\nCopyright (c) 2006-2007 The DMDirc team\n\nPermission "
+                + "\nCopyright (c) 2006-2008 The DMDirc team\n\nPermission "
                 + "is hereby granted, free of charge, to any person obtaining a"
                 + " copy of this software and associated documentation files "
                 + "(the \"Software\"), to deal in the Software without "

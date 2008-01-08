@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2007 Shane Mc Cormack
+ * Copyright (c) 2006-2008 Shane Mc Cormack
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal

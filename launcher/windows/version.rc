@@ -15,7 +15,7 @@ BEGIN
 			VALUE "FileDescription", "Launcher for DMDirc"
 			VALUE "FileVersion", "2.0"
 			VALUE "InternalName", "DMDirc.exe"
-			VALUE "LegalCopyright", "Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes"
+			VALUE "LegalCopyright", "Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes"
 			VALUE "OriginalFilename", "$2"
 			VALUE "ProductName", "DMDirc Launcher"
 		END

@@ -3,7 +3,7 @@
 # This script launches dmdirc and attempts to update the jar file if needed.
 #
 # DMDirc - Open Source IRC Client
-# Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
+# Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -97,7 +97,7 @@ launcherUpdater=${profiledir}/updateLauncher.sh
 echo "---------------------"
 echo "DMDirc - Open Source IRC Client"
 echo "Launcher Version: ${LAUNCHERVERSION}"
-echo "Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes"
+echo "Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes"
 echo "---------------------"
 
 echo -n "Checking for launcher updates in ${profiledir} - ";

@@ -3,7 +3,7 @@
 # This script generates a .run file that will install DMDirc
 #
 # DMDirc - Open Source IRC Client
-# Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
+# Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -328,7 +328,7 @@ exit 0;
 # This script installs dmdirc
 #
 # DMDirc - Open Source IRC Client
-# Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
+# Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
