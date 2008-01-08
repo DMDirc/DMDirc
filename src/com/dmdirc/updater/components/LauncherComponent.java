@@ -76,9 +76,9 @@ public class LauncherComponent implements UpdateComponent {
 
     /** {@inheritDoc} */
     @Override
-    public void doInstall(final String path) throws Throwable {
+    public boolean doInstall(final String path) throws Throwable {
+        final File tmpFile = new File(path);
         if (platform.equalsIgnoreCase("Linux")) {
-            final File tmpFile = new File(path);
             final File targetFile = new File(tmpFile.getParent() + File.separator + ".launcher.sh");
 
             if (targetFile.exists()) {
@@ -86,8 +86,12 @@ public class LauncherComponent implements UpdateComponent {
             }
 
             tmpFile.renameTo(targetFile);
+            return true;
         } else {
-            throw new UnsupportedOperationException("Not supported yet.");
+            final ZipResourceManager ziprm = ZipResourceManager.getInstance(path);
+            ziprm.extractResources("", tmpFile.getParent()+ File.separator);
+            new File(path).delete();
+            return false;
         }
     }
 
