@@ -29,10 +29,16 @@ import java.lang.ref.WeakReference;
  * An extension of WeakReference that implements a sane equals and hashcode
  * method.
  * 
+ * @param <T> The type of object that this reference contains
  * @author chris
  */
 public class EquatableWeakReference<T> extends WeakReference<T> {
     
+    /**
+     * Creates a new instance of EquatableWeakReference.
+     * 
+     * @param referent The object that this weak reference should reference.
+     */
     public EquatableWeakReference(T referent) {
         super(referent);
     }

@@ -34,6 +34,7 @@ import com.dmdirc.updater.UpdateComponent;
  */
 public class ActionGroupComponent implements UpdateComponent {
     
+    /** The group that this component represents. */
     private ActionGroup group;
     
     /**

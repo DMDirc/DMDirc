@@ -35,7 +35,22 @@ public final class ConfigTarget implements Comparable, Serializable {
     
     /** The possible target types. */
     public static enum TYPE {
-        GLOBALDEFAULT, GLOBAL, THEME, PROFILE, IRCD, NETWORK, SERVER, CHANNEL,
+        /** Client-wide default settings. */
+        GLOBALDEFAULT,
+        /** Client-wide settings. */
+        GLOBAL,
+        /** Settings for a theme. */
+        THEME,
+        /** Settings for a profile. */
+        PROFILE,
+        /** Settings for an IRCd. */
+        IRCD,
+        /** Settings for a network. */
+        NETWORK,
+        /** Settings for a server. */
+        SERVER,
+        /** Settings for a channel. */
+        CHANNEL,
     }
     
     /**
@@ -224,6 +239,7 @@ public final class ConfigTarget implements Comparable, Serializable {
      *
      * @return A string representation of this object
      */
+    @Override
     public String toString() {
         switch (type) {
         case GLOBALDEFAULT:

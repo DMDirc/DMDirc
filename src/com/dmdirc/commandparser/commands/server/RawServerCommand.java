@@ -35,6 +35,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
  */
 public final class RawServerCommand extends ServerCommand {
     
+    /** The name of this raw command. */
     private final String myName;
     
     /**

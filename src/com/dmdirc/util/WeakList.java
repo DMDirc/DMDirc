@@ -30,18 +30,27 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- *
- * @param <T>
+ * Implements a list of weak references. The weak references (and subsequent
+ * garbage collection) are handled transparently.
+ * 
+ * @param <T> The type of object that this list will contain.
  * @author chris
  */
 public class WeakList<T> implements List<T> {
 
+    /** The items in this list. */
     private final List<WeakReference<T>> list = new ArrayList<WeakReference<T>>();
 
+    /**
+     * Creates a new instance of WeakList.
+     */
     public WeakList() {
         super();
     }
 
+    /**
+     * Removes any entries from the list that have been GC'd.
+     */
     private void cleanUp() {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).get() == null) {
@@ -50,6 +59,12 @@ public class WeakList<T> implements List<T> {
         }
     }
 
+    /**
+     * Dereferences the specified list of WeakReferences to get a plain List.
+     * 
+     * @param list The list to be dereferenced
+     * @return A list containing the items referenced by the specified list
+     */
     private List<T> dereferenceList(final List<WeakReference<T>> list) {
         final List<T> res = new ArrayList<T>();
 
@@ -62,6 +77,14 @@ public class WeakList<T> implements List<T> {
         return res;
     }
 
+    /**
+     * Creates a new collection of weak references to elements in the specified
+     * collection.
+     * 
+     * @param c The collection whose elements should be referenced
+     * @return A copy of the specified collection, with each item wrapped in
+     * a weak reference.
+     */
     @SuppressWarnings(value = "unchecked")
     private Collection<WeakReference<T>> referenceCollection(final Collection<?> c) {
         final Collection<WeakReference<T>> res = new ArrayList<WeakReference<T>>();

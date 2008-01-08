@@ -43,11 +43,17 @@ public final class Update {
      * An enumeration of possible statuses.
      */
     public static enum STATUS {
+        /** The update is waiting to be started. */
         PENDING,
+        /** The update is currently downloading. */
         DOWNLOADING,
+        /** The update is currently installing. */
         INSTALLING,
+        /** The update has been installed correctly. */
         INSTALLED,
+        /** An error was encountered during update. */
         ERROR,
+        /** A restart is needed to complete the update. */
         RESTART_NEEDED
     }
 

@@ -31,6 +31,7 @@ import java.nio.charset.Charset;
  */
 public class StringTranscoder {
    
+    /** The charset that is used by this transcoder. */
     private final Charset charset;
     
     /**

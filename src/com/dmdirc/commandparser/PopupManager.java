@@ -22,14 +22,8 @@
 
 package com.dmdirc.commandparser;
 
-import com.dmdirc.Precondition;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * The popup manager manages which commands should be present in popup menus.
@@ -50,13 +44,20 @@ public class PopupManager {
      * Configuration data is read from the specified config manager.
      * 
      * @param menuType The type of the menu that is needed
-     * @param configManager The config manager to be used for the mnenu
+     * @param configManager The config manager to be used for the menu
      * @return The PopupMenu that should be displayed
      */
     public static PopupMenu getMenu(final PopupType menuType, final ConfigManager configManager) {
         return getMenu(menuType.toString(), configManager);
     }
     
+    /**
+     * Retrieves the menu with the specified name.
+     * 
+     * @param menuName The name of the menu to read
+     * @param configManager The config manager to be used for the menu
+     * @return The PopupMenu with the specified name
+     */
     private static PopupMenu getMenu(final String menuName, final ConfigManager configManager) {
         final PopupMenu res = new PopupMenu();
         
@@ -71,6 +72,13 @@ public class PopupManager {
         return res;
     }
     
+    /**
+     * Creates a PopupMenuItem for the specified item.
+     * 
+     * @param item The item to be turned into a PopupMenuItem
+     * @param configManager The config manager to beused for the menu
+     * @return The corresponding PopupMenuItem
+     */
     private static PopupMenuItem getItem(final String item, final ConfigManager configManager) {
         PopupMenuItem res;
         

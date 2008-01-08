@@ -32,15 +32,20 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 
 /**
- *
+ * An RMI server that allows other clients to interact with DMDirc.
+ * 
  * @author chris
  */
 public class RemoteServer implements RemoteInterface {
     
+    /**
+     * Creates a new instance of RemoteServer.
+     */
     public RemoteServer() {
         super();
     }
     
+    /** {@inheritDoc} */
     @Override
     public void connect(List<IrcAddress> addresses) throws RemoteException {
         for (IrcAddress address : addresses) {

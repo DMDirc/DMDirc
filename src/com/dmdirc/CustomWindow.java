@@ -28,6 +28,7 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.Window;
 
 /**
+ * A generic custom window implementation.
  * 
  * @author chris
  */
@@ -39,10 +40,19 @@ public class CustomWindow extends FrameContainer {
     /** This custom window's title. */
     private final String title;
 
+    /** The window used by this container. */
     private Window window;
 
+    /** This window's parent window. */
     private Window parent = null;
 
+    /**
+     * Creates a new custom window as a child of the specified window.
+     * 
+     * @param name The name of this custom window
+     * @param title The title of this custom window
+     * @param parent The parent of this custom window
+     */
     public CustomWindow(final String name, final String title,
             final Window parent) {
         super();
@@ -62,6 +72,12 @@ public class CustomWindow extends FrameContainer {
         window.setVisible(true);
     }
 
+    /**
+     * Creates a new custom window as a top-level window.
+     * 
+     * @param name The name of this custom window
+     * @param title The parent of this custom window
+     */
     public CustomWindow(final String name, final String title) {
         super();
 
@@ -134,6 +150,7 @@ public class CustomWindow extends FrameContainer {
         return title;
     }
 
+    /** {@inheritDoc} */
     @Override
     public ConfigManager getConfigManager() {
         return parent == null ? IdentityManager.getGlobalConfig() : parent

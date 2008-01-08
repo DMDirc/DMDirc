@@ -33,7 +33,7 @@ public final class DMDircExceptionHandler implements Thread.UncaughtExceptionHan
     }
     
     /** {@inheritDoc} */
-    public void uncaughtException(final Thread thread, final Throwable throwable) {
-        Logger.appError(ErrorLevel.HIGH, throwable.toString(), throwable);
+    public void uncaughtException(final Thread t, final Throwable e) {
+        Logger.appError(ErrorLevel.HIGH, e.toString(), e);
     }
 }

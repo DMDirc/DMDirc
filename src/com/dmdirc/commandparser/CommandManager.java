@@ -43,7 +43,6 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.util.MapList;
-import com.dmdirc.util.WeakList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -376,6 +375,13 @@ public final class CommandManager {
         return getCommand(null, name);
     }
     
+    /**
+     * Retrieves a command of the specified type with the specified name.
+     * 
+     * @param type The type of the command to look for
+     * @param name The name to look for
+     * @return A command with a matching signature, or null if none were found
+     */
     public static Command getCommand(final CommandType type, final String name) {
         final List<Command> res = getCommands(type, name);
         
@@ -393,6 +399,12 @@ public final class CommandManager {
                 || getCommand(CommandType.TYPE_CHAT, command) != null;
     }
        
+    /**
+     * Retrieves a list of the names of all commands of the specified type.
+     * 
+     * @param type The type of command to list
+     * @return A list of command names
+     */
     public static List<String> getCommandNames(final CommandType type) {
         final List<String> res = new ArrayList<String>();
         
@@ -403,10 +415,24 @@ public final class CommandManager {
         return res;
     }
     
+    /**
+     * Retrieves a list of all commands of the specified type.
+     * 
+     * @param type The type of command to list
+     * @return A list of commands
+     */    
     public static List<Command> getCommands(final CommandType type) {    
         return getCommands(type, null);
     }
     
+    /**
+     * Retrieves a list of all commands of the specified type, with the
+     * specified name.
+     * 
+     * @param type The type of command to list, or null for all types
+     * @param name The name of the command to look for, or null for any name
+     * @return A list of matching commands
+     */    
     private static List<Command> getCommands(final CommandType type,
             final String name) {
         final List<Command> res = new ArrayList<Command>();

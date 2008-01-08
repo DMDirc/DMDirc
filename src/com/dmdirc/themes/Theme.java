@@ -27,7 +27,6 @@ import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.util.resourcemanager.ZipResourceManager;
-import com.dmdirc.ui.messages.Formatter;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +42,7 @@ public class Theme {
     /** The file to load the theme from. */
     private final File file;
     
+    /** The resource manager we're using for this theme. */
     private ZipResourceManager rm;
     
     /**

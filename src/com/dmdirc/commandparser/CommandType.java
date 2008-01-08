@@ -30,17 +30,30 @@ import com.dmdirc.commandparser.commands.QueryCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
 
 /**
- *
+ * Defines the possible targets for commands.
+ * 
  * @author chris
  */
 public enum CommandType {
     
+    /** A global command, which may be executed anywhere. */
     TYPE_GLOBAL,
+    /** A server command, which only makes sense in the context of a connection. */
     TYPE_SERVER,
+    /** A chat command, which needs a MessageTarget to make sense. */
     TYPE_CHAT,
+    /** A channel command. */
     TYPE_CHANNEL,
+    /** A query command. */
     TYPE_QUERY;
-    
+   
+    /**
+     * Looks up the command type for the specified command, by inspecting its
+     * class.
+     * 
+     * @param command The command to look up
+     * @return The type of the specified command
+     */
     public static CommandType fromCommand(final Command command) {
         if (command instanceof GlobalCommand) {
             return TYPE_GLOBAL;

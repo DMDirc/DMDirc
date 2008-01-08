@@ -35,40 +35,20 @@ public enum PopupType {
      * 
      * Expected arguments: the nickname of the user who was clicked on.
      */
-    CHAN_NICKLIST("nick", "chan-nick", "chan-nick-list"),
+    CHAN_NICKLIST,
         
     /**
      * The menu that appears when right clicking in a channel window.
      * 
      * Expected arguments: none.
      */
-    CHAN_CHAN("chan"),
+    CHAN_CHAN,
     
     /**
      * The menu that appears when right clicking in a query window.
      * 
      * Expected arguments: the nickname of the user who the query is with.
      */
-    QUERY_QUERY("nick", "query");
-    
-    private final String[] domains;
-    
-    /**
-     * Instansiates one of the PopupTypes.
-     * 
-     * @param domains The configuration domains used for the type
-     */
-    PopupType(final String ... domains) {
-        this.domains = domains;
-    }
-    
-    /**
-     * Retrieve a list of the domains that should be used by this type.
-     * 
-     * @return This type's domains
-     */
-    public String[] getDomains() {
-        return domains.clone();
-    }
-    
+    QUERY_QUERY;
+       
 }

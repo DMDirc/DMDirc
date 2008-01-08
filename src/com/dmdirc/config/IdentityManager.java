@@ -157,6 +157,12 @@ public final class IdentityManager {
         }
     }
     
+    /**
+     * Loads an identity from the specified file. If the identity already
+     * exists, it is told to reload instead.
+     * 
+     * @param file The file to load the identity from.
+     */
     private static void loadIdentity(final File file) {
         for (Identity identity : identities) {
             if (file.equals(identity.getFile())) {

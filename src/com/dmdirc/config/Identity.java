@@ -74,6 +74,7 @@ public class Identity extends ConfigSource implements Serializable,
     /** The configuration details for this identity. */
     protected final Properties properties;
     
+    /** The global config manager. */
     protected ConfigManager globalConfig;
     
     /** The config change listeners for this source. */
@@ -220,6 +221,12 @@ public class Identity extends ConfigSource implements Serializable,
         }
     }
     
+    /**
+     * Fires the config changed listener for the specified option after this
+     * identity is reloaded.
+     * 
+     * @param object A string describing the changed option (domain.key)
+     */
     private void fireReloadChange(final Object object) {
         final String string = (String) object;
         final String domain = string.substring(0, string.indexOf('.'));

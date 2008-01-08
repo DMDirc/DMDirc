@@ -27,23 +27,40 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- *
+ * Represents an abstract, UI-independent popup menu.
+ * 
  * @author chris
  */
 public class PopupMenu {
     
+    /** The items contained within this popup menu. */
     private final List<PopupMenuItem> items = new ArrayList<PopupMenuItem>();
     
+    /**
+     * Retrieves a list of items contained within this popup menu.
+     * 
+     * @return A list of this popup menu's items.
+     */
     public List<PopupMenuItem> getItems() {
         return items;
     }
 
-    public boolean add(final PopupMenuItem e) {
-        return items.add(e);
+    /**
+     * Adds the specified item to this popup menu.
+     * 
+     * @param e The item to be added to the popup menu.
+     */
+    public void add(final PopupMenuItem e) {
+        items.add(e);
     }
 
-    public boolean addAll(final Collection<? extends PopupMenuItem> c) {
-        return items.addAll(c);
+    /**
+     * Adds all of the items in the specified collection to this popup menu.
+     * 
+     * @param c The collection whose items should be added.
+     */
+    public void addAll(final Collection<? extends PopupMenuItem> c) {
+        items.addAll(c);
     }    
 
 }
