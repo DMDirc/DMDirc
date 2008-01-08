@@ -102,6 +102,8 @@ public enum CoreActionType implements ActionType {
     SERVER_GOTPING(ServerEvents.SERVER_PING, "Received server ping reply"),
     /** Missed server ping reply. */
     SERVER_NOPING(ServerEvents.SERVER_PING, "Missed server ping reply"),
+    /** Ping sent. */
+    SERVER_PINGSENT(ServerEvents.SERVER_EVENT, "Ping request sent"),
     
     /** Invite received. */
     SERVER_INVITERECEIVED(ServerEvents.SERVER_INVITE, "Invite received"),

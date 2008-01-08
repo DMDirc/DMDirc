@@ -45,7 +45,7 @@ public final class ServerEventHandler extends EventHandler
         IPrivateNotice, IMOTDStart, IMOTDLine, IMOTDEnd, INumeric, IPingFailed,
         IPingSuccess, IAwayState, IConnectError, IAwayStateOther, INickInUse,
         IPost005, INoticeAuth, IUnknownNotice, IUserModeChanged, IInvite,
-        IWallop, IWalluser, IWallDesync, INickChanged, IServerError {
+        IWallop, IWalluser, IWallDesync, INickChanged, IServerError, IPingSent {
     
     /** The server instance that owns this event handler. */
     private final Server owner;
@@ -190,6 +190,14 @@ public final class ServerEventHandler extends EventHandler
         checkParser(tParser);
         owner.onPingFailed();
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void onPingSent(IRCParser tParser) {
+        checkParser(tParser);
+        
+        ActionManager.processEvent(CoreActionType.SERVER_PINGSENT, null, owner);
+    }    
     
     /** {@inheritDoc} */
     @Override

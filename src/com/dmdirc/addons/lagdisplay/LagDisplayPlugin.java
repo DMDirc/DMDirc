@@ -35,6 +35,7 @@ import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.interfaces.Window;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -82,7 +83,8 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
         
         ActionManager.addListener(this, CoreActionType.SERVER_GOTPING,
                 CoreActionType.SERVER_NOPING, CoreActionType.CLIENT_FRAME_CHANGED,
-                CoreActionType.SERVER_DISCONNECTED);
+                CoreActionType.SERVER_DISCONNECTED, CoreActionType.SERVER_PINGSENT,
+                CoreActionType.SERVER_NUMERIC);
     }
     
     /** {@inheritDoc} */
@@ -143,6 +145,25 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
                 label.setText(pings.get(source.getServer()));
             } else {
                 label.setText("Unknown");
+            }
+        } else if (useAlternate && type.equals(CoreActionType.SERVER_PINGSENT)) {
+            ((Server) arguments[0]).getParser().sendLine("LAGCHECK_" + new Date().getTime());
+        } else if (useAlternate && type.equals(CoreActionType.SERVER_NUMERIC)
+                && ((Integer) arguments[1]).intValue() == 421
+                && ((String[]) arguments[2])[3].startsWith("LAGCHECK_")) {            
+            try {
+                final long sent = Long.parseLong(((String[]) arguments[2])[3].substring(9));
+                final Long duration = Long.valueOf(new Date().getTime() - sent);
+                final String value = formatTime(duration);
+                final Window active = Main.getUI().getMainWindow().getActiveFrame();
+                
+                pings.put((Server) arguments[0], value);
+                
+                if (((Server) arguments[0]).ownsFrame(active)) {
+                    label.setText(value);
+                }                
+            } catch (NumberFormatException ex) {
+                pings.remove((Server) arguments[0]);
             }
         }
     }
