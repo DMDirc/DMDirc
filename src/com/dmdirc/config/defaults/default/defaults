@@ -53,11 +53,11 @@ notifications.numeric_007=group:map
 notifications.numeric_015=group:map
 notifications.numeric_017=group:map
 
-notifications.numeric_261=group:lusers
-notifications.numeric_262=group:lusers
-notifications.numeric_263=group:lusers
-notifications.numeric_264=group:lusers
-notifications.numeric_265=group:lusers
+notifications.numeric_251=group:lusers
+notifications.numeric_252=group:lusers
+notifications.numeric_253=group:lusers
+notifications.numeric_254=group:lusers
+notifications.numeric_255=group:lusers
 
 notifications.numeric_290=server
 notifications.numeric_292=server

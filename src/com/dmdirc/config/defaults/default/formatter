@@ -202,11 +202,11 @@ formatter.numeric_007 = \u0011%4$s
 formatter.numeric_015 = \u0011%4$s
 formatter.numeric_017 = \u0011%4$s
 
-formatter.numeric_261 = \u000310%4$s
-formatter.numeric_262 = \u000310%4$s %5$s
-formatter.numeric_263 = \u000310%4$s %5$s
-formatter.numeric_264 = \u000310%4$s %5$s
-formatter.numeric_265 = \u000310%4$s
+formatter.numeric_251 = \u000310%4$s
+formatter.numeric_252 = \u000310%4$s %5$s
+formatter.numeric_253 = \u000310%4$s %5$s
+formatter.numeric_254 = \u000310%4$s %5$s
+formatter.numeric_255 = \u000310%4$s
 
 formatter.numeric_290 = \u0002%4$s
 formatter.numeric_292 = %4$s
