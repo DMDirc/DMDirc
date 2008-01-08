@@ -60,16 +60,17 @@ public final class ConfigManager extends ConfigSource implements Serializable,
             = new MapList<String, ConfigChangeListener>();
     
     /** The ircd this manager is for. */
-    private final String ircd;
+    private String ircd;
     /** The network this manager is for. */
-    private final String network;
+    private String network;
     /** The server this manager is for. */
-    private final String server;
+    private String server;
     /** The channel this manager is for. */
-    private final String channel;
+    private String channel;
     
     /**
      * Creates a new instance of ConfigManager.
+     * 
      * @param ircd The name of the ircd for this manager
      * @param network The name of the network for this manager
      * @param server The name of the server for this manager
@@ -81,6 +82,7 @@ public final class ConfigManager extends ConfigSource implements Serializable,
     
     /**
      * Creates a new instance of ConfigManager.
+     * 
      * @param ircd The name of the ircd for this manager
      * @param network The name of the network for this manager
      * @param server The name of the server for this manager
@@ -180,6 +182,7 @@ public final class ConfigManager extends ConfigSource implements Serializable,
      */
     public void removeIdentity(final Identity identity) {
         synchronized (sources) {
+            identity.removeListener(this);
             sources.remove(identity);
         }
     }
@@ -251,12 +254,68 @@ public final class ConfigManager extends ConfigSource implements Serializable,
     }
     
     /**
+     * Migrates this ConfigManager from its current configuration to the
+     * appropriate one for the specified new parameters, firing listeners where
+     * settings have changed.
+     * 
+     * @param ircd The new name of the ircd for this manager
+     * @param network The new name of the network for this manager
+     * @param server The new name of the server for this manager
+     * @param channel The new name of the channel for this manager
+     */
+    public void migrate(final String ircd, final String network, final String server,
+            final String channel) {
+        final ConfigManager old = new ConfigManager(this.ircd, this.network,
+                this.server, this.channel);
+        
+        this.ircd = ircd;
+        this.network = network;
+        this.server = server;
+        this.channel = channel;
+        
+        for (Identity identity : new ArrayList<Identity>(sources)) {
+            removeIdentity(identity);
+        }
+        
+        sources = IdentityManager.getSources(ircd, network, server, channel);
+        for (Identity identity : sources) {
+            identity.addListener(this);
+        }
+        
+        final List<String> myDomains = getDomains();
+        for (String domain : myDomains) {
+            final List<String> myKeys = getOptions(domain);
+            
+            for (String key : myKeys) {
+                if (!old.hasOption(domain, key) || 
+                        !old.getOption(domain, key).equals(getOption(domain, key))) {
+                    configChanged(domain, key);
+                }
+            }
+            
+            for (String key : old.getOptions(domain)) {
+                if (!myKeys.contains(key)) {
+                    configChanged(domain, key);
+                }
+            }
+        }
+        
+        for (String domain : old.getDomains()) {
+            if (!myDomains.contains(domain)) {
+                for (String key : old.getOptions(domain)) {
+                    configChanged(domain, key);
+                }
+            }
+        }
+    }
+    
+    /**
      * Records the lookup request for the specified domain & option.
      *
      * @param domain The domain that is being looked up
      * @param option The option that is being looked up
      */
-    private void doStats(final String domain, final String option) {
+    protected static void doStats(final String domain, final String option) {
         final String key = domain + "." + option;
         
         stats.put(key, 1 + (stats.containsKey(key) ? stats.get(key) : 0));

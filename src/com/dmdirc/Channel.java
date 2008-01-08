@@ -148,6 +148,8 @@ public final class Channel extends MessageTarget
      */
     private void registerCallbacks() {
         eventHandler.registerCallbacks();
+        configManager.migrate(server.getIrcd(), server.getNetwork(),
+                server.getName(), channelInfo.getName());
     }
     
     /**
