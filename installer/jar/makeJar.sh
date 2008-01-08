@@ -166,7 +166,7 @@ if [ "${isRelease}" != "" ]; then
 	if [ "" != "${finalTag}" ]; then
 		finalTag="-${finalTag}"
 	fi;
-	finalname=DMDirc-${isRelease}-Setup${finalTag}.jar
+	finalname=DMDirc-${isRelease}${finalTag}.jar
 else
 	finalname=${RUNNAME##*/}
 fi;
