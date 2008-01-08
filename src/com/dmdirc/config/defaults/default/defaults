@@ -75,12 +75,12 @@ notifications.numeric_320=group:whois
 notifications.numeric_330=group:whois
 notifications.numeric_343=group:whois
 
-notifications.numeric_401=lastcommand:(whois|msg|notice|ctcp|invite) %4$s( .*?)?
+notifications.numeric_401=lastcommand:(raw )?(whois|(priv)?msg|notice|ctcp|invite) %4$s( .*?)?
 notifications.numeric_404=channel:%4$s
 notifications.numeric_405=server
 notifications.numeric_421=server
 notifications.numeric_433=server
-notifications.numeric_461=lastcommand:%4$s .*
+notifications.numeric_461=lastcommand:(raw )?%4$s( .*)?
 notifications.numeric_471=server
 notifications.numeric_472=server
 notifications.numeric_473=server
@@ -88,7 +88,7 @@ notifications.numeric_474=server
 notifications.numeric_475=server
 notifications.numeric_479=server
 notifications.numeric_482=channel:%4$s
-notifications.numeric_486=lastcommand:msg %4$s .*
+notifications.numeric_486=lastcommand:(raw priv)?msg %4$s .*
 notifications.numeric_499=channel:%4$s
 
 notifications.numeric_501=server
@@ -100,7 +100,7 @@ notifications.numeric_705=server
 
 notifications.lusers=server
 notifications.map=window:Network Map
-notifications.whois=lastcommand:whois %4$s( %4$s)?
+notifications.whois=lastcommand:(raw )?whois %4$s( %4$s)?
 
 ui.backgroundcolour=0
 ui.foregroundcolour=1
