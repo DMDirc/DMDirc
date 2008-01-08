@@ -24,69 +24,55 @@ package com.dmdirc;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.dummy.DummyController;
+import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ServerTest extends junit.framework.TestCase {
-
+public class InviteTest extends junit.framework.TestCase {
+    
     private Server server;
-
+    private Invite test;
+    private long ts;
+    
     @Before
     public void setUp() throws Exception {
         Main.setUI(new DummyController());
         IdentityManager.load();
+        
         server = new Server("255.255.255.255", 6667, "", false, IdentityManager.getProfiles().get(0));
+        test = new Invite(server, "#channel", "nick!ident@host");
+        server.addInvite(test);
+        ts = new Date().getTime();
+    }    
+
+    @Test
+    public void testGetServer() {
+        assertEquals(server, test.getServer());
     }
 
     @Test
-    public void testGetNetworkFromServerName() {
-        final String[][] tests = {
-            {"foo.com", "foo.com"},
-            {"bar.foo.com", "foo.com"},
-            {"irc.us.foo.com", "foo.com"},
-            {"irc.foo.co.uk", "foo.co.uk"},
-            {"com", "com"},
-            {"localhost", "localhost"},
-            {"foo.de", "foo.de"}
-        };
-
-        for (String[] test : tests) {
-            assertEquals(test[1], Server.getNetworkFromServerName(test[0]));
-        }
+    public void testGetChannel() {
+        assertEquals("#channel", test.getChannel());
     }
 
     @Test
-    public void testDuplicateInviteRemoval() {
-        server.disconnect();
-        
-        server.addInvite(new Invite(server, "#chan1", "a!b@c"));
-        server.addInvite(new Invite(server, "#chan1", "d!e@f"));
-
-        assertEquals(1, server.getInvites().size());
-        assertEquals("d", server.getInvites().get(0).getSource()[0]);
-        server.removeInvites("#chan1");
+    public void testGetTimestamp() {
+        assertTrue(test.getTimestamp() - ts < 10000);
+        assertTrue(test.getTimestamp() - ts > -10000);
     }
 
     @Test
-    public void testRemoveInvites() {
-        server.disconnect();
-        
-        server.addInvite(new Invite(server, "#chan1", "a!b@c"));
-        server.addInvite(new Invite(server, "#chan2", "d!e@f"));
-
-        server.removeInvites("#chan1");
-        assertEquals(1, server.getInvites().size());
-
-        server.removeInvites("#chan2");
-        assertEquals(0, server.getInvites().size());
+    public void testGetSource() {
+        assertEquals(3, test.getSource().length);
+        assertEquals("nick", test.getSource()[0]);
+        assertEquals("ident", test.getSource()[1]);
+        assertEquals("host", test.getSource()[2]);
     }
 
     @Test
-    public void testRemoveInvitesOnDisconnect() {
-        server.reconnect();
-        server.addInvite(new Invite(server, "#chan1", "a!b@c"));
-        server.disconnect();
+    public void testAccept() {
+        test.accept();
         assertEquals(0, server.getInvites().size());
     }
 

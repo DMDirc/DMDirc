@@ -326,6 +326,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             myState = ServerState.DISCONNECTED;
         }
 
+        removeInvites();
         updateIcon();
 
         if (parser != null && parser.getSocketState() == IRCParser.STATE_OPEN) {
@@ -826,6 +827,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         myState = ServerState.CLOSING;
         closeChannels();
         closeQueries();
+        removeInvites();
 
         if (raw != null) {
             raw.close();
@@ -1082,6 +1084,8 @@ public final class Server extends WritableFrameContainer implements Serializable
         if (configManager.getOptionBool(DOMAIN_GENERAL, "closequeriesondisconnect", false)) {
             closeQueries();
         }
+        
+        removeInvites();
 
         if (configManager.getOptionBool(DOMAIN_GENERAL, "reconnectondisconnect", false)) {
             doDelayedReconnect();
@@ -1326,6 +1330,15 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
         }
     }
+    
+    /**
+     * Removes all invites for all channels.
+     */
+    private void removeInvites() {
+        for (Invite invite : new ArrayList<Invite>(invites)) {
+            removeInvite(invite);
+        }
+    }    
 
     /**
      * Removes an invite from this server, and fires the appropriate listeners.
