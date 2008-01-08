@@ -5,6 +5,8 @@
 
 # Path to trunk
 MYDIR="/home/dmdirc/google"
+# Path to scripts
+SCRIPTDIR="/home/dmdirc/scripts"
 # Path to ant binary
 ANT="/usr/bin/ant"
 # Path to svn binary
@@ -23,7 +25,7 @@ else
 fi
 
 # Run junit issue notifier
-$MYDIR/../scripts/junit-failures.php
+$SCRIPTDIR/junit-failures.php
 
 # Oblong junit announcement
 LINE=`cat junitreports/overview-summary.html | grep "%</td"`
