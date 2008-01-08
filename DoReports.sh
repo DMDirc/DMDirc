@@ -21,6 +21,11 @@ elif [ "$1" = "--findbugs" ]; then
 else
 	$ANT -k -buildfile $MYDIR/doreports.xml domostreports
 fi
+
+# Run junit issue notifier
+$MYDIR/../scripts/junit-failures.php
+
+# Oblong junit announcement
 LINE=`cat junitreports/overview-summary.html | grep "%</td"`
 PASSRATE=`expr "$LINE" : '.*<td>\(.*\)%</td>'`
 if [ "${PASSRATE}" = "" ]; then
