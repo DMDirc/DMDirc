@@ -37,7 +37,7 @@ public interface IChannelAwayStateOther extends ICallbackInterface {
 	 *
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param channel Channel this is for
-	 * @param channelclient Client this is for
+	 * @param channelClient Client this is for
 	 * @param state Away State (true if away, false if here)
 	 * @see com.dmdirc.parser.ProcessAway#callChannelAwayStateOther
 	 */

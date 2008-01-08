@@ -159,7 +159,7 @@ public final class ParserError {
 	}
 	
 	/**
-	 * Add to the error information
+	 * Add to the error information.
 	 *
 	 * @param data Information to add to the end of the existing Data
 	 */

@@ -126,7 +126,7 @@ public class ProcessNames extends IRCProcessor {
 	} 
 	
 	/**
-	 * Create a new instance of the IRCProcessor Object
+	 * Create a new instance of the IRCProcessor Object.
 	 *
 	 * @param parser IRCParser That owns this IRCProcessor
 	 * @param manager ProcessingManager that is in charge of this IRCProcessor

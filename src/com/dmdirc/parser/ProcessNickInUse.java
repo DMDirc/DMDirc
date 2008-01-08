@@ -93,7 +93,7 @@ public class ProcessNickInUse extends IRCProcessor {
 	} 
 	
 	/**
-	 * Create a new instance of the ProcessNickInUse Object
+	 * Create a new instance of the ProcessNickInUse Object.
 	 *
 	 * @param parser IRCParser That owns this object
 	 * @param manager ProcessingManager that is in charge of this object

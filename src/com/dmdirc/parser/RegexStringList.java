@@ -35,19 +35,20 @@ import java.util.List;
  */
 public class RegexStringList {
 	
-	/** Arraylist storing ignore patterns */
+	/** Arraylist storing ignore patterns. */
 	protected final List<String> ignoreInfo = new ArrayList<String>();
 
 	/**
 	 * Creates a new instance of RegexStringList.
-	 */ 
+	 */
 	public RegexStringList() {
 		// Do nothing
 	}
-        
+
 	/**
 	 * Creates a new instance of RegexStringList, with the specified items.
-	 * @param items 
+	 *
+	 * @param items Items to add to this RegexStringList
 	 */ 
 	public RegexStringList(final List<String> items) {
 		ignoreInfo.addAll(items);
@@ -80,7 +81,7 @@ public class RegexStringList {
 	}
 	
 	/**
-	 * Delete an ignore from the list
+	 * Delete an ignore from the list.
 	 *
 	 * @param position Position in the list to remove
 	 */
@@ -91,14 +92,14 @@ public class RegexStringList {
 	}
 	
 	/**
-	 * Clear the ignore list
+	 * Clear the ignore list.
 	 */
 	public void clear() {
 		ignoreInfo.clear();
 	}	
 	
 	/**
-	 * Check if a string matches any of the ignores in the list
+	 * Check if a string matches any of the ignores in the list.
 	 *
 	 * @param check String to check (Patterns are matched case-insensitively as ^pattern$)
 	 * @return integer showing the position of the first match in the ignore list (-1 if none)
@@ -113,7 +114,7 @@ public class RegexStringList {
 	}
 	
 	/**
-	 * Check if a string matches a specific ignore in the list
+	 * Check if a string matches a specific ignore in the list.
 	 *
 	 * @param position Position to check
 	 * @param check String to check (Patterns are matched case-insensitively as ^pattern$)

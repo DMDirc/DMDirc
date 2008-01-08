@@ -50,7 +50,7 @@ public class ProcessingManager {
 	}
 
 	/**
-	 * Constructor to create a ProcessingManager
+	 * Constructor to create a ProcessingManager.
 	 *
 	 * @param parser IRCParser that owns this Processing Manager
 	 */
@@ -177,6 +177,7 @@ public class ProcessingManager {
 	 *
 	 * @param sParam Type of line to process ("005", "PRIVMSG" etc)
 	 * @return IRCProcessor for the given param.
+	 * @throws ProcessorNotFoundException if no processer exists for the param
 	 */
 	public IRCProcessor getProcessor(final String sParam) throws ProcessorNotFoundException {
 		if (processHash.containsKey(sParam.toLowerCase())) {

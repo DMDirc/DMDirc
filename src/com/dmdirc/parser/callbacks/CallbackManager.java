@@ -229,7 +229,7 @@ public final class CallbackManager {
 	 * @param callbackName Name of callback object.
 	 * @param o instance of ICallbackInterface to add.
 	 * @param target Parameter to specify that a callback should only fire for specific things
-	 * @throws CallbackNotFoundException If callback is not found.
+	 * @return true/false if the callback was added or not.
 	 */
 	public boolean addNonCriticalCallback(final String callbackName, final ICallbackInterface o, final String target) {
 		try {

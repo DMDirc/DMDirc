@@ -66,6 +66,7 @@ public final class ChannelClientInfo {
 	 * Set the Map object attatched to this object.
 	 *
 	 * @param newMap New Map to attatch.
+	 * @see #getMap
 	 */
 	public void setMap(Map newMap) {
 		myMap = newMap;
@@ -75,6 +76,7 @@ public final class ChannelClientInfo {
 	 * Get the Map object attatched to this object.
 	 *
 	 * @return Map to attatched to this.
+	 * @see #setMap
 	 */
 	public Map getMap() {
 		return myMap;
@@ -93,7 +95,7 @@ public final class ChannelClientInfo {
 	 */
 	public ClientInfo getClient() { return cClient; }
 	/**
-	 * Get the Channel object that owns this ChannelClient
+	 * Get the Channel object that owns this ChannelClient.
 	 *
 	 * @return Channel object that owns this ChannelClient
 	 */
@@ -109,7 +111,7 @@ public final class ChannelClientInfo {
 	 * Set the modes this client has (Prefix modes).
 	 *
 	 * @param nNewMode integer representing the modes this client has.
-	 */	
+	 */
 	public void setChanMode(final long nNewMode) { nModes = nNewMode; }
 	/**
 	 * Get the modes this client has (Prefix modes).

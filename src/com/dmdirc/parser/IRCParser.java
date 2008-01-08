@@ -1031,7 +1031,7 @@ public final class IRCParser implements Runnable {
 	protected int getLastLimit() { return lastLimit; }
 
 	/**
-	 * Update the character arrays
+	 * Update the character arrays.
 	 *
 	 * @param limit Number of post-alphabetical characters to convert
 	 *              0 = ascii encoding
@@ -1058,7 +1058,7 @@ public final class IRCParser implements Runnable {
 	}
 
 	/**
-	 * Get the lowercase version of a String for this Server
+	 * Get the lowercase version of a String for this Server.
 	 *
 	 * @param sInputString String to lowercase
 	 */
@@ -1075,7 +1075,7 @@ public final class IRCParser implements Runnable {
 	}
 
 	/**
-	 * Get the uppercase version of a String for this Server
+	 * Get the uppercase version of a String for this Server.
 	 *
 	 * @param sInputString String to uppercase
 	 */
@@ -1960,7 +1960,7 @@ public final class IRCParser implements Runnable {
 	public ClientInfo getMyself() { return cMyself; }
 
 	/**
-	 * Set the cMyself variable
+	 * Set the cMyself variable.
 	 *
 	 * @param client new "myself" client
 	 */
@@ -1992,7 +1992,7 @@ public final class IRCParser implements Runnable {
 	}
 
 	/**
-	 * Add a client to the ClientList
+	 * Add a client to the ClientList.
 	 *
 	 * @param client Client to add
 	 */
@@ -2023,7 +2023,7 @@ public final class IRCParser implements Runnable {
 	}
 
 	/**
-	 * Get the number of known clients
+	 * Get the number of known clients.
 	 *
 	 * @return Count of known clients
 	 */
@@ -2032,7 +2032,7 @@ public final class IRCParser implements Runnable {
 	}
 
 	/**
-	 * Get the known clients as a collection
+	 * Get the known clients as a collection.
 	 *
 	 * @return Known clients as a collection
 	 */
@@ -2041,7 +2041,7 @@ public final class IRCParser implements Runnable {
 	}
 
 	/**
-	 * Clear the client list
+	 * Clear the client list.
 	 */
 	public void clearClients() {
 		hClientList.clear();
@@ -2049,7 +2049,7 @@ public final class IRCParser implements Runnable {
 	}
 
 	/**
-	 * Add a channel to the ChannelList
+	 * Add a channel to the ChannelList.
 	 *
 	 * @param channel Channel to add
 	 */
@@ -2060,7 +2060,7 @@ public final class IRCParser implements Runnable {
 	}
 
 	/**
-	 * Remove a channel from the ChannelList
+	 * Remove a channel from the ChannelList.
 	 *
 	 * @param channel Channel to remove
 	 */
@@ -2071,7 +2071,7 @@ public final class IRCParser implements Runnable {
 	}
 
 	/**
-	 * Get the number of known channel
+	 * Get the number of known channel.
 	 *
 	 * @return Count of known channel
 	 */
@@ -2082,7 +2082,7 @@ public final class IRCParser implements Runnable {
 	}
 
 	/**
-	 * Get the known channels as a collection
+	 * Get the known channels as a collection.
 	 *
 	 * @return Known channels as a collection
 	 */
@@ -2093,7 +2093,7 @@ public final class IRCParser implements Runnable {
 	}
 
 	/**
-	 * Clear the channel list
+	 * Clear the channel list.
 	 */
 	public void clearChannels() {
 		synchronized (hChannelList) {

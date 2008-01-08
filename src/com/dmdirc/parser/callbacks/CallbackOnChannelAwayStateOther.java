@@ -47,7 +47,7 @@ public final class CallbackOnChannelAwayStateOther extends CallbackObjectSpecifi
 	 * Callback to all objects implementing the IChannelAwayStateOther Interface.
 	 *
 	 * @param channel Channel this is for
-	 * @param channelclient ChannelClient this is for
+	 * @param channelClient ChannelClient this is for
 	 * @param state Away State (true if away, false if here)
 	 * @see IChannelAwayStateOther
 	 * @return true if a callback was called, else false

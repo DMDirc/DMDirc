@@ -29,7 +29,7 @@ import com.dmdirc.parser.callbacks.CallbackOnMOTDLine;
 import com.dmdirc.parser.callbacks.CallbackOnMOTDStart;
 
 /**
- * Process a MOTD Related Line
+ * Process a MOTD Related Line.
  */
 public class ProcessMOTD extends IRCProcessor {
 	/**
@@ -80,7 +80,7 @@ public class ProcessMOTD extends IRCProcessor {
 	}
 	
 	/**
-	 * Callback to all objects implementing the MOTDStart
+	 * Callback to all objects implementing the MOTDStart Callback.
 	 *
 	 * @see IMOTDStart
 	 * @param data Incomming Line.
@@ -107,7 +107,7 @@ public class ProcessMOTD extends IRCProcessor {
 	} 
 	
 	/**
-	 * Create a new instance of the IRCProcessor Object
+	 * Create a new instance of the IRCProcessor Object.
 	 *
 	 * @param parser IRCParser That owns this IRCProcessor
 	 * @param manager ProcessingManager that is in charge of this IRCProcessor

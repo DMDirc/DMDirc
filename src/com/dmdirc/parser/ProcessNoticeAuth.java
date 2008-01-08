@@ -65,7 +65,7 @@ public class ProcessNoticeAuth extends IRCProcessor {
 	} 
 	
 	/**
-	 * Create a new instance of the ProcessNoticeAuth Object
+	 * Create a new instance of the ProcessNoticeAuth Object.
 	 *
 	 * @param parser IRCParser That owns this object
 	 * @param manager ProcessingManager that is in charge of this object

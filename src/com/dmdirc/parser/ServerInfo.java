@@ -165,7 +165,7 @@ public class ServerInfo {
 	public int getProxyPort() { return proxyPort; }
 	
 	/**
-	 * Get SVN Version information
+	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */

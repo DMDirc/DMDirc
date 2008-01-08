@@ -27,11 +27,11 @@ package com.dmdirc.parser;
 import com.dmdirc.parser.callbacks.CallbackOnInvite;
 
 /**
- * Process an Invite Request
+ * Process an Invite Request.
  */
 public class ProcessInvite extends IRCProcessor {
 	/**
-	 * Process an Inite Request
+	 * Process an Invite Request.
 	 *
 	 * @param sParam Type of line to process ("INVITE")
 	 * @param token IRCTokenised line to process
@@ -67,7 +67,7 @@ public class ProcessInvite extends IRCProcessor {
 	} 
 	
 	/**
-	 * Create a new instance of the IRCProcessor Object
+	 * Create a new instance of the IRCProcessor Object.
 	 *
 	 * @param parser IRCParser That owns this IRCProcessor
 	 * @param manager ProcessingManager that is in charge of this IRCProcessor

@@ -27,6 +27,13 @@ package com.dmdirc.parser;
 import java.util.TimerTask;
 import java.util.Timer;
 
+/**
+ * Used by the parser to ping the server at a set interval to check that the
+ * server is still alive.
+ *
+ * @author Shane Mc Cormack
+ * @version $Id: ParserError.java 3151 2008-01-08 18:47:54Z ShaneMcC $
+ */
 public class PingTimer extends TimerTask {
 	/** Owning Parser. */
 	final IRCParser myOwner;
@@ -34,7 +41,7 @@ public class PingTimer extends TimerTask {
 	final Timer myTimer;
 	
 	/**
-	 * Create the PingTimer
+	 * Create the PingTimer.
 	 *
 	 * @param control IRCParser that owns this TimerTask.
 	 * @param timer Timer that owns this TimerTask.

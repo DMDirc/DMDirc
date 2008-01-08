@@ -28,11 +28,11 @@ import com.dmdirc.parser.callbacks.CallbackOnAwayStateOther;
 import com.dmdirc.parser.callbacks.CallbackOnChannelAwayStateOther;
 
 /**
- * Process a /who reply
+ * Process a /who reply.
  */
 public class ProcessWho extends IRCProcessor {
 	/**
-	 * Process a /who reply
+	 * Process a /who reply.
 	 *
 	 * @param sParam Type of line to process ("352")
 	 * @param token IRCTokenised line to process
@@ -121,7 +121,7 @@ public class ProcessWho extends IRCProcessor {
 	} 
 	
 	/**
-	 * Create a new instance of the IRCProcessor Object
+	 * Create a new instance of the IRCProcessor Object.
 	 *
 	 * @param parser IRCParser That owns this IRCProcessor
 	 * @param manager ProcessingManager that is in charge of this IRCProcessor

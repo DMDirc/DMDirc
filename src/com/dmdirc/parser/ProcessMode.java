@@ -75,6 +75,8 @@ public class ProcessMode extends IRCProcessor {
 	 *
 	 * @param sParam String representation of parameter to parse
 	 * @param token IRCTokenised Array of the incomming line
+	 * @param sModestr The modes and params
+	 * @param sChannelName Channel these modes are for
 	 */	
 	public void processChanMode(String sParam, String token[], String sModestr[], String sChannelName) {
 		StringBuilder sFullModeStr = new StringBuilder();
@@ -314,7 +316,7 @@ public class ProcessMode extends IRCProcessor {
 	} 
 	
 	/**
-	 * Create a new instance of the IRCProcessor Object
+	 * Create a new instance of the IRCProcessor Object.
 	 *
 	 * @param parser IRCParser That owns this IRCProcessor
 	 * @param manager ProcessingManager that is in charge of this IRCProcessor

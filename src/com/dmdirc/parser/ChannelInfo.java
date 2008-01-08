@@ -101,7 +101,7 @@ public final class ChannelInfo {
 	}
 	
 	/**
-	 * Get the listModeQueue
+	 * Get the listModeQueue.
 	 *
 	 * @return The listModeQueue
 	 */
@@ -486,7 +486,7 @@ public final class ChannelInfo {
 	 * Add/Remove a value to a channel list.
 	 *
 	 * @param givenMode Character representing mode
-	 * @param newItem ChannelListModeItem representing the item
+	 * @param givenItem ChannelListModeItem representing the item
 	 * @param bAdd Add or remove the value. (true for add, false for remove)
 	 */
 	protected void setListModeParam(final Character givenMode, final ChannelListModeItem givenItem, final boolean bAdd) { 
