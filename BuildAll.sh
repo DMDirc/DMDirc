@@ -82,7 +82,7 @@ if [ -f $MYDIR/dist/DMDirc.jar ]; then
 	FILENAME=DMDirc_${FILEDATA}.jar
 	mv "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.exe" "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.exe"
 	mv "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.run" "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.run"
-	rm -Rf "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.*.md5"
+	rm -Rf "${MYDIR}/installer/output/DMDirc-${FILEDATA}.jar"
 	cp $MYDIR/dist/DMDirc.jar /home/dmdirc/www/nightly/$FILENAME
 
 	if [ -e "${WWWDIR}/nightly/${FILENAME}" ]; then
