@@ -25,7 +25,18 @@
 
 LAUNCHERVERSION="1"
 
-params="${@}"
+params=""
+
+# Store params so that we can pass them back to the client
+for param in "$@"; do
+	SPACE=`echo "${param}" | grep " "`
+	if [ "${SPACE}" != "" ]; then
+		niceParam=`echo "${param}" | sed 's/"/\\\\"/g'`
+		params=${params}" \"${niceParam}\""
+	else
+		params=${params}" ${param}"
+	fi;
+done;
 
 # Check for some CLI params
 profiledir="${HOME}/.DMDirc/"

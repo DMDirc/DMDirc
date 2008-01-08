@@ -472,6 +472,11 @@ if [ ! -e "wget.exe" ]; then
 	wget "http://users.ugent.be/~bpuype/cgi-bin/fetch.pl?dl=wget/wget.exe"
 fi;
 
+if [ ! -e "wget.exe" ]; then
+	echo "wget.exe not found, unable to continue."
+	exit 1;
+fi;
+
 FILES="${FILES} wget.exe"
 
 compress $FILES
@@ -494,6 +499,11 @@ if [ ! -e "7zS.sfx" ]; then
 	tar -jxvf 7zextra.tar.bz2 7zS.sfx
 	rm 7zextra.tar.bz2
 fi
+
+if [ ! -e "7zS.sfx" ]; then
+	echo "7zS.sfx not found, unable to continue."
+	exit 1;
+fi;
 
 echo "Creating .exe"
 cat 7zS.sfx 7zip.conf "${INTNAME}" > "${RUNNAME}"

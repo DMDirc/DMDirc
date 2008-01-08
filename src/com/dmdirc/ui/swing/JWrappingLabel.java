@@ -130,7 +130,12 @@ public class JWrappingLabel extends JComponent {
 
 	/** {@inheritDoc} */
 	public Dimension getMinimumSize() {
-		return getPreferredSize();
+		if (isMinimumSizeSet()) {
+			return super.getMinimumSize();
+		} else {
+			doPaint(getGraphics(), true);
+			return new Dimension(0, myPreferredHeight);
+		}
 	}
 
 	/** {@inheritDoc} */

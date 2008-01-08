@@ -1,7 +1,8 @@
 #!/bin/sh
 
-# cron doesn't seem to like doing this iself...
+# cron doesn't do this
 . /etc/profile
+. ${HOME}/.bashrc
 
 # Path to trunk
 MYDIR="/home/dmdirc/google"
@@ -25,7 +26,9 @@ else
 fi
 
 # Run junit issue notifier
-$SCRIPTDIR/junit-failures.php
+if [ -e "$SCRIPTDIR/junit-failures.php" ]; then
+	$SCRIPTDIR/junit-failures.php
+fi
 
 # Oblong junit announcement
 LINE=`cat junitreports/overview-summary.html | grep "%</td"`
