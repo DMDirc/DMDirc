@@ -4,6 +4,9 @@
 . /etc/profile
 . ${HOME}/.bashrc
 
+# Used for the report.log to help diagnosing problems
+env
+
 # Path to trunk
 MYDIR="/home/dmdirc/google"
 # Path to scripts
