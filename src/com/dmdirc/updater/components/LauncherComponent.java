@@ -107,7 +107,7 @@ public class LauncherComponent implements UpdateComponent {
             final ZipResourceManager ziprm = ZipResourceManager.getInstance(path);
             ziprm.extractResources("", tmpFile.getParent()+ File.separator);
             new File(path).delete();
-            return false;
+            return true;
         }
     }
 
