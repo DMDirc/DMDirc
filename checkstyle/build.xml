@@ -148,7 +148,7 @@
 			
 			<ruleset>checkstyle/pmd_checks.xml</ruleset>
 			<formatter type="xml" toFile="reports/report-pmd.xml" linkPrefix="http://pmd.sourceforge.net/xref/"/>
-			<fileset dir="src/" includes="**/*.java" />
+			<fileset dir="src/com/" includes="**/*.java" />
 		</pmd>
 		<xslt in="reports/report-pmd.xml" style="checkstyle/pmd.xslt" out="reports/report-pmd.html" />
 	</target>
@@ -157,18 +157,19 @@
 		<taskdef name="cpd" classpath="pmd-3.9.jar" classname="net.sourceforge.pmd.cpd.CPDTask" />
 		
 		<cpd format="xml" minimumTokenCount="50" outputFile="reports/report-cpd.xml">
-			<fileset dir="src/">
+			<fileset dir="src/com/">
 				<include name="**/*.java"/>
 			</fileset>
 		</cpd>
 		<xslt in="reports/report-cpd.xml" style="checkstyle/cpd.xslt" out="reports/report-cpd.html" />
 	</target>
 	
-	<target name="findbugs">
+	<target name="findbugs" depends="jar">
 		
 		<taskdef name="findbugs" classpath="findbugs-ant.jar"
 						 classname="edu.umd.cs.findbugs.anttask.FindBugsTask" />
 		<findbugs home="/usr/share/java/findbugs/" effort="max"
+							jvmargs="-Xmx512M"
 							output="xml:withMessages"
 							outputFile="reports/report-fb.xml" >
 			<sourcePath path="src/" />
