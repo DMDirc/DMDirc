@@ -182,7 +182,7 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
         
         final JScrollPane nickScrollPane = new JScrollPane();
         nickList = new JList();
-        nickList.setCellRenderer(new NicklistRenderer(parent.getConfigManager()));
+        nickList.setCellRenderer(new NicklistRenderer(parent.getConfigManager(), nickList));
         nickList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         
         nickList.addMouseListener(this);

@@ -51,15 +51,21 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
     private Color altBackgroundColour;
     /** Show nick colours. */
     private boolean showColours;
+    /** The list that we're using for the nicklist. */
+    private JList nicklist;
 
     /**
      * Creates a new instance of NicklistRenderer.
      *
      * @param config ConfigManager for the associated channel
+     * @param nicklist The nicklist that we're rendering for.
      */
-    public NicklistRenderer(final ConfigManager config) {
+    public NicklistRenderer(final ConfigManager config, final JList nicklist) {
         super();
+        
         this.config = config;
+        this.nicklist = nicklist;
+        
         config.addChangeListener("ui", this);
         config.addChangeListener("nicklist", this);
 
@@ -116,11 +122,14 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
                     config.getOptionColour("ui", "nicklistbackgroundcolour",
                     config.getOptionColour("ui", "backgroundcolour",
                     Color.WHITE)));
+            nicklist.repaint();
         }
+        
         if ("ui".equals(domain) && "shownickcoloursinnicklist".equals(key)) {
             showColours =
                     config.getOptionBool("ui", "shownickcoloursinnicklist",
                     false);
+            nicklist.repaint();
         }
     }
 }
