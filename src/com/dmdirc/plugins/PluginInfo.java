@@ -23,6 +23,7 @@
  */
 package com.dmdirc.plugins;
 
+import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
@@ -30,6 +31,7 @@ import com.dmdirc.util.resourcemanager.ResourceManager;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.logger.ErrorLevel;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -87,37 +89,44 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			} else {
 				throw new PluginException("Plugin "+filename+" failed to load, plugin.info doesn't exist in jar");
 			}
+		} catch (PluginException pe) {
+			// Stop the next catch Catching the one we threw ourself
+			throw pe;
 		} catch (Exception e) {
 			throw new PluginException("Plugin "+filename+" failed to load, plugin.info failed to open - "+e.getMessage(), e);
 		}
 
 		if (getVersion() < 0) {
 			throw new PluginException("Plugin "+filename+" failed to load, incomplete plugin.info (Missing or invalid 'version')");
-		} else if(getAuthor().equals("")) {
+		} else if (getAuthor().isEmpty()) {
 			throw new PluginException("Plugin "+filename+" failed to load, incomplete plugin.info (Missing 'author')");
-		} else if(getName().equals("")) {
+		} else if (getName().isEmpty()) {
 			throw new PluginException("Plugin "+filename+" failed to load, incomplete plugin.info (Missing 'name')");
-		} else if(getMinVersion().equals("")) {
+		} else if (getMinVersion().isEmpty()) {
 			throw new PluginException("Plugin "+filename+" failed to load, incomplete plugin.info (Missing 'minversion')");
-		} else if(getMainClass().equals("")) {
+		} else if (getMainClass().isEmpty()) {
 			throw new PluginException("Plugin "+filename+" failed to load, incomplete plugin.info (Missing 'mainclass')");
 		}
-
-		final String mainClass = getMainClass().replace('.', '/')+".class";
-		if (!res.resourceExists(mainClass)) {
-			throw new PluginException("Plugin "+filename+" failed to load, main class file ("+mainClass+") not found in jar.");
-		}
-
-		for (final String classfilename : res.getResourcesStartingWith("")) {
-			String classname = classfilename.replace('/', '.');
-			if (classname.matches("^.*\\.class$")) {
-				classname = classname.replaceAll("\\.class$", "");
-				myClasses.add(classname);
+		
+		final String requirements = checkRequirements();
+		if (requirements.isEmpty()) {
+			final String mainClass = getMainClass().replace('.', '/')+".class";
+			if (!res.resourceExists(mainClass)) {
+				throw new PluginException("Plugin "+filename+" failed to load, main class file ("+mainClass+") not found in jar.");
 			}
+	
+			for (final String classfilename : res.getResourcesStartingWith("")) {
+				String classname = classfilename.replace('/', '.');
+				if (classname.matches("^.*\\.class$")) {
+					classname = classname.replaceAll("\\.class$", "");
+					myClasses.add(classname);
+				}
+			}
+	
+			if (isPersistant()) { loadEntirePlugin(); }
+		} else {
+			throw new PluginException("Plugin "+filename+" was not loaded, one or more requirements not met ("+requirements+")");
 		}
-
-		if (isPersistant()) { loadEntirePlugin(); }
-
 		myResourceManager = null;
 	}
 
@@ -137,12 +146,118 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	/**
 	 * Are the requirements for this plugin met?
 	 *
-	 * @throws PluginException if requirements to load plugin are not met.
+	 * @return Empty string if ok, else a reason for failure
 	 */
-	public void checkRequirements() throws PluginException {
-		// This needs to parse getMetaInfo("requirements"); when I decide on the
-		// syntax.
-		// Also needs to check min/max version.
+	public String checkRequirements() {
+		if (metaData == null) { return ""; }
+		// Check minimum version
+		try {
+			final int version = Integer.parseInt(getMinVersion());
+			if (version == -1) { return ""; }
+			if (Main.RELEASE_DATE > 0 && version > 0) {
+				if (Main.RELEASE_DATE < version) {
+					return "Plugin is for a newwer version of DMDirc";
+				}
+			}
+		} catch (NumberFormatException nfe) {
+			return "'minversion' is a non-integer";
+		}
+		
+		// Check maximum version (if found)
+		try {
+			if (!getMaxVersion().isEmpty()) {
+				final int version = Integer.parseInt(getMaxVersion());
+				if (Main.RELEASE_DATE > 0 && version > 0) {
+					if (Main.RELEASE_DATE > version) {
+						return "Plugin is for an older version of DMDirc";
+					}
+				}
+			}
+		} catch (NumberFormatException nfe) {
+			return "'maxversion' is a non-integer";
+		}
+		
+		// Now check other requirements
+		
+		// Required OS
+		final String requiredOS = getMetaInfo(new String[]{"required-os", "require-os"});
+		if (!requiredOS.isEmpty()) {
+			final String[] data = requiredOS.split(":");
+			if (!System.getProperty("os.name").toLowerCase().matches(data[0])) {
+				return "Incorrect OS. (Wanted: '"+data[0]+"', Actual: '"+System.getProperty("os.name")+"')";
+			} else {
+				if (data.length > 1) {
+					if (!System.getProperty("os.version").toLowerCase().matches(data[1])) {
+						return "Incorrect OS Version. (Wanted: '"+data[1]+"', Actual: '"+System.getProperty("os.version")+"')";
+					} else {
+						if (data.length > 2) {
+							if (!System.getProperty("os.arch").toLowerCase().matches(data[2])) {
+								return "Incorrect OS Arch. (Wanted: '"+data[2]+"', Actual: '"+System.getProperty("os.arch")+"')";
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		// Required Files
+		final String requiredFiles = getMetaInfo(new String[]{"required-files", "require-files", "required-file", "require-file"});
+		if (!requiredFiles.isEmpty()) {
+			for (String files : requiredFiles.split(",")) {
+				final String[] filelist = files.split("\\|");
+				boolean foundFile = false;
+				for (String file : filelist) {
+					if ((new File(file)).exists()) {
+						foundFile = true;
+						break;
+					}
+				}
+				if (!foundFile) {
+					return "Required file '"+files+"' not found";
+				}
+			}
+		}
+		
+		// Required Plugins
+		final String requiredPlugins = getMetaInfo(new String[]{"required-plugins", "require-plugins", "required-plugin", "require-plugin"});
+		if (!requiredPlugins.isEmpty()) {
+			for (String plugin : requiredPlugins.split(",")) {
+				final String[] data = plugin.split(":");
+				final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(data[0]);
+				if (pi == null) {
+					return "Required plugin '"+data[0]+"' was not found";
+				} else {
+					if (data.length > 1) {
+						// Check plugin minimum version matches.
+						try {
+							final int minversion = Integer.parseInt(data[1]);
+							if (pi.getVersion() < minversion) {
+								return "Plugin '"+data[0]+"' is too old (Required Version: "+minversion+", Actual Version: "+pi.getVersion()+")";
+							} else {
+								if (data.length > 2) {
+									// Check plugin maximum version matches.
+									try {
+										final int maxversion = Integer.parseInt(data[2]);
+										if (pi.getVersion() > maxversion) {
+											return "Plugin '"+data[0]+"' is too new (Required Version: "+maxversion+", Actual Version: "+pi.getVersion()+")";
+										}
+									} catch (NumberFormatException nfe) {
+										return "Plugin max-version '"+data[2]+"' for plugin ('"+data[0]+"') is a non-integer";
+									}
+								}
+							}
+						} catch (NumberFormatException nfe) {
+							return "Plugin min-version '"+data[1]+"' for plugin ('"+data[0]+"') is a non-integer";
+						}
+					}
+					// Make sure the required plugin is loaded if its not already,
+					pi.loadPlugin();
+				}
+			}
+		}
+		
+		// All requirements passed, woo \o
+		return "";
 	}
 
 	/**
@@ -445,21 +560,48 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	public String toString() { return getNiceName()+" - "+filename; }
 
 	/**
-	 * Get misc meta-information
+	 * Get misc meta-information.
 	 *
 	 * @param metainfo The metainfo to return
 	 * @return Misc Meta Info (or "" if not found);
 	 */
-	public String getMetaInfo(final String metainfo) { return metaData.getProperty(metainfo,""); }
+	public String getMetaInfo(final String metainfo) { return getMetaInfo(metainfo,""); }
 
 	/**
-	 * Get misc meta-information
+	 * Get misc meta-information.
 	 *
 	 * @param metainfo The metainfo to return
 	 * @param fallback Fallback value if requested value is not found
 	 * @return Misc Meta Info (or fallback if not found);
 	 */
 	public String getMetaInfo(final String metainfo, final String fallback) { return metaData.getProperty(metainfo,fallback); }
+	
+	/**
+	 * Get misc meta-information.
+	 *
+	 * @param metainfo[] The metainfos to look for in order. If the first item in
+	 *                   the array is not found, the next will be looked for, and
+	 *                   so on until either one is found, or none are found.
+	 * @return Misc Meta Info (or "" if none are found);
+	 */
+	public String getMetaInfo(final String[] metainfo) { return getMetaInfo(metainfo,""); }
+	
+	/**
+	 * Get misc meta-information.
+	 *
+	 * @param metainfo[] The metainfos to look for in order. If the first item in
+	 *                   the array is not found, the next will be looked for, and
+	 *                   so on until either one is found, or none are found.
+	 * @param fallback Fallback value if requested values are not found
+	 * @return Misc Meta Info (or "" if none are found);
+	 */
+	public String getMetaInfo(final String[] metainfo, final String fallback) {
+		for (String meta : metainfo) {
+			String result = metaData.getProperty(meta);
+			if (result != null) { return result; }
+		}
+		return fallback;
+	}
 
 	/**
 	 * Compares this object with the specified object for order.

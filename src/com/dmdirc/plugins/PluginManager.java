@@ -98,7 +98,6 @@ public class PluginManager {
 		
 		try {
 			pluginInfo = new PluginInfo(filename);
-			pluginInfo.checkRequirements();
 			knownPlugins.put(filename.toLowerCase(), pluginInfo);
 			
 			return true;
