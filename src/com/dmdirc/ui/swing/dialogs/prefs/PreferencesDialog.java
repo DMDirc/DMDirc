@@ -325,10 +325,10 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
         preferencesPanel.addCheckboxOption(tabName, "ui.maximisewindows",
                 "Auto-Maximise windows: ", "Automatically maximise newly opened windows",
                 config.getOptionBool("ui", "maximisewindows", false));
-        preferencesPanel.addCheckboxOption(tabName, "ui.showintext",
+        preferencesPanel.addCheckboxOption(tabName, "ui.shownickcoloursintext",
                 "Show colours in text area: ", "Show nickname colours in text areas",
                 config.getOptionBool("ui", "shownickcoloursintext", false));
-        preferencesPanel.addCheckboxOption(tabName, "ui.showinlist",
+        preferencesPanel.addCheckboxOption(tabName, "ui.shownickcoloursinnicklist",
                 "Show colours in nick list: ", "Show nickname colours in the nicklist",
                 config.getOptionBool("ui", "shownickcoloursinnicklist", false));
         preferencesPanel.addComboboxOption(tabName, "ui.framemanager",
