@@ -49,6 +49,7 @@ import com.dmdirc.ui.messages.Formatter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -523,9 +524,11 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     public void renameQuery(String oldNick, String newNick) {
-        final Query query = queries.get(parser.toLowerCase(oldNick));
-        queries.remove(parser.toLowerCase(oldNick));
-        queries.put(parser.toLowerCase(newNick), query);
+        if (queries.containsKey(parser.toLowerCase(oldNick))) {
+            final Query query = queries.get(parser.toLowerCase(oldNick));
+            queries.remove(parser.toLowerCase(oldNick));
+            queries.put(parser.toLowerCase(newNick), query);
+        }
     }
 
     /** {@inheritDoc} */
