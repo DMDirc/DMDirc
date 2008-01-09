@@ -25,6 +25,7 @@ package com.dmdirc.ui.swing;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.ui.swing.dialogs.PluginDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -155,6 +156,8 @@ public class PluginsMenu extends JMenu implements ActionListener {
             PluginManager.getPluginManager().
                     getPluginInfo(pluginList.get(e.getSource())).getPlugin().
                     showConfig();
+        } else if (e.getActionCommand().equals("ManagePlugins")) {
+            PluginDialog.showPluginDialog();
         }
     }
 }
