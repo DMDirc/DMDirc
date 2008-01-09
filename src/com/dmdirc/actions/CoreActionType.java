@@ -125,7 +125,7 @@ public enum CoreActionType implements ActionType {
     /** Names reply received. */
     CHANNEL_GOTNAMES(ChannelEvents.CHANNEL_EVENT, "Channel names reply received"),
     /** Channel topic received. */
-    CHANNEL_GOTTOPIC(ChannelEvents.CHANNEL_EVENT, "Channel topic received"),
+    CHANNEL_GOTTOPIC(ChannelEvents.CHANNEL_TOPICEVENT, "Channel topic received"),
     
     /** Channel message sent. */
     CHANNEL_SELF_MESSAGE(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Channel message sent"),
@@ -154,6 +154,8 @@ public enum CoreActionType implements ActionType {
     /** Someone marked as back. */
     CHANNEL_USERBACK(ChannelEvents.CHANNEL_SOURCED_EVENT, "Someone is marked as 'back'"),
     
+    /** Channel mode discovered. */
+    CHANNEL_MODESDISCOVERED(ChannelEvents.CHANNEL_MODEEVENT, "Channel modes discovered"),
     /** Channel mode changes. */
     CHANNEL_MODECHANGE(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Someone changed channel modes"),
     /** Someone changed someone else's user modes. */

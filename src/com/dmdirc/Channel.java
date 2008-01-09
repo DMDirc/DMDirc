@@ -44,6 +44,7 @@ import java.awt.Color;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -408,6 +409,23 @@ public final class Channel extends MessageTarget
     }
     
     /**
+     * Replaces the list of known clients on this channel with the specified one.
+     * 
+     * @param clients The list of clients to use
+     */
+    public void setClients(final List<ChannelClientInfo> clients) {
+        window.updateNames(clients);
+        
+        tabCompleter.clear();
+        
+        for (ChannelClientInfo client : clients) {
+            tabCompleter.addEntry(client.getNickname());
+        }
+        tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_CHANNEL));
+        tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_CHAT));
+    }
+    
+    /**
      * Renames a client that is in this channel.
      * 
      * @param oldName The old nickname of the client
@@ -426,126 +444,7 @@ public final class Channel extends MessageTarget
     public void refreshClients() {
         window.updateNames();
     }
-   
-    public void onChannelGotNames() {
-        
-        window.updateNames(channelInfo.getChannelClients());
-        
-        final ArrayList<String> names = new ArrayList<String>();
-        
-        for (ChannelClientInfo channelClient : channelInfo.getChannelClients()) {
-            names.add(channelClient.getNickname());
-        }
-        
-        tabCompleter.replaceEntries(names);
-        tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_CHANNEL));
-        tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_CHAT));
-        
-        ActionManager.processEvent(CoreActionType.CHANNEL_GOTNAMES, null, this);
-    }
-    
-    public void onChannelTopic(final boolean bIsJoinTopic) {
-        if (bIsJoinTopic) {
-            final StringBuffer buff = new StringBuffer("channelJoinTopic");
-            
-            ActionManager.processEvent(CoreActionType.CHANNEL_GOTTOPIC, buff, this);
-            
-            addLine(buff, channelInfo.getTopic(), channelInfo.getTopicUser(),
-                    1000 * channelInfo.getTopicTime(), channelInfo);
-        } else {
-            final ChannelClientInfo user = channelInfo.getUser(channelInfo.getTopicUser());
-            final String[] parts = ClientInfo.parseHostFull(channelInfo.getTopicUser());
-            final String modes = getModes(user);
-            final String topic = channelInfo.getTopic();
-            
-            final StringBuffer buff = new StringBuffer("channelTopicChange");
-            
-            ActionManager.processEvent(CoreActionType.CHANNEL_TOPICCHANGE, buff, this, user, topic);
-            
-            addLine(buff, modes, parts[0], parts[1], parts[2], channelInfo, topic);
-        }
-        
-        topics.add(new Topic(channelInfo.getTopic(), 
-                channelInfo.getTopicUser(), channelInfo.getTopicTime()));
-        
-        updateTitle();
-    }
-    
-    public void onChannelModeChanged(
-            final ChannelClientInfo cChannelClient, final String sHost, final String sModes) {
-        if (sHost.isEmpty()) {
-            final StringBuffer buff = new StringBuffer(21);
-            
-            if (sModes.length() <= 1) {
-                buff.append("channelNoModes");
-            } else {
-                buff.append("channelModeDiscovered");
-            }
-            
-            ActionManager.processEvent(CoreActionType.CHANNEL_MODECHANGE, buff, this, cChannelClient, sModes);
-            
-            addLine(buff, sModes, channelInfo.getName());
-        } else {
-            final String modes = getModes(cChannelClient);
-            final String[] details = getDetails(cChannelClient, showColours);
-            final String myNick = server.getParser().getMyself().getNickname();
-            
-            String type = "channelModeChange";
-            if (myNick.equals(cChannelClient.getNickname())) {
-                type = "channelSelfModeChange";
-            }
-            
-            final StringBuffer buff = new StringBuffer(type);
-            
-            ActionManager.processEvent(CoreActionType.CHANNEL_MODECHANGE, buff, this, cChannelClient, sModes);
-            
-            addLine(type,  modes, details[0], details[1],
-                    details[2], channelInfo.getName(), sModes);
-        }
-        
-        window.updateNames();
-    }
-    
-    public void onChannelUserModeChanged(
-            final ChannelClientInfo cChangedClient,
-            final ChannelClientInfo cSetByClient, final String sMode) {
-        
-        if (configManager.getOptionBool("channel", "splitusermodes", false)) {
-            final String sourceModes = getModes(cSetByClient);
-            final String[] sourceHost = getDetails(cSetByClient, showColours);
-            final String targetModes = cChangedClient.getImportantModePrefix();
-            final String targetNick = cChangedClient.getClient().getNickname();
-            final String targetIdent = cChangedClient.getClient().getIdent();
-            final String targetHost = cChangedClient.getClient().getHost();
-            
-            String format = "channelUserMode_" + sMode;
-            if (!Formatter.hasFormat(format)) {
-                format = "channelUserMode_default";
-            }
-            
-            addLine(format, sourceModes, sourceHost[0], sourceHost[1],
-                    sourceHost[2], targetModes, targetNick, targetIdent,
-                    targetHost, channelInfo, sMode);
-        }
-        
-        ActionManager.processEvent(CoreActionType.CHANNEL_USERMODECHANGE, null,
-                this, cSetByClient, cChangedClient, sMode);
-    }
-    
-    public void onAwayStateOther(final ClientInfo client, final boolean state) {
-        final ChannelClientInfo channelClient = channelInfo.getUser(client);
-        
-        if (channelClient != null) {
-            if (state) {
-                ActionManager.processEvent(CoreActionType.CHANNEL_USERAWAY,
-                        null, this, channelClient);
-            } else {
-                ActionManager.processEvent(CoreActionType.CHANNEL_USERBACK,
-                        null, this, channelClient);
-            }
-        }
-    }
-    
+       
     /**
      * Returns a string containing the most important mode for the specified client.
      * 
@@ -559,6 +458,15 @@ public final class Channel extends MessageTarget
         } else {
             return channelClient.getImportantModePrefix();
         }
+    }
+    
+    /**
+     * Adds the specified topic to this channel's topic list.
+     * 
+     * @param topic The topic to be added.
+     */
+    public void addTopic(final Topic topic) {
+        topics.add(topic);
     }
        
     /**
@@ -600,7 +508,8 @@ public final class Channel extends MessageTarget
      * @param showColours Whether or not to show colours
      * @return A string[] containing displayable components
      */
-    private static String[] getDetails(final ChannelClientInfo client, final boolean showColours) {
+    private static String[] getDetails(final ChannelClientInfo client,
+            final boolean showColours) {
         if (client == null) {
             // WTF?
             throw new UnsupportedOperationException("getDetails called with" +
@@ -638,17 +547,34 @@ public final class Channel extends MessageTarget
     @Override
     protected boolean processNotificationArg(final Object arg, final List<Object> args) {
         if (arg instanceof ClientInfo) {
+            // Format ClientInfos
+            
             final ClientInfo clientInfo = (ClientInfo) arg;
             args.add(clientInfo.getNickname());
             args.add(clientInfo.getIdent());
             args.add(clientInfo.getHost());
+            
             return true;
         } else if (arg instanceof ChannelClientInfo) {
+            // Format ChannelClientInfos
+            
             final ChannelClientInfo clientInfo = (ChannelClientInfo) arg;
             args.add(getModes(clientInfo));
             args.addAll(Arrays.asList(getDetails(clientInfo, showColours)));
+            
             return true;            
+        } else if (arg instanceof Topic) {
+            // Format topics
+            
+            args.add("");
+            args.addAll(Arrays.asList(ClientInfo.parseHostFull(((Topic) arg).getClient())));
+            args.add(((Topic) arg).getTopic());
+            args.add(((Topic) arg).getTime() * 1000);
+            
+            return true;
         } else {
+            // Everything else - default formatting
+            
             return super.processNotificationArg(arg, args);
         }
     }

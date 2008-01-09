@@ -23,6 +23,7 @@
 package com.dmdirc.actions.metatypes;
 
 import com.dmdirc.Channel;
+import com.dmdirc.Topic;
 import com.dmdirc.actions.interfaces.ActionMetaType;
 import com.dmdirc.parser.ChannelClientInfo;
 
@@ -32,9 +33,13 @@ import com.dmdirc.parser.ChannelClientInfo;
  * @author Chris
  */
 public enum ChannelEvents implements ActionMetaType {
-    
+
     /** Channel event type. */
-    CHANNEL_EVENT(new String[]{"channel"}, Channel.class),  
+    CHANNEL_EVENT(new String[]{"channel"}, Channel.class),
+    /** Channel mode event. */
+    CHANNEL_MODEEVENT(new String[]{"channel", "modes"}, Channel.class, String.class),
+    /** Channel topic event type. */
+    CHANNEL_TOPICEVENT(new String[]{"channel", "topic"}, Channel.class, Topic.class),
     /** Channel CTCP type. */
     CHANNEL_CTCP(new String[]{"channel", "user", "type", "content"}, Channel.class, ChannelClientInfo.class, String.class, String.class),
     /** Channel event with source. */
@@ -43,12 +48,12 @@ public enum ChannelEvents implements ActionMetaType {
     CHANNEL_SOURCED_EVENT_WITH_ARG(new String[]{"channel", "user", "message"}, Channel.class, ChannelClientInfo.class, String.class),
     /** Channel event with source and victim. */
     CHANNEL_SOURCED_EVENT_WITH_VICTIM(new String[]{"channel", "user", "victim", "message"}, Channel.class, ChannelClientInfo.class, ChannelClientInfo.class, String.class);
-    
+
     /** The names of the arguments for this meta type. */
     private String[] argNames;
     /** The classes of the arguments for this meta type. */
     private Class[] argTypes;
-    
+
     /**
      * Creates a new instance of this meta-type.
      *
@@ -59,17 +64,17 @@ public enum ChannelEvents implements ActionMetaType {
         this.argNames = argNames;
         this.argTypes = argTypes;
     }
-    
+
     /** {@inheritDoc} */
     public int getArity() {
         return argNames.length;
     }
-    
+
     /** {@inheritDoc} */
     public Class[] getArgTypes() {
         return argTypes;
     }
-    
+
     /** {@inheritDoc} */
     public String[] getArgNames() {
         return argNames;
@@ -79,5 +84,5 @@ public enum ChannelEvents implements ActionMetaType {
     public String getGroup() {
         return "Channel Events";
     }
-    
+
 }

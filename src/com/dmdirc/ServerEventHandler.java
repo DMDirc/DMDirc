@@ -43,9 +43,9 @@ public final class ServerEventHandler extends EventHandler
         implements IChannelSelfJoin, IPrivateMessage, IPrivateAction, 
         IErrorInfo, IPrivateCTCP, IPrivateCTCPReply, ISocketClosed, 
         IPrivateNotice, IMOTDStart, IMOTDLine, IMOTDEnd, INumeric, IPingFailed,
-        IPingSuccess, IAwayState, IConnectError, IAwayStateOther, INickInUse,
-        IPost005, INoticeAuth, IUnknownNotice, IUserModeChanged, IInvite,
-        IWallop, IWalluser, IWallDesync, INickChanged, IServerError, IPingSent {
+        IPingSuccess, IAwayState, IConnectError, INickInUse, IPost005,
+        INoticeAuth, IUnknownNotice, IUserModeChanged, IInvite, IWallop,
+        IWalluser, IWallDesync, INickChanged, IServerError, IPingSent {
     
     /** The server instance that owns this event handler. */
     private final Server owner;
@@ -228,18 +228,6 @@ public final class ServerEventHandler extends EventHandler
     public void onConnectError(final IRCParser tParser, final ParserError errorInfo) {
         checkParser(tParser);
         owner.onConnectError(errorInfo);
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void onAwayStateOther(final IRCParser tParser, final ClientInfo client,
-            final boolean state) {
-        checkParser(tParser);
-        
-        // Just proxy it
-        for (String chan : owner.getChannels()) {
-            owner.getChannel(chan).onAwayStateOther(client, state);
-        }
     }
     
     /** {@inheritDoc} */

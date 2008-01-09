@@ -152,4 +152,11 @@ public final class TabCompleter implements Serializable {
         entries = newEntries;
     }
     
+    /**
+     * Clears all entries in this tab completer.
+     */
+    public void clear() {
+        entries.clear();
+    }
+    
 }

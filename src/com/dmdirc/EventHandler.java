@@ -49,7 +49,8 @@ public abstract class EventHandler implements ICallbackInterface {
         try {
             for (Class iface : this.getClass().getInterfaces()) {
                 if (iface.getName().startsWith(CALLBACK_PREFIX)) {
-                    addCallback(cbm, "on" + iface.getName().substring(CALLBACK_PREFIX.length()));
+                    addCallback(cbm, "on"
+                            + iface.getName().substring(CALLBACK_PREFIX.length()));
                 }
             }
         } catch (CallbackNotFoundException exception) {
