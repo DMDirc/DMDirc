@@ -57,9 +57,9 @@ public class Process004005 extends IRCProcessor {
 					myParser.sNetworkName = sValue;
 					callGotNetwork();
 				} else if (sKey.equals("CASEMAPPING")) {
-					byte limit = (byte)3;
+					byte limit = (byte)4;
 					if (sValue.equalsIgnoreCase("strict-rfc1459")) {
-						limit = (byte)4;
+						limit = (byte)3;
 					} else if (sValue.equalsIgnoreCase("ascii")) {
 						limit = (byte)0;
 					} else if (!sValue.equalsIgnoreCase("rfc1459")) {

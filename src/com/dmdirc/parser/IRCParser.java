@@ -1032,8 +1032,8 @@ public final class IRCParser implements Runnable {
 	 *
 	 * @param limit Number of post-alphabetical characters to convert
 	 *              0 = ascii encoding
-	 *              3 = rfc1459 encoding
-	 *              4 = strict-rfc1459 encoding
+	 *              3 = strict-rfc1459 encoding
+	 *              4 = rfc1459 encoding
 	 */
 	protected void updateCharArrays(final byte limit) {
 		// If limit is out side the boundries, use rfc1459
