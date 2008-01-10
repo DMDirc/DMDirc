@@ -78,12 +78,7 @@ public final class UserModesPane extends JPanel {
         final IRCParser parser = server.getParser();
 
         final String userModes = parser.getUserModeString();
-        final String ourUserModes;
-        if (parser.getMyself() == null) {
-            ourUserModes = "";
-        } else {
-            ourUserModes = parser.getMyself().getUserModeStr();
-        }
+        final String ourUserModes = parser.getMyself().getUserModeStr();
 
         modeCheckBoxes =
                 new Hashtable<String, JCheckBox>();

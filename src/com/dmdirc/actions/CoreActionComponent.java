@@ -99,12 +99,12 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) {
             final Server server = (Server) argument;
             
-            if (server == null || server.getParser() == null || server.getParser().getMyself() == null) {
+            if (server == null || server.getParser() == null || server.getParser().getMyself().isFake()) {
                 Logger.appError(ErrorLevel.LOW, "SERVER_MYNICKNAME.get() called with null element",
                         new UnsupportedOperationException(
                         server == null ? "Server was null" :
                             server.getParser() == null ? "Parser was null" :
-                                server.getParser().getMyself() == null ? "Myself was null" :
+                                server.getParser().getMyself().isFake() ? "Myself was fake" :
                                     "Unknown"
                         ));
                 

@@ -355,6 +355,7 @@ public final class ClientInfo {
 	 * @param mode Character representing the mode to change
 	 */
 	public void alterMode(final boolean positive, final Character mode) {
+		if (isFake()) { return; }
 		int modecount = 1;
 		String modestr = "";
 		if (myParser.h005Info.containsKey("MODES")) {
@@ -378,7 +379,7 @@ public final class ClientInfo {
 	 * and thus will try to send the entire queue in one go.<br><br>
 	 * Modes are always sent negative then positive and not mixed.
 	 */
-	public void sendModes() { 
+	public void sendModes() {
 		if (lModeQueue.size() == 0) { return; }
 		final StringBuilder positivemode = new StringBuilder();
 		final StringBuilder negativemode = new StringBuilder();
