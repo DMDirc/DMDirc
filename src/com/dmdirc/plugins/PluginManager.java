@@ -265,6 +265,6 @@ public class PluginManager {
 	 * @return Collection<PluginInfo> of known plugins.
 	 */
 	public Collection<PluginInfo> getPluginInfos() {
-		return knownPlugins.values();
+		return new ArrayList<PluginInfo>(knownPlugins.values());
 	}
 }
