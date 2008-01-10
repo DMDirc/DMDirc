@@ -50,9 +50,9 @@ public class Process001 extends IRCProcessor {
 		temp = sNick.split("!",2);
 		sNick = temp[0];  /* */
 		
-		myParser.setMyself(getClientInfo(sNick));
-		if (myParser.getMyself() == null) {
-			myParser.setMyself(new ClientInfo(myParser, sNick));
+		if (myParser.getMyself().isFake()) {
+			myParser.getMyself().setUserBits(sNick, true, true);
+			myParser.getMyself().setFake(false);
 			myParser.addClient(myParser.getMyself());
 		}
 		

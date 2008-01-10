@@ -211,7 +211,7 @@ public final class IRCParser implements Runnable {
 	/** Hashtable storing all known channels based on chanel name (inc prefix - in lowercase). */
 	private Hashtable<String, ChannelInfo> hChannelList = new Hashtable<String, ChannelInfo>();
 	/** Reference to the ClientInfo object that references ourself. */
-	private ClientInfo cMyself = null;
+	private ClientInfo cMyself = new ClientInfo(this, "myself").setFake(true);
 	/** Hashtable storing all information gathered from 005. */
 	Hashtable<String, String> h005Info = new Hashtable<String, String>();
 
@@ -603,7 +603,7 @@ public final class IRCParser implements Runnable {
 		sServerName = "";
 		sNetworkName = "";
 		lastLine = "";
-		cMyself = null;
+		cMyself = new ClientInfo(this, "myself").setFake(true);
 		if (pingTimer != null) {
 			pingTimer.cancel();
 			pingTimer = null;
@@ -1529,7 +1529,7 @@ public final class IRCParser implements Runnable {
 	 */
 	public void setNickname(final String sNewNickName) {
 		if (getSocketState() == STATE_OPEN) {
-			if (cMyself != null && cMyself.getNickname().equals(sNewNickName)) {
+			if (!cMyself.isFake() && cMyself.getNickname().equals(sNewNickName)) {
 				return;
 			}
 			sendString("NICK " + sNewNickName);
@@ -1565,7 +1565,7 @@ public final class IRCParser implements Runnable {
 	 */
 	public int getMaxLength(final int nLength) {
 		final int lineLint = 5;
-		if (cMyself == null) {
+		if (cMyself.isFake()) {
 			callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "getMaxLength() called, but I don't know who I am?", lastLine));
 			return MAX_LINELENGTH - nLength - lineLint;
 		} else {
@@ -1944,7 +1944,6 @@ public final class IRCParser implements Runnable {
 	 */
 	private void setPingNeeded(final boolean newStatus)  {
 		synchronized (pingNeeded) {
-//			System.out.println("Ping needed is now: "+newStatus);
 			pingNeeded = newStatus;
 		}
 	}
@@ -1956,7 +1955,6 @@ public final class IRCParser implements Runnable {
 	 */
 	private boolean getPingNeeded()  {
 		synchronized (pingNeeded) {
-//			System.out.println("Pingneeded = "+pingNeeded);
 			return pingNeeded;
 		}
 	}
@@ -1966,14 +1964,7 @@ public final class IRCParser implements Runnable {
 	 *
 	 * @return cMyself reference
 	 */
-	public ClientInfo getMyself() { return cMyself; }
-
-	/**
-	 * Set the cMyself variable.
-	 *
-	 * @param client new "myself" client
-	 */
-	public void setMyself(final ClientInfo client) { cMyself = client; }
+	public synchronized ClientInfo getMyself() { return cMyself; }
 
 	/**
 	 * Get the current nickname.
@@ -1983,7 +1974,7 @@ public final class IRCParser implements Runnable {
 	 * @return Current nickname.
 	 */
 	public String getMyNickname() {
-		if (cMyself == null) {
+		if (cMyself.isFake()) {
 			return sThinkNickname;
 		} else {
 			return cMyself.getNickname();

@@ -152,15 +152,27 @@ public final class ClientInfo {
 	}
 
 	/**
-	 * Get a string representation of the user.
+	 * Set the nick/ident/host of this client
 	 *
 	 * @param sHostmask takes a host (?:)nick(?!ident)(?@host) and sets nick/host/ident variables
 	 * @param bUpdateNick if this is false, only host/ident will be updated.
 	 */	
 	public void setUserBits(final String sHostmask, final boolean bUpdateNick) {
+		setUserBits(sHostmask, bUpdateNick, false);
+	}
+	
+	/**
+	 * Set the nick/ident/host of this client
+	 *
+	 * @param sHostmask takes a host (?:)nick(?!ident)(?@host) and sets nick/host/ident variables
+	 * @param bUpdateNick if this is false, only host/ident will be updated.
+	 * @param allowBlank if this is true, ident/host will be set even if
+	 *                   parseHostFull returns empty values for them
+	 */	
+	public void setUserBits(final String sHostmask, final boolean bUpdateNick, final boolean allowBlank) {
 		final String[] sTemp = parseHostFull(sHostmask);
-		if (!sTemp[2].isEmpty()) { sHost = sTemp[2]; }
-		if (!sTemp[1].isEmpty()) { sIdent = sTemp[1]; }
+		if (!sTemp[2].isEmpty() || allowBlank) { sHost = sTemp[2]; }
+		if (!sTemp[1].isEmpty() || allowBlank) { sIdent = sTemp[1]; }
 		if (bUpdateNick) { sNickname = sTemp[0]; }
 	}
 	
