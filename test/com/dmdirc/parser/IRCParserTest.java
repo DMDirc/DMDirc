@@ -54,10 +54,10 @@ public class IRCParserTest extends junit.framework.TestCase {
         asciiParser.updateCharArrays((byte) 0);
 
         final IRCParser rfcParser = new IRCParser();
-        rfcParser.updateCharArrays((byte) 3);
+        rfcParser.updateCharArrays((byte) 4);
 
         final IRCParser strictParser = new IRCParser();
-        strictParser.updateCharArrays((byte) 4);
+        strictParser.updateCharArrays((byte) 3);
 
         final String[][] testcases = {
             {"12345", "12345", "12345", "12345"},
