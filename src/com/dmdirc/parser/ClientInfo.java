@@ -113,7 +113,7 @@ public final class ClientInfo {
 	 * This returns "this" and thus can be used in the construction line.
 	 *
 	 * @param newValue new value for isFake - True if this is a fake client, else false
-	 * @param return this Object
+	 * @return this Object
 	 */
 	public ClientInfo setFake(boolean newValue) { bIsFake = newValue; return this; }
 

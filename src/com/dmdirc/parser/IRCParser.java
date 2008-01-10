@@ -565,6 +565,7 @@ public final class IRCParser implements Runnable {
 	/**
 	 * Callback to all objects implementing the Post005 Callback.
 	 *
+	 * @return true if any callbacks were called.
 	 * @see IPost005
 	 */
 	protected synchronized boolean callPost005() {
@@ -1060,7 +1061,8 @@ public final class IRCParser implements Runnable {
 	/**
 	 * Get the lowercase version of a String for this Server.
 	 *
-	 * @param sInputString String to lowercase
+	 * @param input String to convert lowercase
+	 * @return input String converterd to lowercase
 	 */
 	public String toLowerCase(final String input) {
 		final char[] result = input.toCharArray();
@@ -1077,7 +1079,8 @@ public final class IRCParser implements Runnable {
 	/**
 	 * Get the uppercase version of a String for this Server.
 	 *
-	 * @param sInputString String to uppercase
+	 * @param input String to convert uppercase
+	 * @return input String converterd to uppercase
 	 */
 	public String toUpperCase(final String input) {
 		final char[] result = input.toCharArray();
@@ -1096,6 +1099,7 @@ public final class IRCParser implements Runnable {
 	 *
 	 * @param first First string to check
 	 * @param second Second string to check
+	 * @return True if both strings are equal after being lowercased
 	 */
 	public boolean equalsIgnoreCase(final String first, final String second) {
 		if (first == null && second == null) { return true; }

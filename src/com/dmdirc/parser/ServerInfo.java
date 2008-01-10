@@ -59,8 +59,15 @@ public class ServerInfo {
 	
 	/** Constructor using Default values. */
 	public ServerInfo () { }
-	/** Constructor using specifed host, port and password, SSL/Proxy must be specifed separately. */
-	public ServerInfo (String serverHost, int serverPort, String serverPass) {
+	
+	/**
+	 * Constructor using specifed host, port and password, SSL/Proxy must be specifed separately.
+	 *
+	 * @param serverHost Host to use
+	 * @param serverPort Port to use
+	 * @param serverPass Password to use
+	 */
+	public ServerInfo (final String serverHost, final int serverPort, final String serverPass) {
 		host = serverHost;
 		port = serverPort;
 		password = serverPass;
