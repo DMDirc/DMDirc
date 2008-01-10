@@ -29,11 +29,11 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class IRCParserTest extends junit.framework.TestCase {
-    
+
     @Test
     public void testIssue042() {
         boolean res = false;
-        
+
         try {
             final IRCParser myParser = new IRCParser();
             myParser.getCallbackManager().addCallback("non-existant",new IAwayState() {
@@ -44,33 +44,74 @@ public class IRCParserTest extends junit.framework.TestCase {
         } catch (CallbackNotFoundException ex) {
             res = true;
         }
-        
+
         assertTrue("addCallback() should throw exception for non-existant callbacks", res);
     }
-    
+
+    @Test
+    public void testCaseConversion() {
+        final IRCParser asciiParser = new IRCParser();
+        asciiParser.updateCharArrays((byte) 0);
+
+        final IRCParser rfcParser = new IRCParser();
+        rfcParser.updateCharArrays((byte) 3);
+
+        final IRCParser strictParser = new IRCParser();
+        strictParser.updateCharArrays((byte) 4);
+
+        final String[][] testcases = {
+            {"12345", "12345", "12345", "12345"},
+            {"HELLO", "hello", "hello", "hello"},
+            {"^[[MOO]]^", "^[[moo]]^", "~{{moo}}~", "^{{moo}}^"},
+            {"«—»", "«—»", "«—»", "«—»"}
+        };
+
+        for (String[] testcase : testcases) {
+            final String asciiL = asciiParser.toLowerCase(testcase[0]);
+            final String rfcL = rfcParser.toLowerCase(testcase[0]);
+            final String strictL = strictParser.toLowerCase(testcase[0]);
+
+            final String asciiU = asciiParser.toUpperCase(testcase[1]);
+            final String rfcU = rfcParser.toUpperCase(testcase[2]);
+            final String strictU = strictParser.toUpperCase(testcase[3]);
+            
+            assertEquals(testcase[1], asciiL);
+            assertEquals(testcase[2], rfcL);
+            assertEquals(testcase[3], strictL);
+            
+            assertTrue(asciiParser.equalsIgnoreCase(testcase[0], testcase[1]));
+            assertTrue(rfcParser.equalsIgnoreCase(testcase[0], testcase[2]));
+            assertTrue(strictParser.equalsIgnoreCase(testcase[0], testcase[3]));
+            
+            assertEquals(testcase[0], asciiU);
+            assertEquals(testcase[0], rfcU);
+            assertEquals(testcase[0], strictU);
+        }
+    }
+
     @Test
     public void testTokeniser() {
         final IRCParser myParser = new IRCParser();
-        
+
         final String line1 = "a b c d e";
         final String line2 = "a b c :d e";
         final String line3 = ":a b:c :d e";
-        
+
         final String[] res1 = myParser.tokeniseLine(line1);
         final String[] res2 = myParser.tokeniseLine(line2);
         final String[] res3 = myParser.tokeniseLine(line3);
-        
+
         arrayEquals(res1, new String[]{"a", "b", "c", "d", "e"});
         arrayEquals(res2, new String[]{"a", "b", "c", "d e"});
         arrayEquals(res3, new String[]{":a", "b:c", "d e"});
     }
-    
+
     private void arrayEquals(final String[] a1, final String[] a2) {
         assertEquals(a1.length, a2.length);
-        
+
         for (int i = 0; i < a1.length; i++) {
             assertEquals(a1[i], a2[i]);
         }
     }
-    
+
 }
