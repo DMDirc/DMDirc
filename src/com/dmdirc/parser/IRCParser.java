@@ -610,7 +610,7 @@ public final class IRCParser implements Runnable {
 		}
 		currentSocketState = STATE_CLOSED;
 		// Char Mapping
-		updateCharArrays((byte)3);
+		updateCharArrays((byte)4);
 	}
 
 	/**
@@ -1041,7 +1041,7 @@ public final class IRCParser implements Runnable {
 	 */
 	protected void updateCharArrays(final byte limit) {
 		// If limit is out side the boundries, use rfc1459
-		if (limit > 4 || limit < 0 ) { updateCharArrays((byte)3); return; }
+		if (limit > 4 || limit < 0 ) { updateCharArrays((byte)4); return; }
 		lastLimit = limit;
 		lowercase = new char[127];
 		uppercase = new char[127];
