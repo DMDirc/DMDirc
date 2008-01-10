@@ -999,6 +999,11 @@ public final class IRCParser implements Runnable {
 					// Before 001 we don't care about much.
 					try { nParam = Integer.parseInt(token[1]); } catch (Exception e) { nParam = -1; }
 					switch (nParam) {
+						case -1: // Some networks send a CTCP during the auth process, handle it.
+							if (token.length > 3 && !token[3].isEmpty() && token[3].charAt(0) == (char)1 && token[3].charAt(token[3].length()-1) == (char)1) {
+								try { myProcessingManager.process(sParam, token); } catch (Exception e) { }
+							}
+							break;
 						case 1: // 001 - Welcome to IRC
 						case 464: // Password Required
 						case 433: // Nick In Use
