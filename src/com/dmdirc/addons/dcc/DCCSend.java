@@ -22,6 +22,8 @@
 
 package com.dmdirc.addons.dcc;
 
+import com.dmdirc.config.IdentityManager;
+
 import java.net.Socket;
 import java.io.File;
 import java.io.IOException;
@@ -69,13 +71,14 @@ public class DCCSend extends DCC {
 	/** What is the token for this send? */
 	private String token = "";
 	/** Block Size */
-	private int blockSize = 1024;
+	private final int blockSize;
 	/** Is this a turbo dcc? */
 	private boolean turbo = false;
 	
 	/** Creates a new instance of DCCSend. */
 	public DCCSend() {
 		super();
+		blockSize = IdentityManager.getGlobalConfig().getOptionInt(DCCPlugin.getDomain(), "send.blocksize", "1024")
 		sends.add(this);
 	}
 	

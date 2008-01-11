@@ -105,19 +105,20 @@ public final class DCCCommand extends GlobalCommand {
 					final IRCParser parser = origin.getContainer().getServer().getParser();
 					final String myNickname = parser.getMyNickname();
 					DCCSend send = new DCCSend();
+					send.setTurbo(IdentityManager.getGlobalConfig().getOptionBool(DCCPlugin.getDomain(), "send.forceturbo", false));
 					send.setType(DCCSend.TransferType.SEND);
 					
 					sendLine(origin, isSilent, FORMAT_OUTPUT, "Starting DCC Send with: "+target);
 				
 					send.setFileName(jc.getSelectedFile().getAbsolutePath());
 					send.setFileSize(jc.getSelectedFile().length());
-					if (IdentityManager.getGlobalConfig().getOptionBool(DCCPlugin.MY_DOMAIN, "send.reverse", false)) {
+					if (IdentityManager.getGlobalConfig().getOptionBool(DCCPlugin.getDomain(), "send.reverse", false)) {
 						new DCCSendWindow(myPlugin, send, "*Send: "+target, myNickname, target);
-						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(send.getHost())+" 0 "+send.getFileSize()+" "+send.makeToken());
+						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(send.getHost())+" 0 "+send.getFileSize()+" "+send.makeToken()+((send.getTurbo()) ? "T" : ""));
 					} else {
 						new DCCSendWindow(myPlugin, send, "Send: "+target, myNickname, target);
 						send.listen();
-						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+send.getFileSize());
+						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+send.getFileSize()+((send.getTurbo()) ? " T" : ""));
 					}
 				}
 			}

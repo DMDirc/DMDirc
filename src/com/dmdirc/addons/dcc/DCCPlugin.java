@@ -39,6 +39,8 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.interfaces.ActionListener;
+import com.dmdirc.ui.interfaces.PreferencesInterface;
+import com.dmdirc.ui.interfaces.PreferencesPanel;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +60,7 @@ import javax.swing.JFrame;
  * @author Shane 'Dataforce' McCormack
  * @version $Id: DCCPlugin.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
-public final class DCCPlugin extends Plugin implements ActionListener {
+public final class DCCPlugin extends Plugin implements ActionListener, PreferencesInterface {
 	/** The DCCCommand we created */
 	private DCCCommand command = null;
 	
@@ -66,7 +68,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	private DCCFrame container;
 	
 	/** What domain do we store all settings in the global config under. */
-	protected static final String MY_DOMAIN = "plugin-DCC";
+	private static final String MY_DOMAIN = "plugin-DCC";
 	
 	/** Child Frames */
 	private List<DCCFrame> childFrames = new ArrayList<DCCFrame>();
@@ -238,6 +240,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 						boolean newSend = (send == null);
 						if (newSend) {
 							send = new DCCSend();
+							send.setTurbo(IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "send.forceturbo", false));
 						}
 						try {
 							send.setAddress(Long.parseLong(ip), Integer.parseInt(port));
@@ -367,7 +370,9 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		Properties defaults = new Properties();
 		defaults.setProperty(MY_DOMAIN + ".recieve.savelocation", Main.getConfigDir() + "downloads" + System.getProperty("file.separator"));
 		defaults.setProperty(MY_DOMAIN + ".send.reverse", "false");
-		defaults.setProperty(MY_DOMAIN + ".recieve.reverse.sendtoken", "true");
+		defaults.setProperty(MY_DOMAIN + ".send.forceturbo", "true");
+		defaults.setProperty(MY_DOMAIN + ".recieve.reverse.sendtoken", "false");
+		defaults.setProperty(MY_DOMAIN + ".send.blocksize", "1024");
 		defaults.setProperty("identity.name", "DCC Plugin Defaults");
 		IdentityManager.addIdentity(new Identity(defaults));
 	
@@ -400,6 +405,82 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 			container.close();
 		}
 	}
+	
+	
+	/**
+	 * Called to see if the plugin has configuration options (via dialog).
+	 *
+	 * @return true if the plugin has configuration options via a dialog.
+	 */
+	public boolean isConfigurable() { return true; }
+	
+	/**
+	 * Called to show the Configuration dialog of the plugin if appropriate.
+	 */
+	public void showConfig() {
+		final PreferencesPanel preferencesPanel = Main.getUI().getPreferencesPanel(this, "DCC Plugin - Config");
+		preferencesPanel.addCategory("General", "General Configuration for DCC.");
+		preferencesPanel.addCategory("Send", "Configuration for DCC Sends.");
+		preferencesPanel.addCategory("Recieve", "Configuration for DCC Recieves.");
+		
+		preferencesPanel.addTextfieldOption("Recieve", "recieve.savelocation", "Default Save Location: ", "Where the save as window defaults to?", IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "recieve.savelocation"));
+		preferencesPanel.addCheckboxOption("Send", "send.reverse", "Reverse DCC: ", "With reverse DCC, the sender connects rather than listens like normal dcc", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "send.reverse"));
+		preferencesPanel.addCheckboxOption("Send", "send.forceturbo", "Use Turbo DCC: ", "Turbo DCC doesn't wait for ack packets. this is faster but not always supported.", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "send.forceturbo"));
+		preferencesPanel.addCheckboxOption("Recieve", "receive.reverse.sendtoken", "Send token in reverse recieve?: ", "If you have problems with reverse dcc recieve resume, try toggling this.", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "recieve.reverse.sendtoken"));
+				
+		preferencesPanel.addSpinnerOption("General", "send.blocksize", "Blocksize to use for DCC: ", "Change the block size for send/recieve, this can sometimes speed up transfers.", IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "send.blocksize"));
+		preferencesPanel.display();
+	}
+	
+	/**
+	 * Get the name of the domain we store all settings in the global config under.
+	 *
+	 * @return the plugins domain
+	 */
+	protected static String getDomain() { return MY_DOMAIN; }
+	
+	/**
+	 * Copy the new vaule of an option to the global config.
+	 *
+	 * @param properties Source of option value, or null if setting default values
+	 * @param name name of option
+	 */
+	protected void updateOption(final Properties properties, final String name) {
+		String value = null;
+		
+		// Get the value from the properties file if one is given, else use the
+		// value from the global config.
+		if (properties != null) {
+			value = properties.getProperty(name);
+		} else {
+			value = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, name);
+		}
+		
+		// Check if the Value exists
+		if (value != null) {
+			// It does, so update the global config with the new value
+			IdentityManager.getConfigIdentity().setOption(MY_DOMAIN, name, value);
+		}
+	}
+	
+	/**
+	 * Called when the preferences dialog is closed.
+	 *
+	 * @param properties user preferences
+	 */
+	public void configClosed(final Properties properties) {
+		// Update Config options
+		updateOption(properties, "recieve.savelocation");
+		updateOption(properties, "send.reverse");
+		updateOption(properties, "send.forceturbo");
+		updateOption(properties, "receive.reverse.sendtoken");
+		updateOption(properties, "send.blocksize");
+	}
+	
+	/**
+	 * Called when the preferences dialog is cancelled.
+	 */
+	public void configCancelled() { }
 	
 	/**
 	 * Get SVN Version information.
