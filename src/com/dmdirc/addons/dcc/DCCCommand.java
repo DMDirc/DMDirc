@@ -22,10 +22,16 @@
 
 package com.dmdirc.addons.dcc;
 
+import com.dmdirc.Main;
 import com.dmdirc.parser.IRCParser;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
+
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+
+import java.io.File;
 
 /**
  * This command allows starting dcc chats/file transfers
@@ -69,13 +75,50 @@ public final class DCCCommand extends GlobalCommand {
 				sendLine(origin, isSilent, FORMAT_OUTPUT, "Starting DCC Chat with: "+target+" on "+chat.getHost()+":"+chat.getPort());
 				window.getFrame().addLine(FORMAT_OUTPUT, "Starting DCC Chat with: "+target+" on "+chat.getHost()+":"+chat.getPort());
 			} else if (type.equalsIgnoreCase("send")) {
-				
+				sendFile(target, origin, isSilent);
 			} else {
 				sendLine(origin, isSilent, FORMAT_ERROR, "Unknown DCC Type: '"+type+"'");
 			}
 		} else {
 			sendLine(origin, isSilent, FORMAT_ERROR, "Syntax: dcc <type> <target> [params]");
 		}
+	}
+
+	/**
+	 * Ask for the file to send, then start the send.
+	 *
+	 * @param target Person this dcc is to.
+	 * @param window The InputWindow this command was issued on
+	 * @param isSilent Whether this command is silenced or not
+	 */
+	public void sendFile(final String target, final InputWindow origin, final boolean isSilent) {
+		// New thread to ask the user what file to senfd
+		Thread dccThread = new Thread(new Runnable() {
+			public void run() {
+				final JFileChooser jc = new JFileChooser();
+				jc.setDialogTitle("Send file to "+target+" - DMDirc ");
+				jc.setFileSelectionMode(jc.FILES_AND_DIRECTORIES);
+				jc.setMultiSelectionEnabled(false);
+				int result = jc.showOpenDialog((JFrame)Main.getUI().getMainWindow());
+				if (result == JFileChooser.APPROVE_OPTION) {
+					final IRCParser parser = origin.getContainer().getServer().getParser();
+					final String myNickname = parser.getMyNickname();
+					DCCSend send = new DCCSend();
+					send.setType(DCCSend.TransferType.SEND);
+					
+					DCCSendWindow window = new DCCSendWindow(myPlugin, send, "Send: "+target, myNickname, target);
+					sendLine(origin, isSilent, FORMAT_OUTPUT, "Starting DCC Send with: "+target);
+				
+					System.out.println("jc.getSelectedFile().getAbsolutePath() = "+jc.getSelectedFile().getAbsolutePath());
+					send.setFileName(jc.getSelectedFile().getAbsolutePath());
+					send.setFileSize(jc.getSelectedFile().length());
+					send.listen();
+					parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+send.getFileSize());
+				}
+			}
+		}, "openFileThread");
+		// Start the thread
+		dccThread.start();
 	}
 
 	/**

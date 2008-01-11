@@ -37,7 +37,7 @@ import java.io.FileOutputStream;
  */
 public class DCCSend extends DCC {
 	/** File Transfer Types */
-	private enum TransferType { SEND, RECIEVE; }
+	public enum TransferType { SEND, RECIEVE; }
 	/** The File transfer type for this file */
 	private TransferType transferType = TransferType.RECIEVE;
 	/** The handler for this DCCSend */
@@ -81,6 +81,24 @@ public class DCCSend extends DCC {
 	 */
 	public String getFileName() {
 		return filename;
+	}
+	
+	/**
+	 * Set dcc Type.
+	 *
+	 * @param type Type of DCC Send this is.
+	 */
+	public void setType(final TransferType type) {
+		this.transferType = type;
+	}
+	
+	/**
+	 * Get dcc Type.
+	 *
+	 * @return Type of DCC Send this is.
+	 */
+	public TransferType getType() {
+		return transferType;
 	}
 	
 	/**
@@ -153,11 +171,10 @@ public class DCCSend extends DCC {
 		try {
 			transferFile = new File(filename);
 			if (transferType == TransferType.RECIEVE) {
-				fileOut = new DataOutputStream(new FileOutputStream(transferFile.getName()));
+				fileOut = new DataOutputStream(new FileOutputStream(transferFile.getAbsolutePath()));
 			} else if (transferType == TransferType.SEND) {
-				fileIn = new DataInputStream(new FileInputStream(transferFile.getName()));
+				fileIn = new DataInputStream(new FileInputStream(transferFile.getAbsolutePath()));
 			}
-			
 			out = new DataOutputStream(socket.getOutputStream());
 			in = new DataInputStream(socket.getInputStream());
 			if (handler != null) {
@@ -171,8 +188,8 @@ public class DCCSend extends DCC {
 	 */
 	protected void socketClosed() {
 		// Try to close both, even if one fails.
-		try { out.close(); } catch (IOException ioe) { }
-		try { in.close(); } catch (IOException ioe) { }
+		try { out.close(); } catch (Exception e) { }
+		try { in.close(); } catch (Exception e) { }
 		out = null;
 		in = null;
 		if (handler != null) {
@@ -251,7 +268,7 @@ public class DCCSend extends DCC {
 				}
 				
 				if (readSize == size) {
-					fileOut.close();
+					fileIn.close();
 					return false;
 				} else {
 					return true;
