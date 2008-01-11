@@ -37,13 +37,26 @@ public class PreferencesCategory {
     private final List<PreferencesSetting> settings = new ArrayList<PreferencesSetting>();
     
     private final List<PreferencesCategory> subcats = new ArrayList<PreferencesCategory>();
+    
+    private final Object object;
 
     public PreferencesCategory(final String title, final String description) {
+        this(title, description, null);
+    }
+    
+    public PreferencesCategory(final String title, final String description,
+            final Object object) {
         this.title = title;
         this.description = description;
+        this.object = object;
     }
     
     public void addSetting(final PreferencesSetting setting) {
+        if (hasObject()) {
+            throw new IllegalArgumentException("Can't add settings to a " +
+                    "category that uses a replacement object");
+        }
+        
         settings.add(setting);
     }
     
@@ -65,6 +78,14 @@ public class PreferencesCategory {
 
     public String getTitle() {
         return title;
+    }
+    
+    public boolean hasObject() {
+        return object != null;
+    }
+    
+    public Object getObject() {
+        return object;
     }
 
 }

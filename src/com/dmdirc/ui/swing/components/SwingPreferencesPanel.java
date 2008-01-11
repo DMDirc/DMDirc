@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.components;
 
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
@@ -277,7 +278,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
      * </ul>
      */
     private void addComponent(final JPanel parent, final String optionName,
-            final String title, final String helpText, final OptionType type,
+            final String title, final String helpText, final PreferencesType type,
             final Object... args) {
         final JLabel label = new JLabel(title, JLabel.TRAILING);
         if (helpText.isEmpty()) {
@@ -290,17 +291,17 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         
         ((JPanel) parent.getComponent(1)).add(label);
         switch (type) {
-            case TEXTFIELD:
+            case TEXT:
                 option = new JTextField();
                 ((JTextField) option).setText((String) args[0]);
                 textFields.put(optionName, (JTextField) option);
                 break;
-            case CHECKBOX:
+            case BOOLEAN:
                 option = new JCheckBox();
                 ((JCheckBox) option).setSelected((Boolean) args[0]);
                 checkBoxes.put(optionName, (JCheckBox) option);
                 break;
-            case COMBOBOX:
+            case MULTICHOICE:
                 if (args[0] instanceof String[]) {
                     option = new JComboBox((String[]) args[0]);
                     ((JComboBox) option).setSelectedItem(args[1]);
@@ -319,7 +320,8 @@ public final class SwingPreferencesPanel extends StandardDialog implements
                 comboBoxes.put(optionName, (JComboBox) option);
                 ((JComboBox) option).setEditable((Boolean) args[2]);
                 break;
-            case SPINNER:
+            case INTEGER:
+            case DURATION:
                 if (args.length == 1) {
                     option = new JSpinner(new SpinnerNumberModel());
                     try {
@@ -345,9 +347,6 @@ public final class SwingPreferencesPanel extends StandardDialog implements
                 option = new OptionalColourChooser((String) args[0], (Boolean) args[1],
                         (Boolean) args[2], (Boolean) args[3]);
                 optionalColours.put(optionName, (OptionalColourChooser) option);
-                break;
-            case PANEL:
-                option = (JComponent) args[0];
                 break;
             default:
                 throw new IllegalArgumentException(type + " is not a valid option");
@@ -408,7 +407,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
             final String displayName, final String helpText,
             final String defaultValue) {
         addComponent(categories.get(category), name, displayName, helpText,
-                OptionType.TEXTFIELD, defaultValue);
+                PreferencesType.TEXT, defaultValue);
     }
     
     /** {@inheritDoc} */
@@ -416,7 +415,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
             final String displayName, final String helpText,
             final boolean defaultValue) {
         addComponent(categories.get(category), name, displayName, helpText,
-                OptionType.CHECKBOX, defaultValue);
+                PreferencesType.BOOLEAN, defaultValue);
     }
     
     /** {@inheritDoc} */
@@ -425,7 +424,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
             final String[] options, final String defaultValue,
             final boolean editable) {
         addComponent(categories.get(category), name, displayName, helpText,
-                OptionType.COMBOBOX, options, defaultValue, editable);
+                PreferencesType.MULTICHOICE, options, defaultValue, editable);
     }
     
     /**
@@ -445,7 +444,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
             final DefaultComboBoxModel options, final ListCellRenderer renderer,
             final String defaultValue, final boolean editable) {
         addComponent(categories.get(category), name, displayName, helpText,
-                OptionType.COMBOBOX, options, defaultValue, editable, renderer);
+                PreferencesType.MULTICHOICE, options, defaultValue, editable, renderer);
     }
     
     /** {@inheritDoc} */
@@ -453,7 +452,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
             final String displayName, final String helpText,
             final int defaultValue) {
         addComponent(categories.get(category), name, displayName, helpText,
-                OptionType.SPINNER, defaultValue);
+                PreferencesType.INTEGER, defaultValue);
     }
     
     /** {@inheritDoc} */
@@ -462,7 +461,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
             final int defaultValue, final int minimum, final int maximum,
             final int stepSize) {
         addComponent(categories.get(category), name, displayName, helpText,
-                OptionType.SPINNER, defaultValue, minimum, maximum, stepSize);
+                PreferencesType.INTEGER, defaultValue, minimum, maximum, stepSize);
     }
     
     /** {@inheritDoc} */
@@ -471,7 +470,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
             final String defaultValue, final boolean showIrcColours,
             final boolean showHexColours) {
         addComponent(categories.get(category), name, displayName, helpText,
-                OptionType.COLOUR, defaultValue, showIrcColours, showHexColours);
+                PreferencesType.COLOUR, defaultValue, showIrcColours, showHexColours);
     }
     
     /** {@inheritDoc} */
@@ -480,16 +479,8 @@ public final class SwingPreferencesPanel extends StandardDialog implements
             final String defaultValue, final boolean initialState,
             final boolean showIrcColours, final boolean showHexColours) {
         addComponent(categories.get(category), name, displayName, helpText,
-                OptionType.OPTIONALCOLOUR, defaultValue, initialState,
+                PreferencesType.OPTIONALCOLOUR, defaultValue, initialState,
                 showIrcColours, showHexColours);
-    }
-    
-    /** {@inheritDoc} */
-    public void addPanelOption(final String category, final String name,
-            final String displayName, final String helpText,
-            final JPanel panel) {
-        addComponent(categories.get(category), name, displayName, helpText,
-                OptionType.PANEL, panel);
     }
     
     /**

@@ -23,6 +23,9 @@ package com.dmdirc.config.prefs;
 
 import com.dmdirc.config.prefs.validator.NumericalValidator;
 import com.dmdirc.config.prefs.validator.StringLengthValidator;
+import com.dmdirc.ui.swing.dialogs.prefs.URLConfigPanel;
+
+import com.dmdirc.ui.swing.dialogs.prefs.UpdateConfigPanel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -73,6 +76,7 @@ public class PreferencesManager {
         addMessagesCategory();
         addGuiCategory();
         addUrlHandlerCategory();
+        addUpdatesCategory();
         addAdvancedCategory();
     }
 
@@ -242,16 +246,38 @@ public class PreferencesManager {
         parent.addSubCategory(category);
     }
 
+    /**
+     * Creates and adds the "Advanced" category.
+     */    
     private void addAdvancedCategory() {
         // XXX: Not implemented
     }
 
+    /**
+     * Creates and adds the "GUI" category.
+     */    
     private void addGuiCategory() {
         // XXX: Not implemented
     }
+    
+    /**
+     * Creates and adds the "Updates" category.
+     */    
+    private void addUpdatesCategory() {
+        // TODO: Abstract the panel
+        
+        addCategory(new PreferencesCategory("Updates", "", new UpdateConfigPanel()));
+    }
 
+    /**
+     * Creates and adds the "URL Handlers" category.
+     */
     private void addUrlHandlerCategory() {
-        // XXX: Not implemented
+        // TODO: Abstract the panel
+        
+        addCategory(new PreferencesCategory("URL Handlers",
+                "Configure how DMDirc handles different types of URLs",
+                new URLConfigPanel()));
     }
 
 }

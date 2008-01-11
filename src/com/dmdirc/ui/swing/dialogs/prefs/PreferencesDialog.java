@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.swing.dialogs.prefs;
 
-import com.dmdirc.ui.swing.components.renderers.MapEntryRenderer;
 import com.dmdirc.Main;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
@@ -38,15 +37,14 @@ import com.dmdirc.themes.ThemeManager;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.SwingPreferencesPanel;
-import java.util.AbstractMap.SimpleImmutableEntry;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 
+import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
@@ -76,10 +74,9 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     
     /** restart warning issued. */
     private boolean restartNeeded;
-    /** URL Config panel. */
-    private URLConfigPanel urlConfigPanel;
-    /** Update Config panel. */
-    private UpdateConfigPanel updateConfigPanel;
+    
+    /** Our preferences manager. */
+    private PreferencesManager manager;
     
     /**
      * Creates a new instance of PreferencesDialog.
@@ -116,6 +113,22 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
      */
     private void addCategory(final PreferencesCategory category, final String parent) {
         preferencesPanel.addCategory(parent, category.getTitle(), category.getDescription());
+        
+        for (PreferencesCategory child : category.getSubcats()) {
+            addCategory(child, category.getTitle());
+        }
+        
+        if (category.hasObject()) {
+            if (!(category.getObject() instanceof JPanel)) {
+                throw new IllegalArgumentException("Custom preferences objects" +
+                        " for this UI must extend JPanel.");
+            }
+            
+            preferencesPanel.replaceOptionPanel(category.getTitle(), 
+                    (JPanel) category.getObject());
+            
+            return;
+        }
         
         for (PreferencesSetting setting : category.getSettings()) {
             switch(setting.getType()) {
@@ -155,10 +168,6 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
                     break;
             }
         }
-        
-        for (PreferencesCategory child : category.getSubcats()) {
-            addCategory(child, category.getTitle());
-        }
     }
     
     /**
@@ -169,7 +178,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
         preferencesPanel = new SwingPreferencesPanel(this);
         restartNeeded = false;
         
-        final PreferencesManager manager = new PreferencesManager();
+        manager = new PreferencesManager();
         
         for (PreferencesCategory cat : manager.getCategories()) {
             addCategory(cat);
@@ -179,8 +188,6 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
         initThemesTab();
         initNicklistTab();
         initTreeviewTab();
-        initURLTab();
-        initUpdateTab();
         initAdvancedTab();
         
         preferencesPanel.display();
@@ -189,6 +196,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     /**
      * Initialises the GUI tab.
      */
+    @Deprecated
     private void initGUITab() {
         final LookAndFeelInfo[] plaf = UIManager.getInstalledLookAndFeels();
         final String sysLafClass = UIManager.getSystemLookAndFeelClassName();
@@ -255,6 +263,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     }
     
     /** Initialises the themes tab. */
+    @Deprecated
     private void initThemesTab() {
         final String tabName = "Themes";
         final Map<String, Theme> availThemes = new ThemeManager().
@@ -284,6 +293,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     /**
      * Initialises the Nicklist tab.
      */
+    @Deprecated
     private void initNicklistTab() {
         final String tabName = "Nicklist";
         preferencesPanel.addCategory("GUI", tabName, "");
@@ -313,6 +323,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     /**
      * Initialises the Treeview tab.
      */
+    @Deprecated
     private void initTreeviewTab() {
         final String tabName = "Treeview";
         preferencesPanel.addCategory("GUI", tabName, "");
@@ -359,6 +370,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     /**
      * Initialises the advanced tab.
      */
+    @Deprecated
     private void initAdvancedTab() {
         final String tabName = "Advanced";
         preferencesPanel.addCategory(tabName, "");
@@ -390,33 +402,17 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
                 1, Integer.MAX_VALUE, 1);
     }
     
-    /**
-     * Initialises the URL tab.
-     */
-    private void initURLTab() {
-        final String tabName = "URL Handlers";
-        preferencesPanel.addCategory(tabName, "Use this panel to adjust the" +
-                " URL handling options.");
-        urlConfigPanel = new URLConfigPanel();
-        preferencesPanel.replaceOptionPanel(tabName, urlConfigPanel);
-    }
-    
-    /**
-     * Initialises the Update tab.
-     */
-    private void initUpdateTab() {
-        final String tabName = "Updates";
-        preferencesPanel.addCategory(tabName, "Use this panel to adjust the" +
-                " update checking for DMDirc.");
-        updateConfigPanel = new UpdateConfigPanel();
-        preferencesPanel.replaceOptionPanel(tabName, updateConfigPanel);
-    }
-    
     /** {@inheritDoc}. */
     @Override
+    @Deprecated
     public void configClosed(final Properties properties) {
-        urlConfigPanel.save();
-        updateConfigPanel.save();   
+        for (PreferencesCategory category : manager.getCategories()) {
+            if (category.hasObject() && category.getObject() instanceof URLConfigPanel) {
+                ((URLConfigPanel) category.getObject()).save();
+            } else if (category.hasObject() && category.getObject() instanceof UpdateConfigPanel) {
+                ((UpdateConfigPanel) category.getObject()).save();
+            }
+        }
         
         final Identity identity = IdentityManager.getConfigIdentity();
         for (Map.Entry<Object, Object> entry : properties.entrySet()) {
@@ -476,8 +472,6 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     /** Disposes of this prefs dialog. */
     public void dispose() {
         synchronized (me) {
-            urlConfigPanel = null;
-            updateConfigPanel = null;
             preferencesPanel = null;
             IdentityManager.getGlobalConfig().removeListener(this);
             me = null;

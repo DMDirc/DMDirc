@@ -30,14 +30,8 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
 import com.dmdirc.ui.interfaces.PreferencesPanel;
-import com.dmdirc.ui.swing.components.ColourChooser;
 
-import java.awt.BorderLayout;
 import java.util.Properties;
-
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
 
 /**
  * Allows the user to display on-screen-display messages.
@@ -53,15 +47,6 @@ public final class OsdPlugin extends Plugin implements PreferencesInterface {
     
     /** OSD Command. */
     private OsdCommand command;
-    
-    /** Font size spinner. */
-    private JSpinner spinner;
-    
-    /** Background colour chooser. */
-    private ColourChooser bgColour;
-    
-    /** Background colour chooser. */
-    private ColourChooser fgColour;
     
     /**
      * Creates a new instance of OsdPlugin.
@@ -81,51 +66,36 @@ public final class OsdPlugin extends Plugin implements PreferencesInterface {
     }
 
     /** {@inheritDoc}. */
+    @Override
     public boolean isConfigurable() {
         return true;
     }
     
     /** {@inheritDoc}. */
+    @Override
     public void showConfig() {
         final ConfigManager config = IdentityManager.getGlobalConfig();
         final PreferencesPanel preferencesPanel = Main.getUI().
                 getPreferencesPanel(this, "OSD Plugin - Config");
-        final JPanel spinnerPanel = new JPanel(new BorderLayout());
-        final JPanel bgColourPanel = new JPanel(new BorderLayout());
-        final JPanel fgColourPanel = new JPanel(new BorderLayout());
-        spinner = new JSpinner(new SpinnerNumberModel());
-        bgColour = new ColourChooser();
-        fgColour = new ColourChooser();
-        
-        spinner.setValue(config.getOptionInt(MY_DOMAIN, "fontSize", 20));
-        bgColour.setColour(config.getOption(MY_DOMAIN, "bgcolour", "2222aa"));
-        fgColour.setColour(config.getOption(MY_DOMAIN, "fgcolour", "ffffff"));
-        
-        spinnerPanel.add(spinner);
-        bgColourPanel.add(bgColour);
-        fgColourPanel.add(fgColour);
-        
+
         preferencesPanel.addCategory("General", "General configuration for OSD plugin.");
         
-        preferencesPanel.addPanelOption("General", "fontsize", "Font size: ",
-                "Changes the font size of the OSD", spinnerPanel);
-        preferencesPanel.addPanelOption("General", "bgcolour",
-                "Background Colour: ", "Background colour for the OSD",
-                bgColourPanel);
-        preferencesPanel.addPanelOption("General", "fgcolour",
-                "Foreground Colour: ", "Foreground colour for the OSD", 
-                fgColourPanel);
+        preferencesPanel.addSpinnerOption("General", "fontSize", 
+                "Font size", "Changes the font size of the OSD",
+                config.getOptionInt(MY_DOMAIN, "fontSize", 20));
+        preferencesPanel.addColourOption("General", "bgcolour", 
+                "Background colour", "Background colour for the OSD", 
+                config.getOption(MY_DOMAIN, "bgcolour", "2222aa"),
+                true, true);
+        preferencesPanel.addColourOption("General", "fgcolour", 
+                "Foreground colour", "Foreground colour for the OSD", 
+                config.getOption(MY_DOMAIN, "fgcolour", "ffffff"),
+                true, true);
         preferencesPanel.addSpinnerOption("General", "timeout", "Timeout: ",
                 "Length of times in seconds before the OSD window times out",
                 IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "timeout", 15));
         
         osdWindow = new OsdWindow("Please drag this OSD to position", true);
-        
-        spinner.addChangeListener(osdWindow);
-        bgColour.addActionListener(osdWindow);
-        bgColour.setActionCommand("backgroundColour");
-        fgColour.addActionListener(osdWindow);
-        fgColour.setActionCommand("foregroundColour");
         
         preferencesPanel.display();
     }
@@ -134,18 +104,22 @@ public final class OsdPlugin extends Plugin implements PreferencesInterface {
     public void configClosed(final Properties properties) {
         final Identity config = IdentityManager.getConfigIdentity();
         
-        if (spinner != null) {
-            config.setOption(MY_DOMAIN, "fontSize", String.valueOf(spinner.getValue()));
+        if (properties.containsKey("fontSize")) {
+            config.setOption(MY_DOMAIN, "fontSize", properties.getProperty("fontSize"));
         }
-        if (fgColour != null) {
-            config.setOption(MY_DOMAIN, "fgcolour", fgColour.getColour());
+        
+        if (properties.containsKey("fgcolour")) {
+            config.setOption(MY_DOMAIN, "fgcolour", properties.getProperty("fontSize"));
         }
-        if (bgColour != null) {
-            config.setOption(MY_DOMAIN, "bgcolour", bgColour.getColour());
+        
+        if (properties.containsKey("bgcolour")) {
+            config.setOption(MY_DOMAIN, "bgcolour", properties.getProperty("fontSize"));
         }
+        
         if (properties.getProperty("timeout") != null) {
             config.setOption(MY_DOMAIN, "timeout", properties.getProperty("timeout"));
         }
+        
         if (osdWindow != null && osdWindow.isVisible()) {
             config.setOption(MY_DOMAIN, "locationX",
                     String.valueOf((int) osdWindow.getLocationOnScreen().getX()));

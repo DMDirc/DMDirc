@@ -28,25 +28,7 @@ import javax.swing.JPanel;
  * Preferences panel interface.
  */
 public interface PreferencesPanel {
-    
-    /** Acceptable input types for the config dialog. */
-    public static enum OptionType {
-        /** JTextfield. */
-        TEXTFIELD,
-        /** JCheckBox. */
-        CHECKBOX,
-        /** JComboBox. */
-        COMBOBOX,
-        /** JSpinner. */
-        SPINNER,
-        /** ColourChooser. */
-        COLOUR,
-        /** OptionalColourChooser. */
-        OPTIONALCOLOUR,
-        /** JPanel. */
-        PANEL,
-    };
-    
+       
     /**
      * Adds a named category to the preferences panel.
      *
@@ -178,19 +160,6 @@ public interface PreferencesPanel {
             final String displayName, final String helpText,
             final String defaultValue, final boolean initialState,
             final boolean showIrcColours, final boolean showHexColours);
-    
-    /**
-     * Adds an option to the specified category.
-     *
-     * @param category category option is to be added to
-     * @param name config name for the option
-     * @param displayName displayable name for the option
-     * @param helpText Help text to be displayed for the option
-     * @param panel panel to add
-     */
-    void addPanelOption(final String category, final String name,
-            final String displayName, final String helpText,
-            final JPanel panel);
     
     /**
      * Saves the options in the dialog to the config.
