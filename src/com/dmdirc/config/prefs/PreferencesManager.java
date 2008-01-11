@@ -23,6 +23,8 @@ package com.dmdirc.config.prefs;
 
 import com.dmdirc.config.prefs.validator.NumericalValidator;
 import com.dmdirc.config.prefs.validator.StringLengthValidator;
+import com.dmdirc.themes.Theme;
+import com.dmdirc.themes.ThemeManager;
 import com.dmdirc.ui.swing.dialogs.prefs.URLConfigPanel;
 
 import com.dmdirc.ui.swing.dialogs.prefs.UpdateConfigPanel;
@@ -30,10 +32,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 
 /**
  * Manages categories that should appear in the preferences dialog.
- * 
+ *
  * @author chris
  */
 public class PreferencesManager {
@@ -51,7 +55,7 @@ public class PreferencesManager {
 
     /**
      * Adds the specified category to the preferences manager.
-     * 
+     *
      * @param category The category to be added
      */
     public void addCategory(final PreferencesCategory category) {
@@ -60,7 +64,7 @@ public class PreferencesManager {
 
     /**
      * Retrieves a list of categories registered with the preferences manager.
-     * 
+     *
      * @return An ordered list of categories
      */
     public List<PreferencesCategory> getCategories() {
@@ -248,16 +252,16 @@ public class PreferencesManager {
 
     /**
      * Creates and adds the "Advanced" category.
-     */    
+     */
     private void addAdvancedCategory() {
         final PreferencesCategory category = new PreferencesCategory("Advanced", "");
-        
+
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "browser", "userlaunchdelay", "false", "Use browser launch delay", 
+                "browser", "userlaunchdelay", "false", "Use browser launch delay",
                 "Enable delay between browser launches (to prevent mistakenly" +
                 " double clicking)?"));
         category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
-                "browser", "launchdelay", "500", "Browser launch delay", 
+                "browser", "launchdelay", "500", "Browser launch delay",
                 "Minimum time between opening of URLs"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "autoSubmitErrors", "false", "Automatically submit errors",
@@ -275,23 +279,183 @@ public class PreferencesManager {
                 new NumericalValidator(10, -1), "ui", "frameBufferSize", "100000",
                 "Window buffer size", "The maximum number of lines in a window" +
                 " buffer"));
-        
+
         addCategory(category);
     }
 
     /**
      * Creates and adds the "GUI" category.
-     */    
+     */
     private void addGuiCategory() {
-        // XXX: Not implemented
+        final Map<String, String> lafs = new HashMap<String, String>();
+        final Map<String, String> framemanagers = new HashMap<String, String>();
+        final Map<String, String> fmpositions = new HashMap<String, String>();
+        final PreferencesCategory category = new PreferencesCategory("GUI", "");
+        
+        framemanagers.put("treeview", "Treeview");
+        framemanagers.put("buttonbar", "Button bar");
+        
+        fmpositions.put("top", "Top");
+        fmpositions.put("bottom", "Bottom");
+        fmpositions.put("left", "Left");
+        fmpositions.put("right", "Right");
+
+        final LookAndFeelInfo[] plaf = UIManager.getInstalledLookAndFeels();
+        final String sysLafClass = UIManager.getSystemLookAndFeelClassName();
+        String sysLafName = "";
+
+        lafs.put("Native", "Native");
+        for (LookAndFeelInfo laf : plaf) {
+            lafs.put(laf.getName(), laf.getName());
+
+            if (laf.getClassName().equals(sysLafClass)) {
+                sysLafName = laf.getName();
+            }
+        }
+
+        category.addSetting(new PreferencesSetting(PreferencesType.COLOUR,
+                "ui", "backgroundcolour", "0", "Background colour", "Default " +
+                "background colour to use"));
+        category.addSetting(new PreferencesSetting(PreferencesType.COLOUR,
+                "ui", "foregroundcolour", "1", "Foreground colour", "Default " +
+                "foreground colour to use"));
+        category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
+                "ui", "inputbackgroundcolour", null, "Input background colour",
+                "Default background colour to use for input fields"));
+        category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
+                "ui", "inputforegroundcolour", null, "Input foreground colour",
+                "Default foreground colour to use for input fields"));        
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "general", "showcolourdialog", "false", "Show colour dialog",
+                "Show colour picker dialog when using colour control codes?"));
+        category.addSetting(new PreferencesSetting("ui", "lookandfeel", 
+                sysLafName, "Look and feel", "The Java look and feel to use", lafs));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "ui", "antialias", "false", "System anti-alias",
+                "Anti-alias all fonts?"));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "ui", "maximisewindows", "true", "Auto-maximise windows",
+                "Automatically maximise newly opened windows?"));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "ui", "shownickcoloursintext", "false", "Show nick colours in text area",
+                "Show nickname colours in text areas?"));        
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "ui", "shownickcoloursinnicklist", "false", "Show nick colours in nicklists",
+                "Show nickname colours in channel nicklists?"));
+        category.addSetting(new PreferencesSetting("ui", "framemanager", 
+                "treeview", "Window manager", "Which window manager should be used?",
+                framemanagers));
+        category.addSetting(new PreferencesSetting("ui", "framemanagerPosition", 
+                "left", "Window manager position", "Where should the window " +
+                "manager be positioned?", fmpositions));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "ui", "stylelinks", "true", "Style links",
+                "Style links in text areas"));
+        
+        addThemesCategory(category);
+        addNicklistCategory(category);
+        addTreeviewCategory(category);
+        addCategory(category);
     }
     
     /**
+     * Creates and adds the "Themes" category.
+     * 
+     * @param parent The parent category
+     */
+    private void addThemesCategory(final PreferencesCategory parent) {
+        final PreferencesCategory category = new PreferencesCategory("Themes", "");
+                
+        final Map<String, String> themes = new HashMap<String, String>();
+        
+        for (Map.Entry<String, Theme> entry
+                : new ThemeManager().getAvailableThemes().entrySet()) {
+            if (entry.getKey().indexOf('/') == -1) {
+                themes.put(entry.getKey(), entry.getKey());
+            } else {
+                themes.put(entry.getKey(), 
+                        entry.getKey().substring(entry.getKey().lastIndexOf('/'),
+                        entry.getKey().length()));
+            }
+        }
+                
+        themes.put("", "None");
+        
+        category.addSetting(new PreferencesSetting("general", "theme", "",
+                "Theme", "DMDirc theme to use", themes));
+        
+        parent.addSubCategory(category);
+    }
+    
+    /**
+     * Creates and adds the "Nicklist" category.
+     * 
+     * @param parent The parent category
+     */
+    private void addNicklistCategory(final PreferencesCategory parent) {
+        final PreferencesCategory category = new PreferencesCategory("Nicklist", "");
+        
+        category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
+                "ui", "nicklistbackgroundcolour", null, "Nicklist background colour",
+                "Background colour to use for the nicklist"));
+        category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
+                "ui", "nicklistforegroundcolour", null, "Nicklist foreground colour",
+                "Foreground colour to use for the nicklist"));
+        category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
+                "nicklist", "altBackgroundColour", null, "Alternate background colour",
+                "Background colour to use for every other nicklist entry"));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "ui", "sortByMode", "true", "Sort nicklist by user mode",
+                "Sort nicknames by the modes that they have?"));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "ui", "sortByCase", "false", "Sort nicklist by case",
+                "Sort nicknames in a case-sensitive manner?"));
+
+        parent.addSubCategory(category);
+    }
+    
+    /**
+     * Creates and adds the "Treeview" category.
+     * 
+     * @param parent The parent category
+     */
+    private void addTreeviewCategory(final PreferencesCategory parent) {
+        final PreferencesCategory category = new PreferencesCategory("Treeview", "");
+        
+        category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
+                "treeview", "backgroundcolour", null, "Treeview background colour",
+                "Background colour to use for the treeview"));
+        category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
+                "treeview", "foregroundcolour", null, "Treeview foreground colour",
+                "Foreground colour to use for the treeview"));
+        category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
+                "ui", "treeviewRolloverColour", null, "Treeview rollover colour",
+                "Background colour to use when the mouse cursor is over a node"));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "treeview", "sortwindows", "true", "Sort windows",
+                "Sort windows belonging to servers in the treeview?"));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "treeview", "sortservers", "true", "Sort servers",
+                "Sort servers in the treeview?"));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "ui", "treeviewActiveBold", "false", "Active node bold",
+                "Make the active node bold?"));
+        category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
+                "ui", "treeviewActiveBackground", null, "Active node background",
+                "Background colour to use for active treeview node"));        
+        category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
+                "ui", "treeviewActiveForeground", null, "Active node foreground",
+                "Foreground colour to use for active treeview node"));
+
+        parent.addSubCategory(category);
+    }
+
+    /**
      * Creates and adds the "Updates" category.
-     */    
+     */
     private void addUpdatesCategory() {
         // TODO: Abstract the panel
-        
+
         addCategory(new PreferencesCategory("Updates", "", new UpdateConfigPanel()));
     }
 
@@ -300,7 +464,7 @@ public class PreferencesManager {
      */
     private void addUrlHandlerCategory() {
         // TODO: Abstract the panel
-        
+
         addCategory(new PreferencesCategory("URL Handlers",
                 "Configure how DMDirc handles different types of URLs",
                 new URLConfigPanel()));

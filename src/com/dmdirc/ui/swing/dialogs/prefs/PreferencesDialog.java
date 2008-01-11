@@ -32,21 +32,15 @@ import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.themes.Theme;
-import com.dmdirc.themes.ThemeManager;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.SwingPreferencesPanel;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import javax.swing.JOptionPane;
 
 import javax.swing.JPanel;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 
 /**
  * Allows the user to modify global client preferences.
@@ -68,9 +62,6 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     
     /** preferences panel. */
     private SwingPreferencesPanel preferencesPanel;
-    
-    /** Theme map. */
-    private Map<String, String> themes;
     
     /** restart warning issued. */
     private boolean restartNeeded;
@@ -184,186 +175,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
             addCategory(cat);
         }
         
-        initGUITab();
-        initThemesTab();
-        initNicklistTab();
-        initTreeviewTab();
-        
         preferencesPanel.display();
-    }
-    
-    /**
-     * Initialises the GUI tab.
-     */
-    @Deprecated
-    private void initGUITab() {
-        final LookAndFeelInfo[] plaf = UIManager.getInstalledLookAndFeels();
-        final String sysLafClass = UIManager.getSystemLookAndFeelClassName();
-        final String[] lafs = new String[plaf.length + 1];
-        final String tabName = "GUI";
-        String sysLafName = "";
-        
-        lafs[0] = "Native";
-        int i = 1;
-        for (LookAndFeelInfo laf : plaf) {
-            lafs[i++] = laf.getName();
-            if (laf.getClassName().equals(sysLafClass)) {
-                sysLafName = laf.getName();
-            }
-        }
-        
-        preferencesPanel.addCategory(tabName, "");
-        
-        preferencesPanel.addColourOption(tabName, "ui.backgroundcolour",
-                "Window background colour: ", "Default background colour to use",
-                config.getOption("ui", "backgroundcolour"), true, true);
-        preferencesPanel.addColourOption(tabName, "ui.foregroundcolour",
-                "Window foreground colour: ", "Default foreground colour to use",
-                config.getOption("ui", "foregroundcolour"), true, true);
-        preferencesPanel.addOptionalColourOption(tabName, "ui.inputbackgroundcolour",
-                "Input background colour: ", "Background colour to use for input fields",
-                config.getOption("ui", "inputbackgroundcolour",
-                config.getOption("ui", "backgroundcolour", "")),
-                config.hasOption("ui", "inputbackgroundcolour"), true, true);
-        preferencesPanel.addOptionalColourOption(tabName, "ui.inputforegroundcolour",
-                "Input foreground colour: ", "Foreground colour to use for input fields",
-                config.getOption("ui", "inputforegroundcolour",
-                config.getOption("ui", "foregroundcolour", "")),
-                config.hasOption("ui", "inputforegroundcolour"), true, true);
-        preferencesPanel.addCheckboxOption(tabName, "general.showcolourdialog",
-                "Show colour dialog: ", "Show colour picker dialog when inserting colour control codes",
-                config.getOptionBool("general", "showcolourdialog", false));
-        preferencesPanel.addComboboxOption(tabName, "ui.lookandfeel",
-                "Look and feel: ", "The Java Look and Feel to use", lafs,
-                config.getOption("ui", "lookandfeel", sysLafName), false);
-        preferencesPanel.addCheckboxOption(tabName, "ui.antialias",
-                "System anti-alias: ", "Anti-alias all fonts",
-                config.getOptionBool("ui", "antialias", false));
-        preferencesPanel.addCheckboxOption(tabName, "ui.maximisewindows",
-                "Auto-Maximise windows: ", "Automatically maximise newly opened windows",
-                config.getOptionBool("ui", "maximisewindows", false));
-        preferencesPanel.addCheckboxOption(tabName, "ui.shownickcoloursintext",
-                "Show colours in text area: ", "Show nickname colours in text areas",
-                config.getOptionBool("ui", "shownickcoloursintext", false));
-        preferencesPanel.addCheckboxOption(tabName, "ui.shownickcoloursinnicklist",
-                "Show colours in nick list: ", "Show nickname colours in the nicklist",
-                config.getOptionBool("ui", "shownickcoloursinnicklist", false));
-        preferencesPanel.addComboboxOption(tabName, "ui.framemanager",
-                "Frame manager: ", "Which frame manager should be used",
-                new String[]{"treeview", "buttonbar", },
-                config.getOption("ui", "framemanager", "treeview"), false);
-        preferencesPanel.addComboboxOption(tabName, "ui.framemanagerPosition",
-                "Frame manager position: ", "Where should the frame manager be positioned",
-                new String[]{"top", "bottom", "left", "right"},
-                config.getOption("ui", "framemanagerPosition", "left"), false);
-        preferencesPanel.addCheckboxOption(tabName, "ui.stylelinks",
-                "Style links: ", "Style links in the textpane",
-                config.getOptionBool("ui", "stylelinks", false));
-    }
-    
-    /** Initialises the themes tab. */
-    @Deprecated
-    private void initThemesTab() {
-        final String tabName = "Themes";
-        final Map<String, Theme> availThemes = new ThemeManager().
-                getAvailableThemes();
-        
-        themes = new HashMap<String, String>();
-        
-        for (Entry<String, Theme> entry : availThemes.entrySet()) {
-            if (entry.getKey().indexOf('/') == -1) {
-                themes.put(entry.getKey(), entry.getKey());
-            } else {
-                themes.put(entry.getKey().substring(entry.getKey().lastIndexOf('/'),
-                        entry.getKey().length()), entry.getKey());
-            }
-        }
-        
-        themes.put("None", "");
-        
-        preferencesPanel.addCategory("GUI", tabName, "");
-        
-        preferencesPanel.addComboboxOption(tabName, "general.theme",
-                "Theme: ", "DMDirc theme to user",
-                themes.keySet().toArray(new String[themes.size()]),
-                config.getOption("general", "theme", ""), false);
-    }
-    
-    /**
-     * Initialises the Nicklist tab.
-     */
-    @Deprecated
-    private void initNicklistTab() {
-        final String tabName = "Nicklist";
-        preferencesPanel.addCategory("GUI", tabName, "");
-        
-        preferencesPanel.addOptionalColourOption(tabName, "ui.nicklistbackgroundcolour",
-                "Nicklist background colour: ", "Background colour to use for the nicklist",
-                config.getOption("ui", "nicklistbackgroundcolour",
-                config.getOption("ui", "backgroundcolour", "")),
-                config.hasOption("ui", "nicklistbackgroundcolour"), true, true);
-        preferencesPanel.addOptionalColourOption(tabName, "ui.nicklistforegroundcolour",
-                "Nicklist foreground colour: ", "Foreground colour to use for the nicklist",
-                config.getOption("ui", "nicklistforegroundcolour",
-                config.getOption("ui", "foregroundcolour", "")),
-                config.hasOption("ui", "nicklistforegroundcolour"), true, true);
-        preferencesPanel.addOptionalColourOption(tabName, "nicklist.altBackgroundColour",
-                "Alternate nicklist colour: ", "Alternate background colour to use",
-                config.getOption("nicklist", "altBackgroundColour", "f0f0f0"),
-                config.hasOption("nicklist", "altBackgroundColour"), true, true);
-        preferencesPanel.addCheckboxOption(tabName, "ui.sortByMode",
-                "Nicklist sort by mode: ", "Sort nicklist by user mode",
-                config.getOptionBool("ui", "sortByMode", false));
-        preferencesPanel.addCheckboxOption(tabName, "ui.sortByCase",
-                "Nicklist sort by case: ", "Sort nicklist by user mode",
-                config.getOptionBool("ui", "sortByCase", false));
-    }
-    
-    /**
-     * Initialises the Treeview tab.
-     */
-    @Deprecated
-    private void initTreeviewTab() {
-        final String tabName = "Treeview";
-        preferencesPanel.addCategory("GUI", tabName, "");
-        
-        preferencesPanel.addOptionalColourOption(tabName, "treeview.backgroundcolour",
-                "Treeview background colour: ", "Background colour to use for the treeview",
-                config.getOption("treeview", "backgroundcolour",
-                config.getOption("ui", "backgroundcolour", "")),
-                config.hasOption("treeview", "backgroundcolour"), true, true);
-        preferencesPanel.addOptionalColourOption(tabName, "treeview.foregroundcolour",
-                "Treeview foreground colour: ", "Foreground colour to use for the treeview",
-                config.getOption("treeview", "foregroundcolour",
-                config.getOption("ui", "foregroundcolour", "")),
-                config.hasOption("treeview", "foregroundcolour"), true, true);
-        preferencesPanel.addOptionalColourOption(tabName, "ui.treeviewRolloverColour",
-                "Rollover colour: ", "Rollover colour to use",
-                config.getOption("ui", "treeviewRolloverColour",
-                config.getOption("treeview", "backgroundcolour", 
-                config.getOption("ui", "backgroundcolour", "f0f0f0"))),
-                config.hasOption("ui", "treeviewRolloverColour"), true, true);
-        preferencesPanel.addCheckboxOption(tabName, "treeview.sortwindows",
-                "Sort windows: ", "Sort windows of servers in the treeview",
-                config.getOptionBool("treeview", "sortwindows"));
-        preferencesPanel.addCheckboxOption(tabName, "treeview.sortservers",
-                "Sort servers: ", "Sort servers in the treeview",
-                config.getOptionBool("treeview", "sortservers"));
-        preferencesPanel.addCheckboxOption(tabName, "ui.treeviewActiveBold",
-                "Active node bold: ", "Show the active node in bold",
-                config.getOptionBool("ui", "treeviewActiveBold"));
-        preferencesPanel.addOptionalColourOption(tabName, "ui.treeviewActiveForeground",
-                "Active node foreground: ", "Foreground colour of the active node",
-                config.getOption("ui", "treeviewActiveForeground",
-                config.getOption("treeview", "foregroundcolour", 
-                config.getOption("ui", "foregroundcolour", ""))),
-                config.hasOption("ui", "treeviewActiveForeground"), true, true);
-        preferencesPanel.addOptionalColourOption(tabName, "ui.treeviewActiveBackground",
-                "Active node background: ", "Background colour of the active node",
-                config.getOption("ui", "treeviewActiveBackground",
-                config.getOption("treeview", "backgroundcolour", 
-                config.getOption("ui", "backgroundcolour", ""))),
-                config.hasOption("ui", "treeviewActiveBackground"), true, true);
     }
     
     /** {@inheritDoc}. */
@@ -393,14 +205,9 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
                     } else {
                         object = null;
                     }
-                    if ("general".equals(args[0]) && "theme".equals(args[1])) {
-                        if (object == null || !object.equals(themes.get(entry.getValue()))) {
-                            identity.setOption(args[0], args[1], themes.get(entry.getValue()));
-                        }
-                    } else {
-                        if (object == null || !object.equals(entry.getValue())) {
-                            identity.setOption(args[0], args[1], (String) entry.getValue());
-                        }
+
+                    if (object == null || !object.equals(entry.getValue())) {
+                        identity.setOption(args[0], args[1], (String) entry.getValue());
                     }
                 }
             } else {
