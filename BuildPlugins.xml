@@ -26,7 +26,7 @@
 			<else>
 				<echo message="Building: ${folder.name} to ${pluginjar.name}"/>
 				<delete file="plugins/${pluginjar.name}"/>
-				<jar jarfile="plugins/${pluginjar.name}" basedir="build/classes" includes="${folder.name}/**/*.class">
+				<jar jarfile="plugins/${pluginjar.name}" basedir="build/classes" includes="${folder.name}/**/*.class ${folder.name}/**/*.png">
 					<metainf file="${target.file}/plugin.info"/>
 				</jar>
 			</else>

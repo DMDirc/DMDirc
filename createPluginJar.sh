@@ -40,7 +40,7 @@ while [ 1 -eq 1 ]; do
 	if [ ${?} -ne 0 ]; then
 		break;
 	else
-		for thisfile in `ls -1 ${foo}${bit}/*.class`; do
+		for thisfile in `ls -1 ${foo}${bit}/*.class ${foo}${bit}/*.png`; do
 			jar -uvf ${srcdir}/src/${foldername}/${2}.jar ${thisfile} >/dev/null
 		done
 	fi
