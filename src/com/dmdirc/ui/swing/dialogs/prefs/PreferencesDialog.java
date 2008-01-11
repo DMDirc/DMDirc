@@ -188,7 +188,6 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
         initThemesTab();
         initNicklistTab();
         initTreeviewTab();
-        initAdvancedTab();
         
         preferencesPanel.display();
     }
@@ -365,41 +364,6 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
                 config.getOption("treeview", "backgroundcolour", 
                 config.getOption("ui", "backgroundcolour", ""))),
                 config.hasOption("ui", "treeviewActiveBackground"), true, true);
-    }
-    
-    /**
-     * Initialises the advanced tab.
-     */
-    @Deprecated
-    private void initAdvancedTab() {
-        final String tabName = "Advanced";
-        preferencesPanel.addCategory(tabName, "");
-        
-        preferencesPanel.addTextfieldOption(tabName, "general.browser",
-                "Browser: ", "The browser to use for opening URLs (only required when auto detection fails)",
-                config.getOption("general", "browser", ""));
-        preferencesPanel.addCheckboxOption(tabName, "browser.uselaunchdelay",
-                "Use browser delay: ", "Enable delay between browser launches (to prevent mistakenly double clicking)",
-                config.getOptionBool("browser", "uselaunchdelay", false));
-        preferencesPanel.addSpinnerOption(tabName, "browser.launchdelay",
-                "Browser launch delay (ms): ", "Minimum time between opening of URLs",
-                config.getOptionInt("browser", "launchdelay", 500), 0, Integer.MAX_VALUE, 1);
-        preferencesPanel.addCheckboxOption(tabName, "general.autoSubmitErrors",
-                "Automatically submit errors: ", "Automatically submit client errors to the developers",
-                config.getOptionBool("general", "autoSubmitErrors", false));
-        preferencesPanel.addCheckboxOption(tabName, "tabcompletion.casesensitive",
-                "Case-sensitive tab completion: ", "Respect case when tab completing",
-                config.getOptionBool("tabcompletion", "casesensitive", false));
-        preferencesPanel.addCheckboxOption(tabName, "ui.quickCopy",
-                "Quick Copy: ", "Automatically copy text that's selected in windows when the mouse button is released",
-                config.getOptionBool("ui", "quickCopy", false));
-        preferencesPanel.addCheckboxOption(tabName, "ui.showversion",
-                "Show version: ", "Show DMDirc version in the titlebar",
-                config.getOptionBool("ui", "showversion", false));
-        preferencesPanel.addSpinnerOption(tabName, "ui.frameBufferSize",
-                "Frame buffer size: ", "Sets the maximum number of lines in the frame buffer.",
-                config.getOptionInt("ui", "frameBufferSize", Integer.MAX_VALUE),
-                1, Integer.MAX_VALUE, 1);
     }
     
     /** {@inheritDoc}. */

@@ -250,7 +250,33 @@ public class PreferencesManager {
      * Creates and adds the "Advanced" category.
      */    
     private void addAdvancedCategory() {
-        // XXX: Not implemented
+        final PreferencesCategory category = new PreferencesCategory("Advanced", "");
+        
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "browser", "userlaunchdelay", "false", "Use browser launch delay", 
+                "Enable delay between browser launches (to prevent mistakenly" +
+                " double clicking)?"));
+        category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
+                "browser", "launchdelay", "500", "Browser launch delay", 
+                "Minimum time between opening of URLs"));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "general", "autoSubmitErrors", "false", "Automatically submit errors",
+                "Automatically submit client errors to the developers?"));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "tabcompletion", "casesensitive", "false", "Case-sensitive tab completion",
+                "Respect case when tab completing?"));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "ui", "quickCopy", "false", "Quick copy", "Automatically copy" +
+                " text that's selected when the mouse button is released?"));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "ui", "showversion", "true", "Show version",
+                "Show DMDirc version in the titlebar?"));
+        category.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
+                new NumericalValidator(10, -1), "ui", "frameBufferSize", "100000",
+                "Window buffer size", "The maximum number of lines in a window" +
+                " buffer"));
+        
+        addCategory(category);
     }
 
     /**
