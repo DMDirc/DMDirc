@@ -94,7 +94,7 @@ public final class DCCPlugin extends Plugin implements ActionListener, Preferenc
 		// New thread to ask the question in to stop us locking the UI
 		Thread questionThread = new Thread(new Runnable() {
 			public void run() {
-				int result = JOptionPane.showConfirmDialog((JFrame)Main.getUI().getMainWindow(), question, title, JOptionPane.YES_NO_OPTION);
+				int result = JOptionPane.showConfirmDialog(null, question, title, JOptionPane.YES_NO_OPTION);
 				if (result == desiredAnswer) {
 					handleProcessEvent(type, format, true, arguments);
 				}
@@ -428,7 +428,7 @@ public final class DCCPlugin extends Plugin implements ActionListener, Preferenc
 		preferencesPanel.addCheckboxOption("Send", "send.forceturbo", "Use Turbo DCC: ", "Turbo DCC doesn't wait for ack packets. this is faster but not always supported.", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "send.forceturbo"));
 		preferencesPanel.addCheckboxOption("Recieve", "receive.reverse.sendtoken", "Send token in reverse recieve?: ", "If you have problems with reverse dcc recieve resume, try toggling this.", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "recieve.reverse.sendtoken"));
 				
-		preferencesPanel.addSpinnerOption("General", "send.blocksize", "Blocksize to use for DCC: ", "Change the block size for send/recieve, this can sometimes speed up transfers.", IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "send.blocksize"));
+		preferencesPanel.addSpinnerOption("General", "send.blocksize", "Blocksize to use for DCC: ", "Change the block size for send/recieve, this can sometimes speed up transfers.", IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "send.blocksize", 1024));
 		preferencesPanel.display();
 	}
 	

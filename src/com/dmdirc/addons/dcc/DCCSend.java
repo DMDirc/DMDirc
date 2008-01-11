@@ -78,7 +78,7 @@ public class DCCSend extends DCC {
 	/** Creates a new instance of DCCSend. */
 	public DCCSend() {
 		super();
-		blockSize = IdentityManager.getGlobalConfig().getOptionInt(DCCPlugin.getDomain(), "send.blocksize", "1024")
+		blockSize = IdentityManager.getGlobalConfig().getOptionInt(DCCPlugin.getDomain(), "send.blocksize", 1024);
 		sends.add(this);
 	}
 	
