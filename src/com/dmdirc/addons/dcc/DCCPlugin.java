@@ -132,11 +132,21 @@ public final class DCCPlugin extends Plugin implements ActionListener, Preferenc
 					send.setFileName(jc.getSelectedFile().getPath());
 					boolean resume = false;
 					if (jc.getSelectedFile().exists()) {
-						if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "recieve.autoaccept", false)) {
-							resume = true;
+						if (send.getFileSize() > -1 && send.getFileSize() <= jc.getSelectedFile().length()) {
+							if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "recieve.autoaccept", false)) {
+								return;
+							} else {
+								JOptionPane.showMessageDialog((JFrame)Main.getUI().getMainWindow(), "This file has already been completed, or is longer than the file you are reciving.\n Please choose a different file.", "Problem with selected file", JOptionPane.ERROR_MESSAGE);
+								saveFile(nickname, send, parser, reverse, sendFilename, token);
+								return;
+							}
 						} else {
-							result = JOptionPane.showConfirmDialog((JFrame)Main.getUI().getMainWindow(), "This file exists already, do you want to resume an exisiting download?", "Resume Download?", JOptionPane.YES_NO_OPTION);
-							resume = (result == JOptionPane.YES_OPTION);
+							if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "recieve.autoaccept", false)) {
+								resume = true;
+							} else {
+								result = JOptionPane.showConfirmDialog((JFrame)Main.getUI().getMainWindow(), "This file exists already, do you want to resume an exisiting download?", "Resume Download?", JOptionPane.YES_NO_OPTION);
+								resume = (result == JOptionPane.YES_OPTION);
+							}
 						}
 					}
 					if (reverse && !token.isEmpty()) {
