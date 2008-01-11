@@ -28,6 +28,9 @@ import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.prefs.PreferencesCategory;
+import com.dmdirc.config.prefs.PreferencesManager;
+import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.themes.Theme;
@@ -95,6 +98,68 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
             me.initComponents();
         }
     }
+
+    /**
+     * Adds the specified category to the preferences dialog.
+     * 
+     * @param category The category to be added
+     */
+    private void addCategory(final PreferencesCategory category) {
+        addCategory(category, "");
+    }    
+    
+    /**
+     * Adds the specified category to the preferences dialog.
+     * 
+     * @param category The category to be added
+     * @param parent The parent category's name
+     */
+    private void addCategory(final PreferencesCategory category, final String parent) {
+        preferencesPanel.addCategory(parent, category.getTitle(), category.getDescription());
+        
+        for (PreferencesSetting setting : category.getSettings()) {
+            switch(setting.getType()) {
+                case BOOLEAN:
+                    preferencesPanel.addCheckboxOption(category.getTitle(),
+                            setting.getOption(), setting.getTitle(), 
+                            setting.getHelptext(), Boolean.parseBoolean(setting.getValue()));
+                    break;
+                case COLOUR:
+                    preferencesPanel.addColourOption(category.getTitle(), 
+                            setting.getOption(), setting.getTitle(), 
+                            setting.getHelptext(), setting.getValue(), true, true);
+                    break;
+                case DURATION:
+                case INTEGER:
+                    preferencesPanel.addSpinnerOption(category.getTitle(), 
+                            setting.getOption(), setting.getTitle(),
+                            setting.getHelptext(), Integer.parseInt(setting.getValue()));
+                    break;
+                case MULTICHOICE:
+                    preferencesPanel.addComboboxOption(category.getTitle(),
+                            setting.getOption(), setting.getTitle(), 
+                            setting.getHelptext(),
+                            setting.getComboOptions().keySet().toArray(new String[0]),
+                            setting.getValue(), false);
+                    break;
+                case OPTIONALCOLOUR:
+                    preferencesPanel.addOptionalColourOption(category.getTitle(),
+                            setting.getOption(), setting.getTitle(), 
+                            setting.getHelptext(), setting.getValue(), 
+                            setting.getValue() != null, true, true);
+                    break;
+                case TEXT:
+                    preferencesPanel.addTextfieldOption(category.getTitle(),
+                            setting.getOption(), setting.getTitle(), 
+                            setting.getHelptext(), setting.getValue());
+                    break;
+            }
+        }
+        
+        for (PreferencesCategory child : category.getSubcats()) {
+            addCategory(child, category.getTitle());
+        }
+    }
     
     /**
      * Initialises GUI components.
@@ -104,10 +169,12 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
         preferencesPanel = new SwingPreferencesPanel(this);
         restartNeeded = false;
         
-        initGeneralTab();
-        initConnectionTab();
-        initMessagesTab();
-        initNotificationsTab();
+        final PreferencesManager manager = new PreferencesManager();
+        
+        for (PreferencesCategory cat : manager.getCategories()) {
+            addCategory(cat);
+        }
+        
         initGUITab();
         initThemesTab();
         initNicklistTab();
@@ -117,167 +184,6 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
         initAdvancedTab();
         
         preferencesPanel.display();
-    }
-    
-    /**
-     * Initialises the preferences tab.
-     */
-    private void initGeneralTab() {
-        final String tabName = "General";
-        preferencesPanel.addCategory(tabName, "");
-        
-        preferencesPanel.addCheckboxOption(tabName, "ui.confirmQuit",
-                "Confirm quit", "Do you want to confirm closing the client",
-                config.getOptionBool(   "ui", "confirmQuit", false));
-        preferencesPanel.addCheckboxOption(tabName, "channel.splitusermodes",
-                "Split user modes: ", "Show individual mode lines for each mode change that affects a user (e.g. op, devoice)",
-                config.getOptionBool("channel", "splitusermodes", false));
-        preferencesPanel.addCheckboxOption(tabName, "channel.sendwho",
-                "Send channel WHOs: ", "Request information (away state, hostname, etc) on channel users automatically",
-                config.getOptionBool("channel", "sendwho", false));
-        preferencesPanel.addSpinnerOption(tabName, "general.whotime",
-                "Who request interval (ms): ", "How often to send WHO requests for a channel",
-                config.getOptionInt("general", "whotime", 600000),
-                10000, Integer.MAX_VALUE, 10000);
-        preferencesPanel.addCheckboxOption(tabName, "channel.showmodeprefix",
-                "Show mode prefix: ", "Prefix users' names with their mode in channels",
-                config.getOptionBool("channel", "showmodeprefix", false));
-        preferencesPanel.addCheckboxOption(tabName, "server.friendlymodes",
-                "Friendly modes: ", "Show friendly mode names",
-                config.getOptionBool("server", "friendlymodes", false));
-        preferencesPanel.addCheckboxOption(tabName, "general.hidequeries",
-                "Hide queries : ", "", config.getOptionBool("general", "hidequeries", false));
-        preferencesPanel.addTextfieldOption(tabName, "general.commandchar",
-                "Command character: ", "Character used to indicate a command",
-                config.getOption("general", "commandchar"));
-        preferencesPanel.addTextfieldOption(tabName, "general.silencechar",
-                "Silence character: ", "Character used to indicate a command should be silently executed",
-                config.getOption("general", "silencechar"));
-        preferencesPanel.addCheckboxOption(tabName, "ui.awayindicator",
-                "Away indicator: ", "Shows an away indicator in the input field.",
-                config.getOptionBool("ui", "awayindicator", false));
-        preferencesPanel.addSpinnerOption(tabName, "ui.pasteProtectionLimit",
-                "Paste protection trigger: ", "Confirm pasting of text that contains more than this many lines",
-                config.getOptionInt("ui", "pasteProtectionLimit", 1), 0, Integer.MAX_VALUE, 1);
-    }
-    
-    /**
-     * Initialises the Connection tab.
-     */
-    private void initConnectionTab() {
-        final String tabName = "Connection";
-        preferencesPanel.addCategory(tabName, "");
-        
-        preferencesPanel.addCheckboxOption(tabName, "general.closechannelsonquit",
-                "Close channels on quit: ", "Close channel windows when you quit the server",
-                config.getOptionBool("general", "closechannelsonquit", false));
-        preferencesPanel.addCheckboxOption(tabName, "general.closechannelsondisconnect",
-                "Close channels on disconnect: ", "Close channel windows when the server is disconnected",
-                config.getOptionBool("general", "closechannelsondisconnect", false));
-        preferencesPanel.addCheckboxOption(tabName, "general.closequeriesonquit",
-                "Close queries on quit: ", "Close query windows when you quit the server",
-                config.getOptionBool("general", "closequeriesonquit", false));
-        preferencesPanel.addCheckboxOption(tabName, "general.closequeriesondisconnect",
-                "Close queries on disconnect: ", "Close query windows when the server is disconnected",
-                config.getOptionBool("general", "closequeriesondisconnect", false));
-        preferencesPanel.addSpinnerOption(tabName, "server.pingtimeout",
-                "Server timeout (ms): ", "How long to wait for a server to reply to a PING request before disconnecting",
-                config.getOptionInt("server", "pingtimeout", 60000),
-                5000, Integer.MAX_VALUE, 5000);
-        preferencesPanel.addCheckboxOption(tabName, "general.reconnectonconnectfailure",
-                "Reconnect on failure: ", "Attempt to reconnect if there's an error when connecting",
-                config.getOptionBool("general", "reconnectonconnectfailure", false));
-        preferencesPanel.addCheckboxOption(tabName, "general.reconnectondisconnect",
-                "Reconnect on disconnect: ", "Reconnect automatically if the server is disconnected",
-                config.getOptionBool("general", "reconnectondisconnect", false));
-        preferencesPanel.addSpinnerOption(tabName, "general.reconnectdelay",
-                "Reconnect delay: ", "How long to wait before attempting to reconnect to a server",
-                config.getOptionInt("general", "reconnectdelay", 30), 0, Integer.MAX_VALUE, 1);
-        preferencesPanel.addCheckboxOption(tabName, "general.rejoinchannels",
-                "Rejoin open channels: ", "Rejoin open channels when reconnecting to a server",
-                config.getOptionBool("general", "rejoinchannels", false));
-    }
-    
-    /**
-     * Initialises the Messages tab.
-     */
-    private void initMessagesTab() {
-        final String tabName = "Messages";
-        preferencesPanel.addCategory(tabName, "");
-        
-        preferencesPanel.addTextfieldOption(tabName, "general.closemessage",
-                "Close message: ", "Default quit message to use when closing DMDirc",
-                config.getOption("general", "closemessage"));
-        preferencesPanel.addTextfieldOption(tabName, "general.partmessage",
-                "Part message: ", "Default message to use when parting a channel",
-                config.getOption("general", "partmessage"));
-        preferencesPanel.addTextfieldOption(tabName, "general.quitmessage",
-                "Quit message: ", "Default message to use when quitting a server",
-                config.getOption("general", "quitmessage"));
-        preferencesPanel.addTextfieldOption(tabName, "general.cyclemessage",
-                "Cycle message: ", "Default message to use when cycling a channel",
-                config.getOption("general", "cyclemessage"));
-        preferencesPanel.addTextfieldOption(tabName, "general.kickmessage",
-                "Kick message: ", "Default message to use when kicking a user from a channel",
-                config.getOption("general", "kickmessage"));
-        preferencesPanel.addTextfieldOption(tabName, "general.reconnectmessage",
-                "Reconnect message: ", "Default message to use when quitting a server to reconnect",
-                config.getOption("general", "reconnectmessage"));
-    }
-    
-    /**
-     * Initialises the Notifications tab.
-     */
-    private void initNotificationsTab() {
-        final String tabName = "Notifications";
-        preferencesPanel.addCategory("Messages", tabName, "");
-        final Entry[] windowOptions = new Entry[] {
-                    new SimpleImmutableEntry<String, String>("All", "all"),
-                    new SimpleImmutableEntry<String, String>("Active", "active"), 
-                    new SimpleImmutableEntry<String, String>("Server", "server"), 
-                    new SimpleImmutableEntry<String, String>("None", "none  "), 
-        };
-        final Entry[] windowOptions2 = new Entry[] {
-                    new SimpleImmutableEntry<String, String>("All", "all"),
-                    new SimpleImmutableEntry<String, String>("Active", "active"), 
-                    new SimpleImmutableEntry<String, String>("Server", "server"), 
-                    new SimpleImmutableEntry<String, String>("Source of command", 
-                            "lastcommand:whois %4$s( %4$s)?"),
-                    new SimpleImmutableEntry<String, String>("None", "none  "), 
-        };
-        
-        preferencesPanel.addComboboxOption(tabName, "notifications.socketClosed",
-                "Socket closed: ", "Where to display socket closed notifications",
-                new DefaultComboBoxModel(windowOptions), new MapEntryRenderer(),
-                config.getOption("notifications", "socketClosed"), false);
-        preferencesPanel.addComboboxOption(tabName, "notifications.privateNotice",
-                "Private notice: ", "Where to display private notice notifications",
-                new DefaultComboBoxModel(windowOptions), new MapEntryRenderer(),
-                config.getOption("notifications", "privateNotice"), false);
-        preferencesPanel.addComboboxOption(tabName, "notifications.privateCTCP",
-                "CTCP request: ", "Where to display CTCP request notifications",
-                new DefaultComboBoxModel(windowOptions), new MapEntryRenderer(),
-                config.getOption("notifications", "privateCTCP"), false);
-        preferencesPanel.addComboboxOption(tabName, "notifications.privateCTCPreply",
-                "CTCP reply: ", "Where to display CTCP reply notifications",
-                new DefaultComboBoxModel(windowOptions), new MapEntryRenderer(),
-                config.getOption("notifications", "privateCTCPreply"), false);
-        preferencesPanel.addComboboxOption(tabName, "notifications.connectError",
-                "Connect error: ", "Where to display connect error notifications",
-                new DefaultComboBoxModel(windowOptions), new MapEntryRenderer(),
-                config.getOption("notifications", "connectError"), false);
-        preferencesPanel.addComboboxOption(tabName, "notifications.connectRetry",
-                "Connect retry: ", "Where to display connect retry notifications",
-                new DefaultComboBoxModel(windowOptions), new MapEntryRenderer(),
-                config.getOption("notifications", "connectRetry"), false);
-        preferencesPanel.addComboboxOption(tabName, "notifications.stonedServer",
-                "Stoned server: ", "Where to display stoned server notifications",
-                new DefaultComboBoxModel(windowOptions), new MapEntryRenderer(),
-                config.getOption("notifications", "stonedServer"), false);
-        preferencesPanel.addComboboxOption(tabName, "notifications.whois",
-                "Whois output: ", "Where to display whois command output",
-                new DefaultComboBoxModel(windowOptions2), new MapEntryRenderer(),
-                config.getOption("notifications", "whois"), false);
     }
     
     /**

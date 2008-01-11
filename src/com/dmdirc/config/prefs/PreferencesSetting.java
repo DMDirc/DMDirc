@@ -25,6 +25,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.validator.PermissiveValidator;
 import com.dmdirc.config.prefs.validator.Validator;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -138,7 +139,7 @@ public class PreferencesSetting {
             final String fallback, final String title, final String helptext,
             final Map<String, String> options) {
         this.type = PreferencesType.MULTICHOICE;
-        this.combooptions = options;
+        this.combooptions = new HashMap<String, String>(options);
         this.validator = new PermissiveValidator<String>();
         this.domain = domain;
         this.option = option;
@@ -157,6 +158,35 @@ public class PreferencesSetting {
      */
     public Map<String, String> getComboOptions() {
         return combooptions;
+    }
+    
+    /**
+     * Retrieves the domain and key of this setting.
+     * 
+     * @return This setting's full config name.
+     * @deprecated Should not be needed, only created for easing UI transition
+     */
+    @Deprecated
+    public String getOption() {
+        return domain + "." + option;
+    }
+
+    /**
+     * Retrieves the help text for this setting.
+     * 
+     * @return This setting's help text.
+     */
+    public String getHelptext() {
+        return helptext;
+    }
+
+    /**
+     * Retrieves the title of this setting.
+     * 
+     * @return This setting's title.
+     */
+    public String getTitle() {
+        return title;
     }
 
     /**

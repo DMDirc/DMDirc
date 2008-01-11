@@ -22,9 +22,7 @@
 package com.dmdirc.config.prefs;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -38,8 +36,7 @@ public class PreferencesCategory {
     
     private final List<PreferencesSetting> settings = new ArrayList<PreferencesSetting>();
     
-    private final Map<String, PreferencesCategory> subcats
-            = new HashMap<String, PreferencesCategory>();
+    private final List<PreferencesCategory> subcats = new ArrayList<PreferencesCategory>();
 
     public PreferencesCategory(final String title, final String description) {
         this.title = title;
@@ -51,7 +48,7 @@ public class PreferencesCategory {
     }
     
     public void addSubCategory(final PreferencesCategory subcategory) {
-        subcats.put(subcategory.getTitle(), subcategory);
+        subcats.add(subcategory);
     }
 
     public String getDescription() {
@@ -62,7 +59,7 @@ public class PreferencesCategory {
         return settings;
     }
 
-    public Map<String, PreferencesCategory> getSubcats() {
+    public List<PreferencesCategory> getSubcats() {
         return subcats;
     }
 

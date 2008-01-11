@@ -40,7 +40,7 @@ public enum PreferencesType {
     OPTIONALCOLOUR,
     /** A multiple choice preference. */
     MULTICHOICE,
-    /** A duration specified in seconds. */
+    /** A duration specified in milliseconds. */
     DURATION;
 
 }
