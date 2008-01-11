@@ -25,8 +25,8 @@ package com.dmdirc.ui.swing.dialogs.profiles;
 import com.dmdirc.Main;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardInputDialog;
-import com.dmdirc.ui.swing.components.validating.NotEmptyValidator;
-import com.dmdirc.ui.swing.components.validating.RegexValidator;
+import com.dmdirc.config.prefs.validator.NotEmptyValidator;
+import com.dmdirc.config.prefs.validator.RegexValidator;
 import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
 
 import java.awt.Dimension;

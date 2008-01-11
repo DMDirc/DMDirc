@@ -27,12 +27,12 @@ import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.prefs.validator.PortValidator;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
-import com.dmdirc.ui.swing.components.validating.RegexValidator;
+import com.dmdirc.config.prefs.validator.RegexValidator;
 import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
-import com.dmdirc.ui.swing.components.validating.Validator;
 import com.dmdirc.ui.swing.dialogs.profiles.ProfileManagerDialog;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
@@ -66,13 +66,7 @@ public final class NewServerDialog extends StandardDialog {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 8;
-    
-    /** The minimum port number. */
-    private static final int MIN_PORT = 1;
-    
-    /** The maximum port number. */
-    private static final int MAX_PORT = 65535;
-    
+       
     /** A previously created instance of NewServerDialog. */
     private static NewServerDialog me;
     
@@ -247,29 +241,7 @@ public final class NewServerDialog extends StandardDialog {
         serverLabel = new JLabel();
         serverField = new ValidatingJTextField(new RegexValidator("^[^\\s]+$+", "Cannot contain spaces."));
         portLabel = new JLabel();
-        portField = new ValidatingJTextField(new Validator<String>() {
-
-            /** {@inheritDoc} */
-            @Override
-            public boolean validate(final String object) {
-                int port;
-                try {
-                    port = Integer.parseInt(object);
-                } catch (NumberFormatException e) {
-                    return false;
-                }
-                if (port >= MIN_PORT && port <= MAX_PORT) {
-                    return true;
-                }
-                return false;
-            }
-
-            /** {@inheritDoc} */
-            @Override
-            public String getFailureReason() {
-                return "Must be a valid port (1-65535)";
-            }
-        });
+        portField = new ValidatingJTextField(new PortValidator());
         passwordLabel = new JLabel();
         passwordField = new JPasswordField();
         newServerWindowCheck = new JCheckBox();

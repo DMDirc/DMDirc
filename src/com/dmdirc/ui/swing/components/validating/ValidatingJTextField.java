@@ -22,8 +22,10 @@
 
 package com.dmdirc.ui.swing.components.validating;
 
+import com.dmdirc.config.prefs.validator.Validator;
 import com.dmdirc.IconManager;
 
+import com.dmdirc.config.prefs.validator.ValidationResponse;
 import java.awt.Font;
 
 import javax.swing.BorderFactory;
@@ -77,7 +79,6 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
         this.validator = validator;
         errorIcon =
                 new JLabel(IconManager.getIconManager().getIcon("input-error"));
-        errorIcon.setToolTipText(validator.getFailureReason());
 
         if (!"javax.swing.plaf.synth.SynthLookAndFeel".equals(UIManager.get("TextFieldUI"))) {
             setBorder(textField.getBorder());
@@ -99,7 +100,9 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
      */
     private void checkError() {
         if (textField.isEnabled()) {
-            errorIcon.setVisible(!validator.validate(textField.getText()));
+            final ValidationResponse vr = validator.validate(textField.getText());
+            errorIcon.setToolTipText(vr.getFailureReason());
+            errorIcon.setVisible(vr.isFailure());
         } else {
             errorIcon.setVisible(false);
         }
@@ -114,7 +117,7 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
      */
     public boolean validateText() {
         if (textField.isEnabled()) {
-            return validator.validate(getText());
+            return !validator.validate(getText()).isFailure();
         } else {
             return true;
         }

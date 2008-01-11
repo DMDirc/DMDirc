@@ -22,9 +22,10 @@
 
 package com.dmdirc.ui.swing.components;
 
+import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.ui.swing.JWrappingLabel;
 import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
-import com.dmdirc.ui.swing.components.validating.Validator;
+import com.dmdirc.config.prefs.validator.Validator;
 
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -67,15 +68,10 @@ public abstract class StandardInputDialog extends StandardDialog {
 
             /** {@inheritDoc} */
             @Override
-            public boolean validate(final String object) {
-                return true;
+            public ValidationResponse validate(final String object) {
+                return new ValidationResponse();
             }
-
-            /** {@inheritDoc} */
-            @Override
-            public String getFailureReason() {
-                return "";
-            }
+            
         });
     }
 
@@ -182,7 +178,7 @@ public abstract class StandardInputDialog extends StandardDialog {
      * Validates the change.
      */
     private void validateText() {
-        getOkButton().setEnabled(validator.validate(getText()));
+        getOkButton().setEnabled(!validator.validate(getText()).isFailure());
     }
 
     /**

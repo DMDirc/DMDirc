@@ -26,12 +26,13 @@ import com.dmdirc.ui.swing.components.renderers.URISchemeCellRenderer;
 import com.dmdirc.ui.swing.components.renderers.URIHandlerCellRenderer;
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.PackingTable;
 import com.dmdirc.ui.swing.components.StandardInputDialog;
 import com.dmdirc.ui.swing.components.URLProtocolPanel;
 
-import com.dmdirc.ui.swing.components.validating.Validator;
+import com.dmdirc.config.prefs.validator.Validator;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URI;
@@ -298,20 +299,17 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
 
         /** {@inheritDoc} */
         @Override
-        public boolean validate(String object) {
-            if (object != null && !object.isEmpty()) {
-                return !IdentityManager.getGlobalConfig().hasOption("protocol",
-                        object);
+        public ValidationResponse validate(final String object) {
+            if (object == null || object.isEmpty()) {
+                return new ValidationResponse("Cannot be empty");
+            } else if (IdentityManager.getGlobalConfig().hasOption("protocol",
+                        object)) {
+                return new ValidationResponse("Cannot already exist");
             } else {
-                return false;
+                return new ValidationResponse();
             }
         }
 
-        /** {@inheritDoc} */
-        @Override
-        public String getFailureReason() {
-            return "Cannot be an empty string, and must not already exist";
-        }
     }
 
 }

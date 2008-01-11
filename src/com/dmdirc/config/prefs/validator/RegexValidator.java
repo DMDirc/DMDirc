@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,29 +20,37 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.components.validating;
+package com.dmdirc.config.prefs.validator;
 
 /**
- * Validator checking the string is not empty.
+ * Regex validator.
  */
-public class NotEmptyValidator implements Validator<String> {
+public class RegexValidator implements Validator<String> {
+
+    /** Regex. */
+    private final String regex;
+    /** Failure reason. */
+    private final String failedReason;
 
     /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
+     * Instantiates a new regex validator.
+     * 
+     * @param regex Regex to validate text against
+     * @param failedReason Reason for validation failure
      */
-    private static final long serialVersionUID = 1;
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean validate(String object) {
-        return !object.isEmpty();
+    public RegexValidator(final String regex, final String failedReason) {
+        this.regex = regex;
+        this.failedReason = failedReason;
     }
 
     /** {@inheritDoc} */
     @Override
-    public String getFailureReason() {
-        return "Cannot be an empty string.";
+    public ValidationResponse validate(final String object) {
+        if (object.matches(regex)) {
+            return new ValidationResponse();
+        } else {
+            return new ValidationResponse(failedReason);
+        }
     }
+    
 }

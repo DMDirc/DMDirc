@@ -22,12 +22,14 @@
 package com.dmdirc.config.prefs;
 
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.prefs.validator.ValidationResponse;
+import com.dmdirc.config.prefs.validator.Validator;
 
 /**
  *
  * @author chris
  */
-public abstract class PreferencesSetting {
+public abstract class PreferencesSetting implements Validator<String> {
     
     protected final String domain;
     
@@ -40,7 +42,7 @@ public abstract class PreferencesSetting {
     protected final String fallback;
     
     protected String value;
-
+    
     public PreferencesSetting(final String domain, final String key, final String title,
             final String tooltip, final String fallback) {
         this.domain = domain;
@@ -72,10 +74,12 @@ public abstract class PreferencesSetting {
         return fallback;
     }
     
-    public abstract boolean isValid(final String newValue);
+    /** {@inheritDoc} */
+    @Override
+    public abstract ValidationResponse validate(final String object);
     
     public void set(final String newValue) {
-        if (isValid(newValue)) {
+        if (!validate(newValue).isFailure()) {
             value = newValue;
         } else {
             throw new IllegalArgumentException("Specified value is not valid");
