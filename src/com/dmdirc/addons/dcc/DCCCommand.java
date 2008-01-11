@@ -24,6 +24,7 @@ package com.dmdirc.addons.dcc;
 
 import com.dmdirc.Main;
 import com.dmdirc.parser.IRCParser;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -111,8 +112,12 @@ public final class DCCCommand extends GlobalCommand {
 				
 					send.setFileName(jc.getSelectedFile().getAbsolutePath());
 					send.setFileSize(jc.getSelectedFile().length());
-					send.listen();
-					parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+send.getFileSize());
+					if (IdentityManager.getGlobalConfig().getOptionBool(DCCPlugin.MY_DOMAIN, "send.reverse", false)) {
+						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(send.getHost())+" 0 "+send.getFileSize()+" "+send.makeToken());
+					} else {
+						send.listen();
+						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+send.getFileSize());
+					}
 				}
 			}
 		}, "openFileThread");

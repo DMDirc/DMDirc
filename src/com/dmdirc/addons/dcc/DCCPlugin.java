@@ -66,13 +66,10 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	private DCCFrame container;
 	
 	/** What domain do we store all settings in the global config under. */
-	private static final String MY_DOMAIN = "plugin-DCC";
+	protected static final String MY_DOMAIN = "plugin-DCC";
 	
 	/** Child Frames */
 	private List<DCCFrame> childFrames = new ArrayList<DCCFrame>();
-	
-//	/** Pending Sends (This uses DCCFrame not DCCSend so we can check if the window was closed or not) */
-//	private Map<String, DCCFrame> pendingSends = new HashMap<String, DCCFrame>();
 	
 	/**
 	 * Creates a new instance of the DCC Plugin.
@@ -129,6 +126,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 					if (reverse && !token.isEmpty()) {
 						new DCCSendWindow(DCCPlugin.this, send, "*Recieve: "+nickname, parser.getMyNickname(), nickname);
 						send.listen();
+						send.setToken(token);
 						parser.sendCTCP(nickname, "DCC", "SEND "+sendFilename+" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+send.getFileSize()+" "+token);
 					} else {
 						new DCCSendWindow(DCCPlugin.this, send, "Recieve: "+nickname, parser.getMyNickname(), nickname);
@@ -213,23 +211,33 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 							size = Integer.parseInt(ctcpData[++i]);
 						} catch (NumberFormatException nfe) { size = -1; }
 					} else { size = -1; }
-					// Add support for resume later
+					// Add support for recieve-resume later
 					startpos = 0;
+					final String token = (ctcpData.length-1 > i) ? ctcpData[++i] : "";
 					
-					if (!dontAsk) {
+					DCCSend send = DCCSend.findByToken(token);
+					
+					if (send == null && !dontAsk) {
 						askQuestion("User "+nickname+" on "+((Server)arguments[0]).toString()+" would like to send you a file over DCC.\n\nFile: "+filename+"\n\nDo you want to continue?", "DCC Chat Request", JOptionPane.YES_OPTION, type, format, arguments);
 						return;
 					} else {
-						DCCSend send = new DCCSend();
+						boolean newSend = (send == null);
+						if (newSend) {
+							send = new DCCSend();
+						}
 						try {
 							if (!port.equals("0")) {
 								send.setAddress(Long.parseLong(ip), Integer.parseInt(port));
 							}
 						} catch (NumberFormatException nfe) { return; }
-						send.setFileName(filename);
-						send.setFileSize(size);
-						send.setFileStart(startpos);
-						saveFile(nickname, send, ((Server)arguments[0]).getParser(), port.equals("0"), (quoted) ? "\""+filename+"\"" : filename, (ctcpData.length-1 > i) ? ctcpData[++i] : "");
+						if (newSend) {
+							send.setFileName(filename);
+							send.setFileSize(size);
+							send.setFileStart(startpos);
+							saveFile(nickname, send, ((Server)arguments[0]).getParser(), port.equals("0"), (quoted) ? "\""+filename+"\"" : filename, token);
+						} else {
+							send.connect();
+						}
 					}
 				} else if (ctcpData[0].equalsIgnoreCase("resume") && ctcpData.length > 2) {
 
@@ -258,13 +266,14 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 					try {
 						final int port = Integer.parseInt(ctcpData[++i]);
 						final int position = Integer.parseInt(ctcpData[++i]);
+						final String token = (ctcpData.length-1 > i) ? " "+ctcpData[++i] : "";
 						
 						// Now look for a dcc that matches.
 						for (DCCSend send : DCCSend.getSends()) {
 							if (send.port == port && (new File(send.getFileName())).getName().equalsIgnoreCase(filename)) {
 								final IRCParser parser = ((Server)arguments[0]).getParser();
 								final String nickname = ((ClientInfo)arguments[1]).getNickname();
-								parser.sendCTCP(nickname, "DCC", "ACCEPT "+((quoted) ? "\""+filename+"\"" : filename)+" "+port+" "+send.setFileStart(position));
+								parser.sendCTCP(nickname, "DCC", "ACCEPT "+((quoted) ? "\""+filename+"\"" : filename)+" "+port+" "+send.setFileStart(position)+token);
 							}
 						}
 					} catch (NumberFormatException nfe) { }
@@ -328,6 +337,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	public void onLoad() {
 		Properties defaults = new Properties();
 		defaults.setProperty(MY_DOMAIN + ".recieve.savelocation", Main.getConfigDir() + "downloads" + System.getProperty("file.separator"));
+		defaults.setProperty(MY_DOMAIN + ".send.reverse", "false");
 		defaults.setProperty("identity.name", "DCC Plugin Defaults");
 		IdentityManager.addIdentity(new Identity(defaults));
 	

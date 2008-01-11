@@ -66,6 +66,8 @@ public class DCCSend extends DCC {
 	private long readSize = 0;
 	/** What is the name of the file? */
 	private String filename = "";
+	/** What is the token for this send? */
+	private String token = "";
 	/** Block Size */
 	private int blockSize = 1024;
 	/** Is this a turbo dcc? */
@@ -146,6 +148,58 @@ public class DCCSend extends DCC {
 	 */
 	public boolean getTurbo() {
 		return turbo;
+	}
+	
+	/**
+	 * Set the Token for this send
+	 *
+	 * @param token Token for this send
+	 */
+	public void setToken(final String token) {
+		this.token = token;
+	}
+	
+	/**
+	 * Get the Token for this send
+	 *
+	 * @return Token for this send
+	 */
+	public String getToken() {
+		return token;
+	}
+	
+	/**
+	 * Make a Token for this send.
+	 * This token will be unique compared to all the other known sends
+	 *
+	 * @return The Token for this send.
+	 */
+	public String makeToken() {
+		String token = "";
+		boolean unique = true;
+		do {
+			token = Integer.toString(Math.abs((token+filename).hashCode()));
+			unique = (findByToken(token) == null);
+		} while (!unique);
+		setToken(token);
+		return token;
+	}
+	
+	/**
+	 * Find a send based on a given token.
+	 *
+	 * @param token Token to look for. (case sensitive)
+	 * @return The first DCCSend that matches the given token.
+	 *         null if none match, or token is "" or null.
+	 */
+	public static DCCSend findByToken(final String token) {
+		if (token == null || token.isEmpty()) { return null; }
+		for (DCCSend send : getSends()) {
+			if (send.getToken().equals(token)) {
+				return send;
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -300,7 +354,7 @@ public class DCCSend extends DCC {
 					return true;
 				}
 			} else if (bytesRead < 0) {
-				fileOut.close();
+				fileIn.close();
 				return false;
 			}
 		} catch (IOException e) {
