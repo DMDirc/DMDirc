@@ -29,6 +29,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.List;
+import java.util.ArrayList;
+
 /**
  * This class handles a DCC Send
  *
@@ -36,6 +39,9 @@ import java.io.FileOutputStream;
  * @version $Id: DCCSend.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public class DCCSend extends DCC {
+	/** List of active sends */
+	private static List<DCCSend> sends = new ArrayList<DCCSend>();
+	
 	/** File Transfer Types */
 	public enum TransferType { SEND, RECIEVE; }
 	/** The File transfer type for this file */
@@ -65,6 +71,21 @@ public class DCCSend extends DCC {
 	/** Is this a turbo dcc? */
 	private boolean turbo = false;
 	
+	/** Creates a new instance of DCCSend. */
+	public DCCSend() {
+		super();
+		sends.add(this);
+	}
+	
+	/**
+	 * Get a copy of the list of active sends.
+	 *
+	 * @return A copy of the list of active sends.
+	 */
+	public static List<DCCSend> getSends() {
+		return new ArrayList<DCCSend>(sends);
+	}
+	
 	/**
 	 * Set the filename of this file
 	 *
@@ -72,6 +93,12 @@ public class DCCSend extends DCC {
 	 */
 	public void setFileName(final String filename) {
 		this.filename = filename;
+		if (transferType == TransferType.SEND) {
+			transferFile = new File(filename);
+			try {
+				fileIn = new DataInputStream(new FileInputStream(transferFile.getAbsolutePath()));
+			} catch (Exception e) { fileIn = null; }
+		}
 	}
 	
 	/**
@@ -143,16 +170,16 @@ public class DCCSend extends DCC {
 	 * Set the starting position of the file
 	 *
 	 * @param startpos Starting position
+	 * @return -1 if fileIn is null or if dcc receive, else the result of fileIn.skipBytes()
 	 */
-	public void setFileStart(final long startpos) {
+	public int setFileStart(final int startpos) {
 		this.startpos = startpos;
-	}
-	
-	/**
-	 * Creates a new instance of DCCSend.
-	 */
-	public DCCSend() {
-		super();
+		if (transferType == TransferType.SEND && fileIn != null) {
+			try {
+				return fileIn.skipBytes(startpos);
+			} catch (IOException ioe) { }
+		}
+		return -1;
 	}
 	
 	/**
@@ -172,8 +199,6 @@ public class DCCSend extends DCC {
 			transferFile = new File(filename);
 			if (transferType == TransferType.RECIEVE) {
 				fileOut = new DataOutputStream(new FileOutputStream(transferFile.getAbsolutePath()));
-			} else if (transferType == TransferType.SEND) {
-				fileIn = new DataInputStream(new FileInputStream(transferFile.getAbsolutePath()));
 			}
 			out = new DataOutputStream(socket.getOutputStream());
 			in = new DataInputStream(socket.getInputStream());
@@ -195,6 +220,7 @@ public class DCCSend extends DCC {
 		if (handler != null) {
 			handler.socketClosed(this);
 		}
+		sends.remove(this);
 	}
 	
 	/**

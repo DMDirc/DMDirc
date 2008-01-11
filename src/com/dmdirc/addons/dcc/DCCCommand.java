@@ -109,7 +109,6 @@ public final class DCCCommand extends GlobalCommand {
 					DCCSendWindow window = new DCCSendWindow(myPlugin, send, "Send: "+target, myNickname, target);
 					sendLine(origin, isSilent, FORMAT_OUTPUT, "Starting DCC Send with: "+target);
 				
-					System.out.println("jc.getSelectedFile().getAbsolutePath() = "+jc.getSelectedFile().getAbsolutePath());
 					send.setFileName(jc.getSelectedFile().getAbsolutePath());
 					send.setFileSize(jc.getSelectedFile().length());
 					send.listen();

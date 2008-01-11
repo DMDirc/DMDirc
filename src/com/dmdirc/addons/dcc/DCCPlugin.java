@@ -207,10 +207,10 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 					final String ip = ctcpData[++i];
 					final String port = ctcpData[++i];
 					long size;
-					long startpos;
+					int startpos;
 					if (ctcpData.length+1 > i) {
 						try {
-							size = Long.parseLong(ctcpData[++i]);
+							size = Integer.parseInt(ctcpData[++i]);
 						} catch (NumberFormatException nfe) { size = -1; }
 					} else { size = -1; }
 					// Add support for resume later
@@ -231,6 +231,43 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 						send.setFileStart(startpos);
 						saveFile(nickname, send, ((Server)arguments[0]).getParser(), port.equals("0"), (quoted) ? "\""+filename+"\"" : filename, (ctcpData.length-1 > i) ? ctcpData[++i] : "");
 					}
+				} else if (ctcpData[0].equalsIgnoreCase("resume") && ctcpData.length > 2) {
+
+					final String filename;
+					// Clients tend to put files with spaces in the name in "" so lets look for that.
+					final StringBuilder filenameBits = new StringBuilder();
+					int i;
+					boolean quoted = ctcpData[1].startsWith("\"");
+					if (quoted) {
+						for (i = 1; i < ctcpData.length; i++) {
+							String bit = ctcpData[i];
+							if (i == 1) { bit = bit.substring(1); }
+							if (bit.endsWith("\"")) {
+								filenameBits.append(" "+bit.substring(0, bit.length()-1));
+								break;
+							} else {
+								filenameBits.append(" "+bit);
+							}
+						}
+						filename = filenameBits.toString().trim();
+					} else {
+						filename = ctcpData[1];
+						i = 1;
+					}
+					
+					try {
+						final int port = Integer.parseInt(ctcpData[++i]);
+						final int position = Integer.parseInt(ctcpData[++i]);
+						
+						// Now look for a dcc that matches.
+						for (DCCSend send : DCCSend.getSends()) {
+							if (send.port == port && (new File(send.getFileName())).getName().equalsIgnoreCase(filename)) {
+								final IRCParser parser = ((Server)arguments[0]).getParser();
+								final String nickname = ((ClientInfo)arguments[1]).getNickname();
+								parser.sendCTCP(nickname, "DCC", "ACCEPT "+((quoted) ? "\""+filename+"\"" : filename)+" "+port+" "+send.setFileStart(position));
+							}
+						}
+					} catch (NumberFormatException nfe) { }
 				}
 			}
 		}
