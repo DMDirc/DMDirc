@@ -22,6 +22,8 @@
 
 package com.dmdirc.commandparser;
 
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.ConfigManager;
 
 
@@ -48,7 +50,12 @@ public class PopupManager {
      * @return The PopupMenu that should be displayed
      */
     public static PopupMenu getMenu(final PopupType menuType, final ConfigManager configManager) {
-        return getMenu(menuType.toString(), configManager);
+        final PopupMenu menu = getMenu(menuType.toString(), configManager);
+        
+        ActionManager.processEvent(CoreActionType.CLIENT_POPUP_GENERATED, 
+                null, menuType, menu, configManager);
+        
+        return menu;
     }
     
     /**
