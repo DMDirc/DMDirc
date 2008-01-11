@@ -123,14 +123,31 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 				int result = jc.showSaveDialog((JFrame)Main.getUI().getMainWindow());
 				if (result == JFileChooser.APPROVE_OPTION) {
 					send.setFileName(jc.getSelectedFile().getPath());
+					boolean resume = false;
+					if (jc.getSelectedFile().exists()) {
+						result = JOptionPane.showConfirmDialog((JFrame)Main.getUI().getMainWindow(), "This file exists already, do you want to resume an exisiting download?", "Resume Download?", JOptionPane.YES_NO_OPTION);
+						resume = (result == JOptionPane.YES_OPTION);
+					}
 					if (reverse && !token.isEmpty()) {
 						new DCCSendWindow(DCCPlugin.this, send, "*Recieve: "+nickname, parser.getMyNickname(), nickname);
-						send.listen();
 						send.setToken(token);
-						parser.sendCTCP(nickname, "DCC", "SEND "+sendFilename+" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+send.getFileSize()+" "+token);
+						if (!resume) {
+							send.listen();
+							parser.sendCTCP(nickname, "DCC", "SEND "+sendFilename+" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+send.getFileSize()+" "+token);
+						} else {
+							if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "recieve.reverse.sendtoken", true)) {
+								parser.sendCTCP(nickname, "DCC", "RESUME "+sendFilename+" 0 "+jc.getSelectedFile().length()+" "+token);
+							} else {
+								parser.sendCTCP(nickname, "DCC", "RESUME "+sendFilename+" 0 "+jc.getSelectedFile().length());
+							}
+						}
 					} else {
 						new DCCSendWindow(DCCPlugin.this, send, "Recieve: "+nickname, parser.getMyNickname(), nickname);
-						send.connect();
+						if (!resume) {
+							send.connect();
+						} else {
+							parser.sendCTCP(nickname, "DCC", "RESUME "+sendFilename+" "+send.getPort()+" "+jc.getSelectedFile().length());
+						}
 					}
 				}
 			}
@@ -205,14 +222,11 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 					final String ip = ctcpData[++i];
 					final String port = ctcpData[++i];
 					long size;
-					int startpos;
 					if (ctcpData.length+1 > i) {
 						try {
 							size = Integer.parseInt(ctcpData[++i]);
 						} catch (NumberFormatException nfe) { size = -1; }
 					} else { size = -1; }
-					// Add support for recieve-resume later
-					startpos = 0;
 					final String token = (ctcpData.length-1 > i) ? ctcpData[++i] : "";
 					
 					DCCSend send = DCCSend.findByToken(token);
@@ -226,20 +240,17 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 							send = new DCCSend();
 						}
 						try {
-							if (!port.equals("0")) {
-								send.setAddress(Long.parseLong(ip), Integer.parseInt(port));
-							}
+							send.setAddress(Long.parseLong(ip), Integer.parseInt(port));
 						} catch (NumberFormatException nfe) { return; }
 						if (newSend) {
 							send.setFileName(filename);
 							send.setFileSize(size);
-							send.setFileStart(startpos);
 							saveFile(nickname, send, ((Server)arguments[0]).getParser(), port.equals("0"), (quoted) ? "\""+filename+"\"" : filename, token);
 						} else {
 							send.connect();
 						}
 					}
-				} else if (ctcpData[0].equalsIgnoreCase("resume") && ctcpData.length > 2) {
+				} else if ((ctcpData[0].equalsIgnoreCase("resume") || ctcpData[0].equalsIgnoreCase("accept")) && ctcpData.length > 2) {
 
 					final String filename;
 					// Clients tend to put files with spaces in the name in "" so lets look for that.
@@ -271,9 +282,27 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 						// Now look for a dcc that matches.
 						for (DCCSend send : DCCSend.getSends()) {
 							if (send.port == port && (new File(send.getFileName())).getName().equalsIgnoreCase(filename)) {
+								if ((!token.isEmpty() && !send.getToken().isEmpty()) && (!token.equals(send.getToken()))) {
+									continue;
+								}
 								final IRCParser parser = ((Server)arguments[0]).getParser();
 								final String nickname = ((ClientInfo)arguments[1]).getNickname();
-								parser.sendCTCP(nickname, "DCC", "ACCEPT "+((quoted) ? "\""+filename+"\"" : filename)+" "+port+" "+send.setFileStart(position)+token);
+								if (ctcpData[0].equalsIgnoreCase("resume")) {
+									parser.sendCTCP(nickname, "DCC", "ACCEPT "+((quoted) ? "\""+filename+"\"" : filename)+" "+port+" "+send.setFileStart(position)+token);
+								} else {
+									send.setFileStart(position);
+									if (port == 0) {
+										// Reverse dcc
+										send.listen();
+										if (send.getToken().isEmpty()) {
+											parser.sendCTCP(nickname, "DCC", "SEND "+((quoted) ? "\""+filename+"\"" : filename)+" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+send.getFileSize());
+										} else {
+											parser.sendCTCP(nickname, "DCC", "SEND "+((quoted) ? "\""+filename+"\"" : filename)+" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+send.getFileSize()+" "+send.getToken());
+										}
+									} else {
+										send.connect();
+									}
+								}
 							}
 						}
 					} catch (NumberFormatException nfe) { }
@@ -338,6 +367,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		Properties defaults = new Properties();
 		defaults.setProperty(MY_DOMAIN + ".recieve.savelocation", Main.getConfigDir() + "downloads" + System.getProperty("file.separator"));
 		defaults.setProperty(MY_DOMAIN + ".send.reverse", "false");
+		defaults.setProperty(MY_DOMAIN + ".recieve.reverse.sendtoken", "true");
 		defaults.setProperty("identity.name", "DCC Plugin Defaults");
 		IdentityManager.addIdentity(new Identity(defaults));
 	

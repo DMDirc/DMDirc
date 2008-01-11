@@ -229,20 +229,20 @@ public abstract class DCCFrame extends WritableFrameContainer {
 	/** {@inheritDoc} */
 	@Override
 	public void windowClosing() {
-                // 1: Make the window non-visible
-                myWindow.setVisible(false);
+		// 1: Make the window non-visible
+		myWindow.setVisible(false);
 
-                // 2: Remove any callbacks or listeners
-                // 3: Trigger any actions neccessary
-                // 4: Trigger action for the window closing
-                
-                // 5: Inform any parents that the window is closing
-                plugin.delWindow(this);
+		// 2: Remove any callbacks or listeners
+		// 3: Trigger any actions neccessary
+		// 4: Trigger action for the window closing
+		
+		// 5: Inform any parents that the window is closing
+		plugin.delWindow(this);
 
-                // 6: Remove the window from the window manager
-                WindowManager.removeWindow(myWindow);
+		// 6: Remove the window from the window manager
+		WindowManager.removeWindow(myWindow);
 
-                // 7: Remove any references to the window and parents
-                myWindow = null; // NOPMD
+		// 7: Remove any references to the window and parents
+		myWindow = null; // NOPMD
 	}   
 }

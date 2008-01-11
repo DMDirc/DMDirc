@@ -59,7 +59,7 @@ public class DCCSend extends DCC {
 	/** Used to read data from the file */
 	private DataInputStream fileIn;
 	/** Where are we starting from? */
-	private long startpos = 0;
+	private int startpos = 0;
 	/** How big is this file? */
 	private long size = -1;
 	/** How much of this file have we read so far? */
@@ -230,7 +230,8 @@ public class DCCSend extends DCC {
 		this.startpos = startpos;
 		if (transferType == TransferType.SEND && fileIn != null) {
 			try {
-				return fileIn.skipBytes(startpos);
+				this.startpos = fileIn.skipBytes(startpos);
+				return this.startpos;
 			} catch (IOException ioe) { }
 		}
 		return -1;
@@ -252,7 +253,8 @@ public class DCCSend extends DCC {
 		try {
 			transferFile = new File(filename);
 			if (transferType == TransferType.RECIEVE) {
-				fileOut = new DataOutputStream(new FileOutputStream(transferFile.getAbsolutePath()));
+				fileOut = new DataOutputStream(new FileOutputStream(transferFile.getAbsolutePath(), (startpos > 0)));
+				System.out.println("Appending: "+(startpos > 0));
 			}
 			out = new DataOutputStream(socket.getOutputStream());
 			in = new DataInputStream(socket.getInputStream());

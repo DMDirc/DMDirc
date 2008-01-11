@@ -107,14 +107,15 @@ public final class DCCCommand extends GlobalCommand {
 					DCCSend send = new DCCSend();
 					send.setType(DCCSend.TransferType.SEND);
 					
-					DCCSendWindow window = new DCCSendWindow(myPlugin, send, "Send: "+target, myNickname, target);
 					sendLine(origin, isSilent, FORMAT_OUTPUT, "Starting DCC Send with: "+target);
 				
 					send.setFileName(jc.getSelectedFile().getAbsolutePath());
 					send.setFileSize(jc.getSelectedFile().length());
 					if (IdentityManager.getGlobalConfig().getOptionBool(DCCPlugin.MY_DOMAIN, "send.reverse", false)) {
+						new DCCSendWindow(myPlugin, send, "*Send: "+target, myNickname, target);
 						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(send.getHost())+" 0 "+send.getFileSize()+" "+send.makeToken());
 					} else {
+						new DCCSendWindow(myPlugin, send, "Send: "+target, myNickname, target);
 						send.listen();
 						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+send.getFileSize());
 					}
