@@ -101,7 +101,7 @@ public final class ChannelEventHandler extends EventHandler implements
         checkParser(tParser);
 
         owner.setClients(cChannel.getChannelClients());
-        ActionManager.processEvent(CoreActionType.CHANNEL_GOTNAMES, null, this);
+        ActionManager.processEvent(CoreActionType.CHANNEL_GOTNAMES, null, owner);
     }
 
     /** {@inheritDoc} */
