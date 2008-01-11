@@ -21,6 +21,8 @@
  */
 package com.dmdirc.config.prefs;
 
+import com.dmdirc.config.prefs.validator.NumericalValidator;
+import com.dmdirc.config.prefs.validator.StringLengthValidator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,14 +31,14 @@ import java.util.Map;
  * @author chris
  */
 public class PreferencesManager {
-    
+
     private final Map<String, PreferencesCategory> categories
             = new HashMap<String, PreferencesCategory>();
 
     public PreferencesManager() {
         addDefaultCategories();
     }
-    
+
     public void addCategory(final PreferencesCategory category) {
         categories.put(category.getTitle(), category);
     }
@@ -44,7 +46,10 @@ public class PreferencesManager {
     public Map<String, PreferencesCategory> getCategories() {
         return categories;
     }
-   
+
+    /**
+     * Adds the default categories to this preferences manager.
+     */
     private void addDefaultCategories() {
         addGeneralCategory();
         addConnectionCategory();
@@ -53,29 +58,71 @@ public class PreferencesManager {
         addUrlHandlerCategory();
         addAdvancedCategory();
     }
+
+    /**
+     * Creates and adds the "General" category.
+     */
+    private void addGeneralCategory() {
+        final PreferencesCategory category = new PreferencesCategory("General", "");
+
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "ui", "confirmquit", "false", "Confirm quit",
+                "Do you want to confirm closing the client?"));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "channel", "splitusermodes", "false", "Split user modes",
+                "Show individual mode lines for each mode change that affects" +
+                " a user (e.g. op, devoice)"));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "channel", "sendwho", "false", "Send channel WHOs",
+                "Request information (away state, hostname, etc) on channel " +
+                "users automatically"));
+        category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
+                "general", "whotime", "600", "Who request interval",
+                "How often to send WHO requests for a channel"));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "channel", "showmodeprefix", "false", "Show mode prefix",
+                "Prefix users' names with their mode in channels"));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "server", "friendlymodes", "false", "Friendly modes",
+                "Show friendly mode names"));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "general", "hidequeries", "false", "Hide queries",
+                "Initially hide queries so that they don't steal focus"));
+        category.addSetting(new PreferencesSetting(PreferencesType.TEXT,
+                new StringLengthValidator(1, 1), "general", "commandchar", "/",
+                "Command character", "Character used to prefix a command"));
+        category.addSetting(new PreferencesSetting(PreferencesType.TEXT,
+                new StringLengthValidator(1, 1), "general", "silencechar", ".",
+                "Silence character", "Character used to silence commands"));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "ui", "awayindicator", "false", "Away indicator",
+                "Shows an indicator in windows when you are marked as away"));
+        category.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
+                new NumericalValidator(0, 100), "ui", "pasteProtectionLimit", "1",
+                "Paste protection trigger", "Confirm pasting of text that " +
+                "contains more than this many lines."));
+        
+        addCategory(category);
+    }
     
     private void addAdvancedCategory() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        // XXX: Not implemented
     }
 
     private void addConnectionCategory() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        // XXX: Not implemented
     }    
 
-    private void addGeneralCategory() {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
     private void addGuiCategory() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        // XXX: Not implemented
     }
 
     private void addMessagesCategory() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        // XXX: Not implemented
     }
 
     private void addUrlHandlerCategory() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        // XXX: Not implemented
     }
 
 }
