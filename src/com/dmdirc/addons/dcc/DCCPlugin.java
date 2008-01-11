@@ -109,7 +109,7 @@ public final class DCCPlugin extends Plugin implements ActionListener, Preferenc
 	 *
 	 * @param nickname Person this dcc is from.
 	 * @param send The DCCSend to save for.
-	 * @param parser The parser this send was received on
+	 * @param parser The parser this send was recieved on
 	 * @param reverse Is this a reverse dcc?
 	 * @param token Token used in reverse dcc.
 	 */
@@ -122,13 +122,22 @@ public final class DCCPlugin extends Plugin implements ActionListener, Preferenc
 				jc.setFileSelectionMode(jc.FILES_AND_DIRECTORIES);
 				jc.setMultiSelectionEnabled(false);
 				jc.setSelectedFile(new File(send.getFileName()));
-				int result = jc.showSaveDialog((JFrame)Main.getUI().getMainWindow());
+				int result; 
+				if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "recieve.autoaccept", false)) {
+					result = JFileChooser.APPROVE_OPTION;
+				} else {
+					result = jc.showSaveDialog((JFrame)Main.getUI().getMainWindow());
+				}
 				if (result == JFileChooser.APPROVE_OPTION) {
 					send.setFileName(jc.getSelectedFile().getPath());
 					boolean resume = false;
 					if (jc.getSelectedFile().exists()) {
-						result = JOptionPane.showConfirmDialog((JFrame)Main.getUI().getMainWindow(), "This file exists already, do you want to resume an exisiting download?", "Resume Download?", JOptionPane.YES_NO_OPTION);
-						resume = (result == JOptionPane.YES_OPTION);
+						if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "recieve.autoaccept", false)) {
+							resume = true;
+						} else {
+							result = JOptionPane.showConfirmDialog((JFrame)Main.getUI().getMainWindow(), "This file exists already, do you want to resume an exisiting download?", "Resume Download?", JOptionPane.YES_NO_OPTION);
+							resume = (result == JOptionPane.YES_OPTION);
+						}
 					}
 					if (reverse && !token.isEmpty()) {
 						new DCCSendWindow(DCCPlugin.this, send, "*Recieve: "+nickname, parser.getMyNickname(), nickname);
@@ -179,6 +188,11 @@ public final class DCCPlugin extends Plugin implements ActionListener, Preferenc
 	 * @param arguments The arguments for the event
 	 */
 	public void handleProcessEvent(final ActionType type, final StringBuffer format, final boolean dontAsk, final Object... arguments) {
+		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "recieve.autoaccept", false) && !dontAsk) {
+			handleProcessEvent(type, format, true, arguments);
+			return;
+		}
+	
 		if (type == CoreActionType.SERVER_CTCP) {
 			final String ctcpType = (String)arguments[2];
 			final String[] ctcpData = ((String)arguments[3]).split(" ");
@@ -234,7 +248,7 @@ public final class DCCPlugin extends Plugin implements ActionListener, Preferenc
 					DCCSend send = DCCSend.findByToken(token);
 					
 					if (send == null && !dontAsk) {
-						askQuestion("User "+nickname+" on "+((Server)arguments[0]).toString()+" would like to send you a file over DCC.\n\nFile: "+filename+"\n\nDo you want to continue?", "DCC Chat Request", JOptionPane.YES_OPTION, type, format, arguments);
+						askQuestion("User "+nickname+" on "+((Server)arguments[0]).toString()+" would like to send you a file over DCC.\n\nFile: "+filename+"\n\nDo you want to continue?", "DCC Send Request", JOptionPane.YES_OPTION, type, format, arguments);
 						return;
 					} else {
 						boolean newSend = (send == null);
@@ -373,6 +387,7 @@ public final class DCCPlugin extends Plugin implements ActionListener, Preferenc
 		defaults.setProperty(MY_DOMAIN + ".send.forceturbo", "true");
 		defaults.setProperty(MY_DOMAIN + ".recieve.reverse.sendtoken", "false");
 		defaults.setProperty(MY_DOMAIN + ".send.blocksize", "1024");
+		defaults.setProperty(MY_DOMAIN + ".recieve.autoaccept", "false");
 		defaults.setProperty("identity.name", "DCC Plugin Defaults");
 		IdentityManager.addIdentity(new Identity(defaults));
 	
@@ -426,7 +441,7 @@ public final class DCCPlugin extends Plugin implements ActionListener, Preferenc
 		preferencesPanel.addTextfieldOption("Recieve", "recieve.savelocation", "Default Save Location: ", "Where the save as window defaults to?", IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "recieve.savelocation"));
 		preferencesPanel.addCheckboxOption("Send", "send.reverse", "Reverse DCC: ", "With reverse DCC, the sender connects rather than listens like normal dcc", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "send.reverse"));
 		preferencesPanel.addCheckboxOption("Send", "send.forceturbo", "Use Turbo DCC: ", "Turbo DCC doesn't wait for ack packets. this is faster but not always supported.", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "send.forceturbo"));
-		preferencesPanel.addCheckboxOption("Recieve", "receive.reverse.sendtoken", "Send token in reverse recieve?: ", "If you have problems with reverse dcc recieve resume, try toggling this.", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "recieve.reverse.sendtoken"));
+		preferencesPanel.addCheckboxOption("Recieve", "recieve.reverse.sendtoken", "Send token in reverse recieve?: ", "If you have problems with reverse dcc recieve resume, try toggling this.", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "recieve.reverse.sendtoken"));
 				
 		preferencesPanel.addSpinnerOption("General", "send.blocksize", "Blocksize to use for DCC: ", "Change the block size for send/recieve, this can sometimes speed up transfers.", IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "send.blocksize", 1024));
 		preferencesPanel.display();
@@ -473,7 +488,7 @@ public final class DCCPlugin extends Plugin implements ActionListener, Preferenc
 		updateOption(properties, "recieve.savelocation");
 		updateOption(properties, "send.reverse");
 		updateOption(properties, "send.forceturbo");
-		updateOption(properties, "receive.reverse.sendtoken");
+		updateOption(properties, "recieve.reverse.sendtoken");
 		updateOption(properties, "send.blocksize");
 	}
 	
