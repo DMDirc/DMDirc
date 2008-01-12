@@ -50,12 +50,12 @@ public final class Main {
     /**
      * Stores the current textual program version.
      */
-    public static final String VERSION = "0.5.5b3";
+    public static final String VERSION = "0.5.5rc2";
     
     /**
      * Stores the release date of this version.
      */
-    public static final int RELEASE_DATE = 20071223;
+    public static final int RELEASE_DATE = 20080112;
     
     /**
      * Stores the update channel that this version came from, if any.
