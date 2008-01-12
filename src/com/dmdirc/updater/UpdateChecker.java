@@ -122,6 +122,7 @@ public final class UpdateChecker implements Runnable {
             IdentityManager.getConfigIdentity().setOption("updater",
                     "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
         
+            mutex.release();
             init();
             return;
         }
