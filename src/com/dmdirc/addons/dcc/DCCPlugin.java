@@ -109,7 +109,7 @@ public final class DCCPlugin extends Plugin implements ActionListener, Preferenc
 	 *
 	 * @param nickname Person this dcc is from.
 	 * @param send The DCCSend to save for.
-	 * @param parser The parser this send was recieved on
+	 * @param parser The parser this send was received on
 	 * @param reverse Is this a reverse dcc?
 	 * @param token Token used in reverse dcc.
 	 */
@@ -117,13 +117,13 @@ public final class DCCPlugin extends Plugin implements ActionListener, Preferenc
 		// New thread to ask the user where to save in to stop us locking the UI
 		Thread dccThread = new Thread(new Runnable() {
 			public void run() {
-				final JFileChooser jc = new JFileChooser(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "recieve.savelocation"));
+				final JFileChooser jc = new JFileChooser(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "receive.savelocation"));
 				jc.setDialogTitle("Save "+sendFilename+" As - DMDirc ");
 				jc.setFileSelectionMode(jc.FILES_AND_DIRECTORIES);
 				jc.setMultiSelectionEnabled(false);
 				jc.setSelectedFile(new File(send.getFileName()));
 				int result; 
-				if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "recieve.autoaccept", false)) {
+				if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "receive.autoaccept", false)) {
 					result = JFileChooser.APPROVE_OPTION;
 				} else {
 					result = jc.showSaveDialog((JFrame)Main.getUI().getMainWindow());
@@ -133,7 +133,7 @@ public final class DCCPlugin extends Plugin implements ActionListener, Preferenc
 					boolean resume = false;
 					if (jc.getSelectedFile().exists()) {
 						if (send.getFileSize() > -1 && send.getFileSize() <= jc.getSelectedFile().length()) {
-							if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "recieve.autoaccept", false)) {
+							if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "receive.autoaccept", false)) {
 								return;
 							} else {
 								JOptionPane.showMessageDialog((JFrame)Main.getUI().getMainWindow(), "This file has already been completed, or is longer than the file you are reciving.\n Please choose a different file.", "Problem with selected file", JOptionPane.ERROR_MESSAGE);
@@ -141,7 +141,7 @@ public final class DCCPlugin extends Plugin implements ActionListener, Preferenc
 								return;
 							}
 						} else {
-							if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "recieve.autoaccept", false)) {
+							if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "receive.autoaccept", false)) {
 								resume = true;
 							} else {
 								result = JOptionPane.showConfirmDialog((JFrame)Main.getUI().getMainWindow(), "This file exists already, do you want to resume an exisiting download?", "Resume Download?", JOptionPane.YES_NO_OPTION);
@@ -150,20 +150,20 @@ public final class DCCPlugin extends Plugin implements ActionListener, Preferenc
 						}
 					}
 					if (reverse && !token.isEmpty()) {
-						new DCCSendWindow(DCCPlugin.this, send, "*Recieve: "+nickname, parser.getMyNickname(), nickname);
+						new DCCSendWindow(DCCPlugin.this, send, "*Receive: "+nickname, parser.getMyNickname(), nickname);
 						send.setToken(token);
 						if (!resume) {
 							send.listen();
 							parser.sendCTCP(nickname, "DCC", "SEND "+sendFilename+" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+send.getFileSize()+" "+token);
 						} else {
-							if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "recieve.reverse.sendtoken", true)) {
+							if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "receive.reverse.sendtoken", true)) {
 								parser.sendCTCP(nickname, "DCC", "RESUME "+sendFilename+" 0 "+jc.getSelectedFile().length()+" "+token);
 							} else {
 								parser.sendCTCP(nickname, "DCC", "RESUME "+sendFilename+" 0 "+jc.getSelectedFile().length());
 							}
 						}
 					} else {
-						new DCCSendWindow(DCCPlugin.this, send, "Recieve: "+nickname, parser.getMyNickname(), nickname);
+						new DCCSendWindow(DCCPlugin.this, send, "Receive: "+nickname, parser.getMyNickname(), nickname);
 						if (!resume) {
 							send.connect();
 						} else {
@@ -198,7 +198,7 @@ public final class DCCPlugin extends Plugin implements ActionListener, Preferenc
 	 * @param arguments The arguments for the event
 	 */
 	public void handleProcessEvent(final ActionType type, final StringBuffer format, final boolean dontAsk, final Object... arguments) {
-		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "recieve.autoaccept", false) && !dontAsk) {
+		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "receive.autoaccept", false) && !dontAsk) {
 			handleProcessEvent(type, format, true, arguments);
 			return;
 		}
@@ -392,16 +392,16 @@ public final class DCCPlugin extends Plugin implements ActionListener, Preferenc
 	@Override
 	public void onLoad() {
 		Properties defaults = new Properties();
-		defaults.setProperty(MY_DOMAIN + ".recieve.savelocation", Main.getConfigDir() + "downloads" + System.getProperty("file.separator"));
+		defaults.setProperty(MY_DOMAIN + ".receive.savelocation", Main.getConfigDir() + "downloads" + System.getProperty("file.separator"));
 		defaults.setProperty(MY_DOMAIN + ".send.reverse", "false");
 		defaults.setProperty(MY_DOMAIN + ".send.forceturbo", "true");
-		defaults.setProperty(MY_DOMAIN + ".recieve.reverse.sendtoken", "false");
+		defaults.setProperty(MY_DOMAIN + ".receive.reverse.sendtoken", "false");
 		defaults.setProperty(MY_DOMAIN + ".send.blocksize", "1024");
-		defaults.setProperty(MY_DOMAIN + ".recieve.autoaccept", "false");
+		defaults.setProperty(MY_DOMAIN + ".receive.autoaccept", "false");
 		defaults.setProperty("identity.name", "DCC Plugin Defaults");
 		IdentityManager.addIdentity(new Identity(defaults));
 	
-		final File dir = new File(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "recieve.savelocation"));
+		final File dir = new File(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "receive.savelocation"));
 		if (!dir.exists()) {
 			try {
 				dir.mkdirs();
@@ -446,14 +446,14 @@ public final class DCCPlugin extends Plugin implements ActionListener, Preferenc
 		final PreferencesPanel preferencesPanel = Main.getUI().getPreferencesPanel(this, "DCC Plugin - Config");
 		preferencesPanel.addCategory("General", "General Configuration for DCC.");
 		preferencesPanel.addCategory("Send", "Configuration for DCC Sends.");
-		preferencesPanel.addCategory("Recieve", "Configuration for DCC Recieves.");
+		preferencesPanel.addCategory("Receive", "Configuration for DCC Receives.");
 		
-		preferencesPanel.addTextfieldOption("Recieve", "recieve.savelocation", "Default Save Location: ", "Where the save as window defaults to?", IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "recieve.savelocation"));
+		preferencesPanel.addTextfieldOption("Receive", "receive.savelocation", "Default Save Location: ", "Where the save as window defaults to?", IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "receive.savelocation"));
 		preferencesPanel.addCheckboxOption("Send", "send.reverse", "Reverse DCC: ", "With reverse DCC, the sender connects rather than listens like normal dcc", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "send.reverse"));
 		preferencesPanel.addCheckboxOption("Send", "send.forceturbo", "Use Turbo DCC: ", "Turbo DCC doesn't wait for ack packets. this is faster but not always supported.", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "send.forceturbo"));
-		preferencesPanel.addCheckboxOption("Recieve", "recieve.reverse.sendtoken", "Send token in reverse recieve?: ", "If you have problems with reverse dcc recieve resume, try toggling this.", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "recieve.reverse.sendtoken"));
+		preferencesPanel.addCheckboxOption("Receive", "receive.reverse.sendtoken", "Send token in reverse receive?: ", "If you have problems with reverse dcc receive resume, try toggling this.", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "receive.reverse.sendtoken"));
 				
-		preferencesPanel.addSpinnerOption("General", "send.blocksize", "Blocksize to use for DCC: ", "Change the block size for send/recieve, this can sometimes speed up transfers.", IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "send.blocksize", 1024));
+		preferencesPanel.addSpinnerOption("General", "send.blocksize", "Blocksize to use for DCC: ", "Change the block size for send/receive, this can sometimes speed up transfers.", IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "send.blocksize", 1024));
 		preferencesPanel.display();
 	}
 	
@@ -495,10 +495,10 @@ public final class DCCPlugin extends Plugin implements ActionListener, Preferenc
 	 */
 	public void configClosed(final Properties properties) {
 		// Update Config options
-		updateOption(properties, "recieve.savelocation");
+		updateOption(properties, "receive.savelocation");
 		updateOption(properties, "send.reverse");
 		updateOption(properties, "send.forceturbo");
-		updateOption(properties, "recieve.reverse.sendtoken");
+		updateOption(properties, "receive.reverse.sendtoken");
 		updateOption(properties, "send.blocksize");
 	}
 	

@@ -45,9 +45,9 @@ public class DCCSend extends DCC {
 	private static List<DCCSend> sends = new ArrayList<DCCSend>();
 	
 	/** File Transfer Types */
-	public enum TransferType { SEND, RECIEVE; }
+	public enum TransferType { SEND, RECEIVE; }
 	/** The File transfer type for this file */
-	private TransferType transferType = TransferType.RECIEVE;
+	private TransferType transferType = TransferType.RECEIVE;
 	/** The handler for this DCCSend */
 	private DCCSendInterface handler = null;
 	/** Used to send data out the socket */
@@ -255,7 +255,7 @@ public class DCCSend extends DCC {
 	protected void socketOpened() {
 		try {
 			transferFile = new File(filename);
-			if (transferType == TransferType.RECIEVE) {
+			if (transferType == TransferType.RECEIVE) {
 				fileOut = new DataOutputStream(new FileOutputStream(transferFile.getAbsolutePath(), (startpos > 0)));
 				System.out.println("Appending: "+(startpos > 0));
 			}
@@ -290,8 +290,8 @@ public class DCCSend extends DCC {
 	 */
 	protected boolean handleSocket() {
 		if (out == null || in == null) { return false; }	
-		if (transferType == TransferType.RECIEVE) {
-			return handleRecieve();
+		if (transferType == TransferType.RECEIVE) {
+			return handleReceive();
 		} else {
 			return handleSend();
 		}
@@ -304,7 +304,7 @@ public class DCCSend extends DCC {
 	 * @return false when socket is closed (or should be closed), true will cause the method to be
 	 *         called again.
 	 */
-	protected boolean handleRecieve() {
+	protected boolean handleReceive() {
 		try {
 			byte[] data = new byte[blockSize];
 			int bytesRead = in.read(data);

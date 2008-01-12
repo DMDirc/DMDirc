@@ -80,7 +80,7 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 	}
 	
 	/**
-	 * Handle a recieved message
+	 * Handle a received message
 	 *
 	 * @param dcc The DCCChat that this message is from
 	 * @param message The message

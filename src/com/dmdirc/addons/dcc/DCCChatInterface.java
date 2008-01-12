@@ -30,7 +30,7 @@ package com.dmdirc.addons.dcc;
  */
 public interface DCCChatInterface {
 	/**
-	 * Handle a recieved message
+	 * Handle a received message
 	 *
 	 * @param dcc The DCCChat that this message is from
 	 * @param message The message
