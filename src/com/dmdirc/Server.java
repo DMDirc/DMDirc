@@ -414,8 +414,10 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @return True iff the query is known, false otherwise
      */
     public boolean hasQuery(final String host) {
+        final String nick = ClientInfo.parseHost(host);
+        
         for (Query query : queries) {
-            if (parser.equalsIgnoreCase(query.getHost(), host)) {
+            if (parser.equalsIgnoreCase(ClientInfo.parseHost(query.getHost()), nick)) {
                 return true;
             }
         }
@@ -430,8 +432,10 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @return The appropriate query object
      */
     public Query getQuery(final String host) {
+        final String nick = ClientInfo.parseHost(host);
+        
         for (Query query : queries) {
-            if (parser.equalsIgnoreCase(query.getHost(), host)) {
+            if (parser.equalsIgnoreCase(ClientInfo.parseHost(query.getHost()), nick)) {
                 return query;
             }
         }
