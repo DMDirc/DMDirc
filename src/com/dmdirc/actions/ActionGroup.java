@@ -22,6 +22,7 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.config.prefs.PreferencesSetting;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +56,7 @@ public class ActionGroup extends ArrayList<Action> {
     private int version = -1;
     
     /** A list of settings used by this action group. */
-    private final List<ActionSetting> settings = new ArrayList<ActionSetting>();
+    private final List<PreferencesSetting> settings = new ArrayList<PreferencesSetting>();
 
     /**
      * Creates a new instance of ActionGroup.
@@ -116,7 +117,7 @@ public class ActionGroup extends ArrayList<Action> {
      * 
      * @return A list of settings used by this action group.
      */
-    public List<ActionSetting> getSettings() {
+    public List<PreferencesSetting> getSettings() {
         return settings;
     }
 

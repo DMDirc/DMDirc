@@ -25,6 +25,8 @@ package com.dmdirc.actions;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.interfaces.ActionComponent;
 import com.dmdirc.actions.interfaces.ActionComparison;
+import com.dmdirc.config.prefs.PreferencesSetting;
+import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.util.ConfigFile;
@@ -273,8 +275,8 @@ public class Action extends ActionModel implements Serializable {
             if (data.containsKey("type") && data.containsKey("setting")
                     && data.containsKey("title") && data.containsKey("default")
                     && data.containsKey("tooltip")) {
-                myGroup.getSettings().add(new ActionSetting(
-                        ActionSetting.TYPE.valueOf(data.get("type")),
+                myGroup.getSettings().add(new PreferencesSetting(
+                        PreferencesType.valueOf(data.get("type")), "actions",
                         data.get("setting"), data.get("title"), 
                         data.get("tooltip"), data.get("default")));
                 ActionManager.registerDefault(data.get("setting"), data.get("default"));

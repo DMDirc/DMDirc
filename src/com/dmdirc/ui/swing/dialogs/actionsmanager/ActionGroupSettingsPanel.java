@@ -23,8 +23,8 @@
 package com.dmdirc.ui.swing.dialogs.actionsmanager;
 
 import com.dmdirc.actions.ActionGroup;
-import com.dmdirc.actions.ActionSetting;
 
+import com.dmdirc.config.prefs.PreferencesSetting;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JLabel;
@@ -46,7 +46,7 @@ public class ActionGroupSettingsPanel extends JPanel {
     /** Action group. */
     private ActionGroup group;
     /** Settings list. */
-    private List<ActionSetting> settings;   
+    private List<PreferencesSetting> settings;   
 
     /**
      * Initialises a new action group information panel.
@@ -81,7 +81,7 @@ public class ActionGroupSettingsPanel extends JPanel {
         removeAll();
         setLayout(new MigLayout("fill, wrap 1"));
 
-        for (ActionSetting setting : settings) {
+        for (PreferencesSetting setting : settings) {
             add(new JLabel(setting.getTitle()), "growx");
         }
     }
@@ -94,7 +94,7 @@ public class ActionGroupSettingsPanel extends JPanel {
     public void setActionGroup(final ActionGroup group) {
         this.group = group;
         if (group == null || group.getSettings().isEmpty()) {
-            this.settings = new ArrayList<ActionSetting>();
+            this.settings = new ArrayList<PreferencesSetting>();
         } else {
             this.settings = group.getSettings();
         }
