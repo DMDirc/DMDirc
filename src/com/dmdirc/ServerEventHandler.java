@@ -214,7 +214,7 @@ public final class ServerEventHandler extends EventHandler
             final String reason) {
         checkParser(tParser);
         
-        owner.updateAwayState(currentState ? reason : "");
+        owner.updateAwayState(currentState ? reason : null);
         
         if (currentState) {
             owner.doNotification("away", CoreActionType.SERVER_AWAY, reason);

@@ -112,7 +112,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     private ConfigManager configManager;
 
     /** Our reason for being away, if any. */
-    private String awayMessage = "";
+    private String awayMessage = null;
 
     /** Our event handler. */
     private final ServerEventHandler eventHandler = new ServerEventHandler(this);
@@ -262,7 +262,7 @@ public final class Server extends WritableFrameContainer implements Serializable
 
         doCallbacks();
 
-        awayMessage = "";
+        awayMessage = null;
         invites.clear();
         window.setAwayIndicator(false);
 
@@ -770,7 +770,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @return True if the client is marked as away, false otherwise
      */
     public boolean isAway() {
-        return !awayMessage.isEmpty();
+        return awayMessage != null;
     }
 
     /**
@@ -1380,13 +1380,12 @@ public final class Server extends WritableFrameContainer implements Serializable
     /**
      * Updates our away state and fires the relevant listeners.
      * 
-     * @param message The away message to use, or an empty string if we're not
-     * away
+     * @param message The away message to use, or null if we're not away.
      */
     public void updateAwayState(final String message) {
         awayMessage = message;
         
-        if (message.isEmpty()) {
+        if (message == null) {
             for (AwayStateListener listener : listeners.get(AwayStateListener.class)) {
                 listener.onBack();
             }
