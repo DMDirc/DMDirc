@@ -217,9 +217,7 @@ public final class Server extends WritableFrameContainer implements Serializable
                 reconnectTimer.cancel();
                 break;
             case CLOSING:
-                Logger.appError(ErrorLevel.MEDIUM,
-                        "Connect attempt while not expecting one",
-                        new UnsupportedOperationException("Current state: " + myState));
+                // Ignore the connection attempt
                 return;
             case CONNECTED:
             case CONNECTING:
