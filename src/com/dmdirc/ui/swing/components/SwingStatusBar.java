@@ -203,21 +203,28 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
 
     /** Checks all the errors for the most significant error. */
     private void checkErrors() {
-        clearError();
-        final List<ProgramError> errors =
-                ErrorManager.getErrorManager().getErrors();
-        if (errors.size() > 0) {
-            for (ProgramError error : errors) {
-                if (errorLevel == null ||
-                        error.getLevel().moreImportant(errorLevel)) {
-                    errorLevel = error.getLevel();
-                    errorLabel.setIcon(errorLevel.getIcon());
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                clearError();
+                final List<ProgramError> errors =
+                        ErrorManager.getErrorManager().getErrors();
+                if (errors.size() > 0) {
+                    for (ProgramError error : errors) {
+                        if (errorLevel == null ||
+                                error.getLevel().moreImportant(errorLevel)) {
+                            errorLevel = error.getLevel();
+                            errorLabel.setIcon(errorLevel.getIcon());
+                        }
+                    }
+                    errorLabel.setVisible(true);
+                } else {
+                    errorLabel.setVisible(false);
                 }
             }
-            errorLabel.setVisible(true);
-        } else {
-            errorLabel.setVisible(false);
-        }
+            });
     }
 
     /** {@inheritDoc} */
@@ -260,20 +267,34 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     @Override
     public void addComponent(final Component component) {
         if (!Arrays.asList(getComponents()).contains(component)) {
-            remove(errorLabel);
-            remove(inviteLabel);
-            add(component, "sgy components, hmax 20, hmin 20");
-            add(inviteLabel, "sgy components, hmax 20, hmin 20");
-            add(errorLabel, "sgy components, hmax 20, hmin 20");
-            validate();
+            SwingUtilities.invokeLater(new Runnable() {
+
+                /** {@inheritDoc} */
+                @Override
+                public void run() {
+                    remove(errorLabel);
+                    remove(inviteLabel);
+                    add(component, "sgy components, hmax 20, hmin 20");
+                    add(inviteLabel, "sgy components, hmax 20, hmin 20");
+                    add(errorLabel, "sgy components, hmax 20, hmin 20");
+                    validate();
+                }
+            });
         }
     }
 
     /** {@inheritDoc} */
     @Override
     public void removeComponent(final Component component) {
-        remove(component);
-        validate();
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                remove(component);
+                validate();
+            }
+            });
     }
 
     /** {@inheritDoc} */

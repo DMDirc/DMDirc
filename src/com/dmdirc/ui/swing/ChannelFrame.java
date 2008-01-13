@@ -133,7 +133,11 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
     
     /** {@inheritDoc} */
     public void updateNames() {
-        nicklistModel.sort();
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                nicklistModel.sort();
+            }
+        });
     }
     
     /** {@inheritDoc} */

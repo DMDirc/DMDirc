@@ -45,6 +45,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
@@ -56,65 +57,56 @@ import net.miginfocom.swing.MigLayout;
  */
 public final class ErrorListDialog extends StandardDialog implements
         ActionListener, ErrorListener, ListSelectionListener {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 5;
-    
     /** Previously instantiated instance of ErrorListDialog. */
     private static ErrorListDialog me;
-    
     /** Error manager. */
     private final ErrorManager errorManager;
-    
     /** Table scrollpane. */
     private JScrollPane scrollPane;
-    
     /** Error table. */
     private JTable table;
-    
     /** Table model. */
     private ErrorTableModel tableModel;
-    
     /** Error detail panel. */
     private ErrorDetailPanel errorDetails;
-    
     /** Send button. */
     private JButton sendButton;
-    
     /** Delete button. */
     private JButton deleteButton;
-    
     /** Delete all button. */
     private JButton deleteAllButton;
-    
+
     /** Creates a new instance of ErrorListDialog. */
     private ErrorListDialog() {
         super((MainFrame) Main.getUI().getMainWindow(), false);
-        
+
         setTitle("DMDirc: Error list");
-        
+
         errorManager = ErrorManager.getErrorManager();
-        
+
         initComponents();
         layoutComponents();
         initListeners();
-        
+
         pack();
     }
-    
+
     /** Returns the instance of ErrorListDialog. */
     public static synchronized void showErrorListDialog() {
         me = getErrorListDialog();
-        
+
         me.setLocationRelativeTo(me.getParent());
         me.setVisible(true);
         me.requestFocus();
     }
-    
+
     /**
      * Returns the current instance of the ErrorListDialog.
      *
@@ -123,28 +115,32 @@ public final class ErrorListDialog extends StandardDialog implements
     public static synchronized ErrorListDialog getErrorListDialog() {
         if (me == null) {
             me = new ErrorListDialog();
-        } else if (me.tableModel.getRowCount() != me.errorManager.getErrorCount()) {
+        } else if (me.tableModel.getRowCount() !=
+                me.errorManager.getErrorCount()) {
             me.tableModel = new ErrorTableModel(new ArrayList<ProgramError>(
                     me.errorManager.getErrorList().values()));
             me.table.setModel(me.tableModel);
         }
-        
+
         return me;
     }
-    
+
     /** Initialises the components. */
     private void initComponents() {
         initButtons();
-        
+
         scrollPane = new JScrollPane();
-        
+
         tableModel = new ErrorTableModel(new ArrayList<ProgramError>(
                 errorManager.getErrorList().values()));
         table = new PackingTable(tableModel, false, scrollPane) {
+
             private static final long serialVersionUID = 1;
+
             /** {@inheritDoc} */
             @Override
-            public TableCellRenderer getCellRenderer(final int row, final int column) {
+            public TableCellRenderer getCellRenderer(final int row,
+                    final int column) {
                 switch (column) {
                     case 1:
                         return new DateCellRenderer();
@@ -155,7 +151,7 @@ public final class ErrorListDialog extends StandardDialog implements
                 }
             }
         };
-        
+
         table.setAutoCreateRowSorter(true);
         table.setAutoCreateColumnsFromModel(true);
         table.setColumnSelectionAllowed(false);
@@ -165,25 +161,25 @@ public final class ErrorListDialog extends StandardDialog implements
         table.setRowSelectionAllowed(true);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.getRowSorter().toggleSortOrder(0);
-        
+
         table.getTableHeader().setReorderingAllowed(false);
-        
+
         table.setPreferredScrollableViewportSize(new Dimension(600, 150));
-        
+
         scrollPane.setViewportView(table);
-        
+
         errorDetails = new ErrorDetailPanel();
     }
-    
+
     /** Initialises the buttons. */
-    private void initButtons() {        
+    private void initButtons() {
         orderButtons(new JButton(), new JButton());
-        
+
         getCancelButton().setText("Close");
         sendButton = new JButton("Send");
         deleteButton = new JButton("Delete");
         deleteAllButton = new JButton("Delete All");
-        
+
         sendButton.setEnabled(false);
         deleteButton.setEnabled(false);
         if (ErrorManager.getErrorManager().getErrorCount() > 0) {
@@ -192,7 +188,7 @@ public final class ErrorListDialog extends StandardDialog implements
             deleteAllButton.setEnabled(false);
         }
     }
-    
+
     /** Initialises the listeners. */
     private void initListeners() {
         ErrorManager.getErrorManager().addErrorListener(this);
@@ -203,26 +199,27 @@ public final class ErrorListDialog extends StandardDialog implements
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
     }
-    
+
     /** Lays out the components. */
     private void layoutComponents() {
-        final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true);
+        final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+                true);
         final JPanel panel = new JPanel();
-        
+
         panel.setLayout(new MigLayout("fill"));
-        
+
         panel.add(errorDetails, "wrap, grow");
         panel.add(deleteAllButton, "split 4, tag left, sgx button");
         panel.add(deleteButton, "tag other, sgx button");
         panel.add(sendButton, "tag other, sgx button");
         panel.add(getCancelButton(), "tag ok, sgx button");
-        
+
         splitPane.setTopComponent(scrollPane);
         splitPane.setBottomComponent(panel);
-        
+
         getContentPane().add(splitPane);
     }
-    
+
     /** {@inheritDoc}. */
     @Override
     public void valueChanged(final ListSelectionEvent e) {
@@ -233,8 +230,8 @@ public final class ErrorListDialog extends StandardDialog implements
                         table.getSelectedRow()));
                 errorDetails.setError(error);
                 deleteButton.setEnabled(true);
-                if (error.getReportStatus() == ErrorReportStatus.NOT_APPLICABLE
-                        || error.getReportStatus() == ErrorReportStatus.FINISHED) {
+                if (error.getReportStatus() == ErrorReportStatus.NOT_APPLICABLE ||
+                        error.getReportStatus() == ErrorReportStatus.FINISHED) {
                     sendButton.setEnabled(false);
                 } else {
                     sendButton.setEnabled(true);
@@ -246,7 +243,7 @@ public final class ErrorListDialog extends StandardDialog implements
             }
         }
     }
-    
+
     /** 
      * {@inheritDoc}.
      * 
@@ -272,24 +269,32 @@ public final class ErrorListDialog extends StandardDialog implements
             }
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void errorAdded(final ProgramError error) {
-        synchronized (tableModel) {
-            final int selectedRow = table.getSelectedRow();
-            tableModel.addRow(error);
-            table.getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
-            deleteAllButton.setEnabled(true);
-        }
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                synchronized (tableModel) {
+                    final int selectedRow = table.getSelectedRow();
+                    tableModel.addRow(error);
+                    table.getSelectionModel().setSelectionInterval(selectedRow,
+                            selectedRow);
+                    deleteAllButton.setEnabled(true);
+                }
+            }
+            });
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void fatalError(final ProgramError error) {
         new FatalErrorDialog(error);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void errorDeleted(final ProgramError error) {
@@ -301,7 +306,7 @@ public final class ErrorListDialog extends StandardDialog implements
             }
             table.getSelectionModel().setSelectionInterval(selectedRow,
                     selectedRow);
-            
+
             if (tableModel.getRowCount() > 0) {
                 deleteAllButton.setEnabled(true);
             } else {
@@ -309,19 +314,19 @@ public final class ErrorListDialog extends StandardDialog implements
             }
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void errorStatusChanged(final ProgramError error) {
         synchronized (tableModel) {
             final int errorRow = tableModel.indexOf(error);
-            
+
             if (errorRow != -1 && errorRow < tableModel.getRowCount()) {
                 tableModel.fireTableRowsUpdated(errorRow, errorRow);
             }
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void dispose() {

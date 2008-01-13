@@ -21,6 +21,8 @@
  */
 package com.dmdirc.actions;
 
+import com.dmdirc.config.prefs.PreferencesSetting;
+import com.dmdirc.config.prefs.PreferencesType;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
@@ -61,11 +63,11 @@ public class ActionGroupTest extends junit.framework.TestCase {
     public void testGetSettings() {
         ActionGroup instance = new ActionGroup("foo");
         
-        List<ActionSetting> expResult = new ArrayList<ActionSetting>();
-        List<ActionSetting> result = instance.getSettings();
+        List<PreferencesSetting> expResult = new ArrayList<PreferencesSetting>();
+        List<PreferencesSetting> result = instance.getSettings();
         assertEquals(expResult, result);
         
-        result.add(new ActionSetting(ActionSetting.TYPE.BOOLEAN, "", "", "", ""));
+        result.add(new PreferencesSetting(PreferencesType.BOOLEAN, "", "", "", "", ""));
         assertEquals(1, instance.getSettings().size());
     }
 

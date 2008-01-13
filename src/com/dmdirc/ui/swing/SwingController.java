@@ -57,6 +57,7 @@ import java.net.URI;
 import java.util.List;
 
 import javax.swing.JOptionPane;
+import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -225,7 +226,11 @@ public final class SwingController implements UIController {
             System.setProperty("awt.useSystemAAFontSettings", "true");
             System.setProperty("swing.aatext", "true");
         }
-
+        
+        if (IdentityManager.getGlobalConfig().hasOption("ui", "checkEDTViolations")) {
+            RepaintManager.setCurrentManager(new CheckThreadViolationRepaintManager());
+        }
+        
         try {
             UIUtilities.initUISettings();
 
