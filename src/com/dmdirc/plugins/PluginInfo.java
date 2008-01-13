@@ -332,6 +332,8 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+filename+":"+getMainClass()+"')", ie);
 		} catch (NoClassDefFoundError ncdf) {
 			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+filename+":"+getMainClass()+"'): Unable to find class: " + ncdf.getMessage(), ncdf);
+		} catch (VerifyError ve) {
+			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+filename+":"+getMainClass()+"')", ve);
 		}
 	}
 
