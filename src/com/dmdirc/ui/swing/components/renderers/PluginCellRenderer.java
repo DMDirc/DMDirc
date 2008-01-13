@@ -25,10 +25,8 @@ package com.dmdirc.ui.swing.components.renderers;
 import com.dmdirc.plugins.PluginInfo;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 
 import javax.swing.BorderFactory;
@@ -38,11 +36,20 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.ListCellRenderer;
 
+import net.miginfocom.swing.MigLayout;
+
 /**
  * Handles the rendering of the JList used for plugin management.
  * @author chris
  */
-public final class PluginCellRenderer implements ListCellRenderer {
+public final class PluginCellRenderer extends JPanel implements ListCellRenderer {
+    
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;    
     
     /** Creates a new instance of PluginCellRenderer. */
     public PluginCellRenderer() {
@@ -54,19 +61,15 @@ public final class PluginCellRenderer implements ListCellRenderer {
     public Component getListCellRendererComponent(final JList list,
             final Object value, final int index, final boolean isSelected,
             final boolean cellHasFocus) {
-        
-        final JPanel res = new JPanel();
         final PluginInfo plugin = (PluginInfo) value;
         
-        res.setLayout(new BorderLayout());
-        
-        res.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 
-                SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
+        removeAll();
+        setLayout(new MigLayout("fill, ins 3 0 0 0"));        
         
         if (isSelected) {
-            res.setBackground(list.getSelectionBackground());
+            setBackground(list.getSelectionBackground());
         } else {
-            res.setBackground(list.getBackground());
+            setBackground(list.getBackground());
         }
         
         Color foreground;
@@ -92,23 +95,13 @@ public final class PluginCellRenderer implements ListCellRenderer {
         desc.setForeground(foreground);
         desc.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0, 0, 0));
         
-        res.add(version, BorderLayout.CENTER);
-        res.add(name, BorderLayout.WEST);
-        res.add(author, BorderLayout.EAST);
-        res.add(desc, BorderLayout.SOUTH);
-
-        final int width = list.getWidth() - 2 * SMALL_BORDER;
-        name.setPreferredSize(new Dimension(5 * width / 16, 15));
-        version.setPreferredSize(new Dimension(width / 8, 15));
-        author.setPreferredSize(new Dimension(9 * width / 16, 15));
+        add(name, "width 31%!, gapleft 3");
+        add(version, "width 12%!");
+        add(author, "wrap, width 57%!, gapright 3");
+        add(desc, "span 3, growx, wrap, gapleft 3, gapright 3");
+        add(new JSeparator(), "span 3, growx");
         
-        final JPanel wrapper = new JPanel();
-        wrapper.setLayout(new BorderLayout());
-        wrapper.setBackground(res.getBackground());
-        wrapper.add(res, BorderLayout.NORTH);
-        wrapper.add(new JSeparator(), BorderLayout.SOUTH);
-        
-        return wrapper;
+        return this;
     }
     
 }
