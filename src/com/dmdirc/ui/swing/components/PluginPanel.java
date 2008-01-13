@@ -26,34 +26,28 @@ import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.swing.components.renderers.PluginCellRenderer;
-import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import com.dmdirc.util.URLHandler;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Plugin manager dialog. Allows the user to manage their plugins.
  */
 public final class PluginPanel extends JPanel implements
-        ActionListener, ListSelectionListener, HyperlinkListener {
+        ActionListener, ListSelectionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -62,32 +56,20 @@ public final class PluginPanel extends JPanel implements
      */
     private static final long serialVersionUID = 3;
     
-    /** Previously created instance of PluginDialog. */
-    private static PluginPanel me;
-    
     /** List of plugins. */
     private JList pluginList;
     
     /** plugin list scroll pane. */
     private JScrollPane scrollPane;
     
-    /** Button to open plugin configuration. */
-    private JButton configureButton;
-    
     /** Button to enable/disable plugin. */
     private JButton toggleButton;
-    
-    /** The OK Button. */
-    private JButton myOkButton;
     
     /** Currently selected plugin. */
     private int selectedPlugin;
     
     /** Blurb label. */
     private TextLabel blurbLabel;
-    
-    /** Info Label. */
-    private HTMLLabel infoLabel;
     
     /** Creates a new instance of PluginDialog. */
     public PluginPanel() {
@@ -102,90 +84,42 @@ public final class PluginPanel extends JPanel implements
     }
     
     /** Initialises the components. */
-    private void initComponents() {        
-        myOkButton = new JButton();
-        myOkButton.setText("OK");
-        myOkButton.setDefaultCapable(true);
-        
-        setPreferredSize(new Dimension(400, 400));
-        
+    private void initComponents() {                        
         pluginList = new JList(new DefaultListModel());
         pluginList.setCellRenderer(new PluginCellRenderer());
         
         scrollPane = new JScrollPane(pluginList);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        
-        configureButton = new JButton("Configure");
-        configureButton.setEnabled(false);
-        
+                
         toggleButton = new JButton("Enable");
         toggleButton.setEnabled(false);
         
-        blurbLabel = new TextLabel("Plugins allow you to extend the functionality of DMDirc."
-                + " Plugins enabled here will also be enabled next time you start the client.");
-        
-        infoLabel = new HTMLLabel("<html><center style='font-family: "
-                + blurbLabel.getFont().getFamily() + "; font-size:"
-                + blurbLabel.getFont().getSize() + "pt;'>You can get "
-                + "more plugins from the <a href=\"http://addons.dmdirc.com/\">"
-                + "Addons site</a></center></html>");
+        blurbLabel = new TextLabel("Plugins allow you to extend the functionality of DMDirc.");
         
         populateList();
     }
     
     /** Lays out the dialog. */
     private void layoutComponents() {
-        final GridBagConstraints constraints = new GridBagConstraints();
-        setLayout(new GridBagLayout());
+        setLayout(new MigLayout("ins 0, fill"));
         
-        constraints.weighty = 0.0;
-        constraints.weightx = 1.0;
-        constraints.gridwidth = 4;
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.insets.set(LARGE_BORDER, LARGE_BORDER, SMALL_BORDER,
-                LARGE_BORDER);
-        add(blurbLabel, constraints);
+        add(blurbLabel, "wrap 10, growx");
         
-        constraints.weighty = 1.0;
-        constraints.weightx = 1.0;
-        constraints.gridy = 1;
-        constraints.gridheight = 4;
-        constraints.insets.set(SMALL_BORDER, LARGE_BORDER, SMALL_BORDER,
-                LARGE_BORDER);
-        add(scrollPane, constraints);
+        add(scrollPane, "wrap 5, growx, growy");
+               
+        add(toggleButton, "split 2, width 50%");
         
-        constraints.weightx = 1.0;
-        constraints.weighty = 0.0;
-        constraints.gridheight = 1;
-        constraints.gridy = 5;
-        constraints.insets.set(0, LARGE_BORDER, 0, LARGE_BORDER);
-        add(infoLabel, constraints);
-        
-        constraints.insets.set(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, 0);
-        constraints.gridwidth = 1;
-        constraints.gridy = 6;
-        constraints.gridx = 0;
-        add(configureButton, constraints);
-        
-        constraints.gridx = 1;
-        add(toggleButton, constraints);
-        
-        constraints.gridx = 2;
-        add(Box.createHorizontalBox(), constraints);
-        
-        constraints.insets.set(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
-                LARGE_BORDER);
-        constraints.gridx = 3;
-        add(myOkButton, constraints);
+        final JButton button = new JButton("Get more plugins");
+        button.addActionListener(this);
+        add(button, "width 50%");
     }
     
     
     /** Populates the plugins list with plugins from the plugin manager. */
     private void populateList() {
-        final List<PluginInfo> list = PluginManager.getPluginManager().getPossiblePluginInfos(true);
+        final List<PluginInfo> list = 
+                PluginManager.getPluginManager().getPossiblePluginInfos(true);
         Collections.sort(list);
         
         ((DefaultListModel) pluginList.getModel()).clear();
@@ -200,11 +134,8 @@ public final class PluginPanel extends JPanel implements
     
     /** Adds listeners to components. */
     private void addListeners() {
-        myOkButton.addActionListener(this);
-        configureButton.addActionListener(this);
         toggleButton.addActionListener(this);
         pluginList.addListSelectionListener(this);
-        infoLabel.addHyperlinkListener(this);
     }
     
     /**
@@ -212,41 +143,33 @@ public final class PluginPanel extends JPanel implements
      * @param e The event related to this action.
      */
     public void actionPerformed(final ActionEvent e) {
-        if (e.getSource() == myOkButton) {
-            // Do nothing
-        } else if (e.getSource() == configureButton && selectedPlugin >= 0) {
-            final PluginInfo pluginInfo = (PluginInfo) pluginList.getSelectedValue();
-            final Plugin plugin = pluginInfo.getPlugin();
-            if (plugin != null && plugin.isConfigurable()) {
-                plugin.showConfig();
-            }
-        } else if (e.getSource() == toggleButton && selectedPlugin >= 0) {
+        if (e.getSource() == toggleButton && selectedPlugin >= 0) {
             final PluginInfo pluginInfo = (PluginInfo) pluginList.getSelectedValue();
             if (pluginInfo.isLoaded()) {
                 pluginInfo.unloadPlugin();
                 toggleButton.setText("Enable");
-                configureButton.setEnabled(false);
             } else {
                 pluginInfo.loadPlugin();
                 toggleButton.setText("Disable");
-                configureButton.setEnabled(pluginInfo.getPlugin().isConfigurable());
             }
             
             PluginManager.getPluginManager().updateAutoLoad(pluginInfo);
             
             pluginList.repaint();
+        } else if (e.getSource() != toggleButton) {
+            URLHandler.getURLHander().launchApp("http://addons.dmdirc.com/");
         }
     }
     
     /** {@inheritDoc}. */
-    public void valueChanged(final ListSelectionEvent selectionEvent) {
-        if (!selectionEvent.getValueIsAdjusting()) {
-            final int selected = ((JList) selectionEvent.getSource()).getSelectedIndex();
+    public void valueChanged(final ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting()) {
+            final int selected = ((JList) e.getSource()).getSelectedIndex();
             if (selected >= 0) {
-                final PluginInfo pluginInfo = (PluginInfo) ((JList) selectionEvent.getSource()).getSelectedValue();
+                final PluginInfo pluginInfo = (PluginInfo) 
+                        ((JList) e.getSource()).getSelectedValue();
                 final Plugin plugin = pluginInfo.getPlugin();
                 if (pluginInfo.isLoaded()) {
-                    configureButton.setEnabled(plugin.isConfigurable());
                     pluginInfo.loadPlugin();
                     if (pluginInfo.isPersistant()) {
                         toggleButton.setEnabled(false);
@@ -254,18 +177,10 @@ public final class PluginPanel extends JPanel implements
                     toggleButton.setText("Disable");
                 } else {
                     pluginInfo.unloadPlugin();
-                    configureButton.setEnabled(false);
                     toggleButton.setText("Enable");
                 }
             }
             selectedPlugin = selected;
-        }
-    }
-    
-    /** {@inheritDoc}. */
-    public void hyperlinkUpdate(final HyperlinkEvent e) {
-        if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-            URLHandler.getURLHander().launchApp(e.getURL());
         }
     }
     

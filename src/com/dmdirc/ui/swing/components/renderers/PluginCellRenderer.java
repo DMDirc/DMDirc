@@ -84,7 +84,7 @@ public final class PluginCellRenderer extends JPanel implements ListCellRenderer
         name.setFont(name.getFont().deriveFont(Font.BOLD));
         name.setForeground(foreground);
         
-        final JLabel version = new JLabel("v" + plugin.getFriendlyVersion());
+        final JLabel version = new JLabel(plugin.getFriendlyVersion());
         version.setForeground(foreground);
         version.setHorizontalAlignment(JLabel.CENTER);
         
@@ -95,9 +95,9 @@ public final class PluginCellRenderer extends JPanel implements ListCellRenderer
         desc.setForeground(foreground);
         desc.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0, 0, 0));
         
-        add(name, "width 31%!, gapleft 3");
-        add(version, "width 12%!");
-        add(author, "wrap, width 57%!, gapright 3");
+        add(name, "gapleft 3");
+        add(version, "pushx");
+        add(author, "wrap, gapright 3");
         add(desc, "span 3, growx, wrap, gapleft 3, gapright 3");
         add(new JSeparator(), "span 3, growx");
         
