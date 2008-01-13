@@ -891,7 +891,9 @@ public final class IRCParser implements Runnable {
 		out.printf("%s\r\n", line);
 		final String[] newLine = tokeniseLine(line);
 		if (newLine[0].equalsIgnoreCase("away") && newLine.length > 1) {
-			cMyself.setAwayReason(newLine[newLine.length-1]);
+			if (cMyself != null) {
+				cMyself.setAwayReason(newLine[newLine.length-1]);
+			}
 		} else if (newLine[0].equalsIgnoreCase("mode") && newLine.length == 3) {
 			// This makes sure we don't add the same item to the LMQ twice, even if its requested twice,
 			// as the ircd will only reply once.
