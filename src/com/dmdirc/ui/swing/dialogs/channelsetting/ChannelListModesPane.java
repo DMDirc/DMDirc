@@ -209,10 +209,10 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
 
         setLayout(new MigLayout("fill, wrap 1"));
 
-        add(toggle, "alignx center");
         add(listModesMenu, "growx");
         add(listModesPanel, "grow");
-        add(modeCount, "growx, pushx");
+        add(modeCount, "split 2, growx, pushx");
+        add(toggle, "alignx center");
         add(addListModeButton, "split 2, growx");
         add(removeListModeButton, "growx");
 
@@ -364,18 +364,17 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
             modeCount.setText(null);
             return;
         }
+        
         final int selected = listModesMenu.getSelectedIndex();
-        final int maxModes =
-                channel.getServer().getParser().
+        final int current = listModesPanels.get(selected).getModel().getSize();
+        final int maxModes = channel.getServer().getParser().
                 getMaxListModes(listModesArray[selected]);
+        
         if (maxModes == -1) {
-            modeCount.setText("" + listModesPanels.get(selected).getModel().
-                    getSize());
+            modeCount.setText(current + " mode" + (current == 1 ? "" : "s") + " set");
         } else {
-            modeCount.setText(listModesPanels.get(selected).getModel().getSize() +
-                    " of " +
-                    channel.getServer().getParser().
-                    getMaxListModes(listModesArray[selected]));
+            modeCount.setText(current + " mode" + (current == 1 ? "" : "s")
+                    + " set (maximum of " + maxModes + ")");
         }
     }
 

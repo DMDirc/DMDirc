@@ -153,7 +153,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
     private void initIrcTab() {
         channelModesPane =
                 new ChannelModesPane(channel);
-        tabbedPane.addTab("IRC Settings", channelModesPane);
+        tabbedPane.addTab("Channel Modes", channelModesPane);
     }
 
     /** Initialises the IRC Settings tab. */

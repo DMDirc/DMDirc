@@ -62,9 +62,10 @@ public class ExtendedListModeCellRenderer extends JPanel implements ListCellRend
             setBackground(list.getBackground());
         }
         
-        add(new JLabel(listMode.getItem()), "split 2, growx, pushx");
-        add(new JLabel(new Date(listMode.getTime() * 1000).toString()), "right, wrap");
-        add(new JLabel(listMode.getOwner()), "growx, pushx, wrap");
+        add(new JLabel(listMode.getItem()), "split 2, growx, pushx, gapleft 3");
+        add(new JLabel(new Date(listMode.getTime() * 1000).toString()),
+                "right, wrap, gapright 3");
+        add(new JLabel(listMode.getOwner()), "growx, pushx, wrap, gapleft 3");
         add(new JSeparator(), "growx, pushx");
         
         return this;
