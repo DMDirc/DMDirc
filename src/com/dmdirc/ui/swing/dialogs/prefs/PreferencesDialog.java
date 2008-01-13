@@ -86,80 +86,6 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
             me.initComponents();
         }
     }
-
-    /**
-     * Adds the specified category to the preferences dialog.
-     * 
-     * @param category The category to be added
-     */
-    private void addCategory(final PreferencesCategory category) {
-        addCategory(category, "");
-    }    
-    
-    /**
-     * Adds the specified category to the preferences dialog.
-     * 
-     * @param category The category to be added
-     * @param parent The parent category's name
-     */
-    private void addCategory(final PreferencesCategory category, final String parent) {
-        preferencesPanel.addCategory(parent, category.getTitle(), category.getDescription());
-        
-        for (PreferencesCategory child : category.getSubcats()) {
-            addCategory(child, category.getTitle());
-        }
-        
-        if (category.hasObject()) {
-            if (!(category.getObject() instanceof JPanel)) {
-                throw new IllegalArgumentException("Custom preferences objects" +
-                        " for this UI must extend JPanel.");
-            }
-            
-            preferencesPanel.replaceOptionPanel(category.getTitle(), 
-                    (JPanel) category.getObject());
-            
-            return;
-        }
-        
-        for (PreferencesSetting setting : category.getSettings()) {
-            switch(setting.getType()) {
-                case BOOLEAN:
-                    preferencesPanel.addCheckboxOption(category.getTitle(),
-                            setting.getOption(), setting.getTitle(), 
-                            setting.getHelptext(), Boolean.parseBoolean(setting.getValue()));
-                    break;
-                case COLOUR:
-                    preferencesPanel.addColourOption(category.getTitle(), 
-                            setting.getOption(), setting.getTitle(), 
-                            setting.getHelptext(), setting.getValue(), true, true);
-                    break;
-                case DURATION:
-                case INTEGER:
-                    preferencesPanel.addSpinnerOption(category.getTitle(), 
-                            setting.getOption(), setting.getTitle(),
-                            setting.getHelptext(), Integer.parseInt(setting.getValue()));
-                    break;
-                case MULTICHOICE:
-                    preferencesPanel.addComboboxOption(category.getTitle(),
-                            setting.getOption(), setting.getTitle(), 
-                            setting.getHelptext(),
-                            setting.getComboOptions().keySet().toArray(new String[0]),
-                            setting.getValue(), false);
-                    break;
-                case OPTIONALCOLOUR:
-                    preferencesPanel.addOptionalColourOption(category.getTitle(),
-                            setting.getOption(), setting.getTitle(), 
-                            setting.getHelptext(), setting.getValue(), 
-                            setting.getValue() != null, true, true);
-                    break;
-                case TEXT:
-                    preferencesPanel.addTextfieldOption(category.getTitle(),
-                            setting.getOption(), setting.getTitle(), 
-                            setting.getHelptext(), setting.getValue());
-                    break;
-            }
-        }
-    }
     
     /**
      * Initialises GUI components.
@@ -172,7 +98,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
         manager = new PreferencesManager();
         
         for (PreferencesCategory cat : manager.getCategories()) {
-            addCategory(cat);
+            preferencesPanel.addCategory(cat);
         }
         
         preferencesPanel.display();

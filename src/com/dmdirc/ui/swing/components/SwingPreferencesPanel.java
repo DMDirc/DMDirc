@@ -24,6 +24,8 @@ package com.dmdirc.ui.swing.components;
 
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.prefs.PreferencesCategory;
+import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -80,56 +82,56 @@ import javax.swing.tree.TreeSelectionModel;
  */
 public final class SwingPreferencesPanel extends StandardDialog implements
         ActionListener, TreeSelectionListener, PreferencesPanel {
-    
+
     /**
      * A version number for this class. It should be changed whenever the
      * class structure is changed (or anything else that would prevent
      * serialized objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 8;
-    
+
     /** All text fields in the dialog, used to apply settings. */
     private final Map<String, JTextField> textFields;
-    
+
     /** All checkboxes in the dialog, used to apply settings. */
     private final Map<String, JCheckBox> checkBoxes;
-    
+
     /** All combo boxes in the dialog, used to apply settings. */
     private final Map<String, JComboBox> comboBoxes;
-    
+
     /** All spinners in the dialog, used to apply settings. */
     private final Map<String, JSpinner> spinners;
-    
+
     /** All colours in the dialog, used to apply settings. */
     private final Map<String, ColourChooser> colours;
-    
+
     /** All optional colours in the dialog, used to apply settings. */
     private final Map<String, OptionalColourChooser> optionalColours;
-    
+
     /** Categories in the dialog. */
     private final Map<String, JPanel> categories;
-    
+
     /** Custom panels, not to be laid out automatically. */
     private final List<JPanel> panels;
-    
+
     /** Preferences tab list, used to switch option types. */
     private JTree tabList;
-    
+
     /** Main card layout. */
     private CardLayout cardLayout;
-    
+
     /** Main panel. */
     private JPanel mainPanel;
-    
+
     /** Preferences owner. */
     private transient PreferencesInterface owner;
-    
+
     /** title of window. */
     private String windowTitle;
-    
+
     /** root node. */
     private DefaultMutableTreeNode rootNode;
-    
+
     /**
      * Creates a new instance of SwingPreferencesPanel.
      *
@@ -138,7 +140,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
     public SwingPreferencesPanel(final PreferencesInterface preferencesOwner) {
         this(preferencesOwner, "Preferences");
     }
-    
+
     /**
      * Creates a new instance of SwingPreferencesPanel.
      *
@@ -148,27 +150,27 @@ public final class SwingPreferencesPanel extends StandardDialog implements
     public SwingPreferencesPanel(final PreferencesInterface preferencesOwner,
             final String title) {
         super((MainFrame) Main.getUI().getMainWindow(), false);
-        
+
         windowTitle = title;
-        
+
         owner = preferencesOwner;
-        
+
         categories = new HashMap<String, JPanel>();
-        
+
         textFields = new HashMap<String, JTextField>();
         checkBoxes = new HashMap<String, JCheckBox>();
         comboBoxes = new HashMap<String, JComboBox>();
         spinners = new HashMap<String, JSpinner>();
         colours = new HashMap<String, ColourChooser>();
         optionalColours = new HashMap<String, OptionalColourChooser>();
-        
+
         panels = new ArrayList<JPanel>();
-        
+
         initComponents();
-        
+
         new TreeScroller(tabList);
     }
-    
+
     /**
      * Initialises GUI components.
      */
@@ -176,12 +178,12 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         final SpringLayout layout = new SpringLayout();
         final JButton button1 = new JButton();
         final JButton button2 = new JButton();
-        
+
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
-        
+
         rootNode = new DefaultMutableTreeNode("root");
-        
+
         tabList = new JTree(new DefaultTreeModel(rootNode));
         tabList.getSelectionModel().setSelectionMode(
                 TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -191,41 +193,41 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         tabList.setShowsRootHandles(false);
         tabList.setCellRenderer(new PreferencesTreeCellRenderer());
         tabList.addTreeSelectionListener(this);
-        
+
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new GridBagLayout());
         setTitle(windowTitle);
         setResizable(false);
-        
+
         mainPanel.setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER,
                 LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
         tabList.setBorder(BorderFactory.createCompoundBorder(BorderFactory
                 .createEtchedBorder(), BorderFactory.createEmptyBorder(
                 SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER)));
-        
+
         getContentPane().setLayout(layout);
-        
+
         tabList.setPreferredSize(new Dimension(150, 550));
         tabList.setMinimumSize(new Dimension(150, 550));
         setMinimumSize(new Dimension(650, 600));
         setPreferredSize(new Dimension(650, 600));
         setMaximumSize(new Dimension(650, 600));
-        
+
         orderButtons(button1, button2);
-        
+
         getContentPane().add(tabList);
-        
+
         getContentPane().add(mainPanel);
-        
+
         getContentPane().add(Box.createHorizontalGlue());
-        
+
         getContentPane().add(button1);
-        
+
         getContentPane().add(button2);
-        
+
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
-        
+
         // tab list
         layout.putConstraint(SpringLayout.WEST, tabList, LARGE_BORDER,
                 SpringLayout.WEST, getContentPane());
@@ -252,7 +254,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         layout.putConstraint(SpringLayout.SOUTH, getContentPane(), LARGE_BORDER,
                 SpringLayout.SOUTH, getRightButton());
     }
-    
+
     /**
      * Initialises and adds a component to a panel.
      *
@@ -286,9 +288,9 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         } else {
             label.setToolTipText(helpText);
         }
-        
+
         JComponent option;
-        
+
         ((JPanel) parent.getComponent(1)).add(label);
         switch (type) {
             case TEXT:
@@ -356,23 +358,97 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         label.setLabelFor(option);
         ((JPanel) parent.getComponent(1)).add(option);
     }
-    
+
+
+    /**
+     * Adds the specified category to the preferences dialog.
+     *
+     * @param category The category to be added
+     */
+    private void addCategory(final PreferencesCategory category, final String parent) {
+        addCategory(parent, category.getTitle(), category.getDescription());
+
+        for (PreferencesCategory child : category.getSubcats()) {
+            addCategory(child, category.getTitle());
+        }
+
+        if (category.hasObject()) {
+            if (!(category.getObject() instanceof JPanel)) {
+                throw new IllegalArgumentException("Custom preferences objects" +
+                        " for this UI must extend JPanel.");
+            }
+
+            replaceOptionPanel(category.getTitle(),
+                    (JPanel) category.getObject());
+
+            return;
+        }
+
+        for (PreferencesSetting setting : category.getSettings()) {
+            switch(setting.getType()) {
+                case BOOLEAN:
+                    addCheckboxOption(category.getTitle(),
+                            setting.getOption(), setting.getTitle(),
+                            setting.getHelptext(), Boolean.parseBoolean(setting.getValue()));
+                    break;
+                case COLOUR:
+                    addColourOption(category.getTitle(),
+                            setting.getOption(), setting.getTitle(),
+                            setting.getHelptext(), setting.getValue(), true, true);
+                    break;
+                case DURATION:
+                case INTEGER:
+                    addSpinnerOption(category.getTitle(),
+                            setting.getOption(), setting.getTitle(),
+                            setting.getHelptext(), Integer.parseInt(setting.getValue()));
+                    break;
+                case MULTICHOICE:
+                    addComboboxOption(category.getTitle(),
+                            setting.getOption(), setting.getTitle(),
+                            setting.getHelptext(),
+                            setting.getComboOptions().keySet().toArray(new String[0]),
+                            setting.getValue(), false);
+                    break;
+                case OPTIONALCOLOUR:
+                    addOptionalColourOption(category.getTitle(),
+                            setting.getOption(), setting.getTitle(),
+                            setting.getHelptext(),
+                            setting.getValue() == null ? "" : setting.getValue(),
+                            setting.getValue() != null, true, true);
+                    break;
+                case TEXT:
+                    addTextfieldOption(category.getTitle(),
+                            setting.getOption(), setting.getTitle(),
+                            setting.getHelptext(), setting.getValue());
+                    break;
+            }
+        }
+    }
+
     /** {@inheritDoc} */
+    @Override
+    public void addCategory(final PreferencesCategory category) {
+        addCategory(category, "");
+    }
+
+    /** {@inheritDoc} */
+    @Deprecated
     public void addCategory(final String name, final String blurb) {
         addCategory("", name, blurb);
     }
-    
+
     /** {@inheritDoc} */
+    @Deprecated
     public void addCategory(final String parentCategory, final String name,
             final String blurb) {
         final JPanel panel = new JPanel(new BorderLayout(SMALL_BORDER,
                 LARGE_BORDER));
-        
+
         DefaultMutableTreeNode parent;
         DefaultMutableTreeNode newNode;
-        
+
         newNode = new DefaultMutableTreeNode(name);
-        
+
         if (parentCategory.isEmpty()) {
             parent = rootNode;
         } else {
@@ -380,45 +456,49 @@ public final class SwingPreferencesPanel extends StandardDialog implements
                     parentCategory, 0, Position.Bias.Forward)
                     .getLastPathComponent();
         }
-        
+
         categories.put(name, panel);
         mainPanel.add(panel, name);
         ((DefaultTreeModel) tabList.getModel()).insertNodeInto(newNode, parent,
                 parent.getChildCount());
         tabList.scrollPathToVisible(new TreePath(newNode.getPath()));
-        
+
         final TextLabel infoLabel = new TextLabel(blurb);
         if (blurb.isEmpty()) {
             infoLabel.setVisible(false);
         }
-        
+
         panel.add(infoLabel, BorderLayout.PAGE_START);
         panel.add(new JPanel(new SpringLayout()), BorderLayout.CENTER);
     }
-    
+
     /** {@inheritDoc} */
+    @Deprecated
     public void replaceOptionPanel(final String category, final JPanel panel) {
         panels.add(panel);
         categories.get(category).add(panel, 1);
     }
-    
+
     /** {@inheritDoc} */
+    @Deprecated
     public void addTextfieldOption(final String category, final String name,
             final String displayName, final String helpText,
             final String defaultValue) {
         addComponent(categories.get(category), name, displayName, helpText,
                 PreferencesType.TEXT, defaultValue);
     }
-    
+
     /** {@inheritDoc} */
+    @Deprecated
     public void addCheckboxOption(final String category, final String name,
             final String displayName, final String helpText,
             final boolean defaultValue) {
         addComponent(categories.get(category), name, displayName, helpText,
                 PreferencesType.BOOLEAN, defaultValue);
     }
-    
+
     /** {@inheritDoc} */
+    @Deprecated
     public void addComboboxOption(final String category, final String name,
             final String displayName, final String helpText,
             final String[] options, final String defaultValue,
@@ -426,7 +506,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         addComponent(categories.get(category), name, displayName, helpText,
                 PreferencesType.MULTICHOICE, options, defaultValue, editable);
     }
-    
+
     /**
      * Adds an option to the specified category.
      *
@@ -439,6 +519,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
      * @param defaultValue default value
      * @param editable editable combo box
      */
+    @Deprecated
     public void addComboboxOption(final String category, final String name,
             final String displayName, final String helpText,
             final DefaultComboBoxModel options, final ListCellRenderer renderer,
@@ -446,16 +527,18 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         addComponent(categories.get(category), name, displayName, helpText,
                 PreferencesType.MULTICHOICE, options, defaultValue, editable, renderer);
     }
-    
+
     /** {@inheritDoc} */
+    @Deprecated
     public void addSpinnerOption(final String category, final String name,
             final String displayName, final String helpText,
             final int defaultValue) {
         addComponent(categories.get(category), name, displayName, helpText,
                 PreferencesType.INTEGER, defaultValue);
     }
-    
+
     /** {@inheritDoc} */
+    @Deprecated
     public void addSpinnerOption(final String category, final String name,
             final String displayName, final String helpText,
             final int defaultValue, final int minimum, final int maximum,
@@ -463,8 +546,9 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         addComponent(categories.get(category), name, displayName, helpText,
                 PreferencesType.INTEGER, defaultValue, minimum, maximum, stepSize);
     }
-    
+
     /** {@inheritDoc} */
+    @Deprecated
     public void addColourOption(final String category, final String name,
             final String displayName, final String helpText,
             final String defaultValue, final boolean showIrcColours,
@@ -472,8 +556,9 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         addComponent(categories.get(category), name, displayName, helpText,
                 PreferencesType.COLOUR, defaultValue, showIrcColours, showHexColours);
     }
-    
+
     /** {@inheritDoc} */
+    @Deprecated
     public void addOptionalColourOption(final String category, final String name,
             final String displayName, final String helpText,
             final String defaultValue, final boolean initialState,
@@ -482,7 +567,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
                 PreferencesType.OPTIONALCOLOUR, defaultValue, initialState,
                 showIrcColours, showHexColours);
     }
-    
+
     /**
      * Handles the actions for the dialog.
      *
@@ -504,7 +589,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
             owner.configCancelled();
         }
     }
-    
+
     /**
      * Called when the selection in the tree changes.
      *
@@ -514,7 +599,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         cardLayout.show(mainPanel, ((JTree) selectionEvent.getSource())
         .getSelectionPath().getLastPathComponent().toString());
     }
-    
+
     /** {@inheritDoc} */
     public void saveOptions() {
         final Properties properties = new Properties();
@@ -554,7 +639,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         }
         owner.configClosed(properties);
     }
-    
+
     /** {@inheritDoc} */
     public void display() {
         for (JPanel panel : categories.values()) {
@@ -564,12 +649,12 @@ public final class SwingPreferencesPanel extends StandardDialog implements
                         SMALL_BORDER, LARGE_BORDER, LARGE_BORDER);
             }
         }
-        
+
         final String[] tabName = IdentityManager.getGlobalConfig().
                 getOption("dialogstate", owner.getClass().getName().
                 replaceAll("\\.", "-"), "").split("->");
         TreePath path = new TreePath(tabList.getModel().getRoot());
-        
+
         for (String string : tabName) {
             final TreePath treePath = tabList.getNextMatch(string, 0,
                     Position.Bias.Forward);
@@ -580,7 +665,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
                 }
             }
         }
-        
+
         if (path == null || path.getPathCount() <= 1) {
             tabList.setSelectionPath(tabList.getPathForRow(0));
         } else {
@@ -590,19 +675,19 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         setVisible(true);
     }
-    
+
     /**
      * Preferences tree cell renderer.
      */
     private class PreferencesTreeCellRenderer extends JLabel implements TreeCellRenderer {
-        
+
         /**
          * A version number for this class. It should be changed whenever the class
          * structure is changed (or anything else that would prevent serialized
          * objects being unserialized with the new class).
          */
         private static final long serialVersionUID = 1;
-        
+
         /**
          * Creates a new instance of PreferencesTreeCellRenderer.
          */
@@ -623,7 +708,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         public final Component getTreeCellRendererComponent(final JTree tree,
                 final Object value, final boolean sel, final boolean expanded,
                 final boolean leaf, final int row, final boolean focused) {
-            
+
             setText(value.toString());
             setBackground(tree.getBackground());
             setForeground(tree.getForeground());
@@ -631,18 +716,18 @@ public final class SwingPreferencesPanel extends StandardDialog implements
             setToolTipText(null);
             setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                     SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
-            
+
             setPreferredSize(new Dimension((int) tabList.getPreferredSize().getWidth() - 20,
                     getFont().getSize() + SMALL_BORDER));
-            
+
             if (sel) {
                 setFont(getFont().deriveFont(Font.BOLD));
             } else {
                 setFont(getFont().deriveFont(Font.PLAIN));
             }
-            
+
             return this;
         }
     }
-    
+
 }

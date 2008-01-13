@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.interfaces;
 
+import com.dmdirc.config.prefs.PreferencesCategory;
 import javax.swing.JPanel;
 
 /**
@@ -34,8 +35,17 @@ public interface PreferencesPanel {
      *
      * @param name Category name
      * @param blurb category blurb
+     * @deprecated Use addCategory(PreferencesCategory) instead
      */
+    @Deprecated
     void addCategory(final String name, final String blurb);
+    
+    /**
+     * Adds the specified PreferencesCategory to the panel.
+     * 
+     * @param category The category to be added
+     */
+    void addCategory(final PreferencesCategory category);
     
     /**
      * Adds a named category to the preferences panel.
@@ -43,7 +53,9 @@ public interface PreferencesPanel {
      * @param parentCategory parent category
      * @param name Category name
      * @param blurb category blurb
+     * @deprecated Use addCategory(PreferencesCategory) instead
      */
+    @Deprecated
     void addCategory(final String parentCategory, final String name,
             final String blurb);
     
@@ -53,7 +65,9 @@ public interface PreferencesPanel {
      *
      * @param category category to replace the options panel in
      * @param panel panel to replace options panel with
+     * @deprecated Should be done via core PreferencesSettings instead
      */
+    @Deprecated
     void replaceOptionPanel(final String category, final JPanel panel);
     
     /**
@@ -64,7 +78,9 @@ public interface PreferencesPanel {
      * @param displayName displayable name for the option
      * @param helpText Help text to be displayed for the option
      * @param defaultValue default value
+     * @deprecated Should be done via core PreferencesSettings instead
      */
+    @Deprecated
     void addTextfieldOption(final String category, final String name,
             final String displayName, final String helpText,
             final String defaultValue);
@@ -77,7 +93,9 @@ public interface PreferencesPanel {
      * @param displayName displayable name for the option
      * @param helpText Help text to be displayed for the option
      * @param defaultValue default value
+     * @deprecated Should be done via core PreferencesSettings instead
      */
+    @Deprecated
     void addCheckboxOption(final String category, final String name,
             final String displayName, final String helpText,
             final boolean defaultValue);
@@ -92,7 +110,9 @@ public interface PreferencesPanel {
      * @param options Default combo box options
      * @param defaultValue default value
      * @param editable editable combo box
+     * @deprecated Should be done via core PreferencesSettings instead
      */
+    @Deprecated
     void addComboboxOption(final String category, final String name,
             final String displayName, final String helpText,
             final String[] options, final String defaultValue,
@@ -106,7 +126,9 @@ public interface PreferencesPanel {
      * @param displayName displayable name for the option
      * @param helpText Help text to be displayed for the option
      * @param defaultValue default value
+     * @deprecated Should be done via core PreferencesSettings instead
      */
+    @Deprecated
     void addSpinnerOption(final String category, final String name,
             final String displayName, final String helpText,
             final int defaultValue);
@@ -122,7 +144,9 @@ public interface PreferencesPanel {
      * @param minimum minimum value
      * @param maximum maximum value
      * @param stepSize step size interval
+     * @deprecated Should be done via core PreferencesSettings instead
      */
+    @Deprecated
     void addSpinnerOption(final String category, final String name,
             final String displayName, final String helpText,
             final int defaultValue, final int minimum, final int maximum,
@@ -138,7 +162,9 @@ public interface PreferencesPanel {
      * @param defaultValue default value
      * @param showIrcColours show irc colours in the colour picker
      * @param showHexColours show hex colours in the colour picker
+     * @deprecated Should be done via core PreferencesSettings instead
      */
+    @Deprecated
     void addColourOption(final String category, final String name,
             final String displayName, final String helpText,
             final String defaultValue, final boolean showIrcColours,
@@ -155,7 +181,9 @@ public interface PreferencesPanel {
      * @param initialState initial state
      * @param showIrcColours show irc colours in the colour picker
      * @param showHexColours show hex colours in the colour picker
+     * @deprecated Should be done via core PreferencesSettings instead
      */
+    @Deprecated
     void addOptionalColourOption(final String category, final String name,
             final String displayName, final String helpText,
             final String defaultValue, final boolean initialState,
