@@ -45,6 +45,7 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,15 +132,6 @@ public final class SwingPreferencesPanel extends StandardDialog implements
 
     /** root node. */
     private DefaultMutableTreeNode rootNode;
-
-    /**
-     * Creates a new instance of SwingPreferencesPanel.
-     *
-     * @param preferencesOwner Owner of the preferences dialog
-     */
-    public SwingPreferencesPanel(final PreferencesInterface preferencesOwner) {
-        this(preferencesOwner, "Preferences");
-    }
 
     /**
      * Creates a new instance of SwingPreferencesPanel.
@@ -254,7 +246,22 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         layout.putConstraint(SpringLayout.SOUTH, getContentPane(), LARGE_BORDER,
                 SpringLayout.SOUTH, getRightButton());
     }
+    
+    /**
+     * Initialises and adds a component to a panel.
+     * 
+     * @param category The category the setting is being added to
+     * @param setting The setting to be used
+     * @param args component specific arguments
+     */
+    private void addComponent(final PreferencesCategory category,
+            final PreferencesSetting setting, final Object ... args) {
+        addComponent(categories.get(category.getTitle()), setting.getOption(),
+                setting.getTitle(), setting.getHelptext(), setting.getType(),
+                args);
+    }
 
+            
     /**
      * Initialises and adds a component to a panel.
      *
@@ -387,39 +394,27 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         for (PreferencesSetting setting : category.getSettings()) {
             switch(setting.getType()) {
                 case BOOLEAN:
-                    addCheckboxOption(category.getTitle(),
-                            setting.getOption(), setting.getTitle(),
-                            setting.getHelptext(), Boolean.parseBoolean(setting.getValue()));
+                    addComponent(category, setting, Boolean.parseBoolean(setting.getValue()));
                     break;
                 case COLOUR:
-                    addColourOption(category.getTitle(),
-                            setting.getOption(), setting.getTitle(),
-                            setting.getHelptext(), setting.getValue(), true, true);
+                    addComponent(category, setting, setting.getValue(), true, true);
                     break;
                 case DURATION:
                 case INTEGER:
-                    addSpinnerOption(category.getTitle(),
-                            setting.getOption(), setting.getTitle(),
-                            setting.getHelptext(), Integer.parseInt(setting.getValue()));
+                    addComponent(category, setting, Integer.parseInt(setting.getValue()));
                     break;
                 case MULTICHOICE:
-                    addComboboxOption(category.getTitle(),
-                            setting.getOption(), setting.getTitle(),
-                            setting.getHelptext(),
+                    addComponent(category, setting, 
                             setting.getComboOptions().keySet().toArray(new String[0]),
                             setting.getValue(), false);
                     break;
                 case OPTIONALCOLOUR:
-                    addOptionalColourOption(category.getTitle(),
-                            setting.getOption(), setting.getTitle(),
-                            setting.getHelptext(),
+                    addComponent(category, setting,
                             setting.getValue() == null ? "" : setting.getValue(),
                             setting.getValue() != null, true, true);
                     break;
                 case TEXT:
-                    addTextfieldOption(category.getTitle(),
-                            setting.getOption(), setting.getTitle(),
-                            setting.getHelptext(), setting.getValue());
+                    addComponent(category, setting, setting.getValue());
                     break;
             }
         }
@@ -429,6 +424,14 @@ public final class SwingPreferencesPanel extends StandardDialog implements
     @Override
     public void addCategory(final PreferencesCategory category) {
         addCategory(category, "");
+    }
+    
+    /** {@inheritDoc} */
+    @Override    
+    public void addCategories(final Collection<? extends PreferencesCategory> categories) {
+        for (PreferencesCategory category : categories) {
+            addCategory(category);
+        }
     }
 
     /** {@inheritDoc} */

@@ -23,6 +23,7 @@
 package com.dmdirc.ui.interfaces;
 
 import com.dmdirc.config.prefs.PreferencesCategory;
+import java.util.Collection;
 import javax.swing.JPanel;
 
 /**
@@ -46,6 +47,13 @@ public interface PreferencesPanel {
      * @param category The category to be added
      */
     void addCategory(final PreferencesCategory category);
+    
+    /**
+     * Adds the specified PreferencesCategories to the panel.
+     * 
+     * @param categories The categories to be added
+     */
+    void addCategories(final Collection<? extends PreferencesCategory> categories);    
     
     /**
      * Adds a named category to the preferences panel.

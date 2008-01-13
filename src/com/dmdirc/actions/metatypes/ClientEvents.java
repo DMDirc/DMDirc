@@ -28,6 +28,7 @@ import com.dmdirc.commandparser.PopupMenu;
 import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.config.ConfigManager;
 
+import com.dmdirc.config.prefs.PreferencesManager;
 import javax.swing.KeyStroke;
 
 /**
@@ -49,6 +50,8 @@ public enum ClientEvents implements ActionMetaType {
     CLIENT_EVENT_WITH_KEY(new String[]{"key event"}, KeyStroke.class),
     /** Client event with an origin and editable buffer. */
     CLIENT_EVENT_WITH_BUFFER(new String[]{"origin", "buffer"}, FrameContainer.class, StringBuffer.class),
+    /** Client event with preferences manager. */
+    CLIENT_EVENT_WITH_PREFS(new String[]{"preferences manager"}, PreferencesManager.class),
     /** Unknown command event type. */
     UNKNOWN_COMMAND(new String[]{"source", "command", "arguments"}, FrameContainer.class, String.class, String[].class);
     

@@ -21,17 +21,20 @@
  */
 package com.dmdirc.config.prefs;
 
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.prefs.validator.NumericalValidator;
 import com.dmdirc.config.prefs.validator.StringLengthValidator;
 import com.dmdirc.themes.Theme;
 import com.dmdirc.themes.ThemeManager;
 import com.dmdirc.ui.swing.dialogs.prefs.URLConfigPanel;
-
 import com.dmdirc.ui.swing.dialogs.prefs.UpdateConfigPanel;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
@@ -51,6 +54,8 @@ public class PreferencesManager {
      */
     public PreferencesManager() {
         addDefaultCategories();
+        
+        ActionManager.processEvent(CoreActionType.CLIENT_PREFS_OPENED, null, this);
     }
 
     /**

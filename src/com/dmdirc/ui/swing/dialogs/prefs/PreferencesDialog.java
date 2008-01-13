@@ -29,18 +29,16 @@ import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesCategory;
 import com.dmdirc.config.prefs.PreferencesManager;
-import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
+import com.dmdirc.ui.interfaces.PreferencesPanel;
 import com.dmdirc.ui.swing.MainFrame;
-import com.dmdirc.ui.swing.components.SwingPreferencesPanel;
 
 import java.util.Map;
 import java.util.Properties;
-import javax.swing.JOptionPane;
 
-import javax.swing.JPanel;
+import javax.swing.JOptionPane;
 
 /**
  * Allows the user to modify global client preferences.
@@ -61,7 +59,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     private static PreferencesDialog me;
     
     /** preferences panel. */
-    private SwingPreferencesPanel preferencesPanel;
+    private PreferencesPanel preferencesPanel;
     
     /** restart warning issued. */
     private boolean restartNeeded;
@@ -92,7 +90,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
      */
     private void initComponents() {
         
-        preferencesPanel = new SwingPreferencesPanel(this);
+        preferencesPanel = Main.getUI().getPreferencesPanel(this, "Preferences");
         restartNeeded = false;
         
         manager = new PreferencesManager();
