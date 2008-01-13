@@ -66,7 +66,7 @@ public final class Logger {
      */
     public static void userError(final ErrorLevel level,
             final String message, final String details) {
-        error(level, message, null, false);
+        error(level, message, new String[]{"\n", details, }, false);
     }
     
     /**
@@ -78,7 +78,7 @@ public final class Logger {
      */
     public static void userError(final ErrorLevel level,
             final String message, final Throwable exception) {
-        error(level, message, null, false);
+        error(level, message, new String[0], false);
     }
     
     /**
@@ -91,7 +91,7 @@ public final class Logger {
      */
     public static void appError(final ErrorLevel level,
             final String message, final Throwable exception) {
-        error(level, message, exception, true);
+        error(level, message, exceptionToStringArray(exception), true);
     }
     
     /**
@@ -103,7 +103,7 @@ public final class Logger {
      * @param sendable Whether the error is sendable
      */
     private static void error(final ErrorLevel level,
-            final String message, final Throwable exception,
+            final String message, final String[] exception,
             final boolean sendable) {
         final ProgramError error = createError(level, message, exception);
         final boolean report = 
@@ -132,28 +132,12 @@ public final class Logger {
      *
      * @param level Error level
      * @param message Error message
-     * @param exception Error cause
+     * @param trace Error cause
      *
      * @return ProgramError encapsulating the supplied information
      */
     private static ProgramError createError(final ErrorLevel level,
-            final String message, final Throwable exception) {
-        final String[] trace;
-        final StackTraceElement[] traceElements;
-        
-        if (exception == null) {
-            trace = new String[0];
-        } else {
-            traceElements = exception.getStackTrace();
-            trace = new String[traceElements.length + 1];
-            
-            trace[0] = exception.toString();
-            
-            for (int i = 0; i < traceElements.length; i++) {
-                trace[i + 1] = traceElements[i].toString();
-            }
-        }
-        
+            final String message, final String[] trace) {        
         final ProgramError error = new ProgramError(
                 ErrorManager.getErrorManager().getNextErrorID(), level, message,
                 trace, new Date(System.currentTimeMillis()));
@@ -224,6 +208,32 @@ public final class Logger {
             ex.printStackTrace(System.err);
             return new NullOutputStream();
         }
+    }
+    
+    /**
+     * Converts an exception into a string array.
+     * 
+     * @param throwable Exception to convert
+     * 
+     * @return Exception string array
+     */
+    private static String[] exceptionToStringArray(final Throwable throwable) {
+        final String[] trace;
+        
+        if (throwable == null) {
+            trace = new String[0];
+        } else {
+            final StackTraceElement[] traceElements = throwable.getStackTrace();
+            trace = new String[traceElements.length + 1];
+            
+            trace[0] = throwable.toString();
+            
+            for (int i = 0; i < traceElements.length; i++) {
+                trace[i + 1] = traceElements[i].toString();
+            }
+        }
+        
+        return trace;
     }
     
 }

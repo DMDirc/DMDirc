@@ -25,13 +25,18 @@ package com.dmdirc.ui.swing.components;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputField;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
 
+import javax.swing.JComponent;
 import javax.swing.JTextField;
 
+
 /** Swing input field. */
-public class SwingInputField extends JTextField implements InputField {
+public class SwingInputField extends JComponent implements InputField {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -41,12 +46,19 @@ public class SwingInputField extends JTextField implements InputField {
     private static final long serialVersionUID = 1;
     /** Colour picker. */
     private ColourPickerDialog colourPicker;
+    /** Input field text field. */
+    private JTextField textField;
 
     /**
      * Instantiates a new swing input field.
      */
     public SwingInputField() {
-        setFocusTraversalKeysEnabled(false);
+        textField = new JTextField();
+        textField.setFocusTraversalKeysEnabled(false);
+        
+        setLayout(new BorderLayout());
+        
+        add(textField, BorderLayout.CENTER);
     }
 
     /** {@inheritDoc} */
@@ -59,13 +71,13 @@ public class SwingInputField extends JTextField implements InputField {
 
                 @Override
                 public void actionPerformed(final ActionEvent actionEvent) {
-                    setText(getText() + actionEvent.getActionCommand());
+                    textField.setText(textField.getText() + actionEvent.getActionCommand());
                     colourPicker.dispose();
                     colourPicker = null;
                 }
             });
-            colourPicker.setLocation((int) getLocationOnScreen().getX(),
-                    (int) getLocationOnScreen().getY() -
+            colourPicker.setLocation((int) textField.getLocationOnScreen().getX(),
+                    (int) textField.getLocationOnScreen().getY() -
                     colourPicker.getHeight());
             colourPicker.setVisible(true);
         }
@@ -78,5 +90,98 @@ public class SwingInputField extends JTextField implements InputField {
             colourPicker.dispose();
             colourPicker = null;
         }
+    }
+    
+    /**
+     * Returns the textfield for this inputfield.
+     * 
+     * @return JTextField
+     */
+    public JTextField getTextField() {
+        return textField;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void addActionListener(ActionListener listener) {
+        textField.addActionListener(listener);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void addKeyListener(KeyListener listener) {
+        textField.addKeyListener(listener);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeActionListener(ActionListener listener) {
+        textField.removeActionListener(listener);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeKeyListener(KeyListener listener) {
+        textField.removeKeyListener(listener);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getSelectedText() {
+        return textField.getSelectedText();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int getSelectionEnd() {
+        return textField.getSelectionEnd();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int getSelectionStart() {
+        return textField.getSelectionStart();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getText() {
+        return textField.getText();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setText(String text) {
+        textField.setText(text);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int getCaretPosition() {
+        return textField.getCaretPosition();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setCaretPosition(int position) {
+        textField.setCaretPosition(position);
+    }
+
+    /**
+     * Replaces the selection with the specified text.
+     * 
+     * @param clipboard Text to replace selection with
+     */
+    public void replaceSelection(String clipboard) {
+        textField.replaceSelection(clipboard);
+    }
+
+    /**
+     * Sets the caret colour to the specified coloour.
+     * 
+     * @param optionColour Colour for the caret
+     */
+    public void setCaretColor(Color optionColour) {
+        textField.setCaretColor(optionColour);
     }
 }

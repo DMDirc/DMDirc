@@ -240,8 +240,8 @@ public class URLHandler {
         try {
             Runtime.getRuntime().exec(commandLine);
         } catch (IOException ex) {
-            Logger.userError(ErrorLevel.LOW,
-                    "Unable to run application: " + ex.getMessage(), ex);
+            Logger.userError(ErrorLevel.LOW, "Unable to run application: ",
+                    ex.getMessage());
         }
     }
 
