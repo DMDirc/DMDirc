@@ -97,18 +97,6 @@ public interface UIController {
     InputWindow getInputWindow(WritableFrameContainer owner, CommandParser commandParser);
     
     /**
-     * Creates a new preferences panel for the specified parent.
-     *
-     * @param parent Preferences panel parent
-     * @param title Preferences panel title
-     *
-     * @return PreferencesPanel
-     * @deprecated The application should now only have one preferences panel
-     */
-    @Deprecated
-    PreferencesPanel getPreferencesPanel(PreferencesInterface parent, String title);
-    
-    /**
      * Returns an updater dialog for the specified updates.
      *
      * @param updates Updates available

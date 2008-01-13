@@ -31,8 +31,6 @@ import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.MainWindow;
-import com.dmdirc.ui.interfaces.PreferencesInterface;
-import com.dmdirc.ui.interfaces.PreferencesPanel;
 import com.dmdirc.ui.interfaces.QueryWindow;
 import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.interfaces.StatusBar;
@@ -100,13 +98,6 @@ public final class DummyController implements UIController {
     public InputWindow getInputWindow(final WritableFrameContainer owner, 
             final CommandParser commandParser) {
         return new DummyInputWindow(owner, commandParser);
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public PreferencesPanel getPreferencesPanel(final PreferencesInterface parent, 
-            final String title) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
     
     /** {@inheritDoc} */

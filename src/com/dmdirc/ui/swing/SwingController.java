@@ -35,15 +35,12 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.ui.interfaces.PreferencesInterface;
-import com.dmdirc.ui.interfaces.PreferencesPanel;
 import com.dmdirc.ui.interfaces.QueryWindow;
 import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.interfaces.StatusBar;
 import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.components.FeedbackNag;
-import com.dmdirc.ui.swing.components.SwingPreferencesPanel;
 import com.dmdirc.ui.swing.components.SwingStatusBar;
 import com.dmdirc.ui.swing.dialogs.SwingUpdaterDialog;
 import com.dmdirc.ui.swing.dialogs.URLDialog;
@@ -152,13 +149,6 @@ public final class SwingController implements UIController {
     public InputWindow getInputWindow(final WritableFrameContainer owner,
             final CommandParser commandParser) {
         return new CustomInputFrame(owner, commandParser);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public PreferencesPanel getPreferencesPanel(final PreferencesInterface parent,
-            final String title) {
-        return new SwingPreferencesPanel(parent, title);
     }
 
     /** {@inheritDoc} */

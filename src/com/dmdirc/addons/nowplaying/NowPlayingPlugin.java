@@ -22,28 +22,23 @@
 
 package com.dmdirc.addons.nowplaying;
 
-import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.addons.nowplaying.MediaSource;
-import com.dmdirc.addons.nowplaying.MediaSourceManager;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.prefs.PreferencesCategory;
+import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
-import com.dmdirc.ui.interfaces.PreferencesInterface;
-import com.dmdirc.ui.interfaces.PreferencesPanel;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 
-public class NowPlayingPlugin extends Plugin implements ActionListener,
-        PreferencesInterface  {
+public class NowPlayingPlugin extends Plugin implements ActionListener  {
     
     /** Config domain. */
     private static final String DOMAIN = "plugin-nowplaying";
@@ -92,33 +87,16 @@ public class NowPlayingPlugin extends Plugin implements ActionListener,
     }
     
     /** {@inheritDoc} */
-    public boolean isConfigurable() {
-        return true;
-    }
-    
-    /** {@inheritDoc} */
-    public void showConfig() {
-        final PreferencesPanel preferencesPanel = Main.getUI().getPreferencesPanel(this, "Now playing Plugin - Config");
-        
+    @Override
+    public void showConfig(final PreferencesManager manager) {
         configPanel = new ConfigPanel(order);
         
-        preferencesPanel.addCategory("General", "General options for the plugin.");
+        final PreferencesCategory category = new PreferencesCategory("Now Playing",
+                "General options for the plugin", configPanel);
+        manager.getCategory("Plugins").addSubCategory(category);
         
-        preferencesPanel.replaceOptionPanel("General", configPanel);
-        
-        preferencesPanel.display();
-    }
-    
-    /** {@inheritDoc} */
-    public void configClosed(final Properties properties) {
-        order = configPanel.getSources();
-        
-        saveSettings();
-    }
-    
-    /** {@inheritDoc} */
-    public void configCancelled() {
-        //Ignore
+        //order = configPanel.getSources();
+        //saveSettings();
     }
     
     /** Saves the plugins settings. */

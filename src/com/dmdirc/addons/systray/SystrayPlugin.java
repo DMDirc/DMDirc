@@ -28,9 +28,11 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.prefs.PreferencesCategory;
+import com.dmdirc.config.prefs.PreferencesManager;
+import com.dmdirc.config.prefs.PreferencesSetting;
+import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.plugins.Plugin;
-import com.dmdirc.ui.interfaces.PreferencesInterface;
-import com.dmdirc.ui.interfaces.PreferencesPanel;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.ui.swing.MainFrame;
 
@@ -44,7 +46,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Properties;
 
 /**
  * The Systray plugin shows DMDirc in the user's system tray, and allows
@@ -52,7 +53,7 @@ import java.util.Properties;
  * @author chris
  */
 public final class SystrayPlugin extends Plugin implements ActionListener,
-        MouseListener, com.dmdirc.interfaces.ActionListener, PreferencesInterface {
+        MouseListener, com.dmdirc.interfaces.ActionListener {
     
     /** The command we registered. */
     private PopupCommand command;
@@ -137,17 +138,18 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
     }
 
     /** {@inheritDoc} */
-    public void showConfig() {
-        final PreferencesPanel preferencesPanel
-                = Main.getUI().getPreferencesPanel(this, "Systray Plugin - Config");
-        preferencesPanel.addCategory("General", "General configuration settings");
-        preferencesPanel.addCheckboxOption("General", "autominimise", 
-                "Auto-hide DMDirc when minimised", 
-                "If this option is enabled, the systray plugin will hide DMDirc " +
-                "to the system tray whenever DMDirc is minimised",
-                IdentityManager.getGlobalConfig().getOptionBool("plugin-systray",
-                "autominimise", false));
-        preferencesPanel.display();
+    @Override
+    public void showConfig(final PreferencesManager manager) {
+        final PreferencesCategory category = new PreferencesCategory("System Tray", 
+                "General configuration settings");
+        
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "plugin-systray", "autominimise", "false", "Auto-hide DMDirc " +
+                "when minimised", "If this option is enabled, the systray " +
+                "plugin will hide DMDirc to the system tray whenever DMDirc is" +
+                " minimised"));
+        
+        manager.getCategory("Plugins").addSubCategory(category);
     }
     
     /** {@inheritDoc} */
@@ -197,19 +199,6 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
                 "autominimise", false)) {
             Main.getUI().getMainWindow().setVisible(false);
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override    
-    public void configClosed(final Properties properties) {
-        IdentityManager.getConfigIdentity().setOption("plugin-systray", 
-                "autominimise", properties.getProperty("autominimise"));
-    }
-
-    /** {@inheritDoc} */
-    @Override    
-    public void configCancelled() {
-        // Do nothing
     }
     
 }

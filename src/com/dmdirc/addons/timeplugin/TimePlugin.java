@@ -85,7 +85,6 @@ public final class TimePlugin  extends Plugin {
         }
     }
     
-    
     /** {@inheritDoc} */
     public void onUnload() {
         if (timer != null) {

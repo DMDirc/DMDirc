@@ -30,7 +30,6 @@ import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
-import com.dmdirc.ui.interfaces.PreferencesPanel;
 import com.dmdirc.ui.swing.MainFrame;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
@@ -82,7 +81,7 @@ import javax.swing.tree.TreeSelectionModel;
  * Allows the user to modify global client preferences.
  */
 public final class SwingPreferencesPanel extends StandardDialog implements
-        ActionListener, TreeSelectionListener, PreferencesPanel {
+        ActionListener, TreeSelectionListener {
 
     /**
      * A version number for this class. It should be changed whenever the
@@ -385,8 +384,8 @@ public final class SwingPreferencesPanel extends StandardDialog implements
                         " for this UI must extend JPanel.");
             }
 
-            replaceOptionPanel(category.getTitle(),
-                    (JPanel) category.getObject());
+            panels.add((JPanel) category.getObject());
+            categories.get(category.getTitle()).add((JPanel) category.getObject(), 1);
 
             return;
         }
@@ -421,23 +420,15 @@ public final class SwingPreferencesPanel extends StandardDialog implements
     }
 
     /** {@inheritDoc} */
-    @Override
     public void addCategory(final PreferencesCategory category) {
         addCategory(category, "");
     }
     
     /** {@inheritDoc} */
-    @Override    
     public void addCategories(final Collection<? extends PreferencesCategory> categories) {
         for (PreferencesCategory category : categories) {
             addCategory(category);
         }
-    }
-
-    /** {@inheritDoc} */
-    @Deprecated
-    public void addCategory(final String name, final String blurb) {
-        addCategory("", name, blurb);
     }
 
     /** {@inheritDoc} */
@@ -473,102 +464,6 @@ public final class SwingPreferencesPanel extends StandardDialog implements
 
         panel.add(infoLabel, BorderLayout.PAGE_START);
         panel.add(new JPanel(new SpringLayout()), BorderLayout.CENTER);
-    }
-
-    /** {@inheritDoc} */
-    @Deprecated
-    public void replaceOptionPanel(final String category, final JPanel panel) {
-        panels.add(panel);
-        categories.get(category).add(panel, 1);
-    }
-
-    /** {@inheritDoc} */
-    @Deprecated
-    public void addTextfieldOption(final String category, final String name,
-            final String displayName, final String helpText,
-            final String defaultValue) {
-        addComponent(categories.get(category), name, displayName, helpText,
-                PreferencesType.TEXT, defaultValue);
-    }
-
-    /** {@inheritDoc} */
-    @Deprecated
-    public void addCheckboxOption(final String category, final String name,
-            final String displayName, final String helpText,
-            final boolean defaultValue) {
-        addComponent(categories.get(category), name, displayName, helpText,
-                PreferencesType.BOOLEAN, defaultValue);
-    }
-
-    /** {@inheritDoc} */
-    @Deprecated
-    public void addComboboxOption(final String category, final String name,
-            final String displayName, final String helpText,
-            final String[] options, final String defaultValue,
-            final boolean editable) {
-        addComponent(categories.get(category), name, displayName, helpText,
-                PreferencesType.MULTICHOICE, options, defaultValue, editable);
-    }
-
-    /**
-     * Adds an option to the specified category.
-     *
-     * @param category category option is to be added to
-     * @param name config name for the option
-     * @param displayName displayable name for the option
-     * @param helpText Help text to be displayed for the option
-     * @param options Combo box model
-     * @param renderer Combo box renderer
-     * @param defaultValue default value
-     * @param editable editable combo box
-     */
-    @Deprecated
-    public void addComboboxOption(final String category, final String name,
-            final String displayName, final String helpText,
-            final DefaultComboBoxModel options, final ListCellRenderer renderer,
-            final String defaultValue, final boolean editable) {
-        addComponent(categories.get(category), name, displayName, helpText,
-                PreferencesType.MULTICHOICE, options, defaultValue, editable, renderer);
-    }
-
-    /** {@inheritDoc} */
-    @Deprecated
-    public void addSpinnerOption(final String category, final String name,
-            final String displayName, final String helpText,
-            final int defaultValue) {
-        addComponent(categories.get(category), name, displayName, helpText,
-                PreferencesType.INTEGER, defaultValue);
-    }
-
-    /** {@inheritDoc} */
-    @Deprecated
-    public void addSpinnerOption(final String category, final String name,
-            final String displayName, final String helpText,
-            final int defaultValue, final int minimum, final int maximum,
-            final int stepSize) {
-        addComponent(categories.get(category), name, displayName, helpText,
-                PreferencesType.INTEGER, defaultValue, minimum, maximum, stepSize);
-    }
-
-    /** {@inheritDoc} */
-    @Deprecated
-    public void addColourOption(final String category, final String name,
-            final String displayName, final String helpText,
-            final String defaultValue, final boolean showIrcColours,
-            final boolean showHexColours) {
-        addComponent(categories.get(category), name, displayName, helpText,
-                PreferencesType.COLOUR, defaultValue, showIrcColours, showHexColours);
-    }
-
-    /** {@inheritDoc} */
-    @Deprecated
-    public void addOptionalColourOption(final String category, final String name,
-            final String displayName, final String helpText,
-            final String defaultValue, final boolean initialState,
-            final boolean showIrcColours, final boolean showHexColours) {
-        addComponent(categories.get(category), name, displayName, helpText,
-                PreferencesType.OPTIONALCOLOUR, defaultValue, initialState,
-                showIrcColours, showHexColours);
     }
 
     /**

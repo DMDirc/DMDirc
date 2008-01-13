@@ -32,9 +32,9 @@ import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
-import com.dmdirc.ui.interfaces.PreferencesPanel;
 import com.dmdirc.ui.swing.MainFrame;
 
+import com.dmdirc.ui.swing.components.SwingPreferencesPanel;
 import java.util.Map;
 import java.util.Properties;
 
@@ -59,7 +59,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     private static PreferencesDialog me;
     
     /** preferences panel. */
-    private PreferencesPanel preferencesPanel;
+    private SwingPreferencesPanel preferencesPanel;
     
     /** restart warning issued. */
     private boolean restartNeeded;
@@ -90,14 +90,12 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
      */
     private void initComponents() {
         
-        preferencesPanel = Main.getUI().getPreferencesPanel(this, "Preferences");
+        preferencesPanel = new SwingPreferencesPanel(this, "Preferences");
         restartNeeded = false;
         
         manager = new PreferencesManager();
         
-        for (PreferencesCategory cat : manager.getCategories()) {
-            preferencesPanel.addCategory(cat);
-        }
+        preferencesPanel.addCategories(manager.getCategories());
         
         preferencesPanel.display();
     }
@@ -116,7 +114,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
         
         final Identity identity = IdentityManager.getConfigIdentity();
         for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-            final String[] args = ((String) entry.getKey()).split("\\.");
+            final String[] args = ((String) entry.getKey()).split("\\.", 2);
             if (args.length == 2) {
                 if (((String) entry.getValue()).isEmpty() || entry.getValue() == null) {
                     if (identity.hasOption(args[0], args[1])) {
@@ -135,8 +133,8 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
                     }
                 }
             } else {
-                Logger.appError(ErrorLevel.LOW, "Invalid setting value: "
-                        + entry.getKey(), new IllegalArgumentException("Invalid setting: " + entry.getKey()));
+                Logger.appError(ErrorLevel.LOW, "Invalid setting value: " + entry.getKey(),
+                        new IllegalArgumentException("Invalid setting: " + entry.getKey()));
             }
         }
         dispose();

@@ -22,22 +22,18 @@
 
 package com.dmdirc.addons.osdplugin;
 
-import com.dmdirc.Main;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.Identity;
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.prefs.PreferencesCategory;
+import com.dmdirc.config.prefs.PreferencesManager;
+import com.dmdirc.config.prefs.PreferencesSetting;
+import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.plugins.Plugin;
-import com.dmdirc.ui.interfaces.PreferencesInterface;
-import com.dmdirc.ui.interfaces.PreferencesPanel;
-
-import java.util.Properties;
 
 /**
  * Allows the user to display on-screen-display messages.
  * @author chris
  */
-public final class OsdPlugin extends Plugin implements PreferencesInterface {
+public final class OsdPlugin extends Plugin {
     
     /** What domain do we store all settings in the global config under. */
     private static final String MY_DOMAIN = "plugin-OSD";
@@ -55,80 +51,44 @@ public final class OsdPlugin extends Plugin implements PreferencesInterface {
         super();
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public void onLoad() {
         command = new OsdCommand();
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public void onUnload() {
         CommandManager.unregisterCommand(command);
     }
 
-    /** {@inheritDoc}. */
-    public boolean isConfigurable() {
-        return true;
-    }
-    
-    /** {@inheritDoc}. */
-    public void showConfig() {
-        final ConfigManager config = IdentityManager.getGlobalConfig();
-        final PreferencesPanel preferencesPanel = Main.getUI().
-                getPreferencesPanel(this, "OSD Plugin - Config");
+    /** {@inheritDoc} */
+    @Override
+    public void showConfig(final PreferencesManager manager) {
+        final PreferencesCategory category = new PreferencesCategory("OSD",
+                "General configuration for OSD plugin.");
+        
+        category.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
+                MY_DOMAIN, "fontSize", "20", "Font size", "Changes the font " +
+                "size of the OSD"));
+        category.addSetting(new PreferencesSetting(PreferencesType.COLOUR,
+                MY_DOMAIN, "bgcolour", "2222aa", "Background colour", 
+                "Background colour for the OSD"));
+        category.addSetting(new PreferencesSetting(PreferencesType.COLOUR,
+                MY_DOMAIN, "fgcolour", "ffffff", "Foreground colour", 
+                "Foreground colour for the OSD"));
+        category.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
+                MY_DOMAIN, "timeout", "15", "Timeout", "Length of time in " +
+                "seconds before the OSD window closes"));
 
-        preferencesPanel.addCategory("General", "General configuration for OSD plugin.");
-        
-        preferencesPanel.addSpinnerOption("General", "fontSize", 
-                "Font size", "Changes the font size of the OSD",
-                config.getOptionInt(MY_DOMAIN, "fontSize", 20));
-        preferencesPanel.addColourOption("General", "bgcolour", 
-                "Background colour", "Background colour for the OSD", 
-                config.getOption(MY_DOMAIN, "bgcolour", "2222aa"),
-                true, true);
-        preferencesPanel.addColourOption("General", "fgcolour", 
-                "Foreground colour", "Foreground colour for the OSD", 
-                config.getOption(MY_DOMAIN, "fgcolour", "ffffff"),
-                true, true);
-        preferencesPanel.addSpinnerOption("General", "timeout", "Timeout: ",
-                "Length of times in seconds before the OSD window times out",
-                IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "timeout", 15));
-        
-        osdWindow = new OsdWindow("Please drag this OSD to position", true);
-        
-        preferencesPanel.display();
+        manager.getCategory("Plugins").addSubCategory(category);
+
+        //osdWindow = new OsdWindow("Please drag this OSD to position", true);
+        //config.setOption(MY_DOMAIN, "locationX",
+        //        String.valueOf((int) osdWindow.getLocationOnScreen().getX()));
+        //config.setOption(MY_DOMAIN, "locationY",
+        //        String.valueOf((int) osdWindow.getLocationOnScreen().getY()));        
     }
-    
-    /** {@inheritDoc}. */
-    public void configClosed(final Properties properties) {
-        final Identity config = IdentityManager.getConfigIdentity();
-        
-        if (properties.containsKey("fontSize")) {
-            config.setOption(MY_DOMAIN, "fontSize", properties.getProperty("fontSize"));
-        }
-        
-        if (properties.containsKey("fgcolour")) {
-            config.setOption(MY_DOMAIN, "fgcolour", properties.getProperty("fontSize"));
-        }
-        
-        if (properties.containsKey("bgcolour")) {
-            config.setOption(MY_DOMAIN, "bgcolour", properties.getProperty("fontSize"));
-        }
-        
-        if (properties.getProperty("timeout") != null) {
-            config.setOption(MY_DOMAIN, "timeout", properties.getProperty("timeout"));
-        }
-        
-        if (osdWindow != null && osdWindow.isVisible()) {
-            config.setOption(MY_DOMAIN, "locationX",
-                    String.valueOf((int) osdWindow.getLocationOnScreen().getX()));
-            config.setOption(MY_DOMAIN, "locationY",
-                    String.valueOf((int) osdWindow.getLocationOnScreen().getY()));
-            osdWindow.dispose();
-        }
-    }
-    
-    /** {@inheritDoc}. */
-    public void configCancelled() {
-        osdWindow.dispose();
-    }
+
 }
