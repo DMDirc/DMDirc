@@ -227,10 +227,6 @@ public final class SwingController implements UIController {
             System.setProperty("swing.aatext", "true");
         }
         
-        if (IdentityManager.getGlobalConfig().hasOption("ui", "checkEDTViolations")) {
-            RepaintManager.setCurrentManager(new CheckThreadViolationRepaintManager());
-        }
-        
         try {
             UIUtilities.initUISettings();
 
