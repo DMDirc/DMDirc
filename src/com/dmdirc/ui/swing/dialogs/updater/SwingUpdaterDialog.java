@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs;
+package com.dmdirc.ui.swing.dialogs.updater;
 
 import com.dmdirc.Main;
 import com.dmdirc.ui.interfaces.UpdaterDialog;

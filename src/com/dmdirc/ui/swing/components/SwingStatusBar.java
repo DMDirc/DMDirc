@@ -31,7 +31,7 @@ import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ProgramError;
 import com.dmdirc.ui.interfaces.StatusBar;
 import com.dmdirc.ui.interfaces.StatusMessageNotifier;
-import com.dmdirc.ui.swing.dialogs.SwingUpdaterDialog;
+import com.dmdirc.ui.swing.dialogs.updater.SwingUpdaterDialog;
 import com.dmdirc.ui.swing.dialogs.error.ErrorListDialog;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateChecker.STATE;

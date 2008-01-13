@@ -42,7 +42,7 @@ import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.components.FeedbackNag;
 import com.dmdirc.ui.swing.components.SwingStatusBar;
-import com.dmdirc.ui.swing.dialogs.SwingUpdaterDialog;
+import com.dmdirc.ui.swing.dialogs.updater.SwingUpdaterDialog;
 import com.dmdirc.ui.swing.dialogs.URLDialog;
 import com.dmdirc.ui.swing.dialogs.channelsetting.ChannelSettingsDialog;
 import com.dmdirc.ui.swing.dialogs.error.ErrorListDialog;
