@@ -97,17 +97,6 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
     
     /** {@inheritDoc} */
     @Override
-    public boolean isConfigurable() {
-        return false;
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void showConfig() {
-    }
-    
-    /** {@inheritDoc} */
-    @Override
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {
         if (!useAlternate && type.equals(CoreActionType.SERVER_GOTPING)) {

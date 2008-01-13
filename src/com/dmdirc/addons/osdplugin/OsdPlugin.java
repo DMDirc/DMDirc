@@ -66,13 +66,11 @@ public final class OsdPlugin extends Plugin implements PreferencesInterface {
     }
 
     /** {@inheritDoc}. */
-    @Override
     public boolean isConfigurable() {
         return true;
     }
     
     /** {@inheritDoc}. */
-    @Override
     public void showConfig() {
         final ConfigManager config = IdentityManager.getGlobalConfig();
         final PreferencesPanel preferencesPanel = Main.getUI().

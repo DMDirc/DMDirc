@@ -38,9 +38,12 @@ import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.config.prefs.PreferencesCategory;
+import com.dmdirc.config.prefs.PreferencesManager;
+import com.dmdirc.config.prefs.PreferencesSetting;
+import com.dmdirc.config.prefs.PreferencesSetting;
+import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
-import com.dmdirc.ui.interfaces.PreferencesInterface;
-import com.dmdirc.ui.interfaces.PreferencesPanel;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,7 +63,7 @@ import javax.swing.JFrame;
  * @author Shane 'Dataforce' McCormack
  * @version $Id: DCCPlugin.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
-public final class DCCPlugin extends Plugin implements ActionListener, PreferencesInterface {
+public final class DCCPlugin extends Plugin implements ActionListener {
 	/** The DCCCommand we created */
 	private DCCCommand command = null;
 	
@@ -119,7 +122,7 @@ public final class DCCPlugin extends Plugin implements ActionListener, Preferenc
 			public void run() {
 				final JFileChooser jc = new JFileChooser(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "receive.savelocation"));
 				jc.setDialogTitle("Save "+sendFilename+" As - DMDirc ");
-				jc.setFileSelectionMode(jc.FILES_AND_DIRECTORIES);
+				jc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 				jc.setMultiSelectionEnabled(false);
 				jc.setSelectedFile(new File(send.getFileName()));
 				int result; 
@@ -431,30 +434,37 @@ public final class DCCPlugin extends Plugin implements ActionListener, Preferenc
 		}
 	}
 	
-	
-	/**
-	 * Called to see if the plugin has configuration options (via dialog).
-	 *
-	 * @return true if the plugin has configuration options via a dialog.
-	 */
-	public boolean isConfigurable() { return true; }
-	
-	/**
-	 * Called to show the Configuration dialog of the plugin if appropriate.
-	 */
-	public void showConfig() {
-		final PreferencesPanel preferencesPanel = Main.getUI().getPreferencesPanel(this, "DCC Plugin - Config");
-		preferencesPanel.addCategory("General", "General Configuration for DCC.");
-		preferencesPanel.addCategory("Send", "Configuration for DCC Sends.");
-		preferencesPanel.addCategory("Receive", "Configuration for DCC Receives.");
-		
-		preferencesPanel.addTextfieldOption("Receive", "receive.savelocation", "Default Save Location: ", "Where the save as window defaults to?", IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "receive.savelocation"));
-		preferencesPanel.addCheckboxOption("Send", "send.reverse", "Reverse DCC: ", "With reverse DCC, the sender connects rather than listens like normal dcc", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "send.reverse"));
-		preferencesPanel.addCheckboxOption("Send", "send.forceturbo", "Use Turbo DCC: ", "Turbo DCC doesn't wait for ack packets. this is faster but not always supported.", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "send.forceturbo"));
-		preferencesPanel.addCheckboxOption("Receive", "receive.reverse.sendtoken", "Send token in reverse receive?: ", "If you have problems with reverse dcc receive resume, try toggling this.", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "receive.reverse.sendtoken"));
-				
-		preferencesPanel.addSpinnerOption("General", "send.blocksize", "Blocksize to use for DCC: ", "Change the block size for send/receive, this can sometimes speed up transfers.", IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "send.blocksize", 1024));
-		preferencesPanel.display();
+	/** {@inheritDoc} */
+        @Override
+	public void showConfig(final PreferencesManager manager) {
+		final PreferencesCategory general = new PreferencesCategory("DCC Plugin", "");
+                final PreferencesCategory sending = new PreferencesCategory("Sending", "");
+                final PreferencesCategory receiving = new PreferencesCategory("Receiving", "");
+                
+                manager.getCategory("Plugins").addSubCategory(general);
+                general.addSubCategory(sending);
+                general.addSubCategory(receiving);
+                
+                receiving.addSetting(new PreferencesSetting(PreferencesType.TEXT,
+                        MY_DOMAIN, "receive.savelocation", "", "Default save location",
+                        "Where the save as window defaults to?"));
+                sending.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                        MY_DOMAIN, "send.reverse", "false", "Reverse DCC",
+                        "With reverse DCC, the sender connects rather than " +
+                        "listens like normal dcc"));
+                sending.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                        MY_DOMAIN, "send.forcetube", "false", "Use Turbo DCC",
+                        "Turbo DCC doesn't wait for ack packets. this is " +
+                        "faster but not always supported."));
+                receiving.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                        MY_DOMAIN, "receive.reverse.sendtoken", "false",
+                        "Send token in reverse receive",
+                        "If you have problems with reverse dcc receive resume," +
+                        " try toggling this."));
+                general.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
+                        MY_DOMAIN, "send.blocksize", "1024", "Blocksize to use for DCC",
+                        "Change the block size for send/receive, this can " +
+                        "sometimes speed up transfers."));
 	}
 	
 	/**

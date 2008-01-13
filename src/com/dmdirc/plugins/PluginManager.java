@@ -22,7 +22,12 @@
 package com.dmdirc.plugins;
 
 import com.dmdirc.Main;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.prefs.PreferencesManager;
+import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.logger.ErrorLevel;
 
@@ -34,7 +39,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class PluginManager {
+public class PluginManager implements ActionListener {
 	/** List of known plugins. */
 	private final Map<String, PluginInfo> knownPlugins = new Hashtable<String, PluginInfo>();
 
@@ -50,6 +55,7 @@ public class PluginManager {
 	private PluginManager() {
 		final String fs = System.getProperty("file.separator");
 		myDir = Main.getConfigDir() + "plugins" + fs;
+                ActionManager.addListener(this, CoreActionType.CLIENT_PREFS_OPENED);
 	}
 
 	/**
@@ -267,4 +273,17 @@ public class PluginManager {
 	public Collection<PluginInfo> getPluginInfos() {
 		return new ArrayList<PluginInfo>(knownPlugins.values());
 	}
+
+        /** {@inheritDoc} */
+        @Override
+        public void processEvent(final ActionType type, final StringBuffer format,
+                final Object... arguments) {
+            if (type.equals(CoreActionType.CLIENT_PREFS_OPENED)) {
+                for (PluginInfo pi : getPluginInfos()) {
+                    if (pi.isLoaded()) {
+                        pi.getPlugin().showConfig((PreferencesManager) arguments[0]);
+                    }
+                }
+            }
+        }
 }

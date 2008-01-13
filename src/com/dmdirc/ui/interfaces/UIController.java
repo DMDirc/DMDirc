@@ -103,7 +103,9 @@ public interface UIController {
      * @param title Preferences panel title
      *
      * @return PreferencesPanel
+     * @deprecated The application should now only have one preferences panel
      */
+    @Deprecated
     PreferencesPanel getPreferencesPanel(PreferencesInterface parent, String title);
     
     /**

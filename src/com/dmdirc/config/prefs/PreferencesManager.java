@@ -76,6 +76,22 @@ public class PreferencesManager {
     public List<PreferencesCategory> getCategories() {
         return categories;
     }
+    
+    /**
+     * Finds and retrieves the category with the specified name.
+     * 
+     * @param name The name (title) of the category to find.
+     * @return The appropriate category, or null if none was found
+     */
+    public PreferencesCategory getCategory(final String name) {
+        for (PreferencesCategory category : categories) {
+            if (category.getTitle().equals(name)) {
+                return category;
+            }
+        }
+        
+        return null;
+    }
 
     /**
      * Adds the default categories to this preferences manager.

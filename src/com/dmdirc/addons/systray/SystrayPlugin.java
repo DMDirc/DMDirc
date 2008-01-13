@@ -137,13 +137,6 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
     }
 
     /** {@inheritDoc} */
-    @Override
-    public boolean isConfigurable() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public void showConfig() {
         final PreferencesPanel preferencesPanel
                 = Main.getUI().getPreferencesPanel(this, "Systray Plugin - Config");

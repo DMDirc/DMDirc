@@ -23,22 +23,19 @@
  */
 package com.dmdirc.plugins;
 
-import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.config.prefs.PreferencesManager;
 
 /**
  * Defines the standard methods that should be implemented by plugins.
  */
 public abstract class Plugin implements Comparable<Plugin> {
-	/** Is this plugin active? */
-	private boolean isActive = false;
 
 	/**
 	 * Called when the plugin is constructed.
 	 */
 	public Plugin() { }
-
-	/**
+        
+        /**
 	 * Called when the plugin is loaded.
 	 */
 	public abstract void onLoad();
@@ -50,24 +47,20 @@ public abstract class Plugin implements Comparable<Plugin> {
 	 * @return true if the plugin can be used, else false.
 	 */
 	public boolean checkPrerequisites() { return true; }
-	
-	/**
+        
+        /**
 	 * Called when the plugin is about to be unloaded.
-	 */
+         */
 	public abstract void onUnload();
-	
+            	
 	/**
-	 * Called to see if the plugin has configuration options (via dialog).
-	 *
-	 * @return true if the plugin has configuration options via a dialog.
+	 * Called to allow plugins to add their configuration options to the manager.
+         * 
+         * @param manager The preferences manager that configuration options
+         * need to be added to.
 	 */
-	public boolean isConfigurable() { return false; }
-	
-	/**
-	 * Called to show the Configuration dialog of the plugin if appropriate.
-	 */
-	public void showConfig() { }
-	
+	public void showConfig(final PreferencesManager manager) { }
+        
 	/**
 	 * Compares this object with the specified object for order.
 	 * Returns a negative integer, zero, or a positive integer as per String.compareTo();

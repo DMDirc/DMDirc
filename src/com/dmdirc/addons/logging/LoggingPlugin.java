@@ -32,6 +32,10 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.prefs.PreferencesCategory;
+import com.dmdirc.config.prefs.PreferencesManager;
+import com.dmdirc.config.prefs.PreferencesSetting;
+import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -41,8 +45,6 @@ import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.parser.IRCParser;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.ui.interfaces.PreferencesInterface;
-import com.dmdirc.ui.interfaces.PreferencesPanel;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Styliser;
 
@@ -69,7 +71,7 @@ import java.util.Stack;
  * @author Shane 'Dataforce' McCormack
  * @version $Id: LoggingPlugin.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
-public final class LoggingPlugin extends Plugin implements ActionListener, PreferencesInterface {
+public final class LoggingPlugin extends Plugin implements ActionListener {
 	/** What domain do we store all settings in the global config under. */
 	private static final String MY_DOMAIN = "plugin-Logging";
 	
@@ -146,39 +148,59 @@ public final class LoggingPlugin extends Plugin implements ActionListener, Prefe
 		}
 	}
 	
-	/**
-	 * Called to see if the plugin has configuration options (via dialog).
-	 *
-	 * @return true if the plugin has configuration options via a dialog.
-	 */
+	/** {@inheritDoc} */
 	@Override
-	public boolean isConfigurable() { return true; }
-	
-	/**
-	 * Called to show the Configuration dialog of the plugin if appropriate.
-	 */
-	@Override
-	public void showConfig() {
-		final PreferencesPanel preferencesPanel = Main.getUI().getPreferencesPanel(this, "Logging Plugin - Config");
-		preferencesPanel.addCategory("General", "General configuration for Logging plugin.");
-		preferencesPanel.addCategory("Back Buffer", "Options related to the automatic backbuffer");
-		preferencesPanel.addCategory("Advanced", "Advanced configuration for Logging plugin. You shouldn't need to edit this unless you know what you are doing.");
+	public void showConfig(final PreferencesManager manager) {
+		final PreferencesCategory general = new PreferencesCategory("Logging plugin", 
+                "General configuration for Logging plugin.");
+        final PreferencesCategory backbuffer = new PreferencesCategory("Back Buffer",
+                "Options related to the automatic backbuffer");
+		final PreferencesCategory advanced = new PreferencesCategory("Advanced",
+                "Advanced configuration for Logging plugin. You shouldn't need " +
+                "to edit this unless you know what you are doing.");
+        
+        general.addSetting(new PreferencesSetting(PreferencesType.TEXT, 
+                MY_DOMAIN, "general.directory", "false", "Directory",
+                "Directory for log files"));
+        general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, 
+                MY_DOMAIN, "general.networkfolders", "", "Separate logs by network",
+                "Should the files be stored in a sub-dir with the networks name?"));
+        general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, 
+                MY_DOMAIN, "general.addtime", "false", "Timestamp logs",
+                "Should a timestamp be added to the log files?"));
+        general.addSetting(new PreferencesSetting(PreferencesType.TEXT,
+                MY_DOMAIN, "general.timestamp", "", "Timestamp format",
+                "The String to pass to 'SimpleDateFormat' to format the timestamp"));
+        general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, 
+                MY_DOMAIN, "general.stripcodes", "false", "Strip Control Codes",
+                "Remove known irc control codes from lines before saving?"));
+        general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, 
+                MY_DOMAIN, "general.channelmodeprefix", "", "Show channel mode prefix",
+                "Show the @,+ etc next to nicknames"));
+
+        backbuffer.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, 
+                MY_DOMAIN, "backbuffer.autobackbuffer", "", "Automatically display",
+                "Automatically display the backbuffer when a channel is joined"));
+        backbuffer.addSetting(new PreferencesSetting(PreferencesType.COLOUR, 
+                MY_DOMAIN, "backbuffer.colour", "0", "Colour to use for display",
+                "Colour used when displaying the backbuffer"));
+		backbuffer.addSetting(new PreferencesSetting(PreferencesType.INTEGER, 
+                MY_DOMAIN, "backbuffer.lines", "0", "Number of lines to show",
+                "Number of lines used when displaying backbuffer"));
+        backbuffer.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, 
+                MY_DOMAIN, "backbuffer.timestamp", "false", "Show Formatter-Timestamp",
+                "Should the line be added to the frame with the timestamp from " +
+                "the formatter aswell as the file contents"));
+
+        advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, 
+                MY_DOMAIN, "advanced.filenamehash", "false", "Add Filename hash",
+                "Add the MD5 hash of the channel/client name to the filename." +
+                "(This is used to allow channels with similar names (ie a _ not" +
+                "a  -) to be logged separately)"));
 		
-		preferencesPanel.addTextfieldOption("General", "general.directory", "Directory: ", "Directory for log files", IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.directory"));
-		preferencesPanel.addCheckboxOption("General", "general.networkfolders", "Separate logs by network: ", "Should the files be stored in a sub-dir with the networks name", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.networkfolders"));
-		preferencesPanel.addCheckboxOption("General", "general.addtime", "Timestamp logs: ", "Should a timestamp be added to the log files", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.addtime"));
-		preferencesPanel.addTextfieldOption("General", "general.timestamp", "Timestamp format: ", "The String to pass to 'SimpleDateFormat' to format the timestamp", IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.timestamp"));
-		preferencesPanel.addCheckboxOption("General", "general.stripcodes", "Strip Control Codes: ", "Remove known irc control codes from lines before saving", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.stripcodes"));
-		preferencesPanel.addCheckboxOption("General", "general.channelmodeprefix", "Show channel mode prefix: ", "Show the @,+ etc next to nicknames", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.channelmodeprefix"));
-		
-		preferencesPanel.addCheckboxOption("Back Buffer", "backbuffer.autobackbuffer", "Automatically display: ", "Automatically display the backbuffer when a channel is joined", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer"));
-		preferencesPanel.addColourOption("Back Buffer", "backbuffer.colour", "Colour to use for display: ", "Colour used when displaying the backbuffer", IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "backbuffer.colour"), true, true);
-		preferencesPanel.addSpinnerOption("Back Buffer", "backbuffer.lines", "Number of lines to show: ", "Number of lines used when displaying backbuffer", IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "backbuffer.lines", 0));
-		preferencesPanel.addCheckboxOption("Back Buffer", "backbuffer.timestamp", "Show Formatter-Timestamp: ", "Should the line be added to the frame with the timestamp from the formatter aswell as the file contents", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.timestamp"));
-		
-		preferencesPanel.addCheckboxOption("Advanced", "advanced.filenamehash", "Add Filename hash: ", "Add the MD5 hash of the channel/client name to the filename. (This is used to allow channels with similar names (ie a _ not a  -) to be logged separately)", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "advanced.filenamehash"));
-		
-		preferencesPanel.display();
+		general.addSubCategory(backbuffer);
+        general.addSubCategory(advanced);
+        manager.getCategory("Plugins").addSubCategory(general);
 	}
 	
 	/**
@@ -187,76 +209,6 @@ public final class LoggingPlugin extends Plugin implements ActionListener, Prefe
 	 * @return the plugins domain
 	 */
 	protected static String getDomain() { return MY_DOMAIN; }
-	
-	/**
-	 * Copy the new vaule of an option to the global config.
-	 *
-	 * @param properties Source of option value, or null if setting default values
-	 * @param name name of option
-	 */
-	protected void updateOption(final Properties properties, final String name) {
-		String value = null;
-		
-		// Get the value from the properties file if one is given, else use the
-		// value from the global config.
-		if (properties != null) {
-			value = properties.getProperty(name);
-		} else {
-			value = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, name);
-		}
-		
-		// Check if the Value exists
-		if (value != null) {
-			// It does, so update the global config with the new value
-			IdentityManager.getConfigIdentity().setOption(MY_DOMAIN, name, value);
-		}
-	}
-	
-	/**
-	 * Called when the preferences dialog is closed.
-	 *
-	 * @param properties user preferences
-	 */
-	@Override
-	public void configClosed(final Properties properties) {
-		
-		// Update Config options
-		updateOption(properties, "general.networkfolders");
-		updateOption(properties, "advanced.filenamehash");
-		updateOption(properties, "general.addtime");
-		updateOption(properties, "general.timestamp");
-		updateOption(properties, "general.stripcodes");
-		updateOption(properties, "general.channelmodeprefix");
-		updateOption(properties, "backbuffer.autobackbuffer");
-		updateOption(properties, "backbuffer.lines");
-		updateOption(properties, "backbuffer.colour");
-		updateOption(properties, "backbuffer.timestamp");
-		
-		// Check new dir exists before changing
-		final File dir = new File(properties.getProperty("general.directory"));
-		if (!dir.exists()) {
-			try {
-				dir.mkdirs();
-				dir.createNewFile();
-				updateOption(properties, "general.directory");
-			} catch (IOException ex) {
-				Logger.userError(ErrorLevel.LOW, "Unable to create new logging dir, not changing");
-			}
-		} else {
-			if (!dir.isDirectory()) {
-				Logger.userError(ErrorLevel.LOW, "Unable to create new logging dir (file exists instead), not changing");
-			} else {
-				updateOption(properties, "general.directory");
-			}
-		}
-	}
-	
-	
-	/**
-	 * Called when the preferences dialog is cancelled.
-	 */
-	@Override
-	public void configCancelled() { }
 	
 	/**
 	 * Process an event of the specified type.

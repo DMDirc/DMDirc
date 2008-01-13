@@ -89,9 +89,5 @@ public final class DcopPlugin extends Plugin {
     public void onUnload() {
         CommandManager.unregisterCommand(command);
     }
-    
-    /** {@inheritDoc}. */
-    public boolean isConfigurable() {
-        return false;
-    }
+
 }

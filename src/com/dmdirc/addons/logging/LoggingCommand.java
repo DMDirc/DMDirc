@@ -73,9 +73,7 @@ public final class LoggingCommand extends ServerCommand implements IntelligentCo
 		final LoggingPlugin plugin = (LoggingPlugin) gotPlugin;
 		
 		if (args.length > 0) {
-			if (args[0].equalsIgnoreCase("config")) {
-				plugin.showConfig();
-			} else if (args[0].equalsIgnoreCase("reload")) {
+			if (args[0].equalsIgnoreCase("reload")) {
 				if (PluginManager.getPluginManager().reloadPlugin(pluginInfo.getFilename())) {
 					sendLine(origin, isSilent, FORMAT_OUTPUT, "Plugin reloaded.");
 				} else {
@@ -89,7 +87,6 @@ public final class LoggingCommand extends ServerCommand implements IntelligentCo
 				sendLine(origin, isSilent, FORMAT_OUTPUT, getName() + " reload           - Reload the logging plugin.");
 				sendLine(origin, isSilent, FORMAT_OUTPUT, getName() + " history          - Open the history of this window, if available.");
 				sendLine(origin, isSilent, FORMAT_OUTPUT, getName() + " help             - Show this help.");
-				sendLine(origin, isSilent, FORMAT_OUTPUT, getName() + " config           - Show the logging plugin configuration.");
 			} else {
 				sendLine(origin, isSilent, FORMAT_ERROR, "Unknown command '" + args[0] + "'. Use " + getName() + " help for a list of commands.");
 			}
@@ -109,7 +106,6 @@ public final class LoggingCommand extends ServerCommand implements IntelligentCo
 	public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
 			final AdditionalTabTargets res = new AdditionalTabTargets();
 			if (arg == 0) {
-				res.add("config");
 				res.add("reload");
 				res.add("history");
 				res.add("help");
@@ -137,7 +133,7 @@ public final class LoggingCommand extends ServerCommand implements IntelligentCo
 	 *
 	 * @return the help message for this command
 	 */
-	public String getHelp() { return this.getName() + " <config|set|help> [parameters]"; }
+	public String getHelp() { return this.getName() + " <set|help> [parameters]"; }
 	
 	/**
 	 * Get SVN Version information.

@@ -32,14 +32,16 @@ import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.Identity;
+import com.dmdirc.config.prefs.PreferencesCategory;
+import com.dmdirc.config.prefs.PreferencesManager;
+import com.dmdirc.config.prefs.PreferencesSetting;
+import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.parser.ChannelInfo;
 import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.ui.interfaces.PreferencesInterface;
-import com.dmdirc.ui.interfaces.PreferencesPanel;
 import com.dmdirc.ui.interfaces.Window;
 
 import net.miginfocom.swing.MigLayout;
@@ -59,16 +61,17 @@ import javax.swing.JPanel;
  * @author Shane 'Dataforce' McCormack
  * @version $Id: WindowStatusPlugin.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
-public final class WindowStatusPlugin extends Plugin implements ActionListener, PreferencesInterface {
-	/** What domain do we store all settings in the global config under. */
+public final class WindowStatusPlugin extends Plugin implements ActionListener {
+
+        /** What domain do we store all settings in the global config under. */
 	private static final String MY_DOMAIN = "plugin-Logging";
-	
+
 	/** The panel we use in the status bar. */
 	private final JPanel panel = new JPanel();
-	
+
 	/** The label we use to show window status. */
 	private final JLabel label = new JLabel("???");
-	
+
 	/** Creates a new instance of WindowStatusPlugin. */
 	public WindowStatusPlugin() {
 		super();
@@ -76,7 +79,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 		panel.setLayout(new MigLayout("ins 0 rel 0 rel, aligny center"));
 		panel.add(label);
 	}
-	
+
 	/**
 	 * Called when the plugin is loaded.
 	 */
@@ -88,13 +91,13 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 		defaults.setProperty(MY_DOMAIN + ".client.showname", "false");
 		defaults.setProperty("identity.name", "WindowStatus Plugin Defaults");
 		IdentityManager.addIdentity(new Identity(defaults));
-		
+
 		Main.getUI().getStatusBar().addComponent(panel);
 		updateStatus();
-		
+
 		ActionManager.addListener(this, CoreActionType.CLIENT_FRAME_CHANGED);
 	}
-	
+
 	/**
 	 * Called when this plugin is unloaded.
 	 */
@@ -102,7 +105,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 		Main.getUI().getStatusBar().removeComponent(panel);
 		ActionManager.removeListener(this);
 	}
-	
+
 	/**
 	 * Process an event of the specified type.
 	 *
@@ -110,24 +113,25 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 	 * @param format Format of messages that are about to be sent. (May be null)
 	 * @param arguments The arguments for the event
 	 */
+        @Override
 	public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
 		if (type.equals(CoreActionType.CLIENT_FRAME_CHANGED)) {
 			updateStatus((FrameContainer)arguments[0]);
-		}
+                }
 	}
-	
+
 	/**
 	 * Update the window status using the current active window.
 	 */
 	public void updateStatus() {
 		Window active = Main.getUI().getMainWindow().getActiveFrame();
-		
+
 		if (active != null) {
 			FrameContainer activeFrame = ((InputWindow) active).getContainer();
 			updateStatus(activeFrame);
 		}
 	}
-	
+
 	/**
 	 * Update the window status using a given FrameContainer as the active frame.
 	 *
@@ -136,26 +140,26 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 	public void updateStatus(final FrameContainer current) {
 		if (current == null) { return; }
 		StringBuffer textString = new StringBuffer("");
-		
+
 		if (current instanceof Server) {
 			Server frame = (Server)current;
-			
+
 			textString.append(frame.getName());
 		} else if (current instanceof Channel) {
 			final Channel frame = (Channel)current;
 			final ChannelInfo chan = frame.getChannelInfo();
 			final Hashtable<Long,String> names = new Hashtable<Long,String>();
 			final Hashtable<Long,Integer> types = new Hashtable<Long,Integer>();
-			
+
 			textString.append(chan.getName());
 			textString.append(" - Nicks: "+chan.getUserCount()+" (");
-			
+
 			for (ChannelClientInfo client : chan.getChannelClients()) {
 				Long im = client.getImportantModeValue();
-				
+
 				if (!names.containsKey(im)) {
 					String mode = client.getImportantModePrefix();
-					
+
 					if (mode.isEmpty()) {
 						if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "channel.shownone")) {
 							if (IdentityManager.getGlobalConfig().hasOption(MY_DOMAIN, "channel.noneprefix")) {
@@ -169,9 +173,9 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 					}
 					names.put(im, mode);
 				}
-				
+
 				Integer count = types.get(im);
-				
+
 				if (count == null) {
 					count = Integer.valueOf(1);
 				} else {
@@ -179,18 +183,18 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 				}
 				types.put(im, count);
 			}
-			
+
 			boolean isFirst = true;
-			
+
 			for (Entry<Long, Integer> entry : types.entrySet()) {
 				if (isFirst) { isFirst = false; } else { textString.append(" "); }
 				textString.append(names.get(entry.getKey())+entry.getValue());
 			}
-			
+
 			textString.append(")");
 		} else if (current instanceof Query) {
 			final Query frame = (Query)current;
-			
+
 			textString.append(frame.getHost());
 			if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "client.showname")) {
 				final ClientInfo client = frame.getServer().getParser().getClientInfo(frame.getHost());
@@ -206,76 +210,31 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener, 
 		}
 		label.setText(textString.toString());
 	}
-	
-	/**
-	 * Called to see if the plugin has configuration options (via dialog).
-	 *
-	 * @return true if the plugin has configuration options via a dialog.
-	 */
-	public boolean isConfigurable() { return true; }
-	
-	/**
-	 * Called to show the Configuration dialog of the plugin if appropriate.
-	 */
-	public void showConfig() {
-		final PreferencesPanel preferencesPanel = Main.getUI().getPreferencesPanel(this, "Window Status Plugin - Config");
-		preferencesPanel.addCategory("Channel", "Configuration for Window Status plugin when showing a channel window.");
-		preferencesPanel.addCategory("Client", "Configuration for Window Status plugin when showing a client window.");
-		
-		preferencesPanel.addCheckboxOption("Channel", "channel.shownone", "Show 'none' count: ", "Should the count for uses with no state be shown?", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "channel.shownone"));
-		preferencesPanel.addTextfieldOption("Channel", "channel.noneprefix", "Prefix used before 'none' count: ", "The Prefix to use when showing the 'none' count", IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "channel.noneprefix"));
-		
-		preferencesPanel.addCheckboxOption("Client", "client.showname", "Show Client realname if known: ", "Should the realname for clients be shown if known?", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "client.showname"));
-		preferencesPanel.display();
+
+	/** {@inheritDoc} */
+        @Override
+	public void showConfig(final PreferencesManager manager) {
+                final PreferencesCategory category
+                        = new PreferencesCategory("Window status", "");
+
+                category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                        MY_DOMAIN, "channel.shownone", "true", "Show 'none' count",
+                        "Should the count for users with no state be shown?"));
+                category.addSetting(new PreferencesSetting(PreferencesType.TEXT,
+                        MY_DOMAIN, "channel.noneprefix", "None:", "'None' count prefix",
+                        "The Prefix to use when showing the 'none' count"));
+                category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                        MY_DOMAIN, "client.showname", "false", "Show real name",
+                        "Should the realname for clients be shown if known?"));
+
+		manager.getCategory("Plugins").addSubCategory(category);
 	}
-	
+
 	/**
 	 * Get the name of the domain we store all settings in the global config under.
 	 *
 	 * @return the plugins domain
 	 */
 	protected static String getDomain() { return MY_DOMAIN; }
-	
-	/**
-	 * Copy the new vaule of an option to the global config.
-	 *
-	 * @param properties Source of option value, or null if setting default values
-	 * @param name name of option
-	 */
-	protected void updateOption(final Properties properties, final String name) {
-		String value = null;
-		
-		// Get the value from the properties file if one is given, else use the
-		// value from the global config.
-		if (properties != null) {
-			value = properties.getProperty(name);
-		} else {
-			value = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, name);
-		}
-		
-		// Check if the Value exists
-		if (value != null) {
-			// It does, so update the global config with the new value
-			IdentityManager.getConfigIdentity().setOption(MY_DOMAIN, name, value);
-		}
-	}
-	
-	/**
-	 * Called when the preferences dialog is closed.
-	 *
-	 * @param properties user preferences
-	 */
-	public void configClosed(final Properties properties) {
-		// Update Config options
-		updateOption(properties, "channel.shownone");
-		updateOption(properties, "channel.noneprefix");
-		updateOption(properties, "client.showname");
-		// Update Status bar
-		updateStatus();
-	}
-	
-	/**
-	 * Called when the preferences dialog is cancelled.
-	 */
-	public void configCancelled() { }
+
 }
