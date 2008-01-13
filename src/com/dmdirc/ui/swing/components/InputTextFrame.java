@@ -181,8 +181,8 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     private void initPopupMenu() {
         inputFieldPopup = new JPopupMenu();
 
-        inputFieldPopup.add(new CutAction(getInputField()));
-        inputFieldPopup.add(new CopyAction(getInputField()));
+        inputFieldPopup.add(new CutAction(getInputField().getTextField()));
+        inputFieldPopup.add(new CopyAction(getInputField().getTextField()));
         inputFieldPopup.add(new InputTextFramePasteAction(this));
         inputFieldPopup.setOpaque(true);
         inputFieldPopup.setLightWeightPopupEnabled(true);
@@ -192,7 +192,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
      * Initialises the input field.
      */
     private void initInputField() {
-        UIUtilities.addUndoManager(getInputField());
+        UIUtilities.addUndoManager(getInputField().getTextField());
 
         getInputField().getActionMap().put("PasteAction",
                 new InputTextFramePasteAction(this));
