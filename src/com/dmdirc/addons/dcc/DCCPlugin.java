@@ -66,23 +66,23 @@ import javax.swing.JFrame;
 public final class DCCPlugin extends Plugin implements ActionListener {
 	/** The DCCCommand we created */
 	private DCCCommand command = null;
-	
+
 	/** Our DCC Container window. */
 	private DCCFrame container;
-	
+
 	/** What domain do we store all settings in the global config under. */
 	private static final String MY_DOMAIN = "plugin-DCC";
-	
+
 	/** Child Frames */
 	private List<DCCFrame> childFrames = new ArrayList<DCCFrame>();
-	
+
 	/**
 	 * Creates a new instance of the DCC Plugin.
 	 */
 	public DCCPlugin() {
 		super();
 	}
-	
+
 	/**
 	 * Ask a question, if the answer is the answer required, then recall handleProcessEvent
 	 *
@@ -106,7 +106,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		// Start the thread
 		questionThread.start();
 	}
-	
+
 	/**
 	 * Ask the location to save a file, then start the download.
 	 *
@@ -125,7 +125,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 				jc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 				jc.setMultiSelectionEnabled(false);
 				jc.setSelectedFile(new File(send.getFileName()));
-				int result; 
+				int result;
 				if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "receive.autoaccept", false)) {
 					result = JFileChooser.APPROVE_OPTION;
 				} else {
@@ -179,7 +179,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		// Start the thread
 		dccThread.start();
 	}
-	
+
 	/**
 	 * Process an event of the specified type.
 	 *
@@ -191,7 +191,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
 		handleProcessEvent(type, format, false, arguments);
 	}
-	
+
 	/**
 	 * Process an event of the specified type.
 	 *
@@ -205,7 +205,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 			handleProcessEvent(type, format, true, arguments);
 			return;
 		}
-	
+
 		if (type == CoreActionType.SERVER_CTCP) {
 			final String ctcpType = (String)arguments[2];
 			final String[] ctcpData = ((String)arguments[3]).split(" ");
@@ -247,7 +247,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 						filename = ctcpData[1];
 						i = 1;
 					}
-					
+
 					final String ip = ctcpData[++i];
 					final String port = ctcpData[++i];
 					long size;
@@ -257,9 +257,9 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 						} catch (NumberFormatException nfe) { size = -1; }
 					} else { size = -1; }
 					final String token = (ctcpData.length-1 > i) ? ctcpData[++i] : "";
-					
+
 					DCCSend send = DCCSend.findByToken(token);
-					
+
 					if (send == null && !dontAsk) {
 						askQuestion("User "+nickname+" on "+((Server)arguments[0]).toString()+" would like to send you a file over DCC.\n\nFile: "+filename+"\n\nDo you want to continue?", "DCC Send Request", JOptionPane.YES_OPTION, type, format, arguments);
 						return;
@@ -303,12 +303,12 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 						filename = ctcpData[1];
 						i = 1;
 					}
-					
+
 					try {
 						final int port = Integer.parseInt(ctcpData[++i]);
 						final int position = Integer.parseInt(ctcpData[++i]);
 						final String token = (ctcpData.length-1 > i) ? " "+ctcpData[++i] : "";
-						
+
 						// Now look for a dcc that matches.
 						for (DCCSend send : DCCSend.getSends()) {
 							if (send.port == port && (new File(send.getFileName())).getName().equalsIgnoreCase(filename)) {
@@ -340,7 +340,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 			}
 		}
 	}
-	
+
 	/**
 	 * Create the container window
 	 */
@@ -351,7 +351,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		((TextFrame)container.getFrame()).getContentPane().add(label);
 		WindowManager.addWindow(container.getFrame());
 	}
-	
+
 	/**
 	 * Add a window to the container window
 	 *
@@ -360,11 +360,11 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	protected void addWindow(final DCCFrame window) {
 		if (window == container) { return; }
 		if (container == null) { createContainer(); }
-		
+
 		WindowManager.addWindow(container.getFrame(), window.getFrame());
 		childFrames.add(window);
 	}
-	
+
 	/**
 	 * Remove a window from the container window
 	 *
@@ -388,7 +388,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 			}
 		}
 	}
-	
+
 	/**
 	 * Called when the plugin is loaded.
 	 */
@@ -403,7 +403,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		defaults.setProperty(MY_DOMAIN + ".receive.autoaccept", "false");
 		defaults.setProperty("identity.name", "DCC Plugin Defaults");
 		IdentityManager.addIdentity(new Identity(defaults));
-	
+
 		final File dir = new File(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "receive.savelocation"));
 		if (!dir.exists()) {
 			try {
@@ -417,11 +417,11 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 				Logger.userError(ErrorLevel.LOW, "Unable to create download dir (file exists instead)");
 			}
 		}
-	
+
 		command = new DCCCommand(this);
 		ActionManager.addListener(this, CoreActionType.SERVER_CTCP);
 	}
-	
+
 	/**
 	 * Called when this plugin is Unloaded
 	 */
@@ -433,18 +433,18 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 			container.close();
 		}
 	}
-	
+
 	/** {@inheritDoc} */
         @Override
 	public void showConfig(final PreferencesManager manager) {
 		final PreferencesCategory general = new PreferencesCategory("DCC Plugin", "");
                 final PreferencesCategory sending = new PreferencesCategory("Sending", "");
                 final PreferencesCategory receiving = new PreferencesCategory("Receiving", "");
-                
+
                 manager.getCategory("Plugins").addSubCategory(general);
                 general.addSubCategory(sending);
                 general.addSubCategory(receiving);
-                
+
                 receiving.addSetting(new PreferencesSetting(PreferencesType.TEXT,
                         MY_DOMAIN, "receive.savelocation", "", "Default save location",
                         "Where the save as window defaults to?"));
@@ -453,7 +453,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
                         "With reverse DCC, the sender connects rather than " +
                         "listens like normal dcc"));
                 sending.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                        MY_DOMAIN, "send.forcetube", "false", "Use Turbo DCC",
+                        MY_DOMAIN, "send.forceturbo", "false", "Use Turbo DCC",
                         "Turbo DCC doesn't wait for ack packets. this is " +
                         "faster but not always supported."));
                 receiving.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
@@ -466,14 +466,14 @@ public final class DCCPlugin extends Plugin implements ActionListener {
                         "Change the block size for send/receive, this can " +
                         "sometimes speed up transfers."));
 	}
-	
+
 	/**
 	 * Get the name of the domain we store all settings in the global config under.
 	 *
 	 * @return the plugins domain
 	 */
 	protected static String getDomain() { return MY_DOMAIN; }
-	
+
 	/**
 	 * Copy the new vaule of an option to the global config.
 	 *
@@ -482,7 +482,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 */
 	protected void updateOption(final Properties properties, final String name) {
 		String value = null;
-		
+
 		// Get the value from the properties file if one is given, else use the
 		// value from the global config.
 		if (properties != null) {
@@ -490,14 +490,14 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		} else {
 			value = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, name);
 		}
-		
+
 		// Check if the Value exists
 		if (value != null) {
 			// It does, so update the global config with the new value
 			IdentityManager.getConfigIdentity().setOption(MY_DOMAIN, name, value);
 		}
 	}
-	
+
 	/**
 	 * Called when the preferences dialog is closed.
 	 *
@@ -511,17 +511,17 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		updateOption(properties, "receive.reverse.sendtoken");
 		updateOption(properties, "send.blocksize");
 	}
-	
+
 	/**
 	 * Called when the preferences dialog is cancelled.
 	 */
 	public void configCancelled() { }
-	
+
 	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo() { return "$Id: DCCPlugin.java 969 2007-04-30 18:38:20Z ShaneMcC $"; }	
+	public static String getSvnInfo() { return "$Id: DCCPlugin.java 969 2007-04-30 18:38:20Z ShaneMcC $"; }
 }
 
