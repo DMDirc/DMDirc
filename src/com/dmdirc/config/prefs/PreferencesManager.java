@@ -27,6 +27,7 @@ import com.dmdirc.config.prefs.validator.NumericalValidator;
 import com.dmdirc.config.prefs.validator.StringLengthValidator;
 import com.dmdirc.themes.Theme;
 import com.dmdirc.themes.ThemeManager;
+import com.dmdirc.ui.swing.components.PluginPanel;
 import com.dmdirc.ui.swing.dialogs.prefs.URLConfigPanel;
 import com.dmdirc.ui.swing.dialogs.prefs.UpdateConfigPanel;
 
@@ -84,6 +85,7 @@ public class PreferencesManager {
         addConnectionCategory();
         addMessagesCategory();
         addGuiCategory();
+        addPluginsCategory();
         addUrlHandlerCategory();
         addUpdatesCategory();
         addAdvancedCategory();
@@ -453,6 +455,15 @@ public class PreferencesManager {
                 "Foreground colour to use for active treeview node"));
 
         parent.addSubCategory(category);
+    }
+    
+    /**
+     * Creates and adds the "Plugins" category.
+     */
+    private void addPluginsCategory() {
+        // TODO: Abstract the panel
+        
+        addCategory(new PreferencesCategory("Plugins", "", new PluginPanel()));
     }
 
     /**

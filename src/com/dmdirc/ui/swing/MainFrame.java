@@ -66,7 +66,6 @@ import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
@@ -227,18 +226,6 @@ public final class MainFrame extends JFrame implements WindowListener,
         } else {
             return null;
         }
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public void addPluginMenu(final JMenuItem menuItem) {
-        menu.addPluginMenu(menuItem);
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public void removePluginMenu(final JMenuItem menuItem) {
-        menu.removePluginMenu(menuItem);
     }
 
     /** {@inheritDoc}. */

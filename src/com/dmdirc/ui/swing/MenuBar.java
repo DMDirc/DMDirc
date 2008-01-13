@@ -28,7 +28,6 @@ import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.components.TextFrame;
 import com.dmdirc.ui.swing.dialogs.FeedbackDialog;
 import com.dmdirc.ui.swing.dialogs.NewServerDialog;
-import com.dmdirc.ui.swing.dialogs.PluginDialog;
 import com.dmdirc.ui.swing.dialogs.about.AboutDialog;
 import com.dmdirc.ui.swing.dialogs.aliases.AliasManagerDialog;
 import com.dmdirc.ui.swing.dialogs.prefs.PreferencesDialog;
@@ -55,8 +54,6 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    /** Plugins menu. */
-    private PluginsMenu plugins;
     /** CSD. */
     private JMenuItem csd;
     /** SSD. */
@@ -147,9 +144,6 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         csd.setActionCommand("ChannelSettings");
         csd.addActionListener(this);
         menu.add(csd);
-
-        plugins = new PluginsMenu();
-        menu.add(plugins);
     }
 
     /**
@@ -183,24 +177,6 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         menu.add(menuItem);
     }
 
-    /**
-     * Adds a JMenuItem to the plugin menu.
-     *
-     * @param menuItem The menu item to be added.
-     */
-    public void addPluginMenu(final JMenuItem menuItem) {
-        plugins.addPluginMenu(menuItem);
-    }
-
-    /**
-     * Removes a JMenuItem from the plugin menu.
-     *
-     * @param menuItem The menu item to be removed.
-     */
-    public void removePluginMenu(final JMenuItem menuItem) {
-        plugins.removePluginMenu(menuItem);
-    }
-
     /** 
      * {@inheritDoc}
      *  
@@ -218,8 +194,6 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
             ProfileManagerDialog.showProfileManagerDialog();
         } else if (e.getActionCommand().equals("Exit")) {
             ((MainFrame) Main.getUI().getMainWindow()).quit();
-        } else if (e.getActionCommand().equals("ManagePlugins")) {
-            PluginDialog.showPluginDialog();
         } else if (e.getActionCommand().equals("Actions")) {
             //ActionsManagerDialog.showActionsManagerDialog();
             com.dmdirc.ui.swing.dialogs.actionsmanager.ActionsManagerDialog.showActionsManagerDialog();

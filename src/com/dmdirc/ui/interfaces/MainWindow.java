@@ -52,20 +52,6 @@ public interface MainWindow {
     Window getActiveFrame();
     
     /**
-     * Adds a JMenuItem to the plugin menu.
-     *
-     * @param menuItem The menu item to be added.
-     */
-    void addPluginMenu(final JMenuItem menuItem);
-    
-    /**
-     * Removes a JMenuItem from the plugin menu.
-     *
-     * @param menuItem The menu item to be removed.
-     */
-    void removePluginMenu(final JMenuItem menuItem);
-    
-    /**
      * Quits the client.
      */
     void quit();
