@@ -31,7 +31,6 @@ import com.dmdirc.config.prefs.PreferencesCategory;
 import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.interfaces.PreferencesInterface;
 import com.dmdirc.ui.swing.MainFrame;
 
 import com.dmdirc.ui.swing.components.SwingPreferencesPanel;
@@ -43,7 +42,7 @@ import javax.swing.JOptionPane;
 /**
  * Allows the user to modify global client preferences.
  */
-public final class PreferencesDialog implements PreferencesInterface, ConfigChangeListener {
+public final class PreferencesDialog implements ConfigChangeListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -101,17 +100,8 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     }
     
     /** {@inheritDoc}. */
-    @Override
     @Deprecated
-    public void configClosed(final Properties properties) {
-        for (PreferencesCategory category : manager.getCategories()) {
-            if (category.hasObject() && category.getObject() instanceof URLConfigPanel) {
-                ((URLConfigPanel) category.getObject()).save();
-            } else if (category.hasObject() && category.getObject() instanceof UpdateConfigPanel) {
-                ((UpdateConfigPanel) category.getObject()).save();
-            }
-        }
-        
+    public void configClosed(final Properties properties) {       
         final Identity identity = IdentityManager.getConfigIdentity();
         for (Map.Entry<Object, Object> entry : properties.entrySet()) {
             final String[] args = ((String) entry.getKey()).split("\\.", 2);
@@ -142,7 +132,6 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     
     
     /** {@inheritDoc} */
-    @Override
     public void configCancelled() {
         dispose();
     }

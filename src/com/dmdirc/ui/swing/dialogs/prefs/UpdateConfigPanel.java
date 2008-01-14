@@ -25,6 +25,7 @@ package com.dmdirc.ui.swing.dialogs.prefs;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.ui.swing.components.PackingTable;
 import com.dmdirc.updater.UpdateChecker;
 import java.awt.event.ActionEvent;
@@ -39,7 +40,8 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Updates configuration UI.
  */
-public class UpdateConfigPanel extends JPanel implements ActionListener {
+public class UpdateConfigPanel extends JPanel implements ActionListener, 
+        PreferencesInterface {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -67,9 +69,8 @@ public class UpdateConfigPanel extends JPanel implements ActionListener {
         layoutComponents();
     }
 
-    /**
-     * Saves the states of all the updates.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void save() {
         final Identity identity = IdentityManager.getConfigIdentity();
         if (enable.isSelected()) {

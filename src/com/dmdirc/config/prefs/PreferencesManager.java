@@ -31,6 +31,7 @@ import com.dmdirc.ui.swing.components.PluginPanel;
 import com.dmdirc.ui.swing.dialogs.prefs.URLConfigPanel;
 import com.dmdirc.ui.swing.dialogs.prefs.UpdateConfigPanel;
 
+import com.dmdirc.util.ListenerList;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +50,9 @@ public class PreferencesManager {
     /** A list of categories. */
     private final List<PreferencesCategory> categories
             = new ArrayList<PreferencesCategory>();
+    
+    /** A list of listeners. */
+    private final ListenerList listeners = new ListenerList();
 
     /**
      * Creates a new instance of PreferencesManager.
@@ -66,6 +70,10 @@ public class PreferencesManager {
      */
     public void addCategory(final PreferencesCategory category) {
         categories.add(category);
+        
+        if (category.hasObject()) {
+            listeners.add(PreferencesInterface.class, category.getObject());
+        }
     }
 
     /**

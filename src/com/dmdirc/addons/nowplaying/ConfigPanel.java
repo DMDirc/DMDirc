@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.nowplaying;
 
+import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.ui.swing.components.reorderablelist.ReorderableJList;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
@@ -37,7 +38,7 @@ import javax.swing.JScrollPane;
 /**
  * Now playing plugin config panel.
  */
-public class ConfigPanel extends JPanel {
+public class ConfigPanel extends JPanel implements PreferencesInterface {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -52,11 +53,14 @@ public class ConfigPanel extends JPanel {
     /** Media sources. */
     private final List<String> sources;
     
+    private final NowPlayingPlugin plugin;
+    
     /** Creates a new instance of ConfigPanel. */
-    public ConfigPanel(final List<String> sources) {
+    public ConfigPanel(final NowPlayingPlugin plugin, final List<String> sources) {
         super();
         
         this.sources = new LinkedList<String>(sources);
+        this.plugin = plugin;
         
         initComponents();
     }
@@ -85,5 +89,11 @@ public class ConfigPanel extends JPanel {
         }
         
         return newSources;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void save() {
+        plugin.saveSettings(getSources());
     }
 }

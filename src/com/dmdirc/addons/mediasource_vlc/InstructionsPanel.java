@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.mediasource_vlc;
 
+import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.ui.swing.components.HTMLLabel;
 
 import javax.swing.JPanel;
@@ -33,7 +34,7 @@ import net.miginfocom.swing.MigLayout;
  * 
  * @author chris
  */
-class InstructionsPanel extends JPanel {
+class InstructionsPanel extends JPanel implements PreferencesInterface {
     
     private static final long serialVersionUID = 1;
 
@@ -61,6 +62,12 @@ class InstructionsPanel extends JPanel {
                 "<li>For Windows users this will be under the main VLC directory, e.g. " +
                 "C:\\Program Files\\VLC\\http</ul><li>Click 'Save'<li>Restart VLC</ol></html>");
         add(instructions);
+    }
+
+    /** {@inheritDpc} */
+    @Override
+    public void save() {
+        // Do nothing
     }
 
 }

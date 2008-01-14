@@ -89,18 +89,20 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
     /** {@inheritDoc} */
     @Override
     public void showConfig(final PreferencesManager manager) {
-        configPanel = new ConfigPanel(order);
+        configPanel = new ConfigPanel(this, order);
         
         final PreferencesCategory category = new PreferencesCategory("Now Playing",
                 "General options for the plugin", configPanel);
         manager.getCategory("Plugins").addSubCategory(category);
-        
-        //order = configPanel.getSources();
-        //saveSettings();
     }
     
-    /** Saves the plugins settings. */
-    private void saveSettings() {
+    /**
+     * Saves the plugins settings.
+     * 
+     * @param newOrder The new order for sources
+     */
+    protected void saveSettings(final List<String> newOrder) {
+        order = newOrder;
         IdentityManager.getConfigIdentity().setOption(DOMAIN, "sourceOrder", order);
     }
     

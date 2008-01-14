@@ -22,6 +22,8 @@
 
 package com.dmdirc.addons.nickcolours;
 
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.ui.swing.UIUtilities;
 
 import java.awt.BorderLayout;
@@ -47,7 +49,8 @@ import javax.swing.table.TableCellRenderer;
  *
  * @author Chris
  */
-public class NickColourPanel extends JPanel implements ActionListener {
+public class NickColourPanel extends JPanel implements ActionListener, 
+        PreferencesInterface {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -213,6 +216,22 @@ public class NickColourPanel extends JPanel implements ActionListener {
         }
         
         return res;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void save() {
+        // Remove all old config entries
+        for (Object[] parts : plugin.getData()) {
+            IdentityManager.getConfigIdentity().unsetOption(plugin.DOMAIN,
+                    "color:" + parts[0] + ":" + parts[1]);
+        }
+ 	
+        // And write the new ones
+        for (Object[] row : getData()) {
+            IdentityManager.getConfigIdentity().setOption(plugin.DOMAIN,
+                    "color:" + row[0] + ":" + row[1], row[2] + ":" + row[3]);
+        }
     }
     
 }

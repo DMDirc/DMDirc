@@ -29,8 +29,8 @@ import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.interfaces.PreferencesInterface;
 import com.dmdirc.ui.swing.MainFrame;
+import com.dmdirc.ui.swing.dialogs.prefs.PreferencesDialog;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
@@ -124,7 +124,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
     private JPanel mainPanel;
 
     /** Preferences owner. */
-    private transient PreferencesInterface owner;
+    private transient PreferencesDialog owner;
 
     /** title of window. */
     private String windowTitle;
@@ -138,7 +138,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
      * @param preferencesOwner Owner of the preferences dialog
      * @param title preferences dialog title
      */
-    public SwingPreferencesPanel(final PreferencesInterface preferencesOwner,
+    public SwingPreferencesPanel(final PreferencesDialog preferencesOwner,
             final String title) {
         super((MainFrame) Main.getUI().getMainWindow(), false);
 

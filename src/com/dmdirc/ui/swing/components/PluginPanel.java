@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing.components;
 
+import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
@@ -47,7 +48,7 @@ import net.miginfocom.swing.MigLayout;
  * Plugin manager dialog. Allows the user to manage their plugins.
  */
 public final class PluginPanel extends JPanel implements
-        ActionListener, ListSelectionListener {
+        ActionListener, ListSelectionListener, PreferencesInterface {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -182,6 +183,12 @@ public final class PluginPanel extends JPanel implements
             }
             selectedPlugin = selected;
         }
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void save() {
+        // TODO: Make this panel cache & use the save method
     }
     
 }

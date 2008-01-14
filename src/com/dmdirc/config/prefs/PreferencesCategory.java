@@ -25,32 +25,58 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Represents one category of preferences. Categories can contain 0 or more
+ * subcategories, and either 0 or more PreferencesSettings or exactly 1
+ * PreferencesInterface object.
+ * 
  * @author chris
  */
 public class PreferencesCategory {
         
+    /** The title (name) of this category. */
     private final String title;
     
+    /** A description of this category. */
     private final String description;
     
+    /** A list of settings in this category. */
     private final List<PreferencesSetting> settings = new ArrayList<PreferencesSetting>();
     
+    /** A list of subcategories of this category. */
     private final List<PreferencesCategory> subcats = new ArrayList<PreferencesCategory>();
     
-    private final Object object;
+    /** The replacement object to use for this category. */
+    private final PreferencesInterface object;
 
+    /**
+     * Creates a new preferences category that contains settings.
+     * 
+     * @param title The title of this preferences category
+     * @param description The description of this category
+     */
     public PreferencesCategory(final String title, final String description) {
         this(title, description, null);
     }
     
+    /**
+     * Creates a new preferences category that contains an object.
+     * 
+     * @param title The title of this preferences category
+     * @param description The description of this category
+     * @param object The replacement object for this category
+     */
     public PreferencesCategory(final String title, final String description,
-            final Object object) {
+            final PreferencesInterface object) {
         this.title = title;
         this.description = description;
         this.object = object;
     }
     
+    /**
+     * Adds the specified setting to this category.
+     * 
+     * @param setting The setting to be added
+     */
     public void addSetting(final PreferencesSetting setting) {
         if (hasObject()) {
             throw new IllegalArgumentException("Can't add settings to a " +
@@ -60,31 +86,68 @@ public class PreferencesCategory {
         settings.add(setting);
     }
     
+    /**
+     * Adds the specified subcategory to this category.
+     * 
+     * @param subcategory The category to be asdded
+     */
     public void addSubCategory(final PreferencesCategory subcategory) {
         subcats.add(subcategory);
     }
 
+    /**
+     * Retrieves the description of this category.
+     * 
+     * @return This category's description
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Retrieves the settings in this category.
+     * 
+     * @return This category's settings
+     */
     public List<PreferencesSetting> getSettings() {
         return settings;
     }
 
+    /**
+     * Retrieves the subcategories of this category.
+     * 
+     * @return This category's subcategories
+     */
     public List<PreferencesCategory> getSubcats() {
         return subcats;
     }
 
+    /**
+     * Retrieves the title of this category.
+     * 
+     * @return This category's title
+     */
     public String getTitle() {
         return title;
     }
     
+    /**
+     * Determines if this category has a replacement object.
+     * 
+     * @return True if the category has a replacement object, false otherwise
+     * @see #getObject()
+     */
     public boolean hasObject() {
         return object != null;
     }
     
-    public Object getObject() {
+    /**
+     * Retrieves this category's replacement object.
+     * 
+     * @return This category's replacement object.
+     * @see #hasObject()
+     */
+    public PreferencesInterface getObject() {
         return object;
     }
 

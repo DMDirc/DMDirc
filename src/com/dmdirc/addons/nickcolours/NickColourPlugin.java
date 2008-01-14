@@ -52,7 +52,7 @@ import java.util.Map;
 public final class NickColourPlugin extends Plugin implements ActionListener {
     
     /** The config domain to use for this plugin. */
-    private static final String DOMAIN = "plugin-NickColour";
+    protected static final String DOMAIN = "plugin-NickColour";
     
     /** "Random" colours to use to colour nicknames. */
     private String[] randColours = new String[] {

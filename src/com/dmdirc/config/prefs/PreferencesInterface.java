@@ -20,23 +20,16 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.interfaces;
-
-import java.util.Properties;
+package com.dmdirc.config.prefs;
 
 /**
- * Interface for classes requiring a standard preferences dialog.
+ * Interface for objects that are added to the preferences dialog.
  */
 public interface PreferencesInterface {
     
     /** 
-     * Called when the preferences dialog is closed.
-     * @param properties user preferences
+     * Called when the preferences dialog is being saved.
      */
-    void configClosed(Properties properties);
+    void save();
     
-    /** 
-     * Called when the preferences dialog is cancelled.
-     */
-    void configCancelled();
 }

@@ -26,6 +26,7 @@ import com.dmdirc.ui.swing.components.renderers.URISchemeCellRenderer;
 import com.dmdirc.ui.swing.components.renderers.URIHandlerCellRenderer;
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.PackingTable;
@@ -57,7 +58,7 @@ import net.miginfocom.swing.MigLayout;
  * configured.
  */
 public class URLConfigPanel extends JPanel implements ListSelectionListener,
-        ActionListener {
+        ActionListener, PreferencesInterface {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -173,9 +174,8 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
         add(activeComponent, "growx, pushx");
     }
 
-    /**
-     * Saves the changes.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void save() {
         valueChanged(null);
         final Map<URI, String> handlers = model.getURLHandlers();
