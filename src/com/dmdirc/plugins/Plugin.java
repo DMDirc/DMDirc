@@ -34,8 +34,8 @@ public abstract class Plugin implements Comparable<Plugin> {
 	 * Called when the plugin is constructed.
 	 */
 	public Plugin() { }
-        
-        /**
+	
+	/**
 	 * Called when the plugin is loaded.
 	 */
 	public abstract void onLoad();
@@ -47,20 +47,20 @@ public abstract class Plugin implements Comparable<Plugin> {
 	 * @return true if the plugin can be used, else false.
 	 */
 	public boolean checkPrerequisites() { return true; }
-        
-        /**
+		
+	/**
 	 * Called when the plugin is about to be unloaded.
-         */
+	 */
 	public abstract void onUnload();
-            	
+	
 	/**
 	 * Called to allow plugins to add their configuration options to the manager.
-         * 
-         * @param manager The preferences manager that configuration options
-         * need to be added to.
+	 *
+	 * @param manager The preferences manager that configuration options
+	 * need to be added to.
 	 */
 	public void showConfig(final PreferencesManager manager) { }
-        
+	
 	/**
 	 * Compares this object with the specified object for order.
 	 * Returns a negative integer, zero, or a positive integer as per String.compareTo();

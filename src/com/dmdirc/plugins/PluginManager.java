@@ -55,7 +55,7 @@ public class PluginManager implements ActionListener {
 	private PluginManager() {
 		final String fs = System.getProperty("file.separator");
 		myDir = Main.getConfigDir() + "plugins" + fs;
-                ActionManager.addListener(this, CoreActionType.CLIENT_PREFS_OPENED);
+		ActionManager.addListener(this, CoreActionType.CLIENT_PREFS_OPENED);
 	}
 
 	/**
@@ -213,11 +213,11 @@ public class PluginManager implements ActionListener {
 	 */
 	public List<PluginInfo> getPossiblePluginInfos(final boolean addPlugins) {
 		final ArrayList<PluginInfo> res = new ArrayList<PluginInfo>();
-
+		
 		final LinkedList<File> dirs = new LinkedList<File>();
-
+		
 		dirs.add(new File(myDir));
-
+		
 		while (!dirs.isEmpty()) {
 			final File dir = dirs.pop();
 			if (dir.isDirectory()) {
@@ -274,16 +274,24 @@ public class PluginManager implements ActionListener {
 		return new ArrayList<PluginInfo>(knownPlugins.values());
 	}
 
-        /** {@inheritDoc} */
-        @Override
-        public void processEvent(final ActionType type, final StringBuffer format,
-                final Object... arguments) {
-            if (type.equals(CoreActionType.CLIENT_PREFS_OPENED)) {
-                for (PluginInfo pi : getPluginInfos()) {
-                    if (pi.isLoaded()) {
-                        pi.getPlugin().showConfig((PreferencesManager) arguments[0]);
-                    }
-                }
-            }
-        }
+	/** {@inheritDoc} */
+	@Override
+	public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
+		if (type.equals(CoreActionType.CLIENT_PREFS_OPENED)) {
+			for (PluginInfo pi : getPluginInfos()) {
+				if (!pi.isLoaded()) {
+					pi.loadPluginTemp();
+				}
+				if (pi.isLoaded() || pi.isTempLoaded()) {
+					pi.getPlugin().showConfig((PreferencesManager) arguments[0]);
+				}
+			}
+		} else if (type.equals(CoreActionType.CLIENT_PREFS_CLOSED)) {
+			for (PluginInfo pi : getPluginInfos()) {
+				if (pi.isTempLoaded()) {
+					pi.unloadPlugin();
+				}
+			}
+		}
+	}
 }

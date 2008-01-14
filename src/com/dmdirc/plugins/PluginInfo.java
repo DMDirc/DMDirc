@@ -50,6 +50,8 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	private PluginClassLoader classloader = null;
 	/** The resource manager used by this pluginInfo */
 	private ResourceManager myResourceManager = null;
+	/** Is this plugin only loaded temporarily? */
+	private boolean tempLoaded = false;
 	/** List of classes this plugin has */
 	private List<String> myClasses = new ArrayList<String>();
 
@@ -264,8 +266,15 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 * Is this plugin loaded?
 	 */
 	public boolean isLoaded() {
-		return (plugin != null);
+		return (plugin != null) && !tempLoaded;
 	}
+	
+	/**
+	 * Is this plugin temporarily loaded?
+	 */
+	public boolean isTempLoaded() {
+		return (plugin != null) && tempLoaded;
+	}	
 
 	/**
 	 * Load entire plugin.
@@ -285,10 +294,29 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	}
 
 	/**
+	 * Load the plugin files temporarily.
+	 */
+	public void loadPluginTemp() {
+		tempLoaded = true;
+		loadPlugin();
+	}
+	
+	/**
+	 * Load a plugin permanently, if it was previously loaded as temp
+	 */
+	public void loadPluginPerm() {
+		if (isTempLoaded()) {
+			unloadPlugin();
+			tempLoaded = false;
+			loadPlugin();
+		}
+	}
+	
+	/**
 	 * Load the plugin files.
 	 */
 	public void loadPlugin() {
-		if (isLoaded() || metaData == null) {
+		if (isLoaded() || isTempLoaded() || metaData == null) {
 			return;
 		}
 		loadClass(getMainClass());
@@ -315,9 +343,13 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			if (temp instanceof Plugin) {
 				if (((Plugin) temp).checkPrerequisites()) {
 					plugin = (Plugin) temp;
-					plugin.onLoad();
+					if (!tempLoaded) {
+						plugin.onLoad();
+					}
 				} else {
-					Logger.userError(ErrorLevel.LOW, "Prerequisites for plugin not met. ('"+filename+":"+getMainClass()+"')");
+					if (!tempLoaded) {
+						Logger.userError(ErrorLevel.LOW, "Prerequisites for plugin not met. ('"+filename+":"+getMainClass()+"')");
+					}
 				}
 			}
 		} catch (ClassNotFoundException cnfe) {
@@ -333,7 +365,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 		} catch (NoClassDefFoundError ncdf) {
 			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+filename+":"+getMainClass()+"'): Unable to find class: " + ncdf.getMessage(), ncdf);
 		} catch (VerifyError ve) {
-			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+filename+":"+getMainClass()+"')", ve);
+			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+filename+":"+getMainClass()+"') - Incompatible", ve);
 		}
 	}
 
@@ -341,13 +373,16 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 * Unload the plugin if possible.
 	 */
 	public void unloadPlugin() {
-		if (!isPersistant() && isLoaded()) {
-			try {
-				plugin.onUnload();
-			} catch (Exception e) {
-				Logger.userError(ErrorLevel.MEDIUM, "Error in onUnload for "+getName()+":"+e.getMessage(), e);
+		if (!isPersistant() && (isLoaded() || isTempLoaded())) {
+			if (!isTempLoaded()) {
+				try {
+					plugin.onUnload();
+				} catch (Exception e) {
+					Logger.userError(ErrorLevel.MEDIUM, "Error in onUnload for "+getName()+":"+e.getMessage(), e);
+				}
+				ActionManager.processEvent(CoreActionType.PLUGIN_UNLOADED, null, this);
 			}
-			ActionManager.processEvent(CoreActionType.PLUGIN_UNLOADED, null, this);
+			tempLoaded = false;
 			plugin = null;
 			classloader = null;
 		}
