@@ -103,7 +103,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
     private final Map<PreferencesSetting, OptionalColourChooser> optionalColours;
 
     /** Categories in the dialog. */
-    private final Map<String, JPanel> categories;
+    private final Map<PreferencesCategory, JPanel> categories;
 
     /** Custom panels, not to be laid out automatically. */
     private final List<JPanel> panels;
@@ -140,7 +140,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
 
         owner = preferencesOwner;
 
-        categories = new HashMap<String, JPanel>();
+        categories = new HashMap<PreferencesCategory, JPanel>();
 
         textFields = new HashMap<PreferencesSetting, JTextField>();
         checkBoxes = new HashMap<PreferencesSetting, JCheckBox>();
@@ -252,10 +252,10 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         final JLabel label = getLabel(setting);
         final JComponent option = getComponent(setting);
 
-        ((JPanel) categories.get(category.getTitle()).getComponent(1)).add(label);
+        ((JPanel) categories.get(category).getComponent(1)).add(label);
 
         label.setLabelFor(option);
-        ((JPanel) categories.get(category.getTitle()).getComponent(1)).add(option);
+        ((JPanel) categories.get(category).getComponent(1)).add(option);
     }
 
     /**
@@ -276,6 +276,12 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         return label;
     }
 
+    /**
+     * Retrieves the component for the specified setting.
+     * 
+     * @param setting The setting whose component is being requested
+     * @return An appropriate JComponent descendant
+     */
     private final JComponent getComponent(final PreferencesSetting setting) {
         JComponent option;
 
@@ -354,11 +360,40 @@ public final class SwingPreferencesPanel extends StandardDialog implements
      *
      * @param category The category to be added
      */
-    private void addCategory(final PreferencesCategory category, final String parent) {
-        addCategory(parent, category.getTitle(), category.getDescription());
+    private void addCategory(final PreferencesCategory category,
+            final PreferencesCategory parent) {
+        final JPanel panel = new JPanel(new BorderLayout(SMALL_BORDER,
+                LARGE_BORDER));
+
+        DefaultMutableTreeNode parentNode;
+        DefaultMutableTreeNode newNode;
+
+        newNode = new DefaultMutableTreeNode(category.getTitle());
+
+        if (parent == null) {
+            parentNode = rootNode;
+        } else {
+            parentNode = (DefaultMutableTreeNode) tabList.getNextMatch(
+                    parent.getTitle(), 0, Position.Bias.Forward)
+                    .getLastPathComponent();
+        }
+
+        categories.put(category, panel);
+        mainPanel.add(panel, category.getTitle());
+        ((DefaultTreeModel) tabList.getModel()).insertNodeInto(newNode, parentNode,
+                parentNode.getChildCount());
+        tabList.scrollPathToVisible(new TreePath(newNode.getPath()));
+
+        final TextLabel infoLabel = new TextLabel(category.getDescription());
+        if (category.getDescription().isEmpty()) {
+            infoLabel.setVisible(false);
+        }
+
+        panel.add(infoLabel, BorderLayout.PAGE_START);
+        panel.add(new JPanel(new SpringLayout()), BorderLayout.CENTER);        
 
         for (PreferencesCategory child : category.getSubcats()) {
-            addCategory(child, category.getTitle());
+            addCategory(child, category);
         }
 
         if (category.hasObject()) {
@@ -368,7 +403,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
             }
 
             panels.add((JPanel) category.getObject());
-            categories.get(category.getTitle()).add((JPanel) category.getObject(), 1);
+            categories.get(category).add((JPanel) category.getObject(), 1);
 
             return;
         }
@@ -378,51 +413,15 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         }
     }
 
-    /** {@inheritDoc} */
-    public void addCategory(final PreferencesCategory category) {
-        addCategory(category, "");
-    }
-
-    /** {@inheritDoc} */
+    /**
+     * Adds the specified categories to the preferences dialog.
+     * 
+     * @param categories The categories to be added
+     */
     public void addCategories(final Collection<? extends PreferencesCategory> categories) {
         for (PreferencesCategory category : categories) {
-            addCategory(category);
+            addCategory(category, null);
         }
-    }
-
-    /** {@inheritDoc} */
-    @Deprecated
-    public void addCategory(final String parentCategory, final String name,
-            final String blurb) {
-        final JPanel panel = new JPanel(new BorderLayout(SMALL_BORDER,
-                LARGE_BORDER));
-
-        DefaultMutableTreeNode parent;
-        DefaultMutableTreeNode newNode;
-
-        newNode = new DefaultMutableTreeNode(name);
-
-        if (parentCategory.isEmpty()) {
-            parent = rootNode;
-        } else {
-            parent = (DefaultMutableTreeNode) tabList.getNextMatch(
-                    parentCategory, 0, Position.Bias.Forward)
-                    .getLastPathComponent();
-        }
-
-        categories.put(name, panel);
-        mainPanel.add(panel, name);
-        ((DefaultTreeModel) tabList.getModel()).insertNodeInto(newNode, parent,
-                parent.getChildCount());
-        tabList.scrollPathToVisible(new TreePath(newNode.getPath()));
-
-        final TextLabel infoLabel = new TextLabel(blurb);
-        if (blurb.isEmpty()) {
-            infoLabel.setVisible(false);
-        }
-
-        panel.add(infoLabel, BorderLayout.PAGE_START);
-        panel.add(new JPanel(new SpringLayout()), BorderLayout.CENTER);
     }
 
     /**
