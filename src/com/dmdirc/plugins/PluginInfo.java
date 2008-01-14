@@ -306,9 +306,8 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 */
 	public void loadPluginPerm() {
 		if (isTempLoaded()) {
-			unloadPlugin();
 			tempLoaded = false;
-			loadPlugin();
+			plugin.onLoad();
 		}
 	}
 	
