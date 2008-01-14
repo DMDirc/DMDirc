@@ -26,9 +26,7 @@ import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesCategory;
 import com.dmdirc.config.prefs.PreferencesSetting;
-import com.dmdirc.config.prefs.PreferencesType;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
+import com.dmdirc.config.prefs.validator.NumericalValidator;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.dialogs.prefs.PreferencesDialog;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
@@ -48,12 +46,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -63,7 +58,6 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JTree;
-import javax.swing.ListCellRenderer;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
 import javax.swing.WindowConstants;
@@ -91,22 +85,22 @@ public final class SwingPreferencesPanel extends StandardDialog implements
     private static final long serialVersionUID = 8;
 
     /** All text fields in the dialog, used to apply settings. */
-    private final Map<String, JTextField> textFields;
+    private final Map<PreferencesSetting, JTextField> textFields;
 
     /** All checkboxes in the dialog, used to apply settings. */
-    private final Map<String, JCheckBox> checkBoxes;
+    private final Map<PreferencesSetting, JCheckBox> checkBoxes;
 
     /** All combo boxes in the dialog, used to apply settings. */
-    private final Map<String, JComboBox> comboBoxes;
+    private final Map<PreferencesSetting, JComboBox> comboBoxes;
 
     /** All spinners in the dialog, used to apply settings. */
-    private final Map<String, JSpinner> spinners;
+    private final Map<PreferencesSetting, JSpinner> spinners;
 
     /** All colours in the dialog, used to apply settings. */
-    private final Map<String, ColourChooser> colours;
+    private final Map<PreferencesSetting, ColourChooser> colours;
 
     /** All optional colours in the dialog, used to apply settings. */
-    private final Map<String, OptionalColourChooser> optionalColours;
+    private final Map<PreferencesSetting, OptionalColourChooser> optionalColours;
 
     /** Categories in the dialog. */
     private final Map<String, JPanel> categories;
@@ -148,12 +142,12 @@ public final class SwingPreferencesPanel extends StandardDialog implements
 
         categories = new HashMap<String, JPanel>();
 
-        textFields = new HashMap<String, JTextField>();
-        checkBoxes = new HashMap<String, JCheckBox>();
-        comboBoxes = new HashMap<String, JComboBox>();
-        spinners = new HashMap<String, JSpinner>();
-        colours = new HashMap<String, ColourChooser>();
-        optionalColours = new HashMap<String, OptionalColourChooser>();
+        textFields = new HashMap<PreferencesSetting, JTextField>();
+        checkBoxes = new HashMap<PreferencesSetting, JCheckBox>();
+        comboBoxes = new HashMap<PreferencesSetting, JComboBox>();
+        spinners = new HashMap<PreferencesSetting, JSpinner>();
+        colours = new HashMap<PreferencesSetting, ColourChooser>();
+        optionalColours = new HashMap<PreferencesSetting, OptionalColourChooser>();
 
         panels = new ArrayList<JPanel>();
 
@@ -245,126 +239,115 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         layout.putConstraint(SpringLayout.SOUTH, getContentPane(), LARGE_BORDER,
                 SpringLayout.SOUTH, getRightButton());
     }
-    
-    /**
-     * Initialises and adds a component to a panel.
-     * 
-     * @param category The category the setting is being added to
-     * @param setting The setting to be used
-     * @param args component specific arguments
-     */
-    private void addComponent(final PreferencesCategory category,
-            final PreferencesSetting setting, final Object ... args) {
-        addComponent(categories.get(category.getTitle()), setting.getOption(),
-                setting.getTitle(), setting.getHelptext(), setting.getType(),
-                args);
-    }
 
-            
     /**
      * Initialises and adds a component to a panel.
      *
-     * @param parent parent panel
-     * @param optionName option name to use
-     * @param title option display name
-     * @param helpText help text for the option
-     * @param type the type of component to use
-     * @param args component specific arguments<p>
-     * <ul>
-     * <li>TEXTFIELD takes a String as its default value</li>
-     * <li>CHECKBOX takes a boolean as its default state</li>
-     * <li>COMBOBOX takes a String[] of options, a String
-     *   selected option and a boolean to specify if its editable</li>
-     * <li>SPINNER takes an Integer value to specify the default value or
-     *   4 Integers, default, minimum maximum, step size</li>
-     * <li>COLOUR takes a String as the initial value, and
-     *   two booleans, one to show irc colours, one to show hex colours</li>
-     * <li>OPTIONALCOLOUR takes a String as the initial value, and
-     *   three booleans, one to set the initial state (enabled or disabled),
-     *   one to show irc colours, one to show hex colours</li>
-     * <li>TABLE takes a table model param</li>
-     * </ul>
+     * @param category The category the setting is being added to
+     * @param setting The setting to be used
      */
-    private void addComponent(final JPanel parent, final String optionName,
-            final String title, final String helpText, final PreferencesType type,
-            final Object... args) {
-        final JLabel label = new JLabel(title, JLabel.TRAILING);
-        if (helpText.isEmpty()) {
+    private void addComponent(final PreferencesCategory category,
+            final PreferencesSetting setting) {
+
+        final JLabel label = getLabel(setting);
+        final JComponent option = getComponent(setting);
+
+        ((JPanel) categories.get(category.getTitle()).getComponent(1)).add(label);
+
+        label.setLabelFor(option);
+        ((JPanel) categories.get(category.getTitle()).getComponent(1)).add(option);
+    }
+
+    /**
+     * Retrieves the title label for the specified setting.
+     *
+     * @param setting The setting whose label is being requested
+     * @return A JLabel with the appropriate text and tooltip
+     */
+    private JLabel getLabel(final PreferencesSetting setting) {
+        final JLabel label = new JLabel(setting.getTitle() + ": ", JLabel.TRAILING);
+
+        if (setting.getHelptext().isEmpty()) {
             label.setToolTipText("No help available.");
         } else {
-            label.setToolTipText(helpText);
+            label.setToolTipText(setting.getHelptext());
         }
 
+        return label;
+    }
+
+    private final JComponent getComponent(final PreferencesSetting setting) {
         JComponent option;
 
-        ((JPanel) parent.getComponent(1)).add(label);
-        switch (type) {
+        switch (setting.getType()) {
             case TEXT:
                 option = new JTextField();
-                ((JTextField) option).setText((String) args[0]);
-                textFields.put(optionName, (JTextField) option);
+                ((JTextField) option).setText(setting.getValue());
+                textFields.put(setting, (JTextField) option);
                 break;
             case BOOLEAN:
                 option = new JCheckBox();
-                ((JCheckBox) option).setSelected((Boolean) args[0]);
-                checkBoxes.put(optionName, (JCheckBox) option);
+                ((JCheckBox) option).setSelected(Boolean.parseBoolean(setting.getValue()));
+                checkBoxes.put(setting, (JCheckBox) option);
                 break;
             case MULTICHOICE:
-                if (args[0] instanceof String[]) {
-                    option = new JComboBox((String[]) args[0]);
-                    ((JComboBox) option).setSelectedItem(args[1]);
-                } else {
-                    final DefaultComboBoxModel model = (DefaultComboBoxModel) args[0];
-                    option = new JComboBox(model);
-                    ((JComboBox) option).setRenderer((ListCellRenderer) args[3]);
-                    for (int i = 0; i < model.getSize(); i++) {
-                        final Object entry = model.getElementAt(i);
-                        if (((Entry) entry).getValue().equals(args[1])) {
-                            ((JComboBox) option).setSelectedItem(entry);
-                            break;
-                        }
-                    }
-                }
-                comboBoxes.put(optionName, (JComboBox) option);
-                ((JComboBox) option).setEditable((Boolean) args[2]);
+                //if (args[0] instanceof String[]) {
+                    option = new JComboBox(setting.getComboOptions().keySet()
+                            .toArray(new String[0]));
+                    ((JComboBox) option).setSelectedItem(setting.getValue());
+                //} else {
+//                    final DefaultComboBoxModel model = (DefaultComboBoxModel) args[0];
+  //                  option = new JComboBox(model);
+    //               ((JComboBox) option).setRenderer((ListCellRenderer) args[3]);
+     //               for (int i = 0; i < model.getSize(); i++) {
+       //                 final Object entry = model.getElementAt(i);
+         //               if (((Entry) entry).getValue().equals(args[1])) {
+           //                 ((JComboBox) option).setSelectedItem(entry);
+             //               break;
+               //         }
+                 //   }
+                //}
+                comboBoxes.put(setting, (JComboBox) option);
+                ((JComboBox) option).setEditable(false);
                 break;
             case INTEGER:
             case DURATION:
-                if (args.length == 1) {
-                    option = new JSpinner(new SpinnerNumberModel());
-                    try {
-                        ((JSpinner) option).setValue(args[0]);
-                    } catch (NumberFormatException ex) {
-                        ((JSpinner) option).setEnabled(false);
-                        Logger.userError(ErrorLevel.LOW, "Default value incorrect");
+                try {
+                    if (setting.getValidator() instanceof NumericalValidator) {
+                        option = new JSpinner(
+                                new SpinnerNumberModel(Integer.parseInt(setting.getValue()),
+                                ((NumericalValidator) setting.getValidator()).getMin(),
+                                ((NumericalValidator) setting.getValidator()).getMax(),
+                                1));
+                    } else {
+                        option = new JSpinner(new SpinnerNumberModel());
+
+                        ((JSpinner) option).setValue(Integer.parseInt(setting.getValue()));
                     }
-                } else {
-                    option = new JSpinner(
-                            new SpinnerNumberModel((Integer) args[0],
-                            (Integer) args[1], (Integer) args[2],
-                            (Integer) args[3]));
+                } catch (NumberFormatException ex) {
+                        option = new JSpinner(new SpinnerNumberModel());
                 }
-                spinners.put(optionName, (JSpinner) option);
+                
+                spinners.put(setting, (JSpinner) option);
                 break;
             case COLOUR:
-                option = new ColourChooser((String) args[0], (Boolean) args[1],
-                        (Boolean) args[2]);
-                colours.put(optionName, (ColourChooser) option);
+                option = new ColourChooser(setting.getValue(), true, true);
+                colours.put(setting, (ColourChooser) option);
                 break;
             case OPTIONALCOLOUR:
-                option = new OptionalColourChooser((String) args[0], (Boolean) args[1],
-                        (Boolean) args[2], (Boolean) args[3]);
-                optionalColours.put(optionName, (OptionalColourChooser) option);
+                option = new OptionalColourChooser(setting.getValue() == null ?
+                    "0" : setting.getValue(), setting.getValue() != null,
+                    true, true);
+                optionalColours.put(setting, (OptionalColourChooser) option);
                 break;
             default:
-                throw new IllegalArgumentException(type + " is not a valid option");
+                throw new IllegalArgumentException(setting.getType() + " is not a valid option");
         }
         option.setPreferredSize(new Dimension(Short.MAX_VALUE, option.getFont()
         .getSize()));
-        label.setLabelFor(option);
-        ((JPanel) parent.getComponent(1)).add(option);
-    }
 
+        return option;
+    }
 
     /**
      * Adds the specified category to the preferences dialog.
@@ -391,31 +374,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         }
 
         for (PreferencesSetting setting : category.getSettings()) {
-            switch(setting.getType()) {
-                case BOOLEAN:
-                    addComponent(category, setting, Boolean.parseBoolean(setting.getValue()));
-                    break;
-                case COLOUR:
-                    addComponent(category, setting, setting.getValue(), true, true);
-                    break;
-                case DURATION:
-                case INTEGER:
-                    addComponent(category, setting, Integer.parseInt(setting.getValue()));
-                    break;
-                case MULTICHOICE:
-                    addComponent(category, setting, 
-                            setting.getComboOptions().keySet().toArray(new String[0]),
-                            setting.getValue(), false);
-                    break;
-                case OPTIONALCOLOUR:
-                    addComponent(category, setting,
-                            setting.getValue() == null ? "" : setting.getValue(),
-                            setting.getValue() != null, true, true);
-                    break;
-                case TEXT:
-                    addComponent(category, setting, setting.getValue());
-                    break;
-            }
+            addComponent(category, setting);
         }
     }
 
@@ -423,7 +382,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
     public void addCategory(final PreferencesCategory category) {
         addCategory(category, "");
     }
-    
+
     /** {@inheritDoc} */
     public void addCategories(final Collection<? extends PreferencesCategory> categories) {
         for (PreferencesCategory category : categories) {
@@ -482,9 +441,10 @@ public final class SwingPreferencesPanel extends StandardDialog implements
             }
             saveOptions();
             dispose();
+            owner.dispose();
         } else if (getCancelButton().equals(actionEvent.getSource())) {
             dispose();
-            owner.configCancelled();
+            owner.dispose();
         }
     }
 
@@ -500,42 +460,39 @@ public final class SwingPreferencesPanel extends StandardDialog implements
 
     /** {@inheritDoc} */
     public void saveOptions() {
-        final Properties properties = new Properties();
-        for (String option : textFields.keySet()) {
-            properties.setProperty(option, textFields.get(option).getText());
+        for (Map.Entry<PreferencesSetting, JTextField> entry : textFields.entrySet()) {
+            entry.getKey().setValue(entry.getValue().getText());
+            entry.getKey().save();
         }
-        for (String option : checkBoxes.keySet()) {
-            properties.setProperty(option, ""
-                    + checkBoxes.get(option).isSelected());
+
+        for (Map.Entry<PreferencesSetting, JCheckBox> entry : checkBoxes.entrySet()) {
+            entry.getKey().setValue(String.valueOf(entry.getValue().isSelected()));
+            entry.getKey().save();
         }
-        for (String option : comboBoxes.keySet()) {
-            if (comboBoxes.get(option).getSelectedItem() != null) {
-                if (comboBoxes.get(option).getSelectedItem() instanceof String) {
-                    properties.setProperty(option, (String) comboBoxes.get(option)
-                    .getSelectedItem());
-                } else {
-                    properties.setProperty(option, (String) ((Entry) comboBoxes.get(option)
-                    .getSelectedItem()).getValue());
-                }
+        
+        for (Map.Entry<PreferencesSetting, JSpinner> entry : spinners.entrySet()) {
+            entry.getKey().setValue(String.valueOf(entry.getValue().getValue()));
+            entry.getKey().save();
+        }        
+        
+        for (Map.Entry<PreferencesSetting, ColourChooser> entry : colours.entrySet()) {
+            entry.getKey().setValue(entry.getValue().getColour());
+            entry.getKey().save();
+        }
+        
+        for (Map.Entry<PreferencesSetting, OptionalColourChooser> entry
+                : optionalColours.entrySet()) {
+            entry.getKey().setValue(entry.getValue().isEnabled() ?
+                entry.getValue().getColour() : null);
+            entry.getKey().save();
+        }        
+                
+        for (Map.Entry<PreferencesSetting, JComboBox> entry : comboBoxes.entrySet()) {
+            if (entry.getValue().getSelectedItem() != null) {
+                entry.getKey().setValue(entry.getValue().getSelectedItem().toString());
+                entry.getKey().save();
             }
         }
-        for (String option : spinners.keySet()) {
-            properties.setProperty(option, ""
-                    + spinners.get(option).getValue().toString());
-        }
-        for (String option : colours.keySet()) {
-            properties
-                    .setProperty(option, colours.get(option).getColour());
-        }
-        for (String option : optionalColours.keySet()) {
-            final OptionalColourChooser colour = optionalColours.get(option);
-            if (colour.isEnabled()) {
-                properties.setProperty(option, colour.getColour());
-            } else {
-                properties.setProperty(option, "");
-            }
-        }
-        owner.configClosed(properties);
     }
 
     /** {@inheritDoc} */

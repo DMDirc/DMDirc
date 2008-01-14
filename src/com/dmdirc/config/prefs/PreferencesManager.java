@@ -509,5 +509,14 @@ public class PreferencesManager {
                 "Configure how DMDirc handles different types of URLs",
                 new URLConfigPanel()));
     }
+    
+    /**
+     * Fires the "save" methods of all registered listeners.
+     */
+    public void fireSaveListeners() {
+        for (PreferencesInterface iface : listeners.get(PreferencesInterface.class)) {
+            iface.save();
+        }
+    }
 
 }

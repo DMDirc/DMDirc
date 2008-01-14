@@ -26,7 +26,7 @@ package com.dmdirc.config.prefs.validator;
  * 
  * @author chris
  */
-public class NumericalValidator implements Validator<Integer> {
+public class NumericalValidator implements Validator<String> {
     
     /** The minimum value for this number. */
     protected final int min;
@@ -51,7 +51,7 @@ public class NumericalValidator implements Validator<Integer> {
      * @return This validator's maximum value
      */
     public int getMax() {
-        return max;
+        return max == -1 ? Integer.MAX_VALUE : max;
     }
 
     /**
@@ -60,15 +60,23 @@ public class NumericalValidator implements Validator<Integer> {
      * @return This validator's minimum value
      */    
     public int getMin() {
-        return min;
+        return min == -1 ? Integer.MIN_VALUE : min;
     }
     
     /** {@inheritDoc} */
     @Override
-    public ValidationResponse validate(final Integer object) {
-        if (object < min && min != -1) {
+    public ValidationResponse validate(final String object) {
+        int intv;
+        
+        try {
+            intv = Integer.parseInt(object);
+        } catch (NumberFormatException ex) {
+            return new ValidationResponse("Must be a valid number");
+        }
+        
+        if (intv < min && min != -1) {
             return new ValidationResponse("Must be at least " + min);
-        } else if (object > max && max != -1) {
+        } else if (intv > max && max != -1) {
             return new ValidationResponse("Must be at most " + max);
         } else {
             return new ValidationResponse();

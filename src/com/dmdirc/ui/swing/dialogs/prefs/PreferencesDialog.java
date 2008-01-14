@@ -25,17 +25,11 @@ package com.dmdirc.ui.swing.dialogs.prefs;
 import com.dmdirc.Main;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.config.prefs.PreferencesCategory;
 import com.dmdirc.config.prefs.PreferencesManager;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.swing.MainFrame;
 
 import com.dmdirc.ui.swing.components.SwingPreferencesPanel;
-import java.util.Map;
-import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
@@ -97,44 +91,7 @@ public final class PreferencesDialog implements ConfigChangeListener {
         preferencesPanel.addCategories(manager.getCategories());
         
         preferencesPanel.display();
-    }
-    
-    /** {@inheritDoc}. */
-    @Deprecated
-    public void configClosed(final Properties properties) {       
-        final Identity identity = IdentityManager.getConfigIdentity();
-        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-            final String[] args = ((String) entry.getKey()).split("\\.", 2);
-            if (args.length == 2) {
-                if (((String) entry.getValue()).isEmpty() || entry.getValue() == null) {
-                    if (identity.hasOption(args[0], args[1])) {
-                        identity.unsetOption(args[0], args[1]);
-                    }
-                } else {
-                    final Object object;
-                    if (config.hasOption(args[0], args[1])) {
-                        object= config.getOption(args[0], args[1]);
-                    } else {
-                        object = null;
-                    }
-
-                    if (object == null || !object.equals(entry.getValue())) {
-                        identity.setOption(args[0], args[1], (String) entry.getValue());
-                    }
-                }
-            } else {
-                Logger.appError(ErrorLevel.LOW, "Invalid setting value: " + entry.getKey(),
-                        new IllegalArgumentException("Invalid setting: " + entry.getKey()));
-            }
-        }
-        dispose();
-    }
-    
-    
-    /** {@inheritDoc} */
-    public void configCancelled() {
-        dispose();
-    }
+    }   
     
     /** {@inheritDoc} */
     @Override

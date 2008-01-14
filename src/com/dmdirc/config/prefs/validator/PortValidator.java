@@ -26,32 +26,16 @@ package com.dmdirc.config.prefs.validator;
  * 
  * @author chris
  */
-public class PortValidator implements Validator<String> {
+public class PortValidator extends NumericalValidator {
     
     /** The minimum port number. */
     private static final int MIN_PORT = 1;
     
     /** The maximum port number. */
-    private static final int MAX_PORT = 65535;    
+    private static final int MAX_PORT = 65535;
 
-    /** {@inheritDoc} */
-    @Override
-    public ValidationResponse validate(final String object) {
-        try {
-            int port = Integer.parseInt(object);
-            
-            if (port >= MIN_PORT) {
-                if (port <= MAX_PORT) {
-                    return new ValidationResponse();
-                } else {
-                    return new ValidationResponse("Port must be less than " + (MAX_PORT + 1));
-                }
-            } else {
-                return new ValidationResponse("Port must be greater than " + (MIN_PORT - 1));
-            }
-        } catch (NumberFormatException ex) {
-            return new ValidationResponse("Port must be numerical");
-        }
+    public PortValidator() {
+        super(MIN_PORT, MAX_PORT);
     }
 
 }
