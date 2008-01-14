@@ -58,6 +58,8 @@ public enum CoreActionType implements ActionType {
     CLIENT_POPUP_GENERATED(ClientEvents.POPUP_EVENT, "Popup menu generated"),
     /** Prefs dialog opened. */
     CLIENT_PREFS_OPENED(ClientEvents.CLIENT_EVENT_WITH_PREFS, "Preferences dialog opened"),
+    /** Prefs dialog closed. */
+    CLIENT_PREFS_CLOSED(ClientEvents.CLIENT_EVENT, "Preferences dialog opened"),
     
     /** Unknown command. */
     UNKNOWN_COMMAND(ClientEvents.UNKNOWN_COMMAND, "Unknown command entered"),
