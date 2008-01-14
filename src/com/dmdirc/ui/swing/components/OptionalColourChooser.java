@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.components;
 
 import com.dmdirc.ui.messages.ColourManager;
+import com.dmdirc.util.ListenerList;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
@@ -69,6 +70,9 @@ public final class OptionalColourChooser extends JPanel implements ActionListene
     
     /** The value of this component. */
     private String value;
+    
+    /** Our listeners. */
+    private final ListenerList listeners = new ListenerList();
     
     /** Creates a new instance of ColourChooser. */
     public OptionalColourChooser() {
@@ -152,7 +156,7 @@ public final class OptionalColourChooser extends JPanel implements ActionListene
             previewPanel.setToolTipText(newColour);
         }
     }
-    
+
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == editButton) {
@@ -162,10 +166,22 @@ public final class OptionalColourChooser extends JPanel implements ActionListene
             cpd.setVisible(true);
         } else if (e.getSource() == enabled) {
             editButton.setEnabled(enabled.isSelected());
+            fireActionEvent();
         } else {
             value = e.getActionCommand();
             updateColour(e.getActionCommand());
+            fireActionEvent();
             cpd.dispose();
+        }
+    }
+    
+    public void addActionListener(final ActionListener l) {
+        listenerList.add(ActionListener.class, l);
+    }
+    
+    protected void fireActionEvent() {
+        for (ActionListener listener : listeners.get(ActionListener.class)) {
+            listener.actionPerformed(new ActionEvent(this, 1, "stuffChanged"));
         }
     }
 }

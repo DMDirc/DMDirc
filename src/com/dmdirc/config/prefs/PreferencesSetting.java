@@ -42,7 +42,7 @@ public class PreferencesSetting {
     protected final Map<String, String> combooptions;
 
     /** The validator to use to validate this setting. */
-    protected final Validator validator;
+    protected final Validator<String> validator;
     
     /** The domain of the setting. */
     protected final String domain;
@@ -74,7 +74,7 @@ public class PreferencesSetting {
      * @param helptext Text to display to help the user
      */
     public PreferencesSetting(final PreferencesType type,
-            final Validator validator, final String domain,
+            final Validator<String> validator, final String domain,
             final String option, final String fallback, final String title,
             final String helptext) {
         if (PreferencesType.MULTICHOICE.equals(type)) {
@@ -212,7 +212,7 @@ public class PreferencesSetting {
      * 
      * @return This setting's validator.
      */
-    public Validator getValidator() {
+    public Validator<String> getValidator() {
         return validator;
     }
     

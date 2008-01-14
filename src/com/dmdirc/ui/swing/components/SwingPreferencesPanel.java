@@ -28,6 +28,7 @@ import com.dmdirc.config.prefs.PreferencesCategory;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.validator.NumericalValidator;
 import com.dmdirc.ui.swing.MainFrame;
+import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
 import com.dmdirc.ui.swing.dialogs.prefs.PreferencesDialog;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
@@ -41,6 +42,8 @@ import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -61,6 +64,8 @@ import javax.swing.JTree;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
 import javax.swing.WindowConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.text.Position;
@@ -84,23 +89,8 @@ public final class SwingPreferencesPanel extends StandardDialog implements
      */
     private static final long serialVersionUID = 8;
 
-    /** All text fields in the dialog, used to apply settings. */
-    private final Map<PreferencesSetting, JTextField> textFields;
-
-    /** All checkboxes in the dialog, used to apply settings. */
-    private final Map<PreferencesSetting, JCheckBox> checkBoxes;
-
-    /** All combo boxes in the dialog, used to apply settings. */
-    private final Map<PreferencesSetting, JComboBox> comboBoxes;
-
-    /** All spinners in the dialog, used to apply settings. */
-    private final Map<PreferencesSetting, JSpinner> spinners;
-
-    /** All colours in the dialog, used to apply settings. */
-    private final Map<PreferencesSetting, ColourChooser> colours;
-
-    /** All optional colours in the dialog, used to apply settings. */
-    private final Map<PreferencesSetting, OptionalColourChooser> optionalColours;
+    /** A map of settings to the components used to represent them. */
+    private final Map<PreferencesSetting, JComponent> components;
 
     /** Categories in the dialog. */
     private final Map<PreferencesCategory, JPanel> categories;
@@ -141,13 +131,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         owner = preferencesOwner;
 
         categories = new HashMap<PreferencesCategory, JPanel>();
-
-        textFields = new HashMap<PreferencesSetting, JTextField>();
-        checkBoxes = new HashMap<PreferencesSetting, JCheckBox>();
-        comboBoxes = new HashMap<PreferencesSetting, JComboBox>();
-        spinners = new HashMap<PreferencesSetting, JSpinner>();
-        colours = new HashMap<PreferencesSetting, ColourChooser>();
-        optionalColours = new HashMap<PreferencesSetting, OptionalColourChooser>();
+        components = new HashMap<PreferencesSetting, JComponent>();
 
         panels = new ArrayList<JPanel>();
 
@@ -287,14 +271,24 @@ public final class SwingPreferencesPanel extends StandardDialog implements
 
         switch (setting.getType()) {
             case TEXT:
-                option = new JTextField();
-                ((JTextField) option).setText(setting.getValue());
-                textFields.put(setting, (JTextField) option);
+                option = new ValidatingJTextField(setting.getValidator());
+                ((ValidatingJTextField) option).setText(setting.getValue());
+                ((ValidatingJTextField) option).addKeyListener(new KeyAdapter() {
+                    public void keyTyped(KeyEvent e) {
+                        setting.setValue(((ValidatingJTextField) e.getSource()).getText());
+                    }
+                });
                 break;
             case BOOLEAN:
                 option = new JCheckBox();
                 ((JCheckBox) option).setSelected(Boolean.parseBoolean(setting.getValue()));
-                checkBoxes.put(setting, (JCheckBox) option);
+                
+                ((JCheckBox) option).addChangeListener(new ChangeListener(){
+                    public void stateChanged(ChangeEvent e) {
+                        setting.setValue(String.valueOf(((JCheckBox) e.getSource()).isSelected()));
+                    }
+                });
+                
                 break;
             case MULTICHOICE:
                 //if (args[0] instanceof String[]) {
@@ -313,7 +307,14 @@ public final class SwingPreferencesPanel extends StandardDialog implements
                //         }
                  //   }
                 //}
-                comboBoxes.put(setting, (JComboBox) option);
+                
+                ((JComboBox) option).addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        setting.setValue(String.valueOf(
+                                ((JComboBox) e.getSource()).getSelectedItem()));
+                    }
+                });
+                
                 ((JComboBox) option).setEditable(false);
                 break;
             case INTEGER:
@@ -334,21 +335,42 @@ public final class SwingPreferencesPanel extends StandardDialog implements
                         option = new JSpinner(new SpinnerNumberModel());
                 }
                 
-                spinners.put(setting, (JSpinner) option);
+                ((JSpinner) option).addChangeListener(new ChangeListener() {
+                    public void stateChanged(ChangeEvent e) {
+                        setting.setValue(((JSpinner) e.getSource()).getValue().toString());
+                    }
+                });
+                
                 break;
             case COLOUR:
                 option = new ColourChooser(setting.getValue(), true, true);
-                colours.put(setting, (ColourChooser) option);
+                
+                ((ColourChooser) option).addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        setting.setValue(((ColourChooser) e.getSource()).getColour());
+                    }
+                });
+                
                 break;
             case OPTIONALCOLOUR:
                 option = new OptionalColourChooser(setting.getValue() == null ?
                     "0" : setting.getValue(), setting.getValue() != null,
                     true, true);
-                optionalColours.put(setting, (OptionalColourChooser) option);
+                
+                ((OptionalColourChooser) option).addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        setting.setValue(((OptionalColourChooser) e.getSource()).isEnabled()
+                                ? ((OptionalColourChooser) e.getSource()).getColour()
+                                : null);
+                    }
+                });
+                
                 break;
             default:
                 throw new IllegalArgumentException(setting.getType() + " is not a valid option");
         }
+        
+        components.put(setting, option);
         option.setPreferredSize(new Dimension(Short.MAX_VALUE, option.getFont()
         .getSize()));
 
@@ -459,38 +481,8 @@ public final class SwingPreferencesPanel extends StandardDialog implements
 
     /** {@inheritDoc} */
     public void saveOptions() {
-        for (Map.Entry<PreferencesSetting, JTextField> entry : textFields.entrySet()) {
-            entry.getKey().setValue(entry.getValue().getText());
-            entry.getKey().save();
-        }
-
-        for (Map.Entry<PreferencesSetting, JCheckBox> entry : checkBoxes.entrySet()) {
-            entry.getKey().setValue(String.valueOf(entry.getValue().isSelected()));
-            entry.getKey().save();
-        }
-        
-        for (Map.Entry<PreferencesSetting, JSpinner> entry : spinners.entrySet()) {
-            entry.getKey().setValue(String.valueOf(entry.getValue().getValue()));
-            entry.getKey().save();
-        }        
-        
-        for (Map.Entry<PreferencesSetting, ColourChooser> entry : colours.entrySet()) {
-            entry.getKey().setValue(entry.getValue().getColour());
-            entry.getKey().save();
-        }
-        
-        for (Map.Entry<PreferencesSetting, OptionalColourChooser> entry
-                : optionalColours.entrySet()) {
-            entry.getKey().setValue(entry.getValue().isEnabled() ?
-                entry.getValue().getColour() : null);
-            entry.getKey().save();
-        }        
-                
-        for (Map.Entry<PreferencesSetting, JComboBox> entry : comboBoxes.entrySet()) {
-            if (entry.getValue().getSelectedItem() != null) {
-                entry.getKey().setValue(entry.getValue().getSelectedItem().toString());
-                entry.getKey().save();
-            }
+        for (PreferencesSetting setting : components.keySet()) {
+            setting.save();
         }
     }
 
@@ -583,5 +575,5 @@ public final class SwingPreferencesPanel extends StandardDialog implements
             return this;
         }
     }
-
+    
 }

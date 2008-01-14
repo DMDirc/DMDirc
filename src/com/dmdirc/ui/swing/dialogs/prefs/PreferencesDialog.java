@@ -24,7 +24,6 @@ package com.dmdirc.ui.swing.dialogs.prefs;
 
 import com.dmdirc.Main;
 import com.dmdirc.interfaces.ConfigChangeListener;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.ui.swing.MainFrame;
@@ -44,9 +43,6 @@ public final class PreferencesDialog implements ConfigChangeListener {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 9;
-    
-    /** The global config manager. */
-    private final ConfigManager config = IdentityManager.getGlobalConfig();
     
     /** A previously created instance of PreferencesDialog. */
     private static PreferencesDialog me;
