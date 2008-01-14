@@ -192,7 +192,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             /** {@inheritDoc} */
             @Override
             public void run() {
-                TextFrame.this.setTitle(title);
+                TextFrame.super.setTitle(title);
             }
         });
     }
