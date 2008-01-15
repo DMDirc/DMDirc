@@ -81,6 +81,7 @@ public class PackingTable extends JTable {
         
         super.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         super.getTableHeader().setResizingAllowed(false);
+        super.setDragEnabled(false);
     }
     
     /** {@inheritDoc} */
@@ -166,9 +167,11 @@ public class PackingTable extends JTable {
         }
         
         for (int row = 0; row < getRowCount(); row++) {
-            width = Math.max(width, (int) getCellRenderer(row, col).
-                    getTableCellRendererComponent(this, getValueAt(row,
-                    col), false, false, row, col).getPreferredSize().getWidth());
+            if (getCellRenderer(row, col) != null) {
+                width = Math.max(width, (int) getCellRenderer(row, col).
+                        getTableCellRendererComponent(this, getValueAt(row,
+                      col), false, false, row, col).getPreferredSize().getWidth());
+            }
         }
         
         return width + SMALL_BORDER;
