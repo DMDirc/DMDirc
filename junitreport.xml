@@ -3,7 +3,6 @@
 <!-- some examples of how to customize the build. -->
 <!-- (If you delete it and reopen the project it will be recreated.) -->
 <project name="DMDirc" default="default" basedir=".">
-    <taskdef resource="clovertasks"/>
     <description>Builds, tests, and runs the project DMDirc.</description>
 
     <property name="clover.jar" location="/home/dmdirc/clover/clover/lib/clover.jar"/>
@@ -27,7 +26,7 @@
     <property name="test.reports" value="./junitreports" />
 
 		
-   <target name="test-html" depends="compile-test,test,clover.html"/>
+   <target name="test-html" depends="with.clover,compile-test,test,clover.html"/>
    <target name="-post-test-run">
       <junitreport todir="${test.reports}">
         <fileset dir="${build.test.results.dir}">
