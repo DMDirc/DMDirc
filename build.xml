@@ -4,8 +4,10 @@
 <!-- (If you delete it and reopen the project it will be recreated.) -->
 <project name="DMDirc" default="default" basedir=".">
     <description>Builds, tests, and runs the project DMDirc.</description>
-		<import file="nbproject/build-impl.xml"/>
-		<import file="BuildPlugins.xml"/>
+
+    <import file="nbproject/build-impl.xml"/>
+    <import file="BuildPlugins.xml"/>
+
     <!--
 
     There exist several targets which are by default empty and which can be 
