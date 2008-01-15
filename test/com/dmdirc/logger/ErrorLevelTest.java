@@ -52,6 +52,7 @@ public class ErrorLevelTest extends junit.framework.TestCase {
         assertTrue(ErrorLevel.LOW.moreImportant(ErrorLevel.FATAL));
         assertFalse(ErrorLevel.LOW.moreImportant(ErrorLevel.LOW));
         assertFalse(ErrorLevel.LOW.moreImportant(ErrorLevel.UNKNOWN));
+        assertFalse(ErrorLevel.LOW.moreImportant(null));
     }
 
     @Test
@@ -61,6 +62,7 @@ public class ErrorLevelTest extends junit.framework.TestCase {
         assertTrue(ErrorLevel.MEDIUM.moreImportant(ErrorLevel.FATAL));
         assertFalse(ErrorLevel.MEDIUM.moreImportant(ErrorLevel.LOW));
         assertFalse(ErrorLevel.MEDIUM.moreImportant(ErrorLevel.UNKNOWN));
+        assertFalse(ErrorLevel.MEDIUM.moreImportant(null));
     }
 
     @Test
@@ -70,6 +72,7 @@ public class ErrorLevelTest extends junit.framework.TestCase {
         assertTrue(ErrorLevel.HIGH.moreImportant(ErrorLevel.FATAL));
         assertFalse(ErrorLevel.HIGH.moreImportant(ErrorLevel.LOW));
         assertFalse(ErrorLevel.HIGH.moreImportant(ErrorLevel.UNKNOWN));
+        assertFalse(ErrorLevel.HIGH.moreImportant(null));
     }
 
     @Test
@@ -79,6 +82,7 @@ public class ErrorLevelTest extends junit.framework.TestCase {
         assertFalse(ErrorLevel.FATAL.moreImportant(ErrorLevel.FATAL));
         assertFalse(ErrorLevel.FATAL.moreImportant(ErrorLevel.LOW));
         assertFalse(ErrorLevel.FATAL.moreImportant(ErrorLevel.UNKNOWN));
+        assertFalse(ErrorLevel.FATAL.moreImportant(null));
     }
     
     @Test
@@ -88,6 +92,7 @@ public class ErrorLevelTest extends junit.framework.TestCase {
         assertTrue(ErrorLevel.UNKNOWN.moreImportant(ErrorLevel.FATAL));
         assertTrue(ErrorLevel.UNKNOWN.moreImportant(ErrorLevel.LOW));
         assertFalse(ErrorLevel.UNKNOWN.moreImportant(ErrorLevel.UNKNOWN));
+        assertFalse(ErrorLevel.UNKNOWN.moreImportant(null));
     }    
 
 }
