@@ -25,7 +25,6 @@ package com.dmdirc.plugins;
 
 import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 import com.dmdirc.logger.Logger;
@@ -54,6 +53,8 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	private boolean tempLoaded = false;
 	/** List of classes this plugin has */
 	private List<String> myClasses = new ArrayList<String>();
+        /** Requirements error message. */
+        private String requirementsError;
 
 	/**
 	 * Create a new PluginInfo.
@@ -109,14 +110,14 @@ public class PluginInfo implements Comparable<PluginInfo> {
 		} else if (getMainClass().isEmpty()) {
 			throw new PluginException("Plugin "+filename+" failed to load, incomplete plugin.info (Missing 'mainclass')");
 		}
-		
+
 		final String requirements = checkRequirements();
 		if (requirements.isEmpty()) {
 			final String mainClass = getMainClass().replace('.', '/')+".class";
 			if (!res.resourceExists(mainClass)) {
 				throw new PluginException("Plugin "+filename+" failed to load, main class file ("+mainClass+") not found in jar.");
 			}
-	
+
 			for (final String classfilename : res.getResourcesStartingWith("")) {
 				String classname = classfilename.replace('/', '.');
 				if (classname.matches("^.*\\.class$")) {
@@ -124,7 +125,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 					myClasses.add(classname);
 				}
 			}
-	
+
 			if (isPersistant()) { loadEntirePlugin(); }
 		} else {
 			throw new PluginException("Plugin "+filename+" was not loaded, one or more requirements not met ("+requirements+")");
@@ -145,63 +146,126 @@ public class PluginInfo implements Comparable<PluginInfo> {
 		return myResourceManager;
 	}
 
+        /**
+         * Checks to see if the minimum version requirement of the plugin is
+         * satisfied. If either version is non-positive, the test passes. On
+         * failure, the requirementsError field will contain a user-friendly
+         * error message.
+         *
+         * @param desired The desired minimum version of DMDirc.
+         * @param actual The actual current version of DMDirc.
+         * @return True if the test passed, false otherwise
+         */
+        protected boolean checkMinimumVersion(final String desired, final int actual) {
+            int idesired;
+
+            try {
+                idesired = Integer.parseInt(desired);
+            } catch (NumberFormatException ex) {
+                requirementsError = "'minversion' is a non-integer";
+                return false;
+            }
+
+            if (actual > 0 && idesired > 0 && actual < idesired) {
+                requirementsError = "Plugin is for a newer version of DMDirc";
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        /**
+         * Checks to see if the maximum version requirement of the plugin is
+         * satisfied. If either version is non-positive, the test passes. If
+         * the desired version is empty, the test passes. On failure, the
+         * requirementsError field will contain a user-friendly error message.
+         *
+         * @param desired The desired maximum version of DMDirc.
+         * @param actual The actual current version of DMDirc.
+         * @return True if the test passed, false otherwise
+         */
+        protected boolean checkMaximumVersion(final String desired, final int actual) {
+            int idesired;
+
+            if (desired.isEmpty()) {
+                return true;
+            }
+
+            try {
+                idesired = Integer.parseInt(desired);
+            } catch (NumberFormatException ex) {
+                requirementsError = "'maxversion' is a non-integer";
+                return false;
+            }
+
+            if (actual > 0 && idesired > 0 && actual > idesired) {
+                requirementsError = "Plugin is for an older version of DMDirc";
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        /**
+         * Checks to see if the OS requirements of the plugin are satisfied.
+         * If the desired string is empty, the test passes. Otherwise it is
+         * used as one to three colon-delimited regular expressions, to test
+         * the name, version and architecture of the OS, respectively. If the
+         * test fails, the requirementsError field will contain a user-friendly
+         * error message.
+         * 
+         * @param desired The desired OS requirements
+         * @param actualName The actual name of the OS
+         * @param actualVersion The actual version of the OS
+         * @param actualArch The actual architecture of the OS
+         * @return True if the test passes, false otherwise
+         */
+        protected boolean checkOS(final String desired, final String actualName,
+                final String actualVersion, final String actualArch) {
+            if (desired.isEmpty()) {
+                return true;
+            }
+
+            final String[] desiredParts = desired.split(":");
+
+            if (!actualName.toLowerCase().matches(desiredParts[0])) {
+                requirementsError = "Invalid OS. (Wanted: '" + desiredParts[0]
+                        + "', actual: '" + actualName + "')";
+                return false;
+            } else if (desiredParts.length > 1
+                    && !actualVersion.toLowerCase().matches(desiredParts[1])) {
+                requirementsError = "Invalid OS version. (Wanted: '" + desiredParts[1]
+                        + "', actual: '" + actualVersion + "')";
+                return false;
+            } else if (desiredParts.length > 2
+                    && !actualVersion.toLowerCase().matches(desiredParts[2])) {
+                requirementsError = "Invalid OS architecture. (Wanted: '" + desiredParts[2]
+                        + "', actual: '" + actualArch + "')";
+                return false;
+            }
+
+            return true;
+        }
+
 	/**
 	 * Are the requirements for this plugin met?
 	 *
 	 * @return Empty string if ok, else a reason for failure
 	 */
 	public String checkRequirements() {
-		if (metaData == null) { return ""; }
-		// Check minimum version
-		try {
-			final int version = Integer.parseInt(getMinVersion());
-			if (version == -1) { return ""; }
-			if (Main.RELEASE_DATE > 0 && version > 0) {
-				if (Main.RELEASE_DATE < version) {
-					return "Plugin is for a newer version of DMDirc";
-				}
-			}
-		} catch (NumberFormatException nfe) {
-			return "'minversion' is a non-integer";
-		}
-		
-		// Check maximum version (if found)
-		try {
-			if (!getMaxVersion().isEmpty()) {
-				final int version = Integer.parseInt(getMaxVersion());
-				if (Main.RELEASE_DATE > 0 && version > 0) {
-					if (Main.RELEASE_DATE > version) {
-						return "Plugin is for an older version of DMDirc";
-					}
-				}
-			}
-		} catch (NumberFormatException nfe) {
-			return "'maxversion' is a non-integer";
-		}
-		
-		// Now check other requirements
-		
-		// Required OS
-		final String requiredOS = getMetaInfo(new String[]{"required-os", "require-os"});
-		if (!requiredOS.isEmpty()) {
-			final String[] data = requiredOS.split(":");
-			if (!System.getProperty("os.name").toLowerCase().matches(data[0])) {
-				return "Incorrect OS. (Wanted: '"+data[0]+"', Actual: '"+System.getProperty("os.name")+"')";
-			} else {
-				if (data.length > 1) {
-					if (!System.getProperty("os.version").toLowerCase().matches(data[1])) {
-						return "Incorrect OS Version. (Wanted: '"+data[1]+"', Actual: '"+System.getProperty("os.version")+"')";
-					} else {
-						if (data.length > 2) {
-							if (!System.getProperty("os.arch").toLowerCase().matches(data[2])) {
-								return "Incorrect OS Arch. (Wanted: '"+data[2]+"', Actual: '"+System.getProperty("os.arch")+"')";
-							}
-						}
-					}
-				}
-			}
-		}
-		
+		if (metaData == null) {
+                    // No meta-data, so no requirements.
+                    return "";
+                }
+
+                if (!checkMinimumVersion(getMinVersion(), Main.RELEASE_DATE)
+                        || !checkMaximumVersion(getMaxVersion(), Main.RELEASE_DATE)
+                        || !checkOS(getMetaInfo(new String[]{"required-os", "require-os"}),
+                        System.getProperty("os.name"), System.getProperty("os.version"),
+                        System.getProperty("os.arch"))) {
+                    return requirementsError;
+                }
+
 		// Required Files
 		final String requiredFiles = getMetaInfo(new String[]{"required-files", "require-files", "required-file", "require-file"});
 		if (!requiredFiles.isEmpty()) {
@@ -219,7 +283,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 				}
 			}
 		}
-		
+
 		// Required Plugins
 		final String requiredPlugins = getMetaInfo(new String[]{"required-plugins", "require-plugins", "required-plugin", "require-plugin"});
 		if (!requiredPlugins.isEmpty()) {
@@ -257,7 +321,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 				}
 			}
 		}
-		
+
 		// All requirements passed, woo \o
 		return "";
 	}
@@ -268,13 +332,13 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	public boolean isLoaded() {
 		return (plugin != null) && !tempLoaded;
 	}
-	
+
 	/**
 	 * Is this plugin temporarily loaded?
 	 */
 	public boolean isTempLoaded() {
 		return (plugin != null) && tempLoaded;
-	}	
+	}
 
 	/**
 	 * Load entire plugin.
@@ -300,7 +364,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 		tempLoaded = true;
 		loadPlugin();
 	}
-	
+
 	/**
 	 * Load a plugin permanently, if it was previously loaded as temp
 	 */
@@ -310,7 +374,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			plugin.onLoad();
 		}
 	}
-	
+
 	/**
 	 * Load the plugin files.
 	 */
@@ -611,7 +675,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 * @return Misc Meta Info (or fallback if not found);
 	 */
 	public String getMetaInfo(final String metainfo, final String fallback) { return metaData.getProperty(metainfo,fallback); }
-	
+
 	/**
 	 * Get misc meta-information.
 	 *
@@ -621,7 +685,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 * @return Misc Meta Info (or "" if none are found);
 	 */
 	public String getMetaInfo(final String[] metainfo) { return getMetaInfo(metainfo,""); }
-	
+
 	/**
 	 * Get misc meta-information.
 	 *
