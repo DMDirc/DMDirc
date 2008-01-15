@@ -631,21 +631,23 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
 
     /**
-     * Joins the specified channel.
+     * Joins the specified channel, or adds it to the auto-join list if the
+     * server is not connected.
      *
      * @param channel The channel to be joined
      */
-    @Precondition("This server is connected")
     public void join(final String channel) {
-        assert(myState == ServerState.CONNECTED);
+        if (myState == ServerState.CONNECTED) {
+            removeInvites(channel);
 
-        removeInvites(channel);
-        
-        if (hasChannel(channel)) {
-            getChannel(channel).join();
-            getChannel(channel).activateFrame();
+            if (hasChannel(channel)) {
+                getChannel(channel).join();
+                getChannel(channel).activateFrame();
+            } else {
+                parser.joinChannel(channel);
+            }
         } else {
-            parser.joinChannel(channel);
+            autochannels.add(channel);
         }
     }
 
