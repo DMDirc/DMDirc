@@ -212,7 +212,7 @@ public class IrcAddress implements Serializable {
                     profile, getChannels());
         } else {
             final Server thisServer = servers.get(0);
-            for (String channel : getChannels()) {
+            for (String channel : new ArrayList<String>(getChannels())) {
                 thisServer.join(channel);
             }
         }
