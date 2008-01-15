@@ -72,7 +72,7 @@ public class ParserErrorTest extends junit.framework.TestCase {
     }
     
     @Test
-    public void getLevel() {
+    public void testGetLevel() {
         assertEquals(ParserError.ERROR_ERROR, error.getLevel());
         assertEquals(ParserError.ERROR_EXCEPTION, except.getLevel());
         assertEquals(ParserError.ERROR_FATAL, fatal.getLevel());
@@ -97,12 +97,12 @@ public class ParserErrorTest extends junit.framework.TestCase {
     }
 
     @Test
-    public void getData() {
+    public void testGetData() {
         assertEquals("moo", except.getData());
     }
 
     @Test
-    public void appendData() {
+    public void testAppendData() {
         final String origin = warning.getData();
         warning.appendData("new data!");
         
@@ -111,12 +111,12 @@ public class ParserErrorTest extends junit.framework.TestCase {
     }
 
     @Test
-    public void getLastLine() {
+    public void testGetLastLine() {
         assertEquals("last line", error.getLastLine());
     }
 
     @Test
-    public void getSvnInfo() {
+    public void testGetSvnInfo() {
         assertTrue(ParserError.getSvnInfo().toLowerCase().startsWith("$id"));
     }
 

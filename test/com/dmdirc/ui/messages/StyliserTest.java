@@ -23,6 +23,7 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.config.IdentityManager;
+import java.util.Enumeration;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -97,6 +98,25 @@ public class StyliserTest extends junit.framework.TestCase {
         
         for (String[] testcase : tests) {
             assertEquals(testcase[1], Styliser.doLinks(testcase[0]).replace(h, '~'));
+        }
+    }
+    
+    @Test
+    public void testNegation() {
+        final String input1 = ((char) 18) + "abc" + ((char) 2) + "def" + ((char) 31) + "ghi";
+        final String input2 = "abcdefghi";
+        
+        for (int i = 0; i < input2.length(); i++) {
+            final Enumeration<?> res1 = Styliser.getStyledString(new String[]{input1})
+                    .getLogicalStyle(i).getAttributeNames();
+            final Enumeration<?> res2 = Styliser.getStyledString(new String[]{input2})
+                    .getLogicalStyle(i).getAttributeNames();
+
+            while (res1.hasMoreElements()) {
+                assertEquals(res1.nextElement(), res2.nextElement());
+            }
+
+            assertFalse(res1.hasMoreElements());
         }
     }
     

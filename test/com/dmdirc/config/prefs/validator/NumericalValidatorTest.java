@@ -29,11 +29,13 @@ public class NumericalValidatorTest extends junit.framework.TestCase {
     @Test
     public void testGetMax() {
         assertEquals(10, new NumericalValidator(1, 10).getMax());
+        assertEquals(Integer.MAX_VALUE, new NumericalValidator(1, -1).getMax());
     }
 
     @Test
     public void testGetMin() {
         assertEquals(1, new NumericalValidator(1, 10).getMin());
+        assertEquals(Integer.MIN_VALUE, new NumericalValidator(-1, 10).getMin());
     }
 
     @Test
@@ -43,5 +45,30 @@ public class NumericalValidatorTest extends junit.framework.TestCase {
         assertTrue(vr.isFailure());
         assertTrue(vr.getFailureReason().indexOf("number") > -1);
     }
+    
+    @Test
+    public void testMin() {
+        final NumericalValidator nv1 = new NumericalValidator(-1, -1);
+        final NumericalValidator nv2 = new NumericalValidator(-5, -1);
+        
+        assertFalse(nv1.validate("-5").isFailure());
+        assertFalse(nv2.validate("-5").isFailure());
+        assertFalse(nv2.validate("-4").isFailure());
+        assertFalse(nv2.validate("10").isFailure());
+        assertTrue(nv2.validate("-6").isFailure());
+    }
+    
+    @Test
+    public void testMax() {
+        final NumericalValidator nv1 = new NumericalValidator(-1, -1);
+        final NumericalValidator nv2 = new NumericalValidator(-1, 10);
+        
+        assertFalse(nv1.validate("-5").isFailure());
+        assertFalse(nv1.validate("50").isFailure());
+        assertFalse(nv2.validate("-5").isFailure());
+        assertFalse(nv2.validate("-4").isFailure());
+        assertFalse(nv2.validate("10").isFailure());
+        assertTrue(nv2.validate("11").isFailure());
+    }    
 
 }

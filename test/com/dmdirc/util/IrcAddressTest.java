@@ -20,14 +20,49 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandline;
+package com.dmdirc.util;
 
-import com.dmdirc.util.InvalidAddressException;
-import com.dmdirc.util.IrcAddress;
+import com.dmdirc.Main;
+import com.dmdirc.ServerManager;
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.dummy.DummyController;
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class IrcAddressTest extends junit.framework.TestCase {
+    
+    @Before
+    public void setUp() {
+        IdentityManager.load();
+        Main.setUI(new DummyController());
+    }    
+    
+    @Test
+    public void testInvalidProtocol() {
+        boolean exception = false;
+        
+        try {
+            final IrcAddress address = new IrcAddress("http://moo!");
+        } catch (InvalidAddressException ex) {
+            exception = true;
+        }
+        
+        assertTrue(exception);
+    }
+    
+    @Test
+    public void testNoProtocol() {
+        boolean exception = false;
+        
+        try {
+            final IrcAddress address = new IrcAddress("moo!");
+        } catch (InvalidAddressException ex) {
+            exception = true;
+        }
+        
+        assertTrue(exception);
+    }    
     
     @Test
     public void testBasic() {
@@ -56,6 +91,19 @@ public class IrcAddressTest extends junit.framework.TestCase {
     }
     
     @Test
+    public void testPort() {
+        try {
+            final IrcAddress address = new IrcAddress("irc://servername:7000/");
+            assertEquals("servername", address.getServer());
+            assertEquals("", address.getPassword());
+            assertEquals(7000, address.getPort());
+            assertFalse(address.isSSL());
+        } catch (InvalidAddressException ex) {
+            assertFalse(true);
+        }
+    }    
+    
+    @Test
     public void testPortSSL() {
         try {
             final IrcAddress address = new IrcAddress("ircs://servername:+7000/");
@@ -77,6 +125,25 @@ public class IrcAddressTest extends junit.framework.TestCase {
             assertEquals(7000, address.getPort());
             assertEquals(3, address.getChannels().size());
             assertTrue(address.isSSL());
+        } catch (InvalidAddressException ex) {
+            assertFalse(true);
+        }
+    }
+    
+    @Test
+    public void testConnect() {
+        try {
+            final IrcAddress address = new IrcAddress("irc://255.255.255.205/a,b,c");
+            
+            int initial = ServerManager.getServerManager().numServers();
+            
+            address.connect();
+            
+            assertEquals(initial + 1, ServerManager.getServerManager().numServers());
+            
+            address.connect();
+            
+            assertEquals(initial + 1, ServerManager.getServerManager().numServers());
         } catch (InvalidAddressException ex) {
             assertFalse(true);
         }
