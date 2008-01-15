@@ -158,7 +158,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			if (version == -1) { return ""; }
 			if (Main.RELEASE_DATE > 0 && version > 0) {
 				if (Main.RELEASE_DATE < version) {
-					return "Plugin is for a newwer version of DMDirc";
+					return "Plugin is for a newer version of DMDirc";
 				}
 			}
 		} catch (NumberFormatException nfe) {
