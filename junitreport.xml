@@ -11,7 +11,8 @@
 
     <target name="with.clover" depends="clean" if="clover.installed">
         <clover-setup>
-            <fileset dir="src/com/dmdirc/" includes="**/*.java"/>
+            <fileset dir="src/com/" includes="**/*.java" />
+            <fileset dir="test/com/" includes="**/*.java" />
         </clover-setup>
     </target>
 
