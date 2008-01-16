@@ -475,7 +475,7 @@ public final class Styliser {
      * @return True iff the character is in the range [0-F], false otherwise
      */
     private static boolean isHex(final char c) {
-        return isInt(c) || (c >= 'A' && c <= 'Z');
+        return isInt(c) || (c >= 'A' && c <= 'F');
     }
     
     /**
