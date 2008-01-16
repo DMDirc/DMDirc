@@ -6,6 +6,7 @@
 # any sections that take key/values.
 keysections:
   condition 0
+  condition 1
 
 triggers:
   UNKNOWN_COMMAND
@@ -21,3 +22,9 @@ condition 0:
   component=STRING_STRING
   target=quote
   comparison=STRING_EQUALS
+
+condition 1:
+  argument=2
+  component=STRINGARRAY_LENGTH
+  target=0
+  comparison=INT_GREATER
