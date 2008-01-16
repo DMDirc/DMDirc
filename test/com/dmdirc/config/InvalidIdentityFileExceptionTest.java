@@ -34,4 +34,9 @@ public class InvalidIdentityFileExceptionTest extends junit.framework.TestCase {
         assertEquals("message here", ex.getMessage());
     }
     
+    @Test
+    public void testEmpty() {
+        assertTrue(new InvalidIdentityFileException() instanceof Exception);
+    }
+    
 }

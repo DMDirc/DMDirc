@@ -34,7 +34,7 @@ import javax.swing.JComponent;
  * A dummy frame manager. Does nothing.
  * @author chris
  */
-public final class DummyFrameManager implements FrameManager {
+public class DummyFrameManager implements FrameManager {
     
     /** Creates a new instance of DummyFrameManager. */
     public DummyFrameManager() {

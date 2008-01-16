@@ -31,7 +31,7 @@ import java.io.Serializable;
  *
  * @author chris
  */
-public final class ConfigTarget implements Comparable, Serializable {
+public class ConfigTarget implements Comparable, Serializable {
     
     /** The possible target types. */
     public static enum TYPE {
@@ -61,13 +61,13 @@ public final class ConfigTarget implements Comparable, Serializable {
     private static final long serialVersionUID = 2;
     
     /** The type of this target. */
-    private TYPE type = ConfigTarget.TYPE.GLOBAL;
+    protected TYPE type = ConfigTarget.TYPE.GLOBAL;
     
     /** The data of this target. */
-    private String data;
+    protected String data;
     
     /** The user-defined ordering for this target. */
-    private int order = 50000;
+    protected int order = 50000;
     
     /** Creates a new instance of ConfigTarget. */
     public ConfigTarget() {
