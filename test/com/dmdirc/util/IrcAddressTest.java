@@ -101,7 +101,20 @@ public class IrcAddressTest extends junit.framework.TestCase {
         } catch (InvalidAddressException ex) {
             assertFalse(true);
         }
-    }    
+    }
+    
+    @Test
+    public void testInvalidPort() {
+        boolean except = false;
+        
+        try {
+            new IrcAddress("irc://servername:port/");
+        } catch (InvalidAddressException ex) {
+            except = true;
+        }
+        
+        assertTrue(except);
+    }
     
     @Test
     public void testPortSSL() {
