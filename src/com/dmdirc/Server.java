@@ -1232,7 +1232,10 @@ public final class Server extends WritableFrameContainer implements Serializable
                     new Exception(missing.toString() + "\n" // NOPMD
                     + "Network: " + getNetwork() + "\n"
                     + "IRCd: " + parser.getIRCD(false)
-                    + " (" + parser.getIRCD(true) + ")\n\n"));            
+                    + " (" + parser.getIRCD(true) + ")\n"
+                    + "Mode alias version: "
+                    + configManager.getOption("identity", "modealiasversion", "none")
+                    + "\n\n"));
         }
     }
    
