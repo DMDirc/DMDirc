@@ -116,7 +116,7 @@ public class UpdateTableModel extends AbstractTableModel {
         }
         switch (columnIndex) {
             case 0:
-                return updates.get(rowIndex).getName();
+                return updates.get(rowIndex).getFriendlyName();
             case 1:
                 return UpdateChecker.isEnabled(updates.get(rowIndex));
             case 2:
