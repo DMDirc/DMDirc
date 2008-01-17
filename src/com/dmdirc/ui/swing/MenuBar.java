@@ -25,12 +25,12 @@ package com.dmdirc.ui.swing;
 import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
 import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.ui.swing.dialogs.prefs.SwingPreferencesDialog;
 import com.dmdirc.ui.swing.components.TextFrame;
 import com.dmdirc.ui.swing.dialogs.FeedbackDialog;
 import com.dmdirc.ui.swing.dialogs.NewServerDialog;
 import com.dmdirc.ui.swing.dialogs.about.AboutDialog;
 import com.dmdirc.ui.swing.dialogs.aliases.AliasManagerDialog;
-import com.dmdirc.ui.swing.dialogs.prefs.PreferencesDialog;
 import com.dmdirc.ui.swing.dialogs.profiles.ProfileManagerDialog;
 import com.dmdirc.ui.swing.framemanager.windowmenu.WindowMenuFrameManager;
 
@@ -187,7 +187,7 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         if ("NewServer".equals(e.getActionCommand())) {
             NewServerDialog.showNewServerDialog();
         } else if ("Preferences".equals(e.getActionCommand())) {
-            PreferencesDialog.showPreferencesDialog();
+            new SwingPreferencesDialog().setVisible(true);
         } else if (e.getActionCommand().equals("About")) {
             AboutDialog.showAboutDialog();
         } else if (e.getActionCommand().equals("Profile")) {

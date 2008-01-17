@@ -356,7 +356,8 @@ public class PreferencesManager {
                 "general", "showcolourdialog", "false", "Show colour dialog",
                 "Show colour picker dialog when using colour control codes?"));
         category.addSetting(new PreferencesSetting("ui", "lookandfeel", 
-                sysLafName, "Look and feel", "The Java look and feel to use", lafs));
+                sysLafName, "Look and feel", "The Java look and feel to use",
+                lafs).setRestartNeeded());
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "antialias", "false", "System anti-alias",
                 "Anti-alias all fonts?"));
@@ -371,10 +372,10 @@ public class PreferencesManager {
                 "Show nickname colours in channel nicklists?"));
         category.addSetting(new PreferencesSetting("ui", "framemanager", 
                 "treeview", "Window manager", "Which window manager should be used?",
-                framemanagers));
+                framemanagers).setRestartNeeded());
         category.addSetting(new PreferencesSetting("ui", "framemanagerPosition", 
                 "left", "Window manager position", "Where should the window " +
-                "manager be positioned?", fmpositions));
+                "manager be positioned?", fmpositions).setRestartNeeded());
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "stylelinks", "true", "Style links",
                 "Style links in text areas"));

@@ -61,6 +61,12 @@ public class PreferencesSetting {
     
     /** The current value of the setting. */
     protected String current;
+    
+    /** The original value of this vsetting. */
+    private String original;
+    
+    /** Whether or not we need a restart. */
+    protected boolean restartNeeded;
 
     /**
      * Creates a new preferences setting for any type except multi-choice.
@@ -92,6 +98,7 @@ public class PreferencesSetting {
         this.helptext = helptext;
         
         current = IdentityManager.getGlobalConfig().getOption(domain, option, fallback);
+        original = current;
     }
     
     /**
@@ -123,6 +130,7 @@ public class PreferencesSetting {
         this.helptext = helptext;
         
         current = IdentityManager.getGlobalConfig().getOption(domain, option, fallback);
+        original = current;
     }    
     
     /**
@@ -148,6 +156,7 @@ public class PreferencesSetting {
         this.helptext = helptext;
         
         current = IdentityManager.getGlobalConfig().getOption(domain, option, fallback);
+        original = current;
     }    
 
     /**
@@ -158,17 +167,6 @@ public class PreferencesSetting {
      */
     public Map<String, String> getComboOptions() {
         return combooptions;
-    }
-    
-    /**
-     * Retrieves the domain and key of this setting.
-     * 
-     * @return This setting's full config name.
-     * @deprecated Should not be needed, only created for easing UI transition
-     */
-    @Deprecated
-    public String getOption() {
-        return domain + "." + option;
     }
 
     /**
@@ -225,16 +223,45 @@ public class PreferencesSetting {
     public void setValue(final String newValue) {
         current = newValue;
     }
+
+    /**
+     * Determines whether or not this setting needs a restart when it's changed.
+     * 
+     * @return True if this setting needs a restart, false otherwise
+     */
+    public boolean isRestartNeeded() {
+        return restartNeeded;
+    }
+
+    /**
+     * Sets the "restart needed" flag for this setting, indicating a client
+     * restart is needed before the setting takes effect.
+     * 
+     * @return A reference for this setting, for convenience
+     */
+    public PreferencesSetting setRestartNeeded() {
+        restartNeeded = true;
+        return this;
+    }
     
     /**
      * Saves the current value of this setting to the global configuration.
+     * 
+     * @return True if the setting has changed, false otherwise
      */
-    public void save() {
+    public boolean save() {
+        if ((current != null && current.equals(original)) || (current == null && original == null)) {
+            return false;
+        }
+        
         if (current == null) {
             IdentityManager.getConfigIdentity().unsetOption(domain, option);
         } else {
             IdentityManager.getConfigIdentity().setOption(domain, option, current);
         }
+
+        original = current;
+        return true;
     }
 
 }

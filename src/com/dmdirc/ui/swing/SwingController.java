@@ -57,7 +57,6 @@ import java.net.URI;
 import java.util.List;
 
 import javax.swing.JOptionPane;
-import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;

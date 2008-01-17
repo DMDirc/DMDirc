@@ -20,8 +20,10 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.components;
+package com.dmdirc.ui.swing.dialogs.prefs;
 
+import com.dmdirc.ui.swing.components.*;
+import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesCategory;
@@ -30,7 +32,6 @@ import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.validator.NumericalValidator;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
-import com.dmdirc.ui.swing.dialogs.prefs.PreferencesDialog;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
@@ -58,6 +59,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTree;
@@ -79,7 +81,7 @@ import javax.swing.tree.TreeSelectionModel;
 /**
  * Allows the user to modify global client preferences.
  */
-public final class SwingPreferencesPanel extends StandardDialog implements
+public final class SwingPreferencesDialog extends StandardDialog implements
         ActionListener, TreeSelectionListener {
 
     /**
@@ -107,12 +109,6 @@ public final class SwingPreferencesPanel extends StandardDialog implements
     /** Main panel. */
     private JPanel mainPanel;
 
-    /** Preferences owner. */
-    private transient PreferencesDialog owner;
-
-    /** title of window. */
-    private String windowTitle;
-
     /** root node. */
     private DefaultMutableTreeNode rootNode;
     
@@ -120,21 +116,12 @@ public final class SwingPreferencesPanel extends StandardDialog implements
     private final PreferencesManager manager;
 
     /**
-     * Creates a new instance of SwingPreferencesPanel.
-     *
-     * @param preferencesOwner Owner of the preferences dialog
-     * @param title preferences dialog title
-     * @param manager The preferences manager to use for settings
+     * Creates a new instance of SwingPreferencesDialog.
      */
-    public SwingPreferencesPanel(final PreferencesDialog preferencesOwner,
-            final String title, final PreferencesManager manager) {
+    public SwingPreferencesDialog() {
         super((MainFrame) Main.getUI().getMainWindow(), false);
-
-        windowTitle = title;
-
-        owner = preferencesOwner;
         
-        this.manager = manager;
+        manager = new PreferencesManager();
 
         categories = new HashMap<PreferencesCategory, JPanel>();
         components = new HashMap<PreferencesSetting, JComponent>();
@@ -173,7 +160,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new GridBagLayout());
-        setTitle(windowTitle);
+        setTitle("Preferences");
         setResizable(false);
 
         mainPanel.setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER,
@@ -465,16 +452,13 @@ public final class SwingPreferencesPanel extends StandardDialog implements
             if (tabList.getSelectionPath() != null) {
                 final String node = tabList.getSelectionPath().toString();
                 IdentityManager.getConfigIdentity().setOption("dialogstate",
-                        owner.getClass().getName().replaceAll("\\.", "-"),
-                        node.substring(7, node.length() - 1).
+                        "preferences", node.substring(7, node.length() - 1).
                         replaceAll(", ", "->"));
             }
             saveOptions();
             dispose();
-            owner.dispose();
         } else if (getCancelButton().equals(actionEvent.getSource())) {
             dispose();
-            owner.dispose();
         }
     }
 
@@ -492,8 +476,19 @@ public final class SwingPreferencesPanel extends StandardDialog implements
     public void saveOptions() {
         manager.fireSaveListeners();
         
+        boolean restart = false;
+        
         for (PreferencesSetting setting : components.keySet()) {
-            setting.save();
+            if (setting.save() && setting.isRestartNeeded()) {
+                restart = true;
+            }
+        }
+        
+        if (restart) {
+            JOptionPane.showMessageDialog((MainFrame) Main.getUI().
+                    getMainWindow(), "One or more of the changes you made "
+                    + "won't take effect until you restart the client.",
+                    "Restart needed", JOptionPane.INFORMATION_MESSAGE);            
         }
     }
 
@@ -508,8 +503,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         }
 
         final String[] tabName = IdentityManager.getGlobalConfig().
-                getOption("dialogstate", owner.getClass().getName().
-                replaceAll("\\.", "-"), "").split("->");
+                getOption("dialogstate", "preferences", "").split("->");
         TreePath path = new TreePath(tabList.getModel().getRoot());
 
         for (String string : tabName) {
