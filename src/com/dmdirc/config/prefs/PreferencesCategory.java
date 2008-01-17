@@ -21,6 +21,8 @@
  */
 package com.dmdirc.config.prefs;
 
+import com.dmdirc.util.ListenerList;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +49,9 @@ public class PreferencesCategory {
     
     /** The replacement object to use for this category. */
     private final PreferencesInterface object;
+    
+    /** A list of listeners who are interested in this category. */
+    private final ListenerList listeners = new ListenerList();
 
     /**
      * Creates a new preferences category that contains settings.
@@ -150,5 +155,41 @@ public class PreferencesCategory {
     public PreferencesInterface getObject() {
         return object;
     }
+    
+    /**
+     * Registers a change listener for this category.
+     * 
+     * @param listener The listener to be added
+     */
+    public void addChangeListener(final CategoryChangeListener listener) {
+        listeners.add(CategoryChangeListener.class, listener);
+    }
+    
+    /**
+     * Removes a change listener from this category.
+     * 
+     * @param listener The listener to be added
+     */
+    public void removeChangeListener(final CategoryChangeListener listener) {
+        listeners.remove(CategoryChangeListener.class, listener);
+    }
+    
+    /**
+     * Informs all registered listeners that this category has been selected.
+     */
+    public void fireCategorySelected() {
+        for (CategoryChangeListener listener : listeners.get(CategoryChangeListener.class)) {
+            listener.CategorySelected(this);
+        }
+    }
+    
+    /**
+     * Informs all registered listeners that this category has been deselected.
+     */
+    public void fireCategoryDeselected() {
+        for (CategoryChangeListener listener : listeners.get(CategoryChangeListener.class)) {
+            listener.CategorySelected(this);
+        }
+    }    
 
 }

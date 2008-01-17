@@ -32,6 +32,7 @@ import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.validator.NumericalValidator;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
+import com.dmdirc.util.DoubleMap;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
@@ -95,7 +96,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     private final Map<PreferencesSetting, JComponent> components;
 
     /** Categories in the dialog. */
-    private final Map<PreferencesCategory, JPanel> categories;
+    private final DoubleMap<PreferencesCategory, JPanel> categories;
 
     /** Custom panels, not to be laid out automatically. */
     private final List<JPanel> panels;
@@ -123,7 +124,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         
         manager = new PreferencesManager();
 
-        categories = new HashMap<PreferencesCategory, JPanel>();
+        categories = new DoubleMap<PreferencesCategory, JPanel>();
         components = new HashMap<PreferencesSetting, JComponent>();
 
         panels = new ArrayList<JPanel>();
@@ -231,10 +232,10 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         final JLabel label = getLabel(setting);
         final JComponent option = getComponent(setting);
 
-        ((JPanel) categories.get(category).getComponent(1)).add(label);
+        ((JPanel) categories.getValue(category).getComponent(1)).add(label);
 
         label.setLabelFor(option);
-        ((JPanel) categories.get(category).getComponent(1)).add(option);
+        ((JPanel) categories.getValue(category).getComponent(1)).add(option);
     }
 
     /**
@@ -421,7 +422,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             }
 
             panels.add((JPanel) category.getObject());
-            categories.get(category).add((JPanel) category.getObject(), 1);
+            categories.getValue(category).add((JPanel) category.getObject(), 1);
 
             return;
         }
@@ -494,7 +495,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
     /** {@inheritDoc} */
     public void display() {
-        for (JPanel panel : categories.values()) {
+        for (JPanel panel : categories.valueSet()) {
             if (!panels.contains(panel.getComponent(1))) {
                 layoutGrid((JPanel) panel.getComponent(1), ((JPanel) panel
                         .getComponent(1)).getComponentCount() / 2, 2, SMALL_BORDER,
