@@ -184,4 +184,22 @@ public class SwingInputField extends JComponent implements InputField {
     public void setCaretColor(Color optionColour) {
         textField.setCaretColor(optionColour);
     }
+    
+    /**
+     * Sets the foreground colour to the specified coloour.
+     * 
+     * @param optionColour Colour for the caret
+     */
+    public void setForeground(Color optionColour) {
+        textField.setForeground(optionColour);
+    }
+    
+    /**
+     * Sets the background colour to the specified coloour.
+     * 
+     * @param optionColour Colour for the caret
+     */
+    public void setBackground(Color optionColour) {
+        textField.setBackground(optionColour);
+    }
 }
