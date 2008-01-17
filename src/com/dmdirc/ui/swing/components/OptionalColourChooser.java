@@ -175,10 +175,19 @@ public final class OptionalColourChooser extends JPanel implements ActionListene
         }
     }
     
+    /**
+     * Adds an action listener to this optional colour chooser. Action
+     * listeners are notified whenever the state changes in some way.
+     * 
+     * @param l The listener to be added
+     */
     public void addActionListener(final ActionListener l) {
-        listenerList.add(ActionListener.class, l);
+        listeners.add(ActionListener.class, l);
     }
     
+    /**
+     * Informs all action listeners that an action has occured.
+     */
     protected void fireActionEvent() {
         for (ActionListener listener : listeners.get(ActionListener.class)) {
             listener.actionPerformed(new ActionEvent(this, 1, "stuffChanged"));

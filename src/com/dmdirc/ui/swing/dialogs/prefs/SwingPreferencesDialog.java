@@ -350,15 +350,18 @@ public final class SwingPreferencesDialog extends StandardDialog implements
                 
                 break;
             case OPTIONALCOLOUR:
-                option = new OptionalColourChooser(setting.getValue() == null ?
-                    "0" : setting.getValue(), setting.getValue() != null,
-                    true, true);
+                final boolean state = setting.getValue() != null && 
+                        !setting.getValue().startsWith("false:");
+                final String colour = setting.getValue() == null ? "0" :
+                        setting.getValue().substring(1 + setting.getValue().indexOf(':'));
+                
+                option = new OptionalColourChooser(colour, state, true, true);
                 
                 ((OptionalColourChooser) option).addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        setting.setValue(((OptionalColourChooser) e.getSource()).isEnabled()
-                                ? ((OptionalColourChooser) e.getSource()).getColour()
-                                : null);
+                        setting.setValue(
+                                String.valueOf(((OptionalColourChooser) e.getSource()).isEnabled())
+                                + ":" + ((OptionalColourChooser) e.getSource()).getColour());
                     }
                 });
                 

@@ -82,7 +82,15 @@ public abstract class ConfigSource {
             return fallback;
         }
 
-        return ColourManager.parseColour(getOption(domain, option), fallback);
+        String value = getOption(domain, option);
+        
+        if (value.startsWith("true:")) {
+            value = value.substring(5);
+        } else if (value.startsWith("false:")) {
+            return fallback;
+        }
+        
+        return ColourManager.parseColour(value, fallback);
     }
 
     /**

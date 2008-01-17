@@ -347,10 +347,10 @@ public class PreferencesManager {
                 "ui", "foregroundcolour", "1", "Foreground colour", "Default " +
                 "foreground colour to use"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "ui", "inputbackgroundcolour", null, "Input background colour",
+                "ui", "inputbackgroundcolour", "false:0", "Input background colour",
                 "Default background colour to use for input fields"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "ui", "inputforegroundcolour", null, "Input foreground colour",
+                "ui", "inputforegroundcolour", "false:1", "Input foreground colour",
                 "Default foreground colour to use for input fields"));        
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "showcolourdialog", "false", "Show colour dialog",
@@ -424,13 +424,13 @@ public class PreferencesManager {
         final PreferencesCategory category = new PreferencesCategory("Nicklist", "");
         
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "ui", "nicklistbackgroundcolour", null, "Nicklist background colour",
+                "ui", "nicklistbackgroundcolour", "false:0", "Nicklist background colour",
                 "Background colour to use for the nicklist"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "ui", "nicklistforegroundcolour", null, "Nicklist foreground colour",
+                "ui", "nicklistforegroundcolour", "false:1", "Nicklist foreground colour",
                 "Foreground colour to use for the nicklist"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "nicklist", "altBackgroundColour", null, "Alternate background colour",
+                "nicklist", "altBackgroundColour", "false:f0f0f0", "Alternate background colour",
                 "Background colour to use for every other nicklist entry"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "sortByMode", "true", "Sort nicklist by user mode",
@@ -451,13 +451,13 @@ public class PreferencesManager {
         final PreferencesCategory category = new PreferencesCategory("Treeview", "");
         
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "treeview", "backgroundcolour", null, "Treeview background colour",
+                "treeview", "backgroundcolour", "false:0", "Treeview background colour",
                 "Background colour to use for the treeview"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "treeview", "foregroundcolour", null, "Treeview foreground colour",
+                "treeview", "foregroundcolour", "false:1", "Treeview foreground colour",
                 "Foreground colour to use for the treeview"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "ui", "treeviewRolloverColour", null, "Treeview rollover colour",
+                "ui", "treeviewRolloverColour", "false:f0f0f0", "Treeview rollover colour",
                 "Background colour to use when the mouse cursor is over a node"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "treeview", "sortwindows", "true", "Sort windows",
@@ -469,10 +469,10 @@ public class PreferencesManager {
                 "ui", "treeviewActiveBold", "false", "Active node bold",
                 "Make the active node bold?"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "ui", "treeviewActiveBackground", null, "Active node background",
+                "ui", "treeviewActiveBackground", "false:0", "Active node background",
                 "Background colour to use for active treeview node"));        
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "ui", "treeviewActiveForeground", null, "Active node foreground",
+                "ui", "treeviewActiveForeground", "false:1", "Active node foreground",
                 "Foreground colour to use for active treeview node"));
 
         parent.addSubCategory(category);
