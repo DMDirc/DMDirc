@@ -1215,16 +1215,23 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
             
             if (missingUmodes.length() > 0) {
+                if (missingModes.length() > 0) {
+                    missing.append(' ');
+                }
+                
                 missing.append("user: +");
                 missing.append(missingUmodes);
             }
             
             Logger.appError(ErrorLevel.LOW, missing.toString() + " ["
-                    + parser.getNetworkName() + "]",
+                    + getNetwork() + "]",
                     new Exception(missing.toString() + "\n" // NOPMD
-                    + "Network: " + parser.getNetworkName() + "\n"
+                    + "Network: " + getNetwork() + "\n"
                     + "IRCd: " + parser.getIRCD(false)
-                    + " (" + parser.getIRCD(true) + ")\n\n"));            
+                    + " (" + parser.getIRCD(true) + ")\n"
+                    + "Mode alias version: "
+                    + configManager.getOption("identity", "modealiasversion", "none")
+                    + "\n\n"));
         }
     }
    
