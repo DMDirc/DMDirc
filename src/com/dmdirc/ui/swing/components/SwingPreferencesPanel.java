@@ -25,6 +25,7 @@ package com.dmdirc.ui.swing.components;
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesCategory;
+import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.validator.NumericalValidator;
 import com.dmdirc.ui.swing.MainFrame;
@@ -59,7 +60,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
-import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
@@ -115,20 +115,26 @@ public final class SwingPreferencesPanel extends StandardDialog implements
 
     /** root node. */
     private DefaultMutableTreeNode rootNode;
+    
+    /** Preferences Manager. */
+    private final PreferencesManager manager;
 
     /**
      * Creates a new instance of SwingPreferencesPanel.
      *
      * @param preferencesOwner Owner of the preferences dialog
      * @param title preferences dialog title
+     * @param manager The preferences manager to use for settings
      */
     public SwingPreferencesPanel(final PreferencesDialog preferencesOwner,
-            final String title) {
+            final String title, final PreferencesManager manager) {
         super((MainFrame) Main.getUI().getMainWindow(), false);
 
         windowTitle = title;
 
         owner = preferencesOwner;
+        
+        this.manager = manager;
 
         categories = new HashMap<PreferencesCategory, JPanel>();
         components = new HashMap<PreferencesSetting, JComponent>();
@@ -138,6 +144,8 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         initComponents();
 
         new TreeScroller(tabList);
+        
+        addCategories(manager.getCategories());
     }
 
     /**
@@ -274,7 +282,8 @@ public final class SwingPreferencesPanel extends StandardDialog implements
                 option = new ValidatingJTextField(setting.getValidator());
                 ((ValidatingJTextField) option).setText(setting.getValue());
                 ((ValidatingJTextField) option).addKeyListener(new KeyAdapter() {
-                    public void keyTyped(KeyEvent e) {
+                    @Override
+                    public void keyTyped(final KeyEvent e) {
                         setting.setValue(((ValidatingJTextField) e.getSource()).getText());
                     }
                 });
@@ -284,7 +293,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
                 ((JCheckBox) option).setSelected(Boolean.parseBoolean(setting.getValue()));
                 
                 ((JCheckBox) option).addChangeListener(new ChangeListener(){
-                    public void stateChanged(ChangeEvent e) {
+                    public void stateChanged(final ChangeEvent e) {
                         setting.setValue(String.valueOf(((JCheckBox) e.getSource()).isSelected()));
                     }
                 });
@@ -295,18 +304,18 @@ public final class SwingPreferencesPanel extends StandardDialog implements
                     option = new JComboBox(setting.getComboOptions().keySet()
                             .toArray(new String[0]));
                     ((JComboBox) option).setSelectedItem(setting.getValue());
-                //} else {
+//                } else {
 //                    final DefaultComboBoxModel model = (DefaultComboBoxModel) args[0];
-  //                  option = new JComboBox(model);
-    //               ((JComboBox) option).setRenderer((ListCellRenderer) args[3]);
-     //               for (int i = 0; i < model.getSize(); i++) {
-       //                 final Object entry = model.getElementAt(i);
-         //               if (((Entry) entry).getValue().equals(args[1])) {
-           //                 ((JComboBox) option).setSelectedItem(entry);
-             //               break;
-               //         }
-                 //   }
-                //}
+//                    option = new JComboBox(model);
+//                   ((JComboBox) option).setRenderer((ListCellRenderer) args[3]);
+//                    for (int i = 0; i < model.getSize(); i++) {
+//                        final Object entry = model.getElementAt(i);
+//                        if (((Entry) entry).getValue().equals(args[1])) {
+//                            ((JComboBox) option).setSelectedItem(entry);
+//                            break;
+//                        }
+//                    }
+//                }
                 
                 ((JComboBox) option).addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
@@ -481,6 +490,8 @@ public final class SwingPreferencesPanel extends StandardDialog implements
 
     /** {@inheritDoc} */
     public void saveOptions() {
+        manager.fireSaveListeners();
+        
         for (PreferencesSetting setting : components.keySet()) {
             setting.save();
         }

@@ -131,7 +131,7 @@ public class IdentdPlugin extends Plugin implements ActionListener {
 	/** {@inheritDoc} */
 	@Override
 	public void showConfig(final PreferencesManager manager) {
-        final PreferencesCategory general = new PreferencesCategory("Identd Plugin",
+        final PreferencesCategory general = new PreferencesCategory("Identd",
                 "General Identd Plugin config ('Lower' options take priority " +
                 "over those above them)");
         final PreferencesCategory advanced = new PreferencesCategory("Advanced", 

@@ -27,7 +27,7 @@ import com.dmdirc.config.prefs.validator.NumericalValidator;
 import com.dmdirc.config.prefs.validator.StringLengthValidator;
 import com.dmdirc.themes.Theme;
 import com.dmdirc.themes.ThemeManager;
-import com.dmdirc.ui.swing.components.PluginPanel;
+import com.dmdirc.ui.swing.components.pluginpanel.PluginPanel;
 import com.dmdirc.ui.swing.dialogs.prefs.URLConfigPanel;
 import com.dmdirc.ui.swing.dialogs.prefs.UpdateConfigPanel;
 
@@ -70,10 +70,6 @@ public class PreferencesManager {
      */
     public void addCategory(final PreferencesCategory category) {
         categories.add(category);
-        
-        if (category.hasObject()) {
-            listeners.add(PreferencesInterface.class, category.getObject());
-        }
     }
 
     /**
@@ -517,6 +513,25 @@ public class PreferencesManager {
         for (PreferencesInterface iface : listeners.get(PreferencesInterface.class)) {
             iface.save();
         }
+        
+        for (PreferencesCategory category : categories) {
+            fireSaveListener(category);
+        }
+    }
+    
+    /**
+     * Fires the save listener for any objects within the specified category.
+     * 
+     * @param category The category to check
+     */
+    private void fireSaveListener(final PreferencesCategory category) {
+        if (category.hasObject()) {
+            category.getObject().save();
+        }
+        
+        for (PreferencesCategory subcategory : category.getSubcats()) {
+            fireSaveListener(subcategory);
+        }        
     }
 
 }

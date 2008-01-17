@@ -185,7 +185,7 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
                 "", new InstructionsPanel());
         
         general.addSetting(new PreferencesSetting(PreferencesType.TEXT, 
-                "plugin-vlc", "host", "localhost:8082", "Hostnamo and port",
+                "plugin-vlc", "host", "localhost:8082", "Hostname and port",
                 "The host and port that VLC listens on for web connections"));
         
         manager.getCategory("Plugins").addSubCategory(general);

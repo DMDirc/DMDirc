@@ -20,10 +20,10 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.components;
+package com.dmdirc.ui.swing.components.pluginpanel;
 
+import com.dmdirc.ui.swing.components.*;
 import com.dmdirc.config.prefs.PreferencesInterface;
-import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.swing.components.renderers.PluginCellRenderer;
@@ -125,7 +125,7 @@ public final class PluginPanel extends JPanel implements
         
         ((DefaultListModel) pluginList.getModel()).clear();
         for (PluginInfo plugin : list) {
-            ((DefaultListModel) pluginList.getModel()).addElement(plugin);
+            ((DefaultListModel) pluginList.getModel()).addElement(new PluginInfoToggle(plugin));
         }
         if (((DefaultListModel) pluginList.getModel()).size() > 0) {
             toggleButton.setEnabled(true);
@@ -145,16 +145,15 @@ public final class PluginPanel extends JPanel implements
      */
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == toggleButton && selectedPlugin >= 0) {
-            final PluginInfo pluginInfo = (PluginInfo) pluginList.getSelectedValue();
-            if (pluginInfo.isLoaded()) {
-                pluginInfo.unloadPlugin();
-                toggleButton.setText("Enable");
-            } else {
-                pluginInfo.loadPlugin();
-                toggleButton.setText("Disable");
-            }
+            final PluginInfoToggle pluginInfo = (PluginInfoToggle) pluginList.getSelectedValue();
             
-            PluginManager.getPluginManager().updateAutoLoad(pluginInfo);
+            pluginInfo.toggle();
+            
+            if (pluginInfo.getState()) {
+                toggleButton.setText("Disable");
+            } else {
+                toggleButton.setText("Enable");
+            }
             
             pluginList.repaint();
         } else if (e.getSource() != toggleButton) {
@@ -167,17 +166,16 @@ public final class PluginPanel extends JPanel implements
         if (!e.getValueIsAdjusting()) {
             final int selected = ((JList) e.getSource()).getSelectedIndex();
             if (selected >= 0) {
-                final PluginInfo pluginInfo = (PluginInfo) 
+                final PluginInfoToggle pluginInfo = (PluginInfoToggle) 
                         ((JList) e.getSource()).getSelectedValue();
-                final Plugin plugin = pluginInfo.getPlugin();
-                if (pluginInfo.isLoaded()) {
-                    pluginInfo.loadPlugin();
-                    if (pluginInfo.isPersistant()) {
+                toggleButton.setEnabled(true);
+                
+                if (pluginInfo.getState()) {
+                    if (pluginInfo.getPluginInfo().isPersistant()) {
                         toggleButton.setEnabled(false);
                     }
                     toggleButton.setText("Disable");
                 } else {
-                    pluginInfo.unloadPlugin();
                     toggleButton.setText("Enable");
                 }
             }
@@ -188,7 +186,9 @@ public final class PluginPanel extends JPanel implements
     /** {@inheritDoc} */
     @Override
     public void save() {
-        // TODO: Make this panel cache & use the save method
+        for (Object pit : ((DefaultListModel) pluginList.getModel()).toArray()) {
+            ((PluginInfoToggle) pit).apply();
+        }
     }
     
 }

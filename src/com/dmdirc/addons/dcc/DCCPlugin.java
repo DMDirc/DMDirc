@@ -437,7 +437,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	/** {@inheritDoc} */
         @Override
 	public void showConfig(final PreferencesManager manager) {
-		final PreferencesCategory general = new PreferencesCategory("DCC Plugin", "");
+		final PreferencesCategory general = new PreferencesCategory("DCC", "");
                 final PreferencesCategory sending = new PreferencesCategory("Sending", "");
                 final PreferencesCategory receiving = new PreferencesCategory("Receiving", "");
 

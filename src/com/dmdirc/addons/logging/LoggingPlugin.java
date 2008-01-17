@@ -151,7 +151,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	/** {@inheritDoc} */
 	@Override
 	public void showConfig(final PreferencesManager manager) {
-		final PreferencesCategory general = new PreferencesCategory("Logging plugin", 
+		final PreferencesCategory general = new PreferencesCategory("Logging", 
                 "General configuration for Logging plugin.");
         final PreferencesCategory backbuffer = new PreferencesCategory("Back Buffer",
                 "Options related to the automatic backbuffer");

@@ -79,12 +79,9 @@ public final class PreferencesDialog implements ConfigChangeListener {
      */
     private void initComponents() {
         
-        preferencesPanel = new SwingPreferencesPanel(this, "Preferences");
-        restartNeeded = false;
-        
         manager = new PreferencesManager();
-        
-        preferencesPanel.addCategories(manager.getCategories());
+        preferencesPanel = new SwingPreferencesPanel(this, "Preferences", manager);
+        restartNeeded = false;
         
         preferencesPanel.display();
     }   

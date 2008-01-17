@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.swing.components.renderers;
 
-import com.dmdirc.plugins.PluginInfo;
+import com.dmdirc.ui.swing.components.pluginpanel.PluginInfoToggle;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.Color;
@@ -61,7 +61,7 @@ public final class PluginCellRenderer extends JPanel implements ListCellRenderer
     public Component getListCellRendererComponent(final JList list,
             final Object value, final int index, final boolean isSelected,
             final boolean cellHasFocus) {
-        final PluginInfo plugin = (PluginInfo) value;
+        final PluginInfoToggle plugin = (PluginInfoToggle) value;
         
         removeAll();
         setLayout(new MigLayout("fill, ins 3 0 0 0"));        
@@ -74,24 +74,24 @@ public final class PluginCellRenderer extends JPanel implements ListCellRenderer
         
         Color foreground;
         
-        if (plugin.isLoaded()) {
+        if (plugin.getState()) {
             foreground = Color.BLACK;
         } else {
             foreground = Color.GRAY;
         }
         
-        final JLabel name = new JLabel(plugin.getNiceName());
+        final JLabel name = new JLabel(plugin.getPluginInfo().getNiceName());
         name.setFont(name.getFont().deriveFont(Font.BOLD));
         name.setForeground(foreground);
         
-        final JLabel version = new JLabel(plugin.getFriendlyVersion());
+        final JLabel version = new JLabel(plugin.getPluginInfo().getFriendlyVersion());
         version.setForeground(foreground);
         version.setHorizontalAlignment(JLabel.CENTER);
         
-        final JLabel author = new JLabel(plugin.getAuthor());
+        final JLabel author = new JLabel(plugin.getPluginInfo().getAuthor());
         author.setForeground(foreground);
         
-        final JLabel desc = new JLabel(plugin.getDescription());
+        final JLabel desc = new JLabel(plugin.getPluginInfo().getDescription());
         desc.setForeground(foreground);
         desc.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0, 0, 0));
         
