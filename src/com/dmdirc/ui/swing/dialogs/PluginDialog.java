@@ -263,7 +263,9 @@ public final class PluginDialog extends StandardDialog implements
             } else {
                 pluginInfo.loadPlugin();
                 toggleButton.setText("Disable");
-                configureButton.setEnabled(pluginInfo.getPlugin().isConfigurable());
+                if (pluginInfo.getPlugin() != null) {
+                    configureButton.setEnabled(pluginInfo.getPlugin().isConfigurable());
+                }
             }
             
             PluginManager.getPluginManager().updateAutoLoad(pluginInfo);
