@@ -74,7 +74,7 @@ public class UpdateConfigPanel extends JPanel implements ActionListener,
     public void save() {
         final Identity identity = IdentityManager.getConfigIdentity();
         if (enable.isSelected()) {
-            identity.unsetOption("updater", "enable");
+            identity.setOption("updater", "enable", true);
         } else {
             identity.setOption("updater", "enable", false);
         }
