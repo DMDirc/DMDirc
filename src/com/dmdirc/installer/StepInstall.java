@@ -63,6 +63,7 @@ public final class StepInstall extends Step implements StepListener {
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
 
+		infoLabel.setFont(UIManager.getFont("Label.font"));
 		infoLabel.setEditable(false);
 		infoLabel.setWrapStyleWord(true);
 		infoLabel.setLineWrap(true);
