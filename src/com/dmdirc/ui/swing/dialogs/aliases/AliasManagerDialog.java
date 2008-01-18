@@ -81,10 +81,7 @@ public final class AliasManagerDialog extends StandardDialog implements
     
     /** Error detail panel. */
     private AliasPanel aliasDetails;
-    
-    /** Buttons pane. */
-    private JPanel buttonsPanel;
-    
+
     /** Add/edit button. */
     private JButton addButton;
     
@@ -135,7 +132,12 @@ public final class AliasManagerDialog extends StandardDialog implements
     private void initComponents() {
         final TableCellRenderer arrayRenderer = new ArrayCellRenderer();
         final TableCellRenderer conditionRenderer = new ActionConditionCellRenderer();
-        initButtonsPanel();
+        
+        orderButtons(new JButton(), new JButton());
+        addButton = new JButton("Add");
+        deleteButton = new JButton("Delete");
+        
+        deleteButton.setEnabled(false);
         
         scrollPane = new JScrollPane();
         
@@ -206,15 +208,6 @@ public final class AliasManagerDialog extends StandardDialog implements
         }
         
         return aliases;
-    }
-    
-    /** Initialises the button panel. */
-    private void initButtonsPanel() {
-        buttonsPanel = new JPanel();
-        
-        orderButtons(new JButton(), new JButton());
-        addButton = new JButton("Add");
-        deleteButton = new JButton("Delete");
     }
     
     /** Initialises the listeners. */
