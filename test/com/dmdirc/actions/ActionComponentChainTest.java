@@ -90,4 +90,27 @@ public class ActionComponentChainTest extends junit.framework.TestCase {
         assertTrue("Should throw an IAE", iaed);
     }
 
+    @Test
+    public void testAppliesTo() {
+        final ActionComponentChain chain = new ActionComponentChain(String.class,
+                "STRING_STRING.STRING_STRING.STRING_LENGTH");
+        assertEquals(String.class, chain.appliesTo());
+    }
+    
+    @Test
+    public void testGetType() {
+        final ActionComponentChain chain = new ActionComponentChain(String.class,
+                "STRING_STRING.STRING_STRING.STRING_LENGTH");
+        assertEquals(Integer.class, chain.getType());
+    }    
+    
+    @Test
+    public void testGetName() {
+        final ActionComponentChain chain = new ActionComponentChain(String.class,
+                "STRING_STRING.STRING_STRING.STRING_LENGTH");
+        
+        assertTrue(chain.getName().indexOf(CoreActionComponent.STRING_STRING.getName()) > -1);
+        assertTrue(chain.getName().indexOf(CoreActionComponent.STRING_LENGTH.getName()) > -1);
+    }    
+
 }

@@ -119,9 +119,12 @@ public class ConditionTreeTest extends junit.framework.TestCase {
     public void testGetNumArgs() {
         final String target = "((0&1&2)|3)&(!4)";
         final ConditionTree tree = ConditionTree.parseString(target);
-        assertNotNull(tree);        
+        assertNotNull(tree);
         
         assertEquals(4, tree.getMaximumArgument());
+        
+        final String target2 = "";
+        assertEquals(0, ConditionTree.parseString(target2).getMaximumArgument());
     }
     
     @Test

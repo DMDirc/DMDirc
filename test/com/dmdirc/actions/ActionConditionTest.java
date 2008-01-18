@@ -88,6 +88,15 @@ public class ActionConditionTest extends junit.framework.TestCase {
         ac.setArg(0);
         assertEquals(0, ac.getArg());
     }
+    
+    @Test
+    public void testToString() {
+        final ActionCondition ac1 = new ActionCondition("foobarbaz",
+            CoreActionComparison.STRING_STARTSWITH, "foo");
+        assertTrue(ac1.toString().indexOf("foo") > -1);
+        assertTrue(ac1.toString().indexOf("foobarbaz") > -1);
+        assertTrue(ac1.toString().indexOf(CoreActionComparison.STRING_STARTSWITH.toString()) > -1);
+    }
 
     @Test
     public void testEquals() {
