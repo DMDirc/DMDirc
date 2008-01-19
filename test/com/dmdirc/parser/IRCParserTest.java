@@ -25,6 +25,7 @@ package com.dmdirc.parser;
 import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.callbacks.interfaces.IAwayState;
 
+import com.dmdirc.parser.callbacks.interfaces.INoticeAuth;
 import com.dmdirc.parser.callbacks.interfaces.IServerError;
 import java.util.Arrays;
 import org.junit.Test;
@@ -173,6 +174,25 @@ public class IRCParserTest extends junit.framework.TestCase {
     }
     
     @Test
+    public void testAuthNotices() throws CallbackNotFoundException {
+        final INATest test = new INATest();
+        final TestParser parser = new TestParser();
+        parser.getCallbackManager().addCallback("onNoticeAuth", test);
+        parser.sendConnectionStrings();
+        parser.injectLine("NOTICE AUTH :Random auth notice?");
+        
+        assertNotNull(test.message);
+        assertEquals("Random auth notice?", test.message);
+        
+        test.message = null;
+        
+        parser.injectLine(":us.ircnet.org 020 * :Stupid notice");
+        
+        assertNotNull(test.message);
+        assertEquals("Stupid notice", test.message);        
+    }
+    
+    @Test
     public void testIRCds() {
         doIRCdTest("u2.10.12.10+snircd(1.3.4)", "snircd");
         doIRCdTest("u2.10.12.12", "ircu");
@@ -206,6 +226,15 @@ public class IRCParserTest extends junit.framework.TestCase {
         public void onServerError(IRCParser tParser, String sMessage) {
             message = sMessage;
         }
-    }    
+    }
+    
+    private class INATest implements INoticeAuth {
+        String message = null;
+
+        public void onNoticeAuth(IRCParser tParser, String sData) {
+            message = sData;
+        }
+        
+    }
 
 }
