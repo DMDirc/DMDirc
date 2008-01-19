@@ -26,6 +26,8 @@ import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.callbacks.interfaces.IAwayState;
 
 import com.dmdirc.parser.callbacks.interfaces.INoticeAuth;
+import com.dmdirc.parser.callbacks.interfaces.INumeric;
+import com.dmdirc.parser.callbacks.interfaces.IPost005;
 import com.dmdirc.parser.callbacks.interfaces.IServerError;
 import java.util.Arrays;
 import org.junit.Test;
@@ -193,6 +195,71 @@ public class IRCParserTest extends junit.framework.TestCase {
     }
     
     @Test
+    public void testNumeric() throws CallbackNotFoundException {
+        final INTest test = new INTest();
+        final TestParser parser = new TestParser();
+        parser.getCallbackManager().addCallback("onNumeric", test);
+        
+        parser.injectLine(":server 001 nick :Hi there, nick");
+        
+        assertEquals(1, test.numeric);
+        assertTrue(Arrays.equals(new String[]{":server", "001", "nick", "Hi there, nick"}, 
+                test.data));
+    }
+    
+    @Test
+    public void testPost005() throws CallbackNotFoundException {
+        final IPFTest test = new IPFTest();
+        final TestParser parser = new TestParser();
+        parser.getCallbackManager().addCallback("onPost005", test);
+        
+        final String[] strings = {
+            "NOTICE AUTH :Blah, blah",
+            ":server 020 * :Blah! Blah!",
+            ":server 001 nick :Welcome to the Testing IRC Network, nick",
+            ":server 002 nick :Your host is server.net, running version foo",
+            "NOTICE AUTH :I'm a retarded server",
+            ":server 003 nick :This server was created Sun Jan 6 2008 at 17:34:54 CET",
+            ":server 004 nick server.net foo dioswkgxRXInP biklmnopstvrDcCNuMT bklov",
+            ":server 005 nick WHOX WALLCHOPS WALLVOICES USERIP :are supported by this server",
+            ":server 005 nick MAXNICKLEN=15 TOPICLEN=250 AWAYLEN=160 :are supported by this server",
+            ":server 375 nick :zomg, motd!",
+        };
+        
+        for (String string : strings) {
+            assertFalse("OnPost005 fired too early", test.done);
+            parser.injectLine(string);
+        }
+        
+        assertTrue("OnPost005 not fired", test.done);
+    }
+    
+    @Test
+    public void test005Parsing() {
+        final TestParser parser = new TestParser();
+        
+        final String[] strings = {
+            ":server 001 nick :Welcome to the Testing IRC Network, nick",
+            ":server 002 nick :Your host is server.net, running version foo",
+            ":server 003 nick :This server was created Sun Jan 6 2008 at 17:34:54 CET",
+            ":server 004 nick server.net foo dioswkgxRXInP biklmnopstvrDcCNuMT bklov",
+            ":server 005 nick WHOX WALLCHOPS WALLVOICES NETWORK=moo :are supported by this server",
+            ":server 005 nick MAXNICKLEN=15 MAXLIST=b:10,e:22,I:45 :are supported by this server",
+            ":server 375 nick :zomg, motd!",
+        };        
+        
+        for (String string : strings) {
+            parser.injectLine(string);
+        }
+        
+        assertEquals(10, parser.getMaxListModes('b'));
+        assertEquals(22, parser.getMaxListModes('e'));
+        assertEquals(45, parser.getMaxListModes('I'));
+        assertEquals("getMaxListModes should return 0 for unknowns;", 0, parser.getMaxListModes('z'));
+        assertEquals("moo", parser.getNetworkName());
+    }
+    
+    @Test
     public void testIRCds() {
         doIRCdTest("u2.10.12.10+snircd(1.3.4)", "snircd");
         doIRCdTest("u2.10.12.12", "ircu");
@@ -233,8 +300,25 @@ public class IRCParserTest extends junit.framework.TestCase {
 
         public void onNoticeAuth(IRCParser tParser, String sData) {
             message = sData;
+        }   
+    }
+    
+    private class INTest implements INumeric {
+        int numeric = 0;
+        String[] data;
+
+        public void onNumeric(IRCParser tParser, int numeric, String[] token) {
+            this.numeric = numeric;
+            data = token;
         }
-        
+    }
+    
+    private class IPFTest implements IPost005 {
+        boolean done = false;
+
+        public void onPost005(IRCParser tParser) {
+            done = true;
+        }
     }
 
 }
