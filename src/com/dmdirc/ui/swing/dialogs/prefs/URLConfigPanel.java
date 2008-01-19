@@ -285,7 +285,7 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
             }.display();
 
         } else if (e.getSource() == remove) {
-            model.removeURI(table.getSelectedRow());
+            model.removeURI(table.getRowSorter().convertRowIndexToModel(table.getSelectedRow()));
         }
     }
 
