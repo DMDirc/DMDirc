@@ -67,7 +67,7 @@ import javax.net.ssl.X509TrustManager;
  * @author Shane Mc Cormack
  * @version $Id$
  */
-public final class IRCParser implements Runnable {
+public class IRCParser implements Runnable {
 
 	/** Max length an outgoing line should be (NOT including \r\n). */
 	public static final int MAX_LINELENGTH = 510;
@@ -227,7 +227,7 @@ public final class IRCParser implements Runnable {
 	private boolean disconnectOnFatal = true;
 
 	/** Current Socket State. */
-	private byte currentSocketState;
+	protected byte currentSocketState;
 
 	/** This is the socket used for reading from/writing to the IRC server. */
 	private Socket socket;
@@ -716,7 +716,7 @@ public final class IRCParser implements Runnable {
 	/**
 	 * Send server connection strings (NICK/USER/PASS).
 	 */
-	private void sendConnectionStrings() {
+	protected void sendConnectionStrings() {
 		if (!server.getPassword().isEmpty()) {
 			sendString("PASS " + server.getPassword());
 		}
@@ -953,7 +953,7 @@ public final class IRCParser implements Runnable {
 	 *
 	 * @param line IRC Line to process
 	 */
-	private void processLine(final String line) {
+	protected void processLine(final String line) {
 		callDataIn(line);
 
 		final String[] token = tokeniseLine(line);

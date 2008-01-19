@@ -25,11 +25,13 @@ package com.dmdirc.parser;
 import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.callbacks.interfaces.IAwayState;
 
+import com.dmdirc.parser.callbacks.interfaces.IServerError;
+import java.util.Arrays;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class IRCParserTest extends junit.framework.TestCase {
-
+    
     @Test
     public void testIssue042() {
         boolean res = false;
@@ -101,17 +103,109 @@ public class IRCParserTest extends junit.framework.TestCase {
         final String[] res2 = myParser.tokeniseLine(line2);
         final String[] res3 = myParser.tokeniseLine(line3);
 
-        arrayEquals(res1, new String[]{"a", "b", "c", "d", "e"});
-        arrayEquals(res2, new String[]{"a", "b", "c", "d e"});
-        arrayEquals(res3, new String[]{":a", "b:c", "d e"});
+        assertTrue(Arrays.equals(res1, new String[]{"a", "b", "c", "d", "e"}));
+        assertTrue(Arrays.equals(res2, new String[]{"a", "b", "c", "d e"}));
+        assertTrue(Arrays.equals(res3, new String[]{":a", "b:c", "d e"}));
     }
+    
+    @Test
+    public void testSendConnectionStrings1() {
+        final ServerInfo serverInfo = new ServerInfo("irc.testing.dmdirc", 6667, "");
+        final MyInfo myInfo = new MyInfo();
+        myInfo.setNickname("Nickname");
+        myInfo.setRealname("Real name");
+        myInfo.setUsername("Username");
+        
+        final TestParser parser = new TestParser(myInfo, serverInfo);
+        parser.sendConnectionStrings();
+        
+        assertEquals(2, parser.sentLines.size());
+        
+        assertTrue("Should send nickname line",
+                Arrays.equals(parser.getLine(0), new String[]{"NICK", "Nickname"}));
+        
+        final String[] userParts = parser.getLine(1);
+        assertEquals("First token should be USER", "USER", userParts[0]);
+        assertEquals("USER should contain username", myInfo.getUsername().toLowerCase(),
+                userParts[1].toLowerCase());
+        assertEquals("USER should contain server name", serverInfo.getHost(), userParts[3]);
+        assertEquals("USER should contain real name", "Real name", userParts[4]);
+    }
+    
+    @Test
+    public void testSendConnectionStrings2() {
+        final ServerInfo serverInfo = new ServerInfo("irc.testing.dmdirc", 6667, "password");
+        final MyInfo myInfo = new MyInfo();
+        myInfo.setNickname("Nickname");
+        myInfo.setRealname("Real name");
+        myInfo.setUsername("Username");
+        
+        final TestParser parser = new TestParser(myInfo, serverInfo);
+        parser.sendConnectionStrings();
+        
+        assertEquals(3, parser.sentLines.size());
+        
+        assertTrue("Should send password line",
+                Arrays.equals(parser.getLine(0), new String[]{"PASS", "password"}));
+    }    
+    
+    @Test
+    public void testPingPong() {
+        final TestParser parser = new TestParser();
+        
+        parser.injectLine("PING :flubadee7291");
+        
+        assertTrue("Should reply to PINGs with PONGs",
+                Arrays.equals(parser.getLine(0), new String[]{"PONG", "flubadee7291"}));
+    }
+    
+    @Test
+    public void testError() throws CallbackNotFoundException {
+        final ISETest test = new ISETest();
 
-    private void arrayEquals(final String[] a1, final String[] a2) {
-        assertEquals(a1.length, a2.length);
-
-        for (int i = 0; i < a1.length; i++) {
-            assertEquals(a1[i], a2[i]);
+        final TestParser parser = new TestParser();
+        parser.getCallbackManager().addCallback("onServerError", test);
+        parser.injectLine("ERROR :You smell of cheese");
+        
+        assertNotNull(test.message);
+        assertEquals("ERROR message should be passed to callback",
+                "You smell of cheese", test.message);
+    }
+    
+    @Test
+    public void testIRCds() {
+        doIRCdTest("u2.10.12.10+snircd(1.3.4)", "snircd");
+        doIRCdTest("u2.10.12.12", "ircu");
+        doIRCdTest("hyperion-1.0.2b", "hyperion");
+        doIRCdTest("hybrid-7.2.3", "hybrid");
+        doIRCdTest("Unreal3.2.6", "unreal");
+        doIRCdTest("bahamut-1.8(04)", "bahamut");
+    }
+    
+    private void doIRCdTest(final String ircd, final String expected) {
+        final TestParser parser = new TestParser();
+        
+        String[] strings = {
+            ":server 001 nick :Welcome to the Testing IRC Network, nick",
+            ":server 002 nick :Your host is server.net, running version %s",
+            ":server 003 nick :This server was created Sun Jan 6 2008 at 17:34:54 CET",
+            ":server 004 nick server.net %s dioswkgxRXInP biklmnopstvrDcCNuMT bklov"
+        };
+        
+        for (String line : strings) {
+            parser.injectLine(String.format(line, ircd));
         }
+        
+        assertEquals(ircd, parser.getIRCD(false));
+        assertEquals(expected.toLowerCase(), parser.getIRCD(true).toLowerCase());
     }
+    
+    private class ISETest implements IServerError {
+        String message = null;
+
+        public void onServerError(IRCParser tParser, String sMessage) {
+            message = sMessage;
+        }
+    }    
 
 }
