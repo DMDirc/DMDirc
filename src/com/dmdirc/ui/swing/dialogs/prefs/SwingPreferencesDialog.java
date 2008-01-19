@@ -31,6 +31,7 @@ import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.validator.NumericalValidator;
 import com.dmdirc.ui.swing.MainFrame;
+import com.dmdirc.ui.swing.components.renderers.MapEntryRenderer;
 import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
 import com.dmdirc.util.DoubleMap;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
@@ -55,6 +56,7 @@ import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -288,31 +290,24 @@ public final class SwingPreferencesDialog extends StandardDialog implements
                 
                 break;
             case MULTICHOICE:
-                //if (args[0] instanceof String[]) {
-                    option = new JComboBox(setting.getComboOptions().keySet()
-                            .toArray(new String[0]));
-                    ((JComboBox) option).setSelectedItem(setting.getValue());
-//                } else {
-//                    final DefaultComboBoxModel model = (DefaultComboBoxModel) args[0];
-//                    option = new JComboBox(model);
-//                   ((JComboBox) option).setRenderer((ListCellRenderer) args[3]);
-//                    for (int i = 0; i < model.getSize(); i++) {
-//                        final Object entry = model.getElementAt(i);
-//                        if (((Entry) entry).getValue().equals(args[1])) {
-//                            ((JComboBox) option).setSelectedItem(entry);
-//                            break;
-//                        }
-//                    }
-//                }
+                option = new JComboBox(setting.getComboOptions().entrySet().toArray());
+                ((JComboBox) option).setRenderer(new MapEntryRenderer());
+                ((JComboBox) option).setEditable(false);
+                
+                for (Map.Entry<String, String> entry : setting.getComboOptions().entrySet()) {
+                    if (entry.getKey().equals(setting.getValue())) {
+                        ((JComboBox) option).setSelectedItem(entry);
+                        break;
+                    }
+                }
                 
                 ((JComboBox) option).addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        setting.setValue(String.valueOf(
-                                ((JComboBox) e.getSource()).getSelectedItem()));
+                        setting.setValue((String) ((Map.Entry)
+                                ((JComboBox) e.getSource()).getSelectedItem()).getKey());
                     }
                 });
                 
-                ((JComboBox) option).setEditable(false);
                 break;
             case INTEGER:
             case DURATION:

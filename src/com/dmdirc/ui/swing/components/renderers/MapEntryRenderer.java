@@ -49,7 +49,7 @@ public final class MapEntryRenderer extends DefaultListCellRenderer {
         if (value == null) {
             setText("Any");
         } else if (value instanceof Entry) {
-            setText((String) ((Entry) value).getKey());
+            setText((String) ((Entry) value).getValue());
         } else {
             setText(value.toString());
         }
