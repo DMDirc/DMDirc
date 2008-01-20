@@ -32,6 +32,7 @@ import com.dmdirc.ui.swing.components.ColourChooser;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -71,15 +72,35 @@ public final class OsdWindow extends JDialog implements MouseListener,
     
     /** OSD Panel. */
     private final JPanel panel;
+    
+    /** Starting positions of the mouse. */
+    private int startX, startY;
+    
+    /** Is this a config instance? */
+    private final boolean config;
 
     /**
      * Creates a new instance of OsdWindow.
      * @param text The text to be displayed in the OSD window
      * @param config Is the window being configured (should it timeout and
      * allow itself to be moved)
-     */
+     */    
     public OsdWindow(final String text, final boolean config) {
+        this(text, config, 
+                IdentityManager.getGlobalConfig().getOptionInt("plugin-OSD", "locationX", 20),
+                IdentityManager.getGlobalConfig().getOptionInt("plugin-OSD", "locationY", 20));
+    }
+    
+    /**
+     * Creates a new instance of OsdWindow.
+     * @param text The text to be displayed in the OSD window
+     * @param config Is the window being configured (should it timeout and
+     * allow itself to be moved)
+     */
+    public OsdWindow(final String text, final boolean config, final int x, final int y) {
         super(((MainFrame) Main.getUI().getMainWindow()), false);
+        
+        this.config = config;
         
         setFocusableWindowState(false);
         setAlwaysOnTop(true);
@@ -91,8 +112,7 @@ public final class OsdWindow extends JDialog implements MouseListener,
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         
-        setLocation(IdentityManager.getGlobalConfig().getOptionInt("plugin-OSD", "locationX", 20),
-                IdentityManager.getGlobalConfig().getOptionInt("plugin-OSD", "locationY", 20));
+        setLocation(x, y);
         
         panel = new JPanel();
         panel.setBorder(new LineBorder(Color.BLACK));
@@ -115,6 +135,7 @@ public final class OsdWindow extends JDialog implements MouseListener,
         
         if (config) {
             this.addMouseMotionListener(this);
+            this.addMouseListener(this);
         } else {
             addMouseListener(this);
             new Timer("OSD Display Timer").schedule(new TimerTask() {
@@ -127,12 +148,17 @@ public final class OsdWindow extends JDialog implements MouseListener,
     
     /** {@inheritDoc} */
     public void mouseClicked(final MouseEvent e) {
-        setVisible(false);
+        if (!config) {
+            setVisible(false);
+        }
     }
     
     /** {@inheritDoc} */
     public void mousePressed(final MouseEvent e) {
-        // Do nothing
+        if (config) {
+            startX = e.getPoint().x;
+            startY = e.getPoint().y;
+        }
     }
     
     /** {@inheritDoc} */
@@ -152,7 +178,9 @@ public final class OsdWindow extends JDialog implements MouseListener,
     
     /** {@inheritDoc} */
     public void mouseDragged(final MouseEvent e) {
-        setLocation(e.getLocationOnScreen());
+        final Point p = e.getLocationOnScreen();
+        p.translate(-1 * startX, -1 * startY);
+        setLocation(p);
     }
     
     /** {@inheritDoc} */

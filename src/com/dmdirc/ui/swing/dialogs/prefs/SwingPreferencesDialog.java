@@ -100,6 +100,9 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     
     /** Nodes in the treeview. */
     private final Map<TreeNode, String> nodes;
+    
+    /** Paths to categories. */
+    private final Map<String, PreferencesCategory> paths;
 
     /** Custom panels, not to be laid out automatically. */
     private final List<JPanel> panels;
@@ -116,6 +119,9 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     /** root node. */
     private DefaultMutableTreeNode rootNode;
     
+    /** Previously selected category. */
+    private PreferencesCategory selected = null;
+    
     /** Preferences Manager. */
     private final PreferencesManager manager;
 
@@ -130,6 +136,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         categories = new HashMap<PreferencesCategory, JPanel>();
         components = new HashMap<PreferencesSetting, JComponent>();
         nodes = new HashMap<TreeNode, String>();
+        paths = new HashMap<String, PreferencesCategory>();
 
         panels = new ArrayList<JPanel>();
 
@@ -384,14 +391,16 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             final DefaultMutableTreeNode parentNode, final String namePrefix) {
         final JPanel panel = new JPanel(new BorderLayout(SMALL_BORDER,
                 LARGE_BORDER));
-
+        final String path = namePrefix + "/" + category.getTitle();
         DefaultMutableTreeNode newNode;
 
         newNode = new DefaultMutableTreeNode(category.getTitle());
 
         categories.put(category, panel);
-        nodes.put(newNode, namePrefix + "/" + category.getTitle());
-        mainPanel.add(panel, namePrefix + "/" + category.getTitle());
+        nodes.put(newNode, path);
+        paths.put(path, category);
+        
+        mainPanel.add(panel, path);
         ((DefaultTreeModel) tabList.getModel()).insertNodeInto(newNode,
                 parentNode, parentNode.getChildCount());
         tabList.scrollPathToVisible(new TreePath(newNode.getPath()));
@@ -405,7 +414,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         panel.add(new JPanel(new SpringLayout()), BorderLayout.CENTER);        
 
         for (PreferencesCategory child : category.getSubcats()) {
-            addCategory(child, newNode, namePrefix + "/" + category.getTitle());
+            addCategory(child, newNode, path);
         }
 
         if (category.hasObject()) {
@@ -442,6 +451,10 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * @param actionEvent Action event
      */
     public void actionPerformed(final ActionEvent actionEvent) {
+        if (selected != null) {
+            selected.fireCategoryDeselected();
+        }
+        
         if (getOkButton().equals(actionEvent.getSource())) {
             if (tabList.getSelectionPath() != null) {
                 final String node = tabList.getSelectionPath().toString();
@@ -462,9 +475,17 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * @param selectionEvent list selection event
      */
     public void valueChanged(final TreeSelectionEvent selectionEvent) {
-        cardLayout.show(mainPanel, 
-                nodes.get(((JTree) selectionEvent.getSource())
-                .getSelectionPath().getLastPathComponent()));
+        final String path = nodes.get(((JTree) selectionEvent.getSource())
+                .getSelectionPath().getLastPathComponent());
+        
+        cardLayout.show(mainPanel, path);
+        
+        if (selected != null) {
+            selected.fireCategoryDeselected();
+        }
+        
+        selected = paths.get(path);
+        selected.fireCategorySelected();
     }
 
     /** {@inheritDoc} */

@@ -23,7 +23,10 @@
 package com.dmdirc.addons.osdplugin;
 
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.prefs.CategoryChangeListener;
 import com.dmdirc.config.prefs.PreferencesCategory;
+import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
@@ -33,7 +36,8 @@ import com.dmdirc.plugins.Plugin;
  * Allows the user to display on-screen-display messages.
  * @author chris
  */
-public final class OsdPlugin extends Plugin {
+public final class OsdPlugin extends Plugin implements CategoryChangeListener,
+        PreferencesInterface {
     
     /** What domain do we store all settings in the global config under. */
     private static final String MY_DOMAIN = "plugin-OSD";
@@ -43,6 +47,12 @@ public final class OsdPlugin extends Plugin {
     
     /** OSD Command. */
     private OsdCommand command;
+    
+    /** X-axis position of OSD. */
+    private int x = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "locationX", 20);
+    
+    /** Y-axis potion of OSD. */
+    private int y = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "locationY", 20);
     
     /**
      * Creates a new instance of OsdPlugin.
@@ -82,13 +92,37 @@ public final class OsdPlugin extends Plugin {
                 MY_DOMAIN, "timeout", "15", "Timeout", "Length of time in " +
                 "seconds before the OSD window closes"));
 
+        category.addChangeListener(this);
         manager.getCategory("Plugins").addSubCategory(category);
+        manager.registerSaveListener(this);
 
-        //osdWindow = new OsdWindow("Please drag this OSD to position", true);
         //config.setOption(MY_DOMAIN, "locationX",
         //        String.valueOf((int) osdWindow.getLocationOnScreen().getX()));
         //config.setOption(MY_DOMAIN, "locationY",
         //        String.valueOf((int) osdWindow.getLocationOnScreen().getY()));        
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void CategorySelected(final PreferencesCategory category) {
+        osdWindow = new OsdWindow("Please drag this OSD to position", true, x, y);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void CategoryDeselected(final PreferencesCategory category) {
+        x = osdWindow.getLocationOnScreen().x;
+        y = osdWindow.getLocationOnScreen().y;
+        
+        osdWindow.dispose();
+        osdWindow = null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void save() {
+        IdentityManager.getConfigIdentity().setOption(MY_DOMAIN, "locationX", x);
+        IdentityManager.getConfigIdentity().setOption(MY_DOMAIN, "locationY", y);
     }
 
 }

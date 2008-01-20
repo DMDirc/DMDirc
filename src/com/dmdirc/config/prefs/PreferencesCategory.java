@@ -188,7 +188,7 @@ public class PreferencesCategory {
      */
     public void fireCategoryDeselected() {
         for (CategoryChangeListener listener : listeners.get(CategoryChangeListener.class)) {
-            listener.CategorySelected(this);
+            listener.CategoryDeselected(this);
         }
     }    
 

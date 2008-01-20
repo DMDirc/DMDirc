@@ -508,6 +508,15 @@ public class PreferencesManager {
     }
     
     /**
+     * Registers the specified save listener with this manager.
+     * 
+     * @param listener The listener to be registered
+     */
+    public void registerSaveListener(final PreferencesInterface listener) {
+        listeners.add(PreferencesInterface.class, listener);
+    }
+    
+    /**
      * Fires the "save" methods of all registered listeners.
      */
     public void fireSaveListeners() {
