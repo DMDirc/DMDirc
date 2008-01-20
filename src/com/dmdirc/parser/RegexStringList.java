@@ -34,7 +34,7 @@ import java.util.List;
  * @version $Id$
  */
 public class RegexStringList {
-	
+
 	/** Arraylist storing ignore patterns. */
 	protected final List<String> ignoreInfo = new ArrayList<String>();
 
@@ -49,11 +49,13 @@ public class RegexStringList {
 	 * Creates a new instance of RegexStringList, with the specified items.
 	 *
 	 * @param items Items to add to this RegexStringList
-	 */ 
+	 */
 	public RegexStringList(final List<String> items) {
-		ignoreInfo.addAll(items);
+		for (String item : items) {
+			add(item);
+		}
 	}
-	
+
 	/**
 	 * Add a new ignore pattern to the ignore list.
 	 *
@@ -65,10 +67,10 @@ public class RegexStringList {
 				return;
 			}
 		}
-		
+
 		ignoreInfo.add(pattern);
 	}
-        
+
 	/**
 	 * Adds a set of patterns to the list.
 	 *
@@ -79,7 +81,7 @@ public class RegexStringList {
 			add(pattern);
 		}
 	}
-	
+
 	/**
 	 * Delete an ignore from the list.
 	 *
@@ -90,14 +92,14 @@ public class RegexStringList {
 			ignoreInfo.remove(position);
 		}
 	}
-	
+
 	/**
 	 * Clear the ignore list.
 	 */
 	public void clear() {
 		ignoreInfo.clear();
-	}	
-	
+	}
+
 	/**
 	 * Check if a string matches any of the ignores in the list.
 	 *
@@ -112,7 +114,7 @@ public class RegexStringList {
 		}
 		return -1;
 	}
-	
+
 	/**
 	 * Check if a string matches a specific ignore in the list.
 	 *
@@ -127,7 +129,7 @@ public class RegexStringList {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Get the ignore pattern in a given position in the list.
 	 *
@@ -141,7 +143,7 @@ public class RegexStringList {
 			return "";
 		}
 	}
-	
+
 	/**
 	 * Change the ignore pattern in a given position in the list.
 	 *
@@ -153,7 +155,7 @@ public class RegexStringList {
 			ignoreInfo.set(position, pattern);
 		}
 	}
-	
+
 	/**
 	 * Get the amount of ignores in the list.
 	 *
