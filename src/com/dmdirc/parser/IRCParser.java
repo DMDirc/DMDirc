@@ -721,7 +721,13 @@ public class IRCParser implements Runnable {
 			sendString("PASS " + server.getPassword());
 		}
 		setNickname(me.getNickname());
-		sendString("USER " + toLowerCase(me.getUsername()) + " * * :" + me.getRealname());
+		String localhost;
+		try {
+			localhost = InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException uhe) {
+			localhost = "*";
+		}
+		sendString("USER " + toLowerCase(me.getUsername()) + " "+localhost+" "+server.getHost()+" :" + me.getRealname());
 		isFirst = false;
 	}
 
@@ -999,17 +1005,18 @@ public class IRCParser implements Runnable {
 					// Before 001 we don't care about much.
 					try { nParam = Integer.parseInt(token[1]); } catch (Exception e) { nParam = -1; }
 					switch (nParam) {
-						case -1: // Some networks send a CTCP during the auth process, handle it.
-							if (token.length > 3 && !token[3].isEmpty() && token[3].charAt(0) == (char)1 && token[3].charAt(token[3].length()-1) == (char)1) {
-								try { myProcessingManager.process(sParam, token); } catch (Exception e) { }
-							}
-							break;
 						case 1: // 001 - Welcome to IRC
 						case 464: // Password Required
 						case 433: // Nick In Use
 							try { myProcessingManager.process(sParam, token); } catch (Exception e) { }
 							break;
 						default: // Unknown - Send to Notice Auth
+							// Some networks send a CTCP during the auth process, handle it
+							if (token.length > 3 && !token[3].isEmpty() && token[3].charAt(0) == (char)1 && token[3].charAt(token[3].length()-1) == (char)1) {
+								try { myProcessingManager.process(sParam, token); } catch (Exception e) { }
+								break;
+							}
+							// Otherwise, send to Notice Auth
 							try { myProcessingManager.process("Notice Auth", token); } catch (Exception e) { }
 							break;
 					}
@@ -1578,9 +1585,11 @@ public class IRCParser implements Runnable {
 	 *
 	 * @param mode The mode to know the max number for
 	 * @return The max number of list modes for the given mode.
-	 *         - returns 0 if mode is not found in MAXLIST (unless MAXBANS is
-	 *           specified, then this value is returned)
-	 *         - returns -1 if MAXLIST or MAXBANS were not in 005
+	 *         - returns 0 if MAXLIST does not contain the mode, unless MAXBANS is
+	 *           set, then this is returned instead.
+	 *         - returns -1 if:
+	 *           - MAXLIST or MAXBANS were not in 005
+	 *           - Values for MAXLIST or MAXBANS were invalid (non integer, empty)
 	 */
 	public int getMaxListModes(final char mode) {
 		// MAXLIST=bdeI:50
@@ -1590,6 +1599,9 @@ public class IRCParser implements Runnable {
 		callDebugInfo(DEBUG_INFO, "Looking for maxlistmodes for: "+mode);
 		// Try in MAXLIST
 		if (h005Info.get("MAXLIST") != null) {
+			if (h005Info.get("MAXBANS") == null) {
+				result = 0;
+			}
 			final String maxlist = h005Info.get("MAXLIST");
 			callDebugInfo(DEBUG_INFO, "Found maxlist ("+maxlist+")");
 			final String[] bits = maxlist.split(",");
