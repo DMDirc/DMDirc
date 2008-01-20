@@ -62,11 +62,5 @@ public final class CallbackOnConnectError extends CallbackObject {
 		}
 		return bResult;
 	}	
-	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo() { return "$Id: CallbackOnConnectError.java 719 2007-03-28 13:20:56Z ShaneMcC $"; }	
+
 }

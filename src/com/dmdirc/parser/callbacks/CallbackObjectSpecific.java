@@ -114,11 +114,5 @@ public abstract class CallbackObjectSpecific extends CallbackObject {
 		delCallback(eMethod);
 		if (specificData.containsKey(eMethod)) { specificData.remove(eMethod); }
 	}
-	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo() { return "$Id$"; }	
+
 }

@@ -124,11 +124,5 @@ public class ProcessQuit extends IRCProcessor {
 	 * @param manager ProcessingManager that is in charge of this IRCProcessor
 	 */
 	protected ProcessQuit (IRCParser parser, ProcessingManager manager) { super(parser, manager); }
-	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+
 }

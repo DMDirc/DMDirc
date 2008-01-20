@@ -78,11 +78,5 @@ public final class CallbackOnChannelUserModeChanged extends CallbackObjectSpecif
 		}
 		return bResult;
 	}	
-	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo() { return "$Id$"; }	
+
 }

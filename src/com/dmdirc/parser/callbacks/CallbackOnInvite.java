@@ -63,11 +63,5 @@ public final class CallbackOnInvite extends CallbackObject {
 		}
 		return bResult;
 	}	
-	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo() { return "$Id: CallbackOnInvite.java 1360 2007-05-25 19:12:05Z ShaneMcC $"; }
+
 }

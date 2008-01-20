@@ -126,11 +126,5 @@ public abstract class CallbackObject {
 	 * @return Name of callback, in lowercase
 	 */
 	public final String getLowerName() { return this.getName().toLowerCase(); }
-	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo() { return "$Id$"; }	
+
 }

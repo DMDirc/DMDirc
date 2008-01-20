@@ -175,11 +175,5 @@ public final class ParserError {
 	public String getLastLine() {
 		return lastLine;
 	}	
-	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo() { return "$Id$"; }	
+
 }

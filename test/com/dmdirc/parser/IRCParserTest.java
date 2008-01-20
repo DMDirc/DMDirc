@@ -28,6 +28,9 @@ import com.dmdirc.parser.callbacks.interfaces.IChannelSelfJoin;
 import com.dmdirc.parser.callbacks.interfaces.INoticeAuth;
 import com.dmdirc.parser.callbacks.interfaces.INumeric;
 import com.dmdirc.parser.callbacks.interfaces.IPost005;
+import com.dmdirc.parser.callbacks.interfaces.IPrivateAction;
+import com.dmdirc.parser.callbacks.interfaces.IPrivateCTCP;
+import com.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
 import com.dmdirc.parser.callbacks.interfaces.IServerError;
 
 import java.util.Arrays;
@@ -370,8 +373,8 @@ public class IRCParserTest extends junit.framework.TestCase {
         assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
         assertNotNull(parser.getClientInfo("luser"));
         assertEquals(1, parser.getClientInfo("luser").getChannelClients().size());
-        
-        final ChannelClientInfo cci = parser.getClientInfo("luser").getChannelClients().get(0);        
+
+        final ChannelClientInfo cci = parser.getClientInfo("luser").getChannelClients().get(0);
         assertEquals(parser.getChannelInfo("#DMDirc_testing"), cci.getChannel());
         assertEquals("+", cci.getChanModeStr(true));
 
@@ -381,13 +384,53 @@ public class IRCParserTest extends junit.framework.TestCase {
         parser.injectLine(":server MODE #DMDirc_testing +o luser");
         assertEquals("ov", cci.getChanModeStr(false));
         assertEquals("@+", cci.getChanModeStr(true));
-        
+
         parser.injectLine(":server MODE #DMDirc_testing +bov moo luser luser");
         assertEquals("ov", cci.getChanModeStr(false));
-        
+
         parser.injectLine(":server MODE #DMDirc_testing -bov moo luser luser");
         assertEquals("", cci.getChanModeStr(false));
         assertEquals("", cci.getChanModeStr(true));
+    }
+    
+    @Test
+    public void testPrivateMessages() throws CallbackNotFoundException {
+        final TestParser parser = new TestParser();
+        final IPMTest ipmtest = new IPMTest();
+        final IPATest ipatest = new IPATest();
+        final IPCTest ipctest = new IPCTest();
+        
+        parser.injectConnectionStrings();
+        
+        parser.getCallbackManager().addCallback("onPrivateMessage", ipmtest);
+        parser.getCallbackManager().addCallback("onPrivateAction", ipatest);
+        parser.getCallbackManager().addCallback("onPrivateCTCP", ipctest);
+        
+        parser.injectLine(":a!b@c PRIVMSG nick :Hello!");
+        assertNotNull(ipmtest.host);
+        assertNull(ipatest.host);
+        assertNull(ipctest.host);
+        assertEquals("a!b@c", ipmtest.host);
+        assertEquals("Hello!", ipmtest.message);
+        ipmtest.host = null;
+        ipmtest.message = null;
+        
+        parser.injectLine(":a!b@c PRIVMSG nick :" + ((char) 1) + "ACTION meep" + ((char) 1));
+        assertNull(ipmtest.host);
+        assertNotNull(ipatest.host);
+        assertNull(ipctest.host);
+        assertEquals("a!b@c", ipatest.host);
+        assertEquals("meep", ipatest.message);
+        ipatest.host = null;
+        ipatest.message = null;
+        
+        parser.injectLine(":a!b@c PRIVMSG nick :" + ((char) 1) + "FOO meep" + ((char) 1));
+        assertNull(ipmtest.host);
+        assertNull(ipatest.host);
+        assertNotNull(ipctest.host);
+        assertEquals("a!b@c", ipctest.host);
+        assertEquals("FOO", ipctest.type);
+        assertEquals("meep", ipctest.message);
     }
 
     @Test
@@ -464,6 +507,35 @@ public class IRCParserTest extends junit.framework.TestCase {
 
         public void onChannelSelfJoin(IRCParser tParser, ChannelInfo cChannel) {
             channel = cChannel;
+        }
+    }
+
+    private class IPMTest implements IPrivateMessage {
+        String host = null, message = null;
+
+        public void onPrivateMessage(IRCParser tParser, String sMessage, String sHost) {
+            host = sHost;
+            message = sMessage;
+        }
+    }
+
+    private class IPCTest implements IPrivateCTCP {
+        String type = null, message = null, host = null;
+
+        public void onPrivateCTCP(IRCParser tParser, String sType, String sMessage,
+                String sHost) {
+            type = sType;
+            message = sMessage;
+            host = sHost;
+        }
+    }
+    
+    private class IPATest implements IPrivateAction {
+        String message = null, host = null;
+
+        public void onPrivateAction(IRCParser tParser, String sMessage, String sHost) {
+            message = sMessage;
+            host = sHost;
         }
     }
 

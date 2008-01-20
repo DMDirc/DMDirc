@@ -64,11 +64,5 @@ public final class CallbackOnDebugInfo extends CallbackObject {
 		}
 		return bResult;
 	}
-	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo() { return "$Id$"; }
+
 }

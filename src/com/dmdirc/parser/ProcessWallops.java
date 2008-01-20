@@ -118,11 +118,5 @@ public class ProcessWallops extends IRCProcessor {
 	 * @param manager ProcessingManager that is in charge of this IRCProcessor
 	 */
 	protected ProcessWallops (IRCParser parser, ProcessingManager manager) { super(parser, manager); }
-	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo () { return "$Id: ProcessWallops.java 1970 2007-09-05 18:33:06Z chris87 $"; }	
+
 }

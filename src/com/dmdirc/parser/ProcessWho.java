@@ -127,11 +127,5 @@ public class ProcessWho extends IRCProcessor {
 	 * @param manager ProcessingManager that is in charge of this IRCProcessor
 	 */
 	protected ProcessWho (IRCParser parser, ProcessingManager manager) { super(parser, manager); }
-	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo () { return "$Id: ProcessWho.java 1015 2007-05-02 15:21:37Z ShaneMcC $"; }	
+
 }

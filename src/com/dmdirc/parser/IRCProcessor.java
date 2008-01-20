@@ -179,10 +179,4 @@ public abstract class IRCProcessor {
 	 */
 	public final String toString() { return this.getName(); }
 	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo() { return "$Id$"; }	
 }

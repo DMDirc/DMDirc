@@ -211,12 +211,6 @@ public final class ChannelClientInfo {
 	 * @return String Value of user (inc prefix) (ie @+Nickname)
 	 */
 	public String toFullString() { return this.getChanModeStr(true) + this.getNickname(); }	
-	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo() { return "$Id$"; }	
+
 }
 

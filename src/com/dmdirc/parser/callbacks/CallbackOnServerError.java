@@ -63,10 +63,4 @@ public final class CallbackOnServerError extends CallbackObject {
 		return bResult;
 	}
 	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo() { return "$Id: CallbackOnServerError.java 2514 2007-10-22 11:35:05Z ShaneMcC $"; }
 }

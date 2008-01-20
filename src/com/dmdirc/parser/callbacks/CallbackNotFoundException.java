@@ -44,11 +44,5 @@ public class CallbackNotFoundException extends Exception {
 	 * @param message Reason for exception
 	 */
 	public CallbackNotFoundException(final String message) { super(message); }
-	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo() { return "$Id$"; }	
+
 }

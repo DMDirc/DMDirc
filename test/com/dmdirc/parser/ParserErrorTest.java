@@ -115,9 +115,4 @@ public class ParserErrorTest extends junit.framework.TestCase {
         assertEquals("last line", error.getLastLine());
     }
 
-    @Test
-    public void testGetSvnInfo() {
-        assertTrue(ParserError.getSvnInfo().toLowerCase().startsWith("$id"));
-    }
-
 }

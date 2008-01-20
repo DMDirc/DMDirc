@@ -66,11 +66,5 @@ public final class CallbackOnErrorInfo extends CallbackObject {
 		myParser.onPostErrorInfo(errorInfo, bResult);
 		return bResult;
 	}	
-	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo() { return "$Id$"; }	
+
 }

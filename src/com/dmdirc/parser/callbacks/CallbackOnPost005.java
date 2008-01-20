@@ -61,11 +61,5 @@ public final class CallbackOnPost005 extends CallbackObject {
 		}
 		return bResult;
 	}
-	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo() { return "$Id: CallbackOnPost005.java 1320 2007-05-21 09:53:01Z ShaneMcC $"; }
+
 }

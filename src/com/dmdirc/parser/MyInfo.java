@@ -157,11 +157,5 @@ public final class MyInfo {
 	 * @return Current Prepend Character
 	 */
 	public char getPrependChar() { return prependChar; }	
-	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo() { return "$Id$"; }	
+
 }

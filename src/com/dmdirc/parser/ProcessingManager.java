@@ -228,12 +228,5 @@ public class ProcessingManager {
 		return false;
 	}
 
-
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo () { return "$Id$"; }
 }
 

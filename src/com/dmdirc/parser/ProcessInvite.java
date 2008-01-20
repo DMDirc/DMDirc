@@ -73,11 +73,5 @@ public class ProcessInvite extends IRCProcessor {
 	 * @param manager ProcessingManager that is in charge of this IRCProcessor
 	 */
 	protected ProcessInvite (IRCParser parser, ProcessingManager manager) { super(parser, manager); }
-	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo () { return "$Id: ProcessInvite.java 1508 2007-06-11 20:08:12Z ShaneMcC $"; }	
+
 }

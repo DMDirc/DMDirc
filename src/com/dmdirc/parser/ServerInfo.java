@@ -170,12 +170,6 @@ public class ServerInfo {
 	 * @return Current Proxy port
 	 */
 	public int getProxyPort() { return proxyPort; }
-	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+
 }
 

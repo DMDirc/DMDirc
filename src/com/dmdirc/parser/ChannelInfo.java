@@ -738,12 +738,6 @@ public final class ChannelInfo {
 	 * @return The parser object that owns this channel
 	 */
 	public IRCParser getParser() { return myParser; }
-	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo() { return "$Id$"; }	
+
 }
 

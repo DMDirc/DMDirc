@@ -66,11 +66,5 @@ public final class CallbackOnChannelGotListModes extends CallbackObjectSpecific 
 		}
 		return bResult;
 	}	
-	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo() { return "$Id: CallbackOnChannelGotListModes.java 1360 2007-05-25 19:12:05Z ShaneMcC $"; }
+
 }
