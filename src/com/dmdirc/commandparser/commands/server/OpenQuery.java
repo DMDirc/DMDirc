@@ -26,6 +26,7 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.ui.messages.Styliser;
 
 /**
  * Allows the user to open a query dialog with another user.
@@ -48,15 +49,25 @@ public final class OpenQuery extends ServerCommand {
             final boolean isSilent, final String... args) {
         if (args.length == 0) {
             showUsage(origin, isSilent, "query", "<target> <message>");
+            return;
         }
-        if (args.length >= 1) {
-            if (server.hasQuery(args[0])) {
-                server.getQuery(args[0]).activateFrame();
-            } else {
-                server.addQuery(args[0]);
-                server.getQuery(args[0]).show();                
-            }
+            
+        if (server.getParser().isValidChannelName(args[0])) {
+            sendLine(origin, isSilent, FORMAT_ERROR, "You can't open a query " +
+                    "with a channel; maybe you meant " + Styliser.CODE_FIXED +
+                    Styliser.CODE_BOLD + CommandManager.getCommandChar()
+                    + (args.length > 1 ? "msg" : "join") + " " + implodeArgs(args)
+                    + Styliser.CODE_BOLD + Styliser.CODE_FIXED + "?");
+            return;
         }
+
+        if (server.hasQuery(args[0])) {
+            server.getQuery(args[0]).activateFrame();
+        } else {
+            server.addQuery(args[0]);
+            server.getQuery(args[0]).show();                
+        }
+
         if (args.length > 1) {
             server.getQuery(args[0]).sendLine(implodeArgs(1, args));
         }
