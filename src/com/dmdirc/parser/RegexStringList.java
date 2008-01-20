@@ -51,9 +51,7 @@ public class RegexStringList {
 	 * @param items Items to add to this RegexStringList
 	 */
 	public RegexStringList(final List<String> items) {
-		for (String item : items) {
-			add(item);
-		}
+		addAll(items);
 	}
 
 	/**
