@@ -25,7 +25,9 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.validator.PermissiveValidator;
 import com.dmdirc.config.prefs.validator.Validator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -67,6 +69,9 @@ public class PreferencesSetting {
     
     /** Whether or not we need a restart. */
     protected boolean restartNeeded;
+    
+    /** A list of change listeners. */
+    private final List<SettingChangeListener> listeners = new ArrayList<SettingChangeListener>();
 
     /**
      * Creates a new preferences setting for any type except multi-choice.
@@ -222,6 +227,10 @@ public class PreferencesSetting {
      */
     public void setValue(final String newValue) {
         current = newValue;
+        
+        for (SettingChangeListener listener : listeners) {
+            listener.settingChanged(this);
+        }
     }
 
     /**
@@ -237,12 +246,23 @@ public class PreferencesSetting {
      * Sets the "restart needed" flag for this setting, indicating a client
      * restart is needed before the setting takes effect.
      * 
-     * @return A reference for this setting, for convenience
+     * @return A reference to this setting, for convenience
      */
     public PreferencesSetting setRestartNeeded() {
         restartNeeded = true;
         return this;
     }
+    
+    /**
+     * Registers the specified setting change listener.
+     * 
+     * @param listener The listener to be registered
+     * @return A reference to this setting, for convenience
+     */
+    public PreferencesSetting registerChangeListener(final SettingChangeListener listener) {
+        listeners.add(listener);
+        return this;
+    }    
     
     /**
      * Saves the current value of this setting to the global configuration.

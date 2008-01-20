@@ -30,6 +30,7 @@ import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
+import com.dmdirc.config.prefs.SettingChangeListener;
 import com.dmdirc.plugins.Plugin;
 
 /**
@@ -37,7 +38,7 @@ import com.dmdirc.plugins.Plugin;
  * @author chris
  */
 public final class OsdPlugin extends Plugin implements CategoryChangeListener,
-        PreferencesInterface {
+        PreferencesInterface, SettingChangeListener {
     
     /** What domain do we store all settings in the global config under. */
     private static final String MY_DOMAIN = "plugin-OSD";
@@ -49,10 +50,13 @@ public final class OsdPlugin extends Plugin implements CategoryChangeListener,
     private OsdCommand command;
     
     /** X-axis position of OSD. */
-    private int x = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "locationX", 20);
+    private int x;
     
     /** Y-axis potion of OSD. */
-    private int y = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "locationY", 20);
+    private int y;
+    
+    /** Setting objects with registered change listeners. */
+    private PreferencesSetting fontSizeSetting, backgroundSetting, foregroundSetting;
     
     /**
      * Creates a new instance of OsdPlugin.
@@ -76,18 +80,25 @@ public final class OsdPlugin extends Plugin implements CategoryChangeListener,
     /** {@inheritDoc} */
     @Override
     public void showConfig(final PreferencesManager manager) {
+        x = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "locationX", 20);
+        y = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "locationY", 20);
+        
         final PreferencesCategory category = new PreferencesCategory("OSD",
                 "General configuration for OSD plugin.");
         
-        category.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
+        fontSizeSetting = new PreferencesSetting(PreferencesType.INTEGER,
                 MY_DOMAIN, "fontSize", "20", "Font size", "Changes the font " +
-                "size of the OSD"));
-        category.addSetting(new PreferencesSetting(PreferencesType.COLOUR,
+                "size of the OSD").registerChangeListener(this);
+        backgroundSetting = new PreferencesSetting(PreferencesType.COLOUR,
                 MY_DOMAIN, "bgcolour", "2222aa", "Background colour", 
-                "Background colour for the OSD"));
-        category.addSetting(new PreferencesSetting(PreferencesType.COLOUR,
+                "Background colour for the OSD").registerChangeListener(this);
+        foregroundSetting = new PreferencesSetting(PreferencesType.COLOUR,
                 MY_DOMAIN, "fgcolour", "ffffff", "Foreground colour", 
-                "Foreground colour for the OSD"));
+                "Foreground colour for the OSD").registerChangeListener(this);
+                
+        category.addSetting(fontSizeSetting);
+        category.addSetting(backgroundSetting);
+        category.addSetting(foregroundSetting);
         category.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
                 MY_DOMAIN, "timeout", "15", "Timeout", "Length of time in " +
                 "seconds before the OSD window closes"));
@@ -95,11 +106,6 @@ public final class OsdPlugin extends Plugin implements CategoryChangeListener,
         category.addChangeListener(this);
         manager.getCategory("Plugins").addSubCategory(category);
         manager.registerSaveListener(this);
-
-        //config.setOption(MY_DOMAIN, "locationX",
-        //        String.valueOf((int) osdWindow.getLocationOnScreen().getX()));
-        //config.setOption(MY_DOMAIN, "locationY",
-        //        String.valueOf((int) osdWindow.getLocationOnScreen().getY()));        
     }
 
     /** {@inheritDoc} */
@@ -123,6 +129,18 @@ public final class OsdPlugin extends Plugin implements CategoryChangeListener,
     public void save() {
         IdentityManager.getConfigIdentity().setOption(MY_DOMAIN, "locationX", x);
         IdentityManager.getConfigIdentity().setOption(MY_DOMAIN, "locationY", y);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void settingChanged(final PreferencesSetting setting) {
+        if (setting.equals(fontSizeSetting)) {
+            osdWindow.setFontSize(Integer.parseInt(setting.getValue()));
+        } else if (setting.equals(backgroundSetting)) {
+            osdWindow.setBackgroundColour(setting.getValue());
+        } else if (setting.equals(foregroundSetting)) {
+            osdWindow.setForegroundColour(setting.getValue());
+        }
     }
 
 }

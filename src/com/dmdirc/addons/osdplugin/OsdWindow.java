@@ -27,14 +27,11 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.swing.MainFrame;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
-import com.dmdirc.ui.swing.components.ColourChooser;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -44,13 +41,9 @@ import java.util.TimerTask;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 /**
  * The OSD Window is an always-on-top window designed to convey information
@@ -58,7 +51,7 @@ import javax.swing.event.ChangeListener;
  * @author chris
  */
 public final class OsdWindow extends JDialog implements MouseListener,
-        MouseMotionListener, ChangeListener, ActionListener {
+        MouseMotionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -187,25 +180,33 @@ public final class OsdWindow extends JDialog implements MouseListener,
     public void mouseMoved(final MouseEvent e) {
         // Do nothing
     }
-
-    /** {@inheritDoc} */
-    public void stateChanged(final ChangeEvent e) {
-        final float size = (((SpinnerNumberModel) ((JSpinner) e.getSource()).
-                getModel()).getNumber()).floatValue();
-        label.setFont(label.getFont().deriveFont(size));
-        setSize(new Dimension(500, (int) size + LARGE_BORDER));
+    
+    /**
+     * Sets the font size that this OSD uses.
+     * 
+     * @param size The new size of the font
+     */
+    public void setFontSize(final int size) {
+        label.setFont(label.getFont().deriveFont((float) size));
+        setSize(new Dimension(500, size + LARGE_BORDER));
     }
 
-    /** {@inheritDoc} */
-    public void actionPerformed(final ActionEvent e) {
-        if ("backgroundColour".equals(e.getActionCommand())) {
-            panel.setBackground(ColourManager.parseColour(
-                    ((ColourChooser) e.getSource()).getColour()));
-        }
-        if ("foregroundColour".equals(e.getActionCommand())) {
-            label.setForeground(ColourManager.parseColour(
-                    ((ColourChooser) e.getSource()).getColour()));
-        }
+    /**
+     * Sets the background colour for this OSD.
+     * 
+     * @param colour The background colour to use
+     */
+    public void setBackgroundColour(final String colour) {
+        panel.setBackground(ColourManager.parseColour(colour));
+    }
+
+    /**
+     * Sets the foreground colour for this OSD.
+     * 
+     * @param colour The foreground colour to use
+     */
+    public void setForegroundColour(final String colour) {
+        label.setForeground(ColourManager.parseColour(colour));
     }
     
 }
