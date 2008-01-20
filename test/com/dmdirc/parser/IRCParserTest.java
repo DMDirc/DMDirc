@@ -24,13 +24,16 @@ package com.dmdirc.parser;
 
 import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.callbacks.interfaces.IAwayState;
-
+import com.dmdirc.parser.callbacks.interfaces.IChannelSelfJoin;
 import com.dmdirc.parser.callbacks.interfaces.INoticeAuth;
 import com.dmdirc.parser.callbacks.interfaces.INumeric;
 import com.dmdirc.parser.callbacks.interfaces.IPost005;
 import com.dmdirc.parser.callbacks.interfaces.IServerError;
+
 import java.util.Arrays;
+
 import javax.net.ssl.TrustManager;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -43,7 +46,8 @@ public class IRCParserTest extends junit.framework.TestCase {
         try {
             final IRCParser myParser = new IRCParser();
             myParser.getCallbackManager().addCallback("non-existant",new IAwayState() {
-                public void onAwayState(IRCParser tParser, boolean currentState, String reason) {
+                public void onAwayState(IRCParser tParser, boolean currentState,
+                        String reason) {
                     throw new UnsupportedOperationException("Not supported yet.");
                 }
             });
@@ -223,7 +227,8 @@ public class IRCParserTest extends junit.framework.TestCase {
             ":server 003 nick :This server was created Sun Jan 6 2008 at 17:34:54 CET",
             ":server 004 nick server.net foo dioswkgxRXInP biklmnopstvrDcCNuMT bklov",
             ":server 005 nick WHOX WALLCHOPS WALLVOICES USERIP :are supported by this server",
-            ":server 005 nick MAXNICKLEN=15 TOPICLEN=250 AWAYLEN=160 :are supported by this server",
+            ":server 005 nick MAXNICKLEN=15 TOPICLEN=250 AWAYLEN=160 :are supported " +
+                    "by this server",
             ":server 375 nick :zomg, motd!",
         };
 
@@ -244,8 +249,10 @@ public class IRCParserTest extends junit.framework.TestCase {
             ":server 002 nick :Your host is server.net, running version foo",
             ":server 003 nick :This server was created Sun Jan 6 2008 at 17:34:54 CET",
             ":server 004 nick server.net foo dioswkgxRXInP biklmnopstvrDcCNuMT bklov",
-            ":server 005 nick WHOX WALLCHOPS WALLVOICES NETWORK=moo :are supported by this server",
-            ":server 005 nick MAXNICKLEN=15 MAXLIST=b:10,e:22,I:45 :are supported by this server",
+            ":server 005 nick WHOX WALLCHOPS WALLVOICES NETWORK=moo :are supported by" +
+                    " this server",
+            ":server 005 nick MAXNICKLEN=15 MAXLIST=b:10,e:22,I:45 :are supported by" +
+                    " this server",
             ":server 375 nick :zomg, motd!",
         };
 
@@ -256,7 +263,8 @@ public class IRCParserTest extends junit.framework.TestCase {
         assertEquals(10, parser.getMaxListModes('b'));
         assertEquals(22, parser.getMaxListModes('e'));
         assertEquals(45, parser.getMaxListModes('I'));
-        assertEquals("getMaxListModes should return 0 for unknowns;", 0, parser.getMaxListModes('z'));
+        assertEquals("getMaxListModes should return 0 for unknowns;", 0,
+                parser.getMaxListModes('z'));
         assertEquals("moo", parser.getNetworkName());
         assertEquals("server", parser.getServerName());
     }
@@ -308,7 +316,7 @@ public class IRCParserTest extends junit.framework.TestCase {
         parser.setAddLastLine(true);
         assertTrue(parser.getAddLastLine());
     }
-    
+
     @Test
     public void testDisconnectOnFatal() {
         final TestParser parser = new TestParser();
@@ -317,19 +325,71 @@ public class IRCParserTest extends junit.framework.TestCase {
         assertFalse(parser.getDisconnectOnFatal());
         parser.setDisconnectOnFatal(true);
         assertTrue(parser.getDisconnectOnFatal());
-    }    
-    
+    }
+
     @Test
     public void testTrustManager() {
         final TestParser parser = new TestParser();
-        
+
         assertTrue(Arrays.equals(parser.getDefaultTrustManager(), parser.getTrustManager()));
-        
+
         parser.setTrustManager(new TrustManager[0]);
-        
+
         assertTrue(Arrays.equals(new TrustManager[0], parser.getTrustManager()));
     }
-    
+
+    @Test
+    public void testJoinChannel() throws CallbackNotFoundException {
+        final TestParser parser = new TestParser();
+        final ICSJTest test = new ICSJTest();
+
+        parser.injectConnectionStrings();
+        parser.getCallbackManager().addCallback("onChannelSelfJoin", test);
+        parser.injectLine(":nick JOIN #DMDirc_testing");
+
+        System.out.println(parser.getMyNickname());
+
+        assertNotNull(test.channel);
+        assertEquals("#DMDirc_testing", test.channel.getName());
+        assertEquals(1, parser.getChannels().size());
+        assertTrue(parser.getChannels().contains(test.channel));
+        assertEquals(test.channel, parser.getChannelInfo("#DMDirc_testing"));
+    }
+
+    @Test
+    public void testChannelUmodes() {
+        final TestParser parser = new TestParser();
+
+        parser.injectConnectionStrings();
+        parser.injectLine(":nick JOIN #DMDirc_testing");
+        parser.injectLine(":server 353 nick = #DMDirc_testing :@nick +luser");
+        parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list");
+
+        assertEquals(1, parser.getChannels().size());
+        assertNotNull(parser.getChannelInfo("#DMDirc_testing"));
+        assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
+        assertNotNull(parser.getClientInfo("luser"));
+        assertEquals(1, parser.getClientInfo("luser").getChannelClients().size());
+        
+        final ChannelClientInfo cci = parser.getClientInfo("luser").getChannelClients().get(0);        
+        assertEquals(parser.getChannelInfo("#DMDirc_testing"), cci.getChannel());
+        assertEquals("+", cci.getChanModeStr(true));
+
+        parser.injectLine(":server MODE #DMDirc_testing +v luser");
+        assertEquals("+", cci.getChanModeStr(true));
+
+        parser.injectLine(":server MODE #DMDirc_testing +o luser");
+        assertEquals("ov", cci.getChanModeStr(false));
+        assertEquals("@+", cci.getChanModeStr(true));
+        
+        parser.injectLine(":server MODE #DMDirc_testing +bov moo luser luser");
+        assertEquals("ov", cci.getChanModeStr(false));
+        
+        parser.injectLine(":server MODE #DMDirc_testing -bov moo luser luser");
+        assertEquals("", cci.getChanModeStr(false));
+        assertEquals("", cci.getChanModeStr(true));
+    }
+
     @Test
     public void testGetParam() {
         assertEquals("abc def", TestParser.getParam("foo :abc def"));
@@ -396,6 +456,14 @@ public class IRCParserTest extends junit.framework.TestCase {
 
         public void onPost005(IRCParser tParser) {
             done = true;
+        }
+    }
+
+    private class ICSJTest implements IChannelSelfJoin {
+        ChannelInfo channel = null;
+
+        public void onChannelSelfJoin(IRCParser tParser, ChannelInfo cChannel) {
+            channel = cChannel;
         }
     }
 
