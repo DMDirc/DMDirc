@@ -41,10 +41,11 @@ public class ProcessNames extends IRCProcessor {
 		if (sParam.equals("366")) {
 			// End of names
 			iChannel = getChannelInfo(token[3]);
-			if (iChannel != null) {
-				iChannel.setAddingNames(false);
-				callChannelGotNames(iChannel);
-			}
+			if (iChannel == null) { return; }
+			
+			iChannel.setAddingNames(false);
+			callChannelGotNames(iChannel);
+			
 			if (!iChannel.hasAskedForListModes()) {
 				if (myParser.getAutoListMode()) {
 					iChannel.requestListModes();
