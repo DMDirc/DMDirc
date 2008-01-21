@@ -35,9 +35,9 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.updater.UpdateChecker;
+
 import java.io.Serializable;
 import java.util.Comparator;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -64,8 +64,6 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
             showUsage(origin, isSilent, "debug", "<debug command> [options]");
         } else if ("error".equals(args[0])) {
             doError(args);
-        } else if ("fakeupdate".equals(args[0])) {
-            doFakeUpdate();
         } else if ("showraw".equals(args[0])) {
             doShowRaw(origin, isSilent);
         } else if ("configstats".equals(args[0])) {
@@ -124,13 +122,6 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
         } else {
             Logger.appError(el, "Debug error message", new Exception());
         }
-    }
-    
-    /**
-     * Fakes an available update.
-     */
-    private void doFakeUpdate() {
-        new UpdateChecker().doUpdateAvailable("outofdate dummy 1337 0 http://www.example.com/");
     }
     
     /**
@@ -318,7 +309,6 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
         
         if (arg == 0) {
             res.add("error");
-            res.add("fakeupdate");
             res.add("showraw");
             res.add("colourspam");
             res.add("configstats");
