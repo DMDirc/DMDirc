@@ -47,7 +47,11 @@ begin
 	begin
 		repeat
 			if (searchResult.attr and faDirectory) <> faDirectory then begin
-				DeleteFile(Dir+'\'+searchResult.name);
+				Try
+					DeleteFile(Dir+'\'+searchResult.name);
+				Except
+					MessageBox(0, PChar('Unable to delete "'+Dir+'\'+searchResult.name+'" - is DMDirc still running?.'), 'DMDirc Uninstaller', MB_OK);
+				end;
 			end
 			else begin
 				if (searchResult.name <> '.') and (searchResult.name <> '..') then begin
@@ -57,7 +61,10 @@ begin
 		until FindNext(searchResult) <> 0;
 		FindClose(searchResult);
 	end;
-	RmDir(Dir);
+	Try
+		RmDir(Dir);
+	Except
+	end;
 end;
 
 var
@@ -123,7 +130,7 @@ begin
 	end
 	else begin
 		TempDir := GetTempDirectory;
-		if MessageBox(0, PChar('This will uninstall DMDirc.'+#13#10+'Do you want to continue?'), 'DMDirc Uninstaller', MB_YESNO) = IDYES then begin
+		if MessageBox(0, PChar('This will uninstall DMDirc.'+#13#10+#13#10+'Please make sure DMDirc is not running before continuing, or some files might not get correctly removed.'+#13#10+#13#10+'Do you want to continue?'), 'DMDirc Uninstaller', MB_YESNO) = IDYES then begin
 			CopyFile(pchar(paramstr(0)), pchar(TempDir+'/uninstall.exe'), false);
 			Launch(TempDir+'/uninstall.exe '+ExtractFileDir(paramstr(0))+'\');
 		end;
