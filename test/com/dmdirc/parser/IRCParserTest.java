@@ -35,6 +35,7 @@ import com.dmdirc.parser.callbacks.interfaces.IServerError;
 
 import java.util.Arrays;
 
+import java.util.List;
 import javax.net.ssl.TrustManager;
 
 import org.junit.Test;
@@ -392,20 +393,20 @@ public class IRCParserTest extends junit.framework.TestCase {
         assertEquals("", cci.getChanModeStr(false));
         assertEquals("", cci.getChanModeStr(true));
     }
-    
+
     @Test
     public void testPrivateMessages() throws CallbackNotFoundException {
         final TestParser parser = new TestParser();
         final IPMTest ipmtest = new IPMTest();
         final IPATest ipatest = new IPATest();
         final IPCTest ipctest = new IPCTest();
-        
+
         parser.injectConnectionStrings();
-        
+
         parser.getCallbackManager().addCallback("onPrivateMessage", ipmtest);
         parser.getCallbackManager().addCallback("onPrivateAction", ipatest);
         parser.getCallbackManager().addCallback("onPrivateCTCP", ipctest);
-        
+
         parser.injectLine(":a!b@c PRIVMSG nick :Hello!");
         assertNotNull(ipmtest.host);
         assertNull(ipatest.host);
@@ -414,7 +415,7 @@ public class IRCParserTest extends junit.framework.TestCase {
         assertEquals("Hello!", ipmtest.message);
         ipmtest.host = null;
         ipmtest.message = null;
-        
+
         parser.injectLine(":a!b@c PRIVMSG nick :" + ((char) 1) + "ACTION meep" + ((char) 1));
         assertNull(ipmtest.host);
         assertNotNull(ipatest.host);
@@ -423,7 +424,7 @@ public class IRCParserTest extends junit.framework.TestCase {
         assertEquals("meep", ipatest.message);
         ipatest.host = null;
         ipatest.message = null;
-        
+
         parser.injectLine(":a!b@c PRIVMSG nick :" + ((char) 1) + "FOO meep" + ((char) 1));
         assertNull(ipmtest.host);
         assertNull(ipatest.host);
@@ -431,6 +432,66 @@ public class IRCParserTest extends junit.framework.TestCase {
         assertEquals("a!b@c", ipctest.host);
         assertEquals("FOO", ipctest.type);
         assertEquals("meep", ipctest.message);
+    }
+
+    private void testListModes(String numeric1, String numeric2, char mode) {
+        final TestParser parser = new TestParser();
+        parser.injectConnectionStrings();
+
+        parser.injectLine(":nick JOIN #D");
+        parser.injectLine(":server " + numeric1 + " nick #D ban1!ident@.host bansetter1 1001");
+        parser.injectLine(":server " + numeric1 + " nick #D ban2!*@.host bansetter2 1002");
+        parser.injectLine(":server " + numeric1 + " nick #D ban3!ident@* bansetter3 1003");
+        parser.injectLine(":server " + numeric2 + " nick #D :End of Channel Something List");
+
+        final List<ChannelListModeItem> items
+                = parser.getChannelInfo("#D").getListModeParam(mode);
+
+        assertEquals(3, items.size());
+        boolean gotOne = false, gotTwo = false, gotThree = false;
+
+        for (ChannelListModeItem item : items) {
+            if (item.getItem().equals("ban1!ident@.host")) {
+                assertEquals("bansetter1", item.getOwner());
+                assertEquals(1001, item.getTime());
+                assertFalse(gotOne);
+                gotOne = true;
+            } else if (item.getItem().equals("ban2!*@.host")) {
+                assertEquals("bansetter2", item.getOwner());
+                assertEquals(1002, item.getTime());
+                assertFalse(gotTwo);
+                gotTwo = true;
+            } else if (item.getItem().equals("ban3!ident@*")) {
+                assertEquals("bansetter3", item.getOwner());
+                assertEquals(1003, item.getTime());
+                assertFalse(gotThree);
+                gotThree = true;
+            }
+        }
+
+        assertTrue(gotOne);
+        assertTrue(gotTwo);
+        assertTrue(gotThree);
+    }
+
+    @Test
+    public void testNormalBans() {
+        testListModes("367", "368", 'b');
+    }
+
+    @Test
+    public void testInvexList() {
+        testListModes("346", "347", 'I');
+    }
+
+    @Test
+    public void testExemptList() {
+        testListModes("348", "349", 'e');
+    }
+
+    @Test
+    public void testReopList() {
+        testListModes("344", "345", 'R');
     }
 
     @Test
@@ -529,7 +590,7 @@ public class IRCParserTest extends junit.framework.TestCase {
             host = sHost;
         }
     }
-    
+
     private class IPATest implements IPrivateAction {
         String message = null, host = null;
 

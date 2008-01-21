@@ -58,11 +58,11 @@ public class TestParser extends IRCParser {
             ":server 001 nick :Welcome to the Testing IRC Network, nick",
             ":server 002 nick :Your host is server.net, running version foo",
             ":server 003 nick :This server was created Sun Jan 6 2008 at 17:34:54 CET",
-            ":server 004 nick server.net foo dioswkgxRXInP biklmnopstvrDcCNuMT bklov",
+            ":server 004 nick server.net foo dioswkgxRXInP bRIeiklmnopstvrDcCNuMT bklov",
             ":server 005 nick WHOX WALLCHOPS WALLVOICES USERIP PREFIX=(ov)@+ " +
                     ":are supported by this server",
             ":server 005 nick MAXNICKLEN=15 TOPICLEN=250 AWAYLEN=160 " +
-                    "CHANMODES=b,k,l,imnpstrDducCNMT :are supported by this server",
+                    "CHANMODES=bIeR,k,l,imnpstrDducCNMT :are supported by this server",
         };
         
         sendConnectionStrings();
