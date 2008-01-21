@@ -226,7 +226,7 @@ public class WindowsInstaller extends Installer {
 					editRegistryValue(key, "URLInfoAbout", "http://www.DMDirc.com/");
 					editRegistryValue(key, "URLUpdateInfo", "http://www.DMDirc.com/");
 					editRegistryValue(key, "InstallDir", location);
-					editRegistryValue(key, "InstalledTime", System.currentTimeMillis());
+					editRegistryValue(key, "InstalledTime", String.valueOf(System.currentTimeMillis()));
 					return;
 
 				case PROTOCOL:
