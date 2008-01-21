@@ -194,11 +194,11 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     private void initInputField() {
         UIUtilities.addUndoManager(getInputField().getTextField());
 
-        getInputField().getActionMap().put("PasteAction",
+        getInputField().getTextField().getActionMap().put("PasteAction",
                 new InputTextFramePasteAction(this));
-        getInputField().getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("shift INSERT"),
+        getInputField().getTextField().getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("shift INSERT"),
                 "PasteAction");
-        getInputField().getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("ctrl V"),
+        getInputField().getTextField().getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("ctrl V"),
                 "PasteAction");
     }
 
