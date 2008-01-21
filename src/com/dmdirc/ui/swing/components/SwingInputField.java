@@ -63,6 +63,12 @@ public class SwingInputField extends JComponent implements InputField {
 
     /** {@inheritDoc} */
     @Override
+    public void requestFocus() {
+        textField.requestFocus();
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public void showColourPicker(boolean irc, boolean hex) {
         if (IdentityManager.getGlobalConfig().getOptionBool("general",
                 "showcolourdialog", false)) {

@@ -27,27 +27,26 @@ import com.dmdirc.ui.interfaces.UpdaterDialog;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.updater.Update;
-import com.dmdirc.updater.Update.STATUS;
+import com.dmdirc.updater.UpdateStatus;
 import com.dmdirc.interfaces.UpdateListener;
-import com.dmdirc.updater.UpdateChecker;
-import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.swing.components.PackingTable;
+import com.dmdirc.ui.swing.components.renderers.UpdateComponentTableCellRenderer;
+import com.dmdirc.ui.swing.components.renderers.UpdateStatusTableCellRenderer;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * The updater dialog informs the user of the new update that is available,
@@ -55,30 +54,26 @@ import javax.swing.table.DefaultTableModel;
  */
 public final class SwingUpdaterDialog extends StandardDialog implements
         ActionListener, UpdaterDialog, UpdateListener {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
-    
-    /** Update table headers. */
-    private static final String[] HEADERS = new String[]{"Component", 
-    "New version", "Status", };
-    
+    private static final long serialVersionUID = 3;
     /** Previously created instance of SwingUpdaterDialog. */
     private static SwingUpdaterDialog me;
-    
-    /** List of updates. */
-    private List<Update> updates;
-    
     /** Update table. */
     private JTable table;
-    
+    /** Table scrollpane. */
+    private JScrollPane scrollPane;
     /** The label we use for the dialog header. */
     private JLabel header;
-    
+    /** UpdateComponent renderer. */
+    private UpdateComponentTableCellRenderer updateComponentRenderer;
+    /** Update.Status renderer. */
+    private UpdateStatusTableCellRenderer updateStatusRenderer;
+
     /**
      * Creates a new instance of the updater dialog.
      * 
@@ -86,21 +81,21 @@ public final class SwingUpdaterDialog extends StandardDialog implements
      */
     private SwingUpdaterDialog(final List<Update> updates) {
         super((MainFrame) Main.getUI().getMainWindow(), false);
-        
-        this.updates = new ArrayList<Update>(updates);
-        
+
+        initComponents(updates);
+        layoutComponents();
+
         for (Update update : updates) {
             update.addUpdateListener(this);
         }
-        
-        initComponents();
-        
+
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
-        
+
         setTitle("Update available");
+        setSize(new Dimension(400, 400));
     }
-    
+
     /**
      * Creates the dialog if one doesn't exist, and displays it.
      * 
@@ -111,7 +106,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         me = getSwingUpdaterDialog(updates);
         me.display();
     }
-    
+
     /**
      * Gets the dialog if one doesn't exist.
      * 
@@ -124,110 +119,123 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         if (me == null) {
             me = new SwingUpdaterDialog(updates);
         } else {
-            me.updates = updates;
-            ((DefaultTableModel) me.table.getModel()).setDataVector(
-                    me.getTableData(), HEADERS);
+            ((UpdateTableModel) me.table.getModel()).setUpdates(updates);
         }
-        
+
         return me;
     }
-    
-    /** Initialises the components. */
-    private void initComponents() {
+
+    /** 
+     * Initialises the components.
+     * 
+     * @param updates The updates that are available
+     */
+    private void initComponents(final List<Update> updates) {
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        
-        setLayout(new BorderLayout());
-        
-        header = new JLabel("<html><big>Update Available</big><br><br>"
-                + "An update is available for one or more "
-                + "components of DMDirc:</html>");
-        header.setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER,
-                LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
-        add(header, BorderLayout.NORTH);
-        
-        
-        table = new JTable(new DefaultTableModel(getTableData(), HEADERS)) {
+        updateStatusRenderer = new UpdateStatusTableCellRenderer();
+        updateComponentRenderer = new UpdateComponentTableCellRenderer();
+
+        header = new JLabel("<html>An update is available for one or more " +
+                "components of DMDirc:</html>");
+
+        scrollPane = new JScrollPane();
+        table = new PackingTable(new UpdateTableModel(updates), false,
+                scrollPane) {
+
             private static final long serialVersionUID = 1;
-            
+
             @Override
-            public boolean isCellEditable(final int x, final int y) {
-                return false;
+            public TableCellRenderer getCellRenderer(final int row,
+                    final int column) {
+                switch (column) {
+                    case 1:
+                        return updateComponentRenderer;
+                    case 3:
+                        return updateStatusRenderer;
+                    default:
+                        return super.getCellRenderer(row, column);
+                }
             }
         };
-        
-        final JScrollPane pane = new JScrollPane(table);
-        pane.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(SMALL_BORDER, LARGE_BORDER,
-                SMALL_BORDER, LARGE_BORDER),
-                BorderFactory.createEtchedBorder()));
-        pane.setPreferredSize(new Dimension(400, 150));
-        add(pane, BorderLayout.CENTER);
-        
-        final JPanel buttonContainer = new JPanel();
-        buttonContainer.setLayout(new BorderLayout());
-        buttonContainer.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
-                LARGE_BORDER, LARGE_BORDER, LARGE_BORDER));
-        
-        final JButton lButton = new JButton();
-        lButton.setPreferredSize(new Dimension(100, 30));
-        final JButton rButton = new JButton();
-        rButton.setPreferredSize(new Dimension(100, 30));
-        buttonContainer.add(lButton, BorderLayout.WEST);
-        buttonContainer.add(rButton, BorderLayout.EAST);
-        
-        orderButtons(lButton, rButton);
-        //getOkButton().setText("Update");
-        
-        add(buttonContainer, BorderLayout.SOUTH);
-        
-        pack();
+
+        table.setAutoCreateRowSorter(true);
+        table.setAutoCreateColumnsFromModel(true);
+        table.setColumnSelectionAllowed(false);
+        table.setCellSelectionEnabled(false);
+        table.setDragEnabled(false);
+        table.setFillsViewportHeight(false);
+        table.setRowSelectionAllowed(true);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.getRowSorter().toggleSortOrder(0);
+
+        table.getTableHeader().setReorderingAllowed(false);
+
+        scrollPane.setViewportView(table);
+
+        orderButtons(new JButton(), new JButton());
     }
-    
+
     /**
-     * Returns the table data for updates
-     *
-     * @return Table of updates
+     * Lays out the components.
      */
-    private Object[][] getTableData() {
-        final String[][] tableData = new String[updates.size()][4];
-        
-        for (int i = 0; i < updates.size(); i++) {
-            tableData[i][0] = UpdateChecker.findComponent(updates.get(i).getComponent()).getFriendlyName();
-            tableData[i][1] = updates.get(i).getRemoteVersion();
-            tableData[i][2] = updates.get(i).getStatus().toString();
-        }
-        
-        return tableData;
+    private void layoutComponents() {
+        setLayout(new MigLayout("fill"));
+
+        add(header, "wrap 1.5*unrel");
+        add(scrollPane, "grow, wrap");
+        add(getLeftButton(), "split 2, right");
+        add(getRightButton(), "right");
     }
-    
+
     /** {@inheritDoc} */
     public void display() {
         setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         setVisible(true);
         requestFocus();
     }
-    
-    /** {@inheritDoc} */
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Action event
+     */
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource().equals(getOkButton())) {
             getOkButton().setEnabled(false);
-         
-            header.setText("<html><big>Updating...</big><br><br>"
-                + "DMDirc is updating the following components:</html>");
-            
-            for (Update update : updates) {
-                if (update.getStatus() == Update.STATUS.PENDING) {
+
+            header.setText("<html>DMDirc is updating the following components:</html>");
+
+            for (Update update : ((UpdateTableModel) table.getModel()).getUpdates()) {
+                if (update.getStatus() == UpdateStatus.PENDING &&
+                        ((UpdateTableModel) table.getModel()).isEnabled(update)) {
                     update.doUpdate();
                     return;
                 }
             }
-            
+
             dispose();
         } else if (e.getSource().equals(getCancelButton())) {
             setVisible(false);
         }
     }
-    
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateStatusChange(Update update, UpdateStatus status) {
+        if (status == UpdateStatus.ERROR || status == UpdateStatus.INSTALLED ||
+                status == UpdateStatus.RESTART_NEEDED) {
+            for (Update myupdate : ((UpdateTableModel) table.getModel()).getUpdates()) {
+                if (myupdate.getStatus() == UpdateStatus.PENDING &&
+                        ((UpdateTableModel) table.getModel()).isEnabled(myupdate)) {    
+                    myupdate.doUpdate();
+                    return;
+                }
+            }
+        }
+
+        getOkButton().setEnabled(true);
+    }
+
     /** {@inheritDoc} */
     @Override
     public void dispose() {
@@ -235,26 +243,5 @@ public final class SwingUpdaterDialog extends StandardDialog implements
             super.dispose();
             me = null;
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateStatusChange(final Update update, final STATUS status) {
-        for (int i = 0; i < updates.size(); i++) {
-            if (table.getModel().getValueAt(i, 0).equals(update.getComponent())) {
-                table.getModel().setValueAt(status, i, 2);
-            }
-        }
-        
-        if (status == Update.STATUS.ERROR || status == Update.STATUS.INSTALLED) {            
-            for (Update myupdate : updates) {
-                if (myupdate.getStatus() == Update.STATUS.PENDING) {
-                    myupdate.doUpdate();
-                    return;
-                }
-            }            
-        }
-        
-        getOkButton().setEnabled(true);
     }
 }

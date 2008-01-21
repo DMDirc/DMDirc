@@ -30,7 +30,7 @@ import com.dmdirc.interfaces.UpdateListener;
 import com.dmdirc.interfaces.UpdateCheckerListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.updater.Update.STATUS;
+import com.dmdirc.updater.UpdateStatus;
 import com.dmdirc.updater.components.ClientComponent;
 import com.dmdirc.updater.components.DefaultsComponent;
 import com.dmdirc.updater.components.ModeAliasesComponent;
@@ -86,9 +86,9 @@ public final class UpdateChecker implements Runnable {
     /** A reference to the listener we use for update status changes. */
     private static final UpdateListener listener = new UpdateListener() {
         @Override
-        public void updateStatusChange(final Update update, final STATUS status) {
-            if (status == Update.STATUS.INSTALLED
-                || status == Update.STATUS.ERROR) {
+        public void updateStatusChange(final Update update, final UpdateStatus status) {
+            if (status == UpdateStatus.INSTALLED
+                || status == UpdateStatus.ERROR) {
                 removeUpdate(update);
             }
         }

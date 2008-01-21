@@ -20,23 +20,41 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.interfaces;
-
-import com.dmdirc.updater.*;
+package com.dmdirc.updater;
 
 /**
- * Defines the method that must be implemented by update listeners.
- * 
- * @author chris
+ * Represents the status of an update.
  */
-public interface UpdateListener {
+public enum UpdateStatus {
+
+    /** Update pending. */
+    PENDING("Pending"), 
+    /** Update downloading. */
+    DOWNLOADING("Downloading"), 
+    /** Update installing. */
+    INSTALLING("Installing"), 
+    /** Update installed. */
+    INSTALLED("Installed"), 
+    /** Error updating. */
+    ERROR("Error"), 
+    /** Update requires restart. */
+    RESTART_NEEDED("Restart needed");
+    
+    /** Friendly name. */
+    private final String friendlyName;
     
     /**
-     * Called when the state of the update has changed.
+     * Instantiates a new update status.
      * 
-     * @param update The update in question
-     * @param status The new status of the update
+     * @param friendlyName Friendly name for the status
      */
-    void updateStatusChange(Update update, UpdateStatus status);
+    UpdateStatus(final String friendlyName) {
+        this.friendlyName = friendlyName;
+    }
     
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return friendlyName;
+    }
 }

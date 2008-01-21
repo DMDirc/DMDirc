@@ -49,8 +49,8 @@ import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
 import javax.swing.SwingUtilities;
+
 import net.miginfocom.swing.MigLayout;
 
 /** Status bar, shows message and info on the gui. */
@@ -214,7 +214,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
                 if (errors.size() > 0) {
                     for (ProgramError error : errors) {
                         if (errorLevel == null ||
-                                error.getLevel().moreImportant(errorLevel)) {
+                                !error.getLevel().moreImportant(errorLevel)) {
                             errorLevel = error.getLevel();
                             errorLabel.setIcon(errorLevel.getIcon());
                         }

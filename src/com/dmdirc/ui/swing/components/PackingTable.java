@@ -95,15 +95,6 @@ public class PackingTable extends JTable {
     }
     
     /** {@inheritDoc} */
-    public boolean isCellEditable(final int x, final int y) {
-        if (editable) {
-            return true;
-        }
-        
-        return false;
-    }
-    
-    /** {@inheritDoc} */
     public final void paint(final Graphics g) {
         packColumns();
         super.paint(g);

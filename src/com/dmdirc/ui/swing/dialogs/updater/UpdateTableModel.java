@@ -1,16 +1,16 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
- *
+ * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,23 +20,25 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs.prefs;
+package com.dmdirc.ui.swing.dialogs.updater;
 
+import com.dmdirc.interfaces.UpdateListener;
 import com.dmdirc.updater.Update;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateComponent;
+import com.dmdirc.updater.UpdateStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import java.util.Map;
+
 import javax.swing.table.AbstractTableModel;
 
 /**
- * Update component table model
+ * Update table model.
  */
-public class UpdateTableModel extends AbstractTableModel {
+public class UpdateTableModel extends AbstractTableModel implements UpdateListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -44,30 +46,42 @@ public class UpdateTableModel extends AbstractTableModel {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 3;
-    /** Update component list. */
-    private final List<UpdateComponent> updates;
+    /** Data list. */
+    private List<Update> updates;
     /** Enabled list. */
-    private Map<UpdateComponent, Boolean> enabled;
-    
-    /**
-     * Instantiates a new table model.
-     */
+    private Map<Update, Boolean> enabled;
+
+    /** Creates a new instance of UpdateTableModel. */
     public UpdateTableModel() {
-        this(new ArrayList<UpdateComponent>());
+        this(new ArrayList<Update>());
     }
 
     /**
-     * Instantiates a new table model.
-     * 
-     * @param updates Update components to show
+     * Creates a new instance of UpdateTableModel.
+     *
+     * @param updates List of updates
      */
-    public UpdateTableModel(final List<UpdateComponent> updates) {
-        this.updates = updates;
-        this.enabled = new HashMap<UpdateComponent, Boolean>();
+    public UpdateTableModel(final List<Update> updates) {
+        super();
 
-        for (UpdateComponent update : updates) {
-            enabled.put(update, UpdateChecker.isEnabled(update));
+        setUpdates(updates);
+    }
+
+    /**
+     * Sets the updates list.
+     *
+     * @param updates List of updates
+     */
+    public void setUpdates(final List<Update> updates) {
+        this.updates = new ArrayList<Update>(updates);
+        this.enabled = new HashMap<Update, Boolean>();
+
+        for (Update update : updates) {
+            update.addUpdateListener(this);
+            enabled.put(update, true);
         }
+
+        fireTableDataChanged();
     }
 
     /** {@inheritDoc} */
@@ -79,7 +93,7 @@ public class UpdateTableModel extends AbstractTableModel {
     /** {@inheritDoc} */
     @Override
     public int getColumnCount() {
-        return 3;
+        return 4;
     }
 
     /** {@inheritDoc} */
@@ -87,10 +101,12 @@ public class UpdateTableModel extends AbstractTableModel {
     public String getColumnName(final int columnIndex) {
         switch (columnIndex) {
             case 0:
-                return "Update Component";
+                return "Update?";
             case 1:
-                return "Enabled?";
+                return "Component";
             case 2:
+                return "New version";
+            case 3:
                 return "Version";
             default:
                 throw new IllegalArgumentException("Unknown column: " +
@@ -103,26 +119,28 @@ public class UpdateTableModel extends AbstractTableModel {
     public Class<?> getColumnClass(final int columnIndex) {
         switch (columnIndex) {
             case 0:
-                return String.class;
-            case 1:
                 return Boolean.class;
+            case 1:
+                return UpdateComponent.class;
             case 2:
-                return Integer.class;
+                return String.class;
+            case 3:
+                return UpdateStatus.class;
             default:
                 throw new IllegalArgumentException("Unknown column: " +
                         columnIndex);
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean isCellEditable(final int rowIndex, final int columnIndex) {
-        return columnIndex == 1;
+        return columnIndex == 0;
     }
 
     /** {@inheritDoc} */
     @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
+    public Object getValueAt(final int rowIndex, final int columnIndex) {
         if (updates.size() <= rowIndex) {
             throw new IndexOutOfBoundsException(rowIndex + " >= " +
                     updates.size());
@@ -132,17 +150,25 @@ public class UpdateTableModel extends AbstractTableModel {
         }
         switch (columnIndex) {
             case 0:
-                return updates.get(rowIndex).getFriendlyName();
-            case 1:
                 return enabled.get(updates.get(rowIndex));
+            case 1:
+                if (UpdateChecker.findComponent(updates.get(rowIndex).
+                        getComponent()) == null) {
+                    return "Unknown";
+                } else {
+                    return UpdateChecker.findComponent(updates.get(rowIndex).
+                            getComponent());
+                }
             case 2:
-                return updates.get(rowIndex).getVersion();
+                return updates.get(rowIndex).getRemoteVersion();
+            case 3:
+                return updates.get(rowIndex).getStatus();
             default:
                 throw new IllegalArgumentException("Unknown column: " +
                         columnIndex);
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void setValueAt(final Object aValue, final int rowIndex,
@@ -155,7 +181,7 @@ public class UpdateTableModel extends AbstractTableModel {
             throw new IllegalArgumentException("Must specify a positive integer");
         }
         switch (columnIndex) {
-            case 1:
+            case 0:
                 enabled.put(updates.get(rowIndex), (Boolean) aValue);
                 break;
             default:
@@ -166,33 +192,82 @@ public class UpdateTableModel extends AbstractTableModel {
     }
 
     /**
-     * Adds a update component to the model.
-     * 
-     * @param component update component to add
+     * Gets the update at the specified row.
+     *
+     * @param rowIndex Row to retrieve
+     *
+     * @return Specified Update
      */
-    public void add(final UpdateComponent component) {
-        updates.add(component);
-        fireTableRowsInserted(updates.size() - 1, updates.size() - 1);
+    public Update getUpdate(final int rowIndex) {
+        return updates.get(rowIndex);
     }
 
     /**
-     * Removes a update component to the model.
-     * 
-     * @param component update component to remove
+     * Gets a list of all updates.
+     *
+     * @return Update list
      */
-    public void remove(final UpdateComponent component) {
-        remove(updates.indexOf(component));
+    public List<Update> getUpdates() {
+        return new ArrayList<Update>(updates);
     }
 
     /**
-     * Removes a update component to the model.
+     * Is the specified component to be updated?
      * 
-     * @param index Index of the update component to remove
+     * @param update Component to check
+     * 
+     * @return true iif the component needs to be updated
      */
-    public void remove(final int index) {
-        if (index != -1) {
-            updates.remove(index);
-            fireTableRowsDeleted(index, index);
-        }
+    public boolean isEnabled(final Update update) {
+        return enabled.get(update);
+    }
+
+    /**
+     * Is the component at the specified index to be updated?
+     * 
+     * @param rowIndex Component index to check
+     * 
+     * @return true iif the component needs to be updated
+     */
+    public boolean isEnabled(final int rowIndex) {
+        return isEnabled(updates.get(rowIndex));
+    }
+
+    /**
+     * Adds an update to the list.
+     *
+     * @param update Update to add
+     */
+    public void addRow(final Update update) {
+        updates.add(update);
+        update.addUpdateListener(this);
+        fireTableRowsInserted(updates.indexOf(update), updates.indexOf(update));
+    }
+
+    /**
+     * Removes a specified row from the list.
+     *
+     * @param row Row to remove
+     */
+    public void removeRow(final int row) {
+        updates.get(row).removeUpdateListener(this);
+        updates.remove(row);
+        fireTableRowsDeleted(row, row);
+    }
+
+    /**
+     * Returns the index of the specified update.
+     *
+     * @param update Update to get index of
+     *
+     * @return Index of the update or -1 if not found.
+     */
+    public int indexOf(final Update update) {
+        return updates.indexOf(update);
+    }
+
+    public void updateStatusChange(Update update, UpdateStatus status) {
+        fireTableCellUpdated(updates.indexOf(update), 3);
     }
 }
+

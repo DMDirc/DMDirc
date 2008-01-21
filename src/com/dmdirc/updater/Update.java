@@ -26,7 +26,6 @@ import com.dmdirc.Main;
 import com.dmdirc.interfaces.UpdateListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.updater.Update.STATUS;
 import com.dmdirc.util.Downloader;
 import com.dmdirc.util.WeakList;
 
@@ -38,24 +37,6 @@ import java.util.List;
  * @author chris
  */
 public final class Update {
-
-    /**
-     * An enumeration of possible statuses.
-     */
-    public static enum STATUS {
-        /** The update is waiting to be started. */
-        PENDING,
-        /** The update is currently downloading. */
-        DOWNLOADING,
-        /** The update is currently installing. */
-        INSTALLING,
-        /** The update has been installed correctly. */
-        INSTALLED,
-        /** An error was encountered during update. */
-        ERROR,
-        /** A restart is needed to complete the update. */
-        RESTART_NEEDED
-    }
 
     /** Update component. */
     private final String component;
@@ -73,7 +54,7 @@ public final class Update {
             = new WeakList<UpdateListener>();
 
     /** Our current status. */
-    private STATUS status = Update.STATUS.PENDING;
+    private UpdateStatus status = UpdateStatus.PENDING;
 
     /**
      * Creates a new instance of Update, with details from the specified line.
@@ -135,7 +116,7 @@ public final class Update {
      *
      * @return This update's status
      */
-    public STATUS getStatus() {
+    public UpdateStatus getStatus() {
         return status;
     }
 
@@ -144,7 +125,7 @@ public final class Update {
      *
      * @param newStatus This update's new status
      */
-    protected void setStatus(final STATUS newStatus) {
+    protected void setStatus(final UpdateStatus newStatus) {
         status = newStatus;
 
         for (UpdateListener listener : listeners) {
@@ -182,12 +163,12 @@ public final class Update {
                 final String path = Main.getConfigDir() + "update.tmp."
                         + Math.round(Math.random() * 1000);
 
-                setStatus(STATUS.DOWNLOADING);
+                setStatus(UpdateStatus.DOWNLOADING);
 
                 try {
                     Downloader.downloadPage(getUrl(), path);
                 } catch (Throwable ex) {
-                    setStatus(STATUS.ERROR);
+                    setStatus(UpdateStatus.ERROR);
 
                     Logger.appError(ErrorLevel.MEDIUM,
                             "Error when updating component " + component, ex);
@@ -195,19 +176,19 @@ public final class Update {
                     return;
                 }
 
-                setStatus(STATUS.INSTALLING);
+                setStatus(UpdateStatus.INSTALLING);
 
                 try {
                     final boolean restart = UpdateChecker.findComponent(getComponent()).doInstall(path);
 
                     if (restart) {
-                        setStatus(STATUS.RESTART_NEEDED);
+                        setStatus(UpdateStatus.RESTART_NEEDED);
                         UpdateChecker.removeComponent(getComponent());
                     } else {
-                        setStatus(STATUS.INSTALLED);
+                        setStatus(UpdateStatus.INSTALLED);
                     }
                 } catch (Throwable ex) {
-                    setStatus(STATUS.ERROR);
+                    setStatus(UpdateStatus.ERROR);
                     Logger.appError(ErrorLevel.MEDIUM,
                             "Error when updating component " + component, ex);
                 }
