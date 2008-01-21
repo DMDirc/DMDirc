@@ -59,7 +59,17 @@ public final class LoadPlugin extends GlobalCommand implements IntelligentComman
             PluginManager.getPluginManager().getPluginInfo(args[0]).loadPlugin();
             sendLine(origin, isSilent, FORMAT_OUTPUT, "Plugin loaded.");
         } else {
-            sendLine(origin, isSilent, FORMAT_ERROR, "Plugin Loading failed");
+            PluginInfo plugin = PluginManager.getPluginManager().getPluginInfo(args[0]);
+            if (plugin == null) {
+                sendLine(origin, isSilent, FORMAT_ERROR, "Plugin Loading failed");
+            } else {
+                if (!plugin.isLoaded()) {
+                    PluginManager.getPluginManager().getPluginInfo(args[0]).loadPlugin();
+                    sendLine(origin, isSilent, FORMAT_OUTPUT, "Plugin loaded.");
+                } else {
+                    sendLine(origin, isSilent, FORMAT_OUTPUT, "Plugin already loaded.");
+                }
+            }
         }
     }
     
