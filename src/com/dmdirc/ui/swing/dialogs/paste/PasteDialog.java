@@ -23,10 +23,12 @@
 package com.dmdirc.ui.swing.dialogs.paste;
 
 import com.dmdirc.Main;
+import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.components.InputTextFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
+import com.dmdirc.ui.swing.components.TextAreaInputField;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import com.dmdirc.ui.swing.components.TextLabel;
 
@@ -44,7 +46,6 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
@@ -69,7 +70,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
     private JScrollPane scrollPane;
     
     /** Text area. */
-    private JTextArea textField;
+    private TextAreaInputField textField;
     
     /** Parent frame. */
     private final InputTextFrame parent;
@@ -107,7 +108,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
     private void initComponents(final String text) {
         final GridBagConstraints constraints = new GridBagConstraints();
         scrollPane = new JScrollPane();
-        textField = new JTextArea(text);
+        textField = new TextAreaInputField(text);
         editButton = new JButton("Edit");
         infoLabel = new TextLabel();
         
@@ -132,6 +133,10 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
                 BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         textField.setColumns(50);
         textField.setRows(10);
+        
+        new InputHandler(textField, parent.getCommandParser(), parent)
+                .setTypes(false, false, true, false);
+                
         scrollPane.setViewportView(textField);
         scrollPane.setVisible(false);
         

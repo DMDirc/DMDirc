@@ -26,8 +26,10 @@ import com.dmdirc.Channel;
 import com.dmdirc.Topic;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.actions.NoNewlinesPasteAction;
+import com.dmdirc.ui.swing.components.TextAreaInputField;
 import com.dmdirc.ui.swing.components.TextLabel;
 
 import java.awt.Color;
@@ -45,7 +47,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -71,7 +72,7 @@ public final class TopicPane extends JPanel implements DocumentListener,
     /** label showing the number of characters left in a topic.*/
     private JLabel topicLengthLabel;
     /** Topic text entry text area. */
-    private JTextArea topicText;
+    private TextAreaInputField topicText;
     /** Topic who. */
     private TextLabel topicWho;
     /** Topic history. */
@@ -125,7 +126,7 @@ public final class TopicPane extends JPanel implements DocumentListener,
         final List<Topic> topics = channel.getTopics();
         Collections.reverse(topics);
         topicLengthLabel = new JLabel();
-        topicText = new JTextArea(100, 4);
+        topicText = new TextAreaInputField(100, 4);
         topicHistory =
                 new JComboBox(new DefaultComboBoxModel(topics.toArray()));
         topicWho = new TextLabel();
@@ -139,6 +140,8 @@ public final class TopicPane extends JPanel implements DocumentListener,
         topicText.setWrapStyleWord(true);
         topicText.setRows(5);
         topicText.setColumns(30);
+        new InputHandler(topicText, channel.getFrame().getCommandParser(), 
+                channel.getFrame()).setTypes(false, false, true, false);
 
         topicText.getActionMap().
                 put("paste-from-clipboard",

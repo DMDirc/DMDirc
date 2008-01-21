@@ -69,6 +69,22 @@ public final class InputHandler extends KeyAdapter implements ActionListener,
      */
     private static final int POSITION_START = 2;
     
+    /** Flag to indicate that this input handler should handle tab completion. */
+    private static final int HANDLE_TABCOMPLETION = 1;
+    
+    /** Flag to indicate that this input handler should maintain a back buffer. */
+    private static final int HANDLE_BACKBUFFER = 2;
+    
+    /** Flag to indicate that this input handler should handle formatting. */
+    private static final int HANDLE_FORMATTING = 4;
+    
+    /** Flag to indicate that this input handler should handle returns. */
+    private static final int HANDLE_RETURN = 8;
+    
+    /** The flags for this particular input handler. */
+    private int flags = HANDLE_TABCOMPLETION | HANDLE_BACKBUFFER | HANDLE_FORMATTING
+            | HANDLE_RETURN;
+    
     /** The input buffer. */
     private RollingList<String> buffer;
     
@@ -116,10 +132,27 @@ public final class InputHandler extends KeyAdapter implements ActionListener,
     }
     
     /**
+     * Indicates which types of input this handler should handle.
+     * 
+     * @param handleTabCompletion Whether or not to handle tab completion
+     * @param handleBackBuffer Whether or not to maintain an input back buffer
+     * @param handleFormatting Whether or not to handle formatting
+     * @param handleReturn Whether or not to handle returns
+     */
+    public void setTypes(final boolean handleTabCompletion, final boolean handleBackBuffer,
+            final boolean handleFormatting, final boolean handleReturn) {
+        flags = (handleTabCompletion ? HANDLE_TABCOMPLETION : 0)
+                | (handleBackBuffer ? HANDLE_BACKBUFFER : 0)
+                | (handleFormatting ? HANDLE_FORMATTING : 0)
+                | (handleReturn ? HANDLE_RETURN : 0);
+    }
+    
+    /**
      * Sets this inputhandler's tab completion style.
      */
     private void setStyle() {
-        if ("bash".equals(parentWindow.getConfigManager().getOption("tabcompletion", "style", "bash"))) {
+        if ("bash".equals(parentWindow.getConfigManager().getOption("tabcompletion",
+                "style", "bash"))) {
             style = new BashStyle();
         } else {
             style = new MircStyle();
@@ -149,20 +182,24 @@ public final class InputHandler extends KeyAdapter implements ActionListener,
         target.hideColourPicker();
         
         // Formatting codes
-        if ((keyEvent.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
+        if ((keyEvent.getModifiers() & KeyEvent.CTRL_MASK) != 0
+                && (flags & HANDLE_FORMATTING) != 0) {
             handleControlKey(keyEvent);
         }
         
         // Back buffer scrolling
-        if (keyEvent.getKeyCode() == KeyEvent.VK_UP) {
+        if (keyEvent.getKeyCode() == KeyEvent.VK_UP
+                && (flags & HANDLE_BACKBUFFER) != 0) {
             doBufferUp();
-        } else if (keyEvent.getKeyCode() == KeyEvent.VK_DOWN) {
+        } else if (keyEvent.getKeyCode() == KeyEvent.VK_DOWN
+                && (flags & HANDLE_BACKBUFFER) != 0) {
             doBufferDown();
         }
         
         // Tab completion
         if (keyEvent.getKeyCode() == KeyEvent.VK_TAB  && tabCompleter != null
-                && (keyEvent.getModifiers() & KeyEvent.CTRL_MASK) != KeyEvent.CTRL_MASK) {
+                && (keyEvent.getModifiers() & KeyEvent.CTRL_MASK) != KeyEvent.CTRL_MASK
+                && (flags & HANDLE_TABCOMPLETION) != 0) {
             doTabCompletion();
         }
     }
@@ -208,8 +245,10 @@ public final class InputHandler extends KeyAdapter implements ActionListener,
             break;
             
         case KeyEvent.VK_ENTER:
-            commandParser.parseCommandCtrl(parentWindow, target.getText());
-            addToBuffer(target.getText());
+            if ((flags & HANDLE_RETURN) != 0) {
+                commandParser.parseCommandCtrl(parentWindow, target.getText());
+                addToBuffer(target.getText());
+            }
             break;
             
         default:
