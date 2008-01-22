@@ -69,7 +69,7 @@ public final class CommunicationStep extends Step {
                 "updates for various parts of the client, you can globally " +
                 "disable that behaviour here, you can also fine tune the " +
                 "behaviour in the preferences dialog once the client is running.");
-        updates = new JCheckBox("Enabled update checks?", true);
+        updates = new JCheckBox("Enable update checks?", true);
         errorsInfo = new JWrappingLabel("DMDirc will automatically report application " +
                 "errors to the developers, whilst this is of great help to the developers " +
                 "you may disable this behaviour here.");
