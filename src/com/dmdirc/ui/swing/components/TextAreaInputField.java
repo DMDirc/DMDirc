@@ -23,9 +23,12 @@ package com.dmdirc.ui.swing.components;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputField;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JTextArea;
+import javax.swing.text.BadLocationException;
 
 /**
  *
@@ -84,7 +87,12 @@ public class TextAreaInputField extends JTextArea implements InputField {
 
                 @Override
                 public void actionPerformed(final ActionEvent actionEvent) {
-                    setText(getText() + actionEvent.getActionCommand());
+                    try {
+                        getDocument().insertString(getCaretPosition(), 
+                                actionEvent.getActionCommand(), null);
+                    } catch (BadLocationException ex) {
+                        //Ignore, wont happen
+                    }
                     colourPicker.dispose();
                     colourPicker = null;
                 }

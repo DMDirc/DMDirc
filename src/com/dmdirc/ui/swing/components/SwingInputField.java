@@ -31,9 +31,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
-
+import javax.swing.text.BadLocationException;
 
 /** Swing input field. */
 public class SwingInputField extends JComponent implements InputField {
@@ -55,9 +57,9 @@ public class SwingInputField extends JComponent implements InputField {
     public SwingInputField() {
         textField = new JTextField();
         textField.setFocusTraversalKeysEnabled(false);
-        
+
         setLayout(new BorderLayout());
-        
+
         add(textField, BorderLayout.CENTER);
     }
 
@@ -77,7 +79,13 @@ public class SwingInputField extends JComponent implements InputField {
 
                 @Override
                 public void actionPerformed(final ActionEvent actionEvent) {
-                    textField.setText(textField.getText() + actionEvent.getActionCommand());
+                    try {
+                        textField.getDocument().
+                                insertString(textField.getCaretPosition(),
+                                actionEvent.getActionCommand(), null);
+                    } catch (BadLocationException ex) {
+                        //Ignore, wont happen
+                    }
                     colourPicker.dispose();
                     colourPicker = null;
                 }
@@ -97,7 +105,7 @@ public class SwingInputField extends JComponent implements InputField {
             colourPicker = null;
         }
     }
-    
+
     /**
      * Returns the textfield for this inputfield.
      * 
@@ -190,7 +198,7 @@ public class SwingInputField extends JComponent implements InputField {
     public void setCaretColor(Color optionColour) {
         textField.setCaretColor(optionColour);
     }
-    
+
     /**
      * Sets the foreground colour to the specified coloour.
      * 
@@ -199,7 +207,7 @@ public class SwingInputField extends JComponent implements InputField {
     public void setForeground(Color optionColour) {
         textField.setForeground(optionColour);
     }
-    
+
     /**
      * Sets the background colour to the specified coloour.
      * 
