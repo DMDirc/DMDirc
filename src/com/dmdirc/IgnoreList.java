@@ -61,6 +61,20 @@ public class IgnoreList extends RegexStringList {
     }
     
     /**
+     * Determines if this list can be converted to a simple list.
+     * 
+     * @return True if this list can be converted, false otherwise.
+     */
+    public boolean canConvert() {
+        try {
+            getSimpleList();
+            return true;
+        } catch(UnsupportedOperationException ex) {
+            return false;
+        }
+    }
+    
+    /**
      * Retrieves a list of regular expressions in this ignore list.
      * 
      * @return All expressions in this ignore list

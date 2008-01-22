@@ -35,7 +35,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -84,7 +83,7 @@ public final class IgnoreListPanel extends JPanel implements ActionListener,
     private IgnoreList cachedIgnoreList;
     
     /** Ignore list model . */
-    private DefaultListModel listModel;
+    private IgnoreListModel listModel;
     
     /**
      * Creates a new instance of IgnoreList.
@@ -103,7 +102,9 @@ public final class IgnoreListPanel extends JPanel implements ActionListener,
     
     /** Initialises teh components. */
     private void initComponents() {
-        listModel = new DefaultListModel();
+        cachedIgnoreList = new IgnoreList(server.getIgnoreList().getRegexList());
+                
+        listModel = new IgnoreListModel(cachedIgnoreList);
         list = new JList(listModel);
         final JScrollPane scrollPane = new JScrollPane(list);
         
@@ -138,30 +139,13 @@ public final class IgnoreListPanel extends JPanel implements ActionListener,
     }
     
     /** Populates the ignore list. */
-    private void populateList() {
-        if (cachedIgnoreList == null) {
-            cachedIgnoreList = new IgnoreList(server.getIgnoreList().getRegexList());
-        }
-        
+    private void populateList() {        
         List<String> results;
         
         if (viewToggle.isSelected()) {
             results = cachedIgnoreList.getRegexList();
         } else {
-            try {
-                results = cachedIgnoreList.getSimpleList();
-            } catch (UnsupportedOperationException ex) {
-                viewToggle.setSelected(true);
-                viewToggle.setEnabled(false);
-                results = cachedIgnoreList.getRegexList();
-            }
-        }
-        
-        // TODO: Make the model use the ignore list directly, instead of
-        //       clearing it and readding items every time.
-        listModel.clear();
-        for (String ignoreListItem : results) {
-            listModel.addElement(ignoreListItem);
+            results = cachedIgnoreList.getSimpleList();
         }
         
         if (list.getSelectedIndex() == -1) {
@@ -169,6 +153,18 @@ public final class IgnoreListPanel extends JPanel implements ActionListener,
         }
         
         updateSizeLabel();
+    }
+    
+    /** Updates the list. */
+    private void updateList() {
+        listModel.notifyUpdated();
+        
+        if (cachedIgnoreList.canConvert()) {
+            viewToggle.setEnabled(true);
+        } else {
+            viewToggle.setEnabled(false);
+            viewToggle.setSelected(true);
+        }
     }
     
     /** Saves the ignore list. */
@@ -205,7 +201,7 @@ public final class IgnoreListPanel extends JPanel implements ActionListener,
                         cachedIgnoreList.addSimple(getText());
                     }
 
-                    populateList();
+                    updateList();
                     return true;
                 }
 
@@ -222,9 +218,9 @@ public final class IgnoreListPanel extends JPanel implements ActionListener,
                 == JOptionPane.YES_OPTION) {
             cachedIgnoreList.remove(list.getSelectedIndex());
             
-            populateList();
+            updateList();
         } else if (e.getSource() == viewToggle) {
-            populateList();
+            listModel.setIsSimple(!viewToggle.isSelected());
         }
     }
     
