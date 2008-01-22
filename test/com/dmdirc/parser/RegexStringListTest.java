@@ -92,6 +92,15 @@ public class RegexStringListTest extends junit.framework.TestCase {
         assertTrue(list.matches("foo") == -1);
         assertTrue(list.matches("Dataforce") == 1);
         assertFalse(list.matches(100, "Dataforce"));
+        assertTrue(list.matches(1, "Dataforce"));
+    }
+    
+    @Test
+    public void testGet() {
+        final RegexStringList list = new RegexStringList();
+        list.add("a!b@c");
+        assertEquals("a!b@c", list.get(0));
+        assertEquals("", list.get(7));
     }
 
     @Test
@@ -99,6 +108,7 @@ public class RegexStringListTest extends junit.framework.TestCase {
         final RegexStringList list = new RegexStringList();
         list.add("a!b@c");
         list.set(0, "moo");
+        list.set(1, "bar");
         assertEquals(1, list.count());
         assertEquals("moo", list.get(0));        
     }

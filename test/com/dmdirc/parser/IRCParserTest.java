@@ -461,7 +461,7 @@ public class IRCParserTest extends junit.framework.TestCase {
                 assertEquals(1002, item.getTime());
                 assertFalse(gotTwo);
                 gotTwo = true;
-            } else if (item.getItem().equals("ban3!ident@*")) {
+            } else if (item.toString().equals("ban3!ident@*")) {
                 assertEquals("bansetter3", item.getOwner());
                 assertEquals(1003, item.getTime());
                 assertFalse(gotThree);
