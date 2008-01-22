@@ -122,8 +122,9 @@ public class IgnoreList extends RegexStringList {
             } else if (part == '.') {
                 inchar = true;
             } else if (part == '.' || part == '^' || part == '$' || part == '['
-            || part == ']' || part == '\\' || part == '(' || part == ')'
-            || part == '{' || part == '}' || part == '|' || part == '+') {
+                    || part == ']' || part == '\\' || part == '(' || part == ')'
+                    || part == '{' || part == '}' || part == '|' || part == '+'
+                    || part == '*' || part == '?') {
                 throw new UnsupportedOperationException("Cannot convert to"
                         + " simple expression: unescaped special char: " + part);
             } else {

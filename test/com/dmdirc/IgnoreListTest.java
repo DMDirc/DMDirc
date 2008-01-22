@@ -33,7 +33,15 @@ public class IgnoreListTest extends junit.framework.TestCase {
         {"*chris*", ".*chris.*"},
         {"c???s", "c...s"},
         {"c*?*", "c.*..*"},
-    };  
+    }; 
+    
+    private final String[] illegals = {
+        "a+",
+        "a*",
+        "a.{4}",
+        "a|b",
+        "a?",
+    };
 
     @Test
     public void testToRegex() {
@@ -50,5 +58,20 @@ public class IgnoreListTest extends junit.framework.TestCase {
             assertEquals(test[0], convert2);
         }
     }    
+    
+    @Test
+    public void testIllegals() {
+        for (String test : illegals) {
+            boolean except = false;
+            
+            try {
+                String converted = IgnoreList.regexToSimple(test);
+            } catch (UnsupportedOperationException ex) {
+                except = true;
+            }
+            
+            assertTrue(except);
+        }
+    }
     
 }

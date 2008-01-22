@@ -29,7 +29,7 @@ public class RegexValidatorTest extends junit.framework.TestCase {
     @Test
     public void testValidate() {
         final String reason = "abc 123";
-        final RegexValidator rv = new RegexValidator("[0-9]{5}", reason);
+        final RegexStringValidator rv = new RegexStringValidator("[0-9]{5}", reason);
         
         assertTrue(rv.validate("abc").isFailure());
         assertEquals(reason, rv.validate("abc").getFailureReason());

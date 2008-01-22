@@ -26,7 +26,7 @@ import com.dmdirc.Main;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardInputDialog;
 import com.dmdirc.config.prefs.validator.NotEmptyValidator;
-import com.dmdirc.config.prefs.validator.RegexValidator;
+import com.dmdirc.config.prefs.validator.RegexStringValidator;
 import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
 
 import java.awt.Dimension;
@@ -96,13 +96,13 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
 
     /** Initialises the components in the main panel. */
     private void initMainComponents() {
-        name = new ValidatingJTextField(new RegexValidator(FILENAME_REGEX,
+        name = new ValidatingJTextField(new RegexStringValidator(FILENAME_REGEX,
                 "Name must only contain letters and numbers."));
         nickname =
-                new ValidatingJTextField(new RegexValidator(NICKNAME_REGEX,
+                new ValidatingJTextField(new RegexStringValidator(NICKNAME_REGEX,
                 "Nickname must only contain letters, numbers and []{}|-^\\."));
         realname = new ValidatingJTextField(new NotEmptyValidator());
-        ident = new ValidatingJTextField(new RegexValidator(IDENT_REGEX,
+        ident = new ValidatingJTextField(new RegexStringValidator(IDENT_REGEX,
                 "Ident must only contain letters, numbers and []{}|-^\\."));
         altNicknames = new JList(new DefaultListModel());
 
@@ -244,7 +244,7 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
             new StandardInputDialog((MainFrame) Main.getUI().getMainWindow(),
                     false, "New Alternate Nickname",
                     "Please enter the name for alternate nickname",
-                    new RegexValidator(NICKNAME_REGEX,
+                    new RegexStringValidator(NICKNAME_REGEX,
                     "Ident must only contain letters, numbers and []{}|-^\\.")) {
 
                 /**
@@ -272,7 +272,7 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
                     (MainFrame) Main.getUI().getMainWindow(),
                     false, "New Alternate Nickname",
                     "Please enter the name for alternate nickname",
-                    new RegexValidator(NICKNAME_REGEX,
+                    new RegexStringValidator(NICKNAME_REGEX,
                     "Ident must only contain letters, numbers and []{}|-^\\.")) {
 
                 /**

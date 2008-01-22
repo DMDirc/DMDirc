@@ -23,12 +23,18 @@
 package com.dmdirc.ui.swing.dialogs.serversetting;
 
 import com.dmdirc.IgnoreList;
+import com.dmdirc.Main;
 import com.dmdirc.Server;
+import com.dmdirc.config.prefs.validator.NotEmptyValidator;
+import com.dmdirc.config.prefs.validator.RegexValidator;
+import com.dmdirc.config.prefs.validator.ValidatorChain;
+import com.dmdirc.ui.swing.MainFrame;
+import com.dmdirc.ui.swing.components.StandardInputDialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.util.List;
+
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -173,19 +179,42 @@ public final class IgnoreListPanel extends JPanel implements ActionListener,
     }
     
     /** {@inheritDoc} */
+    @SuppressWarnings("unchecked")
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == addButton) {
-            final String newName = JOptionPane.showInputDialog(this,
-                    "Please enter the new ignore item", "");
-            if (newName != null && !newName.isEmpty()) {                
-                if (viewToggle.isSelected()) {
-                    cachedIgnoreList.add(newName);
-                } else {
-                    cachedIgnoreList.addSimple(newName);
+            new StandardInputDialog((MainFrame) Main.getUI().getMainWindow(),
+                    false, "New ignore list entry",
+                    "Please enter the new ignore list entry",
+                    viewToggle.isSelected() ? new ValidatorChain<String>(
+                    new NotEmptyValidator(), new RegexValidator())
+                    : new NotEmptyValidator()) {
+
+                /**
+                 * A version number for this class. It should be changed whenever the class
+                 * structure is changed (or anything else that would prevent serialized
+                 * objects being unserialized with the new class).
+                 */
+                private static final long serialVersionUID = 2;
+
+                /** {@inheritDoc} */
+                @Override
+                public boolean save() {
+                    if (viewToggle.isSelected()) {
+                        cachedIgnoreList.add(getText());
+                    } else {
+                        cachedIgnoreList.addSimple(getText());
+                    }
+
+                    populateList();
+                    return true;
                 }
-                
-                populateList();
-            }
+
+                /** {@inheritDoc} */
+                @Override
+                public void cancelled() {
+                //Ignore
+                }
+            }.display();            
         } else if (e.getSource() == delButton && list.getSelectedIndex() != -1
                 && JOptionPane.showConfirmDialog(this,
                 "Are you sure you want to delete this item?",

@@ -22,25 +22,44 @@
 
 package com.dmdirc.config.prefs.validator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Validates a regular expression.
+ * Allows multiple validators to be chained together.
  * 
+ * @param A The type of class that this chain validates
  * @author chris
  */
-public class RegexValidator implements Validator<String> {
+public class ValidatorChain<A> implements Validator<A> {
+    
+    /** A list of validators to use. */
+    private final List<Validator<A>> validatorList
+            = new ArrayList<Validator<A>>();
+
+    /**
+     * Creates a new validator chain containing the specified validators.
+     * 
+     * @param validators The validators to be used in this chain.
+     */
+    public ValidatorChain(final Validator<A> ... validators) {
+        for (Validator<A> validator : validators) {
+            validatorList.add(validator);
+        }
+    }
 
     /** {@inheritDoc} */
     @Override
-    public ValidationResponse validate(final String object) {
-        try {
-            // Is there a proper way of doing this, as opposed to just seeing
-            // if it breaks?
+    public ValidationResponse validate(final A object) {
+        for (Validator<A> validator : validatorList) {
+            final ValidationResponse res = validator.validate(object);
             
-            "abc".matches(object);
-            return new ValidationResponse();
-        } catch (Exception ex) {
-            return new ValidationResponse(ex.getMessage());
+            if (res.isFailure()) {
+                return res;
+            }
         }
+        
+        return new ValidationResponse();
     }
 
 }
