@@ -145,7 +145,12 @@ public final class CommandManager {
         }
         
         if (canContinue) {
-            commands.put(command, command);
+            if (register) {
+                commands.put(command, command);
+            } else {
+                commands.remove(command);
+            }
+            
             registerCommandName(command, register);
         }
     }
