@@ -31,10 +31,9 @@ import com.dmdirc.commandparser.commands.PreviousCommand;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
+import com.dmdirc.util.RollingList;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -61,11 +60,14 @@ public abstract class CommandParser implements Serializable {
     /**
      * A history of commands that have been entered into this parser.
      */
-    private final List<PreviousCommand> history = new ArrayList<PreviousCommand>();
+    private final RollingList<PreviousCommand> history;
     
     /** Creates a new instance of CommandParser. */
     public CommandParser() {
         commands = new Hashtable<String, Command>();
+        history = new RollingList<PreviousCommand>(
+                IdentityManager.getGlobalConfig().getOptionInt("general",
+                    "commandhistory", 10));
         loadCommands();
     }
     
@@ -174,12 +176,6 @@ public abstract class CommandParser implements Serializable {
         
         synchronized(history) {
             history.add(new PreviousCommand(builder.toString()));
-
-            int historysize = IdentityManager.getGlobalConfig().getOptionInt("general",
-                    "commandhistory", 10);
-            while (history.size() > historysize) {
-                history.remove(0);
-            }
         }
     }
     
@@ -194,7 +190,7 @@ public abstract class CommandParser implements Serializable {
         long res = 0;
 
         synchronized(history) {
-            for (PreviousCommand pc : history) {
+            for (PreviousCommand pc : history.getList()) {
                 if (pc.getLine().matches("(?i)" + command)) {
                     res = Math.max(res, pc.getTime());
                 }
