@@ -102,7 +102,7 @@ public class GlobalClassLoader extends ClassLoader {
 			List<String> classList = pi.getClassList();
 			if (classList.contains(name)) {
 				if (pi.getPluginClassLoader() != null){
-					return pi.getPluginClassLoader().loadClass(name);
+					return pi.getPluginClassLoader().loadClass(name, false);
 				}
 			}
 		}
