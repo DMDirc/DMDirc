@@ -52,6 +52,18 @@ public class PluginClassLoader extends ClassLoader {
 	 * @throws ClassNotFoundException if the class to be loaded could not be found.
 	 */
 	public Class< ? > loadClass(final String name) throws ClassNotFoundException {
+		return loadClass(name, true);
+	}
+	
+	/**
+	 * Load the plugin with the given className
+	 *
+	 * @param name Class Name of plugin
+	 * @param askGlobal Ask the gobal class loaded for this class if we can't find it?
+	 * @return plugin class
+	 * @throws ClassNotFoundException if the class to be loaded could not be found.
+	 */
+	public Class< ? > loadClass(final String name, final boolean askGlobal) throws ClassNotFoundException {
 		ResourceManager res;
 		try {
 			res = pluginInfo.getResourceManager();
@@ -64,12 +76,14 @@ public class PluginClassLoader extends ClassLoader {
 		final String fileName = name.replace('.', '/')+".class";
 		try {
 			if (pluginInfo.isPersistant(name) || !res.resourceExists(fileName)) {
-				if (!pluginInfo.isPersistant(name)) {
+				if (!pluginInfo.isPersistant(name) && askGlobal) {
 					return GlobalClassLoader.getGlobalClassLoader().loadClass(name);
 				} else {
 					// Try to load class from previous load.
 					try {
-						return GlobalClassLoader.getGlobalClassLoader().loadClass(name, pluginInfo);
+						if (askGlobal) {
+							return GlobalClassLoader.getGlobalClassLoader().loadClass(name, pluginInfo);
+						}
 					} catch (Exception e) {
 						/* Class doesn't exist, we load it outself below */
 					}
