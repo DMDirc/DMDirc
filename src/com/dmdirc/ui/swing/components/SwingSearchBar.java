@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.components;
 
 import com.dmdirc.IconManager;
 import com.dmdirc.Main;
+import com.dmdirc.ui.interfaces.SearchBar;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.actions.SearchAction;
@@ -49,8 +50,8 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Status bar, shows message and info on the gui.
  */
-public final class SearchBar extends JPanel implements ActionListener,
-        KeyListener {
+public final class SwingSearchBar extends JPanel implements ActionListener,
+        KeyListener, SearchBar {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -77,14 +78,6 @@ public final class SearchBar extends JPanel implements ActionListener,
     /** Search text field. */
     private JTextField searchBox;
     
-    /** Direction used for searching. */
-    public enum Direction {
-        /** Move up through the document. */
-        UP,
-        /** Move down through the document. */
-        DOWN,
-    }
-    
     /** Line to search from. */
     private int line;
     /** Character to search from. */
@@ -94,7 +87,7 @@ public final class SearchBar extends JPanel implements ActionListener,
      * Creates a new instance of StatusBar.
      * @param newParent parent frame for the dialog
      */
-    public SearchBar(final TextFrame newParent) {
+    public SwingSearchBar(final TextFrame newParent) {
         super();
         
         this.parent = newParent;
@@ -147,7 +140,12 @@ public final class SearchBar extends JPanel implements ActionListener,
         prevButton.addActionListener(this);
     }
     
-    /** {@inheritDoc}. */
+    /** 
+     * {@inheritDoc}. 
+     * 
+     * @param e Action event
+     */
+    @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == closeButton) {
             close();
@@ -158,7 +156,8 @@ public final class SearchBar extends JPanel implements ActionListener,
         }
     }
     
-    /** Shows the search bar in the frame. */
+    /** {@inheritDoc}. */
+    @Override
     public void open() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -170,7 +169,8 @@ public final class SearchBar extends JPanel implements ActionListener,
         );
     }
     
-    /** Hides the search bar in the frame. */
+    /** {@inheritDoc}. */
+    @Override
     public void close() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -185,30 +185,24 @@ public final class SearchBar extends JPanel implements ActionListener,
         );
     }
     
-    /**
-     * Searches the textpane for text.
-     */
-    public void search() {
+    /** {@inheritDoc}. */
+    @Override
+    public void search(final String text, final boolean caseSensitive) {
         if (!searchBox.getText().isEmpty()) {
             if (line == -1) {
                 line = parent.getTextPane().getLastVisibleLine();
             }
-            search(Direction.UP, searchBox.getText(), caseCheck.isSelected());
+            search(Direction.UP, text, caseSensitive);
         }
     }
     
-    /**
-     * Searches the textpane for text.
-     *
-     * @param direction the direction to search from
-     * @param text the text to search for
-     * @param caseSensitive whether the search is case sensitive
-     */
+    /** {@inheritDoc}. */
+    @Override
     public void search(final Direction direction, final String text,
             final boolean caseSensitive) {
         boolean foundText = false;
         
-        if (!text.isEmpty() && checkOccurs(searchBox.getText(), caseCheck.isSelected())) {
+        if (!text.isEmpty() && checkPhraseOccurs(searchBox.getText(), caseCheck.isSelected())) {
             if (direction == Direction.UP) {
                 foundText = searchUp(text, caseSensitive);
             } else {
@@ -361,15 +355,9 @@ public final class SearchBar extends JPanel implements ActionListener,
         return false;
     }
     
-    /**
-     * Checks to see if the specified text exist in the document.
-     *
-     * @param text Text to check for
-     * @param caseSensitive Case sensitive check
-     *
-     * @return Whether the text exists
-     */
-    public boolean checkOccurs(final String text, final boolean caseSensitive) {
+    /** {@inheritDoc}. */
+    @Override
+    public boolean checkPhraseOccurs(final String text, final boolean caseSensitive) {
         final TextPane textPane = parent.getTextPane();
         boolean foundText = false;
         int i;
@@ -392,12 +380,12 @@ public final class SearchBar extends JPanel implements ActionListener,
         return foundText;
     }
     
-    /** {@inheritDoc}. */
-    public void keyTyped(final KeyEvent event) {
-        //Ignore
-    }
-    
-    /** {@inheritDoc}. */
+    /** 
+     * {@inheritDoc}.
+     * 
+     * @param event Key event
+     */
+    @Override
     public void keyPressed(final KeyEvent event) {
         if (event.getSource() == searchBox) {
             searchBox.setBackground(ColourManager.getColour("FFFFFF"));
@@ -412,7 +400,22 @@ public final class SearchBar extends JPanel implements ActionListener,
         }
     }
     
-    /** {@inheritDoc}. */
+    /** 
+     * {@inheritDoc}.
+     * 
+     * @param event Key event
+     */
+    @Override
+    public void keyTyped(final KeyEvent event) {
+        //Ignore
+    }
+    
+    /** 
+     * {@inheritDoc}.
+     * 
+     * @param event Key event
+     */
+    @Override
     public void keyReleased(final KeyEvent event) {
         //Ignore
     }
@@ -427,5 +430,17 @@ public final class SearchBar extends JPanel implements ActionListener,
             }
         }
         );
+    }
+
+    /** {@inheritDoc}. */
+    @Override
+    public String getSearchPhrase() {
+        return searchBox.getText();
+    }
+
+    /** {@inheritDoc}. */
+    @Override
+    public boolean isCaseSensitive() {
+        return caseCheck.isSelected();
     }
 }

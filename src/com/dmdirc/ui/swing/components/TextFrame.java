@@ -113,7 +113,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     private JMenuItem hyperlinkOpenMI;
     
     /** search bar. */
-    private SearchBar searchBar;
+    private SwingSearchBar searchBar;
     
     /** String transcoder. */
     private StringTranscoder transcoder;
@@ -289,7 +289,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         channelPopup = new JPopupMenu();
         urlPopup = new JPopupMenu();
         
-        searchBar = new SearchBar(this);
+        searchBar = new SwingSearchBar(this);
         searchBar.setVisible(false);
         
         getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).
@@ -638,7 +638,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      *
      * @return the frames search bar
      */
-    public final SearchBar getSearchBar() {
+    public final SwingSearchBar getSearchBar() {
         return searchBar;
     }
     

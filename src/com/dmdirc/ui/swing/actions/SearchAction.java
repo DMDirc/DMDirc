@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.swing.actions;
 
-import com.dmdirc.ui.swing.components.SearchBar;
+import com.dmdirc.ui.swing.components.SwingSearchBar;
 
 import java.awt.event.ActionEvent;
 
@@ -41,14 +41,14 @@ public final class SearchAction extends AbstractAction {
     private static final long serialVersionUID = 2;
     
     /** Parent searchbar. */
-    private final SearchBar searchBar;
+    private final SwingSearchBar searchBar;
     
     /** 
      * Creates a new instance of SearchAction. 
      *
      * @param searchBar Parent searchbar.
      */
-    public SearchAction(final SearchBar searchBar) {
+    public SearchAction(final SwingSearchBar searchBar) {
         super("Search");
         
         this.searchBar = searchBar;
@@ -58,7 +58,7 @@ public final class SearchAction extends AbstractAction {
     public void actionPerformed(final ActionEvent e) { 
         if (searchBar.isVisible()) {
             searchBar.getFocus();
-            searchBar.search();
+            searchBar.search(searchBar.getSearchPhrase(), searchBar.isCaseSensitive());
         } else {
             searchBar.open();
         }
