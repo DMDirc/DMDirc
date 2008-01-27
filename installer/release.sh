@@ -199,7 +199,7 @@ rm -Rf installer_temp
 # Copy default settings from www to trunk for compile (if they exist, and we are
 # building a new jar)
 REVERTLIST=""
-if [ "" == "${JARFILE}" ]; then
+if [ "" = "${JARFILE}" ]; then
 	if [ -e "${HOME}/www/updates/" ]; then
 		echo "================================================================"
 		echo "Applying settings update to this source"
