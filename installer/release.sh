@@ -270,7 +270,7 @@ echo "================================================================"
 # Now revert the trunk so as not to break updates.
 for updatedir in ${REVERTLIST}; do
 	SVN=`which svn`
-	${svn} revert ${updatedir}/*
+	${SVN} revert ${updatedir}/*
 done;
 
 echo "================================================================"
