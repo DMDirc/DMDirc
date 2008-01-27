@@ -253,6 +253,7 @@ echo "Clean Up"
 echo "================================================================"
 # Now revert the trunk so as not to break updates.
 for updatedir in ${REVERTLIST}; do
+	SVN=`which svn`
 	${SVN} revert ${updatedir}/*
 done;
 
