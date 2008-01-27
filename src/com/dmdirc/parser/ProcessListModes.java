@@ -84,6 +84,7 @@ public class ProcessListModes extends IRCProcessor {
 		if (!isCleverMode && listModeQueue != null) {
 			if (sParam.equals("482")) {
 				myParser.callDebugInfo(myParser.DEBUG_LMQ, "Dropped LMQ mode "+listModeQueue.poll());
+				return;
 			} else {
 				if (listModeQueue.peek() != null) {
 					Character oldMode = mode;
@@ -109,26 +110,17 @@ public class ProcessListModes extends IRCProcessor {
 			}
 		}
 		
-		if (sParam.equals("482")) { return; }
-		
 		if (isItem) {
-			if ((!isCleverMode) && listModeQueue == null && (thisIRCD.equals("hyperion") || thisIRCD.equals("dancer"))) {
-				if (token.length > 4) {
-					if (mode == 'b') {
-						// Assume mode is a 'd' mode
-						mode = 'd';
-						// Now work out if its not (or attempt to.)
-						int identstart = token[tokenStart].indexOf('!');
-						int hoststart = token[tokenStart].indexOf('@');
-						// Check that ! and @ are both in the string - as required by +b and +q
-						if ((identstart >= 0) && (hoststart >= 0)) {
-							// Check that ! is BEFORE the @ - as required by +b and +q
-							if (identstart < hoststart) {
-								if (thisIRCD.equals("hyperion") && token[tokenStart].charAt(0) == '%') { mode = 'q'; }
-								else { mode = 'b'; }
-							}
-						}
-					}
+			if ((!isCleverMode) && listModeQueue == null && (thisIRCD.equals("hyperion") || thisIRCD.equals("dancer")) && token.length > 4 && mode == 'b') {
+				// Assume mode is a 'd' mode
+				mode = 'd';
+				// Now work out if its not (or attempt to.)
+				int identstart = token[tokenStart].indexOf('!');
+				int hoststart = token[tokenStart].indexOf('@');
+				// Check that ! and @ are both in the string - as required by +b and +q
+				if ((identstart >= 0) && (identstart < hoststart)) {
+					if (thisIRCD.equals("hyperion") && token[tokenStart].charAt(0) == '%') { mode = 'q'; }
+					else { mode = 'b'; }
 				}
 			} // End Hyperian stupidness of using the same numeric for 3 different things..
 			
