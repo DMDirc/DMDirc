@@ -819,9 +819,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         window.setVisible(false);
         
         // 2: Remove any callbacks or listeners
-        if (parser != null) {
-            parser.getCallbackManager().delAllCallback(eventHandler);
-        }
+        eventHandler.unregisterCallbacks();
         
         // 3: Trigger any actions neccessary
         if (parser != null && parser.isReady()) {

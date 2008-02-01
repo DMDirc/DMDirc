@@ -63,7 +63,9 @@ public abstract class EventHandler implements ICallbackInterface {
      * Unregisters all callbacks that have been registered by this event handler.
      */
     public void unregisterCallbacks() {
-        getParser().getCallbackManager().delAllCallback(this);
+        if (getParser() != null) {
+            getParser().getCallbackManager().delAllCallback(this);
+        }
     }
     
     /**
