@@ -12,6 +12,6 @@ server.umodel = Show excess connections
 server.umoden = Show client nick changes
 server.umoder = Show reject notices
 server.umodeu = Show unauthorised connections
-server.umodey = Show stats/links/admin requests
+server.umodey = Spy mode
 server.umodez = Receive wallops
 server.umodeD = Deaf
