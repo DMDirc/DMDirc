@@ -261,6 +261,7 @@ formatter.numeric_486 = 6A7000%4$s\u000F: %5$s
 formatter.numeric_unreal_486 = 6A7000%4$s
 formatter.numeric_499 = 6A7000%4$s\u000F: %5$s
 formatter.numeric_501 = 6A7000%4$s\u000F: %5$s
+formatter.numeric_hybrid_501 = 6A7000%4$s
 formatter.numeric_524 = 6A7000%4$s\u000F: %5$s
 
 formatter.numeric_671 = %4$s %5$s.
