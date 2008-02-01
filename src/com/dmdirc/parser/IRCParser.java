@@ -1865,7 +1865,7 @@ public class IRCParser implements Runnable {
 
 	/**
 	 * Set the time used for the ping countdown.
-	 * The pingTimer fires every pingTimerLength seconds, whenever a line of data
+	 * The pingTimer fires every pingTimerLength/1000 seconds, whenever a line of data
 	 * is received, the "waiting for ping" flag is set to false, if the line is
 	 * a "PONG", then onPingSuccess is also called.
 	 *
@@ -1877,7 +1877,7 @@ public class IRCParser implements Runnable {
 	 * pingCountDownLength and a PING is sent to the server.
 	 *
 	 * To ping the server after 30 seconds of inactivity you could use:
-	 * pingTimerLength = 20000, pingCountDown = 6
+	 * pingTimerLength = 5000, pingCountDown = 6
 	 * or
 	 * pingTimerLength = 10000, pingCountDown = 3
 	 *
