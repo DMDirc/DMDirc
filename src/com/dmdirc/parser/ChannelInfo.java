@@ -128,6 +128,8 @@ public final class ChannelInfo {
 		final boolean isFreenode = (thisIRCD.equals("hyperion") || thisIRCD.equals("dancer"));
 		final boolean isUnreal = thisIRCD.equals("unreal");
 		final boolean isStarChat = thisIRCD.equals("starchat");
+		final boolean isHybrid = thisIRCD.equals("hybrid");
+		
 		// We are considered opped if we have a mode higher than voice (or if we have any modes if voice doesn't exist)
 		long voiceValue = 0;
 		if (myParser.hPrefixModes.get('v') != null) { voiceValue = myParser.hPrefixModes.get('v');}
@@ -151,16 +153,12 @@ public final class ChannelInfo {
 		for (Character cTemp : myParser.hChanModesOther.keySet()) {
 			int nTemp = myParser.hChanModesOther.get(cTemp);
 			if (nTemp == myParser.MODE_LIST) {
-				if (isFreenode) {
-					if ((cTemp == 'e' || cTemp == 'I') && !isOpped) {
-						// Freenode doesn't allow non-ops to ask for these modes.
-						continue;
-					}
-				} else if (isStarChat) {
-					if (cTemp == 'H') {
-						// The ircd denies teh existance of thie mode
-						continue;
-					}
+				if ((isFreenode || isHybrid) && (cTemp == 'e' || cTemp == 'I') && !isOpped) {
+					// IRCD doesn't allow non-ops to ask for these modes.
+					continue;
+				} else if (isStarChat && cTemp == 'H') {
+					// IRCD Denies the mode exists
+					continue;
 				}
 				i++;
 				listmodes = listmodes + cTemp;
