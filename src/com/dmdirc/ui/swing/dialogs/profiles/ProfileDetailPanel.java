@@ -61,7 +61,7 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
     private static final long serialVersionUID = 2;
     /** Nickname regex. */
     private static final String NICKNAME_REGEX =
-            "[A-Za-z0-9\\[\\]{|}\\-\\^\\\\]+";
+            "[A-Za-z0-9\\[\\]{|}\\-\\^\\\\\\`\\_]+";
     /** Ident regex. */
     private static final String IDENT_REGEX =
             "[A-Za-z0-9\\[\\]{|}\\-\\^\\\\]*";
@@ -100,7 +100,7 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
                 "Name must only contain letters and numbers."));
         nickname =
                 new ValidatingJTextField(new RegexStringValidator(NICKNAME_REGEX,
-                "Nickname must only contain letters, numbers and []{}|-^\\."));
+                "Nickname must only contain letters, numbers and []{}|-^\\.`_"));
         realname = new ValidatingJTextField(new NotEmptyValidator());
         ident = new ValidatingJTextField(new RegexStringValidator(IDENT_REGEX,
                 "Ident must only contain letters, numbers and []{}|-^\\."));
@@ -245,7 +245,7 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
                     false, "New Alternate Nickname",
                     "Please enter the name for alternate nickname",
                     new RegexStringValidator(NICKNAME_REGEX,
-                    "Ident must only contain letters, numbers and []{}|-^\\.")) {
+                    "Nicknames must only contain letters, numbers and []{}|-^\\.`_")) {
 
                 /**
                  * A version number for this class. It should be changed whenever the class
