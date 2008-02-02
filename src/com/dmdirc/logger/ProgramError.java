@@ -216,7 +216,7 @@ public final class ProgramError implements Serializable {
         int hash = 7;
         hash = 67 * hash + (this.level != null ? this.level.hashCode() : 0);
         hash = 67 * hash + (this.message != null ? this.message.hashCode() : 0);
-        hash = 67 * hash + (this.trace != null ? this.trace.hashCode() : 0);
+        hash = 67 * hash + (this.trace != null ? Arrays.hashCode(this.trace) : 0);
         return hash;
     }
     
