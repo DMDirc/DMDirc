@@ -23,11 +23,9 @@
 package com.dmdirc.ui.swing.dialogs.wizard.firstrun;
 
 import com.dmdirc.Main;
-import com.dmdirc.actions.ActionManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.interfaces.FirstRunWizard;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.dialogs.profiles.ProfileManagerDialog;

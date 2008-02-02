@@ -248,7 +248,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
             return;
         } 
         if (action == null) {
-            action = new Action(parent.getSelectedGroup(),
+            action = new Action(group,
                     ((GeneralTabPanel) tabbedPane.getComponentAt(0)).getActionName(),
                     ((GeneralTabPanel) tabbedPane.getComponentAt(0)).getTriggers().toArray(new ActionType[0]),
                     ((ResponseTabPanel) tabbedPane.getComponentAt(2)).getResponses().split("\\n"),
