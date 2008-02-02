@@ -77,12 +77,12 @@ public class Process004005 extends IRCProcessor {
 						} else if (myParser.knownClients() > 1) {
 							// If this happens then something buggered up.
 							// joining channels before 005, when the encoding is not rfc1459
-							myParser.callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "Casemapping has changed since we have seen other users!", myParser.getLastLine()));
+							// myParser.callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "Casemapping has changed since we have seen other users!", myParser.getLastLine()));
 						}
 						if (myParser.knownChannels() > 0) {
 							// If this happens then something buggered up.
 							// joining channels before 005, when the encoding is not rfc1459
-							myParser.callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "Casemapping has changed since we joined channels!", myParser.getLastLine()));
+							// myParser.callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "Casemapping has changed since we joined channels!", myParser.getLastLine()));
 						}
 					}
 				} else if (sKey.equals("CHANTYPES")) {
