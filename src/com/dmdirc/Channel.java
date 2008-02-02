@@ -329,7 +329,10 @@ public final class Channel extends MessageTarget
      * @param reason The reason for parting the channel
      */
     public void part(final String reason) {
-        server.getParser().partChannel(channelInfo.getName(), reason);
+        if (server != null && server.getParser() != null) {
+            server.getParser().partChannel(channelInfo.getName(), reason);
+        }
+        
         resetWindow();
     }
     
