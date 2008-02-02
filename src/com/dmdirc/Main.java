@@ -110,16 +110,6 @@ public final class Main {
         
         getUI().initUISettings();
         
-        ActionManager.init();
-        
-        PluginManager.getPluginManager();
-        
-        ActionManager.loadActions();
-        
-        new ThemeManager().loadDefaultTheme();
-        
-        getUI().getMainWindow();
-        
         if (IdentityManager.getGlobalConfig().getOptionBool("general", "firstRun", true)) {
             IdentityManager.getConfigIdentity().setOption("general", "firstRun", "false");
             IdentityManager.getConfigIdentity().setOption("general", "addonrevision", ADDON_REVISION);
@@ -135,8 +125,18 @@ public final class Main {
         } else if (IdentityManager.getGlobalConfig().getOptionInt("general", "addonrevision", -1) < ADDON_REVISION) {
             IdentityManager.getConfigIdentity().setOption("general", "addonrevision", ADDON_REVISION);
             getUI().showMigrationWizard();
-        }
+        }        
         
+        ActionManager.init();
+        
+        PluginManager.getPluginManager();
+        
+        ActionManager.loadActions();
+        
+        new ThemeManager().loadDefaultTheme();
+        
+        getUI().getMainWindow();
+                
         ActionManager.processEvent(CoreActionType.CLIENT_OPENED, null);
         
         UpdateChecker.init();
