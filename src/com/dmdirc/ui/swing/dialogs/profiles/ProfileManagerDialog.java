@@ -136,8 +136,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
         infoLabel =
                 new JWrappingLabel("Profiles describe information needed to " +
                 "connect to a server.  You can use a different profile for " +
-                "each connection. Profiles are automatically saved when you " +
-                "select another or click OK");
+                "each connection.");
 
         profileList.setCellRenderer(new ProfileListCellRenderer());
 
