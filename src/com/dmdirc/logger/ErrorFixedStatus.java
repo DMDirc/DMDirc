@@ -36,6 +36,8 @@ public enum ErrorFixedStatus {
     INVALID("Invalid bug"),
     /** Unreported. */
     UNREPORTED("Unreported"),
+    /** Client too old. */
+    TOOOLD("Client too old - please update"),
     /** Unknown state. */
     UNKNOWN("Unknown status");
     

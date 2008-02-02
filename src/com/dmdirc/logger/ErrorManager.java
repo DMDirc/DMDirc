@@ -268,6 +268,8 @@ public final class ErrorManager implements Serializable, Runnable {
         final String responseToCheck = response.get(0);
         if (responseToCheck.matches(".*fixed.*")) {
             error.setFixedStatus(ErrorFixedStatus.FIXED);
+        } else if (responseToCheck.matches(".*more recent version.*")) {
+            error.setFixedStatus(ErrorFixedStatus.TOOOLD);
         } else if (responseToCheck.matches(".*invalid.*")) {
             error.setFixedStatus(ErrorFixedStatus.INVALID);
         } else if (responseToCheck.matches(".*previously.*")) {
