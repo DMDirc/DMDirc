@@ -74,18 +74,18 @@ import java.util.Stack;
 public final class LoggingPlugin extends Plugin implements ActionListener {
 	/** What domain do we store all settings in the global config under. */
 	private static final String MY_DOMAIN = "plugin-Logging";
-	
+
 	/** The command we registered */
 	private LoggingCommand command;
-	
+
 	/** Hashtable of open files */
 	Hashtable<String,BufferedWriter> openFiles = new Hashtable<String,BufferedWriter>();
-	
+
 	/**
 	 * Creates a new instance of the Logging Plugin.
 	 */
 	public LoggingPlugin() { super(); }
-	
+
 	/**
 	 * Called when the plugin is loaded.
 	 */
@@ -107,7 +107,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 		defaults.setProperty(MY_DOMAIN + ".history.lines", "50000");
 		defaults.setProperty("identity.name", "Logging Plugin Defaults");
 		IdentityManager.addIdentity(new Identity(defaults));
-		
+
 		final File dir = new File(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.directory"));
 		if (!dir.exists()) {
 			try {
@@ -121,11 +121,11 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 				Logger.userError(ErrorLevel.LOW, "Unable to create logging dir (file exists instead)");
 			}
 		}
-		
+
 		command = new LoggingCommand();
 		ActionManager.addListener(this, CoreActionType.SERVER_CONNECTED, CoreActionType.QUERY_CLOSED, CoreActionType.CHANNEL_CLOSED, CoreActionType.QUERY_OPENED, CoreActionType.CHANNEL_OPENED, CoreActionType.QUERY_MESSAGE, CoreActionType.QUERY_SELF_MESSAGE, CoreActionType.QUERY_ACTION, CoreActionType.QUERY_SELF_ACTION, CoreActionType.CHANNEL_MESSAGE, CoreActionType.CHANNEL_SELF_MESSAGE, CoreActionType.CHANNEL_ACTION, CoreActionType.CHANNEL_SELF_ACTION, CoreActionType.CHANNEL_GOTTOPIC, CoreActionType.CHANNEL_TOPICCHANGE, CoreActionType.CHANNEL_JOIN, CoreActionType.CHANNEL_PART, CoreActionType.CHANNEL_QUIT, CoreActionType.CHANNEL_KICK, CoreActionType.CHANNEL_NICKCHANGE, CoreActionType.CHANNEL_MODECHANGE);
 	}
-	
+
 	/**
 	 * Called when this plugin is unloaded.
 	 */
@@ -133,7 +133,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	public void onUnload() {
 		CommandManager.unregisterCommand(command);
 		ActionManager.removeListener(this);
-		
+
 		BufferedWriter file;
 		synchronized (openFiles) {
 			for (String filename : openFiles.keySet()) {
@@ -147,69 +147,69 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 			openFiles.clear();
 		}
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public void showConfig(final PreferencesManager manager) {
-		final PreferencesCategory general = new PreferencesCategory("Logging", 
+		final PreferencesCategory general = new PreferencesCategory("Logging",
                 "General configuration for Logging plugin.");
         final PreferencesCategory backbuffer = new PreferencesCategory("Back Buffer",
                 "Options related to the automatic backbuffer");
 		final PreferencesCategory advanced = new PreferencesCategory("Advanced",
                 "Advanced configuration for Logging plugin. You shouldn't need " +
                 "to edit this unless you know what you are doing.");
-        
-        general.addSetting(new PreferencesSetting(PreferencesType.TEXT, 
+
+        general.addSetting(new PreferencesSetting(PreferencesType.TEXT,
                 MY_DOMAIN, "general.directory", "false", "Directory",
                 "Directory for log files"));
-        general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, 
+        general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 MY_DOMAIN, "general.networkfolders", "", "Separate logs by network",
                 "Should the files be stored in a sub-dir with the networks name?"));
-        general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, 
+        general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 MY_DOMAIN, "general.addtime", "false", "Timestamp logs",
                 "Should a timestamp be added to the log files?"));
         general.addSetting(new PreferencesSetting(PreferencesType.TEXT,
                 MY_DOMAIN, "general.timestamp", "", "Timestamp format",
                 "The String to pass to 'SimpleDateFormat' to format the timestamp"));
-        general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, 
+        general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 MY_DOMAIN, "general.stripcodes", "false", "Strip Control Codes",
                 "Remove known irc control codes from lines before saving?"));
-        general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, 
+        general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 MY_DOMAIN, "general.channelmodeprefix", "", "Show channel mode prefix",
                 "Show the @,+ etc next to nicknames"));
 
-        backbuffer.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, 
+        backbuffer.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 MY_DOMAIN, "backbuffer.autobackbuffer", "", "Automatically display",
                 "Automatically display the backbuffer when a channel is joined"));
-        backbuffer.addSetting(new PreferencesSetting(PreferencesType.COLOUR, 
+        backbuffer.addSetting(new PreferencesSetting(PreferencesType.COLOUR,
                 MY_DOMAIN, "backbuffer.colour", "0", "Colour to use for display",
                 "Colour used when displaying the backbuffer"));
-		backbuffer.addSetting(new PreferencesSetting(PreferencesType.INTEGER, 
+		backbuffer.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
                 MY_DOMAIN, "backbuffer.lines", "0", "Number of lines to show",
                 "Number of lines used when displaying backbuffer"));
-        backbuffer.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, 
+        backbuffer.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 MY_DOMAIN, "backbuffer.timestamp", "false", "Show Formatter-Timestamp",
                 "Should the line be added to the frame with the timestamp from " +
                 "the formatter aswell as the file contents"));
 
-        advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, 
+        advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 MY_DOMAIN, "advanced.filenamehash", "false", "Add Filename hash",
                 "Add the MD5 hash of the channel/client name to the filename." +
                 "(This is used to allow channels with similar names (ie a _ not" +
                 "a  -) to be logged separately)"));
-		
+
 		general.addSubCategory(backbuffer);
         general.addSubCategory(advanced);
         manager.getCategory("Plugins").addSubCategory(general);
 	}
-	
+
 	/**
 	 * Get the name of the domain we store all settings in the global config under.
 	 *
 	 * @return the plugins domain
 	 */
 	protected static String getDomain() { return MY_DOMAIN; }
-	
+
 	/**
 	 * Process an event of the specified type.
 	 *
@@ -229,7 +229,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 			String reason = "";
 			Query query;
 			final DateFormat openedAtFormat = new SimpleDateFormat("EEEE MMMM dd, yyyy - HH:mm:ss");
-			
+
 			switch (thisType) {
 				case SERVER_CONNECTED:
 					// Do Nothing
@@ -242,7 +242,18 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 						break;
 					}
 					parser = query.getServer().getParser();
-					client = parser.getClientInfo(query.getHost());
+					if (parser == null) {
+						// Without a parser object, we might not be able to find the file
+						// to log this to.
+						if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.networkfolders")) {
+							// We *wont* be able to, so rather than logging to an incorrect file
+							// we just won't log.
+							return;
+						}
+						client = null;
+					} else {
+						client = parser.getClientInfo(query.getHost());
+					}
 					if (client == null) {
 						client = new ClientInfo(parser, query.getHost()).setFake(true);
 					}
@@ -261,7 +272,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 				case CHANNEL_CLOSED:
 					// ActionManager.processEvent(CoreActionType.CHANNEL_CLOSED, this);
 					channel = ((Channel)arguments[0]).getChannelInfo();
-					
+
 					line = getLogFile(channel);
 					if (openFiles.containsKey(line)) {
 						appendLine(line, "*** Channel closed at: " + openedAtFormat.format(new Date()));
@@ -286,12 +297,12 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 					if (client == null) {
 						client = new ClientInfo(parser, query.getHost()).setFake(true);
 					}
-					
+
 					// Backbuffer Display goes here!
 					if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer")) {
 						showBackBuffer(query.getFrame(), getLogFile(client));
 					}
-					
+
 					appendLine(getLogFile(client), "*** Query opened at: " + openedAtFormat.format(new Date()));
 					appendLine(getLogFile(client), "*** Query with User: " + query.getHost());
 					appendLine(getLogFile(client), "");
@@ -299,12 +310,12 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 				case CHANNEL_OPENED:
 					// ActionManager.processEvent(CoreActionType.CHANNEL_OPENED, this);
 					channel = ((Channel)arguments[0]).getChannelInfo();
-					
+
 					// Backbuffer Display goes here!
 					if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer")) {
 						showBackBuffer(((Channel)arguments[0]).getFrame(), getLogFile(channel));
 					}
-					
+
 					appendLine(getLogFile(channel), "*** Channel opened at: " + openedAtFormat.format(new Date()));
 					appendLine(getLogFile(channel), "");
 					break;
@@ -352,7 +363,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 					final DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 					final DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 					final String topicTime = timeFormat.format(1000 * channel.getTopicTime()) + " on " + dateFormat.format(1000 * channel.getTopicTime());
-					
+
 					appendLine(getLogFile(channel), "*** Topic is: " + channel.getTopic());
 					appendLine(getLogFile(channel), "*** Set at: " + topicTime + " by " + channel.getTopicUser());
 					break;
@@ -375,7 +386,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 					channelClient = (ChannelClientInfo) arguments[1];
 					client = channelClient.getClient();
 					line = "*** " + getDisplayName(channelClient) + " (" + client.toString() + ") left the channel";
-					
+
 					reason = (String) arguments[2];
 					if (!reason.isEmpty()) {
 						line = line + " (" + reason + ")";
@@ -388,7 +399,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 					channelClient = (ChannelClientInfo) arguments[1];
 					client = channelClient.getClient();
 					line = "*** " + getDisplayName(channelClient) + " (" + client.toString() + ") Quit IRC";
-					
+
 					reason = (String) arguments[2];
 					if (!reason.isEmpty()) {
 						line = line + " (" + reason + ")";
@@ -401,7 +412,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 					channelClient = (ChannelClientInfo) arguments[2];
 					final ChannelClientInfo kickerClient = (ChannelClientInfo) arguments[1];
 					line = "*** " + getDisplayName(channelClient) + " was kicked by " + getDisplayName(kickerClient);
-					
+
 					reason = (String) arguments[3];
 					if (!reason.isEmpty()) {
 						line = line + " (" + reason + ")";
@@ -430,7 +441,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 			}
 		}
 	}
-	
+
 	/**
 	 * Add a backbuffer to a frame.
 	 *
@@ -445,7 +456,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 			Logger.userError(ErrorLevel.LOW, "Given a null frame");
 			return;
 		}
-		
+
 		File testFile = new File(filename);
 		if (testFile.exists()) {
 			try {
@@ -465,7 +476,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 			}
 		}
 	}
-	
+
 	/**
 	 * Get a coloured String.
 	 * If colour is invalid, IRC Colour 14 will be used.
@@ -478,13 +489,13 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 		String res = null;
 		if (colour.length() < 3) {
 			int num;
-			
+
 			try {
 				num = Integer.parseInt(colour);
 			} catch (NumberFormatException ex) {
 				num = -1;
 			}
-			
+
 			if (num >= 0 && num <= 15) {
 				if (num > 10) {
 					res = Styliser.CODE_COLOUR+""+num+""+line+Styliser.CODE_COLOUR;
@@ -498,14 +509,14 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 				res = Styliser.CODE_HEXCOLOUR+""+colour+""+line+Styliser.CODE_HEXCOLOUR;
 			} catch (NumberFormatException ex) { /* Do Nothing */ }
 		}
-		
+
 		if (res == null) {
 			res = Styliser.CODE_COLOUR+"14"+line+""+Styliser.CODE_COLOUR;
 		}
 		return res;
 	}
-	
-	
+
+
 	/**
 	 * Add a line to a file.
 	 *
@@ -546,7 +557,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Get the name of the log file for a specific object.
 	 *
@@ -555,12 +566,14 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 */
 	private String getLogFile(final Object obj) {
 		String result = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.directory");
-		
+
 		if (obj == null) {
 			result = result + "null.log";
 		} else if (obj instanceof ChannelInfo) {
 			final ChannelInfo channel = (ChannelInfo) obj;
-			result = addNetworkDir(result, channel.getParser().getNetworkName());
+			if (channel.getParser() != null) {
+				result = addNetworkDir(result, channel.getParser().getNetworkName());
+			}
 			result = result + sanitise(channel.getName().toLowerCase());
 			if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "advanced.filenamehash")) {
 				result = result + '.' + md5(channel.getName());
@@ -568,7 +581,9 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 			result = result + ".log";
 		} else if (obj instanceof ClientInfo) {
 			final ClientInfo client = (ClientInfo) obj;
-			result = addNetworkDir(result, client.getParser().getNetworkName());
+			if (client.getParser() != null) {
+				result = addNetworkDir(result, client.getParser().getNetworkName());
+			}
 			result = result + sanitise(client.getNickname().toLowerCase());
 			if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "advanced.filenamehash")) {
 				result = result + '.' + md5(client.getNickname());
@@ -591,7 +606,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Get name to display for client.
 	 *
@@ -601,7 +616,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	private String getDisplayName(final ClientInfo client) {
 		return getDisplayName(client, "");
 	}
-	
+
 	/**
 	 * Get name to display for client.
 	 *
@@ -626,7 +641,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Get name to display for channelClient (Taking into account the channelmodeprefix setting).
 	 *
@@ -636,7 +651,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	private String getDisplayName(final ChannelClientInfo channelClient) {
 		return getDisplayName(channelClient, "");
 	}
-	
+
 	/**
 	 * Get name to display for channelClient (Taking into account the channelmodeprefix setting).
 	 *
@@ -668,7 +683,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * This function adds the networkName to the log file.
 	 * It first tries to create a directory for each network, if that fails
@@ -703,7 +718,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Sanitise a string to be used as a filename.
 	 *
@@ -714,7 +729,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 		// Replace illegal chars with
 		return name.replaceAll("[^\\w\\.\\s\\-\\#\\&\\_]", "_");
 	}
-	
+
 	/**
 	 * Get the md5 hash of a string.
 	 *
@@ -730,7 +745,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 			return "";
 		}
 	}
-	
+
 	/**
 	 * Shows the history window for the specified target, if available.
 	 *
@@ -739,7 +754,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 */
 	protected boolean showHistory(final InputWindow target) {
 		Object component;
-		
+
 		if (target.getContainer() instanceof Channel) {
 			component = ((Channel) target.getContainer()).getChannelInfo();
 		} else if (target.getContainer() instanceof Query) {
@@ -754,16 +769,16 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 			// Unknown component
 			return false;
 		}
-		
+
 		final String log = getLogFile(component);
-		
+
 		if (!new File(log).exists()) {
 			// File doesn't exist
 			return false;
 		}
-		
+
 		ReverseFileReader reader;
-		
+
 		try {
 			reader = new ReverseFileReader(log);
 		} catch (FileNotFoundException ex) {
@@ -773,18 +788,18 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 		} catch (SecurityException ex) {
 			return false;
 		}
-		
+
 		new HistoryWindow("History", reader, target);
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
 	public static String getSvnInfo() { return "$Id: IRCParser.java 969 2007-04-30 18:38:20Z ShaneMcC $"; }
-	
+
 }
 
