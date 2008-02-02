@@ -92,7 +92,7 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
         configPanel = new ConfigPanel(this, order);
         
         final PreferencesCategory category = new PreferencesCategory("Now Playing",
-                "General options for the plugin", configPanel);
+                "", configPanel);
         manager.getCategory("Plugins").addSubCategory(category);
     }
     
