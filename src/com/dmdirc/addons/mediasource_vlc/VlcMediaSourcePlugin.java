@@ -111,14 +111,15 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
             try {
                 final int item = Integer.parseInt(information.get("playlist_current"));
                 result = information.get("playlist_item_" + item);
-                result = result.substring(result.lastIndexOf(File.separatorChar),
-                        result.lastIndexOf('.'));
-                // The above will break for file names that don't contain full
-                // stops. Blame Dataforce.
+                
+                final int sepIndex = result.lastIndexOf(File.separatorChar);
+                final int extIndex = result.lastIndexOf('.');
+                result = result.substring(sepIndex,
+                        extIndex > sepIndex ? extIndex : result.length());
                 
                 int offset = result.indexOf('-');
                 if (offset > -1) {
-                    result = result.substring(result.indexOf('-') + 1).trim();
+                    result = result.substring(offset + 1).trim();
                 }
             } catch (NumberFormatException nfe) {
                 // Do nothing
