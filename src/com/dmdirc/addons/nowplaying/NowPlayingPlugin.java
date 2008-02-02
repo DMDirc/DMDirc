@@ -41,7 +41,7 @@ import java.util.List;
 public class NowPlayingPlugin extends Plugin implements ActionListener  {
     
     /** Config domain. */
-    private static final String DOMAIN = "plugin-nowplaying";
+    public static final String DOMAIN = "plugin-nowplaying";
     
     /** The sources that we know of. */
     private final List<MediaSource> sources = new ArrayList<MediaSource>();
@@ -216,6 +216,34 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
         }
         
         return paused;
+    }
+    
+    /**
+     * Substitutes the keywords in the specified format with the values with
+     * values from the specified source.
+     * 
+     * @param format The format to be substituted
+     * @param source The source whose values should be used
+     * @return The substituted string
+     */
+    public String doSubstitution(final String format, final MediaSource source) {
+        final String artist = source.getArtist();
+        final String title = source.getTitle();
+        final String album = source.getAlbum();
+        final String app = source.getAppName();
+        final String bitrate = source.getBitrate();
+        final String filetype = source.getFormat();
+        final String length = source.getLength();
+        final String time = source.getTime();
+        
+        return format.replaceAll("\\$artist", artist)
+                     .replaceAll("\\$title", title)
+                     .replaceAll("\\$album", album)
+                     .replaceAll("\\$app", app)
+                     .replaceAll("\\$bitrate", bitrate)
+                     .replaceAll("\\$format", filetype)
+                     .replaceAll("\\$length", length)
+                     .replaceAll("\\$time", time);
     }
     
     /**

@@ -27,6 +27,7 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.commands.ChatCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 
@@ -70,7 +71,7 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
                     sendLine(origin, isSilent, FORMAT_ERROR, "Source not found.");
                 } else {
                     if (source.isRunning()) {
-                        target.sendAction("is playing " + getInformation(source));
+                        target.sendAction(getInformation(source));
                     } else {
                         sendLine(origin, isSilent, FORMAT_ERROR, "Source is not running.");
                     }
@@ -81,7 +82,7 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
             }
         } else {
             if (parent.hasRunningSource()) {
-                target.sendAction("is playing " + getInformation(parent.getBestSource()));
+                target.sendAction(getInformation(parent.getBestSource()));
             } else {
                 sendLine(origin, isSilent, FORMAT_ERROR, "No running media sources available.");
             }
@@ -135,18 +136,9 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
      * @return Formatted information string
      */ 
     private String getInformation(final MediaSource source) {
-        //TODO grab format for specified source
-        String artist = source.getArtist();
-        String title = source.getTitle();
-        
-        if (artist == null) {
-            artist = "n/a";
-        }
-        if (title == null) {
-            title = "n/a";
-        }
-        
-        return artist + " - " + title;
+        return parent.doSubstitution(IdentityManager.getGlobalConfig()
+                .getOption(NowPlayingPlugin.DOMAIN, "format", "is playing $artist - $title"),
+                source);
     }
     
     /** {@inheritDoc}. */

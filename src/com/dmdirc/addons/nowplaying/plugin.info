@@ -1,10 +1,10 @@
 mainclass=com.dmdirc.addons.nowplaying.NowPlayingPlugin
-version=3
+version=4
 friendlyversion=0.3
 author=Chris <chris@dmdirc.com>
-description=Adds a nowplaying command
+description=Adds a command to show nowplaying information
 name=nowplaying
-nicename=Now Playing Command
+nicename=Now Playing Plugin
 minversion=0
 persistant-com.dmdirc.addons.nowplaying.MediaSource=true
 persistant-com.dmdirc.addons.nowplaying.MediaSourceManager=true
