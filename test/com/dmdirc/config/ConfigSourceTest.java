@@ -42,6 +42,12 @@ public class ConfigSourceTest extends junit.framework.TestCase {
     }
     
     @Test
+    public void testGetOptionalColour() {
+        assertEquals(Color.RED, s.getOptionColour("true", "false:0", Color.RED));
+        assertEquals(Color.WHITE, s.getOptionColour("true", "true:0", Color.RED));
+    }    
+    
+    @Test
     public void testGetBoolean() {
         assertTrue(s.getOptionBool("true", "true"));
         assertFalse(s.getOptionBool("true", "false"));

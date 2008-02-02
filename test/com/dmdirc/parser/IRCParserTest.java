@@ -351,10 +351,10 @@ public class IRCParserTest extends junit.framework.TestCase {
         parser.getCallbackManager().addCallback("onChannelSelfJoin", test);
         parser.injectLine(":nick JOIN #DMDirc_testing");
 
-        System.out.println(parser.getMyNickname());
-
         assertNotNull(test.channel);
         assertEquals("#DMDirc_testing", test.channel.getName());
+        assertEquals("#DMDirc_testing", test.channel.toString());
+        assertEquals(parser, test.channel.getParser());
         assertEquals(1, parser.getChannels().size());
         assertTrue(parser.getChannels().contains(test.channel));
         assertEquals(test.channel, parser.getChannelInfo("#DMDirc_testing"));

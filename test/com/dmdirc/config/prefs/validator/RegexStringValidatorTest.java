@@ -19,20 +19,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.dmdirc.config.prefs.validator;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class RegexValidatorTest extends junit.framework.TestCase {
+public class RegexStringValidatorTest extends junit.framework.TestCase {
 
     @Test
     public void testValidate() {
-        final RegexValidator rv = new RegexValidator();
+        final String reason = "abc 123";
+        final RegexStringValidator rv = new RegexStringValidator("[0-9]{5}", reason);
         
-        assertTrue(rv.validate("****").isFailure());
-        assertFalse(rv.validate("[a-z]").isFailure());
+        assertTrue(rv.validate("abc").isFailure());
+        assertEquals(reason, rv.validate("abc").getFailureReason());
+        assertFalse(rv.validate("55555").isFailure());
     }
 
 }

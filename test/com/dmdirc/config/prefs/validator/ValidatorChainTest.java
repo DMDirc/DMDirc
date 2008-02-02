@@ -25,14 +25,17 @@ package com.dmdirc.config.prefs.validator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class RegexValidatorTest extends junit.framework.TestCase {
+public class ValidatorChainTest extends junit.framework.TestCase {
 
     @Test
     public void testValidate() {
-        final RegexValidator rv = new RegexValidator();
+        @SuppressWarnings("unchecked")
+        final ValidatorChain<String> chain = new ValidatorChain<String>(
+                new NotEmptyValidator(), new RegexStringValidator("[a-z]*", "abc"));
         
-        assertTrue(rv.validate("****").isFailure());
-        assertFalse(rv.validate("[a-z]").isFailure());
+        assertTrue(chain.validate("").isFailure());
+        assertTrue(chain.validate("__").isFailure());
+        assertFalse(chain.validate("abc").isFailure());
     }
 
 }

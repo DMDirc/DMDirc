@@ -29,49 +29,138 @@ import static org.junit.Assert.*;
 public class ChannelInfoTest extends junit.framework.TestCase {
 
     final ChannelInfo ci = new ChannelInfo(null, "name");
-    
+
     @Test
     public void testGetName() {
         assertEquals("name", ci.getName());
     }
-    
+
     @Test
     public void testAddingNames() {
         assertTrue(ci.getAddingNames());
-        
+
         ci.setAddingNames(false);
-        
+
         assertFalse(ci.getAddingNames());
     }
-    
+
     @Test
     public void testMap() {
         final Map map = new HashMap();
-        
+
         ci.setMap(map);
-        
+
         assertEquals(map, ci.getMap());
     }
-    
+
     @Test
     public void testCreateTime() {
         ci.setCreateTime(12345l);
-        
+
         assertEquals(12345l, ci.getCreateTime());
     }
-    
+
     @Test
     public void testTopicTime() {
         ci.setTopicTime(12345l);
-        
+
         assertEquals(12345l, ci.getTopicTime());
     }
-    
+
     @Test
     public void testTopic() {
         ci.setTopic("abcdef");
-        
+
         assertEquals("abcdef", ci.getTopic());
+    }
+
+    @Test
+    public void testSendMessage() {
+        final TestParser parser = new TestParser();
+        getChannelInfo(parser).sendMessage("hello");
+
+        assertEquals(1, parser.sentLines.size());
+        assertEquals("PRIVMSG #DMDirc_testing :hello", parser.sentLines.get(0));
+    }
+
+    @Test
+    public void testSendNotice() {
+        final TestParser parser = new TestParser();
+        getChannelInfo(parser).sendNotice("hello");
+
+        assertEquals(1, parser.sentLines.size());
+        assertEquals("NOTICE #DMDirc_testing :hello", parser.sentLines.get(0));
+    }
+
+    @Test
+    public void testSendCTCP() {
+        final TestParser parser = new TestParser();
+        getChannelInfo(parser).sendCTCP("type", "hello");
+
+        assertEquals(1, parser.sentLines.size());
+        assertEquals("PRIVMSG #DMDirc_testing :" + ((char) 1) + "TYPE hello" + ((char) 1),
+                parser.sentLines.get(0));
+    }
+
+    @Test
+    public void testSendCTCPEmpty() {
+        final TestParser parser = new TestParser();
+        getChannelInfo(parser).sendCTCP("type", "");
+
+        assertEquals(1, parser.sentLines.size());
+        assertEquals("PRIVMSG #DMDirc_testing :" + ((char) 1) + "TYPE" + ((char) 1),
+                parser.sentLines.get(0));
+    }
+
+    @Test
+    public void testSendAction() {
+        final TestParser parser = new TestParser();
+        getChannelInfo(parser).sendAction("moo");
+
+        assertEquals(1, parser.sentLines.size());
+        assertEquals("PRIVMSG #DMDirc_testing :" + ((char) 1) + "ACTION moo" + ((char) 1),
+                parser.sentLines.get(0));
+    }
+
+    @Test
+    public void testSendCTCPReply() {
+        final TestParser parser = new TestParser();
+        getChannelInfo(parser).sendCTCPReply("type", "moo");
+
+        assertEquals(1, parser.sentLines.size());
+        assertEquals("NOTICE #DMDirc_testing :" + ((char) 1) + "TYPE moo" + ((char) 1),
+                parser.sentLines.get(0));
+    }
+
+    @Test
+    public void testSendCTCPReplyEmpty() {
+        final TestParser parser = new TestParser();
+        getChannelInfo(parser).sendCTCPReply("type", "");
+
+        assertEquals(1, parser.sentLines.size());
+        assertEquals("NOTICE #DMDirc_testing :" + ((char) 1) + "TYPE" + ((char) 1),
+                parser.sentLines.get(0));
+    }
+    
+    @Test
+    public void testSendEmptyMessages() {
+        final TestParser parser = new TestParser();
+        final ChannelInfo info = getChannelInfo(parser);
+        
+        info.sendAction("");
+        info.sendCTCP("", "");
+        info.sendCTCPReply("", "");
+        info.sendMessage("");
+
+        assertEquals(0, parser.sentLines.size());
+    }    
+
+    private ChannelInfo getChannelInfo(final TestParser parser) {
+        parser.injectConnectionStrings();
+        parser.injectLine(":nick JOIN #DMDirc_testing");
+
+        parser.sentLines.clear();
+        return parser.getChannels().iterator().next();
     }
 
 }

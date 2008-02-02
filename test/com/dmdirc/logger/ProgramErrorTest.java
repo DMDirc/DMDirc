@@ -181,5 +181,35 @@ public class ProgramErrorTest extends junit.framework.TestCase {
                 new String[0], new Date());
         assertTrue(pe.toString().indexOf("moo") > -1);
     }
+    
+    @Test
+    public void testEquals() {
+        final ProgramError pe1 = new ProgramError(10, ErrorLevel.LOW, "moo",
+                new String[0], new Date());
+        final ProgramError pe2 = new ProgramError(11, ErrorLevel.LOW, "moo",
+                new String[0], new Date());
+        final ProgramError pe3 = new ProgramError(10, ErrorLevel.MEDIUM, "moo",
+                new String[0], new Date());
+        final ProgramError pe4 = new ProgramError(10, ErrorLevel.LOW, "bar",
+                new String[0], new Date());
+        final ProgramError pe5 = new ProgramError(10, ErrorLevel.LOW, "moo",
+                new String[]{"Hello"}, new Date());
+        
+        assertFalse(pe1.equals(null));
+        assertFalse(pe1.equals("moo"));
+        
+        assertTrue(pe1.equals(pe2));
+        assertTrue(pe1.equals(pe1));
+        assertTrue(pe2.equals(pe1));
+        
+        assertFalse(pe1.equals(pe3));
+        assertFalse(pe1.equals(pe4));
+        assertFalse(pe1.equals(pe5));
+        assertFalse(pe4.equals(pe5));
+        assertFalse(pe4.equals(pe3));
+        
+        assertEquals(pe1.hashCode(), pe2.hashCode());
+        assertEquals(pe1.hashCode(), pe1.hashCode());
+    }
 
 }
