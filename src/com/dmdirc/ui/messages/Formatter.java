@@ -23,9 +23,7 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.Precondition;
-import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.IdentityManager;
 
 import java.util.HashMap;
 import java.util.IllegalFormatConversionException;
@@ -43,21 +41,7 @@ public final class Formatter {
      */
     private static final Map<String, Character[]> typeCache
             = new HashMap<String, Character[]>();
-    
-    /**
-     * The config manager we're using.
-     */
-    private static final ConfigManager config = IdentityManager.getGlobalConfig();
-    
-    static {
-        config.addChangeListener("formatter", new ConfigChangeListener() {
-            @Override
-            public void configChanged(final String domain, final String key) {
-                Formatter.typeCache.remove(key);
-            }
-        });
-    }
-    
+   
     /**
      * Creates a new instance of Formatter.
      */
@@ -70,11 +54,12 @@ public final class Formatter {
      * message type.
      * 
      * @param messageType The message type that the arguments should be formatted as
+     * @param config The config manager to use to format the message
      * @param arguments The arguments to this message type
      * @return A formatted string
      */
     @Precondition("The specified message type is not null")
-    public static String formatMessage(final String messageType,
+    public static String formatMessage(final ConfigManager config, final String messageType,
             final Object... arguments) {
         assert(messageType != null);
                 
@@ -84,7 +69,7 @@ public final class Formatter {
             return "<No format string for message type " + messageType + ">";
         } else {
             try {
-                final Object[] newArgs = castArguments(messageType, res, arguments);
+                final Object[] newArgs = castArguments(res, arguments);
                 return String.format(res, newArgs);
             } catch (IllegalFormatConversionException ex) {
                 return "<Invalid format string for message type " + messageType
@@ -103,24 +88,26 @@ public final class Formatter {
      * Casts the specified arguments to the relevant classes, based on the
      * format type cache.
      *
-     * @param formatName The name of the format to be used
      * @param format The format to be used
      * @param args The arguments to be casted
      * @return A new set of arguments of appropriate types
      */
     @Precondition("The specified format is not null")
-    private static Object[] castArguments(final String formatName,
-            final String format, final Object[] args) {
+    private static Object[] castArguments(final String format, final Object[] args) {
         assert(format != null);
         
-        if (!typeCache.containsKey(formatName)) {
-            analyseFormat(formatName, format, args);
+        if (!typeCache.containsKey(format)) {
+            analyseFormat(format, args);
         }
         
         final Object[] res = new Object[args.length];
         
         int i = 0;
-        for (Character chr : typeCache.get(formatName)) {
+        for (Character chr : typeCache.get(format)) {
+            if (i >= args.length) {
+                break;
+            }
+            
             switch (chr) {
             case 'b': case 'B': case 'h': case 'H': case 's': case 'S':
                 // General (strings)
@@ -160,12 +147,10 @@ public final class Formatter {
     /**
      * Analyses the specified format string and fills in the format type cache.
      *
-     * @param formatName The name of the format to use
      * @param format The format to analyse
      * @param args The raw arguments
      */
-    private static void analyseFormat(final String formatName, 
-            final String format, final Object[] args) {
+    private static void analyseFormat(final String format, final Object[] args) {
         final Character[] types = new Character[args.length];
         
         for (int i = 0; i < args.length; i++) {
@@ -178,16 +163,19 @@ public final class Formatter {
             }
         }
         
-        typeCache.put(formatName, types);
+        typeCache.put(format, types);
     }
     
     /**
      * Determines whether the formatter knows of a specific message type.
      * 
+     * @param config The config manager to use to check for formats
      * @param messageType the message type to check
      * @return True iff there is a matching format, false otherwise
+     * @deprecated Should be checked with the config manager directly.
      */
-    public static boolean hasFormat(final String messageType) {
+    @Deprecated
+    public static boolean hasFormat(final ConfigManager config, final String messageType) {
         return config.hasOption("formatter", messageType);
     }
 

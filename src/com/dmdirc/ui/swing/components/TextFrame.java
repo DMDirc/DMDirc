@@ -218,7 +218,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 for (String myLine : encodedLine.split("\n")) {
                     if (timestamp) {
                         getTextPane().addStyledString(new String[]{
-                            Formatter.formatMessage("timestamp", new Date()),
+                            Formatter.formatMessage(getConfigManager(), "timestamp", new Date()),
                             myLine, });
                     } else {
                         getTextPane().addStyledString(myLine);
@@ -239,7 +239,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     @Override
     public final void addLine(final String messageType, final Object... args) {
         if (!messageType.isEmpty()) {
-            addLine(Formatter.formatMessage(messageType, args), true);
+            addLine(Formatter.formatMessage(getConfigManager(), messageType, args), true);
         }
     }
     

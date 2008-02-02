@@ -76,7 +76,7 @@ public class FakeInputWindow implements InputWindow {
     /** {@inheritDoc} */
     @Override
     public void addLine(final String messageType, final Object... args) {
-        target.sendLine(Formatter.formatMessage(messageType, args));
+        target.sendLine(Formatter.formatMessage(getConfigManager(), messageType, args));
     }
 
     /** {@inheritDoc} */

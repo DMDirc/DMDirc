@@ -1042,11 +1042,11 @@ public final class Server extends WritableFrameContainer implements Serializable
         final String sansIrcd = "numeric_" + snumeric;
         String target = null;
 
-        if (Formatter.hasFormat(withIrcd)) {
+        if (Formatter.hasFormat(configManager, withIrcd)) {
             target = withIrcd;
-        } else if (Formatter.hasFormat(sansIrcd)) {
+        } else if (Formatter.hasFormat(configManager,sansIrcd)) {
             target = sansIrcd;
-        } else if (Formatter.hasFormat("numeric_unknown")) {
+        } else if (Formatter.hasFormat(configManager, "numeric_unknown")) {
             target = "numeric_unknown";
         }
 
