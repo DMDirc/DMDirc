@@ -138,6 +138,7 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
         searchBox.addKeyListener(this);
         nextButton.addActionListener(this);
         prevButton.addActionListener(this);
+        caseCheck.addActionListener(this);
     }
     
     /** 
@@ -153,6 +154,10 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
             search(Direction.DOWN, searchBox.getText(), caseCheck.isSelected());
         } else if (e.getSource() == prevButton) {
             search(Direction.UP, searchBox.getText(), caseCheck.isSelected());
+        } else if (e.getSource() == caseCheck) {
+            searchBox.setBackground(ColourManager.getColour("FFFFFF"));
+            line = parent.getTextPane().getLastVisibleLine();
+            index = 0;
         }
     }
     
