@@ -340,10 +340,11 @@ public final class ErrorManager implements Serializable, Runnable {
         }
          
         if (firedListeners == 0) {
-            System.err.println("A fatal has occurred: " + error.getMessage());
+            System.err.println("A fatal error has occurred: " + error.getMessage());
             for (String line : error.getTrace()) {
                 System.err.println("\t" + line);
             }
+            System.exit(-1);
         }
     }
     
