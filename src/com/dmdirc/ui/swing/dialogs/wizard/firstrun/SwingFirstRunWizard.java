@@ -137,7 +137,6 @@ public final class SwingFirstRunWizard implements WizardListener, FirstRunWizard
                 Logger.userError(ErrorLevel.LOW, "Failed to extract plugins");
             }
         }
-        PluginManager.getPluginManager().reloadAllPlugins();
     }
 
     /** {@inheritDoc} */
@@ -179,7 +178,6 @@ public final class SwingFirstRunWizard implements WizardListener, FirstRunWizard
                 Logger.userError(ErrorLevel.LOW, "Failed to extract actions");
             }
         }
-        ActionManager.loadActions();
     }
 
     /** {@inheritDoc} */
@@ -201,5 +199,14 @@ public final class SwingFirstRunWizard implements WizardListener, FirstRunWizard
                 steps, this, (MainFrame) Main.getUI().getMainWindow());
         wizardDialog.addWizardListener(this);
         wizardDialog.display();
+    }
+    
+    /**
+     * Returns the dialog associated with this wizard.
+     * 
+     * @return Associated wizard dialog
+     */
+    public WizardDialog getWizardDialog() {
+        return wizardDialog;
     }
 }
