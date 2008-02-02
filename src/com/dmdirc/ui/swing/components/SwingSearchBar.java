@@ -167,8 +167,8 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 setVisible(true);
-                searchBox.requestFocus();
                 searchBox.setBackground(ColourManager.getColour("FFFFFF"));
+                getFocus();
             }
         }
         );
