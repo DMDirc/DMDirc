@@ -22,6 +22,8 @@
 
 package com.dmdirc.commandline;
 
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import com.dmdirc.util.IrcAddress;
 
 import java.rmi.NotBoundException;
@@ -78,11 +80,13 @@ public class RemoteServer implements RemoteInterface {
      */
     public static RemoteInterface getServer() {
         try {
-            Registry registry = LocateRegistry.getRegistry();
+            Registry registry = LocateRegistry.getRegistry("localhost", 1099);
             return (RemoteInterface) registry.lookup("DMDirc");
         } catch (RemoteException ex) {
+            Logger.appError(ErrorLevel.FATAL, "Remote exception", ex);
             return null;
         } catch (NotBoundException ex) {
+            Logger.appError(ErrorLevel.FATAL, "Remote exception", ex);
             return null;
         }
     }
