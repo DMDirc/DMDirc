@@ -107,7 +107,6 @@ public final class WizardDialog extends StandardDialog implements ActionListener
             @Override
             public void windowClosed(final WindowEvent e) {
                 removeWindowListener(this);
-                System.out.println("closed");
                 wizard.fireWizardCancelled();
             }
         });
