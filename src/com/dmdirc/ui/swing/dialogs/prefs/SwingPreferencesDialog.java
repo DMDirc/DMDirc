@@ -63,6 +63,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
@@ -283,7 +284,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
                 ((ValidatingJTextField) option).addKeyListener(new KeyAdapter() {
                     @Override
                     public void keyTyped(final KeyEvent e) {
-                        setting.setValue(((ValidatingJTextField) e.getSource()).getText());
+                        setting.setValue(((JTextField) e.getSource()).getText());
                     }
                 });
                 break;

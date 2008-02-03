@@ -28,6 +28,7 @@ import com.dmdirc.IconManager;
 import com.dmdirc.config.prefs.validator.ValidationResponse;
 import java.awt.Font;
 
+import java.awt.event.KeyListener;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -354,4 +355,17 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
     public Font getFont() {
         return textField.getFont();
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public synchronized void addKeyListener(KeyListener l) {
+        textField.addKeyListener(l);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public synchronized void removeKeyListener(KeyListener l) {
+        textField.removeKeyListener(l);
+    }
+
 }
