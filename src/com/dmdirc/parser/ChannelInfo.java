@@ -122,6 +122,12 @@ public final class ChannelInfo {
 	 * Ask the server for all the list modes for this channel.
 	 */
 	public void requestListModes() {
+		final ChannelClientInfo me = getUser(myParser.getMyself());
+		if (me == null) {
+			// In a normal situation of non bouncer-brokenness this won't happen
+			return;
+		}
+		
 		askedForListModes = true;
 		
 		final String thisIRCD = myParser.getIRCD(true).toLowerCase();
@@ -133,7 +139,7 @@ public final class ChannelInfo {
 		// We are considered opped if we have a mode higher than voice (or if we have any modes if voice doesn't exist)
 		long voiceValue = 0;
 		if (myParser.hPrefixModes.get('v') != null) { voiceValue = myParser.hPrefixModes.get('v');}
-		final boolean isOpped = getUser(myParser.getMyself()).getImportantModeValue() > voiceValue;
+		final boolean isOpped = me.getImportantModeValue() > voiceValue;
 		
 		int modecount = 1;
 		if (!isUnreal) {
