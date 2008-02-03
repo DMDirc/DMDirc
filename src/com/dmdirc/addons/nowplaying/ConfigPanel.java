@@ -24,6 +24,7 @@ package com.dmdirc.addons.nowplaying;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesInterface;
+import com.dmdirc.ui.swing.JWrappingLabel;
 import com.dmdirc.ui.swing.components.reorderablelist.ReorderableJList;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
@@ -33,6 +34,7 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -64,8 +66,11 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
     /** Text field for our setting. */
     private JTextField textfield;
     
+    /** Panel that the preview is in. */
+    private JPanel previewPanel;
+    
     /** Label for previews. */
-    private JLabel preview;
+    private JWrappingLabel preview;
 
     /** Creates a new instance of ConfigPanel.
      *
@@ -92,37 +97,47 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
         textfield = new JTextField(IdentityManager.getGlobalConfig()
                 .getOption(NowPlayingPlugin.DOMAIN, "format", "is playing $artist - $title"));
         textfield.addKeyListener(this);
-        preview = new JLabel("Preview: * nick ");
+        preview = new JWrappingLabel("Preview:\n* nick ");
 
         setLayout(new MigLayout("fillx, ins 0"));
-
-        add(new JSeparator(), "span, split 3, width 10");
-        add(new JLabel("Source order"));
-        add(new JSeparator(), "growx, wrap");
-
-        add(new JScrollPane(list), "gaptop 5, span, growx, wrap");
-
-        add(new JSeparator(), "span, split 3, width 10");
-        add(new JLabel("Output format"));
-        add(new JSeparator(), "growx, wrap");
         
-        add(textfield, "span, growx, gaptop 5, wrap");
-        add(preview, "span, growx, wrap");
-
-        add(new JSeparator(), "span, split 3, width 10");
-        add(new JLabel("Substitutions"));
-        add(new JSeparator(), "growx, wrap");        
+        JPanel panel = new JPanel();
         
-        add(new JLabel("$app"), "width 25%!");
-        add(new JLabel("$title"), "width 25%!");        
-        add(new JLabel("$artist"), "width 25%!");
-        add(new JLabel("$album"), "wrap");
-
-        add(new JLabel("$bitrate"));
-        add(new JLabel("$format"));        
-        add(new JLabel("$length"));
-        add(new JLabel("$time"));
+        panel.setBorder(BorderFactory.createTitledBorder("Source order"));
+        panel.setLayout(new MigLayout("fillx, ins 5"));
         
+        panel.add(new JLabel("Drag and drop items to reorder"), "wrap");
+        panel.add(new JScrollPane(list), "growx");
+        
+        add(panel, "growx, wrap");
+        
+        panel = new JPanel();
+        
+        panel.setBorder(BorderFactory.createTitledBorder("Output format"));
+        panel.setLayout(new MigLayout("fillx, ins 5"));
+        
+        panel.add(textfield, "span, growx, wrap");
+        panel.add(preview, "span, grow, wrap, gaptop 10");
+        add(panel, "growx, wrap");
+        
+        previewPanel = panel;
+        
+        panel = new JPanel();
+        
+        panel.setBorder(BorderFactory.createTitledBorder("Substitutions"));
+        panel.setLayout(new MigLayout("fillx, ins 5"));        
+        
+        panel.add(new JLabel("$app"));
+        panel.add(new JLabel("$title"));        
+        panel.add(new JLabel("$artist"));
+        panel.add(new JLabel("$album"), "wrap");
+
+        panel.add(new JLabel("$bitrate"));
+        panel.add(new JLabel("$format"));        
+        panel.add(new JLabel("$length"));
+        panel.add(new JLabel("$time"));
+        
+        add(panel, "growx");
         updatePreview();
     }
     
@@ -133,8 +148,9 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
             source = new DummyMediaSource();
         }
         
-        preview.setText("Preview: * nick " + plugin.doSubstitution(textfield.getText(),
+        preview.setText("Preview:\n* nick " + plugin.doSubstitution(textfield.getText(),
                 source));
+        previewPanel.validate();
     }
 
     public List<String> getSources() {
