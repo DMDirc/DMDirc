@@ -330,6 +330,8 @@ public final class ActionManager {
     private static void loadActions(final File dir) {
         assert(dir != null);
         assert(dir.isDirectory());
+        
+        groups.put(dir.getName(), new ActionGroup(dir.getName()));
 
         for (File file : dir.listFiles()) {
             new Action(dir.getName(), file.getName());
