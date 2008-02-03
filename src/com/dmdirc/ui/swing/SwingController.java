@@ -48,6 +48,7 @@ import com.dmdirc.ui.swing.dialogs.channelsetting.ChannelSettingsDialog;
 import com.dmdirc.ui.swing.dialogs.error.ErrorListDialog;
 import com.dmdirc.ui.swing.dialogs.wizard.firstrun.SwingFirstRunWizard;
 import com.dmdirc.ui.swing.dialogs.serversetting.ServerSettingsDialog;
+import com.dmdirc.ui.swing.dialogs.wizard.WizardListener;
 import com.dmdirc.updater.Update;
 
 import java.awt.Font;
@@ -70,6 +71,8 @@ public final class SwingController implements UIController {
     private static MainFrame me;
     /** Status bar. */
     private SwingStatusBar statusBar;
+    /** Wizard. */
+    private SwingFirstRunWizard wizard;
 
     /** Instantiates a new SwingController. */
     public SwingController() {
@@ -160,27 +163,49 @@ public final class SwingController implements UIController {
     /** {@inheritDoc} */
     @Override
     public void showFirstRunWizard() {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                new SwingFirstRunWizard().display();
-            }
-        });
+        showFirstRunWizard(true);
     }
 
     /** {@inheritDoc} */
     @Override
     public void showMigrationWizard() {
+        showFirstRunWizard(false);
+    }
+
+    /**
+     * Shows a first run wizard, or a migration wizard.
+     * 
+     * @param firstRun First run?
+     */
+    private synchronized void showFirstRunWizard(final boolean firstRun) {
         SwingUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
             public void run() {
-                new SwingFirstRunWizard(false).display();
+                wizard = new SwingFirstRunWizard(firstRun);
+                wizard.display();
+                wizard.getWizardDialog().addWizardListener(new WizardListener() {
+
+                    public void wizardFinished() {
+                        synchronized (SwingController.this) {
+                            SwingController.this.notifyAll();
+                        }
+                    }
+
+                    public void wizardCancelled() {
+                        synchronized (SwingController.this) {
+                            SwingController.this.notifyAll();
+                        }
+                    }
+                });
             }
-        });
+            });
+        try {
+            wait();
+        } catch (InterruptedException ex) {
+        //Ignore
+        }
     }
 
     /** {@inheritDoc} */
@@ -225,7 +250,7 @@ public final class SwingController implements UIController {
             System.setProperty("awt.useSystemAAFontSettings", "true");
             System.setProperty("swing.aatext", "true");
         }
-        
+
         try {
             UIUtilities.initUISettings();
 

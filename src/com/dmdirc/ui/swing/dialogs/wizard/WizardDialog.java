@@ -32,6 +32,8 @@ import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -99,6 +101,16 @@ public final class WizardDialog extends StandardDialog implements ActionListener
                     gcBounds.y + ((gcBounds.height - getHeight()) / 2);
             setLocation(xPos, yPos);
         }
+        addWindowListener(new WindowAdapter() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void windowClosed(final WindowEvent e) {
+                removeWindowListener(this);
+                System.out.println("closed");
+                wizard.fireWizardCancelled();
+            }
+        });
         setResizable(false);
         setVisible(true);
     }

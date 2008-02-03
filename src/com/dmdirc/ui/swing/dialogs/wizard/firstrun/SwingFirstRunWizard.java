@@ -27,7 +27,6 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.FirstRunWizard;
-import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.dialogs.profiles.ProfileManagerDialog;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardListener;
@@ -42,7 +41,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /** First run wizard, used to initially setup the client for the user. */
-public final class SwingFirstRunWizard implements WizardListener, FirstRunWizard {
+public final class SwingFirstRunWizard implements WizardListener,
+        FirstRunWizard {
 
     /** Wizard dialog. */
     private WizardDialog wizardDialog;
@@ -51,6 +51,7 @@ public final class SwingFirstRunWizard implements WizardListener, FirstRunWizard
 
     /** Instatiate the wizard. */
     public SwingFirstRunWizard() {
+        this(true);
     }
 
     /**
@@ -74,15 +75,19 @@ public final class SwingFirstRunWizard implements WizardListener, FirstRunWizard
         if (((ExtractionStep) wizardDialog.getStep(0)).getActionsState()) {
             extractActions();
         }
-        
-        if (firstRun && !((CommunicationStep) wizardDialog.getStep(1)).checkUpdates()) {
-            IdentityManager.getConfigIdentity().setOption("updater", "enable", false);
+
+        if (firstRun &&
+                !((CommunicationStep) wizardDialog.getStep(1)).checkUpdates()) {
+            IdentityManager.getConfigIdentity().setOption("updater", "enable",
+                    false);
         }
-        
-        if (firstRun && !((CommunicationStep) wizardDialog.getStep(1)).checkErrors()) {
-            IdentityManager.getConfigIdentity().setOption("general", "submitErrors", false);
+
+        if (firstRun &&
+                !((CommunicationStep) wizardDialog.getStep(1)).checkErrors()) {
+            IdentityManager.getConfigIdentity().setOption("general",
+                    "submitErrors", false);
         }
-        
+
         if (firstRun &&
                 ((ProfileStep) wizardDialog.getStep(2)).getProfileManagerState()) {
             ProfileManagerDialog.showProfileManagerDialog();
@@ -191,14 +196,14 @@ public final class SwingFirstRunWizard implements WizardListener, FirstRunWizard
         } else {
             steps.add(new MigrationExtrationStep());
         }
-
+        
         wizardDialog =
                 new WizardDialog(firstRun ? "Setup wizard" : "Migration wizard",
-                steps, this, (MainFrame) Main.getUI().getMainWindow());
+                steps, this, null);
         wizardDialog.addWizardListener(this);
         wizardDialog.display();
     }
-    
+
     /**
      * Returns the dialog associated with this wizard.
      * 

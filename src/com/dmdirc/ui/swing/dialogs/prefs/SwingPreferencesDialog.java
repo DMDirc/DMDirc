@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.swing.dialogs.prefs;
 
-import com.dmdirc.ui.swing.components.*;
 import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
@@ -31,6 +30,10 @@ import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.validator.NumericalValidator;
 import com.dmdirc.ui.swing.MainFrame;
+import com.dmdirc.ui.swing.components.ColourChooser;
+import com.dmdirc.ui.swing.components.OptionalColourChooser;
+import com.dmdirc.ui.swing.components.StandardDialog;
+import com.dmdirc.ui.swing.components.TreeScroller;
 import com.dmdirc.ui.swing.components.renderers.MapEntryRenderer;
 import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
@@ -387,6 +390,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      *
      * @param category The category to be added
      * @param parentNode the parent node of the category
+     * @param namePrefix Category name prefix
      */
     private void addCategory(final PreferencesCategory category,
             final DefaultMutableTreeNode parentNode, final String namePrefix) {
