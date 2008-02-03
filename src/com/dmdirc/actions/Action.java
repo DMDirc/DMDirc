@@ -33,7 +33,6 @@ import com.dmdirc.util.ConfigFile;
 import com.dmdirc.util.InvalidConfigFileException;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -41,7 +40,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Describes a single action.
@@ -68,17 +66,11 @@ public class Action extends ActionModel implements Serializable {
     /** The domain name for triggers. */
     private static final String DOMAIN_TRIGGERS = "triggers".intern();
 
-    /** The file containing this action. */
-    private File file;
-
     /** The location of the file we're reading/saving. */
     private String location;
 
     /** The config file we're using. */
     private ConfigFile config;
-
-    /** The properties read for this action. */
-    private Properties properties;
 
     /**
      * Creates a new instance of Action. The group and name specified must
@@ -92,37 +84,14 @@ public class Action extends ActionModel implements Serializable {
 
         location = ActionManager.getDirectory() + group + File.separator + name;
 
-        file = new File(location);
-
         try {
             config = new ConfigFile(location);
             config.read();
             loadActionFromConfig();
         } catch (InvalidConfigFileException ex) {
             // This isn't a valid config file. Maybe it's a properties file?
-
-            loadProperties();
-        } catch (IOException ex) {
-            Logger.userError(ErrorLevel.HIGH, "I/O error when loading action: "
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to parse action file: "
                     + group + "/" + name + ": " + ex.getMessage());
-        }
-    }
-
-    /**
-     * Loads this action from a properties file.
-     * 
-     * @Deprecated Remove post 0.6
-     */
-    @Deprecated
-    private void loadProperties() {
-        try {
-            final FileInputStream inputStream = new FileInputStream(file);
-
-            properties = new Properties();
-            properties.load(inputStream);
-            loadActionFromProperties();
-
-            inputStream.close();
         } catch (IOException ex) {
             Logger.userError(ErrorLevel.HIGH, "I/O error when loading action: "
                     + group + "/" + name + ": " + ex.getMessage());
@@ -169,8 +138,6 @@ public class Action extends ActionModel implements Serializable {
         location = dir + name;
 
         new File(dir).mkdirs();
-
-        file = new File(location);
 
         ActionManager.registerAction(this);
     }
@@ -306,79 +273,6 @@ public class Action extends ActionModel implements Serializable {
         }
 
         return true;
-    }
-
-    /**
-     * Loads the various attributes of this action from the properties instance.
-     * 
-     * @Deprecated Remove post-0.6
-     */
-    @Deprecated
-    private void loadActionFromProperties() {
-        // Read the triggers
-        if (properties.containsKey("trigger")) {
-            final String[] triggerStrings = properties.getProperty("trigger").split("\\|");
-
-            loadTriggers(Arrays.asList(triggerStrings));
-        } else {
-            error("No trigger specified");
-            return;
-        }
-
-        // Read the response
-        if (properties.containsKey(DOMAIN_RESPONSE)) {
-            response = properties.getProperty(DOMAIN_RESPONSE).split("\n");
-        } else {
-            error("No response specified");
-            return;
-        }
-
-        // Read the format change
-        if (properties.containsKey(DOMAIN_FORMAT)) {
-            newFormat = properties.getProperty(DOMAIN_FORMAT);
-        }
-
-        // Read the conditions
-        int numConditions = 0;
-
-        if (properties.containsKey("conditions")) {
-            try {
-                numConditions = Integer.parseInt(properties.getProperty("conditions"));
-            } catch (NumberFormatException ex) {
-                error("Invalid number of conditions specified");
-                return;
-            }
-        }
-
-        boolean valid = true;
-
-        for (int i = 0; i < numConditions; i++) {
-            valid = valid & readCondition(i);
-        }
-
-        if (!valid) {
-            return;
-        }
-
-        if (properties.containsKey(DOMAIN_CONDITIONTREE)) {
-            conditionTree = ConditionTree.parseString(properties.getProperty(DOMAIN_CONDITIONTREE));
-
-            if (conditionTree == null) {
-                error("Unable to parse condition tree");
-                return;
-            }
-
-            if (conditionTree.getMaximumArgument() >= conditions.size()) {
-                error("Condition tree references condition "
-                        + conditionTree.getMaximumArgument() + " but there are"
-                        + " only " + conditions.size() + " conditions");
-                return;
-            }
-        }
-
-        ActionManager.registerAction(this);
-        modified = true;
-        save();
     }
 
     /**
@@ -575,95 +469,6 @@ public class Action extends ActionModel implements Serializable {
     }
 
     /**
-     * Reads the specified condition.
-     *
-     * @param condition Condition number to read
-     * @return True if the condition was read successfully.
-     * @deprecated Remove post-0.6
-     */
-    @Deprecated
-    private boolean readCondition(final int condition) {
-        // It may help to close your eyes while reading this method.
-
-        int arg = -1;
-        ActionComponent component = null;
-        ActionComparison comparison = null;
-        String target = "";
-
-        if (properties.containsKey("condition" + condition + "-arg")) {
-            try {
-                arg = Integer.parseInt(properties.getProperty("condition" + condition + "-arg"));
-            } catch (NumberFormatException ex) {
-                error("Invalid argument number for condition " + condition);
-                return false;
-            }
-        }
-
-        if (arg < 0 || arg >= triggers[0].getType().getArity()) {
-            error("Invalid argument number for condition " + condition);
-            return false;
-        }
-
-        if (properties.containsKey("condition" + condition + "-component")) {
-            final String componentName = properties.getProperty("condition"
-                    + condition + "-component");
-
-            if (componentName.indexOf('.') == -1) {
-                component = ActionManager.getActionComponent(componentName);
-            } else {
-                try {
-                    component = new ActionComponentChain(triggers[0].getType().getArgTypes()[arg],
-                            componentName);
-                } catch (IllegalArgumentException iae) {
-                    error(iae.getMessage());
-                    return false;
-                }
-            }
-
-            if (component == null) {
-                error("Invalid component for condition " + condition);
-                return false;
-            }
-
-            if (!component.appliesTo().equals(triggers[0].getType().getArgTypes()[arg])) {
-                error("Component cannot be applied to specified arg in condition " + condition);
-                return false;
-            }
-        } else {
-            error("No component specified for condition " + condition);
-            return false;
-        }
-
-        if (properties.containsKey("condition" + condition + "-comparison")) {
-            comparison = ActionManager.getActionComparison(
-                    properties.getProperty("condition" + condition + "-comparison"));
-            if (comparison == null) {
-                error("Invalid comparison for condition " + condition);
-                return false;
-            }
-
-            if (!comparison.appliesTo().equals(component.getType())) {
-                error("Comparison cannot be applied to specified component in condition "
-                        + condition);
-                return false;
-            }
-        } else {
-            error("No comparison specified for condition " + condition);
-            return false;
-        }
-
-        if (properties.containsKey("condition" + condition + "-target")) {
-            target = properties.getProperty("condition" + condition + "-target");
-        } else {
-            error("No target specified for condition " + condition);
-            return false;
-        }
-
-        conditions.add(new ActionCondition(arg, component, comparison, target));
-        return true;
-    }
-
-    /**
      * Raises a trivial error, informing the user of the problem.
      *
      * @param message The message to be raised
@@ -678,9 +483,8 @@ public class Action extends ActionModel implements Serializable {
     public void setName(final String newName) {
         super.setName(newName);
 
-        file.delete();
-
-        file = new File(file.getParent() + System.getProperty("file.separator") + newName);
+        new File(location).delete();        
+        location = ActionManager.getDirectory() + group + File.separator + newName;
 
         save();
     }
@@ -690,10 +494,8 @@ public class Action extends ActionModel implements Serializable {
     public void setGroup(final String newGroup) {
         super.setGroup(newGroup);
 
+        new File(location).delete();
         location = ActionManager.getDirectory() + group + File.separator + name;
-
-        file.delete();
-        file = new File(location);
 
         save();
     }
@@ -702,7 +504,7 @@ public class Action extends ActionModel implements Serializable {
      * Deletes this action.
      */
     public void delete() {
-        file.delete();
+        new File(location).delete();
     }
 
     /** {@inheritDoc} */
@@ -711,7 +513,7 @@ public class Action extends ActionModel implements Serializable {
         final String parent = super.toString();
 
         return parent.substring(0, parent.length() - 1)
-                + ",file=" + file + "]";
+                + ",location=" + location + "]";
     }
 
 }
