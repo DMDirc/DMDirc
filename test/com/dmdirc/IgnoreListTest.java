@@ -33,6 +33,8 @@ public class IgnoreListTest extends junit.framework.TestCase {
         {"*chris*", ".*chris.*"},
         {"c???s", "c...s"},
         {"c*?*", "c.*..*"},
+        {"foo?", "foo."},
+        {".^$[]\\(){}|+", "\\.\\^\\$\\[\\]\\\\\\(\\)\\{\\}\\|\\+"},
     }; 
     
     private final String[] illegals = {
@@ -41,6 +43,9 @@ public class IgnoreListTest extends junit.framework.TestCase {
         "a.{4}",
         "a|b",
         "a?",
+        "foo\\",
+        "a\\?",
+        "a\\*",
     };
 
     @Test
