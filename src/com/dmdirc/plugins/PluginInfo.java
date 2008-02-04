@@ -238,7 +238,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
                         + "', actual: '" + actualVersion + "')";
                 return false;
             } else if (desiredParts.length > 2
-                    && !actualVersion.toLowerCase().matches(desiredParts[2])) {
+                    && !actualArch.toLowerCase().matches(desiredParts[2])) {
                 requirementsError = "Invalid OS architecture. (Wanted: '" + desiredParts[2]
                         + "', actual: '" + actualArch + "')";
                 return false;

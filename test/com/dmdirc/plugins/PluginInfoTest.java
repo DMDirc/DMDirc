@@ -58,5 +58,18 @@ public class PluginInfoTest extends junit.framework.TestCase {
         assertFalse(pi.checkMaximumVersion("abc", 6));
         assertFalse(pi.checkMaximumVersion("7", 10));
     }
+    
+    @Test
+    public void testOS() {
+        assertTrue(pi.checkOS("windows", "windows", "xp", "x86"));
+        assertFalse(pi.checkOS("windows", "linux", "2.6.2.11", "x86"));
+        assertTrue(pi.checkOS("windows:xp|98|3\\.1", "windows", "xp", "x86"));
+        assertFalse(pi.checkOS("windows:xp|98|3\\.1", "windows", "vista", "x86"));
+        assertFalse(pi.checkOS("windows:xp|98|3\\.1", "linux", "2.6.2.11", "x86"));
+        assertTrue(pi.checkOS("windows:xp|98|3\\.1:.86", "windows", "xp", "x86"));
+        assertFalse(pi.checkOS("windows:xp|98|3\\.1:.86", "windows", "xp", "mips"));
+        assertFalse(pi.checkOS("windows:xp|98|3\\.1:.86", "windows", "vista", "x86"));
+        assertFalse(pi.checkOS("windows:xp|98|3\\.1:.86", "linux", "2.6.2.11", "x86"));        
+    }
 
 }
