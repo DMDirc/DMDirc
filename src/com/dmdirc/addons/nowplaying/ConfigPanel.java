@@ -26,7 +26,6 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.ui.swing.JWrappingLabel;
 import com.dmdirc.ui.swing.components.reorderablelist.ReorderableJList;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -34,12 +33,15 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -62,17 +64,21 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
 
     /** The plugin that owns this panel. */
     private final NowPlayingPlugin plugin;
-    
+
     /** Text field for our setting. */
     private JTextField textfield;
-    
+
     /** Panel that the preview is in. */
     private JPanel previewPanel;
-    
+
     /** Label for previews. */
     private JWrappingLabel preview;
+    
+    /** Update timer. */
+    private Timer updateTimer;
 
-    /** Creates a new instance of ConfigPanel.
+    /**
+     * Creates a new instance of ConfigPanel.
      *
      * @param plugin The plugin that owns this panel
      * @param sources A list of sources to be used in the panel
@@ -86,73 +92,90 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
         initComponents();
     }
 
-    /** Initialises the components. */
+    /**
+     * Initialises the components.
+     */
     private void initComponents() {
         list = new ReorderableJList();
 
         for (String source : sources) {
             list.getModel().addElement(source);
         }
-        
+
         textfield = new JTextField(IdentityManager.getGlobalConfig()
                 .getOption(NowPlayingPlugin.DOMAIN, "format", "is playing $artist - $title"));
         textfield.addKeyListener(this);
         preview = new JWrappingLabel("Preview:\n* nick ");
 
         setLayout(new MigLayout("fillx, ins 0"));
-        
+
         JPanel panel = new JPanel();
-        
+
         panel.setBorder(BorderFactory.createTitledBorder("Source order"));
         panel.setLayout(new MigLayout("fillx, ins 5"));
-        
+
         panel.add(new JLabel("Drag and drop items to reorder"), "wrap");
         panel.add(new JScrollPane(list), "growx");
-        
+
         add(panel, "growx, wrap");
-        
+
         panel = new JPanel();
-        
+
         panel.setBorder(BorderFactory.createTitledBorder("Output format"));
         panel.setLayout(new MigLayout("fillx, ins 5"));
-        
+
         panel.add(textfield, "span, growx, wrap");
         panel.add(preview, "span, grow, wrap, gaptop 10");
         add(panel, "growx, wrap");
-        
+
         previewPanel = panel;
-        
+
         panel = new JPanel();
-        
+
         panel.setBorder(BorderFactory.createTitledBorder("Substitutions"));
-        panel.setLayout(new MigLayout("fillx, ins 5"));        
-        
+        panel.setLayout(new MigLayout("fillx, ins 5"));
+
         panel.add(new JLabel("$app"));
-        panel.add(new JLabel("$title"));        
+        panel.add(new JLabel("$title"));
         panel.add(new JLabel("$artist"));
         panel.add(new JLabel("$album"), "wrap");
 
         panel.add(new JLabel("$bitrate"));
-        panel.add(new JLabel("$format"));        
+        panel.add(new JLabel("$format"));
         panel.add(new JLabel("$length"));
         panel.add(new JLabel("$time"));
-        
+
         add(panel, "growx");
         updatePreview();
     }
-    
+
+    /**
+     * Updates the preview text.
+     */
     private void updatePreview() {
         MediaSource source = plugin.getBestSource();
-        
+
         if (source == null) {
             source = new DummyMediaSource();
         }
-        
+
         preview.setText("Preview:\n* nick " + plugin.doSubstitution(textfield.getText(),
                 source));
-        previewPanel.validate();
+        preview.repaint();
+
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                previewPanel.revalidate();
+                revalidate();
+            }
+        });
     }
 
+    /**
+     * Retrieves the (new) source order from this config panel.
+     *
+     * @return An ordered list of sources
+     */
     public List<String> getSources() {
         final List<String> newSources = new LinkedList<String>();
 
@@ -172,23 +195,36 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
         IdentityManager.getConfigIdentity().setOption(NowPlayingPlugin.DOMAIN,
                 "format", textfield.getText());
     }
-    
+
+    /** {@inheritDoc} */
+    @Override
     public void keyTyped(KeyEvent e) {
         // Do nothing
     }
 
     /** {@inheritDoc} */
-    @Override    
+    @Override
     public void keyPressed(KeyEvent e) {
         // Do nothing
     }
 
     /** {@inheritDoc} */
-    @Override    
+    @Override
     public void keyReleased(KeyEvent e) {
-        updatePreview();
-    }    
-    
+        if (updateTimer != null) {
+            updateTimer.cancel();
+        }
+        
+        updateTimer = new Timer("Nowplaying config timer");
+        updateTimer.schedule(new TimerTask() {
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                updatePreview();
+            }
+        }, 500);
+    }
+
     /**
      * A dummy media source for use in previews.
      */
@@ -201,59 +237,59 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
         }
 
         /** {@inheritDoc} */
-        @Override        
+        @Override
         public boolean isPlaying() {
             return true;
         }
 
         /** {@inheritDoc} */
-        @Override        
+        @Override
         public String getAppName() {
             return "MyProgram";
         }
 
         /** {@inheritDoc} */
-        @Override        
+        @Override
         public String getArtist() {
             return "The Artist";
         }
 
         /** {@inheritDoc} */
-        @Override        
+        @Override
         public String getTitle() {
             return "Song about nothing";
         }
 
         /** {@inheritDoc} */
-        @Override        
+        @Override
         public String getAlbum() {
             return "Album 45";
         }
 
         /** {@inheritDoc} */
-        @Override        
+        @Override
         public String getLength() {
             return "3:45";
         }
 
         /** {@inheritDoc} */
-        @Override        
+        @Override
         public String getTime() {
             return "1:20";
         }
 
         /** {@inheritDoc} */
-        @Override        
+        @Override
         public String getFormat() {
             return "flac";
         }
 
         /** {@inheritDoc} */
-        @Override        
+        @Override
         public String getBitrate() {
             return "128";
         }
-        
+
     }
 
 }
