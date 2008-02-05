@@ -29,6 +29,7 @@ import com.dmdirc.parser.callbacks.CallbackOnChannelNonUserModeChanged;
 import com.dmdirc.parser.callbacks.CallbackOnChannelModeChanged;
 import com.dmdirc.parser.callbacks.CallbackOnChannelUserModeChanged;
 import com.dmdirc.parser.callbacks.CallbackOnUserModeChanged;
+import com.dmdirc.parser.callbacks.CallbackOnUserModeDiscovered;
 
 import java.util.Calendar;
 
@@ -251,7 +252,11 @@ public class ProcessMode extends IRCProcessor {
 		}
 		
 		iClient.setUserMode(nCurrent);
-		callUserModeChanged(iClient, token[0], sModestr[0]);
+		if (sParam.equals("221")) {
+			callUserModeDiscovered(iClient, sModestr[0]);
+		} else {
+			callUserModeChanged(iClient, token[0], sModestr[0]);
+		}
 	}
 	
 	/**
@@ -299,6 +304,20 @@ public class ProcessMode extends IRCProcessor {
 	protected boolean callUserModeChanged(ClientInfo cClient, String sSetby, String sModes) {
 		CallbackOnUserModeChanged cb = (CallbackOnUserModeChanged)getCallbackManager().getCallbackType("OnUserModeChanged");
 		if (cb != null) { return cb.call(cClient, sSetby, sModes); }
+		return false;
+	}
+	
+	/**
+	 * Callback to all objects implementing the UserModeDiscovered Callback.
+	 *
+	 * @see IUserModeDiscovered
+	 * @param cClient Client that had the mode changed (almost always us)
+	 * @param sModes The modes set.
+	 * @return true if a method was called, false otherwise
+	 */
+	protected boolean callUserModeDiscovered(ClientInfo cClient, String sModes) {
+		CallbackOnUserModeDiscovered cb = (CallbackOnUserModeDiscovered)getCallbackManager().getCallbackType("OnUserModeDiscovered");
+		if (cb != null) { return cb.call(cClient, sModes); }
 		return false;
 	}	
 	
