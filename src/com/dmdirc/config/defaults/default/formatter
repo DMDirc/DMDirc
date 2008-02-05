@@ -147,6 +147,7 @@ formatter.querySelfMessage = <%1$s> %4$s
 formatter.querySelfAction = \u00036* %1$s %4$s
 formatter.queryNickChanged = \u00033* %1$s is now known as %4$s\u000F.
 formatter.userModeChanged = \u00033* %1$s sets user mode: %4$s\u000F.
+formatter.userModeDiscovered = \u00033* User modes are: %4$s\u000F.
 formatter.queryQuitReason = \u00032* %1$s has quit IRC (%4$s\u000F).
 formatter.queryMessageHighlight = \u00034<%1$s> %4$s
 formatter.queryActionHighlight = \u00036* %1$s %4$s

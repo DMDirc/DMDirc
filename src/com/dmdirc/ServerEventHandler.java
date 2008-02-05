@@ -45,7 +45,8 @@ public final class ServerEventHandler extends EventHandler
         IPrivateNotice, IMOTDStart, IMOTDLine, IMOTDEnd, INumeric, IPingFailed,
         IPingSuccess, IAwayState, IConnectError, INickInUse, IPost005,
         INoticeAuth, IUnknownNotice, IUserModeChanged, IInvite, IWallop,
-        IWalluser, IWallDesync, INickChanged, IServerError, IPingSent {
+        IWalluser, IWallDesync, INickChanged, IServerError, IPingSent,
+        IUserModeDiscovered {
     
     /** The server instance that owns this event handler. */
     private final Server owner;
@@ -272,6 +273,16 @@ public final class ServerEventHandler extends EventHandler
         
         owner.doNotification("userModeChanged", CoreActionType.SERVER_USERMODES,
                 tParser.getClientInfoOrFake(sSetBy), sModes);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onUserModeDiscovered(final IRCParser tParser, final ClientInfo cClient,
+             final String sModes) {
+        checkParser(tParser);
+        
+        owner.doNotification("userModeDiscovered", CoreActionType.SERVER_USERMODES,
+                cClient, sModes);        
     }
 
     /** {@inheritDoc} */
