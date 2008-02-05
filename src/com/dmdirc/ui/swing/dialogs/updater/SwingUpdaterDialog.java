@@ -23,16 +23,17 @@
 package com.dmdirc.ui.swing.dialogs.updater;
 
 import com.dmdirc.Main;
+import com.dmdirc.interfaces.UpdateCheckerListener;
 import com.dmdirc.ui.interfaces.UpdaterDialog;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.updater.Update;
-import com.dmdirc.updater.UpdateStatus;
-import com.dmdirc.interfaces.UpdateListener;
 import com.dmdirc.ui.swing.components.PackingTable;
 import com.dmdirc.ui.swing.components.renderers.UpdateComponentTableCellRenderer;
 import com.dmdirc.ui.swing.components.renderers.UpdateStatusTableCellRenderer;
 
+import com.dmdirc.updater.UpdateChecker;
+import com.dmdirc.updater.UpdateChecker.STATE;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -53,7 +54,7 @@ import net.miginfocom.swing.MigLayout;
  * and walks them through the process of downloading the update.
  */
 public final class SwingUpdaterDialog extends StandardDialog implements
-        ActionListener, UpdaterDialog, UpdateListener {
+        ActionListener, UpdaterDialog, UpdateCheckerListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -85,9 +86,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         initComponents(updates);
         layoutComponents();
 
-        for (Update update : updates) {
-            update.addUpdateListener(this);
-        }
+        UpdateChecker.addListener(this);
 
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
@@ -206,34 +205,20 @@ public final class SwingUpdaterDialog extends StandardDialog implements
             header.setText("<html>DMDirc is updating the following components:</html>");
 
             for (Update update : ((UpdateTableModel) table.getModel()).getUpdates()) {
-                if (update.getStatus() == UpdateStatus.PENDING &&
-                        ((UpdateTableModel) table.getModel()).isEnabled(update)) {
-                    update.doUpdate();
-                    return;
+                if (!((UpdateTableModel) table.getModel()).isEnabled(update)) {
+                    UpdateChecker.removeUpdate(update);
                 }
             }
 
-            dispose();
+            
+            UpdateChecker.applyUpdates();
+            
+            if (UpdateChecker.getStatus() == STATE.IDLE) {
+                dispose();
+            }
         } else if (e.getSource().equals(getCancelButton())) {
             setVisible(false);
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateStatusChange(Update update, UpdateStatus status) {
-        if (status == UpdateStatus.ERROR || status == UpdateStatus.INSTALLED ||
-                status == UpdateStatus.RESTART_NEEDED) {
-            for (Update myupdate : ((UpdateTableModel) table.getModel()).getUpdates()) {
-                if (myupdate.getStatus() == UpdateStatus.PENDING &&
-                        ((UpdateTableModel) table.getModel()).isEnabled(myupdate)) {    
-                    myupdate.doUpdate();
-                    return;
-                }
-            }
-        }
-
-        getOkButton().setEnabled(true);
     }
 
     /** {@inheritDoc} */
@@ -242,6 +227,16 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         synchronized (me) {
             super.dispose();
             me = null;
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void statusChanged(final STATE newStatus) {
+        if (newStatus == STATE.UPDATING) {
+            getOkButton().setEnabled(false);
+        } else {
+            getOkButton().setEnabled(true);
         }
     }
 }

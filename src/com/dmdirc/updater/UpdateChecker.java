@@ -30,7 +30,6 @@ import com.dmdirc.interfaces.UpdateListener;
 import com.dmdirc.interfaces.UpdateCheckerListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.updater.UpdateStatus;
 import com.dmdirc.updater.components.ClientComponent;
 import com.dmdirc.updater.components.DefaultsComponent;
 import com.dmdirc.updater.components.ModeAliasesComponent;
@@ -60,6 +59,8 @@ public final class UpdateChecker implements Runnable {
         IDLE,
         /** Currently checking for updates. */
         CHECKING,
+        /** Currently updating. */
+        UPDATING,
         /** New updates are available. */
         UPDATES_AVAILABLE
     }
@@ -90,6 +91,9 @@ public final class UpdateChecker implements Runnable {
             if (status == UpdateStatus.INSTALLED
                 || status == UpdateStatus.ERROR) {
                 removeUpdate(update);
+            } else if (status == UpdateStatus.RESTART_NEEDED && UpdateChecker.status
+                    == STATE.UPDATING) {
+                doNextUpdate();
             }
         }
     };
@@ -118,7 +122,8 @@ public final class UpdateChecker implements Runnable {
 
         final ConfigManager config = IdentityManager.getGlobalConfig();
 
-        if (!config.getOptionBool("updater", "enable", true)) {
+        if (!config.getOptionBool("updater", "enable", true)
+                || status == STATE.UPDATING) {
             IdentityManager.getConfigIdentity().setOption("updater",
                     "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
         
@@ -202,7 +207,7 @@ public final class UpdateChecker implements Runnable {
      *
      * @param line The line that was received from the update server
      */
-    public void doUpdateAvailable(final String line) {
+    private void doUpdateAvailable(final String line) {
         final Update update = new Update(line);
 
         updates.add(update);
@@ -299,16 +304,41 @@ public final class UpdateChecker implements Runnable {
 
     /**
      * Removes the specified update from the list. This should be called when
-     * the update has finished or has encountered an error.
+     * the update has finished, has encountered an error, or the user does not
+     * want the update to be performed.
      *
      * @param update The update to be removed
      */
-    private static void removeUpdate(final Update update) {
+    public static void removeUpdate(final Update update) {
+        update.removeUpdateListener(listener);
         updates.remove(update);
 
         if (updates.isEmpty()) {
             setStatus(STATE.IDLE);
+        } else if (status == STATE.UPDATING) {
+            doNextUpdate();
         }
+    }
+    
+    /**
+     * Downloads and installs all known updates.
+     */
+    public static void applyUpdates() {
+        if (updates.size() > 0) {
+            status = STATE.UPDATING;
+            doNextUpdate();
+        }
+    }
+    
+    private static void doNextUpdate() {
+        for (Update update : updates) {
+            if (update.getStatus() == UpdateStatus.PENDING) {
+                update.doUpdate();
+                return;
+            }
+        }
+        
+        status = STATE.IDLE;
     }
 
     /**
