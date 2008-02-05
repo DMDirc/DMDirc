@@ -39,7 +39,7 @@ import java.util.TreeMap;
  * 
  * @author chris
  */
-public final class ConfigManager extends ConfigSource implements Serializable,
+public class ConfigManager extends ConfigSource implements Serializable,
         ConfigChangeListener {
     
     /**
