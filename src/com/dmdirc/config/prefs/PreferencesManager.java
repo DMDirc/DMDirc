@@ -291,7 +291,7 @@ public class PreferencesManager {
                 "browser", "launchdelay", "500", "Browser launch delay",
                 "Minimum time between opening of URLs"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "general", "autoSubmitErrors", "false", "Automatically submit errors",
+                "general", "submitErrors", "false", "Automatically submit errors",
                 "Automatically submit client errors to the developers?"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "tabcompletion", "casesensitive", "false", "Case-sensitive tab completion",
