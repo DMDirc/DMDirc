@@ -438,33 +438,33 @@ public final class DCCPlugin extends Plugin implements ActionListener {
         @Override
 	public void showConfig(final PreferencesManager manager) {
 		final PreferencesCategory general = new PreferencesCategory("DCC", "");
-                final PreferencesCategory sending = new PreferencesCategory("Sending", "");
-                final PreferencesCategory receiving = new PreferencesCategory("Receiving", "");
+        final PreferencesCategory sending = new PreferencesCategory("Sending", "");
+        final PreferencesCategory receiving = new PreferencesCategory("Receiving", "");
 
-                manager.getCategory("Plugins").addSubCategory(general);
-                general.addSubCategory(sending);
-                general.addSubCategory(receiving);
+        manager.getCategory("Plugins").addSubCategory(general.setInlineAfter());
+        general.addSubCategory(sending.setInline());
+        general.addSubCategory(receiving.setInline());
 
-                receiving.addSetting(new PreferencesSetting(PreferencesType.TEXT,
-                        MY_DOMAIN, "receive.savelocation", "", "Default save location",
-                        "Where the save as window defaults to?"));
-                sending.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                        MY_DOMAIN, "send.reverse", "false", "Reverse DCC",
-                        "With reverse DCC, the sender connects rather than " +
-                        "listens like normal dcc"));
-                sending.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                        MY_DOMAIN, "send.forceturbo", "false", "Use Turbo DCC",
-                        "Turbo DCC doesn't wait for ack packets. this is " +
-                        "faster but not always supported."));
-                receiving.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                        MY_DOMAIN, "receive.reverse.sendtoken", "false",
-                        "Send token in reverse receive",
-                        "If you have problems with reverse dcc receive resume," +
-                        " try toggling this."));
-                general.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
-                        MY_DOMAIN, "send.blocksize", "1024", "Blocksize to use for DCC",
-                        "Change the block size for send/receive, this can " +
-                        "sometimes speed up transfers."));
+        receiving.addSetting(new PreferencesSetting(PreferencesType.TEXT,
+                MY_DOMAIN, "receive.savelocation", "", "Default save location",
+                "Where the save as window defaults to?"));
+        sending.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                MY_DOMAIN, "send.reverse", "false", "Reverse DCC",
+                "With reverse DCC, the sender connects rather than " +
+                "listens like normal dcc"));
+        sending.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                MY_DOMAIN, "send.forceturbo", "false", "Use Turbo DCC",
+                "Turbo DCC doesn't wait for ack packets. this is " +
+                "faster but not always supported."));
+        receiving.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                MY_DOMAIN, "receive.reverse.sendtoken", "false",
+                "Send token in reverse receive",
+                "If you have problems with reverse dcc receive resume," +
+                " try toggling this."));
+        general.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
+                MY_DOMAIN, "send.blocksize", "1024", "Blocksize to use for DCC",
+                "Change the block size for send/receive, this can " +
+                "sometimes speed up transfers."));
 	}
 
 	/**

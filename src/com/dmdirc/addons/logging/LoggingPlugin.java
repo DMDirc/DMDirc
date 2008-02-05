@@ -198,9 +198,9 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
                 "(This is used to allow channels with similar names (ie a _ not" +
                 "a  -) to be logged separately)"));
 
-		general.addSubCategory(backbuffer);
-        general.addSubCategory(advanced);
-        manager.getCategory("Plugins").addSubCategory(general);
+		general.addSubCategory(backbuffer.setInline());
+        general.addSubCategory(advanced.setInline());
+        manager.getCategory("Plugins").addSubCategory(general.setInlineAfter());
 	}
 
 	/**

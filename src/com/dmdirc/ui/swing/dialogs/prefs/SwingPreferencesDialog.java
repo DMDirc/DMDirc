@@ -38,7 +38,6 @@ import com.dmdirc.ui.swing.components.renderers.MapEntryRenderer;
 import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
-import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -82,6 +81,8 @@ import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Allows the user to modify global client preferences.
@@ -250,7 +251,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         ((JPanel) categories.get(category).getComponent(1)).add(label);
 
         label.setLabelFor(option);
-        ((JPanel) categories.get(category).getComponent(1)).add(option);
+        ((JPanel) categories.get(category).getComponent(1)).add(option, "wrap");
     }
 
     /**
@@ -384,6 +385,25 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
         return option;
     }
+    
+    /**
+     * Adds a new inline category.
+     * 
+     * @param category The category to be added
+     * @param parent The panel to add the category to
+     */
+    private void addInlineCategory(final PreferencesCategory category,
+            final JPanel parent) {
+        final JPanel panel = new JPanel(new BorderLayout(SMALL_BORDER,
+                LARGE_BORDER));
+        panel.setBorder(BorderFactory.createTitledBorder(category.getTitle()));
+        
+        categories.put(category, panel);
+        
+        ((JPanel) parent.getComponent(1)).add(panel, "span, growx, wrap");
+
+        initCategory(category, panel, null, "");
+    }
 
     /**
      * Adds the specified category to the preferences dialog.
@@ -409,17 +429,26 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         ((DefaultTreeModel) tabList.getModel()).insertNodeInto(newNode,
                 parentNode, parentNode.getChildCount());
         tabList.scrollPathToVisible(new TreePath(newNode.getPath()));
-
+        
+        initCategory(category, panel, newNode, path);
+    }
+    
+    private void initCategory(final PreferencesCategory category, final JPanel panel,
+            final DefaultMutableTreeNode newNode, final String path) {
         final TextLabel infoLabel = new TextLabel(category.getDescription());
         if (category.getDescription().isEmpty()) {
             infoLabel.setVisible(false);
         }
 
         panel.add(infoLabel, BorderLayout.PAGE_START);
-        panel.add(new JPanel(new SpringLayout()), BorderLayout.CENTER);        
+        panel.add(new JPanel(new MigLayout("fillx, gap " + LARGE_BORDER)), BorderLayout.CENTER);        
 
         for (PreferencesCategory child : category.getSubcats()) {
-            addCategory(child, newNode, path);
+            if (child.isInline() && category.getInlineBefore()) {
+                addInlineCategory(child, panel);
+            } else if (!child.isInline()) {
+                addCategory(child, newNode, path);
+            }
         }
 
         if (category.hasObject()) {
@@ -436,6 +465,14 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
         for (PreferencesSetting setting : category.getSettings()) {
             addComponent(category, setting);
+        }
+        
+        if (!category.getInlineBefore()) {
+            for (PreferencesCategory child : category.getSubcats()) {
+                if (child.isInline()) {
+                    addInlineCategory(child, panel);
+                }
+            }
         }
     }
 
@@ -515,14 +552,6 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
     /** {@inheritDoc} */
     public void display() {
-        for (JPanel panel : categories.values()) {
-            if (!panels.contains(panel.getComponent(1))) {
-                layoutGrid((JPanel) panel.getComponent(1), ((JPanel) panel
-                        .getComponent(1)).getComponentCount() / 2, 2, SMALL_BORDER,
-                        SMALL_BORDER, LARGE_BORDER, LARGE_BORDER);
-            }
-        }
-
         final String[] tabName = IdentityManager.getGlobalConfig().
                 getOption("dialogstate", "preferences", "").split("->");
         TreePath path = new TreePath(tabList.getModel().getRoot());

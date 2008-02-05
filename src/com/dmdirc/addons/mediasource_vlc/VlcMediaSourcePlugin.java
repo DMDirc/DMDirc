@@ -190,7 +190,7 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
                 "The host and port that VLC listens on for web connections"));
         
         manager.getCategory("Plugins").addSubCategory(general);
-        general.addSubCategory(instr);
+        general.addSubCategory(instr.setInline());
     }
     
     private boolean getInformation() {

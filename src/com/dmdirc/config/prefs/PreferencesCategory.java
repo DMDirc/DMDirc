@@ -41,6 +41,12 @@ public class PreferencesCategory {
     /** A description of this category. */
     private final String description;
     
+    /** Whether or not this category is inline. */
+    private boolean isInline = false;
+    
+    /** Whether or not to show inline categories before settings. */
+    private boolean inlineBefore = true;
+    
     /** A list of settings in this category. */
     private final List<PreferencesSetting> settings = new ArrayList<PreferencesSetting>();
     
@@ -78,6 +84,46 @@ public class PreferencesCategory {
     }
     
     /**
+     * Sets this as an inline category.
+     * 
+     * @return A reference to this category, for convenience
+     */
+    public PreferencesCategory setInline() {
+        isInline = true;
+        return this;
+    }
+    
+    /**
+     * Sets this category to show inline categories after settings, rather than
+     * before.
+     * 
+     * @return A reference to this category, for convenience
+     */
+    public PreferencesCategory setInlineAfter() {
+        inlineBefore = false;
+        return this;
+    }
+    
+    /**
+     * Determines if this category is meant to be displayed inline or not.
+     * 
+     * @return True if this category should be shown inline, false otherwise
+     */
+    public boolean isInline() {
+        return isInline;
+    }
+    
+    /**
+     * Determines whether this category wants inline subcats to be displayed
+     * before the settings, or after.
+     * 
+     * @return True if subcats should be displayed first, false otherwise.
+     */
+    public boolean getInlineBefore() {
+        return inlineBefore;
+    }
+    
+    /**
      * Adds the specified setting to this category.
      * 
      * @param setting The setting to be added
@@ -97,6 +143,11 @@ public class PreferencesCategory {
      * @param subcategory The category to be asdded
      */
     public void addSubCategory(final PreferencesCategory subcategory) {
+        if (isInline() && !subcategory.isInline()) {
+            throw new IllegalArgumentException("Can't add non-inline " +
+                    "subcategories to inline ones");
+        }
+        
         subcats.add(subcategory);
     }
 
