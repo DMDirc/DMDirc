@@ -59,7 +59,8 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
     
     /** {@inheritDoc} */
     @Override
-    public void execute(final InputWindow origin, final boolean isSilent, final String ... args) {
+    public void execute(final InputWindow origin, final boolean isSilent,
+            final String ... args) {
         if (args.length == 0) {
             showUsage(origin, isSilent, "debug", "<debug command> [options]");
         } else if ("error".equals(args[0])) {

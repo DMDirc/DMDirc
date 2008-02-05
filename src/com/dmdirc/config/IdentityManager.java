@@ -305,6 +305,12 @@ public final class IdentityManager {
         
         final List<Identity> sources = new ArrayList<Identity>();
         
+        if (channel != null && !channel.isEmpty() && (channel.indexOf('@') == -1
+                || channel.indexOf('@') != channel.lastIndexOf('@'))) {
+            throw new IllegalArgumentException("Channel names must be in the" +
+                    " format channel@network.\n\nGiven name: " + channel);
+        }
+        
         String comp = "";
         
         for (Identity identity : identities) {

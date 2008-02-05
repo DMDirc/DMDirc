@@ -266,18 +266,18 @@ public final class ConfigManager extends ConfigSource implements Serializable,
     public void migrate(final String ircd, final String network, final String server,
             final String channel) {
         final ConfigManager old = new ConfigManager(this.ircd, this.network,
-                this.server, this.channel);
+                this.server, this.channel.substring(0, this.channel.indexOf('@')));
         
         this.ircd = ircd;
         this.network = network;
         this.server = server;
-        this.channel = channel;
+        this.channel = channel + "@" + network;
         
         for (Identity identity : new ArrayList<Identity>(sources)) {
             removeIdentity(identity);
         }
         
-        sources = IdentityManager.getSources(ircd, network, server, channel);
+        sources = IdentityManager.getSources(ircd, network, server, this.channel);
         for (Identity identity : sources) {
             identity.addListener(this);
         }

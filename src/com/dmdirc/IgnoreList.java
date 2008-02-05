@@ -106,7 +106,8 @@ public class IgnoreList extends RegexStringList {
      * @return A simple expression corresponding to the regex
      * @throws UnsupportedOperationException if the regex cannot be converted
      */
-    protected static String regexToSimple(final String regex) throws UnsupportedOperationException {
+    protected static String regexToSimple(final String regex)
+            throws UnsupportedOperationException {
         final StringBuilder res = new StringBuilder(regex.length());
         boolean escaped = false;
         boolean inchar = false;

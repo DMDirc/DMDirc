@@ -346,7 +346,7 @@ public final class ActionManager {
     @Precondition("The specified action is not null")
     public static void registerAction(final Action action) {
         assert(action != null);
-
+ 
         for (ActionType trigger : action.getTriggers()) {
             actions.add(trigger, action);
         }
