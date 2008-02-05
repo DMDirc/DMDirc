@@ -105,7 +105,9 @@ public final class ServerEventHandler extends EventHandler
         final ErrorLevel errorLevel = ErrorLevel.UNKNOWN;
         
         if (errorInfo.isException()) {
-            Logger.appError(errorLevel, errorInfo.getData(), errorInfo.getException());
+            Logger.appError(errorLevel, errorInfo.getData(), 
+                    new Exception("Parser exception with line:\t"
+                    + errorInfo.getLastLine(), errorInfo.getException()));
         } else {
             Logger.appError(errorLevel, errorInfo.getData(),
                     new Exception("Parser exception.\n\n\tLast line:\t" //NOPMD

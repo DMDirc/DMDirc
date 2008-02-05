@@ -251,7 +251,6 @@ public final class Server extends WritableFrameContainer implements Serializable
         parser = new IRCParser(myInfo, serverInfo);
         parser.setRemoveAfterCallback(true);
         parser.setCreateFake(true);
-        parser.setAddLastLine(true);
         parser.setIgnoreList(ignoreList);
 
         if (configManager.hasOption(DOMAIN_GENERAL, "bindip")) {
