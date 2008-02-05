@@ -218,7 +218,7 @@ public final class Logger {
      * @return Exception string array
      */
     private static String[] exceptionToStringArray(final Throwable throwable) {
-        final String[] trace;
+        String[] trace;
         
         if (throwable == null) {
             trace = new String[0];
@@ -230,6 +230,16 @@ public final class Logger {
             
             for (int i = 0; i < traceElements.length; i++) {
                 trace[i + 1] = traceElements[i].toString();
+            }
+            
+            if (throwable.getCause() != null) {
+                String[] causeTrace = exceptionToStringArray(throwable.getCause());
+                String[] newTrace = new String[trace.length + causeTrace.length];
+                causeTrace[0] = "\nCaused by: " + causeTrace[0];
+                
+                System.arraycopy(trace, 0, newTrace, 0, trace.length);
+                System.arraycopy(causeTrace, 0, newTrace, trace.length, causeTrace.length);
+                trace = newTrace;
             }
         }
         
