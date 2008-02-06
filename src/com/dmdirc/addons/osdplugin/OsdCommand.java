@@ -25,6 +25,7 @@ package com.dmdirc.addons.osdplugin;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.ui.messages.Styliser;
 
 /**
  * The osd command shows an on screen message.
@@ -45,7 +46,7 @@ public final class OsdCommand extends GlobalCommand {
     @Override
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
-        new OsdWindow(implodeArgs(args), false);
+        new OsdWindow(Styliser.stipControlCodes(implodeArgs(args)), false);
     }
     
     /** {@inheritDoc}. */
