@@ -70,7 +70,7 @@ public final class Formatter {
         } else {
             try {
                 final Object[] newArgs = castArguments(res, arguments);
-                return String.format(res, newArgs);
+                return String.format(res.replaceAll("(%[0-9]+\\$)u", "$1s"), newArgs);
             } catch (IllegalFormatConversionException ex) {
                 return "<Invalid format string for message type " + messageType
                         + "; Error: Illegal format conversion: " + ex.getMessage() + ">";
@@ -134,6 +134,10 @@ public final class Formatter {
                     res[i] = args[i];
                 }
                 break;
+            case 'u':
+                // Duration hacks
+                res[i] = formatDuration(Integer.valueOf(args[i].toString()));
+                break;
             default:
                 res[i] = args[i];
             }
@@ -142,6 +146,55 @@ public final class Formatter {
         }
         
         return res;
+    }
+    
+    /**
+     * Tests for and adds one component of the duration format.
+     * 
+     * @param builder The string builder to append text to
+     * @param current The number of seconds in the duration
+     * @param duration The number of seconds in this component
+     * @param name The name of this component
+     * @return The number of seconds used by this component
+     */
+    private static int doDuration(final StringBuilder builder, final int current,
+            final int duration, final String name) {
+        int res = 0;
+        
+        if (current >= duration) {
+            final int units = current / duration;
+            res = units * duration;
+            
+            if (builder.length() > 0) {
+                builder.append(", ");
+            }
+            
+            builder.append(units);
+            builder.append(' ');
+            builder.append(name + (units != 1 ? 's' : ""));
+        }
+        
+        return res;
+    }
+    
+    /**
+     * Formats the specified number of seconds as a string containing the
+     * number of days, hours, minutes and seconds.
+     * 
+     * @param duration The duration in seconds to be formatted
+     * @return A textual version of the duration
+     */
+    public static String formatDuration(final int duration) {
+        final StringBuilder buff = new StringBuilder();
+        
+        int seconds = duration;
+        
+        seconds -= doDuration(buff, seconds, 60*60*24, "day");
+        seconds -= doDuration(buff, seconds, 60*60, "hour");
+        seconds -= doDuration(buff, seconds, 60, "minute");
+        seconds -= doDuration(buff, seconds, 1, "second");
+        
+        return buff.toString();
     }
     
     /**
