@@ -248,10 +248,10 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         final JLabel label = getLabel(setting);
         final JComponent option = getComponent(setting);
 
-        ((JPanel) categories.get(category).getComponent(1)).add(label);
+        categories.get(category).add(label);
 
         label.setLabelFor(option);
-        ((JPanel) categories.get(category).getComponent(1)).add(option, "wrap");
+        categories.get(category).add(option, "wrap");
     }
 
     /**
@@ -394,13 +394,12 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      */
     private void addInlineCategory(final PreferencesCategory category,
             final JPanel parent) {
-        final JPanel panel = new JPanel(new BorderLayout(SMALL_BORDER,
-                LARGE_BORDER));
+        final JPanel panel = new JPanel(new MigLayout("fillx, gap " + LARGE_BORDER));
         panel.setBorder(BorderFactory.createTitledBorder(category.getTitle()));
         
         categories.put(category, panel);
         
-        ((JPanel) parent.getComponent(1)).add(panel, "span, growx, wrap");
+        parent.add(panel, "span, growx, wrap");
 
         initCategory(category, panel, null, "");
     }
@@ -414,8 +413,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      */
     private void addCategory(final PreferencesCategory category,
             final DefaultMutableTreeNode parentNode, final String namePrefix) {
-        final JPanel panel = new JPanel(new BorderLayout(SMALL_BORDER,
-                LARGE_BORDER));
+        final JPanel panel = new JPanel(new MigLayout("fillx, gap " + LARGE_BORDER));
         final String path = namePrefix + "/" + category.getTitle();
         DefaultMutableTreeNode newNode;
 
@@ -435,13 +433,11 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     
     private void initCategory(final PreferencesCategory category, final JPanel panel,
             final DefaultMutableTreeNode newNode, final String path) {
-        final TextLabel infoLabel = new TextLabel(category.getDescription());
-        if (category.getDescription().isEmpty()) {
-            infoLabel.setVisible(false);
-        }
 
-        panel.add(infoLabel, BorderLayout.PAGE_START);
-        panel.add(new JPanel(new MigLayout("fillx, gap " + LARGE_BORDER)), BorderLayout.CENTER);        
+        if (!category.getDescription().isEmpty()) {
+            final TextLabel infoLabel = new TextLabel(category.getDescription());
+            panel.add(infoLabel, "span, growx, wrap");
+        }
 
         for (PreferencesCategory child : category.getSubcats()) {
             if (child.isInline() && category.getInlineBefore()) {
@@ -458,7 +454,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             }
 
             panels.add((JPanel) category.getObject());
-            categories.get(category).add((JPanel) category.getObject(), 1);
+            categories.get(category).add((JPanel) category.getObject());
 
             return;
         }
