@@ -31,6 +31,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.ChannelClientInfo;
 
+import com.dmdirc.ui.messages.Styliser;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Calendar;
@@ -204,6 +205,18 @@ public enum CoreActionComponent implements ActionComponent {
         /** {@inheritDoc} */
         public String getName() { return "content"; }
     },
+    
+    /** Returns the content of a string, stripped of formatting. */
+    STRING_STRIPPED {
+        /** {@inheritDoc} */
+        public Object get(final Object argument) { return Styliser.stipControlCodes((String) argument); }
+        /** {@inheritDoc} */
+        public Class appliesTo() { return String.class; }
+        /** {@inheritDoc} */
+        public Class getType() { return String.class; }
+        /** {@inheritDoc} */
+        public String getName() { return "content (without formatting)"; }
+    },    
     
     /** Returns the length of a string. */
     STRING_LENGTH {
