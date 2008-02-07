@@ -111,11 +111,11 @@ public final class Formatter {
             switch (chr) {
             case 'b': case 'B': case 'h': case 'H': case 's': case 'S':
                 // General (strings)
-                res[i] = args[i].toString();
+                res[i] = String.valueOf(args[i]);
                 break;
             case 'c': case 'C':
                 // Character
-                res[i] = ((String) args[i]).charAt(0);
+                res[i] = String.valueOf(args[i]).charAt(0);
                 break;
             case 'd': case 'o': case 'x': case 'X':
                 // Integers
@@ -136,7 +136,7 @@ public final class Formatter {
                 break;
             case 'u':
                 // Duration hacks
-                res[i] = formatDuration(Integer.valueOf(args[i].toString()));
+                res[i] = formatDuration(Integer.valueOf(String.valueOf(args[i].toString())));
                 break;
             default:
                 res[i] = args[i];

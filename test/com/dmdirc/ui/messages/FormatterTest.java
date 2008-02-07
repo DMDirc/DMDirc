@@ -47,7 +47,51 @@ public class FormatterTest extends junit.framework.TestCase {
         assertEquals("10", Formatter.formatMessage(mcm, "1%1$d", "10"));
         assertEquals("111999", Formatter.formatMessage(mcm, "1%1$s", "111999"));
     }
-
+    
+    @Test
+    public void testCaching() {
+        try {
+            assertEquals("H", Formatter.formatMessage(mcm, "1%1$C", "Hello!"));
+            assertEquals("H", Formatter.formatMessage(mcm, "1%1$C", "Hello!", 123, null));
+            assertEquals("HELLO!", Formatter.formatMessage(mcm, "1%1$S", "Hello!", 123, null));
+            assertEquals("HELLO!", Formatter.formatMessage(mcm, "1%1$S", "Hello!"));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            assertTrue(false);
+        }
+    }
+    
+    @Test
+    public void testFormatDuration() {
+        assertEquals("1 minute, 1 second", Formatter.formatMessage(mcm, "1%1$u", "61"));
+    }
+    
+    @Test
+    public void testFormatDurationSeconds() {
+        assertEquals("1 second", Formatter.formatDuration(1));
+        assertEquals("2 seconds", Formatter.formatDuration(2));
+    }
+    
+    @Test
+    public void testFormatDurationMinutes() {
+        assertEquals("1 minute", Formatter.formatDuration(60));
+        assertEquals("1 minute, 1 second", Formatter.formatDuration(61));
+        assertEquals("1 minute, 2 seconds", Formatter.formatDuration(62));
+        assertEquals("2 minutes, 2 seconds", Formatter.formatDuration(122));
+    }
+    
+    @Test
+    public void testFormatDurationHours() {
+        assertEquals("1 hour", Formatter.formatDuration(3600));
+        assertEquals("1 hour, 1 second", Formatter.formatDuration(3601));
+        assertEquals("2 hours, 1 minute, 5 seconds", Formatter.formatDuration(7265));
+    }
+    
+    @Test
+    public void testFormatDurationDays() {
+        assertEquals("1 day", Formatter.formatDuration(86400));
+        assertEquals("1 day, 10 minutes, 1 second", Formatter.formatDuration(87001));
+    }
 
     private class MyConfigManager extends ConfigManager {
         
