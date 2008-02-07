@@ -29,8 +29,9 @@ else
 fi
 
 # Run junit issue notifier
-if [ -e "$SCRIPTDIR/junit-failures.php" ]; then
-	$SCRIPTDIR/junit-failures.php
+PHP=`which php`
+if [ -e "$SCRIPTDIR/junit-failures.php" -a "${PHP}" != "" ]; then
+	$PHP -q $SCRIPTDIR/junit-failures.php
 fi
 
 # Oblong junit announcement
