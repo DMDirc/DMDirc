@@ -61,7 +61,7 @@ public final class TimePlugin  extends Plugin {
         
         timer = new Timer("Time plugin timer");
         
-        timer.scheduleAtFixedRate(new TimerTask() {
+        timer.schedule(new TimerTask() {
             public void run() {
                 runTimer();
             }

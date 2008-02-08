@@ -176,7 +176,7 @@ public final class Server extends WritableFrameContainer implements Serializable
 
         this.autochannels = autochannels;
 
-        new Timer("Server Who Timer").scheduleAtFixedRate(new TimerTask() {
+        new Timer("Server Who Timer").schedule(new TimerTask() {
             @Override
             public void run() {
                 for (Channel channel : channels.values()) {
