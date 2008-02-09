@@ -32,6 +32,8 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.QueryWindow;
 import com.dmdirc.ui.interfaces.ServerWindow;
 
+import com.dmdirc.ui.messages.Styliser;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -61,42 +63,73 @@ public final class Help extends ServerCommand {
      */
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
-        sendLine(origin, isSilent, FORMAT_OUTPUT, "-- Global commands ----------------------------------");
-        showCommands(CommandManager.getCommands(CommandType.TYPE_GLOBAL), origin, isSilent);
-        
-        if (origin instanceof ServerWindow || origin instanceof ChannelWindow
-                || origin instanceof QueryWindow) {
-            sendLine(origin, isSilent, FORMAT_OUTPUT, "-- Server commands ----------------------------------");
-            showCommands(CommandManager.getCommands(CommandType.TYPE_SERVER), origin, isSilent);
+        if (args.length == 0) {
+            showAllCommands(origin, isSilent);
+        } else {
+            showCommand(origin, isSilent, args[0]);
         }
-        
-            if (origin instanceof ChannelWindow) {
-            sendLine(origin, isSilent, FORMAT_OUTPUT, "-- Channel commands ---------------------------------");
-            showCommands(CommandManager.getCommands(CommandType.TYPE_CHANNEL), origin, isSilent);
-        }
-        
-        if (origin instanceof QueryWindow) {
-            sendLine(origin, isSilent, FORMAT_OUTPUT, "-- Query commands -----------------------------------");
-            showCommands(CommandManager.getCommands(CommandType.TYPE_QUERY), origin, isSilent);
-            
-        }
-        
-        sendLine(origin, isSilent, FORMAT_OUTPUT, "-----------------------------------------------------");
     }
     
-    /**
-     * Shows the user the commands from the specified list.
-     * @param commands The commands to be displayed
-     * @param origin The window to output to
-     * @param isSilent Whether this command is silent or not
-     */
-    private void showCommands(final List<Command> commands,
-            final InputWindow origin, final boolean isSilent) {
+    private void showAllCommands(final InputWindow origin, final boolean isSilent) {
+        final List<Command> commands = new ArrayList<Command>();
+
+        commands.addAll(CommandManager.getCommands(CommandType.TYPE_GLOBAL));
+        
+        if (origin instanceof ServerWindow) {
+            commands.addAll(CommandManager.getCommands(CommandType.TYPE_SERVER));
+        } else if (origin instanceof ChannelWindow) {
+            commands.addAll(CommandManager.getCommands(CommandType.TYPE_CHANNEL));
+            commands.addAll(CommandManager.getCommands(CommandType.TYPE_CHAT));
+            commands.addAll(CommandManager.getCommands(CommandType.TYPE_SERVER));
+        } else if (origin instanceof QueryWindow) {
+            commands.addAll(CommandManager.getCommands(CommandType.TYPE_QUERY));
+            commands.addAll(CommandManager.getCommands(CommandType.TYPE_CHAT));
+            commands.addAll(CommandManager.getCommands(CommandType.TYPE_SERVER));
+        }
+        
         Collections.sort(commands);
-        for (Command com : commands) {
-            if (com.showInHelp()) {
-                sendLine(origin, isSilent, FORMAT_OUTPUT, com.getHelp());
+        
+        sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
+                + "----------------------- Available commands -------");
+        
+        final StringBuilder builder = new StringBuilder();
+        
+        for (Command command : commands) {
+            if (builder.length() + command.getName().length() + 1 > 50) {
+                sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED + builder.toString());
+                builder.delete(0, builder.length());
+            } else if (builder.length() > 0) {
+                builder.append(' ');
             }
+            
+            builder.append(command.getName());
+        }
+        
+        if (builder.length() > 0) {
+            sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED + builder.toString());
+        }
+        
+        sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
+                + "--------------------------------------------------");
+    }
+    
+    private void showCommand(final InputWindow origin, final boolean isSilent,
+            final String name) {
+        final Command command = CommandManager.getCommand(name);
+        
+        if (command == null) {
+            sendLine(origin, isSilent, FORMAT_ERROR, "Command '" + name + "' not found.");
+        } else {
+            sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
+                    + "---------------------- Command information -------");            
+            sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
+                    + " Name: " + name);
+            sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
+                    + " Type: " + command.getType());
+            sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
+                    + "Usage: " + command.getHelp());
+            sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
+                    + "--------------------------------------------------");            
         }
     }
     
@@ -112,7 +145,7 @@ public final class Help extends ServerCommand {
     
     /** {@inheritDoc}. */
     public String getHelp() {
-        return "help - shows all available client commands";
+        return "help [command] - shows client command help";
     }
     
 }

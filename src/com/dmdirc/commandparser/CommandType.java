@@ -70,4 +70,22 @@ public enum CommandType {
         }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        switch (this) {
+            case TYPE_CHANNEL:
+                return "Channel";
+            case TYPE_CHAT:
+                return "Chat";
+            case TYPE_GLOBAL:
+                return "Global";
+            case TYPE_QUERY:
+                return "Query";
+            case TYPE_SERVER:
+                return "Server";
+            default:
+                return "Unknown";
+        }
+    }
 }
