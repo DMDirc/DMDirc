@@ -55,7 +55,7 @@ public final class AliasCommand extends GlobalCommand {
         }
         
         for (Action alias : AliasWrapper.getAliasWrapper().getActions()) {
-            if (AliasWrapper.getCommandName(alias).equalsIgnoreCase(args[0])) {
+            if (AliasWrapper.getCommandName(alias).substring(1).equalsIgnoreCase(args[0])) {
                 sendLine(origin, isSilent, FORMAT_ERROR, "Alias '" + args[0] + "' already exists.");
                 return;
             }
