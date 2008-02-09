@@ -100,7 +100,8 @@ public class ActionModel {
         this.response = response.clone();
         this.conditions = conditions;
         this.conditionTree = conditionTree;
-        this.newFormat = newFormat;        
+        this.newFormat = newFormat;
+        this.modified = true;
     }
 
     /**

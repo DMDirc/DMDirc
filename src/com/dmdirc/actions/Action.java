@@ -139,6 +139,8 @@ public class Action extends ActionModel implements Serializable {
 
         new File(dir).mkdirs();
 
+        save();
+        
         ActionManager.registerAction(this);
     }
 
