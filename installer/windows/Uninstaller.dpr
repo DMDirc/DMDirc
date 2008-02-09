@@ -74,6 +74,7 @@ var
 	i: Integer;
 	Reg: TRegistry;
 	handlerInfo: String;
+	profileDir: String;
 	deleteProtocol: boolean;
 begin
 	if (ParamCount > 0) then begin
@@ -83,17 +84,21 @@ begin
 		InstallDir := trim(InstallDir);
 		KillDir(InstallDir);
 		hK32 := GetModuleHandle('kernel32');
+		profileDir := GetEnvironmentVariable('USERPROFILE');
+		
 		if GetProcAddress(hK32, 'GetLocaleInfoEx') <> nil then begin
 			// Vista
 			KillDir(GetEnvironmentVariable('APPDATA')+'\Microsoft\Windows\Start Menu\Programs\DMDirc');
 			DeleteFile(GetEnvironmentVariable('USERPROFILE')+'\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\DMDirc.lnk');
 			DeleteFile(GetEnvironmentVariable('USERPROFILE')+'\Desktop\DMDirc.lnk');
+			profileDir := profileDir+'\AppData\Roaming\DMDirc';
 		end
 		else begin
 			// Not Vista
 			KillDir(GetEnvironmentVariable('USERPROFILE')+'\Microsoft\Windows\Start Menu\Programs\DMDirc');
-			DeleteFile(GetEnvironmentVariable('USERPROFILE')+'\Application DataMicrosoft\Internet Explorer\Quick Launch\DMDirc.lnk');
+			DeleteFile(GetEnvironmentVariable('USERPROFILE')+'\Application Data\Microsoft\Internet Explorer\Quick Launch\DMDirc.lnk');
 			DeleteFile(GetEnvironmentVariable('USERPROFILE')+'\Desktop\DMDirc.lnk');
+			profileDir := profileDir+'\Application Data\DMDirc';
 		end;
 		// Remove irc:// handler if it is us.
 		deleteProtocol := false;
@@ -125,6 +130,12 @@ begin
 		Reg.DeleteKey('SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DMDirc');
 		Reg.CloseKey;
 		Reg.Free;
+		
+		if (FileExists(profileDir+'\dmdirc.config')) then begin
+			if MessageBox(0, PChar('A dmdirc profile has been detected ('+profileDir+')'+#13#10+' Do you want to delete it aswell?'), 'DMDirc Uninstaller', MB_YESNO) = IDYES then begin
+				KillDir(profileDir);
+			end;
+		end;
 		
 		MessageBox(0, PChar('DMDirc has been uninstalled from "'+InstallDir+'".'), 'DMDirc Uninstaller', MB_OK);
 	end
