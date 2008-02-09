@@ -195,6 +195,24 @@ public class LinuxInstaller extends Installer {
 
 					writer.println("echo \"Removing Installation Directory\"");
 					writer.println("rm -Rfv \""+location+"\"");
+					
+					
+					writer.println("PROFILEDIR=\"${HOME}/.DMDirc\"");
+					writer.println("if [ -e ${PROFILEDIR}/dmdirc.config ]; then");
+					writer.println("\tif [ \"\" != \"${ISKDE}\" -a \"\" != \"${KDIALOG}\" -a \"\" != \"${DISPLAY}\" ]; then");
+					writer.println("\t\techo \"Dialog Prompt on: ${DISPLAY}\"");
+					writer.println("\t\t${KDIALOG} --title \"DMDirc Uninstaller\" --yesno \"A dmdirc profile has been detected (${PROFILEDIR})\n Do you want to delete it aswell?\"");
+					writer.println("\telif [ \"\" != \"${ISGNOME}\" -a \"\" != \"${ZENITY}\" -a \"\" != \"${DISPLAY}\" ]; then");
+					writer.println("\t\techo \"Dialog Prompt on: ${DISPLAY}\"");
+					writer.println("\t\t${ZENITY} --question --title \"DMDirc Uninstaller\" --text \"A dmdirc profile has been detected (${PROFILEDIR})\n Do you want to delete it aswell\"");
+					writer.println("\telif [ \"\" != \"${DIALOG}\" ]; then");
+					writer.println("\t\t${DIALOG} --title \"DMDirc Uninstaller\" --yesno \"A dmdirc profile has been detected (${PROFILEDIR})\n Do you want to delete it aswell\" 8 40");
+					writer.println("\tfi");
+
+					writer.println("\tif [ $? -eq 0 ]; then");
+					writer.println("\t\trm -Rfv \"${PROFILEDIR}\"");
+					writer.println("\tfi");
+					writer.println("fi");
 
 					writer.println("if [ \"\" != \"${ISKDE}\" -a \"\" != \"${KDIALOG}\" -a \"\" != \"${DISPLAY}\" ]; then");
 					writer.println("	${KDIALOG} --title \"DMDirc Uninstaller\" --msgbox \"DMDirc Uninstalled Successfully\"");
