@@ -22,6 +22,8 @@
 
 package com.dmdirc.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -33,9 +35,69 @@ public class MapListTest extends junit.framework.TestCase {
         assertTrue(test.isEmpty());
 
         test.add("a", "b");
+        assertFalse(test.isEmpty());
         test.removeFromAll("b");
         assertTrue(test.isEmpty());
     }
+    
+    @Test
+    public void testAddCollection() {
+        final MapList<String, String> test = new MapList<String, String>();
+        final List<String> testList = new ArrayList<String>();
+        testList.add("d");
+        testList.add("e");
+        test.add("key", testList);
+        
+        assertTrue(test.containsKey("key"));
+        assertTrue(test.containsValue("key", "d"));
+        assertTrue(test.containsValue("key", "e"));
+    }
+    
+    @Test
+    public void testClear() {
+        final MapList<String, String> test = new MapList<String, String>();
+        test.add("a", "b");
+        test.add("d", "e");
+        test.clear();
+        assertTrue(test.isEmpty());
+    }
+    
+    @Test
+    public void testClearKey() {
+        final MapList<String, String> test = new MapList<String, String>();
+        test.add("a", "b");
+        test.add("d", "e");
+        test.clear("a");
+        assertTrue(test.values("a").isEmpty());
+        assertFalse(test.isEmpty());
+    }
+    
+    @Test
+    public void testRemove() {
+        final MapList<String, String> test = new MapList<String, String>();
+        test.add("a", "b");
+        test.add("d", "e");
+        test.remove("z", "b");
+        
+        assertEquals(2, test.keySet().size());
+        assertEquals(1, test.values("a").size());
+        assertEquals(1, test.values("d").size());
+        
+        test.remove("a", "b");
+        assertEquals(2, test.keySet().size());
+        assertEquals(0, test.values("a").size());
+        assertEquals(1, test.values("d").size());        
+    }    
+    
+    @Test
+    public void testKeySet() {
+        final MapList<String, String> test = new MapList<String, String>();
+        test.add("a", "b");
+        test.add("d", "e");
+        assertEquals(2, test.keySet().size());
+        assertTrue(test.keySet().contains("a"));
+        assertTrue(test.keySet().contains("d"));
+    }    
 
     @Test
     public void testContainsKey() {
