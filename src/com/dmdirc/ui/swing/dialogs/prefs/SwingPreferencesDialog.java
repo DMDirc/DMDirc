@@ -39,7 +39,6 @@ import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
-import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -454,7 +453,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             }
 
             panels.add((JPanel) category.getObject());
-            categories.get(category).add((JPanel) category.getObject());
+            categories.get(category).add((JPanel) category.getObject(), "growx");
 
             return;
         }
