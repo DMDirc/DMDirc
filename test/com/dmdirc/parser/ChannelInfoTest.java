@@ -21,6 +21,7 @@
  */
 package com.dmdirc.parser;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
@@ -79,7 +80,8 @@ public class ChannelInfoTest extends junit.framework.TestCase {
         final TestParser parser = new TestParser();
         getChannelInfo(parser).sendMessage("hello");
 
-        assertEquals(1, parser.sentLines.size());
+        assertEquals("Parser should output 1 line. Actual output: "
+                + Arrays.toString(parser.sentLines.toArray()), 1, parser.sentLines.size());
         assertEquals("PRIVMSG #DMDirc_testing :hello", parser.sentLines.get(0));
     }
 
@@ -88,7 +90,8 @@ public class ChannelInfoTest extends junit.framework.TestCase {
         final TestParser parser = new TestParser();
         getChannelInfo(parser).sendNotice("hello");
 
-        assertEquals(1, parser.sentLines.size());
+        assertEquals("Parser should output 1 line. Actual output: "
+                + Arrays.toString(parser.sentLines.toArray()), 1, parser.sentLines.size());
         assertEquals("NOTICE #DMDirc_testing :hello", parser.sentLines.get(0));
     }
 
@@ -97,7 +100,8 @@ public class ChannelInfoTest extends junit.framework.TestCase {
         final TestParser parser = new TestParser();
         getChannelInfo(parser).sendCTCP("type", "hello");
 
-        assertEquals(1, parser.sentLines.size());
+        assertEquals("Parser should output 1 line. Actual output: "
+                + Arrays.toString(parser.sentLines.toArray()), 1, parser.sentLines.size());
         assertEquals("PRIVMSG #DMDirc_testing :" + ((char) 1) + "TYPE hello" + ((char) 1),
                 parser.sentLines.get(0));
     }
@@ -107,7 +111,8 @@ public class ChannelInfoTest extends junit.framework.TestCase {
         final TestParser parser = new TestParser();
         getChannelInfo(parser).sendCTCP("type", "");
 
-        assertEquals(1, parser.sentLines.size());
+        assertEquals("Parser should output 1 line. Actual output: "
+                + Arrays.toString(parser.sentLines.toArray()), 1, parser.sentLines.size());
         assertEquals("PRIVMSG #DMDirc_testing :" + ((char) 1) + "TYPE" + ((char) 1),
                 parser.sentLines.get(0));
     }
@@ -117,7 +122,8 @@ public class ChannelInfoTest extends junit.framework.TestCase {
         final TestParser parser = new TestParser();
         getChannelInfo(parser).sendAction("moo");
 
-        assertEquals(1, parser.sentLines.size());
+        assertEquals("Parser should output 1 line. Actual output: "
+                + Arrays.toString(parser.sentLines.toArray()), 1, parser.sentLines.size());
         assertEquals("PRIVMSG #DMDirc_testing :" + ((char) 1) + "ACTION moo" + ((char) 1),
                 parser.sentLines.get(0));
     }
@@ -127,7 +133,8 @@ public class ChannelInfoTest extends junit.framework.TestCase {
         final TestParser parser = new TestParser();
         getChannelInfo(parser).sendCTCPReply("type", "moo");
 
-        assertEquals(1, parser.sentLines.size());
+        assertEquals("Parser should output 1 line. Actual output: "
+                + Arrays.toString(parser.sentLines.toArray()), 1, parser.sentLines.size());
         assertEquals("NOTICE #DMDirc_testing :" + ((char) 1) + "TYPE moo" + ((char) 1),
                 parser.sentLines.get(0));
     }
@@ -137,7 +144,8 @@ public class ChannelInfoTest extends junit.framework.TestCase {
         final TestParser parser = new TestParser();
         getChannelInfo(parser).sendCTCPReply("type", "");
 
-        assertEquals(1, parser.sentLines.size());
+        assertEquals("Parser should output 1 line. Actual output: "
+                + Arrays.toString(parser.sentLines.toArray()), 1, parser.sentLines.size());
         assertEquals("NOTICE #DMDirc_testing :" + ((char) 1) + "TYPE" + ((char) 1),
                 parser.sentLines.get(0));
     }
@@ -151,6 +159,7 @@ public class ChannelInfoTest extends junit.framework.TestCase {
         info.sendCTCP("", "");
         info.sendCTCPReply("", "");
         info.sendMessage("");
+        info.sendNotice("");
 
         assertEquals(0, parser.sentLines.size());
     }    
