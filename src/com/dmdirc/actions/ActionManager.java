@@ -431,7 +431,8 @@ public final class ActionManager {
         assert(type.getType().getArity() == arguments.length);
 
         if (listeners.containsKey(type)) {
-            for (ActionListener listener : listeners.get(type)) {
+            for (ActionListener listener :
+                new ArrayList<ActionListener>(listeners.get(type))) {
                 listener.processEvent(type, format, arguments);
             }
         }
@@ -455,7 +456,7 @@ public final class ActionManager {
         assert(type != null);
 
         if (actions.containsKey(type)) {
-            for (Action action : actions.get(type)) {
+            for (Action action : new ArrayList<Action>(actions.get(type))) {
                 action.trigger(format, arguments);
             }
         }
