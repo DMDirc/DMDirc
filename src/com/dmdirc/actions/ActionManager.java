@@ -118,6 +118,7 @@ public final class ActionManager {
         target.setOrder(500000);
         properties.setProperty("identity.name", "Action defaults");
         defaultsIdentity = new Identity(properties, target);
+        IdentityManager.addIdentity(defaultsIdentity);
         
         // Register a listener for the closing event, so we can save actions
         addListener(new ActionListener() {
