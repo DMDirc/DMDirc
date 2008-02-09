@@ -71,7 +71,8 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
                     sendLine(origin, isSilent, FORMAT_ERROR, "Source not found.");
                 } else {
                     if (source.isRunning()) {
-                        target.sendAction(getInformation(source));
+                        target.getFrame().getCommandParser().parseCommand(origin,
+                                getInformation(source));
                     } else {
                         sendLine(origin, isSilent, FORMAT_ERROR, "Source is not running.");
                     }
@@ -82,7 +83,8 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
             }
         } else {
             if (parent.hasRunningSource()) {
-                target.sendAction(getInformation(parent.getBestSource()));
+                target.getFrame().getCommandParser().parseCommand(origin,
+                        getInformation(parent.getBestSource()));
             } else {
                 sendLine(origin, isSilent, FORMAT_ERROR, "No running media sources available.");
             }
@@ -137,7 +139,7 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
      */ 
     private String getInformation(final MediaSource source) {
         return parent.doSubstitution(IdentityManager.getGlobalConfig()
-                .getOption(NowPlayingPlugin.DOMAIN, "format", "is playing $artist - $title"),
+                .getOption(NowPlayingPlugin.DOMAIN, "format", "/me is playing $artist - $title"),
                 source);
     }
     

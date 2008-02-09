@@ -103,9 +103,9 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
         }
 
         textfield = new JTextField(IdentityManager.getGlobalConfig()
-                .getOption(NowPlayingPlugin.DOMAIN, "format", "is playing $artist - $title"));
+                .getOption(NowPlayingPlugin.DOMAIN, "format", "/me is playing $artist - $title"));
         textfield.addKeyListener(this);
-        preview = new JWrappingLabel("Preview:\n* nick ");
+        preview = new JWrappingLabel("Preview:\n");
 
         setLayout(new MigLayout("fillx, ins 0"));
 
@@ -159,7 +159,7 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
             source = new DummyMediaSource();
         }
 
-        preview.setText("Preview:\n* nick " + plugin.doSubstitution(textfield.getText(),
+        preview.setText("Preview:\n" + plugin.doSubstitution(textfield.getText(),
                 source));
         preview.repaint();
 
