@@ -1,0 +1,21 @@
+# This is a DMDirc configuration file.
+# Written on: Mon Dec 17 23:32:19 GMT 2007
+
+# This section indicates which sections below take key/value
+# pairs, rather than a simple list. It should be placed above
+# any sections that take key/values.
+
+keysections:
+  section one
+
+section alpha:
+  line 1
+  line 2
+
+section one point one:
+  line 1
+
+section one:
+  1=one
+  2=two
+  3=three

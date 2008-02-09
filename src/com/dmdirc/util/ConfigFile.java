@@ -24,6 +24,7 @@ package com.dmdirc.util;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -57,6 +58,15 @@ public class ConfigFile {
      */
     public ConfigFile(final String file) {
         this.file = new TextFile(file);
+    }
+    
+    /**
+     * Creates a new instance of ConfigFile.
+     * 
+     * @param uri The URI of the file to be loaded
+     */
+    public ConfigFile(final URI uri) {
+        this.file = new TextFile(uri);
     }
 
     /**

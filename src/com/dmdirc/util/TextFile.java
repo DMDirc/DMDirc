@@ -29,6 +29,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +50,15 @@ public class TextFile {
      */
     public TextFile(final String filename) {
         file = new File(filename);
+    }
+    
+    /**
+     * Creates a new instance of TextFile for the specified URI.
+     * 
+     * @param uri The URI of the file
+     */
+    public TextFile(final URI uri) {
+        file = new File(uri);
     }
     
     /**
