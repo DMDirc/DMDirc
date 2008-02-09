@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.actions.Action;
+import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.wrappers.Alias;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.CommandManager;
@@ -50,7 +51,15 @@ public final class AliasCommand extends GlobalCommand {
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         if (args.length < 2) {
-            showUsage(origin, isSilent, "alias", "<name> <command>");
+            showUsage(origin, isSilent, "alias", "[--remove] <name> [command]");
+            return;
+        } else if (args[0].equalsIgnoreCase("--remove")) {
+            if (doRemove(args[1])) {
+                sendLine(origin, isSilent, FORMAT_OUTPUT, "Alias '" + args[1] + "' removed.");
+            } else {
+                sendLine(origin, isSilent, FORMAT_ERROR, "Alias '" + args[1] + "' not found.");
+            }
+            
             return;
         }
         
@@ -68,6 +77,24 @@ public final class AliasCommand extends GlobalCommand {
         sendLine(origin, isSilent, FORMAT_OUTPUT, "Alias '" + args[0] + "' created.");
     }
     
+    /**
+     * Removes the alias with the specified name.
+     * 
+     * @param name The name of the alias to remove
+     * @return True if the alias was deleted, false otherwise
+     */
+    private boolean doRemove(final String name) {
+        for (Action alias : AliasWrapper.getAliasWrapper().getActions()) {
+            if (AliasWrapper.getCommandName(alias).substring(1).equalsIgnoreCase(name)) {
+                alias.delete();
+                ActionManager.unregisterAction(alias);
+                
+                return true;
+            }
+        }
+        
+        return false;
+    }
     
     /** {@inheritDoc} */
     @Override
@@ -84,7 +111,7 @@ public final class AliasCommand extends GlobalCommand {
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
-        return "alias <name> <command> - creates an alias for the specified command";
+        return "alias [--remove] <name> [command] - creates or removes the specified alias";
     }
     
 }
