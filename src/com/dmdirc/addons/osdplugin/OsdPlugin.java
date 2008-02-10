@@ -137,6 +137,12 @@ public final class OsdPlugin extends Plugin implements CategoryChangeListener,
     /** {@inheritDoc} */
     @Override
     public void settingChanged(final PreferencesSetting setting) {
+        if (osdWindow == null) {
+            // They've changed categories but are somehow poking settings.
+            // Ignore the request.
+            return;
+        }
+        
         if (setting.equals(fontSizeSetting)) {
             osdWindow.setFontSize(Integer.parseInt(setting.getValue()));
         } else if (setting.equals(backgroundSetting)) {
