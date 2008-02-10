@@ -162,6 +162,10 @@ public class PreferencesSetting {
         
         current = IdentityManager.getGlobalConfig().getOption(domain, option, fallback);
         original = current;
+        
+        if (!combooptions.containsKey(current)) {
+            combooptions.put(current, "Current (" + current + ")");
+        }
     }    
 
     /**
