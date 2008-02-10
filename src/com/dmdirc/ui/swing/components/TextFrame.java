@@ -193,6 +193,9 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             @Override
             public void run() {
                 TextFrame.super.setTitle(title);
+                if (isMaximum()) {
+                    Main.getUI().getMainWindow().setTitle(Main.getUI().getMainWindow().getTitlePrefix() + " - " + title);
+                }
             }
         });
     }
