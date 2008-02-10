@@ -244,10 +244,6 @@ public final class Query extends MessageTarget implements
         final String title = ClientInfo.parseHost(host);
 
         window.setTitle(title);
-
-        if (window.isMaximum() && window.equals(Main.getUI().getMainWindow().getActiveFrame())) {
-            Main.getUI().getMainWindow().setTitle(Main.getUI().getMainWindow().getTitlePrefix() + " - " + title);
-        }
     }
 
     /**

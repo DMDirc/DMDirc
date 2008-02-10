@@ -303,12 +303,6 @@ public final class Channel extends MessageTarget
         }
 
         window.setTitle(temp);
-
-        if (window.isMaximum()
-                && window.equals(Main.getUI().getMainWindow().getActiveFrame())) {
-            Main.getUI().getMainWindow().setTitle(
-                    Main.getUI().getMainWindow().getTitlePrefix() + " - " + temp);
-        }
     }
 
     /**

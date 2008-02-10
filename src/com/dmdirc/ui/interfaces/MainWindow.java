@@ -23,7 +23,6 @@
 package com.dmdirc.ui.interfaces;
 
 import javax.swing.ImageIcon;
-import javax.swing.JMenuItem;
 
 /**
  * Main window interface.
@@ -48,7 +47,9 @@ public interface MainWindow {
      * Returns the window that is currently active.
      *
      * @return The active window
+     * @deprecated Use SwingController.getActiveWindow() instead
      */
+    @Deprecated
     Window getActiveFrame();
     
     /**
@@ -77,13 +78,6 @@ public interface MainWindow {
      * @return Titlebar prefix
      */
     String getTitlePrefix();
-    
-    /**
-     * Sets the main window's title.
-     * 
-     * @param newTitle The new title to use for the main window.
-     */
-    void setTitle(final String newTitle);
     
     /**
      * Shows or hides the main window.

@@ -100,11 +100,6 @@ public final class DummyMainWindow implements MainWindow {
     }
     
     /** {@inheritDoc} */
-    public void setTitle(final String newTitle) {
-        // Do nothing
-    }
-    
-    /** {@inheritDoc} */
     public void setVisible(final boolean visible) {
         this.visible = visible;
     }
