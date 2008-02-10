@@ -50,7 +50,7 @@ public class PreferencesManager {
     /** A list of categories. */
     private final List<PreferencesCategory> categories
             = new ArrayList<PreferencesCategory>();
-    
+
     /** A list of listeners. */
     private final ListenerList listeners = new ListenerList();
 
@@ -59,7 +59,7 @@ public class PreferencesManager {
      */
     public PreferencesManager() {
         addDefaultCategories();
-        
+
         ActionManager.processEvent(CoreActionType.CLIENT_PREFS_OPENED, null, this);
     }
 
@@ -80,10 +80,10 @@ public class PreferencesManager {
     public List<PreferencesCategory> getCategories() {
         return categories;
     }
-    
+
     /**
      * Finds and retrieves the category with the specified name.
-     * 
+     *
      * @param name The name (title) of the category to find.
      * @return The appropriate category, or null if none was found
      */
@@ -93,7 +93,7 @@ public class PreferencesManager {
                 return category;
             }
         }
-        
+
         return null;
     }
 
@@ -234,45 +234,62 @@ public class PreferencesManager {
     private void addNotificationsCategory(final PreferencesCategory parent) {
         final PreferencesCategory category = new PreferencesCategory("Notifications", "");
 
-        final Map<String, String> optionsOne = new HashMap<String, String>();
-        final Map<String, String> optionsTwo = new HashMap<String, String>();
+        final Map<String, String> options = new HashMap<String, String>();
+        final Map<String, String> whoisOptions = new HashMap<String, String>();
+        final Map<String, String> ctcprOptions = new HashMap<String, String>();
+        final Map<String, String> mapOptions = new HashMap<String, String>();
 
-        optionsOne.put("all", "All");
-        optionsOne.put("active", "Active");
-        optionsOne.put("server", "Server");
-        optionsOne.put("none", "Nowhere");
+        options.put("all", "All windows");
+        options.put("active", "Active window");
+        options.put("server", "Server window");
+        options.put("none", "Nowhere");
 
-        optionsTwo.put("all", "All");
-        optionsTwo.put("active", "Active");
-        optionsTwo.put("server", "Server");
-        optionsTwo.put("lastcommand:whois %4$s( %4$s)?", "Source of command");
-        optionsTwo.put("none", "Nowhere");
+        whoisOptions.putAll(options);
+        whoisOptions.put("lastcommand:whois %4$s( %4$s)?", "Source of whois command");
+
+        ctcprOptions.putAll(options);
+        ctcprOptions.put("lastcommand:ctcp %1$s %4$S", "Source of ctcp command");
+
+        mapOptions.putAll(options);
+        mapOptions.put("window:Network Map", "Map window");
 
         category.addSetting(new PreferencesSetting("notifications", "socketClosed",
                 "server", "Socket closed", "Where to display socket closed notifications",
-                optionsOne));
+                options));
         category.addSetting(new PreferencesSetting("notifications", "privateNotice",
                 "server", "Private notice", "Where to display private notices",
-                optionsOne));
+                options));
         category.addSetting(new PreferencesSetting("notifications", "privateCTCP",
                 "server", "CTCP request", "Where to display CTCP request notifications",
-                optionsOne));
+                options));
         category.addSetting(new PreferencesSetting("notifications", "privateCTCPreply",
                 "server", "CTCP reply", "Where to display CTCP replies",
-                optionsOne));
+                ctcprOptions));
         category.addSetting(new PreferencesSetting("notifications", "connectError",
                 "server", "Connect error", "Where to display connect error notifications",
-                optionsOne));
+                options));
         category.addSetting(new PreferencesSetting("notifications", "connectRetry",
                 "server", "Connect retry", "Where to display connect retry notifications",
-                optionsOne));
+                options));
         category.addSetting(new PreferencesSetting("notifications", "stonedServer",
                 "server", "Stoned server", "Where to display stoned server notifications",
-                optionsOne));
+                options));
         category.addSetting(new PreferencesSetting("notifications", "whois",
                 "lastcommand:whois %4$s( %4$s)?", "Whois output", "Where to " +
                 "display /whois output",
-                optionsTwo));
+                whoisOptions));
+        category.addSetting(new PreferencesSetting("notifications", "lusers",
+                "server", "Lusers output", "Where to display /lusers output",
+                options));
+        category.addSetting(new PreferencesSetting("notifications", "map",
+                "window:Network Map", "Map output", "Where to display /map output",
+                mapOptions));
+        category.addSetting(new PreferencesSetting("notifications", "away",
+                "server", "Away notification", "Where to display /away output",
+                options));
+        category.addSetting(new PreferencesSetting("notifications", "back",
+                "server", "Back notification", "Where to display /away output",
+                options));
 
         parent.addSubCategory(category);
     }
@@ -318,10 +335,10 @@ public class PreferencesManager {
         final Map<String, String> framemanagers = new HashMap<String, String>();
         final Map<String, String> fmpositions = new HashMap<String, String>();
         final PreferencesCategory category = new PreferencesCategory("GUI", "");
-        
+
         framemanagers.put("treeview", "Treeview");
         framemanagers.put("buttonbar", "Button bar");
-        
+
         fmpositions.put("top", "Top");
         fmpositions.put("bottom", "Bottom");
         fmpositions.put("left", "Left");
@@ -351,11 +368,11 @@ public class PreferencesManager {
                 "Default background colour to use for input fields"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
                 "ui", "inputforegroundcolour", "false:1", "Input foreground colour",
-                "Default foreground colour to use for input fields"));        
+                "Default foreground colour to use for input fields"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "showcolourdialog", "false", "Show colour dialog",
                 "Show colour picker dialog when using colour control codes?"));
-        category.addSetting(new PreferencesSetting("ui", "lookandfeel", 
+        category.addSetting(new PreferencesSetting("ui", "lookandfeel",
                 sysLafName, "Look and feel", "The Java look and feel to use",
                 lafs).setRestartNeeded());
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
@@ -366,63 +383,63 @@ public class PreferencesManager {
                 "Automatically maximise newly opened windows?"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "shownickcoloursintext", "false", "Show nick colours in text area",
-                "Show nickname colours in text areas?"));        
+                "Show nickname colours in text areas?"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "shownickcoloursinnicklist", "false", "Show nick colours in nicklists",
                 "Show nickname colours in channel nicklists?"));
-        category.addSetting(new PreferencesSetting("ui", "framemanager", 
+        category.addSetting(new PreferencesSetting("ui", "framemanager",
                 "treeview", "Window manager", "Which window manager should be used?",
                 framemanagers).setRestartNeeded());
-        category.addSetting(new PreferencesSetting("ui", "framemanagerPosition", 
+        category.addSetting(new PreferencesSetting("ui", "framemanagerPosition",
                 "left", "Window manager position", "Where should the window " +
                 "manager be positioned?", fmpositions).setRestartNeeded());
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "stylelinks", "true", "Style links",
                 "Style links in text areas"));
-        
+
         addThemesCategory(category);
         addNicklistCategory(category);
         addTreeviewCategory(category);
         addCategory(category);
     }
-    
+
     /**
      * Creates and adds the "Themes" category.
-     * 
+     *
      * @param parent The parent category
      */
     private void addThemesCategory(final PreferencesCategory parent) {
         final PreferencesCategory category = new PreferencesCategory("Themes", "");
-                
+
         final Map<String, String> themes = new HashMap<String, String>();
-        
+
         for (Map.Entry<String, Theme> entry
                 : new ThemeManager().getAvailableThemes().entrySet()) {
             if (entry.getKey().indexOf('/') == -1) {
                 themes.put(entry.getKey(), entry.getKey());
             } else {
-                themes.put(entry.getKey(), 
+                themes.put(entry.getKey(),
                         entry.getKey().substring(entry.getKey().lastIndexOf('/'),
                         entry.getKey().length()));
             }
         }
-                
+
         themes.put("", "None");
-        
+
         category.addSetting(new PreferencesSetting("general", "theme", "",
                 "Theme", "DMDirc theme to use", themes));
-        
+
         parent.addSubCategory(category);
     }
-    
+
     /**
      * Creates and adds the "Nicklist" category.
-     * 
+     *
      * @param parent The parent category
      */
     private void addNicklistCategory(final PreferencesCategory parent) {
         final PreferencesCategory category = new PreferencesCategory("Nicklist", "");
-        
+
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
                 "ui", "nicklistbackgroundcolour", "false:0", "Nicklist background colour",
                 "Background colour to use for the nicklist"));
@@ -441,15 +458,15 @@ public class PreferencesManager {
 
         parent.addSubCategory(category);
     }
-    
+
     /**
      * Creates and adds the "Treeview" category.
-     * 
+     *
      * @param parent The parent category
      */
     private void addTreeviewCategory(final PreferencesCategory parent) {
         final PreferencesCategory category = new PreferencesCategory("Treeview", "");
-        
+
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
                 "treeview", "backgroundcolour", "false:0", "Treeview background colour",
                 "Background colour to use for the treeview"));
@@ -470,20 +487,20 @@ public class PreferencesManager {
                 "Make the active node bold?"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
                 "ui", "treeviewActiveBackground", "false:0", "Active node background",
-                "Background colour to use for active treeview node"));        
+                "Background colour to use for active treeview node"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
                 "ui", "treeviewActiveForeground", "false:1", "Active node foreground",
                 "Foreground colour to use for active treeview node"));
 
         parent.addSubCategory(category);
     }
-    
+
     /**
      * Creates and adds the "Plugins" category.
      */
     private void addPluginsCategory() {
         // TODO: Abstract the panel
-        
+
         addCategory(new PreferencesCategory("Plugins", "", new PluginPanel()));
     }
 
@@ -506,16 +523,16 @@ public class PreferencesManager {
                 "Configure how DMDirc handles different types of URLs",
                 new URLConfigPanel()));
     }
-    
+
     /**
      * Registers the specified save listener with this manager.
-     * 
+     *
      * @param listener The listener to be registered
      */
     public void registerSaveListener(final PreferencesInterface listener) {
         listeners.add(PreferencesInterface.class, listener);
     }
-    
+
     /**
      * Fires the "save" methods of all registered listeners.
      */
@@ -523,25 +540,25 @@ public class PreferencesManager {
         for (PreferencesInterface iface : listeners.get(PreferencesInterface.class)) {
             iface.save();
         }
-        
+
         for (PreferencesCategory category : categories) {
             fireSaveListener(category);
         }
     }
-    
+
     /**
      * Fires the save listener for any objects within the specified category.
-     * 
+     *
      * @param category The category to check
      */
     private void fireSaveListener(final PreferencesCategory category) {
         if (category.hasObject()) {
             category.getObject().save();
         }
-        
+
         for (PreferencesCategory subcategory : category.getSubcats()) {
             fireSaveListener(subcategory);
-        }        
+        }
     }
 
 }
