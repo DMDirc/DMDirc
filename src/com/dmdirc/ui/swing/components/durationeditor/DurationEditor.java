@@ -20,9 +20,10 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.components;
+package com.dmdirc.ui.swing.components.durationeditor;
 
-import javax.swing.JComponent;
+import com.dmdirc.ui.swing.components.StandardDialog;
+import java.awt.Frame;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
@@ -32,8 +33,15 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Duration editor component.
  */
-public class DurationEditor extends JComponent implements ChangeListener {
+public class DurationEditor extends StandardDialog implements ChangeListener {
 
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
+    
     private long duration;
     private JSpinner yearsSpinner;
     private JSpinner monthsSpinner;
@@ -49,6 +57,7 @@ public class DurationEditor extends JComponent implements ChangeListener {
     }
 
     public DurationEditor(final long duration) {
+        super((Frame) null, false);
         this.duration = duration;
         
         initComponents();

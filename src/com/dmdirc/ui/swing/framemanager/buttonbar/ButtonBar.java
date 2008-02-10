@@ -287,7 +287,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
      * @param e The action event associated with this action
      */
     public void actionPerformed(final ActionEvent e) {
-        final Window active = Main.getUI().getMainWindow().getActiveFrame();
+        final Window active = Main.getUI().getActiveWindow();
         
         for (Map.Entry<FrameContainer, JToggleButton> entry : buttons.entrySet()) {
             if (entry.getValue().equals(e.getSource())) {

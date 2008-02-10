@@ -132,7 +132,7 @@ public abstract class FrameContainer {
      * @param colour The colour to use for the notification
      */
     public void sendNotification(final Color colour) {
-        final Window activeFrame = Main.getUI().getMainWindow().getActiveFrame();
+        final Window activeFrame = Main.getUI().getActiveWindow();
 
         if (activeFrame != null && !activeFrame.equals(getFrame())
                 && !colour.equals(notification)) {

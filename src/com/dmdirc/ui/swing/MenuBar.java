@@ -200,9 +200,9 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         } else if (e.getActionCommand().equals("Aliases")) {
             AliasManagerDialog.showAliasManagerDialog();
         } else if (e.getActionCommand().equals("Minimise")) {
-            ((TextFrame) Main.getUI().getMainWindow().getActiveFrame()).minimise();
+            ((TextFrame) Main.getUI().getActiveWindow()).minimise();
         } else if (e.getActionCommand().equals("Close")) {
-            ((TextFrame) Main.getUI().getMainWindow().getActiveFrame()).close();
+            ((TextFrame) Main.getUI().getActiveWindow()).close();
         } else if (e.getActionCommand().equals("JoinDevChat")) {
             ServerManager.getServerManager().joinDevChat();
         } else if (e.getActionCommand().equals("feedback")) {

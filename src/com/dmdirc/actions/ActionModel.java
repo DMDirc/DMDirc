@@ -136,14 +136,14 @@ public class ActionModel {
             return;
         }
 
-        final Window active = Main.getUI().getMainWindow().getActiveFrame();
+        final Window active = Main.getUI().getActiveWindow();
         InputWindow cw;
         CommandParser cp;
 
         if (arguments.length > 0 && arguments[0] instanceof WritableFrameContainer) {
             cw = ((WritableFrameContainer) arguments[0]).getFrame();
         } else if (active instanceof InputWindow) {
-            cw = (InputWindow) Main.getUI().getMainWindow().getActiveFrame();
+            cw = (InputWindow) Main.getUI().getActiveWindow();
         } else if (ServerManager.getServerManager().numServers() > 0) {
             cw = ServerManager.getServerManager().getServers().get(0).getFrame();
         } else {

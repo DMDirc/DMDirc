@@ -124,7 +124,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 	 * Update the window status using the current active window.
 	 */
 	public void updateStatus() {
-		Window active = Main.getUI().getMainWindow().getActiveFrame();
+		Window active = Main.getUI().getActiveWindow();
 
 		if (active != null) {
 			FrameContainer activeFrame = ((InputWindow) active).getContainer();

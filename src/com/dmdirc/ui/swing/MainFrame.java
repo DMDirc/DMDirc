@@ -217,7 +217,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     public ImageIcon getIcon() {
         return imageIcon;
     }
-
+    
     /** {@inheritDoc}. */
     @Override
     public Window getActiveFrame() {

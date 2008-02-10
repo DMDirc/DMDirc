@@ -50,7 +50,7 @@ public final class Echo extends GlobalCommand {
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         if (args.length > 0 && args[0].equalsIgnoreCase("--active")) {
-            final Window frame = Main.getUI().getMainWindow().getActiveFrame();
+            final Window frame = Main.getUI().getActiveWindow();
             if (frame instanceof InputWindow) {
                 ((InputWindow) frame).addLine(FORMAT_OUTPUT, implodeArgs(1,
                         args));

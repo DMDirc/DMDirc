@@ -100,7 +100,7 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {
         if (!useAlternate && type.equals(CoreActionType.SERVER_GOTPING)) {
-            final Window active = Main.getUI().getMainWindow().getActiveFrame();
+            final Window active = Main.getUI().getActiveWindow();
             final String value = formatTime(arguments[1]);
             
             pings.put(((Server) arguments[0]), value);
@@ -109,7 +109,7 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
                 label.setText(value);
             }
         } else if (!useAlternate && type.equals(CoreActionType.SERVER_NOPING)) {
-            final Window active = Main.getUI().getMainWindow().getActiveFrame();
+            final Window active = Main.getUI().getActiveWindow();
             final String value = formatTime(arguments[1]) + "+";
             
             pings.put(((Server) arguments[0]), value);
@@ -118,7 +118,7 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
                 label.setText(value);
             }
         } else if (type.equals(CoreActionType.SERVER_DISCONNECTED)) {
-            final Window active = Main.getUI().getMainWindow().getActiveFrame();
+            final Window active = Main.getUI().getActiveWindow();
             
             if (((Server) arguments[0]).ownsFrame(active)) {
                 label.setText("Not connected");
@@ -144,7 +144,7 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
                 final long sent = Long.parseLong(((String[]) arguments[2])[3].substring(9));
                 final Long duration = Long.valueOf(new Date().getTime() - sent);
                 final String value = formatTime(duration);
-                final Window active = Main.getUI().getMainWindow().getActiveFrame();
+                final Window active = Main.getUI().getActiveWindow();
                 
                 pings.put((Server) arguments[0], value);
                 

@@ -47,7 +47,7 @@ public final class Active extends GlobalCommand {
             final String... args) {
         final String command = implodeArgs(args);
         
-        final InputWindow window = (InputWindow) Main.getUI().getMainWindow().getActiveFrame();
+        final InputWindow window = (InputWindow) Main.getUI().getActiveWindow();
         
         if (window != null) {
             window.getCommandParser().parseCommand(window, command);

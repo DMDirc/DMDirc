@@ -70,7 +70,7 @@ public final class SwingController implements UIController {
     /** Singleton instance of MainFrame. */
     private static MainFrame me;
     /** Status bar. */
-    private SwingStatusBar statusBar;
+    private static SwingStatusBar statusBar;
     /** Wizard. */
     private SwingFirstRunWizard wizard;
 
@@ -82,6 +82,15 @@ public final class SwingController implements UIController {
     /** {@inheritDoc} */
     @Override
     public synchronized MainFrame getMainWindow() {
+        return getMainFrame();
+    }
+    
+    /**
+     * Retrieves the main window used by this UI.
+     *
+     * @return This UI's main window
+     */
+    public synchronized static MainFrame getMainFrame() {
         if (me == null) {
             try {
                 SwingUtilities.invokeAndWait(new Runnable() {

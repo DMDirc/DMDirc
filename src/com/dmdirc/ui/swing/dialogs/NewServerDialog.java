@@ -141,7 +141,7 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
         serverField.requestFocus();
 
         if (ServerManager.getServerManager().numServers() == 0 || Main.getUI().
-                getMainWindow().getActiveFrame() == null) {
+                getActiveWindow() == null) {
             newServerWindowCheck.setSelected(true);
             newServerWindowCheck.setEnabled(false);
         } else {
@@ -256,12 +256,11 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
 
         // Open in a new window?
         if (newServerWindowCheck.isSelected() || ServerManager.getServerManager().
-                numServers() == 0 || Main.getUI().getMainWindow().
-                getActiveFrame() == null) {
+                numServers() == 0 || Main.getUI().getActiveWindow() == null) {
             new Server(host, port, pass, sslCheck.isSelected(), profile);
         } else {
             final Window active =
-                    Main.getUI().getMainWindow().getActiveFrame();
+                    Main.getUI().getActiveWindow();
             final Server server = ServerManager.getServerManager().
                     getServerFromFrame(active);
             if (server == null) {

@@ -35,6 +35,7 @@ import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.IRCTextAttribute;
 import com.dmdirc.ui.swing.MainFrame;
+import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.ui.swing.actions.SearchAction;
 import com.dmdirc.ui.swing.textpane.TextPane;
 import com.dmdirc.ui.swing.textpane.TextPaneListener;
@@ -193,9 +194,6 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             @Override
             public void run() {
                 TextFrame.super.setTitle(title);
-                if (isMaximum()) {
-                    Main.getUI().getMainWindow().setTitle(Main.getUI().getMainWindow().getTitlePrefix() + " - " + title);
-                }
             }
         });
     }
