@@ -135,7 +135,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         groups.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         edit.setEnabled(false);
         delete.setEnabled(false);
-        
+
         info.setVisible(false);
         settings.setVisible(false);
 
@@ -166,7 +166,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         groupPanel.add(edit, "sgx button, w 200");
         groupPanel.add(delete, "sgx button, w 200");
 
-        setLayout(new MigLayout("fill, wrap 2, hidemode 2"));
+        setLayout(new MigLayout("fill, wrap 2, hidemode 3, nocache"));
 
         groupPanel.setBorder(BorderFactory.createTitledBorder(groupPanel.getBorder(),
                 "Groups"));
@@ -179,9 +179,9 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
 
         add(infoLabel, "spanx 2");
         add(groupPanel, "growy, spany 3");
-        add(info, "grow");
+        add(info, "growx");
         add(actions, "grow");
-        add(settings, "grow");
+        add(settings, "growx");
         add(getRightButton(), "skip, right, sgx button");
     }
 
@@ -193,7 +193,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
             ((DefaultListModel) groups.getModel()).addElement(group);
         }
     }
-    
+
     /**
      * Changes the active group.
      * 
@@ -203,7 +203,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         info.setActionGroup(group);
         actions.setActionGroup(group);
         settings.setActionGroup(group);
-        
+
         info.setVisible(info.shouldDisplay());
         settings.setVisible(settings.shouldDisplay());
     }

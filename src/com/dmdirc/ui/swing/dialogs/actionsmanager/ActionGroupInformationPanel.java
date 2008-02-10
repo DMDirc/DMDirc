@@ -91,7 +91,7 @@ public class ActionGroupInformationPanel extends JPanel {
 
         infoLabel.setMaximumSize(new Dimension(400, 0));
 
-        add(infoLabel, "span 2, grow");
+        add(infoLabel, "span 2, growx");
         add(new JLabel("Author: "), "");
         add(author, "growx, pushx");
         add(new JLabel("Version: "), "");
