@@ -101,7 +101,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** The frame manager that's being used. */
     private FrameManager mainFrameManager;
     /** Dekstop pane. */
-    private JDesktopPane desktopPane;
+    private DMDircDesktopPane desktopPane;
     /** Main panel. */
     private JPanel frameManagerPanel;
     /** Frame manager position. */
@@ -354,7 +354,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         final JPanel panel = new JPanel();
 
         frameManagerPanel = new JPanel();
-        desktopPane = new JDesktopPane();
+        desktopPane = new DMDircDesktopPane();
         desktopPane.setBackground(new Color(238, 238, 238));
         statusBar = new SwingStatusBar();
 
@@ -624,10 +624,20 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void addWindow(final FrameContainer window) {
+        addWindow(window, desktopPane.getAllFrames().length - 1);
+    }
+    
+    /**
+     * Adds a window to this frame manager.
+     * 
+     * @param window The server to be added
+     * @param index Index of the window to be added
+     */
+    public void addWindow(final FrameContainer window, final int index) {
         final JInternalFrame frame = (JInternalFrame) window.getFrame();
 
         // Add the frame
-        desktopPane.add(frame);
+        desktopPane.add(frame, index);
 
         // Make sure it'll fit with our offsets
         if (frame.getWidth() + xOffset > desktopPane.getWidth()) {
@@ -639,7 +649,6 @@ public final class MainFrame extends JFrame implements WindowListener,
 
         // Position the frame
         frame.setLocation(xOffset, yOffset);
-        frame.moveToFront();
 
         // Increase the offsets
         xOffset += FRAME_OPENING_OFFSET;
