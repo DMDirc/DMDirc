@@ -24,6 +24,7 @@
 
 package com.dmdirc.parser;
 
+import java.util.ArrayList;
 import com.dmdirc.parser.callbacks.CallbackOnChannelQuit;
 import com.dmdirc.parser.callbacks.CallbackOnQuit;
 
@@ -54,7 +55,8 @@ public class ProcessQuit extends IRCProcessor {
 		String sReason = "";
 		if (token.length > 2) { sReason = token[token.length-1]; }
 		
-		for (ChannelInfo iChannel : myParser.getChannels()) {
+		ArrayList<ChannelInfo> channelList = new ArrayList(myParser.getChannels());
+		for (ChannelInfo iChannel : channelList) {
 			iChannelClient = iChannel.getUser(iClient);
 			if (iChannelClient != null) {
 				if (myParser.removeAfterCallback) { callChannelQuit(iChannel,iChannelClient,sReason); }
