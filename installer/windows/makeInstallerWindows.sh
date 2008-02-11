@@ -266,7 +266,7 @@ if [ "" != "${jre}" ]; then
 fi;
 DELETEFILES=${FILES}
 FPC=`which fpc`
-lazarusDir="/usr/lib/lazarus"
+lazarusDir="/usr/share/lazarus"
 compilerFlags="-Sd -Twin32 ${compilerFlags}";
 if [ ! -e "Setup.exe"  -o "${compileSetup}" = "true" ]; then
 	echo "Setup.exe does not exist. Lets try and compile it."
