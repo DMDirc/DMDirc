@@ -280,6 +280,10 @@ if [ ! -e "Setup.exe"  -o "${compileSetup}" = "true" ]; then
 			echo "Using Lazarus"
 			mkdir -p ${PWD}/lazarus-build
 			extraFlags="-dLAZARUS -FU${PWD}/lazarus-build -Fu${PWD}/lazarus-build -Fu${lazarusDir}/lcl/widgetset/ -Fu${lazarusDir}/lcl/interfaces/win32/ -Fu${lazarusDir}/lcl/ -Fi${lazarusDir}/lcl/include/"
+		else
+			echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@";
+			echo "@        Building installer *WITHOUT* lazarus.        @";
+			echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@";
 		fi;
 		${FPC} ${compilerFlags} ${extraFlags} Setup.dpr
 		if [ $? -ne 0 ]; then
