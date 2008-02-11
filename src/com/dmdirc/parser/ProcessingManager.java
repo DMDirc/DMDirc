@@ -202,7 +202,7 @@ public class ProcessingManager {
 		} catch (ProcessorNotFoundException p) {
 			throw p;
 		} catch (Exception e) {
-			final ParserError ei = new ParserError(ParserError.ERROR_WARNING,"Exception in Parser. [Param: "+sParam+"] [Processor: "+messageProcessor+"]", myParser.getLastLine());
+			final ParserError ei = new ParserError(ParserError.ERROR_WARNING,"Exception in Parser. ["+messageProcessor+"]: "+e.getMessage(), myParser.getLastLine());
 			ei.setException(e);
 			myParser.callErrorInfo(ei);
 		} finally {
