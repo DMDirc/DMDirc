@@ -18,7 +18,7 @@ begin
 		dwFlags := STARTF_USESHOWWINDOW;
 		wShowWindow := SW_SHOWNORMAL;
 	end;
-	MessageBox(0, pchar('Foo: '+sProgramToRun), 'Update Failed', MB_ICONSTOP);
+	// MessageBox(0, pchar('Foo: '+sProgramToRun), 'Update Failed', MB_ICONSTOP);
 	CreateProcess(nil, PChar(sProgramToRun), nil, nil, False, NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo, ProcessInfo);
 end;
 
