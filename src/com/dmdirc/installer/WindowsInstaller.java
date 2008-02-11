@@ -53,6 +53,20 @@ public class WindowsInstaller extends Installer {
 		}
 		return result;
 	}
+	
+	/**
+	 * Is the given file name vaild to copy to the installation directory?
+	 *
+	 * @param filename File to check
+	 * @return true If the file should be copied, else false.
+	 */
+	public boolean validFile(final String filename) {
+		return (!filename.equalsIgnoreCase("setup.exe") &&
+		        !filename.equalsIgnoreCase("jre.exe") &&
+		        !filename.equalsIgnoreCase("wget.exe") &&
+		        !filename.equalsIgnoreCase("wgetoutput") &&
+		        !filename.equalsIgnoreCase("shortcut.exe"));
+	}
 
 	/**
 	 * Are we running vista? -_-

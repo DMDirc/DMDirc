@@ -40,6 +40,16 @@ public class LinuxInstaller extends Installer {
 	private boolean isRoot() {
 		return (CLIParser.getCLIParser().getParamNumber("-isroot") > 0);
 	}
+	
+	/**
+	 * Is the given file name vaild to copy to the installation directory?
+	 *
+	 * @param filename File to check
+	 * @return true If the file should be copied, else false.
+	 */
+	public boolean validFile(final String filename) {
+		return (!filename.equalsIgnoreCase("setup.sh"));
+	}
 
 	/**
 	 * Get the default install location

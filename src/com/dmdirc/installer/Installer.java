@@ -71,6 +71,14 @@ public abstract class Installer extends Thread {
 	}
 	
 	/**
+	 * Is the given file name vaild to copy to the installation directory?
+	 *
+	 * @param filename File to check
+	 * @return true If the file should be copied, else false.
+	 */
+	public abstract boolean validFile(final String filename);
+	
+	/**
 	 * Main Setup stuff
 	 *
 	 * @param location Location where app will be installed to.
@@ -88,9 +96,7 @@ public abstract class Installer extends Thread {
 				public boolean accept(File dir, String name) {
 					return !name.startsWith(".") &&
 					       !name.equalsIgnoreCase("installer.jar") &&
-					       !name.equalsIgnoreCase("setup.exe") &&
-					       !name.equalsIgnoreCase("setup.sh") &&
-					       !name.equalsIgnoreCase("shortcut.exe");
+					       validFile(name);
 				}
 			};
 			String[] children = dir.list(filter);
