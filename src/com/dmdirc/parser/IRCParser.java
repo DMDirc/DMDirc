@@ -1453,7 +1453,7 @@ public class IRCParser implements Runnable {
 	 * @param sChannelName Name of channel to join
 	 */
 	public void joinChannel(final String sChannelName) {
-		joinChannel(sChannelName, "", false);
+		joinChannel(sChannelName, "", true);
 	}
 
 	/**
@@ -1475,7 +1475,7 @@ public class IRCParser implements Runnable {
 	 * @param sKey Key to use to try and join the channel
 	 */
 	public void joinChannel(final String sChannelName, final String sKey) {
-		joinChannel(sChannelName, sKey, false);
+		joinChannel(sChannelName, sKey, true);
 	}
 
 	/**
