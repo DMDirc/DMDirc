@@ -67,6 +67,28 @@ public abstract class ConfigSource {
             final String fallback) {
         return hasOption(domain, option) ? getOption(domain, option) : fallback;
     }
+    
+    /**
+     * Retrieves the specified option as a character.
+     *
+     * @param domain The domain of the option
+     * @param option The name of the option
+     * @param fallback Value to use if the option isn't set
+     * @return The value of the option
+     */
+    public char getOptionChar(final String domain, final String option,
+            final char fallback) {
+        
+        if (hasOption(domain, option)) {
+            final String value = getOption(domain, option);
+            
+            if (!value.isEmpty()) {
+                return value.charAt(0);
+            }
+        }
+        
+        return fallback;
+    }    
 
     /**
      * Retrieves a colour representation of the specified option.
