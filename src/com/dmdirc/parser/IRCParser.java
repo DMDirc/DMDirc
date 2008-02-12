@@ -1496,7 +1496,7 @@ public class IRCParser implements Runnable {
 					if (!chantypes.isEmpty()) {
 						channelName = chantypes.charAt(0)+sChannelName;
 					} else {
-						return;
+						channelName = "#"+sChannelName;
 					}
 				} else {
 					return;
