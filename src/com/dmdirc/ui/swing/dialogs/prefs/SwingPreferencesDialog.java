@@ -286,7 +286,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
                 ((ValidatingJTextField) option).setText(setting.getValue());
                 ((ValidatingJTextField) option).addKeyListener(new KeyAdapter() {
                     @Override
-                    public void keyTyped(final KeyEvent e) {
+                    public void keyReleased(final KeyEvent e) {
                         setting.setValue(((JTextField) e.getSource()).getText());
                     }
                 });
