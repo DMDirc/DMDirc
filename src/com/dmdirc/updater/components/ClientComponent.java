@@ -24,7 +24,7 @@ package com.dmdirc.updater.components;
 
 import com.dmdirc.Main;
 import com.dmdirc.updater.UpdateComponent;
-import com.dmdirc.util.resourcemanager.ResourceManager;
+import com.dmdirc.util.resourcemanager.DMDircResourceManager;
 
 import java.io.File;
 
@@ -66,18 +66,17 @@ public class ClientComponent implements UpdateComponent {
         tmpFile.renameTo(targetFile);
         
         if (!LauncherComponent.isUsingLauncher()) {
-            final ResourceManager.Type type = ResourceManager.getResourceManagerType();
             final String message;
-            if (type == ResourceManager.Type.JAR) {
+            if (DMDircResourceManager.isRunningFromJar()) {
                 message = "A new version of DMDirc has been downloaded, but as you\n"
                     + "do not seem to be using the DMDirc launcher, it will\n"
                     + "not be installed automatically.\n\n"
                     + "To install this update manually, please replace the\n"
                     + "existing DMDirc.jar file, located at:\n"
-                    + " " + ResourceManager.getCurrentWorkingDirectory() + "\n"
+                    + " " + DMDircResourceManager.getCurrentWorkingDirectory() + "\n"
                     + "with the following file:\n"
                     + "  " + targetFile.getAbsolutePath();
-            } else if (type == ResourceManager.Type.FILE) {
+            } else {
                 message = "A new version of DMDirc has been downloaded, but as you\n"
                     + "do not seem to be using the DMDirc launcher, it will\n"
                     + "not be installed automatically.\n\n"
@@ -85,15 +84,9 @@ public class ClientComponent implements UpdateComponent {
                     + "new DMDirc.jar file, located at:\n"
                     + " " + targetFile.getAbsolutePath() + "\n"
                     + "over your existing DMDirc install located in:\n"
-                    + "  " + ResourceManager.getCurrentWorkingDirectory();
-            } else {
-                message = "A new version of DMDirc has been downloaded, but as you\n"
-                    + "do not seem to be using the DMDirc launcher, it will\n"
-                    + "not be installed automatically.\n\n"
-                    + "To install this update manually, please place the\n"
-                    + targetFile.getAbsolutePath() + " wherever you wish to\n"
-                    + " run DMDirc from and update your shortcuts accordingly.";
+                    + "  " + DMDircResourceManager.getCurrentWorkingDirectory();
             }
+            
             Main.getUI().showMessageDialog("Client update downloaded", message);
         }
         

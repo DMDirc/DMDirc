@@ -30,7 +30,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -41,23 +40,15 @@ import java.util.Map.Entry;
 public abstract class ResourceManager {
     
     /** Previously assigned ResourceManager. */
+    @Deprecated
     private static ResourceManager me;
-    
-    /** Enum indicating resource manager type. */
-    public enum Type {
-        /** File resource manager. */
-        FILE,
-        /** Jar resource manager. */
-        JAR,
-        /** No resource manager. */
-        NONE,
-    }
     
     /**
      * Returns an appropriate instance of ResourceManager.
      *
      * @return ResourceManager implementation
      */
+    @Deprecated
     public static final synchronized ResourceManager getResourceManager() {
         if (me == null) {
             String path = Thread.currentThread().getContextClassLoader().
@@ -92,76 +83,35 @@ public abstract class ResourceManager {
     }
     
     /**
-     * Returns an appropriate instance of ResourceManager for the specified url string.
+     * Returns a resource manager for the specified URL. The following URL types
+     * are valid:
+     * 
+     * <ul>
+     *  <li>file://path/</li>
+     *  <li>zip://path/filename.zip</li>
+     *  <li>jar://path/filename.jar</li>
+     *  <li>dmdirc://</li>
+     *  <li>theme://[themename:]</li>
+     * </ul>
      *
-     * @param type  file://path/to/base
-     *              jar://path/to/jar
-     *              zip://path/to/zip
+     * @param url The URL for which a resource manager is required
+     * @return A resource manager for the specified URL
      * 
-     * @return ResourceManager implementation
-     * 
-     * @throws java.io.IOException if an IO Error occurs opening the file
+     * @throws IOException if an IO Error occurs opening the file
+     * @throws IllegalArgumentException if the URL type is not valid
      */
-    public static final ResourceManager getResourceManager(final String type) throws IOException {
-        if (type.startsWith("file://")) {
-            return new FileResourceManager(type.substring(7));
-        } else if (type.startsWith("jar://") || type.startsWith("zip://")) {
-            return new ZipResourceManager(type.substring(6));
+    public static final ResourceManager getResourceManager(final String url)
+            throws IOException, IllegalArgumentException {
+        if (url.startsWith("file://")) {
+            return new FileResourceManager(url.substring(7));
+        } else if (url.startsWith("jar://") || url.startsWith("zip://")) {
+            return new ZipResourceManager(url.substring(6));
+        } else if (url.startsWith("dmdirc://")) {
+            throw new UnsupportedOperationException("Not implemented yet");
+        } else if (url.startsWith("theme://")) {
+            throw new UnsupportedOperationException("Not implemented yet");
         } else {
             throw new IllegalArgumentException("Unknown resource manager type");
-        }
-    }
-    
-    /**
-     * Returns the working directory for the application.
-     * 
-     * @return Current working directory
-     */
-    public static final synchronized String getCurrentWorkingDirectory() {
-        final URL resource = Thread.currentThread().getContextClassLoader().
-                        getResource("com/dmdirc/Main.class");
-        String path = "";
-        
-        final String protocol = resource.getProtocol();
-        
-        if ("file".equals(protocol)) {
-            path = Thread.currentThread().
-                    getContextClassLoader().getResource("").getPath();
-        } else if ("jar".equals(protocol)) {
-            final String tempPath = resource.getPath();
-            if (System.getProperty("os.name").startsWith("Windows")) {
-                path = tempPath.substring(6, tempPath.length() - 23);
-            } else {
-                path = tempPath.substring(5, tempPath.length() - 23);
-            }
-            path = path.substring(0, path.lastIndexOf('/') + 1);
-        }
-        
-        try {
-            path = java.net.URLDecoder.decode(path, "UTF-8");
-        } catch (UnsupportedEncodingException ex) {
-            Logger.userError(ErrorLevel.MEDIUM, "Unable to decode path");
-            path = "";
-        }
-        return path;
-    }
-    
-    /**
-     * Returns the type of the resource manager.
-     *
-     * @return ResourceManager Type
-     */
-    public static final synchronized Type getResourceManagerType() {
-        if (me == null) {
-            getResourceManager();
-        }
-        
-        if (me instanceof ZipResourceManager) {
-            return Type.JAR;
-        } else if (me instanceof FileResourceManager) {
-            return Type.FILE;
-        } else {
-            return Type.NONE;
         }
     }
     
@@ -173,6 +123,7 @@ public abstract class ResourceManager {
      *
      * @throws IOException if the write operation fails
      */
+    @Deprecated
     public final void resourceToFile(final byte[] resource, final File file)
     throws IOException {
         final FileOutputStream out = new FileOutputStream(file, false);
@@ -195,6 +146,7 @@ public abstract class ResourceManager {
      *
      * @return success of failure of the operation
      */
+    @Deprecated
     public final boolean extractResource(final String resourceName,
             final String directory, final boolean usePath) throws IOException {
         final byte[] resource = getResourceBytes(resourceName);
@@ -241,6 +193,7 @@ public abstract class ResourceManager {
      *
      * @throws IOException if the write operation fails
      */
+    @Deprecated
     public final void extractResources(final String resourcesPrefix,
             final String directory, final boolean usePath) throws IOException {
         final Map<String, byte[]> resourcesBytes =
@@ -258,6 +211,7 @@ public abstract class ResourceManager {
      *
      * @throws IOException if the write operation fails
      */
+    @Deprecated
     public final void extractResources(final String resourcesPrefix,
             final String directory) throws IOException {
         extractResources(resourcesPrefix, directory, true);
@@ -270,6 +224,7 @@ public abstract class ResourceManager {
      * 
      * @return true iif the resource exists
      */
+    @Deprecated
     public abstract boolean resourceExists(final String resource);
     
     /**
@@ -279,6 +234,7 @@ public abstract class ResourceManager {
      *
      * @return byte[] for the resource, or an empty byte[] if not found
      */
+    @Deprecated
     public abstract byte[] getResourceBytes(final String resource);
     
     /**
@@ -288,6 +244,7 @@ public abstract class ResourceManager {
      *
      * @return InputStream for the resource, or null if not found
      */
+    @Deprecated
     public abstract InputStream getResourceInputStream(final String resource);
     
     /**
@@ -298,6 +255,7 @@ public abstract class ResourceManager {
      *
      * @return Map of byte[]s of resources found
      */
+    @Deprecated
     public abstract Map<String, byte[]> getResourcesStartingWithAsBytes(
             final String resourcesPrefix);
     
@@ -309,6 +267,7 @@ public abstract class ResourceManager {
      *
      * @return Map of InputStreams of resources found
      */
+    @Deprecated
     public abstract Map<String, InputStream> getResourcesStartingWithAsInputStreams(
             final String resourcesPrefix);
     
@@ -320,5 +279,6 @@ public abstract class ResourceManager {
      *
      * @return List of resources found
      */
+    @Deprecated
     public abstract List<String> getResourcesStartingWith(final String resourcesPrefix);
 }

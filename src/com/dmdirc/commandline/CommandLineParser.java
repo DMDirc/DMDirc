@@ -27,7 +27,7 @@ import com.dmdirc.util.IrcAddress;
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.updater.components.LauncherComponent;
-import com.dmdirc.util.resourcemanager.ResourceManager;
+import com.dmdirc.util.resourcemanager.DMDircResourceManager;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -203,7 +203,7 @@ public class CommandLineParser {
             launcherVersion = param;
             break;
         case 'p':
-            doDirectory(ResourceManager.getCurrentWorkingDirectory());
+            doDirectory(DMDircResourceManager.getCurrentWorkingDirectory());
             break;
         case 'r':
             disablereporting = true;
