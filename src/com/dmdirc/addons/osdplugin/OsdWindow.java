@@ -121,13 +121,20 @@ public final class OsdWindow extends JDialog implements MouseListener,
             }            
         } else if ("close".equals(policy)) {
             // Close existing windows and use their place
-            for (OsdWindow window : new ArrayList<OsdWindow>(windows)) {
-                window.setVisible(false);
-                window.dispose();
-            }
+            closeAll();
         }        
         
         return y;
+    }
+    
+    /**
+     * Closes all open OSD windows.
+     */
+    protected static void closeAll() {
+        for (OsdWindow window : new ArrayList<OsdWindow>(windows)) {
+            window.setVisible(false);
+            window.dispose();
+        }        
     }
     
     /**

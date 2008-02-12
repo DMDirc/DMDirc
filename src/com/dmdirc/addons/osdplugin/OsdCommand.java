@@ -46,7 +46,11 @@ public final class OsdCommand extends GlobalCommand {
     @Override
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
-        new OsdWindow(Styliser.stipControlCodes(implodeArgs(args)), false);
+        if (args.length > 0 && "--close".equalsIgnoreCase(args[0])) {
+            OsdWindow.closeAll();
+        } else {
+            new OsdWindow(Styliser.stipControlCodes(implodeArgs(args)), false);
+        }
     }
     
     /** {@inheritDoc}. */
@@ -64,7 +68,8 @@ public final class OsdCommand extends GlobalCommand {
     /** {@inheritDoc}. */
     @Override
     public String getHelp() {
-        return "osd <message> - show the specified message in an OSD window";
+        return "osd --close - closes all OSD windows\n" +
+                "osd <message> - show the specified message in an OSD window";
     }
     
 }
