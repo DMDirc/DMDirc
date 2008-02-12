@@ -35,6 +35,8 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -60,6 +62,12 @@ public final class OsdWindow extends JDialog implements MouseListener,
      */
     private static final long serialVersionUID = 2;
     
+    /** Gap between vertically stacked windows. */
+    private static final int WINDOW_GAP = 5;
+    
+    /** A list of open OSD windows. */
+    private static List<OsdWindow> windows = new ArrayList<OsdWindow>();
+    
     /** OSD Label. */
     private final JLabel label;
     
@@ -80,15 +88,56 @@ public final class OsdWindow extends JDialog implements MouseListener,
      */    
     public OsdWindow(final String text, final boolean config) {
         this(text, config, 
-                IdentityManager.getGlobalConfig().getOptionInt("plugin-OSD", "locationX", 20),
-                IdentityManager.getGlobalConfig().getOptionInt("plugin-OSD", "locationY", 20));
+                IdentityManager.getGlobalConfig().getOptionInt(OsdPlugin.MY_DOMAIN,
+                "locationX", 20), getYPosition());
+        
+    }
+    
+    /**
+     * Retrieves the y-axis position for a new OSD window, based on the user's
+     * configured policy.
+     * 
+     * @return The y-axis position for a new OSD window.
+     */
+    private static int getYPosition() {
+        final String policy = IdentityManager.getGlobalConfig()
+                .getOption(OsdPlugin.MY_DOMAIN, "newbehaviour", "down");
+        int y = IdentityManager.getGlobalConfig().getOptionInt(OsdPlugin.MY_DOMAIN,
+                "locationY", 20);
+        
+        if ("down".equals(policy)) {
+            // Place our new window below old windows
+            for (OsdWindow window : new ArrayList<OsdWindow>(windows)) {
+                if (window.isVisible()) {
+                    y = Math.max(y, window.getY() + window.getHeight() + WINDOW_GAP);
+                }
+            }
+        } else if ("up".equals(policy)) {
+            // Place our new window above old windows
+            for (OsdWindow window : new ArrayList<OsdWindow>(windows)) {
+                if (window.isVisible()) {
+                    y = Math.min(y, window.getY() - window.getHeight() - WINDOW_GAP);
+                }
+            }            
+        } else if ("close".equals(policy)) {
+            // Close existing windows and use their place
+            for (OsdWindow window : new ArrayList<OsdWindow>(windows)) {
+                window.setVisible(false);
+                window.dispose();
+            }
+        }        
+        
+        return y;
     }
     
     /**
      * Creates a new instance of OsdWindow.
+     * 
      * @param text The text to be displayed in the OSD window
      * @param config Is the window being configured (should it timeout and
      * allow itself to be moved)
+     * @param x The x-axis position for the OSD Window
+     * @param y The y-axis position for the OSD window
      */
     public OsdWindow(final String text, final boolean config, final int x, final int y) {
         super(((MainFrame) Main.getUI().getMainWindow()), false);
@@ -134,6 +183,7 @@ public final class OsdWindow extends JDialog implements MouseListener,
             new Timer("OSD Display Timer").schedule(new TimerTask() {
                 public void run() {
                     setVisible(false);
+                    dispose();
                 }
             }, IdentityManager.getGlobalConfig().getOptionInt("plugin-OSD", "timeout", 15) * 1000);
         }
@@ -143,6 +193,7 @@ public final class OsdWindow extends JDialog implements MouseListener,
     public void mouseClicked(final MouseEvent e) {
         if (!config) {
             setVisible(false);
+            dispose();
         }
     }
     
@@ -208,5 +259,22 @@ public final class OsdWindow extends JDialog implements MouseListener,
     public void setForegroundColour(final String colour) {
         label.setForeground(ColourManager.parseColour(colour));
     }
-    
+
+    /** {@inheritDoc} */
+    @Override
+    public void setVisible(final boolean b) {
+        super.setVisible(b);
+        
+        if (b) {
+            windows.add(this);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        super.dispose();
+        
+        windows.remove(this);
+    }
 }

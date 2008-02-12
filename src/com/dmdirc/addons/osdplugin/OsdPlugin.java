@@ -32,6 +32,8 @@ import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.config.prefs.SettingChangeListener;
 import com.dmdirc.plugins.Plugin;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Allows the user to display on-screen-display messages.
@@ -41,7 +43,7 @@ public final class OsdPlugin extends Plugin implements CategoryChangeListener,
         PreferencesInterface, SettingChangeListener {
     
     /** What domain do we store all settings in the global config under. */
-    private static final String MY_DOMAIN = "plugin-OSD";
+    protected static final String MY_DOMAIN = "plugin-OSD";
     
     /** Config OSD Window. */
     private OsdWindow osdWindow;
@@ -102,6 +104,16 @@ public final class OsdPlugin extends Plugin implements CategoryChangeListener,
         category.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
                 MY_DOMAIN, "timeout", "15", "Timeout", "Length of time in " +
                 "seconds before the OSD window closes"));
+        
+        final Map<String, String> posOptions = new HashMap<String, String>();
+        posOptions.put("down", "Place new windows below old ones");
+        posOptions.put("up", "Place new windows above old ones");
+        posOptions.put("close", "Close existing windows");
+        posOptions.put("ontop", "Place new windows on top of existing window");
+        
+        category.addSetting(new PreferencesSetting(MY_DOMAIN, "newbehaviour", 
+                "down", "New window policy:", "What to do when an OSD Window "
+                + "is opened when there are other, existing windows open", posOptions));
 
         category.addChangeListener(this);
         manager.getCategory("Plugins").addSubCategory(category);
