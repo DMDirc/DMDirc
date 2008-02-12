@@ -113,7 +113,11 @@ public class IrcAddress implements Serializable {
      */
     private void doChannels(final String channels) {
         for (String channel : channels.split(",")) {
-            this.channels.add(channel);
+            if (!channel.equalsIgnoreCase("needpass") && 
+                    !channel.equalsIgnoreCase("needkey") &&
+                    !channel.equalsIgnoreCase("isnick") && !channel.isEmpty()) {
+                this.channels.add(channel);
+            }
         }
     }
 

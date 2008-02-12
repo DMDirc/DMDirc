@@ -31,39 +31,39 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class IrcAddressTest extends junit.framework.TestCase {
-    
+
     @Before
     public void setUp() {
         IdentityManager.load();
         Main.setUI(new DummyController());
-    }    
-    
+    }
+
     @Test
     public void testInvalidProtocol() {
         boolean exception = false;
-        
+
         try {
             final IrcAddress address = new IrcAddress("http://moo!");
         } catch (InvalidAddressException ex) {
             exception = true;
         }
-        
+
         assertTrue(exception);
     }
-    
+
     @Test
     public void testNoProtocol() {
         boolean exception = false;
-        
+
         try {
             final IrcAddress address = new IrcAddress("moo!");
         } catch (InvalidAddressException ex) {
             exception = true;
         }
-        
+
         assertTrue(exception);
-    }    
-    
+    }
+
     @Test
     public void testBasic() {
         try {
@@ -76,7 +76,7 @@ public class IrcAddressTest extends junit.framework.TestCase {
             assertFalse(true);
         }
     }
-    
+
     @Test
     public void testPasswordSSL() {
         try {
@@ -89,7 +89,7 @@ public class IrcAddressTest extends junit.framework.TestCase {
             assertFalse(true);
         }
     }
-    
+
     @Test
     public void testPort() {
         try {
@@ -102,20 +102,20 @@ public class IrcAddressTest extends junit.framework.TestCase {
             assertFalse(true);
         }
     }
-    
+
     @Test
     public void testInvalidPort() {
         boolean except = false;
-        
+
         try {
             new IrcAddress("irc://servername:port/");
         } catch (InvalidAddressException ex) {
             except = true;
         }
-        
+
         assertTrue(except);
     }
-    
+
     @Test
     public void testPortSSL() {
         try {
@@ -128,7 +128,7 @@ public class IrcAddressTest extends junit.framework.TestCase {
             assertFalse(true);
         }
     }
-    
+
     @Test
     public void testComplex() {
         try {
@@ -142,24 +142,42 @@ public class IrcAddressTest extends junit.framework.TestCase {
             assertFalse(true);
         }
     }
-    
+
     @Test
     public void testConnect() {
         try {
             final IrcAddress address = new IrcAddress("irc://255.255.255.205/a,b,c");
-            
+
             int initial = ServerManager.getServerManager().numServers();
-            
+
             address.connect();
-            
+
             assertEquals(initial + 1, ServerManager.getServerManager().numServers());
-            
+
             address.connect();
-            
+
             assertEquals(initial + 1, ServerManager.getServerManager().numServers());
         } catch (InvalidAddressException ex) {
             assertFalse(true);
         }
     }
-    
+
+    @Test
+    public void testReservedChanNames() {
+        try {
+            final IrcAddress address1 = new IrcAddress("irc://server/,needpass");
+            assertEquals(0, address1.getChannels().size());
+
+            final IrcAddress address2 = new IrcAddress("irc://server/MDbot,needkey");
+            assertEquals(1, address2.getChannels().size());
+            assertEquals("MDbot", address2.getChannels().get(0));
+
+            final IrcAddress address3 = new IrcAddress("irc://server/MDbot,isnick");
+            assertEquals(1, address3.getChannels().size());
+            assertEquals("MDbot", address3.getChannels().get(0));
+        } catch (InvalidAddressException ex) {
+            assertFalse(true);
+        }
+    }
+
 }
