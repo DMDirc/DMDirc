@@ -28,6 +28,8 @@ import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 
 import java.io.Serializable;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,37 +66,42 @@ public class IrcAddress implements Serializable {
      * @throws InvalidAddressException If an invalid address is passed
      */
     public IrcAddress(final String address) throws InvalidAddressException {
-        StringBuilder builder;
-
-        if (address.toLowerCase().startsWith("ircs://")) {
+        URI uri;
+        String myAddress;
+        
+        // Check for +ports (SSL)
+        myAddress = address.replaceFirst(":\\+([0-9]+)", ":$1");
+        if (myAddress.length() < address.length()) {
             usesSSL = true;
-            builder = new StringBuilder(address.substring(7));
-        } else if (address.toLowerCase().startsWith("irc://")) {
-            usesSSL = false;
-            builder = new StringBuilder(address.substring(6));
-        } else {
+        }
+        
+        try {
+            uri = new URI(myAddress);
+        } catch (URISyntaxException ex) {
+            throw new InvalidAddressException("Unable to parse URI", ex);
+        }
+        
+        if (uri.getScheme() != null && uri.getScheme().equalsIgnoreCase("ircs")) {
+            usesSSL = true;
+        } else if (uri.getScheme() == null || !uri.getScheme().equalsIgnoreCase("irc")) {
             throw new InvalidAddressException("Invalid protocol specified");
         }
+        
+        if (uri.getUserInfo() != null) {
+            doPass(uri.getUserInfo());
+        }
+        
+        doChannels(uri.getPath());
 
-        final int atIndex = builder.indexOf("@");
-        if (atIndex > -1) {
-            doPass(builder.substring(0, atIndex));
-            builder.delete(0, atIndex + 1);
+        if (uri.getPort() > -1) {
+            doPort(uri.getPort());
         }
 
-        final int slashIndex = builder.indexOf("/");
-        if (slashIndex > -1) {
-            doChannels(builder.substring(slashIndex + 1));
-            builder.delete(slashIndex, builder.length());
+        if (uri.getHost() == null) {
+            throw new InvalidAddressException("Invalid host or port specified");
+        } else {
+            doServer(uri.getHost());
         }
-
-        final int colonIndex = builder.indexOf(":");
-        if (colonIndex > -1) {
-            doPort(builder.substring(colonIndex + 1));
-            builder.delete(colonIndex, builder.length());
-        }
-
-        doServer(builder.toString());
     }
 
     /**
@@ -112,7 +119,11 @@ public class IrcAddress implements Serializable {
      * @param channels The channels part of this address
      */
     private void doChannels(final String channels) {
-        for (String channel : channels.split(",")) {
+        if (channels == null || channels.length() == 0 || channels.charAt(0) != '/') {
+            return;
+        }
+        
+        for (String channel : channels.substring(1).split(",")) {
             if (!channel.equalsIgnoreCase("needpass") && 
                     !channel.equalsIgnoreCase("needkey") &&
                     !channel.equalsIgnoreCase("isnick") && !channel.isEmpty()) {
@@ -127,19 +138,8 @@ public class IrcAddress implements Serializable {
      * @param port The port part of this address
      * @throws InvalidAddressException if the port is non-numeric
      */
-    private void doPort(final String port) throws InvalidAddressException {
-        String actualPort = port;
-
-        if (port.charAt(0) == '+') {
-            usesSSL = true;
-            actualPort = port.substring(1);
-        }
-
-        try {
-            this.port = Integer.valueOf(actualPort);
-        } catch (NumberFormatException ex) {
-            throw new InvalidAddressException("Invalid port number", ex);
-        }
+    private void doPort(final int port) throws InvalidAddressException {
+        this.port = port;
     }
 
     /**

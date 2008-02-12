@@ -179,5 +179,16 @@ public class IrcAddressTest extends junit.framework.TestCase {
             assertFalse(true);
         }
     }
+    
+    @Test
+    public void testEncoding() {
+        try {
+            final IrcAddress address1 = new IrcAddress("irc://server/%23DMDirc");
+            assertEquals(1, address1.getChannels().size());
+            assertEquals("#DMDirc", address1.getChannels().get(0));
+        } catch (InvalidAddressException ex) {
+            assertFalse(true);
+        }        
+    }
 
 }
