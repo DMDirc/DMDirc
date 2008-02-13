@@ -37,16 +37,16 @@ import java.util.List;
  * @author chris
  */
 public final class LoadPlugin extends GlobalCommand implements IntelligentCommand {
-    
+
     /**
      * Creates a new instance of LoadPlugin.
      */
     public LoadPlugin() {
         super();
-        
+
         CommandManager.registerCommand(this);
     }
-    
+
     /** {@inheritDoc} */
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
@@ -54,7 +54,7 @@ public final class LoadPlugin extends GlobalCommand implements IntelligentComman
             showUsage(origin, isSilent, "loadplugin", "<plugin>");
             return;
         }
-        
+
         if (PluginManager.getPluginManager().addPlugin(args[0])) {
             PluginManager.getPluginManager().getPluginInfo(args[0]).loadPlugin();
             sendLine(origin, isSilent, FORMAT_OUTPUT, "Plugin loaded.");
@@ -72,36 +72,37 @@ public final class LoadPlugin extends GlobalCommand implements IntelligentComman
             }
         }
     }
-    
-    
+
+
     /** {@inheritDoc} */
     public String getName() {
         return "loadplugin";
     }
-    
+
     /** {@inheritDoc} */
     public boolean showInHelp() {
         return true;
     }
-    
+
     /** {@inheritDoc} */
     public String getHelp() {
         return "loadplugin <plugin> - loads the specified class as a plugin";
     }
-    
+
     /** {@inheritDoc} */
     public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
-        
+
+        res.excludeAll();
+
         if (arg == 0) {
-            res.excludeAll();
-            
-            for (PluginInfo possPlugin : PluginManager.getPluginManager().getPossiblePluginInfos(false)) {
+            for (PluginInfo possPlugin
+                    : PluginManager.getPluginManager().getPossiblePluginInfos(false)) {
                 res.add(possPlugin.getFilename());
             }
         }
-        
+
         return res;
     }
-    
+
 }

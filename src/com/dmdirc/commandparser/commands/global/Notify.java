@@ -24,10 +24,13 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.ColourManager;
 
 import java.awt.Color;
+import java.util.List;
 
 /**
  * The notify command allows the user to set the notification colour for a
@@ -35,7 +38,7 @@ import java.awt.Color;
  * 
  * @author chris
  */
-public final class Notify extends GlobalCommand {
+public final class Notify extends GlobalCommand implements IntelligentCommand {
     
     /**
      * Creates a new instance of Notify.
@@ -59,7 +62,8 @@ public final class Notify extends GlobalCommand {
         
         if (colour == null) {
             showUsage(origin, isSilent, "notify",
-                    "<colour> - colour must be an IRC colour code (0-15) or a hex string (e.g. FFFF00).");
+                    "<colour> - colour must be an IRC colour code (0-15) or a " +
+                    "hex string (e.g. FFFF00).");
         } else if (origin != null) {            
             // There's not much point echoing an error if the origin isn't
             // valid, as errors go to the origin!
@@ -84,5 +88,11 @@ public final class Notify extends GlobalCommand {
     public String getHelp() {
         return "notify <colour> - sets the notification colour for this window";
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        return new AdditionalTabTargets().excludeAll();
+    } 
     
 }

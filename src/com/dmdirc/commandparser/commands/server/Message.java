@@ -24,14 +24,19 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
+import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
+
+import java.util.List;
 
 /**
  * Allows the user to send privmsgs.
  * @author chris
  */
-public final class Message extends ServerCommand {
+public final class Message extends ServerCommand implements IntelligentCommand {
     
     /**
      * Creates a new instance of Message.
@@ -73,5 +78,20 @@ public final class Message extends ServerCommand {
     public String getHelp() {
         return "msg <target> <message> - sends a private message";
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        final AdditionalTabTargets res = new AdditionalTabTargets();
+        
+        if (arg == 0) {
+            res.excludeAll();
+            res.include(TabCompletionType.CHANNEL_NICK);
+            res.include(TabCompletionType.CHANNEL);
+            res.include(TabCompletionType.QUERY_NICK);
+        }
+        
+        return res;
+    } 
     
 }

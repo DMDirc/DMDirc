@@ -25,15 +25,18 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.CustomWindow;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
+import java.util.List;
 
 /**
  * @author chris
  * 
  */
-public class OpenWindow extends GlobalCommand {
+public class OpenWindow extends GlobalCommand implements IntelligentCommand {
     
     /**
      * Creates a new instance of OpenWindow.
@@ -109,5 +112,18 @@ public class OpenWindow extends GlobalCommand {
     public boolean showInHelp() {
         return true;
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        final AdditionalTabTargets res = new AdditionalTabTargets();
+        
+        if (arg == 0) {
+            res.add("--server");
+            res.add("--child");
+        }
+        
+        return res;
+    } 
 
 }

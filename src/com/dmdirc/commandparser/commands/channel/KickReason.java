@@ -26,15 +26,20 @@ import com.dmdirc.Channel;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
+
+import java.util.List;
 
 /**
  * The kick command kicks a specified user from the channel.
  * This version allows the user to specify a reason.
  * @author chris
  */
-public final class KickReason extends ChannelCommand {
+public final class KickReason extends ChannelCommand implements IntelligentCommand {
     
     /** Creates a new instance of KickReason. */
     public KickReason() {
@@ -57,7 +62,8 @@ public final class KickReason extends ChannelCommand {
         if (victim == null) {
             sendLine(origin, isSilent, FORMAT_ERROR, "User not found: " + args[0]);
         } else {
-            victim.kick(args.length > 1 ? implodeArgs(1, args) : origin.getConfigManager().getOption("general", "kickmessage"));
+            victim.kick(args.length > 1 ? implodeArgs(1, args) :
+                origin.getConfigManager().getOption("general", "kickmessage"));
         }
     }
     
@@ -78,5 +84,18 @@ public final class KickReason extends ChannelCommand {
     public String getHelp() {
         return "kick <user> [reason] - kicks the specified user from the channel";
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        final AdditionalTabTargets res = new AdditionalTabTargets();
+        
+        if (arg == 0) {
+            res.excludeAll();
+            res.include(TabCompletionType.CHANNEL_NICK);
+        }
+        
+        return res;
+    }    
     
 }

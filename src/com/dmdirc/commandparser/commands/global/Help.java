@@ -26,7 +26,10 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
+import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.QueryWindow;
@@ -43,7 +46,7 @@ import java.util.List;
  * are only displayed when in a channel window, for example.
  * @author chris
  */
-public final class Help extends ServerCommand {
+public final class Help extends ServerCommand implements IntelligentCommand {
     
     /**
      * Creates a new instance of Help.
@@ -70,6 +73,12 @@ public final class Help extends ServerCommand {
         }
     }
     
+    /**
+     * Shows a list of all commands valid for the current window.
+     * 
+     * @param origin The window the command was executed in
+     * @param isSilent Whether this command has been silenced or not
+     */
     private void showAllCommands(final InputWindow origin, final boolean isSilent) {
         final List<Command> commands = new ArrayList<Command>();
 
@@ -113,9 +122,22 @@ public final class Help extends ServerCommand {
                 + "--------------------------------------------------");
     }
     
+    /**
+     * Shows information about the specified command.
+     * 
+     * @param origin The window the command was executed in
+     * @param isSilent Whether this command has been silenced or not
+     * @param name The name of the command to display info for
+     */
     private void showCommand(final InputWindow origin, final boolean isSilent,
             final String name) {
-        final Command command = CommandManager.getCommand(name);
+        Command command;
+        
+        if (name.length() > 0 && name.charAt(0) == CommandManager.getCommandChar()) {
+            command = CommandManager.getCommand(name.substring(1));
+        } else {
+            command = CommandManager.getCommand(name);
+        }
         
         if (command == null) {
             sendLine(origin, isSilent, FORMAT_ERROR, "Command '" + name + "' not found.");
@@ -147,5 +169,17 @@ public final class Help extends ServerCommand {
     public String getHelp() {
         return "help [command] - shows client command help";
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        final AdditionalTabTargets res = new AdditionalTabTargets().excludeAll();
+
+        if (arg == 0) {
+            res.include(TabCompletionType.COMMAND);
+        }
+        
+        return res;
+    } 
     
 }
