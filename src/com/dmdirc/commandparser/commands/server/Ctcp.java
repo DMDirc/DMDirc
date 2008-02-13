@@ -27,6 +27,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.util.List;
@@ -84,7 +85,9 @@ public final class Ctcp extends ServerCommand implements IntelligentCommand {
     public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
-        if (arg == 1) {
+        if (arg == 0) {
+            res.exclude(TabCompletionType.COMMAND);
+        } else if (arg == 1) {
             res.add("VERSION");
             res.add("ACTION");
             res.add("USERINFO");

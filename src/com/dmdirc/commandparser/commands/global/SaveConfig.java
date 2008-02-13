@@ -24,15 +24,19 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
+
+import java.util.List;
 
 /**
  * Allows the user to save the config file.
  * 
  * @author chris
  */
-public final class SaveConfig extends GlobalCommand {
+public final class SaveConfig extends GlobalCommand implements IntelligentCommand {
     
     /**
      * Creates a new instance of SaveConfig.
@@ -66,5 +70,11 @@ public final class SaveConfig extends GlobalCommand {
     public String getHelp() {
         return "saveconfig - force the client to save its configuration to disk";
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        return new AdditionalTabTargets().excludeAll();
+    } 
     
 }

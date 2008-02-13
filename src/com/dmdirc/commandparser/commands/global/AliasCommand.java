@@ -28,14 +28,18 @@ import com.dmdirc.actions.wrappers.Alias;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
+
+import java.util.List;
 
 /**
  * The alias command allows users to create aliases on-the-fly.
  * 
  * @author chris
  */
-public final class AliasCommand extends GlobalCommand {
+public final class AliasCommand extends GlobalCommand implements IntelligentCommand {
     
     /**
      * Creates a new instance of Active.
@@ -113,5 +117,22 @@ public final class AliasCommand extends GlobalCommand {
     public String getHelp() {
         return "alias [--remove] <name> [command] - creates or removes the specified alias";
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        final AdditionalTabTargets res = new AdditionalTabTargets();
+        
+        if (arg == 0) {
+            res.add("--remove");
+            res.excludeAll();
+        } else if (arg == 1 && previousArgs.get(0).equals("--remove")) {
+            for (Action alias : AliasWrapper.getAliasWrapper().getActions()) {
+                res.add(alias.getName());
+            }   
+        }
+        
+        return res;
+    } 
     
 }

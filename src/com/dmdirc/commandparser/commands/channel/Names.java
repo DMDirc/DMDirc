@@ -26,14 +26,18 @@ import com.dmdirc.Channel;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ChannelCommand;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
+
+import java.util.List;
 
 /**
  * Sends a names request.
  * 
  * @author chris
  */
-public class Names extends ChannelCommand {
+public class Names extends ChannelCommand implements IntelligentCommand {
     
     /**
      * Creates a new instance of Names.
@@ -68,5 +72,11 @@ public class Names extends ChannelCommand {
     public String getHelp() {
         return "names - Requests a list of users that are in the channel";
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        return new AdditionalTabTargets().excludeAll();
+    } 
 
 }

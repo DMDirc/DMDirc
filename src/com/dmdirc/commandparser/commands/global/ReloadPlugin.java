@@ -85,17 +85,15 @@ public final class ReloadPlugin extends GlobalCommand implements IntelligentComm
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
-        return "Reloadplugin <plugin> - Reloads the specified plugin";
+        return "reloadplugin <plugin> - Reloads the specified plugin";
     }
 
     /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
-        final AdditionalTabTargets res = new AdditionalTabTargets();
+        final AdditionalTabTargets res = new AdditionalTabTargets().excludeAll();
         
         if (arg == 0) {
-            res.excludeAll();
-            
             for (PluginInfo possPlugin : PluginManager.getPluginManager().getPluginInfos()) {
                 res.add(possPlugin.getName());
             }

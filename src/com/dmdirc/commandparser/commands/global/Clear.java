@@ -24,14 +24,18 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
+
+import java.util.List;
 
 /**
  * The clear command clears the main text area of the current window.
  * 
  * @author chris
  */
-public final class Clear extends GlobalCommand {
+public final class Clear extends GlobalCommand implements IntelligentCommand {
     
     /**
      * Creates a new instance of Clear.
@@ -67,5 +71,11 @@ public final class Clear extends GlobalCommand {
     public String getHelp() {
         return "clear - clears the current window's text area";
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        return new AdditionalTabTargets().excludeAll();
+    } 
     
 }
