@@ -94,7 +94,7 @@ public final class LoadPlugin extends GlobalCommand implements IntelligentComman
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
         if (arg == 0) {
-            res.setIncludeNormal(false);
+            res.excludeAll();
             
             for (PluginInfo possPlugin : PluginManager.getPluginManager().getPossiblePluginInfos(false)) {
                 res.add(possPlugin.getFilename());

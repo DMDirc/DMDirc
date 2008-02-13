@@ -29,6 +29,7 @@ import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
@@ -46,7 +47,8 @@ public class GlobalWindow extends WritableFrameContainer {
         super();
         
         final TabCompleter tabCompleter = new TabCompleter();
-        tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_GLOBAL));
+        tabCompleter.addEntries(TabCompletionType.COMMAND,
+                CommandManager.getCommandNames(CommandType.TYPE_GLOBAL));
         
         window = Main.getUI().getInputWindow(this, GlobalCommandParser.getGlobalCommandParser());
         

@@ -168,7 +168,7 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
             final List<String> previousArgs) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
-        res.setIncludeNormal(false);
+        res.excludeAll();
         
         if (arg == 0) {
             res.add("--sources");

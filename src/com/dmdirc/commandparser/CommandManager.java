@@ -42,6 +42,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.util.MapList;
 
 import java.util.ArrayList;
@@ -222,9 +223,9 @@ public final class CommandManager {
     private static void registerCommandName(final TabCompleter completer,
             final String name, final boolean register) {
         if (register) {
-            completer.addEntry(name);
+            completer.addEntry(TabCompletionType.COMMAND, name);
         }  else {
-            completer.removeEntry(name);
+            completer.removeEntry(TabCompletionType.COMMAND, name);
         }
     }
         

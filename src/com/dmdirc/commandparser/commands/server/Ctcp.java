@@ -93,7 +93,7 @@ public final class Ctcp extends ServerCommand implements IntelligentCommand {
             res.add("FINGER");
             res.add("SOURCE");
             res.add("TIME");
-            res.setIncludeNormal(false);
+            res.excludeAll();
         }
         
         return res;

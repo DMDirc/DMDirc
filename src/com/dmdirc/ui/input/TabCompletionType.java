@@ -19,36 +19,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-package com.dmdirc.util;
-
-import java.util.List;
+package com.dmdirc.ui.input;
 
 /**
- * Wraps a Map&lt;S, List&lt;T&gt;&gt; with various convenience methods for
- * accessing the data. Implements a Map-like interface for easier transition.
- * This implementation uses WeakLists (i.e., lists of weak references) - all
- * references to values are wrapped in WeakReferences.
+ * The possible types of tab-completion entries.
  * 
- * @param <S> the type of keys maintained by this map
- * @param <T> the type of mapped values
  * @author chris
  */
-public class WeakMapList<S,T> extends MapList<S,T> {
+public enum TabCompletionType {
     
-    /**
-     * Retrieves the list of values associated with the specified key, creating
-     * the key if neccessary.
-     * 
-     * @param key The key to retrieve
-     * @return A list of the specified key's values
-     */
-    @Override
-    public List<T> safeGet(final S key) {
-        if (!map.containsKey(key)) {
-            map.put(key, new WeakList<T>());
-        }
-        
-        return map.get(key);
-    }
+    /** A command name. */
+    COMMAND,
+    /** A channel name. */
+    CHANNEL,
+    /** A nick we're in a query with. */
+    QUERY_NICK,
+    /** A nick in the current channel. */
+    CHANNEL_NICK,
+    /** Additional results. */
+    ADDITIONAL,
+    /** Anything else. */
+    OTHER;
+
 }

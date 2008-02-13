@@ -306,7 +306,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
     public AdditionalTabTargets getSuggestions(int arg, List<String> previousArgs) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
-        res.setIncludeNormal(false);
+        res.excludeAll();
         
         if (arg == 0) {
             res.add("error");

@@ -42,6 +42,7 @@ import com.dmdirc.parser.ParserError;
 import com.dmdirc.parser.ServerInfo;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.interfaces.Window;
@@ -164,15 +165,18 @@ public final class Server extends WritableFrameContainer implements Serializable
 
         window.setTitle(server + ":" + port);
 
-        tabCompleter.addEntries(AliasWrapper.getAliasWrapper().getAliases());
+        tabCompleter.addEntries(TabCompletionType.COMMAND,
+                AliasWrapper.getAliasWrapper().getAliases());
         window.getInputHandler().setTabCompleter(tabCompleter);
 
         updateIcon();
 
         window.open();
 
-        tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_SERVER));
-        tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_GLOBAL));
+        tabCompleter.addEntries(TabCompletionType.COMMAND,
+                CommandManager.getCommandNames(CommandType.TYPE_SERVER));
+        tabCompleter.addEntries(TabCompletionType.COMMAND,
+                CommandManager.getCommandNames(CommandType.TYPE_GLOBAL));
 
         this.autochannels = autochannels;
 
@@ -487,7 +491,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @param chan channel to remove
      */
     public void delChannel(final String chan) {
-        tabCompleter.removeEntry(chan);
+        tabCompleter.removeEntry(TabCompletionType.CHANNEL, chan);
         channels.remove(parser.toLowerCase(chan));
     }
 
@@ -503,7 +507,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         } else {
             final Channel newChan = new Channel(this, chan);
 
-            tabCompleter.addEntry(chan.getName());
+            tabCompleter.addEntry(TabCompletionType.CHANNEL, chan.getName());
             channels.put(parser.toLowerCase(chan.getName()), newChan);
             newChan.show();
         }
@@ -518,7 +522,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         if (!hasQuery(host)) {
             final Query newQuery = new Query(this, host);
 
-            tabCompleter.addEntry(ClientInfo.parseHost(host));
+            tabCompleter.addEntry(TabCompletionType.QUERY_NICK, ClientInfo.parseHost(host));
             queries.add(newQuery);
         }
     }
@@ -529,7 +533,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @param query The query that should be removed.
      */
     public void delQuery(final Query query) {
-        tabCompleter.removeEntry(query.getNickname());
+        tabCompleter.removeEntry(TabCompletionType.QUERY_NICK, query.getNickname());
         queries.remove(query);
     }
 

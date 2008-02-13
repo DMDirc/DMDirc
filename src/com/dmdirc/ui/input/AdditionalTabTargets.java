@@ -23,11 +23,12 @@
 package com.dmdirc.ui.input;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * The AdditionalTabTargets class is a basic wrapper around an arraylist that
- * adds an additional property to determine whether or not to include normal
- * tab-completable targets (such as nicknames and channels).
+ * adds an additional property to determine what types of results to include.
  * 
  * @author chris
  */
@@ -41,7 +42,8 @@ public final class AdditionalTabTargets extends ArrayList<String> {
     private static final long serialVersionUID = 1;
     
     /** Whether to include normal targets. */
-    private boolean includeNormal = true;
+    private List<TabCompletionType> includes
+            = new ArrayList<TabCompletionType>(Arrays.asList(TabCompletionType.values()));
     
     /** Initialises the AdditionalTabTargets. */
     public AdditionalTabTargets() {
@@ -50,23 +52,41 @@ public final class AdditionalTabTargets extends ArrayList<String> {
     }
 
     /**
-     * Determines if this set of tab targets precludes the inclusion of
-     * standard targets.
+     * Determines if the specified type of completion should be used.
      * 
-     * @return True if normal targets are included, false otherwise
+     * @param type The type to check for
+     * @return True if the specified targets are included, false otherwise
      */
-    public boolean shouldIncludeNormal() {
-        return includeNormal;
+    public boolean shouldInclude(final TabCompletionType type) {
+        return includes.contains(type);
     }
 
     /**
-     * Sets whether or not these results preclude the inclusion of the standard
-     * tab-completable targets.
+     * Includes the specified target type.
      * 
-     * @param includeNormal Whether normal targets should be included or not
+     * @param type The type to be included
      */
-    public void setIncludeNormal(final boolean includeNormal) {
-        this.includeNormal = includeNormal;
-    }    
+    public void include(final TabCompletionType type) {
+        if (!includes.contains(type)) {
+            includes.add(type);
+        }
+    }
+    
+    /**
+     * Excludes the specified target type.
+     * 
+     * @param type The type to be excluded
+     */
+    public void exclude(final TabCompletionType type) {
+        includes.remove(type);
+    }
+    
+    /**
+     * Excludes all types of targets except ADDITIONAL.
+     */
+    public void excludeAll() {
+        includes.clear();
+        includes.add(TabCompletionType.ADDITIONAL);
+    }
 
 }

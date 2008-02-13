@@ -109,7 +109,7 @@ public final class LoggingCommand extends ServerCommand implements IntelligentCo
 				res.add("reload");
 				res.add("history");
 				res.add("help");
-				res.setIncludeNormal(false);
+				res.excludeAll();
 			}
 			return res;
 	}

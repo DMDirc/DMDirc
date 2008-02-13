@@ -40,6 +40,7 @@ import com.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
 import com.dmdirc.parser.callbacks.interfaces.IQuit;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.QueryWindow;
 
@@ -100,8 +101,10 @@ public final class Query extends MessageTarget implements
         }
 
         tabCompleter = new TabCompleter(server.getTabCompleter());
-        tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_QUERY));
-        tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_CHAT));
+        tabCompleter.addEntries(TabCompletionType.COMMAND,
+                CommandManager.getCommandNames(CommandType.TYPE_QUERY));
+        tabCompleter.addEntries(TabCompletionType.COMMAND,
+                CommandManager.getCommandNames(CommandType.TYPE_CHAT));
         window.getInputHandler().setTabCompleter(tabCompleter);
 
         reregister();
@@ -283,8 +286,8 @@ public final class Query extends MessageTarget implements
 
             ActionManager.processEvent(CoreActionType.QUERY_NICKCHANGE, format, this, sOldNick);
 
-            server.getTabCompleter().removeEntry(sOldNick);
-            server.getTabCompleter().addEntry(cClient.getNickname());
+            server.getTabCompleter().removeEntry(TabCompletionType.QUERY_NICK, sOldNick);
+            server.getTabCompleter().addEntry(TabCompletionType.QUERY_NICK, cClient.getNickname());
 
             addLine(format, sOldNick, cClient.getIdent(),
                     cClient.getHost(), cClient.getNickname());

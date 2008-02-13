@@ -40,7 +40,23 @@ import java.util.Set;
 public class MapList<S,T> {
     
     /** Our internal map. */
-    protected final Map<S, List<T>> map = new HashMap<S, List<T>>();
+    protected final Map<S, List<T>> map;
+
+    /**
+     * Creates a new, empty MapList.
+     */
+    public MapList() {
+        map = new HashMap<S, List<T>>();
+    }
+
+    /**
+     * Creates a new MapList with the values from the specified list.
+     * 
+     * @param list The MapList whose values should be used
+     */
+    public MapList(final MapList<S,T> list) {
+        map = list.getMap();
+    }
 
     /**
      * Determines if this MapList is empty. An empty MapList is one that either
@@ -109,7 +125,7 @@ public class MapList<S,T> {
      * @param key The key to retrieve
      * @return A list of the specified key's values
      */
-    protected List<T> safeGet(final S key) {
+    public List<T> safeGet(final S key) {
         if (!map.containsKey(key)) {
             map.put(key, new ArrayList<T>());
         }
@@ -222,6 +238,15 @@ public class MapList<S,T> {
      */
     public Set<Map.Entry<S, List<T>>> entrySet() {
         return map.entrySet();
+    }
+    
+    /**
+     * Retrieves the map behind this maplist.
+     * 
+     * @return This MapList's map.
+     */
+    public Map<S, List<T>> getMap() {
+        return new HashMap<S, List<T>>(map);
     }
 
 }

@@ -94,7 +94,7 @@ public final class UnloadPlugin extends GlobalCommand implements IntelligentComm
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
         if (arg == 0) {
-            res.setIncludeNormal(false);
+            res.excludeAll();
             
             for (PluginInfo possPlugin : PluginManager.getPluginManager().getPluginInfos()) {
                 res.add(possPlugin.getName());

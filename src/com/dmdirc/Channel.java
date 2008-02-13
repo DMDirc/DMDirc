@@ -33,6 +33,7 @@ import com.dmdirc.parser.ChannelInfo;
 import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.ColourManager;
@@ -124,8 +125,10 @@ public final class Channel extends MessageTarget
         icon = IconManager.getIconManager().getIcon("channel");
 
         tabCompleter = new TabCompleter(server.getTabCompleter());
-        tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_CHANNEL));
-        tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_CHAT));
+        tabCompleter.addEntries(TabCompletionType.COMMAND, 
+                CommandManager.getCommandNames(CommandType.TYPE_CHANNEL));
+        tabCompleter.addEntries(TabCompletionType.COMMAND,
+                CommandManager.getCommandNames(CommandType.TYPE_CHAT));
 
         window = Main.getUI().getChannel(Channel.this);
         WindowManager.addWindow(server.getFrame(), window);
@@ -389,7 +392,7 @@ public final class Channel extends MessageTarget
      */
     public void addClient(final ChannelClientInfo client) {
         window.addName(client);
-        tabCompleter.addEntry(client.getNickname());
+        tabCompleter.addEntry(TabCompletionType.CHANNEL_NICK, client.getNickname());
     }
 
     /**
@@ -399,7 +402,7 @@ public final class Channel extends MessageTarget
      */
     public void removeClient(final ChannelClientInfo client) {
         window.removeName(client);
-        tabCompleter.removeEntry(client.getNickname());
+        tabCompleter.removeEntry(TabCompletionType.CHANNEL_NICK, client.getNickname());
 
         if (client.getClient().equals(server.getParser().getMyself())) {
             resetWindow();
@@ -414,13 +417,11 @@ public final class Channel extends MessageTarget
     public void setClients(final List<ChannelClientInfo> clients) {
         window.updateNames(clients);
 
-        tabCompleter.clear();
+        tabCompleter.clear(TabCompletionType.CHANNEL_NICK);
 
         for (ChannelClientInfo client : clients) {
-            tabCompleter.addEntry(client.getNickname());
+            tabCompleter.addEntry(TabCompletionType.CHANNEL_NICK, client.getNickname());
         }
-        tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_CHANNEL));
-        tabCompleter.addEntries(CommandManager.getCommandNames(CommandType.TYPE_CHAT));
     }
 
     /**
@@ -430,8 +431,8 @@ public final class Channel extends MessageTarget
      * @param newName The new nickname of the client
      */
     public void renameClient(final String oldName, final String newName) {
-        tabCompleter.removeEntry(oldName);
-        tabCompleter.addEntry(newName);
+        tabCompleter.removeEntry(TabCompletionType.CHANNEL_NICK, oldName);
+        tabCompleter.addEntry(TabCompletionType.CHANNEL_NICK, newName);
         refreshClients();
     }
 

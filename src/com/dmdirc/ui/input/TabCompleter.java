@@ -23,11 +23,12 @@
 package com.dmdirc.ui.input;
 
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.util.MapList;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * The tab completer handles a user's request to tab complete some word.
@@ -50,7 +51,8 @@ public final class TabCompleter implements Serializable {
     /**
      * The entries in this completer.
      */
-    private List<String> entries = new ArrayList<String>();
+    private final MapList<TabCompletionType, String> entries
+            = new MapList<TabCompletionType, String>();
     
     /** Creates a new instance of TabCompleter. */
     public TabCompleter() {
@@ -77,79 +79,93 @@ public final class TabCompleter implements Serializable {
             final AdditionalTabTargets additionals) {
         final TabCompleterResult result = new TabCompleterResult();
         
-        final List<String> targets = new ArrayList<String>();
+        final MapList<TabCompletionType, String> targets
+                = new MapList<TabCompletionType, String>(entries);
         
         final boolean caseSensitive = IdentityManager.getGlobalConfig()
                 .getOptionBool("tabcompletion", "casesensitive", false);
                 
         if (additionals != null) {
-            targets.addAll(additionals);
+            targets.safeGet(TabCompletionType.ADDITIONAL).addAll(additionals);
         }
         
-        if (additionals == null || additionals.shouldIncludeNormal()) {
-            targets.addAll(entries);
-        }
-        
-        for (String entry : targets) {
-            // Skip over duplicates
-            if (result.hasResult(entry)) {
+        for (Map.Entry<TabCompletionType, List<String>> typeEntry : targets.entrySet()) {
+            if (additionals != null && !additionals.shouldInclude(typeEntry.getKey())) {
+                // If we're not including this type, skip to the next.
                 continue;
             }
             
-            if (caseSensitive) {
-                if (entry.startsWith(partial)) {
-                    result.addResult(entry);
+            for (String entry : typeEntry.getValue()) {
+                // Skip over duplicates
+                if (result.hasResult(entry)) {
+                    continue;
                 }
-            } else {
-                if (entry.toLowerCase(Locale.getDefault())
+
+                if (caseSensitive && entry.startsWith(partial)) {
+                    result.addResult(entry);
+                } else if (!caseSensitive && entry.toLowerCase(Locale.getDefault())
                         .startsWith(partial.toLowerCase(Locale.getDefault()))) {
                     result.addResult(entry);
                 }
             }
         }
         
-        if (parent != null && (additionals == null || additionals.shouldIncludeNormal())) {
-            result.merge(parent.complete(partial, null));
+        if (parent != null) {
+            if (additionals != null) {
+                additionals.clear();
+            }
+            
+            result.merge(parent.complete(partial, additionals));
         }
+        
         return result;
     }
     
     /**
      * Adds a new entry to this tab completer's list.
+     * 
+     * @param type The type of the entry that's being added
      * @param entry The new entry to be added
      */
-    public void addEntry(final String entry) {
-        entries.add(entry);
+    public void addEntry(final TabCompletionType type, final String entry) {
+        entries.add(type, entry);
     }
     
     /**
      * Adds multiple new entries to this tab completer's list.
+     * 
+     * @param type The type of the entries that're being added
      * @param newEntries Entries to be added
      */
-    public void addEntries(final List<String> newEntries) {
+    public void addEntries(final TabCompletionType type, final List<String> newEntries) {
         if (newEntries == null) {
             return;
         }
         
         for (String entry : newEntries) {
-            addEntry(entry);
+            addEntry(type, entry);
         }
     }
     
     /**
      * Removes a specified entry from this tab completer's list.
+     * 
+     * @param type The type of the entry that should be removed
      * @param entry The entry to be removed
      */
-    public void removeEntry(final String entry) {
-        entries.remove(entry);
+    public void removeEntry(final TabCompletionType type, final String entry) {
+        entries.remove(type, entry);
     }
     
     /**
      * Replaces the current entries with the new list.
+     * 
+     * @param type The type of entry which should be replaced
      * @param newEntries the new entries to use
      */
-    public void replaceEntries(final List<String> newEntries) {
-        entries = newEntries;
+    public void replaceEntries(final TabCompletionType type, final List<String> newEntries) {
+        entries.clear(type);
+        entries.add(type, newEntries);
     }
     
     /**
@@ -158,5 +174,14 @@ public final class TabCompleter implements Serializable {
     public void clear() {
         entries.clear();
     }
+    
+    /**
+     * Clears all entries of the specified type in this tab completer.
+     * 
+     * @param type The type of entry to clear
+     */
+    public void clear(final TabCompletionType type) {
+        entries.clear(type);
+    }    
     
 }

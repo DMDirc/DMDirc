@@ -247,7 +247,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
             res.add("--unset");
             res.add("--append");
             res.add("--server");
-            res.setIncludeNormal(false);
+            res.excludeAll();
         } else if (arg == 1 && previousArgs.size() >= 1) {
             if (previousArgs.get(0).equalsIgnoreCase("--unset")
                     || previousArgs.get(0).equalsIgnoreCase("--append")
@@ -256,12 +256,12 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
             } else {
                 res.addAll(IdentityManager.getGlobalConfig().getOptions(previousArgs.get(0)));
             }
-            res.setIncludeNormal(false);
+            res.excludeAll();
         } else if (arg == 2 && (previousArgs.get(0).equalsIgnoreCase("--unset")
                 || previousArgs.get(0).equalsIgnoreCase("--append")
                 || previousArgs.get(0).equalsIgnoreCase("--server"))) {
             res.addAll(IdentityManager.getGlobalConfig().getOptions(previousArgs.get(1)));
-            res.setIncludeNormal(false);
+            res.excludeAll();
         }
         
         return res;

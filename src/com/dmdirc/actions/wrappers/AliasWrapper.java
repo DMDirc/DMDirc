@@ -31,6 +31,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
+import com.dmdirc.ui.input.TabCompletionType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,7 +88,7 @@ public final class AliasWrapper extends ActionWrapper {
             aliases.add(commandName);
             
             for (Server server : ServerManager.getServerManager().getServers()) {
-                server.getTabCompleter().addEntry(commandName);
+                server.getTabCompleter().addEntry(TabCompletionType.COMMAND, commandName);
             }
         } else {
             Logger.userError(ErrorLevel.MEDIUM, "Invalid alias action: " + action.getName());
@@ -105,7 +106,7 @@ public final class AliasWrapper extends ActionWrapper {
             aliases.remove(commandName);
             
             for (Server server : ServerManager.getServerManager().getServers()) {
-                server.getTabCompleter().removeEntry(commandName);
+                server.getTabCompleter().removeEntry(TabCompletionType.COMMAND, commandName);
             }
         }
     }
