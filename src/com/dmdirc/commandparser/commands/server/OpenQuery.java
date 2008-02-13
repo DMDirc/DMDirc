@@ -24,15 +24,19 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
+import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.Styliser;
+import java.util.List;
 
 /**
  * Allows the user to open a query dialog with another user.
  * @author chris
  */
-public final class OpenQuery extends ServerCommand {
+public final class OpenQuery extends ServerCommand implements IntelligentCommand {
     
     /**
      * Creates a new instance of Query.
@@ -91,5 +95,18 @@ public final class OpenQuery extends ServerCommand {
     public String getHelp() {
         return "query <user> [message] - opens a query with the specified user";
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        final AdditionalTabTargets targets = new AdditionalTabTargets();
+        
+        if (arg == 0) {
+            targets.excludeAll();
+            targets.include(TabCompletionType.CHANNEL_NICK);
+        }
+        
+        return targets;
+    }    
     
 }

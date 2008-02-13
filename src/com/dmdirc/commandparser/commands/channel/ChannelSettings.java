@@ -27,13 +27,16 @@ import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
+import java.util.List;
 
 /**
  * Opens the channel settings window for the channel.
  * @author chris
  */
-public final class ChannelSettings extends ChannelCommand {
+public final class ChannelSettings extends ChannelCommand implements IntelligentCommand {
     
     /** Creates a new instance of ChannelSettings. */
     public ChannelSettings() {
@@ -68,5 +71,11 @@ public final class ChannelSettings extends ChannelCommand {
     /** {@inheritDoc}. */
     public String getHelp() {
         return "channelsettings - opens the channel settings window";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        return new AdditionalTabTargets().excludeAll();
     }
 }

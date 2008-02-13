@@ -83,10 +83,14 @@ public final class AdditionalTabTargets extends ArrayList<String> {
     
     /**
      * Excludes all types of targets except ADDITIONAL.
+     * 
+     * @return A reference to this object.
      */
-    public void excludeAll() {
+    public AdditionalTabTargets excludeAll() {
         includes.clear();
         includes.add(TabCompletionType.ADDITIONAL);
+        
+        return this;
     }
 
 }

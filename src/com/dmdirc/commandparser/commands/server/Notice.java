@@ -24,14 +24,18 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
+import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
+import java.util.List;
 
 /**
  * Allows the user to send notices.
  * @author chris
  */
-public final class Notice extends ServerCommand {
+public final class Notice extends ServerCommand implements IntelligentCommand {
     
     /**
      * Creates a new instance of Notice.
@@ -72,6 +76,18 @@ public final class Notice extends ServerCommand {
     @Override
     public String getHelp() {
         return "notice <target> <message> - sends a notice";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        final AdditionalTabTargets targets = new AdditionalTabTargets();
+        
+        if (arg == 0) {
+            targets.exclude(TabCompletionType.COMMAND);
+        }
+        
+        return targets;
     }
     
 }

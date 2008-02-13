@@ -27,19 +27,23 @@ import com.dmdirc.ChannelClientProperty;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.swing.ChannelFrame;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.ColourManager;
 
 import java.awt.Color;
+import java.util.List;
 
 /**
  * Allows the user to set a nickname on the channel to use a custom colour.
  * @author chris
  */
-public final class SetNickColour extends ChannelCommand {
+public final class SetNickColour extends ChannelCommand implements IntelligentCommand {
     
     /** Creates a new instance of SetNickColour. */
     public SetNickColour() {
@@ -120,7 +124,26 @@ public final class SetNickColour extends ChannelCommand {
     
     /** {@inheritDoc}. */
     public String getHelp() {
-        return "setnickcolour [--nicklist|--text] <nick> [colour] - set the specified person's display colour";
+        return "setnickcolour [--nicklist|--text] <nick> [colour] - " +
+                "set the specified person's display colour";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        final AdditionalTabTargets targets = new AdditionalTabTargets();
+        targets.excludeAll();
+        
+        if (arg == 0) {
+            targets.include(TabCompletionType.CHANNEL_NICK);
+            targets.add("--nicklist");
+            targets.add("--text");
+        } else if (arg == 1 && (previousArgs.get(0).equals("--text")
+                || previousArgs.get(0).equals("--nicklist"))) {
+            targets.include(TabCompletionType.CHANNEL_NICK);            
+        }
+        
+        return targets;
     }
     
 }
