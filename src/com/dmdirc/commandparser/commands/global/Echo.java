@@ -25,16 +25,20 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.Main;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
+
+import java.util.List;
 
 /**
  * The echo commands simply echos text to the current window.
  * 
  * @author chris
  */
-public final class Echo extends GlobalCommand {
+public final class Echo extends GlobalCommand implements IntelligentCommand {
 
     /**
      * Creates a new instance of Echo.
@@ -97,6 +101,22 @@ public final class Echo extends GlobalCommand {
     public String getHelp() {
         return "echo [--active|--target <window>] <line> "
                 + "- echos the specified line to the window";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        final AdditionalTabTargets targets = new AdditionalTabTargets();
+        
+        if (arg == 0) {
+            targets.add("--active");
+            targets.add("--target");
+        } else if (arg == 1 && previousArgs.get(0).equals("--target")) {
+            targets.excludeAll();
+            // TODO: Include window names
+        }
+        
+        return targets;
     }
 
 }

@@ -24,8 +24,11 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.config.Identity;
+import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.util.List;
@@ -34,7 +37,7 @@ import java.util.List;
  * Allows the user to add/view/delete ignores.
  * @author chris
  */
-public final class Ignore extends ServerCommand {
+public final class Ignore extends ServerCommand implements IntelligentCommand {
     
     /**
      * Creates a new instance of Ignore.
@@ -75,7 +78,8 @@ public final class Ignore extends ServerCommand {
                     }
                     
                 } else {
-                    sendLine(origin, isSilent, FORMAT_ERROR, "No ignore list entries for this network.");
+                    sendLine(origin, isSilent, FORMAT_ERROR,
+                            "No ignore list entries for this network.");
                 }
                 
             } else {
@@ -121,7 +125,8 @@ public final class Ignore extends ServerCommand {
             
             if (found) {
                 identity.setOption("network", "ignorelist", newlist.toString());
-                sendLine(origin, isSilent, FORMAT_OUTPUT, "Removed " + host + " from the ignore list.");
+                sendLine(origin, isSilent, FORMAT_OUTPUT, "Removed " + host
+                        + " from the ignore list.");
             } else {
                 sendLine(origin, isSilent, FORMAT_ERROR, "Host '" + host + "' not found.");
             }
@@ -150,6 +155,24 @@ public final class Ignore extends ServerCommand {
     @Override
     public String getHelp() {
         return "ignore <add|remove|view> [host] - manages the network's ignore list";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        final AdditionalTabTargets targets = new AdditionalTabTargets();
+        targets.excludeAll();
+        
+        if (arg == 0) {
+            targets.add("add");
+            targets.add("remove");
+            targets.add("view");
+        } else if (arg == 1) {
+            targets.include(TabCompletionType.CHANNEL_NICK);
+            targets.include(TabCompletionType.QUERY_NICK);
+        }
+        
+        return targets;
     }
     
 }

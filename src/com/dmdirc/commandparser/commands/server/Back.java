@@ -24,14 +24,17 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
+import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
+import java.util.List;
 
 /**
  * The back command allows the user to unset their away status.
  * @author chris
  */
-public final class Back extends ServerCommand {
+public final class Back extends ServerCommand implements IntelligentCommand {
     
     /**
      * Creates a new instance of Back.
@@ -70,6 +73,12 @@ public final class Back extends ServerCommand {
     /** {@inheritDoc}. */
     public String getHelp() {
         return "back - unsets your away status";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        return new AdditionalTabTargets().excludeAll();
     }
     
 }

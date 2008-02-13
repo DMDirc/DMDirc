@@ -25,13 +25,16 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
+import java.util.List;
 
 /**
  * Allows the user to reload actions.
  * @author chris
  */
-public final class ReloadActions extends GlobalCommand {
+public final class ReloadActions extends GlobalCommand implements IntelligentCommand {
     
     /**
      * Creates a new instance of ReloadActions.
@@ -63,6 +66,12 @@ public final class ReloadActions extends GlobalCommand {
     /** {@inheritDoc}. */
     public String getHelp() {
         return "reloadactions - reloads actions from disk";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        return new AdditionalTabTargets().excludeAll();
     }
     
 }

@@ -51,7 +51,8 @@ public final class Cycle extends ChannelCommand {
      */
     public void execute(final InputWindow origin, final Server server,
             final Channel channel, final boolean isSilent, final String... args) {
-        channel.part(origin.getConfigManager().getOption("general", "cyclemessage"));
+        channel.part(args.length > 0 ? implodeArgs(args)
+                : origin.getConfigManager().getOption("general", "cyclemessage"));
         channel.join();
     }
     
@@ -67,7 +68,7 @@ public final class Cycle extends ChannelCommand {
     
     /** {@inheritDoc}. */
     public String getHelp() {
-        return "cycle - parts and rejoins the channel";
+        return "cycle [message] - parts and rejoins the channel";
     }
     
 }

@@ -85,17 +85,15 @@ public final class UnloadPlugin extends GlobalCommand implements IntelligentComm
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
-        return "UnloadPlugin <plugin> - Unloads the specified plugin";
+        return "unloadplugin <plugin> - Unloads the specified plugin";
     }
 
     /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
-        final AdditionalTabTargets res = new AdditionalTabTargets();
+        final AdditionalTabTargets res = new AdditionalTabTargets().excludeAll();
         
-        if (arg == 0) {
-            res.excludeAll();
-            
+        if (arg == 0) {            
             for (PluginInfo possPlugin : PluginManager.getPluginManager().getPluginInfos()) {
                 res.add(possPlugin.getName());
             }
