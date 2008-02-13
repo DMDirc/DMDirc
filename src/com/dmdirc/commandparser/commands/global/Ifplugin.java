@@ -29,6 +29,7 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.util.List;
@@ -103,16 +104,18 @@ public final class Ifplugin extends GlobalCommand implements IntelligentCommand 
     /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
-        final AdditionalTabTargets res = new AdditionalTabTargets();
+        AdditionalTabTargets res;
         
         if (arg == 0) {
-            res.excludeAll();
+            res = new AdditionalTabTargets().excludeAll();
 
             for (PluginInfo possPlugin
                     : PluginManager.getPluginManager().getPluginInfos()) {
                 res.add(possPlugin.getName());
                 res.add("!" + possPlugin.getName());
             }            
+        } else {
+            res = TabCompleter.getIntelligentResults(arg, previousArgs, 1);
         }
         
         return res;

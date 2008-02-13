@@ -30,6 +30,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.util.List;
@@ -121,7 +122,7 @@ public final class AliasCommand extends GlobalCommand implements IntelligentComm
     /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
-        final AdditionalTabTargets res = new AdditionalTabTargets();
+        AdditionalTabTargets res = new AdditionalTabTargets();
         
         if (arg == 0) {
             res.add("--remove");
@@ -130,6 +131,8 @@ public final class AliasCommand extends GlobalCommand implements IntelligentComm
             for (Action alias : AliasWrapper.getAliasWrapper().getActions()) {
                 res.add(alias.getName());
             }   
+        } else if (arg >= 1 && !previousArgs.get(0).equals("--remove")) {
+            return TabCompleter.getIntelligentResults(arg, previousArgs, 1);
         }
         
         return res;

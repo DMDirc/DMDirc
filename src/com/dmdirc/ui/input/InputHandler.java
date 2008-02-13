@@ -329,29 +329,8 @@ public final class InputHandler extends KeyAdapter implements ActionListener,
      */
     private void doCommandTabCompletion(final String text, final int start,
             final int end) {
-        final String signature = text.substring(1, text.indexOf(' '));
-        final Command command = CommandManager.getCommand(signature);
-        
-        if (command instanceof IntelligentCommand) {
-            int args = 0;
-            int lastArg = signature.length() + 2;
-            final List<String> previousArgs = new ArrayList<String>();
-            
-            for (int i = lastArg; i < start; i++) {
-                if (text.charAt(i) == ' ') {
-                    args++;
-                    previousArgs.add(text.substring(lastArg, i));
-                    lastArg = i + 1;
-                }
-            }
-            
-            final AdditionalTabTargets results =
-                    ((IntelligentCommand) command).getSuggestions(args, previousArgs);
-            
-            doNormalTabCompletion(text, start, end, results);
-        } else {
-            doNormalTabCompletion(text, start, end, null);
-        }
+            doNormalTabCompletion(text, start, end, 
+                    TabCompleter.getIntelligentResults(text.substring(0, start)));
     }
     
     /**

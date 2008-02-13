@@ -25,7 +25,11 @@ package com.dmdirc.addons.redirectplugin;
 import com.dmdirc.MessageTarget;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.commands.ChatCommand;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
+import java.util.List;
 
 /**
  * The redirect command allows the user to redirect the output from another
@@ -34,7 +38,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
  *
  * @author Chris
  */
-public class RedirectCommand extends ChatCommand {
+public class RedirectCommand extends ChatCommand implements IntelligentCommand {
     
     public RedirectCommand() {
     }
@@ -42,7 +46,8 @@ public class RedirectCommand extends ChatCommand {
     /** {@inheritDoc} */
     public void execute(final InputWindow origin, final Server server,
             final MessageTarget target, final boolean isSilent, final String... args) {
-        target.getFrame().getCommandParser().parseCommand(new FakeInputWindow(target), implodeArgs(args));
+        target.getFrame().getCommandParser().parseCommand(new FakeInputWindow(target),
+                implodeArgs(args));
     }
     
     /** {@inheritDoc} */
@@ -58,6 +63,12 @@ public class RedirectCommand extends ChatCommand {
     /** {@inheritDoc} */
     public String getHelp() {
         return "redirect <command> - sends the output of the command to a channel or query window";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        return TabCompleter.getIntelligentResults(arg, previousArgs, 0);
     }
     
 }

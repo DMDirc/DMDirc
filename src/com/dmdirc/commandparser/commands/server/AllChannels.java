@@ -24,15 +24,20 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
+import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
+
+import java.util.List;
 
 /**
  * The AllChannels command allows the user to issue a command to all channels
  * on a server.
  * @author chris
  */
-public final class AllChannels extends ServerCommand {
+public final class AllChannels extends ServerCommand implements IntelligentCommand {
     
     /** Creates a new instance of AllChannels. */
     public AllChannels() {
@@ -72,6 +77,12 @@ public final class AllChannels extends ServerCommand {
     public String getHelp() {
         return "allchannels <command> - executes the command as though it had" +
                 "been entered on all channels";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        return TabCompleter.getIntelligentResults(arg, previousArgs, 0);
     }
     
 }

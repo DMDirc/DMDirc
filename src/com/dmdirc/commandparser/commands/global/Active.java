@@ -25,13 +25,18 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.Main;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
+
+import java.util.List;
 
 /**
  * The Active command issues a command to the active window.
  * @author chris
  */
-public final class Active extends GlobalCommand {
+public final class Active extends GlobalCommand implements IntelligentCommand {
     
     /**
      * Creates a new instance of Active.
@@ -67,7 +72,14 @@ public final class Active extends GlobalCommand {
     
     /** {@inheritDoc}. */
     public String getHelp() {
-        return "active <command> - executes the command as though it had been typed in the active window";
+        return "active <command> - executes the command as though it had been" +
+                " typed in the active window";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        return TabCompleter.getIntelligentResults(arg, previousArgs, 0);
     }
     
 }

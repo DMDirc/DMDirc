@@ -26,13 +26,18 @@ import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
+import java.util.List;
 
 /**
  * The AllServers command allows users to issue commands to all servers.
  * @author chris
  */
-public final class AllServers extends GlobalCommand {
+public final class AllServers extends GlobalCommand implements IntelligentCommand {
     
     /** Creates a new instance of AllServers. */
     public AllServers() {
@@ -70,7 +75,14 @@ public final class AllServers extends GlobalCommand {
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
-        return "allservers <command> - executes the command as though it had been entered on all servers";
+        return "allservers <command> - executes the command as though it had" +
+                " been entered on all servers";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        return TabCompleter.getIntelligentResults(arg, previousArgs, 0);
     }
     
 }
