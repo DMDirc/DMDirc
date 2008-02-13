@@ -23,14 +23,17 @@
 package com.dmdirc.addons.urlcatcher;
 
 import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
+import java.util.List;
 import java.util.Map;
 
 /**
  *
  * @author chris
  */
-public class UrlListCommand extends GlobalCommand {
+public class UrlListCommand extends GlobalCommand implements IntelligentCommand {
     
     private final UrlCatcherPlugin plugin;
     
@@ -71,5 +74,11 @@ public class UrlListCommand extends GlobalCommand {
     public String getHelp() {
         return "urllist - shows a list of URLs that have been seen";
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        return new AdditionalTabTargets().excludeAll();
+    } 
 
 }

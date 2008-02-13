@@ -26,14 +26,19 @@ import com.dmdirc.Channel;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.parser.ChannelInfo;
+import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
+
+import java.util.List;
 
 /**
  * The mode command allows the user to inspect and change channel modes.
  * @author chris
  */
-public final class Mode extends ChannelCommand {
+public final class Mode extends ChannelCommand implements IntelligentCommand {
     
     /** Creates a new instance of Mode. */
     public Mode() {
@@ -72,5 +77,17 @@ public final class Mode extends ChannelCommand {
     public String getHelp() {
         return "mode [changes] - displays or changes the current channel modes";
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        final AdditionalTabTargets res = new AdditionalTabTargets().excludeAll();
+        
+        if (arg > 0) {
+            res.include(TabCompletionType.CHANNEL_NICK);
+        }
+        
+        return res;
+    } 
     
 }

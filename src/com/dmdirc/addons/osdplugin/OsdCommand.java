@@ -24,14 +24,18 @@ package com.dmdirc.addons.osdplugin;
 
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.Styliser;
+
+import java.util.List;
 
 /**
  * The osd command shows an on screen message.
  * @author chris
  */
-public final class OsdCommand extends GlobalCommand {
+public final class OsdCommand extends GlobalCommand implements IntelligentCommand {
     
     /**
      * Creates a new instance of OsdCommand.
@@ -71,5 +75,19 @@ public final class OsdCommand extends GlobalCommand {
         return "osd --close - closes all OSD windows\n" +
                 "osd <message> - show the specified message in an OSD window";
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        final AdditionalTabTargets res = new AdditionalTabTargets();
+        
+        if (arg == 0) {
+            res.add("--close");
+        } else if (arg > 0 && previousArgs.get(0).equals("--close")) {
+            res.excludeAll();
+        }
+        
+        return res;
+    } 
     
 }

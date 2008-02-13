@@ -26,15 +26,20 @@ import com.dmdirc.Channel;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
+
+import java.util.List;
 
 /**
  * The kick command bans a specified user or host from the channel.
  * 
  * @author chris
  */
-public final class Ban extends ChannelCommand {
+public final class Ban extends ChannelCommand implements IntelligentCommand {
     
     /** Creates a new instance of Ban. */
     public Ban() {
@@ -79,5 +84,17 @@ public final class Ban extends ChannelCommand {
     public String getHelp() {
         return "ban <user|host> - bans the specified user or host from the channel.";
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        final AdditionalTabTargets res = new AdditionalTabTargets().excludeAll();
+        
+        if (arg == 0) {
+            res.include(TabCompletionType.CHANNEL_NICK);
+        }
+        
+        return res;
+    } 
     
 }

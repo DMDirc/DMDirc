@@ -24,14 +24,17 @@ package com.dmdirc.addons.timeplugin;
 
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
+import java.util.List;
 
 /**
  * The timer command allows users to schedule commands to occur after a certain
  * interval, or to repeatedly occur with a specified delay.
  * @author chris
  */
-public final class TimerCommand extends GlobalCommand {
+public final class TimerCommand extends GlobalCommand implements IntelligentCommand {
     
     /**
      * Creates a new instance of TimerCommand.
@@ -84,7 +87,20 @@ public final class TimerCommand extends GlobalCommand {
     
     /** {@inheritDoc} */
     public String getHelp() {
-        return "timer <repetitions> <interval> <command> - schedules a command to be executed after a certain time";
+        return "timer <repetitions> <interval> <command> " +
+                "- schedules a command to be executed after a certain time";
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        final AdditionalTabTargets res = new AdditionalTabTargets();
+        
+        if (arg <= 1) {
+            res.excludeAll();
+        }
+        
+        return res;
+    } 
     
 }
