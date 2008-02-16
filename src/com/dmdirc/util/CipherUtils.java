@@ -38,6 +38,7 @@ import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
+import java.util.logging.Level;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -46,6 +47,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
+import net.miginfocom.Base64;
 
 /**
  * Helper class to encrypt and decrypt strings, requests passwords if needed.
@@ -113,7 +115,7 @@ public class CipherUtils {
             }
         }
         try {
-            return new String(ecipher.doFinal(str.getBytes("UTF8")), Charset.forName("UTF-8"));
+            return Base64.encodeToString(ecipher.doFinal(str.getBytes("UTF8")), false);
         } catch (BadPaddingException e) {
             Logger.userError(ErrorLevel.LOW, "Unable to decrypt string: " + e.getMessage());
         } catch (IllegalBlockSizeException e) {
@@ -140,7 +142,7 @@ public class CipherUtils {
             }
         }
         try {
-            return new String(dcipher.doFinal(str.getBytes()), Charset.forName("UTF-8"));
+            return new String(dcipher.doFinal(Base64.decode(str)));
         } catch (BadPaddingException e) {
             Logger.userError(ErrorLevel.LOW, "Unable to decrypt string: " + e.getMessage());
         } catch (IllegalBlockSizeException e) {

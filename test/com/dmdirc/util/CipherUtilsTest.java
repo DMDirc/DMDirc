@@ -42,7 +42,7 @@ public class CipherUtilsTest extends junit.framework.TestCase {
         final String encrypted = utils.encrypt(source);
         assertNotNull(encrypted);
         
-        final String decrypted = utils.decrypt(source);
+        final String decrypted = utils.decrypt(encrypted);
         assertNotNull(decrypted);
         
         assertEquals(source, decrypted);
