@@ -31,24 +31,87 @@ package com.dmdirc.commandparser;
 public enum PopupType {
     
     /**
-     * The menu that appears when right clicking in a channel's nicklist.
-     * 
-     * Expected arguments: the nickname of the user who was clicked on.
-     */
-    CHAN_NICKLIST,
-        
-    /**
      * The menu that appears when right clicking in a channel window.
      * 
      * Expected arguments: none.
      */
-    CHAN_CHAN,
+    CHAN_NORMAL,
+    
+    /**
+     * The menu that appears when right clicking in a nickname in a channel window.
+     * 
+     * Expected arguments: the nickname of the user who was clicked on.
+     */
+    CHAN_NICK,
+    
+    /**
+     * The menu that appears when right clicking in a channel in a channel window.
+     * 
+     * Expected arguments: the nickname of the user who was clicked on.
+     */
+    CHAN_CHANNEL,
+    
+    /**
+     * The menu that appears when right clicking in a hyperlink in a channel window.
+     * 
+     * Expected arguments: the hyperlink clicked.
+     */
+    CHAN_HYPERLINK,
     
     /**
      * The menu that appears when right clicking in a query window.
      * 
      * Expected arguments: the nickname of the user who the query is with.
      */
-    QUERY_QUERY;
+    QUERY_NORMAL,
+    
+    /**
+     * The menu that appears when right clicking in a nickname in a query window.
+     * 
+     * Expected arguments: the nickname of the user who the query is with.
+     */
+    QUERY_NICK,
+    
+    /**
+     * The menu that appears when right clicking in a channel in a query window.
+     * 
+     * Expected arguments: the nickname of the user who the query is with.
+     */
+    QUERY_CHANNEL,
+    
+    /**
+     * The menu that appears when right clicking in a hyperlink in a query window.
+     * 
+     * Expected arguments: the hyperlink clicked.
+     */
+    QUERY_HYPERLINK,
+    
+    /**
+     * The menu that appears when right clicking in a server window.
+     * 
+     * Expected arguments: the nickname of the user who the query is with.
+     */
+    SERVER_NORMAL,
+    
+    /**
+     * The menu that appears when right clicking in a nickname in a server window.
+     * 
+     * Expected arguments: the nickname of the user who the query is with.
+     */
+    SERVER_NICK,
+    
+    /**
+     * The menu that appears when right clicking in a channel in a server window.
+     * 
+     * Expected arguments: the nickname of the user who the query is with.
+     */
+    SERVER_CHANNEL,
+    
+    /**
+     * The menu that appears when right clicking in a hyperlink in a server window.
+     * 
+     * Expected arguments: the hyperlink clicked.
+     */
+    SERVER_HYPERLINK;
        
 }

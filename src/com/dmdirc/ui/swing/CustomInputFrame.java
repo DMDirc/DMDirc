@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing;
 
 import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.swing.components.InputTextFrame;
@@ -31,6 +32,7 @@ import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import javax.swing.JPopupMenu;
 
 /**
  * A custom frame that includes an input field (for use with writable
@@ -98,6 +100,36 @@ public class CustomInputFrame extends InputTextFrame {
         getContentPane().add(inputPanel, constraints);
         
         pack();
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    protected PopupType getNicknamePopupType() {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected PopupType getChannelPopupType() {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected PopupType getHyperlinkPopupType() {
+        return null;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    protected PopupType getNormalPopupType() {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected void addCustomPopupItems(final JPopupMenu popupMenu) {
+        //Add no custom popup items
     }
     
 }

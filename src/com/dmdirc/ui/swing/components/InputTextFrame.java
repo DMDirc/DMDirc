@@ -73,7 +73,7 @@ import javax.swing.event.InternalFrameListener;
  * Frame with an input field.
  */
 public abstract class InputTextFrame extends TextFrame implements InputWindow,
-        InternalFrameListener, MouseListener, ActionListener, KeyListener,
+        InternalFrameListener, MouseListener, KeyListener,
         Serializable, AwayStateListener {
 
     /**
@@ -519,23 +519,13 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
         }
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void nickNameClicked(final String nickname, final MouseEvent event) {
-        if (event.isPopupTrigger()) {
-            final Point point = getMousePosition();
-            popuplateNicklistPopup(nickname);
-            nickPopup.show(this, (int) point.getX(), (int) point.getY());
-        }
-    }
-
     /** 
      * Popuplates the nicklist popup. 
      *
      * @param nickname Nickname for the popup
      */
     protected final void popuplateNicklistPopup(final String nickname) {
-        final PopupMenu popups = PopupManager.getMenu(PopupType.CHAN_NICKLIST,
+        final PopupMenu popups = PopupManager.getMenu(PopupType.CHAN_NICK,
                 getConfigManager());
 
         nickPopup = (JPopupMenu) populatePopupMenu(new JPopupMenu(), popups,

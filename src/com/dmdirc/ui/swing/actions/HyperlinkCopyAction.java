@@ -20,38 +20,46 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.textpane;
+package com.dmdirc.ui.swing.actions;
 
-import java.awt.event.MouseEvent;
-import java.util.EventListener;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+
+import javax.swing.AbstractAction;
 
 /**
- * Interface for events on the TextPane.
+ * hyperlink copy action.
  */
-public interface TextPaneListener extends EventListener {
-    
+public final class HyperlinkCopyAction extends AbstractAction {
+
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
+    /** hyperlink to be copied. */
+    private final String hyperlink;
+
     /** 
-     * Fired when a hyperlink is clicked. 
-     *
-     * @param url Hyperlink that was clicked on
-     * @param event Triggering Event
+     * Instantiates a new hyperlink copy action.
+     * 
+     * @param hyperlink hyperlink to be copied
      */
-    void hyperlinkClicked(final String url, final MouseEvent event);
-    
-    /**
-     * Fired when a channel is clicked.
-     *
-     * @param channel Name of the channel clicked on
-     * @param event Triggering Event
+    public HyperlinkCopyAction(final String hyperlink) {
+        super("Copy hyperlink");
+
+        this.hyperlink = hyperlink;
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Action event
      */
-    void channelClicked(final String channel, final MouseEvent event);
-    
-    /**
-     * Fired when a channel is clicked.
-     *
-     * @param nickname Name of the channel clicked on
-     * @param event Triggering Event
-     */
-    void nickNameClicked(final String nickname, final MouseEvent event);
-    
-}
+    public void actionPerformed(final ActionEvent e) {
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(hyperlink),
+                null);
+    }
+} 

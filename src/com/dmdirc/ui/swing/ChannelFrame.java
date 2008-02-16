@@ -22,9 +22,11 @@
 
 package com.dmdirc.ui.swing;
 
+import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.ui.swing.components.renderers.NicklistRenderer;
 import com.dmdirc.Channel;
 import com.dmdirc.Main;
+import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.parser.ChannelClientInfo;
@@ -47,6 +49,7 @@ import java.util.List;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
@@ -178,8 +181,6 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
     private void initComponents() {
         settingsMI = new JMenuItem("Settings");
         settingsMI.addActionListener(this);
-        getPopup().addSeparator();
-        getPopup().add(settingsMI);
         final JPanel panel = new JPanel(new BorderLayout());
         
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -230,7 +231,6 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
      * {@inheritDoc}.
      */
     public void actionPerformed(final ActionEvent actionEvent) {
-        super.actionPerformed(actionEvent);
         if (actionEvent.getSource() == settingsMI) {
             ChannelSettingsDialog.showChannelSettingsDialog((Channel) getContainer());
         }
@@ -353,5 +353,42 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
                     getConfigManager().getOptionColour("ui", "foregroundcolour", Color.BLACK)));
             nickList.repaint();
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected PopupType getNicknamePopupType() {
+        return PopupType.CHAN_NICK;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected PopupType getChannelPopupType() {
+        return PopupType.CHAN_NORMAL;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected PopupType getHyperlinkPopupType() {
+        return PopupType.CHAN_HYPERLINK;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    protected PopupType getNormalPopupType() {
+        return PopupType.CHAN_NORMAL;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected void addCustomPopupItems(final JPopupMenu popupMenu) {
+        if (getContainer().getServer().getState().equals(ServerState.CONNECTED)) {
+            settingsMI.setEnabled(true);
+        } else {
+            settingsMI.setEnabled(false);
+        }
+        
+        popupMenu.addSeparator();
+        popupMenu.add(settingsMI);
     }
 }

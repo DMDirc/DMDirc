@@ -260,7 +260,11 @@ public class URLHandler {
                         "Unable to open URL: " + ex.getMessage());
             }
         } else {
-            Logger.userError(ErrorLevel.LOW, "Unable to open your browser.");
+            Logger.userError(ErrorLevel.LOW,
+                    "Unable to open your browser: Your desktop enviroment is " +
+                    "not supported, please go to the URL Handlers section of " +
+                    "the preferences dialog and set the path to your browser " +
+                    "manually");
         }
     }
 
@@ -278,7 +282,11 @@ public class URLHandler {
                         "Unable to open URL: " + ex.getMessage());
             }
         } else {
-            Logger.userError(ErrorLevel.LOW, "Unable to open your mail client.");
+            Logger.userError(ErrorLevel.LOW,
+                    "Unable to open your mail client: Your desktop enviroment is " +
+                    "not supported, please go to the URL Handlers section of " +
+                    "the preferences dialog and set the path to your browser " +
+                    "manually");
         }
     }
 }

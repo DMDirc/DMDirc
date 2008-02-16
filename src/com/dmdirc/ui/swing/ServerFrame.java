@@ -25,6 +25,7 @@ package com.dmdirc.ui.swing;
 
 import com.dmdirc.Server;
 import com.dmdirc.ServerState;
+import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
 import com.dmdirc.ui.input.InputHandler;
@@ -40,14 +41,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JMenuItem;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
+import javax.swing.JPopupMenu;
 
 /**
  * The ServerFrame is the MDI window that shows server messages to the user.
  */
 public final class ServerFrame extends InputTextFrame implements ServerWindow,
-        ActionListener, PopupMenuListener {
+        ActionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -91,9 +91,6 @@ public final class ServerFrame extends InputTextFrame implements ServerWindow,
     private void initComponents() {
         settingsMI = new JMenuItem("Settings");
         settingsMI.addActionListener(this);
-        getPopup().addSeparator();
-        getPopup().add(settingsMI);
-        getPopup().addPopupMenuListener(this);
         
         final GridBagConstraints constraints = new GridBagConstraints();
         
@@ -121,32 +118,46 @@ public final class ServerFrame extends InputTextFrame implements ServerWindow,
     /** {@inheritDoc}. */
     @Override
     public void actionPerformed(final ActionEvent actionEvent) {
-        super.actionPerformed(actionEvent);
         if (actionEvent.getSource() == settingsMI) {
             ServerSettingsDialog.showServerSettingsDialog(getContainer().getServer());
         }
     }
-
-    /** {@inheritDoc}. */
+    
+    /** {@inheritDoc} */
     @Override
-    public void popupMenuWillBecomeVisible(final PopupMenuEvent e) {
+    protected PopupType getNicknamePopupType() {
+        return PopupType.CHAN_NICK;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected PopupType getChannelPopupType() {
+        return PopupType.CHAN_NORMAL;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected PopupType getHyperlinkPopupType() {
+        return PopupType.CHAN_HYPERLINK;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    protected PopupType getNormalPopupType() {
+        return PopupType.CHAN_NORMAL;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected void addCustomPopupItems(final JPopupMenu popupMenu) {
         if (getContainer().getServer().getState().equals(ServerState.CONNECTED)) {
             settingsMI.setEnabled(true);
         } else {
             settingsMI.setEnabled(false);
         }
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public void popupMenuWillBecomeInvisible(final PopupMenuEvent e) {
-        //Ignore
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public void popupMenuCanceled(final PopupMenuEvent e) {
-        //Ignore
+        
+        popupMenu.addSeparator();
+        popupMenu.add(settingsMI);
     }
     
 }

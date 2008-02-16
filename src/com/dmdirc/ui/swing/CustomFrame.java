@@ -23,12 +23,14 @@
 package com.dmdirc.ui.swing;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.ui.swing.components.TextFrame;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import javax.swing.JPopupMenu;
 
 /**
  * A very basic custom frame.
@@ -78,6 +80,36 @@ public class CustomFrame extends TextFrame {
         getContentPane().add(getSearchBar(), constraints);
         
         pack();
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    protected PopupType getNicknamePopupType() {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected PopupType getChannelPopupType() {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected PopupType getHyperlinkPopupType() {
+        return null;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    protected PopupType getNormalPopupType() {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected void addCustomPopupItems(final JPopupMenu popupMenu) {
+        //Add no custom popup items
     }
     
 }

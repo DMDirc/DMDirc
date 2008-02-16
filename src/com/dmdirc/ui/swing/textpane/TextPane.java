@@ -35,7 +35,6 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.font.TextAttribute;
@@ -47,7 +46,6 @@ import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.event.EventListenerList;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
@@ -77,8 +75,18 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     private final IRCDocument document;
     /** Parent Frame. */
     private final FrameContainer frame;
-    /** Listener list. */
-    private final EventListenerList textPaneListeners;
+    
+    /** Click types. */
+    public enum ClickType {
+        /** Hyperlink. */
+        HYPERLINK,
+        /** Channel. */
+        CHANNEL,
+        /** Nickname. */
+        NICKNAME,
+        /** Normal. */
+        NORMAL,
+    }
     
     /** 
      * Creates a new instance of TextPane. 
@@ -89,8 +97,6 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         super();
         
         this.frame = frame;
-        
-        textPaneListeners = new EventListenerList();
         
         document = new IRCDocument();
         
@@ -380,6 +386,16 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     }
     
     /**
+     * Returns whether there is a selected range.
+     * 
+     * @return true iif there is a selected range
+     */
+    public boolean hasSelectedRange() {
+        final int[] selectedRange = canvas.getSelectedRange();
+        return !(selectedRange[0] == selectedRange[2] && selectedRange[1] == selectedRange[3]);
+    }
+    
+    /**
      * Selects the specified region of text.
      *
      * @param startLine Start line
@@ -453,6 +469,44 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         return text.toString();
     }
     
+    /**
+     * Returns the type of text this click represents.
+     * 
+     * @param lineInfo Line info of click.
+     * 
+     * @return Click type for specified position
+     */
+    public ClickType getClickType(final int[] lineInfo) {
+        return canvas.getClickType(lineInfo);
+    }
+    
+    /**
+     * Returns the surrouding word at the specified position.
+     * 
+     * @param lineNumber Line number to get word from
+     * @param index Position to get surrounding word
+     * 
+     * @return Surrounding word
+     */
+    public String getWordAtIndex(final int lineNumber, final int index) {
+        if (lineNumber == -1) {
+            return "";
+        }
+        final int[] indexes = canvas.getSurroundingWordIndexes(getTextFromLine(lineNumber), index);
+        return getTextFromLine(lineNumber, indexes[0], indexes[1]);
+    }
+    
+    /**
+     * Returns the atrriute value for the specified location.
+     * 
+     * @param lineInfo Specified location
+     * 
+     * @return Specified value
+     */
+    public Object getAttributeValueAtPoint(int[] lineInfo) {
+        return canvas.getAttributeValueAtPoint(lineInfo);
+    }
+    
     /** Adds the selected text to the clipboard. */
     public void copy() {
         if (getSelectedText() != null && !getSelectedText().isEmpty()) {
@@ -499,74 +553,6 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         setSelectedTexT(selectedRange[0], selectedRange[1], 
                 selectedRange[2], selectedRange[3]);
         document.trim(numLines);
-    }
-    
-    /**
-     * Adds a TextPaneListener to the listener list.
-     *
-     * @param listener Listener to add
-     */
-    public void addTextPaneListener(final TextPaneListener listener) {
-        synchronized (textPaneListeners) {
-            if (listener == null) {
-                return;
-            }
-            textPaneListeners.add(TextPaneListener.class, listener);
-        }
-    }
-    
-    /**
-     * Removes a TextPaneListener from the listener list.
-     *
-     * @param listener Listener to remove
-     */
-    public void removeTextPaneListener(final TextPaneListener listener) {
-        textPaneListeners.remove(TextPaneListener.class, listener);
-    }
-    
-    /**
-     * Informs listeners when a word has been clicked on.
-     *
-     * @param text word clicked on
-     * @param event Triggering Event
-     */
-    protected void fireHyperlinkClicked(final String text, final MouseEvent event) {
-        final Object[] listeners = textPaneListeners.getListenerList();
-        for (int i = 0; i < listeners.length; i += 2) {
-            if (listeners[i] == TextPaneListener.class) {
-                ((TextPaneListener) listeners[i + 1]).hyperlinkClicked(text, event);
-            }
-        }
-    }
-    
-    /**
-     * Informs listeners when a word has been clicked on.
-     *
-     * @param text word clicked on
-     * @param event Triggering Event
-     */
-    protected void fireChannelClicked(final String text, final MouseEvent event) {
-        final Object[] listeners = textPaneListeners.getListenerList();
-        for (int i = 0; i < listeners.length; i += 2) {
-            if (listeners[i] == TextPaneListener.class) {
-                ((TextPaneListener) listeners[i + 1]).channelClicked(text, event);
-            }
-        }
-    }
-    
-    /**
-     * Informs listeners when a nickname has been clicked on.
-     *
-     * @param text word clicked on
-     * @param event Triggering Event
-     */
-    protected void fireNicknameClicked(final String text, final MouseEvent event) {
-        final Object[] listeners = textPaneListeners.getListenerList();
-        for (int i = 0; i < listeners.length; i += 2) {
-            if (listeners[i] == TextPaneListener.class) {
-                ((TextPaneListener) listeners[i + 1]).nickNameClicked(text, event);
-            }
-        }
     }
     
     /** Scrolls one page up in the textpane. */

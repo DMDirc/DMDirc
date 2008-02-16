@@ -26,6 +26,7 @@ import com.dmdirc.IconManager;
 import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.parsers.CommandParser;
@@ -35,6 +36,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.swing.components.InputTextFrame;
+import javax.swing.JPopupMenu;
 
 /**
  * This class links DCC objects to a window.
@@ -69,6 +71,35 @@ public abstract class DCCFrame extends WritableFrameContainer {
 			public final CommandParser getCommandParser() {
 				return GlobalCommandParser.getGlobalCommandParser();
 			}
+			/** {@inheritDoc} */
+			@Override
+			protected PopupType getNicknamePopupType() {
+				return null;
+			}
+
+			/** {@inheritDoc} */
+			@Override
+			protected PopupType getChannelPopupType() {
+				return null;
+			}
+
+			/** {@inheritDoc} */
+			@Override
+			protected PopupType getHyperlinkPopupType() {
+				return null;
+			}
+    
+			/** {@inheritDoc} */
+			@Override
+			protected PopupType getNormalPopupType() {
+				return null;
+			}
+
+			/** {@inheritDoc} */
+			@Override
+			protected void addCustomPopupItems(final JPopupMenu popupMenu) {
+				//Add no custom popup items
+			}
 	}
 	
 	/**
@@ -79,7 +110,7 @@ public abstract class DCCFrame extends WritableFrameContainer {
 		private static final long serialVersionUID = 200711271;
 		
 		/** Loads the relevant commands into the parser. */
-        @Override
+		@Override
 		protected void loadCommands() { CommandManager.loadGlobalCommands(this); }
 		
 		/**
@@ -90,7 +121,7 @@ public abstract class DCCFrame extends WritableFrameContainer {
 		 * @param command The command to be executed
 		 * @param args The arguments to the command
 		 */
-        @Override
+		@Override
 		protected void executeCommand(final InputWindow origin, final boolean isSilent, final Command command, final String... args) {
 			((GlobalCommand) command).execute(origin, isSilent, args);
 		}
@@ -103,7 +134,7 @@ public abstract class DCCFrame extends WritableFrameContainer {
 		 * @param origin The window in which the command was typed
 		 * @param line The line input by the user
 		 */
-        @Override
+ 		@Override
 		protected void handleNonCommand(final InputWindow origin, final String line) {
 			if (origin.getContainer() instanceof WritableFrameContainer) {
 				((WritableFrameContainer)origin.getContainer()).sendLine(line);
@@ -158,7 +189,7 @@ public abstract class DCCFrame extends WritableFrameContainer {
 	 *
 	 * @return A DCCCommandParser
 	 */
-	public static synchronized DCCCommandParser getDCCCommandParser() {
+	static synchronized DCCCommandParser getDCCCommandParser() {
 		if (myDCCCommandParser == null) {
 			myDCCCommandParser = new DCCCommandParser();
 		}

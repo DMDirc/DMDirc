@@ -157,8 +157,8 @@ popups.umodes-admin=Make admin:mode +a %1$s\nRemove admin:mode -a %1$s
 popups.umodes-owner=Make owner:mode +q %1$s\nRemove owner:mode -q %1$s
 
 popups.CHAN_NICKLIST=<nick\n-\nModes:<umodes\n<chan-nick
-popups.CHAN_CHAN=
-popups.QUERY_QUERY=<nick
+popups.CHAN_NORMAL=
+popups.QUERY_NORMAL=<nick
 
 protocol.http=BROWSER
 protocol.https=BROWSER
