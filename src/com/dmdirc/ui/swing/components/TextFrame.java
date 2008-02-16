@@ -566,7 +566,12 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                             URLHandler.getURLHander().launchApp(attribute);
                             break;
                         case NICKNAME:
-                            getContainer().getServer().getQuery(attribute).activateFrame();
+                            if (getContainer().getServer().hasQuery(attribute)) {
+                                getContainer().getServer().getQuery(attribute).activateFrame();
+                            } else {
+                                getContainer().getServer().addQuery(attribute);
+                                getContainer().getServer().getQuery(attribute).show();
+                            }
                             break;
                         default:
                             break;
