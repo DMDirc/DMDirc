@@ -1029,19 +1029,29 @@ public class IRCParser implements Runnable {
 		}
 	}
 
-	/** Characters to use when converting tolowercase. */
-	private char[] lowercase;
-	/** Characters to use when converting touppercase. */
-	private char[] uppercase;
-	/** Previous char array limit */
-	private byte lastLimit = (byte)3;
 
+	/** The IRCStringConverter for this parser */
+	private IRCStringConverter stringConverter = null;
+
+	/**
+	 * Get the IRCStringConverter used by this parser.
+	 *
+	 * @return the IRCStringConverter used by this parser. (will create a default
+	 *         one if none exists already);
+	 */
+	public IRCStringConverter getIRCStringConverter() {
+		if (stringConverter == null) {
+			stringConverter = new IRCStringConverter((byte)4);
+		}
+		return stringConverter;
+	}
+	
 	/**
 	 * Get last used chararray limit.
 	 *
 	 * @return last used chararray limit
 	 */
-	protected int getLastLimit() { return lastLimit; }
+	protected int getLastLimit() { return getIRCStringConverter().getLimit(); }
 
 	/**
 	 * Update the character arrays.
@@ -1052,22 +1062,7 @@ public class IRCParser implements Runnable {
 	 *              4 = rfc1459 encoding
 	 */
 	protected void updateCharArrays(final byte limit) {
-		// If limit is out side the boundries, use rfc1459
-		if (limit > 4 || limit < 0 ) { updateCharArrays((byte)4); return; }
-		lastLimit = limit;
-		lowercase = new char[127];
-		uppercase = new char[127];
-		// Normal Chars
-		for (char i = 0; i < lowercase.length; ++i) {
-			lowercase[i] = i;
-			uppercase[i] = i;
-		}
-
-		// Replace the uppercase chars with lowercase
-		for (char i = 65; i <= (90 + limit); ++i) {
-			lowercase[i] = (char)(i + 32);
-			uppercase[i + 32] = i;
-		}
+		stringConverter = new IRCStringConverter(limit);
 	}
 
 	/**
@@ -1077,15 +1072,7 @@ public class IRCParser implements Runnable {
 	 * @return input String converterd to lowercase
 	 */
 	public String toLowerCase(final String input) {
-		final char[] result = input.toCharArray();
-		for (int i = 0; i < input.length(); ++i) {
-			if (result[i] >= 0 && result[i] < lowercase.length) {
-				result[i] = lowercase[result[i]];
-			} else {
-				result[i] = result[i];
-			}
-		}
-		return new String(result);
+		return getIRCStringConverter().toLowerCase(input);
 	}
 
 	/**
@@ -1095,15 +1082,7 @@ public class IRCParser implements Runnable {
 	 * @return input String converterd to uppercase
 	 */
 	public String toUpperCase(final String input) {
-		final char[] result = input.toCharArray();
-		for (int i = 0; i < input.length(); ++i) {
-			if (result[i] >= 0 && result[i] < uppercase.length) {
-				result[i] = uppercase[result[i]];
-			} else {
-				result[i] = result[i];
-			}
-		}
-		return new String(result);
+		return getIRCStringConverter().toUpperCase(input);
 	}
 
 	/**
@@ -1114,23 +1093,7 @@ public class IRCParser implements Runnable {
 	 * @return True if both strings are equal after being lowercased
 	 */
 	public boolean equalsIgnoreCase(final String first, final String second) {
-		if (first == null && second == null) { return true; }
-		if (first == null || second == null) { return false; }
-		boolean result = (first.length() == second.length());
-		if (result) {
-			final char[] firstChar = first.toCharArray();
-			final char[] secondChar = second.toCharArray();
-			for (int i = 0; i < first.length(); ++i) {
-				if (firstChar[i] < lowercase.length && secondChar[i] < lowercase.length) {
-					result = (lowercase[firstChar[i]] == lowercase[secondChar[i]]);
-				} else {
-					result = firstChar[i] == secondChar[i];
-				}
-				if (!result) { break; }
-			}
-		}
-
-		return result;
+		return getIRCStringConverter().equalsIgnoreCase(first, second);
 	}
 
 	/**
