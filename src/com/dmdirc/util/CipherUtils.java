@@ -50,44 +50,52 @@ import javax.crypto.spec.PBEParameterSpec;
 /**
  * Helper class to encrypt and decrypt strings, requests passwords if needed.
  */
-public final class CipherUtils {
-    /**
-     * Encryption cipher.
-     */
-    private static Cipher ecipher;
+public class CipherUtils {
     
-    /**
-     * Decryption cipher.
-     */
-    private static Cipher dcipher;
+    /** Singleton instance. */
+    protected static CipherUtils me;
     
-    /**
-     * Salt.
-     */
-    private static final byte[] SALT = {
+    /** Encryption cipher. */
+    protected Cipher ecipher;
+    
+    /** Decryption cipher. */
+    protected Cipher dcipher;
+    
+    /** Salt. */
+    protected final byte[] SALT = {
         (byte) 0xA9, (byte) 0x9B, (byte) 0xC8, (byte) 0x32,
         (byte) 0x56, (byte) 0x35, (byte) 0xE3, (byte) 0x03,
     };
     
-    /**
-     * Iteration count.
-     */
-    private static final int ITERATIONS = 19;
+    /** Iteration count. */
+    protected final int ITERATIONS = 19;
     
-    /**
-     * number of auth attemps before failing the attempt.
-     */
-    private static final int AUTH_TRIES = 4;
+    /** Number of auth attemps before failing the attempt. */
+    protected final int AUTH_TRIES = 4;
     
-    /**
-     * User password.
-     */
-    private static String password;
+    /** User password. */
+    protected String password;
     
     /**
      * Prevents creation of a new instance of Encipher.
      */
-    private CipherUtils() {
+    protected CipherUtils() {
+        // Do nothing
+    }
+    
+    /**
+     * Retrieves a singleton instance of CipherUtils.
+     * 
+     * @return A singleton cipher utils instance.
+     */
+    public static CipherUtils getCipherUtils() {
+        synchronized(CipherUtils.class) {
+            if (me == null) {
+                me = new CipherUtils();
+            }
+            
+            return me;
+        }
     }
     
     /**
@@ -96,7 +104,7 @@ public final class CipherUtils {
      * @param str String to encrypt
      * @return Encrypted string
      */
-    public static String encrypt(final String str) {
+    public String encrypt(final String str) {
         if (!checkAuthed()) {
             if (auth()) {
                 createCiphers();
@@ -123,7 +131,7 @@ public final class CipherUtils {
      * @param str String to decrypt
      * @return Decrypted string
      */
-    public static String decrypt(final String str) {
+    public String decrypt(final String str) {
         if (!checkAuthed()) {
             if (auth()) {
                 createCiphers();
@@ -146,7 +154,7 @@ public final class CipherUtils {
      * @param data String to hashed
      * @return hashed string
      */
-    public static String hash(final String data) {
+    public String hash(final String data) {
         try {
             return new String(MessageDigest.getInstance("SHA-512")
             .digest(data.getBytes("UTF8")), Charset.forName("UTF-8"));
@@ -163,7 +171,7 @@ public final class CipherUtils {
      *
      * @return true if authed, false otherwise
      */
-    public static boolean checkAuthed() {
+    public boolean checkAuthed() {
         if (dcipher != null && ecipher != null) {
             return true;
         }
@@ -173,7 +181,7 @@ public final class CipherUtils {
     /**
      * creates ciphers.
      */
-    private static void createCiphers() {
+    protected void createCiphers() {
         try {
             final KeySpec keySpec = new PBEKeySpec(
                     password.toCharArray(), SALT, ITERATIONS);
@@ -213,7 +221,7 @@ public final class CipherUtils {
      *
      * @return true if auth was successful, false otherwise.
      */
-    public static boolean auth() {
+    public boolean auth() {
         String passwordHash = null;
         String prompt = "Please enter your password";
         int tries = 1;
@@ -224,7 +232,7 @@ public final class CipherUtils {
                 passwordHash = IdentityManager.getGlobalConfig().getOption("encryption",
                         "passwordHash");
             }
-            passwordHash = "moo";
+
             while ((password == null || password.isEmpty()) && tries < AUTH_TRIES) {
                 password = getPassword(prompt);
                 if (passwordHash == null) {
@@ -252,7 +260,7 @@ public final class CipherUtils {
      * @param prompt The prompt to show
      * @return The user-specified password
      */
-    protected static String getPassword(final String prompt) {
+    protected String getPassword(final String prompt) {
         return Main.getUI().getUserInput(prompt);
     }
 }
