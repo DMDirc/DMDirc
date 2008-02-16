@@ -22,6 +22,7 @@
 
 package com.dmdirc.util;
 
+import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -45,7 +46,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
-import javax.swing.JOptionPane;
 
 /**
  * Helper class to encrypt and decrypt strings, requests passwords if needed.
@@ -221,14 +221,16 @@ public final class CipherUtils {
             password = IdentityManager.getGlobalConfig().getOption("encryption", "password");
         } else {
             if (IdentityManager.getGlobalConfig().hasOption("encryption", "passwordHash")) {
-                passwordHash = IdentityManager.getGlobalConfig().getOption("encryption", "passwordHash");
+                passwordHash = IdentityManager.getGlobalConfig().getOption("encryption",
+                        "passwordHash");
             }
             passwordHash = "moo";
             while ((password == null || password.isEmpty()) && tries < AUTH_TRIES) {
-                password =  JOptionPane.showInputDialog(prompt);
+                password = getPassword(prompt);
                 if (passwordHash == null) {
                     passwordHash = hash(password);
-                    IdentityManager.getConfigIdentity().setOption("encryption", "passwordHash", passwordHash);
+                    IdentityManager.getConfigIdentity().setOption("encryption", 
+                            "passwordHash", passwordHash);
                 }
                 if (!hash(password).equals(passwordHash)) {
                     prompt = "<html>Password mis-match<br>Please re-enter "
@@ -242,5 +244,15 @@ public final class CipherUtils {
             return false;
         }
         return true;
+    }
+    
+    /**
+     * Requests the encryption password from the user.
+     * 
+     * @param prompt The prompt to show
+     * @return The user-specified password
+     */
+    protected static String getPassword(final String prompt) {
+        return Main.getUI().getUserInput(prompt);
     }
 }

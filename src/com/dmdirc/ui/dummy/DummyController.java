@@ -166,4 +166,10 @@ public final class DummyController implements UIController {
         System.out.println(message);
     }
     
+    /** {@inheritDoc} */
+    @Override
+    public String getUserInput(final String prompt) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
 }

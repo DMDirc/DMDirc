@@ -371,4 +371,10 @@ public final class SwingController implements UIController {
             }
         });
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public String getUserInput(final String prompt) {
+        return JOptionPane.showInputDialog(prompt);
+    }
 }

@@ -162,11 +162,19 @@ public interface UIController {
     void showFeedbackNag();
     
     /**
-     * Shows a message dialog to the user
+     * Shows a message dialog to the user.
      * 
      * @param title Dialog title
      * @param message Message to display
      */
     void showMessageDialog(final String title, final String message);
+    
+    /**
+     * Requests user input.
+     * 
+     * @param prompt The prompt to display
+     * @return The user-inputted string
+     */
+    String getUserInput(final String prompt);
     
 }
