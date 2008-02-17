@@ -34,6 +34,7 @@ import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.swing.components.InputTextFrame;
 import com.dmdirc.ui.swing.dialogs.channelsetting.ChannelSettingsDialog;
+import com.dmdirc.ui.swing.textpane.TextPane.ClickType;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
@@ -62,32 +63,26 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
  */
 public final class ChannelFrame extends InputTextFrame implements MouseListener,
         ActionListener, ChannelWindow {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 10;
-    
     /** The nick list model used for this channel's nickname list. */
     private NicklistListModel nicklistModel;
-    
     /** This channel's command parser. */
     private final ChannelCommandParser commandParser;
-    
     /** Nick list. */
     private JList nickList;
-    
     /** split pane. */
     private JSplitPane splitPane;
-    
     /** popup menu item. */
     private JMenuItem settingsMI;
-    
     /** The channel object that owns this frame. */
     private final Channel parent;
-    
+
     /**
      * Creates a new instance of ChannelFrame. Sets up callbacks and handlers,
      * and default options for the form.
@@ -95,28 +90,36 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
      */
     public ChannelFrame(final Channel owner) {
         super(owner);
-        
+
         parent = owner;
-        
+
         initComponents();
-        
-        nickList.setBackground(getConfigManager().getOptionColour("ui", "nicklistbackgroundcolour",
-                getConfigManager().getOptionColour("ui", "backgroundcolour", Color.WHITE)));
-        nickList.setForeground(getConfigManager().getOptionColour("ui", "nicklistforegroundcolour",
-                getConfigManager().getOptionColour("ui", "foregroundcolour", Color.BLACK)));
-        
-        getConfigManager().addChangeListener("ui", "nicklistforegroundcolour", this);
+
+        nickList.setBackground(getConfigManager().getOptionColour("ui",
+                "nicklistbackgroundcolour",
+                getConfigManager().getOptionColour("ui", "backgroundcolour",
+                Color.WHITE)));
+        nickList.setForeground(getConfigManager().getOptionColour("ui",
+                "nicklistforegroundcolour",
+                getConfigManager().getOptionColour("ui", "foregroundcolour",
+                Color.BLACK)));
+
+        getConfigManager().addChangeListener("ui", "nicklistforegroundcolour",
+                this);
         getConfigManager().addChangeListener("ui", "foregroundcolour", this);
-        getConfigManager().addChangeListener("ui", "nicklistbackgroundcolour", this);
+        getConfigManager().addChangeListener("ui", "nicklistbackgroundcolour",
+                this);
         getConfigManager().addChangeListener("ui", "backgroundcolour", this);
-        getConfigManager().addChangeListener("nicklist", "altBackgroundColour", this);
-        
-        commandParser = new ChannelCommandParser(((Channel) getContainer()).
-                getServer(), (Channel) getContainer());
-        
+        getConfigManager().addChangeListener("nicklist", "altBackgroundColour",
+                this);
+
+        commandParser =
+                new ChannelCommandParser(((Channel) getContainer()).getServer(),
+                (Channel) getContainer());
+
         setInputHandler(new InputHandler(getInputField(), commandParser, this));
     }
-    
+
     /**
      * Retrieves the command Parser for this command window.
      * @return This window's command Parser
@@ -124,43 +127,47 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
     public CommandParser getCommandParser() {
         return commandParser;
     }
-    
+
     /** {@inheritDoc} */
     public void updateNames(final List<ChannelClientInfo> clients) {
         SwingUtilities.invokeLater(new Runnable() {
+
             public void run() {
                 nicklistModel.replace(clients);
             }
         });
     }
-    
+
     /** {@inheritDoc} */
     public void updateNames() {
         SwingUtilities.invokeLater(new Runnable() {
+
             public void run() {
                 nicklistModel.sort();
             }
         });
     }
-    
+
     /** {@inheritDoc} */
     public void addName(final ChannelClientInfo client) {
         SwingUtilities.invokeLater(new Runnable() {
+
             public void run() {
                 nicklistModel.add(client);
             }
         });
     }
-    
+
     /** {@inheritDoc} */
     public void removeName(final ChannelClientInfo client) {
         SwingUtilities.invokeLater(new Runnable() {
+
             public void run() {
                 nicklistModel.remove(client);
             }
         });
     }
-    
+
     /**
      * Retrieves this channel frame's nicklist component.
      * @return This channel's nicklist
@@ -168,13 +175,13 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
     public JList getNickList() {
         return nickList;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public Channel getChannel() {
         return parent;
     }
-    
+
     /**
      * Initialises the compoents in this frame.
      */
@@ -182,51 +189,52 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
         settingsMI = new JMenuItem("Settings");
         settingsMI.addActionListener(this);
         final JPanel panel = new JPanel(new BorderLayout());
-        
+
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        
+
         final JScrollPane nickScrollPane = new JScrollPane();
         nickList = new JList();
-        nickList.setCellRenderer(new NicklistRenderer(parent.getConfigManager(), nickList));
+        nickList.setCellRenderer(new NicklistRenderer(parent.getConfigManager(),
+                nickList));
         nickList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        
+
         nickList.addMouseListener(this);
-        
+
         splitPane.setBorder(null);
         final BasicSplitPaneDivider divider =
                 ((BasicSplitPaneUI) splitPane.getUI()).getDivider();
         if (divider != null) {
             divider.setBorder(null);
         }
-        
+
         nicklistModel = new NicklistListModel();
-        
+
         nickList.setModel(nicklistModel);
         nickScrollPane.setViewportView(nickList);
-        
+
         nickScrollPane.setMinimumSize(new Dimension(150, 10));
         getTextPane().setPreferredSize(new Dimension(((MainFrame) Main.getUI().
                 getMainWindow()).getWidth(), 10));
-        
+
         panel.add(getSearchBar(), BorderLayout.PAGE_START);
         panel.add(inputPanel, BorderLayout.PAGE_END);
-        
+
         getContentPane().setLayout(new BorderLayout());
-        
+
         getContentPane().add(splitPane, BorderLayout.CENTER);
         getContentPane().add(panel, BorderLayout.PAGE_END);
-        
+
         splitPane.setLeftComponent(getTextPane());
         splitPane.setRightComponent(nickScrollPane);
-        
+
         splitPane.setDividerLocation((double) 1);
         splitPane.setResizeWeight(1);
         splitPane.setDividerSize(SMALL_BORDER);
         splitPane.setContinuousLayout(true);
-        
+
         pack();
     }
-    
+
     /**
      * {@inheritDoc}.
      */
@@ -235,7 +243,7 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
             ChannelSettingsDialog.showChannelSettingsDialog((Channel) getContainer());
         }
     }
-    
+
     /**
      * Returns the splitpane.
      * @return nicklist JSplitPane
@@ -243,7 +251,7 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
     public JSplitPane getSplitPane() {
         return splitPane;
     }
-    
+
     /**
      * Checks for url's, channels and nicknames. {@inheritDoc}
      */
@@ -251,7 +259,7 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
         processMouseEvent(mouseEvent);
         super.mouseClicked(mouseEvent);
     }
-    
+
     /**
      * Not needed for this class. {@inheritDoc}
      */
@@ -259,7 +267,7 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
         processMouseEvent(mouseEvent);
         super.mousePressed(mouseEvent);
     }
-    
+
     /**
      * Not needed for this class. {@inheritDoc}
      */
@@ -267,7 +275,7 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
         processMouseEvent(mouseEvent);
         super.mouseReleased(mouseEvent);
     }
-    
+
     /**
      * Processes every mouse button event to check for a popup trigger.
      *
@@ -281,10 +289,8 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
             }
             if (showMenu) {
                 if (e.isPopupTrigger()) {
-                    final Point point = getMousePosition();
-                    popuplateNicklistPopup(((ChannelClientInfo) nickList.
-                            getSelectedValue()).getNickname());
-                    nickPopup.show(this, (int) point.getX(), (int) point.getY());
+                    showPopupMenu(ClickType.NICKNAME, getMousePosition(),
+                            ((ChannelClientInfo) nickList.getSelectedValue()).getNickname());
                 }
             } else {
                 nickList.clearSelection();
@@ -292,7 +298,7 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
         }
         super.processMouseEvent(e);
     }
-    
+
     /**
      *
      * Checks whether to show the nicklist menu.
@@ -304,9 +310,8 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
         final Point mousePos = nickList.getMousePosition();
         if (mousePos != null) {
             for (int i = 0; i < nickList.getModel().getSize(); i++) {
-                if (nickList.getCellBounds(i, i) != null
-                        && nickList.getCellBounds(i, i).contains(mousePos)
-                        && nickList.isSelectedIndex(i)) {
+                if (nickList.getCellBounds(i, i) != null && nickList.getCellBounds(i, i).
+                        contains(mousePos) && nickList.isSelectedIndex(i)) {
                     showMenu = true;
                     break;
                 }
@@ -314,7 +319,7 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
         }
         return showMenu;
     }
-    
+
     /**
      * Selects the nick underneath the mouse.
      *
@@ -325,8 +330,8 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
         final Point mousePos = nickList.getMousePosition();
         if (mousePos != null) {
             for (int i = 0; i < nickList.getModel().getSize(); i++) {
-                if (nickList.getCellBounds(i, i) != null
-                        && nickList.getCellBounds(i, i).contains(mousePos)) {
+                if (nickList.getCellBounds(i, i) != null && nickList.getCellBounds(i, i).
+                        contains(mousePos)) {
                     nickList.setSelectedIndex(i);
                     suceeded = true;
                     break;
@@ -335,22 +340,26 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
         }
         return suceeded;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
         super.configChanged(domain, key);
-        
+
         if (("ui".equals(domain) || "nicklist".equals(domain)) &&
                 ("altBackgroundColour".equals(key) ||
                 "nicklistbackgroundcolour".equals(key) ||
                 "backgroundcolour".equals(key) ||
                 "nicklistforegroundcolour".equals(key) ||
                 "foregroundcolour".equals(key))) {
-            nickList.setBackground(getConfigManager().getOptionColour("ui", "nicklistbackgroundcolour",
-                    getConfigManager().getOptionColour("ui", "backgroundcolour", Color.WHITE)));
-            nickList.setForeground(getConfigManager().getOptionColour("ui", "nicklistforegroundcolour",
-                    getConfigManager().getOptionColour("ui", "foregroundcolour", Color.BLACK)));
+            nickList.setBackground(getConfigManager().getOptionColour("ui",
+                    "nicklistbackgroundcolour",
+                    getConfigManager().getOptionColour("ui", "backgroundcolour",
+                    Color.WHITE)));
+            nickList.setForeground(getConfigManager().getOptionColour("ui",
+                    "nicklistforegroundcolour",
+                    getConfigManager().getOptionColour("ui", "foregroundcolour",
+                    Color.BLACK)));
             nickList.repaint();
         }
     }
@@ -372,7 +381,7 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
     protected PopupType getHyperlinkPopupType() {
         return PopupType.CHAN_HYPERLINK;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected PopupType getNormalPopupType() {
@@ -387,7 +396,7 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
         } else {
             settingsMI.setEnabled(false);
         }
-        
+
         popupMenu.addSeparator();
         popupMenu.add(settingsMI);
     }

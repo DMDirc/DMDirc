@@ -553,9 +553,10 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         if (e.getSource() == getTextPane() && point != null) {
             final int[] lineInfo = getTextPane().getClickPosition(point);
             final ClickType clickType = getTextPane().getClickType(lineInfo);
-            final String attribute = (String) getTextPane().getAttributeValueAtPoint(lineInfo);
+            final String attribute = (String) getTextPane().
+                    getAttributeValueAtPoint(lineInfo);
             if (e.isPopupTrigger()) {
-                showPopupMenu(clickType, point, attribute);
+                showPopupMenuInternal(clickType, point, attribute);
             } else {
                 if (type == MouseClickType.CLICKED) {
                     switch (clickType) {
@@ -567,10 +568,12 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                             break;
                         case NICKNAME:
                             if (getContainer().getServer().hasQuery(attribute)) {
-                                getContainer().getServer().getQuery(attribute).activateFrame();
+                                getContainer().getServer().getQuery(attribute).
+                                        activateFrame();
                             } else {
                                 getContainer().getServer().addQuery(attribute);
-                                getContainer().getServer().getQuery(attribute).show();
+                                getContainer().getServer().getQuery(attribute).
+                                        show();
                             }
                             break;
                         default:
@@ -624,42 +627,79 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      * @param point Point Point of the click
      * @param argument Word under the click
      */
-    private void showPopupMenu(final ClickType type, final Point point,
+    private void showPopupMenuInternal(final ClickType type, final Point point,
             final String argument) {
         final JPopupMenu popupMenu;
         switch (type) {
             case CHANNEL:
                 popupMenu = getPopupMenu(getChannelPopupType(), argument);
-                if (popupMenu.getComponentCount() > 0) {
+                popupMenu.add(new ChannelCopyAction(argument));
+                if (popupMenu.getComponentCount() > 1) {
                     popupMenu.addSeparator();
                 }
-                popupMenu.add(new ChannelCopyAction(argument));
                 break;
             case HYPERLINK:
                 popupMenu = getPopupMenu(getHyperlinkPopupType(), argument);
-                if (popupMenu.getComponentCount() > 0) {
+                popupMenu.add(new HyperlinkCopyAction(argument));
+                if (popupMenu.getComponentCount() > 1) {
                     popupMenu.addSeparator();
                 }
-                popupMenu.add(new HyperlinkCopyAction(argument));
                 break;
             case NICKNAME:
                 popupMenu = getPopupMenu(getNicknamePopupType(), argument);
-                if (popupMenu.getComponentCount() > 0) {
+                popupMenu.add(new NicknameCopyAction(argument));
+                if (popupMenu.getComponentCount() > 1) {
                     popupMenu.addSeparator();
                 }
-                popupMenu.add(new NicknameCopyAction(argument));
                 break;
             default:
                 popupMenu = getPopupMenu(null, argument);
                 break;
         }
 
-        if (popupMenu.getComponentCount() > 0) {
-            popupMenu.addSeparator();
-        }
         popupMenu.add(new TextPaneCopyAction(getTextPane()));
 
         addCustomPopupItems(popupMenu);
+
+        popupMenu.show(this, (int) point.getX(), (int) point.getY());
+    }
+    
+    /**
+     * Shows a popup menu at the specified point for the specified click type
+     * 
+     * @param type ClickType Click type
+     * @param point Point Point of the click
+     * @param argument Word under the click
+     */
+    protected void showPopupMenu(final ClickType type, final Point point,
+            final String argument) {
+        final JPopupMenu popupMenu;
+        switch (type) {
+            case CHANNEL:
+                popupMenu = getPopupMenu(getChannelPopupType(), argument);
+                popupMenu.add(new ChannelCopyAction(argument));
+                if (popupMenu.getComponentCount() > 1) {
+                    popupMenu.addSeparator();
+                }
+                break;
+            case HYPERLINK:
+                popupMenu = getPopupMenu(getHyperlinkPopupType(), argument);
+                popupMenu.add(new HyperlinkCopyAction(argument));
+                if (popupMenu.getComponentCount() > 1) {
+                    popupMenu.addSeparator();
+                }
+                break;
+            case NICKNAME:
+                popupMenu = getPopupMenu(getNicknamePopupType(), argument);
+                popupMenu.add(new NicknameCopyAction(argument));
+                if (popupMenu.getComponentCount() > 1) {
+                    popupMenu.addSeparator();
+                }
+                break;
+            default:
+                popupMenu = getPopupMenu(null, argument);
+                break;
+        }
 
         popupMenu.show(this, (int) point.getX(), (int) point.getY());
     }
@@ -672,7 +712,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      * 
      * @return PopupMenu
      */
-    private JPopupMenu getPopupMenu(final PopupType type,
+    protected JPopupMenu getPopupMenu(final PopupType type,
             final Object... arguments) {
         JPopupMenu popupMenu = new JPopupMenu();
 
