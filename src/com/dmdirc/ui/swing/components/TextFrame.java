@@ -30,15 +30,19 @@ import com.dmdirc.commandparser.PopupManager;
 import com.dmdirc.commandparser.PopupMenu;
 import com.dmdirc.commandparser.PopupMenuItem;
 import com.dmdirc.commandparser.PopupType;
+import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.util.StringTranscoder;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.actions.ChannelCopyAction;
+import com.dmdirc.ui.swing.actions.CommandAction;
 import com.dmdirc.ui.swing.actions.HyperlinkCopyAction;
 import com.dmdirc.ui.swing.actions.NicknameCopyAction;
 import com.dmdirc.ui.swing.actions.SearchAction;
@@ -110,6 +114,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     private boolean quickCopy;
     /** Are we closing? */
     private boolean closing = false;
+    /** Input window for popup commands. */
+    private Window inputWindow;
 
     /** Click types. */
     public enum MouseClickType {
@@ -147,6 +153,11 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             transcoder = new StringTranscoder(Charset.forName("UTF-8"));
         } catch (IllegalArgumentException ex) {
             transcoder = new StringTranscoder(Charset.forName("UTF-8"));
+        }
+
+        inputWindow = this;
+        while (!(inputWindow instanceof InputWindow) && inputWindow != null) {
+            inputWindow = WindowManager.getParent(inputWindow);
         }
 
         initComponents();
@@ -627,7 +638,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      * @param point Point Point of the click
      * @param argument Word under the click
      */
-    private void showPopupMenuInternal(final ClickType type, final Point point,
+    private void showPopupMenuInternal(final ClickType type,
+            final Point point,
             final String argument) {
         final JPopupMenu popupMenu;
         switch (type) {
@@ -663,7 +675,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
 
         popupMenu.show(this, (int) point.getX(), (int) point.getY());
     }
-    
+
     /**
      * Shows a popup menu at the specified point for the specified click type
      * 
@@ -743,7 +755,10 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 menu.add(populatePopupMenu(new JMenu(menuItem.getName()),
                         menuItem.getSubMenu(), arguments));
             } else {
-                menu.add(new JMenuItem(menuItem.getName()));
+                menu.add(new JMenuItem(new CommandAction(inputWindow == null ? GlobalCommandParser.getGlobalCommandParser()
+                        : ((InputWindow) inputWindow).getCommandParser(),
+                        (InputWindow) inputWindow, menuItem.getName(),
+                        menuItem.getCommand(arguments))));
             }
         }
         return menu;
