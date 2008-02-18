@@ -177,10 +177,10 @@ public final class UpdateChecker implements Runnable {
 
         mutex.release();
         
-        UpdateChecker.init();
-
         IdentityManager.getConfigIdentity().setOption("updater",
                 "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
+        
+        UpdateChecker.init();
         
         if (config.getOptionBool("updater", "autoupdate", false)) {
             applyUpdates();
