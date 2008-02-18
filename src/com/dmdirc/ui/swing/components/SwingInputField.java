@@ -22,23 +22,24 @@
 
 package com.dmdirc.ui.swing.components;
 
+import com.dmdirc.IconManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputField;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
+import net.miginfocom.swing.MigLayout;
 
 /** Swing input field. */
-public class SwingInputField extends JComponent implements InputField {
+public class SwingInputField extends JComponent implements InputField, DocumentListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -50,6 +51,8 @@ public class SwingInputField extends JComponent implements InputField {
     private ColourPickerDialog colourPicker;
     /** Input field text field. */
     private JTextField textField;
+    /** Line wrap indicator. */
+    private ImageButton wrapIndicator;
 
     /**
      * Instantiates a new swing input field.
@@ -57,10 +60,14 @@ public class SwingInputField extends JComponent implements InputField {
     public SwingInputField() {
         textField = new JTextField();
         textField.setFocusTraversalKeysEnabled(false);
+        wrapIndicator = new ImageButton("", IconManager.getIconManager().getIcon("dmdirc"));
+        textField.getDocument().addDocumentListener(this);
+        checkLength(0);
 
-        setLayout(new BorderLayout());
+        setLayout(new MigLayout("ins 0, hidemode 3"));
 
-        add(textField, BorderLayout.CENTER);
+        add(textField, "growx, pushx");
+        add(wrapIndicator, "");
     }
 
     /** {@inheritDoc} */
@@ -204,6 +211,7 @@ public class SwingInputField extends JComponent implements InputField {
      * 
      * @param optionColour Colour for the caret
      */
+    @Override
     public void setForeground(Color optionColour) {
         textField.setForeground(optionColour);
     }
@@ -213,7 +221,35 @@ public class SwingInputField extends JComponent implements InputField {
      * 
      * @param optionColour Colour for the caret
      */
+    @Override
     public void setBackground(Color optionColour) {
         textField.setBackground(optionColour);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void insertUpdate(final DocumentEvent e) {
+        checkLength(e.getDocument().getLength());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeUpdate(final DocumentEvent e) {
+        checkLength(e.getDocument().getLength());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void changedUpdate(final DocumentEvent e) {
+        //Ignore
+    }
+    
+    /**
+     * Checks the length of the input and shows wrap indicator if required.
+     * 
+     * @param newLength New length of input
+     */
+    private void checkLength(final int newLength) {
+        //Check length and set visible if needed
     }
 }
