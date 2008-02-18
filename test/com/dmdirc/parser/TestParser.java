@@ -24,6 +24,7 @@ package com.dmdirc.parser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 public class TestParser extends IRCParser {
 
@@ -73,4 +74,10 @@ public class TestParser extends IRCParser {
         
         sentLines.clear();
     }
+
+    @Override
+    protected void pingTimerTask(final Timer timer) {
+        // Do nothing
+    }
+
 }
