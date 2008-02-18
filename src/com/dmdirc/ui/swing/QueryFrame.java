@@ -109,31 +109,31 @@ public final class QueryFrame extends InputTextFrame implements QueryWindow {
     
     /** {@inheritDoc} */
     @Override
-    protected PopupType getNicknamePopupType() {
+    public PopupType getNicknamePopupType() {
         return PopupType.QUERY_NICK;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected PopupType getChannelPopupType() {
+    public PopupType getChannelPopupType() {
         return PopupType.QUERY_NORMAL;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected PopupType getHyperlinkPopupType() {
+    public PopupType getHyperlinkPopupType() {
         return PopupType.QUERY_HYPERLINK;
     }
     
     /** {@inheritDoc} */
     @Override
-    protected PopupType getNormalPopupType() {
+    public PopupType getNormalPopupType() {
         return PopupType.QUERY_NORMAL;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected void addCustomPopupItems(final JPopupMenu popupMenu) {
+    public void addCustomPopupItems(final JPopupMenu popupMenu) {
         //Add no custom popup items
     }
 

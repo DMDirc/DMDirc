@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.swing;
 
-
 import com.dmdirc.Server;
 import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.PopupType;
@@ -48,34 +47,32 @@ import javax.swing.JPopupMenu;
  */
 public final class ServerFrame extends InputTextFrame implements ServerWindow,
         ActionListener {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 9;
-    
     /** This channel's command parser. */
     private final ServerCommandParser commandParser;
-    
     /** popup menu item. */
     private JMenuItem settingsMI;
-    
+
     /**
      * Creates a new ServerFrame.
      * @param owner Parent Frame container
      */
     public ServerFrame(final Server owner) {
         super(owner);
-        
+
         initComponents();
-        
+
         commandParser = new ServerCommandParser((Server) getContainer());
-        
+
         setInputHandler(new InputHandler(getInputField(), commandParser, this));
     }
-    
+
     /**
      * Retrieves the command Parser for this command window.
      * @return This window's command Parser
@@ -84,80 +81,83 @@ public final class ServerFrame extends InputTextFrame implements ServerWindow,
     public CommandParser getCommandParser() {
         return commandParser;
     }
-    
+
     /**
      * Initialises components in this frame.
      */
     private void initComponents() {
         settingsMI = new JMenuItem("Settings");
         settingsMI.addActionListener(this);
-        
+
         final GridBagConstraints constraints = new GridBagConstraints();
-        
+
         setTitle("Server Frame");
-        
+
         getContentPane().setLayout(new GridBagLayout());
         constraints.weightx = 1.0;
         constraints.weighty = 1.0;
         constraints.fill = GridBagConstraints.BOTH;
         constraints.insets = new Insets(0, 0, 0, 0);
         getContentPane().add(getTextPane(), constraints);
-        
+
         constraints.weighty = 0.0;
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.gridy = 1;
         constraints.insets = new Insets(0, 0, 0, 0);
         getContentPane().add(getSearchBar(), constraints);
-        
+
         constraints.gridy = 2;
         getContentPane().add(inputPanel, constraints);
-        
+
         pack();
     }
-    
+
     /** {@inheritDoc}. */
     @Override
     public void actionPerformed(final ActionEvent actionEvent) {
         if (actionEvent.getSource() == settingsMI) {
-            ServerSettingsDialog.showServerSettingsDialog(getContainer().getServer());
+            ServerSettingsDialog.showServerSettingsDialog(getContainer().
+                    getServer());
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
-    protected PopupType getNicknamePopupType() {
+    public PopupType getNicknamePopupType() {
         return PopupType.CHAN_NICK;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected PopupType getChannelPopupType() {
+    public PopupType getChannelPopupType() {
         return PopupType.CHAN_NORMAL;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected PopupType getHyperlinkPopupType() {
+    public PopupType getHyperlinkPopupType() {
         return PopupType.CHAN_HYPERLINK;
     }
-    
+
     /** {@inheritDoc} */
     @Override
-    protected PopupType getNormalPopupType() {
+    public PopupType getNormalPopupType() {
         return PopupType.CHAN_NORMAL;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected void addCustomPopupItems(final JPopupMenu popupMenu) {
+    public void addCustomPopupItems(final JPopupMenu popupMenu) {
         if (getContainer().getServer().getState().equals(ServerState.CONNECTED)) {
             settingsMI.setEnabled(true);
         } else {
             settingsMI.setEnabled(false);
         }
+
+        if (popupMenu.getComponentCount() > 0) {
+            popupMenu.addSeparator();
+        }
         
-        popupMenu.addSeparator();
         popupMenu.add(settingsMI);
     }
-    
 }

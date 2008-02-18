@@ -366,38 +366,41 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
 
     /** {@inheritDoc} */
     @Override
-    protected PopupType getNicknamePopupType() {
+    public PopupType getNicknamePopupType() {
         return PopupType.CHAN_NICK;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected PopupType getChannelPopupType() {
+    public PopupType getChannelPopupType() {
         return PopupType.CHAN_NORMAL;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected PopupType getHyperlinkPopupType() {
+    public PopupType getHyperlinkPopupType() {
         return PopupType.CHAN_HYPERLINK;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected PopupType getNormalPopupType() {
+    public PopupType getNormalPopupType() {
         return PopupType.CHAN_NORMAL;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected void addCustomPopupItems(final JPopupMenu popupMenu) {
+    public void addCustomPopupItems(final JPopupMenu popupMenu) {
         if (getContainer().getServer().getState().equals(ServerState.CONNECTED)) {
             settingsMI.setEnabled(true);
         } else {
             settingsMI.setEnabled(false);
         }
 
-        popupMenu.addSeparator();
+        if (popupMenu.getComponentCount() > 0) {
+            popupMenu.addSeparator();
+        }
+
         popupMenu.add(settingsMI);
     }
 }

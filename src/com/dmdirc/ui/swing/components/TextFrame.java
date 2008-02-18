@@ -601,35 +601,35 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      * 
      * @return Appropriate popuptype for this frame
      */
-    protected abstract PopupType getNicknamePopupType();
+    public abstract PopupType getNicknamePopupType();
 
     /**
      * What popup type should be used for popup menus for channels
      * 
      * @return Appropriate popuptype for this frame
      */
-    protected abstract PopupType getChannelPopupType();
+    public abstract PopupType getChannelPopupType();
 
     /**
      * What popup type should be used for popup menus for hyperlinks
      * 
      * @return Appropriate popuptype for this frame
      */
-    protected abstract PopupType getHyperlinkPopupType();
+    public abstract PopupType getHyperlinkPopupType();
 
     /**
      * What popup type should be used for popup menus for normal clicks
      * 
      * @return Appropriate popuptype for this frame
      */
-    protected abstract PopupType getNormalPopupType();
+    public abstract PopupType getNormalPopupType();
 
     /**
      * A method called to add custom popup items.
      * 
      * @param popupMenu Popup menu to add popup items to
      */
-    protected abstract void addCustomPopupItems(final JPopupMenu popupMenu);
+    public abstract void addCustomPopupItems(final JPopupMenu popupMenu);
 
     /**
      * Shows a popup menu at the specified point for the specified click type
@@ -683,7 +683,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      * @param point Point Point of the click
      * @param argument Word under the click
      */
-    protected void showPopupMenu(final ClickType type, final Point point,
+    public void showPopupMenu(final ClickType type, final Point point,
             final String argument) {
         final JPopupMenu popupMenu;
         switch (type) {
@@ -724,7 +724,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      * 
      * @return PopupMenu
      */
-    protected JPopupMenu getPopupMenu(final PopupType type,
+    public JPopupMenu getPopupMenu(final PopupType type,
             final Object... arguments) {
         JPopupMenu popupMenu = new JPopupMenu();
 
