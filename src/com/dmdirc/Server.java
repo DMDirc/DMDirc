@@ -37,6 +37,7 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.ChannelInfo;
 import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.IRCStringConverter;
 import com.dmdirc.parser.MyInfo;
 import com.dmdirc.parser.ParserError;
 import com.dmdirc.parser.ServerInfo;
@@ -46,7 +47,6 @@ import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.interfaces.Window;
-import com.dmdirc.ui.messages.Formatter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -123,6 +123,9 @@ public final class Server extends WritableFrameContainer implements Serializable
     
     /** Our ignore list. */
     private IgnoreList ignoreList = new IgnoreList();
+    
+    /** Our string convertor. */
+    private IRCStringConverter converter = new IRCStringConverter();
 
     /**
      * Creates a new instance of Server.
@@ -380,7 +383,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @return True iff the channel is known, false otherwise
      */
     public boolean hasChannel(final String channel) {
-        return parser != null && channels.containsKey(parser.toLowerCase(channel));
+        return channels.containsKey(converter.toLowerCase(channel));
     }
 
     /**
@@ -390,7 +393,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @return The appropriate channel object
      */
     public Channel getChannel(final String channel) {
-        return channels.get(parser.toLowerCase(channel));
+        return channels.get(converter.toLowerCase(channel));
     }
 
     /**
@@ -492,7 +495,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public void delChannel(final String chan) {
         tabCompleter.removeEntry(TabCompletionType.CHANNEL, chan);
-        channels.remove(parser.toLowerCase(chan));
+        channels.remove(converter.toLowerCase(chan));
     }
 
     /**
@@ -508,7 +511,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             final Channel newChan = new Channel(this, chan);
 
             tabCompleter.addEntry(TabCompletionType.CHANNEL, chan.getName());
-            channels.put(parser.toLowerCase(chan.getName()), newChan);
+            channels.put(converter.toLowerCase(chan.getName()), newChan);
             newChan.show();
         }
     }
@@ -1045,11 +1048,11 @@ public final class Server extends WritableFrameContainer implements Serializable
         final String sansIrcd = "numeric_" + snumeric;
         String target = null;
 
-        if (Formatter.hasFormat(configManager, withIrcd)) {
+        if (configManager.hasOption("formatter", withIrcd)) {
             target = withIrcd;
-        } else if (Formatter.hasFormat(configManager,sansIrcd)) {
+        } else if (configManager.hasOption("formatter", sansIrcd)) {
             target = sansIrcd;
-        } else if (Formatter.hasFormat(configManager, "numeric_unknown")) {
+        } else if (configManager.hasOption("formatter", "numeric_unknown")) {
             target = "numeric_unknown";
         }
 
@@ -1171,6 +1174,8 @@ public final class Server extends WritableFrameContainer implements Serializable
 
         configManager = new ConfigManager(parser.getIRCD(true), getNetwork(), getName());
         updateIgnoreList();
+        
+        converter = parser.getIRCStringConverter();
 
         ActionManager.processEvent(CoreActionType.SERVER_CONNECTED, null, this);
 
