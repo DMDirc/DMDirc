@@ -60,7 +60,7 @@ public class SwingInputField extends JComponent implements InputField, DocumentL
     public SwingInputField() {
         textField = new JTextField();
         textField.setFocusTraversalKeysEnabled(false);
-        wrapIndicator = new ImageButton("", IconManager.getIconManager().getIcon("dmdirc"));
+        wrapIndicator = new ImageButton("", IconManager.getIconManager().getIcon("linewrap"));
         textField.getDocument().addDocumentListener(this);
         checkLength(0);
 
@@ -250,6 +250,6 @@ public class SwingInputField extends JComponent implements InputField, DocumentL
      * @param newLength New length of input
      */
     private void checkLength(final int newLength) {
-        //Check length and set visible if needed
+        wrapIndicator.setVisible(false);
     }
 }
