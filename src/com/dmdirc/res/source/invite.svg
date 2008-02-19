@@ -12,11 +12,13 @@
    height="16px"
    id="svg3157"
    sodipodi:version="0.32"
-   inkscape:version="0.45"
-   sodipodi:docbase="/home/chris/DMDirc/src/com/dmdirc/res"
+   inkscape:version="0.45.1"
+   sodipodi:docbase="/home/chris/DMDirc/src/com/dmdirc/res/source"
    sodipodi:docname="invite.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   sodipodi:modified="true">
+   inkscape:export-filename="/home/chris/DMDirc/src/com/dmdirc/res/invite.png"
+   inkscape:export-xdpi="89.779999"
+   inkscape:export-ydpi="89.779999">
   <defs
      id="defs3159" />
   <sodipodi:namedview
@@ -27,8 +29,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="22.197802"
-     inkscape:cx="8"
-     inkscape:cy="8.2129576"
+     inkscape:cx="11.642889"
+     inkscape:cy="7.2701612"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:grid-bbox="true"
@@ -54,36 +56,37 @@
      inkscape:groupmode="layer">
     <text
        xml:space="preserve"
-       style="font-size:8.30886936px;font-style:normal;font-weight:normal;fill:#008000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="6.8085947"
-       y="14.294144"
+       style="font-size:9px;font-style:normal;font-weight:normal;fill:#008000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="6.2780223"
+       y="14.305999"
        id="text3165"
        transform="scale(1.0412822,0.9603544)"><tspan
          sodipodi:role="line"
          id="tspan3167"
-         x="6.8085947"
-         y="14.294144">#</tspan></text>
+         x="6.2780223"
+         y="14.305999">#</tspan></text>
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#552200;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 0.93042009,0.73852929 L 4.6730451,4.3332529"
+       style="fill:none;fill-rule:evenodd;stroke:#552200;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 0.88292086,0.49999993 L 4.4477978,4.4999998"
        id="path3171" />
     <path
        style="fill:#552200;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 1.2111335,4.8738468 L 5.3938374,4.8738468 L 5.3938374,1.3195544"
-       id="path3177" />
+       d="M 0.95495049,5.0675743 L 5.0475554,5.0675743 L 5.0250306,0.99521255"
+       id="path3177"
+       sodipodi:nodetypes="ccc" />
     <rect
-       style="fill:none;stroke:#000000;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
        id="rect3183"
-       width="8.6410894"
-       height="8.2792082"
+       width="8"
+       height="8.0292082"
        x="6.5"
-       y="6.8198023" />
+       y="6.4707918" />
     <rect
-       style="fill:#000080;stroke:#000000;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:#000080;stroke:#000000;stroke-width:0.99999994;stroke-miterlimit:4;stroke-dasharray:none"
        id="rect4154"
-       width="8.6495047"
-       height="1.3613862"
-       x="6.4871287"
-       y="5.6386137" />
+       width="8"
+       height="2.1509895"
+       x="6.4999995"
+       y="4.5" />
   </g>
 </svg>
