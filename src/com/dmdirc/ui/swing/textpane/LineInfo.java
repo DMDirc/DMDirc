@@ -31,6 +31,8 @@ public final class LineInfo {
     private final int line;
     /** What part of a line. */
     private final int part;
+    /** Character index? */
+    private final int index;
     
     /** 
      * Creates a new instance of LineInfo. 
@@ -39,8 +41,20 @@ public final class LineInfo {
      * @param part line wrap number
      */
     public LineInfo(final int line, final int part) {
+        this(line, part, -1);
+    }
+    
+    /** 
+     * Creates a new instance of LineInfo. 
+     *
+     * @param line Line number
+     * @param part line wrap number
+     * @param index Position index
+     */
+    public LineInfo(final int line, final int part, final int index) {
         this.line = line;
         this.part = part;
+        this.index = index;
     }
     
     /**
@@ -59,5 +73,14 @@ public final class LineInfo {
      */
     public int getPart() {
         return part;
+    }
+    
+    /**
+     * Returns the index for this line.
+     * 
+     * @return Index for the line of -1
+     */
+    public int getIndex() {
+        return index;
     }
 }

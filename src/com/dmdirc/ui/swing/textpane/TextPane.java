@@ -305,13 +305,21 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         }
     }
     
-    /** {@inheritDoc}. */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse wheel event
+     */
     @Override
     public void adjustmentValueChanged(final AdjustmentEvent e) {
         setScrollBarPosition(e.getValue());
     }
     
-    /** {@inheritDoc}. */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse wheel event
+     */
     @Override
     public void mouseWheelMoved(final MouseWheelEvent e) {
         if (scrollBar.isEnabled()) {
@@ -331,36 +339,41 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      *
      * @return line number, line part, position in whole line
      */
-    public int[] getClickPosition(final Point point) {
+    public LineInfo getClickPosition(final Point point) {
         return canvas.getClickPosition(point);
     }
     
     /**
      * Returns the selected text.
+     * 
+     *     *    <li>0 = start line</li>
+     *    <li>1 = start char</li>
+     *    <li>2 = end line</li>
+     *    <li>3 = end char</li>
      *
      * @return Selected text
      */
     public String getSelectedText() {
         final StringBuffer selectedText = new StringBuffer();
-        final int[] selectedRange = canvas.getSelectedRange();
+        final LinePosition selectedRange = canvas.getSelectedRange();
         
-        for (int i = selectedRange[0]; i <= selectedRange[2]; i++) {
-            if (i != selectedRange[0]) {
+        for (int i = selectedRange.getStartLine(); i <= selectedRange.getEndLine(); i++) {
+            if (i != selectedRange.getStartLine()) {
                 selectedText.append('\n');
             }
             if (document.getLine(i) == null) {
                 return "";
             }
             final AttributedCharacterIterator iterator = document.getLine(i).getIterator();
-            if (selectedRange[2] == selectedRange[0]) {
+            if (selectedRange.getEndLine() == selectedRange.getStartLine()) {
                 //loop through range
-                selectedText.append(getTextFromLine(iterator, selectedRange[1], selectedRange[3]));
-            } else if (i == selectedRange[0]) {
+                selectedText.append(getTextFromLine(iterator, selectedRange.getStartPos(), selectedRange.getEndPos()));
+            } else if (i == selectedRange.getStartLine()) {
                 //loop from start of range to the end
-                selectedText.append(getTextFromLine(iterator, selectedRange[1], iterator.getEndIndex()));
-            } else if (i == selectedRange[2]) {
+                selectedText.append(getTextFromLine(iterator, selectedRange.getStartPos(), iterator.getEndIndex()));
+            } else if (i == selectedRange.getEndLine()) {
                 //loop from start to end of range
-                selectedText.append(getTextFromLine(iterator, 0, selectedRange[3]));
+                selectedText.append(getTextFromLine(iterator, 0, selectedRange.getEndPos()));
             } else {
                 //loop the whole line
                 selectedText.append(getTextFromLine(iterator, 0, iterator.getEndIndex()));
@@ -374,14 +387,8 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * Returns the selected range.
      *
      * @return selected range
-     *  <ul>
-     *    <li>0 = start line</li>
-     *    <li>1 = start char</li>
-     *    <li>2 = end line</li>
-     *    <li>3 = end char</li>
-     *  </ul>
      */
-    public int[] getSelectedRange() {
+    public LinePosition getSelectedRange() {
         return canvas.getSelectedRange();
     }
     
@@ -391,21 +398,17 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * @return true iif there is a selected range
      */
     public boolean hasSelectedRange() {
-        final int[] selectedRange = canvas.getSelectedRange();
-        return !(selectedRange[0] == selectedRange[2] && selectedRange[1] == selectedRange[3]);
+        final LinePosition selectedRange = canvas.getSelectedRange();
+        return !(selectedRange.getStartLine() == selectedRange.getEndLine() && selectedRange.getStartPos() == selectedRange.getEndPos());
     }
     
     /**
      * Selects the specified region of text.
      *
-     * @param startLine Start line
-     * @param startChar Start char
-     * @param endLine End line
-     * @param endChar End char
+     * @param position Line position
      */
-    public void setSelectedTexT(final int startLine, final int startChar,
-            final int endLine, final int endChar) {
-        canvas.setSelectedRange(startLine, startChar, endLine, endChar);
+    public void setSelectedTexT(final LinePosition position) {
+        canvas.setSelectedRange(position);
     }
     
     /**
@@ -417,7 +420,20 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      */
     public String getTextFromLine(final int line) {
         final AttributedCharacterIterator iterator = document.getLine(line).getIterator();
-        return getTextFromLine(iterator, 0, iterator.getEndIndex());
+        return getTextFromLine(iterator, 0, iterator.getEndIndex(), document);
+    }
+    
+    /**
+     * Returns the entire text from the specified line.
+     *
+     * @param line line to retrieve text from
+     * @param document Document to retrieve text from
+     * 
+     * @return Text from the line
+     */
+    public static String getTextFromLine(final int line, final IRCDocument document) {
+        final AttributedCharacterIterator iterator = document.getLine(line).getIterator();
+        return getTextFromLine(iterator, 0, iterator.getEndIndex(), document);
     }
     
     /**
@@ -431,7 +447,22 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      */
     public String getTextFromLine(final int line, final int start,
             final int end) {
-        return getTextFromLine(document.getLine(line).getIterator(), start, end);
+        return getTextFromLine(document.getLine(line).getIterator(), start, end, document);
+    }
+    
+    /**
+     * Returns the range of text from the specified iterator.
+     *
+     * @param line line to retrieve text from
+     * @param start Start index in the iterator
+     * @param end End index in the iterator
+     * @param document Document to retrieve text from
+     *
+     * @return Text in the range from the line
+     */
+    public static String getTextFromLine(final int line, final int start,
+            final int end, final IRCDocument document) {
+        return getTextFromLine(document.getLine(line).getIterator(), start, end, document);
     }
     
     /**
@@ -442,13 +473,19 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * @return Text in the range from the line
      */
     public String getTextFromLine(final AttributedCharacterIterator iterator) {
-        final int end = iterator.getEndIndex();
-        final int start = iterator.getBeginIndex();
-        final StringBuffer text = new StringBuffer();
-        for (iterator.setIndex(start); iterator.getIndex() < end; iterator.next()) {
-            text.append(iterator.current());
-        }
-        return text.toString();
+        return getTextFromLine(iterator, iterator.getBeginIndex(), iterator.getEndIndex(), document);
+    }
+    
+    /**
+     * Returns the range of text from the specified iterator.
+     *
+     * @param iterator iterator to get text from
+     * @param document Document to retrieve text from
+     *
+     * @return Text in the range from the line
+     */
+    public static String getTextFromLine(final AttributedCharacterIterator iterator, final IRCDocument document) {
+        return getTextFromLine(iterator, iterator.getBeginIndex(), iterator.getEndIndex(), document);
     }
     
     /**
@@ -462,6 +499,21 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      */
     public String getTextFromLine(final AttributedCharacterIterator iterator,
             final int start, final int end) {
+        return getTextFromLine(iterator, start, end, document);
+    }
+    
+    /**
+     * Returns the range of text from the specified iterator.
+     *
+     * @param iterator iterator to get text from
+     * @param start Start index in the iterator
+     * @param end End index in the iterator
+     * @param document Document to retrieve text from
+     *
+     * @return Text in the range from the line
+     */
+    public static String getTextFromLine(final AttributedCharacterIterator iterator,
+            final int start, final int end, final IRCDocument document) {
         final StringBuffer text = new StringBuffer();
         for (iterator.setIndex(start); iterator.getIndex() < end; iterator.next()) {
             text.append(iterator.current());
@@ -476,7 +528,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * 
      * @return Click type for specified position
      */
-    public ClickType getClickType(final int[] lineInfo) {
+    public ClickType getClickType(final LineInfo lineInfo) {
         return canvas.getClickType(lineInfo);
     }
     
@@ -503,7 +555,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * 
      * @return Specified value
      */
-    public Object getAttributeValueAtPoint(int[] lineInfo) {
+    public Object getAttributeValueAtPoint(LineInfo lineInfo) {
         return canvas.getAttributeValueAtPoint(lineInfo);
     }
     
@@ -538,20 +590,19 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             return;
         }
         final int trimmedLines = document.getNumLines() - numLines;
-        final int[] selectedRange = getSelectedRange();
+        final LinePosition selectedRange = getSelectedRange();
         
-        selectedRange[0] -= trimmedLines;
-        selectedRange[2] -= trimmedLines;
+        selectedRange.setStartLine(selectedRange.getStartLine() - trimmedLines);
+        selectedRange.setEndLine(selectedRange.getEndLine() - trimmedLines);
         
-        if (selectedRange[0] < 0) {
-            selectedRange[0] = 0;
+        if (selectedRange.getStartLine() < 0) {
+            selectedRange.setStartLine(0);
         }
-        if (selectedRange[2] < 0) {
-            selectedRange[2] = 0;
+        if (selectedRange.getEndLine() < 0) {
+            selectedRange.setEndLine(0);
         }
         
-        setSelectedTexT(selectedRange[0], selectedRange[1], 
-                selectedRange[2], selectedRange[3]);
+        setSelectedTexT(selectedRange);
         document.trim(numLines);
     }
     

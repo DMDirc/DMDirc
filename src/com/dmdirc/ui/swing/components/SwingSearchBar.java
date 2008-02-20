@@ -28,6 +28,7 @@ import com.dmdirc.ui.interfaces.SearchBar;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.actions.SearchAction;
+import com.dmdirc.ui.swing.textpane.LinePosition;
 import com.dmdirc.ui.swing.textpane.TextPane;
 
 import java.awt.event.ActionEvent;
@@ -274,7 +275,7 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
                 } else {
                     //found, select and return found
                     textPane.setScrollBarPosition(line);
-                    textPane.setSelectedTexT(line, position, line, position + text.length());
+                    textPane.setSelectedTexT(new LinePosition(line, position, line, position + text.length()));
                     index = position;
                     return true;
                 }
@@ -339,7 +340,7 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
                 } else {
                     //found, select and return found
                     textPane.setScrollBarPosition(line);
-                    textPane.setSelectedTexT(line, position, line, position + text.length());
+                    textPane.setSelectedTexT(new LinePosition(line, position, line, position + text.length()));
                     position = position + text.length();
                     index = position;
                     return true;
@@ -377,7 +378,7 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
                 lineText = textPane.getTextFromLine(i).toLowerCase(Locale.getDefault());
                 position = lineText.indexOf(text.toLowerCase(Locale.getDefault()));
             }
-            if (position != -1 && textPane.getSelectedRange()[0] != i) {
+            if (position != -1 && textPane.getSelectedRange().getStartLine() != i) {
                 foundText = true;
                 break;
             }

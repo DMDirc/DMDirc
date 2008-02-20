@@ -47,6 +47,7 @@ import com.dmdirc.ui.swing.actions.HyperlinkCopyAction;
 import com.dmdirc.ui.swing.actions.NicknameCopyAction;
 import com.dmdirc.ui.swing.actions.SearchAction;
 import com.dmdirc.ui.swing.actions.TextPaneCopyAction;
+import com.dmdirc.ui.swing.textpane.LineInfo;
 import com.dmdirc.ui.swing.textpane.TextPane;
 import com.dmdirc.ui.swing.textpane.TextPane.ClickType;
 import com.dmdirc.ui.swing.textpane.TextPanePageUpAction;
@@ -562,10 +563,9 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             final MouseClickType type) {
         final Point point = getTextPane().getMousePosition();
         if (e.getSource() == getTextPane() && point != null) {
-            final int[] lineInfo = getTextPane().getClickPosition(point);
+            final LineInfo lineInfo = getTextPane().getClickPosition(point);
             final ClickType clickType = getTextPane().getClickType(lineInfo);
-            final String attribute = (String) getTextPane().
-                    getAttributeValueAtPoint(lineInfo);
+            final String attribute = (String) getTextPane().getAttributeValueAtPoint(lineInfo);
             if (e.isPopupTrigger()) {
                 showPopupMenuInternal(clickType, point, attribute);
             } else {

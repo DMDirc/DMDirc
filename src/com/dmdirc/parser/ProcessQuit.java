@@ -55,7 +55,7 @@ public class ProcessQuit extends IRCProcessor {
 		String sReason = "";
 		if (token.length > 2) { sReason = token[token.length-1]; }
 		
-		ArrayList<ChannelInfo> channelList = new ArrayList(myParser.getChannels());
+		ArrayList<ChannelInfo> channelList = new ArrayList<ChannelInfo>(myParser.getChannels());
 		for (ChannelInfo iChannel : channelList) {
 			iChannelClient = iChannel.getUser(iClient);
 			if (iChannelClient != null) {
