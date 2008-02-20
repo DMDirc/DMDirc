@@ -32,6 +32,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -52,7 +53,7 @@ public class SwingInputField extends JComponent implements InputField, DocumentL
     /** Input field text field. */
     private JTextField textField;
     /** Line wrap indicator. */
-    private ImageButton wrapIndicator;
+    private JLabel wrapIndicator;
 
     /**
      * Instantiates a new swing input field.
@@ -60,7 +61,7 @@ public class SwingInputField extends JComponent implements InputField, DocumentL
     public SwingInputField() {
         textField = new JTextField();
         textField.setFocusTraversalKeysEnabled(false);
-        wrapIndicator = new ImageButton("", IconManager.getIconManager().getIcon("linewrap"));
+        wrapIndicator = new JLabel(IconManager.getIconManager().getIcon("linewrap"));
         textField.getDocument().addDocumentListener(this);
         checkLength(0);
 
