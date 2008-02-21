@@ -26,13 +26,17 @@ import com.dmdirc.MessageTarget;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.commands.ChatCommand;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.ValidatingCommand;
+import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.ui.interfaces.InputWindow;
+
+import java.util.List;
 
 /**
  * The me command sends a CTCP action to the current channel.
  * @author chris
  */
-public final class Me extends ChatCommand {
+public final class Me extends ChatCommand implements ValidatingCommand {
     
     /** Creates a new instance of Me. */
     public Me() {
@@ -68,6 +72,20 @@ public final class Me extends ChatCommand {
     @Override
     public String getHelp() {
         return "me <action> - sends the specified action";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public ValidationResponse validateArguments(final InputWindow origin, 
+            final List<String> arguments) {
+        final int length = implodeArgs(arguments.toArray(new String[0])).length();
+        
+        if (origin.getContainer().getServer().getParser().getMaxLength("PRIVMSG",
+                origin.getContainer().toString()) <= length) {
+            return new ValidationResponse("Too long");
+        } else {
+            return new ValidationResponse();
+        }
     }
     
 }
