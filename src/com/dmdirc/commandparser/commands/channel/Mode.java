@@ -26,6 +26,7 @@ import com.dmdirc.Channel;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.parser.ChannelInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -38,40 +39,52 @@ import java.util.List;
  * The mode command allows the user to inspect and change channel modes.
  * @author chris
  */
-public final class Mode extends ChannelCommand implements IntelligentCommand {
-    
+public final class Mode extends ChannelCommand implements IntelligentCommand,
+        ExternalCommand {
+
     /** Creates a new instance of Mode. */
     public Mode() {
         super();
-        
+
         CommandManager.registerCommand(this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final Server server,
             final Channel channel, final boolean isSilent, final String... args) {
         final ChannelInfo cChannel = channel.getChannelInfo();
-        
+
         if (args.length == 0) {
             sendLine(origin, isSilent, "channelModeDiscovered", cChannel.getModeStr(), cChannel);
         } else {
             server.getParser().sendLine("MODE " + cChannel + " " + implodeArgs(args));
         }
     }
-    
+
+    /** {@inheritDoc} */
+    @Override
+    public void execute(final InputWindow origin, final Server server,
+            final String channel, final boolean isSilent, final String ... args) {
+        if (args.length == 0) {
+            server.getParser().sendLine("MODE " + channel);
+        } else {
+            server.getParser().sendLine("MODE " + channel + " " + implodeArgs(args));
+        }
+    }
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "mode";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
         return true;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
@@ -82,12 +95,12 @@ public final class Mode extends ChannelCommand implements IntelligentCommand {
     @Override
     public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
         final AdditionalTabTargets res = new AdditionalTabTargets().excludeAll();
-        
+
         if (arg > 0) {
             res.include(TabCompletionType.CHANNEL_NICK);
         }
-        
+
         return res;
-    } 
-    
+    }
+
 }

@@ -26,6 +26,7 @@ import com.dmdirc.Channel;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ChannelCommand;
+import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -37,7 +38,7 @@ import java.util.List;
  * 
  * @author chris
  */
-public class Names extends ChannelCommand implements IntelligentCommand {
+public class Names extends ChannelCommand implements IntelligentCommand, ExternalCommand {
     
     /**
      * Creates a new instance of Names.
@@ -54,6 +55,14 @@ public class Names extends ChannelCommand implements IntelligentCommand {
             final Channel channel, final boolean isSilent, final String... args) {
         server.getParser().sendLine("NAMES " + channel.getChannelInfo().getName());
     }
+    
+
+    /** {@inheritDoc} */
+    @Override
+    public void execute(final InputWindow origin, final Server server,
+            final String channel, final boolean isSilent, final String ... args) {
+        server.getParser().sendLine("NAMES " + channel);
+    }    
 
     /** {@inheritDoc} */
     @Override

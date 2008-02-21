@@ -26,7 +26,9 @@ import com.dmdirc.Server;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.PreviousCommand;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -40,28 +42,28 @@ import java.util.Map;
  * Represents a generic command parser. A command parser takes a line of input
  * from the user, determines if it is an attempt at executing a command (based
  * on the character at the start of the string), and handles it appropriately.
- * 
+ *
  * @author chris
  */
 public abstract class CommandParser implements Serializable {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
+
     /**
      * Commands that are associated with this parser.
      */
     private final Map<String, Command> commands;
-    
+
     /**
      * A history of commands that have been entered into this parser.
      */
     private final RollingList<PreviousCommand> history;
-    
+
     /** Creates a new instance of CommandParser. */
     public CommandParser() {
         commands = new Hashtable<String, Command>();
@@ -70,31 +72,31 @@ public abstract class CommandParser implements Serializable {
                     "commandhistory", 10));
         loadCommands();
     }
-    
+
     /** Loads the relevant commands into the parser. */
     protected abstract void loadCommands();
-    
+
     /**
      * Registers the specified command with this parser.
-     * 
+     *
      * @param command Command to be registered
      */
     public final void registerCommand(final Command command) {
         commands.put(command.getName().toLowerCase(), command);
     }
-    
+
     /**
      * Unregisters the specified command with this parser.
-     * 
+     *
      * @param command Command to be unregistered
      */
     public final void unregisterCommand(final Command command) {
         commands.remove(command.getName().toLowerCase());
     }
-    
+
     /**
      * Parses the specified string as a command.
-     * 
+     *
      * @param origin The window in which the command was typed
      * @param line The line to be parsed
      * @param parseChannel Whether or not to try and parse the first argument
@@ -105,50 +107,59 @@ public abstract class CommandParser implements Serializable {
         if (line.isEmpty()) {
             return;
         }
-        
+
         if (line.charAt(0) == CommandManager.getCommandChar()) {
             int offset = 1;
             boolean silent = false;
-            
+
             if (line.length() > offset && line.charAt(offset) == CommandManager.getSilenceChar()) {
                 silent = true;
                 offset++;
             }
-            
+
             final String[] args = line.split(" ");
             final String command = args[0].substring(offset);
             String[] comargs;
-            
+
             if (args.length >= 2 && parseChannel && origin != null
                     && origin.getContainer() != null
                     && origin.getContainer().getServer() != null
                     && origin.getContainer().getServer().isValidChannelName(args[1])
                     && CommandManager.isChannelCommand(command)) {
                 final Server server = origin.getContainer().getServer();
-                
+
                 if (server.hasChannel(args[1])) {
-                    
+
                     final StringBuilder newLine = new StringBuilder();
                     for (int i = 0; i < args.length; i++) {
                         if (i == 1) { continue; }
                         newLine.append(" ").append(args[i]);
                     }
-                    
+
                     server.getChannel(args[1]).getFrame().getCommandParser()
                             .parseCommand(origin, newLine.substring(1), false);
-                    
+
                     return;
                 } else {
-                    // Do something haxy involving external commands here...
+                    final Command actCommand = CommandManager.getCommand(
+                            CommandType.TYPE_CHANNEL, command);
+
+                    if (actCommand instanceof ExternalCommand) {
+                        comargs = new String[args.length - 2];
+                        System.arraycopy(args, 2, comargs, 0, args.length - 2);
+
+                        ((ExternalCommand) actCommand).execute(origin, server,
+                                args[1], silent, comargs);
+                        return;
+                    }
                 }
             }
-            
+
             comargs = new String[args.length - 1];
-            
             System.arraycopy(args, 1, comargs, 0, args.length - 1);
-            
+
             final String signature = command;
-            
+
             if (commands.containsKey(signature.toLowerCase())) {
                 addHistory(command, comargs);
                 executeCommand(origin, silent, commands.get(signature.toLowerCase()), comargs);
@@ -159,7 +170,7 @@ public abstract class CommandParser implements Serializable {
             handleNonCommand(origin, line);
         }
     }
-    
+
     /**
      * Adds a command to this parser's history.
      *
@@ -168,17 +179,17 @@ public abstract class CommandParser implements Serializable {
      */
     private void addHistory(final String command, final String... args) {
         final StringBuilder builder = new StringBuilder(command);
-        
+
         for (String arg : args) {
             builder.append(' ');
             builder.append(arg);
         }
-        
+
         synchronized(history) {
             history.add(new PreviousCommand(builder.toString()));
         }
     }
-    
+
     /**
      * Retrieves the most recent time that the specified command was used.
      * Commands should not include command or silence chars.
@@ -196,13 +207,13 @@ public abstract class CommandParser implements Serializable {
                 }
             }
         }
-        
+
         return res;
     }
-    
+
     /**
      * Parses the specified string as a command.
-     * 
+     *
      * @param origin The window in which the command was typed
      * @param line The line to be parsed
      */
@@ -210,20 +221,20 @@ public abstract class CommandParser implements Serializable {
             final String line) {
         parseCommand(origin, line, true);
     }
-    
+
     /**
      * Handles the specified string as a non-command.
-     * 
+     *
      * @param origin The window in which the command was typed
      * @param line The line to be parsed
      */
     public final void parseCommandCtrl(final InputWindow origin, final String line) {
         handleNonCommand(origin, line);
     }
-    
+
     /**
      * Executes the specified command with the given arguments.
-     * 
+     *
      * @param origin The window in which the command was typed
      * @param isSilent Whether the command is being silenced or not
      * @param command The command to be executed
@@ -231,7 +242,7 @@ public abstract class CommandParser implements Serializable {
      */
     protected abstract void executeCommand(final InputWindow origin,
             final boolean isSilent, final Command command, final String... args);
-    
+
     /**
      * Called when the user attempted to issue a command (i.e., used the command
      * character) that wasn't found. It could be that the command has a different
@@ -247,18 +258,18 @@ public abstract class CommandParser implements Serializable {
                     null, command, args);
         } else {
             final StringBuffer buff = new StringBuffer("unknownCommand");
-            
+
             ActionManager.processEvent(CoreActionType.UNKNOWN_COMMAND, buff,
                     origin.getContainer(), command, args);
-            
+
             origin.addLine(buff, command);
         }
     }
-    
+
     /**
      * Called when the input was a line of text that was not a command. This normally
      * means it is sent to the server/channel/user as-is, with no further processing.
-     * 
+     *
      * @param origin The window in which the command was typed
      * @param line The line input by the user
      */
