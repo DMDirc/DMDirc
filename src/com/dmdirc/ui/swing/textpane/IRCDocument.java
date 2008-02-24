@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.textpane;
 
 import java.io.Serializable;
+import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,7 @@ public final class IRCDocument implements Serializable {
     private final EventListenerList listeners;
     
     /** Creates a new instance of IRCDocument. */
-    protected IRCDocument() {
+    public IRCDocument() {
         iterators = new ArrayList<AttributedString>();
         listeners = new EventListenerList();
     }
@@ -57,7 +58,7 @@ public final class IRCDocument implements Serializable {
      *
      * @return Number of lines
      */
-    protected int getNumLines() {
+    public int getNumLines() {
         return iterators.size();
     }
     
@@ -68,15 +69,68 @@ public final class IRCDocument implements Serializable {
      *
      * @return Line at the specified number or null
      */
-    protected AttributedString getLine(final int lineNumber) {
+    public AttributedString getLine(final int lineNumber) {
         return iterators.get(lineNumber);
     }
+    
+    /**
+     * Returns the range of text from the specified iterator.
+     *
+     * @param lineNumber line to get text from
+     *
+     * @return Text in the range from the line
+     */
+    public String getLineText(final int lineNumber) {
+        final AttributedCharacterIterator iterator = getLine(lineNumber).getIterator();
+        return getLineText(iterator, iterator.getBeginIndex(), iterator.getEndIndex());
+    }
+    
+    /**
+     * Returns the range of text from the specified iterator.
+     *
+     * @param lineNumber line to get text from
+     * @param start Start index in the iterator
+     * @param end End index in the iterator
+     *
+     * @return Text in the range from the line
+     */
+    public String getLineText(final int lineNumber, final int start, final int end) {
+        return getLineText(getLine(lineNumber).getIterator(), start, end);
+    }
+    
+    /**
+     * Returns the range of text from the specified iterator.
+     *
+     * @param iterator iterator to get text from
+     * @param start Start index in the iterator
+     * @param end End index in the iterator
+     *
+     * @return Text in the range from the line
+     */
+    public String getLineText(final AttributedCharacterIterator iterator, final int start, final int end) {
+        final StringBuffer text = new StringBuffer();
+        for (iterator.setIndex(start); iterator.getIndex() < end; iterator.next()) {
+            text.append(iterator.current());
+        }
+        return text.toString();
+    }
+    
+    /**
+     * Returns the length of the specified line
+     * 
+     * @param lineNumber Line to query
+     * 
+     * @return Length of the line
+     */
+    public int getLineLength(final int lineNumber) {
+        return iterators.get(lineNumber).getIterator().getEndIndex();
+    }    
     
     /**
      * Adds the stylised string to the canvas.
      * @param text stylised string to add to the text
      */
-    protected void addText(final AttributedString text) {
+    public void addText(final AttributedString text) {
         synchronized (iterators) {
             iterators.add(text);
             fireLineAdded(iterators.indexOf(text));
