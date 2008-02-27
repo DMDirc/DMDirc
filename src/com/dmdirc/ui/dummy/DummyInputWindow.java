@@ -40,7 +40,7 @@ import javax.swing.Icon;
 /**
  * Dummy input window, used for testing.
  */
-public final class DummyInputWindow implements InputWindow {
+public class DummyInputWindow implements InputWindow {
     
     /** Window title. */
     private String title;
