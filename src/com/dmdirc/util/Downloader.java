@@ -178,6 +178,7 @@ public class Downloader {
         urlConn.setUseCaches(false);
         urlConn.setDoInput(true);
         urlConn.setDoOutput(postData.length() > 0);
+        urlConn.setConnectTimeout(10000);
         
         if (postData.length() > 0) {
             urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
