@@ -139,7 +139,7 @@ public final class DummyController implements UIController {
     /** {@inheritDoc} */
     @Override
     public Window getActiveWindow() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return null;
     }
 
     /** {@inheritDoc} */
