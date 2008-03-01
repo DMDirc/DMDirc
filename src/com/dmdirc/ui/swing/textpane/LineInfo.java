@@ -26,14 +26,14 @@ package com.dmdirc.ui.swing.textpane;
  *
  */
 public final class LineInfo {
-    
+
     /** Line number. */
-    private final int line;
+    private int line;
     /** What part of a line. */
-    private final int part;
+    private int part;
     /** Character index? */
-    private final int index;
-    
+    private int index;
+
     /** 
      * Creates a new instance of LineInfo. 
      *
@@ -43,7 +43,7 @@ public final class LineInfo {
     public LineInfo(final int line, final int part) {
         this(line, part, -1);
     }
-    
+
     /** 
      * Creates a new instance of LineInfo. 
      *
@@ -56,7 +56,7 @@ public final class LineInfo {
         this.part = part;
         this.index = index;
     }
-    
+
     /**
      * Returns the line number of this object.
      *
@@ -65,7 +65,7 @@ public final class LineInfo {
     public int getLine() {
         return line;
     }
-    
+
     /**
      * Returns the part for this line.
      *
@@ -74,7 +74,7 @@ public final class LineInfo {
     public int getPart() {
         return part;
     }
-    
+
     /**
      * Returns the index for this line.
      * 
@@ -82,5 +82,32 @@ public final class LineInfo {
      */
     public int getIndex() {
         return index;
+    }
+    
+    /**
+     * Sets the index for this line.
+     * 
+     * @param index New index
+     */
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    /**
+     * Sets the line for this line.
+     * 
+     * @param line New line
+     */
+    public void setLine(int line) {
+        this.line = line;
+    }
+
+    /**
+     * Sets the line part for this line
+     * 
+     * @param part New part
+     */
+    public void setPart(int part) {
+        this.part = part;
     }
 }
