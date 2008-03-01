@@ -257,7 +257,8 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         if (mouseEvent.getButton() == MouseEvent.BUTTON1) {
             if (mouseEvent.getSource() == errorLabel) {
                 ErrorListDialog.showErrorListDialog();
-            } else if (mouseEvent.getSource() == updateLabel) {
+            } else if (mouseEvent.getSource() == updateLabel 
+                    && updateLabel.getToolTipText().equals("Updates available")) {
                 SwingUpdaterDialog.showSwingUpdaterDialog(UpdateChecker.getAvailableUpdates());
             }
         }
