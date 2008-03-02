@@ -30,9 +30,9 @@ import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.parser.ChannelClientInfo;
-import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.swing.components.InputTextFrame;
+import com.dmdirc.ui.swing.components.SwingInputHandler;
 import com.dmdirc.ui.swing.dialogs.channelsetting.ChannelSettingsDialog;
 import com.dmdirc.ui.swing.textpane.TextPane.ClickType;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
@@ -117,7 +117,7 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
                 new ChannelCommandParser(((Channel) getContainer()).getServer(),
                 (Channel) getContainer());
 
-        setInputHandler(new InputHandler(getInputField(), commandParser, this));
+        setInputHandler(new SwingInputHandler(getInputField(), commandParser, this));
     }
 
     /**

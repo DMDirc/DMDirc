@@ -43,6 +43,13 @@ public interface InputField {
      * @param listener KeyListener to add
      */
     public void addKeyListener(final KeyListener listener);
+
+    /**
+     * Does this input field have focus?
+     * 
+     * @return true iif the input field has focus
+     */
+    public boolean hasFocus();
     
     /**
      * Removes an action listener to this input field.

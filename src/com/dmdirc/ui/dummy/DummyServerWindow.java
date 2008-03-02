@@ -70,7 +70,7 @@ public final class DummyServerWindow implements ServerWindow {
     
     /** {@inheritDoc} */
     public InputHandler getInputHandler() {
-        return new InputHandler(new DummyInputField(), null, this);
+        return new DummyInputHandler(new DummyInputField(), null, this);
     }
     
     /** {@inheritDoc} */

@@ -23,11 +23,11 @@
 package com.dmdirc.ui.swing.dialogs.paste;
 
 import com.dmdirc.Main;
-import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.components.InputTextFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
+import com.dmdirc.ui.swing.components.SwingInputHandler;
 import com.dmdirc.ui.swing.components.TextAreaInputField;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import com.dmdirc.ui.swing.components.TextLabel;
@@ -134,7 +134,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         textField.setColumns(50);
         textField.setRows(10);
         
-        new InputHandler(textField, parent.getCommandParser(), parent)
+        new SwingInputHandler(textField, parent.getCommandParser(), parent)
                 .setTypes(false, false, true, false);
                 
         scrollPane.setViewportView(textField);

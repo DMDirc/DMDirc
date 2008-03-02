@@ -88,7 +88,7 @@ public final class DummyChannelWindow implements ChannelWindow {
 
     /** {@inheritDoc} */
     public InputHandler getInputHandler() {
-        return new InputHandler(new DummyInputField(), getCommandParser(), this);
+        return new DummyInputHandler(new DummyInputField(), getCommandParser(), this);
     }
 
     /** {@inheritDoc} */

@@ -109,4 +109,10 @@ public class DummyInputField implements InputField {
     public void hideColourPicker() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasFocus() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

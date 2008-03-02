@@ -244,6 +244,12 @@ public class SwingInputField extends JComponent implements InputField, DocumentL
     public void changedUpdate(final DocumentEvent e) {
         //Ignore
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasFocus() {
+        return textField.isFocusOwner();
+    }
     
     /**
      * Checks the length of the input and shows wrap indicator if required.

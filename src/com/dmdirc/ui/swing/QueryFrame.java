@@ -26,9 +26,9 @@ import com.dmdirc.Query;
 import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.QueryCommandParser;
-import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.QueryWindow;
 import com.dmdirc.ui.swing.components.InputTextFrame;
+import com.dmdirc.ui.swing.components.SwingInputHandler;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.GridBagConstraints;
@@ -68,7 +68,7 @@ public final class QueryFrame extends InputTextFrame implements QueryWindow {
         commandParser = new QueryCommandParser(((Query) getContainer()).
                 getServer(), (Query) getContainer());
         
-        setInputHandler(new InputHandler(getInputField(), commandParser, this));
+        setInputHandler(new SwingInputHandler(getInputField(), commandParser, this));
     }
     
     /**

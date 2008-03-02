@@ -27,9 +27,9 @@ import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
-import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.swing.components.InputTextFrame;
+import com.dmdirc.ui.swing.components.SwingInputHandler;
 import com.dmdirc.ui.swing.dialogs.serversetting.ServerSettingsDialog;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
@@ -70,7 +70,7 @@ public final class ServerFrame extends InputTextFrame implements ServerWindow,
 
         commandParser = new ServerCommandParser((Server) getContainer());
 
-        setInputHandler(new InputHandler(getInputField(), commandParser, this));
+        setInputHandler(new SwingInputHandler(getInputField(), commandParser, this));
     }
 
     /**

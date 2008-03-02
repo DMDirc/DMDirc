@@ -26,9 +26,9 @@ import com.dmdirc.Channel;
 import com.dmdirc.Topic;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.actions.NoNewlinesPasteAction;
+import com.dmdirc.ui.swing.components.SwingInputHandler;
 import com.dmdirc.ui.swing.components.TextAreaInputField;
 import com.dmdirc.ui.swing.components.TextLabel;
 
@@ -140,7 +140,7 @@ public final class TopicPane extends JPanel implements DocumentListener,
         topicText.setWrapStyleWord(true);
         topicText.setRows(5);
         topicText.setColumns(30);
-        new InputHandler(topicText, channel.getFrame().getCommandParser(), 
+        new SwingInputHandler(topicText, channel.getFrame().getCommandParser(), 
                 channel.getFrame()).setTypes(false, false, true, false);
 
         topicText.getActionMap().
