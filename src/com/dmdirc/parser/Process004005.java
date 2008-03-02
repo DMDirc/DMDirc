@@ -38,14 +38,14 @@ public class Process004005 extends IRCProcessor {
 	 */
 	public void process(String sParam, String[] token) {
 		if (sParam.equals("003")) {
-			myParser.h005Info.put("003IRCD",token[4]);
+			myParser.h005Info.put("003IRCD",token[token.length-1]);
 		} else if (sParam.equals("004")) {
 			// 004
 			myParser.h005Info.put("004IRCD",token[4]);
 			myParser.h005Info.put("USERMODES",token[5]);
 			myParser.h005Info.put("USERCHANMODES",token[6]);
 			myParser.parseUserModes();
-		} else {
+		} else if (sParam.equals("005")) {
 			// 005
 			String[] Bits = null;
 			String sKey = null, sValue = null;
@@ -118,11 +118,7 @@ public class Process004005 extends IRCProcessor {
 	 * @return String[] with the names of the tokens we handle.
 	 */
 	public String[] handles() {
-		String[] iHandle = new String[3];
-		iHandle[0] = "003";
-		iHandle[1] = "004";
-		iHandle[2] = "005";
-		return iHandle;
+		return new String[]{"004", "005"};
 	} 
 	
 	/**
