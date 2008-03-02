@@ -86,7 +86,11 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
     public ConfigPanel(final NowPlayingPlugin plugin, final List<String> sources) {
         super();
 
-        this.sources = new LinkedList<String>(sources);
+        if (sources != null) {
+            this.sources = new LinkedList<String>(sources);
+        } else {
+            this.sources = new LinkedList<String>();
+        }
         this.plugin = plugin;
 
         initComponents();
