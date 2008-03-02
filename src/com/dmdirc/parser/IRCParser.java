@@ -1786,6 +1786,8 @@ public class IRCParser implements Runnable {
 					// Stupid networks/ircds go here...
 					if (sNetworkName.equalsIgnoreCase("ircnet")) { return "ircnet"; }
 					else if (sNetworkName.equalsIgnoreCase("starchat")) { return "starchat"; }
+					else if (sNetworkName.equalsIgnoreCase("bitlbee")) { return "bitlbee"; }
+					else if (h005Info.get("003IRCD").matches("(?i).*bitlbee.*")) { return "bitlbee"; } // Older bitlbee
 					else { return "generic"; }
 				}
 			} else {

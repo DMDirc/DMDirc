@@ -34,7 +34,7 @@ public class RegexStringListTest extends junit.framework.TestCase {
         list.add("a!b@c");
         list.add("a!b@c");
         list.add("A!B@c");
-        
+
         assertEquals(1, list.count());
         assertEquals("a!b@c", list.get(0));
     }
@@ -73,10 +73,10 @@ public class RegexStringListTest extends junit.framework.TestCase {
         final List<String> tempList = new ArrayList<String>();
         tempList.add("a!b@c");
         tempList.add("Data.*");
-        
+
         final RegexStringList list = new RegexStringList(tempList);
         list.clear();
-        
+
         assertEquals(0, list.count());
     }
 
@@ -85,9 +85,9 @@ public class RegexStringListTest extends junit.framework.TestCase {
         final List<String> tempList = new ArrayList<String>();
         tempList.add("a!b@c");
         tempList.add("Data.*");
-        
+
         final RegexStringList list = new RegexStringList(tempList);
-        
+
         assertTrue(list.matches("a!b@c") == 0);
         assertTrue(list.matches("foo") == -1);
         assertTrue(list.matches("Dataforce") == 1);
@@ -110,7 +110,7 @@ public class RegexStringListTest extends junit.framework.TestCase {
         list.set(0, "moo");
         list.set(1, "bar");
         assertEquals(1, list.count());
-        assertEquals("moo", list.get(0));        
+        assertEquals("moo", list.get(0));
     }
 
 }
