@@ -118,7 +118,7 @@ public class Process004005 extends IRCProcessor {
 	 * @return String[] with the names of the tokens we handle.
 	 */
 	public String[] handles() {
-		return new String[]{"004", "005"};
+		return new String[]{"003", "004", "005"};
 	} 
 	
 	/**
