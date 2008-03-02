@@ -353,7 +353,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     private void doDelayedReconnect() {
         final int delay = Math.max(1,
-                configManager.getOptionInt(DOMAIN_GENERAL, "reconnectdelay", 5));
+                configManager.getOptionInt(DOMAIN_GENERAL, "reconnectdelay", 5000));
 
         handleNotification("connectRetry", getName(), delay);
 
@@ -368,7 +368,7 @@ public final class Server extends WritableFrameContainer implements Serializable
                     }
                 }
             }
-        }, delay * 1000);
+        }, delay);
 
         myState = ServerState.RECONNECT_WAIT;
         updateIcon();

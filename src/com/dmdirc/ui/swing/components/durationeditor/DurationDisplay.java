@@ -22,24 +22,24 @@
 
 package com.dmdirc.ui.swing.components.durationeditor;
 
-import com.dmdirc.ui.swing.SwingController;
-import com.dmdirc.ui.swing.components.StandardDialog;
+import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.util.ListenerList;
 
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
 
 /**
- * Duration editor component.
+ * Duration display and edit component.
  */
-public class DurationEditor extends StandardDialog implements ActionListener {
+public class DurationDisplay extends JPanel implements ActionListener,
+        DurationListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -47,111 +47,97 @@ public class DurationEditor extends StandardDialog implements ActionListener {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    /** Days spinner. */
-    private JSpinner daysSpinner;
-    /** Hours spinner. */
-    private JSpinner hoursSpinner;
-    /** Minutes spinner. */
-    private JSpinner minutesSpinner;
-    /** Seconds spinner. */
-    private JSpinner secondsSpinner;
+    /** Current duration. */
+    private int duration;
+    /** Duration label. */
+    private JLabel durationLabel;
+    /** Edit button. */
+    private JButton button;
     /** Listener list. */
     private final ListenerList listeners;
 
     /**
-     * Instantiates a new duration editor.
+     * Initialises a new duration display of 0 milliseconds.
      */
-    public DurationEditor() {
+    public DurationDisplay() {
         this(0);
     }
 
     /**
-     * Instantiates a new duration editor.
+     * Initialises a new duration display showing the specified millisecond duration.
      * 
-     * @param duration Starting duration
+     * @param duration Duration to display in milliseconds
      */
-    public DurationEditor(final long duration) {
-        super(SwingController.getMainFrame(), false);
+    public DurationDisplay(final long duration) {
+        this.duration = Long.valueOf(duration / 1000).intValue();
         listeners = new ListenerList();
 
-        initComponents(duration);
+        initComponents();
         addListeners();
         layoutComponents();
     }
 
     /**
-     * Initialises the components.
-     * 
-     * @param duration Duration to initialise to
+     * Initliases and lays out the components.
      */
-    private void initComponents(long duration) {
-        orderButtons(new JButton(), new JButton());
-        daysSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 31, 1));
-        hoursSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 24, 1));
-        minutesSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 60, 1));
-        secondsSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 60, 1));
-        
-        daysSpinner.setValue(duration / 86400);
-        duration = (duration % 86400);
-        hoursSpinner.setValue(duration / 3600);
-        duration = (duration % 3600);
-        minutesSpinner.setValue(duration / 60);
-        duration = (duration % 60);
-        secondsSpinner.setValue(duration);
+    private void initComponents() {
+        button = new JButton("Edit");
+        durationLabel = new JLabel();
+        durationLabel.setText(Formatter.formatDuration(duration));
+
+        button.setMargin(new Insets(0, 2, 0, 2));
+    }
+
+    public static void main(final String[] args) {
+        System.out.println(Formatter.formatDuration(5));
+        System.out.println(Formatter.formatDuration(5));
     }
 
     /**
-     * Adds the listeners.
+     * Adds listeners to the components.
      */
     private void addListeners() {
-        getOkButton().addActionListener(this);
-        getCancelButton().addActionListener(this);
+        button.addActionListener(this);
     }
 
     /**
      * Lays out the components.
      */
     private void layoutComponents() {
-        setLayout(new MigLayout("hidemode 3"));
+        setLayout(new MigLayout("ins 0, fill"));
 
-        add(new JLabel("Days: "), "split 8");
-        add(daysSpinner);
-        add(new JLabel("Hours: "));
-        add(hoursSpinner);
-        add(new JLabel("Minutes: "));
-        add(minutesSpinner);
-        add(new JLabel("Seconds: "));
-        add(secondsSpinner, "wrap");
-        add(getLeftButton(), "split 2, sgx button, right");
-        add(getRightButton(), "sgx button, right");
-
-        setDefaultCloseOperation(DurationEditor.DISPOSE_ON_CLOSE);
-        pack();
-        setResizable(false);
-        setVisible(true);
+        add(durationLabel, "growx");
+        add(button, "");
     }
 
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == getOkButton()) {
-            fireDurationListener(getDuration());
-        }
-        dispose();
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Action event
+     */
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+        DurationEditor editor = new DurationEditor(duration);
+        editor.addDurationListener(this);
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    @Override
+    public void durationUpdated(final int newDuration) {
+        duration = newDuration;
+        durationLabel.setText(Formatter.formatDuration(duration));
+        fireDurationListener(newDuration);
     }
 
     /**
-     * Returns the duration currently represented by this duration editor.
+     * Returns the duration of this display in milliseconds.
      * 
-     * @return Current duration (in seconds)
+     * @return Displayed duration in milliseconds
      */
-    public int getDuration() {
-        int duration = 0;
-
-        duration += ((Number) secondsSpinner.getValue()).intValue();
-        duration += (((Number) minutesSpinner.getValue())).intValue() * 60;
-        duration += (((Number) hoursSpinner.getValue())).intValue() * 60 * 60;
-        duration += (((Number) daysSpinner.getValue())).intValue() * 60 * 60 * 24;
-
-        return duration;
+    public long getDuration() {
+        return duration * 1000;
     }
 
     /**

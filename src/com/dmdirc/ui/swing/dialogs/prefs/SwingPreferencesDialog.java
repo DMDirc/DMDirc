@@ -34,6 +34,8 @@ import com.dmdirc.ui.swing.components.ColourChooser;
 import com.dmdirc.ui.swing.components.OptionalColourChooser;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.TreeScroller;
+import com.dmdirc.ui.swing.components.durationeditor.DurationDisplay;
+import com.dmdirc.ui.swing.components.durationeditor.DurationListener;
 import com.dmdirc.ui.swing.components.renderers.MapEntryRenderer;
 import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
@@ -323,7 +325,6 @@ public final class SwingPreferencesDialog extends StandardDialog implements
                 
                 break;
             case INTEGER:
-            case DURATION:
                 try {
                     if (setting.getValidator() instanceof NumericalValidator) {
                         option = new JSpinner(
@@ -343,6 +344,20 @@ public final class SwingPreferencesDialog extends StandardDialog implements
                 ((JSpinner) option).addChangeListener(new ChangeListener() {
                     public void stateChanged(ChangeEvent e) {
                         setting.setValue(((JSpinner) e.getSource()).getValue().toString());
+                    }
+                });
+                
+                break;
+            case DURATION:                
+                try {
+                    option = new DurationDisplay(Integer.parseInt(setting.getValue()));
+                } catch (NumberFormatException ex) {
+                        option = new DurationDisplay();
+                }
+                
+                ((DurationDisplay) option).addDurationListener(new DurationListener() {
+                    public void durationUpdated(int newDuration) {
+                        setting.setValue("" + newDuration);
                     }
                 });
                 
