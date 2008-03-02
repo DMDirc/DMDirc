@@ -152,7 +152,7 @@ public final class ClientInfo {
 	}
 
 	/**
-	 * Set the nick/ident/host of this client
+	 * Set the nick/ident/host of this client.
 	 *
 	 * @param sHostmask takes a host (?:)nick(?!ident)(?@host) and sets nick/host/ident variables
 	 * @param bUpdateNick if this is false, only host/ident will be updated.
@@ -162,7 +162,7 @@ public final class ClientInfo {
 	}
 	
 	/**
-	 * Set the nick/ident/host of this client
+	 * Set the nick/ident/host of this client.
 	 *
 	 * @param sHostmask takes a host (?:)nick(?!ident)(?@host) and sets nick/host/ident variables
 	 * @param bUpdateNick if this is false, only host/ident will be updated.

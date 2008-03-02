@@ -24,6 +24,12 @@
 
 package com.dmdirc.parser;
 
+/**
+ * IRC String Converter.
+ *
+ * @author Shane Mc Cormack
+ * @version $Id$
+ */
 public class IRCStringConverter {
 	/** Characters to use when converting tolowercase. */
 	private final char[] lowercase;
@@ -40,7 +46,7 @@ public class IRCStringConverter {
 	}
 	
 	/**
-	 * Create a new IRCStringConverter
+	 * Create a new IRCStringConverter.
 	 * @param limit Number of post-alphabetical characters to convert
 	 *              0 = ascii encoding
 	 *              3 = strict-rfc1459 encoding
