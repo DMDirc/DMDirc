@@ -66,7 +66,9 @@ public final class ServerManager {
      * @param server The server to be registered
      */
     public void registerServer(final Server server) {
-        servers.add(server);
+        synchronized(servers) {
+            servers.add(server);
+        }
     }
     
     /**
@@ -76,7 +78,9 @@ public final class ServerManager {
      * @param server The server to be unregistered
      */
     public void unregisterServer(final Server server) {
-        servers.remove(server);
+        synchronized(servers) {
+            servers.remove(server);
+        }
     }
     
     /**
@@ -85,7 +89,7 @@ public final class ServerManager {
      * @return A list of all servers
      */
     public List<Server> getServers() {
-        return servers;
+        return new ArrayList<Server>(servers);
     }
     
     /**
@@ -94,8 +98,10 @@ public final class ServerManager {
      * @param message The quit message to send to the IRC servers
      */
     public void disconnectAll(final String message) {
-        for (Server server : servers) {
-            server.disconnect(message);
+        synchronized(servers) {
+            for (Server server : servers) {
+                server.disconnect(message);
+            }
         }
     }
     
@@ -103,9 +109,11 @@ public final class ServerManager {
      * Closes all servers with a default quit message.
      */
     public void closeAll() {
-        for (Server server : new ArrayList<Server>(servers)) {
-            server.disconnect();
-            server.close();
+        synchronized(servers) {
+            for (Server server : servers) {
+                server.disconnect();
+                server.close();
+            }
         }
     }
     
@@ -115,9 +123,11 @@ public final class ServerManager {
      * @param message The quit message to send to the IRC servers
      */
     public void closeAll(final String message) {
-        for (Server server : new ArrayList<Server>(servers)) {
-            server.disconnect(message);
-            server.close();
+        synchronized(servers) {
+            for (Server server : servers) {
+                server.disconnect(message);
+                server.close();
+            }
         }
     }
     
@@ -137,9 +147,11 @@ public final class ServerManager {
      * @return The server associated with the internal frame
      */
     public Server getServerFromFrame(final Window active) {
-        for (Server server : servers) {
-            if (server.ownsFrame(active)) {
-                return server;
+        synchronized(servers) {
+            for (Server server : servers) {
+                if (server.ownsFrame(active)) {
+                    return server;
+                }
             }
         }
         
@@ -155,9 +167,11 @@ public final class ServerManager {
     public List<Server> getServersByNetwork(final String network) {
         final List<Server> res = new ArrayList<Server>();
         
-        for (Server server : servers) {
-            if (server.getNetwork().equalsIgnoreCase(network)) {
-                res.add(server);
+        synchronized(servers) {
+            for (Server server : servers) {
+                if (server.getNetwork().equalsIgnoreCase(network)) {
+                    res.add(server);
+                }
             }
         }
         
@@ -173,9 +187,11 @@ public final class ServerManager {
     public List<Server> getServersByAddress(final String address) {
         final List<Server> res = new ArrayList<Server>();
         
-        for (Server server : servers) {
-            if (server.getName().equalsIgnoreCase(address)) {
-                res.add(server);
+        synchronized(servers) {
+            for (Server server : servers) {
+                if (server.getName().equalsIgnoreCase(address)) {
+                    res.add(server);
+                }
             }
         }
         
