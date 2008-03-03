@@ -83,14 +83,13 @@ public class DurationDisplay extends JPanel implements ActionListener,
     private void initComponents() {
         button = new JButton("Edit");
         durationLabel = new JLabel();
-        durationLabel.setText(Formatter.formatDuration(duration));
+        if (duration == 0) {
+            durationLabel.setText("0 Seconds");
+        } else {
+            durationLabel.setText(Formatter.formatDuration(duration));
+        }
 
         button.setMargin(new Insets(0, 2, 0, 2));
-    }
-
-    public static void main(final String[] args) {
-        System.out.println(Formatter.formatDuration(5));
-        System.out.println(Formatter.formatDuration(5));
     }
 
     /**
@@ -127,8 +126,12 @@ public class DurationDisplay extends JPanel implements ActionListener,
     @Override
     public void durationUpdated(final int newDuration) {
         duration = newDuration;
-        durationLabel.setText(Formatter.formatDuration(duration));
-        fireDurationListener(newDuration);
+        if (duration == 0) {
+            durationLabel.setText("0 Seconds");
+        } else {
+            durationLabel.setText(Formatter.formatDuration(duration));
+        }
+        fireDurationListener(newDuration * 1000);
     }
 
     /**
