@@ -35,7 +35,15 @@ public class ChannelAccessLevelComponent implements ActionComponent {
     /** {@inheritDoc} */
     @Override
     public Object get(final Object argument) {
-        return ((ChannelClientInfo) argument).getMap().get("level");
+        final ChannelClientInfo ci = (ChannelClientInfo) argument;
+        
+        UserLevelPlugin.doChannelLevel(ci);
+        
+        if (ci.getMap().containsKey("level")) {
+            return ci.getMap().get("level");
+        } else {
+            return ci.getClient().getMap().get("level");
+        }
     }
 
     /** {@inheritDoc} */

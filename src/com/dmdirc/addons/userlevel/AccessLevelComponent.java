@@ -35,6 +35,7 @@ public class AccessLevelComponent implements ActionComponent {
     /** {@inheritDoc} */
     @Override
     public Object get(final Object argument) {
+        UserLevelPlugin.doGlobalLevel((ClientInfo) argument);
         return ((ClientInfo) argument).getMap().get("level");
     }
 

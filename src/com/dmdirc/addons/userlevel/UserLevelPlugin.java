@@ -22,9 +22,16 @@
 
 package com.dmdirc.addons.userlevel;
 
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.interfaces.ActionListener;
+import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.plugins.Plugin;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Allows the client to assign user levels to users (based on hostname matches),
@@ -33,23 +40,62 @@ import com.dmdirc.plugins.Plugin;
  * @author chris
  */
 public class UserLevelPlugin extends Plugin implements ActionListener {
+    
+    /** A map of hostmasks to associated level numbers. */
+    private static Map<String, Integer> levels = new HashMap<String, Integer>();
 
     /** {@inheritDoc} */
     @Override
     public void onLoad() {
-        // Do nothing
+        ActionManager.addListener(this, CoreActionType.CHANNEL_JOIN);
     }
 
     /** {@inheritDoc} */
     @Override
     public void onUnload() {
-        // Do nothing
+        ActionManager.removeListener(this);
     }
 
     /** {@inheritDoc} */
     public void processEvent(final ActionType type, final StringBuffer format,
                              final Object... arguments) {
-        // Do nothing
+        switch ((CoreActionType) type) {
+            case CHANNEL_JOIN:
+                doChannelLevel((ChannelClientInfo) arguments[1]);
+                break;
+        }
+    }
+    
+    /**
+     * Updates the specified channel client's channel user level.
+     * 
+     * @param client The client whose user level is to be updated
+     */
+    protected static void doChannelLevel(final ChannelClientInfo client) {
+        doGlobalLevel(client.getClient());
+    }
+    
+    /**
+     * Updates the specified client's global user level.
+     * 
+     * @param client The client whose user level is to be updated
+     */
+    @SuppressWarnings("unchecked")
+    protected static void doGlobalLevel(final ClientInfo client) {
+        final String host = client.getNickname() + "!" + client.getIdent()
+                + "@" + client.getHost();
+        
+        int level = 0;
+        
+        synchronized(levels) {
+            for (Map.Entry<String, Integer> entry : levels.entrySet()) {
+                if (host.matches(entry.getKey())) {
+                    level = Math.max(level, entry.getValue());
+                }
+            }
+        }
+        
+        client.getMap().put("level", level);
     }
 
 }
