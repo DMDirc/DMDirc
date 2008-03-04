@@ -95,6 +95,8 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     private DefaultMutableTreeNode rolloverNode;
     /** notification colour cache. */
     private final Map<FrameContainer, Color> notificationColours;
+    /** Drag selection enabled? */
+    private boolean dragSelect;
 
     /** creates a new instance of the TreeFrameManager. */
     public TreeFrameManager() {
@@ -132,11 +134,16 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
         tree.addTreeSelectionListener(this);
         new TreeScroller(tree);
 
+        dragSelect = IdentityManager.getGlobalConfig().getOptionBool("treeview",
+                "dragSelection", true);
+
         IdentityManager.getGlobalConfig().addChangeListener("treeview", this);
         IdentityManager.getGlobalConfig().addChangeListener("ui",
                 "backgroundcolour", this);
         IdentityManager.getGlobalConfig().addChangeListener("ui",
                 "foregroundcolour", this);
+        IdentityManager.getGlobalConfig().addChangeListener("treeview",
+                "dragSelection", this);
     }
 
     /** {@inheritDoc} */
@@ -362,7 +369,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
                         ((TextFrame) ((FrameContainer) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject()).getFrame());
                 final JPopupMenu popupMenu =
                         frame.getPopupMenu(null, "");
-                    frame.addCustomPopupItems(popupMenu);
+                frame.addCustomPopupItems(popupMenu);
                 if (popupMenu.getComponentCount() > 0) {
                     popupMenu.addSeparator();
                 }
@@ -378,11 +385,13 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
      * @param event mouse event.
      */
     public void mouseDragged(final MouseEvent event) {
-        final DefaultMutableTreeNode node = getNodeForLocation(
-                event.getX(), event.getY());
-        showRollover(node);
-        if (node != null) {
-            ((FrameContainer) node.getUserObject()).activateFrame();
+        if (dragSelect) {
+            final DefaultMutableTreeNode node = getNodeForLocation(
+                    event.getX(), event.getY());
+            showRollover(node);
+            if (node != null) {
+                ((FrameContainer) node.getUserObject()).activateFrame();
+            }
         }
     }
 
@@ -442,6 +451,12 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
 
     /** {@inheritDoc} */
     public void configChanged(final String domain, final String key) {
+        if ("treeview".equals(domain) && "dragSelection".equals(key)) {
+            dragSelect =
+                    IdentityManager.getGlobalConfig().getOptionBool("treeview",
+                    "dragSelection", true);
+            return;
+        }
         setColours();
 
         tree.repaint();
