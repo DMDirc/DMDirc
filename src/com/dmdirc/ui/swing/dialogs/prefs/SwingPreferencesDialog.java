@@ -45,7 +45,6 @@ import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -69,7 +68,6 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SpringLayout;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -157,7 +155,6 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * Initialises GUI components.
      */
     private void initComponents() {
-        final SpringLayout layout = new SpringLayout();
         final JButton button1 = new JButton();
         final JButton button2 = new JButton();
 
@@ -177,64 +174,29 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         tabList.addTreeSelectionListener(this);
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        getContentPane().setLayout(new GridBagLayout());
+        setLayout(new MigLayout());
         setTitle("Preferences");
         setResizable(false);
 
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER,
-                LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
         tabList.setBorder(BorderFactory.createCompoundBorder(BorderFactory
                 .createEtchedBorder(), BorderFactory.createEmptyBorder(
                 SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER)));
 
-        getContentPane().setLayout(layout);
-
-        tabList.setPreferredSize(new Dimension(150, 550));
-        tabList.setMinimumSize(new Dimension(150, 550));
+        tabList.setPreferredSize(new Dimension(150, 560));
+        tabList.setMinimumSize(new Dimension(150, 560));
         setMinimumSize(new Dimension(650, 600));
         setPreferredSize(new Dimension(650, 600));
         setMaximumSize(new Dimension(650, 600));
 
         orderButtons(button1, button2);
 
-        getContentPane().add(tabList);
-
-        getContentPane().add(mainPanel);
-
-        getContentPane().add(Box.createHorizontalGlue());
-
-        getContentPane().add(button1);
-
-        getContentPane().add(button2);
-
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
 
-        // tab list
-        layout.putConstraint(SpringLayout.WEST, tabList, LARGE_BORDER,
-                SpringLayout.WEST, getContentPane());
-        layout.putConstraint(SpringLayout.NORTH, tabList, LARGE_BORDER,
-                SpringLayout.NORTH, getContentPane());
-        // main panel
-        layout.putConstraint(SpringLayout.WEST, mainPanel, SMALL_BORDER,
-                SpringLayout.EAST, tabList);
-        layout.putConstraint(SpringLayout.NORTH, mainPanel, SMALL_BORDER,
-                SpringLayout.NORTH, getContentPane());
-        // ok button
-        layout.putConstraint(SpringLayout.EAST, getRightButton(), -LARGE_BORDER,
-                SpringLayout.EAST, getContentPane());
-        layout.putConstraint(SpringLayout.NORTH, getRightButton(), SMALL_BORDER,
-                SpringLayout.SOUTH, mainPanel);
-        // cancel button
-        layout.putConstraint(SpringLayout.EAST, getLeftButton(), -LARGE_BORDER,
-                SpringLayout.WEST, getRightButton());
-        layout.putConstraint(SpringLayout.NORTH, getLeftButton(), SMALL_BORDER,
-                SpringLayout.SOUTH, mainPanel);
-        // panel size
-        layout.putConstraint(SpringLayout.EAST, getContentPane(), LARGE_BORDER,
-                SpringLayout.EAST, mainPanel);
-        layout.putConstraint(SpringLayout.SOUTH, getContentPane(), LARGE_BORDER,
-                SpringLayout.SOUTH, getRightButton());
+        add(tabList, "width 150!, spany");
+        add(mainPanel, "wrap, width 480!");
+        add(getLeftButton(), "split");
+        add(getRightButton(), "");
     }
 
     /**
