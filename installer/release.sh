@@ -9,6 +9,9 @@ plugins_windows=""
 # Additional Jar names of plugins to add to only linux installers. (* means all)
 plugins_linux=""
 
+# Additional Jar names of plugins to add to only osx installers. (* means all)
+plugins_osx=""
+
 showHelp() {
 	echo "This will generate the different DMDirc installers."
 	echo "Usage: ${0} [params] <release>"
@@ -22,7 +25,8 @@ showHelp() {
 	echo "     --jre64                        Include a 64bit jre in the installers."
 	echo "-p,  --plugins <plugins>            Plugins to add to all the jars."
 	echo "-pl, --plugins-linux <plugins>      Plugins to linux installer."
-	echo "-pw, --plugins-windows <plugins>    Plugins to linux installer."
+	echo "-pw, --plugins-windows <plugins>    Plugins to windows installer."
+	echo "-po  --plugins-osx <plugins>        Plugins to osx installer."
 	echo "-h,  --help                         Help information"
 	echo "-o,  --opt <options>                Additional options to pass to the make*Installer.sh files"
 	echo "---------------------"
@@ -63,6 +67,10 @@ while test -n "$1"; do
 			shift
 			plugins_windows="${1}"
 			;;
+		--plugins-osx|-po)
+			shift
+			plugins_osx="${1}"
+			;;
 		--opt|-o)
 			shift
 			OPT="${1} "
@@ -77,7 +85,7 @@ while test -n "$1"; do
 	shift
 done
 
-if [ "${plugins}" = "*" -o "${plugins_linux}" = "*" -o "${plugins_windows}" = "*" ]; then
+if [ "${plugins}" = "*" -o "${plugins_linux}" = "*" -o "${plugins_windows}" = "*" -o "${plugins_osx}" = "*" ]; then
 	echo "Something is all.";
 	allPlugins=""
 	for thisfile in `ls -1 ../plugins/*.jar`; do
@@ -86,6 +94,7 @@ if [ "${plugins}" = "*" -o "${plugins_linux}" = "*" -o "${plugins_windows}" = "*
 	if [ "${plugins}" = "*" ]; then plugins=${allPlugins}; fi
 	if [ "${plugins_linux}" = "*" ]; then plugins_linux=${allPlugins}; fi
 	if [ "${plugins_windows}" = "*" ]; then plugins_windows=${allPlugins}; fi
+	if [ "${plugins_osx}" = "*" ]; then plugins_osx=${allPlugins}; fi
 fi;
 
 if [ "${LAST}" != "" ]; then
@@ -248,6 +257,13 @@ echo "Building Windows installer"
 echo "================================================================"
 cd windows
 ./makeInstallerWindows.sh ${OPT}${JARFILE}${JRE}-k -s ${BRANCH}${RELEASE} -p "${plugins_windows}"
+cd ${THISDIR}
+
+echo "================================================================"
+echo "Building OSX Bundle"
+echo "================================================================"
+cd osx
+./makeInstallerOSX.sh ${OPT}${JARFILE}-k -s ${BRANCH}${RELEASE} -p "${plugins_osx}"
 cd ${THISDIR}
 
 

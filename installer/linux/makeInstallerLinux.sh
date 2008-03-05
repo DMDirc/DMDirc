@@ -398,7 +398,7 @@ random() {
 	MKTEMP=`which mktemp`
 	if [ "" != "${MKTEMP}" ]; then
 		# mktemp exists \o
-		DIR=`${MKTEMP} -d`
+		DIR=`${MKTEMP} -d /tmp/DMDirc.XXXXXX`
 		eval "$1=${DIR}"
 		return;
 	fi
