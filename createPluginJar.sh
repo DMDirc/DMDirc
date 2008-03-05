@@ -48,4 +48,6 @@ done
 
 mv ${srcdir}/src/${foldername}/${2}.jar ${srcdir}/plugins/
 
+cd ${srcdir}
+rm -Rf ${TMPDIR}
 #echo "done";
