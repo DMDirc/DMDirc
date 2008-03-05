@@ -275,7 +275,7 @@ public class PreferencesManager {
                 "server", "Stoned server", "Where to display stoned server notifications",
                 options));
         category.addSetting(new PreferencesSetting("notifications", "whois",
-                "lastcommand:whois %4$s( %4$s)?", "Whois output", "Where to " +
+                "lastcommand:(raw )?whois %4$s( %4$s)?", "Whois output", "Where to " +
                 "display /whois output",
                 whoisOptions));
         category.addSetting(new PreferencesSetting("notifications", "lusers",
