@@ -291,7 +291,10 @@ if [ -e ${DMG} ]; then
 	rm -Rf ${DMG}
 fi;
 mkdir ${DMG}
+# Copy the application
 mv ${APPDIR} ${DMG}/
+# link to /Applications to allow easy drag and drop
+ln -sf /Applications ${DMG}/
 
 if [ -e ${jarPath}"/src/com/dmdirc/res/osx/VolumeIcon.icns" ]; then
 	cp -v ${jarPath}"/src/com/dmdirc/res/osx/VolumeIcon.icns" ${DMG}/.VolumeIcon.icns
@@ -312,6 +315,7 @@ SIZE=$((`du -sb ${DMG} | awk '{print $1}'`  + 10))
 if [ "" = "${HDITOOL}" ]; then
 	DMGMOUNTDIR=${PWD}/dmg
 	# Non-OSX
+	# This doesn't work quite aswell as on OSX, but it works.
 	if [ "" = "${MKHFS}" -a "" != "${MKHFSPLUS}" ]; then
 		MKHFS=${MKHFSPLUS}
 	fi;
@@ -356,7 +360,24 @@ if [ "" = "${HDITOOL}" ]; then
 	# If anyone finds out how to compress these nicely, add it here.
 else
 	# OSX
-	${HDIUTIL} create -srcfolder ${DMG} ${RUNNAME}
+	# This creates better versions than non-OSX
+	
+	# Create Read/Write image
+	${HDIUTIL} create -volname "DMDirc" -fs HFS+ -srcfolder ${DMG} -format UDRW ${RUNNAME}.RW.dmg
+	# Make it auto-open
+	BLESS=`which bless`
+	if [ "" != "${BLESS}" ]; then
+		if [ -e /Volumes/DMDirc ]; then
+			${HDIUTIL} detach /Volumes/DMDirc
+		fi;
+		if [ ! -e /Volumes/DMDirc ]; then
+			${HDIUTIL} attach ${RUNNAME}.RW.dmg
+			${BLESS} -openfolder /Volumes/DMDirc
+			${HDIUTIL} detach /Volumes/DMDirc
+		fi;
+	fi;
+	# Convert to compressed read-only image
+	${HDIUTIL} convert ${RUNNAME}.RW.dmg -format UDZO -imagekey zlib-level=9 -o ${RUNNAME}
 fi;
 
 echo "DMG Creation complete!"
