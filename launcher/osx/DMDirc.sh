@@ -200,6 +200,11 @@ fi;
 
 echo -n "Looking for java - ";
 JAVA=`which java`
+if [ -e "/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Commands/java" ]; then
+	JAVA="/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Commands/java"
+elif [ -e "/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Commands/java" ]; then
+	JAVA="/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Commands/java"
+fi;
 
 if [ "" != "${JAVA}" ]; then
 	echo "Success!"
