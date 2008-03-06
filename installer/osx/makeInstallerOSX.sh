@@ -378,6 +378,7 @@ else
 	fi;
 	# Convert to compressed read-only image
 	${HDIUTIL} convert ${RUNNAME}.RW.dmg -format UDZO -imagekey zlib-level=9 -o ${RUNNAME}
+	rm ${RUNNAME}.RW.dmg
 fi;
 
 echo "DMG Creation complete!"
