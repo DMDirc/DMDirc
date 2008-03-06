@@ -276,8 +276,8 @@ cp DMDirc.jar ${RESDIR}/Java/DMDirc.jar
 #	echo "[WARNING] Creating installer-less archive - relying on setup.sh"
 #fi
 
-if [ -e ${jarPath}"/src/com/dmdirc/res/osx/dmdirc.icns" ]; then
-	cp ${jarPath}"/src/com/dmdirc/res/osx/dmdirc.icns" ${RESDIR}/dmdirc.icns
+if [ -e ${jarPath}"/installer/osx/res/dmdirc.icns" ]; then
+	cp ${jarPath}"/installer/osx/res/dmdirc.icns" ${RESDIR}/dmdirc.icns
 fi
 
 if [ "${isRelease}" != "" ]; then
@@ -314,13 +314,13 @@ mv ${APPDIR} ${DMG}/
 # link to /Applications to allow easy drag and drop
 ln -sf /Applications ${DMG}/
 
-if [ -e ${jarPath}"/src/com/dmdirc/res/osx/VolumeIcon.icns" ]; then
-	cp -v ${jarPath}"/src/com/dmdirc/res/osx/VolumeIcon.icns" ${DMG}/.VolumeIcon.icns
+if [ -e ${jarPath}"/installer/osx/res/VolumeIcon.icns" ]; then
+	cp -v ${jarPath}"/installer/osx/res/VolumeIcon.icns" ${DMG}/.VolumeIcon.icns
 fi
 
-if [ -e ${jarPath}"/src/com/dmdirc/res/osx/Background.png" ]; then
+if [ -e ${jarPath}"/installer/osx/res/Background.png" ]; then
 	mkdir ${DMG}/.background
-	cp -v ${jarPath}"/src/com/dmdirc/res/osx/Background.png" ${DMG}/.background/background.png
+	cp -v ${jarPath}"/installer/osx/res/Background.png" ${DMG}/.background/background.png
 fi
 
 if [ -e ${PWD}/.DS_Store ]; then
