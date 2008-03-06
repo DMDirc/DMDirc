@@ -23,6 +23,7 @@ showHelp() {
 	echo "     --fulljar <file>               Use <file> instead of compiling a jar, and don't run makeJar on it."
 	echo "     --jre                          Include a jre in the installers."
 	echo "     --jre64                        Include a 64bit jre in the installers."
+	echo "     --target <target>              Build only a specific target. <target> should be one of 'windows', 'linux' or 'osx'."
 	echo "-p,  --plugins <plugins>            Plugins to add to all the jars."
 	echo "-pl, --plugins-linux <plugins>      Plugins to linux installer."
 	echo "-pw, --plugins-windows <plugins>    Plugins to windows installer."
@@ -40,12 +41,17 @@ BRANCH=""
 JARFILE=""
 JRE=""
 FULLJAR=""
+BUILDTARGET=""
 while test -n "$1"; do
 	LAST=${1}
 	case "$1" in
 		--plugins|-p)
 			shift
 			plugins="${1}"
+			;;
+		--target)
+			shift
+			BUILDTARGET="${1}"
 			;;
 		--jar)
 			shift
@@ -140,74 +146,86 @@ else
 	exit 1;
 fi
 
-JAR=/usr/bin/jar
-JAVAC=/usr/bin/javac
+JAR=`which jar`
+JAVAC=`which javac`
+# OSX Users might have a non 1.6 javac, look specifically for it.
+if [ -e "/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Commands/javac" ]; then
+	JAVAC="/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Commands/javac"
+elif [ -e "/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Commands/javac" ]; then
+	JAVAC="/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Commands/javac"
+fi;
+
 THISDIR=${PWD}
 
 echo "================================================================"
 echo "Removing existing releases from output directory"
 echo "================================================================"
-rm -Rf output/*.run output/*.exe
-echo "================================================================"
-echo "Building Installer JAR "
-echo "================================================================"
-mkdir -p installer_temp/build
-cd installer_temp
-ln -sf ../../src/com
-ln -sf ../../src/net
-# I don't know why, but -d doesn't nicely put ALL generated class files here,
-# just those that were in the dir of the java file that was requested for compile
-# So we specify each of the different ones we want built into the jar file here.
-FILELIST="com/dmdirc/installer/*.java"
-FILELIST=${FILELIST}" com/dmdirc/installer/cliparser/*.java"
-FILELIST=${FILELIST}" com/dmdirc/ui/swing/dialogs/wizard/*.java"
-FILELIST=${FILELIST}" com/dmdirc/ui/interfaces/MainWindow.java"
-FILELIST=${FILELIST}" com/dmdirc/ui/swing/MainFrame.java"
-FILELIST=${FILELIST}" com/dmdirc/ui/swing/UIUtilities.java"
-FILELIST=${FILELIST}" com/dmdirc/ui/swing/UIUtilities.java"
-FILELIST=${FILELIST}" com/dmdirc/ui/swing/components/StandardDialog.java"
-FILELIST=${FILELIST}" com/dmdirc/util/ListenerList.java"
-FILELIST=${FILELIST}" com/dmdirc/util/WeakMapList.java"
-FILELIST=${FILELIST}" com/dmdirc/util/MapList.java"
-FILELIST=${FILELIST}" com/dmdirc/ui/swing/components/EtchedLineBorder.java"
-FILELIST=${FILELIST}" com/dmdirc/util/EquatableWeakReference.java"
-FILELIST=${FILELIST}" com/dmdirc/ui/swing/JWrappingLabel.java"
-FILELIST=${FILELIST}" com/dmdirc/util/WeakList.java"
-FILELIST=${FILELIST}" net/miginfocom/layout/*.java"
-FILELIST=${FILELIST}" net/miginfocom/swing/*.java"
+rm -Rf output/*.run output/*.exe output/*.dmg
 
-${JAVAC} -d ./build ${FILELIST}
-
-if [ $? -ne 0 ]; then
+# OSX doesn't use the installer
+if [ "osx" != "${BUILDTARGET}" ]; then
 	echo "================================================================"
-	echo "Building installer failed."
+	echo "Building Installer JAR "
 	echo "================================================================"
+	mkdir -p installer_temp/build
+	cd installer_temp
+	ln -sf ../../src/com
+	ln -sf ../../src/net
+	# I don't know why, but -d doesn't nicely put ALL generated class files here,
+	# just those that were in the dir of the java file that was requested for compile
+	# So we specify each of the different ones we want built into the jar file here.
+	FILELIST="com/dmdirc/installer/*.java"
+	FILELIST=${FILELIST}" com/dmdirc/installer/cliparser/*.java"
+	FILELIST=${FILELIST}" com/dmdirc/ui/swing/dialogs/wizard/*.java"
+	FILELIST=${FILELIST}" com/dmdirc/ui/interfaces/MainWindow.java"
+	FILELIST=${FILELIST}" com/dmdirc/ui/swing/MainFrame.java"
+	FILELIST=${FILELIST}" com/dmdirc/ui/swing/UIUtilities.java"
+	FILELIST=${FILELIST}" com/dmdirc/ui/swing/UIUtilities.java"
+	FILELIST=${FILELIST}" com/dmdirc/ui/swing/components/StandardDialog.java"
+	FILELIST=${FILELIST}" com/dmdirc/util/ListenerList.java"
+	FILELIST=${FILELIST}" com/dmdirc/util/WeakMapList.java"
+	FILELIST=${FILELIST}" com/dmdirc/util/MapList.java"
+	FILELIST=${FILELIST}" com/dmdirc/ui/swing/components/EtchedLineBorder.java"
+	FILELIST=${FILELIST}" com/dmdirc/util/EquatableWeakReference.java"
+	FILELIST=${FILELIST}" com/dmdirc/ui/swing/JWrappingLabel.java"
+	FILELIST=${FILELIST}" com/dmdirc/util/WeakList.java"
+	FILELIST=${FILELIST}" net/miginfocom/layout/*.java"
+	FILELIST=${FILELIST}" net/miginfocom/swing/*.java"
+	
+	${JAVAC} -d ./build ${FILELIST}
+	
+	if [ $? -ne 0 ]; then
+		echo "================================================================"
+		echo "Building installer failed."
+		echo "================================================================"
+		cd ${THISDIR}
+		rm -Rf installer_temp
+		exit 1;
+	fi
+	
+	cd build
+	echo "Manifest-Version: 1.0" > manifest.txt
+	echo "Created-By: DMDirc Installer" >> manifest.txt
+	echo "Main-Class: com.dmdirc.installer.Main" >> manifest.txt
+	echo "Class-Path: " >> manifest.txt
+	echo "" >> manifest.txt
+	${JAR} cmf manifest.txt installer.jar com net
+	if [ $? -ne 0 ]; then
+		echo "================================================================"
+		echo "Building installer failed."
+		echo "================================================================"
+		cd ${THISDIR}
+		rm -Rf installer_temp
+		exit 1;
+	else
+		rm -Rf ${THISDIR}/common/installer.jar
+		mv installer.jar ${THISDIR}/common/installer.jar
+	fi
+	
 	cd ${THISDIR}
 	rm -Rf installer_temp
-	exit 1;
-fi
+fi;
 
-cd build
-echo "Manifest-Version: 1.0" > manifest.txt
-echo "Created-By: DMDirc Installer" >> manifest.txt
-echo "Main-Class: com.dmdirc.installer.Main" >> manifest.txt
-echo "Class-Path: " >> manifest.txt
-echo "" >> manifest.txt
-${JAR} cmf manifest.txt installer.jar com net
-if [ $? -ne 0 ]; then
-	echo "================================================================"
-	echo "Building installer failed."
-	echo "================================================================"
-	cd ${THISDIR}
-	rm -Rf installer_temp
-	exit 1;
-else
-	rm -Rf ${THISDIR}/common/installer.jar
-	mv installer.jar ${THISDIR}/common/installer.jar
-fi
-
-cd ${THISDIR}
-rm -Rf installer_temp
 
 # Copy default settings from www to trunk for compile (if they exist, and we are
 # building a new jar)
@@ -245,27 +263,32 @@ if [ "" = "${FULLJAR}" ]; then
 	fi;
 fi;
 
-echo "================================================================"
-echo "Building linux installer"
-echo "================================================================"
-cd linux
-./makeInstallerLinux.sh ${OPT}${JARFILE}${JRE}-k ${BRANCH}${RELEASE} -p "${plugins_linux}"
-cd ${THISDIR}
+if [ "linux" = "${BUILDTARGET}" -o "" = "${BUILDTARGET}" ]; then
+	echo "================================================================"
+	echo "Building linux installer"
+	echo "================================================================"
+	cd linux
+	./makeInstallerLinux.sh ${OPT}${JARFILE}${JRE}-k ${BRANCH}${RELEASE} -p "${plugins_linux}"
+	cd ${THISDIR}
+fi;
 
-echo "================================================================"
-echo "Building Windows installer"
-echo "================================================================"
-cd windows
-./makeInstallerWindows.sh ${OPT}${JARFILE}${JRE}-k -s ${BRANCH}${RELEASE} -p "${plugins_windows}"
-cd ${THISDIR}
+if [ "windows" = "${BUILDTARGET}" -o "" = "${BUILDTARGET}" ]; then
+	echo "================================================================"
+	echo "Building Windows installer"
+	echo "================================================================"
+	cd windows
+	./makeInstallerWindows.sh ${OPT}${JARFILE}${JRE}-k -s ${BRANCH}${RELEASE} -p "${plugins_windows}"
+	cd ${THISDIR}
+fi;
 
-echo "================================================================"
-echo "Building OSX Bundle"
-echo "================================================================"
-cd osx
-./makeInstallerOSX.sh ${OPT}${JARFILE}-k -s ${BRANCH}${RELEASE} -p "${plugins_osx}"
-cd ${THISDIR}
-
+if [ "osx" = "${BUILDTARGET}" -o "" = "${BUILDTARGET}" ]; then
+	echo "================================================================"
+	echo "Building OSX Bundle"
+	echo "================================================================"
+	cd osx
+	./makeInstallerOSX.sh ${OPT}${JARFILE}-k -s ${BRANCH}${RELEASE} -p "${plugins_osx}"
+	cd ${THISDIR}
+fi;
 
 #MD5BIN=`which md5sum`
 #if [ "${MD5BIN}" != "" ]; then
