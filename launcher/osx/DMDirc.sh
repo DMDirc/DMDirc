@@ -242,7 +242,7 @@ if [ -e "${jar}" ]; then
 	APPLEOPTS="${APPLEOPTS} -Dcom.apple.mrj.application.growbox.intrudes=false"
 	APPLEOPTS="${APPLEOPTS} -Dcom.apple.mrj.application.live-resize=true"
 	APPLEOPTS="${APPLEOPTS} -Dcom.apple.mrj.application.apple.menu.about.name=DMDirc"
-	APPLEOPTS="${APPLEOPTS} -Dcom.apple.macos.useScreenMenuBar=true"
+	APPLEOPTS="${APPLEOPTS} -Dapple.laf.useScreenMenuBar=true"
 	
 	${JAVA}${APPLEOPTS} -ea -jar ${jar} -l osx-${LAUNCHERVERSION} ${params}
 	exit $?;
