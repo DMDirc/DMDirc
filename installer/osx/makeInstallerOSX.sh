@@ -310,9 +310,9 @@ if [ -e ${PWD}/.DS_Store ]; then
 fi
 
 # Now, make a dmg
-SIZE=$((`du -sb ${DMG} | awk '{print $1}'`  + 10))
-
-if [ "" = "${HDITOOL}" ]; then
+DMGMOUNTDIR=""
+if [ "" = "${HDIUTIL}" ]; then
+	SIZE=$((`du -sb ${DMG} | awk '{print $1}'`  + 10))
 	DMGMOUNTDIR=${PWD}/dmg
 	# Non-OSX
 	# This doesn't work quite aswell as on OSX, but it works.
