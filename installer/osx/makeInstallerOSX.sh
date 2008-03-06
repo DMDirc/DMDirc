@@ -33,7 +33,7 @@ MKHFSPLUS=`which mkfs.hfsplus`
 HDIUTIL=`which hdiutil`
 
 if [ "" = "${HDIUTIL}" ]; then
-	if [ "" = "${MKHFS}" -o "" = "${MKHFSPLUS}" ]; then
+	if [ "" = "${MKHFS}" -a "" = "${MKHFSPLUS}" ]; then
 		echo "This machine is unable to produce dmg images. Aborting."
 		exit 1;
 	fi;
