@@ -257,7 +257,7 @@ compress $FILES
 MD5BIN=`which md5sum`
 AWK=`which awk`
 getMD5() {
-	echo "test" | ${MD5BIN}
+	echo "test" | ${MD5BIN} -
 	if [ $? -eq 0 ]; then
 		getMD5Linux $@
 	else
