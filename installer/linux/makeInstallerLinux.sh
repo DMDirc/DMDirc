@@ -257,11 +257,29 @@ compress $FILES
 MD5BIN=`which md5sum`
 AWK=`which awk`
 getMD5() {
+	echo "test" | ${MD5BIN}
+	if [ $? -eq 0 ]; then
+		getMD5Linux $@
+	else
+		getMD5OSX $@
+	fi;
+}
+
+getMD5Linux() {
 	# Everything below the MD5SUM Line
 	MD5LINE=`grep -na "^MD5=\".*\"$" ${1}`
 	MD5LINE=$((${MD5LINE%%:*} + 1))
 
 	MD5SUM=`tail -n +${MD5LINE} "${1}" | ${MD5BIN} - | ${AWK} '{print $1}'`
+	return;
+}
+
+getMD5OSX() {
+	# Everything below the MD5SUM Line
+	MD5LINE=`grep -na "^MD5=\".*\"$" ${1}`
+	MD5LINE=$((${MD5LINE%%:*} + 1))
+
+	MD5SUM=`tail -n +${MD5LINE} "${1}" | ${MD5BIN} | ${AWK} '{print $1}'`
 	return;
 }
 
