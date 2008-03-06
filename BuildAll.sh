@@ -82,6 +82,7 @@ if [ -f $MYDIR/dist/DMDirc.jar ]; then
 	FILENAME=DMDirc_${FILEDATA}.jar
 	mv "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.exe" "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.exe"
 	mv "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.run" "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.run"
+	mv "${MYDIR}/installer/output/DMDirc-${FILEDATA}.dmg" "${WWWDIR}/nightly/DMDirc-${FILEDATA}.dmg"
 	rm -Rf "${MYDIR}/installer/output/DMDirc-${FILEDATA}.jar"
 	cp $MYDIR/dist/DMDirc.jar /home/dmdirc/www/nightly/$FILENAME
 
@@ -93,6 +94,9 @@ if [ -f $MYDIR/dist/DMDirc.jar ]; then
 	fi;
 	if [ -e "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.exe" ]; then
 		ln -sf "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.exe" $WWWDIR/nightly/DMDirc-Setup_latest.exe
+	fi;
+	if [ -e "${WWWDIR}/nightly/DMDirc-${FILEDATA}.dmg" ]; then
+		ln -sf "${WWWDIR}/nightly/DMDirc-${FILEDATA}.dmg" $WWWDIR/nightly/DMDirc_latest.dmg
 	fi;
 	cd ${MYDIR}
 	/bin/sh $MYDIR/oblong.sh "Nightly Build" "Build Successful";
