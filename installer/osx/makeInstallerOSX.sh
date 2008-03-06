@@ -200,54 +200,72 @@ else
 	bundleVersion="trunk-"`date +%Y%m%d_%H%M%S`
 fi;
 
-echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" > ${CONTENTSDIR}/Info.plist
-echo "<!DOCTYPE plist SYSTEM \"file://localhost/System/Library/DTDs/PropertyList.dtd\">" >> ${CONTENTSDIR}/Info.plist
-echo "<plist version=\"0.9\">" >> ${CONTENTSDIR}/Info.plist
-echo "<dict>" >> ${CONTENTSDIR}/Info.plist
-echo "	<key>CFBundleName</key>" >> ${CONTENTSDIR}/Info.plist
-echo "	<string>DMDirc</string>" >> ${CONTENTSDIR}/Info.plist
-echo "	<key>CFBundleAllowMixedLocalizations</key>" >> ${CONTENTSDIR}/Info.plist
-echo "	<string>true</string>" >> ${CONTENTSDIR}/Info.plist
-echo "	<key>CFBundleExecutable</key>" >> ${CONTENTSDIR}/Info.plist
-echo "	<string>DMDirc.sh</string>" >> ${CONTENTSDIR}/Info.plist
-echo "	<key>CFBundleDevelopmentRegion</key>" >> ${CONTENTSDIR}/Info.plist
-echo "	<string>English</string>" >> ${CONTENTSDIR}/Info.plist
-echo "	<key>CFBundlePackageType</key>" >> ${CONTENTSDIR}/Info.plist
-echo "	<string>APPL</string>" >> ${CONTENTSDIR}/Info.plist
-echo "	<key>CFBundleSignature</key>" >> ${CONTENTSDIR}/Info.plist
-echo "	<string>????</string>" >> ${CONTENTSDIR}/Info.plist
-echo "	<key>CFBundleInfoDictionaryVersion</key>" >> ${CONTENTSDIR}/Info.plist
-echo "	<string>6.0</string>" >> ${CONTENTSDIR}/Info.plist
-echo "	<key>CFBundleIconFile</key>" >> ${CONTENTSDIR}/Info.plist
-echo "	<string>dmdirc.icns</string>" >> ${CONTENTSDIR}/Info.plist
-echo "	<key>CFBundleVersion</key>" >> ${CONTENTSDIR}/Info.plist
-echo "	<string>${bundleVersion}</string>" >> ${CONTENTSDIR}/Info.plist
-echo "	<key>CFBundleShortVersionString</key>" >> ${CONTENTSDIR}/Info.plist
-echo "	<string>${bundleVersion}</string>" >> ${CONTENTSDIR}/Info.plist
-echo "	<key>Java</key>" >> ${CONTENTSDIR}/Info.plist
-echo "	<dict>" >> ${CONTENTSDIR}/Info.plist
-echo "		<key>WorkingDirectory</key>" >> ${CONTENTSDIR}/Info.plist
-echo "		<string>\$APP_PACKAGE/Contents/Resources/Java</string>" >> ${CONTENTSDIR}/Info.plist
-echo "		<key>MainClass</key>" >> ${CONTENTSDIR}/Info.plist
-echo "		<string>com.dmdirc.Main</string>" >> ${CONTENTSDIR}/Info.plist
-echo "		<key>JVMVersion</key>" >> ${CONTENTSDIR}/Info.plist
-echo "		<string>1.6+</string>" >> ${CONTENTSDIR}/Info.plist
-echo "		<key>ClassPath</key>" >> ${CONTENTSDIR}/Info.plist
-echo "		<string>\$JAVAROOT/DMDirc.jar</string>" >> ${CONTENTSDIR}/Info.plist
-echo "	</dict>" >> ${CONTENTSDIR}/Info.plist
-#echo "	<key>Properties</key>" >> ${CONTENTSDIR}/Info.plist
-#echo "	<dict>" >> ${CONTENTSDIR}/Info.plist
-#echo "		<key>com.apple.mrj.application.growbox.intrudes</key>" >> ${CONTENTSDIR}/Info.plist
-#echo "		<string>false</string>" >> ${CONTENTSDIR}/Info.plist
-#echo "		<key>com.apple.mrj.application.live-resize</key>" >> ${CONTENTSDIR}/Info.plist
-#echo "		<string>true</string>" >> ${CONTENTSDIR}/Info.plist
-#echo "		<key>com.apple.mrj.application.apple.menu.about.name</key>" >> ${CONTENTSDIR}/Info.plist
-#echo "		<string>DMDirc</string>" >> ${CONTENTSDIR}/Info.plist
-#echo "		<key>com.apple.macos.useScreenMenuBar</key>" >> ${CONTENTSDIR}/Info.plist
-#echo "		<string>true</string>" >> ${CONTENTSDIR}/Info.plist
-#echo "	</dict>" >> ${CONTENTSDIR}/Info.plist
-echo "</dict>" >> ${CONTENTSDIR}/Info.plist
-echo "</plist>" >> ${CONTENTSDIR}/Info.plist
+
+cat <<EOF> ${CONTENTSDIR}/Info.plist
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
+<plist version="0.9">
+<dict>
+	<key>CFBundleName</key>
+	<string>DMDirc</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.dmdirc.osx</string>
+	<key>CFBundleAllowMixedLocalizations</key>
+	<string>true</string>
+	<key>CFBundleExecutable</key>
+	<string>DMDirc.sh</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleIconFile</key>
+	<string>dmdirc.icns</string>
+	<key>CFBundleVersion</key>
+	<string>${bundleVersion}</string>
+	<key>CFBundleShortVersionString</key>
+	<string>${bundleVersion}</string>
+	<key>Java</key>
+	<dict>
+		<key>WorkingDirectory</key>
+		<string>\$APP_PACKAGE/Contents/Resources/Java</string>
+		<key>MainClass</key>
+		<string>com.dmdirc.Main</string>
+		<key>JVMVersion</key>
+		<string>1.6+</string>
+		<key>ClassPath</key>
+		<string>\$JAVAROOT/DMDirc.jar</string>
+	</dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>IRC URL</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>irc</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>
+EOF
+
+#	<key>Properties</key>
+#	<dict>
+#		<key>com.apple.mrj.application.growbox.intrudes</key>
+#		<string>false</string>
+#		<key>com.apple.mrj.application.live-resize</key>
+#		<string>true</string>
+#		<key>com.apple.mrj.application.apple.menu.about.name</key>
+#		<string>DMDirc</string>
+#		<key>apple.laf.useScreenMenuBar</key>
+#		<string>true</string>
+#	</dict>
 
 cp DMDirc.jar ${RESDIR}/Java/DMDirc.jar
 
