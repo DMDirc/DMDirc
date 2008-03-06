@@ -96,7 +96,7 @@ public final class Styliser {
     
     /** Regular expression for intelligent handling of trailing punctuation. */
     private static final String URL_INT4 = "(" + CODE_HYPERLINK
-            + "[^" + CODE_HYPERLINK + "]+?)([\\.,]?)" + CODE_HYPERLINK;
+            + "[^" + CODE_HYPERLINK + "]+?)([\\.,?]?)" + CODE_HYPERLINK;
     
     /** The regular expression to use for marking up channels. */
     private static final String URL_CHANNEL = "(?i)(?<![^\\s])([#&]" + RESERVED_CHARS + "+)";

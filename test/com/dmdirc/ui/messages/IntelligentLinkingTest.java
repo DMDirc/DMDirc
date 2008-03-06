@@ -55,6 +55,8 @@ public class IntelligentLinkingTest {
         final String[][] tests = {
             {"no links here!", "no links here!"},
             {"www.google.com", "~www.google.com~"},
+            {"www.google.com.", "~www.google.com~."},
+            {"www.google.com, foo", "~www.google.com~, foo"},
             {"http://www.google.com", "~http://www.google.com~"},
             {"www.google.com www.google.com", "~www.google.com~ ~www.google.com~"},
             {"http://www.google.com:80/test#flub", "~http://www.google.com:80/test#flub~"},
@@ -62,6 +64,7 @@ public class IntelligentLinkingTest {
             {"(foo: www.google.com)", "(foo: ~www.google.com~)"},
             {"(foo: 'www.google.com')", "(foo: '~www.google.com~')"},
             {"foo: www.google.com, bar", "foo: ~www.google.com~, bar"},
+            {"www.google.com?", "~www.google.com~?"},
             {"\"foo\" www.google.com \"www.google.com\"",
                      "\"foo\" ~www.google.com~ \"~www.google.com~\"",
             },
