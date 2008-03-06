@@ -168,8 +168,8 @@ public class CommandLineParser {
      */
     private char processShortArg(final String arg) {
         for (int i = 0; i < ARGUMENTS.length; i++) {
-            if (arg.charAt(0) == ARGUMENTS[i][0]) {
-                return arg.charAt(0);
+            if (arg.equals(String.valueOf(ARGUMENTS[i][0]))) {
+                return (Character) ARGUMENTS[i][0];
             }
         }
         
