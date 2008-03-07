@@ -202,7 +202,7 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         } else if (e.getActionCommand().equals("Exit")) {
             ((MainFrame) Main.getUI().getMainWindow()).quit();
         } else if (e.getActionCommand().equals("ActionsOld")) {
-            ActionsManagerDialog.showActionsManagerDialog();
+            com.dmdirc.ui.swing.dialogs.actionseditor.ActionsManagerDialog.showActionsManagerDialog();
         } else if (e.getActionCommand().equals("Actions")) {
             //ActionsManagerDialog.showActionsManagerDialog();
             com.dmdirc.ui.swing.dialogs.actionsmanager.ActionsManagerDialog.showActionsManagerDialog();
