@@ -120,6 +120,11 @@ public final class ErrorListDialog extends StandardDialog implements
             me.tableModel = new ErrorTableModel(new ArrayList<ProgramError>(
                     me.errorManager.getErrorList().values()));
             me.table.setModel(me.tableModel);
+            if (me.tableModel.getRowCount() > 0) {
+                me.deleteAllButton.setEnabled(true);
+            } else {
+                me.deleteAllButton.setEnabled(false);
+            }
         }
 
         return me;

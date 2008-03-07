@@ -31,16 +31,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 
-import javax.swing.JComponent;
+import java.util.Map;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.JTextComponent;
 import net.miginfocom.swing.MigLayout;
 
 /** Swing input field. */
-public class SwingInputField extends JComponent implements InputField, DocumentListener {
+public class SwingInputField extends JTextComponent implements InputField,
+        DocumentListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -54,6 +58,10 @@ public class SwingInputField extends JComponent implements InputField, DocumentL
     private JTextField textField;
     /** Line wrap indicator. */
     private JLabel wrapIndicator;
+    /** Action maps. */
+    private Map<Integer, ActionMap> actionsMaps;
+    /** Input maps. */
+    private Map<Integer, InputMap> inputMaps;
 
     /**
      * Instantiates a new swing input field.
@@ -61,7 +69,8 @@ public class SwingInputField extends JComponent implements InputField, DocumentL
     public SwingInputField() {
         textField = new JTextField();
         textField.setFocusTraversalKeysEnabled(false);
-        wrapIndicator = new JLabel(IconManager.getIconManager().getIcon("linewrap"));
+        wrapIndicator =
+                new JLabel(IconManager.getIconManager().getIcon("linewrap"));
         textField.getDocument().addDocumentListener(this);
         checkLength(0);
 
@@ -69,6 +78,14 @@ public class SwingInputField extends JComponent implements InputField, DocumentL
 
         add(textField, "growx, pushx");
         add(wrapIndicator, "");
+
+        setActionMap(textField.getActionMap());
+        setInputMap(SwingInputField.WHEN_FOCUSED,
+                textField.getInputMap(SwingInputField.WHEN_FOCUSED));
+        setInputMap(SwingInputField.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+                textField.getInputMap(SwingInputField.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
+        setInputMap(SwingInputField.WHEN_IN_FOCUSED_WINDOW,
+                textField.getInputMap(SwingInputField.WHEN_IN_FOCUSED_WINDOW));
     }
 
     /** {@inheritDoc} */
@@ -92,7 +109,7 @@ public class SwingInputField extends JComponent implements InputField, DocumentL
                                 insertString(textField.getCaretPosition(),
                                 actionEvent.getActionCommand(), null);
                     } catch (BadLocationException ex) {
-                        //Ignore, wont happen
+                    //Ignore, wont happen
                     }
                     colourPicker.dispose();
                     colourPicker = null;
@@ -242,7 +259,7 @@ public class SwingInputField extends JComponent implements InputField, DocumentL
     /** {@inheritDoc} */
     @Override
     public void changedUpdate(final DocumentEvent e) {
-        //Ignore
+    //Ignore
     }
 
     /** {@inheritDoc} */
@@ -250,7 +267,7 @@ public class SwingInputField extends JComponent implements InputField, DocumentL
     public boolean hasFocus() {
         return textField.isFocusOwner();
     }
-    
+
     /**
      * Checks the length of the input and shows wrap indicator if required.
      * 
