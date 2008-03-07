@@ -6,7 +6,7 @@
 # Progress data is read from the created pipe, echoing "quit" to the pipe will 
 # cause the script to terminate, as will the progress reaching 100%
 #
-# Pressing cancle on a zenity dialog will terminate right away, kdialog will
+# Pressing cancel on a zenity dialog will terminate right away, kdialog will
 # only terminate when the next line of data is read from the pipe.
 #
 
