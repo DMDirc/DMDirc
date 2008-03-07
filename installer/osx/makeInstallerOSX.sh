@@ -28,6 +28,18 @@ INSTALLERNAME=DMDirc
 # full name of the file to output to
 RUNNAME="${PWD}/${INSTALLERNAME}.dmg"
 
+# Linux needs an entry in fstab to allow normal users to mount things (like a
+# dmg image).
+# These 2 config vars choose what dir and file we mount so that fstab can be
+# correct, these should be full paths, and are ignored on OSX.
+# This is the name of the image that gets mounted:
+LINUXIMAGE=${PWD}/DMDirc.dmg
+# This is the dir we mount it in
+LINUXIMAGEDIR=${PWD}/dmg
+# fstab entry should read:
+# ${LINUXIMAGE} ${LINUXIMAGEDIR} auto users,noauto,loop 0 0
+
+
 MKHFS=`which mkfs.hfs`
 MKHFSPLUS=`which mkfs.hfsplus`
 HDIUTIL=`which hdiutil`
@@ -328,10 +340,16 @@ if [ -e ${PWD}/.DS_Store ]; then
 fi
 
 # Now, make a dmg
-DMGMOUNTDIR=""
 if [ "" = "${HDIUTIL}" ]; then
+	# Make sure the variables are set
+	if [ "" = "${LINUXIMAGEDIR}" ]; then
+		LINUXIMAGEDIR=${PWD}/dmg
+	fi;
+	if [ "" = "${LINUXIMAGED}" ]; then	
+		LINUXIMAGE=${PWD}/DMDirc.dmg
+	fi;
+
 	SIZE=$((`du -sb ${DMG} | awk '{print $1}'`  + 10))
-	DMGMOUNTDIR=${PWD}/dmg
 	# Non-OSX
 	# This doesn't work quite aswell as on OSX, but it works.
 	if [ "" = "${MKHFS}" -a "" != "${MKHFSPLUS}" ]; then
@@ -342,21 +360,21 @@ if [ "" = "${HDIUTIL}" ]; then
 		echo "Size is less than 4MB"
 		SIZE=4194304;
 	fi;
-	dd if=/dev/zero of=${RUNNAME} bs=${SIZE} count=1
-	${MKHFS} -v 'DMDirc' ${RUNNAME}
+	dd if=/dev/zero of=${LINUXIMAGE} bs=${SIZE} count=1
+	${MKHFS} -v 'DMDirc' ${LINUXIMAGE}
 	# Now try and mount
 	# This could be a problem, as linux requires either root to mount, or an fstab
 	# entry.
 	# Try to mount, if this fails, let the user know what to add to fstab.
-	if [ -e ${DMGMOUNTDIR} ]; then
-		rm -Rf ${DMGMOUNTDIR}
+	if [ -e ${LINUXIMAGEDIR} ]; then
+		rm -Rf ${LINUXIMAGEDIR}
 	fi;
-	mkdir ${DMGMOUNTDIR}
-	mount ${DMGMOUNTDIR}
+	mkdir ${LINUXIMAGEDIR}
+	mount ${LINUXIMAGEDIR}
 	MOUNTRES=${?}
 	if [ ${MOUNTRES} -ne 0 ]; then
 		# Try using full parameters - could be running as root.
-		mount -t hfsplus -o loop ${RUNNAME} ${DMGMOUNTDIR}
+		mount -t hfsplus -o loop ${RUNNAME} ${LINUXIMAGEDIR}
 		MOUNTRES=${?}
 	fi;
 	if [ ${MOUNTRES} -ne 0 ]; then
@@ -366,16 +384,21 @@ if [ "" = "${HDIUTIL}" ]; then
 		echo "You do not have permission to mount the image."
 		echo "Please add the following lines to /etc/fstab and rcd oun this script again"
 		echo "# DMDirc OSX dmg image"
-		echo "${RUNNAME} ${DMGMOUNTDIR} auto users,noauto,loop 0 0"
+		echo "${LINUXIMAGE} ${LINUXIMAGEDIR} auto users,noauto,loop 0 0"
 		echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 		echo "@                               ERROR                               @"
 		echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 		exit 1;
 	fi;
-	mv -fv ${DMG}/* ${DMGMOUNTDIR}
-	mv -fv ${DMG}/.[A-Za-z]* ${DMGMOUNTDIR}
-	umount ${DMGMOUNTDIR}
+	mv -fv ${DMG}/* ${LINUXIMAGEDIR}
+	mv -fv ${DMG}/.[A-Za-z]* ${LINUXIMAGEDIR}
+	umount ${LINUXIMAGEDIR}
 	# If anyone finds out how to compress these nicely, add it here.
+	
+	if [ "${LINUXIMAGE}" != "${RUNNAME}" ]; then
+		# Rename the image
+		mv ${LINUXIMAGE} ${RUNNAME}
+	fi;
 else
 	# OSX
 	# This creates better versions than non-OSX
