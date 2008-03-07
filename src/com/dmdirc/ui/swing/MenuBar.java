@@ -123,7 +123,14 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         menuItem.setActionCommand("Actions");
         menuItem.addActionListener(this);
         menu.add(menuItem);
-
+        
+        menuItem = new JMenuItem();
+        menuItem.setMnemonic('a');
+        menuItem.setText("Old Actions Manager");
+        menuItem.setActionCommand("ActionsOld");
+        menuItem.addActionListener(this);
+        menu.add(menuItem);
+        
         menuItem = new JMenuItem();
         menuItem.setMnemonic('l');
         menuItem.setText("Alias Manager");
@@ -194,6 +201,8 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
             ProfileManagerDialog.showProfileManagerDialog();
         } else if (e.getActionCommand().equals("Exit")) {
             ((MainFrame) Main.getUI().getMainWindow()).quit();
+        } else if (e.getActionCommand().equals("ActionsOld")) {
+            ActionsManagerDialog.showActionsManagerDialog();
         } else if (e.getActionCommand().equals("Actions")) {
             //ActionsManagerDialog.showActionsManagerDialog();
             com.dmdirc.ui.swing.dialogs.actionsmanager.ActionsManagerDialog.showActionsManagerDialog();
