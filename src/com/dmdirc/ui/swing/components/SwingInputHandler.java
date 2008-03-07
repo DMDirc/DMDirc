@@ -166,8 +166,7 @@ public class SwingInputHandler extends InputHandler implements KeyListener {
     @Override
     public void keyPressed(final KeyEvent e) {
         if (e.getKeyCode() != KeyEvent.VK_TAB && e.getKeyCode() !=
-                KeyEvent.VK_ENTER && e.getKeyCode() != KeyEvent.VK_UP &&
-                e.getKeyCode() != KeyEvent.VK_DOWN) {
+                KeyEvent.VK_UP && e.getKeyCode() != KeyEvent.VK_DOWN) {
             handleKeyPressed(e.getKeyCode(), e.isShiftDown(), e.isControlDown());
         }
     }
