@@ -65,7 +65,7 @@ errordialog() {
 
 	if [ "" != "${OSASCRIPT}" ]; then
 		echo "Displaying dialog.."
-		${OSASCRIPT} -e 'tell application \"System Events\"' -e "activate" -e "display dialog \"${1}\n${2}\" with icon stop" -e 'end tell'
+		${OSASCRIPT} -e 'tell application "System Events"' -e "activate" -e "display dialog \"${1}\n${2}\" buttons {\"Ok\"} with icon stop" -e 'end tell'
 	fi;
 }
 
@@ -80,7 +80,7 @@ messagedialog() {
 
 	if [ "" != "${OSASCRIPT}" ]; then
 		echo "Displaying dialog.."
-		${OSASCRIPT} -e 'tell application \"System Events\"' -e "activate" -e "display dialog \"${1}\n${2}\" with giving up after 120" -e 'end tell'
+		${OSASCRIPT} -e 'tell application "System Events"' -e "activate" -e "display dialog \"${1}\n${2}\" buttons {\"Ok\"} giving up after 120 with icon note" -e 'end tell'
 	fi;
 }
 
@@ -114,7 +114,7 @@ elif [ -e "${profiledir}/.launcher.sh" ]; then
 		
 			if [ "" != "${OSASCRIPT}" ]; then
 				echo "Displaying dialog.."
-				${OSASCRIPT} -e 'tell application \"System Events\"' -e "activate" -e "display dialog \"\${1}\n\${2}\" with icon stop" -e 'end tell'
+				${OSASCRIPT} -e 'tell application "System Events"' -e "activate" -e "display dialog \"${1}\n${2}\" buttons {\"Ok\"} with icon stop" -e 'end tell'
 			fi;
 		}
 		
@@ -129,7 +129,7 @@ elif [ -e "${profiledir}/.launcher.sh" ]; then
 		
 			if [ "" != "${OSASCRIPT}" ]; then
 				echo "Displaying dialog.."
-				${OSASCRIPT} -e 'tell application \"System Events\"' -e "activate" -e "display dialog \"\${1}\n\${2}\" with giving up after 120" -e 'end tell'
+				${OSASCRIPT} -e 'tell application "System Events"' -e "activate" -e "display dialog \"${1}\n${2}\" buttons {\"Ok\"} giving up after 120 with icon note" -e 'end tell'
 			fi;
 		}
 
@@ -142,7 +142,7 @@ elif [ -e "${profiledir}/.launcher.sh" ]; then
 				UID=`id -u`;
 			fi
 			if [ "0" != "${UID}" ]; then
-				messagedialog "DMDirc" "DMDirc Client Updater requires root access to modify the installation"
+				messagedialog "DMDirc" "The DMDirc Client Updater was unable to modify the client installation, trying again with administrator access"
 				if [ $? -eq 0 ]; then
 					echo "Password dialog on display"
 					osascript -e do shell script "mv -fv \"${profiledir}/.launcher.sh\" \"${0}\"" with administrator privileges
@@ -183,10 +183,10 @@ if [ -e "${profiledir}/.DMDirc.jar" ]; then
 			UID=`id -u`;
 		fi
 		if [ "0" != "${UID}" ]; then
-			messagedialog "DMDirc" "DMDirc Client Updater requires root access to modify the installation"
+			messagedialog "DMDirc" "The DMDirc Client Updater was unable to modify the client installation, trying again with administrator access"
 			if [ $? -eq 0 ]; then
 				echo "Password dialog on display"
-				osascript -e do shell script "mv -fv \"${profiledir}/.launcher.sh\" \"${0}\"" with administrator privileges
+				osascript -e "do shell script \"mv -fv \\\"${profiledir}/.launcher.sh\\\" \\\"${0}\\\"\" with administrator privileges"
 			fi;
 		fi
 		if [ ! -e "${profiledir}/.DMDirc.jar" ]; then
