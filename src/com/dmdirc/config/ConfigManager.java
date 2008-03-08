@@ -318,10 +318,10 @@ public class ConfigManager extends ConfigSource implements Serializable,
     protected static void doStats(final String domain, final String option) {
         final String key = domain + "." + option;
         
-        if (stats != null) {
-            // Don't ask how it's null, but it is.
-            
+        try {
             stats.put(key, 1 + (stats.containsKey(key) ? stats.get(key) : 0));
+        } catch (NullPointerException ex) {
+            // JVM bugs ftl.
         }
     }
     
