@@ -186,7 +186,9 @@ public abstract class CommandParser implements Serializable {
         }
 
         synchronized(history) {
-            history.add(new PreviousCommand(builder.toString()));
+            final PreviousCommand pc = new PreviousCommand(builder.toString());
+            history.remove(pc);
+            history.add(pc);
         }
     }
 

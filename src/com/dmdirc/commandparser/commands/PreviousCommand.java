@@ -64,5 +64,33 @@ public final class PreviousCommand {
     public String getLine() {
         return line;
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        
+        final PreviousCommand other = (PreviousCommand) obj;
+        if (this.line != other.line
+                && (this.line == null || !this.line.equals(other.line))) {
+            return false;
+        }
+        
+        return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 97 * hash + (this.line != null ? this.line.hashCode() : 0);
+        return hash;
+    }
     
 }
