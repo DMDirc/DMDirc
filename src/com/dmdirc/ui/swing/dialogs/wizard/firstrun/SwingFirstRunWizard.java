@@ -36,7 +36,6 @@ import com.dmdirc.util.resourcemanager.ResourceManager;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -61,6 +60,11 @@ public final class SwingFirstRunWizard implements WizardListener,
      */
     public SwingFirstRunWizard(final boolean firstRun) {
         this.firstRun = firstRun;
+        
+        wizardDialog =
+                new WizardDialog(firstRun ? "Setup wizard" : "Migration wizard",
+                new ArrayList<Step>(), this, null);
+        wizardDialog.addWizardListener(this);
     }
 
     /** {@inheritDoc} */
@@ -186,21 +190,13 @@ public final class SwingFirstRunWizard implements WizardListener,
     /** {@inheritDoc} */
     @Override
     public void display() {
-        final List<Step> steps =
-                new ArrayList<Step>();
-
         if (firstRun) {
-            steps.add(new FirstRunExtractionStep());
-            steps.add(new CommunicationStep());
-            steps.add(new ProfileStep());
+            wizardDialog.addStep(new FirstRunExtractionStep());
+            wizardDialog.addStep(new CommunicationStep());
+            wizardDialog.addStep(new ProfileStep());
         } else {
-            steps.add(new MigrationExtrationStep());
+            wizardDialog.addStep(new MigrationExtrationStep());
         }
-        
-        wizardDialog =
-                new WizardDialog(firstRun ? "Setup wizard" : "Migration wizard",
-                steps, this, null);
-        wizardDialog.addWizardListener(this);
         wizardDialog.display();
     }
 

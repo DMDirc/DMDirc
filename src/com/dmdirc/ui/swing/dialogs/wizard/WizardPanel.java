@@ -124,7 +124,8 @@ public class WizardPanel extends JPanel implements ActionListener,
         titlePanel.setBackground(Color.WHITE);
         titlePanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0,
                 Color.BLACK));
-        titlePanel.setBorder(new EtchedLineBorder(EtchedBorder.LOWERED, BorderSide.BOTTOM));
+        titlePanel.setBorder(new EtchedLineBorder(EtchedBorder.LOWERED,
+                BorderSide.BOTTOM));
 
         final JPanel progressPanel = new JPanel(new MigLayout("fill"));
         progressPanel.add(progressLabel, "growx");
@@ -132,7 +133,8 @@ public class WizardPanel extends JPanel implements ActionListener,
         progressPanel.add(next, "sg button");
         progressPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0,
                 Color.BLACK));
-        progressPanel.setBorder(new EtchedLineBorder(EtchedBorder.LOWERED, BorderSide.TOP));
+        progressPanel.setBorder(new EtchedLineBorder(EtchedBorder.LOWERED,
+                BorderSide.TOP));
 
         setLayout(new MigLayout("fill, wrap 1, ins 0"));
         add(titlePanel, "growx");
@@ -258,7 +260,9 @@ public class WizardPanel extends JPanel implements ActionListener,
      * @param listener
      */
     public void addStepListener(final StepListener listener) {
-        stepListeners.add(StepListener.class, listener);
+        synchronized (stepListeners) {
+            stepListeners.add(StepListener.class, listener);
+        }
     }
 
     /**
@@ -267,7 +271,9 @@ public class WizardPanel extends JPanel implements ActionListener,
      * @param listener
      */
     public void removeStepListener(final StepListener listener) {
-        stepListeners.remove(StepListener.class, listener);
+        synchronized (stepListeners) {
+            stepListeners.remove(StepListener.class, listener);
+        }
     }
 
     /**
@@ -276,7 +282,9 @@ public class WizardPanel extends JPanel implements ActionListener,
      * @param listener
      */
     public void addWizardListener(final WizardListener listener) {
-        stepListeners.add(WizardListener.class, listener);
+        synchronized (stepListeners) {
+            stepListeners.add(WizardListener.class, listener);
+        }
     }
 
     /**
@@ -285,7 +293,9 @@ public class WizardPanel extends JPanel implements ActionListener,
      * @param listener
      */
     public void removeWizardListener(final WizardListener listener) {
-        stepListeners.remove(WizardListener.class, listener);
+        synchronized (stepListeners) {
+            stepListeners.remove(WizardListener.class, listener);
+        }
     }
 
     /**
@@ -294,10 +304,12 @@ public class WizardPanel extends JPanel implements ActionListener,
      * @param step Step to be displayed
      */
     private void fireStepAboutToBeDisplayed(final Step step) {
-        List<StepListener> listeners =
-                stepListeners.get(StepListener.class);
-        for (StepListener listener : listeners) {
-            listener.stepAboutToDisplay(step);
+        synchronized (stepListeners) {
+            List<StepListener> listeners =
+                    stepListeners.get(StepListener.class);
+            for (StepListener listener : listeners) {
+                listener.stepAboutToDisplay(step);
+            }
         }
     }
 
@@ -307,10 +319,12 @@ public class WizardPanel extends JPanel implements ActionListener,
      * @param step step thats been hidden
      */
     private void fireStepHidden(final Step step) {
-        List<StepListener> listeners =
-                stepListeners.get(StepListener.class);
-        for (StepListener listener : listeners) {
-            listener.stepHidden(step);
+        synchronized (stepListeners) {
+            List<StepListener> listeners =
+                    stepListeners.get(StepListener.class);
+            for (StepListener listener : listeners) {
+                listener.stepHidden(step);
+            }
         }
     }
 
@@ -318,10 +332,13 @@ public class WizardPanel extends JPanel implements ActionListener,
      * Fires wizard finished events.
      */
     private void fireWizardFinished() {
-        List<WizardListener> listeners =
-                stepListeners.get(WizardListener.class);
-        for (WizardListener listener : listeners) {
-            listener.wizardFinished();
+        synchronized (stepListeners) {
+            List<WizardListener> listeners =
+                    stepListeners.get(WizardListener.class);
+            for (WizardListener listener : listeners) {
+                System.out.println("finished: " + listener);
+                listener.wizardFinished();
+            }
         }
     }
 
@@ -329,10 +346,13 @@ public class WizardPanel extends JPanel implements ActionListener,
      * Fires wizard cancelled events.
      */
     protected void fireWizardCancelled() {
-        List<WizardListener> listeners =
-                stepListeners.get(WizardListener.class);
-        for (WizardListener listener : listeners) {
-            listener.wizardCancelled();
+        synchronized (stepListeners) {
+            List<WizardListener> listeners =
+                    stepListeners.get(WizardListener.class);
+            for (WizardListener listener : listeners) {
+                System.out.println("cancelled: " + listener);
+                listener.wizardCancelled();
+            }
         }
     }
 }

@@ -31,9 +31,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 
-import java.util.Map;
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -58,10 +55,6 @@ public class SwingInputField extends JTextComponent implements InputField,
     private JTextField textField;
     /** Line wrap indicator. */
     private JLabel wrapIndicator;
-    /** Action maps. */
-    private Map<Integer, ActionMap> actionsMaps;
-    /** Input maps. */
-    private Map<Integer, InputMap> inputMaps;
 
     /**
      * Instantiates a new swing input field.
@@ -211,6 +204,7 @@ public class SwingInputField extends JTextComponent implements InputField,
      * 
      * @param clipboard Text to replace selection with
      */
+    @Override
     public void replaceSelection(String clipboard) {
         textField.replaceSelection(clipboard);
     }
@@ -220,6 +214,7 @@ public class SwingInputField extends JTextComponent implements InputField,
      * 
      * @param optionColour Colour for the caret
      */
+    @Override
     public void setCaretColor(Color optionColour) {
         textField.setCaretColor(optionColour);
     }
@@ -241,6 +236,7 @@ public class SwingInputField extends JTextComponent implements InputField,
      */
     @Override
     public void setBackground(Color optionColour) {
+        System.out.println(textField);
         textField.setBackground(optionColour);
     }
 

@@ -134,7 +134,7 @@ public final class WizardDialog extends StandardDialog implements ActionListener
      * @param step Step to add
      */
     public void addStep(final Step step) {
-        wizard.add(step);
+        wizard.addStep(step);
     }
     
     /**

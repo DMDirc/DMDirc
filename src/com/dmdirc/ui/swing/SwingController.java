@@ -84,7 +84,7 @@ public final class SwingController implements UIController {
     public synchronized MainFrame getMainWindow() {
         return getMainFrame();
     }
-    
+
     /**
      * Retrieves the main window used by this UI.
      *
@@ -192,22 +192,27 @@ public final class SwingController implements UIController {
             /** {@inheritDoc} */
             @Override
             public void run() {
-                wizard = new SwingFirstRunWizard(firstRun);
-                wizard.display();
-                wizard.getWizardDialog().addWizardListener(new WizardListener() {
+                final WizardListener listener = new WizardListener() {
 
+                    /** {@inheritDoc} */
+                    @Override
                     public void wizardFinished() {
                         synchronized (SwingController.this) {
                             SwingController.this.notifyAll();
                         }
                     }
 
+                    /** {@inheritDoc} */
+                    @Override
                     public void wizardCancelled() {
                         synchronized (SwingController.this) {
                             SwingController.this.notifyAll();
                         }
                     }
-                });
+                };
+                wizard = new SwingFirstRunWizard(firstRun);
+                wizard.getWizardDialog().addWizardListener(listener);
+                wizard.display();
             }
             });
         try {
@@ -371,7 +376,7 @@ public final class SwingController implements UIController {
             }
         });
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getUserInput(final String prompt) {
