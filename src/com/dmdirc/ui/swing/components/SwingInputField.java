@@ -236,7 +236,6 @@ public class SwingInputField extends JTextComponent implements InputField,
      */
     @Override
     public void setBackground(Color optionColour) {
-        System.out.println(textField);
         textField.setBackground(optionColour);
     }
 
