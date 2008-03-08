@@ -57,7 +57,15 @@ public class SwingInputHandler extends InputHandler implements KeyListener {
     /** {@inheritDoc} */
     @Override
     protected void addUpHandler() {
-        ((JTextComponent) target).getActionMap().put("upArrow", new AbstractAction() {
+        final JTextComponent localTarget;
+        if (target instanceof JTextComponent) {
+            localTarget = (JTextComponent) target;
+        } else if (target instanceof SwingInputField) {
+            localTarget = ((SwingInputField) target).getTextField();
+        } else {
+            throw new RuntimeException("Unsupported component: " + target.getClass());
+        }
+        localTarget.getActionMap().put("upArrow", new AbstractAction() {
 
             /**
              * A version number for this class. It should be changed whenever the class
@@ -72,14 +80,22 @@ public class SwingInputHandler extends InputHandler implements KeyListener {
                 doBufferUp();
             }
         });
-        ((JTextComponent) target).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).
+        localTarget.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).
                 put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "upArrow");
     }
 
     /** {@inheritDoc} */
     @Override
     protected void addDownHandler() {
-        ((JTextComponent) target).getActionMap().put("downArrow", new AbstractAction() {
+        final JTextComponent localTarget;
+        if (target instanceof JTextComponent) {
+            localTarget = (JTextComponent) target;
+        } else if (target instanceof SwingInputField) {
+            localTarget = ((SwingInputField) target).getTextField();
+        } else {
+            throw new RuntimeException("Unsupported component: " + target.getClass());
+        }
+        localTarget.getActionMap().put("downArrow", new AbstractAction() {
 
             /**
              * A version number for this class. It should be changed whenever the class
@@ -94,14 +110,22 @@ public class SwingInputHandler extends InputHandler implements KeyListener {
                 doBufferDown();
             }
         });
-        ((JTextComponent) target).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).
+        localTarget.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).
                 put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "downArrow");
     }
 
     /** {@inheritDoc} */
     @Override
     protected void addTabHandler() {
-        ((JTextComponent) target).getActionMap().put("tabPressed", new AbstractAction() {
+        final JTextComponent localTarget;
+        if (target instanceof JTextComponent) {
+            localTarget = (JTextComponent) target;
+        } else if (target instanceof SwingInputField) {
+            localTarget = ((SwingInputField) target).getTextField();
+        } else {
+            throw new RuntimeException("Unsupported component: " + target.getClass());
+        }
+        localTarget.getActionMap().put("tabPressed", new AbstractAction() {
 
             /**
              * A version number for this class. It should be changed whenever the class
@@ -116,14 +140,22 @@ public class SwingInputHandler extends InputHandler implements KeyListener {
                 doTabCompletion();
             }
         });
-        ((JTextComponent) target).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).
+        localTarget.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).
                 put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tabPressed");
     }
 
     /** {@inheritDoc} */
     @Override
     protected void addEnterHandler() {
-        ((JTextComponent) target).getActionMap().put("enterButton", new AbstractAction() {
+        final JTextComponent localTarget;
+        if (target instanceof JTextComponent) {
+            localTarget = (JTextComponent) target;
+        } else if (target instanceof SwingInputField) {
+            localTarget = ((SwingInputField) target).getTextField();
+        } else {
+            throw new RuntimeException("Unsupported component: " + target.getClass());
+        }
+        localTarget.getActionMap().put("enterButton", new AbstractAction() {
 
             /**
              * A version number for this class. It should be changed whenever the class
@@ -138,7 +170,7 @@ public class SwingInputHandler extends InputHandler implements KeyListener {
                 enterPressed(target.getText());
             }
         });
-        ((JTextComponent) target).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).
+        localTarget.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).
                 put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enterButton");
     }
 

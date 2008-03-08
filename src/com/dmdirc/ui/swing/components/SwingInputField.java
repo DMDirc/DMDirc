@@ -31,16 +31,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.JTextComponent;
 import net.miginfocom.swing.MigLayout;
 
 /** Swing input field. */
-public class SwingInputField extends JTextComponent implements InputField,
+public class SwingInputField extends JComponent implements InputField,
         DocumentListener {
 
     /**
@@ -204,7 +204,6 @@ public class SwingInputField extends JTextComponent implements InputField,
      * 
      * @param clipboard Text to replace selection with
      */
-    @Override
     public void replaceSelection(String clipboard) {
         textField.replaceSelection(clipboard);
     }
@@ -214,7 +213,6 @@ public class SwingInputField extends JTextComponent implements InputField,
      * 
      * @param optionColour Colour for the caret
      */
-    @Override
     public void setCaretColor(Color optionColour) {
         textField.setCaretColor(optionColour);
     }
