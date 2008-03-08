@@ -242,10 +242,11 @@ if [ -e "${jar}" ]; then
 	# to be seen, and the shell script exits with the correct exit code.
 	
 	APPLEOPTS=""
-	APPLEOPTS="${APPLEOPTS} -Dcom.apple.mrj.application.growbox.intrudes=false"
-	APPLEOPTS="${APPLEOPTS} -Dcom.apple.mrj.application.live-resize=true"
-	APPLEOPTS="${APPLEOPTS} -Dcom.apple.mrj.application.apple.menu.about.name=DMDirc"
-	APPLEOPTS="${APPLEOPTS} -Dapple.laf.useScreenMenuBar=true"
+#	APPLEOPTS="${APPLEOPTS} -Dcom.apple.mrj.application.growbox.intrudes=false"
+#	APPLEOPTS="${APPLEOPTS} -Dcom.apple.mrj.application.live-resize=true"
+#	APPLEOPTS="${APPLEOPTS} -Dcom.apple.mrj.application.apple.menu.about.name=DMDirc"
+#	APPLEOPTS="${APPLEOPTS} -Dapple.awt.showGrowBox=true"
+#	APPLEOPTS="${APPLEOPTS} -Dapple.laf.useScreenMenuBar=true"
 	
 	${JAVA}${APPLEOPTS} -ea -jar ${jar} -l osx-${LAUNCHERVERSION} ${params}
 	exit $?;

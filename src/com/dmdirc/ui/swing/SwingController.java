@@ -264,6 +264,29 @@ public final class SwingController implements UIController {
             System.setProperty("awt.useSystemAAFontSettings", "true");
             System.setProperty("swing.aatext", "true");
         }
+        
+        if (System.getProperty("os.name").startsWith("Mac OS")) {
+            // Set some Apple OS X related stuff from
+            // http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaSystemProperties.html
+            final String aaText = 
+                System.getProperty("swing.aatext").equalsIgnoreCase("true") ?
+                "on" : "off";
+            final String aaSetting =
+                    IdentityManager.getGlobalConfig().getOption("ui",
+                    "antialias");
+            if (aaSetting.equalsIgnoreCase("true")) {
+                System.setProperty("apple.awt.antialiasing", "on");
+            } else {
+                System.setProperty("apple.awt.antialiasing", "off");
+            }
+            System.setProperty("apple.awt.textantialiasing", aaText);
+            System.setProperty("apple.awt.showGrowBox", "true");
+            System.setProperty("apple.laf.useScreenMenuBar", "true");
+            System.setProperty("com.apple.mrj.application.apple.menu.about.name",
+                    "DMDirc: " + Main.VERSION);
+            System.setProperty("com.apple.mrj.application.growbox.intrudes", "false");
+            System.setProperty("com.apple.mrj.application.live-resize", "true");
+        }
 
         try {
             UIUtilities.initUISettings();
@@ -291,13 +314,6 @@ public final class SwingController implements UIController {
             UIManager.put("Tree.expandedIcon",
                     IconManager.getIconManager().getIcon("nothing"));
 
-            //These are likely to change lots, and i cant test them - Greboid
-            UIManager.put("apple.awt.showGrowBox", true);
-            UIManager.put("apple.laf.useScreenMenuBar", true);
-            UIManager.put("com.apple.mrj.application.apple.menu.about.name",
-                    "DMDirc: " + Main.VERSION);
-            UIManager.put("com.apple.mrj.application.growbox.intrudes", false);
-            UIManager.put("com.apple.mrj.application.live-resize", true);
         } catch (UnsupportedOperationException ex) {
             Logger.userError(ErrorLevel.LOW, "Unable to set UI Settings");
         } catch (UnsupportedLookAndFeelException ex) {
