@@ -200,7 +200,7 @@ mkdir -pv ${RESDIR}/Java
 mkdir -pv ${MACOSDIR}
 
 echo "Creating meta files"
-echo "APPL????" > ${CONTENTSDIR}/PkgInfo
+echo "APPLDMDI" > ${CONTENTSDIR}/PkgInfo
 
 if [ "${isRelease}" != "" ]; then
 	if [ "${BRANCH}" = "1" ]; then
@@ -232,7 +232,7 @@ cat <<EOF> ${CONTENTSDIR}/Info.plist
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
-	<string>????</string>
+	<string>DMDI</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleIconFile</key>
