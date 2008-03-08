@@ -245,7 +245,7 @@ public class PreferencesManager {
         options.put("none", "Nowhere");
 
         whoisOptions.putAll(options);
-        whoisOptions.put("lastcommand:whois %4$s( %4$s)?", "Source of whois command");
+        whoisOptions.put("lastcommand:(raw )?whois %4$s( %4$s)?", "Source of whois command");
 
         ctcprOptions.putAll(options);
         ctcprOptions.put("lastcommand:ctcp %1$s %4$S", "Source of ctcp command");
