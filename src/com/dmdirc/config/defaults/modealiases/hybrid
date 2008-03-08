@@ -1,16 +1,22 @@
 identity.name = Hyrbid mode aliases
 identity.ircd = hybrid
 
+server.modeS = SSL users only
+
 server.umodea = Server admin
 server.umodeb = Receive bot detection notices
 server.umodec = Show client connections
+server.umodeC = Server
 server.umoded = Show debug messages
 server.umodef = Show fake mode/nick collisions
 server.umodeg = Caller ID mode
+server.umodeG = Soft Caller ID mode
 server.umodek = Show kills
 server.umodel = Show excess connections
 server.umoden = Show client nick changes
+server.umodeP = Network service
 server.umoder = Show reject notices
+server.umodeS = God mode
 server.umodeu = Show unauthorised connections
 server.umodey = Spy mode
 server.umodez = Receive wallops
