@@ -91,7 +91,9 @@ public class IrcAddress implements Serializable {
             doPass(uri.getUserInfo());
         }
         
-        doChannels(uri.getPath());
+        doChannels(uri.getPath() + (uri.getQuery() == null ? "" :
+            "?" + uri.getQuery()) + (uri.getFragment() == null ? "" :
+            "#" + uri.getFragment()));
 
         if (uri.getPort() > -1) {
             doPort(uri.getPort());

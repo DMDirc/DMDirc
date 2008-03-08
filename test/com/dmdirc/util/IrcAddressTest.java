@@ -179,7 +179,18 @@ public class IrcAddressTest extends junit.framework.TestCase {
             assertFalse(true);
         }
     }
-    
+
+    @Test
+    public void testChannels() throws InvalidAddressException {
+        try {
+            final IrcAddress address3 = new IrcAddress("irc://server/#MDbot");
+            assertEquals(1, address3.getChannels().size());
+            assertEquals("#MDbot", address3.getChannels().get(0));
+        } catch (InvalidAddressException ex) {
+            fail();
+        }
+    }
+
     @Test
     public void testEncoding() {
         try {
@@ -188,7 +199,7 @@ public class IrcAddressTest extends junit.framework.TestCase {
             assertEquals("#DMDirc", address1.getChannels().get(0));
         } catch (InvalidAddressException ex) {
             assertFalse(true);
-        }        
+        }
     }
 
 }
