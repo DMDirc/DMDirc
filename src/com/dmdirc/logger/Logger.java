@@ -235,10 +235,11 @@ public final class Logger {
             if (throwable.getCause() != null) {
                 String[] causeTrace = exceptionToStringArray(throwable.getCause());
                 String[] newTrace = new String[trace.length + causeTrace.length];
-                causeTrace[0] = "\nCaused by: " + causeTrace[0];
+                trace[0] = "\nWhich caused: " + trace[0];
                 
-                System.arraycopy(trace, 0, newTrace, 0, trace.length);
-                System.arraycopy(causeTrace, 0, newTrace, trace.length, causeTrace.length);
+                System.arraycopy(causeTrace, 0, newTrace, 0, causeTrace.length);
+                System.arraycopy(trace, 0, newTrace, causeTrace.length, trace.length);
+                
                 trace = newTrace;
             }
         }
