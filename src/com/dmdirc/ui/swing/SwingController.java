@@ -271,10 +271,8 @@ public final class SwingController implements UIController {
             final String aaText = 
                 System.getProperty("swing.aatext").equalsIgnoreCase("true") ?
                 "on" : "off";
-            final String aaSetting =
-                    IdentityManager.getGlobalConfig().getOption("ui",
-                    "antialias");
-            if (aaSetting.equalsIgnoreCase("true")) {
+            if (IdentityManager.getGlobalConfig().getOptionBool("ui", 
+                "antialias")) {
                 System.setProperty("apple.awt.antialiasing", "on");
             } else {
                 System.setProperty("apple.awt.antialiasing", "off");
