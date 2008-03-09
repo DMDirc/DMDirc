@@ -28,6 +28,7 @@ import com.dmdirc.ui.swing.textpane.TextPane.ClickType;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
@@ -80,7 +81,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         /** Mouse dragged. */
         DRAG,
         /** Mouse released. */
-        RELEASE,}
+        RELEASE,
+    }
 
     /** position of the scrollbar. */
     private int scrollBarPosition;
@@ -676,16 +678,19 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             }
             point = e.getLocationOnScreen();
             SwingUtilities.convertPointFromScreen(point, this);
+            System.out.println(point);
+            System.out.println(MouseInfo.getPointerInfo().getLocation());
+            System.out.println(new Rectangle((int) getLocationOnScreen().getX(), (int) getLocationOnScreen().getY(), getWidth(), getHeight()));
             final LineInfo info = getClickPosition(point);
-            if (info.getLine() == -1 && info.getPart() == -1 && point != null) {
+            if (info.getLine() == -1 && info.getPart() == -1 && point != null && contains(point)) {
                 info.setLine(0);
                 info.setPart(0);
                 for (Entry<TextLayout, LineInfo> entry : textLayouts.entrySet()) {
                     if (entry.getValue().getLine() == 0) {
                         for (Entry<Rectangle, TextLayout> entry1 : positions.entrySet()) {
-                            if (entry.getKey().equals(entry.getKey())) {
-                                info.setIndex(getHitPosition(info.getLine(), info.getPart(), point.x, (int) entry1.getKey().getX()));
-                            }
+                            info.setIndex(getHitPosition(info.getLine(),
+                                    info.getPart(), point.x, (int) entry1.getKey().
+                                    getX()));
                         }
                     }
                 }
@@ -724,7 +729,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 }
             }
 
-            pos = getHitPosition(lineNumber, linePart, (int) point.getX(), (int) point.getY());
+            pos = getHitPosition(lineNumber, linePart, (int) point.getX(),
+                    (int) point.getY());
         }
 
         return new LineInfo(lineNumber, linePart, pos);
@@ -740,7 +746,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * 
      * @return Hit position
      */
-    private int getHitPosition(final int lineNumber, final int linePart, final int x, final int y) {
+    private int getHitPosition(final int lineNumber, final int linePart,
+            final int x, final int y) {
         int pos = 0;
 
         for (Map.Entry<Rectangle, TextLayout> entry : positions.entrySet()) {
@@ -749,7 +756,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                     pos += entry.getValue().getCharacterCount();
                 } else if (textLayouts.get(entry.getValue()).getPart() ==
                         linePart) {
-                    final TextHitInfo hit = entry.getValue().hitTestChar(x - 6, y);
+                    final TextHitInfo hit = entry.getValue().hitTestChar(x - 6,
+                            y);
                     pos += hit.getInsertionIndex();
                 }
             }
