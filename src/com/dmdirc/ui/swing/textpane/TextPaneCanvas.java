@@ -678,9 +678,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             }
             point = e.getLocationOnScreen();
             SwingUtilities.convertPointFromScreen(point, this);
-            System.out.println(point);
-            System.out.println(MouseInfo.getPointerInfo().getLocation());
-            System.out.println(new Rectangle((int) getLocationOnScreen().getX(), (int) getLocationOnScreen().getY(), getWidth(), getHeight()));
             final LineInfo info = getClickPosition(point);
             if (info.getLine() == -1 && info.getPart() == -1 && point != null && contains(point)) {
                 info.setLine(0);
