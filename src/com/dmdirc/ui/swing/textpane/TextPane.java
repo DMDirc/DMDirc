@@ -130,6 +130,8 @@ public final class TextPane extends JComponent implements AdjustmentListener,
 
         MouseMotionListener doScrollRectToVisible = new MouseMotionAdapter() {
 
+            /** {@inheritDoc} */
+            @Override
             public void mouseDragged(MouseEvent e) {
                 if (e.getXOnScreen() > getLocationOnScreen().getX() && e.getXOnScreen() < (getLocationOnScreen().
                         getX() + getWidth())) {
