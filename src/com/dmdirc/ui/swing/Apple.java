@@ -24,7 +24,6 @@ package com.dmdirc.ui.swing;
 
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.interfaces.UIController;
 
 import java.awt.event.ActionEvent;
 
@@ -112,12 +111,11 @@ public final class Apple implements InvocationHandler {
 	/**
 	 * Are we on OS X?
 	 *
-	 * @return true if:
-	 *           - The UI Controller is SwingController,
-	 *           - We are running on OS X
+	 * @return true if we are running on OS X
 	 */
 	public static boolean isApple() {
-		return (Main.getUI() instanceof SwingController && System.getProperty("os.name").startsWith("Mac OS"));
+//		return (Main.getUI() instanceof SwingController && System.getProperty("os.name").startsWith("Mac OS"));
+		return (System.getProperty("mrj.version") != null);
 	}
 
 	/**
