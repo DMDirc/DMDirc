@@ -72,7 +72,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     private final int lineHeight;
 
     /** Selection event types. */
-    private enum MouseEventType {
+    protected enum MouseEventType {
 
         /** Mouse clicked. */
         CLICK,
@@ -661,20 +661,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * @param type mouse event type
      * @param e responsible mouse event
      */
-    private void highlightEvent(final MouseEventType type, final MouseEvent e) {
+    protected void highlightEvent(final MouseEventType type, final MouseEvent e) {
         if (isVisible()) {
-            Point point = getMousePosition();
-            if (point == null) {
-                if (e.getXOnScreen() > getLocationOnScreen().getX() && e.getXOnScreen() < (getLocationOnScreen().
-                        getX() + getWidth())) {
-                    if (getLocationOnScreen().getY() > e.getYOnScreen()) {
-                        textPane.setScrollBarPosition(scrollBarPosition - 1);
-                    } else {
-                        textPane.setScrollBarPosition(scrollBarPosition + 1);
-                    }
-                }
-            }
-            point = e.getLocationOnScreen();
+            Point point = e.getLocationOnScreen();
             SwingUtilities.convertPointFromScreen(point, this);
             if (!contains(point)) {
                 final Rectangle bounds = getBounds();

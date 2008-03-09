@@ -31,10 +31,14 @@ import com.dmdirc.ui.messages.Styliser;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.font.TextAttribute;
@@ -59,14 +63,13 @@ import javax.swing.text.StyledDocument;
  */
 public final class TextPane extends JComponent implements AdjustmentListener,
         MouseWheelListener, IRCDocumentListener {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 5;
-    
     /** Scrollbar for the component. */
     private final JScrollBar scrollBar;
     /** Canvas object, used to draw text. */
@@ -75,9 +78,10 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     private final IRCDocument document;
     /** Parent Frame. */
     private final FrameContainer frame;
-    
+
     /** Click types. */
     public enum ClickType {
+
         /** Hyperlink. */
         HYPERLINK,
         /** Channel. */
@@ -87,7 +91,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         /** Normal. */
         NORMAL,
     }
-    
+
     /** 
      * Creates a new instance of TextPane. 
      *
@@ -95,36 +99,52 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      */
     public TextPane(final FrameContainer frame) {
         super();
-        
+
         this.frame = frame;
-        
+
         document = new IRCDocument();
-        
+
         setMinimumSize(new Dimension(0, 0));
-        
+
         setLayout(new BorderLayout());
-        
+
         canvas = new TextPaneCanvas(this, document);
-        
+
         setBorder(UIManager.getBorder("TextField.border"));
-        
+
         add(canvas, BorderLayout.CENTER);
-        
-        
+
+
         scrollBar = new JScrollBar(JScrollBar.VERTICAL);
         add(scrollBar, BorderLayout.LINE_END);
-        
+
         setAutoscrolls(true);
-        
+
         scrollBar.setMaximum(document.getNumLines());
         scrollBar.setBlockIncrement(10);
         scrollBar.setUnitIncrement(1);
         scrollBar.addAdjustmentListener(this);
-        
+
         addMouseWheelListener(this);
         document.addIRCDocumentListener(this);
+
+        MouseMotionListener doScrollRectToVisible = new MouseMotionAdapter() {
+
+            public void mouseDragged(MouseEvent e) {
+                if (e.getXOnScreen() > getLocationOnScreen().getX() && e.getXOnScreen() < (getLocationOnScreen().
+                        getX() + getWidth())) {
+                    if (getLocationOnScreen().getY() > e.getYOnScreen()) {
+                        setScrollBarPosition(scrollBar.getValue() - 1);
+                    } else if (getLocationOnScreen().getY() + getHeight() < e.getYOnScreen()){
+                        setScrollBarPosition(scrollBar.getValue() + 1);
+                    }
+                }
+                canvas.highlightEvent(TextPaneCanvas.MouseEventType.DRAG, e);
+            }
+        };
+        addMouseMotionListener(doScrollRectToVisible);
     }
-    
+
     /**
      * Adds styled text to the textpane.
      * @param text styled text to add
@@ -132,16 +152,16 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public void addText(final AttributedString text) {
         document.addText(text);
     }
-    
+
     /**
      * Stylises the specified string and adds it to the passed TextPane.
      *
      * @param string The line to be stylised and added
      */
     public void addStyledString(final String string) {
-        addStyledString(new String[]{string, });
+        addStyledString(new String[]{string,});
     }
-    
+
     /**
      * Stylises the specified string and adds it to the passed TextPane.
      *
@@ -150,14 +170,14 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public void addStyledString(final String[] strings) {
         final AttributedString text = styledDocumentToAttributedString(
                 Styliser.getStyledString(strings));
-        
+
         if (text.getIterator().getEndIndex() == 0) {
             addText(new AttributedString("\n"));
         } else {
             addText(text);
         }
     }
-    
+
     /**
      * Converts a StyledDocument into an AttributedString.
      *
@@ -172,7 +192,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         AttributedString attString = null;
         final Element line = doc.getParagraphElement(0);
         try {
-            attString = new AttributedString(line.getDocument().getText(0, 
+            attString = new AttributedString(line.getDocument().getText(0,
                     line.getDocument().getLength()));
         } catch (BadLocationException ex) {
             Logger.userError(ErrorLevel.MEDIUM,
@@ -180,65 +200,66 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         }
         for (int i = 0; i < line.getElementCount(); i++) {
             final Element element = line.getElement(i);
-            
+
             final AttributeSet as = element.getAttributes();
             final Enumeration<?> ae = as.getAttributeNames();
-            
+
             while (ae.hasMoreElements()) {
                 final Object attrib = ae.nextElement();
-                
+
                 if (attrib == IRCTextAttribute.HYPERLINK) {
                     //Hyperlink
                     attString.addAttribute(IRCTextAttribute.HYPERLINK,
-                            as.getAttribute(attrib), element.getStartOffset(), 
+                            as.getAttribute(attrib), element.getStartOffset(),
                             element.getEndOffset());
                 } else if (attrib == IRCTextAttribute.NICKNAME) {
                     //Nicknames
                     attString.addAttribute(IRCTextAttribute.NICKNAME,
-                            as.getAttribute(attrib), element.getStartOffset(), 
+                            as.getAttribute(attrib), element.getStartOffset(),
                             element.getEndOffset());
                 } else if (attrib == IRCTextAttribute.CHANNEL) {
                     //Channels
                     attString.addAttribute(IRCTextAttribute.CHANNEL,
-                            as.getAttribute(attrib), element.getStartOffset(), 
+                            as.getAttribute(attrib), element.getStartOffset(),
                             element.getEndOffset());
                 } else if (attrib == ColorConstants.Foreground) {
                     //Foreground
                     attString.addAttribute(TextAttribute.FOREGROUND,
-                            as.getAttribute(attrib), element.getStartOffset(), 
+                            as.getAttribute(attrib), element.getStartOffset(),
                             element.getEndOffset());
                 } else if (attrib == ColorConstants.Background) {
                     //Background
                     attString.addAttribute(TextAttribute.BACKGROUND,
-                            as.getAttribute(attrib), element.getStartOffset(), 
+                            as.getAttribute(attrib), element.getStartOffset(),
                             element.getEndOffset());
                 } else if (attrib == FontConstants.Bold) {
                     //Bold
                     attString.addAttribute(TextAttribute.WEIGHT,
-                            TextAttribute.WEIGHT_BOLD, element.getStartOffset(), 
+                            TextAttribute.WEIGHT_BOLD, element.getStartOffset(),
                             element.getEndOffset());
                 } else if (attrib == FontConstants.Family) {
                     //Family
                     attString.addAttribute(TextAttribute.FAMILY,
-                            as.getAttribute(attrib), element.getStartOffset(), 
+                            as.getAttribute(attrib), element.getStartOffset(),
                             element.getEndOffset());
                 } else if (attrib == FontConstants.Italic) {
                     //italics
                     attString.addAttribute(TextAttribute.POSTURE,
-                            TextAttribute.POSTURE_OBLIQUE, element.getStartOffset(), 
+                            TextAttribute.POSTURE_OBLIQUE,
+                            element.getStartOffset(),
                             element.getEndOffset());
                 } else if (attrib == CharacterConstants.Underline) {
                     //Underline
                     attString.addAttribute(TextAttribute.UNDERLINE,
-                            TextAttribute.UNDERLINE_ON, element.getStartOffset(), 
+                            TextAttribute.UNDERLINE_ON, element.getStartOffset(),
                             element.getEndOffset());
                 }
             }
         }
-        
+
         return attString;
     }
-    
+
     /**
      * Sets the new position for the scrollbar and the associated position
      * to render the text from.
@@ -248,7 +269,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         scrollBar.setValue(position);
         canvas.setScrollBarPosition(position);
     }
-    
+
     /**
      * Enables or disabled the scrollbar for the textpane.
      *
@@ -256,13 +277,14 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      */
     public void setScrollEnabled(final boolean enabled) {
         SwingUtilities.invokeLater(new Runnable() {
+
             @Override
             public void run() {
                 scrollBar.setEnabled(enabled);
             }
         });
     }
-    
+
     /**
      * Returns the last visible line in the textpane.
      *
@@ -271,7 +293,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public int getLastVisibleLine() {
         return scrollBar.getValue();
     }
-    
+
     /**
      * Returns the line count in the textpane.
      *
@@ -280,7 +302,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public int getNumLines() {
         return document.getNumLines();
     }
-    
+
     /**
      * Returns the specified line in the textpane.
      *
@@ -291,7 +313,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public AttributedString getLine(final int line) {
         return document.getLine(line);
     }
-    
+
     /** Sets the scrollbar to the maximum position. */
     public void setScrollBarMax() {
         final int lines = document.getNumLines() - 1;
@@ -299,12 +321,12 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             canvas.repaint();
         }
         scrollBar.setMaximum(lines);
-        if (!scrollBar.getValueIsAdjusting()
-        && (scrollBar.getValue() == lines - 1)) {
+        if (!scrollBar.getValueIsAdjusting() && (scrollBar.getValue() == lines -
+                1)) {
             setScrollBarPosition(lines);
         }
     }
-    
+
     /** 
      * {@inheritDoc}
      * 
@@ -314,7 +336,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public void adjustmentValueChanged(final AdjustmentEvent e) {
         setScrollBarPosition(e.getValue());
     }
-    
+
     /** 
      * {@inheritDoc}
      * 
@@ -330,7 +352,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             }
         }
     }
-    
+
     /**
      *
      * Returns the line information from a mouse click inside the textpane.
@@ -342,7 +364,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public LineInfo getClickPosition(final Point point) {
         return canvas.getClickPosition(point);
     }
-    
+
     /**
      * Returns the selected text.
      * 
@@ -356,33 +378,39 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public String getSelectedText() {
         final StringBuffer selectedText = new StringBuffer();
         final LinePosition selectedRange = canvas.getSelectedRange();
-        
-        for (int i = selectedRange.getStartLine(); i <= selectedRange.getEndLine(); i++) {
+
+        for (int i = selectedRange.getStartLine(); i <=
+                selectedRange.getEndLine(); i++) {
             if (i != selectedRange.getStartLine()) {
                 selectedText.append('\n');
             }
             if (document.getLine(i) == null) {
                 return "";
             }
-            final AttributedCharacterIterator iterator = document.getLine(i).getIterator();
+            final AttributedCharacterIterator iterator = document.getLine(i).
+                    getIterator();
             if (selectedRange.getEndLine() == selectedRange.getStartLine()) {
                 //loop through range
-                selectedText.append(getTextFromLine(iterator, selectedRange.getStartPos(), selectedRange.getEndPos()));
+                selectedText.append(getTextFromLine(iterator,
+                        selectedRange.getStartPos(), selectedRange.getEndPos()));
             } else if (i == selectedRange.getStartLine()) {
                 //loop from start of range to the end
-                selectedText.append(getTextFromLine(iterator, selectedRange.getStartPos(), iterator.getEndIndex()));
+                selectedText.append(getTextFromLine(iterator,
+                        selectedRange.getStartPos(), iterator.getEndIndex()));
             } else if (i == selectedRange.getEndLine()) {
                 //loop from start to end of range
-                selectedText.append(getTextFromLine(iterator, 0, selectedRange.getEndPos()));
+                selectedText.append(getTextFromLine(iterator, 0,
+                        selectedRange.getEndPos()));
             } else {
                 //loop the whole line
-                selectedText.append(getTextFromLine(iterator, 0, iterator.getEndIndex()));
+                selectedText.append(getTextFromLine(iterator, 0,
+                        iterator.getEndIndex()));
             }
         }
-        
+
         return selectedText.toString();
     }
-    
+
     /**
      * Returns the selected range.
      *
@@ -391,7 +419,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public LinePosition getSelectedRange() {
         return canvas.getSelectedRange();
     }
-    
+
     /**
      * Returns whether there is a selected range.
      * 
@@ -399,9 +427,10 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      */
     public boolean hasSelectedRange() {
         final LinePosition selectedRange = canvas.getSelectedRange();
-        return !(selectedRange.getStartLine() == selectedRange.getEndLine() && selectedRange.getStartPos() == selectedRange.getEndPos());
+        return !(selectedRange.getStartLine() == selectedRange.getEndLine() &&
+                selectedRange.getStartPos() == selectedRange.getEndPos());
     }
-    
+
     /**
      * Selects the specified region of text.
      *
@@ -410,7 +439,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public void setSelectedTexT(final LinePosition position) {
         canvas.setSelectedRange(position);
     }
-    
+
     /**
      * Returns the entire text from the specified line.
      *
@@ -419,10 +448,11 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * @return Text from the line
      */
     public String getTextFromLine(final int line) {
-        final AttributedCharacterIterator iterator = document.getLine(line).getIterator();
+        final AttributedCharacterIterator iterator = document.getLine(line).
+                getIterator();
         return getTextFromLine(iterator, 0, iterator.getEndIndex(), document);
     }
-    
+
     /**
      * Returns the entire text from the specified line.
      *
@@ -431,11 +461,13 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * 
      * @return Text from the line
      */
-    public static String getTextFromLine(final int line, final IRCDocument document) {
-        final AttributedCharacterIterator iterator = document.getLine(line).getIterator();
+    public static String getTextFromLine(final int line,
+            final IRCDocument document) {
+        final AttributedCharacterIterator iterator = document.getLine(line).
+                getIterator();
         return getTextFromLine(iterator, 0, iterator.getEndIndex(), document);
     }
-    
+
     /**
      * Returns the range of text from the specified iterator.
      *
@@ -447,9 +479,10 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      */
     public String getTextFromLine(final int line, final int start,
             final int end) {
-        return getTextFromLine(document.getLine(line).getIterator(), start, end, document);
+        return getTextFromLine(document.getLine(line).getIterator(), start, end,
+                document);
     }
-    
+
     /**
      * Returns the range of text from the specified iterator.
      *
@@ -462,9 +495,10 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      */
     public static String getTextFromLine(final int line, final int start,
             final int end, final IRCDocument document) {
-        return getTextFromLine(document.getLine(line).getIterator(), start, end, document);
+        return getTextFromLine(document.getLine(line).getIterator(), start, end,
+                document);
     }
-    
+
     /**
      * Returns the range of text from the specified iterator.
      *
@@ -473,9 +507,10 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * @return Text in the range from the line
      */
     public String getTextFromLine(final AttributedCharacterIterator iterator) {
-        return getTextFromLine(iterator, iterator.getBeginIndex(), iterator.getEndIndex(), document);
+        return getTextFromLine(iterator, iterator.getBeginIndex(),
+                iterator.getEndIndex(), document);
     }
-    
+
     /**
      * Returns the range of text from the specified iterator.
      *
@@ -484,10 +519,12 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      *
      * @return Text in the range from the line
      */
-    public static String getTextFromLine(final AttributedCharacterIterator iterator, final IRCDocument document) {
-        return getTextFromLine(iterator, iterator.getBeginIndex(), iterator.getEndIndex(), document);
+    public static String getTextFromLine(final AttributedCharacterIterator iterator,
+            final IRCDocument document) {
+        return getTextFromLine(iterator, iterator.getBeginIndex(),
+                iterator.getEndIndex(), document);
     }
-    
+
     /**
      * Returns the range of text from the specified iterator.
      *
@@ -501,7 +538,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             final int start, final int end) {
         return getTextFromLine(iterator, start, end, document);
     }
-    
+
     /**
      * Returns the range of text from the specified iterator.
      *
@@ -516,7 +553,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             final int start, final int end, final IRCDocument document) {
         return document.getLineText(iterator, start, end);
     }
-    
+
     /**
      * Returns the type of text this click represents.
      * 
@@ -527,7 +564,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public ClickType getClickType(final LineInfo lineInfo) {
         return canvas.getClickType(lineInfo);
     }
-    
+
     /**
      * Returns the surrouding word at the specified position.
      * 
@@ -540,10 +577,12 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         if (lineNumber == -1) {
             return "";
         }
-        final int[] indexes = canvas.getSurroundingWordIndexes(getTextFromLine(lineNumber), index);
+        final int[] indexes =
+                canvas.getSurroundingWordIndexes(getTextFromLine(lineNumber),
+                index);
         return getTextFromLine(lineNumber, indexes[0], indexes[1]);
     }
-    
+
     /**
      * Returns the atrriute value for the specified location.
      * 
@@ -554,7 +593,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public Object getAttributeValueAtPoint(LineInfo lineInfo) {
         return canvas.getAttributeValueAtPoint(lineInfo);
     }
-    
+
     /** Adds the selected text to the clipboard. */
     public void copy() {
         if (getSelectedText() != null && !getSelectedText().isEmpty()) {
@@ -562,7 +601,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
                     new StringSelection(getSelectedText()), null);
         }
     }
-    
+
     /** Clears the textpane. */
     public void clear() {
         document.clear();
@@ -570,12 +609,12 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         setScrollBarMax();
         canvas.repaint();
     }
-    
+
     /** Clears the selection. */
     public void clearSelection() {
         canvas.clearSelection();
     }
-    
+
     /**
      * Trims the document to the specified number of lines.
      *
@@ -587,28 +626,28 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         }
         final int trimmedLines = document.getNumLines() - numLines;
         final LinePosition selectedRange = getSelectedRange();
-        
+
         selectedRange.setStartLine(selectedRange.getStartLine() - trimmedLines);
         selectedRange.setEndLine(selectedRange.getEndLine() - trimmedLines);
-        
+
         if (selectedRange.getStartLine() < 0) {
             selectedRange.setStartLine(0);
         }
         if (selectedRange.getEndLine() < 0) {
             selectedRange.setEndLine(0);
         }
-        
+
         setSelectedTexT(selectedRange);
         document.trim(numLines);
     }
-    
+
     /** Scrolls one page up in the textpane. */
     public void pageDown() {
         //setScrollBarPosition(scrollBar.getValue() + canvas.getLastVisibleLine() - canvas.getFirstVisibleLine() + 1);
         //use this method for now, its consistent with the block unit for the scrollbar
         setScrollBarPosition(scrollBar.getValue() + 10);
     }
-    
+
     /** Scrolls one page down in the textpane. */
     public void pageUp() {
         //setScrollBarPosition(canvas.getFirstVisibleLine());
