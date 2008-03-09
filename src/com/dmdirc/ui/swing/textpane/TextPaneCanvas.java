@@ -661,7 +661,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * @param type mouse event type
      * @param e responsible mouse event
      */
-    protected void highlightEvent(final MouseEventType type, final MouseEvent e) {
+    protected void highlightEvent(final MouseEventType type,
+            final MouseEvent e) {
         if (isVisible()) {
             Point point = e.getLocationOnScreen();
             SwingUtilities.convertPointFromScreen(point, this);
@@ -678,7 +679,10 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                     point.setLocation(point.getX(), bounds.getY() + 6);
                 } else if (mousePos.getY() >
                         (bounds.getY() + bounds.getHeight())) {
-                    point.setLocation(point.getX(), bounds.getY() +
+                    //Nice text selection behaviour
+                    //point.setLocation(point.getX(), bounds.getY() +
+                    //        bounds.getHeight() - 6);
+                    point.setLocation(bounds.getX() + bounds.getWidth() - 3, bounds.getY() +
                             bounds.getHeight() - 6);
                 }
             }
@@ -686,8 +690,10 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             if (info.getLine() == -1 && info.getPart() == -1 && contains(point)) {
                 info.setLine(0);
                 info.setPart(0);
-                info.setIndex(getHitPosition(info.getLine(), info.getPart(),
-                        point.x, 0));
+                //Nice text selection behaviour
+                //info.setIndex(getHitPosition(info.getLine(), info.getPart(),
+                //        point.x, 0));
+                info.setIndex(0);
             }
             if (info.getLine() != -1 && info.getPart() != -1) {
                 if (type == MouseEventType.CLICK) {

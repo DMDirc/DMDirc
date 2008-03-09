@@ -31,7 +31,6 @@ import com.dmdirc.ui.messages.Styliser;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.AdjustmentEvent;
@@ -134,14 +133,16 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (e.getXOnScreen() > getLocationOnScreen().getX() && e.getXOnScreen() < (getLocationOnScreen().
-                        getX() + getWidth())) {
+                        getX() + getWidth()) && e.getModifiersEx() ==
+                        MouseEvent.BUTTON1_DOWN_MASK) {
                     if (getLocationOnScreen().getY() > e.getYOnScreen()) {
                         setScrollBarPosition(scrollBar.getValue() - 1);
-                    } else if (getLocationOnScreen().getY() + getHeight() < e.getYOnScreen()){
+                    } else if (getLocationOnScreen().getY() + getHeight() <
+                            e.getYOnScreen()) {
                         setScrollBarPosition(scrollBar.getValue() + 1);
                     }
+                    canvas.highlightEvent(TextPaneCanvas.MouseEventType.DRAG, e);
                 }
-                canvas.highlightEvent(TextPaneCanvas.MouseEventType.DRAG, e);
             }
         };
         addMouseMotionListener(doScrollRectToVisible);
