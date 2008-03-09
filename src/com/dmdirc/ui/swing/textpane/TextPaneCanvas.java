@@ -269,10 +269,10 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 drawPosY -= lineHeight * (wrappedLine - 1);
             }
             if (drawPosY <= 0) {
-                checkForLink();
                 break;
             }
         }
+        checkForLink();
     }
 
     /**
