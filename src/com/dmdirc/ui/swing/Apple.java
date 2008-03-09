@@ -264,7 +264,7 @@ public final class Apple implements InvocationHandler {
 	 * @param event an ApplicationEvent object
 	 */
 	public void handleOpenApplication(final ApplicationEvent event) {
-		javax.swing.JOptionPane.showMessageDialog(null, "Open '"+event.getFilename()+"' ?", "OA", javax.swing.JOptionPane.ERROR_MESSAGE);
+//		javax.swing.JOptionPane.showMessageDialog(null, "Open '"+event.getFilename()+"' ?", "OA", javax.swing.JOptionPane.ERROR_MESSAGE);
 	}
 	
 	/**
@@ -273,7 +273,7 @@ public final class Apple implements InvocationHandler {
 	 * @param event an ApplicationEvent object
 	 */
 	public void handleOpenFile(final ApplicationEvent event) {
-		javax.swing.JOptionPane.showMessageDialog(null, "Open '"+event.getFilename()+"' ?", "OF", javax.swing.JOptionPane.ERROR_MESSAGE);
+//		javax.swing.JOptionPane.showMessageDialog(null, "Open '"+event.getFilename()+"' ?", "OF", javax.swing.JOptionPane.ERROR_MESSAGE);
 	}
 	
 	/**
@@ -282,7 +282,7 @@ public final class Apple implements InvocationHandler {
 	 * @param event an ApplicationEvent object
 	 */
 	public void handlePrintFile(final ApplicationEvent event) {
-		javax.swing.JOptionPane.showMessageDialog(null, "Open '"+event.getFilename()+"' ?", "PF", javax.swing.JOptionPane.ERROR_MESSAGE);
+//		javax.swing.JOptionPane.showMessageDialog(null, "Open '"+event.getFilename()+"' ?", "PF", javax.swing.JOptionPane.ERROR_MESSAGE);
 	}
 	
 	/**
@@ -291,6 +291,6 @@ public final class Apple implements InvocationHandler {
 	 * @param event an ApplicationEvent object
 	 */
 	public void handleReopenApplication(final ApplicationEvent event) {
-		javax.swing.JOptionPane.showMessageDialog(null, "Open '"+event.getFilename()+"' ?", "ROA", javax.swing.JOptionPane.ERROR_MESSAGE);
+//		javax.swing.JOptionPane.showMessageDialog(null, "Open '"+event.getFilename()+"' ?", "ROA", javax.swing.JOptionPane.ERROR_MESSAGE);
 	}
 }
