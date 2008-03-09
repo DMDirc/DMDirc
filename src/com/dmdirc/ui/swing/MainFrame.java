@@ -364,6 +364,7 @@ public final class MainFrame extends JFrame implements WindowListener,
 
         menu = new MenuBar();
         setJMenuBar(menu);
+        Apple.getApple().setMenuBar(menu);
 
         setPreferredSize(new Dimension(800, 600));
 

@@ -49,6 +49,7 @@ import com.dmdirc.ui.swing.dialogs.error.ErrorListDialog;
 import com.dmdirc.ui.swing.dialogs.wizard.firstrun.SwingFirstRunWizard;
 import com.dmdirc.ui.swing.dialogs.serversetting.ServerSettingsDialog;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardListener;
+import com.dmdirc.util.resourcemanager.ResourceManager;
 import com.dmdirc.updater.Update;
 
 import java.awt.Font;
@@ -265,25 +266,12 @@ public final class SwingController implements UIController {
             System.setProperty("swing.aatext", "true");
         }
         
-        if (System.getProperty("os.name").startsWith("Mac OS")) {
-            // Set some Apple OS X related stuff from
-            // http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaSystemProperties.html
-            final String aaText = 
-                System.getProperty("swing.aatext").equalsIgnoreCase("true") ?
-                "on" : "off";
-            if (IdentityManager.getGlobalConfig().getOptionBool("ui", 
-                "antialias")) {
-                System.setProperty("apple.awt.antialiasing", "on");
-            } else {
-                System.setProperty("apple.awt.antialiasing", "off");
-            }
-            System.setProperty("apple.awt.textantialiasing", aaText);
-            System.setProperty("apple.awt.showGrowBox", "true");
-            System.setProperty("apple.laf.useScreenMenuBar", "true");
-            System.setProperty("com.apple.mrj.application.apple.menu.about.name",
-                    "DMDirc: " + Main.VERSION);
-            System.setProperty("com.apple.mrj.application.growbox.intrudes", "false");
-            System.setProperty("com.apple.mrj.application.live-resize", "true");
+        // This will do nothing on non OS X Systems
+        if (Apple.isApple()) {
+            Apple apple = Apple.getApple();
+            
+            apple.setUISettings();
+            apple.setListener();
         }
 
         try {

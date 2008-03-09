@@ -103,12 +103,14 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         menu.addMenuListener(this);
         add(menu);
 
-        menuItem = new JMenuItem();
-        menuItem.setText("Preferences");
-        menuItem.setMnemonic('p');
-        menuItem.setActionCommand("Preferences");
-        menuItem.addActionListener(this);
-        menu.add(menuItem);
+        if (!Apple.isApple()) {
+            menuItem = new JMenuItem();
+            menuItem.setText("Preferences");
+            menuItem.setMnemonic('p');
+            menuItem.setActionCommand("Preferences");
+            menuItem.addActionListener(this);
+            menu.add(menuItem);
+        }
 
         menuItem = new JMenuItem();
         menuItem.setMnemonic('m');
@@ -176,12 +178,14 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         menuItem.addActionListener(this);
         menu.add(menuItem);
         
-        menuItem = new JMenuItem();
-        menuItem.setMnemonic('a');
-        menuItem.setText("About");
-        menuItem.setActionCommand("About");
-        menuItem.addActionListener(this);
-        menu.add(menuItem);
+        if (!Apple.isApple()) {
+            menuItem = new JMenuItem();
+            menuItem.setMnemonic('a');
+            menuItem.setText("About");
+            menuItem.setActionCommand("About");
+            menuItem.addActionListener(this);
+            menu.add(menuItem);
+        }
     }
 
     /** 
