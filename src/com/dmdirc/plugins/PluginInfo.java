@@ -262,7 +262,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
                 return true;
             }
 
-            final String actual = Main.getUI().getClass().getName();
+            final String actual = Main.getUI().getClass().getPackage().getName();
 
             if (!actual.toLowerCase().matches(desired)) {
                 requirementsError = "Invalid UI. (Wanted: '" + desired + "', actual: '" + actual + "')";
