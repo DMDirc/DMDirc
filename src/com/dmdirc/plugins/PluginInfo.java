@@ -246,7 +246,30 @@ public class PluginInfo implements Comparable<PluginInfo> {
 
             return true;
         }
+        
+        /**
+         * Checks to see if the UI requirements of the plugin are satisfied.
+         * If the desired string is empty, the test passes. Otherwise it is
+         * used as a regular expressions against the name of the UIController to
+         * test the name of the current UI Controller. If the test fails, the
+         * requirementsError field will contain a user-friendly error message.
+         * 
+         * @param desired The desired UI requirements
+         * @return True if the test passes, false otherwise
+         */
+        protected boolean checkUI(final String desired) {
+            if (desired.isEmpty()) {
+                return true;
+            }
 
+            final String actual = Main.getUI().getClass().getName();
+
+            if (!actual.toLowerCase().matches(desired)) {
+                requirementsError = "Invalid UI. (Wanted: '" + desired + "', actual: '" + actual + "')";
+                return false;
+            }
+            return true;
+        }
 	/**
 	 * Are the requirements for this plugin met?
 	 *
@@ -260,6 +283,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 
                 if (!checkMinimumVersion(getMinVersion(), Main.RELEASE_DATE)
                         || !checkMaximumVersion(getMaxVersion(), Main.RELEASE_DATE)
+                        || !checkUI(getMetaInfo(new String[]{"required-ui", "require-ui"}))
                         || !checkOS(getMetaInfo(new String[]{"required-os", "require-os"}),
                         System.getProperty("os.name"), System.getProperty("os.version"),
                         System.getProperty("os.arch"))) {
