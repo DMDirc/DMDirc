@@ -6,3 +6,4 @@ description=Allows logging of conversations
 name=logging
 nicename=Logging Plugin
 minversion=0
+require-ui=com.dmdirc.ui.swing

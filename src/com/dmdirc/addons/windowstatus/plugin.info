@@ -6,3 +6,4 @@ description=Displays information related to the current window in the status bar
 name=windowstatus
 nicename=WindowStatus Plugin
 minversion=0
+require-ui=com.dmdirc.ui.swing

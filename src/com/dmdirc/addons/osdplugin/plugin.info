@@ -6,3 +6,4 @@ description=Provides command to show on screen display
 name=osd
 nicename=OSD Plugin
 minversion=0
+require-ui=com.dmdirc.ui.swing

@@ -6,3 +6,4 @@ description=Adds DCC Support to dmdirc
 name=dcc
 nicename=DCC Plugin
 minversion=0
+require-ui=com.dmdirc.ui.swing
