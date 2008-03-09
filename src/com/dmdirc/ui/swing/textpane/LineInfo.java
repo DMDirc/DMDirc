@@ -110,4 +110,10 @@ public final class LineInfo {
     public void setPart(int part) {
         this.part = part;
     }
+    
+    /* {@inheritDoc} */
+    @Override
+    public String toString() {
+        return "LineInfo[line=" + line + ", part=" + part + ", index=" + index + "]";
+    }
 }

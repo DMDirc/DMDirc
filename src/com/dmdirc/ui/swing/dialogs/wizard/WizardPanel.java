@@ -110,8 +110,8 @@ public class WizardPanel extends JPanel implements ActionListener,
 
         next = new JButton();
 
-        prev = new JButton("<< Previous");
-        next.setText("Next >>");
+        prev = new JButton("« Previous");
+        next.setText("Next »");
 
         next.addActionListener(this);
         prev.addActionListener(this);

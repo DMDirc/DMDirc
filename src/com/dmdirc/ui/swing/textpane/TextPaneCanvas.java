@@ -28,7 +28,6 @@ import com.dmdirc.ui.swing.textpane.TextPane.ClickType;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
@@ -45,7 +44,6 @@ import java.text.AttributedString;
 import java.util.HashMap;
 import java.util.Map;
 
-import java.util.Map.Entry;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputListener;
@@ -261,7 +259,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                     firstVisibleLine = i;
                     textLayouts.put(layout, new LineInfo(i, j));
                     positions.put(new Rectangle(0, (int) drawPosY,
-                            (int) formatWidth, lineHeight), layout);
+                            (int) formatWidth + 6, lineHeight), layout);
                 }
 
                 j++;
@@ -664,8 +662,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * @param e responsible mouse event
      */
     private void highlightEvent(final MouseEventType type, final MouseEvent e) {
-        Point point = getMousePosition();
         if (isVisible()) {
+            Point point = getMousePosition();
             if (point == null) {
                 if (e.getXOnScreen() > getLocationOnScreen().getX() && e.getXOnScreen() < (getLocationOnScreen().
                         getX() + getWidth())) {
@@ -678,21 +676,31 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             }
             point = e.getLocationOnScreen();
             SwingUtilities.convertPointFromScreen(point, this);
-            final LineInfo info = getClickPosition(point);
-            if (info.getLine() == -1 && info.getPart() == -1 && point != null && contains(point)) {
-                info.setLine(0);
-                info.setPart(0);
-                for (Entry<TextLayout, LineInfo> entry : textLayouts.entrySet()) {
-                    if (entry.getValue().getLine() == 0) {
-                        for (Entry<Rectangle, TextLayout> entry1 : positions.entrySet()) {
-                            info.setIndex(getHitPosition(info.getLine(),
-                                    info.getPart(), point.x, (int) entry1.getKey().
-                                    getX()));
-                        }
-                    }
+            if (!contains(point)) {
+                final Rectangle bounds = getBounds();
+                final Point mousePos = e.getPoint();
+                if (mousePos.getX() < bounds.getX()) {
+                    point.setLocation(bounds.getX() + 3, point.getY());
+                } else if (mousePos.getX() > (bounds.getX() + bounds.getWidth())) {
+                    point.setLocation(bounds.getX() + bounds.getWidth() - 3,
+                            point.getY());
+                }
+                if (mousePos.getY() < bounds.getY()) {
+                    point.setLocation(point.getX(), bounds.getY() + 6);
+                } else if (mousePos.getY() >
+                        (bounds.getY() + bounds.getHeight())) {
+                    point.setLocation(point.getX(), bounds.getY() +
+                            bounds.getHeight() - 6);
                 }
             }
-            if (info.getIndex() != -1 && info.getPart() != -1) {
+            final LineInfo info = getClickPosition(point);
+            if (info.getLine() == -1 && info.getPart() == -1 && contains(point)) {
+                info.setLine(0);
+                info.setPart(0);
+                info.setIndex(getHitPosition(info.getLine(), info.getPart(),
+                        point.x, 0));
+            }
+            if (info.getLine() != -1 && info.getPart() != -1) {
                 if (type == MouseEventType.CLICK) {
                     selStartLine = info.getLine();
                     selStartChar = info.getIndex();

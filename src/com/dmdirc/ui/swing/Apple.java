@@ -26,11 +26,9 @@ import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 
 import java.awt.event.ActionEvent;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Field;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.InvocationHandler;
 
