@@ -253,14 +253,13 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 * error message.
 	 * 
 	 * @param desired The desired UI requirements
+	 * @param actual The package of the current UI in use.
 	 * @return True if the test passes, false otherwise
 	 */
-	protected boolean checkUI(final String desired) {
+	protected boolean checkUI(final String desired, final String actual) {
 		if (desired.isEmpty()) {
 			return true;
 		}
-		
-		final String actual = Main.getUI().getClass().getPackage().getName();
 		
 		if (!actual.toLowerCase().matches(desired)) {
 			requirementsError = "Invalid UI. (Wanted: '" + desired + "', actual: '" + actual + "')";
@@ -373,15 +372,15 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			return "";
 		}
 		
-	if (!checkMinimumVersion(getMinVersion(), Main.RELEASE_DATE) ||
-			!checkMaximumVersion(getMaxVersion(), Main.RELEASE_DATE) ||
-			!checkUI(getMetaInfo(new String[]{"required-ui", "require-ui"})) ||
-			!checkFiles(getMetaInfo(new String[]{"required-files", "require-files", "required-file", "require-file"})) ||
-			!checkPlugins(getMetaInfo(new String[]{"required-plugins", "require-plugins", "required-plugin", "require-plugin"})) ||
-			!checkOS(getMetaInfo(new String[]{"required-os", "require-os"}), System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch"))
-			) {
+		if (!checkMinimumVersion(getMinVersion(), Main.RELEASE_DATE) ||
+		    !checkMaximumVersion(getMaxVersion(), Main.RELEASE_DATE) ||
+		    !checkFiles(getMetaInfo(new String[]{"required-files", "require-files", "required-file", "require-file"})) ||
+		    !checkUI(getMetaInfo(new String[]{"required-ui", "require-ui"}), Main.getUI().getClass().getPackage().getName()) ||
+		    !checkPlugins(getMetaInfo(new String[]{"required-plugins", "require-plugins", "required-plugin", "require-plugin"})) ||
+		    !checkOS(getMetaInfo(new String[]{"required-os", "require-os"}), System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch"))
+		    ) {
 			return requirementsError;
-	}
+		}
 		
 		// All requirements passed, woo \o
 		return "";
