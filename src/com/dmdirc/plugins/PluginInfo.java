@@ -146,130 +146,222 @@ public class PluginInfo implements Comparable<PluginInfo> {
 		return myResourceManager;
 	}
 
-        /**
-         * Checks to see if the minimum version requirement of the plugin is
-         * satisfied. If either version is non-positive, the test passes. On
-         * failure, the requirementsError field will contain a user-friendly
-         * error message.
-         *
-         * @param desired The desired minimum version of DMDirc.
-         * @param actual The actual current version of DMDirc.
-         * @return True if the test passed, false otherwise
-         */
-        protected boolean checkMinimumVersion(final String desired, final int actual) {
-            int idesired;
+	/**
+	 * Checks to see if the minimum version requirement of the plugin is
+	 * satisfied.
+	 * If either version is non-positive, the test passes.
+	 * On failure, the requirementsError field will contain a user-friendly
+	 * error message.
+	 *
+	 * @param desired The desired minimum version of DMDirc.
+	 * @param actual The actual current version of DMDirc.
+	 * @return True if the test passed, false otherwise
+	 */
+	protected boolean checkMinimumVersion(final String desired, final int actual) {
+		int idesired;
+		
+		try {
+			idesired = Integer.parseInt(desired);
+		} catch (NumberFormatException ex) {
+			requirementsError = "'minversion' is a non-integer";
+			return false;
+		}
+		
+		if (actual > 0 && idesired > 0 && actual < idesired) {
+			requirementsError = "Plugin is for a newer version of DMDirc";
+			return false;
+		} else {
+			return true;
+		}
+	}
 
-            try {
-                idesired = Integer.parseInt(desired);
-            } catch (NumberFormatException ex) {
-                requirementsError = "'minversion' is a non-integer";
-                return false;
-            }
+	/**
+	 * Checks to see if the maximum version requirement of the plugin is
+	 * satisfied.
+	 * If either version is non-positive, the test passes.
+	 * If the desired version is empty, the test passes.
+	 * On failure, the requirementsError field will contain a user-friendly
+	 * error message.
+	 *
+	 * @param desired The desired maximum version of DMDirc.
+	 * @param actual The actual current version of DMDirc.
+	 * @return True if the test passed, false otherwise
+	 */
+	protected boolean checkMaximumVersion(final String desired, final int actual) {
+		int idesired;
+		
+		if (desired.isEmpty()) {
+			return true;
+		}
+		
+		try {
+			idesired = Integer.parseInt(desired);
+		} catch (NumberFormatException ex) {
+			requirementsError = "'maxversion' is a non-integer";
+			return false;
+		}
+		
+		if (actual > 0 && idesired > 0 && actual > idesired) {
+			requirementsError = "Plugin is for an older version of DMDirc";
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	/**
+	 * Checks to see if the OS requirements of the plugin are satisfied.
+	 * If the desired string is empty, the test passes.
+	 * Otherwise it is used as one to three colon-delimited regular expressions,
+	 * to test the name, version and architecture of the OS, respectively.
+	 * On failure, the requirementsError field will contain a user-friendly
+	 * error message.
+	 * 
+	 * @param desired The desired OS requirements
+	 * @param actualName The actual name of the OS
+	 * @param actualVersion The actual version of the OS
+	 * @param actualArch The actual architecture of the OS
+	 * @return True if the test passes, false otherwise
+	 */
+	protected boolean checkOS(final String desired, final String actualName, final String actualVersion, final String actualArch) {
+		if (desired.isEmpty()) {
+			return true;
+		}
+		
+		final String[] desiredParts = desired.split(":");
+		
+		if (!actualName.toLowerCase().matches(desiredParts[0])) {
+			requirementsError = "Invalid OS. (Wanted: '" + desiredParts[0] + "', actual: '" + actualName + "')";
+			return false;
+		} else if (desiredParts.length > 1 && !actualVersion.toLowerCase().matches(desiredParts[1])) {
+			requirementsError = "Invalid OS version. (Wanted: '" + desiredParts[1] + "', actual: '" + actualVersion + "')";
+			return false;
+		} else if (desiredParts.length > 2 && !actualArch.toLowerCase().matches(desiredParts[2])) {
+			requirementsError = "Invalid OS architecture. (Wanted: '" + desiredParts[2] + "', actual: '" + actualArch + "')";
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Checks to see if the UI requirements of the plugin are satisfied.
+	 * If the desired string is empty, the test passes.
+	 * Otherwise it is used as a regular expressions against the package of the
+	 * UIController to test what UI is currently in use.
+	 * On failure, the requirementsError field will contain a user-friendly
+	 * error message.
+	 * 
+	 * @param desired The desired UI requirements
+	 * @return True if the test passes, false otherwise
+	 */
+	protected boolean checkUI(final String desired) {
+		if (desired.isEmpty()) {
+			return true;
+		}
+		
+		final String actual = Main.getUI().getClass().getPackage().getName();
+		
+		if (!actual.toLowerCase().matches(desired)) {
+			requirementsError = "Invalid UI. (Wanted: '" + desired + "', actual: '" + actual + "')";
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Checks to see if the file requirements of the plugin are satisfied.
+	 * If the desired string is empty, the test passes.
+	 * Otherwise it is passed to File.exists() to see if the file is valid.
+	 * Multiple files can be specified by using a "," to separate. And either/or
+	 * files can be specified using a "|" (eg /usr/bin/bash|/bin/bash)
+	 * If the test fails, the requirementsError field will contain a
+	 * user-friendly error message.
+	 *
+	 * @param desired The desired file requirements
+	 * @return True if the test passes, false otherwise
+	 */
+	protected boolean checkFiles(final String desired) {
+		if (desired.isEmpty()) {
+			return true;
+		}
+	
+		for (String files : desired.split(",")) {
+			final String[] filelist = files.split("\\|");
+			boolean foundFile = false;
+			for (String file : filelist) {
+				if ((new File(file)).exists()) {
+					foundFile = true;
+					break;
+				}
+			}
+			if (!foundFile) {
+				requirementsError = "Required file '"+files+"' not found";
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Checks to see if the plugin requirements of the plugin are satisfied.
+	 * If the desired string is empty, the test passes.
+	 * Plugins should be specified as:
+	 * plugin1[:minversion[:maxversion]],plugin2[:minversion[:maxversion]]
+	 * Plugins will be attempted to be loaded if not loaded, else the test will
+	 * fail if the versions don't match, or the plugin isn't known.
+	 * If the test fails, the requirementsError field will contain a
+	 * user-friendly error message.
+	 *
+	 * @param desired The desired file requirements
+	 * @return True if the test passes, false otherwise
+	 */
+	protected boolean checkPlugins(final String desired) {
+		if (desired.isEmpty()) {
+			return true;
+		}
+	
+		for (String plugin : desired.split(",")) {
+			final String[] data = plugin.split(":");
+			final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(data[0]);
+			if (pi == null) {
+				requirementsError = "Required plugin '"+data[0]+"' was not found";
+				return false;
+			} else {
+				if (data.length > 1) {
+					// Check plugin minimum version matches.
+					try {
+						final int minversion = Integer.parseInt(data[1]);
+						if (pi.getVersion() < minversion) {
+							requirementsError = "Plugin '"+data[0]+"' is too old (Required Version: "+minversion+", Actual Version: "+pi.getVersion()+")";
+							return false;
+						} else {
+							if (data.length > 2) {
+								// Check plugin maximum version matches.
+								try {
+									final int maxversion = Integer.parseInt(data[2]);
+									if (pi.getVersion() > maxversion) {
+										requirementsError = "Plugin '"+data[0]+"' is too new (Required Version: "+maxversion+", Actual Version: "+pi.getVersion()+")";
+										return false;
+									}
+								} catch (NumberFormatException nfe) {
+									requirementsError = "Plugin max-version '"+data[2]+"' for plugin ('"+data[0]+"') is a non-integer";
+									return false;
+								}
+							}
+						}
+					} catch (NumberFormatException nfe) {
+						requirementsError = "Plugin min-version '"+data[1]+"' for plugin ('"+data[0]+"') is a non-integer";
+						return false;
+					}
+				}
+				// Make sure the required plugin is loaded if its not already,
+				pi.loadPlugin();
+			}
+		}
+		return true;
+	}
 
-            if (actual > 0 && idesired > 0 && actual < idesired) {
-                requirementsError = "Plugin is for a newer version of DMDirc";
-                return false;
-            } else {
-                return true;
-            }
-        }
-
-        /**
-         * Checks to see if the maximum version requirement of the plugin is
-         * satisfied. If either version is non-positive, the test passes. If
-         * the desired version is empty, the test passes. On failure, the
-         * requirementsError field will contain a user-friendly error message.
-         *
-         * @param desired The desired maximum version of DMDirc.
-         * @param actual The actual current version of DMDirc.
-         * @return True if the test passed, false otherwise
-         */
-        protected boolean checkMaximumVersion(final String desired, final int actual) {
-            int idesired;
-
-            if (desired.isEmpty()) {
-                return true;
-            }
-
-            try {
-                idesired = Integer.parseInt(desired);
-            } catch (NumberFormatException ex) {
-                requirementsError = "'maxversion' is a non-integer";
-                return false;
-            }
-
-            if (actual > 0 && idesired > 0 && actual > idesired) {
-                requirementsError = "Plugin is for an older version of DMDirc";
-                return false;
-            } else {
-                return true;
-            }
-        }
-
-        /**
-         * Checks to see if the OS requirements of the plugin are satisfied.
-         * If the desired string is empty, the test passes. Otherwise it is
-         * used as one to three colon-delimited regular expressions, to test
-         * the name, version and architecture of the OS, respectively. If the
-         * test fails, the requirementsError field will contain a user-friendly
-         * error message.
-         * 
-         * @param desired The desired OS requirements
-         * @param actualName The actual name of the OS
-         * @param actualVersion The actual version of the OS
-         * @param actualArch The actual architecture of the OS
-         * @return True if the test passes, false otherwise
-         */
-        protected boolean checkOS(final String desired, final String actualName,
-                final String actualVersion, final String actualArch) {
-            if (desired.isEmpty()) {
-                return true;
-            }
-
-            final String[] desiredParts = desired.split(":");
-
-            if (!actualName.toLowerCase().matches(desiredParts[0])) {
-                requirementsError = "Invalid OS. (Wanted: '" + desiredParts[0]
-                        + "', actual: '" + actualName + "')";
-                return false;
-            } else if (desiredParts.length > 1
-                    && !actualVersion.toLowerCase().matches(desiredParts[1])) {
-                requirementsError = "Invalid OS version. (Wanted: '" + desiredParts[1]
-                        + "', actual: '" + actualVersion + "')";
-                return false;
-            } else if (desiredParts.length > 2
-                    && !actualArch.toLowerCase().matches(desiredParts[2])) {
-                requirementsError = "Invalid OS architecture. (Wanted: '" + desiredParts[2]
-                        + "', actual: '" + actualArch + "')";
-                return false;
-            }
-
-            return true;
-        }
-        
-        /**
-         * Checks to see if the UI requirements of the plugin are satisfied.
-         * If the desired string is empty, the test passes. Otherwise it is
-         * used as a regular expressions against the name of the UIController to
-         * test the name of the current UI Controller. If the test fails, the
-         * requirementsError field will contain a user-friendly error message.
-         * 
-         * @param desired The desired UI requirements
-         * @return True if the test passes, false otherwise
-         */
-        protected boolean checkUI(final String desired) {
-            if (desired.isEmpty()) {
-                return true;
-            }
-
-            final String actual = Main.getUI().getClass().getPackage().getName();
-
-            if (!actual.toLowerCase().matches(desired)) {
-                requirementsError = "Invalid UI. (Wanted: '" + desired + "', actual: '" + actual + "')";
-                return false;
-            }
-            return true;
-        }
 	/**
 	 * Are the requirements for this plugin met?
 	 *
@@ -277,75 +369,20 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 */
 	public String checkRequirements() {
 		if (metaData == null) {
-                    // No meta-data, so no requirements.
-                    return "";
-                }
-
-                if (!checkMinimumVersion(getMinVersion(), Main.RELEASE_DATE)
-                        || !checkMaximumVersion(getMaxVersion(), Main.RELEASE_DATE)
-                        || !checkUI(getMetaInfo(new String[]{"required-ui", "require-ui"}))
-                        || !checkOS(getMetaInfo(new String[]{"required-os", "require-os"}),
-                        System.getProperty("os.name"), System.getProperty("os.version"),
-                        System.getProperty("os.arch"))) {
-                    return requirementsError;
-                }
-
-		// Required Files
-		final String requiredFiles = getMetaInfo(new String[]{"required-files", "require-files", "required-file", "require-file"});
-		if (!requiredFiles.isEmpty()) {
-			for (String files : requiredFiles.split(",")) {
-				final String[] filelist = files.split("\\|");
-				boolean foundFile = false;
-				for (String file : filelist) {
-					if ((new File(file)).exists()) {
-						foundFile = true;
-						break;
-					}
-				}
-				if (!foundFile) {
-					return "Required file '"+files+"' not found";
-				}
-			}
+			// No meta-data, so no requirements.
+			return "";
 		}
-
-		// Required Plugins
-		final String requiredPlugins = getMetaInfo(new String[]{"required-plugins", "require-plugins", "required-plugin", "require-plugin"});
-		if (!requiredPlugins.isEmpty()) {
-			for (String plugin : requiredPlugins.split(",")) {
-				final String[] data = plugin.split(":");
-				final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(data[0]);
-				if (pi == null) {
-					return "Required plugin '"+data[0]+"' was not found";
-				} else {
-					if (data.length > 1) {
-						// Check plugin minimum version matches.
-						try {
-							final int minversion = Integer.parseInt(data[1]);
-							if (pi.getVersion() < minversion) {
-								return "Plugin '"+data[0]+"' is too old (Required Version: "+minversion+", Actual Version: "+pi.getVersion()+")";
-							} else {
-								if (data.length > 2) {
-									// Check plugin maximum version matches.
-									try {
-										final int maxversion = Integer.parseInt(data[2]);
-										if (pi.getVersion() > maxversion) {
-											return "Plugin '"+data[0]+"' is too new (Required Version: "+maxversion+", Actual Version: "+pi.getVersion()+")";
-										}
-									} catch (NumberFormatException nfe) {
-										return "Plugin max-version '"+data[2]+"' for plugin ('"+data[0]+"') is a non-integer";
-									}
-								}
-							}
-						} catch (NumberFormatException nfe) {
-							return "Plugin min-version '"+data[1]+"' for plugin ('"+data[0]+"') is a non-integer";
-						}
-					}
-					// Make sure the required plugin is loaded if its not already,
-					pi.loadPlugin();
-				}
-			}
-		}
-
+		
+	if (!checkMinimumVersion(getMinVersion(), Main.RELEASE_DATE) ||
+			!checkMaximumVersion(getMaxVersion(), Main.RELEASE_DATE) ||
+			!checkUI(getMetaInfo(new String[]{"required-ui", "require-ui"})) ||
+			!checkFiles(getMetaInfo(new String[]{"required-files", "require-files", "required-file", "require-file"})) ||
+			!checkPlugins(getMetaInfo(new String[]{"required-plugins", "require-plugins", "required-plugin", "require-plugin"})) ||
+			!checkOS(getMetaInfo(new String[]{"required-os", "require-os"}), System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch"))
+			) {
+			return requirementsError;
+	}
+		
 		// All requirements passed, woo \o
 		return "";
 	}
