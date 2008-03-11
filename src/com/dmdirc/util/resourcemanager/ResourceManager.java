@@ -88,8 +88,6 @@ public abstract class ResourceManager {
      *  <li>file://path/</li>
      *  <li>zip://path/filename.zip</li>
      *  <li>jar://path/filename.jar</li>
-     *  <li>dmdirc://</li>
-     *  <li>theme://[themename:]</li>
      * </ul>
      *
      * @param url The URL for which a resource manager is required
@@ -104,10 +102,6 @@ public abstract class ResourceManager {
             return new FileResourceManager(url.substring(7));
         } else if (url.startsWith("jar://") || url.startsWith("zip://")) {
             return new ZipResourceManager(url.substring(6));
-        } else if (url.startsWith("dmdirc://")) {
-            throw new UnsupportedOperationException("Not implemented yet");
-        } else if (url.startsWith("theme://")) {
-            throw new UnsupportedOperationException("Not implemented yet");
         } else {
             throw new IllegalArgumentException("Unknown resource manager type");
         }

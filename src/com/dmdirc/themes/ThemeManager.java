@@ -46,7 +46,7 @@ public class ThemeManager {
      * Creates a new instance of theme manager.
      */
     public ThemeManager() {
-        themeDir = Main.getConfigDir() + "themes";
+        themeDir = getThemeDirectory();
     }
     
     /**
@@ -97,6 +97,15 @@ public class ThemeManager {
                 themes.get(theme).applyTheme();
             }
         }        
+    }
+    
+    /**
+     * Retrieves the directory used for storing themes.
+     * 
+     * @return The directory used for storing themes
+     */
+    public static String getThemeDirectory() {
+        return Main.getConfigDir() + "themes/";
     }
     
 }

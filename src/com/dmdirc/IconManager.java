@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
 
+import com.dmdirc.util.URLBuilder;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
@@ -81,7 +82,8 @@ public final class IconManager implements ConfigChangeListener {
      */
     public Icon getIcon(final String type) {
         if (!icons.containsKey(type)) {
-            icons.put(type, new ImageIcon(getScaledImage(new ImageIcon(getIconURL(type)).getImage(), 16, 16)));
+            icons.put(type, new ImageIcon(getScaledImage(
+                    new ImageIcon(getIconURL(type)).getImage(), 16, 16)));
         }
         return icons.get(type);
     }
@@ -127,10 +129,11 @@ public final class IconManager implements ConfigChangeListener {
         final URL defaultURL = cldr.getResource("com/dmdirc/res/" + type + ".png");
         
         //Get the path for the url
-        final String path = IdentityManager.getGlobalConfig().getOption("icon", type, "com/dmdirc/res/" + type + ".png");
+        final String path = IdentityManager.getGlobalConfig().getOption("icon",
+                type, "dmdirc://com/dmdirc/res/" + type + ".png");
         
         //Get the url for the speficied path
-        URL imageURL = cldr.getResource(path);
+        URL imageURL = URLBuilder.buildURL(path);
         
         try {
             //if the path didnt exist see if its a file

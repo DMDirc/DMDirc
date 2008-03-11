@@ -1,0 +1,127 @@
+/*
+ * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package com.dmdirc.util;
+
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+
+import com.dmdirc.themes.ThemeManager;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+/**
+ * Provides methods for building URLs to reference DMDirc resources.
+ * 
+ * @author chris
+ */
+public class URLBuilder {
+
+    /**
+     * Constructs an URL pointing to the specified resource on the file system.
+     * 
+     * @param path The path that the URL is for
+     * @return An URL corresponding to the specified path, or null on failure
+     */
+    public static URL buildFileURL(final String path) {
+        final String prefix = path.startsWith("file://") ? "" : "file://";
+        
+        try {
+            return new URL(prefix + path);
+        } catch (MalformedURLException ex) {
+            Logger.appError(ErrorLevel.HIGH, "Unable to build file URL", ex);
+            return null;
+        }
+    }
+    
+    /**
+     * Constructs an URL pointing to the specified resource within a jar file.
+     * 
+     * @param jarFile Path to the jar file (including scheme)
+     * @param path Path to the resource within the jar file
+     * @return An URL corresponding to the specified resource, or null on failure
+     */
+    public static URL buildJarURL(final String jarFile, final String path) {
+        try {
+            return new URL("jar:" + buildURL(jarFile) + "!/" + path);
+        } catch (MalformedURLException ex) {
+            Logger.appError(ErrorLevel.HIGH, "Unable to build jar URL", ex);
+            return null;
+        }        
+    }
+    
+    /**
+     * Constructs an URL pointing to the specified resource within the DMDirc
+     * project.
+     * 
+     * @param resource The path to the resource
+     * @return An URL corresponding to the specified resource
+     */
+    public static URL buildDMDircURL(final String resource) {
+        return URLBuilder.class.getClassLoader().getResource(resource);
+    }
+    
+    /**
+     * Builds an URL pointing to a resource within a DMDirc theme.
+     * 
+     * @param theme The theme which the resource is located in
+     * @param path The path within the theme of the resource
+     * @return An URL corresponding to the specified resource, or null on failure
+     */
+    public static URL buildThemeURL(final String theme, final String path) {
+        return buildJarURL(ThemeManager.getThemeDirectory() + theme + ".zip", path);
+    }
+    
+    /**
+     * Constructs an URL corresponding to the described resource.
+     * 
+     * @param spec The resource location. May take the form of: <ul>
+     * <li>dmdirc://com/dmdirc/etc/
+     * <li>jar://path/to/jarfile:path/inside/jarfile
+     * <li>zip://path/to/zipfile:path/inside/zipfile
+     * <li>theme://theme_name:file/inside/theme
+     * <li>http://server/path
+     * <li>https://server/path
+     * <li>[file://]/path/on/filesystem</ul>
+     * 
+     * @return An URL corresponding to the specified resource, or null on failure
+     */
+    public static URL buildURL(final String spec) {
+        if (spec.startsWith("dmdirc://")) {
+            return buildDMDircURL(spec.substring(9));
+        } else if (spec.startsWith("jar://") || spec.startsWith("zip://")) {
+            final int offset = spec.indexOf(':', 6);
+            return buildJarURL(spec.substring(6, offset), spec.substring(offset));
+        } else if (spec.startsWith("theme://")) {
+            final int offset = spec.indexOf(':', 8);
+            return buildThemeURL(spec.substring(8, offset), spec.substring(offset));
+        } else if (spec.startsWith("http://") || spec.startsWith("https://")) {
+            try {
+                return new URL(spec);
+            } catch (MalformedURLException ex) {
+                Logger.userError(ErrorLevel.MEDIUM, "Unable to load resource", ex);
+                return null;
+            }
+        } else {
+            return buildFileURL(spec);
+        }
+    }
+}
