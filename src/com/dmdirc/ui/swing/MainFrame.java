@@ -220,6 +220,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     
     /** {@inheritDoc}. */
     @Override
+    @Deprecated
     public Window getActiveFrame() {
         if (desktopPane.getSelectedFrame() instanceof Window) {
             return (Window) desktopPane.getSelectedFrame();

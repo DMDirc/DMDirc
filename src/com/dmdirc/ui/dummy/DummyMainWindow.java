@@ -65,6 +65,7 @@ public final class DummyMainWindow implements MainWindow {
     }
     
     /** {@inheritDoc} */
+    @Deprecated
     public Window getActiveFrame() {
         return active;
     }

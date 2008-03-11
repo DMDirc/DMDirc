@@ -40,7 +40,6 @@ import java.util.Map.Entry;
 public abstract class ResourceManager {
     
     /** Previously assigned ResourceManager. */
-    @Deprecated
     private static ResourceManager me;
     
     /**
@@ -48,7 +47,6 @@ public abstract class ResourceManager {
      *
      * @return ResourceManager implementation
      */
-    @Deprecated
     public static final synchronized ResourceManager getResourceManager() {
         if (me == null) {
             String path = Thread.currentThread().getContextClassLoader().
@@ -123,7 +121,6 @@ public abstract class ResourceManager {
      *
      * @throws IOException if the write operation fails
      */
-    @Deprecated
     public final void resourceToFile(final byte[] resource, final File file)
     throws IOException {
         final FileOutputStream out = new FileOutputStream(file, false);
@@ -146,7 +143,6 @@ public abstract class ResourceManager {
      *
      * @return success of failure of the operation
      */
-    @Deprecated
     public final boolean extractResource(final String resourceName,
             final String directory, final boolean usePath) throws IOException {
         final byte[] resource = getResourceBytes(resourceName);
@@ -193,7 +189,6 @@ public abstract class ResourceManager {
      *
      * @throws IOException if the write operation fails
      */
-    @Deprecated
     public final void extractResources(final String resourcesPrefix,
             final String directory, final boolean usePath) throws IOException {
         final Map<String, byte[]> resourcesBytes =
@@ -211,7 +206,6 @@ public abstract class ResourceManager {
      *
      * @throws IOException if the write operation fails
      */
-    @Deprecated
     public final void extractResources(final String resourcesPrefix,
             final String directory) throws IOException {
         extractResources(resourcesPrefix, directory, true);
@@ -224,7 +218,6 @@ public abstract class ResourceManager {
      * 
      * @return true iif the resource exists
      */
-    @Deprecated
     public abstract boolean resourceExists(final String resource);
     
     /**
@@ -234,7 +227,6 @@ public abstract class ResourceManager {
      *
      * @return byte[] for the resource, or an empty byte[] if not found
      */
-    @Deprecated
     public abstract byte[] getResourceBytes(final String resource);
     
     /**
@@ -244,7 +236,6 @@ public abstract class ResourceManager {
      *
      * @return InputStream for the resource, or null if not found
      */
-    @Deprecated
     public abstract InputStream getResourceInputStream(final String resource);
     
     /**
@@ -255,7 +246,6 @@ public abstract class ResourceManager {
      *
      * @return Map of byte[]s of resources found
      */
-    @Deprecated
     public abstract Map<String, byte[]> getResourcesStartingWithAsBytes(
             final String resourcesPrefix);
     
@@ -267,7 +257,6 @@ public abstract class ResourceManager {
      *
      * @return Map of InputStreams of resources found
      */
-    @Deprecated
     public abstract Map<String, InputStream> getResourcesStartingWithAsInputStreams(
             final String resourcesPrefix);
     
@@ -279,6 +268,5 @@ public abstract class ResourceManager {
      *
      * @return List of resources found
      */
-    @Deprecated
     public abstract List<String> getResourcesStartingWith(final String resourcesPrefix);
 }

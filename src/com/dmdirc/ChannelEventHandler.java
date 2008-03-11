@@ -31,7 +31,6 @@ import com.dmdirc.parser.IRCParser;
 import com.dmdirc.parser.callbacks.CallbackManager;
 import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.callbacks.interfaces.*;
-import com.dmdirc.ui.messages.Formatter;
 
 /**
  * Handles events for channel objects.
@@ -223,7 +222,8 @@ public final class ChannelEventHandler extends EventHandler implements
         
         if (owner.getConfigManager().getOptionBool("channel", "splitusermodes", false)) {
             String format = "channelSplitUserMode_" + sMode;
-            if (!Formatter.hasFormat(owner.getConfigManager(), format)) {
+            
+            if (!owner.getConfigManager().hasOption("format", format)) {
                 format = "channelSplitUserMode_default";
             }
  
