@@ -56,7 +56,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -214,7 +213,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         categories.get(category).add(label);
 
         label.setLabelFor(option);
-        categories.get(category).add(option, "wrap");
+        categories.get(category).add(option, "grow, wrap, wmax 70%");
     }
 
     /**
@@ -407,6 +406,14 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         initCategory(category, panel, newNode, path);
     }
     
+    /**
+     * Initialises the specified category.
+     * 
+     * @param category The category that is being initialised
+     * @param panel The panel to which we're adding its contents
+     * @param newNode The treenode that represents this category
+     * @param path The textual path of this category
+     */
     private void initCategory(final PreferencesCategory category, final JPanel panel,
             final DefaultMutableTreeNode newNode, final String path) {
 
