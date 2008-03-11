@@ -38,8 +38,6 @@ import com.dmdirc.ui.swing.components.durationeditor.DurationDisplay;
 import com.dmdirc.ui.swing.components.durationeditor.DurationListener;
 import com.dmdirc.ui.swing.components.renderers.MapEntryRenderer;
 import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
-import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.CardLayout;
 import java.awt.Component;
@@ -81,6 +79,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import net.miginfocom.swing.MigLayout;
+import net.miginfocom.layout.PlatformDefaults;
 
 /**
  * Allows the user to modify global client preferences.
@@ -94,37 +93,26 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * serialized objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 8;
-
     /** A map of settings to the components used to represent them. */
     private final Map<PreferencesSetting, JComponent> components;
-
     /** Categories in the dialog. */
     private final Map<PreferencesCategory, JPanel> categories;
-    
     /** Nodes in the treeview. */
     private final Map<TreeNode, String> nodes;
-    
     /** Paths to categories. */
     private final Map<String, PreferencesCategory> paths;
-
     /** Custom panels, not to be laid out automatically. */
     private final List<JPanel> panels;
-
     /** Preferences tab list, used to switch option types. */
     private JTree tabList;
-
     /** Main card layout. */
     private CardLayout cardLayout;
-
     /** Main panel. */
     private JPanel mainPanel;
-
     /** root node. */
     private DefaultMutableTreeNode rootNode;
-    
     /** Previously selected category. */
     private PreferencesCategory selected = null;
-    
     /** Preferences Manager. */
     private final PreferencesManager manager;
 
@@ -133,7 +121,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      */
     public SwingPreferencesDialog() {
         super((MainFrame) Main.getUI().getMainWindow(), false);
-        
+
         manager = new PreferencesManager();
 
         categories = new HashMap<PreferencesCategory, JPanel>();
@@ -146,7 +134,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         initComponents();
 
         new TreeScroller(tabList);
-        
+
         addCategories(manager.getCategories());
     }
 
@@ -154,9 +142,6 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * Initialises GUI components.
      */
     private void initComponents() {
-        final JButton button1 = new JButton();
-        final JButton button2 = new JButton();
-
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
@@ -177,25 +162,25 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         setTitle("Preferences");
         setResizable(false);
 
-        tabList.setBorder(BorderFactory.createCompoundBorder(BorderFactory
-                .createEtchedBorder(), BorderFactory.createEmptyBorder(
-                SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER)));
+        tabList.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createEmptyBorder(
+                PlatformDefaults.getPanelInsets(0).getUnit(),
+                PlatformDefaults.getPanelInsets(0).getUnit(),
+                PlatformDefaults.getPanelInsets(0).getUnit(),
+                PlatformDefaults.getPanelInsets(0).getUnit())));
 
-        tabList.setPreferredSize(new Dimension(150, 560));
-        tabList.setMinimumSize(new Dimension(150, 560));
         setMinimumSize(new Dimension(650, 600));
         setPreferredSize(new Dimension(650, 600));
         setMaximumSize(new Dimension(650, 600));
 
-        orderButtons(button1, button2);
+        orderButtons(new JButton(), new JButton());
 
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
 
-        add(tabList, "width 150!, spany");
-        add(mainPanel, "wrap, width 480!");
-        add(getLeftButton(), "split");
-        add(getRightButton(), "");
+        add(tabList, "width 150, growy, spany");
+        add(mainPanel, "wrap, width 480, grow");
+        add(getLeftButton(), "split, right");
+        add(getRightButton(), "right");
     }
 
     /**
@@ -223,7 +208,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * @return A JLabel with the appropriate text and tooltip
      */
     private JLabel getLabel(final PreferencesSetting setting) {
-        final JLabel label = new JLabel(setting.getTitle() + ": ", JLabel.TRAILING);
+        final JLabel label = new JLabel(setting.getTitle() + ": ",
+                JLabel.TRAILING);
 
         if (setting.getHelptext().isEmpty()) {
             label.setToolTipText("No help available.");
@@ -248,6 +234,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
                 option = new ValidatingJTextField(setting.getValidator());
                 ((ValidatingJTextField) option).setText(setting.getValue());
                 ((ValidatingJTextField) option).addKeyListener(new KeyAdapter() {
+
                     @Override
                     public void keyReleased(final KeyEvent e) {
                         setting.setValue(((JTextField) e.getSource()).getText());
@@ -257,33 +244,36 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             case BOOLEAN:
                 option = new JCheckBox();
                 ((JCheckBox) option).setSelected(Boolean.parseBoolean(setting.getValue()));
-                
-                ((JCheckBox) option).addChangeListener(new ChangeListener(){
+
+                ((JCheckBox) option).addChangeListener(new ChangeListener() {
+
                     public void stateChanged(final ChangeEvent e) {
                         setting.setValue(String.valueOf(((JCheckBox) e.getSource()).isSelected()));
                     }
                 });
-                
+
                 break;
             case MULTICHOICE:
-                option = new JComboBox(setting.getComboOptions().entrySet().toArray());
+                option = new JComboBox(setting.getComboOptions().entrySet().
+                        toArray());
                 ((JComboBox) option).setRenderer(new MapEntryRenderer());
                 ((JComboBox) option).setEditable(false);
-                
-                for (Map.Entry<String, String> entry : setting.getComboOptions().entrySet()) {
+
+                for (Map.Entry<String, String> entry : setting.getComboOptions().
+                        entrySet()) {
                     if (entry.getKey().equals(setting.getValue())) {
                         ((JComboBox) option).setSelectedItem(entry);
                         break;
                     }
                 }
-                
+
                 ((JComboBox) option).addActionListener(new ActionListener() {
+
                     public void actionPerformed(ActionEvent e) {
-                        setting.setValue((String) ((Map.Entry)
-                                ((JComboBox) e.getSource()).getSelectedItem()).getKey());
+                        setting.setValue((String) ((Map.Entry) ((JComboBox) e.getSource()).getSelectedItem()).getKey());
                     }
                 });
-                
+
                 break;
             case INTEGER:
                 try {
@@ -299,68 +289,76 @@ public final class SwingPreferencesDialog extends StandardDialog implements
                         ((JSpinner) option).setValue(Integer.parseInt(setting.getValue()));
                     }
                 } catch (NumberFormatException ex) {
-                        option = new JSpinner(new SpinnerNumberModel());
+                    option = new JSpinner(new SpinnerNumberModel());
                 }
-                
+
                 ((JSpinner) option).addChangeListener(new ChangeListener() {
+
                     public void stateChanged(ChangeEvent e) {
-                        setting.setValue(((JSpinner) e.getSource()).getValue().toString());
+                        setting.setValue(((JSpinner) e.getSource()).getValue().
+                                toString());
                     }
                 });
-                
+
                 break;
-            case DURATION:                
+            case DURATION:
                 try {
-                    option = new DurationDisplay(Integer.parseInt(setting.getValue()));
+                    option =
+                            new DurationDisplay(Integer.parseInt(setting.getValue()));
                 } catch (NumberFormatException ex) {
-                        option = new DurationDisplay();
+                    option = new DurationDisplay();
                 }
-                
+
                 ((DurationDisplay) option).addDurationListener(new DurationListener() {
+
                     public void durationUpdated(int newDuration) {
                         setting.setValue("" + newDuration);
                     }
                 });
-                
+
                 break;
             case COLOUR:
                 option = new ColourChooser(setting.getValue(), true, true);
-                
+
                 ((ColourChooser) option).addActionListener(new ActionListener() {
+
                     public void actionPerformed(ActionEvent e) {
                         setting.setValue(((ColourChooser) e.getSource()).getColour());
                     }
                 });
-                
+
                 break;
             case OPTIONALCOLOUR:
-                final boolean state = setting.getValue() != null && 
+                final boolean state = setting.getValue() != null &&
                         !setting.getValue().startsWith("false:");
-                final String colour = setting.getValue() == null ? "0" :
-                        setting.getValue().substring(1 + setting.getValue().indexOf(':'));
-                
+                final String colour = setting.getValue() == null ? "0" : setting.getValue().
+                        substring(1 + setting.getValue().indexOf(':'));
+
                 option = new OptionalColourChooser(colour, state, true, true);
-                
+
                 ((OptionalColourChooser) option).addActionListener(new ActionListener() {
+
                     public void actionPerformed(ActionEvent e) {
                         setting.setValue(
-                                String.valueOf(((OptionalColourChooser) e.getSource()).isEnabled())
-                                + ":" + ((OptionalColourChooser) e.getSource()).getColour());
+                                String.valueOf(((OptionalColourChooser) e.getSource()).isEnabled()) +
+                                ":" +
+                                ((OptionalColourChooser) e.getSource()).getColour());
                     }
                 });
-                
+
                 break;
             default:
-                throw new IllegalArgumentException(setting.getType() + " is not a valid option");
+                throw new IllegalArgumentException(setting.getType() +
+                        " is not a valid option");
         }
-        
+
         components.put(setting, option);
-        option.setPreferredSize(new Dimension(Short.MAX_VALUE, option.getFont()
-        .getSize()));
+        option.setPreferredSize(new Dimension(Short.MAX_VALUE, option.getFont().
+                getSize()));
 
         return option;
     }
-    
+
     /**
      * Adds a new inline category.
      * 
@@ -369,11 +367,11 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      */
     private void addInlineCategory(final PreferencesCategory category,
             final JPanel parent) {
-        final JPanel panel = new JPanel(new MigLayout("fillx, gap " + LARGE_BORDER));
+        final JPanel panel = new JPanel(new MigLayout("fillx, gap unrel"));
         panel.setBorder(BorderFactory.createTitledBorder(category.getTitle()));
-        
+
         categories.put(category, panel);
-        
+
         parent.add(panel, "span, growx, wrap");
 
         initCategory(category, panel, null, "");
@@ -388,7 +386,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      */
     private void addCategory(final PreferencesCategory category,
             final DefaultMutableTreeNode parentNode, final String namePrefix) {
-        final JPanel panel = new JPanel(new MigLayout("fillx, gap " + LARGE_BORDER));
+        final JPanel panel = new JPanel(new MigLayout("fillx, gap unrel"));
         final String path = namePrefix + "/" + category.getTitle();
         DefaultMutableTreeNode newNode;
 
@@ -397,15 +395,15 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         categories.put(category, panel);
         nodes.put(newNode, path);
         paths.put(path, category);
-        
+
         mainPanel.add(panel, path);
         ((DefaultTreeModel) tabList.getModel()).insertNodeInto(newNode,
                 parentNode, parentNode.getChildCount());
         tabList.scrollPathToVisible(new TreePath(newNode.getPath()));
-        
+
         initCategory(category, panel, newNode, path);
     }
-    
+
     /**
      * Initialises the specified category.
      * 
@@ -414,11 +412,13 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * @param newNode The treenode that represents this category
      * @param path The textual path of this category
      */
-    private void initCategory(final PreferencesCategory category, final JPanel panel,
+    private void initCategory(final PreferencesCategory category,
+            final JPanel panel,
             final DefaultMutableTreeNode newNode, final String path) {
 
         if (!category.getDescription().isEmpty()) {
-            final TextLabel infoLabel = new TextLabel(category.getDescription());
+            final TextLabel infoLabel =
+                    new TextLabel(category.getDescription());
             panel.add(infoLabel, "span, growx, wrap");
         }
 
@@ -445,7 +445,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         for (PreferencesSetting setting : category.getSettings()) {
             addComponent(category, setting);
         }
-        
+
         if (!category.getInlineBefore()) {
             for (PreferencesCategory child : category.getSubcats()) {
                 if (child.isInline()) {
@@ -475,7 +475,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         if (selected != null) {
             selected.fireCategoryDeselected();
         }
-        
+
         if (getOkButton().equals(actionEvent.getSource())) {
             if (tabList.getSelectionPath() != null) {
                 final String node = tabList.getSelectionPath().toString();
@@ -496,15 +496,15 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * @param selectionEvent list selection event
      */
     public void valueChanged(final TreeSelectionEvent selectionEvent) {
-        final String path = nodes.get(((JTree) selectionEvent.getSource())
-                .getSelectionPath().getLastPathComponent());
-        
+        final String path = nodes.get(((JTree) selectionEvent.getSource()).getSelectionPath().
+                getLastPathComponent());
+
         cardLayout.show(mainPanel, path);
-        
+
         if (selected != null) {
             selected.fireCategoryDeselected();
         }
-        
+
         selected = paths.get(path);
         selected.fireCategorySelected();
     }
@@ -512,20 +512,20 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     /** {@inheritDoc} */
     public void saveOptions() {
         manager.fireSaveListeners();
-        
+
         boolean restart = false;
-        
+
         for (PreferencesSetting setting : components.keySet()) {
             if (setting.save() && setting.isRestartNeeded()) {
                 restart = true;
             }
         }
-        
+
         if (restart) {
             JOptionPane.showMessageDialog((MainFrame) Main.getUI().
-                    getMainWindow(), "One or more of the changes you made "
-                    + "won't take effect until you restart the client.",
-                    "Restart needed", JOptionPane.INFORMATION_MESSAGE);            
+                    getMainWindow(), "One or more of the changes you made " +
+                    "won't take effect until you restart the client.",
+                    "Restart needed", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -539,7 +539,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             final TreePath treePath = tabList.getNextMatch(string, 0,
                     Position.Bias.Forward);
             if (treePath != null) {
-                final TreeNode node = (TreeNode) treePath.getLastPathComponent();
+                final TreeNode node =
+                        (TreeNode) treePath.getLastPathComponent();
                 if (node != null) {
                     path = path.pathByAddingChild(node);
                 }
@@ -574,6 +575,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         public PreferencesTreeCellRenderer() {
             super();
         }
+
         /**
          * Configures the renderer based on the passed parameters.
          * @param tree JTree for this renderer.
@@ -585,20 +587,18 @@ public final class SwingPreferencesDialog extends StandardDialog implements
          * @param focused whether the node has focus.
          * @return RendererComponent for this node.
          */
+        @Override
         public final Component getTreeCellRendererComponent(final JTree tree,
                 final Object value, final boolean sel, final boolean expanded,
                 final boolean leaf, final int row, final boolean focused) {
 
+            setPreferredSize(new Dimension(1000, (int) (getFont().getSize() *
+                    1.2)));
             setText(value.toString());
             setBackground(tree.getBackground());
             setForeground(tree.getForeground());
             setOpaque(true);
             setToolTipText(null);
-            setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
-                    SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
-
-            setPreferredSize(new Dimension((int) tabList.getPreferredSize().getWidth() - 20,
-                    getFont().getSize() + SMALL_BORDER));
 
             if (sel) {
                 setFont(getFont().deriveFont(Font.BOLD));
@@ -609,5 +609,5 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             return this;
         }
     }
-    
+
 }
