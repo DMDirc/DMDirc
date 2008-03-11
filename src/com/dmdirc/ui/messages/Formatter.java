@@ -218,18 +218,5 @@ public final class Formatter {
         
         typeCache.put(format, types);
     }
-    
-    /**
-     * Determines whether the formatter knows of a specific message type.
-     * 
-     * @param config The config manager to use to check for formats
-     * @param messageType the message type to check
-     * @return True iff there is a matching format, false otherwise
-     * @deprecated Should be checked with the config manager directly.
-     */
-    @Deprecated
-    public static boolean hasFormat(final ConfigManager config, final String messageType) {
-        return config.hasOption("formatter", messageType);
-    }
 
 }
