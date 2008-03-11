@@ -62,111 +62,133 @@ public final class DummyChannelWindow implements ChannelWindow {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void updateNames(final List<ChannelClientInfo> clients) {
         // Do nothing
     }
 
     /** {@inheritDoc} */
+    @Override
     public void addName(final ChannelClientInfo client) {
         // Do nothing
     }
 
     /** {@inheritDoc} */
+    @Override
     public void removeName(final ChannelClientInfo client) {
         // Do nothing
     }
 
     /** {@inheritDoc} */
+    @Override
     public void updateNames() {
         // Do nothing
     }
 
     /** {@inheritDoc} */
+    @Override
     public CommandParser getCommandParser() {
         return new ChannelCommandParser(parent.getServer(), parent);
     }
 
     /** {@inheritDoc} */
+    @Override
     public InputHandler getInputHandler() {
         return new DummyInputHandler(new DummyInputField(), getCommandParser(), this);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setAwayIndicator(final boolean isAway) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /** {@inheritDoc} */
+    @Override
     public void addLine(final String messageType, final Object... args) {
         System.out.println("DummyChannelWindow.addLine(" + messageType + ", " + Arrays.toString(args) + ")");
     }
     
     /** {@inheritDoc} */
+    @Override
     public void addLine(final StringBuffer messageType, final Object... args) {
         addLine(messageType.toString(), args);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void addLine(final String line, final boolean timestamp) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /** {@inheritDoc} */
+    @Override
     public void clear() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /** {@inheritDoc} */
+    @Override
     public ConfigManager getConfigManager() {
         return parent.getConfigManager();
     }
 
     /** {@inheritDoc} */
+    @Override
     public FrameContainer getContainer() {
         return parent;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isVisible() {
         return visible;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setVisible(final boolean isVisible) {
         visible = isVisible;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getTitle() {
         return title;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isMaximum() {
         return maximised;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setMaximum(final boolean b) throws PropertyVetoException {
         maximised = b;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setTitle(final String title) {
         this.title = title;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void open() {
         // Do nothing
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setFrameIcon(final Icon icon) {
         // Do nothing
     }
 
     /** {@inheritDoc} */
+    @Override
     public StringTranscoder getTranscoder() {
         return new StringTranscoder(Charset.defaultCharset());
     }

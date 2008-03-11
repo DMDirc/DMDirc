@@ -42,63 +42,74 @@ public class DummyFrameManager implements FrameManager {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void setParent(final JComponent parent) {
         parent.setBackground(Color.RED);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void addWindow(final FrameContainer window) {
         Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: addServer: " + window);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void delWindow(final FrameContainer window) {
         Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: delServer: " + window);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void addWindow(final FrameContainer parent, final FrameContainer window) {
         Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: addCustom: " + window + "@" + parent);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void delWindow(final FrameContainer parent, final FrameContainer window) {
         Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: delCustom: " + window + "@" + parent);
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean canPositionVertically() {
         return true;
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean canPositionHorizontally() {
         return true;
     }
     
     /** {@inheritDoc} */
+    @Override
     public void showNotification(final FrameContainer source, final Color colour) {
         Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: Notifcation for " + source);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void clearNotification(final FrameContainer source) {
         Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: Clear notification for " + source);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void setSelected(final FrameContainer source) {
         Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: Now focused: " + source);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void iconUpdated(final FrameContainer window) {
         Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: Icon changed: " + window);

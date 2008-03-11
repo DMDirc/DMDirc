@@ -64,91 +64,109 @@ public final class DummyServerWindow implements ServerWindow {
     }
     
     /** {@inheritDoc} */
+    @Override
     public CommandParser getCommandParser() {
         return new ServerCommandParser(parent);
     }
     
     /** {@inheritDoc} */
+    @Override
     public InputHandler getInputHandler() {
         return new DummyInputHandler(new DummyInputField(), null, this);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void setAwayIndicator(final boolean isAway) {
         // Do nothing
     }
     
     /** {@inheritDoc} */
+    @Override
     public void addLine(final String messageType, final Object... args) {
         System.out.println("DummyServerWindow.addLine(" + messageType + ", " + Arrays.toString(args) + ")");
     }
     
     /** {@inheritDoc} */
+    @Override
     public void addLine(final StringBuffer messageType, final Object... args) {
         addLine(messageType.toString(), args);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void addLine(final String line, final boolean timestamp) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     /** {@inheritDoc} */
+    @Override
     public void clear() {
         System.out.println("DummyServerWindow.clear()");
     }
     
     /** {@inheritDoc} */
+    @Override
     public ConfigManager getConfigManager() {
         return new ConfigManager("dummy", "dummy", "dummy");
     }
     
     /** {@inheritDoc} */
+    @Override
     public FrameContainer getContainer() {
         return parent;
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean isVisible() {
         return visible;
     }
     
     /** {@inheritDoc} */
+    @Override
     public void setVisible(final boolean isVisible) {
         visible = isVisible;
     }
     
     /** {@inheritDoc} */
+    @Override
     public String getTitle() {
         return title;
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean isMaximum() {
         return maximised;
     }
     
     /** {@inheritDoc} */
+    @Override
     public void setMaximum(final boolean b) throws PropertyVetoException {
         maximised = b;
     }
     
     /** {@inheritDoc} */
+    @Override
     public void setTitle(final String title) {
         this.title = title;
     }
     
     /** {@inheritDoc} */
+    @Override
     public void open() {
         // Do nothing
     }
     
     /** {@inheritDoc} */
+    @Override
     public void setFrameIcon(final Icon icon) {
         // Do nothing
     }
     
     /** {@inheritDoc} */
+    @Override
     public StringTranscoder getTranscoder() {
         return new StringTranscoder(Charset.defaultCharset());
     }

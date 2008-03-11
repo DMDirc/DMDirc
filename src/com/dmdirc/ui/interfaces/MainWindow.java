@@ -44,15 +44,6 @@ public interface MainWindow {
     ImageIcon getIcon();
     
     /**
-     * Returns the window that is currently active.
-     *
-     * @return The active window
-     * @deprecated Use SwingController.getActiveWindow() instead
-     */
-    @Deprecated
-    Window getActiveFrame();
-    
-    /**
      * Quits the client.
      */
     void quit();

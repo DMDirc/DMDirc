@@ -55,57 +55,49 @@ public final class DummyMainWindow implements MainWindow {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void setActiveFrame(final Window frame) {
         active = frame;
     }
     
     /** {@inheritDoc} */
+    @Override
     public ImageIcon getIcon() {
         return null;
     }
     
     /** {@inheritDoc} */
-    @Deprecated
-    public Window getActiveFrame() {
-        return active;
-    }
-       
-    /** {@inheritDoc} */
-    public void addPluginMenu(final JMenuItem menuItem) {
-        pluginMenu.add(menuItem);
-    }
-    
-    /** {@inheritDoc} */
-    public void removePluginMenu(final JMenuItem menuItem) {
-        pluginMenu.remove(menuItem);
-    }
-    
-    /** {@inheritDoc} */
+    @Override
     public void quit() {
         // Do nothing
     }
     
     /** {@inheritDoc} */
+    @Override
     public void setMaximised(final boolean max) {
         maximised = max;
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean getMaximised() {
         return maximised;
     }
     
     /** {@inheritDoc} */
+    @Override
     public String getTitlePrefix() {
         return "DMDirc: Dummy UI: ";
     }
     
     /** {@inheritDoc} */
+    @Override
     public void setVisible(final boolean visible) {
         this.visible = visible;
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean isVisible() {
         return visible;
     }

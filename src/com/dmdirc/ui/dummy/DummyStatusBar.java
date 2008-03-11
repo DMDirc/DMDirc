@@ -38,38 +38,45 @@ public final class DummyStatusBar implements StatusBar {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setMessage(final String newMessage) {
         System.out.println("DummyStatusBar: " + newMessage);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setMessage(final String newMessage, 
             final StatusMessageNotifier newNotifier) {
         System.out.println("DummyStatusBar: " + newMessage);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setMessage(final String newMessage, 
             final StatusMessageNotifier newNotifier, final int timeout) {
         System.out.println("DummyStatusBar: " + newMessage);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void clearMessage() {
         System.out.println("DummyStatusBar: message cleared");
     }
 
     /** {@inheritDoc} */
+    @Override
     public void addComponent(final Component component) {
         // Do nothing
     }
 
     /** {@inheritDoc} */
+    @Override
     public void removeComponent(final Component component) {
         // Do nothing
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isVisible() {
         return true;
     }

@@ -331,10 +331,10 @@ public final class SwingController implements UIController {
         if (me == null) {
             return null;
         }
-        if (me.getActiveFrame() == null) {
+        if (getActiveWindow() == null) {
             return null;
         } else {
-            return me.getActiveFrame().getContainer().getServer();
+            return getActiveWindow().getContainer().getServer();
         }
     }
 

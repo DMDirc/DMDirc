@@ -218,9 +218,11 @@ public final class MainFrame extends JFrame implements WindowListener,
         return imageIcon;
     }
     
-    /** {@inheritDoc}. */
-    @Override
-    @Deprecated
+    /**
+     * Returns the window that is currently active.
+     *
+     * @return The active window
+     */
     public Window getActiveFrame() {
         if (desktopPane.getSelectedFrame() instanceof Window) {
             return (Window) desktopPane.getSelectedFrame();
