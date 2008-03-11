@@ -173,7 +173,7 @@ formatter.selfMessage = >[%1$s]> %2$s
 #    1: Server name
 #    2: Miscellaneous argument
 formatter.connectError = \u00032Error connecting: %2$s
-formatter.connectRetry = \u00032Reconnecting in %2$s seconds...
+formatter.connectRetry = \u00032Reconnecting in %2$u...
 formatter.serverConnecting = Connecting to %1$s:%2$s...
 
 # Type: Argless
@@ -237,7 +237,7 @@ formatter.numeric_307 = %4$s %5$s.
 formatter.numeric_311 = -\n%4$s is %5$s@%6$s (%8$s\u000F).
 formatter.numeric_312 = %4$s is connected to %5$s (%6$s\u000F).
 formatter.numeric_313 = %4$s %5$s.
-formatter.numeric_317 = %4$s has been idle for %5$s seconds; signed on at %6$TT on %6$TF.
+formatter.numeric_317 = %4$s has been idle for %5$u; signed on at %6$TT on %6$TF.
 formatter.numeric_318 = End of WHOIS info for %4$s\u000F.\n-
 formatter.numeric_319 = %4$s is on: %5$s
 formatter.numeric_320 = %4$s %5$s.

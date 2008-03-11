@@ -25,7 +25,7 @@ general.closequeriesondisconnect=false
 
 general.reconnectonconnectfailure=true
 general.reconnectondisconnect=true
-general.reconnectdelay=5
+general.reconnectdelay=5000
 
 general.server=irc.quakenet.org
 general.port=6667

@@ -355,7 +355,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         final int delay = Math.max(1,
                 configManager.getOptionInt(DOMAIN_GENERAL, "reconnectdelay", 5000));
 
-        handleNotification("connectRetry", getName(), delay);
+        handleNotification("connectRetry", getName(), delay / 1000);
 
         reconnectTimer = new Timer("Server Reconnect Timer");
         reconnectTimer.schedule(new TimerTask() {
