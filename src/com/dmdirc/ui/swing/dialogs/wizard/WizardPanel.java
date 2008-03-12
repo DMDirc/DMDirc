@@ -110,8 +110,8 @@ public class WizardPanel extends JPanel implements ActionListener,
 
         next = new JButton();
 
-        prev = new JButton("« Previous");
-        next.setText("Next »");
+        prev = new JButton("\u00AB Previous");
+        next.setText("Next \u00BB");
 
         next.addActionListener(this);
         prev.addActionListener(this);
@@ -200,7 +200,7 @@ public class WizardPanel extends JPanel implements ActionListener,
 
     /** Moves to the next step. */
     protected void nextStep() {
-        if ("Next >>".equals(next.getText())) {
+        if ("Next \u00BB".equals(next.getText())) {
             prev.setEnabled(true);
             fireStepAboutToBeDisplayed(steps.getStep(currentStep + 1));
             steps.next(stepsPanel);
@@ -224,7 +224,7 @@ public class WizardPanel extends JPanel implements ActionListener,
         if (currentStep == 0) {
             prev.setEnabled(false);
         }
-        next.setText("Next >>");
+        next.setText("Next \u00BB");
         updateProgressLabel();
     }
 
