@@ -3,6 +3,9 @@
 # cron doesn't seem to like doing this iself...
 . /etc/profile
 
+# Used for nightly.log to help diagnosing problems
+env
+
 # Path to WWW Directory
 WWWDIR="/home/dmdirc/www"
 # Path to trunk

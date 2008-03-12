@@ -16,6 +16,9 @@ ANT="/usr/bin/ant"
 # Path to svn binary
 SVN="/usr/bin/svn"
 
+# Increase the memory allowed to be used when running stuff
+export ANT_OPTS=-Xmx256m
+
 #/bin/sh $MYDIR/oblong.sh "Reports" "Style Report Generation Started";
 cd $MYDIR
 $SVN update
