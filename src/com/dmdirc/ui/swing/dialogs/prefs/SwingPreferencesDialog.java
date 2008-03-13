@@ -115,6 +115,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     private PreferencesCategory selected = null;
     /** Preferences Manager. */
     private final PreferencesManager manager;
+    /** Panel gap. */
+    private final int padding = (int) PlatformDefaults.getPanelInsets(0).getValue();
 
     /**
      * Creates a new instance of SwingPreferencesDialog.
@@ -162,11 +164,9 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         setTitle("Preferences");
         setResizable(false);
 
-        tabList.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createEmptyBorder(
-                PlatformDefaults.getPanelInsets(0).getUnit(),
-                PlatformDefaults.getPanelInsets(0).getUnit(),
-                PlatformDefaults.getPanelInsets(0).getUnit(),
-                PlatformDefaults.getPanelInsets(0).getUnit())));
+        tabList.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(),
+                BorderFactory.createEmptyBorder(padding, padding, padding,
+                padding)));
 
         setMinimumSize(new Dimension(650, 600));
         setPreferredSize(new Dimension(650, 600));
@@ -574,6 +574,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
          */
         public PreferencesTreeCellRenderer() {
             super();
+            System.out.println(padding);
         }
 
         /**
@@ -592,8 +593,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
                 final Object value, final boolean sel, final boolean expanded,
                 final boolean leaf, final int row, final boolean focused) {
 
-            setPreferredSize(new Dimension(1000, (int) (getFont().getSize() *
-                    1.2)));
+            setPreferredSize(new Dimension(1000, getFont().getSize() + padding));
+            setBorder(BorderFactory.createEmptyBorder(0, 0, padding, padding));
             setText(value.toString());
             setBackground(tree.getBackground());
             setForeground(tree.getForeground());
