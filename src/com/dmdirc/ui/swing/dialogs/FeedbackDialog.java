@@ -356,8 +356,7 @@ class SendWorker extends SwingWorker {
         if (!feedback.isEmpty()) {
             postData.put("feedback", feedback);
         }
-        postData.put("version",
-                Main.VERSION + "(" + Main.RELEASE_DATE + ")");
+        postData.put("version", Main.VERSION + "(" + Main.SVN_REVISION + ")");
         if (sendServerInfo) {
             postData.put("serverInfo", serverInfo);
         }

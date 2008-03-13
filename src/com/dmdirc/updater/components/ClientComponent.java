@@ -50,7 +50,7 @@ public class ClientComponent implements UpdateComponent {
     /** {@inheritDoc} */
     @Override
     public int getVersion() {
-        return Main.RELEASE_DATE;
+        return Main.SVN_REVISION;
     }
 
     /** {@inheritDoc} */

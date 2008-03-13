@@ -90,7 +90,7 @@ public final class InfoPanel extends JPanel implements ActionListener {
         
         info = new JPanel(new MigLayout("fill, wrap 2"));
         info.add(new JLabel("DMDirc version: "));
-        info.add(new JLabel(Main.VERSION + " (" + Main.RELEASE_DATE + "; "
+        info.add(new JLabel(Main.VERSION + " (" + Main.SVN_REVISION + "; "
                 + Main.UPDATE_CHANNEL + ")"), "growx, pushx");
         info.add(new JLabel("Profile directory: "));
         info.add(new JLabel(Main.getConfigDir()), "growx, pushx");

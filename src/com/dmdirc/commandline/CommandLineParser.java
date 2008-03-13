@@ -271,7 +271,7 @@ public class CommandLineParser {
         System.out.println("DMDirc - a cross-platform, open-source IRC client.");
         System.out.println();
         System.out.println("      Version: " + Main.VERSION);
-        System.out.println(" Release date: " + Main.RELEASE_DATE);
+        System.out.println(" SVN revision: " + Main.SVN_REVISION);
         System.out.println("      Channel: " + Main.UPDATE_CHANNEL);
         exit();
     }

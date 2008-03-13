@@ -217,7 +217,7 @@ public final class ErrorManager implements Serializable, Runnable {
         
         postData.put("message", error.getMessage());
         postData.put("trace", Arrays.toString(error.getTrace()));
-        postData.put("version", Main.VERSION + "(" + Main.RELEASE_DATE + ")");
+        postData.put("version", Main.VERSION + "(" + Main.SVN_REVISION + ")");
         
         error.setReportStatus(ErrorReportStatus.SENDING);
         

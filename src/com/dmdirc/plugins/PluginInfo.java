@@ -372,8 +372,8 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			return "";
 		}
 		
-		if (!checkMinimumVersion(getMinVersion(), Main.RELEASE_DATE) ||
-		    !checkMaximumVersion(getMaxVersion(), Main.RELEASE_DATE) ||
+		if (!checkMinimumVersion(getMinVersion(), Main.SVN_REVISION) ||
+		    !checkMaximumVersion(getMaxVersion(), Main.SVN_REVISION) ||
 		    !checkFiles(getMetaInfo(new String[]{"required-files", "require-files", "required-file", "require-file"})) ||
 		    !checkUI(getMetaInfo(new String[]{"required-ui", "require-ui"}), Main.getUI().getClass().getPackage().getName()) ||
 		    !checkPlugins(getMetaInfo(new String[]{"required-plugins", "require-plugins", "required-plugin", "require-plugin"})) ||
