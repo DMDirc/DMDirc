@@ -47,26 +47,28 @@ import java.util.TimerTask;
  */
 public final class Main {
     
-    /**
-     * Stores the current textual program version.
-     */
+    /** Stores the current textual program version. */
     public static final String VERSION = "SVN";
     
     /**
      * Stores the release date of this version.
+     * 
+     * @deprecated Use SVN revision instead
      */
+    @Deprecated
     public static final int RELEASE_DATE = 0;
     
-    /**
-     * Stores the update channel that this version came from, if any.
-     */
+    /** The SVN revision that this build was made from. */
+    public static final int SVN_REVISION = 3601;
+    
+    /** Stores the update channel that this version came from, if any. */
     public static final UpdateChannel UPDATE_CHANNEL = UpdateChannel.NONE;
     
     /**
      * A revision number for actions and core plugins. If this is increased,
      * users will be prompted to re-extract them.
      * 
-     * @Deprecated No longer needed, remove post-0.6
+     * @deprecated No longer needed, remove post-0.6
      */
     @Deprecated
     private static final int ADDON_REVISION = 11;
