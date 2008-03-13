@@ -336,7 +336,6 @@ public class WizardPanel extends JPanel implements ActionListener,
             List<WizardListener> listeners =
                     stepListeners.get(WizardListener.class);
             for (WizardListener listener : listeners) {
-                System.out.println("finished: " + listener);
                 listener.wizardFinished();
             }
         }
@@ -350,7 +349,6 @@ public class WizardPanel extends JPanel implements ActionListener,
             List<WizardListener> listeners =
                     stepListeners.get(WizardListener.class);
             for (WizardListener listener : listeners) {
-                System.out.println("cancelled: " + listener);
                 listener.wizardCancelled();
             }
         }
