@@ -71,9 +71,39 @@
             <fileset dir="${build.classes.dir}"/>
         </jar>
     -->
-    <target name="-post-compile" depends="build-plugins"/>
 
     <available file="/bin/bash" property="has.bash"/>	
+
+    <!--
+        This will revert the svn revision in Main.java to prevent commiting the
+        change everyt time someone builds and causing conflicts.
+      -->
+    <target name="unsvn" depends="unsvn_nobash, unsvn_bash"/>
+    <target name="unsvn_bash" if="has.bash">
+        <exec executable="/bin/bash">
+            <arg value="AddSVN.sh"/>
+            <arg value="--post"/>
+        </exec>
+    </target>
+    <target name="unsvn_nobash" unless="has.bash">
+        <echo message="This task only works on linux"/>
+    </target>
+    <target name="-post-compile" depends="unsvn, build-plugins"/>
+
+    <!--
+        This will add the svn revision to Main.java
+      -->
+    <target name="addsvn" depends="addsvn_nobash, addsvn_bash"/>
+    <target name="addsvn_bash" if="has.bash">
+        <exec executable="/bin/bash">
+            <arg value="AddSVN.sh"/>
+            <arg value="--pre"/>
+        </exec>
+    </target>
+    <target name="addsvn_nobash" unless="has.bash">
+        <echo message="This task only works on linux"/>
+    </target>
+    <target name="-pre-compile" depends="addsvn"/>
 
     <target name="installer" depends="installer-nobuild, installer-build"/>
     
