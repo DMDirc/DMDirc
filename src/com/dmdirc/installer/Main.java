@@ -99,7 +99,7 @@ public final class Main implements WizardListener {
 		final String osName = System.getProperty("os.name");
 		wizardDialog.addStep(new StepWelcome(releaseName));
 		if (osName.startsWith("Mac OS")) {
-			wizardDialog.addStep(new StepError());
+			wizardDialog.addStep(new StepError("Sorry, OSX Installation should be done using the downloadable dmg file, not this installer.\n\n"));
 		} else {
 			wizardDialog.addStep(new StepSettings());
 			wizardDialog.addStep(new StepConfirm(wizardDialog));

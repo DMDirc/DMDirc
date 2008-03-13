@@ -43,21 +43,25 @@ public final class StepError extends Step {
 	private static final long serialVersionUID = 2;
 	
 	/**
-	 * Creates a new instance of StepOne.
+	 * Creates a new instance of StepError with a default error message.
 	 */
 	public StepError() {
+		this("Sorry, it is not possible to install DMDirc on this system at this time.\n\n");
+	}
+	
+	/**
+	 * Creates a new instance of StepError with a given error message.
+	 *
+	 * @param message Error message to show.
+	 */
+	public StepError(final String message) {
 		super();
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
 		
 		JWrappingLabel infoLabel;
-		infoLabel = new JWrappingLabel("Sorry, it is not possible to install DMDirc on this system at this time.\n\n");
-//		infoLabel.setEditable(false);
-//		infoLabel.setWrapStyleWord(true);
-//		infoLabel.setLineWrap(true);
-//		infoLabel.setHighlighter(null);
+		infoLabel = new JWrappingLabel(message);
 		infoLabel.setOpaque(false);
-//		infoLabel.setBackground(getBackground());
 		infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, SMALL_BORDER, 0));
 			
 		add(infoLabel, BorderLayout.CENTER);

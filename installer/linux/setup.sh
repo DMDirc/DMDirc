@@ -23,10 +23,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-ISKDE=`pidof -x -s kdeinit`
-KDIALOG=`which kdialog`
-ISGNOME=`pidof -x -s gnome-panel`
-ZENITY=`which zenity`
+PIDOF=`which pidof`
+if [ "" != "${PIDOF}" ]; then
+	ISKDE=`${PIDOF} -x -s kdeinit`
+	KDIALOG=`which kdialog`
+	ISGNOME=`${PIDOF} -x -s gnome-panel`
+	ZENITY=`which zenity`
+else
+	ISKDE=""
+	KDIALOG=""
+	ISGNOME=""
+	ZENITY=""
+fi;
 
 errordialog() {
 	# Send message to console.
@@ -47,12 +55,20 @@ errordialog() {
 	fi
 }
 
+UNAME=`uname -a`
+isLinux=`echo ${UNAME} | grep -i linux`
+
 echo ""
 echo "---------------------"
 echo "Setup.sh"
 echo "---------------------"
 echo -n "Looking for java.. ";
-JAVA=`which java`
+# Location where ports on FreeBSD/PCBSD installs java6
+# check it first, because it isn't added to the path automatically
+JAVA="/usr/local/jdk1.6.0/jre/bin/java"
+if [ ! -e "${JAVA}" ]; then
+	JAVA=`which java`
+fi
 
 installjre() {
 	result=1
@@ -97,6 +113,10 @@ if [ "" != "${JAVA}" ]; then
 	echo "Success!"
 else
 	echo "Failed!"
+	if [ "" == "${isLinux}" ]; then
+		errordialog "DMDirc Setup" "Sorry, DMDirc setup can not continue without java 6."
+		exit 1
+	fi;
 	installjre "install"
 fi
 
@@ -155,6 +175,10 @@ if [ -e "installer.jar" ]; then
 		echo "Running installer.."
 		${JAVA} -cp DMDirc.jar -jar installer.jar ${isRoot}${isRelease}
 		if [ $? -ne 0 ]; then
+			if [ "" == "${isLinux}" ]; then
+				errordialog "DMDirc Setup" "Sorry, DMDirc setup can not continue without java 6."
+				exit 1
+			fi;
 			installjre "upgrade"
 			echo "Trying to run installer again.."
 			${JAVA} -cp DMDirc.jar -jar installer.jar ${isRoot}${isRelease}
