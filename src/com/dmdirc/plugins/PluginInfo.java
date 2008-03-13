@@ -54,7 +54,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	/** List of classes this plugin has */
 	private List<String> myClasses = new ArrayList<String>();
 	/** Requirements error message. */
-	private String requirementsError;
+	private String requirementsError = "";
 
 	/**
 	 * Create a new PluginInfo.
@@ -111,8 +111,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			throw new PluginException("Plugin "+filename+" failed to load, incomplete plugin.info (Missing 'mainclass')");
 		}
 
-		final String requirements = checkRequirements();
-		if (requirements.isEmpty()) {
+		if (checkRequirements()) {
 			final String mainClass = getMainClass().replace('.', '/')+".class";
 			if (!res.resourceExists(mainClass)) {
 				throw new PluginException("Plugin "+filename+" failed to load, main class file ("+mainClass+") not found in jar.");
@@ -373,12 +372,12 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	/**
 	 * Are the requirements for this plugin met?
 	 *
-	 * @return Empty string if ok, else a reason for failure
+	 * @return true/false (Actual error if false is in the requirementsError field)
 	 */
-	public String checkRequirements() {
+	public boolean checkRequirements() {
 		if (metaData == null) {
 			// No meta-data, so no requirements.
-			return "";
+			return true;
 		}
 		
 		if (!checkMinimumVersion(getMinVersion(), Main.SVN_REVISION) ||
@@ -388,11 +387,11 @@ public class PluginInfo implements Comparable<PluginInfo> {
 		    !checkPlugins(getMetaInfo(new String[]{"required-plugins", "require-plugins", "required-plugin", "require-plugin"})) ||
 		    !checkOS(getMetaInfo(new String[]{"required-os", "require-os"}), System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch"))
 		    ) {
-			return requirementsError;
+			return false;
 		}
 		
 		// All requirements passed, woo \o
-		return "";
+		return true;
 	}
 
 	/**
