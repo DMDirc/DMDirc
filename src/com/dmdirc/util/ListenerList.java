@@ -33,8 +33,8 @@ import java.util.List;
 public class ListenerList {
     
     /** The map of class->listener or string->listener that we're using. */
-    private final WeakMapList<Object, Object> listeners
-            = new WeakMapList<Object, Object>();
+    private final MapList<Object, Object> listeners
+            = new MapList<Object, Object>();
     
     /**
      * Creates a new instance of ListenerList.
