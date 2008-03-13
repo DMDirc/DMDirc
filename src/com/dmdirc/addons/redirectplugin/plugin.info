@@ -6,3 +6,4 @@ description=Adds commands to redirect command output to channels
 name=redirect
 nicename=Redirect Plugin
 minversion=0
+addonid=4

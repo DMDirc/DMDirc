@@ -8,4 +8,4 @@ nicename=User Levels
 minversion=0
 
 persistant-com.dmdirc.addons.userlevel.AccessLevelComponent=true
-persistant-com.dmdirc.addons.userlevel.ChannelAccessLevelComponent=true
+persistant-com.dmdirc.addons.userlevel.ChannelAccessLevelComponent=tre

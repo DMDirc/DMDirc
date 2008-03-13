@@ -7,3 +7,4 @@ name=logging
 nicename=Logging Plugin
 minversion=0
 require-ui=com.dmdirc.ui.swing
+addonid=16

@@ -6,3 +6,4 @@ description=Allows playing audio files
 name=audio
 nicename=Audio Plugin
 minversion=0
+addonid=14

@@ -7,3 +7,4 @@ name=windowstatus
 nicename=WindowStatus Plugin
 minversion=0
 require-ui=com.dmdirc.ui.swing
+addonid=13

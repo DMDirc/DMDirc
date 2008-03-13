@@ -6,3 +6,4 @@ description=Adds a system tray icon
 name=systray
 nicename=Systray Plugin
 minversion=0
+addonid=5

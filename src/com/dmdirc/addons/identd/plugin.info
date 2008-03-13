@@ -6,3 +6,4 @@ description=Answers ident requests from IRC servers
 name=identd
 nicename=Identd Plugin
 minversion=0
+addonid=15

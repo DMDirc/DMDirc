@@ -8,3 +8,4 @@ nicename=Now Playing Plugin
 minversion=0
 persistant-com.dmdirc.addons.nowplaying.MediaSource=true
 persistant-com.dmdirc.addons.nowplaying.MediaSourceManager=true
+addonid=8

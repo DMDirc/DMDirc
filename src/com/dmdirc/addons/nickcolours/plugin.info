@@ -6,3 +6,4 @@ description=Provides various nick colouring tools
 name=nickcolour
 nicename=Nick Colour Plugin
 minversion=0
+addonid=12

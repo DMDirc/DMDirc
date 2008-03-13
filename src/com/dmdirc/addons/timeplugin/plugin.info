@@ -9,3 +9,4 @@ minversion=0
 persistant-com.dmdirc.addons.timeplugin.TimeActionMetaType=true
 persistant-com.dmdirc.addons.timeplugin.TimeActionMetaType$1=true
 persistant-com.dmdirc.addons.timeplugin.TimeActionType=true
+addonid=6

@@ -7,3 +7,4 @@ name=osd
 nicename=OSD Plugin
 minversion=0
 require-ui=com.dmdirc.ui.swing
+addonid=3

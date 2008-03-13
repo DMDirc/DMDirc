@@ -6,3 +6,4 @@ description=Provides commands to interface with DCOP applications
 name=dcop
 nicename=DCOP Plugin
 minversion=0
+addonid=1
