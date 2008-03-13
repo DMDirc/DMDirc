@@ -30,6 +30,7 @@ import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.updater.components.PluginComponent;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -104,9 +105,16 @@ public class PluginManager implements ActionListener {
 		
 		try {
 			pluginInfo = new PluginInfo(filename);
-			knownPlugins.put(filename.toLowerCase(), pluginInfo);
+			new PluginComponent(pluginInfo);
 			
-			return true;
+			final String requirements = pluginInfo.getRequirementsError();
+			if (requirements.isEmpty()) {
+				knownPlugins.put(filename.toLowerCase(), pluginInfo);
+			
+				return true;
+			} else {
+				throw new PluginException("Plugin "+filename+" was not loaded, one or more requirements not met ("+requirements+")");
+			}
 		} catch (PluginException e) {
 			Logger.userError(ErrorLevel.MEDIUM, "Error loading plugin " + filename + ": " + e.getMessage(), e);
 		}

@@ -53,8 +53,8 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	private boolean tempLoaded = false;
 	/** List of classes this plugin has */
 	private List<String> myClasses = new ArrayList<String>();
-        /** Requirements error message. */
-        private String requirementsError;
+	/** Requirements error message. */
+	private String requirementsError;
 
 	/**
 	 * Create a new PluginInfo.
@@ -128,9 +128,18 @@ public class PluginInfo implements Comparable<PluginInfo> {
 
 			if (isPersistant()) { loadEntirePlugin(); }
 		} else {
-			throw new PluginException("Plugin "+filename+" was not loaded, one or more requirements not met ("+requirements+")");
+			// throw new PluginException("Plugin "+filename+" was not loaded, one or more requirements not met ("+requirements+")");
 		}
 		myResourceManager = null;
+	}
+
+	/**
+	 * Get the contents of requirementsError
+	 *
+	 * @return requirementsError
+	 */
+	public String getRequirementsError() {
+		return requirementsError;
 	}
 
 	/**
