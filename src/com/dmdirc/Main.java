@@ -56,28 +56,13 @@ public final class Main {
     /** Stores the update channel that this version came from, if any. */
     public static final UpdateChannel UPDATE_CHANNEL = UpdateChannel.NONE;
     
-    /**
-     * A revision number for actions and core plugins. If this is increased,
-     * users will be prompted to re-extract them.
-     * 
-     * @deprecated No longer needed, remove post-0.6
-     */
-    @Deprecated
-    private static final int ADDON_REVISION = 11;
-    
-    /**
-     * Feedback nag delay.
-     */
+    /** Feedback nag delay. */
     private static final int FEEDBACK_DELAY = 30 * 60 * 1000;
     
-    /**
-     * The UI to use for the client.
-     */
+    /** The UI to use for the client. */
     private static UIController controller;
     
-    /**
-     * The config dir to use for the client.
-     */
+    /** The config dir to use for the client. */
     private static String configdir;
     
     /**
@@ -106,7 +91,6 @@ public final class Main {
         
         if (IdentityManager.getGlobalConfig().getOptionBool("general", "firstRun", true)) {
             IdentityManager.getConfigIdentity().setOption("general", "firstRun", "false");
-            IdentityManager.getConfigIdentity().setOption("general", "addonrevision", ADDON_REVISION);
             getUI().showFirstRunWizard();
             new Timer().schedule(new TimerTask(){
 
@@ -116,8 +100,9 @@ public final class Main {
                     getUI().showFeedbackNag();
                 }
             }, FEEDBACK_DELAY);
-        } else if (IdentityManager.getGlobalConfig().getOptionInt("general", "addonrevision", -1) < ADDON_REVISION) {
-            IdentityManager.getConfigIdentity().setOption("general", "addonrevision", ADDON_REVISION);
+        } else if (IdentityManager.getGlobalConfig().hasOption("general", "addonrevision")) {
+            // @Deprecated - can be removed after 0.6 is released
+            IdentityManager.getConfigIdentity().unsetOption("general", "addonrevision");
             getUI().showMigrationWizard();
         }        
         
