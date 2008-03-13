@@ -50,14 +50,6 @@ public final class Main {
     /** Stores the current textual program version. */
     public static final String VERSION = "SVN";
     
-    /**
-     * Stores the release date of this version.
-     * 
-     * @deprecated Use SVN revision instead
-     */
-    @Deprecated
-    public static final int RELEASE_DATE = 0;
-    
     /** The SVN revision that this build was made from. */
     public static final int SVN_REVISION = 3601;
     
