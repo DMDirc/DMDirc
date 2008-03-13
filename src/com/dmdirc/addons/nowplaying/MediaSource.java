@@ -35,69 +35,69 @@ public interface MediaSource {
      * 
      * @return True if this source is running, false otherwise
      */
-    public abstract boolean isRunning();
+    boolean isRunning();
     
     /**
      * Determine if this source is currently playing or not.
      * 
      * @return True if this source is playing, false otherwise
      */
-    public abstract boolean isPlaying();
+    boolean isPlaying();
     
     /**
      * Retrieves the name of the application that this source is for.
      * 
      * @return This source's application name
      */
-    public abstract String getAppName();
+    String getAppName();
     
     /**
      * Retrieves the artist of the curently loaded track.
      *
      * @return Current track artist
      */
-    public abstract String getArtist();
+    String getArtist();
     
     /**
      * Retrieves the title of the currently loaded track.
      *
      * @return Current track title
      */
-    public abstract String getTitle();
+    String getTitle();
     
     /**
      * Retrieves the album of the currently loaded track.
      *
      * @return Current track album
      */
-    public abstract String getAlbum();
+    String getAlbum();
     
     /**
      * Retrieves the length of the currently loaded track ([h:]mm:ss).
      *
      * @return Current track length
      */
-    public abstract String getLength();
+    String getLength();
     
     /**
      * Retrieves the time of the currently loaded track ([h:]mm:ss).
      *
      * @return Current track time
      */
-    public abstract String getTime();
+    String getTime();
     
     /**
      * Retrives the format of the currently loaded track.
      *
      * @return Current track format
      */
-    public abstract String getFormat();
+    String getFormat();
     
     /**
      * Retrieves the bitrate of the currently loaded track.
      *
      * @return Current track bitrate
      */
-    public abstract String getBitrate();
+    String getBitrate();
 
 }

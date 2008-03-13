@@ -122,7 +122,7 @@ public final class AliasCommand extends GlobalCommand implements IntelligentComm
     /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
-        AdditionalTabTargets res = new AdditionalTabTargets();
+        final AdditionalTabTargets res = new AdditionalTabTargets();
         
         if (arg == 0) {
             res.add("--remove");

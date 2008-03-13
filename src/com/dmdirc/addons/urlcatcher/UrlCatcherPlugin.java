@@ -78,10 +78,10 @@ public class UrlCatcherPlugin extends Plugin implements ActionListener {
      * @param url The URL to be added
      */
     private void addURL(final String url) {
-        if (!urls.containsKey(url)) {
-            urls.put(url, 1);
-        } else {
+        if (urls.containsKey(url)) {
             urls.put(url, urls.get(url) + 1);
+        } else {
+            urls.put(url, 1);
         }
     }
     

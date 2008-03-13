@@ -34,7 +34,7 @@ import com.dmdirc.plugins.Plugin;
  */
 public final class RedirectPlugin extends Plugin {
     
-    private RedirectCommand command;
+    private final RedirectCommand command;
     
     /** Creates a new system tray plugin. */
     public RedirectPlugin() {

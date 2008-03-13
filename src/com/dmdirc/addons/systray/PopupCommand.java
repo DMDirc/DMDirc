@@ -35,7 +35,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
 public final class PopupCommand extends ServerCommand {
     
     /** The SystrayPlugin that we belong to. */
-    private SystrayPlugin parent;
+    private final SystrayPlugin parent;
     
     /**
      * Creates a new instance of PopupCommand.

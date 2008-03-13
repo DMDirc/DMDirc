@@ -196,7 +196,7 @@ public final class ServerEventHandler extends EventHandler
     
     /** {@inheritDoc} */
     @Override
-    public void onPingSent(IRCParser tParser) {
+    public void onPingSent(final IRCParser tParser) {
         checkParser(tParser);
         
         ActionManager.processEvent(CoreActionType.SERVER_PINGSENT, null, owner);

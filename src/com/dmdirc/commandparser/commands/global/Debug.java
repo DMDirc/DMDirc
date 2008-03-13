@@ -105,7 +105,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
     private void doError(final String ... args) {
         ErrorLevel el = ErrorLevel.HIGH;
         if (args.length > 2) {
-            String level = args[2];
+            final String level = args[2];
             
             if (level.equals("low")) {
                 el = ErrorLevel.LOW;

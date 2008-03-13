@@ -22,8 +22,6 @@
 
 package com.dmdirc.addons.nowplaying;
 
-import com.dmdirc.addons.nowplaying.MediaSource;
-
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;

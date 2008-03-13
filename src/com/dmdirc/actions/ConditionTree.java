@@ -46,7 +46,7 @@ public class ConditionTree {
         /** Doesn't do anything (an empty tree). */
         NOOP
     }
-       
+
     /** The left subtree of this tree. */
     private ConditionTree leftArg = null;
 
@@ -57,11 +57,11 @@ public class ConditionTree {
     private int argument = -1;
 
     /** The operation that this tree performs. */
-    private OPERATION op;
-    
+    private final OPERATION op;
+
     /**
      * Creates a new ConditionTree for a binary operation.
-     * 
+     *
      * @param op The binary operation to perform
      * @param leftArg The left argument/subtree
      * @param rightArg The right argument/subtree
@@ -72,46 +72,46 @@ public class ConditionTree {
         assert(op != OPERATION.NOT);
         assert(leftArg != null);
         assert(rightArg != null);
-        
+
         this.op = op;
         this.leftArg = leftArg;
         this.rightArg = rightArg;
     }
-    
+
     /**
      * Creates a new ConditionTree for a unary operation.
-     * 
+     *
      * @param op
      * @param argument
      */
     private ConditionTree(final OPERATION op, final ConditionTree argument) {
         assert(op == OPERATION.NOT);
-        
+
         this.op = op;
         this.leftArg = argument;
-    }    
-    
+    }
+
     /**
      * Creates a new ConditionTree for a VAR operation with the specified
      * argument number.
-     * 
+     *
      * @param argument The number of the argument that's to be tested.
      */
     private ConditionTree(final int argument) {
         this.op = OPERATION.VAR;
         this.argument = argument;
     }
-    
+
     /**
      * Creates a new ConditionTree for a NOOP operation.
      */
     private ConditionTree() {
         this.op = OPERATION.NOOP;
     }
-    
+
     /**
      * Retrieves the highest argument number that is used in this condition tree.
-     * 
+     *
      * @return The highest argument number used in this tree
      */
     public int getMaximumArgument() {
@@ -129,7 +129,7 @@ public class ConditionTree {
     /**
      * Evaluates this tree with the specified conditions. Returns the result
      * of the evaluation.
-     * 
+     *
      * @param conditions The binary values of each of the conditions used in
      * this three
      * @return The result of the evaluation of this tree
@@ -148,13 +148,13 @@ public class ConditionTree {
                 return true;
         }
     }
-    
+
     /**
      * Retrieves a String representation of this ConditionTree. The string
      * representation is a normalised formula describing this tree and all of
      * its children. The output of this method will generate an identical tree
      * if passed to parseString.
-     * 
+     *
      * @return A string representation of this tree
      */
     @Override
@@ -173,42 +173,42 @@ public class ConditionTree {
         default:
             return "<unknown>";
         }
-    }    
-    
+    }
+
     /**
      * Parses the specified string into a condition tree.
-     * 
+     *
      * @param string The string to be parsed
      * @return The corresponding condition tree, or null if there was an error
      * while parsing the data
      */
     public static ConditionTree parseString(final String string) {
         final Deque<Object> stack = new ArrayDeque<Object>();
-        
+
         for (int i = 0; i < string.length(); i++) {
             final char m = string.charAt(i);
-            
+
             if (isInt(m)) {
-                String temp = "" + m;
-                
+                String temp = String.valueOf(m);
+
                 while (i + 1 < string.length() && isInt(string.charAt(i + 1))) {
                     temp = temp + string.charAt(i + 1);
                     i++;
                 }
-                
+
                 stack.add(new ConditionTree(Integer.parseInt(temp)));
             } else if (m != ' ' && m != '\t' && m != '\n' && m != '\r') {
                 stack.add(m);
             }
         }
-        
+
         return parseStack(stack);
     }
-    
+
     /**
      * Parses the specified stack of elements, and returns a corresponding
      * ConditionTree.
-     * 
+     *
      * @param stack The stack to be read.
      * @return The corresponding condition tree, or null if there was an error
      * while parsing the data.
@@ -216,10 +216,10 @@ public class ConditionTree {
     @SuppressWarnings("fallthrough")
     private static ConditionTree parseStack(final Deque<Object> stack) {
         final Deque<Object> myStack = new ArrayDeque<Object>();
-        
+
         while (!stack.isEmpty()) {
             final Object object = stack.poll();
-            
+
             if (object instanceof Character && ((Character) object) == ')') {
                 final ConditionTree bracket = readBracket(myStack);
 
@@ -232,34 +232,36 @@ public class ConditionTree {
                 myStack.add(object);
             }
         }
-        
+
         while (!myStack.isEmpty()) {
             switch (myStack.size()) {
                 case 1:
                     final Object first = myStack.pollFirst();
                     if (first instanceof ConditionTree) {
                         return (ConditionTree) first;
-                    }            
+                    }
                 case 0:
                     return null;
             }
-            
+
             final ConditionTree first = readTerm(myStack);
-            
+
             if (first == null) {
                 return null;
             } else if (myStack.isEmpty()) {
                 return first;
             }
-            
+
             final Object second = myStack.pollFirst();
-            
-            if (!myStack.isEmpty()) {
+
+            if (myStack.isEmpty()) {
+                return null;
+            } else {
                 final ConditionTree third = readTerm(myStack);
-                
+
                 if (first != null && third != null && second instanceof Character) {
                     OPERATION op;
-                    
+
                     if ((Character) second == '&') {
                         op = OPERATION.AND;
                     } else if ((Character) second == '|') {
@@ -267,48 +269,46 @@ public class ConditionTree {
                     } else {
                         return null;
                     }
-                    
+
                     myStack.addFirst(new ConditionTree(op, first, third));
                 } else {
                     return null;
                 }
-            } else {
-                return null;
             }
         }
-        
+
         return new ConditionTree();
     }
-    
+
     /**
      * Reads and returns a single term from the specified stack.
-     * 
+     *
      * @param stack The stack to be read
      * @return The ConditionTree representing the last element on the stack,
      * or null if it was not possible to create one.
      */
     private static ConditionTree readTerm(final Deque<Object> stack) {
         final Object first = stack.pollFirst();
-        
+
         if (first instanceof Character && (Character) first == '!') {
             if (stack.isEmpty()) {
                 return null;
             }
-            
+
             return new ConditionTree(OPERATION.NOT, readTerm(stack));
         } else {
             if (!(first instanceof ConditionTree)) {
                 return null;
             }
-            
+
             return (ConditionTree) first;
         }
     }
-    
+
     /**
      * Pops elements off of the end of the specified stack until an opening
      * bracket is reached, and then returns the parsed content of the bracket.
-     * 
+     *
      * @param stack The stack to be read for the bracket
      * @return The parsed contents of the bracket, or null if the brackets were
      * mismatched.
@@ -316,74 +316,74 @@ public class ConditionTree {
     private static ConditionTree readBracket(final Deque<Object> stack) {
         final Deque<Object> tempStack = new ArrayDeque<Object>();
         boolean found = false;
-        
+
         while (!found && !stack.isEmpty()) {
             final Object object = stack.pollLast();
-            
+
             if (object instanceof Character && ((Character) object) == '(') {
                 found = true;
             } else {
                 tempStack.addFirst(object);
             }
         }
-        
-        if (!found) {
-            return null;
-        } else {
+
+        if (found) {
             return parseStack(tempStack);
+        } else {
+            return null;
         }
     }
-    
+
     /**
      * Determines if the specified character represents a single digit.
-     * 
+     *
      * @param target The character to be tested
      * @return True if the character is a digit, false otherwise
      */
     private static boolean isInt(final char target) {
         return target >= '0' && target <= '9';
     }
-    
+
     /**
      * Creates a condition tree by disjoining the specified number of arguments
      * together.
-     * 
+     *
      * @param numArgs The number of arguments to be disjoined
      * @return The corresponding condition tree
      */
     public static ConditionTree createDisjunction(final int numArgs) {
         final StringBuilder builder = new StringBuilder();
-        
+
         for (int i = 0; i < numArgs; i++) {
             if (builder.length() != 0) {
                 builder.append('|');
             }
-            
+
             builder.append(i);
         }
-        
-        return parseString(builder.toString());        
+
+        return parseString(builder.toString());
     }
 
     /**
      * Creates a condition tree by conjoining the specified number of arguments
      * together.
-     * 
+     *
      * @param numArgs The number of arguments to be conjoined
      * @return The corresponding condition tree
-     */    
+     */
     public static ConditionTree createConjunction(final int numArgs) {
         final StringBuilder builder = new StringBuilder();
-        
+
         for (int i = 0; i < numArgs; i++) {
             if (builder.length() != 0) {
                 builder.append('&');
             }
-            
+
             builder.append(i);
         }
-        
+
         return parseString(builder.toString());
     }
-       
+
 }

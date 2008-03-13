@@ -38,6 +38,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Plugin that allows users to advertise what they're currently playing or
+ * listening to.
+ * 
+ * @author chris
+ */
 public class NowPlayingPlugin extends Plugin implements ActionListener  {
     
     /** Config domain. */
@@ -49,12 +55,12 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
     /** The now playing command we're registering. */
     private NowPlayingCommand command;
     
-    /** Config panel. */
-    private ConfigPanel configPanel;
-    
     /** The user's preferred order for source usage. */
     private List<String> order;
     
+    /**
+     * Creates a new instance of NowPlayingPlugin.
+     */
     public NowPlayingPlugin() {
         super();
     }
@@ -89,7 +95,7 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
     /** {@inheritDoc} */
     @Override
     public void showConfig(final PreferencesManager manager) {
-        configPanel = new ConfigPanel(this, order);
+        final ConfigPanel configPanel = new ConfigPanel(this, order);
         
         final PreferencesCategory category = new PreferencesCategory("Now Playing",
                 "", configPanel);

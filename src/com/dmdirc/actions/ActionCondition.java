@@ -199,7 +199,7 @@ public class ActionCondition {
     /** {@inheritDoc} */
     @Override
     public boolean equals(final Object obj) {
-        if (obj == null || !(obj instanceof ActionCondition)) {
+        if (!(obj instanceof ActionCondition)) {
             return false;
         }
         

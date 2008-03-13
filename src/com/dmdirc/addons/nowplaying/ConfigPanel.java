@@ -86,10 +86,10 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
     public ConfigPanel(final NowPlayingPlugin plugin, final List<String> sources) {
         super();
 
-        if (sources != null) {
-            this.sources = new LinkedList<String>(sources);
-        } else {
+        if (sources == null) {
             this.sources = new LinkedList<String>();
+        } else {
+            this.sources = new LinkedList<String>(sources);
         }
         this.plugin = plugin;
 
@@ -202,19 +202,19 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
 
     /** {@inheritDoc} */
     @Override
-    public void keyTyped(KeyEvent e) {
+    public void keyTyped(final KeyEvent e) {
         // Do nothing
     }
 
     /** {@inheritDoc} */
     @Override
-    public void keyPressed(KeyEvent e) {
+    public void keyPressed(final KeyEvent e) {
         // Do nothing
     }
 
     /** {@inheritDoc} */
     @Override
-    public void keyReleased(KeyEvent e) {
+    public void keyReleased(final KeyEvent e) {
         if (updateTimer != null) {
             updateTimer.cancel();
         }

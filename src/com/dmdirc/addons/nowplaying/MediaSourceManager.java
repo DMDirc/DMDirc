@@ -37,6 +37,6 @@ public interface MediaSourceManager {
      * 
      * @return A list of sources that this manager manages
      */
-    public List<MediaSource> getSources();
+    List<MediaSource> getSources();
     
 }

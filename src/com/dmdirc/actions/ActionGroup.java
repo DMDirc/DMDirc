@@ -41,7 +41,7 @@ public class ActionGroup extends ArrayList<Action> {
     private static final long serialVersionUID = 1;    
     
     /** The name of this action group. */
-    private String name = null;
+    private final String name;
     
     /** The description of this action group. */
     private String description = null;

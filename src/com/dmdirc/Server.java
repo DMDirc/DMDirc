@@ -122,7 +122,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     private final List<Invite> invites = new ArrayList<Invite>();
     
     /** Our ignore list. */
-    private IgnoreList ignoreList = new IgnoreList();
+    private final IgnoreList ignoreList = new IgnoreList();
     
     /** Our string convertor. */
     private IRCStringConverter converter = new IRCStringConverter();
@@ -941,7 +941,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @param channelName The name of the channel to test
      * @return True if the channel name is valid, false otherwise
      */
-    public boolean isValidChannelName(String channelName) {
+    public boolean isValidChannelName(final String channelName) {
         return hasChannel(channelName) ||
                 (parser != null && parser.isValidChannelName(channelName));
     }

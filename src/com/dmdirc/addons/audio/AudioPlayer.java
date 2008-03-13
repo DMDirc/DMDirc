@@ -22,15 +22,15 @@
 
 package com.dmdirc.addons.audio;
 
+import java.io.File;
+import java.applet.AudioClip;
+import java.applet.Applet;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.DataLine;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.applet.AudioClip;
-import java.applet.Applet;
 
 /**
  * The AudioPlayer handles the playing of the audio

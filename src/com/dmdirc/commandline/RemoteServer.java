@@ -49,7 +49,7 @@ public class RemoteServer implements RemoteInterface {
     
     /** {@inheritDoc} */
     @Override
-    public void connect(List<IrcAddress> addresses) throws RemoteException {
+    public void connect(final List<IrcAddress> addresses) throws RemoteException {
         for (IrcAddress address : addresses) {
             address.connect();
         }
