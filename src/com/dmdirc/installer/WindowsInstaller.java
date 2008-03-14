@@ -158,7 +158,7 @@ public class WindowsInstaller extends Installer {
 		params.add("add");
 		params.add(key);
 		params.add("/f");
-		if (value != "") {
+		if (!value.isEmpty()) {
 			params.add("/v");
 			params.add(value);
 		} else {
