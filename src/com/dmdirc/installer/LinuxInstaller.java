@@ -48,7 +48,10 @@ public class LinuxInstaller extends Installer {
 	 * @return true If the file should be copied, else false.
 	 */
 	public boolean validFile(final String filename) {
-		return (!filename.equalsIgnoreCase("setup.sh"));
+		return (!filename.equalsIgnoreCase("setup.sh") &&
+		        !filename.equalsIgnoreCase("getjre.sh") &&
+		        !filename.equalsIgnoreCase("progressbar.sh") &&
+		        !filename.equalsIgnoreCase("installjre.sh"));
 	}
 
 	/**
@@ -268,16 +271,17 @@ public class LinuxInstaller extends Installer {
 					writer.println("exit 0;");
 					writer.close();
 
-					(new File(location+"/protocolHandlers.sh")).setExecutable(true);
+					final File protocolFile = new File(location+"/protocolHandlers.sh");
+					protocolFile.setExecutable(true);
 
 					try {
 						final Process gconfProcess = Runtime.getRuntime().exec(new String[]{"/bin/sh", location+"/protocolHandlers.sh"});
 						new StreamReader(gconfProcess.getInputStream()).start();
 						new StreamReader(gconfProcess.getErrorStream()).start();
 						gconfProcess.waitFor();
-						// (new File(location+"/protocolHandlers.sh")).delete();
+						protocolFile.delete();
 					} catch (Exception e) {
-						step.addText(" - Error adding gnome Protocol Handler: "+e.getMessage());
+						step.addText(" - Error adding Protocol Handler: "+e.getMessage());
 					}
 					return;
 
