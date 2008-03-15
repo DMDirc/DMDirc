@@ -79,7 +79,7 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
         if (information.containsKey("playlist_current")) {
             try {
                 final int item = Integer.parseInt(information.get("playlist_current"));
-                String[] bits = information.get("playlist_item_" + item).split(File.separator);
+                String[] bits = information.get("playlist_item_" + item).split((File.separatorChar=='\\' ? "\\\\" : File.separator));
                 result = bits[bits.length-1];
                 bits = result.split("-");
                 if (bits.length > 1) {

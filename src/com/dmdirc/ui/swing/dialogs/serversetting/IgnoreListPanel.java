@@ -33,7 +33,6 @@ import com.dmdirc.ui.swing.components.StandardInputDialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -140,14 +139,6 @@ public final class IgnoreListPanel extends JPanel implements ActionListener,
     
     /** Populates the ignore list. */
     private void populateList() {        
-        List<String> results;
-        
-        if (viewToggle.isSelected()) {
-            results = cachedIgnoreList.getRegexList();
-        } else {
-            results = cachedIgnoreList.getSimpleList();
-        }
-        
         if (list.getSelectedIndex() == -1) {
             delButton.setEnabled(false);
         }

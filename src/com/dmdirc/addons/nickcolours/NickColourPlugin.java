@@ -60,9 +60,6 @@ public final class NickColourPlugin extends Plugin implements ActionListener {
         "58ADB3", "9E54B3", "B39875", "3176B3",
     };
     
-    /** The nick colour panel we use for config. */
-    private NickColourPanel nickpanel;
-    
     /** Creates a new instance of NickColourPlugin. */
     public NickColourPlugin() {
         super();
@@ -137,7 +134,8 @@ public final class NickColourPlugin extends Plugin implements ActionListener {
      * by config settings.
      *
      * @param map The map to use
-     * @param colour The colour to be inserted
+     * @param textColour Text colour to be inserted
+     * @param nickColour Nick colour to be inserted
      */
     @SuppressWarnings("unchecked")
     private void putColour(final Map map, final Color textColour, final Color nickColour) {
@@ -222,7 +220,7 @@ public final class NickColourPlugin extends Plugin implements ActionListener {
     @Override
     public void onLoad() {
         if (IdentityManager.getGlobalConfig().hasOption(DOMAIN, "randomcolours")) {
-            randColours =(String[]) IdentityManager.getGlobalConfig().getOptionList(DOMAIN, "randomcolours").toArray();
+            randColours = IdentityManager.getGlobalConfig().getOptionList(DOMAIN, "randomcolours").toArray(new String[0]);
         }
         
         ActionManager.addListener(this, CoreActionType.CHANNEL_GOTNAMES,

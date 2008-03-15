@@ -91,13 +91,13 @@ public class DurationEditor extends StandardDialog implements ActionListener {
         minutesSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 60, 1));
         secondsSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 60, 1));
         
-        daysSpinner.setValue(new Long(duration / 86400).intValue());
+        daysSpinner.setValue((int) duration / 86400);
         duration = (duration % 86400);
-        hoursSpinner.setValue(new Long(duration / 3600).intValue());
+        hoursSpinner.setValue((int) duration / 3600);
         duration = (duration % 3600);
-        minutesSpinner.setValue(new Long(duration / 60).intValue());
+        minutesSpinner.setValue((int) duration / 60);
         duration = (duration % 60);
-        secondsSpinner.setValue(new Long(duration).intValue());
+        secondsSpinner.setValue((int) duration);
     }
 
     /**

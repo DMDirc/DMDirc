@@ -122,7 +122,7 @@ public final class OsdPlugin extends Plugin implements CategoryChangeListener,
 
     /** {@inheritDoc} */
     @Override
-    public void CategorySelected(final PreferencesCategory category) {
+    public void categorySelected(final PreferencesCategory category) {
         osdWindow = new OsdWindow("Please drag this OSD to position", true, x, y);
         osdWindow.setBackgroundColour(backgroundSetting.getValue());
         osdWindow.setForegroundColour(foregroundSetting.getValue());
@@ -131,7 +131,7 @@ public final class OsdPlugin extends Plugin implements CategoryChangeListener,
 
     /** {@inheritDoc} */
     @Override
-    public void CategoryDeselected(final PreferencesCategory category) {
+    public void categoryDeselected(final PreferencesCategory category) {
         x = osdWindow.getLocationOnScreen().x;
         y = osdWindow.getLocationOnScreen().y;
         

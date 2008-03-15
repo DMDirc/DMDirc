@@ -273,9 +273,9 @@ public class JWrappingLabel extends JComponent {
 					int x;
 					int alignment = getHorizontalAlignment();
 					if (alignment == SwingConstants.CENTER) {
-						x = (int)((getWidth()/2) - (bounds.getWidth()/2));
+						x = (getWidth() / 2) - ((int) bounds.getWidth() / 2);
 					} else if (alignment == SwingConstants.RIGHT) {
-						x = (int)(getWidth() - bounds.getWidth());
+						x = getWidth() - (int) bounds.getWidth();
 					} else {
 						x = 0;
 					}

@@ -166,7 +166,7 @@ public class WindowsInstaller extends Installer {
 		}
 		params.add("/t");
 		params.add(type);
-		if (data != "") {
+		if (!data.equals("")) {
 			params.add("/d");
 			params.add(data);
 		}

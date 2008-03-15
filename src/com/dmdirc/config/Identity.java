@@ -202,6 +202,7 @@ public class Identity extends ConfigSource implements Serializable,
         
         properties.clear();
         properties.load(input);
+        input.close();
         
         for (Entry<Object, Object> entry : properties.entrySet()) {
             if (oldProps.containsKey(entry.getKey())) {

@@ -315,7 +315,7 @@ public class Action extends ActionModel implements Serializable {
 
         if (newFormat != null) {
             newConfig.addDomain(DOMAIN_FORMAT, new ArrayList<String>());
-            newConfig.getFlatDomain(DOMAIN_FORMAT).add(newFormat.toString());
+            newConfig.getFlatDomain(DOMAIN_FORMAT).add(newFormat);
         }
 
         int i = 0;

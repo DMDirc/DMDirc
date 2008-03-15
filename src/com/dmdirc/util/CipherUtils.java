@@ -38,7 +38,6 @@ import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
-import java.util.logging.Level;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -55,28 +54,28 @@ import net.miginfocom.Base64;
 public class CipherUtils {
     
     /** Singleton instance. */
-    protected static CipherUtils me;
+    private static CipherUtils me;
     
     /** Encryption cipher. */
-    protected Cipher ecipher;
+    private Cipher ecipher;
     
     /** Decryption cipher. */
-    protected Cipher dcipher;
+    private Cipher dcipher;
     
     /** Salt. */
-    protected final byte[] SALT = {
+    private final byte[] SALT = {
         (byte) 0xA9, (byte) 0x9B, (byte) 0xC8, (byte) 0x32,
         (byte) 0x56, (byte) 0x35, (byte) 0xE3, (byte) 0x03,
     };
     
     /** Iteration count. */
-    protected final int ITERATIONS = 19;
+    private static final int ITERATIONS = 19;
     
     /** Number of auth attemps before failing the attempt. */
-    protected final int AUTH_TRIES = 4;
+    private static final int AUTH_TRIES = 4;
     
     /** User password. */
-    protected String password;
+    private String password;
     
     /**
      * Prevents creation of a new instance of Encipher.

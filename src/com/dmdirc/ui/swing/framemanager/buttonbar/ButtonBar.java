@@ -346,7 +346,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
     /** {@inheritDoc} */
     @Override
     public void notificationSet(final Window window, final Color colour) {
-        if (buttons.containsKey(window)) {
+        if (buttons.containsKey(window.getContainer())) {
             buttons.get(window.getContainer()).setForeground(colour);
         }
     }

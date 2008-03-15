@@ -146,7 +146,7 @@ public final class ErrorManager implements Serializable, Runnable {
      *
      * @return ProgramError with specified ID
      */
-    public ProgramError getError(final int id) {
+    public ProgramError getError(final long id) {
         return errors.get(id);
     }
     

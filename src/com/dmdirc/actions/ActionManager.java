@@ -395,7 +395,7 @@ public final class ActionManager {
      */
     public static void reregisterAction(final Action action) {
         unregisterAction(action);
-        reregisterAction(action);
+        registerAction(action);
     }
 
     /**

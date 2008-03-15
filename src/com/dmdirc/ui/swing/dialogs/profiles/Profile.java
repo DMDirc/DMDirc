@@ -48,7 +48,7 @@ public class Profile {
     public Profile() {
         this("");
     }
-    
+
     /**
      * Creates a new profile.
      *
@@ -316,23 +316,23 @@ public class Profile {
             profile.setOption(profileString, "altnicks", altNicknames);
         }
     }
-    
+
     /** Deletes the profile. */
     public void delete() {
-            final List<Identity> identities = IdentityManager.getProfiles();
-            Identity profile = null;
+        final List<Identity> identities = IdentityManager.getProfiles();
+        Identity profile = null;
 
-            for (Identity identity : identities) {
-                if (identity.getName().equals(name)) {
-                    profile = identity;
-                    break;
-                }
+        for (Identity identity : identities) {
+            if (identity.getName().equals(name)) {
+                profile = identity;
+                break;
             }
+        }
 
-            if (profile == null) {
-                return;
-            }
-            profile.delete();
+        if (profile == null) {
+            return;
+        }
+        profile.delete();
     }
 
     /** {@inheritDoc} */
@@ -346,27 +346,27 @@ public class Profile {
         }
 
         final Profile other = (Profile) obj;
-        
-        if (!this.name.equals(other.name) &&
-                (this.name == null || !this.name.equals(other.name))) {
+
+        if (!this.name.equals(other.name)) {
             return false;
         }
-        if (!this.nickname.equals(other.nickname) &&
-                (this.nickname == null || !this.nickname.equals(other.nickname))) {
+        if (!this.nickname.equals(other.nickname)) {
             return false;
         }
-        if (!this.realname.equals(other.realname) &&
-                (this.realname == null || !this.realname.equals(other.realname))) {
+        if (!this.realname.equals(other.realname)) {
             return false;
         }
-        if ((this.ident == null && other.ident != null) && 
-                !this.ident.equals(other.ident) &&
-                (this.ident == null || !this.ident.equals(other.ident))) {
+        if (this.ident == null && other.ident != null) {
             return false;
         }
-        if (this.altNicknames != other.altNicknames &&
-                (this.altNicknames == null ||
-                !this.altNicknames.equals(other.altNicknames))) {
+        if (this.ident != null && !this.ident.equals(other.ident)) {
+            return false;
+        }
+        if (this.altNicknames != other.altNicknames) {
+            return false;
+        }
+        if (this.altNicknames == null ||
+                !this.altNicknames.equals(other.altNicknames)) {
             return false;
         }
 
@@ -378,12 +378,12 @@ public class Profile {
     public int hashCode() {
         int hash = 5;
         hash = 79 * hash + (this.name != null ? this.name.hashCode() : 0);
-        hash =  79 * hash +
+        hash = 79 * hash +
                 (this.nickname != null ? this.nickname.hashCode() : 0);
-        hash =  79 * hash +
+        hash = 79 * hash +
                 (this.realname != null ? this.realname.hashCode() : 0);
         hash = 79 * hash + (this.ident != null ? this.ident.hashCode() : 0);
-        hash =  79 * hash +
+        hash = 79 * hash +
                 (this.altNicknames != null ? this.altNicknames.hashCode() : 0);
 
         return hash;

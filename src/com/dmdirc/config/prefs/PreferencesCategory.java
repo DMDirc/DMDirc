@@ -230,7 +230,7 @@ public class PreferencesCategory {
      */
     public void fireCategorySelected() {
         for (CategoryChangeListener listener : listeners.get(CategoryChangeListener.class)) {
-            listener.CategorySelected(this);
+            listener.categorySelected(this);
         }
     }
     
@@ -239,7 +239,7 @@ public class PreferencesCategory {
      */
     public void fireCategoryDeselected() {
         for (CategoryChangeListener listener : listeners.get(CategoryChangeListener.class)) {
-            listener.CategoryDeselected(this);
+            listener.categoryDeselected(this);
         }
     }    
 

@@ -189,14 +189,14 @@ public class ConditionTree {
             final char m = string.charAt(i);
 
             if (isInt(m)) {
-                String temp = String.valueOf(m);
+                StringBuilder temp = new StringBuilder(String.valueOf(m));
 
                 while (i + 1 < string.length() && isInt(string.charAt(i + 1))) {
-                    temp = temp + string.charAt(i + 1);
+                    temp.append(string.charAt(i + 1));
                     i++;
                 }
 
-                stack.add(new ConditionTree(Integer.parseInt(temp)));
+                stack.add(new ConditionTree(Integer.parseInt(temp.toString())));
             } else if (m != ' ' && m != '\t' && m != '\n' && m != '\r') {
                 stack.add(m);
             }

@@ -40,6 +40,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -271,6 +272,6 @@ class InviteAction extends AbstractAction {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return invite.getChannel() + "(" + invite.getSource() + ")";
+        return invite.getChannel() + "(" + Arrays.toString(invite.getSource()) + ")";
     }
 }

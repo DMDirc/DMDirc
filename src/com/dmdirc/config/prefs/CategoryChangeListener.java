@@ -34,12 +34,12 @@ public interface CategoryChangeListener {
      * 
      * @param category The category that was selected
      */
-    void CategorySelected(final PreferencesCategory category);
+    void categorySelected(final PreferencesCategory category);
     
     /**
      * Called when a category has been deselected.
      * 
      * @param category The category that was deselected
      */
-    void CategoryDeselected(final PreferencesCategory category);
+    void categoryDeselected(final PreferencesCategory category);
 }
