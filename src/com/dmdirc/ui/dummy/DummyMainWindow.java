@@ -25,27 +25,17 @@ package com.dmdirc.ui.dummy;
 import com.dmdirc.ui.interfaces.MainWindow;
 import com.dmdirc.ui.interfaces.Window;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.ImageIcon;
-import javax.swing.JMenuItem;
 
 /**
  * Dummy main window, used for testing.
  */
 public final class DummyMainWindow implements MainWindow {
     
-    /** List of windows. */
-    private final List<Window> windows = new ArrayList<Window>();
-    /** List of plugin menu items. */
-    private final List<JMenuItem> pluginMenu = new ArrayList<JMenuItem>();
     /** Are the windows maximised? */
     private boolean maximised;
     /** Are we visible? */
     private boolean visible = true;
-    /** Active window. */
-    private Window active;
     
     /**
      * Creates a new instance of DummyMainWindow.
@@ -57,7 +47,7 @@ public final class DummyMainWindow implements MainWindow {
     /** {@inheritDoc} */
     @Override
     public void setActiveFrame(final Window frame) {
-        active = frame;
+        // Do nothing
     }
     
     /** {@inheritDoc} */

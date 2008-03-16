@@ -156,8 +156,6 @@ public class IRCParser implements Runnable {
 	boolean post005;
 	/** Has the thread started execution yet, (Prevents run() being called multiple times). */
 	boolean hasBegan;
-	/** Is this line the first line we have seen? */
-	boolean isFirst = true;
 
 	/** Hashtable storing known prefix modes (ohv). */
 	Hashtable<Character, Long> hPrefixModes = new Hashtable<Character, Long>();
@@ -728,7 +726,6 @@ public class IRCParser implements Runnable {
 			localhost = "*";
 		}
 		sendString("USER " + toLowerCase(me.getUsername()) + " "+localhost+" "+server.getHost()+" :" + me.getRealname());
-		isFirst = false;
 	}
 
 	/**
