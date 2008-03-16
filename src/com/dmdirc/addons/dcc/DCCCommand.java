@@ -32,8 +32,6 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
-import java.io.File;
-
 /**
  * This command allows starting dcc chats/file transfers
  *
@@ -41,12 +39,15 @@ import java.io.File;
  * @version $Id: DCCCommand.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public final class DCCCommand extends GlobalCommand {
-	/** My Plugin */
+
+    /** My Plugin */
 	final DCCPlugin myPlugin;
 
 	/**
 	 * Creates a new instance of DCCCommand.
-	 */
+     * 
+     * @param plugin The DCC Plugin that this command belongs to
+     */
 	public DCCCommand(final DCCPlugin plugin) {
 		super();
 		myPlugin = plugin;
@@ -57,7 +58,6 @@ public final class DCCCommand extends GlobalCommand {
 	 * Executes this command.
 	 *
 	 * @param origin The frame in which this command was issued
-	 * @param server The server object that this command is associated with
 	 * @param isSilent Whether this command is silenced or not
 	 * @param args The user supplied arguments
 	 */
@@ -69,9 +69,9 @@ public final class DCCCommand extends GlobalCommand {
 			if (type.equalsIgnoreCase("chat")) {
 				final IRCParser parser = origin.getContainer().getServer().getParser();
 				final String myNickname = parser.getMyNickname();
-				DCCChat chat = new DCCChat();
+				final DCCChat chat = new DCCChat();
 				chat.listen();
-				DCCChatWindow window = new DCCChatWindow(myPlugin, chat, "*Chat: "+target, myNickname, target);
+				final DCCChatWindow window = new DCCChatWindow(myPlugin, chat, "*Chat: "+target, myNickname, target);
 				parser.sendCTCP(target, "DCC", "CHAT chat "+DCC.ipToLong(chat.getHost())+" "+chat.getPort());
 				sendLine(origin, isSilent, FORMAT_OUTPUT, "Starting DCC Chat with: "+target+" on "+chat.getHost()+":"+chat.getPort());
 				window.getFrame().addLine(FORMAT_OUTPUT, "Starting DCC Chat with: "+target+" on "+chat.getHost()+":"+chat.getPort());
@@ -89,16 +89,18 @@ public final class DCCCommand extends GlobalCommand {
 	 * Ask for the file to send, then start the send.
 	 *
 	 * @param target Person this dcc is to.
-	 * @param window The InputWindow this command was issued on
+	 * @param origin The InputWindow this command was issued on
 	 * @param isSilent Whether this command is silenced or not
 	 */
 	public void sendFile(final String target, final InputWindow origin, final boolean isSilent) {
 		// New thread to ask the user what file to senfd
-		Thread dccThread = new Thread(new Runnable() {
+		final Thread dccThread = new Thread(new Runnable() {
+            /** {@inheritDoc} */
+            @Override
 			public void run() {
 				final JFileChooser jc = new JFileChooser();
 				jc.setDialogTitle("Send file to "+target+" - DMDirc ");
-				jc.setFileSelectionMode(jc.FILES_AND_DIRECTORIES);
+				jc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 				jc.setMultiSelectionEnabled(false);
 				int result = jc.showOpenDialog((JFrame)Main.getUI().getMainWindow());
 				if (result == JFileChooser.APPROVE_OPTION) {
@@ -114,11 +116,11 @@ public final class DCCCommand extends GlobalCommand {
 					send.setFileSize(jc.getSelectedFile().length());
 					if (IdentityManager.getGlobalConfig().getOptionBool(DCCPlugin.getDomain(), "send.reverse", false)) {
 						new DCCSendWindow(myPlugin, send, "*Send: "+target, myNickname, target);
-						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(send.getHost())+" 0 "+send.getFileSize()+" "+send.makeToken()+((send.getTurbo()) ? "T" : ""));
+						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(send.getHost())+" 0 "+send.getFileSize()+" "+send.makeToken()+((send.isTurbo()) ? "T" : ""));
 					} else {
 						new DCCSendWindow(myPlugin, send, "Send: "+target, myNickname, target);
 						send.listen();
-						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+send.getFileSize()+((send.getTurbo()) ? " T" : ""));
+						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+send.getFileSize()+((send.isTurbo()) ? " T" : ""));
 					}
 				}
 			}
@@ -150,12 +152,6 @@ public final class DCCCommand extends GlobalCommand {
 	 */
 	@Override
 	public String getHelp() { return "dcc - Allows DCC"; }
-	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo() { return "$Id: DCCCommand.java 969 2007-04-30 18:38:20Z ShaneMcC $"; }	
+
 }
 

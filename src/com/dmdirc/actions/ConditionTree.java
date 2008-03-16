@@ -189,7 +189,7 @@ public class ConditionTree {
             final char m = string.charAt(i);
 
             if (isInt(m)) {
-                StringBuilder temp = new StringBuilder(String.valueOf(m));
+                final StringBuilder temp = new StringBuilder(String.valueOf(m));
 
                 while (i + 1 < string.length() && isInt(string.charAt(i + 1))) {
                     temp.append(string.charAt(i + 1));

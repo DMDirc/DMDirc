@@ -92,6 +92,7 @@ public abstract class DCC implements Runnable {
 	/**
 	 * This handles the socket to keep it out of the main thread
 	 */
+    @Override
 	public void run() {
 		if (running) { return; }
 		running = true;
@@ -99,7 +100,12 @@ public abstract class DCC implements Runnable {
 		// when the socket is closed.
 		Thread thisThread = Thread.currentThread();
 		while (myThread == thisThread) {
-			if (serverSocket != null) {
+			if (serverSocket == null) {
+				if (!handleSocket()) {
+					close();
+					break;
+				}
+			} else {
 				try {
 					socket = serverSocket.accept();
 					serverSocket.close();
@@ -108,11 +114,6 @@ public abstract class DCC implements Runnable {
 					break;
 				}
 				serverSocket = null;
-			} else {
-				if (!handleSocket()) {
-					close();
-					break;
-				}
 			}
 		}
 		// Socket closed
@@ -155,7 +156,9 @@ public abstract class DCC implements Runnable {
 	protected void socketClosed() { }
 	
 	/**
-	 * Check if this socket can be written to
+	 * Check if this socket can be written to.
+     * 
+     * @return True if the socket is writable, false otehrwise
 	 */
 	public boolean isWriteable() {
 		return false;
@@ -214,7 +217,7 @@ public abstract class DCC implements Runnable {
 	 * @return ip as a long
 	 */
 	public static long ipToLong(final String ip) {
-		String bits[] = ip.split("\\.");
+		final String bits[] = ip.split("\\.");
 		if (bits.length > 3) {
 			return (Long.parseLong(bits[0]) << 24) + (Long.parseLong(bits[1]) << 16) + (Long.parseLong(bits[2]) << 8) + Long.parseLong(bits[3]);
 		}

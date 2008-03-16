@@ -24,7 +24,6 @@ package com.dmdirc.addons.dcc;
 
 import com.dmdirc.config.IdentityManager;
 
-import java.net.Socket;
 import java.io.File;
 import java.io.IOException;
 import java.io.DataInputStream;
@@ -149,7 +148,7 @@ public class DCCSend extends DCC {
 	 *
 	 * @return True for turbo dcc, else false
 	 */
-	public boolean getTurbo() {
+	public boolean isTurbo() {
 		return turbo;
 	}
 	
@@ -252,12 +251,13 @@ public class DCCSend extends DCC {
 	/**
 	 * Called when the socket is first opened, before any data is handled.
 	 */
+    @Override
 	protected void socketOpened() {
 		try {
 			transferFile = new File(filename);
 			if (transferType == TransferType.RECEIVE) {
 				fileOut = new DataOutputStream(new FileOutputStream(transferFile.getAbsolutePath(), (startpos > 0)));
-				System.out.println("Appending: "+(startpos > 0));
+				//System.out.println("Appending: "+(startpos > 0));
 			}
 			out = new DataOutputStream(socket.getOutputStream());
 			in = new DataInputStream(socket.getInputStream());
@@ -270,6 +270,7 @@ public class DCCSend extends DCC {
 	/**
 	 * Called when the socket is closed, before the thread terminates.
 	 */
+    @Override
 	protected void socketClosed() {
 		// Try to close both, even if one fails.
 		try { out.close(); } catch (Exception e) { }
@@ -288,6 +289,7 @@ public class DCCSend extends DCC {
 	 * @return false when socket is closed, true will cause the method to be
 	 *         called again.
 	 */
+    @Override
 	protected boolean handleSocket() {
 		if (out == null || in == null) { return false; }	
 		if (transferType == TransferType.RECEIVE) {
@@ -306,8 +308,8 @@ public class DCCSend extends DCC {
 	 */
 	protected boolean handleReceive() {
 		try {
-			byte[] data = new byte[blockSize];
-			int bytesRead = in.read(data);
+			final byte[] data = new byte[blockSize];
+			final int bytesRead = in.read(data);
 			readSize = readSize + bytesRead;
 			
 			if (bytesRead > 0) {
@@ -338,7 +340,7 @@ public class DCCSend extends DCC {
 	 */
 	protected boolean handleSend() {
 		try {
-			byte[] data = new byte[blockSize];
+			final byte[] data = new byte[blockSize];
 			int bytesRead = fileIn.read(data);
 			readSize = readSize + bytesRead;
 			

@@ -69,6 +69,7 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 	 *
 	 * @param line The line to be sent
 	 */
+    @Override
 	public void sendLine(final String line) {
 		if (dcc.isWriteable()) {
 			myWindow.addLine("OUT<< "+line, false);
@@ -76,7 +77,6 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 		} else {
 			myWindow.addLine("<<ERROR>> Socket is closed.", false);
 		}
-		return;
 	}
 	
 	/**
@@ -85,6 +85,7 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 	 * @param dcc The DCCChat that this message is from
 	 * @param message The message
 	 */
+    @Override
 	public void handleChatMessage(final DCCChat dcc, final String message) {
 		myWindow.addLine(" IN>> "+message, false);
 	}
@@ -94,6 +95,7 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 	 *
 	 * @param dcc The DCCChat that this message is from
 	 */
+    @Override
 	public void socketClosed(final DCCChat dcc) {
 		myWindow.addLine(" -- Socket closed -- ", false);
 	}
@@ -103,6 +105,7 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 	 *
 	 * @param dcc The DCCChat that this message is from
 	 */
+    @Override
 	public void socketOpened(final DCCChat dcc) {
 		myWindow.addLine(" ++ Socket opened ++ ", false);
 	}
@@ -110,7 +113,7 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 	/**
 	 * Closes this container (and it's associated frame).
 	 */
-        @Override
+    @Override
 	public void windowClosing() {
 		dcc.close();
 		super.windowClosing();

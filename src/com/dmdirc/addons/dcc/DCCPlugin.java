@@ -41,7 +41,6 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.prefs.PreferencesCategory;
 import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.config.prefs.PreferencesSetting;
-import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
 
@@ -64,6 +63,7 @@ import javax.swing.JFrame;
  * @version $Id: DCCPlugin.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public final class DCCPlugin extends Plugin implements ActionListener {
+    
 	/** The DCCCommand we created */
 	private DCCCommand command = null;
 
@@ -74,7 +74,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	private static final String MY_DOMAIN = "plugin-DCC";
 
 	/** Child Frames */
-	private List<DCCFrame> childFrames = new ArrayList<DCCFrame>();
+	private final List<DCCFrame> childFrames = new ArrayList<DCCFrame>();
 
 	/**
 	 * Creates a new instance of the DCC Plugin.
@@ -95,7 +95,9 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 */
 	public void askQuestion(final String question, final String title, final int desiredAnswer, final ActionType type, final StringBuffer format, final Object... arguments) {
 		// New thread to ask the question in to stop us locking the UI
-		Thread questionThread = new Thread(new Runnable() {
+		final Thread questionThread = new Thread(new Runnable() {
+            /** {@inheritDoc} */
+            @Override
 			public void run() {
 				int result = JOptionPane.showConfirmDialog(null, question, title, JOptionPane.YES_NO_OPTION);
 				if (result == desiredAnswer) {
@@ -114,11 +116,14 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 * @param send The DCCSend to save for.
 	 * @param parser The parser this send was received on
 	 * @param reverse Is this a reverse dcc?
-	 * @param token Token used in reverse dcc.
+     * @param sendFilename The name of the file which is being received
+     * @param token Token used in reverse dcc.
 	 */
 	public void saveFile(final String nickname, final DCCSend send, final IRCParser parser, final boolean reverse, final String sendFilename, final String token) {
 		// New thread to ask the user where to save in to stop us locking the UI
-		Thread dccThread = new Thread(new Runnable() {
+		final Thread dccThread = new Thread(new Runnable() {
+            /** {@inheritDoc} */
+            @Override
 			public void run() {
 				final JFileChooser jc = new JFileChooser(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "receive.savelocation"));
 				jc.setDialogTitle("Save "+sendFilename+" As - DMDirc ");
@@ -155,22 +160,22 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 					if (reverse && !token.isEmpty()) {
 						new DCCSendWindow(DCCPlugin.this, send, "*Receive: "+nickname, parser.getMyNickname(), nickname);
 						send.setToken(token);
-						if (!resume) {
-							send.listen();
-							parser.sendCTCP(nickname, "DCC", "SEND "+sendFilename+" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+send.getFileSize()+" "+token);
-						} else {
+						if (resume) {
 							if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "receive.reverse.sendtoken", true)) {
 								parser.sendCTCP(nickname, "DCC", "RESUME "+sendFilename+" 0 "+jc.getSelectedFile().length()+" "+token);
 							} else {
 								parser.sendCTCP(nickname, "DCC", "RESUME "+sendFilename+" 0 "+jc.getSelectedFile().length());
 							}
+						} else {
+							send.listen();
+							parser.sendCTCP(nickname, "DCC", "SEND "+sendFilename+" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+send.getFileSize()+" "+token);
 						}
 					} else {
 						new DCCSendWindow(DCCPlugin.this, send, "Receive: "+nickname, parser.getMyNickname(), nickname);
-						if (!resume) {
-							send.connect();
-						} else {
+						if (resume) {
 							parser.sendCTCP(nickname, "DCC", "RESUME "+sendFilename+" "+send.getPort()+" "+jc.getSelectedFile().length());
+						} else {
+							send.connect();
 						}
 					}
 				}
@@ -212,17 +217,17 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 			if (ctcpType.equalsIgnoreCase("DCC")) {
 				if (ctcpData[0].equalsIgnoreCase("chat") && ctcpData.length > 3) {
 					final String nickname = ((ClientInfo)arguments[1]).getNickname();
-					if (!dontAsk) {
-						askQuestion("User "+nickname+" on "+((Server)arguments[0]).toString()+" would like to start a DCC Chat with you.\n\nDo you want to continue?", "DCC Chat Request", JOptionPane.YES_OPTION, type, format, arguments);
-						return;
-					} else {
-						DCCChat chat = new DCCChat();
+					if (dontAsk) {
+						final DCCChat chat = new DCCChat();
 						try {
 							chat.setAddress(Long.parseLong(ctcpData[2]), Integer.parseInt(ctcpData[3]));
 						} catch (NumberFormatException nfe) { return; }
-						String myNickname = ((Server)arguments[0]).getParser().getMyNickname();
+						final String myNickname = ((Server)arguments[0]).getParser().getMyNickname();
 						new DCCChatWindow(this, chat, "Chat: "+nickname, myNickname, nickname);
 						chat.connect();
+					} else {
+						askQuestion("User "+nickname+" on "+((Server)arguments[0]).toString()+" would like to start a DCC Chat with you.\n\nDo you want to continue?", "DCC Chat Request", JOptionPane.YES_OPTION, type, format, arguments);
+						return;
 					}
 				} else if (ctcpData[0].equalsIgnoreCase("send") && ctcpData.length > 3) {
 					final String nickname = ((ClientInfo)arguments[1]).getNickname();
@@ -230,7 +235,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 					// Clients tend to put files with spaces in the name in "" so lets look for that.
 					final StringBuilder filenameBits = new StringBuilder();
 					int i;
-					boolean quoted = ctcpData[1].startsWith("\"");
+					final boolean quoted = ctcpData[1].startsWith("\"");
 					if (quoted) {
 						for (i = 1; i < ctcpData.length; i++) {
 							String bit = ctcpData[i];
@@ -264,7 +269,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 						askQuestion("User "+nickname+" on "+((Server)arguments[0]).toString()+" would like to send you a file over DCC.\n\nFile: "+filename+"\n\nDo you want to continue?", "DCC Send Request", JOptionPane.YES_OPTION, type, format, arguments);
 						return;
 					} else {
-						boolean newSend = (send == null);
+						final boolean newSend = send == null;
 						if (newSend) {
 							send = new DCCSend();
 							send.setTurbo(IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "send.forceturbo", false));
@@ -275,7 +280,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 						if (newSend) {
 							send.setFileName(filename);
 							send.setFileSize(size);
-							saveFile(nickname, send, ((Server)arguments[0]).getParser(), port.equals("0"), (quoted) ? "\""+filename+"\"" : filename, token);
+							saveFile(nickname, send, ((Server)arguments[0]).getParser(), "0".equals(port), (quoted) ? "\""+filename+"\"" : filename, token);
 						} else {
 							send.connect();
 						}
@@ -286,7 +291,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 					// Clients tend to put files with spaces in the name in "" so lets look for that.
 					final StringBuilder filenameBits = new StringBuilder();
 					int i;
-					boolean quoted = ctcpData[1].startsWith("\"");
+					final boolean quoted = ctcpData[1].startsWith("\"");
 					if (quoted) {
 						for (i = 1; i < ctcpData.length; i++) {
 							String bit = ctcpData[i];
@@ -346,7 +351,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 */
 	protected void createContainer() {
 		container = new DCCFrame(this, "DCCs"){};
-		JWrappingLabel label = new JWrappingLabel("This is a placeholder window to group DCCs together.", SwingConstants.CENTER);
+		final JWrappingLabel label = new JWrappingLabel("This is a placeholder window to group DCCs together.", SwingConstants.CENTER);
 		label.setText(label.getText()+"\n\nClosing this window will close all the active DCCs");
 		((TextFrame)container.getFrame()).getContentPane().add(label);
 		WindowManager.addWindow(container.getFrame());
@@ -382,7 +387,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 			childFrames.clear();
 		} else {
 			childFrames.remove(window);
-			if (childFrames.size() == 0) {
+			if (childFrames.isEmpty()) {
 				container.close();
 				container = null;
 			}
@@ -394,7 +399,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 */
 	@Override
 	public void onLoad() {
-		Properties defaults = new Properties();
+		final Properties defaults = new Properties();
 		defaults.setProperty(MY_DOMAIN + ".receive.savelocation", Main.getConfigDir() + "downloads" + System.getProperty("file.separator"));
 		defaults.setProperty(MY_DOMAIN + ".send.reverse", "false");
 		defaults.setProperty(MY_DOMAIN + ".send.forceturbo", "true");
@@ -405,16 +410,16 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		IdentityManager.addIdentity(new Identity(defaults));
 
 		final File dir = new File(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "receive.savelocation"));
-		if (!dir.exists()) {
+		if (dir.exists()) {
+			if (!dir.isDirectory()) {
+				Logger.userError(ErrorLevel.LOW, "Unable to create download dir (file exists instead)");
+			}
+		} else {
 			try {
 				dir.mkdirs();
 				dir.createNewFile();
 			} catch (IOException ex) {
 				Logger.userError(ErrorLevel.LOW, "Unable to create download dir");
-			}
-		} else {
-			if (!dir.isDirectory()) {
-				Logger.userError(ErrorLevel.LOW, "Unable to create download dir (file exists instead)");
 			}
 		}
 
@@ -474,54 +479,5 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 */
 	protected static String getDomain() { return MY_DOMAIN; }
 
-	/**
-	 * Copy the new vaule of an option to the global config.
-	 *
-	 * @param properties Source of option value, or null if setting default values
-	 * @param name name of option
-	 */
-	protected void updateOption(final Properties properties, final String name) {
-		String value = null;
-
-		// Get the value from the properties file if one is given, else use the
-		// value from the global config.
-		if (properties != null) {
-			value = properties.getProperty(name);
-		} else {
-			value = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, name);
-		}
-
-		// Check if the Value exists
-		if (value != null) {
-			// It does, so update the global config with the new value
-			IdentityManager.getConfigIdentity().setOption(MY_DOMAIN, name, value);
-		}
-	}
-
-	/**
-	 * Called when the preferences dialog is closed.
-	 *
-	 * @param properties user preferences
-	 */
-	public void configClosed(final Properties properties) {
-		// Update Config options
-		updateOption(properties, "receive.savelocation");
-		updateOption(properties, "send.reverse");
-		updateOption(properties, "send.forceturbo");
-		updateOption(properties, "receive.reverse.sendtoken");
-		updateOption(properties, "send.blocksize");
-	}
-
-	/**
-	 * Called when the preferences dialog is cancelled.
-	 */
-	public void configCancelled() { }
-
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo() { return "$Id: DCCPlugin.java 969 2007-04-30 18:38:20Z ShaneMcC $"; }
 }
 

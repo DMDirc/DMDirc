@@ -203,7 +203,7 @@ public abstract class DCCFrame extends WritableFrameContainer {
 	 */
 	@Override
 	public void sendLine(final String line) {
-		return;
+		
 	}
 	
 	/**
