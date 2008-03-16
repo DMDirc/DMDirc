@@ -255,7 +255,7 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
             }
             
             if (index == 0) {
-                position = lineText.length();
+                position = lineText.length() - 1;
             } else {
                 position = index;
             }
@@ -271,7 +271,7 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
                     //not found, break look and move to next line
                     line--;
                     index = 0;
-                    break;
+                    break;  
                 } else {
                     //found, select and return found
                     textPane.setScrollBarPosition(line);
