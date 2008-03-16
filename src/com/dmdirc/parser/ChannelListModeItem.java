@@ -33,20 +33,15 @@ package com.dmdirc.parser;
  * @see IRCParser
  */
 public final class ChannelListModeItem {
-	/**
-	 * The Item itself.
-	 */
-	private String myItem;
+
+    /** The Item itself. */
+	private final String myItem;
 	
-	/**
-	 * The Time the item was created.
-	 */
-	private long myTime;
+	/** The Time the item was created. */
+	private final long myTime;
 	
-	/**
-	 * The Person who created the item.
-	 */
-	private String myOwner;
+	/** The Person who created the item. */
+	private final String myOwner;
 	
 	/**
 	 * Create a new Item.
@@ -58,8 +53,12 @@ public final class ChannelListModeItem {
 	public ChannelListModeItem(final String item, final String owner, final long time) {
 		myItem = item;
 		myTime = time;
-		myOwner = owner;
-		if (!owner.isEmpty() && owner.charAt(0) == ':') { myOwner = owner.substring(1); }
+
+		if (!owner.isEmpty() && owner.charAt(0) == ':') {
+            myOwner = owner.substring(1);
+        } else {
+            myOwner = owner;
+        }
 	}
 	
 	/**
@@ -88,6 +87,7 @@ public final class ChannelListModeItem {
 	*
 	* @return String representation of this object
 	*/
+    @Override
 	public String toString() {
 			return getItem();
 	}

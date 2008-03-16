@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
@@ -59,28 +60,29 @@ public final class ChannelInfo {
 	/** Known boolean-modes for channel. */
 	private long nModes;
 	/** Reference to the parser object that owns this channel, Used for modes. */
-	private IRCParser myParser; // Reference to parser object that owns this channel. Used for Modes
+	private final IRCParser myParser; // Reference to parser object that owns this channel. Used for Modes
 	
 	/** Channel Name. */
-	private String sName = "";
+	private final String sName;
+    
 	/** Hashtable containing references to ChannelClients. */
-	private Hashtable<String, ChannelClientInfo> hChannelUserList = new Hashtable<String, ChannelClientInfo>();
+	private final Map<String, ChannelClientInfo> hChannelUserList = new Hashtable<String, ChannelClientInfo>();
 	/** Hashtable storing values for modes set in the channel that use parameters. */
-	private Hashtable<Character, String> hParamModes = new Hashtable<Character, String>();
+	private final Map<Character, String> hParamModes = new Hashtable<Character, String>();
 	/** Hashtable storing list modes. */
-	private Hashtable<Character, ArrayList<ChannelListModeItem>> hListModes = new Hashtable<Character, ArrayList<ChannelListModeItem>>();
+	private final Map<Character, ArrayList<ChannelListModeItem>> hListModes = new Hashtable<Character, ArrayList<ChannelListModeItem>>();
 	/**
 	 * LinkedList storing status of mode adding.
 	 * if an item is in this list for a mode, we are expecting new items for the list
 	 */
-	private LinkedList<Character> lAddingModes = new LinkedList<Character>();
+	private final List<Character> lAddingModes = new LinkedList<Character>();
 	/** Modes waiting to be sent to the server. */
-	private LinkedList<String> lModeQueue = new LinkedList<String>();
+	private final List<String> lModeQueue = new LinkedList<String>();
 	/** A Map to allow applications to attach misc data to this object */
 	private Map myMap;
 	
 	/** Queue of requested list modes */
-	private Queue<Character> listModeQueue = new LinkedList<Character>();
+	private final Queue<Character> listModeQueue = new LinkedList<Character>();
 	/** Listmode Queue Time */
 	private long listModeQueueTime = System.currentTimeMillis();
 	/** Have we asked the server for the list modes for this channel yet? */
@@ -112,7 +114,7 @@ public final class ChannelInfo {
 		// 60 seconds ago, we reset the list.
 		if (now-(30*1000) > listModeQueueTime) {
 			result = new LinkedList<Character>();
-			myParser.callDebugInfo(myParser.DEBUG_LMQ, "Resetting LMQ");
+			myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "Resetting LMQ");
 		}
 		listModeQueueTime = now;
 		return result;
@@ -157,8 +159,8 @@ public final class ChannelInfo {
 		String listmodes = "";
 		int i = 0;
 		for (Character cTemp : myParser.hChanModesOther.keySet()) {
-			int nTemp = myParser.hChanModesOther.get(cTemp);
-			if (nTemp == myParser.MODE_LIST) {
+			final int nTemp = myParser.hChanModesOther.get(cTemp);
+			if (nTemp == IRCParser.MODE_LIST) {
 				if ((isFreenode || isHybrid) && (cTemp == 'e' || cTemp == 'I') && !isOpped) {
 					// IRCD doesn't allow non-ops to ask for these modes.
 					continue;
@@ -176,10 +178,10 @@ public final class ChannelInfo {
 			}
 		}
 		if (i > 0) {
-			if (!supportLISTMODE) {
-				myParser.sendString("MODE "+getName()+" "+listmodes);
-			} else {
+			if (supportLISTMODE) {
 				myParser.sendString("LISTMODE "+getName()+" "+listmodes);
+			} else {
+				myParser.sendString("MODE "+getName()+" "+listmodes);
 			}
 		}
 	}
@@ -216,7 +218,7 @@ public final class ChannelInfo {
 	 *
 	 * @param newMap New Map to attatch.
 	 */
-	public void setMap(Map newMap) {
+	public void setMap(final Map newMap) {
 		myMap = newMap;
 	}
 	
@@ -261,8 +263,8 @@ public final class ChannelInfo {
 	 *
 	 * @return ArrayList of ChannelClients
 	 */
-	public ArrayList<ChannelClientInfo> getChannelClients() {
-		final ArrayList<ChannelClientInfo> lClients = new ArrayList<ChannelClientInfo>();
+	public List<ChannelClientInfo> getChannelClients() {
+		final List<ChannelClientInfo> lClients = new ArrayList<ChannelClientInfo>();
 		for (ChannelClientInfo client : hChannelUserList.values()) {
 			lClients.add(client);
 		}
@@ -338,7 +340,7 @@ public final class ChannelInfo {
 		ChannelClientInfo cTemp = null;
 		cTemp = getUser(cClient);
 		if (cTemp != null) {
-			ClientInfo clTemp = cTemp.getClient();
+			final ClientInfo clTemp = cTemp.getClient();
 			clTemp.delChannelClientInfo(cTemp);
 			if (clTemp != myParser.getMyself() && !clTemp.checkVisibility()) {
 				myParser.removeClient(clTemp);
@@ -496,8 +498,7 @@ public final class ChannelInfo {
 	protected void setListModeParam(final Character givenMode, final ChannelListModeItem givenItem, final boolean bAdd) { 
 		Character cMode = givenMode;
 		ChannelListModeItem newItem = givenItem;
-		if (!myParser.hChanModesOther.containsKey(cMode)) { return; }
-		else if (myParser.hChanModesOther.get(cMode) != myParser.MODE_LIST) { return; }
+		if (!myParser.hChanModesOther.containsKey(cMode) || myParser.hChanModesOther.get(cMode) != IRCParser.MODE_LIST) { return; }
 		
 		// Hyperion sucks.
 		if (cMode == 'b' || cMode == 'q') {
@@ -536,9 +537,8 @@ public final class ChannelInfo {
 	 * @param cMode Character representing mode
 	 * @return ArrayList containing ChannelListModeItem in the list, or null if mode is invalid
 	 */
-	public ArrayList<ChannelListModeItem> getListModeParam(final Character cMode) { 
-		if (!myParser.hChanModesOther.containsKey(cMode)) { return null; }
-		else if (myParser.hChanModesOther.get(cMode) != myParser.MODE_LIST) { return null; }
+	public List<ChannelListModeItem> getListModeParam(final Character cMode) { 
+		if (!myParser.hChanModesOther.containsKey(cMode) || myParser.hChanModesOther.get(cMode) != myParser.MODE_LIST) { return null; }
 		
 		if (!hListModes.containsKey(cMode)) { 
 			hListModes.put(cMode, new ArrayList<ChannelListModeItem>());
@@ -634,7 +634,7 @@ public final class ChannelInfo {
 	 * Modes are always sent negative then positive and not mixed.
 	 */
 	public void sendModes() { 
-		if (lModeQueue.size() == 0) { return; }
+		if (lModeQueue.isEmpty()) { return; }
 		final StringBuilder positivemode = new StringBuilder();
 		final StringBuilder positiveparam = new StringBuilder();
 		final StringBuilder negativemode = new StringBuilder();
@@ -659,7 +659,7 @@ public final class ChannelInfo {
 		if (positivemode.length() > 0) { sendModeStr.append("+").append(positivemode); }
 		if (negativeparam.length() > 0) { sendModeStr.append(negativeparam); }
 		if (positiveparam.length() > 0) { sendModeStr.append(positiveparam); }
-		myParser.callDebugInfo(myParser.DEBUG_INFO, "Sending mode: %s", sendModeStr.toString());
+		myParser.callDebugInfo(IRCParser.DEBUG_INFO, "Sending mode: %s", sendModeStr.toString());
 		myParser.sendLine("MODE " + sName + " " + sendModeStr.toString());
 		clearModeQueue();
 	}
@@ -734,6 +734,7 @@ public final class ChannelInfo {
 	 *
 	 * @return String representation of the Channel.
 	 */
+    @Override
 	public String toString() { return sName; }
 	
 	/**

@@ -89,7 +89,7 @@ public final class PreviousCommand {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 97 * hash + (this.line != null ? this.line.hashCode() : 0);
+        hash = 97 * hash + (this.line == null ? 0 : this.line.hashCode());
         return hash;
     }
     

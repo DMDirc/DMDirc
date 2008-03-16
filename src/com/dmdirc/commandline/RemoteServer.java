@@ -62,9 +62,9 @@ public class RemoteServer implements RemoteInterface {
     public static void bind() {
         try {
             final RemoteServer server = new RemoteServer();
-            RemoteInterface stub =
+            final RemoteInterface stub =
                 (RemoteInterface) UnicastRemoteObject.exportObject(server, 0);
-            Registry registry = LocateRegistry.createRegistry(1099);
+            final Registry registry = LocateRegistry.createRegistry(1099);
             registry.rebind("DMDirc", stub);
         } catch (RemoteException ex) {
             // Do nothing

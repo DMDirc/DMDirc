@@ -53,6 +53,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Timer;
 import java.util.Queue;
 
@@ -158,16 +159,16 @@ public class IRCParser implements Runnable {
 	boolean hasBegan;
 
 	/** Hashtable storing known prefix modes (ohv). */
-	Hashtable<Character, Long> hPrefixModes = new Hashtable<Character, Long>();
+	final Map<Character, Long> hPrefixModes = new Hashtable<Character, Long>();
 	/**
 	 * Hashtable maping known prefix modes (ohv) to prefixes (@%+) - Both ways.
 	 * Prefix map contains 2 pairs for each mode. (eg @ => o and o => @)
 	 */
-	Hashtable<Character, Character> hPrefixMap = new Hashtable<Character, Character>();
+	final Map<Character, Character> hPrefixMap = new Hashtable<Character, Character>();
 	/** Integer representing the next avaliable integer value of a prefix mode. */
 	long nNextKeyPrefix = 1;
 	/** Hashtable storing known user modes (owxis etc). */
-	Hashtable<Character, Long> hUserModes = new Hashtable<Character, Long>();
+	final Map<Character, Long> hUserModes = new Hashtable<Character, Long>();
 	/** Integer representing the next avaliable integer value of a User mode. */
 	long nNextKeyUser = 1;
 	/**
@@ -178,7 +179,7 @@ public class IRCParser implements Runnable {
 	 * <br>
 	 * Channel modes discovered but not listed in 005 are stored as boolean modes automatically (and a ERROR_WARNING Error is called)
 	 */
-	Hashtable<Character, Long> hChanModesBool = new Hashtable<Character, Long>();
+	final Map<Character, Long> hChanModesBool = new Hashtable<Character, Long>();
 	/** Integer representing the next avaliable integer value of a Boolean mode. */
 
 	long nNextKeyCMBool = 1;
@@ -192,7 +193,7 @@ public class IRCParser implements Runnable {
 	 * see MODE_SET<br>
 	 * see MODE_UNSET<br>
 	 */
-	Hashtable<Character, Byte> hChanModesOther = new Hashtable<Character, Byte>();
+	final Map<Character, Byte> hChanModesOther = new Hashtable<Character, Byte>();
 
 	/** The last line of input recieved from the server */
 	String lastLine = "";
@@ -203,15 +204,15 @@ public class IRCParser implements Runnable {
 	* Channel Prefixes (ie # + etc).
 	* The "value" for these is always true.
 	*/
-	Hashtable<Character, Boolean> hChanPrefix = new Hashtable<Character, Boolean>();
+	final Map<Character, Boolean> hChanPrefix = new Hashtable<Character, Boolean>();
 	/** Hashtable storing all known clients based on nickname (in lowercase). */
-	private Hashtable<String, ClientInfo> hClientList = new Hashtable<String, ClientInfo>();
+	private final Map<String, ClientInfo> hClientList = new Hashtable<String, ClientInfo>();
 	/** Hashtable storing all known channels based on chanel name (inc prefix - in lowercase). */
-	private Hashtable<String, ChannelInfo> hChannelList = new Hashtable<String, ChannelInfo>();
+	private final Map<String, ChannelInfo> hChannelList = new Hashtable<String, ChannelInfo>();
 	/** Reference to the ClientInfo object that references ourself. */
 	private ClientInfo cMyself = new ClientInfo(this, "myself").setFake(true);
 	/** Hashtable storing all information gathered from 005. */
-	Hashtable<String, String> h005Info = new Hashtable<String, String>();
+	final Map<String, String> h005Info = new Hashtable<String, String>();
 
 	/** Ignore List. */
 	RegexStringList myIgnoreList = new RegexStringList();
@@ -787,6 +788,7 @@ public class IRCParser implements Runnable {
 	}
 
 	/** Close socket on destroy. */
+    @Override
 	protected void finalize() throws Throwable {
 		try { socket.close(); }
 		catch (IOException e) {
@@ -1742,7 +1744,7 @@ public class IRCParser implements Runnable {
 	 *
 	 * @return 005Info hashtable.
 	 */
-	public Hashtable<String, String> get005() { return h005Info; }
+	public Map<String, String> get005() { return h005Info; }
 
 	/**
 	 * Get the name of the ircd.

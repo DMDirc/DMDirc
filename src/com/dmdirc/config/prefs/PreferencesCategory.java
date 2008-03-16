@@ -119,7 +119,7 @@ public class PreferencesCategory {
      * 
      * @return True if subcats should be displayed first, false otherwise.
      */
-    public boolean getInlineBefore() {
+    public boolean isInlineBefore() {
         return inlineBefore;
     }
     

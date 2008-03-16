@@ -88,7 +88,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
     /** Cell renderer. */
     private ListCellRenderer renderer;
     /** Extended info toggle. */
-    private JCheckBox toggle;
+    private final JCheckBox toggle;
 
     /**
      * Creates a new instance of ChannelListModePane.
@@ -146,7 +146,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
             existingListItems.add(mode,
                     new ArrayList<ChannelListModeItem>(channel.getChannelInfo().
                     getListModeParam(mode)));
-            final ArrayList<ChannelListModeItem> listItems =
+            final List<ChannelListModeItem> listItems =
                     channel.getChannelInfo().getListModeParam(mode);
             final DefaultListModel model =
                     (DefaultListModel) listModesPanels.get(i).getModel();
@@ -281,7 +281,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
     /** Adds a list mode. */
     private void addListMode() {
         final int selectedIndex = listModesMenu.getSelectedIndex();
-        String modeText = "" + listModesArray[selectedIndex];
+        String modeText = String.valueOf(listModesArray[selectedIndex]);
         String modeMask;
         if (channel.getConfigManager().
                 hasOption("server", "mode" + listModesArray[selectedIndex])) {
@@ -329,10 +329,10 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
         } else if (removeListModeButton.equals(event.getSource())) {
             removeListMode();
         } else if (toggle.equals(event.getSource())) {
-            if (!toggle.isSelected()) {
-                renderer = new ListModeCellRenderer();
-            } else {
+            if (toggle.isSelected()) {
                 renderer = new ExtendedListModeCellRenderer();
+            } else {
+                renderer = new ListModeCellRenderer();
             }
             for (JList list : listModesPanels) {
                 list.setCellRenderer(renderer);

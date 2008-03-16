@@ -105,7 +105,7 @@ public abstract class Command extends CommandInfo implements Comparable<Command>
      * @return A string containing an ASCII table
      */
     protected static String doTable(final String[] headers, final String[][] data) {
-        StringBuilder res = new StringBuilder();
+        final StringBuilder res = new StringBuilder();
         res.append(Styliser.CODE_FIXED);
         res.append(Styliser.CODE_BOLD);
         

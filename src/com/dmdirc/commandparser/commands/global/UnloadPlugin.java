@@ -57,7 +57,7 @@ public final class UnloadPlugin extends GlobalCommand implements IntelligentComm
             return;
         }
         
-        PluginInfo plugin = PluginManager.getPluginManager().getPluginInfoByName(args[0]);
+        final PluginInfo plugin = PluginManager.getPluginManager().getPluginInfoByName(args[0]);
         if (plugin == null) {
             sendLine(origin, isSilent, FORMAT_ERROR, "Plugin unloading failed - Plugin not loaded");
         } else {

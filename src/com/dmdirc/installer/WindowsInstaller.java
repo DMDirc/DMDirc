@@ -158,15 +158,15 @@ public class WindowsInstaller extends Installer {
 		params.add("add");
 		params.add(key);
 		params.add("/f");
-		if (!value.isEmpty()) {
+		if (value.isEmpty()) {
+			params.add("/ve");
+		} else {
 			params.add("/v");
 			params.add(value);
-		} else {
-			params.add("/ve");
 		}
 		params.add("/t");
 		params.add(type);
-		if (!data.equals("")) {
+		if (!data.isEmpty()) {
 			params.add("/d");
 			params.add(data);
 		}
@@ -273,7 +273,7 @@ public class WindowsInstaller extends Installer {
 			if (!dir.exists()) { dir.mkdir(); }
 
 			// Delete an older shortcut
-			File oldFile = new File(filename+"\\DMDirc.lnk");
+			final File oldFile = new File(filename+"\\DMDirc.lnk");
 			if (oldFile.exists()) { oldFile.delete(); }
 
 			try {

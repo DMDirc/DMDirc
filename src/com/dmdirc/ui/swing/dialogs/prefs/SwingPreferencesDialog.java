@@ -423,7 +423,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         }
 
         for (PreferencesCategory child : category.getSubcats()) {
-            if (child.isInline() && category.getInlineBefore()) {
+            if (child.isInline() && category.isInlineBefore()) {
                 addInlineCategory(child, panel);
             } else if (!child.isInline()) {
                 addCategory(child, newNode, path);
@@ -446,7 +446,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             addComponent(category, setting);
         }
 
-        if (!category.getInlineBefore()) {
+        if (!category.isInlineBefore()) {
             for (PreferencesCategory child : category.getSubcats()) {
                 if (child.isInline()) {
                     addInlineCategory(child, panel);

@@ -46,7 +46,7 @@ public final class StepConfirm extends Step implements StepListener {
 	private static final long serialVersionUID = 2;
 
 	/** Text area showing the install information */
-	private JWrappingLabel infoLabel = new JWrappingLabel("");
+	private final JWrappingLabel infoLabel = new JWrappingLabel("");
 
 	/**
 	* Creates a new instance of StepConfirm.
@@ -70,30 +70,22 @@ public final class StepConfirm extends Step implements StepListener {
 		if (step != this) { return; }
 		String shortcutText = "";
 
-		StepSettings settings = ((StepSettings) Main.getWizardFrame().getStep(1));
+		final StepSettings settings = ((StepSettings) Main.getWizardFrame().getStep(1));
 
-		if (Main.getInstaller().supportsShortcut(ShortcutType.MENU)) {
-			if (settings.getShortcutMenuState()) {
-				shortcutText = shortcutText + " - Create menu shortcut"+ "\n";
-			}
+		if (Main.getInstaller().supportsShortcut(ShortcutType.MENU) && settings.getShortcutMenuState()) {
+			shortcutText = shortcutText + " - Create menu shortcut\n";
 		}
 
-		if (Main.getInstaller().supportsShortcut(ShortcutType.DESKTOP)) {
-			if (settings.getShortcutDesktopState()) {
-				shortcutText = shortcutText + " - Create desktop shortcut"+ "\n";
-			}
+		if (Main.getInstaller().supportsShortcut(ShortcutType.DESKTOP) && settings.getShortcutDesktopState()) {
+			shortcutText = shortcutText + " - Create desktop shortcut\n";
 		}
 
-		if (Main.getInstaller().supportsShortcut(ShortcutType.QUICKLAUNCH)) {
-			if (settings.getShortcutQuickState()) {
-				shortcutText = shortcutText + " - Create Quick Launch shortcut"+ "\n";
-			}
+		if (Main.getInstaller().supportsShortcut(ShortcutType.QUICKLAUNCH) && settings.getShortcutQuickState()) {
+			shortcutText = shortcutText + " - Create Quick Launch shortcut\n";
 		}
 
-		if (Main.getInstaller().supportsShortcut(ShortcutType.PROTOCOL)) {
-			if (settings.getShortcutProtocolState()) {
-				shortcutText = shortcutText + " - Make DMDirc handle irc:// links"+ "\n";
-			}
+		if (Main.getInstaller().supportsShortcut(ShortcutType.PROTOCOL) && settings.getShortcutProtocolState()) {
+			shortcutText = shortcutText + " - Make DMDirc handle irc:// links\n";
 		}
 
 

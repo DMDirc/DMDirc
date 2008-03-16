@@ -37,13 +37,13 @@ import java.util.Map;
  */
 public final class ChannelClientInfo {
 	/** Reference to ClientInfo object this represents. */
-	private ClientInfo cClient;
+	private final ClientInfo cClient;
 	/** Integer representation of the channel modes assocated with this user. */
 	private long nModes;
 	/** Reference to the parser object that owns this channelclient, Used for modes. */
-	private IRCParser myParser;
+	private final IRCParser myParser;
 	/** Reference to the channel object that owns this channelclient. */
-	private ChannelInfo myChannel;
+	private final ChannelInfo myChannel;
 	/** A Map to allow applications to attach misc data to this object */
 	private Map myMap;
 	
@@ -68,7 +68,7 @@ public final class ChannelClientInfo {
 	 * @param newMap New Map to attatch.
 	 * @see #getMap
 	 */
-	public void setMap(Map newMap) {
+	public void setMap(final Map newMap) {
 		myMap = newMap;
 	}
 	
@@ -170,7 +170,7 @@ public final class ChannelClientInfo {
 	 */
 	public String getImportantMode() {
 		String sModes = this.getChanModeStr(false);
-		if (!sModes.equals("")) { sModes = "" + sModes.charAt(0); }
+		if (!sModes.isEmpty()) { sModes = "" + sModes.charAt(0); }
 		return sModes;
 	}
 	
@@ -191,6 +191,7 @@ public final class ChannelClientInfo {
 	 *
 	 * @return String Value of user (inc prefix) (ie @Nickname)
 	 */
+    @Override
 	public String toString() { 
 		return this.getImportantModePrefix() + this.getNickname();
 	}	

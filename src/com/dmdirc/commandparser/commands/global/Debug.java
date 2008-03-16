@@ -84,7 +84,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
         } else if ("serverinfo".equals(args[0])) {
             doServerInfo(origin, isSilent);
         } else if ("benchmark".equals(args[0])) {
-            doBenchmark(origin, isSilent);
+            doBenchmark(origin);
         } else if ("firstrun".equals(args[0])) {
             Main.getUI().showFirstRunWizard();
         } else if ("migration".equals(args[0])) {
@@ -261,19 +261,18 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      * Benchmarks the textpane.
      * 
      * @param origin The window this command was executed in
-     * @param isSilent Whether this command has been silenced or not
      */
-    private void doBenchmark(final InputWindow origin, final boolean isSilent) {
+    private void doBenchmark(final InputWindow origin) {
         long[] results = new long[10];
         
         for (int i = 0; i < results.length; i++) {
-            long start = System.nanoTime();
+            final long start = System.nanoTime();
             
             for (int j = 0; j < 5000; j++) {
                 origin.addLine(FORMAT_OUTPUT, "This is a benchmark. Lorem ipsum doler...");
             }
             
-            long end = System.nanoTime();
+            final long end = System.nanoTime();
             
             results[i] = end - start;
         }
@@ -303,7 +302,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
     
     /** {@inheritDoc} */
     @Override
-    public AdditionalTabTargets getSuggestions(int arg, List<String> previousArgs) {
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
         res.excludeAll();

@@ -66,7 +66,11 @@ public final class Ignore extends ServerCommand implements IntelligentCommand {
             if (identity.hasOption("network", "ignorelist")) {
                 final List<String> list = identity.getOptionList("network", "ignorelist");
                 
-                if (!list.isEmpty()) {
+                if (list.isEmpty()) {
+                    sendLine(origin, isSilent, FORMAT_ERROR,
+                            "No ignore list entries for this network.");
+
+                } else {
                     sendLine(origin, isSilent, FORMAT_OUTPUT, "Ignore list:");
                     
                     int i = 0;
@@ -75,11 +79,7 @@ public final class Ignore extends ServerCommand implements IntelligentCommand {
                             i++;
                             sendLine(origin, isSilent, FORMAT_OUTPUT, i + ". " + line);
                         }
-                    }
-                    
-                } else {
-                    sendLine(origin, isSilent, FORMAT_ERROR,
-                            "No ignore list entries for this network.");
+                    }                    
                 }
                 
             } else {

@@ -60,11 +60,13 @@ public class DcopMediaSourcePlugin extends Plugin
     /** {@inheritDoc} */
     @Override
     public void onLoad() {
+        // Nothing to do
     }
     
     /** {@inheritDoc} */
     @Override
     public void onUnload() {
+        // Nothing to do
     }
     
     /** {@inheritDoc} */

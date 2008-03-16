@@ -177,16 +177,16 @@ public final class ErrorManager implements Serializable, Runnable {
             }
         }
         
-        if (!errors.containsValue(error)) {
+        if (errors.containsValue(error)) {
+            error.setReportStatus(ErrorReportStatus.FINISHED);
+            error.setFixedStatus(ErrorFixedStatus.UNREPORTED);
+        } else {
             reportQueue.add(error);
         
             if (reportThread == null || !reportThread.isAlive()) {
                 reportThread = new Thread(this, "Error reporting thread");
                 reportThread.start();
             }
-        } else {
-            error.setReportStatus(ErrorReportStatus.FINISHED);
-            error.setFixedStatus(ErrorFixedStatus.UNREPORTED);
         }
     }
     
@@ -194,7 +194,7 @@ public final class ErrorManager implements Serializable, Runnable {
     /** {@inheritDoc} */
     @Override
     public void run() {
-        while (reportQueue.size() > 0) {
+        while (!reportQueue.isEmpty()) {
             sendErrorInternal(reportQueue.remove(0));
             
             try {

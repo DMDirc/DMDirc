@@ -47,6 +47,7 @@ import com.dmdirc.ui.interfaces.Window;
 import net.miginfocom.swing.MigLayout;
 
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
@@ -85,7 +86,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 	 */
 	public void onLoad() {
 		// Set defaults
-		Properties defaults = new Properties();
+		final Properties defaults = new Properties();
 		defaults.setProperty(MY_DOMAIN + ".channel.shownone", "true");
 		defaults.setProperty(MY_DOMAIN + ".channel.noneprefix", "None:");
 		defaults.setProperty(MY_DOMAIN + ".client.showname", "false");
@@ -124,11 +125,10 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 	 * Update the window status using the current active window.
 	 */
 	public void updateStatus() {
-		Window active = Main.getUI().getActiveWindow();
+		final Window active = Main.getUI().getActiveWindow();
 
 		if (active != null) {
-			FrameContainer activeFrame = ((InputWindow) active).getContainer();
-			updateStatus(activeFrame);
+			updateStatus(((InputWindow) active).getContainer());
 		}
 	}
 
@@ -139,23 +139,23 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 	 */
 	public void updateStatus(final FrameContainer current) {
 		if (current == null) { return; }
-		StringBuffer textString = new StringBuffer("");
+		final StringBuffer textString = new StringBuffer();
 
 		if (current instanceof Server) {
-			Server frame = (Server)current;
+			final Server frame = (Server)current;
 
 			textString.append(frame.getName());
 		} else if (current instanceof Channel) {
 			final Channel frame = (Channel)current;
 			final ChannelInfo chan = frame.getChannelInfo();
-			final Hashtable<Long,String> names = new Hashtable<Long,String>();
-			final Hashtable<Long,Integer> types = new Hashtable<Long,Integer>();
+			final Map<Long,String> names = new Hashtable<Long,String>();
+			final Map<Long,Integer> types = new Hashtable<Long,Integer>();
 
 			textString.append(chan.getName());
 			textString.append(" - Nicks: "+chan.getUserCount()+" (");
 
 			for (ChannelClientInfo client : chan.getChannelClients()) {
-				Long im = client.getImportantModeValue();
+				final Long im = client.getImportantModeValue();
 
 				if (!names.containsKey(im)) {
 					String mode = client.getImportantModePrefix();
@@ -187,11 +187,12 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 			boolean isFirst = true;
 
 			for (Entry<Long, Integer> entry : types.entrySet()) {
-				if (isFirst) { isFirst = false; } else { textString.append(" "); }
-				textString.append(names.get(entry.getKey())+entry.getValue());
+				if (isFirst) { isFirst = false; } else { textString.append(' '); }
+				textString.append(names.get(entry.getKey()));
+                textString.append(entry.getValue());
 			}
 
-			textString.append(")");
+			textString.append(')');
 		} else if (current instanceof Query) {
 			final Query frame = (Query)current;
 
@@ -201,7 +202,8 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 				if (client != null) {
 					final String realname = client.getRealName();
 					if (!realname.isEmpty()) {
-						textString.append(" - "+client.getRealName());
+						textString.append(" - ");
+                        textString.append(client.getRealName());
 					}
 				}
 			}

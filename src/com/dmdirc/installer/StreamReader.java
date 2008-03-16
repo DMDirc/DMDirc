@@ -28,8 +28,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class StreamReader extends Thread {
+    
 	/** This is the Input Stream we are reading */
-	private InputStream stream;
+	private final InputStream stream;
 	
 	/** This is the output Prefix */
 	private String prefix = null;
@@ -58,23 +59,25 @@ public class StreamReader extends Thread {
 		this.prefix = prefix;
 		this.step = step;
 		
-		if (step != null) {
-			step.addText(String.format(" - -[%s] Started", prefix));
-		} else {
+		if (step == null) {
 			System.out.printf("[%s] Started%n", prefix);
+		} else {
+			step.addText(String.format(" - -[%s] Started", prefix));
 		}
 	}
 
+    /** {@inheritDoc} */
+    @Override
 	public void run() {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+		final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 		try {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				if (prefix != null) {
-					if (step != null) {
-						step.addText(String.format(" - -[%s] %s", prefix, line));
-					} else {
+					if (step == null) {
 						System.out.printf("[%s] %s%n", prefix, line);
+					} else {
+						step.addText(String.format(" - -[%s] %s", prefix, line));
 					}
 				}
 			}

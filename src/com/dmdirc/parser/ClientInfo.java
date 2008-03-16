@@ -57,13 +57,13 @@ public final class ClientInfo {
 	/** Is this a fake client created just for a callback? */
 	private boolean bIsFake;
 	/** Reference to the parser object that owns this channel, Used for modes. */
-	private IRCParser myParser;
+	private final IRCParser myParser;
 	/** A Map to allow applications to attach misc data to this object */
 	private Map myMap;
 	/** List of ChannelClientInfos that point to this */
-	private Hashtable<String, ChannelClientInfo> myChannelClientInfos = new Hashtable<String, ChannelClientInfo>();
+	private final Map<String, ChannelClientInfo> myChannelClientInfos = new Hashtable<String, ChannelClientInfo>();
 	/** Modes waiting to be sent to the server. */
-	private LinkedList<String> lModeQueue = new LinkedList<String>();
+	private final List<String> lModeQueue = new LinkedList<String>();
 
 	/**
 	 * Create a new client object from a hostmask.
@@ -83,7 +83,7 @@ public final class ClientInfo {
 	 *
 	 * @param newMap New Map to attatch.
 	 */
-	public void setMap(Map newMap) {
+	public void setMap(final Map newMap) {
 		myMap = newMap;
 	}
 	
@@ -107,7 +107,7 @@ public final class ClientInfo {
 	 *
 	 * @return True if this client is actually a server.
 	 */
-	public boolean isServer() { return !(sNickname.indexOf(":") == -1); }
+	public boolean isServer() { return !(sNickname.indexOf(':') == -1); }
 	/**
 	 * Set if this is a fake client.
 	 * This returns "this" and thus can be used in the construction line.
@@ -115,7 +115,7 @@ public final class ClientInfo {
 	 * @param newValue new value for isFake - True if this is a fake client, else false
 	 * @return this Object
 	 */
-	public ClientInfo setFake(boolean newValue) { bIsFake = newValue; return this; }
+	public ClientInfo setFake(final boolean newValue) { bIsFake = newValue; return this; }
 
 	/**
 	 * Get a nickname of a user from a hostmask.
@@ -181,6 +181,7 @@ public final class ClientInfo {
 	 *
 	 * @return String representation of the user.
 	 */
+    @Override
 	public String toString() { return sNickname + "!" + sIdent + "@" + sHost; }
 	
 	/**
@@ -189,12 +190,14 @@ public final class ClientInfo {
 	 * @return Known nickname for user.
 	 */
 	public String getNickname() { return sNickname; }
+    
 	/**
 	 * Get the ident for this user.
 	 *
 	 * @return Known ident for user. (May be "")
 	 */		
 	public String getIdent() { return sIdent; }
+    
 	/**
 	 * Get the hostname for this user.
 	 *
@@ -212,6 +215,7 @@ public final class ClientInfo {
 		bIsAway = bNewState;
 		if (!bIsAway) { myAwayReason = ""; }
 	}
+    
 	/**
 	 * Get the away state of a user.
 	 *
@@ -225,6 +229,7 @@ public final class ClientInfo {
 	 * @return Known away reason for user.
 	 */
 	public String getAwayReason() { return myAwayReason; }
+    
 	/**
 	 * Set the Away Reason for this user.
 	 * Automatically set to "" if awaystate is set to false
@@ -239,6 +244,7 @@ public final class ClientInfo {
 	 * @return Known RealName for user.
 	 */
 	public String getRealName() { return sRealName; }
+    
 	/**
 	 * Set the RealName for this user.
 	 *
@@ -252,6 +258,7 @@ public final class ClientInfo {
 	 * @param nNewMode new long representing channel modes. (Boolean only)
 	 */	
 	protected void setUserMode(final long nNewMode) { nModes = nNewMode; }
+    
 	/**
 	 * Get the user modes (as an integer).
 	 *
@@ -337,7 +344,7 @@ public final class ClientInfo {
 	 * @return int with the count of known channels
 	 */	
 	public List<ChannelClientInfo> getChannelClients() {
-		ArrayList<ChannelClientInfo> result = new ArrayList<ChannelClientInfo>();
+		final List<ChannelClientInfo> result = new ArrayList<ChannelClientInfo>();
 		for (ChannelClientInfo cci : myChannelClientInfos.values()) {
 			result.add(cci);
 		}
@@ -380,7 +387,7 @@ public final class ClientInfo {
 	 * Modes are always sent negative then positive and not mixed.
 	 */
 	public void sendModes() {
-		if (lModeQueue.size() == 0) { return; }
+		if (lModeQueue.isEmpty()) { return; }
 		final StringBuilder positivemode = new StringBuilder();
 		final StringBuilder negativemode = new StringBuilder();
 		final StringBuilder sendModeStr = new StringBuilder();
@@ -397,7 +404,7 @@ public final class ClientInfo {
 		}
 		if (negativemode.length() > 0) { sendModeStr.append("-").append(negativemode); }
 		if (positivemode.length() > 0) { sendModeStr.append("+").append(positivemode); }
-		myParser.callDebugInfo(myParser.DEBUG_INFO, "Sending mode: %s", sendModeStr.toString());
+		myParser.callDebugInfo(IRCParser.DEBUG_INFO, "Sending mode: %s", sendModeStr.toString());
 		myParser.sendLine("MODE " + sNickname + " " + sendModeStr.toString());
 		clearModeQueue();
 	}

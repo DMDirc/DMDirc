@@ -66,6 +66,7 @@ public abstract class Installer extends Thread {
 	/**
 	 * This step performs the installation, via the StepInstall step.
 	 */
+    @Override
 	public final void run() {
 		step.performInstall(this);
 	}
@@ -82,7 +83,6 @@ public abstract class Installer extends Thread {
 	 * Main Setup stuff
 	 *
 	 * @param location Location where app will be installed to.
-	 * @param step The step that called this
 	 * @return True if installation passed, else false; 
 	 */
 	public boolean doSetup(final String location) {
@@ -91,15 +91,15 @@ public abstract class Installer extends Thread {
 		if (!directory.exists()) { directory.mkdir(); }
 	
 		try {
-			File dir = new File(".");
-			FilenameFilter filter = new FilenameFilter() {
-				public boolean accept(File dir, String name) {
-					return !name.startsWith(".") &&
+			final File dir = new File(".");
+			final FilenameFilter filter = new FilenameFilter() {
+				public boolean accept(final File dir, final String name) {
+					return name.charAt(0) != '.' &&
 					       !name.equalsIgnoreCase("installer.jar") &&
 					       validFile(name);
 				}
 			};
-			String[] children = dir.list(filter);
+			final String[] children = dir.list(filter);
 			if (children != null) {
 				for (String filename : children) {
 					step.addText("Copying "+filename);
@@ -141,8 +141,8 @@ public abstract class Installer extends Thread {
 	 */
 	protected final void copyFile(final String srcFile, final String dstFile) throws IOException {
 		if (new File(srcFile).exists()) {
-			FileChannel srcChannel = new FileInputStream(srcFile).getChannel();
-			FileChannel dstChannel = new FileOutputStream(dstFile).getChannel();
+			final FileChannel srcChannel = new FileInputStream(srcFile).getChannel();
+			final FileChannel dstChannel = new FileOutputStream(dstFile).getChannel();
 			
 			dstChannel.transferFrom(srcChannel, 0, srcChannel.size());
 			

@@ -190,7 +190,7 @@ public final class ProgramError implements Serializable {
 
     /** {@inheritDoc} */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }
@@ -214,9 +214,9 @@ public final class ProgramError implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 67 * hash + (this.level != null ? this.level.hashCode() : 0);
-        hash = 67 * hash + (this.message != null ? this.message.hashCode() : 0);
-        hash = 67 * hash + (this.trace != null ? Arrays.hashCode(this.trace) : 0);
+        hash = 67 * hash + (this.level == null ? 0 : this.level.hashCode());
+        hash = 67 * hash + (this.message == null ? 0 : this.message.hashCode());
+        hash = 67 * hash + (this.trace == null ? 0 : Arrays.hashCode(this.trace));
         return hash;
     }
     

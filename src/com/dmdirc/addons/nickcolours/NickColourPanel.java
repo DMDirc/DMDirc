@@ -66,7 +66,8 @@ public class NickColourPanel extends JPanel implements ActionListener,
     private final transient NickColourPlugin plugin;
     
     /** The table headings. */
-    private final String[] headers = {"Network", "Nickname", "Text colour", "Nicklist colour"};
+    private static final String[] headers
+            = {"Network", "Nickname", "Text colour", "Nicklist colour"};
     
     /**
      * Creates a new instance of NickColourPanel.
@@ -223,13 +224,13 @@ public class NickColourPanel extends JPanel implements ActionListener,
     public void save() {
         // Remove all old config entries
         for (Object[] parts : plugin.getData()) {
-            IdentityManager.getConfigIdentity().unsetOption(plugin.DOMAIN,
+            IdentityManager.getConfigIdentity().unsetOption(NickColourPlugin.DOMAIN,
                     "color:" + parts[0] + ":" + parts[1]);
         }
  	
         // And write the new ones
         for (Object[] row : getData()) {
-            IdentityManager.getConfigIdentity().setOption(plugin.DOMAIN,
+            IdentityManager.getConfigIdentity().setOption(NickColourPlugin.DOMAIN,
                     "color:" + row[0] + ":" + row[1], row[2] + ":" + row[3]);
         }
     }

@@ -26,6 +26,8 @@ package com.dmdirc.installer.cliparser;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Command Line argument parser.
@@ -41,19 +43,19 @@ public class CLIParser {
 	 * Known arguments.
 	 * This hashtable stores the arguments with their flags as the key.
 	 */
-	private Hashtable<String, CLIParam> params = new Hashtable<String, CLIParam>();
+	private final Map<String, CLIParam> params = new Hashtable<String, CLIParam>();
 	
 	/**
 	 * Known arguments.
 	 * This ArrayList stores every param type. (used for help)
 	 */
-	private ArrayList<CLIParam> paramList = new ArrayList<CLIParam>();
+	private final List<CLIParam> paramList = new ArrayList<CLIParam>();
 	
 	/**
 	 * Redundant Strings.
 	 * This ArrayList stores redundant strings found whilst parsing the params.
 	 */
-	private ArrayList<String> redundant = new ArrayList<String>();
+	private final List<String> redundant = new ArrayList<String>();
 	
 	/**
 	 * Get a reference to the CLIParser.
@@ -131,7 +133,7 @@ public class CLIParser {
 	 *
 	 * @return list of params.
 	 */
-	public ArrayList<CLIParam> getParamList() {
+	public List<CLIParam> getParamList() {
 		return paramList;
 	}
 	
@@ -140,8 +142,8 @@ public class CLIParser {
 	 *
 	 * @return list of redundant strings.
 	 */
-	public ArrayList<String> getRedundant() {
-		ArrayList<String> result = new ArrayList<String>();
+	public List<String> getRedundant() {
+		final List<String> result = new ArrayList<String>();
 		for (String item : redundant) {
 			result.add(item);
 		}
@@ -160,15 +162,15 @@ public class CLIParser {
 	/**
 	 * Check if the help parameter has been passed to the CLI.
 	 */
-	public boolean wantsHelp(String[] args) {
+	public boolean wantsHelp(final String[] args) {
 		if (helpParam == null) { return false; }
 		for (String arg : args) {
 			if (arg.length() > 1 && arg.charAt(0) == '-') {
-				String name = arg.substring(1);
+				final String name = arg.substring(1);
 				if (name.equals("-")) {
 					return false;
 				} else {
-					CLIParam param = getParam(name);
+					final CLIParam param = getParam(name);
 					if (param == helpParam) {
 						return true;
 					}
@@ -213,14 +215,12 @@ public class CLIParser {
 		for (String arg : args) {
 			if (arg.length() > 1 && arg.charAt(0) == '-' && !allRedundant) {
 				if (lastParam != null) { lastParam.setValue(""); }
-				String name = arg.substring(1);
+				final String name = arg.substring(1);
 				if (name.equals("-")) {
 					allRedundant = true;
 				} else {
 					lastParam = getParam(name);
-					if (lastParam != null) {
-						lastParam.incNumber();
-					} else {
+					if (lastParam == null) {
 						System.out.println("Unknown Param: -"+name);
 						if (helpParam != null) {
 							String command = "";
@@ -236,6 +236,8 @@ public class CLIParser {
 						if (strict) {
 							System.exit(1);
 						}
+					} else {
+						lastParam.incNumber();
 					}
 				}
 			} else {

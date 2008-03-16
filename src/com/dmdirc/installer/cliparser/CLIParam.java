@@ -29,11 +29,11 @@ package com.dmdirc.installer.cliparser;
  */
 public abstract class CLIParam {
 	/** Single Character flag for this param. */
-	private char charFlag;
+	private final char charFlag;
 	/** String flag for this param. */
-	private String stringFlag;
+	private final String stringFlag;
 	/** Description of this flag. */
-	private String description;
+	private final String description;
 	/** Number of times this param has been given. */
 	private int number;
 	
