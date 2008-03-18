@@ -177,6 +177,13 @@ public final class ErrorManager implements Serializable, Runnable {
             }
         }
         
+        if (error.getMessage().startsWith("java.lang.NoSuchMethodError")
+                || error.getMessage().startsWith("java.lang.NoClassDefFoundError")) {
+            error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
+            error.setFixedStatus(ErrorFixedStatus.INVALID);
+            return;
+        }
+        
         if (errors.containsValue(error)) {
             error.setReportStatus(ErrorReportStatus.FINISHED);
             error.setFixedStatus(ErrorFixedStatus.UNREPORTED);
