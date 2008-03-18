@@ -1,5 +1,4 @@
 mainclass=com.dmdirc.addons.timeplugin.TimePlugin
-version=2
 friendlyversion=0.2
 author=Chris <chris@dmdirc.com>
 description=Provides time-based actions and commands

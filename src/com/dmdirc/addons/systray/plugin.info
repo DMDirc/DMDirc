@@ -1,5 +1,4 @@
 mainclass=com.dmdirc.addons.systray.SystrayPlugin
-version=2
 friendlyversion=0.2
 author=Chris <chris@dmdirc.com>
 description=Adds a system tray icon

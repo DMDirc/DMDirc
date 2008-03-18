@@ -1,5 +1,4 @@
 mainclass=com.dmdirc.addons.audio.AudioPlugin
-version=2
 friendlyversion=0.2
 author=Shane <shane@dmdirc.com>
 description=Allows playing audio files

@@ -1,5 +1,4 @@
 mainclass=com.dmdirc.addons.mediasource_dcop.DcopMediaSourcePlugin
-version=2
 friendlyversion=0.2
 author=Greboid <greg@dmdirc.com>
 description=Provides DCOP media sources for the now playing plugin

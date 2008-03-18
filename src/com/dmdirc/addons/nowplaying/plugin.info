@@ -1,5 +1,4 @@
 mainclass=com.dmdirc.addons.nowplaying.NowPlayingPlugin
-version=6
 friendlyversion=0.5
 author=Chris <chris@dmdirc.com>
 description=Adds a command to show nowplaying information

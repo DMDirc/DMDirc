@@ -1,5 +1,4 @@
 mainclass=com.dmdirc.addons.windowstatus.WindowStatusPlugin
-version=5
 friendlyversion=0.5
 author=Shane <shane@dmdirc.com>
 description=Displays information related to the current window in the status bar.

@@ -1,5 +1,4 @@
 mainclass=com.dmdirc.addons.nickcolours.NickColourPlugin
-version=6
 friendlyversion=0.6
 author=Chris <chris@dmdirc.com>
 description=Provides various nick colouring tools

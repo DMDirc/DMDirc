@@ -1,5 +1,4 @@
 mainclass=com.dmdirc.addons.dns.DNSPlugin
-version=2
 friendlyversion=0.2
 author=Greboid <greg@dmdirc.com>
 description=Provides a DNS command and method to the client
