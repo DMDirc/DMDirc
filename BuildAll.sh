@@ -82,6 +82,15 @@ fi;
 # Add plugins to jar
 $JAR -uvf "dist/DMDirc.jar" plugins
 
+# Submit plugins to addons site
+if [ -e "${HOME}/www/addons/submitplugin.php" ]; then
+	PHP=`which php`
+
+	for plugin in `ls plugins/*.jar`; do
+		$PHP ${HOME}/www/addons/submitplugin.php $plugin
+	done;
+fi;
+
 if [ -f $MYDIR/dist/DMDirc.jar ]; then
 	FILENAME=DMDirc_${FILEDATA}.jar
 	mv "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.exe" "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.exe"
