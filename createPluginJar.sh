@@ -25,6 +25,19 @@ cd $TMPDIR
 
 mkdir META-INF
 cp ${srcdir}/src/${foldername}/plugin.info META-INF/
+
+# Add the SVN version if there's no version specified and we know the SVN rev
+if ! grep "^version=" META-INF/plugin.info >/dev/null; then
+	SVN=`which svn`	
+	SVNREV=`$SVN info $srcdir/src/$foldername 2>&1 | grep "Last Changed Rev"`
+        SVNREV=${SVNREV##*: }
+	echo "version=$SVNREV" >> META-INF/plugin.info
+
+	if ! grep "^frieldyversion=" META-INF/plugin.info >/dev/null; then
+		echo "friendlyversion=$SVNREV" >> META-INF/plugin.info
+	fi
+fi
+
 foo=`echo $foldername | sed -e 's/\/[^\/]*$//g'`
 mkdir -p $foo
 cd ${foo}
@@ -40,7 +53,7 @@ while [ 1 -eq 1 ]; do
 	if [ ${?} -ne 0 ]; then
 		break;
 	else
-		for thisfile in `ls -1 ${foo}${bit}/*.class ${foo}${bit}/*.png`; do
+		for thisfile in `ls -1 ${foo}${bit}/*.class ${foo}${bit}/*.png 2>/dev/null`; do
 			jar -uvf ${srcdir}/src/${foldername}/${2}.jar ${thisfile} >/dev/null
 		done
 	fi
