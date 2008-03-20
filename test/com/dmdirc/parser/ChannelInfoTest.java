@@ -21,7 +21,6 @@
  */
 package com.dmdirc.parser;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
@@ -38,11 +37,11 @@ public class ChannelInfoTest extends junit.framework.TestCase {
 
     @Test
     public void testAddingNames() {
-        assertTrue(ci.getAddingNames());
+        assertTrue(ci.isAddingNames());
 
         ci.setAddingNames(false);
 
-        assertFalse(ci.getAddingNames());
+        assertFalse(ci.isAddingNames());
     }
 
     @Test
