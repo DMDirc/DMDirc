@@ -201,9 +201,9 @@ public final class ChannelClientInfo {
 	 *
 	 * @param sReason Why are they being kicked? "" for no reason
 	 */
-	public void kick(String sReason) {
-		if (!sReason.isEmpty()) { sReason = " :" + sReason; }
-		myParser.sendString("KICK " + myChannel + " " + this.getNickname() + sReason);
+	public void kick(final String sReason) {
+		myParser.sendString("KICK " + myChannel + " " + this.getNickname()
+                + (sReason.isEmpty() ? sReason : " :" + sReason));
 	}
 	
 	/**

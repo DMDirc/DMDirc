@@ -65,7 +65,7 @@ public final class LoggingCommand extends ServerCommand implements IntelligentCo
 		}
 		final Plugin gotPlugin = pluginInfo.getPlugin();
 		
-		if (gotPlugin == null || !(gotPlugin instanceof LoggingPlugin)) {
+		if (!(gotPlugin instanceof LoggingPlugin)) {
 			sendLine(origin, isSilent, FORMAT_ERROR, "Logging Plugin is not loaded.");
 			return;
 		}

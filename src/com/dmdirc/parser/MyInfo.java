@@ -59,16 +59,16 @@ public final class MyInfo {
 		} catch (SecurityException e) {
 			result = null;
 		}
-		if (result != null && !result.isEmpty()) {
-			nickname = result;
-			username = nickname;
-			realname = nickname+" - DMDIrc";
-			altNickname = nickname+"-";
-		} else {
+		if (result == null || result.isEmpty()) {
 			nickname = "IRCParser";
 			username = "IRCParser";
 			realname = "DMDIrc IRCParser";
 			altNickname = "IRC-Parser";
+		} else {
+			nickname = result;
+			username = nickname;
+			realname = nickname+" - DMDIrc";
+			altNickname = nickname+"-";
 		}
 	}
 	

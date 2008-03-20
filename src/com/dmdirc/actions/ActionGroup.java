@@ -64,6 +64,8 @@ public class ActionGroup extends ArrayList<Action> {
      * @param name The name of this action group
      */
     public ActionGroup(final String name) {
+        super();
+        
         this.name = name;
     }
 

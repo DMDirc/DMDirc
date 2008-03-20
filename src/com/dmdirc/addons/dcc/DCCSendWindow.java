@@ -59,7 +59,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface {
 		nickname = nick;
 		otherNickname = targetNick;
 		
-		JWrappingLabel label = new JWrappingLabel("This is a placeholder dcc send window.", SwingConstants.CENTER);
+		final JWrappingLabel label = new JWrappingLabel("This is a placeholder dcc send window.", SwingConstants.CENTER);
 		
 		((TextFrame)getFrame()).getContentPane().add(label);
 		plugin.addWindow(this);

@@ -139,13 +139,11 @@ public final class ClientInfo {
 	public static String[] parseHostFull(String sWho) {
 		String[] sTemp = null;
 		final String[] result = new String[3];
-		if (!sWho.isEmpty()) {
-			if (sWho.charAt(0) == ':') { sWho = sWho.substring(1); }
-		}
+		if (!sWho.isEmpty() && sWho.charAt(0) == ':') { sWho = sWho.substring(1); }
 		sTemp = sWho.split("@", 2);
-		if (sTemp.length != 1) { result[2] = sTemp[1]; } else { result[2] = ""; }
+		if (sTemp.length == 1) { result[2] = ""; } else { result[2] = sTemp[1]; }
 		sTemp = sTemp[0].split("!", 2);
-		if (sTemp.length != 1) { result[1] = sTemp[1]; } else { result[1] = ""; }
+		if (sTemp.length == 1) { result[1] = ""; } else { result[1] = sTemp[1]; }
 		result[0] = sTemp[0];
 		
 		return result;

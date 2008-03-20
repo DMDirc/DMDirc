@@ -117,7 +117,7 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
                 result = result.substring(sepIndex,
                         extIndex > sepIndex ? extIndex : result.length());
                 
-                int offset = result.indexOf('-');
+                final int offset = result.indexOf('-');
                 if (offset > -1) {
                     result = result.substring(offset + 1).trim();
                 }
@@ -245,7 +245,7 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
                     if (itemname.endsWith("</a>")) {
                         itemname = itemname.substring(0, itemname.length()-4);
                     }
-                    if (!itemname.equals("")) {
+                    if (!itemname.isEmpty()) {
                         if (isCurrent) {
                             information.put("playlist_current", Integer.toString(playlistItem));
                         }

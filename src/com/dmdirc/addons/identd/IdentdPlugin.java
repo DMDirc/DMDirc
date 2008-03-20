@@ -67,7 +67,7 @@ public class IdentdPlugin extends Plugin implements ActionListener {
 		ActionManager.addListener(this, CoreActionType.SERVER_CONNECTED, CoreActionType.SERVER_CONNECTING, CoreActionType.SERVER_CONNECTERROR);
 
 		// Set defaults
-		Properties defaults = new Properties();
+		final Properties defaults = new Properties();
 		defaults.setProperty(getDomain() + ".general.useUsername", "false");
 		defaults.setProperty(getDomain() + ".general.useNickname", "false");
 		defaults.setProperty(getDomain() + ".general.useCustomName", "false");
@@ -83,7 +83,7 @@ public class IdentdPlugin extends Plugin implements ActionListener {
 		defaults.setProperty("identity.name", "Identd Plugin Defaults");
 		IdentityManager.addIdentity(new Identity(defaults));
 		
-		myServer = new IdentdServer(this);
+		myServer = new IdentdServer();
 		if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "advanced.alwaysOn")) {
 			myServer.startServer();
 		}
@@ -110,7 +110,7 @@ public class IdentdPlugin extends Plugin implements ActionListener {
 	public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
 		if (type == CoreActionType.SERVER_CONNECTING) {
 			synchronized (servers) {
-				if (servers.size() == 0) {
+				if (servers.isEmpty()) {
 					myServer.startServer();
 				}
 				servers.add((Server) arguments[0]);
@@ -119,10 +119,8 @@ public class IdentdPlugin extends Plugin implements ActionListener {
 			synchronized (servers) {
 				servers.remove(arguments[0]);
 			
-				if (servers.size() == 0) {
-					if (!IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "advanced.alwaysOn")) {
-						myServer.stopServer();
-					}
+				if (servers.isEmpty() && !IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "advanced.alwaysOn")) {
+					myServer.stopServer();
 				}
 			}
 		}

@@ -48,7 +48,7 @@ public final class StepInstall extends Step implements StepListener {
 	private static final long serialVersionUID = 2;
 
 	/** Text area showing the install information */
-	private JTextArea infoLabel = new JTextArea("Beginning Install");
+	private final JTextArea infoLabel = new JTextArea("Beginning Install");
 
 	/** Scroll pane holding text area */
 	final JScrollPane scrollPane;

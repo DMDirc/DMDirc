@@ -82,6 +82,6 @@ public class BooleanParam extends CLIParam {
 	 * @return The value of this param as a string.
 	 */
 	public String getStringValue() {
-		return ""+getValue();
+		return String.valueOf(getValue());
 	}
 }

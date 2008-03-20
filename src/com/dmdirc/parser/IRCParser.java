@@ -904,13 +904,13 @@ public class IRCParser implements Runnable {
 		} else if (newLine[0].equalsIgnoreCase("mode") && newLine.length == 3) {
 			// This makes sure we don't add the same item to the LMQ twice, even if its requested twice,
 			// as the ircd will only reply once.
-			LinkedList<Character> foundModes = new LinkedList<Character>();
+			final LinkedList<Character> foundModes = new LinkedList<Character>();
 
-			ChannelInfo channel = getChannelInfo(newLine[1]);
+			final ChannelInfo channel = getChannelInfo(newLine[1]);
 			if (channel != null) {
-				Queue<Character> listModeQueue = channel.getListModeQueue();
+				final Queue<Character> listModeQueue = channel.getListModeQueue();
 				for (int i = 0; i < newLine[2].length() ; ++i) {
-					Character mode = newLine[2].charAt(i);
+					final Character mode = newLine[2].charAt(i);
 					callDebugInfo(DEBUG_LMQ, "Intercepted mode request for "+channel+" for mode "+mode);
 					if (hChanModesOther.containsKey(mode) && hChanModesOther.get(mode) == MODE_LIST) {
 						if (foundModes.contains(mode)) {
@@ -974,13 +974,13 @@ public class IRCParser implements Runnable {
 			if (token[0].equalsIgnoreCase("PING") || token[1].equalsIgnoreCase("PING")) {
 				sendString("PONG :" + sParam);
 			} else if (token[0].equalsIgnoreCase("PONG") || token[1].equalsIgnoreCase("PONG")) {
-				if (!lastPingValue.equals("") && lastPingValue.equals(token[token.length-1])) {
+				if (!lastPingValue.isEmpty() && lastPingValue.equals(token[token.length-1])) {
 					lastPingValue = "";
 					serverLag = System.currentTimeMillis() - pingTime;
 					callPingSuccess();
 				}
 			} else if (token[0].equalsIgnoreCase("ERROR")) {
-				StringBuilder errorMessage = new StringBuilder();
+				final StringBuilder errorMessage = new StringBuilder();
 				for (int i = 1; i < token.length; ++i) { errorMessage.append(token[i]); }
 				callServerError(errorMessage.toString());
 			} else {
@@ -1451,14 +1451,16 @@ public class IRCParser implements Runnable {
 	 */
 	public void joinChannel(final String sChannelName, final String sKey, final boolean autoPrefix) {
 		final String channelName;
-		if (!isValidChannelName(sChannelName)) {
+		if (isValidChannelName(sChannelName)) {
+			channelName = sChannelName;
+        } else {
 			if (autoPrefix) {
 				if (h005Info.containsKey("CHANTYPES")) {
 					final String chantypes = h005Info.get("CHANTYPES");
-					if (!chantypes.isEmpty()) {
-						channelName = chantypes.charAt(0)+sChannelName;
+					if (chantypes.isEmpty()) {
+						channelName = "#" + sChannelName;
 					} else {
-						channelName = "#"+sChannelName;
+						channelName = chantypes.charAt(0) + sChannelName;
 					}
 				} else {
 					return;
@@ -1466,8 +1468,6 @@ public class IRCParser implements Runnable {
 			} else {
 				return;
 			}
-		} else {
-			channelName = sChannelName;
 		}
 		if (sKey.isEmpty()) {
 			sendString("JOIN " + channelName);
@@ -1712,9 +1712,9 @@ public class IRCParser implements Runnable {
 		// Check if we are already on this channel
 		if (getChannelInfo(sChannelName) != null) { return true; }
 		// Check if we know of any valid chan prefixes
-		if (hChanPrefix.size() == 0) {
+		if (hChanPrefix.isEmpty()) {
 			// We don't. Lets check against RFC2811-Specified channel types
-			char first = sChannelName.charAt(0);
+			final char first = sChannelName.charAt(0);
 			return first == '#' || first == '&' || first == '!' || first == '+';
 		}
 		// Otherwise return true if:
@@ -1886,8 +1886,8 @@ public class IRCParser implements Runnable {
 				setPingNeeded(true);
 				pingCountDown = pingCountDownLength;
 				callPingSent();
-				lastPingValue = ""+System.currentTimeMillis();
-				sendLine("PING "+lastPingValue);
+				lastPingValue = String.valueOf(System.currentTimeMillis());
+				sendLine("PING " + lastPingValue);
 			}
 		}
 	}

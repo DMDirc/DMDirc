@@ -109,6 +109,8 @@ public final class Main implements WizardListener {
 	
 	/**
 	 * Get the Installer object for this OS.
+     * 
+     * @return The installer for this OS
 	 */
 	public static synchronized Installer getInstaller() {
 		if (myInstaller == null) {

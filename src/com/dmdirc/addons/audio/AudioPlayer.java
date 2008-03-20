@@ -26,11 +26,7 @@ import java.io.File;
 import java.applet.AudioClip;
 import java.applet.Applet;
 
-import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.DataLine;
 
 /**
  * The AudioPlayer handles the playing of the audio
@@ -111,7 +107,7 @@ public final class AudioPlayer implements Runnable {
 	 */
 	private void playWav() {
 		try {
-			final AudioClip ac = (new Applet()).newAudioClip(myFile.toURI().toURL());
+			final AudioClip ac = Applet.newAudioClip(myFile.toURI().toURL());
 			if (ac != null) { ac.play(); }
 		} catch (Exception e) { /* Bad File, can't play */ }
 	}
@@ -120,16 +116,16 @@ public final class AudioPlayer implements Runnable {
 	 * Play the file as a wav file.
 	 * Based on http://www.anyexample.com/programming/java/java_play_wav_sound_file.xml
 	 */
-	private void oldPlayWav() {
+	/*private void oldPlayWav() {
 		final int EXTERNAL_BUFFER_SIZE = 524288; // 128Kb
 		AudioInputStream audioInputStream = null;
 		try {
 			audioInputStream = AudioSystem.getAudioInputStream(myFile);
 		} catch (Exception e) { return; }
-		AudioFormat format = audioInputStream.getFormat();
+		final AudioFormat format = audioInputStream.getFormat();
 		
 		SourceDataLine auline = null;
-		DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
+		final DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
 		
 		try {
 			auline = (SourceDataLine) AudioSystem.getLine(info);
@@ -138,7 +134,7 @@ public final class AudioPlayer implements Runnable {
 		
 		auline.start();
 		int nBytesRead = 0;
-		byte[] abData = new byte[EXTERNAL_BUFFER_SIZE];
+		final byte[] abData = new byte[EXTERNAL_BUFFER_SIZE];
 		
 		try {
 			while (nBytesRead != -1) {
@@ -149,7 +145,7 @@ public final class AudioPlayer implements Runnable {
 				}
 			}
 		} catch (Exception e) {
-			/** Do Nothing */
+			/** Do Nothing *
 		} finally {
 			auline.drain();
 			auline.close();
@@ -157,5 +153,5 @@ public final class AudioPlayer implements Runnable {
 		try {
 			audioInputStream.close();
 		} catch (Exception e) { }
-	}
+	}*/
 }

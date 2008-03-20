@@ -62,7 +62,7 @@ public class ProcessNames extends IRCProcessor {
 			if (iChannel == null) { return; }
 			
 			// If we are not expecting names, clear the current known names - this is fresh stuff!
-			if (!iChannel.getAddingNames()) { iChannel.emptyChannel(); }
+			if (!iChannel.isAddingNames()) { iChannel.emptyChannel(); }
 			iChannel.setAddingNames(true);
 			
 			String[] sNames = token[token.length-1].split(" ");

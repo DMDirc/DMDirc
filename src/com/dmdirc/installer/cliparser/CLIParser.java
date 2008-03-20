@@ -82,11 +82,11 @@ public class CLIParser {
 	 * @return true if added, false if already exists.
 	 */
 	public boolean add(final CLIParam param) {
-		boolean validChar = (param.getChr() == 0 || !params.containsKey(""+param.getChr()));
-		boolean validString = (param.getString().isEmpty() || !params.containsKey("-"+param.getString()));
+		final boolean validChar = param.getChr() == 0 || !params.containsKey(param.getChr());
+		final boolean validString = param.getString().isEmpty() || !params.containsKey("-"+param.getString());
 		if (validChar && validString) {
 			if (param.getChr() != 0) {
-				params.put(""+param.getChr(), param);
+				params.put(String.valueOf(param.getChr()), param);
 			}
 			if (!param.getString().isEmpty()) {
 				params.put("-"+param.getString(), param);
@@ -189,15 +189,15 @@ public class CLIParser {
 		System.out.println(usage);
 		System.out.println(" ");
 		for (CLIParam param : this.getParamList()) {
-			if (param.getChr() != 0) {
-				System.out.print("-"+param.getChr()+" ");
-			} else {
+			if (param.getChr() == 0) {
 				System.out.print("   ");
-			}
-			if (!param.getString().isEmpty()) {
-				System.out.print("--"+param.getString()+" ");
 			} else {
+				System.out.print("-"+param.getChr()+" ");
+			}
+			if (param.getString().isEmpty()) {
 				System.out.print("\t\t");
+			} else {
+				System.out.print("--"+param.getString()+" ");
 			}
 			System.out.println("\t"+param.getDescription());
 		}
@@ -224,10 +224,10 @@ public class CLIParser {
 						System.out.println("Unknown Param: -"+name);
 						if (helpParam != null) {
 							String command = "";
-							if (!helpParam.getString().isEmpty()) {
-								command = helpParam.getString();
+							if (helpParam.getString().isEmpty()) {
+								command = String.valueOf(helpParam.getChr());
 							} else if (helpParam.getChr() != 0) {
-								command = ""+helpParam.getChr();
+								command = helpParam.getString();
 							}
 							if (!command.isEmpty()) {
 								System.out.println("Use "+command+" to get help.");

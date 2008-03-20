@@ -66,7 +66,7 @@ public final class IdentClient implements Runnable {
 	 * Process this connection
 	 */
 	public void run() {
-		Thread thisThread = Thread.currentThread();
+		final Thread thisThread = Thread.currentThread();
 		PrintWriter out = null;
 		BufferedReader in = null;
 		try {
@@ -116,10 +116,9 @@ public final class IdentClient implements Runnable {
 		}
 		
 		final Server server = getServerByPort(myPort);
-		if (!IdentityManager.getGlobalConfig().getOptionBool(IdentdPlugin.getDomain(), "advanced.alwaysOn")) {
-			if (server == null || IdentityManager.getGlobalConfig().getOptionBool(IdentdPlugin.getDomain(), "advanced.isNoUser")) {
-				return String.format("%d , %d : ERROR : NO-USER", myPort, theirPort);
-			}
+		if (!IdentityManager.getGlobalConfig().getOptionBool(IdentdPlugin.getDomain(), "advanced.alwaysOn")
+                && (server == null || IdentityManager.getGlobalConfig().getOptionBool(IdentdPlugin.getDomain(), "advanced.isNoUser"))) {
+			return String.format("%d , %d : ERROR : NO-USER", myPort, theirPort);
 		}
 		
 		if (IdentityManager.getGlobalConfig().getOptionBool(IdentdPlugin.getDomain(), "advanced.isHiddenUser")) {
@@ -140,10 +139,10 @@ public final class IdentClient implements Runnable {
 			if (osName.startsWith("windows")) { os = "WIN32"; }
 			else if (osName.startsWith("mac")) { os = "MACOS"; }
 			else if (osName.startsWith("linux")) { os = "UNIX"; }
-			else if (osName.indexOf("bsd") != -1) { os = "UNIX-BSD"; }
-			else if (osName.equals("os/2")) { os = "OS/2"; }
-			else if (osName.indexOf("unix") != -1) { os = "UNIX"; }
-			else if (osName.equals("irix")) { os = "IRIX"; }
+			else if (osName.indexOf("bsd") > -1) { os = "UNIX-BSD"; }
+			else if ("os/2".equals(osName)) { os = "OS/2"; }
+			else if (osName.indexOf("unix") > -1) { os = "UNIX"; }
+			else if ("irix".equals(osName)) { os = "IRIX"; }
 			else { os = "UNKNOWN"; }
 		}
 		
@@ -166,7 +165,7 @@ public final class IdentClient implements Runnable {
 	 */
 	public void close() {
 		if (myThread != null) {
-			Thread tmpThread = myThread;
+			final Thread tmpThread = myThread;
 			myThread = null;
 			if (tmpThread != null) { tmpThread.interrupt(); }
 			try { mySocket.close(); } catch (IOException e) { }

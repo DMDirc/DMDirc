@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
@@ -198,7 +199,7 @@ public class Identity extends ConfigSource implements Serializable,
         assert(file != null);
                
         final InputStream input = new FileInputStream(file);
-        final Hashtable<Object,Object> oldProps = new Hashtable<Object, Object>(properties);
+        final Map<Object,Object> oldProps = new Hashtable<Object, Object>(properties);
         
         properties.clear();
         properties.load(input);

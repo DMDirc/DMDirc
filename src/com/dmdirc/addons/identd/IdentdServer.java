@@ -39,9 +39,8 @@ import java.util.List;
  * @version $Id: IdentdServer.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public final class IdentdServer implements Runnable {
-	/** The IdentdPlugin that owns this Server */
-	private final IdentdPlugin myIdentdPlugin;
-	/** The Thread in use for this server */
+
+    /** The Thread in use for this server */
 	private volatile Thread myThread = null;
 	/** The current socket in use for this server */
 	private ServerSocket serverSocket;
@@ -49,23 +48,21 @@ public final class IdentdServer implements Runnable {
 	private final List<IdentClient> clientList = new ArrayList<IdentClient>();
 	
 	/**
-	 * Create the IdentdServer
-	 *
-	 * @param plugin The plugin that owns this Server
+	 * Create the IdentdServer.
 	 */
-	public IdentdServer(final IdentdPlugin plugin) {
-		myIdentdPlugin = plugin;
+	public IdentdServer() {
+        super();
 	}
 	
 	/**
-	 * Run this IdentdServer
+	 * Run this IdentdServer.
 	 */
 	public void run() {
-		Thread thisThread = Thread.currentThread();
+		final Thread thisThread = Thread.currentThread();
 		while (myThread == thisThread) {
 			try {
-				Socket clientSocket = serverSocket.accept();
-				IdentClient client = new IdentClient(this, clientSocket);
+				final Socket clientSocket = serverSocket.accept();
+				final IdentClient client = new IdentClient(this, clientSocket);
 				addClient(client);
 			} catch (IOException e) {
 				if (myThread == thisThread) {
@@ -132,7 +129,7 @@ public final class IdentdServer implements Runnable {
 	 */
 	public void stopServer() {
 		if (myThread != null) {
-			Thread tmpThread = myThread;
+			final Thread tmpThread = myThread;
 			myThread = null;
 			if (tmpThread != null) { tmpThread.interrupt(); }
 			try { serverSocket.close(); } catch (IOException e) { }

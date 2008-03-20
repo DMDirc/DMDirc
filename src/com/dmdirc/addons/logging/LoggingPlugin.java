@@ -61,6 +61,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Stack;
 
@@ -72,14 +73,15 @@ import java.util.Stack;
  * @version $Id: LoggingPlugin.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public final class LoggingPlugin extends Plugin implements ActionListener {
-	/** What domain do we store all settings in the global config under. */
+
+    /** What domain do we store all settings in the global config under. */
 	private static final String MY_DOMAIN = "plugin-Logging";
 
-	/** The command we registered */
+	/** The command we registered. */
 	private LoggingCommand command;
 
-	/** Hashtable of open files */
-	Hashtable<String,BufferedWriter> openFiles = new Hashtable<String,BufferedWriter>();
+	/** Hashtable of open files. */
+	private final Map<String,BufferedWriter> openFiles = new Hashtable<String,BufferedWriter>();
 
 	/**
 	 * Creates a new instance of the Logging Plugin.
@@ -92,7 +94,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	@Override
 	public void onLoad() {
 		// Set defaults
-		Properties defaults = new Properties();
+		final Properties defaults = new Properties();
 		defaults.setProperty(MY_DOMAIN + ".general.directory", Main.getConfigDir() + "logs" + System.getProperty("file.separator"));
 		defaults.setProperty(MY_DOMAIN + ".general.networkfolders", "true");
 		defaults.setProperty(MY_DOMAIN + ".advanced.filenamehash", "false");
@@ -109,16 +111,16 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 		IdentityManager.addIdentity(new Identity(defaults));
 
 		final File dir = new File(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.directory"));
-		if (!dir.exists()) {
+		if (dir.exists()) {
+			if (!dir.isDirectory()) {
+				Logger.userError(ErrorLevel.LOW, "Unable to create logging dir (file exists instead)");
+			}            
+		} else {
 			try {
 				dir.mkdirs();
 				dir.createNewFile();
 			} catch (IOException ex) {
 				Logger.userError(ErrorLevel.LOW, "Unable to create logging dir");
-			}
-		} else {
-			if (!dir.isDirectory()) {
-				Logger.userError(ErrorLevel.LOW, "Unable to create logging dir (file exists instead)");
 			}
 		}
 
@@ -260,7 +262,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 					line = getLogFile(client);
 					if (openFiles.containsKey(line)) {
 						appendLine(line, "*** Query closed at: " + openedAtFormat.format(new Date()));
-						BufferedWriter file = openFiles.get(line);
+						final BufferedWriter file = openFiles.get(line);
 						try {
 							file.close();
 						} catch (IOException e) {
@@ -276,7 +278,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 					line = getLogFile(channel);
 					if (openFiles.containsKey(line)) {
 						appendLine(line, "*** Channel closed at: " + openedAtFormat.format(new Date()));
-						BufferedWriter file = openFiles.get(line);
+						final BufferedWriter file = openFiles.get(line);
 						try {
 							file.close();
 						} catch (IOException e) {
@@ -457,15 +459,15 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 			return;
 		}
 
-		File testFile = new File(filename);
+		final File testFile = new File(filename);
 		if (testFile.exists()) {
 			try {
-				ReverseFileReader file = new ReverseFileReader(testFile);
+				final ReverseFileReader file = new ReverseFileReader(testFile);
 				// Because the file includes a newline char at the end, an empty line
 				// is returned by getLines. To counter this, we call getLines(1) and do
 				// nothing with the output.
 				file.getLines(1);
-				Stack<String> lines = file.getLines(numLines);
+				final Stack<String> lines = file.getLines(numLines);
 				while (!lines.empty()) {
 					frame.addLine(getColouredString(colour,lines.pop()), showTimestamp);
 				}
@@ -485,7 +487,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 * @param line the line to colour
 	 * @return The given line with the appropriate irc codes appended/prepended to colour it.
 	 */
-	private String getColouredString(String colour, String line) {
+	private String getColouredString(final String colour, final String line) {
 		String res = null;
 		if (colour.length() < 3) {
 			int num;
@@ -699,18 +701,18 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 			result = result + sanitise(networkName.toLowerCase()) + System.getProperty("file.separator");
 			// Check dir exists
 			final File dir = new File(result);
-			if (!dir.exists()) {
+			if (dir.exists()) {
+				if (!dir.isDirectory()) {
+					Logger.userError(ErrorLevel.LOW, "Unable to create networkfolders dir (file exists instead)");
+					// Prepend network name instead.
+					result = input + sanitise(networkName.toLowerCase()) + " -- ";
+				}
+			} else {
 				try {
 					dir.mkdirs();
 					dir.createNewFile();
 				} catch (IOException ex) {
 					Logger.userError(ErrorLevel.LOW, "Unable to create networkfolders dir");
-					// Prepend network name instead.
-					result = input + sanitise(networkName.toLowerCase()) + " -- ";
-				}
-			} else {
-				if (!dir.isDirectory()) {
-					Logger.userError(ErrorLevel.LOW, "Unable to create networkfolders dir (file exists instead)");
 					// Prepend network name instead.
 					result = input + sanitise(networkName.toLowerCase()) + " -- ";
 				}

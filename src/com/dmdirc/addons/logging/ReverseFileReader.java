@@ -30,6 +30,7 @@ import java.io.EOFException;
 import java.nio.charset.Charset;
 import java.util.Stack;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Reads a file in reverse.
@@ -41,9 +42,9 @@ public class ReverseFileReader {
 	/** File to manipulate. */
 	private RandomAccessFile file;
 	/** \r Character */
-	private static final byte r = 0X0D;
+	private static final byte R = 0X0D;
 	/** \n Character */
-	private static final byte n = 0X0A;
+	private static final byte N = 0X0A;
 	/** Number of bytes to skip backwards at a time. */
 	private byte seekLength = 50;
 
@@ -97,7 +98,7 @@ public class ReverseFileReader {
 	 *
 	 * @param newValue New value for seekLength
 	 */
-	public void setSeekLength(byte newValue) {
+	public void setSeekLength(final byte newValue) {
 		seekLength = newValue;
 	}
 	
@@ -124,7 +125,7 @@ public class ReverseFileReader {
 		if (file == null) { throw new IOException("File has been closed."); }
 		// Used to store result to output.
 //		StringBuilder line = new StringBuilder();
-		ArrayList<Byte> line = new ArrayList<Byte>(seekLength);
+		final List<Byte> line = new ArrayList<Byte>(seekLength);
 		// Used to store position in file pre-read
 		long fp = 0;
 		// Used to store position in file when this is called
@@ -170,12 +171,12 @@ public class ReverseFileReader {
 			// This uses seekDistance so that only wanted data is checked.
 			for (int i = seekDistance-1; i >= 0; --i) {
 				// Check for New line Character, or a non carraige-return char
-				if (bytes[i] == n) {
+				if (bytes[i] == N) {
 					// Seek to the location of this character and exit this loop.
 					file.seek(fp+i);
 					gotNewLine = true;
 					break;
-				} else if (bytes[i] != r) {
+				} else if (bytes[i] != R) {
 					// Add to the result, the loop will continue going.
 					line.add(0, bytes[i]);
 				}
@@ -217,9 +218,10 @@ public class ReverseFileReader {
 	 * If the file is closed, an empty stack will be returned.
 	 *
 	 * @param numLines Number of lines to try and get.
+     * @return The requested lines
 	 */
-	public Stack<String> getLines(int numLines) {
-		Stack<String> result = new Stack<String>();
+	public Stack<String> getLines(final int numLines) {
+		final Stack<String> result = new Stack<String>();
 		for (int i = 0; i < numLines; ++i) {
 			try {
 				result.push(getNextLine());

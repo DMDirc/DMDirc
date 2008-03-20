@@ -243,7 +243,7 @@ public final class ChannelInfo {
 	 *
 	 * @return if false, any new names reply will cause current known channelclients to be removed.
 	 */
-	public boolean getAddingNames() { return bAddingNames; }
+	public boolean isAddingNames() { return bAddingNames; }
 	
 	/**
 	 * Get the name of this channel object.

@@ -52,6 +52,8 @@ public final class ChannelEventHandler extends EventHandler implements
      * @param owner The channel that owns this event handler.
      */
     public ChannelEventHandler(final Channel owner) {
+        super();
+        
         this.owner = owner;
     }
 

@@ -41,7 +41,7 @@ public interface ExternalCommand {
      * @param isSilent Whether this command is silenced or not
      * @param args Arguments passed to this command
      */
-    public abstract void execute(InputWindow origin, Server server, String channel,
+    void execute(InputWindow origin, Server server, String channel,
             boolean isSilent, String... args);    
 
 }
