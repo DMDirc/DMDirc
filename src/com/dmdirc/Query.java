@@ -301,8 +301,8 @@ public final class Query extends MessageTarget implements
     public void onQuit(final IRCParser tParser, final ClientInfo cClient,
             final String sReason) {
         if (cClient.getNickname().equals(ClientInfo.parseHost(host))) {
-            final StringBuffer format = new StringBuffer(sReason.isEmpty() ?
-                "queryQuit" : "queryQuitReason");
+            final StringBuffer format = new StringBuffer(sReason.isEmpty()
+                ? "queryQuit" : "queryQuitReason");
 
             ActionManager.processEvent(CoreActionType.QUERY_QUIT, format, this, sReason);
 
@@ -394,8 +394,9 @@ public final class Query extends MessageTarget implements
     @Override
     public ConfigManager getConfigManager() {
         if (server == null) {
-            Logger.appError(ErrorLevel.LOW, "Tried to retrieve config manager" +
-                    " from a query with no server", new IllegalStateException("My host: " + host));
+            Logger.appError(ErrorLevel.LOW, "Tried to retrieve config manager"
+                    + " from a query with no server",
+                    new IllegalStateException("My host: " + host));
             return IdentityManager.getGlobalConfig();
         }
 

@@ -41,20 +41,20 @@ import java.io.Serializable;
  */
 public final class Raw extends WritableFrameContainer implements IDataIn,
         IDataOut, Serializable {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
+
     /** The server object that's being monitored. */
     private Server server;
-    
+
     /** An InputWindow used for displaying the raw data.*/
     private InputWindow window;
-    
+
     /**
      * Creates a new instance of Raw.
      *
@@ -62,20 +62,20 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
      */
     public Raw(final Server newServer) {
         super();
-        
+
         this.server = newServer;
-        
+
         icon = IconManager.getIconManager().getIcon("raw");
-        
+
         window = Main.getUI().getInputWindow(this, newServer.getFrame().getCommandParser());
         WindowManager.addWindow(server.getFrame(), window);
         window.setTitle("(Raw log)");
         window.getInputHandler().setTabCompleter(server.getTabCompleter());
         window.setFrameIcon(icon);
-        
+
         window.open();
     }
-    
+
     /**
      * Registers the data callbacks for this raw window.
      */
@@ -87,69 +87,69 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
             Logger.appError(ErrorLevel.HIGH, "Unable to register raw callbacks", ex);
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void windowClosing() {
         // 1: Make the window non-visible
         window.setVisible(false);
-        
+
         // 2: Remove any callbacks or listeners
         if (server != null && server.getParser() != null) {
             server.getParser().getCallbackManager().delAllCallback(this);
         }
-        
+
         // 3: Trigger any actions neccessary
         // 4: Trigger action for the window closing
-        
+
         // 5: Inform any parents that the window is closing
         server.delRaw();
-        
+
         // 6: Remove the window from the window manager
         WindowManager.removeWindow(window);
-        
+
         // 7: Remove any references to the window and parents
         window = null;
         server = null;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public InputWindow getFrame() {
         return window;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void onDataIn(final IRCParser tParser, final String sData) {
         addLine("rawIn", sData);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void onDataOut(final IRCParser tParser, final String sData,
             final boolean bFromParser) {
         addLine("rawOut", sData);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String toString() {
         return "Raw";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public Server getServer() {
         return server;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void sendLine(final String line) {
         server.sendLine(window.getTranscoder().encode(line));
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public int getMaxLineLength() {
@@ -161,5 +161,5 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
     public ConfigManager getConfigManager() {
         return server.getConfigManager();
     }
-    
+
 }

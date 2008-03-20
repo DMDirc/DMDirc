@@ -53,7 +53,7 @@ public final class ChannelEventHandler extends EventHandler implements
      */
     public ChannelEventHandler(final Channel owner) {
         super();
-        
+
         this.owner = owner;
     }
 
@@ -107,8 +107,8 @@ public final class ChannelEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    public void onChannelTopic(final IRCParser tParser, final ChannelInfo cChannel,
-            final boolean bIsJoinTopic) {
+    public void onChannelTopic(final IRCParser tParser,
+            final ChannelInfo cChannel, final boolean bIsJoinTopic) {
         checkParser(tParser);
 
         final Topic newTopic = new Topic(cChannel.getTopic(),
@@ -201,7 +201,7 @@ public final class ChannelEventHandler extends EventHandler implements
             final ChannelClientInfo cChannelClient, final String sHost,
             final String sModes) {
         checkParser(tParser);
-        
+
         if (sHost.isEmpty()) {
             owner.doNotification(sModes.length() <= 1 ? "channelNoModes"
                     : "channelModeDiscovered", CoreActionType.CHANNEL_MODESDISCOVERED,
@@ -211,7 +211,7 @@ public final class ChannelEventHandler extends EventHandler implements
                     : "channelModeChanged", CoreActionType.CHANNEL_MODECHANGE,
                     cChannelClient, sModes);
         }
-        
+
         owner.refreshClients();
     }
 
@@ -221,14 +221,14 @@ public final class ChannelEventHandler extends EventHandler implements
             final ChannelInfo cChannel, final ChannelClientInfo cChangedClient,
             final ChannelClientInfo cSetByClient, final String sHost, final String sMode) {
         checkParser(tParser);
-        
+
         if (owner.getConfigManager().getOptionBool("channel", "splitusermodes", false)) {
             String format = "channelSplitUserMode_" + sMode;
-            
+
             if (!owner.getConfigManager().hasOption("format", format)) {
                 format = "channelSplitUserMode_default";
             }
- 
+
             owner.doNotification(format, CoreActionType.CHANNEL_USERMODECHANGE,
                     cSetByClient, cChangedClient, sMode);
         }
@@ -248,8 +248,8 @@ public final class ChannelEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    public void onAwayStateOther(final IRCParser tParser, final ClientInfo client,
-            final boolean state) {
+    public void onAwayStateOther(final IRCParser tParser,
+            final ClientInfo client, final boolean state) {
         checkParser(tParser);
 
         final ChannelClientInfo channelClient = owner.getChannelInfo().getUser(client);

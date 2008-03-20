@@ -40,17 +40,17 @@ import com.dmdirc.parser.callbacks.interfaces.*;
  * @author chris
  */
 public final class ServerEventHandler extends EventHandler
-        implements IChannelSelfJoin, IPrivateMessage, IPrivateAction, 
-        IErrorInfo, IPrivateCTCP, IPrivateCTCPReply, ISocketClosed, 
+        implements IChannelSelfJoin, IPrivateMessage, IPrivateAction,
+        IErrorInfo, IPrivateCTCP, IPrivateCTCPReply, ISocketClosed,
         IPrivateNotice, IMOTDStart, IMOTDLine, IMOTDEnd, INumeric, IPingFailed,
         IPingSuccess, IAwayState, IConnectError, INickInUse, IPost005,
         INoticeAuth, IUnknownNotice, IUserModeChanged, IInvite, IWallop,
         IWalluser, IWallDesync, INickChanged, IServerError, IPingSent,
         IUserModeDiscovered {
-    
+
     /** The server instance that owns this event handler. */
     private final Server owner;
-    
+
     /**
      * Creates a new instance of ServerEventHandler.
      *
@@ -58,30 +58,30 @@ public final class ServerEventHandler extends EventHandler
      */
     public ServerEventHandler(final Server owner) {
         super();
-        
+
         this.owner = owner;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected void addCallback(final CallbackManager cbm, final String name)
             throws CallbackNotFoundException {
         cbm.addCallback(name, this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected IRCParser getParser() {
         return owner.getParser();
     }
-          
+
     /** {@inheritDoc} */
     @Override
     public void onChannelSelfJoin(final IRCParser tParser, final ChannelInfo cChannel) {
         checkParser(tParser);
         owner.addChannel(cChannel);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void onPrivateMessage(final IRCParser tParser, final String sMessage,
@@ -89,7 +89,7 @@ public final class ServerEventHandler extends EventHandler
         checkParser(tParser);
         owner.addQuery(sHost);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void onPrivateAction(final IRCParser tParser, final String sMessage,
@@ -97,16 +97,16 @@ public final class ServerEventHandler extends EventHandler
         checkParser(tParser);
         owner.addQuery(sHost);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void onErrorInfo(final IRCParser tParser, final ParserError errorInfo) {
         checkParser(tParser);
-        
+
         final ErrorLevel errorLevel = ErrorLevel.UNKNOWN;
-        
+
         if (errorInfo.isException()) {
-            Logger.appError(errorLevel, errorInfo.getData(), 
+            Logger.appError(errorLevel, errorInfo.getData(),
                     new Exception("Parser exception with line:\t"
                     + errorInfo.getLastLine(), errorInfo.getException()));
         } else {
@@ -115,7 +115,7 @@ public final class ServerEventHandler extends EventHandler
                     + errorInfo.getLastLine() + "\n\tServer:\t" + owner.getName() + "\n"));
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void onPrivateCTCP(final IRCParser tParser, final String sType,
@@ -123,62 +123,62 @@ public final class ServerEventHandler extends EventHandler
         checkParser(tParser);
 
         owner.doNotification("privateCTCP", CoreActionType.SERVER_CTCP,
-                tParser.getClientInfoOrFake(sHost), sType, sMessage);        
-        
+                tParser.getClientInfoOrFake(sHost), sType, sMessage);
+
         owner.sendCTCPReply(ClientInfo.parseHost(sHost), sType, sMessage);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void onPrivateCTCPReply(final IRCParser tParser, final String sType,
             final String sMessage, final String sHost) {
         checkParser(tParser);
-        
+
         owner.doNotification("privateCTCPreply", CoreActionType.SERVER_CTCPR,
                 tParser.getClientInfoOrFake(sHost), sType, sMessage);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void onSocketClosed(final IRCParser tParser) {
         checkParser(tParser);
         owner.onSocketClosed();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void onPrivateNotice(final IRCParser tParser, final String sMessage,
             final String sHost) {
         checkParser(tParser);
-        
+
         owner.doNotification("privateNotice", CoreActionType.SERVER_NOTICE,
                 tParser.getClientInfoOrFake(sHost), sMessage);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void onMOTDStart(final IRCParser tParser, final String sData) {
         checkParser(tParser);
-        
+
         owner.doNotification("motdStart", CoreActionType.SERVER_MOTDSTART, sData);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void onMOTDLine(final IRCParser tParser, final String sData) {
         checkParser(tParser);
-        
+
         owner.doNotification("motdLine", CoreActionType.SERVER_MOTDLINE, sData);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void onMOTDEnd(final IRCParser tParser, final boolean noMOTD, final String sData) {
         checkParser(tParser);
-        
+
         owner.doNotification("motdEnd", CoreActionType.SERVER_MOTDEND, sData);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void onNumeric(final IRCParser tParser, final int numeric,
@@ -186,75 +186,75 @@ public final class ServerEventHandler extends EventHandler
         checkParser(tParser);
         owner.onNumeric(numeric, token);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void onPingFailed(final IRCParser tParser) {
         checkParser(tParser);
         owner.onPingFailed();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void onPingSent(final IRCParser tParser) {
         checkParser(tParser);
-        
+
         ActionManager.processEvent(CoreActionType.SERVER_PINGSENT, null, owner);
-    }    
-    
+    }
+
     /** {@inheritDoc} */
     @Override
     public void onPingSuccess(final IRCParser tParser) {
         checkParser(tParser);
-        
+
         ActionManager.processEvent(CoreActionType.SERVER_GOTPING, null, owner,
                 Long.valueOf(tParser.getServerLag()));
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void onAwayState(final IRCParser tParser, final boolean currentState,
             final String reason) {
         checkParser(tParser);
-        
+
         owner.updateAwayState(currentState ? reason : null);
-        
+
         if (currentState) {
             owner.doNotification("away", CoreActionType.SERVER_AWAY, reason);
         } else {
             owner.doNotification("back", CoreActionType.SERVER_BACK);
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void onConnectError(final IRCParser tParser, final ParserError errorInfo) {
         checkParser(tParser);
         owner.onConnectError(errorInfo);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void onNickInUse(final IRCParser tParser, final String nickname) {
         owner.onNickInUse(nickname);
         checkParser(tParser);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void onPost005(final IRCParser tParser) {
         checkParser(tParser);
         owner.onPost005();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void onNoticeAuth(final IRCParser tParser, final String sData) {
         checkParser(tParser);
-        
+
         owner.doNotification("authNotice", CoreActionType.SERVER_AUTHNOTICE, sData);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void onUnknownNotice(final IRCParser tParser, final String sMessage,
@@ -264,13 +264,13 @@ public final class ServerEventHandler extends EventHandler
         owner.doNotification("unknownNotice", CoreActionType.SERVER_UNKNOWNNOTICE,
                 sHost, sTarget, sMessage);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void onUserModeChanged(final IRCParser tParser,
             final ClientInfo cClient, final String sSetBy, final String sModes) {
         checkParser(tParser);
-        
+
         owner.doNotification("userModeChanged", CoreActionType.SERVER_USERMODES,
                 tParser.getClientInfoOrFake(sSetBy), sModes);
     }
@@ -280,9 +280,9 @@ public final class ServerEventHandler extends EventHandler
     public void onUserModeDiscovered(final IRCParser tParser, final ClientInfo cClient,
              final String sModes) {
         checkParser(tParser);
-        
+
         owner.doNotification("userModeDiscovered", CoreActionType.SERVER_USERMODES,
-                cClient, sModes);        
+                cClient, sModes);
     }
 
     /** {@inheritDoc} */
@@ -290,41 +290,41 @@ public final class ServerEventHandler extends EventHandler
     public void onInvite(final IRCParser tParser, final String userHost,
             final String channel) {
         checkParser(tParser);
-        
+
         owner.addInvite(new Invite(owner, channel, userHost));
         owner.doNotification("inviteReceived",
-                CoreActionType.SERVER_INVITERECEIVED, 
+                CoreActionType.SERVER_INVITERECEIVED,
                 tParser.getClientInfoOrFake(userHost), channel);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onWallop(final IRCParser tParser, final String sMessage, 
+    public void onWallop(final IRCParser tParser, final String sMessage,
             final String sHost) {
         checkParser(tParser);
-        
-        owner.doNotification("wallop", CoreActionType.SERVER_WALLOPS, 
+
+        owner.doNotification("wallop", CoreActionType.SERVER_WALLOPS,
                 tParser.getClientInfoOrFake(sHost), sMessage);
-        
+
     }
 
     /** {@inheritDoc} */
-    @Override    
-    public void onWalluser(final IRCParser tParser, final String sMessage, 
+    @Override
+    public void onWalluser(final IRCParser tParser, final String sMessage,
             final String sHost) {
         checkParser(tParser);
 
-        owner.doNotification("walluser", CoreActionType.SERVER_WALLUSERS, 
+        owner.doNotification("walluser", CoreActionType.SERVER_WALLUSERS,
                 tParser.getClientInfoOrFake(sHost), sMessage);
     }
 
     /** {@inheritDoc} */
-    @Override    
-    public void onWallDesync(final IRCParser tParser, final String sMessage, 
+    @Override
+    public void onWallDesync(final IRCParser tParser, final String sMessage,
             final String sHost) {
         checkParser(tParser);
-        
-        owner.doNotification("walldesync", CoreActionType.SERVER_WALLDESYNC, 
+
+        owner.doNotification("walldesync", CoreActionType.SERVER_WALLDESYNC,
                 tParser.getClientInfoOrFake(sHost), sMessage);
     }
 
@@ -333,7 +333,7 @@ public final class ServerEventHandler extends EventHandler
     public void onNickChanged(final IRCParser tParser, final ClientInfo cClient,
             final String sOldNick) {
         checkParser(tParser);
-        
+
         if (cClient.equals(tParser.getMyself())) {
             owner.doNotification("selfNickChange", CoreActionType.SERVER_NICKCHANGE,
                     sOldNick, cClient.getNickname());
@@ -344,7 +344,7 @@ public final class ServerEventHandler extends EventHandler
     @Override
     public void onServerError(final IRCParser tParser, final String sMessage) {
         checkParser(tParser);
-        
+
         owner.doNotification("serverError", CoreActionType.SERVER_ERROR, sMessage);
     }
 

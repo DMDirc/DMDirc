@@ -25,17 +25,17 @@ package com.dmdirc;
 /**
  * Defines common methods for objects that you can send messages to (such as
  * channels and queries).
- * 
+ *
  * @author Chris
  */
 public abstract class MessageTarget extends WritableFrameContainer {
-    
+
     /**
      * Sends the specified string as an action (CTCP) to the target that this
      * object represents.
-     * 
+     *
      * @param action The action to send
-     */    
+     */
     public abstract void sendAction(final String action);
 
 }

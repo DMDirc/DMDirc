@@ -46,31 +46,31 @@ import java.util.TimerTask;
  * @author chris
  */
 public final class Main {
-    
+
     /** Stores the current textual program version. */
     public static final String VERSION = "SVN";
-    
+
     /** The SVN revision that this build was made from. */
     public static final int SVN_REVISION = 3628; // 3601;
-    
+
     /** Stores the update channel that this version came from, if any. */
     public static final UpdateChannel UPDATE_CHANNEL = UpdateChannel.NONE;
-    
+
     /** Feedback nag delay. */
     private static final int FEEDBACK_DELAY = 30 * 60 * 1000;
-    
+
     /** The UI to use for the client. */
     private static UIController controller;
-    
+
     /** The config dir to use for the client. */
     private static String configdir;
-    
+
     /**
      * Prevents creation of main.
      */
     private Main() {
     }
-    
+
     /**
      * Entry procedure.
      *
@@ -78,17 +78,17 @@ public final class Main {
      */
     public static void main(final String[] args) {
         Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
-        
+
         final CommandLineParser clp = new CommandLineParser(args);
-        
+
         IdentityManager.load();
-        
+
         clp.applySettings();
-        
+
         CommandManager.initCommands();
-        
+
         getUI().initUISettings();
-        
+
         if (IdentityManager.getGlobalConfig().getOptionBool("general", "firstRun", true)) {
             IdentityManager.getConfigIdentity().setOption("general", "firstRun", "false");
             getUI().showFirstRunWizard();
@@ -104,28 +104,28 @@ public final class Main {
             // @Deprecated - can be removed after 0.6 is released
             IdentityManager.getConfigIdentity().unsetOption("general", "addonrevision");
             getUI().showMigrationWizard();
-        }        
-        
+        }
+
         ActionManager.init();
-        
+
         PluginManager.getPluginManager();
-        
+
         ActionManager.loadActions();
-        
+
         new ThemeManager().loadDefaultTheme();
-        
+
         getUI().getMainWindow();
-                
+
         ActionManager.processEvent(CoreActionType.CLIENT_OPENED, null);
-        
+
         UpdateChecker.init();
-        
+
         clp.processArguments();
-        
+
         if (IdentityManager.getGlobalConfig().getOptionBool("general", "showglobalwindow", false)) {
             new GlobalWindow();
         }
-        
+
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             public void run() {
                 ActionManager.processEvent(CoreActionType.CLIENT_CLOSED, null);
@@ -134,14 +134,14 @@ public final class Main {
             }
         }, "Shutdown thread"));
     }
-    
+
     /**
      * Quits the client nicely, with the default closing message.
      */
     public static void quit() {
         quit(IdentityManager.getGlobalConfig().getOption("general", "closemessage"));
     }
-    
+
     /**
      * Quits the client nicely.
      *
@@ -149,10 +149,10 @@ public final class Main {
      */
     public static void quit(final String reason) {
         ServerManager.getServerManager().disconnectAll(reason);
-        
+
         System.exit(0);
     }
-    
+
     /**
      * Retrieves the UI controller that's being used by the client.
      *
@@ -166,10 +166,10 @@ public final class Main {
                 controller = new SwingController();
             }
         }
-        
+
         return controller;
     }
-    
+
     /**
      * Sets the UI controller that should be used by this client.
      *
@@ -178,7 +178,7 @@ public final class Main {
     public static void setUI(final UIController newController) {
         controller = newController;
     }
-    
+
     /**
      * Returns the application's config directory.
      *
@@ -200,10 +200,10 @@ public final class Main {
                 configdir = System.getProperty("user.home") + fs + ".DMDirc" + fs;
             }
         }
-        
+
         return configdir;
     }
-    
+
     /**
      * Sets the config directory for this client.
      *
@@ -212,5 +212,5 @@ public final class Main {
     public static void setConfigDir(final String newdir) {
         configdir = newdir;
     }
-    
+
 }

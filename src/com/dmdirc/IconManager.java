@@ -22,10 +22,10 @@
 
 package com.dmdirc;
 
-import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
-
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.util.URLBuilder;
+
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
@@ -47,7 +47,7 @@ import javax.swing.ImageIcon;
 public final class IconManager implements ConfigChangeListener {
     
     /** Previously created IconManager instance. */
-    private static final IconManager me = new IconManager();
+    private static final IconManager ME = new IconManager();
         
     /** A map of existing icons. */
     private final Map<String, Icon> icons;
@@ -69,7 +69,7 @@ public final class IconManager implements ConfigChangeListener {
      * @return Instance of IconManager
      */
     public static IconManager getIconManager() {
-        return me;
+        return ME;
     }
     
     /**

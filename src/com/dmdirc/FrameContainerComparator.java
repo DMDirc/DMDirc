@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-
 import java.io.Serializable;
 import java.util.Comparator;
 
@@ -31,27 +30,26 @@ import java.util.Comparator;
  */
 public final class FrameContainerComparator implements Comparator<FrameContainer>,
         Serializable {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
+
     /**
      * Creates a new instance of FrameContainerComparator.
      */
     public FrameContainerComparator() {
         super();
     }
-    
+
     /**
      * Compares two frame containers names.
      *
      * @param item1 The first container to compare
      * @param item2 The second container to compare
-     *
      * @return -1 if item1 is before item2, 0 if they're equal,
      * +1 if item1 is after item2.
      */
@@ -71,57 +69,53 @@ public final class FrameContainerComparator implements Comparator<FrameContainer
             }
         }
     }
-    
+
     /**
      * Compares frame container types and checks order preferences.
      *
      * @param item1 The new container to be tested
      * @param item2 The existing container to test against
-     *
      * @return True iff the new container should be before the old container
      */
     private boolean sortBefore(final FrameContainer item1,
             final FrameContainer item2) {
-        
+
         return getPosition(item1) < getPosition(item2);
     }
-    
+
     /**
      * Compares frame container types and checks order preferences.
      *
      * @param item1 The new container to be tested
      * @param item2 The existing container to test against
-     *
      * @return True iff the new container should be after the old container
      */
     private boolean sortAfter(final FrameContainer item1,
             final FrameContainer item2) {
-        
         return getPosition(item1) > getPosition(item2);
     }
-    
+
     /**
      * Returns an integer corresponding to the expected order of a frame
      * container.
      *
      * @param item The frame container to be tested
-     *
      * @return Position of the frame container
      */
     private int getPosition(final FrameContainer item) {
         if (item instanceof GlobalWindow) {
             return 0;
         } else if (item instanceof Server) {
-	    return 1;
-	} else if (item instanceof Raw) {
-	    return 2;
-	} else if (item instanceof Channel) {
-	    return 3;
-	} else if (item instanceof Query) {
-	    return 4;
-	} else {
-	    return 5;
-	}
+            return 1;
+        } else if (item instanceof Raw) {
+            return 2;
+        } else if (item instanceof Channel) {
+            return 3;
+        } else if (item instanceof Query) {
+            return 4;
+        } else {
+            return 5;
+        }
     }
-    
+
 }

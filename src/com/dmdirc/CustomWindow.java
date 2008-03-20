@@ -29,7 +29,7 @@ import com.dmdirc.ui.interfaces.Window;
 
 /**
  * A generic custom window implementation.
- * 
+ *
  * @author chris
  */
 public class CustomWindow extends FrameContainer {
@@ -48,7 +48,7 @@ public class CustomWindow extends FrameContainer {
 
     /**
      * Creates a new custom window as a child of the specified window.
-     * 
+     *
      * @param name The name of this custom window
      * @param title The title of this custom window
      * @param parent The parent of this custom window
@@ -74,7 +74,7 @@ public class CustomWindow extends FrameContainer {
 
     /**
      * Creates a new custom window as a top-level window.
-     * 
+     *
      * @param name The name of this custom window
      * @param title The parent of this custom window
      */
@@ -112,15 +112,15 @@ public class CustomWindow extends FrameContainer {
     public void windowClosing() {
         // 1: Make the window non-visible
         window.setVisible(false);
-        
+
         // 2: Remove any callbacks or listeners
         // 3: Trigger any actions neccessary
         // 4: Trigger action for the window closing
         // 5: Inform any parents that the window is closing
-        
+
         // 6: Remove the window from the window manager
         WindowManager.removeWindow(window);
-        
+
         // 7: Remove any references to the window and parents
         window = null; // NOPMD
         parent = null; // NOPMD
@@ -134,7 +134,7 @@ public class CustomWindow extends FrameContainer {
 
     /**
      * Retrieves this custom window's name.
-     * 
+     *
      * @return This custom window's name
      */
     public String getName() {
@@ -143,7 +143,7 @@ public class CustomWindow extends FrameContainer {
 
     /**
      * Retrieves this custom window's title.
-     * 
+     *
      * @return This custom window's title
      */
     public String getTitle() {

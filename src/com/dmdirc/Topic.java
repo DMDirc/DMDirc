@@ -24,58 +24,62 @@ package com.dmdirc;
 
 /**
  * Stores information about a channel topic.
- * 
+ *
  * @author chris
  */
 public class Topic {
-    
-    /**  Topic. */
+
+    /** Topic. */
     private final String topic;
-    /**  Topic client. */
+    /** Topic client. */
     private final String client;
-    /**  Topic time. */
+    /** Topic time. */
     private final long time;
 
     /**
      * Creates a new topic.
+     *
      * @param topic Topic
      * @param client Topic client
      * @param time Topic time
      */
-    public Topic(String topic, String client, long time) {
+    public Topic(final String topic, final String client, final long time) {
         this.topic = topic;
         this.client = client;
         this.time = time;
     }
 
-    /** 
+    /**
      * Returns the client who set the topic.
+     *
      * @return client host
      */
     public String getClient() {
         return client;
     }
 
-    /** 
+    /**
      * Returns the time the topic was set.
+     *
      * @return topic time
      */
     public long getTime() {
         return time;
     }
 
-    /** 
+    /**
      * Returns the topic this object represents.
+     *
      * @return topic
      */
     public String getTopic() {
         return topic;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String toString() {
         return topic;
     }
-    
+
 }

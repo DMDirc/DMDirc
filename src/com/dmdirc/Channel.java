@@ -99,6 +99,7 @@ public final class Channel extends MessageTarget
 
     /**
      * Creates a new instance of Channel.
+     *
      * @param newServer The server object that this channel belongs to
      * @param newChannelInfo The parser's channel object that corresponds to
      * this channel
@@ -125,7 +126,7 @@ public final class Channel extends MessageTarget
         icon = IconManager.getIconManager().getIcon("channel");
 
         tabCompleter = new TabCompleter(server.getTabCompleter());
-        tabCompleter.addEntries(TabCompletionType.COMMAND, 
+        tabCompleter.addEntries(TabCompletionType.COMMAND,
                 CommandManager.getCommandNames(CommandType.TYPE_CHANNEL));
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 CommandManager.getCommandNames(CommandType.TYPE_CHAT));
@@ -236,6 +237,7 @@ public final class Channel extends MessageTarget
 
     /**
      * Returns the server object that this channel belongs to.
+     *
      * @return The server object
      */
     @Override
@@ -244,7 +246,9 @@ public final class Channel extends MessageTarget
     }
 
     /**
-     * Returns the parser's ChannelInfo object that this object is associated with.
+     * Returns the parser's ChannelInfo object that this object is associated
+     * with.
+     *
      * @return The ChannelInfo object associated with this object
      */
     public ChannelInfo getChannelInfo() {
@@ -252,9 +256,10 @@ public final class Channel extends MessageTarget
     }
 
     /**
-     * Sets this object's ChannelInfo reference to the one supplied. This only needs
-     * to be done if the channel window (and hence this channel object) has stayed
-     * open while the user has been out of the channel.
+     * Sets this object's ChannelInfo reference to the one supplied. This only
+     * needs to be done if the channel window (and hence this channel object)
+     * has stayed open while the user has been out of the channel.
+     *
      * @param newChannelInfo The new ChannelInfo object
      */
     public void setChannelInfo(final ChannelInfo newChannelInfo) {
@@ -264,6 +269,7 @@ public final class Channel extends MessageTarget
 
     /**
      * Returns the internal window belonging to this object.
+     *
      * @return This object's internal window
      */
     @Override
@@ -273,6 +279,7 @@ public final class Channel extends MessageTarget
 
     /**
      * Returns the tab completer for this channel.
+     *
      * @return This channel's tab completer
      */
     public TabCompleter getTabCompleter() {
@@ -296,7 +303,8 @@ public final class Channel extends MessageTarget
     }
 
     /**
-     * Updates the title of the channel window, and of the main window if appropriate.
+     * Updates the title of the channel window, and of the main window if
+     * appropriate.
      */
     private void updateTitle() {
         String temp = Styliser.stipControlCodes(channelInfo.getName());
@@ -309,8 +317,8 @@ public final class Channel extends MessageTarget
     }
 
     /**
-     * Joins the specified channel. This only makes sense if used after a call to
-     * part().
+     * Joins the specified channel. This only makes sense if used after a call
+     * to part().
      */
     public void join() {
         server.getParser().joinChannel(channelInfo.getName());
@@ -323,6 +331,7 @@ public final class Channel extends MessageTarget
     /**
      * Parts this channel with the specified message. Parting does NOT close the
      * channel window.
+     *
      * @param reason The reason for parting the channel
      */
     public void part(final String reason) {
@@ -410,7 +419,8 @@ public final class Channel extends MessageTarget
     }
 
     /**
-     * Replaces the list of known clients on this channel with the specified one.
+     * Replaces the list of known clients on this channel with the specified
+     * one.
      *
      * @param clients The list of clients to use
      */
@@ -445,7 +455,8 @@ public final class Channel extends MessageTarget
     }
 
     /**
-     * Returns a string containing the most important mode for the specified client.
+     * Returns a string containing the most important mode for the specified
+     * client.
      *
      * @param channelClient The channel client to check.
      * @return A string containing the most important mode, or an empty string
@@ -501,7 +512,8 @@ public final class Channel extends MessageTarget
     }
 
     /**
-     * Returns a string[] containing the nickname/ident/host of a channel client.
+     * Returns a string[] containing the nickname/ident/host of a channel
+     * client.
      *
      * @param client The channel client to check
      * @param showColours Whether or not to show colours

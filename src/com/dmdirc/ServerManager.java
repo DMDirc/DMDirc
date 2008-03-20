@@ -31,26 +31,26 @@ import java.util.List;
 /**
  * The ServerManager maintains a list of all servers, and provides methods to
  * search or iterate over them.
- * 
+ *
  * @author chris
  */
 public final class ServerManager {
-    
+
     /** Singleton instance of ServerManager. */
     private static ServerManager me;
-    
+
     /** All servers that currently exist. */
     private final List<Server> servers = new ArrayList<Server>();
-    
+
     /**
      * Creates a new instance of ServerManager.
      */
     private ServerManager() {
     }
-    
+
     /**
      * Returns the singleton instance of ServerManager.
-     * 
+     *
      * @return Instance of ServerManager
      */
     public static synchronized ServerManager getServerManager() {
@@ -59,173 +59,173 @@ public final class ServerManager {
         }
         return me;
     }
-    
+
     /**
      * Registers a new server with the manager.
-     * 
+     *
      * @param server The server to be registered
      */
     public void registerServer(final Server server) {
-        synchronized(servers) {
+        synchronized (servers) {
             servers.add(server);
         }
     }
-    
+
     /**
      * Unregisters a server from the manager. The request is ignored if the
      * ServerManager is in the process of closing all servers.
-     * 
+     *
      * @param server The server to be unregistered
      */
     public void unregisterServer(final Server server) {
-        synchronized(servers) {
+        synchronized (servers) {
             servers.remove(server);
         }
     }
-    
+
     /**
      * Returns a list of all servers.
-     * 
+     *
      * @return A list of all servers
      */
     public List<Server> getServers() {
         return new ArrayList<Server>(servers);
     }
-    
+
     /**
      * Makes all servers disconnected with the specified quit message.
-     * 
+     *
      * @param message The quit message to send to the IRC servers
      */
     public void disconnectAll(final String message) {
-        synchronized(servers) {
+        synchronized (servers) {
             for (Server server : servers) {
                 server.disconnect(message);
             }
         }
     }
-    
+
     /**
      * Closes all servers with a default quit message.
      */
     public void closeAll() {
-        synchronized(servers) {
+        synchronized (servers) {
             for (Server server : servers) {
                 server.disconnect();
                 server.close();
             }
         }
     }
-    
+
     /**
      * Closes all servers with the specified quit message.
-     * 
+     *
      * @param message The quit message to send to the IRC servers
      */
     public void closeAll(final String message) {
-        synchronized(servers) {
+        synchronized (servers) {
             for (Server server : servers) {
                 server.disconnect(message);
                 server.close();
             }
         }
     }
-    
+
     /**
      * Returns the number of servers that are registered with the manager.
-     * 
+     *
      * @return number of registered servers
      */
     public int numServers() {
         return servers.size();
     }
-    
+
     /**
      * Returns the server instance that owns the specified internal frame.
-     * 
+     *
      * @param active The internal frame to check
      * @return The server associated with the internal frame
      */
     public Server getServerFromFrame(final Window active) {
-        synchronized(servers) {
+        synchronized (servers) {
             for (Server server : servers) {
                 if (server.ownsFrame(active)) {
                     return server;
                 }
             }
         }
-        
+
         return null;
     }
-    
+
     /**
      * Retrieves a list of servers connected to the specified network.
-     * 
+     *
      * @param network The network to search for
      * @return A list of servers connected to the network
      */
     public List<Server> getServersByNetwork(final String network) {
         final List<Server> res = new ArrayList<Server>();
-        
-        synchronized(servers) {
+
+        synchronized (servers) {
             for (Server server : servers) {
                 if (server.getNetwork().equalsIgnoreCase(network)) {
                     res.add(server);
                 }
             }
         }
-        
+
         return res;
     }
-    
+
     /**
      * Retrieves a list of servers connected to the specified address.
-     * 
+     *
      * @param address The address to search for
      * @return A list of servers connected to the network
      */
     public List<Server> getServersByAddress(final String address) {
         final List<Server> res = new ArrayList<Server>();
-        
-        synchronized(servers) {
+
+        synchronized (servers) {
             for (Server server : servers) {
                 if (server.getName().equalsIgnoreCase(address)) {
                     res.add(server);
                 }
             }
         }
-        
+
         return res;
     }
-    
+
     /**
      * Connects the user to Quakenet if neccessary and joins #DMDirc.
      */
     public void joinDevChat() {
         final List<Server> qnetServers = getServersByNetwork("Quakenet");
-        
+
         Server connectedServer = null;
-        
+
         for (Server server : qnetServers) {
             if (server.getState() == ServerState.CONNECTED) {
                 connectedServer = server;
-                
+
                 if (server.hasChannel("#DMDirc")) {
                     server.join("#DMDirc");
                     return;
                 }
             }
         }
-        
+
         if (connectedServer == null) {
             final List<String> channels = new ArrayList<String>();
                 channels.add("#DMDirc");
-                
+
                 new Server("irc.quakenet.org", 6667, "", false,
                         IdentityManager.getProfiles().get(0), channels);
         } else {
             connectedServer.join("#DMDirc");
-        }        
+        }
     }
-    
+
 }

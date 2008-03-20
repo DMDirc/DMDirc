@@ -113,17 +113,17 @@ public final class Server extends WritableFrameContainer implements Serializable
     private ConfigManager configManager;
 
     /** Our reason for being away, if any. */
-    private String awayMessage = null;
+    private String awayMessage;
 
     /** Our event handler. */
     private final ServerEventHandler eventHandler = new ServerEventHandler(this);
 
     /** A list of outstanding invites. */
     private final List<Invite> invites = new ArrayList<Invite>();
-    
+
     /** Our ignore list. */
     private final IgnoreList ignoreList = new IgnoreList();
-    
+
     /** Our string convertor. */
     private IRCStringConverter converter = new IRCStringConverter();
 
@@ -216,9 +216,9 @@ public final class Server extends WritableFrameContainer implements Serializable
     })
     public void connect(final String server, final int port, final String password,
             final boolean ssl, final Identity profile) {
-        assert(profile != null);
+        assert profile != null;
 
-        synchronized(myState) {
+        synchronized (myState) {
             switch (myState) {
             case RECONNECT_WAIT:
                 reconnectTimer.cancel();
@@ -240,7 +240,7 @@ public final class Server extends WritableFrameContainer implements Serializable
 
         ActionManager.processEvent(CoreActionType.SERVER_CONNECTING, null, this);
 
-        assert(parser == null || parser.getSocketState() != IRCParser.STATE_OPEN);
+        assert parser == null || parser.getSocketState() != IRCParser.STATE_OPEN;
 
         serverInfo = new ServerInfo(server, port, password);
         serverInfo.setSSL(ssl);
@@ -283,7 +283,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @param reason The quit reason to send
      */
     public void reconnect(final String reason) {
-        synchronized(myState) {
+        synchronized (myState) {
             if (myState == ServerState.CLOSING) {
                 return;
             }
@@ -300,7 +300,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     public void reconnect() {
         reconnect(configManager.getOption(DOMAIN_GENERAL, "reconnectmessage"));
     }
-    
+
     /**
      * Disconnects from the server with the default quit message.
      */
@@ -314,7 +314,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @param reason disconnect reason
      */
     public void disconnect(final String reason) {
-        synchronized(myState) {
+        synchronized (myState) {
             switch (myState) {
             case CLOSING:
             case DISCONNECTED:
@@ -361,7 +361,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         reconnectTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                synchronized(myState) {
+                synchronized (myState) {
                     if (myState == ServerState.RECONNECT_WAIT) {
                         myState = ServerState.TRANSIENTLY_DISCONNECTED;
                         reconnect();
@@ -419,13 +419,13 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public boolean hasQuery(final String host) {
         final String nick = ClientInfo.parseHost(host);
-        
+
         for (Query query : queries) {
             if (parser.equalsIgnoreCase(ClientInfo.parseHost(query.getHost()), nick)) {
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -437,13 +437,13 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public Query getQuery(final String host) {
         final String nick = ClientInfo.parseHost(host);
-        
+
         for (Query query : queries) {
             if (parser.equalsIgnoreCase(ClientInfo.parseHost(query.getHost()), nick)) {
                 return query;
             }
         }
-        
+
         throw new IllegalArgumentException("No such query: " + host);
     }
 
@@ -592,8 +592,8 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     private void updateIcon() {
         icon = IconManager.getIconManager().getIcon(
-                myState == ServerState.CONNECTED ?
-                    serverInfo.getSSL() ? "secure-server" : "server" : "server-disconnected");
+                myState == ServerState.CONNECTED
+                    ? serverInfo.getSSL() ? "secure-server" : "server" : "server-disconnected");
         if (window != null) {
             window.setFrameIcon(icon);
 
@@ -608,7 +608,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     @Precondition("The current profile is not null")
     private MyInfo getMyInfo() {
-        assert(profile != null);
+        assert profile != null;
 
         final MyInfo myInfo = new MyInfo();
         myInfo.setNickname(profile.getOption(DOMAIN_PROFILE, "nickname"));
@@ -660,7 +660,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     /** {@inheritDoc} */
     @Override
     public void sendLine(final String line) {
-        synchronized(myState) {
+        synchronized (myState) {
             if (parser != null && myState == ServerState.CONNECTED) {
                 parser.sendLine(window.getTranscoder().encode(line));
             }
@@ -823,15 +823,15 @@ public final class Server extends WritableFrameContainer implements Serializable
     public void windowClosing() {
         // 1: Make the window non-visible
         window.setVisible(false);
-        
+
         // 2: Remove any callbacks or listeners
         eventHandler.unregisterCallbacks();
-        
+
         // 3: Trigger any actions neccessary
         if (parser != null && parser.isReady()) {
             disconnect();
         }
-        
+
         myState = ServerState.CLOSING;
         closeChannels();
         closeQueries();
@@ -840,15 +840,15 @@ public final class Server extends WritableFrameContainer implements Serializable
         if (raw != null) {
             raw.close();
         }
-        
-        
+
+
         // 4: Trigger action for the window closing
         // 5: Inform any parents that the window is closing
         ServerManager.getServerManager().unregisterServer(this);
-        
+
         // 6: Remove the window from the window manager
         WindowManager.removeWindow(window);
-        
+
         // 7: Remove any references to the window and parents
         window = null; //NOPMD
         parser = null; //NOPMD
@@ -942,8 +942,8 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @return True if the channel name is valid, false otherwise
      */
     public boolean isValidChannelName(final String channelName) {
-        return hasChannel(channelName) ||
-                (parser != null && parser.isValidChannelName(channelName));
+        return hasChannel(channelName)
+                || (parser != null && parser.isValidChannelName(channelName));
     }
 
     /**
@@ -979,10 +979,10 @@ public final class Server extends WritableFrameContainer implements Serializable
             return super.processNotificationArg(arg, args);
         }
     }
-    
+
     /**
      * Retusnt the list of invites for this server.
-     * 
+     *
      * @return Invite list
      */
     public List<Invite> getInvites() {
@@ -1069,10 +1069,10 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public void onSocketClosed() {
         handleNotification("socketClosed", getName());
-        
-        ActionManager.processEvent(CoreActionType.SERVER_DISCONNECTED, null, this);        
 
-        synchronized(myState) {
+        ActionManager.processEvent(CoreActionType.SERVER_DISCONNECTED, null, this);
+
+        synchronized (myState) {
             if (myState == ServerState.CLOSING || myState == ServerState.DISCONNECTED) {
                 // This has been triggered via .disconect()
                 return;
@@ -1092,7 +1092,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         if (configManager.getOptionBool(DOMAIN_GENERAL, "closequeriesondisconnect", false)) {
             closeQueries();
         }
-        
+
         removeInvites();
 
         if (configManager.getOptionBool(DOMAIN_GENERAL, "reconnectondisconnect", false)) {
@@ -1107,13 +1107,13 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     @Precondition("The current server state is CONNECTING")
     public void onConnectError(final ParserError errorInfo) {
-        synchronized(myState) {
+        synchronized (myState) {
             if (myState == ServerState.CLOSING) {
                 // Do nothing
                 return;
             }
-            
-            assert(myState == ServerState.CONNECTING);
+
+            assert myState == ServerState.CONNECTING;
             myState = ServerState.TRANSIENTLY_DISCONNECTED;
         }
 
@@ -1160,8 +1160,8 @@ public final class Server extends WritableFrameContainer implements Serializable
         ActionManager.processEvent(CoreActionType.SERVER_NOPING, null, this,
                 Long.valueOf(parser.getPingTime(false)));
 
-        if (parser.getPingTime(false) >=
-                configManager.getOptionInt(DOMAIN_SERVER, "pingtimeout", 60000)) {
+        if (parser.getPingTime(false)
+                 >= configManager.getOptionInt(DOMAIN_SERVER, "pingtimeout", 60000)) {
             handleNotification("stonedServer", getName());
             reconnect();
         }
@@ -1171,14 +1171,14 @@ public final class Server extends WritableFrameContainer implements Serializable
      * Called after the parser receives the 005 headers from the server.
      */
     public void onPost005() {
-        synchronized(myState) {
+        synchronized (myState) {
             myState = ServerState.CONNECTED;
         }
         updateIcon();
 
         configManager = new ConfigManager(parser.getIRCD(true), getNetwork(), getName());
         updateIgnoreList();
-        
+
         converter = parser.getIRCStringConverter();
 
         ActionManager.processEvent(CoreActionType.SERVER_CONNECTED, null, this);
@@ -1195,7 +1195,7 @@ public final class Server extends WritableFrameContainer implements Serializable
 
         checkModeAliases();
     }
-    
+
     /**
      * Checks that we have the neccessary mode aliases for this server.
      */
@@ -1213,30 +1213,30 @@ public final class Server extends WritableFrameContainer implements Serializable
                 missingModes.append(mode);
             }
         }
-        
+
         for (char mode : umodes.toCharArray()) {
             if (!configManager.hasOption(DOMAIN_SERVER, "umode" + mode)) {
                 missingUmodes.append(mode);
             }
         }
-        
+
         if (missingModes.length() + missingUmodes.length() > 0) {
             final StringBuffer missing = new StringBuffer("Missing mode aliases: ");
-            
+
             if (missingModes.length() > 0) {
                 missing.append("channel: +");
                 missing.append(missingModes);
             }
-            
+
             if (missingUmodes.length() > 0) {
                 if (missingModes.length() > 0) {
                     missing.append(' ');
                 }
-                
+
                 missing.append("user: +");
                 missing.append(missingUmodes);
             }
-            
+
             Logger.appError(ErrorLevel.LOW, missing.toString() + " ["
                     + getNetwork() + "]",
                     new Exception(missing.toString() + "\n" // NOPMD
@@ -1248,18 +1248,18 @@ public final class Server extends WritableFrameContainer implements Serializable
                     + "\n\n"));
         }
     }
-   
+
     // ---------------------------------------------- IGNORE LIST HANDLING -----
-    
+
     /**
      * Retrieves this server's ignore list.
-     * 
+     *
      * @return This server's ignore list
      */
     public IgnoreList getIgnoreList() {
         return ignoreList;
     }
-    
+
     /**
      * Updates this server's ignore list to use the entries stored in the
      * config manager.
@@ -1268,19 +1268,19 @@ public final class Server extends WritableFrameContainer implements Serializable
         ignoreList.clear();
         ignoreList.addAll(configManager.getOptionList("network", "ignorelist"));
     }
-    
+
     /**
      * Saves the contents of our ignore list to the network identity.
      */
     public void saveIgnoreList() {
         getNetworkIdentity().setOption("network", "ignorelist", ignoreList.getRegexList());
-    }    
-    
+    }
+
     // ------------------------------------------------- IDENTITY WRAPPERS -----
-    
+
     /**
      * Retrieves the identity for this server.
-     * 
+     *
      * @return This server's identity
      */
     public Identity getServerIdentity() {
@@ -1289,9 +1289,9 @@ public final class Server extends WritableFrameContainer implements Serializable
 
     /**
      * Retrieves the identity for this server's network.
-     * 
+     *
      * @return This server's network identity
-     */    
+     */
     public Identity getNetworkIdentity() {
         return IdentityManager.getNetworkConfig(getNetwork());
     }
@@ -1322,7 +1322,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @param invite The invite to be added
      */
     public void addInvite(final Invite invite) {
-        synchronized(invites) {
+        synchronized (invites) {
             for (Invite oldInvite : new ArrayList<Invite>(invites)) {
                 if (oldInvite.getChannel().equals(invite.getChannel())) {
                     removeInvite(oldInvite);
@@ -1336,10 +1336,10 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
         }
     }
-    
+
     /**
      * Removes all invites for the specified channel.
-     * 
+     *
      * @param channel The channel to remove invites for
      */
     public void removeInvites(final String channel) {
@@ -1349,7 +1349,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
         }
     }
-    
+
     /**
      * Removes all invites for all channels.
      */
@@ -1357,7 +1357,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         for (Invite invite : new ArrayList<Invite>(invites)) {
             removeInvite(invite);
         }
-    }    
+    }
 
     /**
      * Removes an invite from this server, and fires the appropriate listeners.
@@ -1365,7 +1365,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @param invite The invite to be removed
      */
     public void removeInvite(final Invite invite) {
-        synchronized(invites) {
+        synchronized (invites) {
             invites.remove(invite);
 
             for (InviteListener listener : listeners.get(InviteListener.class)) {
@@ -1373,35 +1373,35 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
         }
     }
-    
+
     // ----------------------------------------------- AWAY STATE HANDLING -----
-    
+
     /**
      * Adds an away state lisener to this server.
-     * 
+     *
      * @param listener The listener to be added
      */
     public void addAwayStateListener(final AwayStateListener listener) {
         listeners.add(AwayStateListener.class, listener);
     }
-    
+
     /**
      * Removes an away state lisener from this server.
-     * 
+     *
      * @param listener The listener to be removed
      */
     public void removeAwayStateListener(final AwayStateListener listener) {
         listeners.remove(AwayStateListener.class, listener);
     }
-    
+
     /**
      * Updates our away state and fires the relevant listeners.
-     * 
+     *
      * @param message The away message to use, or null if we're not away.
      */
     public void updateAwayState(final String message) {
         awayMessage = message;
-        
+
         if (message == null) {
             for (AwayStateListener listener : listeners.get(AwayStateListener.class)) {
                 listener.onBack();
@@ -1409,7 +1409,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         } else {
             for (AwayStateListener listener : listeners.get(AwayStateListener.class)) {
                 listener.onAway(message);
-            }            
+            }
         }
     }
 

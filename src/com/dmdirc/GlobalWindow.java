@@ -38,33 +38,33 @@ import com.dmdirc.ui.interfaces.InputWindow;
  * @author chris
  */
 public class GlobalWindow extends WritableFrameContainer {
-    
+
     /** The window we're using. */
     private final InputWindow window;
-    
+
     /** Creates a new instance of GlobalWindow. */
     public GlobalWindow() {
         super();
-        
+
         final TabCompleter tabCompleter = new TabCompleter();
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 CommandManager.getCommandNames(CommandType.TYPE_GLOBAL));
-        
+
         window = Main.getUI().getInputWindow(this, GlobalCommandParser.getGlobalCommandParser());
-        
+
         icon = IconManager.getIconManager().getIcon("icon");
-        
+
         window.setTitle("(Global)");
         window.getInputHandler().setTabCompleter(tabCompleter);
-        window.setFrameIcon(icon);        
-        
+        window.setFrameIcon(icon);
+
         WindowManager.addWindow(window);
-        
+
         window.open();
     }
 
     /** {@inheritDoc} */
-    @Override    
+    @Override
     public InputWindow getFrame() {
         return window;
     }
@@ -76,45 +76,45 @@ public class GlobalWindow extends WritableFrameContainer {
     }
 
     /** {@inheritDoc} */
-    @Override    
+    @Override
     public void windowClosing() {
         // 1: Make the window non-visible
         window.setVisible(false);
-        
+
         // 2: Remove any callbacks or listeners
         // 3: Trigger any actions neccessary
         // 4: Trigger action for the window closing
         // 5: Inform any parents that the window is closing
-        
+
         // 6: Remove the window from the window manager
         WindowManager.removeWindow(window);
-        
-        // 7: Remove any references to the window and parents        
+
+        // 7: Remove any references to the window and parents
     }
 
     /** {@inheritDoc} */
-    @Override    
+    @Override
     public Server getServer() {
         return null;
     }
 
     /** {@inheritDoc} */
-    @Override    
+    @Override
     public void sendLine(final String line) {
-        GlobalCommandParser.getGlobalCommandParser().parseCommand(window, 
+        GlobalCommandParser.getGlobalCommandParser().parseCommand(window,
                 CommandManager.getCommandChar() + line);
     }
 
     /** {@inheritDoc} */
-    @Override    
+    @Override
     public int getMaxLineLength() {
         return 0;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public ConfigManager getConfigManager() {
         return IdentityManager.getGlobalConfig();
     }
-    
+
 }
