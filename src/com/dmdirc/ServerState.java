@@ -32,6 +32,8 @@ public enum ServerState {
     TRANSIENTLY_DISCONNECTED,
     /** Indicates that the user has told us to disconnect. */
     DISCONNECTED,
+    /** In the process of disconnecting. */
+    DISCONNECTING,
     /** Indicates we're waiting for the auto-reconnect timer to fire. */
     RECONNECT_WAIT,
     /** Indicates that the server frame and its children are closing. */

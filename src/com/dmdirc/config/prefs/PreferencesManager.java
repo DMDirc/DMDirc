@@ -30,8 +30,8 @@ import com.dmdirc.themes.ThemeManager;
 import com.dmdirc.ui.swing.components.pluginpanel.PluginPanel;
 import com.dmdirc.ui.swing.dialogs.prefs.URLConfigPanel;
 import com.dmdirc.ui.swing.dialogs.prefs.UpdateConfigPanel;
-
 import com.dmdirc.util.ListenerList;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

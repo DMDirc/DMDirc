@@ -230,6 +230,9 @@ public final class Server extends WritableFrameContainer implements Serializable
             case CONNECTING:
                 disconnect(configManager.getOption(DOMAIN_GENERAL, "quitmessage"));
                 break;
+            case DISCONNECTING:
+                onSocketClosed();
+                break;
             default:
                 // Do nothing
                 break;
@@ -327,24 +330,24 @@ public final class Server extends WritableFrameContainer implements Serializable
                 break;
             }
 
-            myState = ServerState.DISCONNECTED;
+            myState = ServerState.DISCONNECTING;
         }
 
         removeInvites();
         updateIcon();
 
-        if (parser != null && parser.getSocketState() == IRCParser.STATE_OPEN) {
+        if (parser != null) {
             parser.disconnect(reason);
+        }
 
-            if (configManager.getOptionBool(DOMAIN_GENERAL, "closechannelsonquit", false)) {
-                closeChannels();
-            } else {
-                clearChannels();
-            }
+        if (configManager.getOptionBool(DOMAIN_GENERAL, "closechannelsonquit", false)) {
+            closeChannels();
+        } else {
+            clearChannels();
+        }
 
-            if (configManager.getOptionBool(DOMAIN_GENERAL, "closequeriesonquit", false)) {
-                closeQueries();
-            }
+        if (configManager.getOptionBool(DOMAIN_GENERAL, "closequeriesonquit", false)) {
+            closeQueries();
         }
     }
 
@@ -1071,9 +1074,13 @@ public final class Server extends WritableFrameContainer implements Serializable
         handleNotification("socketClosed", getName());
 
         ActionManager.processEvent(CoreActionType.SERVER_DISCONNECTED, null, this);
+        
+        eventHandler.unregisterCallbacks();
 
         synchronized (myState) {
-            if (myState == ServerState.CLOSING || myState == ServerState.DISCONNECTED) {
+            if (myState == ServerState.CLOSING
+                    || myState == ServerState.DISCONNECTED
+                    || myState == ServerState.DISCONNECTING) {
                 // This has been triggered via .disconect()
                 return;
             }
@@ -1113,7 +1120,6 @@ public final class Server extends WritableFrameContainer implements Serializable
                 return;
             }
 
-            assert myState == ServerState.CONNECTING;
             myState = ServerState.TRANSIENTLY_DISCONNECTED;
         }
 
