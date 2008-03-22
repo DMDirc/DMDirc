@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.ui.IconManager;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.wrappers.AliasWrapper;
@@ -42,6 +41,7 @@ import com.dmdirc.parser.IRCStringConverter;
 import com.dmdirc.parser.MyInfo;
 import com.dmdirc.parser.ParserError;
 import com.dmdirc.parser.ServerInfo;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -720,7 +720,8 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public String getNetwork() {
         if (parser == null) {
-            return "";
+            throw new IllegalStateException("getNetwork called when "
+                    + "parser is null");
         } else if (parser.getNetworkName().isEmpty()) {
             return getNetworkFromServerName(parser.getServerName());
         } else {
