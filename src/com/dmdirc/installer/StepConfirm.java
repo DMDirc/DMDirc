@@ -23,7 +23,7 @@
 package com.dmdirc.installer;
 
 import com.dmdirc.installer.Installer.ShortcutType;
-import com.dmdirc.ui.swing.JWrappingLabel;
+import com.dmdirc.ui.swing.components.JWrappingLabel;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.dialogs.wizard.StepListener;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardFrame;

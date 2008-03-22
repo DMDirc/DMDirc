@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing;
+package com.dmdirc.ui.swing.components;
 
 import java.awt.Color;
 import java.awt.Dimension;

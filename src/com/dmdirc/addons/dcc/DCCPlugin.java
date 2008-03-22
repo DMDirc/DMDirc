@@ -24,7 +24,7 @@ package com.dmdirc.addons.dcc;
 
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.plugins.Plugin;
-import com.dmdirc.ui.swing.JWrappingLabel;
+import com.dmdirc.ui.swing.components.JWrappingLabel;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.swing.components.TextFrame;
 import com.dmdirc.config.IdentityManager;

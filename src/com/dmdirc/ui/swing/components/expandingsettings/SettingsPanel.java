@@ -23,7 +23,7 @@
 package com.dmdirc.ui.swing.components.expandingsettings;
 
 import com.dmdirc.config.Identity;
-import com.dmdirc.ui.swing.JWrappingLabel;
+import com.dmdirc.ui.swing.components.JWrappingLabel;
 import java.awt.Dimension;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 

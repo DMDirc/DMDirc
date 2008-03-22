@@ -22,7 +22,7 @@
 
 package com.dmdirc.addons.dcc;
 
-import com.dmdirc.ui.swing.JWrappingLabel;
+import com.dmdirc.ui.swing.components.JWrappingLabel;
 import com.dmdirc.ui.swing.components.TextFrame;
 
 import javax.swing.SwingConstants;

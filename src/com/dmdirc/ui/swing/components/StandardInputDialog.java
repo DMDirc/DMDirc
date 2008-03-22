@@ -23,7 +23,7 @@
 package com.dmdirc.ui.swing.components;
 
 import com.dmdirc.config.prefs.validator.ValidationResponse;
-import com.dmdirc.ui.swing.JWrappingLabel;
+import com.dmdirc.ui.swing.components.JWrappingLabel;
 import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
 import com.dmdirc.config.prefs.validator.Validator;
 

@@ -24,7 +24,7 @@ package com.dmdirc.addons.nowplaying;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesInterface;
-import com.dmdirc.ui.swing.JWrappingLabel;
+import com.dmdirc.ui.swing.components.JWrappingLabel;
 import com.dmdirc.ui.swing.components.reorderablelist.ReorderableJList;
 
 import java.awt.event.KeyEvent;

@@ -23,7 +23,7 @@
 package com.dmdirc.ui.swing.dialogs.wizard.firstrun;
 
 
-import com.dmdirc.ui.swing.JWrappingLabel;
+import com.dmdirc.ui.swing.components.JWrappingLabel;
 import java.awt.Dimension;
 import net.miginfocom.swing.MigLayout;
 

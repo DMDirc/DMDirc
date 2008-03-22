@@ -23,7 +23,7 @@
 package com.dmdirc.ui.swing.components.renderers;
 
 import com.dmdirc.Topic;
-import com.dmdirc.ui.swing.JWrappingLabel;
+import com.dmdirc.ui.swing.components.JWrappingLabel;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.Date;
