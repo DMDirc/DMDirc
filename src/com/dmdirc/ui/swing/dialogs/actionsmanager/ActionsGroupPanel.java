@@ -22,11 +22,13 @@
 
 package com.dmdirc.ui.swing.dialogs.actionsmanager;
 
+import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.ui.swing.components.PackingTable;
 import com.dmdirc.ui.swing.components.renderers.ActionTypeTableCellRenderer;
 import com.dmdirc.ui.swing.components.renderers.ArrayCellRenderer;
 
+import com.dmdirc.ui.swing.dialogs.actionseditor.ActionsEditorDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -193,10 +195,10 @@ public final class ActionsGroupPanel extends JPanel implements ActionListener,
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == add) {
-            JOptionPane.showMessageDialog(this, "Adding an action");
+            ActionsEditorDialog.showActionsEditorDialog(group.getName());
         } else if (e.getSource() == edit) {
-            JOptionPane.showMessageDialog(this, "Editing an action: " +
-                    model.getValueAt(table.getSelectedRow(), 0));
+            ActionsEditorDialog.showActionsEditorDialog(model.getAction(table.getSelectedRow()),
+                    group.getName());
         } else if (e.getSource() == delete) {
             JOptionPane.showMessageDialog(this, "Deleting an action: " +
                     model.getValueAt(table.getSelectedRow(), 0));

@@ -133,6 +133,24 @@ public class ActionTableModel extends AbstractTableModel {
     }
     
     /**
+     * Returns the action at the specified row.
+     * 
+     * @param rowIndex Row index
+     * 
+     * @return Action
+     */
+    public Action getAction(final int rowIndex) {
+        if (actions.size() <= rowIndex) {
+            throw new IndexOutOfBoundsException(rowIndex + " >= " +
+                    actions.size());
+        }
+        if (rowIndex < 0) {
+            throw new IllegalArgumentException("Must specify a positive integer");
+        }
+        return actions.get(rowIndex);
+    }
+    
+    /**
      * Replaces the model data with the specified action group.
      * 
      * @param group New Action group

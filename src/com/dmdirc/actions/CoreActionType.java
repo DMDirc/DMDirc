@@ -24,6 +24,7 @@ package com.dmdirc.actions;
 
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.interfaces.ActionMetaType;
+import com.dmdirc.actions.metatypes.ActionEvents;
 import com.dmdirc.actions.metatypes.ChannelEvents;
 import com.dmdirc.actions.metatypes.ClientEvents;
 import com.dmdirc.actions.metatypes.PluginEvents;
@@ -193,7 +194,12 @@ public enum CoreActionType implements ActionType {
     /** Plugin loaded. */
     PLUGIN_LOADED(PluginEvents.PLUGIN_EVENT, "Plugin loaded"),
     /** Plugin unloaded. */
-    PLUGIN_UNLOADED(PluginEvents.PLUGIN_EVENT, "Plugin unloaded");
+    PLUGIN_UNLOADED(PluginEvents.PLUGIN_EVENT, "Plugin unloaded"),
+    
+    /** Action created. */
+    ACTION_CREATED(ActionEvents.ACTION_EVENT, "Action created"),
+    /** Action updated. */
+    ACTION_UPDATED(ActionEvents.ACTION_EVENT, "Action updated");
     
     /** The type of this action. */
     private final ActionMetaType type;

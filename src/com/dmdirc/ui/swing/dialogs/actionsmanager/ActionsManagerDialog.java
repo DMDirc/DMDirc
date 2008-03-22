@@ -25,6 +25,8 @@ package com.dmdirc.ui.swing.dialogs.actionsmanager;
 import com.dmdirc.Main;
 import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.ui.swing.JWrappingLabel;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
@@ -50,7 +52,7 @@ import net.miginfocom.swing.MigLayout;
  * Allows the user to manage actions.
  */
 public final class ActionsManagerDialog extends StandardDialog implements ActionListener,
-        ListSelectionListener {
+        ListSelectionListener, com.dmdirc.interfaces.ActionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -151,6 +153,8 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         edit.addActionListener(this);
         delete.addActionListener(this);
         groups.getSelectionModel().addListSelectionListener(this);
+        ActionManager.addListener(this, CoreActionType.ACTION_CREATED);
+        ActionManager.addListener(this, CoreActionType.ACTION_UPDATED);
     }
 
     /**
@@ -252,5 +256,12 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
             super.dispose();
             me = null;
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void processEvent(ActionType type, StringBuffer format,
+            Object... arguments) {
+        reloadGroups();
     }
 }

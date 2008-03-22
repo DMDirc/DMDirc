@@ -25,6 +25,8 @@ package com.dmdirc.ui.swing.dialogs.actionseditor;
 import com.dmdirc.Main;
 import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 
@@ -50,7 +52,7 @@ import net.miginfocom.swing.MigLayout;
  * Allows the user to manage actions.
  */
 public final class ActionsManagerDialog extends StandardDialog
-        implements ActionListener, ChangeListener {
+        implements ActionListener, ChangeListener, com.dmdirc.interfaces.ActionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -118,6 +120,8 @@ public final class ActionsManagerDialog extends StandardDialog
         orderButtons(new JButton(), new JButton());
         getCancelButton().addActionListener(this);
         getOkButton().addActionListener(this);
+        ActionManager.addListener(this, CoreActionType.ACTION_CREATED);
+        ActionManager.addListener(this, CoreActionType.ACTION_UPDATED);
 
         final JLabel blurb = new JLabel("Actions allow you to make DMDirc " +
                 "respond automatically to events.");
@@ -260,8 +264,7 @@ public final class ActionsManagerDialog extends StandardDialog
         } else if (e.getActionCommand().equals("action.edit")) {
             actionEdit();
         } else if (e.getActionCommand().equals("action.new")) {
-            ActionsEditorDialog.showActionsEditorDialog(this,
-                    groups.getTitleAt(groups.getSelectedIndex()));
+            ActionsEditorDialog.showActionsEditorDialog(groups.getTitleAt(groups.getSelectedIndex()));
         } else if (e.getActionCommand().equals("action.delete")) {
             actionDelete();
         }
@@ -311,8 +314,7 @@ public final class ActionsManagerDialog extends StandardDialog
                 table.getRowCount()) {
             final int row =
                     table.getRowSorter().convertRowIndexToModel(table.getSelectedRow());
-            ActionsEditorDialog.showActionsEditorDialog(this,
-                    ((ActionsGroupPanel) groups.getSelectedComponent()).getAction(row),
+            ActionsEditorDialog.showActionsEditorDialog(((ActionsGroupPanel) groups.getSelectedComponent()).getAction(row),
                     groups.getTitleAt(groups.getSelectedIndex()));
         }
     }
@@ -349,5 +351,12 @@ public final class ActionsManagerDialog extends StandardDialog
             super.dispose();
             me = null;
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void processEvent(ActionType type, StringBuffer format,
+            Object... arguments) {
+        loadGroups();
     }
 }
