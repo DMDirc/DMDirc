@@ -57,7 +57,7 @@ public class ActionModel {
     protected String[] response;
 
     /** The change that should be made to the format string, if any. */
-    protected String newFormat = null;
+    protected String newFormat;
 
     /** The conditions for this action. */
     protected List<ActionCondition> conditions = new ArrayList<ActionCondition>();
@@ -66,7 +66,7 @@ public class ActionModel {
     protected ConditionTree conditionTree;
     
     /** Whether this action has been modified or not. */
-    protected boolean modified = false;
+    protected boolean modified;
     
     /**
      * Creates a new instance of ActionModel with the specified properties.
@@ -119,6 +119,47 @@ public class ActionModel {
         assert(triggers[0] != null);
         
         final ActionSubstitutor sub = new ActionSubstitutor(triggers[0]);
+        
+        if (!test(sub, arguments)) {
+            return;
+        }
+
+        final Window active = Main.getUI().getActiveWindow();
+        InputWindow cw = null;
+        CommandParser cp = null;
+
+        if (arguments.length > 0 && arguments[0] instanceof WritableFrameContainer) {
+            cw = ((WritableFrameContainer) arguments[0]).getFrame();
+        } else if (active instanceof InputWindow) {
+            cw = (InputWindow) active;
+        } else if (ServerManager.getServerManager().numServers() > 0) {
+            cw = ServerManager.getServerManager().getServers().get(0).getFrame();
+        }
+
+        if (cw == null) {
+            cp = GlobalCommandParser.getGlobalCommandParser();
+        } else {
+            cp = cw.getCommandParser();
+        }
+
+        for (String command : response) {
+            cp.parseCommand(cw, sub.doSubstitution(command, arguments));
+        }
+
+        if (newFormat != null && format != null) {
+            format.setLength(0);
+            format.append(newFormat);
+        }
+    }
+    
+    /**
+     * Tests to see if this action should be triggered or not.
+     * 
+     * @param sub The ActionsSubstitutor to use to substitute args
+     * @param arguments The arguments for the action event
+     * @return True if the action should be executed, false otherwise
+     */
+    public boolean test(final ActionSubstitutor sub, final Object ... arguments) {
         final boolean[] results = new boolean[conditions.size()];
         
         int i = 0;
@@ -129,42 +170,14 @@ public class ActionModel {
          if (conditionTree == null) {
             for (boolean res : results) {
                 if (!res) {
-                    return;
+                    return false;
                 }
             }
         } else if (!conditionTree.evaluate(results)) {
-            return;
+            return false;
         }
-
-        final Window active = Main.getUI().getActiveWindow();
-        InputWindow cw;
-        CommandParser cp;
-
-        if (arguments.length > 0 && arguments[0] instanceof WritableFrameContainer) {
-            cw = ((WritableFrameContainer) arguments[0]).getFrame();
-        } else if (active instanceof InputWindow) {
-            cw = (InputWindow) Main.getUI().getActiveWindow();
-        } else if (ServerManager.getServerManager().numServers() > 0) {
-            cw = ServerManager.getServerManager().getServers().get(0).getFrame();
-        } else {
-            cw = null;
-        }
-
-        if (cw == null) {
-            cp = GlobalCommandParser.getGlobalCommandParser();
-        } else {
-            cp = cw.getCommandParser();
-        }
-
-        for (String command : response) {
-            cp.parseCommand(cw,
-                    new ActionSubstitutor(triggers[0]).doSubstitution(command, arguments));
-        }
-
-        if (newFormat != null && format != null) {
-            format.setLength(0);
-            format.append(newFormat);
-        }
+        
+        return true;
     }
 
     /**
