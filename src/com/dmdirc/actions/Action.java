@@ -497,7 +497,11 @@ public class Action extends ActionModel implements Serializable {
         super.setGroup(newGroup);
 
         new File(location).delete();
-        location = ActionManager.getDirectory() + group + File.separator + name;
+
+        final String dir = ActionManager.getDirectory() + group + File.separator;
+        location = dir + name;
+
+        new File(dir).mkdirs();        
 
         save();
     }

@@ -30,7 +30,7 @@ import static org.junit.Assert.*;
 public class ActionManagerTest extends junit.framework.TestCase {
     
     @BeforeClass
-    public void setup() {
+    public void setUpClass() {
         ActionManager.init();
     }
 
