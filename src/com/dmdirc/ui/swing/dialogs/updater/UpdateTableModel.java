@@ -107,7 +107,7 @@ public class UpdateTableModel extends AbstractTableModel implements UpdateListen
             case 2:
                 return "New version";
             case 3:
-                return "Version";
+                return "Status";
             default:
                 throw new IllegalArgumentException("Unknown column: " +
                         columnIndex);
@@ -127,8 +127,8 @@ public class UpdateTableModel extends AbstractTableModel implements UpdateListen
             case 3:
                 return UpdateStatus.class;
             default:
-                throw new IllegalArgumentException("Unknown column: " +
-                        columnIndex);
+                throw new IllegalArgumentException("Unknown column: "
+                        + columnIndex);
         }
     }
 
@@ -142,8 +142,8 @@ public class UpdateTableModel extends AbstractTableModel implements UpdateListen
     @Override
     public Object getValueAt(final int rowIndex, final int columnIndex) {
         if (updates.size() <= rowIndex) {
-            throw new IndexOutOfBoundsException(rowIndex + " >= " +
-                    updates.size());
+            throw new IndexOutOfBoundsException(rowIndex + " >= "
+                    + updates.size());
         }
         if (rowIndex < 0) {
             throw new IllegalArgumentException("Must specify a positive integer");
@@ -164,8 +164,8 @@ public class UpdateTableModel extends AbstractTableModel implements UpdateListen
             case 3:
                 return updates.get(rowIndex).getStatus();
             default:
-                throw new IllegalArgumentException("Unknown column: " +
-                        columnIndex);
+                throw new IllegalArgumentException("Unknown column: "
+                        + columnIndex);
         }
     }
 
@@ -185,8 +185,8 @@ public class UpdateTableModel extends AbstractTableModel implements UpdateListen
                 enabled.put(updates.get(rowIndex), (Boolean) aValue);
                 break;
             default:
-                throw new IllegalArgumentException("Unknown column: " +
-                        columnIndex);
+                throw new IllegalArgumentException("Unknown column: "
+                        + columnIndex);
         }
         fireTableCellUpdated(rowIndex, columnIndex);
     }
