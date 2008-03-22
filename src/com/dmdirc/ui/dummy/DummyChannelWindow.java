@@ -205,4 +205,10 @@ public final class DummyChannelWindow implements ChannelWindow {
         return parent;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void redrawNicklist() {
+        // Do nothing
+    }
+
 }

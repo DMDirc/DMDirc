@@ -67,5 +67,10 @@ public interface ChannelWindow extends InputWindow {
      * @return Associated Channel
      */
     Channel getChannel();
+    
+    /**
+     * Redraws the nicklist belonging to this channel.
+     */
+    void redrawNicklist();
 
 }

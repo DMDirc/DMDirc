@@ -25,14 +25,13 @@ package com.dmdirc.commandparser.commands.channel;
 import com.dmdirc.Channel;
 import com.dmdirc.ChannelClientProperty;
 import com.dmdirc.Server;
-import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.ChannelWindow;
-import com.dmdirc.ui.swing.ChannelFrame;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.ColourManager;
 
@@ -94,7 +93,7 @@ public final class SetNickColour extends ChannelCommand implements IntelligentCo
             if (text) {
                 target.getMap().remove(ChannelClientProperty.TEXT_FOREGROUND);
             }
-            ((ChannelFrame) channel.getFrame()).getNickList().repaint();
+            ((ChannelWindow) channel.getFrame()).redrawNicklist();
         } else {
             // We're setting the colour
             final Color newColour = ColourManager.parseColour(args[offset], null);
@@ -102,12 +101,15 @@ public final class SetNickColour extends ChannelCommand implements IntelligentCo
                 sendLine(origin, isSilent, FORMAT_ERROR, "Invalid colour specified.");
                 return;
             }
+
             if (nicklist) {
                 target.getMap().put(ChannelClientProperty.NICKLIST_FOREGROUND, newColour);
             }
+
             if (text) {
                 target.getMap().put(ChannelClientProperty.TEXT_FOREGROUND, newColour);
             }
+
             ((ChannelWindow) channel.getFrame()).updateNames();
         }
     }
@@ -124,8 +126,8 @@ public final class SetNickColour extends ChannelCommand implements IntelligentCo
     
     /** {@inheritDoc}. */
     public String getHelp() {
-        return "setnickcolour [--nicklist|--text] <nick> [colour] - " +
-                "set the specified person's display colour";
+        return "setnickcolour [--nicklist|--text] <nick> [colour] - "
+                + "set the specified person's display colour";
     }
 
     /** {@inheritDoc} */

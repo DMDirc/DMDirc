@@ -22,17 +22,17 @@
 
 package com.dmdirc.ui.swing;
 
-import com.dmdirc.commandparser.PopupType;
-import com.dmdirc.ui.swing.components.renderers.NicklistRenderer;
 import com.dmdirc.Channel;
 import com.dmdirc.Main;
 import com.dmdirc.ServerState;
+import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.swing.components.InputTextFrame;
 import com.dmdirc.ui.swing.components.SwingInputHandler;
+import com.dmdirc.ui.swing.components.renderers.NicklistRenderer;
 import com.dmdirc.ui.swing.dialogs.channelsetting.ChannelSettingsDialog;
 import com.dmdirc.ui.swing.textpane.TextPane.ClickType;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
@@ -403,4 +403,11 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
 
         popupMenu.add(settingsMI);
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public void redrawNicklist() {
+        getNickList().repaint();
+    }
+    
 }
