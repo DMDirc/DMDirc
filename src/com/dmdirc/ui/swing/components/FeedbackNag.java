@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.swing.components;
 
-import com.dmdirc.IconManager;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.ui.swing.dialogs.FeedbackDialog;
 

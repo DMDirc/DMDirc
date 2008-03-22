@@ -23,7 +23,7 @@
 package com.dmdirc.ui.swing.components.validating;
 
 import com.dmdirc.config.prefs.validator.Validator;
-import com.dmdirc.IconManager;
+import com.dmdirc.ui.IconManager;
 
 import com.dmdirc.config.prefs.validator.ValidationResponse;
 import java.awt.Font;

@@ -23,7 +23,7 @@
 package com.dmdirc.addons.logging;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.IconManager;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.config.ConfigManager;

@@ -22,7 +22,7 @@
 
 package com.dmdirc.addons.dcc;
 
-import com.dmdirc.IconManager;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandManager;

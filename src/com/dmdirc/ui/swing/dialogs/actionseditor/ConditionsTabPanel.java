@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.actionseditor;
 
-import com.dmdirc.IconManager;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.ui.swing.components.ImageButton;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;

@@ -23,7 +23,7 @@
 package com.dmdirc.ui.swing;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.IconManager;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
 import com.dmdirc.actions.ActionManager;

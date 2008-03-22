@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.WindowManager;

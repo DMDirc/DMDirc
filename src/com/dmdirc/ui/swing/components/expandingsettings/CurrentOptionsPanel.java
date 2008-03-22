@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.swing.components.expandingsettings;
 
-import com.dmdirc.IconManager;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.swing.components.ColourChooser;
 import com.dmdirc.ui.swing.components.ImageButton;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel.OptionType;

@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc;
+package com.dmdirc.ui;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
@@ -156,6 +156,11 @@ public final class IconManager implements ConfigChangeListener {
         
         if (imageURL == null) {
             imageURL = cldr.getResource("com/dmdirc/res/icon.png");
+            
+            if (imageURL == null) {
+                throw new IllegalArgumentException("Unable to load icon type '"
+                        + type + "', and unable to load default");
+            }
         }
         
         return imageURL;

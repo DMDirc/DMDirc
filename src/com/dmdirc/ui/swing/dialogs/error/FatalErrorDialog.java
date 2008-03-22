@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.error;
 
-import com.dmdirc.IconManager;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorReportStatus;
 import com.dmdirc.logger.ProgramError;

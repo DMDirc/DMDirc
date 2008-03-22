@@ -22,7 +22,7 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.IconManager;
+import com.dmdirc.ui.IconManager;
 
 import javax.swing.Icon;
 

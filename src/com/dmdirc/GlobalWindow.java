@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;

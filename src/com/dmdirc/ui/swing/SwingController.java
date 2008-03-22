@@ -24,7 +24,7 @@ package com.dmdirc.ui.swing;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.IconManager;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.Query;
 import com.dmdirc.Server;

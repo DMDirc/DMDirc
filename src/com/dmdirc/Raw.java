@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
