@@ -84,7 +84,7 @@ public final class DummyController implements UIController {
     /** {@inheritDoc} */
     @Override
     public QueryWindow getQuery(final Query query) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new DummyQueryWindow(query);
     }
     
     /** {@inheritDoc} */
