@@ -25,22 +25,22 @@ package com.dmdirc.ui.swing.dialogs.updater;
 import com.dmdirc.Main;
 import com.dmdirc.interfaces.UpdateCheckerListener;
 import com.dmdirc.ui.interfaces.UpdaterDialog;
+import com.dmdirc.ui.swing.JWrappingLabel;
 import com.dmdirc.ui.swing.MainFrame;
-import com.dmdirc.ui.swing.components.StandardDialog;
-import com.dmdirc.updater.Update;
 import com.dmdirc.ui.swing.components.PackingTable;
+import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.renderers.UpdateComponentTableCellRenderer;
 import com.dmdirc.ui.swing.components.renderers.UpdateStatusTableCellRenderer;
-
+import com.dmdirc.updater.Update;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateChecker.STATE;
+
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -69,7 +69,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
     /** Table scrollpane. */
     private JScrollPane scrollPane;
     /** The label we use for the dialog header. */
-    private JLabel header;
+    private JWrappingLabel header;
     /** UpdateComponent renderer. */
     private UpdateComponentTableCellRenderer updateComponentRenderer;
     /** Update.Status renderer. */
@@ -134,8 +134,8 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         updateStatusRenderer = new UpdateStatusTableCellRenderer();
         updateComponentRenderer = new UpdateComponentTableCellRenderer();
 
-        header = new JLabel("<html>An update is available for one or more " +
-                "components of DMDirc:</html>");
+        header = new JWrappingLabel("An update is available for one or more "
+                + "components of DMDirc:");
 
         scrollPane = new JScrollPane();
         table = new PackingTable(new UpdateTableModel(updates), false,
@@ -202,7 +202,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         if (e.getSource().equals(getOkButton())) {
             getOkButton().setEnabled(false);
 
-            header.setText("<html>DMDirc is updating the following components:</html>");
+            header.setText("DMDirc is updating the following components:");
 
             for (Update update : ((UpdateTableModel) table.getModel()).getUpdates()) {
                 if (!((UpdateTableModel) table.getModel()).isEnabled(update)) {
