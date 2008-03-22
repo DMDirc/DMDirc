@@ -6,7 +6,7 @@
 	<property file="nbproject/project.properties"/>
 	<property file="nbproject/private/private.properties"/>
 	<property file="${user.properties.file}"/>
-	<available file="${libs.antcontrib}" property="has.ant-contrib"/>
+	<available file="${libs.antcontrib}.disabled" property="has.ant-contrib"/>
 	
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 		<classpath>
