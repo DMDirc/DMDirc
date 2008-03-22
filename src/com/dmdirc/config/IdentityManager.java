@@ -307,8 +307,8 @@ public final class IdentityManager {
         
         if (channel != null && !channel.isEmpty() && (channel.indexOf('@') == -1
                 || channel.indexOf('@') != channel.lastIndexOf('@'))) {
-            throw new IllegalArgumentException("Channel names must be in the" +
-                    " format channel@network.\n\nGiven name: " + channel);
+            throw new IllegalArgumentException("Channel names must be in the"
+                    + " format channel@network.\n\nGiven name: " + channel);
         }
         
         String comp = "";
@@ -384,11 +384,16 @@ public final class IdentityManager {
     })
     public static Identity getChannelConfig(final String network,
             final String channel) {
-        assert(network != null);
-        assert(!network.isEmpty());
-        assert(channel != null);
-        assert(!channel.isEmpty());
+        if (network == null || network.isEmpty()) {
+            throw new IllegalArgumentException("getChannelConfig called "
+                    + "with null or empty network\n\nNetwork: " + network);
+        }
         
+        if (channel == null || channel.isEmpty()) {
+            throw new IllegalArgumentException("getChannelConfig called "
+                    + "with null or empty channel\n\nChannel: " + channel);
+        }        
+
         final String myTarget = (channel + "@" + network).toLowerCase();
         
         for (Identity identity : identities) {
@@ -413,9 +418,11 @@ public final class IdentityManager {
      */
     @Precondition("The specified network is non-null and not empty")
     public static Identity getNetworkConfig(final String network) {
-        assert(network != null);
-        assert(!network.isEmpty());
-        
+        if (network == null || network.isEmpty()) {
+            throw new IllegalArgumentException("getNetworkConfig called "
+                    + "with null or empty network\n\nNetwork:" + network);
+        }
+
         final String myTarget = network.toLowerCase();
         
         for (Identity identity : identities) {
@@ -441,8 +448,10 @@ public final class IdentityManager {
      */
     @Precondition("The specified server is non-null and not empty")
     public static Identity getServerConfig(final String server) {
-        assert(server != null);
-        assert(!server.isEmpty());
+        if (server == null || server.isEmpty()) {
+            throw new IllegalArgumentException("getServerConfig called "
+                    + "with null or empty server\n\nServer: " + server);
+        }
         
         final String myTarget = server.toLowerCase();
         
