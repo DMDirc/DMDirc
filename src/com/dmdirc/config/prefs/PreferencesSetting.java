@@ -289,5 +289,20 @@ public class PreferencesSetting {
         original = current;
         return true;
     }
+    
+    /**
+     * Dismisses changes to this setting.
+     */
+    public void dismiss() {
+        if (original.equals(current)) {
+            return;
+        }
+        
+        current = original;
+        
+        for (SettingChangeListener listener : listeners) {
+            listener.settingChanged(this);
+        }
+    }
 
 }

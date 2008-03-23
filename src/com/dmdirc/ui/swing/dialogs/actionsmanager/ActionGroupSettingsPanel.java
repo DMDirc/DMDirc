@@ -23,10 +23,15 @@
 package com.dmdirc.ui.swing.dialogs.actionsmanager;
 
 import com.dmdirc.actions.ActionGroup;
-
 import com.dmdirc.config.prefs.PreferencesSetting;
+import com.dmdirc.ui.swing.PrefsComponentFactory;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -35,7 +40,7 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Action group settings panel.
  */
-public class ActionGroupSettingsPanel extends JPanel {
+public final class ActionGroupSettingsPanel extends JPanel implements ActionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -43,10 +48,8 @@ public class ActionGroupSettingsPanel extends JPanel {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    /** Action group. */
-    private ActionGroup group;
     /** Settings list. */
-    private List<PreferencesSetting> settings;   
+    private List<PreferencesSetting> settings;
 
     /**
      * Initialises a new action group information panel.
@@ -54,9 +57,11 @@ public class ActionGroupSettingsPanel extends JPanel {
      * @param group Action group
      */
     public ActionGroupSettingsPanel(final ActionGroup group) {
+        super();
+
         initComponents();
         addListeners();
-        
+
         setActionGroup(group);
     }
 
@@ -64,7 +69,7 @@ public class ActionGroupSettingsPanel extends JPanel {
      * Initialises the components.
      */
     private void initComponents() {
-        //
+    //
     }
 
     /**
@@ -79,11 +84,17 @@ public class ActionGroupSettingsPanel extends JPanel {
      */
     private void layoutComponents() {
         removeAll();
-        setLayout(new MigLayout("fill, wrap 1"));
+        setLayout(new MigLayout("fill, wrap 2"));
 
         for (PreferencesSetting setting : settings) {
-            add(new JLabel(setting.getTitle()), "growx");
+            final JLabel label = new JLabel(setting.getTitle());
+            label.setToolTipText(setting.getTitle());
+            add(label, "");
+            add(PrefsComponentFactory.getComponent(setting), "growx");
         }
+        final JButton button = new JButton("Dismiss");
+        button.addActionListener(this);
+        add(button, "span 2, right");
     }
 
     /**
@@ -92,16 +103,15 @@ public class ActionGroupSettingsPanel extends JPanel {
      * @param group New action group
      */
     public void setActionGroup(final ActionGroup group) {
-        this.group = group;
         if (group == null || group.getSettings().isEmpty()) {
             this.settings = new ArrayList<PreferencesSetting>();
         } else {
             this.settings = group.getSettings();
         }
-        
+
         layoutComponents();
     }
-    
+
     /**
      * Should the settings panel be shown?
      * 
@@ -109,5 +119,31 @@ public class ActionGroupSettingsPanel extends JPanel {
      */
     public boolean shouldDisplay() {
         return !settings.isEmpty();
+    }
+
+    /**
+     * Saves the changes to the settings.
+     */
+    public void save() {
+        for (PreferencesSetting setting : settings) {
+            setting.save();
+        }
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Action event
+     */
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+        setVisible(false);
+        
+        for (PreferencesSetting setting : settings) {
+            setting.dismiss();
+        }
+        
+        layoutComponents();
+        setVisible(true);
     }
 }

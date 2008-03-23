@@ -170,10 +170,10 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
 
         groupPanel.setLayout(new MigLayout("fill, wrap 1"));
 
-        groupPanel.add(new JScrollPane(groups), "growy, w 200");
-        groupPanel.add(add, "sgx button, w 200");
-        groupPanel.add(edit, "sgx button, w 200");
-        groupPanel.add(delete, "sgx button, w 200");
+        groupPanel.add(new JScrollPane(groups), "growy, w 200!");
+        groupPanel.add(add, "sgx button, w 200!");
+        groupPanel.add(edit, "sgx button, w 200!");
+        groupPanel.add(delete, "sgx button, w 200!");
 
         setLayout(new MigLayout("fill, wrap 2, hidemode 3, nocache"));
 
@@ -187,7 +187,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
                 "Settings"));
 
         add(infoLabel, "spanx 2");
-        add(groupPanel, "growy, spany 3");
+        add(groupPanel, "growy, spany 4");
         add(info, "growx");
         add(actions, "grow");
         add(settings, "growx");
@@ -226,94 +226,113 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == add) {
-            final StandardInputDialog inputDialog = new StandardInputDialog(SwingController.getMainFrame(), false,
-                    "New action group",
-                    "Please enter the name of the new action group",
-                    new RegexStringValidator(FILENAME_REGEX,
-                    "Must be a valid filename")) {
-
-                /**
-                 * A version number for this class. It should be changed whenever the class
-                 * structure is changed (or anything else that would prevent serialized
-                 * objects being unserialized with the new class).
-                 */
-                private static final long serialVersionUID = 1;
-
-                /** {@inheritDoc} */
-                @Override
-                public boolean save() {
-                    if (getText() != null && !getText().isEmpty()) {
-                        ActionManager.makeGroup(getText());
-                        reloadGroups();
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-
-                /** {@inheritDoc} */
-                @Override
-                public void cancelled() {
-                //Ignore
-                }
-            };
-            inputDialog.pack();
-            inputDialog.setLocationRelativeTo(this);
-            inputDialog.setVisible(true);
+            addGroup();
         } else if (e.getSource() == edit) {
-            final String oldName = ((ActionGroup) groups.getSelectedValue()).getName();
-            System.out.println(oldName);
-            final StandardInputDialog inputDialog = new StandardInputDialog(SwingController.getMainFrame(), false,
-                    "Edit action group",
-                    "Please enter the new name of the action group",
-                    new RegexStringValidator(FILENAME_REGEX,
-                    "Must be a valid filename")) {
-
-                /**
-                 * A version number for this class. It should be changed whenever the class
-                 * structure is changed (or anything eloh blese that would prevent serialized
-                 * objects being unserialized with the new class).
-                 */
-                private static final long serialVersionUID = 1;
-
-                public void StandardInputDialog() {
-                }
-
-                /** {@inheritDoc} */
-                @Override
-                public boolean save() {
-                    if (getText() != null && !getText().isEmpty()) {
-                        ActionManager.renameGroup(oldName, getText());
-                        reloadGroups();
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-
-                /** {@inheritDoc} */
-                @Override
-                public void cancelled() {
-                //Ignore
-                }
-            };
-            inputDialog.pack();
-            inputDialog.setLocationRelativeTo(this);
-            inputDialog.setText(oldName);
-            inputDialog.setVisible(true);
+            editGroup();
         } else if (e.getSource() == delete) {
-            final String group =
-                    ((ActionGroup) groups.getSelectedValue()).getName();
-            final int response = JOptionPane.showConfirmDialog(this,
-                    "Are you sure you wish to delete the '" + group +
-                    "' group and all actions within it?",
-                    "Confirm deletion", JOptionPane.YES_NO_OPTION);
-            if (response == JOptionPane.YES_OPTION) {
-                ActionManager.removeGroup(group);
-                reloadGroups();
-            }
+            delGroup();
         } else if (e.getSource() == getOkButton()) {
+            settings.save();
             dispose();
+        }
+    }
+
+    /**
+     * Prompts then adds an action group.
+     */
+    private void addGroup() {
+        final StandardInputDialog inputDialog = new StandardInputDialog(SwingController.getMainFrame(), false,
+                "New action group",
+                "Please enter the name of the new action group",
+                new RegexStringValidator(FILENAME_REGEX,
+                "Must be a valid filename")) {
+
+            /**
+             * A version number for this class. It should be changed whenever the class
+             * structure is changed (or anything else that would prevent serialized
+             * objects being unserialized with the new class).
+             */
+            private static final long serialVersionUID = 1;
+
+            /** {@inheritDoc} */
+            @Override
+            public boolean save() {
+                if (getText() == null || getText().isEmpty()) {
+                    return false;
+                } else {
+                    ActionManager.makeGroup(getText());
+                    reloadGroups();
+                    return true;
+                }
+            }
+
+            /** {@inheritDoc} */
+            @Override
+            public void cancelled() {
+            //Ignore
+            }
+            };
+        inputDialog.pack();
+        inputDialog.setLocationRelativeTo(this);
+        inputDialog.setVisible(true);
+    }
+
+    /**
+     * Prompts then edits an action group.
+     */
+    private void editGroup() {
+        final String oldName =
+                ((ActionGroup) groups.getSelectedValue()).getName();
+        final StandardInputDialog inputDialog = new StandardInputDialog(SwingController.getMainFrame(), false,
+                "Edit action group",
+                "Please enter the new name of the action group",
+                new RegexStringValidator(FILENAME_REGEX,
+                "Must be a valid filename")) {
+
+            /**
+             * A version number for this class. It should be changed whenever the class
+             * structure is changed (or anything eloh blese that would prevent serialized
+             * objects being unserialized with the new class).
+             */
+            private static final long serialVersionUID = 1;
+
+            /** {@inheritDoc} */
+            @Override
+            public boolean save() {
+                if (getText() == null || getText().isEmpty()) {
+                    return false;
+                } else {
+                    ActionManager.renameGroup(oldName, getText());
+                    reloadGroups();
+                    return true;
+                }
+            }
+
+            /** {@inheritDoc} */
+            @Override
+            public void cancelled() {
+            //Ignore
+            }
+            };
+        inputDialog.pack();
+        inputDialog.setLocationRelativeTo(this);
+        inputDialog.setText(oldName);
+        inputDialog.setVisible(true);
+    }
+
+    /**
+     * Prompts then deletes an action group.
+     */
+    private void delGroup() {
+        final String group =
+                ((ActionGroup) groups.getSelectedValue()).getName();
+        final int response = JOptionPane.showConfirmDialog(this,
+                "Are you sure you wish to delete the '" + group +
+                "' group and all actions within it?",
+                "Confirm deletion", JOptionPane.YES_NO_OPTION);
+        if (response == JOptionPane.YES_OPTION) {
+            ActionManager.removeGroup(group);
+            reloadGroups();
         }
     }
 
