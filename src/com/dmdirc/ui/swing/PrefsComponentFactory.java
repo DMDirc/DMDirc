@@ -62,7 +62,9 @@ public final class PrefsComponentFactory {
     }
 
     /**
-     * Retrieves the component for the specified setting.
+     * Retrieves the component for the specified setting. Components are
+     * initialised with the current value(s) of the setting, and have listeners
+     * added to update the setting whenever the components are changed.
      *
      * @param setting The setting whose component is being requested
      * @return An appropriate JComponent descendant
@@ -72,120 +74,25 @@ public final class PrefsComponentFactory {
 
         switch (setting.getType()) {
             case TEXT:
-                option = new ValidatingJTextField(setting.getValidator());
-                ((ValidatingJTextField) option).setText(setting.getValue());
-                ((ValidatingJTextField) option).addKeyListener(new KeyAdapter() {
-
-                    @Override
-                    public void keyReleased(final KeyEvent e) {
-                        setting.setValue(((JTextField) e.getSource()).getText());
-                    }
-                });
+                option = getTextOption(setting);
                 break;
             case BOOLEAN:
-                option = new JCheckBox();
-                ((JCheckBox) option).setSelected(Boolean.parseBoolean(setting.getValue()));
-
-                ((JCheckBox) option).addChangeListener(new ChangeListener() {
-
-                    public void stateChanged(final ChangeEvent e) {
-                        setting.setValue(String.valueOf(((JCheckBox) e.getSource()).isSelected()));
-                    }
-                });
-
+                option = getBooleanOption(setting);
                 break;
             case MULTICHOICE:
-                option = new JComboBox(setting.getComboOptions().entrySet().
-                        toArray());
-                ((JComboBox) option).setRenderer(new MapEntryRenderer());
-                ((JComboBox) option).setEditable(false);
-
-                for (Map.Entry<String, String> entry : setting.getComboOptions().
-                        entrySet()) {
-                    if (entry.getKey().equals(setting.getValue())) {
-                        ((JComboBox) option).setSelectedItem(entry);
-                        break;
-                    }
-                }
-
-                ((JComboBox) option).addActionListener(new ActionListener() {
-
-                    public void actionPerformed(ActionEvent e) {
-                        setting.setValue((String) ((Map.Entry) ((JComboBox) e.getSource()).getSelectedItem()).getKey());
-                    }
-                });
-
+                option = getComboOption(setting);
                 break;
             case INTEGER:
-                try {
-                    if (setting.getValidator() instanceof NumericalValidator) {
-                        option = new JSpinner(
-                                new SpinnerNumberModel(Integer.parseInt(setting.getValue()),
-                                ((NumericalValidator) setting.getValidator()).getMin(),
-                                ((NumericalValidator) setting.getValidator()).getMax(),
-                                1));
-                    } else {
-                        option = new JSpinner(new SpinnerNumberModel());
-
-                        ((JSpinner) option).setValue(Integer.parseInt(setting.getValue()));
-                    }
-                } catch (NumberFormatException ex) {
-                    option = new JSpinner(new SpinnerNumberModel());
-                }
-
-                ((JSpinner) option).addChangeListener(new ChangeListener() {
-
-                    public void stateChanged(ChangeEvent e) {
-                        setting.setValue(((JSpinner) e.getSource()).getValue().
-                                toString());
-                    }
-                });
-
+                option = getIntegerOption(setting);
                 break;
             case DURATION:
-                try {
-                    option =
-                            new DurationDisplay(Integer.parseInt(setting.getValue()));
-                } catch (NumberFormatException ex) {
-                    option = new DurationDisplay();
-                }
-
-                ((DurationDisplay) option).addDurationListener(new DurationListener() {
-
-                    public void durationUpdated(int newDuration) {
-                        setting.setValue("" + newDuration);
-                    }
-                });
-
+                option = getDurationOption(setting);
                 break;
             case COLOUR:
-                option = new ColourChooser(setting.getValue(), true, true);
-
-                ((ColourChooser) option).addActionListener(new ActionListener() {
-
-                    public void actionPerformed(ActionEvent e) {
-                        setting.setValue(((ColourChooser) e.getSource()).getColour());
-                    }
-                });
-
+                option = getColourOption(setting);
                 break;
             case OPTIONALCOLOUR:
-                final boolean state = setting.getValue() != null &&
-                        !setting.getValue().startsWith("false:");
-                final String colour = setting.getValue() == null ? "0" : setting.getValue().
-                        substring(1 + setting.getValue().indexOf(':'));
-
-                option = new OptionalColourChooser(colour, state, true, true);
-
-                ((OptionalColourChooser) option).addActionListener(new ActionListener() {
-
-                    public void actionPerformed(final ActionEvent e) {
-                        setting.setValue(
-                                ((OptionalColourChooser) e.getSource()).isEnabled() + ":"
-                                + ((OptionalColourChooser) e.getSource()).getColour());
-                    }
-                });
-
+                option = getOptionalColourOption(setting);
                 break;
             default:
                 throw new IllegalArgumentException(setting.getType()
@@ -194,6 +101,173 @@ public final class PrefsComponentFactory {
 
         option.setPreferredSize(new Dimension(Short.MAX_VALUE, option.getFont().
                 getSize()));
+
+        return option;
+    }
+
+    /**
+     * Initialises and returns a ValidatingJTextField for the specified setting.
+     *
+     * @param setting The setting to create the component for
+     * @return A JComponent descendent for the specified setting
+     */
+    private static JComponent getTextOption(final PreferencesSetting setting) {
+        final ValidatingJTextField option = new ValidatingJTextField(setting.getValidator());
+        option.setText(setting.getValue());
+
+        option.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(final KeyEvent e) {
+                setting.setValue(((JTextField) e.getSource()).getText());
+            }
+        });
+
+        return option;
+    }
+
+    /**
+     * Initialises and returns a JCheckBox for the specified setting.
+     *
+     * @param setting The setting to create the component for
+     * @return A JComponent descendent for the specified setting
+     */
+    private static JComponent getBooleanOption(final PreferencesSetting setting) {
+        final JCheckBox option = new JCheckBox();
+        option.setSelected(Boolean.parseBoolean(setting.getValue()));
+        option.addChangeListener(new ChangeListener() {
+            public void stateChanged(final ChangeEvent e) {
+                setting.setValue(String.valueOf(((JCheckBox) e.getSource()).isSelected()));
+            }
+        });
+
+        return option;
+    }
+
+    /**
+     * Initialises and returns a JComboBox for the specified setting.
+     *
+     * @param setting The setting to create the component for
+     * @return A JComponent descendent for the specified setting
+     */
+    private static JComponent getComboOption(final PreferencesSetting setting) {
+        final JComboBox option = new JComboBox(setting.getComboOptions().entrySet().toArray());
+        option.setRenderer(new MapEntryRenderer());
+        option.setEditable(false);
+
+        for (Map.Entry<String, String> entry : setting.getComboOptions().entrySet()) {
+            if (entry.getKey().equals(setting.getValue())) {
+                option.setSelectedItem(entry);
+                break;
+            }
+        }
+
+        option.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                setting.setValue((String) ((Map.Entry)
+                        ((JComboBox) e.getSource()).getSelectedItem()).getKey());
+            }
+        });
+
+        return option;
+    }
+
+    /**
+     * Initialises and returns a JSpinner for the specified setting.
+     *
+     * @param setting The setting to create the component for
+     * @return A JComponent descendent for the specified setting
+     */
+    private static JComponent getIntegerOption(final PreferencesSetting setting) {
+        JSpinner option;
+
+        try {
+            if (setting.getValidator() instanceof NumericalValidator) {
+                option = new JSpinner(
+                        new SpinnerNumberModel(Integer.parseInt(setting.getValue()),
+                        ((NumericalValidator) setting.getValidator()).getMin(),
+                        ((NumericalValidator) setting.getValidator()).getMax(),
+                        1));
+            } else {
+                option = new JSpinner(new SpinnerNumberModel());
+                option.setValue(Integer.parseInt(setting.getValue()));
+            }
+        } catch (NumberFormatException ex) {
+            option = new JSpinner(new SpinnerNumberModel());
+        }
+
+        option.addChangeListener(new ChangeListener() {
+            public void stateChanged(final ChangeEvent e) {
+                setting.setValue(((JSpinner) e.getSource()).getValue().
+                        toString());
+            }
+        });
+
+        return option;
+    }
+
+    /**
+     * Initialises and returns a DurationDisplay for the specified setting.
+     *
+     * @param setting The setting to create the component for
+     * @return A JComponent descendent for the specified setting
+     */
+    private static JComponent getDurationOption(final PreferencesSetting setting) {
+        DurationDisplay option;
+
+        try {
+            option = new DurationDisplay(Integer.parseInt(setting.getValue()));
+        } catch (NumberFormatException ex) {
+            option = new DurationDisplay();
+        }
+
+        option.addDurationListener(new DurationListener() {
+            public void durationUpdated(final int newDuration) {
+                setting.setValue(String.valueOf(newDuration));
+            }
+        });
+
+        return option;
+    }
+
+    /**
+     * Initialises and returns a ColourChooser for the specified setting.
+     *
+     * @param setting The setting to create the component for
+     * @return A JComponent descendent for the specified setting
+     */
+    private static JComponent getColourOption(final PreferencesSetting setting) {
+        final ColourChooser option = new ColourChooser(setting.getValue(), true, true);
+
+        option.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                setting.setValue(((ColourChooser) e.getSource()).getColour());
+            }
+        });
+
+        return option;
+    }
+
+    /**
+     * Initialises and returns an OptionalColourChooser for the specified setting.
+     *
+     * @param setting The setting to create the component for
+     * @return A JComponent descendent for the specified setting
+     */
+    private static JComponent getOptionalColourOption(final PreferencesSetting setting) {
+        final boolean state = setting.getValue() != null
+                && !setting.getValue().startsWith("false:");
+        final String colour = setting.getValue() == null ? "0" : setting.getValue().
+                substring(1 + setting.getValue().indexOf(':'));
+
+        final OptionalColourChooser option = new OptionalColourChooser(colour, state, true, true);
+
+        option.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                setting.setValue(
+                        ((OptionalColourChooser) e.getSource()).isEnabled() + ":"
+                        + ((OptionalColourChooser) e.getSource()).getColour());
+            }
+        });
 
         return option;
     }
