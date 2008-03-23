@@ -194,6 +194,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
         final JLabel label = getLabel(setting);
         final JComponent option = getComponent(setting);
+        components.put(setting, option);
 
         categories.get(category).add(label);
 
@@ -226,7 +227,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * @param setting The setting whose component is being requested
      * @return An appropriate JComponent descendant
      */
-    private final JComponent getComponent(final PreferencesSetting setting) {
+    public static final JComponent getComponent(final PreferencesSetting setting) {
         JComponent option;
 
         switch (setting.getType()) {
@@ -338,11 +339,10 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
                 ((OptionalColourChooser) option).addActionListener(new ActionListener() {
 
-                    public void actionPerformed(ActionEvent e) {
+                    public void actionPerformed(final ActionEvent e) {
                         setting.setValue(
-                                String.valueOf(((OptionalColourChooser) e.getSource()).isEnabled()) +
-                                ":" +
-                                ((OptionalColourChooser) e.getSource()).getColour());
+                                ((OptionalColourChooser) e.getSource()).isEnabled() + ":"
+                                + ((OptionalColourChooser) e.getSource()).getColour());
                     }
                 });
 
@@ -352,7 +352,6 @@ public final class SwingPreferencesDialog extends StandardDialog implements
                         " is not a valid option");
         }
 
-        components.put(setting, option);
         option.setPreferredSize(new Dimension(Short.MAX_VALUE, option.getFont().
                 getSize()));
 
