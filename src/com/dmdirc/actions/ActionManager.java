@@ -556,7 +556,7 @@ public final class ActionManager {
 
         makeGroup(newName);
 
-        for (Action action : groups.get(oldName)) {
+        for (Action action : new ArrayList<Action>(groups.get(oldName))) {
             action.setGroup(newName);
             getGroup(oldName).remove(action);
             getGroup(newName).add(action);

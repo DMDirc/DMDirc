@@ -21,8 +21,10 @@
  */
 package com.dmdirc.actions;
 
+import com.dmdirc.actions.interfaces.ActionType;
 import java.io.File;
 
+import java.util.ArrayList;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -59,12 +61,24 @@ public class ActionManagerTest extends junit.framework.TestCase {
                 new File(ActionManager.getDirectory() + "unit-test").isDirectory());
         assertTrue("renameGroup must create the target directory",
                 new File(ActionManager.getDirectory() + "unit-test-two").isDirectory());
+    }
+    
+    @Test
+    public void testRenameGroupWithAction() {
+        final Action action = new Action("unit-test-two", "test1", new ActionType[0],
+                new String[0], new ArrayList<ActionCondition>(), null);
+        assertSame("Creating a new action must add it to the correct group",
+                action, ActionManager.getGroup("unit-test-two").get(0));
         
         ActionManager.renameGroup("unit-test-two", "unit-test");
         assertFalse("renameGroup must unlink the old directory",
                 new File(ActionManager.getDirectory() + "unit-test-two").isDirectory());
         assertTrue("renameGroup must create the target directory",
                 new File(ActionManager.getDirectory() + "unit-test").isDirectory());        
+        assertSame("renameGroup must move actions to new group",
+                action, ActionManager.getGroup("unit-test").get(0));
+        assertTrue("renameGroup must remove actions from old group",
+                ActionManager.getGroup("unit-test-two").isEmpty());
     }
     
     @Test
