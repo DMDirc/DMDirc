@@ -486,8 +486,12 @@ public final class ActionManager {
         Logger.assertTrue(!group.isEmpty());
         Logger.assertTrue(!groups.containsKey(group));
 
-        if (new File(getDirectory() + group).mkdir()) {
+        final File file = new File(getDirectory() + group);
+        if (file.isDirectory() || file.mkdir()) {
             groups.put(group, new ActionGroup(group));
+        } else {
+            throw new IllegalArgumentException("Unable to create action group directory"
+                    + "\n\nDir: " + getDirectory() + group);
         }
     }
 

@@ -30,8 +30,10 @@ import static org.junit.Assert.*;
 public class ActionManagerTest extends junit.framework.TestCase {
     
     @BeforeClass
-    public void setUpClass() {
+    public void setUpClass() throws Exception {
         ActionManager.init();
+        ActionManager.removeGroup("unit-test");
+        ActionManager.removeGroup("unit-test-two");
     }
 
     @Test
