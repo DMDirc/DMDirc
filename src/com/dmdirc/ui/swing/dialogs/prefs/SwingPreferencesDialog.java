@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.swing.dialogs.prefs;
 
-import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesCategory;
@@ -33,6 +32,7 @@ import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.ColourChooser;
 import com.dmdirc.ui.swing.components.OptionalColourChooser;
 import com.dmdirc.ui.swing.components.StandardDialog;
+import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.components.TreeScroller;
 import com.dmdirc.ui.swing.components.durationeditor.DurationDisplay;
 import com.dmdirc.ui.swing.components.durationeditor.DurationListener;
@@ -78,8 +78,8 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import net.miginfocom.swing.MigLayout;
 import net.miginfocom.layout.PlatformDefaults;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Allows the user to modify global client preferences.
@@ -112,7 +112,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     /** root node. */
     private DefaultMutableTreeNode rootNode;
     /** Previously selected category. */
-    private PreferencesCategory selected = null;
+    private PreferencesCategory selected;
     /** Preferences Manager. */
     private final PreferencesManager manager;
     /** Panel gap. */
@@ -227,7 +227,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * @param setting The setting whose component is being requested
      * @return An appropriate JComponent descendant
      */
-    public static final JComponent getComponent(final PreferencesSetting setting) {
+    public static JComponent getComponent(final PreferencesSetting setting) {
         JComponent option;
 
         switch (setting.getType()) {
@@ -348,8 +348,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
                 break;
             default:
-                throw new IllegalArgumentException(setting.getType() +
-                        " is not a valid option");
+                throw new IllegalArgumentException(setting.getType()
+                        + " is not a valid option type");
         }
 
         option.setPreferredSize(new Dimension(Short.MAX_VALUE, option.getFont().
@@ -412,8 +412,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * @param path The textual path of this category
      */
     private void initCategory(final PreferencesCategory category,
-            final JPanel panel,
-            final DefaultMutableTreeNode newNode, final String path) {
+            final JPanel panel, final DefaultMutableTreeNode newNode,
+            final String path) {
 
         if (!category.getDescription().isEmpty()) {
             final TextLabel infoLabel =
@@ -431,8 +431,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
         if (category.hasObject()) {
             if (!(category.getObject() instanceof JPanel)) {
-                throw new IllegalArgumentException("Custom preferences objects" +
-                        " for this UI must extend JPanel.");
+                throw new IllegalArgumentException("Custom preferences objects"
+                        + " for this UI must extend JPanel.");
             }
 
             panels.add((JPanel) category.getObject());
@@ -522,8 +522,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
         if (restart) {
             JOptionPane.showMessageDialog((MainFrame) Main.getUI().
-                    getMainWindow(), "One or more of the changes you made " +
-                    "won't take effect until you restart the client.",
+                    getMainWindow(), "One or more of the changes you made "
+                    + "won't take effect until you restart the client.",
                     "Restart needed", JOptionPane.INFORMATION_MESSAGE);
         }
     }
@@ -573,7 +573,6 @@ public final class SwingPreferencesDialog extends StandardDialog implements
          */
         public PreferencesTreeCellRenderer() {
             super();
-            System.out.println(padding);
         }
 
         /**
