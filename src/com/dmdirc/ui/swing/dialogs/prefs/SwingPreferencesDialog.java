@@ -27,17 +27,11 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesCategory;
 import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.config.prefs.PreferencesSetting;
-import com.dmdirc.config.prefs.validator.NumericalValidator;
 import com.dmdirc.ui.swing.MainFrame;
-import com.dmdirc.ui.swing.components.ColourChooser;
-import com.dmdirc.ui.swing.components.OptionalColourChooser;
+import com.dmdirc.ui.swing.PrefsComponentFactory;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.components.TreeScroller;
-import com.dmdirc.ui.swing.components.durationeditor.DurationDisplay;
-import com.dmdirc.ui.swing.components.durationeditor.DurationListener;
-import com.dmdirc.ui.swing.components.renderers.MapEntryRenderer;
-import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
 
 import java.awt.CardLayout;
 import java.awt.Component;
@@ -45,8 +39,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -55,19 +47,12 @@ import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
 import javax.swing.JTree;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.WindowConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.text.Position;
@@ -193,7 +178,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             final PreferencesSetting setting) {
 
         final JLabel label = getLabel(setting);
-        final JComponent option = getComponent(setting);
+        final JComponent option = PrefsComponentFactory.getComponent(setting);
         components.put(setting, option);
 
         categories.get(category).add(label);
@@ -219,143 +204,6 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         }
 
         return label;
-    }
-
-    /**
-     * Retrieves the component for the specified setting.
-     * 
-     * @param setting The setting whose component is being requested
-     * @return An appropriate JComponent descendant
-     */
-    public static JComponent getComponent(final PreferencesSetting setting) {
-        JComponent option;
-
-        switch (setting.getType()) {
-            case TEXT:
-                option = new ValidatingJTextField(setting.getValidator());
-                ((ValidatingJTextField) option).setText(setting.getValue());
-                ((ValidatingJTextField) option).addKeyListener(new KeyAdapter() {
-
-                    @Override
-                    public void keyReleased(final KeyEvent e) {
-                        setting.setValue(((JTextField) e.getSource()).getText());
-                    }
-                });
-                break;
-            case BOOLEAN:
-                option = new JCheckBox();
-                ((JCheckBox) option).setSelected(Boolean.parseBoolean(setting.getValue()));
-
-                ((JCheckBox) option).addChangeListener(new ChangeListener() {
-
-                    public void stateChanged(final ChangeEvent e) {
-                        setting.setValue(String.valueOf(((JCheckBox) e.getSource()).isSelected()));
-                    }
-                });
-
-                break;
-            case MULTICHOICE:
-                option = new JComboBox(setting.getComboOptions().entrySet().
-                        toArray());
-                ((JComboBox) option).setRenderer(new MapEntryRenderer());
-                ((JComboBox) option).setEditable(false);
-
-                for (Map.Entry<String, String> entry : setting.getComboOptions().
-                        entrySet()) {
-                    if (entry.getKey().equals(setting.getValue())) {
-                        ((JComboBox) option).setSelectedItem(entry);
-                        break;
-                    }
-                }
-
-                ((JComboBox) option).addActionListener(new ActionListener() {
-
-                    public void actionPerformed(ActionEvent e) {
-                        setting.setValue((String) ((Map.Entry) ((JComboBox) e.getSource()).getSelectedItem()).getKey());
-                    }
-                });
-
-                break;
-            case INTEGER:
-                try {
-                    if (setting.getValidator() instanceof NumericalValidator) {
-                        option = new JSpinner(
-                                new SpinnerNumberModel(Integer.parseInt(setting.getValue()),
-                                ((NumericalValidator) setting.getValidator()).getMin(),
-                                ((NumericalValidator) setting.getValidator()).getMax(),
-                                1));
-                    } else {
-                        option = new JSpinner(new SpinnerNumberModel());
-
-                        ((JSpinner) option).setValue(Integer.parseInt(setting.getValue()));
-                    }
-                } catch (NumberFormatException ex) {
-                    option = new JSpinner(new SpinnerNumberModel());
-                }
-
-                ((JSpinner) option).addChangeListener(new ChangeListener() {
-
-                    public void stateChanged(ChangeEvent e) {
-                        setting.setValue(((JSpinner) e.getSource()).getValue().
-                                toString());
-                    }
-                });
-
-                break;
-            case DURATION:
-                try {
-                    option =
-                            new DurationDisplay(Integer.parseInt(setting.getValue()));
-                } catch (NumberFormatException ex) {
-                    option = new DurationDisplay();
-                }
-
-                ((DurationDisplay) option).addDurationListener(new DurationListener() {
-
-                    public void durationUpdated(int newDuration) {
-                        setting.setValue("" + newDuration);
-                    }
-                });
-
-                break;
-            case COLOUR:
-                option = new ColourChooser(setting.getValue(), true, true);
-
-                ((ColourChooser) option).addActionListener(new ActionListener() {
-
-                    public void actionPerformed(ActionEvent e) {
-                        setting.setValue(((ColourChooser) e.getSource()).getColour());
-                    }
-                });
-
-                break;
-            case OPTIONALCOLOUR:
-                final boolean state = setting.getValue() != null &&
-                        !setting.getValue().startsWith("false:");
-                final String colour = setting.getValue() == null ? "0" : setting.getValue().
-                        substring(1 + setting.getValue().indexOf(':'));
-
-                option = new OptionalColourChooser(colour, state, true, true);
-
-                ((OptionalColourChooser) option).addActionListener(new ActionListener() {
-
-                    public void actionPerformed(final ActionEvent e) {
-                        setting.setValue(
-                                ((OptionalColourChooser) e.getSource()).isEnabled() + ":"
-                                + ((OptionalColourChooser) e.getSource()).getColour());
-                    }
-                });
-
-                break;
-            default:
-                throw new IllegalArgumentException(setting.getType()
-                        + " is not a valid option type");
-        }
-
-        option.setPreferredSize(new Dimension(Short.MAX_VALUE, option.getFont().
-                getSize()));
-
-        return option;
     }
 
     /**
