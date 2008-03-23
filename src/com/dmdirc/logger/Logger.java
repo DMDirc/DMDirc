@@ -247,4 +247,16 @@ public final class Logger {
         return trace;
     }
     
+    /**
+     * Asserts that the specified value is true. If not, an AssertionError
+     * exception is thrown.
+     * 
+     * @param value The value to be tested
+     */
+    public static void assertTrue(final boolean value) {
+        if (!value) {
+            throw new AssertionError();
+        }
+    }
+    
 }

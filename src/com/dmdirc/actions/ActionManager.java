@@ -174,9 +174,9 @@ public final class ActionManager {
         "The specified wrapper's group name is non-null and not empty"
     })
     public static void registerWrapper(final ActionWrapper wrapper) {
-        assert(wrapper != null);
-        assert(wrapper.getGroupName() != null);
-        assert(!wrapper.getGroupName().isEmpty());
+        Logger.assertTrue(wrapper != null);
+        Logger.assertTrue(wrapper.getGroupName() != null);
+        Logger.assertTrue(!wrapper.getGroupName().isEmpty());
 
         actionWrappers.add(wrapper);
     }
@@ -189,7 +189,7 @@ public final class ActionManager {
     @Precondition("None of the specified ActionTypes are null")
     public static void registerActionTypes(final ActionType[] types) {
         for (ActionType type : types) {
-            assert(type != null);
+            Logger.assertTrue(type != null);
 
             actionTypes.add(type);
             actionTypeGroups.add(type.getType().getGroup(), type);
@@ -204,7 +204,7 @@ public final class ActionManager {
     @Precondition("None of the specified ActionComponents are null")
     public static void registerActionComponents(final ActionComponent[] comps) {
         for (ActionComponent comp : comps) {
-            assert(comp != null);
+            Logger.assertTrue(comp != null);
 
             actionComponents.add(comp);
         }
@@ -218,7 +218,7 @@ public final class ActionManager {
     @Precondition("None of the specified ActionComparisons are null")
     public static void registerActionComparisons(final ActionComparison[] comps) {
         for (ActionComparison comp : comps) {
-            assert(comp != null);
+            Logger.assertTrue(comp != null);
 
             actionComparisons.add(comp);
         }
@@ -295,8 +295,8 @@ public final class ActionManager {
      */
     @Precondition("The specified name is non-null and not empty")
     private static ActionWrapper getWrapper(final String name) {
-        assert(name != null);
-        assert(!name.isEmpty());
+        Logger.assertTrue(name != null);
+        Logger.assertTrue(!name.isEmpty());
 
         for (ActionWrapper wrapper : actionWrappers) {
             if (name.equals(wrapper.getGroupName())) {
@@ -316,8 +316,8 @@ public final class ActionManager {
      */
     @Precondition("The specified name is non-null and not empty")
     private static boolean isWrappedGroup(final String name) {
-        assert(name != null);
-        assert(!name.isEmpty());
+        Logger.assertTrue(name != null);
+        Logger.assertTrue(!name.isEmpty());
 
         return getWrapper(name) != null;
     }
@@ -329,8 +329,8 @@ public final class ActionManager {
      */
     @Precondition("The specified File is not null and represents a directory")
     private static void loadActions(final File dir) {
-        assert(dir != null);
-        assert(dir.isDirectory());
+        Logger.assertTrue(dir != null);
+        Logger.assertTrue(dir.isDirectory());
         
         groups.put(dir.getName(), new ActionGroup(dir.getName()));
 
@@ -346,7 +346,7 @@ public final class ActionManager {
      */
     @Precondition("The specified action is not null")
     public static void registerAction(final Action action) {
-        assert(action != null);
+        Logger.assertTrue(action != null);
  
         for (ActionType trigger : action.getTriggers()) {
             actions.add(trigger, action);
@@ -381,7 +381,7 @@ public final class ActionManager {
      */
     @Precondition("The specified action is not null")
     public static void unregisterAction(final Action action) {
-        assert(action != null);
+        Logger.assertTrue(action != null);
 
         actions.removeFromAll(action);
         getGroup(action.getGroup()).remove(action);
@@ -405,7 +405,7 @@ public final class ActionManager {
      */
     @Precondition("The specified Action is not null")
     public static void deleteAction(final Action action) {
-        assert(action != null);
+        Logger.assertTrue(action != null);
 
         unregisterAction(action);
 
@@ -427,9 +427,9 @@ public final class ActionManager {
     })
     public static void processEvent(final ActionType type,
             final StringBuffer format, final Object ... arguments) {
-        assert(type != null);
-        assert(type.getType() != null);
-        assert(type.getType().getArity() == arguments.length);
+        Logger.assertTrue(type != null);
+        Logger.assertTrue(type.getType() != null);
+        Logger.assertTrue(type.getType().getArity() == arguments.length);
 
         if (listeners.containsKey(type)) {
             for (ActionListener listener :
@@ -454,7 +454,7 @@ public final class ActionManager {
     @Precondition("The specified ActionType is not null")
     private static void triggerActions(final ActionType type,
             final StringBuffer format, final Object ... arguments) {
-        assert(type != null);
+        Logger.assertTrue(type != null);
 
         if (actions.containsKey(type)) {
             for (Action action : new ArrayList<Action>(actions.get(type))) {
@@ -482,9 +482,9 @@ public final class ActionManager {
         "The specified group is not an existing group"
     })
     public static void makeGroup(final String group) {
-        assert(group != null);
-        assert(!group.isEmpty());
-        assert(!groups.containsKey(group));
+        Logger.assertTrue(group != null);
+        Logger.assertTrue(!group.isEmpty());
+        Logger.assertTrue(!groups.containsKey(group));
 
         if (new File(getDirectory() + group).mkdir()) {
             groups.put(group, new ActionGroup(group));
@@ -501,9 +501,9 @@ public final class ActionManager {
         "The specified group is an existing group"
     })
     public static void removeGroup(final String group) {
-        assert(group != null);
-        assert(!group.isEmpty());
-        assert(groups.containsKey(group));
+        Logger.assertTrue(group != null);
+        Logger.assertTrue(!group.isEmpty());
+        Logger.assertTrue(groups.containsKey(group));
 
         for (Action action : new ArrayList<Action>(groups.get(group))) {
             unregisterAction(action);
@@ -542,13 +542,13 @@ public final class ActionManager {
         "The old name does not equal the new name"
     })
     public static void renameGroup(final String oldName, final String newName) {
-        assert(oldName != null);
-        assert(!oldName.isEmpty());
-        assert(newName != null);
-        assert(!newName.isEmpty());
-        assert(groups.containsKey(oldName));
-        assert(!groups.containsKey(newName));
-        assert(!newName.equals(oldName));
+        Logger.assertTrue(oldName != null);
+        Logger.assertTrue(!oldName.isEmpty());
+        Logger.assertTrue(newName != null);
+        Logger.assertTrue(!newName.isEmpty());
+        Logger.assertTrue(groups.containsKey(oldName));
+        Logger.assertTrue(!groups.containsKey(newName));
+        Logger.assertTrue(!newName.equals(oldName));
 
         makeGroup(newName);
 
@@ -590,7 +590,7 @@ public final class ActionManager {
      */
     @Precondition("The specified type is not null")
     public static List<ActionType> getCompatibleTypes(final ActionType type) {
-        assert(type != null);
+        Logger.assertTrue(type != null);
 
         final List<ActionType> res = new ArrayList<ActionType>();
         for (ActionType target : actionTypes) {
@@ -611,7 +611,7 @@ public final class ActionManager {
      */
     @Precondition("The specified target is not null")
     public static List<ActionComponent> getCompatibleComponents(final Class target) {
-        assert(target != null);
+        Logger.assertTrue(target != null);
 
         final List<ActionComponent> res = new ArrayList<ActionComponent>();
         for (ActionComponent subject : actionComponents) {
@@ -632,7 +632,7 @@ public final class ActionManager {
      */
     @Precondition("The specified target is not null")
     public static List<ActionComparison> getCompatibleComparisons(final Class target) {
-        assert(target != null);
+        Logger.assertTrue(target != null);
 
         final List<ActionComparison> res = new ArrayList<ActionComparison>();
         for (ActionComparison subject : actionComparisons) {
@@ -671,8 +671,8 @@ public final class ActionManager {
      */
     @Precondition("The specified type is non-null and not empty")
     public static ActionComponent getActionComponent(final String type) {
-        assert(type != null);
-        assert(!type.isEmpty());
+        Logger.assertTrue(type != null);
+        Logger.assertTrue(!type.isEmpty());
 
         for (ActionComponent target : actionComponents) {
             if (((Enum) target).name().equals(type)) {
@@ -692,8 +692,8 @@ public final class ActionManager {
      */
     @Precondition("The specified type is non-null and not empty")
     public static ActionComparison getActionComparison(final String type) {
-        assert(type != null);
-        assert(!type.isEmpty());
+        Logger.assertTrue(type != null);
+        Logger.assertTrue(!type.isEmpty());
 
         for (ActionComparison target : actionComparisons) {
             if (((Enum) target).name().equals(type)) {
@@ -739,7 +739,7 @@ public final class ActionManager {
      * @param listener The listener to be removed
      */
     public static void removeListener(final ActionListener listener, final ActionType ... types) {
-        for (ActionType type: types) {
+        for (ActionType type : types) {
             listeners.remove(type, listener);
         }
     }
