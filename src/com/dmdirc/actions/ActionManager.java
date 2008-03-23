@@ -558,6 +558,7 @@ public final class ActionManager {
 
         for (Action action : groups.get(oldName)) {
             action.setGroup(newName);
+            getGroup(oldName).remove(action);
             getGroup(newName).add(action);
         }
 
