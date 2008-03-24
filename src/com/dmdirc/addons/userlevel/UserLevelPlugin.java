@@ -25,7 +25,9 @@ package com.dmdirc.addons.userlevel;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionListener;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.plugins.Plugin;
@@ -39,15 +41,21 @@ import java.util.Map;
  * 
  * @author chris
  */
-public class UserLevelPlugin extends Plugin implements ActionListener {
+public class UserLevelPlugin extends Plugin implements ActionListener, 
+        ConfigChangeListener {
+    
+    /** The domain used for userlevels. */
+    private static final String DOMAIN = "userlevels";
     
     /** A map of hostmasks to associated level numbers. */
-    private static Map<String, Integer> levels = new HashMap<String, Integer>();
+    private static final Map<String, Integer> LEVELS = new HashMap<String, Integer>();
 
     /** {@inheritDoc} */
     @Override
     public void onLoad() {
         ActionManager.addListener(this, CoreActionType.CHANNEL_JOIN);
+        IdentityManager.getGlobalConfig().addChangeListener(DOMAIN, this);
+        loadLevels();
     }
 
     /** {@inheritDoc} */
@@ -87,8 +95,8 @@ public class UserLevelPlugin extends Plugin implements ActionListener {
         
         int level = 0;
         
-        synchronized(levels) {
-            for (Map.Entry<String, Integer> entry : levels.entrySet()) {
+        synchronized (LEVELS) {
+            for (Map.Entry<String, Integer> entry : LEVELS.entrySet()) {
                 if (host.matches(entry.getKey())) {
                     level = Math.max(level, entry.getValue());
                 }
@@ -96,6 +104,25 @@ public class UserLevelPlugin extends Plugin implements ActionListener {
         }
         
         client.getMap().put("level", level);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void configChanged(final String domain, final String key) {
+        if (DOMAIN.equals(domain)) {
+            loadLevels();
+        }
+    }
+    
+    /**
+     * Loads all levels from the config file into our map.
+     */
+    private void loadLevels() {
+        LEVELS.clear();
+        
+        for (String key : IdentityManager.getGlobalConfig().getOptions(DOMAIN)) {
+            LEVELS.put(key, IdentityManager.getGlobalConfig().getOptionInt(DOMAIN, key, 0));
+        }
     }
 
 }
