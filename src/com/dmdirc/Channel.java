@@ -478,6 +478,7 @@ public final class Channel extends MessageTarget
      */
     public void addTopic(final Topic topic) {
         topics.add(topic);
+        updateTitle();
     }
 
     /**
