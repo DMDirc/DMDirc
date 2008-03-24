@@ -31,16 +31,14 @@ import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.swing.components.InputTextFrame;
 import com.dmdirc.ui.swing.components.SwingInputHandler;
 import com.dmdirc.ui.swing.dialogs.serversetting.ServerSettingsDialog;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * The ServerFrame is the MDI window that shows server messages to the user.
@@ -89,25 +87,12 @@ public final class ServerFrame extends InputTextFrame implements ServerWindow,
         settingsMI = new JMenuItem("Settings");
         settingsMI.addActionListener(this);
 
-        final GridBagConstraints constraints = new GridBagConstraints();
-
         setTitle("Server Frame");
 
-        getContentPane().setLayout(new GridBagLayout());
-        constraints.weightx = 1.0;
-        constraints.weighty = 1.0;
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.insets = new Insets(0, 0, 0, 0);
-        getContentPane().add(getTextPane(), constraints);
-
-        constraints.weighty = 0.0;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.gridy = 1;
-        constraints.insets = new Insets(0, 0, 0, 0);
-        getContentPane().add(getSearchBar(), constraints);
-
-        constraints.gridy = 2;
-        getContentPane().add(inputPanel, constraints);
+        getContentPane().setLayout(new MigLayout("ins 0, fill, hidemode 3, wrap 1"));
+        getContentPane().add(getTextPane(), "grow");
+        getContentPane().add(getSearchBar(), "growx, pushx");
+        getContentPane().add(inputPanel, "growx, pushx");
 
         pack();
     }

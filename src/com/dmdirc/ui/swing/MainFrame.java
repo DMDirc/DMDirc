@@ -73,6 +73,8 @@ import javax.swing.KeyStroke;
 import javax.swing.MenuSelectionManager;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import net.miginfocom.layout.PlatformDefaults;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * The main application frame.
@@ -217,7 +219,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     public ImageIcon getIcon() {
         return imageIcon;
     }
-    
+
     /**
      * Returns the window that is currently active.
      *
@@ -354,7 +356,6 @@ public final class MainFrame extends JFrame implements WindowListener,
      */
     private void initComponents() {
         final JSplitPane mainSplitPane = new JSplitPane();
-        final JPanel panel = new JPanel();
 
         frameManagerPanel = new JPanel();
         desktopPane = new DMDircDesktopPane();
@@ -371,13 +372,9 @@ public final class MainFrame extends JFrame implements WindowListener,
 
         setPreferredSize(new Dimension(800, 600));
 
-        panel.setLayout(new BorderLayout());
-        panel.add(mainSplitPane, BorderLayout.CENTER);
-        panel.add(statusBar, BorderLayout.SOUTH);
-
-        getContentPane().setLayout(new BorderLayout(0, 0));
-
-        getContentPane().add(panel, BorderLayout.CENTER);
+        getContentPane().setLayout(new MigLayout("ins rel, wrap 1"));
+        getContentPane().add(mainSplitPane, "grow");
+        getContentPane().add(statusBar, "growx, pushx");
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -395,10 +392,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     private void initSplitPane(final JSplitPane mainSplitPane) {
         mainSplitPane.setBorder(null);
 
-        mainSplitPane.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
-                SMALL_BORDER, 0, SMALL_BORDER));
-
-        mainSplitPane.setDividerSize(SMALL_BORDER);
+        mainSplitPane.setDividerSize((int) PlatformDefaults.getPanelInsets(0).getValue());
         mainSplitPane.setOneTouchExpandable(false);
 
         position =
@@ -443,12 +437,10 @@ public final class MainFrame extends JFrame implements WindowListener,
                 frameManagerPanel.setPreferredSize(new Dimension(IdentityManager.getGlobalConfig().
                         getOptionInt("ui", "frameManagerSize", 150),
                         Integer.MAX_VALUE));
-                frameManagerPanel.setMinimumSize(new Dimension(150,
-                        Integer.MAX_VALUE));
+                frameManagerPanel.setMinimumSize(new Dimension(150, 0));
                 desktopPane.setMaximumSize(new Dimension(Integer.MAX_VALUE,
                         Integer.MAX_VALUE));
-                desktopPane.setMinimumSize(new Dimension(300,
-                        Integer.MAX_VALUE));
+                desktopPane.setMinimumSize(new Dimension(300, 0));
                 break;
             case BOTTOM:
                 mainSplitPane.setTopComponent(desktopPane);
@@ -472,12 +464,10 @@ public final class MainFrame extends JFrame implements WindowListener,
                 frameManagerPanel.setPreferredSize(new Dimension(IdentityManager.getGlobalConfig().
                         getOptionInt("ui", "frameManagerSize", 50),
                         Integer.MAX_VALUE));
-                frameManagerPanel.setMinimumSize(new Dimension(50,
-                        Integer.MAX_VALUE));
+                frameManagerPanel.setMinimumSize(new Dimension(50, 0));
                 desktopPane.setMaximumSize(new Dimension(Integer.MAX_VALUE,
                         Integer.MAX_VALUE));
-                desktopPane.setMinimumSize(new Dimension(300,
-                        Integer.MAX_VALUE));
+                desktopPane.setMinimumSize(new Dimension(300, 0));
                 break;
             default:
                 break;
@@ -592,7 +582,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void setParent(final JComponent parent) {
-        //Ignore
+    //Ignore
     }
 
     /** {@inheritDoc}. */
@@ -610,19 +600,19 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void setSelected(final FrameContainer source) {
-        //Ignore
+    //Ignore
     }
 
     /** {@inheritDoc}. */
     @Override
     public void showNotification(final FrameContainer source, final Color colour) {
-        //Ignore
+    //Ignore
     }
 
     /** {@inheritDoc}. */
     @Override
     public void clearNotification(final FrameContainer source) {
-        //Ignore
+    //Ignore
     }
 
     /** {@inheritDoc}. */
@@ -630,7 +620,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     public void addWindow(final FrameContainer window) {
         addWindow(window, desktopPane.getAllFrames().length - 1);
     }
-    
+
     /**
      * Adds a window to this frame manager.
      * 
@@ -685,6 +675,6 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void iconUpdated(final FrameContainer window) {
-        //Ignore
+    //Ignore
     }
 }

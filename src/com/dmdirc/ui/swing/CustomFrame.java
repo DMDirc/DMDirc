@@ -25,12 +25,10 @@ package com.dmdirc.ui.swing;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.ui.swing.components.TextFrame;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import javax.swing.JPopupMenu;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * A very basic custom frame.
@@ -61,23 +59,11 @@ public class CustomFrame extends TextFrame {
      * Initialises components in this frame.
      */
     private void initComponents() {
-        final GridBagConstraints constraints = new GridBagConstraints();
-        
         setTitle("Custom Frame");
         
-        getContentPane().setLayout(new GridBagLayout());
-        constraints.weightx = 1.0;
-        constraints.weighty = 1.0;
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.insets = new Insets(0, 0, 0, 0);
-        getContentPane().add(getTextPane(), constraints);
-        
-        
-        constraints.weighty = 0.0;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.gridy = 1;
-        constraints.insets = new Insets(0, 0, 0, 0);
-        getContentPane().add(getSearchBar(), constraints);
+        getContentPane().setLayout(new MigLayout("ins 0, fill, hidemode 3, wrap 1"));
+        getContentPane().add(getTextPane(), "grow");
+        getContentPane().add(getSearchBar(), "growx, pushx");
         
         pack();
     }

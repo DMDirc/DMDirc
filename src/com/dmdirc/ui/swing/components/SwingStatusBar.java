@@ -81,7 +81,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     /** Currently showing error level. */
     private ErrorLevel errorLevel;
     /** Invite label. */
-    private InviteLabel inviteLabel;
+    private final InviteLabel inviteLabel;
 
     /**
      * Creates a new instance of SwingStatusBar.
@@ -104,7 +104,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         ErrorManager.getErrorManager().addErrorListener(this);
         UpdateChecker.addListener(this);
 
-        setLayout(new MigLayout("ins rel, hidemode 3"));
+        setLayout(new MigLayout("ins 0, hidemode 3"));
 
         add(messageLabel, "growx, pushx, sgy components, hmax 20, hmin 20");
         add(inviteLabel, "sgy components, hmax 20, hmin 20");

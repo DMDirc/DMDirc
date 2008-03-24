@@ -153,10 +153,6 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
      */
     private void initComponents() {
         setInputField(new SwingInputField());
-        getInputField().setBorder(
-                BorderFactory.createCompoundBorder(
-                getInputField().getBorder(),
-                BorderFactory.createEmptyBorder(2, 2, 2, 2)));
 
         getInputField().addKeyListener(this);
         getInputField().addMouseListener(this);
@@ -169,8 +165,6 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
         awayLabel.setVisible(false);
 
         inputPanel = new JPanel(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
-        inputPanel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0,
-                0, 0));
         inputPanel.add(awayLabel, BorderLayout.LINE_START);
         inputPanel.add(inputField, BorderLayout.CENTER);
 

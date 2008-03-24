@@ -35,9 +35,7 @@ import com.dmdirc.ui.swing.components.SwingInputHandler;
 import com.dmdirc.ui.swing.components.renderers.NicklistRenderer;
 import com.dmdirc.ui.swing.dialogs.channelsetting.ChannelSettingsDialog;
 import com.dmdirc.ui.swing.textpane.TextPane.ClickType;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -49,7 +47,6 @@ import java.util.List;
 
 import javax.swing.JList;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -57,6 +54,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
+
+import net.miginfocom.layout.PlatformDefaults;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * The channel frame is the GUI component that represents a channel to the user.
@@ -188,7 +188,6 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
     private void initComponents() {
         settingsMI = new JMenuItem("Settings");
         settingsMI.addActionListener(this);
-        final JPanel panel = new JPanel(new BorderLayout());
 
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 
@@ -216,20 +215,18 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
         getTextPane().setPreferredSize(new Dimension(((MainFrame) Main.getUI().
                 getMainWindow()).getWidth(), 10));
 
-        panel.add(getSearchBar(), BorderLayout.PAGE_START);
-        panel.add(inputPanel, BorderLayout.PAGE_END);
+        getContentPane().setLayout(new MigLayout("fill, ins 0, hidemode 3, wrap 1"));
 
-        getContentPane().setLayout(new BorderLayout());
-
-        getContentPane().add(splitPane, BorderLayout.CENTER);
-        getContentPane().add(panel, BorderLayout.PAGE_END);
+        getContentPane().add(splitPane, "grow");
+        getContentPane().add(getSearchBar(), "growx, pushx");
+        getContentPane().add(inputPanel, "growx, pushx");
 
         splitPane.setLeftComponent(getTextPane());
         splitPane.setRightComponent(nickScrollPane);
 
         splitPane.setDividerLocation((double) 1);
         splitPane.setResizeWeight(1);
-        splitPane.setDividerSize(SMALL_BORDER);
+        splitPane.setDividerSize((int) PlatformDefaults.getPanelInsets(0).getValue());
         splitPane.setContinuousLayout(true);
 
         pack();
