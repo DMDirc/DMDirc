@@ -38,13 +38,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import net.miginfocom.swing.MigLayout;
 
-/** 
- * URL Protocol configuration panel. 
+/**
+ * URL Protocol configuration panel.
  */
 public class URLProtocolPanel extends JPanel implements ActionListener,
         DocumentListener {
@@ -71,12 +72,12 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
     private JRadioButton mail;
     /** Custom command choice. */
     private JRadioButton custom;
-    /** Substitutions label */
+    /** Substitutions label. */
     private JLabel subsLabel;
     /** example label. */
     private JLabel exampleLabel;
     /** URL. */
-    private URI uri;
+    private final URI uri;
     /** Show insets? */
     private final boolean useInsets;
 
@@ -141,7 +142,7 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
         add(commandPath, "split 2, growx, pushx");
         add(showFileChooser, "");
         add(subsLabel, "growx");
-        add(exampleLabel, "growx");
+        add(exampleLabel, "growx, width 100%!");
     }
 
     /** Adds listeners to the components. */
@@ -159,10 +160,10 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
         IdentityManager.getConfigIdentity().setOption("protocol",
                 uri.getScheme(), getSelection());
     }
-    
+
     /**
      * Returns the selected value.
-     * 
+     *
      * @return Selected value
      */
     public String getSelection() {
@@ -178,7 +179,7 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
         } else {
             value = "";
         }
-        
+
         return value;
     }
 

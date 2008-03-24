@@ -135,7 +135,7 @@ public class URLDialog extends StandardDialog implements ActionListener {
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == getOkButton()) {
             panel.save();
-        dispose();
+            dispose();
         } else if (e.getSource() == getCancelButton()) {
             dispose();
         }
