@@ -28,8 +28,8 @@ import com.dmdirc.util.URLHandler;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URI;
-
 import java.util.Enumeration;
+
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -38,7 +38,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -142,7 +141,7 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
         add(commandPath, "split 2, growx, pushx");
         add(showFileChooser, "");
         add(subsLabel, "growx");
-        add(exampleLabel, "growx, width 100%!");
+        add(exampleLabel, "width ::100%" + (useInsets ? "-2*u" : ""));
     }
 
     /** Adds listeners to the components. */
