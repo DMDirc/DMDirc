@@ -439,7 +439,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
                 final Object value, final boolean sel, final boolean expanded,
                 final boolean leaf, final int row, final boolean focused) {
 
-            setPreferredSize(new Dimension(1000, getFont().getSize() + padding));
+            setPreferredSize(new Dimension(1000, (int) (getFont().getSize() + 0.5 * padding)));
             setBorder(BorderFactory.createEmptyBorder(0, 0, padding, padding));
             setText(value.toString());
             setBackground(tree.getBackground());
