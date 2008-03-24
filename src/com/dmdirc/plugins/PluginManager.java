@@ -220,7 +220,7 @@ public class PluginManager implements ActionListener {
 	 * @return A list of all installed plugins
 	 */
 	public List<PluginInfo> getPossiblePluginInfos(final boolean addPlugins) {
-		final ArrayList<PluginInfo> res = new ArrayList<PluginInfo>();
+		final Map<String, PluginInfo> res = new Hashtable<String, PluginInfo>();
 		
 		final LinkedList<File> dirs = new LinkedList<File>();
 		
@@ -241,19 +241,23 @@ public class PluginManager implements ActionListener {
 					addPlugin(target);
 				} else {
 					try {
-						res.add(new PluginInfo(target, false));
+						final PluginInfo pi = new PluginInfo(target, false);
+						res.put(target, pi);
 					} catch (PluginException pe) { /* This can not be thrown when the second param is false */}
 				}
 			}
 		}
 
-		if (addPlugins) {
-			for (String name : knownPlugins.keySet()) {
-				res.add(getPluginInfo(name));
+		final Map<String, PluginInfo> knownPluginsCopy = new Hashtable<String, PluginInfo>(knownPlugins);
+		for (PluginInfo pi : knownPluginsCopy.values()) {
+			if (!(new File(pi.getFullFilename())).exists()) {
+				delPlugin(pi.getFilename());
+			} else if (addPlugins) {
+				res.put(pi.getFilename().toLowerCase(), pi);
 			}
 		}
-
-		return res;
+		
+		return new LinkedList<PluginInfo>(res.values());
 	}
 
 	/**
