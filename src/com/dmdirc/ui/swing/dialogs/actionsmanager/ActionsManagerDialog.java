@@ -175,7 +175,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         groupPanel.add(edit, "sgx button, w 200!");
         groupPanel.add(delete, "sgx button, w 200!");
 
-        setLayout(new MigLayout("fill, wrap 2, hidemode 3, nocache"));
+        setLayout(new MigLayout("fill, wrap 2, hidemode 3"));
 
         groupPanel.setBorder(BorderFactory.createTitledBorder(groupPanel.getBorder(),
                 "Groups"));

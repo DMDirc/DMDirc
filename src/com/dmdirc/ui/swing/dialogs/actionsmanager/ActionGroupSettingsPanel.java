@@ -29,9 +29,12 @@ import com.dmdirc.ui.swing.PrefsComponentFactory;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -50,6 +53,8 @@ public final class ActionGroupSettingsPanel extends JPanel implements ActionList
     private static final long serialVersionUID = 1;
     /** Settings list. */
     private List<PreferencesSetting> settings;
+    /** Button -> Component map. */
+    private Map<JButton, PreferencesSetting> settingMap;
 
     /**
      * Initialises a new action group information panel.
@@ -69,7 +74,7 @@ public final class ActionGroupSettingsPanel extends JPanel implements ActionList
      * Initialises the components.
      */
     private void initComponents() {
-    //
+        settingMap = new HashMap<JButton, PreferencesSetting>();
     }
 
     /**
@@ -84,17 +89,20 @@ public final class ActionGroupSettingsPanel extends JPanel implements ActionList
      */
     private void layoutComponents() {
         removeAll();
-        setLayout(new MigLayout("fill, wrap 2"));
+        setLayout(new MigLayout("fill, wrap 2, hidemode 3"));
 
         for (PreferencesSetting setting : settings) {
             final JLabel label = new JLabel(setting.getTitle());
             label.setToolTipText(setting.getTitle());
+            final JComponent component =
+                    PrefsComponentFactory.getComponent(setting);
+            final JButton button = new SettingsRevertButton(setting);
+            settingMap.put(button, setting);
+            button.addActionListener(this);
             add(label, "");
-            add(PrefsComponentFactory.getComponent(setting), "growx");
+            add(component, "split 2, span, growx");
+            add(button, "wrap");
         }
-        final JButton button = new JButton("Dismiss");
-        button.addActionListener(this);
-        add(button, "span 2, right");
     }
 
     /**
@@ -138,11 +146,7 @@ public final class ActionGroupSettingsPanel extends JPanel implements ActionList
     @Override
     public void actionPerformed(final ActionEvent e) {
         setVisible(false);
-        
-        for (PreferencesSetting setting : settings) {
-            setting.dismiss();
-        }
-        
+        settingMap.get(e.getSource()).dismiss();
         layoutComponents();
         setVisible(true);
     }

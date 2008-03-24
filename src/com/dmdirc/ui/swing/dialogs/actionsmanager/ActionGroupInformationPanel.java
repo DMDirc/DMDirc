@@ -35,7 +35,7 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Action group information panel.
  */
-public class ActionGroupInformationPanel extends JPanel {
+public final class ActionGroupInformationPanel extends JPanel {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -58,6 +58,8 @@ public class ActionGroupInformationPanel extends JPanel {
      * @param group Action group
      */
     public ActionGroupInformationPanel(final ActionGroup group) {
+        super();
+        
         this.group = group;
 
         initComponents();
@@ -114,7 +116,7 @@ public class ActionGroupInformationPanel extends JPanel {
 
             infoLabel.setText(group.getDescription());
             author.setText(group.getAuthor());
-            version.setText("" + group.getVersion());
+            version.setText(Integer.toString(group.getVersion()));
         }
     }
     

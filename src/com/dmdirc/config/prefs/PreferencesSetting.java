@@ -304,5 +304,19 @@ public class PreferencesSetting {
             listener.settingChanged(this);
         }
     }
+    
+    /**
+     * Does the setting need saving?
+     * 
+     * @return true iif the setting will be changed if saved
+     */
+    public boolean needsSaving() {
+        if ((current != null && current.equals(original)) 
+                || (current == null && original == null)
+                || (validator != null && validator.validate(current).isFailure())) {
+            return false;
+        }
+        return true;
+    }
 
 }
