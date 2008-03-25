@@ -26,6 +26,7 @@ import com.dmdirc.Main;
 import com.dmdirc.interfaces.UpdateListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.util.DownloadListener;
 import com.dmdirc.util.Downloader;
 import com.dmdirc.util.WeakList;
 
@@ -36,7 +37,7 @@ import java.util.List;
  *
  * @author chris
  */
-public final class Update {
+public final class Update implements DownloadListener {
 
     /** Update component. */
     private final String component;
@@ -48,6 +49,8 @@ public final class Update {
     private final String versionName;
     /** Update url. */
     private final String url;
+    /** The progress of the current stage. */
+    private float progress;
 
     /** A list of registered update listeners. */
     private final List<UpdateListener> listeners
@@ -127,6 +130,7 @@ public final class Update {
      */
     protected void setStatus(final UpdateStatus newStatus) {
         status = newStatus;
+        progress = 0;
 
         for (UpdateListener listener : listeners) {
             listener.updateStatusChange(this, status);
@@ -138,7 +142,7 @@ public final class Update {
      *
      * @param o The update listener to remove
      */
-    public void removeUpdateListener(Object o) {
+    public void removeUpdateListener(final Object o) {
         listeners.remove(o);
     }
 
@@ -147,7 +151,7 @@ public final class Update {
      *
      * @param e The update listener to add
      */
-    public void addUpdateListener(UpdateListener e) {
+    public void addUpdateListener(final UpdateListener e) {
         listeners.add(e);
     }
 
@@ -166,7 +170,7 @@ public final class Update {
                 setStatus(UpdateStatus.DOWNLOADING);
 
                 try {
-                    Downloader.downloadPage(getUrl(), path);
+                    Downloader.downloadPage(getUrl(), path, Update.this);
                 } catch (Throwable ex) {
                     setStatus(UpdateStatus.ERROR);
 
@@ -179,7 +183,8 @@ public final class Update {
                 setStatus(UpdateStatus.INSTALLING);
 
                 try {
-                    final boolean restart = UpdateChecker.findComponent(getComponent()).doInstall(path);
+                    final boolean restart = UpdateChecker.findComponent(getComponent())
+                            .doInstall(path);
 
                     if (restart) {
                         setStatus(UpdateStatus.RESTART_NEEDED);
@@ -197,4 +202,23 @@ public final class Update {
         }, "Update thread").start();
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void downloadProgress(final float percent) {
+        progress = percent;
+        
+        for (UpdateListener listener : listeners) {
+            listener.updateProgressChange(this, percent);
+        }
+    }
+
+    /**
+     * Retrieves the current progress of the current state of this update.
+     * 
+     * @return The percentage of the current stage that has been completed
+     */
+    public float getProgress() {
+        return progress;
+    }
+    
 }

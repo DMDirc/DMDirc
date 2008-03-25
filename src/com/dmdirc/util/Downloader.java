@@ -134,26 +134,45 @@ public class Downloader {
      * 
      * @param url The URL to retrieve
      * @param file The file to save the page to
-     * @throws java.net.MalformedURLException If the URL is malformed
      * @throws java.io.IOException If there's an I/O error while downloading
      */    
     public static void downloadPage(final String url, final String file)
-            throws MalformedURLException, IOException {
+            throws IOException {    
+        downloadPage(url, file, null);
+    }
+    
+    /**
+     * Downloads the specified page to disk.
+     * 
+     * @param url The URL to retrieve
+     * @param file The file to save the page to
+     * @param listener The progress listener for this download
+     * @throws java.io.IOException If there's an I/O error while downloading
+     */    
+    public static void downloadPage(final String url, final String file,
+            final DownloadListener listener) throws IOException {
                 
         final URLConnection urlConn = getConnection(url, "");
         final File myFile = new File(file);
         
         final FileOutputStream output = new FileOutputStream(myFile);
         final InputStream input = urlConn.getInputStream();
+        final int length = urlConn.getContentLength();
+        int current = 0;
         
-        byte[] buffer = new byte[512];
+        final byte[] buffer = new byte[512];
         int count;
         
         do {
             count = input.read(buffer);
             
             if (count > 0) {
+                current += count;
                 output.write(buffer, 0, count);
+                
+                if (listener != null) {
+                    listener.downloadProgress(100 * current / length);
+                }
             }
         } while (count > 0);
 

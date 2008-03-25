@@ -22,16 +22,16 @@
 
 package com.dmdirc;
 
-import com.dmdirc.ui.IconManager;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.parser.ChannelInfo;
 import com.dmdirc.parser.ClientInfo;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -525,8 +525,8 @@ public final class Channel extends MessageTarget
             final boolean showColours) {
         if (client == null) {
             // WTF?
-            throw new UnsupportedOperationException("getDetails called with" +
-                    "null ChannelClientInfo");
+            throw new UnsupportedOperationException("getDetails called with"
+                     + "null ChannelClientInfo");
         }
 
         final String[] res = new String[3];

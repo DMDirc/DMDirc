@@ -162,7 +162,12 @@ public class UpdateTableModel extends AbstractTableModel implements UpdateListen
             case 2:
                 return updates.get(rowIndex).getRemoteVersion();
             case 3:
-                return updates.get(rowIndex).getStatus();
+                if (updates.get(rowIndex).getStatus().equals(UpdateStatus.DOWNLOADING)) {
+                    return updates.get(rowIndex).getStatus() + " ("
+                            + updates.get(rowIndex).getProgress() + "%)";
+                } else {
+                    return updates.get(rowIndex).getStatus();
+                }
             default:
                 throw new IllegalArgumentException("Unknown column: "
                         + columnIndex);
@@ -266,7 +271,15 @@ public class UpdateTableModel extends AbstractTableModel implements UpdateListen
         return updates.indexOf(update);
     }
 
-    public void updateStatusChange(Update update, UpdateStatus status) {
+    /** {@inheritDoc} */
+    @Override
+    public void updateStatusChange(final Update update, final UpdateStatus status) {
+        fireTableCellUpdated(updates.indexOf(update), 3);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateProgressChange(final Update update, final float progress) {
         fireTableCellUpdated(updates.indexOf(update), 3);
     }
 }

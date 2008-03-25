@@ -20,33 +20,20 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.interfaces;
-
-import com.dmdirc.updater.Update;
-import com.dmdirc.updater.UpdateStatus;
-
+package com.dmdirc.util;
 
 /**
- * Defines the method that must be implemented by update listeners.
+ * Defines the method that objects interested in receiving download progress
+ * updates should implement.
  * 
  * @author chris
  */
-public interface UpdateListener {
-    
+public interface DownloadListener {
+
     /**
-     * Called when the state of the update has changed.
+     * Called when the progress of the download has changed.
      * 
-     * @param update The update in question
-     * @param status The new status of the update
+     * @param percent The percentage of the file that has been downloaded
      */
-    void updateStatusChange(Update update, UpdateStatus status);
-    
-    /**
-     * Called when the progress of the current update state has changed.
-     * 
-     * @param update The update in question
-     * @param progress The progress (as a percentage) of the update
-     */
-    void updateProgressChange(Update update, float progress);
-    
+    void downloadProgress(float percent);
 }

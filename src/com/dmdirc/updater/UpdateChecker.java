@@ -26,8 +26,8 @@ import com.dmdirc.Main;
 import com.dmdirc.Precondition;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.interfaces.UpdateListener;
 import com.dmdirc.interfaces.UpdateCheckerListener;
+import com.dmdirc.interfaces.UpdateListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.components.ClientComponent;
@@ -95,6 +95,11 @@ public final class UpdateChecker implements Runnable {
                     == STATE.UPDATING) {
                 doNextUpdate();
             }
+        }
+
+        @Override
+        public void updateProgressChange(final Update update, final float progress) {
+            // Don't care
         }
     };
 
