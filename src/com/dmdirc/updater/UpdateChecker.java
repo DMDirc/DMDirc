@@ -219,8 +219,10 @@ public final class UpdateChecker implements Runnable {
     private void doUpdateAvailable(final String line) {
         final Update update = new Update(line);
 
-        updates.add(update);
-        update.addUpdateListener(listener);
+        if (update.getUrl() != null) {
+            updates.add(update);
+            update.addUpdateListener(listener);
+        }
     }
 
     /**
