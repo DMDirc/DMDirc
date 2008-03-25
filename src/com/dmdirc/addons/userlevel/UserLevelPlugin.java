@@ -24,6 +24,7 @@ package com.dmdirc.addons.userlevel;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.actions.interfaces.ActionComponent;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionListener;
@@ -54,6 +55,11 @@ public class UserLevelPlugin extends Plugin implements ActionListener,
     @Override
     public void onLoad() {
         ActionManager.addListener(this, CoreActionType.CHANNEL_JOIN);
+        ActionManager.registerActionComponents(
+                new ActionComponent[]{
+                    new AccessLevelComponent(),
+                    new ChannelAccessLevelComponent()
+                });
         IdentityManager.getGlobalConfig().addChangeListener(DOMAIN, this);
         loadLevels();
     }
@@ -62,6 +68,7 @@ public class UserLevelPlugin extends Plugin implements ActionListener,
     @Override
     public void onUnload() {
         ActionManager.removeListener(this);
+        IdentityManager.getGlobalConfig().removeListener(this);
     }
 
     /** {@inheritDoc} */
