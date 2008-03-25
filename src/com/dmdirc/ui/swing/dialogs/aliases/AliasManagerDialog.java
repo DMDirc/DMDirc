@@ -238,7 +238,6 @@ public final class AliasManagerDialog extends StandardDialog implements
         splitPane.setBottomComponent(panel);
         
         splitPane.setDividerSize((int) PlatformDefaults.getPanelInsets(0).getValue());
-        System.out.println(splitPane.getLayout().getClass());
         
         getContentPane().add(splitPane);
     }
