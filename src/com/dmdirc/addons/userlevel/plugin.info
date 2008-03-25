@@ -1,5 +1,5 @@
 mainclass=com.dmdirc.addons.userlevel.UserLevelPlugin
-friendlyversion=0.0
+friendlyversion=0.1
 author=Chris <chris@dmdirc.com>
 description=Allows actions and other plugins to assign and check access levels for users
 name=userlevel
