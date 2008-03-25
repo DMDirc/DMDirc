@@ -42,9 +42,7 @@ import com.dmdirc.ui.swing.components.SwingStatusBar;
 import com.dmdirc.ui.swing.framemanager.buttonbar.ButtonBar;
 import com.dmdirc.ui.swing.framemanager.ctrltab.CtrlTabFrameManager;
 import com.dmdirc.ui.swing.framemanager.tree.TreeFrameManager;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
@@ -60,7 +58,6 @@ import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
 
 import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;

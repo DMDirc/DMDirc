@@ -53,6 +53,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
 
+import net.miginfocom.layout.PlatformDefaults;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -236,6 +237,9 @@ public final class AliasManagerDialog extends StandardDialog implements
         splitPane.setTopComponent(scrollPane);
         splitPane.setBottomComponent(panel);
         
+        splitPane.setDividerSize((int) PlatformDefaults.getPanelInsets(0).getValue());
+        System.out.println(splitPane.getLayout().getClass());
+        
         getContentPane().add(splitPane);
     }
     
@@ -274,7 +278,11 @@ public final class AliasManagerDialog extends StandardDialog implements
                 tableModel.indexOf(alias));
     }
     
-    /** {@inheritDoc}. */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Action event
+     */
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == deleteButton) {

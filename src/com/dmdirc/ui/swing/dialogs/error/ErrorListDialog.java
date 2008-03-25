@@ -50,6 +50,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
 
+import net.miginfocom.layout.PlatformDefaults;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -221,6 +222,8 @@ public final class ErrorListDialog extends StandardDialog implements
 
         splitPane.setTopComponent(scrollPane);
         splitPane.setBottomComponent(panel);
+        
+        splitPane.setDividerSize((int) PlatformDefaults.getPanelInsets(0).getValue());
 
         getContentPane().add(splitPane);
     }
