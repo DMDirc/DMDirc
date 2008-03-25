@@ -30,6 +30,7 @@ import com.dmdirc.ui.swing.components.TextFrame;
 import com.dmdirc.ui.swing.dialogs.FeedbackDialog;
 import com.dmdirc.ui.swing.dialogs.NewServerDialog;
 import com.dmdirc.ui.swing.dialogs.about.AboutDialog;
+import com.dmdirc.ui.swing.dialogs.actionsmanager.ActionsManagerDialog;
 import com.dmdirc.ui.swing.dialogs.aliases.AliasManagerDialog;
 import com.dmdirc.ui.swing.dialogs.profiles.ProfileManagerDialog;
 import com.dmdirc.ui.swing.framemanager.windowmenu.WindowMenuFrameManager;
@@ -63,6 +64,8 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
      * Instantiates a new menu bar.
      */
     public MenuBar() {
+        super();
+        
         initServerMenu();
         initSettingsMenu();
         add(new WindowMenuFrameManager());
@@ -123,13 +126,6 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         menuItem.setMnemonic('a');
         menuItem.setText("Actions Manager");
         menuItem.setActionCommand("Actions");
-        menuItem.addActionListener(this);
-        menu.add(menuItem);
-        
-        menuItem = new JMenuItem();
-        menuItem.setMnemonic('a');
-        menuItem.setText("Old Actions Manager");
-        menuItem.setActionCommand("ActionsOld");
         menuItem.addActionListener(this);
         menu.add(menuItem);
         
@@ -205,11 +201,8 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
             ProfileManagerDialog.showProfileManagerDialog();
         } else if (e.getActionCommand().equals("Exit")) {
             ((MainFrame) Main.getUI().getMainWindow()).quit();
-        } else if (e.getActionCommand().equals("ActionsOld")) {
-            com.dmdirc.ui.swing.dialogs.actionseditor.ActionsManagerDialog.showActionsManagerDialog();
         } else if (e.getActionCommand().equals("Actions")) {
-            //ActionsManagerDialog.showActionsManagerDialog();
-            com.dmdirc.ui.swing.dialogs.actionsmanager.ActionsManagerDialog.showActionsManagerDialog();
+            ActionsManagerDialog.showActionsManagerDialog();
         } else if (e.getActionCommand().equals("Aliases")) {
             AliasManagerDialog.showAliasManagerDialog();
         } else if (e.getActionCommand().equals("Minimise")) {
@@ -222,7 +215,7 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
             FeedbackDialog.showFeedbackDialog();
         } else if (e.getActionCommand().equals("ChannelSettings")) {
             final Window activeWindow = Main.getUI().getActiveWindow();
-            if (activeWindow != null && activeWindow instanceof ChannelFrame) {
+            if (activeWindow instanceof ChannelFrame) {
                 Main.getUI().showChannelSettingsDialog(((ChannelFrame) activeWindow).getChannel());
             }
         } else if (e.getActionCommand().equals("ServerSettings")) {
