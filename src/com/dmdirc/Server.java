@@ -1080,14 +1080,16 @@ public final class Server extends WritableFrameContainer implements Serializable
         eventHandler.unregisterCallbacks();
 
         synchronized (myState) {
-            if (myState == ServerState.CLOSING
-                    || myState == ServerState.DISCONNECTED
-                    || myState == ServerState.DISCONNECTING) {
+            if (myState == ServerState.CLOSING || myState == ServerState.DISCONNECTED) {
                 // This has been triggered via .disconect()
                 return;
             }
-
-            myState = ServerState.TRANSIENTLY_DISCONNECTED;
+            
+            if (myState == ServerState.DISCONNECTING) {
+                myState = ServerState.DISCONNECTED;
+            } else {
+                myState = ServerState.TRANSIENTLY_DISCONNECTED;
+            }
         }
 
         updateIcon();
@@ -1104,7 +1106,8 @@ public final class Server extends WritableFrameContainer implements Serializable
 
         removeInvites();
 
-        if (configManager.getOptionBool(DOMAIN_GENERAL, "reconnectondisconnect", false)) {
+        if (configManager.getOptionBool(DOMAIN_GENERAL, "reconnectondisconnect", false)
+                && myState == ServerState.TRANSIENTLY_DISCONNECTED) {
             doDelayedReconnect();
         }
     }
