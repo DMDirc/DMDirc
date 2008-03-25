@@ -32,16 +32,18 @@ import com.dmdirc.ui.swing.components.JWrappingLabel;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.ui.swing.components.StandardDialog;
-
 import com.dmdirc.ui.swing.components.StandardInputDialog;
 import com.dmdirc.ui.swing.components.renderers.ActionGroupListCellRenderer;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
-
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -79,10 +81,14 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
     private ActionGroupInformationPanel info;
     /** Actions panel. */
     private ActionsGroupPanel actions;
-    /** Settings panel. */
-    private ActionGroupSettingsPanel settings;
+    /** Settings panels. */
+    private Map<ActionGroup, ActionGroupSettingsPanel> settings;
+    /** Active s panel. */
+    private ActionGroupSettingsPanel activeSettings;
     /** Filename regex. */
     private static final String FILENAME_REGEX = "[A-Za-z0-9 ]+";
+    /** Group panel. */
+    private JPanel groupPanel;
 
     /** Creates a new instance of ActionsManagerDialog. */
     private ActionsManagerDialog() {
@@ -90,6 +96,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
 
         initComponents();
         addListeners();
+        layoutGroupPanel();
         layoutComponents();
 
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -133,10 +140,19 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         groups = new JList(new DefaultListModel());
         actions = new ActionsGroupPanel(null);
         info = new ActionGroupInformationPanel(null);
-        settings = new ActionGroupSettingsPanel(null);
+        settings = new HashMap<ActionGroup, ActionGroupSettingsPanel>();
+        activeSettings = new ActionGroupSettingsPanel(null);
         add = new JButton("Add");
         edit = new JButton("Edit");
         delete = new JButton("Delete");
+        groupPanel = new JPanel();
+        
+        groupPanel.setBorder(BorderFactory.createTitledBorder(groupPanel.getBorder(),
+                "Groups"));
+        info.setBorder(BorderFactory.createTitledBorder(info.getBorder(),
+                "Information"));
+        actions.setBorder(BorderFactory.createTitledBorder(actions.getBorder(),
+                "Actions"));
 
         groups.setCellRenderer(new ActionGroupListCellRenderer());
         groups.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -144,7 +160,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         delete.setEnabled(false);
 
         info.setVisible(false);
-        settings.setVisible(false);
+        activeSettings.setVisible(false);
 
         reloadGroups();
     }
@@ -161,37 +177,32 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         ActionManager.addListener(this, CoreActionType.ACTION_CREATED);
         ActionManager.addListener(this, CoreActionType.ACTION_UPDATED);
     }
-
+    
     /**
-     * Lays out the components.
+     * Lays out the group panel.
      */
-    private void layoutComponents() {
-        final JPanel groupPanel = new JPanel();
-
+    private void layoutGroupPanel() {
         groupPanel.setLayout(new MigLayout("fill, wrap 1"));
 
         groupPanel.add(new JScrollPane(groups), "growy, w 200!");
         groupPanel.add(add, "sgx button, w 200!");
         groupPanel.add(edit, "sgx button, w 200!");
         groupPanel.add(delete, "sgx button, w 200!");
+    }
 
-        setLayout(new MigLayout("fill, wrap 2, hidemode 3"));
+    /**
+     * Lays out the components.
+     */
+    private void layoutComponents() {
 
-        groupPanel.setBorder(BorderFactory.createTitledBorder(groupPanel.getBorder(),
-                "Groups"));
-        info.setBorder(BorderFactory.createTitledBorder(info.getBorder(),
-                "Information"));
-        actions.setBorder(BorderFactory.createTitledBorder(actions.getBorder(),
-                "Actions"));
-        settings.setBorder(BorderFactory.createTitledBorder(settings.getBorder(),
-                "Settings"));
+        getContentPane().setLayout(new MigLayout("fill, wrap 2, hidemode 3"));
 
-        add(infoLabel, "spanx 2");
-        add(groupPanel, "growy, spany 4");
-        add(info, "growx");
-        add(actions, "grow");
-        add(settings, "growx");
-        add(getRightButton(), "skip, right, sgx button");
+        getContentPane().add(infoLabel, "spanx 2");
+        getContentPane().add(groupPanel, "growy, spany 4");
+        getContentPane().add(info, "growx");
+        getContentPane().add(actions, "grow");
+        getContentPane().add(activeSettings, "growx");
+        getContentPane().add(getRightButton(), "skip, right, sgx button");
     }
 
     /**
@@ -212,10 +223,21 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
     private void changeActiveGroup(final ActionGroup group) {
         info.setActionGroup(group);
         actions.setActionGroup(group);
-        settings.setActionGroup(group);
-
+        if (!settings.containsKey(group)) {
+            final ActionGroupSettingsPanel currentSettings = new ActionGroupSettingsPanel(group);
+            settings.put(group, currentSettings);
+            currentSettings.setBorder(BorderFactory.createTitledBorder(currentSettings.getBorder(),
+                "Settings"));
+        }
+        activeSettings = settings.get(group);
+        
         info.setVisible(info.shouldDisplay());
-        settings.setVisible(settings.shouldDisplay());
+        activeSettings.setVisible(activeSettings.shouldDisplay());
+        
+        getContentPane().setVisible(false);
+        getContentPane().removeAll();
+        layoutComponents();
+        getContentPane().setVisible(true);
     }
 
     /** 
@@ -232,7 +254,9 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         } else if (e.getSource() == delete) {
             delGroup();
         } else if (e.getSource() == getOkButton()) {
-            settings.save();
+            for (ActionGroupSettingsPanel loopSettings : settings.values()) {
+                loopSettings.save();
+            }
             dispose();
         }
     }
