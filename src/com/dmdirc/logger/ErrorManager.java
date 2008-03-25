@@ -91,7 +91,10 @@ public final class ErrorManager implements Serializable, Runnable {
      * @param error ProgramError that occurred
      */
     public void addError(final ProgramError error) {
-        errors.put(error.getID(), error);
+        synchronized (errors) {
+            errors.put(error.getID(), error);
+        }
+        
         if (error.getLevel() == ErrorLevel.FATAL) {
             fireFatalError(error);
         } else {
@@ -106,7 +109,10 @@ public final class ErrorManager implements Serializable, Runnable {
      * @param error ProgramError that changed
      */
     public void deleteError(final ProgramError error) {
-        errors.remove(error.getID());
+        synchronized (errors) {
+            errors.remove(error.getID());
+        }
+        
         fireErrorDeleted(error);
     }
     
@@ -140,7 +146,7 @@ public final class ErrorManager implements Serializable, Runnable {
     }
     
     /**
-     * Returns specified program error
+     * Returns specified program error.
      *
      * @param id ID of the error to fetch
      *
@@ -292,12 +298,11 @@ public final class ErrorManager implements Serializable, Runnable {
      * @param listener Listener to add
      */
     public void addErrorListener(final ErrorListener listener) {
-        synchronized (errorListeners) {
-            if (listener == null) {
-                return;
-            }
-            errorListeners.add(ErrorListener.class, listener);
+        if (listener == null) {
+            return;
         }
+
+        errorListeners.add(ErrorListener.class, listener);
     }
     
     /**
@@ -306,7 +311,7 @@ public final class ErrorManager implements Serializable, Runnable {
      * @param listener Listener to remove
      */
     public void removeErrorListener(final ErrorListener listener) {
-        errorListeners.remove(ErrorListener.class, listener);
+       errorListeners.remove(ErrorListener.class, listener);
     }
     
     /**
@@ -326,7 +331,8 @@ public final class ErrorManager implements Serializable, Runnable {
         
         if (firedListeners == 0) {
             System.err.println("An error has occurred: " + error.getLevel()
-            + ": " + error.getMessage());
+                    + ": " + error.getMessage());
+            
             for (String line : error.getTrace()) {
                 System.err.println("\t" + line);
             }
@@ -350,9 +356,11 @@ public final class ErrorManager implements Serializable, Runnable {
          
         if (firedListeners == 0) {
             System.err.println("A fatal error has occurred: " + error.getMessage());
+            
             for (String line : error.getTrace()) {
                 System.err.println("\t" + line);
             }
+            
             System.exit(-1);
         }
     }
