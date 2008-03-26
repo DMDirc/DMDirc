@@ -142,6 +142,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         info = new ActionGroupInformationPanel(null);
         settings = new HashMap<ActionGroup, ActionGroupSettingsPanel>();
         activeSettings = new ActionGroupSettingsPanel(null);
+        settings.put(null, activeSettings);
         add = new JButton("Add");
         edit = new JButton("Edit");
         delete = new JButton("Delete");
