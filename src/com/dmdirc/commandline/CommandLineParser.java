@@ -62,13 +62,13 @@ public class CommandLineParser {
     private final List<IrcAddress> addresses = new ArrayList<IrcAddress>();
     
     /** Whether to disable error reporting or not. */
-    private boolean disablereporting = false;
-    
-    /** Whether or not to try and use an existing client. */
-    private boolean useExisting = false;
+    private boolean disablereporting;
     
     /** The version string passed for the launcher. */
     private String launcherVersion = "";
+    
+    /** The RMI server we're using. */
+    private RemoteInterface server;
     
     /**
      * Creates a new instance of CommandLineParser.
@@ -100,16 +100,13 @@ public class CommandLineParser {
             doUnknownArg("Missing parameter for argument: " + previousArg);
         }
         
-        if (useExisting) {
-            final RemoteInterface server = RemoteServer.getServer();
-            if (server != null) {
-                try {
-                    server.connect(addresses);
-                    System.exit(0);
-                } catch (RemoteException ex) {
-                    Logger.appError(ErrorLevel.MEDIUM,
-                            "Unable to execute remote connection", ex);
-                }
+        if (server != null) {
+            try {
+                server.connect(addresses);
+                System.exit(0);
+            } catch (RemoteException ex) {
+                Logger.appError(ErrorLevel.MEDIUM,
+                        "Unable to execute remote connection", ex);
             }
         }
         
@@ -196,7 +193,7 @@ public class CommandLineParser {
             doDirectory(param);
             break;
         case 'e':
-            useExisting = true;
+            doExisting();
             break;
         case 'h':
             doHelp();
@@ -254,6 +251,17 @@ public class CommandLineParser {
             addresses.add(myAddress);
         } catch (InvalidAddressException ex) {
             doUnknownArg("Invalid address specified: " + ex.getMessage());
+        }
+    }
+    
+    /**
+     * Handles the --existing argument.
+     */
+    private void doExisting() {
+        server = RemoteServer.getServer();
+        
+        if (server == null) {
+            System.err.println("Unable to connect to existing instance");
         }
     }
     
