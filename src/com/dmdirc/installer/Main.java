@@ -22,60 +22,35 @@
 
 package com.dmdirc.installer;
 
-import com.dmdirc.installer.cliparser.CLIParser;
 import com.dmdirc.installer.cliparser.BooleanParam;
+import com.dmdirc.installer.cliparser.CLIParser;
 import com.dmdirc.installer.cliparser.StringParam;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
+import com.dmdirc.ui.swing.dialogs.wizard.WizardFrame;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardListener;
 
-import com.dmdirc.ui.swing.dialogs.wizard.WizardFrame;
 import java.awt.Dimension;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
 /**
- * Main installer window
+ * Main installer window.
  *
  * @author Shane Mc Cormack
  */
 public final class Main implements WizardListener {
-	/** Wizard dialog. */
+
+    /** Wizard dialog. */
 	private static WizardFrame wizardDialog;
 	
 	/** Installer. */
 	private static Installer myInstaller;
 	
-	/** CLI Parser */
+	/** CLI Parser. */
 	private static CLIParser cli = CLIParser.getCLIParser();
-	
-	/**
-	 * Notification of step change.
-	 *
-	 * @param oldStep the step that just stopped being displayed
-	 * @param newStep the step now being displayed
-	 */
-	public void stepChanged(final int oldStep, final int newStep) {	}
-
-	/**
-	 * Called when the wizard finishes.
-	 */
-	public void wizardFinished() {
-		Thread temp = myInstaller;
-		myInstaller = null;
-		if (temp != null) { temp.interrupt(); }
-		wizardDialog.dispose();
-	}
-	
-	/**
-	 * Called when the wizard is cancelled.
-	 */
-	public void wizardCancelled() {	
-		if (wizardDialog.getCurrentStep() != 3 && JOptionPane.showConfirmDialog(wizardDialog, "Are you sure you want to cancel?", "Cancel confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-			wizardDialog.dispose();
-		}
-	}
 
 	/**
 	 * Creates and Displays the Installer wizard.
@@ -89,10 +64,11 @@ public final class Main implements WizardListener {
 		
 		String releaseName = "DMDirc";
 		if (cli.getParamNumber("-release") > 0) {
-			releaseName = releaseName+" "+cli.getParam("-release").getStringValue();
+			releaseName = releaseName + " " + cli.getParam("-release").getStringValue();
 		}
 		
-		setWizardFrame(new WizardFrame(releaseName+" Installer", new ArrayList<Step>(), this));
+		setWizardFrame(new WizardFrame(releaseName + " Installer", new ArrayList<Step>(), this));
+        wizardDialog.setIconImage(IconManager.getIconManager().getImage("icon"));
 		wizardDialog.setPreferredSize(new Dimension(400, 350));
 		wizardDialog.addWizardListener(this);
 
@@ -106,6 +82,27 @@ public final class Main implements WizardListener {
 			wizardDialog.addStep(new StepInstall(wizardDialog));
 		}
 	}
+    
+	/**
+	 * Called when the wizard finishes.
+	 */
+    @Override
+	public void wizardFinished() {
+		final Thread temp = myInstaller;
+		myInstaller = null;
+		if (temp != null) { temp.interrupt(); }
+		wizardDialog.dispose();
+	}
+	
+	/**
+	 * Called when the wizard is cancelled.
+	 */
+    @Override
+	public void wizardCancelled() {	
+		if (wizardDialog.getCurrentStep() != 3 && JOptionPane.showConfirmDialog(wizardDialog, "Are you sure you want to cancel?", "Cancel confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+			wizardDialog.dispose();
+		}
+	}    
 	
 	/**
 	 * Get the Installer object for this OS.
@@ -133,13 +130,13 @@ public final class Main implements WizardListener {
 	 */
 	private static void setupCLIParser() {
 		cli.clear();
-		cli.add(new BooleanParam((char)0, "isroot", "Installing as Root"));
+		cli.add(new BooleanParam((char) 0, "isroot", "Installing as Root"));
 		cli.add(new StringParam('r', "release", "Release Name"));
 		cli.add(new StringParam('d', "directory", "Default install directory"));
 	}
 	
 	/**
-	 * Get the WizardFrame
+	 * Get the WizardFrame.
 	 *
 	 * @return The current wizardDialog
 	 */
@@ -151,18 +148,20 @@ public final class Main implements WizardListener {
 	}
 	
 	/**
-	 * Set the WizardFrame
+	 * Set the WizardFrame.
 	 *
-	 * @return Set the current wizardDialog to the given one
+	 * @param dialog The new WizardDialog
 	 */
 	private static void setWizardFrame(final WizardFrame dialog) {
 		wizardDialog = dialog;
 	}
 
 	/**
-	 * Run the installer
+	 * Run the installer.
+     * 
+     * @param args Command line arguments
 	 */
-	public static void main (String[] args) {
+	public static void main(final String[] args) {
 		setupCLIParser();
 		cli.parseArgs(args, false);
 		getWizardFrame().display();
