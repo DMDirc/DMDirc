@@ -40,6 +40,13 @@ import java.util.List;
  */
 public class RemoteServer implements RemoteInterface {
     
+    /** The minimum port to use for RMI binding. */
+    private static final int MINPORT = 1099;
+    /** The maximum port to use for RMI binding. */
+    private static final int MAXPORT = 1109;
+    /** The interface we're exposing. */
+    private static final RemoteServer SERVER = new RemoteServer();
+    
     /**
      * Creates a new instance of RemoteServer.
      */
@@ -60,14 +67,23 @@ public class RemoteServer implements RemoteInterface {
      * server.
      */
     public static void bind() {
+        RemoteInterface stub;
+        
         try {
-            final RemoteServer server = new RemoteServer();
-            final RemoteInterface stub =
-                (RemoteInterface) UnicastRemoteObject.exportObject(server, 0);
-            final Registry registry = LocateRegistry.createRegistry(1099);
-            registry.rebind("DMDirc", stub);
+            stub = (RemoteInterface) UnicastRemoteObject.exportObject(SERVER, 0);
         } catch (RemoteException ex) {
-            // Do nothing
+            Logger.appError(ErrorLevel.MEDIUM, "Unable to export remote interface", ex);
+            return;
+        }
+        
+        for (int port = MINPORT; port < MAXPORT; port++) {
+            try {
+                final Registry registry = LocateRegistry.createRegistry(port);
+                registry.rebind("DMDirc", stub);
+                return;
+            } catch (RemoteException ex) {
+                continue;
+            }
         }
     }
     
@@ -79,16 +95,25 @@ public class RemoteServer implements RemoteInterface {
      * @return The RemoteServer instance, or null if none was available
      */
     public static RemoteInterface getServer() {
-        try {
-            Registry registry = LocateRegistry.getRegistry("localhost", 1099);
-            return (RemoteInterface) registry.lookup("DMDirc");
-        } catch (RemoteException ex) {
-            Logger.appError(ErrorLevel.FATAL, "Remote exception", ex);
-            return null;
-        } catch (NotBoundException ex) {
-            Logger.appError(ErrorLevel.FATAL, "Remote exception", ex);
-            return null;
+        for (int port = MINPORT; port < MAXPORT; port++) {
+            try {
+                final Registry registry = LocateRegistry.getRegistry("localhost", port);
+                final RemoteInterface iface = (RemoteInterface) registry.lookup("DMDirc");
+                
+                if (iface == null) {
+                    continue;
+                } else {
+                    return iface;
+                }
+            } catch (RemoteException ex) {
+                continue;
+            } catch (NotBoundException ex) {
+                continue;
+            }
         }
+        
+        // No RMI server found
+        return null;
     }
 
 }

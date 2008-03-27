@@ -26,6 +26,8 @@ import com.dmdirc.util.InvalidAddressException;
 import com.dmdirc.util.IrcAddress;
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.components.LauncherComponent;
 import com.dmdirc.util.resourcemanager.DMDircResourceManager;
 
@@ -100,13 +102,13 @@ public class CommandLineParser {
         
         if (useExisting) {
             final RemoteInterface server = RemoteServer.getServer();
-            
             if (server != null) {
                 try {
                     server.connect(addresses);
                     System.exit(0);
                 } catch (RemoteException ex) {
-                    // Do nothing
+                    Logger.appError(ErrorLevel.MEDIUM,
+                            "Unable to execute remote connection", ex);
                 }
             }
         }
