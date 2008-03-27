@@ -24,52 +24,52 @@ package com.dmdirc.addons.dcc;
 
 import com.dmdirc.config.IdentityManager;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.List;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
- * This class handles a DCC Send
+ * This class handles a DCC Send.
  *
  * @author Shane 'Dataforce' McCormack
  * @version $Id: DCCSend.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public class DCCSend extends DCC {
-	/** List of active sends */
+	/** List of active sends. */
 	private static List<DCCSend> sends = new ArrayList<DCCSend>();
 	
-	/** File Transfer Types */
+	/** File Transfer Types. */
 	public enum TransferType { SEND, RECEIVE; }
-	/** The File transfer type for this file */
+	/** The File transfer type for this file. */
 	private TransferType transferType = TransferType.RECEIVE;
-	/** The handler for this DCCSend */
-	private DCCSendInterface handler = null;
-	/** Used to send data out the socket */
+	/** The handler for this DCCSend. */
+	private DCCSendInterface handler;
+	/** Used to send data out the socket. */
 	private DataOutputStream out;
-	/** Used to read data from the socket */
+	/** Used to read data from the socket. */
 	private DataInputStream in;
-	/** File we are using */
+	/** File we are using. */
 	private File transferFile;
-	/** Used to write data to the file */
+	/** Used to write data to the file. */
 	private DataOutputStream fileOut;
-	/** Used to read data from the file */
+	/** Used to read data from the file. */
 	private DataInputStream fileIn;
 	/** Where are we starting from? */
-	private int startpos = 0;
+	private int startpos;
 	/** How big is this file? */
 	private long size = -1;
 	/** How much of this file have we read so far? */
-	private long readSize = 0;
+	private long readSize;
 	/** What is the name of the file? */
 	private String filename = "";
 	/** What is the token for this send? */
 	private String token = "";
-	/** Block Size */
+	/** Block Size. */
 	private final int blockSize;
 	/** Is this a turbo dcc? */
 	private boolean turbo = false;

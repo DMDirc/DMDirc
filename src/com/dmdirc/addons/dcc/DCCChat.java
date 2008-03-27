@@ -34,11 +34,11 @@ import java.io.PrintWriter;
  * @version $Id: DCCChat.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public class DCCChat extends DCC {
-	/** The handler for this DCCChat */
+	/** The handler for this DCCChat. */
 	private DCCChatInterface handler = null;
-	/** Used to send data out the socket */
+	/** Used to send data out the socket. */
 	private PrintWriter out;
-	/** Used to read data from the socket */
+	/** Used to read data from the socket. */
 	private BufferedReader in;
 	
 	
@@ -50,7 +50,7 @@ public class DCCChat extends DCC {
 	}
 	
 	/**
-	 * Change the handler for this DCC Chat
+	 * Change the handler for this DCC Chat.
 	 *
 	 * @param handler A class implementing DCCChatInterface
 	 */
@@ -110,7 +110,7 @@ public class DCCChat extends DCC {
 	}
 	
 	/**
-	 * Check if this socket can be written to
+	 * Check if this socket can be written to.
 	 */
     @Override
 	public boolean isWriteable() {

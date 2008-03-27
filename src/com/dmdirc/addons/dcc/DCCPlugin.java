@@ -22,49 +22,49 @@
 
 package com.dmdirc.addons.dcc;
 
-import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.plugins.Plugin;
-import com.dmdirc.ui.swing.components.JWrappingLabel;
-import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.swing.components.TextFrame;
-import com.dmdirc.config.IdentityManager;
-import com.dmdirc.config.Identity;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
-import com.dmdirc.parser.IRCParser;
-import com.dmdirc.parser.ClientInfo;
-import com.dmdirc.Server;
 import com.dmdirc.Main;
+import com.dmdirc.Server;
 import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.config.Identity;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesCategory;
 import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.parser.ClientInfo;
+import com.dmdirc.parser.IRCParser;
+import com.dmdirc.plugins.Plugin;
+import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.swing.components.JWrappingLabel;
+import com.dmdirc.ui.swing.components.TextFrame;
 
 import java.io.File;
 import java.io.IOException;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
-import javax.swing.SwingConstants;
-import javax.swing.JOptionPane;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JFrame;
+import javax.swing.SwingConstants;
 
 /**
- * This plugin adds DCC to dmdirc
+ * This plugin adds DCC to dmdirc.
  *
  * @author Shane 'Dataforce' McCormack
  * @version $Id: DCCPlugin.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public final class DCCPlugin extends Plugin implements ActionListener {
     
-	/** The DCCCommand we created */
+	/** The DCCCommand we created. */
 	private DCCCommand command = null;
 
 	/** Our DCC Container window. */
@@ -84,7 +84,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	}
 
 	/**
-	 * Ask a question, if the answer is the answer required, then recall handleProcessEvent
+	 * Ask a question, if the answer is the answer required, then recall handleProcessEvent.
 	 *
 	 * @param question Question to ask
 	 * @param title Title of question dialog
@@ -347,7 +347,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	}
 
 	/**
-	 * Create the container window
+	 * Create the container window.
 	 */
 	protected void createContainer() {
 		container = new DCCFrame(this, "DCCs"){};
@@ -358,7 +358,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	}
 
 	/**
-	 * Add a window to the container window
+	 * Add a window to the container window.
 	 *
 	 * @param window Window to remove
 	 */
@@ -371,7 +371,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	}
 
 	/**
-	 * Remove a window from the container window
+	 * Remove a window from the container window.
 	 *
 	 * @param window Window to remove
 	 */
@@ -428,7 +428,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	}
 
 	/**
-	 * Called when this plugin is Unloaded
+	 * Called when this plugin is Unloaded.
 	 */
 	@Override
 	public void onUnload() {
@@ -440,7 +440,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	}
 
 	/** {@inheritDoc} */
-        @Override
+    @Override
 	public void showConfig(final PreferencesManager manager) {
 		final PreferencesCategory general = new PreferencesCategory("DCC", "");
         final PreferencesCategory sending = new PreferencesCategory("Sending", "");
