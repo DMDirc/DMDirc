@@ -38,19 +38,19 @@ import javax.swing.table.TableModel;
  * data.
  */
 public class PackingTable extends JTable {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
     /** Whether the table should be editable. */
     private final boolean editable;
-    
     /** Scrollpane. */
     private final JScrollPane scrollPane;
+    /** Should the last column fit text (true), or fit viewport (false). */
+    private boolean lastColumnFit;
     
     /**
      * Creates a new packing table.
@@ -62,7 +62,23 @@ public class PackingTable extends JTable {
      */
     public PackingTable(final Object[][] rows, final Object[] cols,
             final boolean editable, final JScrollPane scrollPane) {
-        this(new DefaultTableModel(rows, cols), editable, scrollPane);
+        this(new DefaultTableModel(rows, cols), editable, scrollPane, true);
+    }
+
+    /**
+     * Creates a new packing table.
+     *
+     * @param rows Row data
+     * @param cols Column data
+     * @param editable Whether the table should be editable or not
+     * @param scrollPane Scrollpane parent
+     * @param lastColumnFit Should the last column fit text (true), or fit viewport (false).
+     */
+    public PackingTable(final Object[][] rows, final Object[] cols,
+            final boolean editable, final JScrollPane scrollPane,
+            final boolean lastColumnFit) {
+        this(new DefaultTableModel(rows, cols), editable, scrollPane,
+                lastColumnFit);
     }
     
     /**
@@ -74,65 +90,83 @@ public class PackingTable extends JTable {
      */
     public PackingTable(final TableModel tableModel, final boolean editable,
             final JScrollPane scrollPane) {
+        this(tableModel, editable, scrollPane, true);
+    }
+
+    /**
+     * Creates a new packing table.
+     *
+     * @param tableModel Table data model
+     * @param editable Whether the table should be editable or not
+     * @param scrollPane Scrollpane parent
+     * @param lastColumnFit Should the last column fit text (true), or fit viewport (false).
+     */
+    public PackingTable(final TableModel tableModel, final boolean editable,
+            final JScrollPane scrollPane, final boolean lastColumnFit) {
         super(tableModel);
-        
+
         this.editable = editable;
         this.scrollPane = scrollPane;
-        
+        this.lastColumnFit = lastColumnFit;
+
         super.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         super.getTableHeader().setResizingAllowed(false);
         super.setDragEnabled(false);
     }
-    
+
     /** {@inheritDoc} */
     public void setAutoResizeMode(final int mode) {
-        //Ignore
+    //Ignore
     }
-    
+
     /** {@inheritDoc} */
     public final boolean getScrollableTracksViewportHeight() {
         return getPreferredSize().height < getParent().getHeight();
     }
-    
+
     /** {@inheritDoc} */
     public final void paint(final Graphics g) {
         packColumns();
         super.paint(g);
     }
-    
+
     /** Packs the columns to their width. */
     public final void packColumns() {
         if (!isShowing()) {
             return;
         }
-        
+
         if (getColumnCount() == 0) {
             return;
         }
-        
+
         final TableColumnModel columnModel = getTableHeader().getColumnModel();
         final int numCols = columnModel.getColumnCount();
         final int totalSize = scrollPane.getViewportBorderBounds().width;
         final int[] widths = new int[numCols];
         int widthsTotal = 0;
-        
-        for (int i = 0; i < numCols; i++) { //NOPMD im not copying a damn array fgs
+
+        int checkNumCols = numCols;
+        if (!lastColumnFit) {
+            checkNumCols--;
+        }
+        for (int i = 0; i < checkNumCols; i++) { //NOPMD im not copying a damn array fgs
             widths[i] = getWidth(i);
             widthsTotal += widths[i];
         }
-        
+
         final int extra = totalSize - widthsTotal;
         if (extra > 0) {
             widths[numCols - 1] += extra;
         }
-        
+
         for (int i = 0; i < numCols; i++) {
             final TableColumn col = columnModel.getColumn(i);
             col.setPreferredWidth(widths[i]);
         }
-        
+
     }
-    
+
     /**
      * Returns the width of a column.
      *
@@ -147,24 +181,25 @@ public class PackingTable extends JTable {
         if (getColumnCount() <= col) {
             return 0;
         }
-        
+
         final TableColumn column = getColumnModel().getColumn(col);
         int width = (int) getTableHeader().getDefaultRenderer().
-                getTableCellRendererComponent(this, column.getIdentifier()
-                , false, false, -1, col).getPreferredSize().getWidth();
-        
+                getTableCellRendererComponent(this, column.getIdentifier(),
+                false, false, -1, col).getPreferredSize().getWidth();
+
         if (getRowCount() == 0) {
             return width + SMALL_BORDER;
         }
-        
+
         for (int row = 0; row < getRowCount(); row++) {
             if (getCellRenderer(row, col) != null) {
                 width = Math.max(width, (int) getCellRenderer(row, col).
                         getTableCellRendererComponent(this, getValueAt(row,
-                      col), false, false, row, col).getPreferredSize().getWidth());
+                        col), false, false, row, col).getPreferredSize().
+                        getWidth());
             }
         }
-        
+
         return width + SMALL_BORDER;
     }
 }
