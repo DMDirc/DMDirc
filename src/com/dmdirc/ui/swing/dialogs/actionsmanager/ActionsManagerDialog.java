@@ -31,6 +31,7 @@ import com.dmdirc.config.prefs.validator.RegexStringValidator;
 import com.dmdirc.ui.swing.components.JWrappingLabel;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.SwingController;
+import com.dmdirc.ui.swing.components.ListScroller;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.StandardInputDialog;
 import com.dmdirc.ui.swing.components.renderers.ActionGroupListCellRenderer;
@@ -162,6 +163,8 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
 
         info.setVisible(false);
         activeSettings.setVisible(false);
+        
+        new ListScroller(groups);
 
         reloadGroups();
     }
