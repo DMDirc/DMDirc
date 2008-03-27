@@ -152,6 +152,7 @@ public final class ActionsGroupPanel extends JPanel implements ActionListener,
         table.getTableHeader().setReorderingAllowed(false);
         edit.setEnabled(false);
         delete.setEnabled(false);
+        add.setEnabled(group != null);
     }
 
     /**
@@ -185,6 +186,7 @@ public final class ActionsGroupPanel extends JPanel implements ActionListener,
         this.group = group;
 
         model.setActionGroup(group);
+        add.setEnabled(group != null);
     }
 
     /** 
