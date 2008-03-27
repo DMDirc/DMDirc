@@ -95,7 +95,7 @@ public final class ActionsGroupPanel extends JPanel implements ActionListener,
     private void initComponents() {
         scrollPane = new JScrollPane();
         model = new ActionTableModel(group);
-        table = new PackingTable(model, false, scrollPane) {
+        table = new PackingTable(model, false, scrollPane, false) {
 
             /**
              * A version number for this class. It should be changed whenever the class
