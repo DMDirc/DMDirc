@@ -144,7 +144,7 @@ public final class AliasManagerDialog extends StandardDialog implements
         scrollPane = new JScrollPane();
         
         tableModel = new AliasTableModel(getTableData());
-        table = new PackingTable(tableModel, false, scrollPane) {
+        table = new PackingTable(tableModel, false, scrollPane, false) {
             private static final long serialVersionUID = 1;
             @Override
             public TableCellRenderer getCellRenderer(final int row, final int column) {
