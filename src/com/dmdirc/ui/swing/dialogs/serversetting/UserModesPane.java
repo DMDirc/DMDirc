@@ -136,6 +136,9 @@ public final class UserModesPane extends JPanel {
      * Sends changed modes to the server.
      */
     public void save() {
+        if (server == null || server.getParser() == null) {
+            return;
+        }
         boolean changed = false;
         final IRCParser parser = server.getParser();
         final String userModes = parser.getUserModeString();
