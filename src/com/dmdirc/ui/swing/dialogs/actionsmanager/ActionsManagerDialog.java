@@ -173,6 +173,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
      */
     private void addListeners() {
         getOkButton().addActionListener(this);
+        getCancelButton().addActionListener(this);
         add.addActionListener(this);
         edit.addActionListener(this);
         delete.addActionListener(this);
@@ -262,7 +263,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
             editGroup();
         } else if (e.getSource() == delete) {
             delGroup();
-        } else if (e.getSource() == getOkButton()) {
+        } else if (e.getSource() == getOkButton() || e.getSource() == getCancelButton()) {
             for (ActionGroupSettingsPanel loopSettings : settings.values()) {
                 loopSettings.save();
             }
