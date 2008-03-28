@@ -66,6 +66,8 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** Filename regex. */
+    private static final String FILENAME_REGEX = "[A-Za-z0-9 ]+";
     /** Previously created instance of ActionsManagerDialog. */
     private static ActionsManagerDialog me;
     /** Info label. */
@@ -86,8 +88,6 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
     private Map<ActionGroup, ActionGroupSettingsPanel> settings;
     /** Active s panel. */
     private ActionGroupSettingsPanel activeSettings;
-    /** Filename regex. */
-    private static final String FILENAME_REGEX = "[A-Za-z0-9 ]+";
     /** Group panel. */
     private JPanel groupPanel;
 
@@ -135,9 +135,8 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
      */
     private void initComponents() {
         orderButtons(new JButton(), new JButton());
-        infoLabel = new JWrappingLabel("Actions allow you to automate many " +
-                "aspects of DMDirc, they alow you to intelligently respond " +
-                "to different events.");
+        infoLabel = new JWrappingLabel("Actions allow you to make DMDirc"
+                + " intelligently respond to various events.");
         groups = new JList(new DefaultListModel());
         actions = new ActionsGroupPanel(null);
         info = new ActionGroupInformationPanel(null);
@@ -148,7 +147,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         edit = new JButton("Edit");
         delete = new JButton("Delete");
         groupPanel = new JPanel();
-        
+
         groupPanel.setBorder(BorderFactory.createTitledBorder(groupPanel.getBorder(),
                 "Groups"));
         info.setBorder(BorderFactory.createTitledBorder(info.getBorder(),
@@ -163,7 +162,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
 
         info.setVisible(false);
         activeSettings.setVisible(false);
-        
+
         new ListScroller(groups);
 
         reloadGroups();
@@ -181,7 +180,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         ActionManager.addListener(this, CoreActionType.ACTION_CREATED);
         ActionManager.addListener(this, CoreActionType.ACTION_UPDATED);
     }
-    
+
     /**
      * Lays out the group panel.
      */
@@ -227,7 +226,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
 
     /**
      * Changes the active group.
-     * 
+     *
      * @param group New group
      */
     private void changeActiveGroup(final ActionGroup group) {
@@ -240,19 +239,19 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
                 "Settings"));
         }
         activeSettings = settings.get(group);
-        
+
         info.setVisible(info.shouldDisplay());
         activeSettings.setVisible(activeSettings.shouldDisplay());
-        
+
         getContentPane().setVisible(false);
         getContentPane().removeAll();
         layoutComponents();
         getContentPane().setVisible(true);
     }
 
-    /** 
+    /**
      * {@inheritDoc}
-     * 
+     *
      * @param e Action event
      */
     @Override
