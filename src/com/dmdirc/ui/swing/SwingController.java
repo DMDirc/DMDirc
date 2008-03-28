@@ -25,7 +25,6 @@ package com.dmdirc.ui.swing;
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.ui.IconManager;
-import com.dmdirc.Main;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
@@ -49,7 +48,6 @@ import com.dmdirc.ui.swing.dialogs.error.ErrorListDialog;
 import com.dmdirc.ui.swing.dialogs.wizard.firstrun.SwingFirstRunWizard;
 import com.dmdirc.ui.swing.dialogs.serversetting.ServerSettingsDialog;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardListener;
-import com.dmdirc.util.resourcemanager.ResourceManager;
 import com.dmdirc.updater.Update;
 
 import java.awt.Font;
@@ -72,8 +70,6 @@ public final class SwingController implements UIController {
     private static MainFrame me;
     /** Status bar. */
     private static SwingStatusBar statusBar;
-    /** Wizard. */
-    private SwingFirstRunWizard wizard;
 
     /** Instantiates a new SwingController. */
     public SwingController() {
@@ -114,7 +110,7 @@ public final class SwingController implements UIController {
             } catch (InterruptedException ex) {
             //Ignore
             } catch (InvocationTargetException ex) {
-                Logger.appError(ErrorLevel.HIGH, "Unable to create MainFrame",
+                Logger.appError(ErrorLevel.FATAL, "Unable to create MainFrame",
                         ex.getCause());
             //Ignore
             }
@@ -211,7 +207,7 @@ public final class SwingController implements UIController {
                         }
                     }
                 };
-                wizard = new SwingFirstRunWizard(firstRun);
+                final SwingFirstRunWizard wizard = new SwingFirstRunWizard(firstRun);
                 wizard.getWizardDialog().addWizardListener(listener);
                 wizard.display();
             }
@@ -268,7 +264,7 @@ public final class SwingController implements UIController {
         
         // This will do nothing on non OS X Systems
         if (Apple.isApple()) {
-            Apple apple = Apple.getApple();
+            final Apple apple = Apple.getApple();
             
             apple.setUISettings();
             apple.setListener();
