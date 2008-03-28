@@ -207,7 +207,8 @@ public final class SwingController implements UIController {
                         }
                     }
                 };
-                final SwingFirstRunWizard wizard = new SwingFirstRunWizard(firstRun);
+                final SwingFirstRunWizard wizard =
+                        new SwingFirstRunWizard(firstRun);
                 wizard.getWizardDialog().addWizardListener(listener);
                 wizard.display();
             }
@@ -249,52 +250,38 @@ public final class SwingController implements UIController {
     @Override
     public void initUISettings() {
         // For this to work it *HAS* to be before anything else UI related.
-        if (IdentityManager.getGlobalConfig().hasOption("ui", "antialias")) {
-            final String aaSetting =
-                    IdentityManager.getGlobalConfig().getOption("ui",
-                    "antialias");
-            System.setProperty("awt.useSystemAAFontSettings", aaSetting);
-            System.setProperty("swing.aatext", aaSetting);
-        } else {
-            IdentityManager.getConfigIdentity().setOption("ui", "antialias",
-                    "true");
-            System.setProperty("awt.useSystemAAFontSettings", "true");
-            System.setProperty("swing.aatext", "true");
-        }
-        
+        final boolean aaSetting = IdentityManager.getGlobalConfig().
+                getOptionBool("ui", "antialias", true);
+        System.setProperty("awt.useSystemAAFontSettings",
+                Boolean.toString(aaSetting));
+        System.setProperty("swing.aatext", Boolean.toString(aaSetting));
+
         // This will do nothing on non OS X Systems
         if (Apple.isApple()) {
             final Apple apple = Apple.getApple();
-            
+
             apple.setUISettings();
             apple.setListener();
         }
 
+        final Font defaultFont = new Font(Font.DIALOG, Font.TRUETYPE_FONT,
+                12);
+        if (UIManager.getFont("TextField.font") == null) {
+            UIManager.put("TextField.font", defaultFont);
+        }
+        if (UIManager.getFont("TextPane.font") == null) {
+            UIManager.put("TextPane.font", defaultFont);
+        }
+
+        UIManager.put("Tree.collapsedIcon",
+                IconManager.getIconManager().getIcon("nothing"));
+        UIManager.put("Tree.expandedIcon",
+                IconManager.getIconManager().getIcon("nothing"));
+
         try {
             UIUtilities.initUISettings();
-
-            if (IdentityManager.getGlobalConfig().hasOption("ui", "lookandfeel")) {
-                final String lnfName =
-                        UIUtilities.getLookAndFeel(IdentityManager.getGlobalConfig().
-                        getOption("ui", "lookandfeel"));
-                if (!lnfName.isEmpty()) {
-                    UIManager.setLookAndFeel(lnfName);
-                }
-            }
-
-            final Font defaultFont = new Font(Font.DIALOG, Font.TRUETYPE_FONT,
-                    12);
-            if (UIManager.getFont("TextField.font") == null) {
-                UIManager.put("TextField.font", defaultFont);
-            }
-            if (UIManager.getFont("TextPane.font") == null) {
-                UIManager.put("TextPane.font", defaultFont);
-            }
-
-            UIManager.put("Tree.collapsedIcon",
-                    IconManager.getIconManager().getIcon("nothing"));
-            UIManager.put("Tree.expandedIcon",
-                    IconManager.getIconManager().getIcon("nothing"));
+            UIManager.setLookAndFeel(UIUtilities.getLookAndFeel(IdentityManager.getGlobalConfig().
+                    getOption("ui", "lookandfeel", "")));
 
         } catch (UnsupportedOperationException ex) {
             Logger.userError(ErrorLevel.LOW, "Unable to set UI Settings");

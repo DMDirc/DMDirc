@@ -229,6 +229,11 @@ public final class UIUtilities {
                 }
             }
         }
+        
+        if (classNameBuilder.length() == 0) {
+            classNameBuilder.append(UIManager.getSystemLookAndFeelClassName());
+        } 
+        
         return classNameBuilder.toString();
     }
 }
