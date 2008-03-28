@@ -27,6 +27,7 @@ import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.validator.RegexStringValidator;
 import com.dmdirc.ui.swing.components.JWrappingLabel;
 import com.dmdirc.ui.swing.MainFrame;
@@ -113,6 +114,10 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         me.setVisible(true);
         me.requestFocus();
+
+        me.groups.setSelectedIndex(IdentityManager.getGlobalConfig().getOptionInt("dialogstate", "actionsmanagerdialog", 0));
+        me.changeActiveGroup((ActionGroup) me.groups.getModel().getElementAt(IdentityManager.getGlobalConfig().
+                getOptionInt("dialogstate", "actionsmanagerdialog", 0)));
     }
 
     /**
@@ -135,8 +140,8 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
      */
     private void initComponents() {
         orderButtons(new JButton(), new JButton());
-        infoLabel = new JWrappingLabel("Actions allow you to make DMDirc"
-                + " intelligently respond to various events.");
+        infoLabel = new JWrappingLabel("Actions allow you to make DMDirc" +
+                " intelligently respond to various events.");
         groups = new JList(new DefaultListModel());
         actions = new ActionsGroupPanel(null);
         info = new ActionGroupInformationPanel(null);
@@ -234,10 +239,11 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         info.setActionGroup(group);
         actions.setActionGroup(group);
         if (!settings.containsKey(group)) {
-            final ActionGroupSettingsPanel currentSettings = new ActionGroupSettingsPanel(group);
+            final ActionGroupSettingsPanel currentSettings =
+                    new ActionGroupSettingsPanel(group);
             settings.put(group, currentSettings);
             currentSettings.setBorder(BorderFactory.createTitledBorder(currentSettings.getBorder(),
-                "Settings"));
+                    "Settings"));
         }
         activeSettings = settings.get(group);
 
@@ -263,10 +269,13 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
             editGroup();
         } else if (e.getSource() == delete) {
             delGroup();
-        } else if (e.getSource() == getOkButton() || e.getSource() == getCancelButton()) {
+        } else if (e.getSource() == getOkButton() || e.getSource() ==
+                getCancelButton()) {
             for (ActionGroupSettingsPanel loopSettings : settings.values()) {
                 loopSettings.save();
             }
+            IdentityManager.getConfigIdentity().setOption("dialogstate",
+                    "actionsmanagerdialog", groups.getSelectedIndex());
             dispose();
         }
     }
