@@ -37,6 +37,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -213,6 +214,17 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         .put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "rightArrowAction");
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
         .put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "leftArrowAction");
+        
+        textField.getActionMap().put("ctrlEnterAction",
+                new AbstractAction("ctrlEnterAction") {
+            private static final long serialVersionUID = 1;
+            public void actionPerformed(final ActionEvent evt) {
+                getOkButton().doClick();
+            }
+        }
+        );
+        textField.getInputMap(JComponent.WHEN_FOCUSED).put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_DOWN_MASK), "ctrlEnterAction");
     }
     
     /**
