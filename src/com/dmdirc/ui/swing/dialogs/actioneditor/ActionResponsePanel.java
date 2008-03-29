@@ -23,8 +23,26 @@
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
 /**
- *
+ * Action response panel.
  */
 public class ActionResponsePanel {
 
+    /** Instantiates the panel. */
+    public ActionResponsePanel() {
+        initComponents();
+        addListeners();
+        layoutComponents();
+    }
+
+    /** Initialises the components. */
+    private void initComponents() {
+    }
+
+    /** Adds the listeners. */
+    private void addListeners() {
+    }
+
+    /** Lays out the components. */
+    private void layoutComponents() {
+    }
 }

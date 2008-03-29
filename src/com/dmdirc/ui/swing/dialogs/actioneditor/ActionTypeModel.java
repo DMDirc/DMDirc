@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
-import com.dmdirc.ui.swing.dialogs.actionseditor.*;
 import com.dmdirc.actions.ActionTypeComparator;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.util.MapList;
@@ -36,8 +35,6 @@ import javax.swing.DefaultComboBoxModel;
 /**
  * Model for the "trigger" list of the actions editor. Adds type group headers,
  * and ensures they can't be selected.
- * 
- * @author Chris
  */
 public final class ActionTypeModel extends DefaultComboBoxModel {
     

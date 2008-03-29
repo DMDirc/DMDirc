@@ -23,8 +23,26 @@
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
 /**
- *
+ * Action substitutions panel
  */
 public class ActionSubstitutionsPanel {
 
+    /** Instantiates the panel. */
+    public ActionSubstitutionsPanel() {
+        initComponents();
+        addListeners();
+        layoutComponents();
+    }
+
+    /** Initialises the components. */
+    private void initComponents() {
+    }
+
+    /** Adds the listeners. */
+    private void addListeners() {
+    }
+
+    /** Lays out the components. */
+    private void layoutComponents() {
+    }
 }

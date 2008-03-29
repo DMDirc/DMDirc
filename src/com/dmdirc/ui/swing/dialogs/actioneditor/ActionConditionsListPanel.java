@@ -23,8 +23,26 @@
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
 /**
- *
+ * Action conditions list panel.
  */
 public class ActionConditionsListPanel {
 
+    /** Instantiates the panel. */
+    public ActionConditionsListPanel() {
+        initComponents();
+        addListeners();
+        layoutComponents();
+    }
+
+    /** Initialises the components. */
+    private void initComponents() {
+    }
+
+    /** Adds the listeners. */
+    private void addListeners() {
+    }
+
+    /** Lays out the components. */
+    private void layoutComponents() {
+    }
 }

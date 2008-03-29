@@ -22,8 +22,6 @@
 
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
-import com.dmdirc.ui.swing.dialogs.actionseditor.*;
-
 /**
  * Wrapper for action substitutions.
  */
@@ -55,6 +53,7 @@ public final class ActionSubstitution {
     }
     
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return value;
     }
