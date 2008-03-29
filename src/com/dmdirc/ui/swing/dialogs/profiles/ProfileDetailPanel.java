@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.dialogs.profiles;
 
 import com.dmdirc.Main;
+import com.dmdirc.config.prefs.validator.FileNameValidator;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardInputDialog;
 import com.dmdirc.config.prefs.validator.NotEmptyValidator;
@@ -50,7 +51,7 @@ import javax.swing.event.ListSelectionListener;
 import net.miginfocom.swing.MigLayout;
 
 /** Profile detail panel. */
-public class ProfileDetailPanel extends JPanel implements ActionListener,
+public final class ProfileDetailPanel extends JPanel implements ActionListener,
         ListSelectionListener, ListDataListener {
 
     /**
@@ -65,8 +66,6 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
     /** Ident regex. */
     private static final String IDENT_REGEX =
             "[A-Za-z0-9\\[\\]{|}\\-\\^\\\\]*";
-    /** Filename regex. */
-    private static final String FILENAME_REGEX = "[A-Za-z0-9 ]+";
     /** Displayed profile. */
     private Profile profile;
     /** Name text field. */
@@ -88,6 +87,8 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
 
     /** Creates a new profile detail panel. */
     public ProfileDetailPanel() {
+        super();
+
         initMainComponents();
         layoutComponents();
 
@@ -96,8 +97,7 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
 
     /** Initialises the components in the main panel. */
     private void initMainComponents() {
-        name = new ValidatingJTextField(new RegexStringValidator(FILENAME_REGEX,
-                "Name must only contain letters and numbers."));
+        name = new ValidatingJTextField(new FileNameValidator());
         nickname =
                 new ValidatingJTextField(new RegexStringValidator(NICKNAME_REGEX,
                 "Nickname must only contain letters, numbers and []{}|-^\\.`_"));
@@ -298,13 +298,11 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
             };
             dialog.setText((String) altNicknames.getSelectedValue());
             dialog.display();
-        } else if (e.getSource() == delButton) {
-            if (JOptionPane.showConfirmDialog(this,
-                    "Are you sure you want to delete this nickname?",
-                    "Delete Confirmaton", JOptionPane.YES_NO_OPTION) ==
-                    JOptionPane.YES_OPTION) {
-                ((DefaultListModel) altNicknames.getModel()).removeElementAt(altNicknames.getSelectedIndex());
-            }
+        } else if (e.getSource() == delButton && JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to delete this nickname?",
+                "Delete Confirmaton", JOptionPane.YES_NO_OPTION) ==
+                JOptionPane.YES_OPTION) {
+            ((DefaultListModel) altNicknames.getModel()).removeElementAt(altNicknames.getSelectedIndex());
         }
     }
 

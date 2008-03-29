@@ -28,7 +28,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.config.prefs.validator.RegexStringValidator;
+import com.dmdirc.config.prefs.validator.FileNameValidator;
 import com.dmdirc.ui.swing.components.JWrappingLabel;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.SwingController;
@@ -67,8 +67,6 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    /** Filename regex. */
-    private static final String FILENAME_REGEX = "[A-Za-z0-9 ]+";
     /** Previously created instance of ActionsManagerDialog. */
     private static ActionsManagerDialog me;
     /** Info label. */
@@ -115,7 +113,8 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         me.setVisible(true);
         me.requestFocus();
 
-        me.groups.setSelectedIndex(IdentityManager.getGlobalConfig().getOptionInt("dialogstate", "actionsmanagerdialog", 0));
+        me.groups.setSelectedIndex(IdentityManager.getGlobalConfig().
+                getOptionInt("dialogstate", "actionsmanagerdialog", 0));
         me.changeActiveGroup((ActionGroup) me.groups.getModel().getElementAt(IdentityManager.getGlobalConfig().
                 getOptionInt("dialogstate", "actionsmanagerdialog", 0)));
     }
@@ -287,8 +286,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         final StandardInputDialog inputDialog = new StandardInputDialog(SwingController.getMainFrame(), false,
                 "New action group",
                 "Please enter the name of the new action group",
-                new RegexStringValidator(FILENAME_REGEX,
-                "Must be a valid filename")) {
+                new FileNameValidator()) {
 
             /**
              * A version number for this class. It should be changed whenever the class
@@ -329,8 +327,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         final StandardInputDialog inputDialog = new StandardInputDialog(SwingController.getMainFrame(), false,
                 "Edit action group",
                 "Please enter the new name of the action group",
-                new RegexStringValidator(FILENAME_REGEX,
-                "Must be a valid filename")) {
+                new FileNameValidator()) {
 
             /**
              * A version number for this class. It should be changed whenever the class
