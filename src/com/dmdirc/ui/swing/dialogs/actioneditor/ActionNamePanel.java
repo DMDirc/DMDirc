@@ -22,13 +22,46 @@
 
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
+import com.dmdirc.config.prefs.validator.FileNameValidator;
+import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
+
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import net.miginfocom.swing.MigLayout;
+
 /**
  * Action name panel.
  */
-public class ActionNamePanel {
+public class ActionNamePanel extends JPanel {
 
-    /** Instantiates the panel. */
-    public ActionNamePanel() {
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
+    /** Original name. */
+    private final String originalName;
+    /** Action name field. */
+    private ValidatingJTextField name;
+
+    /** 
+     * Instantiates the panel.
+     * 
+     * @param name Initial name of the action
+     */
+    public ActionNamePanel(final String name) {
+        super();
+        
+        if (name == null) {
+            this.originalName = "";
+        } else {
+            this.originalName = name;
+        }
+        
         initComponents();
         addListeners();
         layoutComponents();
@@ -36,13 +69,46 @@ public class ActionNamePanel {
 
     /** Initialises the components. */
     private void initComponents() {
+        name = new ValidatingJTextField(new JTextField(originalName), new FileNameValidator());
     }
 
     /** Adds the listeners. */
     private void addListeners() {
+        //No listeners needed.
     }
 
     /** Lays out the components. */
     private void layoutComponents() {
+        setLayout(new MigLayout("wrap 1"));
+        
+        setBorder(BorderFactory.createTitledBorder(getBorder(), "Name"));
+        
+        add(new JLabel("This action's name:"));
+        add(name, "growx, pushx");
+    }
+    
+    /**
+     * Has the action's name changed.
+     * 
+     * @return true if the action name has changed.
+
+     */
+    public boolean hasNameChanged() {
+        return getActionName().equals(originalName);
+    }
+    
+    /**
+     * Returns the name represented by this component.
+     * 
+     * @return Current name of this action
+     */
+    public String getActionName() {
+        return name.getText();
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void setEnabled(final boolean enabled) {
+        name.setEnabled(enabled);
     }
 }

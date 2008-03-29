@@ -22,13 +22,24 @@
 
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
+import javax.swing.JLabel;
+
 /**
  * Action substitution label.
  */
-public class ActionSubstitutionLabel {
+public class ActionSubstitutionLabel extends JLabel {
+
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
 
     /** Instantiates the panel. */
     public ActionSubstitutionLabel() {
+        super();
+        
         initComponents();
         addListeners();
         layoutComponents();

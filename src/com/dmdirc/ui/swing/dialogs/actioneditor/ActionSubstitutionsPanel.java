@@ -22,13 +22,24 @@
 
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
+import javax.swing.JPanel;
+
 /**
  * Action substitutions panel
  */
-public class ActionSubstitutionsPanel {
+public class ActionSubstitutionsPanel extends JPanel {
+
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
 
     /** Instantiates the panel. */
     public ActionSubstitutionsPanel() {
+        super();
+        
         initComponents();
         addListeners();
         layoutComponents();
