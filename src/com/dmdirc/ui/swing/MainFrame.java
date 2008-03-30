@@ -459,9 +459,9 @@ public final class MainFrame extends JFrame implements WindowListener,
                 mainSplitPane.setResizeWeight(1.0);
                 mainSplitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
                 frameManagerPanel.setPreferredSize(new Dimension(IdentityManager.getGlobalConfig().
-                        getOptionInt("ui", "frameManagerSize", 50),
+                        getOptionInt("ui", "frameManagerSize", 150),
                         Integer.MAX_VALUE));
-                frameManagerPanel.setMinimumSize(new Dimension(50, 0));
+                frameManagerPanel.setMinimumSize(new Dimension(150, 0));
                 desktopPane.setMaximumSize(new Dimension(Integer.MAX_VALUE,
                         Integer.MAX_VALUE));
                 desktopPane.setMinimumSize(new Dimension(300, 0));
