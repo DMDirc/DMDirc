@@ -23,25 +23,20 @@
 package com.dmdirc.ui.swing.dialogs.about;
 
 import com.dmdirc.util.resourcemanager.ResourceManager;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.SortedMap;
 import java.util.TreeMap;
+
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -114,6 +109,13 @@ public final class LicensePanel extends JPanel {
         add(scrollPane, "grow");
     }
 
+    /**
+     * Converts an input stream into a string.
+     * 
+     * @param stream Stream to convert
+     * 
+     * @return Contents of the input stream
+     */
     private String readInputStream(final InputStream stream) {
 
         String line;
