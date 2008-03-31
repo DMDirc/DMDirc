@@ -103,9 +103,10 @@ public class ProcessMode extends IRCProcessor {
 		
 		iChannel = getChannelInfo(sChannelName);
 		if (iChannel == null) { 
-			callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got modes for channel ("+sChannelName+") that I am not on.", myParser.getLastLine()));
-			iChannel = new ChannelInfo(myParser, sChannelName);
-			myParser.addChannel(iChannel);
+			// callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got modes for channel ("+sChannelName+") that I am not on.", myParser.getLastLine()));
+			// iChannel = new ChannelInfo(myParser, sChannelName);
+			// myParser.addChannel(iChannel);
+			return;
 		}
 		// Get the current channel modes
 		if (!sParam.equals("324")) { nCurrent = iChannel.getMode(); }
