@@ -136,42 +136,94 @@ public class LinuxInstaller extends Installer {
 					writer.println("ISGNOME=`pidof -x -s gnome-panel`");
 					writer.println("ZENITY=`which zenity`");
 					writer.println("DIALOG=`which dialog`");
+					
+					writer.println("messagedialog() {");
+					writer.println("	# Send message to console.");
+					writer.println("	echo \"\"");
+					writer.println("	echo \"-----------------------------------------------------------------------\"");
+					writer.println("	echo \"DMDirc: ${1}\"");
+					writer.println("	echo \"-----------------------------------------------------------------------\"");
+					writer.println("	echo \"${2}\"");
+					writer.println("	echo \"-----------------------------------------------------------------------\"");
+					writer.println("");
+					writer.println("	if [ \"\" != \"${ISKDE}\" -a \"\" != \"${KDIALOG}\" -a \"\" != \"${DISPLAY}\" ]; then");
+					writer.println("		echo \"Dialog on Display: ${DISPLAY}\"");
+					writer.println("		${KDIALOG} --title \"DMDirc: ${1}\" --msgbox \"${2}\"");
+					writer.println("	elif [ \"\" != \"${ISGNOME}\" -a \"\" != \"${ZENITY}\" -a \"\" != \"${DISPLAY}\" ]; then");
+					writer.println("		echo \"Dialog on Display: ${DISPLAY}\"");
+					writer.println("		${ZENITY} --info --title \"DMDirc: ${1}\" --text \"${2}\"");
+					writer.println("	elif [ \"\" != \"${DIALOG}\" ]; then");
+					writer.println("		${DIALOG} --title \"DMDirc: ${1}\" --msgbox \"${2}\" 8 40");
+					writer.println("	fi");
+					writer.println("}");
+					
+					writer.println("questiondialog() {");
+					writer.println("	# Send question to console.");
+					writer.println("	echo \"\"");
+					writer.println("	echo \"-----------------------------------------------------------------------\"");
+					writer.println("	echo \"DMDirc: ${1}\"");
+					writer.println("	echo \"-----------------------------------------------------------------------\"");
+					writer.println("	echo \"${2}\"");
+					writer.println("	echo \"-----------------------------------------------------------------------\"");
+					writer.println("");
+					writer.println("	if [ \"\" != \"${ISKDE}\" -a \"\" != \"${KDIALOG}\" -a \"\" != \"${DISPLAY}\" ]; then");
+					writer.println("		echo \"Dialog on Display: ${DISPLAY}\"");
+					writer.println("		${KDIALOG} --title \"DMDirc: ${1}\" --yesno \"${2}\"");
+					writer.println("	elif [ \"\" != \"${ISGNOME}\" -a \"\" != \"${ZENITY}\" -a \"\" != \"${DISPLAY}\" ]; then");
+					writer.println("		echo \"Dialog on Display: ${DISPLAY}\"");
+					writer.println("		${ZENITY} --question --title \"DMDirc: ${1}\" --text \"${2}\"");
+					writer.println("	elif [ \"\" != \"${DIALOG}\" ]; then");
+					writer.println("		${DIALOG} --title \"DMDirc: ${1}\" --yesno \"${2}\" 8 40");
+					writer.println("	else");
+					writer.println("		echo \"Unable to show Dialog for question, assuming no");
+					writer.println("		return 1");
+					writer.println("	fi");
+					writer.println("}");
+					
+					writer.println("errordialog() {");
+					writer.println("	# Send error to console.");
+					writer.println("	echo \"\"");
+					writer.println("	echo \"-----------------------------------------------------------------------\"");
+					writer.println("	echo \"[Error] DMDirc: ${1}\"");
+					writer.println("	echo \"-----------------------------------------------------------------------\"");
+					writer.println("	echo \"${2}\"");
+					writer.println("	echo \"-----------------------------------------------------------------------\"");
+					writer.println("");
+					writer.println("	if [ \"\" != \"${ISKDE}\" -a \"\" != \"${KDIALOG}\" -a \"\" != \"${DISPLAY}\" ]; then");
+					writer.println("		echo \"Dialog on Display: ${DISPLAY}\"");
+					writer.println("		${KDIALOG} --title \"DMDirc: ${1}\" --error \"${2}\"");
+					writer.println("	elif [ \"\" != \"${ISGNOME}\" -a \"\" != \"${ZENITY}\" -a \"\" != \"${DISPLAY}\" ]; then");
+					writer.println("		echo \"Dialog on Display: ${DISPLAY}\"");
+					writer.println("		${ZENITY} --error --title \"DMDirc: ${1}\" --text \"${2}\"");
+					writer.println("	elif [ \"\" != \"${DIALOG}\" ]; then");
+					writer.println("		${DIALOG} --title \"[Error] DMDirc: ${1}\" --msgbox \"${2}\" 8 40");
+					writer.println("	fi");
+					writer.println("}");
 
 					if (isRoot()) {
 						writer.println("USER=`whoami`");
 						writer.println("if [ \"${USER}\" != \"root\" ]; then");
-						writer.println("if [ ${result} -eq 1 ]; then");
-						writer.println("\t\tif [ \"\" != \"${ISKDE}\" -a \"\" != \"${KDIALOG}\" -a \"\" != \"${DISPLAY}\" ]; then");
-						writer.println("\t\t	${KDIALOG} --title \"DMDirc Uninstaller\" --error \"Uninstall Aborted. Only root can use this script\"");
-						writer.println("\t\telif [ \"\" != \"${ISGNOME}\" -a \"\" != \"${ZENITY}\" -a \"\" != \"${DISPLAY}\" ]; then");
-						writer.println("\t\t	${ZENITY} --info --title \"DMDirc Uninstaller\" --text \"Uninstall Aborted. Only root can use this script\"");
-						writer.println("\t\tfi");
-						writer.println("\t\techo \"Uninstall Aborted. Only root can use this script\"");
-						writer.println("\tfi");
-						writer.println("exit 1;");
+						writer.println("	errordialog \"Uninstaller\" \"Uninstall Aborted. Only root can use this script\"");
+						writer.println("	exit 1;");
 						writer.println("fi");
 					}
+					
 
-					writer.println("if [ \"\" != \"${ISKDE}\" -a \"\" != \"${KDIALOG}\" -a \"\" != \"${DISPLAY}\" ]; then");
-					writer.println("	echo \"Dialog Prompt on: ${DISPLAY}\"");
-					writer.println("	${KDIALOG} --title \"DMDirc Uninstaller\" --yesno \"Are you sure you want to uninstall DMDirc?\"");
-					writer.println("elif [ \"\" != \"${ISGNOME}\" -a \"\" != \"${ZENITY}\" -a \"\" != \"${DISPLAY}\" ]; then");
-					writer.println("	echo \"Dialog Prompt on: ${DISPLAY}\"");
-					writer.println("	${ZENITY} --question --title \"DMDirc Uninstaller\" --text \"Are you sure you want to uninstall DMDirc?\"");
-					writer.println("elif [ \"\" != \"${DIALOG}\" ]; then");
-					writer.println("	${DIALOG} --title \"DMDirc Uninstaller\" --yesno \"Are you sure you want to uninstall DMDirc?\" 8 40");
-					writer.println("fi");
-
+					writer.println("questiondialog \"Uninstaller\" \"Are you sure you want to uninstall DMDirc?\"");
+					
 					writer.println("if [ $? -ne 0 ]; then");
-					writer.println("\tif [ \"\" != \"${ISKDE}\" -a \"\" != \"${KDIALOG}\" -a \"\" != \"${DISPLAY}\" ]; then");
-					writer.println("\t	${KDIALOG} --title \"DMDirc Uninstaller\" --msgbox \"Uninstall Aborted\"");
-					writer.println("\telif [ \"\" != \"${ISGNOME}\" -a \"\" != \"${ZENITY}\" -a \"\" != \"${DISPLAY}\" ]; then");
-					writer.println("\t	${ZENITY} --info --title \"DMDirc Uninstaller\" --text \"Uninstall Aborted\"");
-					writer.println("\tfi");
-					writer.println("\techo \"Uninstall Aborted\"");
-					writer.println("\texit 1;");
+					writer.println("	messagedialog \"Uninstaller\" \"Uninstall Aborted.\"");
+					writer.println("	echo \"Uninstall Aborted\"");
+					writer.println("	exit 1;");
 					writer.println("fi");
-
+					
+					writer.println("RUNNING=\"ps aux | grep DMDirc.jar | grep -v grep\"");
+					writer.println("if [ \"${RUNNING}\" != \"\" ]; then");
+					writer.println("	errordialog \"Uninstaller\" \"Uninstall Aborted - DMDirc is still running.\nPlease close DMDirc before continuing\"");
+					writer.println("	echo \"Uninstall Aborted - DMDirc already running.\"");
+					writer.println("	exit 1;");
+					writer.println("fi");
+					
 					writer.println("echo \"Uninstalling dmdirc\"");
 					writer.println("echo \"Removing Shortcuts..\"");
 					if (isRoot()) {
@@ -186,24 +238,24 @@ public class LinuxInstaller extends Installer {
 					}
 					writer.println("TOOL=`which gconftool-2`");
 					writer.println("if [ \"${TOOL}\" != \"\" ]; then");
-					writer.println("\tCURRENT=`"+command+" --get /desktop/gnome/url-handlers/irc/command`");
-					writer.println("\tif [ \"${CURRENT}\" = \"\\\""+location+"/DMDirc.sh\\\" -e -c %s\" ]; then");
-					writer.println("\t\techo \"Removing Gnome Protocol Handler\"");
-					writer.println("\t\t"+command+" --unset /desktop/gnome/url-handlers/irc/enabled");
-					writer.println("\t\t"+command+" --unset /desktop/gnome/url-handlers/irc/command");
-					writer.println("\telse");
-					writer.println("\t\techo \"Not Removing Gnome Protocol Handler\"");
-					writer.println("\tfi");
+					writer.println("	CURRENT=`"+command+" --get /desktop/gnome/url-handlers/irc/command`");
+					writer.println("	if [ \"${CURRENT}\" = \"\\\""+location+"/DMDirc.sh\\\" -e -c %s\" ]; then");
+					writer.println("		echo \"Removing Gnome Protocol Handler\"");
+					writer.println("		"+command+" --unset /desktop/gnome/url-handlers/irc/enabled");
+					writer.println("		"+command+" --unset /desktop/gnome/url-handlers/irc/command");
+					writer.println("	else");
+					writer.println("		echo \"Not Removing Gnome Protocol Handler\"");
+					writer.println("	fi");
 					writer.println("fi");
 
 					writer.println("if [ -e \""+filename+"\" ]; then");
-					writer.println("\tCURRENT=`grep DMDirc "+filename+"`");
-					writer.println("\tif [ \"\" != \"${CURRENT}\" ]; then");
-					writer.println("\t\techo \"Removing KDE Protocol Handler\"");
-					writer.println("\t\trm -Rfv "+filename);
-					writer.println("\telse");
-					writer.println("\t\techo \"Not Removing KDE Protocol Handler\"");
-					writer.println("\tfi");
+					writer.println("	CURRENT=`grep DMDirc "+filename+"`");
+					writer.println("	if [ \"\" != \"${CURRENT}\" ]; then");
+					writer.println("		echo \"Removing KDE Protocol Handler\"");
+					writer.println("		rm -Rfv "+filename);
+					writer.println("	else");
+					writer.println("		echo \"Not Removing KDE Protocol Handler\"");
+					writer.println("	fi");
 					writer.println("fi");
 
 					writer.println("echo \"Removing Installation Directory\"");
@@ -212,26 +264,14 @@ public class LinuxInstaller extends Installer {
 					
 					writer.println("PROFILEDIR=\"${HOME}/.DMDirc\"");
 					writer.println("if [ -e ${PROFILEDIR}/dmdirc.config ]; then");
-					writer.println("\tif [ \"\" != \"${ISKDE}\" -a \"\" != \"${KDIALOG}\" -a \"\" != \"${DISPLAY}\" ]; then");
-					writer.println("\t\techo \"Dialog Prompt on: ${DISPLAY}\"");
-					writer.println("\t\t${KDIALOG} --title \"DMDirc Uninstaller\" --yesno \"A dmdirc profile has been detected (${PROFILEDIR})\n Do you want to delete it aswell?\"");
-					writer.println("\telif [ \"\" != \"${ISGNOME}\" -a \"\" != \"${ZENITY}\" -a \"\" != \"${DISPLAY}\" ]; then");
-					writer.println("\t\techo \"Dialog Prompt on: ${DISPLAY}\"");
-					writer.println("\t\t${ZENITY} --question --title \"DMDirc Uninstaller\" --text \"A dmdirc profile has been detected (${PROFILEDIR})\n Do you want to delete it aswell\"");
-					writer.println("\telif [ \"\" != \"${DIALOG}\" ]; then");
-					writer.println("\t\t${DIALOG} --title \"DMDirc Uninstaller\" --yesno \"A dmdirc profile has been detected (${PROFILEDIR})\n Do you want to delete it aswell\" 8 40");
-					writer.println("\tfi");
+					writer.println("	questiondialog \"Uninstaller\" \"A dmdirc profile has been detected (${PROFILEDIR})\n Do you want to delete it aswell?\"");
 
-					writer.println("\tif [ $? -eq 0 ]; then");
-					writer.println("\t\trm -Rfv \"${PROFILEDIR}\"");
-					writer.println("\tfi");
+					writer.println("	if [ $? -eq 0 ]; then");
+					writer.println("		rm -Rfv \"${PROFILEDIR}\"");
+					writer.println("	fi");
 					writer.println("fi");
 
-					writer.println("if [ \"\" != \"${ISKDE}\" -a \"\" != \"${KDIALOG}\" -a \"\" != \"${DISPLAY}\" ]; then");
-					writer.println("	${KDIALOG} --title \"DMDirc Uninstaller\" --msgbox \"DMDirc Uninstalled Successfully\"");
-					writer.println("elif [ \"\" != \"${ISGNOME}\" -a \"\" != \"${ZENITY}\" -a \"\" != \"${DISPLAY}\" ]; then");
-					writer.println("	${ZENITY} --info --title \"DMDirc Uninstaller\" --text \"DMDirc Uninstalled Successfully\"");
-					writer.println("fi");
+					writer.println("messagedialog \"Uninstaller\" \"DMDirc Uninstalled Successfully\"");
 
 					writer.println("echo \"Done.\"");
 
