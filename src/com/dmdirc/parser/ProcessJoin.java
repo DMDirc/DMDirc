@@ -66,7 +66,14 @@ public class ProcessJoin extends IRCProcessor {
 			if (iChannel != null) {
 				if (iClient == myParser.getMyself()) {
 					try {
-						myParser.getProcessingManager().process("PART", token);
+						if (iChannel.getUser(iClient) != null) {
+							// If we are joining a channel we are already on, fake a part from
+							// the channel internally, and rejoin.
+							myParser.getProcessingManager().process("PART", token);
+						} else {
+							// Otherwise we have a channel known, that we are not in?
+							myParser.callErrorInfo(new ParserError(ParserError.ERROR_FATAL, "Joined known channel that we wern't already on..", myParser.getLastLine()));
+						}
 					} catch (ProcessorNotFoundException e) { }
 				} else if (iChannel.getUser(iClient) != null) {
 					// Client joined channel that we already know of.
@@ -83,6 +90,8 @@ public class ProcessJoin extends IRCProcessor {
 				// callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got join for channel ("+token[token.length-1]+") that I am not on. [Me: "+myParser.getMyself()+"]", myParser.getLastLine()));
 			}
 			iChannel = new ChannelInfo(myParser, token[token.length-1]);
+			// Add ourself to the channel, this will be overridden by the NAMES reply
+			iChannel.addClient(iClient);
 			myParser.addChannel(iChannel);
 			sendString("MODE "+iChannel.getName());
 			
