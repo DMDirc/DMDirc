@@ -22,11 +22,10 @@
 
 package com.dmdirc.ui.swing.components.pluginpanel;
 
-import com.dmdirc.ui.swing.components.TextLabel;
-import com.dmdirc.ui.swing.components.*;
 import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.components.renderers.PluginCellRenderer;
 import com.dmdirc.util.URLHandler;
 

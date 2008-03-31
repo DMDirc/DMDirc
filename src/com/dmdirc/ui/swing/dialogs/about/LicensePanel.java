@@ -22,107 +22,117 @@
 
 package com.dmdirc.ui.swing.dialogs.about;
 
+import com.dmdirc.util.resourcemanager.ResourceManager;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import net.miginfocom.swing.MigLayout;
 
 /**
  * License panel.
  */
 public final class LicensePanel extends JPanel {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 3;
-    
     /** License scroll pane. */
     private JScrollPane scrollPane;
-    
+
     /** Creates a new instance of LicensePanel. */
     public LicensePanel() {
         super();
-        
+
         initComponents();
     }
-    
+
     /** Initialises the components. */
     private void initComponents() {
-        final JTextArea license;
-        
-        license = new JTextArea();
-        license.setText("Most of DMDirc is licensed under the MIT license, " 
-                + "however some portions (MigLayout) are licensed under the " 
-                + "BSD license, see below for details of both.\n\nMIT License."
-                + "\nCopyright (c) 2006-2008 The DMDirc team\n\nPermission "
-                + "is hereby granted, free of charge, to any person obtaining a"
-                + " copy of this software and associated documentation files "
-                + "(the \"Software\"), to deal in the Software without "
-                + "restriction, including without limitation the rights to use,"
-                + " copy, modify, merge, publish, distribute, sublicense, "
-                + "and/or sell copies of the Software, and to permit persons "
-                + "to whom the Software is furnished to do so, subject to the "
-                + "following conditions:\n\nThe above copyright notice and this"
-                + " permission notice shall be included in all copies or "
-                + "substantial portions of the Software.\n\nTHE SOFTWARE IS "
-                + "PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS "
-                + "OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF "
-                + "MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND "
-                + "NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT "
-                + "HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,"
-                + " WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, "
-                + "ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR "
-                + "THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n\n"
-                + "BSD License.\n"
-                + "Copyright (c) 2004, Mikael Grev, MiG InfoCom AB. (miglayout " 
-                + "(at) miginfocom (dot) com)\nAll rights reserved.\n\n"
-                + "Redistribution and use in source and binary forms, with or " 
-                + "without modification, are permitted provided that the " 
-                + "following conditions are met:\nRedistributions of source " 
-                + "code must retain the above copyright notice, this list of " 
-                + "conditions and the following disclaimer.\nRedistributions " 
-                + "in binary form must reproduce the above copyright notice, " 
-                + "this list of conditions and the following disclaimer in the " 
-                + "documentation and/or other materials provided with the " 
-                + "distribution.\nNeither the name of the MiG InfoCom AB nor " 
-                + "the names of its contributors may be used to endorse or " 
-                + "promote products derived from this software without specific"
-                + "prior written permission.\n\nTHIS SOFTWARE IS PROVIDED BY " 
-                + "THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND ANY " 
-                + "EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED " 
-                + "TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS " 
-                + "FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL " 
-                + "THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY " 
-                + "DIRECT INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR " 
-                + "CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, " 
-                + "PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, " 
-                + "DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED " 
-                + "AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT " 
-                + "LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) " 
-                + "ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN " 
-                + "IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n");
+        final JEditorPane license;
+        final Map<String, InputStream> licenses = new TreeMap<String, InputStream>(ResourceManager.getResourceManager().
+                getResourcesStartingWithAsInputStreams("com/dmdirc/licenses/"));
+
+        license = new JEditorPane();
+        license.setContentType("text/html");
+        final StringBuilder licenseText = new StringBuilder();
+        licenseText.append("<html>Below are the licenses used in various components of DMDirc: <br><ul>");
+        for (Entry<String, InputStream> entry : licenses.entrySet()) {
+            final String licenseString = entry.getKey().substring(entry.getKey().
+                    lastIndexOf('/') + 1);
+            if (licenseString.length() > 1) {
+                licenseText.append("<li>");
+                licenseText.append(licenseString);
+                licenseText.append("</li>");
+            }
+        }
+        licenseText.append("</ul>");
+        for (Entry<String, InputStream> entry : licenses.entrySet()) {
+            final String licenseString = entry.getKey().substring(entry.getKey().
+                    lastIndexOf('/') + 1);
+            if (licenseString.length() > 1) {
+                licenseText.append("<h1>");
+                licenseText.append(licenseString.substring(0,
+                        licenseString.lastIndexOf(" - ")));
+                licenseText.append("</h1>");
+                licenseText.append(readInputStream(entry.getValue()).replaceAll("\n",
+                        "<br>"));
+            }
+        }
+        license.setText(licenseText.toString());
         license.setEditable(false);
-        license.setWrapStyleWord(true);
-        license.setLineWrap(true);
-        license.setColumns(40);
-        license.setRows(10);
-        
+
         scrollPane = new JScrollPane(license);
         SwingUtilities.invokeLater(new Runnable() {
+
             /** {@inheritDoc} */
             @Override
             public void run() {
                 scrollPane.getVerticalScrollBar().setValue(0);
             }
-        }
-        );
-        
+        });
+
         setLayout(new MigLayout("ins rel, fill"));
         add(scrollPane, "grow");
-    }   
+    }
+
+    private String readInputStream(final InputStream stream) {
+
+        String line;
+        final BufferedReader input =
+                new BufferedReader(new InputStreamReader(stream));
+        final StringBuilder text = new StringBuilder();
+
+        try {
+            line = input.readLine();
+            while (line != null) {
+                text.append(line);
+                text.append("<br>");
+                line = input.readLine();
+            }
+        } catch (IOException ex) {
+        //Ignore
+        }
+
+        return text.toString();
+
+    }
 }

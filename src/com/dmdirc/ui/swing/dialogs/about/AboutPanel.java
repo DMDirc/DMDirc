@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.about;
 
-import com.dmdirc.ui.swing.components.HTMLLabel;    
+import com.dmdirc.ui.swing.components.HTMLLabel;
 import com.dmdirc.util.URLHandler;
 
 import javax.swing.JPanel;
@@ -70,6 +70,7 @@ public final class AboutPanel extends JPanel implements HyperlinkListener {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void hyperlinkUpdate(final HyperlinkEvent e) {
         if (e.getEventType() == EventType.ACTIVATED) {
             URLHandler.getURLHander().launchApp(e.getURL());

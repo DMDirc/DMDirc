@@ -88,7 +88,7 @@ public final class InfoPanel extends JPanel implements ActionListener {
         copy = new JButton("Copy to clipboard");
         copy.addActionListener(this);
         
-        info = new JPanel(new MigLayout("fill, wrap 2"));
+        info = new JPanel(new MigLayout("fillx, wrap 2"));
         info.add(new JLabel("DMDirc version: "));
         info.add(new JLabel(Main.VERSION + " (" + Main.SVN_REVISION + "; "
                 + Main.UPDATE_CHANNEL + ")"), "growx, pushx");

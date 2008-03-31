@@ -76,6 +76,7 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
      */
     public ValidatingJTextField(final JTextField textField,
             final Validator<String> validator) {
+        super();
         this.textField = textField;
         this.validator = validator;
         errorIcon =
@@ -101,7 +102,8 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
      */
     private void checkError() {
         if (textField.isEnabled()) {
-            final ValidationResponse vr = validator.validate(textField.getText());
+            final ValidationResponse vr =
+                    validator.validate(textField.getText());
             errorIcon.setToolTipText(vr.getFailureReason());
             errorIcon.setVisible(vr.isFailure());
         } else {
@@ -144,17 +146,17 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
 
     /** {@inheritDoc} */
     @Override
-    public void setToolTipText(String text) {
+    public void setToolTipText(final String text) {
         textField.setToolTipText(text);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(final boolean enabled) {
         textField.setEnabled(enabled);
         checkError();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void requestFocus() {
@@ -179,7 +181,7 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
      * 
      * @param selectionStart Start of the selection
      */
-    public void setSelectionStart(int selectionStart) {
+    public void setSelectionStart(final int selectionStart) {
         textField.setSelectionStart(selectionStart);
     }
 
@@ -190,7 +192,7 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
      * 
      * @param selectionEnd End of the selection
      */
-    public void setSelectionEnd(int selectionEnd) {
+    public void setSelectionEnd(final int selectionEnd) {
         textField.setSelectionEnd(selectionEnd);
     }
 
@@ -201,7 +203,7 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
      * 
      * @param b editable state for the component
      */
-    public void setEditable(boolean b) {
+    public void setEditable(final boolean b) {
         textField.setEditable(b);
     }
 
@@ -222,7 +224,7 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
      * @param selectionStart Selection start
      * @param selectionEnd Selection end
      */
-    public void select(int selectionStart, int selectionEnd) {
+    public void select(final int selectionStart, final int selectionEnd) {
         textField.select(selectionStart, selectionEnd);
     }
 
@@ -233,7 +235,7 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
      * 
      * @param content Text to replace selection with
      */
-    public void replaceSelection(String content) {
+    public void replaceSelection(final String content) {
         textField.replaceSelection(content);
     }
 
@@ -280,7 +282,7 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
      * 
      * @throws javax.swing.text.BadLocationException
      */
-    public String getText(int offs, int len) throws BadLocationException {
+    public String getText(final int offs, final int len) throws BadLocationException {
         return textField.getText(offs, len);
     }
 
@@ -358,14 +360,13 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
 
     /** {@inheritDoc} */
     @Override
-    public synchronized void addKeyListener(KeyListener l) {
+    public synchronized void addKeyListener(final KeyListener l) {
         textField.addKeyListener(l);
     }
 
     /** {@inheritDoc} */
     @Override
-    public synchronized void removeKeyListener(KeyListener l) {
+    public synchronized void removeKeyListener(final KeyListener l) {
         textField.removeKeyListener(l);
     }
-
 }

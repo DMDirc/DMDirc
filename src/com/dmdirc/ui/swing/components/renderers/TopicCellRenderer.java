@@ -24,14 +24,17 @@ package com.dmdirc.ui.swing.components.renderers;
 
 import com.dmdirc.Topic;
 import com.dmdirc.ui.swing.components.JWrappingLabel;
+
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.Date;
+
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.ListCellRenderer;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -48,8 +51,9 @@ public class TopicCellRenderer extends JPanel implements ListCellRenderer {
 
     /** {@inheritDoc} */
     @Override
-    public Component getListCellRendererComponent(JList list, Object value,
-            int index, boolean isSelected, boolean cellHasFocus) {
+    public Component getListCellRendererComponent(final JList list,
+            final Object value, final int index,
+            final boolean isSelected, final boolean cellHasFocus) {
         removeAll();
         setLayout(new MigLayout("ins 0, wrap 1"));
 
