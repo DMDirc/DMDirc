@@ -24,6 +24,7 @@ package com.dmdirc.parser;
 
 import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.callbacks.interfaces.IAwayState;
+import com.dmdirc.parser.callbacks.interfaces.IChannelKick;
 import com.dmdirc.parser.callbacks.interfaces.IChannelSelfJoin;
 import com.dmdirc.parser.callbacks.interfaces.INoticeAuth;
 import com.dmdirc.parser.callbacks.interfaces.INumeric;
@@ -500,6 +501,20 @@ public class IRCParserTest extends junit.framework.TestCase {
         assertEquals("bar :abc def", TestParser.getParam("foo :bar :abc def"));
         assertEquals("abc def", TestParser.getParam("abc def"));
     }
+    
+    @Test
+    public void testKick() throws CallbackNotFoundException {
+        final TestParser parser = new TestParser();
+        final ICKTest ick = new ICKTest();
+        parser.injectConnectionStrings();
+
+        parser.injectLine(":nick JOIN #D");
+        parser.getCallbackManager().addCallback("onChannelKick", ick, "#D");
+        parser.injectLine(":bar!me@moo KICK #D nick :Bye!");
+     
+        assertTrue("onChannelKick must be called", ick.called);
+        assertNotNull("cKickedClient must not be null", ick.cKickedClient);
+    }
 
     @Test
     public void testIRCds() {
@@ -598,6 +613,19 @@ public class IRCParserTest extends junit.framework.TestCase {
             message = sMessage;
             host = sHost;
         }
+    }
+    
+    private class ICKTest implements IChannelKick {
+        ChannelClientInfo cKickedClient = null;
+        boolean called = false;
+
+        public void onChannelKick(IRCParser tParser, ChannelInfo cChannel,
+                ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient,
+                String sReason, String sKickedByHost) {
+            this.cKickedClient = cKickedClient;
+            called = true;
+        }
+        
     }
 
 }
