@@ -28,11 +28,13 @@ import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.DMDircExceptionHandler;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.themes.ThemeManager;
 import com.dmdirc.ui.dummy.DummyController;
-import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.ui.interfaces.UIController;
+import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.updater.UpdateChannel;
 import com.dmdirc.updater.UpdateChecker;
 
@@ -77,6 +79,20 @@ public final class Main {
      * @param args the command line arguments
      */
     public static void main(final String[] args) {
+        try {
+            init(args);
+        } catch (Throwable ex) {
+            Logger.appError(ErrorLevel.FATAL, "Exception while "
+                    + "initialising ", ex);
+        }
+    }
+    
+    /**
+     * Initialises the client.
+     * 
+     * @param args The command line arguments
+     */
+    private static void init(final String[] args) {
         Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
 
         final CommandLineParser clp = new CommandLineParser(args);
@@ -132,7 +148,7 @@ public final class Main {
                 ServerManager.getServerManager().disconnectAll("Unexpected shutdown");
                 IdentityManager.save();
             }
-        }, "Shutdown thread"));
+        }, "Shutdown thread"));        
     }
 
     /**
