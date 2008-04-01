@@ -107,6 +107,7 @@ notifications.whois=lastcommand:(raw )?whois %4$s( %4$s)?
 
 ui.backgroundcolour=0
 ui.foregroundcolour=1
+ui.frameBufferSize=25000
 ui.framemanagerPosition=left
 ui.maximisewindows=false
 ui.sortByMode=true
