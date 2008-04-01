@@ -399,7 +399,7 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
                 close();
             } else if (event.getKeyCode() == KeyEvent.VK_ENTER) {
                 search(Direction.UP, searchBox.getText(), caseCheck.isSelected());
-            } else {
+            } else if (event.getKeyCode() != KeyEvent.VK_F3 && event.getKeyCode() != KeyEvent.VK_F) {
                 line = parent.getTextPane().getLastVisibleLine();
                 index = 0;
             }
