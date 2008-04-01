@@ -659,10 +659,10 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 break;
             case NICKNAME:
                 popupMenu = getPopupMenu(getNicknamePopupType(), argument);
-                popupMenu.add(new NicknameCopyAction(argument));
-                if (popupMenu.getComponentCount() > 1) {
+                if (popupMenu.getComponentCount() > 0) {
                     popupMenu.addSeparator();
                 }
+                popupMenu.add(new NicknameCopyAction(argument));
                 break;
             default:
                 popupMenu = getPopupMenu(null, argument);
@@ -703,10 +703,10 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 break;
             case NICKNAME:
                 popupMenu = getPopupMenu(getNicknamePopupType(), argument);
-                popupMenu.add(new NicknameCopyAction(argument));
-                if (popupMenu.getComponentCount() > 1) {
+                if (popupMenu.getComponentCount() > 0) {
                     popupMenu.addSeparator();
                 }
+                popupMenu.add(new NicknameCopyAction(argument));
                 break;
             default:
                 popupMenu = getPopupMenu(null, argument);
