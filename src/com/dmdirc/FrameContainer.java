@@ -23,6 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.config.ConfigManager;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.interfaces.IconChangeListener;
 import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.SelectionListener;
@@ -56,6 +57,9 @@ public abstract class FrameContainer {
     
     /** The config manager for this container. */
     private final ConfigManager config;
+    
+    /** The IconChanger for this container. */
+    private final IconChanger changer = new IconChanger();
 
     /**
      * Instantiate new frame container.
@@ -64,9 +68,9 @@ public abstract class FrameContainer {
      * @param config The config manager for this container
      */
     public FrameContainer(final String icon, final ConfigManager config) {
-        setIcon(icon);
-        
         this.config = config;
+        
+        setIcon(icon);
     }
 
     /**
@@ -111,6 +115,9 @@ public abstract class FrameContainer {
         this.icon = icon;
         
         iconUpdated();
+        
+        config.removeListener(changer);
+        config.addChangeListener("icon", icon, changer);
     }
     
     /**
@@ -340,5 +347,18 @@ public abstract class FrameContainer {
      */
     public void removeIconChangeListener(final IconChangeListener listener) {
         listeners.remove(IconChangeListener.class, listener);
+    }
+    
+    /**
+     * Updates the icon of this frame if its config setting is changed.
+     */
+    private class IconChanger implements ConfigChangeListener {
+
+        /** {@inheritDoc} */
+        @Override
+        public void configChanged(final String domain, final String key) {
+            iconUpdated();
+        }
+        
     }
 }
