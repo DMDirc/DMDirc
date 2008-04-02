@@ -159,12 +159,11 @@ public final class Server extends WritableFrameContainer implements Serializable
         serverInfo = new ServerInfo(server, port, password);
         serverInfo.setSSL(ssl);
 
-        ServerManager.getServerManager().registerServer(this);
-
         configManager = new ConfigManager("", "", server);
 
         window = Main.getUI().getServer(this);
 
+        ServerManager.getServerManager().registerServer(this);
         WindowManager.addWindow(window);
 
         window.setTitle(server + ":" + port);
@@ -730,7 +729,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
 
     /**
-     * Caclaultes a network name from the specified server name. This method
+     * Calculates a network name from the specified server name. This method
      * implements parts 2-4 of the procedure documented at getNetwork().
      *
      * @param serverName The server name to parse
