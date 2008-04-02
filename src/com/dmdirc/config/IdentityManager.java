@@ -164,17 +164,19 @@ public final class IdentityManager {
      * @param file The file to load the identity from.
      */
     private static void loadIdentity(final File file) {
-        for (Identity identity : identities) {
-            if (file.equals(identity.getFile())) {
-                try {
-                    identity.reload();
-                } catch (IOException ex) {
-                    Logger.userError(ErrorLevel.MEDIUM,
-                            "I/O error when reloading identity file: "
-                            + file.getAbsolutePath() + " (" + ex.getMessage() + ")");
+        synchronized (identities) {
+            for (Identity identity : identities) {
+                if (file.equals(identity.getFile())) {
+                    try {
+                        identity.reload();
+                    } catch (IOException ex) {
+                        Logger.userError(ErrorLevel.MEDIUM,
+                                "I/O error when reloading identity file: "
+                                + file.getAbsolutePath() + " (" + ex.getMessage() + ")");
+                    }
+
+                    return;
                 }
-                
-                return;
             }
         }
         
@@ -225,8 +227,10 @@ public final class IdentityManager {
      * Saves all modified identity files to disk.
      */
     public static void save() {
-        for (Identity identity : identities) {
-            identity.save();
+        synchronized (identities) {
+            for (Identity identity : identities) {
+                identity.save();
+            }
         }
     }
     
@@ -242,10 +246,14 @@ public final class IdentityManager {
             removeIdentity(identity);
         }
         
-        identities.add(identity);
+        synchronized (identities) {
+            identities.add(identity);
+        }
         
-        for (ConfigManager manager : managers) {
-            manager.checkIdentity(identity);
+        synchronized (managers) {
+            for (ConfigManager manager : managers) {
+                manager.checkIdentity(identity);
+            }
         }
     }
     
@@ -261,7 +269,9 @@ public final class IdentityManager {
         assert(identity != null);
         assert(identities.contains(identity));
         
-        identities.remove(identity);
+        synchronized (identities) {
+            identities.remove(identity);
+        }
     }
     
     /**
@@ -272,7 +282,9 @@ public final class IdentityManager {
     public static void addConfigManager(final ConfigManager manager) {
         assert(manager != null);
         
-        managers.add(manager);
+        synchronized (managers) {
+            managers.add(manager);
+        }
     }
     
     /**
@@ -282,9 +294,11 @@ public final class IdentityManager {
     public static List<Identity> getProfiles() {
         final List<Identity> profiles = new ArrayList<Identity>();
         
-        for (Identity identity : identities) {
-            if (identity.isProfile()) {
-                profiles.add(identity);
+        synchronized (identities) {
+            for (Identity identity : identities) {
+                if (identity.isProfile()) {
+                    profiles.add(identity);
+                }
             }
         }
         
@@ -313,30 +327,32 @@ public final class IdentityManager {
         
         String comp = "";
         
-        for (Identity identity : identities) {
-            switch (identity.getTarget().getType()) {
-            case IRCD:
-                comp = ircd;
-                break;
-            case NETWORK:
-                comp = network;
-                break;
-            case SERVER:
-                comp = server;
-                break;
-            case CHANNEL:
-                comp = channel;
-                break;
-            case PROFILE:
-                comp = null;
-                break;
-            default:
-                comp = "";
-                break;
-            }
-            
-            if (comp != null && comp.equalsIgnoreCase(identity.getTarget().getData())) {
-                sources.add(identity);
+        synchronized (identities) {
+            for (Identity identity : identities) {
+                switch (identity.getTarget().getType()) {
+                case IRCD:
+                    comp = ircd;
+                    break;
+                case NETWORK:
+                    comp = network;
+                    break;
+                case SERVER:
+                    comp = server;
+                    break;
+                case CHANNEL:
+                    comp = channel;
+                    break;
+                case PROFILE:
+                    comp = null;
+                    break;
+                default:
+                    comp = "";
+                    break;
+                }
+
+                if (comp != null && comp.equalsIgnoreCase(identity.getTarget().getData())) {
+                    sources.add(identity);
+                }
             }
         }
         
@@ -396,10 +412,12 @@ public final class IdentityManager {
 
         final String myTarget = (channel + "@" + network).toLowerCase();
         
-        for (Identity identity : identities) {
-            if (identity.getTarget().getType() == ConfigTarget.TYPE.CHANNEL
-                    && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
-                return identity;
+        synchronized (identities) {
+            for (Identity identity : identities) {
+                if (identity.getTarget().getType() == ConfigTarget.TYPE.CHANNEL
+                        && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
+                    return identity;
+                }
             }
         }
         
@@ -425,10 +443,12 @@ public final class IdentityManager {
 
         final String myTarget = network.toLowerCase();
         
-        for (Identity identity : identities) {
-            if (identity.getTarget().getType() == ConfigTarget.TYPE.NETWORK
-                    && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
-                return identity;
+        synchronized (identities) {
+            for (Identity identity : identities) {
+                if (identity.getTarget().getType() == ConfigTarget.TYPE.NETWORK
+                        && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
+                    return identity;
+                }
             }
         }
         
@@ -455,10 +475,12 @@ public final class IdentityManager {
         
         final String myTarget = server.toLowerCase();
         
-        for (Identity identity : identities) {
-            if (identity.getTarget().getType() == ConfigTarget.TYPE.SERVER
-                    && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
-                return identity;
+        synchronized (identities) {
+            for (Identity identity : identities) {
+                if (identity.getTarget().getType() == ConfigTarget.TYPE.SERVER
+                        && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
+                    return identity;
+                }
             }
         }
         
