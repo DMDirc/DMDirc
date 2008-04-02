@@ -19,12 +19,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.util;
 
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-
 import com.dmdirc.themes.ThemeManager;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -33,7 +34,14 @@ import java.net.URL;
  * 
  * @author chris
  */
-public class URLBuilder {
+public final class URLBuilder {
+    
+    /**
+     * Creates a new instance of URLBuilder.
+     */
+    private URLBuilder() {
+        // Shouldn't be constructed
+    }
 
     /**
      * Constructs an URL pointing to the specified resource on the file system.
@@ -61,7 +69,7 @@ public class URLBuilder {
      */
     public static URL buildJarURL(final String jarFile, final String path) {
         try {
-            return new URL("jar:" + buildURL(jarFile) + "!/" + path);
+            return new URL("jar:" + buildURL(jarFile) + "!/" + path);            
         } catch (MalformedURLException ex) {
             Logger.appError(ErrorLevel.HIGH, "Unable to build jar URL", ex);
             return null;
@@ -76,7 +84,7 @@ public class URLBuilder {
      * @return An URL corresponding to the specified resource
      */
     public static URL buildDMDircURL(final String resource) {
-        return URLBuilder.class.getClassLoader().getResource(resource);
+        return Thread.currentThread().getContextClassLoader().getResource(resource);
     }
     
     /**
@@ -109,10 +117,10 @@ public class URLBuilder {
             return buildDMDircURL(spec.substring(9));
         } else if (spec.startsWith("jar://") || spec.startsWith("zip://")) {
             final int offset = spec.indexOf(':', 6);
-            return buildJarURL(spec.substring(6, offset), spec.substring(offset));
+            return buildJarURL(spec.substring(6, offset), spec.substring(offset + 1));
         } else if (spec.startsWith("theme://")) {
             final int offset = spec.indexOf(':', 8);
-            return buildThemeURL(spec.substring(8, offset), spec.substring(offset));
+            return buildThemeURL(spec.substring(8, offset), spec.substring(offset + 1));
         } else if (spec.startsWith("http://") || spec.startsWith("https://")) {
             try {
                 return new URL(spec);
