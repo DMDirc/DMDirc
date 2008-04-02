@@ -23,7 +23,6 @@
 package com.dmdirc.addons.logging;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.ui.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.config.ConfigManager;
@@ -57,19 +56,16 @@ public class HistoryWindow extends FrameContainer {
      * @param parent The window this history window was opened from
      */
     public HistoryWindow(final String title, final ReverseFileReader reader, final Window parent) {
-        super();
+        super("raw");
         
         this.title = title;
         this.parent = parent;
-        
-        icon = IconManager.getIconManager().getIcon("raw");
         
         window = Main.getUI().getWindow(this);
         
         WindowManager.addWindow(parent, window);
         
         window.setTitle(title);
-        window.setFrameIcon(icon);
         window.setVisible(true);
         
         final Stack<String> lines = reader.getLines(

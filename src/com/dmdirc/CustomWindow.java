@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.ui.IconManager;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.WindowManager;
@@ -56,17 +55,14 @@ public class CustomWindow extends FrameContainer {
      */
     public CustomWindow(final String name, final String title,
             final Window parent) {
-        super();
+        super("custom");
 
         this.name = name;
         this.title = title;
         this.parent = parent;
 
-        icon = IconManager.getIconManager().getIcon("custom");
-
         window = Main.getUI().getWindow(this);
         window.setTitle(title);
-        window.setFrameIcon(icon);
 
         WindowManager.addWindow(parent, window);
 
@@ -80,16 +76,13 @@ public class CustomWindow extends FrameContainer {
      * @param title The parent of this custom window
      */
     public CustomWindow(final String name, final String title) {
-        super();
+        super("custom");
 
         this.name = name;
         this.title = title;
 
-        icon = IconManager.getIconManager().getIcon("custom");
-
         window = Main.getUI().getWindow(this);
         window.setTitle(title);
-        window.setFrameIcon(icon);
 
         WindowManager.addWindow(window);
 

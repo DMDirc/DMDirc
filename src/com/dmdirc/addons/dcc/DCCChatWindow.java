@@ -60,7 +60,6 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 		plugin.addWindow(this);
 		
 		myWindow.setTitle(title);
-		myWindow.setFrameIcon(icon);
 		myWindow.setVisible(true);
 	}
 	

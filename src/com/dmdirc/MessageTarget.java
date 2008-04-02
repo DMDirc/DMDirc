@@ -31,6 +31,15 @@ package com.dmdirc;
 public abstract class MessageTarget extends WritableFrameContainer {
 
     /**
+     * Creates a new MessageTarget.
+     * 
+     * @param icon The icon to use for this target
+     */
+    public MessageTarget(final String icon) {
+        super(icon);
+    }
+
+    /**
      * Sends the specified string as an action (CTCP) to the target that this
      * object represents.
      *

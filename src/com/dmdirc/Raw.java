@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.ui.IconManager;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -62,17 +61,14 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
      * @param newServer the server to monitor
      */
     public Raw(final Server newServer) {
-        super();
+        super("raw");
 
         this.server = newServer;
-
-        icon = IconManager.getIconManager().getIcon("raw");
 
         window = Main.getUI().getInputWindow(this, newServer.getFrame().getCommandParser());
         WindowManager.addWindow(server.getFrame(), window);
         window.setTitle("(Raw log)");
         window.getInputHandler().setTabCompleter(server.getTabCompleter());
-        window.setFrameIcon(icon);
 
         window.open();
     }

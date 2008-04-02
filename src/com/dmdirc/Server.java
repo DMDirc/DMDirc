@@ -41,7 +41,6 @@ import com.dmdirc.parser.IRCStringConverter;
 import com.dmdirc.parser.MyInfo;
 import com.dmdirc.parser.ParserError;
 import com.dmdirc.parser.ServerInfo;
-import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -154,7 +153,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public Server(final String server, final int port, final String password,
             final boolean ssl, final Identity profile, final List<String> autochannels) {
-        super();
+        super("server-disconnected");
 
         serverInfo = new ServerInfo(server, port, password);
         serverInfo.setSSL(ssl);
@@ -594,14 +593,9 @@ public final class Server extends WritableFrameContainer implements Serializable
      * Updates this server's icon.
      */
     private void updateIcon() {
-        icon = IconManager.getIconManager().getIcon(
-                myState == ServerState.CONNECTED
-                    ? serverInfo.getSSL() ? "secure-server" : "server" : "server-disconnected");
-        if (window != null) {
-            window.setFrameIcon(icon);
-
-            iconUpdated(icon);
-        }
+        final String icon = myState == ServerState.CONNECTED
+                    ? serverInfo.getSSL() ? "secure-server" : "server" : "server-disconnected";
+        setIcon(icon);
     }
 
     /**

@@ -130,13 +130,6 @@ public interface Window {
     void open();
     
     /**
-     * Sets the icon used by this window, if the GUI supports icons.
-     * 
-     * @param icon The icon to be used
-     */
-    void setFrameIcon(Icon icon);
-    
-    /**
      * Returns the transcoder that is being used by the UI.
      * 
      * @return This window's transcoder

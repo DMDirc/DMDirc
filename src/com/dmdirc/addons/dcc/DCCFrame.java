@@ -22,7 +22,6 @@
 
 package com.dmdirc.addons.dcc;
 
-import com.dmdirc.ui.IconManager;
 import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandManager;
@@ -36,6 +35,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.swing.components.InputTextFrame;
+
 import javax.swing.JPopupMenu;
 
 /**
@@ -170,16 +170,13 @@ public abstract class DCCFrame extends WritableFrameContainer {
 	 * @param defaultWindow Create default (empty) window.
 	 */
 	public DCCFrame(final DCCPlugin plugin, final String title, final boolean defaultWindow) {
-		super();
+		super("raw");
 		this.title = title;
 		this.plugin = plugin;
-		
-		icon = IconManager.getIconManager().getIcon("raw");
 
 		if (defaultWindow) {
 			myWindow = new EmptyFrame(this);
 			myWindow.setTitle(title);
-			myWindow.setFrameIcon(icon);
 			myWindow.setVisible(true);
 		}
 	}

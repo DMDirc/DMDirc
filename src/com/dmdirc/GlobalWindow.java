@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.ui.IconManager;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
@@ -45,7 +44,7 @@ public class GlobalWindow extends WritableFrameContainer {
 
     /** Creates a new instance of GlobalWindow. */
     public GlobalWindow() {
-        super();
+        super("icon");
 
         final TabCompleter tabCompleter = new TabCompleter();
         tabCompleter.addEntries(TabCompletionType.COMMAND,
@@ -53,11 +52,8 @@ public class GlobalWindow extends WritableFrameContainer {
 
         window = Main.getUI().getInputWindow(this, GlobalCommandParser.getGlobalCommandParser());
 
-        icon = IconManager.getIconManager().getIcon("icon");
-
         window.setTitle("(Global)");
         window.getInputHandler().setTabCompleter(tabCompleter);
-        window.setFrameIcon(icon);
 
         WindowManager.addWindow(window);
 

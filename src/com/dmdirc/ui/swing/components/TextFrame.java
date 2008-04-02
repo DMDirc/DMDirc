@@ -34,6 +34,7 @@ import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.util.StringTranscoder;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.interfaces.IconChangeListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.WindowManager;
@@ -73,6 +74,7 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
@@ -143,7 +145,14 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         quickCopy = config.getOptionBool("ui", "quickCopy", false);
         parent = owner;
 
-        setFrameIcon(Main.getUI().getMainWindow().getIcon());
+        setFrameIcon(owner.getIcon());
+        owner.addIconChangeListener(new IconChangeListener() {
+            /** {@inheritDoc} */
+            @Override
+            public void iconChanged(final Window window, final Icon icon) {
+                setFrameIcon(icon);
+            }
+        });
 
         try {
             transcoder = new StringTranscoder(Charset.forName(

@@ -160,12 +160,6 @@ public class DummyInputWindow implements InputWindow {
     
     /** {@inheritDoc} */
     @Override
-    public void setFrameIcon(final Icon icon) {
-        // Do nothing
-    }
-    
-    /** {@inheritDoc} */
-    @Override
     public StringTranscoder getTranscoder() {
         return new StringTranscoder(Charset.defaultCharset());
     }

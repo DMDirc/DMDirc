@@ -158,13 +158,7 @@ public final class DummyServerWindow implements ServerWindow {
     public void open() {
         // Do nothing
     }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void setFrameIcon(final Icon icon) {
-        // Do nothing
-    }
-    
+
     /** {@inheritDoc} */
     @Override
     public StringTranscoder getTranscoder() {

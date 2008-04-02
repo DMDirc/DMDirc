@@ -46,7 +46,16 @@ public abstract class WritableFrameContainer extends FrameContainer {
     protected static final String NOTIFICATION_SERVER = "server".intern();
     
     /** The name of the channel notification target. */
-    protected static final String NOTIFICATION_CHANNEL = "channel".intern();    
+    protected static final String NOTIFICATION_CHANNEL = "channel".intern();
+
+    /**
+     * Creates a new WritableFrameContainer.
+     * 
+     * @param icon The icon to use for this container
+     */
+    public WritableFrameContainer(final String icon) {
+        super(icon);
+    }
     
     /**
      * Sends a line of text to this container's source.

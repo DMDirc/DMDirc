@@ -28,6 +28,7 @@ import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.util.ListenerList;
 
@@ -50,12 +51,16 @@ public abstract class FrameContainer {
     /** A list of listeners for this containers's events. */
     protected final ListenerList listeners = new ListenerList();
 
-    /** The icon being used for this container's frame. */
-    protected Icon icon;
+    /** The name of the icon being used for this container's frame. */
+    private String icon;
 
-    /** Instantiate new frame container. */
-    public FrameContainer() {
-        //Do nothing
+    /**
+     * Instantiate new frame container.
+     * 
+     * @param icon The icon to use for this container
+     */
+    public FrameContainer(final String icon) {
+        setIcon(icon);
     }
 
     /**
@@ -92,12 +97,34 @@ public abstract class FrameContainer {
     public abstract Server getServer();
 
     /**
+     * Sets the icon to be used by this frame container.
+     * 
+     * @param icon The new icon to be used
+     */
+    public final void setIcon(final String icon) {
+        this.icon = icon;
+        
+        iconUpdated();
+    }
+    
+    /**
+     * Called when this container's icon is updated.
+     */
+    private void iconUpdated() {
+        final Icon newIcon = getIcon();
+        
+        for (IconChangeListener listener : listeners.get(IconChangeListener.class)) {
+            listener.iconChanged(getFrame(), newIcon);
+        }
+    }
+
+    /**
      * Retrieves the icon used by this container's window.
      *
      * @return This container's icon
      */
-    public Icon getIcon() {
-        return icon;
+    public final Icon getIcon() {
+        return IconManager.getIconManager().getIcon(icon);
     }
 
     /**
@@ -250,17 +277,6 @@ public abstract class FrameContainer {
     protected void addLine(final StringBuffer type, final Object ... args) {
         if (getFrame() != null) {
             getFrame().addLine(type, args);
-        }
-    }
-
-    /**
-     * Informs icon change listeners that this container's icon has changed.
-     *
-     * @param newIcon This container's new icon
-     */
-    protected void iconUpdated(final Icon newIcon) {
-        for (IconChangeListener listener : listeners.get(IconChangeListener.class)) {
-            listener.iconChanged(getFrame(), newIcon);
         }
     }
 

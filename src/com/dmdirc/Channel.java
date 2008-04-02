@@ -31,7 +31,6 @@ import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.parser.ChannelInfo;
 import com.dmdirc.parser.ClientInfo;
-import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -106,7 +105,7 @@ public final class Channel extends MessageTarget
      * this channel
      */
     public Channel(final Server newServer, final ChannelInfo newChannelInfo) {
-        super();
+        super("channel");
 
         channelInfo = newChannelInfo;
         server = newServer;
@@ -124,8 +123,6 @@ public final class Channel extends MessageTarget
         showModePrefix = configManager.getOptionBool("channel", "showmodeprefix", false);
         showColours = configManager.getOptionBool("ui", "shownickcoloursintext", false);
 
-        icon = IconManager.getIconManager().getIcon("channel");
-
         tabCompleter = new TabCompleter(server.getTabCompleter());
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 CommandManager.getCommandNames(CommandType.TYPE_CHANNEL));
@@ -134,7 +131,6 @@ public final class Channel extends MessageTarget
 
         window = Main.getUI().getChannel(Channel.this);
         WindowManager.addWindow(server.getFrame(), window);
-        window.setFrameIcon(icon);
         window.getInputHandler().setTabCompleter(tabCompleter);
 
         eventHandler = new ChannelEventHandler(this);
@@ -297,8 +293,7 @@ public final class Channel extends MessageTarget
         addLine("channelSelfJoin", "", me.getNickname(), me.getIdent(),
                 me.getHost(), channelInfo.getName());
 
-        icon = IconManager.getIconManager().getIcon("channel");
-        iconUpdated(icon);
+        setIcon("channel");
 
         server.removeInvites(channelInfo.getName());
     }
@@ -325,8 +320,7 @@ public final class Channel extends MessageTarget
         server.getParser().joinChannel(channelInfo.getName());
         activateFrame();
 
-        icon = IconManager.getIconManager().getIcon("channel");
-        iconUpdated(icon);
+        setIcon("channel");
     }
 
     /**
@@ -349,8 +343,7 @@ public final class Channel extends MessageTarget
     public void resetWindow() {
         onChannel = false;
 
-        icon = IconManager.getIconManager().getIcon("channel-inactive");
-        iconUpdated(icon);
+        setIcon("channel-inactive");
 
         window.updateNames(new ArrayList<ChannelClientInfo>());
     }

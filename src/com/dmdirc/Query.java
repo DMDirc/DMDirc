@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.ui.IconManager;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
@@ -83,19 +82,15 @@ public final class Query extends MessageTarget implements
      * @param newServer The server object that this Query belongs to
      */
     public Query(final Server newServer, final String newHost) {
-        super();
+        super("query");
 
         this.server = newServer;
         this.host = newHost;
-
-        icon = IconManager.getIconManager().getIcon("query");
 
         window = Main.getUI().getQuery(this);
         WindowManager.addWindow(server.getFrame(), window);
 
         ActionManager.processEvent(CoreActionType.QUERY_OPENED, null, this);
-
-        window.setFrameIcon(icon);
 
         if (!server.getConfigManager().getOptionBool("general", "hidequeries", false)) {
             window.open();
