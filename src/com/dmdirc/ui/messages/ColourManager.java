@@ -22,6 +22,8 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -39,16 +41,34 @@ public final class ColourManager {
     /** Colour cache. */
     private static final Map<String, Color> COLOUR_CACHE = new HashMap<String, Color>();
     
-    /** Colours used for the standard 16 IRC colours. */
-    private static final Color[] IRC_COLOURS = {
+    /** Default colours used for the standard 16 IRC colours. */
+    private static final Color[] DEFAULT_COLOURS = {
         Color.WHITE, Color.BLACK, new Color(0, 0, 127), new Color(0, 141, 0),
         Color.RED, new Color(127, 0, 0), new Color(160, 15, 160), new Color(252, 127, 0),
         Color.YELLOW, new Color(0, 252, 0), new Color(0, 128, 128), new Color(0, 255, 255),
         Color.BLUE, new Color(255, 0, 255), Color.GRAY, Color.LIGHT_GRAY,
     };
     
+    /** Actual colours we're using for the 16 IRC colours. */
+    private static Color[] IRC_COLOURS = DEFAULT_COLOURS;
+       
     /** Creates a new instance of ColourManager. */
     private ColourManager() {
+    }
+    
+    /**
+     * Initialises the IRC_COLOURS array.
+     */
+    private static void initColours() {
+        IRC_COLOURS = DEFAULT_COLOURS;
+        
+        for (int i = 0; i < 16; i++) {
+            if (IdentityManager.getGlobalConfig().hasOption("colour", String.valueOf(i))) {
+                IRC_COLOURS[i] = getColour(IdentityManager.getGlobalConfig()
+                        .getOption("colour", String.valueOf(i)));
+            }
+            COLOUR_CACHE.remove(String.valueOf(i));
+        }
     }
     
     /**
@@ -172,5 +192,18 @@ public final class ColourManager {
         
         return ("" + chars[value / 16]) + chars[value % 16];
     }
+    
+    static {
+        IdentityManager.getGlobalConfig().addChangeListener("colour",
+                new ConfigChangeListener() {
+            /** {@inheritDoc} */
+            @Override
+            public void configChanged(final String domain, final String key) {
+                initColours();
+            }
+        });
+        
+        initColours();
+    }    
     
 }
