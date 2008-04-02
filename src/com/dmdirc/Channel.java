@@ -76,9 +76,6 @@ public final class Channel extends MessageTarget
     /** The tabcompleter used for this channel. */
     private final TabCompleter tabCompleter;
 
-    /** The config manager for this channel. */
-    private final ConfigManager configManager;
-
     /** A list of previous topics we've seen. */
     private final RollingList<Topic> topics;
 
@@ -105,23 +102,21 @@ public final class Channel extends MessageTarget
      * this channel
      */
     public Channel(final Server newServer, final ChannelInfo newChannelInfo) {
-        super("channel");
+        super("channel", new ConfigManager(newServer.getIrcd(), newServer.getNetwork(),
+                newServer.getName(), newChannelInfo.getName()));
 
         channelInfo = newChannelInfo;
         server = newServer;
 
-        configManager = new ConfigManager(server.getIrcd(), server.getNetwork(),
-                server.getName(), channelInfo.getName());
+        getConfigManager().addChangeListener("channel", this);
+        getConfigManager().addChangeListener("ui", "shownickcoloursintext", this);
 
-        configManager.addChangeListener("channel", this);
-        configManager.addChangeListener("ui", "shownickcoloursintext", this);
-
-        topics = new RollingList<Topic>(configManager.getOptionInt("channel",
+        topics = new RollingList<Topic>(getConfigManager().getOptionInt("channel",
                 "topichistorysize", 10));
 
-        sendWho = configManager.getOptionBool("channel", "sendwho", false);
-        showModePrefix = configManager.getOptionBool("channel", "showmodeprefix", false);
-        showColours = configManager.getOptionBool("ui", "shownickcoloursintext", false);
+        sendWho = getConfigManager().getOptionBool("channel", "sendwho", false);
+        showModePrefix = getConfigManager().getOptionBool("channel", "showmodeprefix", false);
+        showColours = getConfigManager().getOptionBool("ui", "shownickcoloursintext", false);
 
         tabCompleter = new TabCompleter(server.getTabCompleter());
         tabCompleter.addEntries(TabCompletionType.COMMAND,
@@ -148,7 +143,7 @@ public final class Channel extends MessageTarget
      */
     private void registerCallbacks() {
         eventHandler.registerCallbacks();
-        configManager.migrate(server.getIrcd(), server.getNetwork(),
+        getConfigManager().migrate(server.getIrcd(), server.getNetwork(),
                 server.getName(), channelInfo.getName());
     }
 
@@ -157,12 +152,6 @@ public final class Channel extends MessageTarget
      */
     public void show() {
         window.open();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public ConfigManager getConfigManager() {
-        return configManager;
     }
 
     /** {@inheritDoc} */
@@ -362,7 +351,7 @@ public final class Channel extends MessageTarget
         }
 
         // 3: Trigger any actions neccessary
-        part(configManager.getOption("general", "partmessage"));
+        part(getConfigManager().getOption("general", "partmessage"));
 
         // 4: Trigger action for the window closing
         ActionManager.processEvent(CoreActionType.CHANNEL_CLOSED, null, this);
@@ -498,11 +487,11 @@ public final class Channel extends MessageTarget
     @Override
     public void configChanged(final String domain, final String key) {
         if ("sendwho".equals(key)) {
-            sendWho = configManager.getOptionBool("channel", "sendwho", false);
+            sendWho = getConfigManager().getOptionBool("channel", "sendwho", false);
         } else if ("showmodeprefix".equals(key)) {
-            showModePrefix = configManager.getOptionBool("channel", "showmodeprefix", false);
+            showModePrefix = getConfigManager().getOptionBool("channel", "showmodeprefix", false);
         } else if ("shownickcoloursintext".equals(key)) {
-            showColours = configManager.getOptionBool("ui", "shownickcoloursintext", false);
+            showColours = getConfigManager().getOptionBool("ui", "shownickcoloursintext", false);
         }
     }
 

@@ -23,6 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 import org.junit.Test;
@@ -57,6 +58,8 @@ class BasicWritableFrameContainer extends WritableFrameContainer {
     private final int lineLength;
     
     public BasicWritableFrameContainer(final int lineLength) {
+        super("raw", IdentityManager.getGlobalConfig());
+        
         this.lineLength = lineLength;
     }
     
@@ -81,10 +84,6 @@ class BasicWritableFrameContainer extends WritableFrameContainer {
     }
     
     public Server getServer() {
-        return null;
-    }
-
-    public ConfigManager getConfigManager() {
         return null;
     }
 }

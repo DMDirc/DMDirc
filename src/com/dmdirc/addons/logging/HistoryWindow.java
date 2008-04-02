@@ -25,7 +25,6 @@ package com.dmdirc.addons.logging;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.Server;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.Window;
@@ -56,7 +55,7 @@ public class HistoryWindow extends FrameContainer {
      * @param parent The window this history window was opened from
      */
     public HistoryWindow(final String title, final ReverseFileReader reader, final Window parent) {
-        super("raw");
+        super("raw", parent.getConfigManager());
         
         this.title = title;
         this.parent = parent;
@@ -112,10 +111,5 @@ public class HistoryWindow extends FrameContainer {
     public Server getServer() {
         return parent.getContainer().getServer();
     }
-    
-    /** {@inheritDoc} */
-    @Override
-    public ConfigManager getConfigManager() {
-        return parent.getConfigManager();
-    }    
+
 }

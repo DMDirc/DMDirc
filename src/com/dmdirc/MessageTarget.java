@@ -22,6 +22,8 @@
 
 package com.dmdirc;
 
+import com.dmdirc.config.ConfigManager;
+
 /**
  * Defines common methods for objects that you can send messages to (such as
  * channels and queries).
@@ -34,9 +36,10 @@ public abstract class MessageTarget extends WritableFrameContainer {
      * Creates a new MessageTarget.
      * 
      * @param icon The icon to use for this target
+     * @param config The config manager to use for this target
      */
-    public MessageTarget(final String icon) {
-        super(icon);
+    public MessageTarget(final String icon, final ConfigManager config) {
+        super(icon, config);
     }
 
     /**

@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.IRCParser;
@@ -61,7 +60,7 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
      * @param newServer the server to monitor
      */
     public Raw(final Server newServer) {
-        super("raw");
+        super("raw", newServer.getConfigManager());
 
         this.server = newServer;
 
@@ -151,12 +150,6 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
     @Override
     public int getMaxLineLength() {
         return server.getMaxLineLength();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public ConfigManager getConfigManager() {
-        return server.getConfigManager();
     }
 
 }

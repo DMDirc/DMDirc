@@ -53,14 +53,20 @@ public abstract class FrameContainer {
 
     /** The name of the icon being used for this container's frame. */
     private String icon;
+    
+    /** The config manager for this container. */
+    private final ConfigManager config;
 
     /**
      * Instantiate new frame container.
      * 
      * @param icon The icon to use for this container
+     * @param config The config manager for this container
      */
-    public FrameContainer(final String icon) {
+    public FrameContainer(final String icon, final ConfigManager config) {
         setIcon(icon);
+        
+        this.config = config;
     }
 
     /**
@@ -132,7 +138,9 @@ public abstract class FrameContainer {
      *
      * @return the associated config manager
      */
-    public abstract ConfigManager getConfigManager();
+    public final ConfigManager getConfigManager() {
+        return config;
+    }
 
     /**
      * Requests that this object's frame be activated.

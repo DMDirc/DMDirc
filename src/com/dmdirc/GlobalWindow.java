@@ -25,7 +25,6 @@ package com.dmdirc;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
@@ -44,7 +43,7 @@ public class GlobalWindow extends WritableFrameContainer {
 
     /** Creates a new instance of GlobalWindow. */
     public GlobalWindow() {
-        super("icon");
+        super("icon", IdentityManager.getGlobalConfig());
 
         final TabCompleter tabCompleter = new TabCompleter();
         tabCompleter.addEntries(TabCompletionType.COMMAND,
@@ -106,12 +105,6 @@ public class GlobalWindow extends WritableFrameContainer {
     @Override
     public int getMaxLineLength() {
         return 0;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public ConfigManager getConfigManager() {
-        return IdentityManager.getGlobalConfig();
     }
 
 }

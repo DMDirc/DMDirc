@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.Window;
@@ -55,7 +54,7 @@ public class CustomWindow extends FrameContainer {
      */
     public CustomWindow(final String name, final String title,
             final Window parent) {
-        super("custom");
+        super("custom", parent.getConfigManager());
 
         this.name = name;
         this.title = title;
@@ -76,7 +75,7 @@ public class CustomWindow extends FrameContainer {
      * @param title The parent of this custom window
      */
     public CustomWindow(final String name, final String title) {
-        super("custom");
+        super("custom", IdentityManager.getGlobalConfig());
 
         this.name = name;
         this.title = title;
@@ -142,13 +141,6 @@ public class CustomWindow extends FrameContainer {
      */
     public String getTitle() {
         return title;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public ConfigManager getConfigManager() {
-        return parent == null ? IdentityManager.getGlobalConfig() : parent
-                .getConfigManager();
     }
 
 }

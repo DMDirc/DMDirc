@@ -261,6 +261,19 @@ public class ConfigManager extends ConfigSource implements Serializable,
      * @param ircd The new name of the ircd for this manager
      * @param network The new name of the network for this manager
      * @param server The new name of the server for this manager
+     */
+    public void migrate(final String ircd, final String network, final String server) {
+        migrate(ircd, network, server, "<Unknown>");
+    }   
+    
+    /**
+     * Migrates this ConfigManager from its current configuration to the
+     * appropriate one for the specified new parameters, firing listeners where
+     * settings have changed.
+     * 
+     * @param ircd The new name of the ircd for this manager
+     * @param network The new name of the network for this manager
+     * @param server The new name of the server for this manager
      * @param channel The new name of the channel for this manager
      */
     public void migrate(final String ircd, final String network, final String server,

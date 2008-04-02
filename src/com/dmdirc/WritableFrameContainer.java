@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.WindowManager;
@@ -52,9 +53,10 @@ public abstract class WritableFrameContainer extends FrameContainer {
      * Creates a new WritableFrameContainer.
      * 
      * @param icon The icon to use for this container
+     * @param config The config manager for this container
      */
-    public WritableFrameContainer(final String icon) {
-        super(icon);
+    public WritableFrameContainer(final String icon, final ConfigManager config) {
+        super(icon, config);
     }
     
     /**

@@ -30,7 +30,6 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -170,7 +169,7 @@ public abstract class DCCFrame extends WritableFrameContainer {
 	 * @param defaultWindow Create default (empty) window.
 	 */
 	public DCCFrame(final DCCPlugin plugin, final String title, final boolean defaultWindow) {
-		super("raw");
+		super("raw", IdentityManager.getGlobalConfig());
 		this.title = title;
 		this.plugin = plugin;
 
@@ -232,16 +231,6 @@ public abstract class DCCFrame extends WritableFrameContainer {
 	@Override
 	public String toString() {
 		return title;
-	}
-	
-	/**
-	 * Retrieves the config manager for this command window.
-	 *
-	 * @return This window's config manager
-	 */
-	@Override
-	public ConfigManager getConfigManager() {
-		return IdentityManager.getGlobalConfig();
 	}
 	
 	/**
