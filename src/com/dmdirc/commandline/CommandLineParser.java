@@ -22,15 +22,16 @@
 
 package com.dmdirc.commandline;
 
-import com.dmdirc.util.InvalidAddressException;
-import com.dmdirc.util.IrcAddress;
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.components.LauncherComponent;
+import com.dmdirc.util.InvalidAddressException;
+import com.dmdirc.util.IrcAddress;
 import com.dmdirc.util.resourcemanager.DMDircResourceManager;
 
+import java.io.File;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -271,7 +272,11 @@ public class CommandLineParser {
      * @param dir The new config directory
      */
     private void doDirectory(final String dir) {
-        Main.setConfigDir(dir);
+        if (dir.endsWith(File.separator)) {
+            Main.setConfigDir(dir);
+        } else {
+            Main.setConfigDir(dir + File.separator);
+        }
     }
     
     /**
