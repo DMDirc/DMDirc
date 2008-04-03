@@ -231,7 +231,14 @@ public class Identity extends ConfigSource implements Serializable,
      */
     private void fireReloadChange(final Object object) {
         final String string = (String) object;
-        final String domain = string.substring(0, string.indexOf('.'));
+        final int offset = string.indexOf('.');
+        
+        if (offset < 0) {
+            // Not a valid setting
+            return;
+        }
+        
+        final String domain = string.substring(0, offset);
         final String key = string.substring(domain.length() + 1);
         
         for (ConfigChangeListener listener : new ArrayList<ConfigChangeListener>(listeners)) {
