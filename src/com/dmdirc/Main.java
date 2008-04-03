@@ -98,6 +98,8 @@ public final class Main {
         final CommandLineParser clp = new CommandLineParser(args);
 
         IdentityManager.load();
+        
+        new ThemeManager().loadDefaultTheme();
 
         clp.applySettings();
 
@@ -112,8 +114,6 @@ public final class Main {
         PluginManager.getPluginManager();
 
         ActionManager.loadActions();
-
-        new ThemeManager().loadDefaultTheme();
 
         getUI().getMainWindow();
 
