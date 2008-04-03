@@ -27,8 +27,8 @@ import com.dmdirc.Main;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
@@ -62,7 +62,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Stack;
 
 
@@ -81,7 +80,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	private LoggingCommand command;
 
 	/** Hashtable of open files. */
-	private final Map<String,BufferedWriter> openFiles = new Hashtable<String,BufferedWriter>();
+	private final Map<String, BufferedWriter> openFiles = new Hashtable<String, BufferedWriter>();
 
 	/**
 	 * Creates a new instance of the Logging Plugin.
@@ -94,21 +93,19 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	@Override
 	public void onLoad() {
 		// Set defaults
-		final Properties defaults = new Properties();
-		defaults.setProperty(MY_DOMAIN + ".general.directory", Main.getConfigDir() + "logs" + System.getProperty("file.separator"));
-		defaults.setProperty(MY_DOMAIN + ".general.networkfolders", "true");
-		defaults.setProperty(MY_DOMAIN + ".advanced.filenamehash", "false");
-		defaults.setProperty(MY_DOMAIN + ".general.addtime", "true");
-		defaults.setProperty(MY_DOMAIN + ".general.timestamp", "[dd/MM/yyyy HH:mm:ss]");
-		defaults.setProperty(MY_DOMAIN + ".general.stripcodes", "true");
-		defaults.setProperty(MY_DOMAIN + ".general.channelmodeprefix", "true");
-		defaults.setProperty(MY_DOMAIN + ".backbuffer.autobackbuffer", "true");
-		defaults.setProperty(MY_DOMAIN + ".backbuffer.lines", "10");
-		defaults.setProperty(MY_DOMAIN + ".backbuffer.colour", "14");
-		defaults.setProperty(MY_DOMAIN + ".backbuffer.timestamp", "false");
-		defaults.setProperty(MY_DOMAIN + ".history.lines", "50000");
-		defaults.setProperty("identity.name", "Logging Plugin Defaults");
-		IdentityManager.addIdentity(new Identity(defaults));
+		final Identity defaults = IdentityManager.getAddonIdentity();
+		defaults.setOption(MY_DOMAIN, "general.directory", Main.getConfigDir() + "logs" + System.getProperty("file.separator"));
+		defaults.setOption(MY_DOMAIN, "general.networkfolders", "true");
+		defaults.setOption(MY_DOMAIN, "advanced.filenamehash", "false");
+		defaults.setOption(MY_DOMAIN, "general.addtime", "true");
+		defaults.setOption(MY_DOMAIN, "general.timestamp", "[dd/MM/yyyy HH:mm:ss]");
+		defaults.setOption(MY_DOMAIN, "general.stripcodes", "true");
+		defaults.setOption(MY_DOMAIN, "general.channelmodeprefix", "true");
+		defaults.setOption(MY_DOMAIN, "backbuffer.autobackbuffer", "true");
+		defaults.setOption(MY_DOMAIN, "backbuffer.lines", "10");
+		defaults.setOption(MY_DOMAIN, "backbuffer.colour", "14");
+		defaults.setOption(MY_DOMAIN, "backbuffer.timestamp", "false");
+		defaults.setOption(MY_DOMAIN, "history.lines", "50000");
 
 		final File dir = new File(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.directory"));
 		if (dir.exists()) {

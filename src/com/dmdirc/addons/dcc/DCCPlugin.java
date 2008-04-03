@@ -49,11 +49,10 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
 /**
@@ -63,17 +62,17 @@ import javax.swing.SwingConstants;
  * @version $Id: DCCPlugin.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public final class DCCPlugin extends Plugin implements ActionListener {
+
+	/** What domain do we store all settings in the global config under. */
+	private static final String MY_DOMAIN = "plugin-DCC";    
     
 	/** The DCCCommand we created. */
-	private DCCCommand command = null;
+	private DCCCommand command;
 
 	/** Our DCC Container window. */
 	private DCCFrame container;
 
-	/** What domain do we store all settings in the global config under. */
-	private static final String MY_DOMAIN = "plugin-DCC";
-
-	/** Child Frames */
+	/** Child Frames. */
 	private final List<DCCFrame> childFrames = new ArrayList<DCCFrame>();
 
 	/**
@@ -399,15 +398,13 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 */
 	@Override
 	public void onLoad() {
-		final Properties defaults = new Properties();
-		defaults.setProperty(MY_DOMAIN + ".receive.savelocation", Main.getConfigDir() + "downloads" + System.getProperty("file.separator"));
-		defaults.setProperty(MY_DOMAIN + ".send.reverse", "false");
-		defaults.setProperty(MY_DOMAIN + ".send.forceturbo", "true");
-		defaults.setProperty(MY_DOMAIN + ".receive.reverse.sendtoken", "false");
-		defaults.setProperty(MY_DOMAIN + ".send.blocksize", "1024");
-		defaults.setProperty(MY_DOMAIN + ".receive.autoaccept", "false");
-		defaults.setProperty("identity.name", "DCC Plugin Defaults");
-		IdentityManager.addIdentity(new Identity(defaults));
+		final Identity defaults = IdentityManager.getAddonIdentity();
+		defaults.setOption(MY_DOMAIN, "receive.savelocation", Main.getConfigDir() + "downloads" + System.getProperty("file.separator"));
+		defaults.setOption(MY_DOMAIN, "send.reverse", "false");
+		defaults.setOption(MY_DOMAIN, "send.forceturbo", "true");
+		defaults.setOption(MY_DOMAIN, "receive.reverse.sendtoken", "false");
+		defaults.setOption(MY_DOMAIN, "send.blocksize", "1024");
+		defaults.setOption(MY_DOMAIN, "receive.autoaccept", "false");
 
 		final File dir = new File(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "receive.savelocation"));
 		if (dir.exists()) {

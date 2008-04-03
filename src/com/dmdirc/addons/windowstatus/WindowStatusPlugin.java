@@ -28,10 +28,10 @@ import com.dmdirc.Main;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.config.Identity;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesCategory;
 import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.config.prefs.PreferencesSetting;
@@ -44,17 +44,15 @@ import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
 
-import net.miginfocom.swing.MigLayout;
-
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Displays information related to the current window in the status bar.
@@ -86,12 +84,10 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 	 */
 	public void onLoad() {
 		// Set defaults
-		final Properties defaults = new Properties();
-		defaults.setProperty(MY_DOMAIN + ".channel.shownone", "true");
-		defaults.setProperty(MY_DOMAIN + ".channel.noneprefix", "None:");
-		defaults.setProperty(MY_DOMAIN + ".client.showname", "false");
-		defaults.setProperty("identity.name", "WindowStatus Plugin Defaults");
-		IdentityManager.addIdentity(new Identity(defaults));
+		final Identity defaults = IdentityManager.getAddonIdentity();
+		defaults.setOption(MY_DOMAIN, "channel.shownone", "true");
+		defaults.setOption(MY_DOMAIN, "channel.noneprefix", "None:");
+		defaults.setOption(MY_DOMAIN, "client.showname", "false");
 
 		Main.getUI().getStatusBar().addComponent(panel);
 		updateStatus();
@@ -117,8 +113,8 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
         @Override
 	public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
 		if (type.equals(CoreActionType.CLIENT_FRAME_CHANGED)) {
-			updateStatus((FrameContainer)arguments[0]);
-                }
+			updateStatus((FrameContainer) arguments[0]);
+        }
 	}
 
 	/**
@@ -146,13 +142,13 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 
 			textString.append(frame.getName());
 		} else if (current instanceof Channel) {
-			final Channel frame = (Channel)current;
+			final Channel frame = (Channel) current;
 			final ChannelInfo chan = frame.getChannelInfo();
-			final Map<Long,String> names = new Hashtable<Long,String>();
-			final Map<Long,Integer> types = new Hashtable<Long,Integer>();
+			final Map<Long, String> names = new Hashtable<Long, String>();
+			final Map<Long, Integer> types = new Hashtable<Long, Integer>();
 
 			textString.append(chan.getName());
-			textString.append(" - Nicks: "+chan.getUserCount()+" (");
+			textString.append(" - Nicks: " + chan.getUserCount() + " (");
 
 			for (ChannelClientInfo client : chan.getChannelClients()) {
 				final Long im = client.getImportantModeValue();
@@ -179,7 +175,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 				if (count == null) {
 					count = Integer.valueOf(1);
 				} else {
-					count = count+1;
+					count++;
 				}
 				types.put(im, count);
 			}
@@ -194,7 +190,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 
 			textString.append(')');
 		} else if (current instanceof Query) {
-			final Query frame = (Query)current;
+			final Query frame = (Query) current;
 
 			textString.append(frame.getHost());
 			if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "client.showname")) {

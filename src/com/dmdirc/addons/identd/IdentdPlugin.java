@@ -24,10 +24,10 @@ package com.dmdirc.addons.identd;
 
 import com.dmdirc.Server;
 import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.config.Identity;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesCategory;
 import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.config.prefs.PreferencesSetting;
@@ -38,7 +38,6 @@ import com.dmdirc.plugins.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * The Identd plugin answers ident requests from IRC servers.
@@ -46,11 +45,14 @@ import java.util.Properties;
  * @author Shane
  */
 public class IdentdPlugin extends Plugin implements ActionListener {
-	/** What domain do we store all settings in the global config under. */
+
+    /** What domain do we store all settings in the global config under. */
 	private static final String MY_DOMAIN = "plugin-Identd";
-	/** Array list to store all the servers in that need ident replies */
+
+    /** Array list to store all the servers in that need ident replies. */
 	private final List<Server> servers = new ArrayList<Server>();
-	/** The IdentdServer that we use*/
+
+    /** The IdentdServer that we use. */
 	private IdentdServer myServer;
 
 	/**
@@ -67,21 +69,18 @@ public class IdentdPlugin extends Plugin implements ActionListener {
 		ActionManager.addListener(this, CoreActionType.SERVER_CONNECTED, CoreActionType.SERVER_CONNECTING, CoreActionType.SERVER_CONNECTERROR);
 
 		// Set defaults
-		final Properties defaults = new Properties();
-		defaults.setProperty(getDomain() + ".general.useUsername", "false");
-		defaults.setProperty(getDomain() + ".general.useNickname", "false");
-		defaults.setProperty(getDomain() + ".general.useCustomName", "false");
-		defaults.setProperty(getDomain() + ".general.customName", "DMDirc-user");
+		final Identity defaults = IdentityManager.getAddonIdentity();
+		defaults.setOption(getDomain(), "general.useUsername", "false");
+		defaults.setOption(getDomain(), "general.useNickname", "false");
+		defaults.setOption(getDomain(), "general.useCustomName", "false");
+		defaults.setOption(getDomain(), "general.customName", "DMDirc-user");
 		
-		defaults.setProperty(getDomain() + ".advanced.alwaysOn", "false");
-		defaults.setProperty(getDomain() + ".advanced.port", "113");
-		defaults.setProperty(getDomain() + ".advanced.useCustomSystem", "false");
-		defaults.setProperty(getDomain() + ".advanced.customSystem", "OTHER");
-		defaults.setProperty(getDomain() + ".advanced.isHiddenUser", "false");
-		defaults.setProperty(getDomain() + ".advanced.isNoUser", "false");
-
-		defaults.setProperty("identity.name", "Identd Plugin Defaults");
-		IdentityManager.addIdentity(new Identity(defaults));
+		defaults.setOption(getDomain(), "advanced.alwaysOn", "false");
+		defaults.setOption(getDomain(), "advanced.port", "113");
+		defaults.setOption(getDomain(), "advanced.useCustomSystem", "false");
+		defaults.setOption(getDomain(), "advanced.customSystem", "OTHER");
+		defaults.setOption(getDomain(), "advanced.isHiddenUser", "false");
+		defaults.setOption(getDomain(), "advanced.isNoUser", "false");
 		
 		myServer = new IdentdServer();
 		if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "advanced.alwaysOn")) {
