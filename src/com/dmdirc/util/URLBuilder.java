@@ -117,10 +117,22 @@ public final class URLBuilder {
             return buildDMDircURL(spec.substring(9));
         } else if (spec.startsWith("jar://") || spec.startsWith("zip://")) {
             final int offset = spec.indexOf(':', 6);
-            return buildJarURL(spec.substring(6, offset), spec.substring(offset + 1));
+            
+            if (offset < 0) {
+                Logger.userError(ErrorLevel.LOW, "Invalid URL, must contain ':': " + spec);
+                return null;
+            } else {
+                return buildJarURL(spec.substring(6, offset), spec.substring(offset + 1));
+            }
         } else if (spec.startsWith("theme://")) {
             final int offset = spec.indexOf(':', 8);
-            return buildThemeURL(spec.substring(8, offset), spec.substring(offset + 1));
+            
+            if (offset < 0) {
+                Logger.userError(ErrorLevel.LOW, "Invalid URL, must contain ':': " + spec);
+                return null;
+            } else {
+                return buildThemeURL(spec.substring(8, offset), spec.substring(offset + 1));
+            }
         } else if (spec.startsWith("http://") || spec.startsWith("https://")) {
             try {
                 return new URL(spec);
