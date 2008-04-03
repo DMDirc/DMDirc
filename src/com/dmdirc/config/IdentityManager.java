@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
     
 /**
  * The identity manager manages all known identities, providing easy methods
@@ -51,6 +52,9 @@ public final class IdentityManager {
     
     /** The identity file used for the global config. */
     private static Identity config;
+    
+    /** The identity file used for addon defaults. */
+    private static Identity addonConfig;
     
     /** The config manager used for global settings. */
     private static ConfigManager globalconfig;
@@ -71,6 +75,15 @@ public final class IdentityManager {
         if (getProfiles().size() == 0) {
             Identity.buildProfile("Default Profile");
         }
+        
+        // Set up the identity used for the addons defaults
+        final ConfigTarget target = new ConfigTarget();
+        final Properties properties = new Properties();
+        target.setGlobalDefault();
+        target.setOrder(500000);
+        properties.setProperty("identity.name", "Action defaults");        
+        addonConfig = new Identity(properties, target);
+        IdentityManager.addIdentity(addonConfig);        
     }
     
     /** Loads the default (built in) identities. */
@@ -221,6 +234,15 @@ public final class IdentityManager {
      */
     public static Identity getConfigIdentity() {
         return config;
+    }
+    
+    /**
+     * Retrieves the identity used for addons defaults.
+     * 
+     * @return The addons defaults identity
+     */
+    public static Identity getAddonIdentity() {
+        return addonConfig;
     }
     
     /**

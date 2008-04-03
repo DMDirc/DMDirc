@@ -30,8 +30,6 @@ import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.wrappers.ActionWrapper;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.actions.wrappers.PerformWrapper;
-import com.dmdirc.config.ConfigTarget;
-import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.ConfigChangeListener;
@@ -47,7 +45,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Manages all actions for the client.
@@ -88,9 +85,6 @@ public final class ActionManager {
     private final static MapList<ActionType, ActionListener> listeners
             = new MapList<ActionType, ActionListener>();
 
-    /** The identity we're using for action defaults. */
-    private static Identity defaultsIdentity;
-
     /** Indicates whether or not user actions should be killed (not processed). */
     private static boolean killSwitch
             = IdentityManager.getGlobalConfig().getOptionBool("actions", "killswitch", false);
@@ -110,16 +104,7 @@ public final class ActionManager {
 
         registerWrapper(AliasWrapper.getAliasWrapper());
         registerWrapper(PerformWrapper.getPerformWrapper());
-
-        // Set up the identity used for our defaults
-        final ConfigTarget target = new ConfigTarget();
-        final Properties properties = new Properties();
-        target.setGlobalDefault();
-        target.setOrder(500000);
-        properties.setProperty("identity.name", "Action defaults");
-        defaultsIdentity = new Identity(properties, target);
-        IdentityManager.addIdentity(defaultsIdentity);
-        
+       
         // Register a listener for the closing event, so we can save actions
         addListener(new ActionListener() {
             /** {@inheritDoc} */
@@ -161,7 +146,7 @@ public final class ActionManager {
      * @param value The default value for the setting
      */
     public static void registerDefault(final String name, final String value) {
-        defaultsIdentity.setOption("actions", name, value);
+        IdentityManager.getAddonIdentity().setOption("actions", name, value);
     }
 
     /**
