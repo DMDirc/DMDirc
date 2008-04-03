@@ -106,5 +106,15 @@ public class GlobalWindow extends WritableFrameContainer {
     public int getMaxLineLength() {
         return 0;
     }
+    
+    /**
+     * Initialises the global window if it's enabled in the config.
+     */
+    public static void init() {
+        if (IdentityManager.getGlobalConfig().getOptionBool("general", "showglobalwindow",
+                false)) {
+            new GlobalWindow();
+        }        
+    }
 
 }

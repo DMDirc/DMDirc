@@ -83,7 +83,7 @@ public final class Main {
             init(args);
         } catch (Throwable ex) {
             Logger.appError(ErrorLevel.FATAL, "Exception while "
-                    + "initialising ", ex);
+                    + "initialising", ex);
         }
     }
     
@@ -105,22 +105,7 @@ public final class Main {
 
         getUI().initUISettings();
 
-        if (IdentityManager.getGlobalConfig().getOptionBool("general", "firstRun", true)) {
-            IdentityManager.getConfigIdentity().setOption("general", "firstRun", "false");
-            getUI().showFirstRunWizard();
-            new Timer().schedule(new TimerTask(){
-
-                /** {@inheritDoc} */
-                @Override
-                public void run() {
-                    getUI().showFeedbackNag();
-                }
-            }, FEEDBACK_DELAY);
-        } else if (IdentityManager.getGlobalConfig().hasOption("general", "addonrevision")) {
-            // @Deprecated - can be removed after 0.6 is released
-            IdentityManager.getConfigIdentity().unsetOption("general", "addonrevision");
-            getUI().showMigrationWizard();
-        }
+        doFirstRun();
 
         ActionManager.init();
 
@@ -138,9 +123,7 @@ public final class Main {
 
         clp.processArguments();
 
-        if (IdentityManager.getGlobalConfig().getOptionBool("general", "showglobalwindow", false)) {
-            new GlobalWindow();
-        }
+        GlobalWindow.init();
 
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             public void run() {
@@ -149,6 +132,28 @@ public final class Main {
                 IdentityManager.save();
             }
         }, "Shutdown thread"));        
+    }
+    
+    /**
+     * Executes the first run or migration wizards as required.
+     */
+    private static void doFirstRun() {
+        if (IdentityManager.getGlobalConfig().getOptionBool("general", "firstRun", true)) {
+            IdentityManager.getConfigIdentity().setOption("general", "firstRun", "false");
+            getUI().showFirstRunWizard();
+            new Timer().schedule(new TimerTask() {
+
+                /** {@inheritDoc} */
+                @Override
+                public void run() {
+                    getUI().showFeedbackNag();
+                }
+            }, FEEDBACK_DELAY);
+        } else if (IdentityManager.getGlobalConfig().hasOption("general", "addonrevision")) {
+            // @Deprecated - can be removed after 0.6 is released
+            IdentityManager.getConfigIdentity().unsetOption("general", "addonrevision");
+            getUI().showMigrationWizard();
+        }        
     }
 
     /**
@@ -205,7 +210,8 @@ public final class Main {
             final String fs = System.getProperty("file.separator");
             final String osName = System.getProperty("os.name");
             if (osName.startsWith("Mac OS")) {
-                configdir = System.getProperty("user.home") + fs + "Library" + fs + "Preferences" + fs + "DMDirc" + fs;
+                configdir = System.getProperty("user.home") + fs + "Library"
+                        + fs + "Preferences" + fs + "DMDirc" + fs;
             } else if (osName.startsWith("Windows")) {
                 if (System.getenv("APPDATA") == null) {
                     configdir = System.getProperty("user.home") + fs + "DMDirc" + fs;
