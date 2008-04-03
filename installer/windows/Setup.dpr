@@ -391,8 +391,8 @@ begin
 //		end;
 	end;
 	errorMessage := '';
-	dowrite('Checking for installer.jar.. ');
-	if FileExists('installer.jar') then begin
+	dowrite('Checking for DMDirc.jar.. ');
+	if FileExists('DMDirc.jar') then begin
 		dowriteln('Success!');
 		dowrite('Checking for JVM.. ');
 		if (ExecAndWait(javaCommand+' -version') <> 0) then begin
@@ -405,7 +405,7 @@ begin
 		else begin
 			if IsConsole then begin
 				writeln('Success!');
-				write('Starting installer.jar.. ');
+				write('Starting installer.. ');
 				javaCommand := 'java.exe';
 			end;
 		end;
@@ -423,7 +423,7 @@ begin
 		if (ReleaseNumber <> '') then begin
 			params := params+' --release '+ReleaseNumber;
 		end;
-		if (ExecAndWait(javaCommand+' -jar installer.jar'+params) <> 0) then begin
+		if (ExecAndWait(javaCommand+' -cp DMDirc.jar com.dmdirc.installer.Main '+params) <> 0) then begin
 			dowriteln('Failed!');
 			if not installJRE(true) then begin
 				showError('Sorry, DMDirc setup can not continue without an updated version of java', false);
@@ -431,13 +431,13 @@ begin
 			end
 			else begin
 				// Try again now that java is installed.
-				ExecAndWait(javaCommand+' -jar installer.jar'+params);
+				ExecAndWait(javaCommand+' -cp DMDirc.jar com.dmdirc.installer.Main '+params);
 			end;
 		end;
 end
 	else begin
 		dowriteln('Failed!');
-		errorMessage := errorMessage+'installer.jar was not found.';
+		errorMessage := errorMessage+'DMDirc.jar was not found.';
 		errorMessage := errorMessage+#13#10;
 		errorMessage := errorMessage+#13#10+'This is likely because of a corrupt installer build.';
 		errorMessage := errorMessage+#13#10+'Please check http://www.dmdirc.com/ for an updated build.';

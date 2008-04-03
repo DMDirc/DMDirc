@@ -216,12 +216,12 @@ else
 	echo "[WARNING] Creating setup-less archive. This will just extract and immediately delete the .jar file unless the -e flag is used"
 fi
 
-if [ -e "../common/installer.jar" ]; then
-	ln -sf ../common/installer.jar ./installer.jar
-	FILES="${FILES} installer.jar"
-else
-	echo "[WARNING] Creating installer-less archive - relying on setup.sh"
-fi
+#if [ -e "../common/installer.jar" ]; then
+#	ln -sf ../common/installer.jar ./installer.jar
+#	FILES="${FILES} installer.jar"
+#else
+#	echo "[WARNING] Creating installer-less archive - relying on setup.sh"
+#fi
 
 if [ -e ${jarPath}"/src/com/dmdirc/res/source/logo.svg" ]; then
 	ln -sf ${jarPath}"/src/com/dmdirc/res/source/logo.svg" ./icon.svg
@@ -482,7 +482,7 @@ showHelp() {
 	echo "---------------------"
 	echo "-h, --help        Help information"
 	echo "-e, --extract     Extract .run file only, do not run setup.sh"
-	echo "-s, --script      Don't use installer.jar (not implemented yet)"
+#	echo "-s, --script      Don't use installer.jar (not implemented yet)"
 	echo "---------------------"
 	exit 0;
 }

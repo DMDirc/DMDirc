@@ -305,13 +305,13 @@ fi
 
 echo "Compressing files.."
 
-if [ -e "../common/installer.jar" ]; then
-	ln -sf ../common/installer.jar ./installer.jar
-	FILES="${FILES} installer.jar"
-	DELETEFILES="${DELETEFILES} installer.jar"
-else
-	echo "[WARNING] Creating installer-less archive - relying on Setup.exe"
-fi
+#if [ -e "../common/installer.jar" ]; then
+#	ln -sf ../common/installer.jar ./installer.jar
+#	FILES="${FILES} installer.jar"
+#	DELETEFILES="${DELETEFILES} installer.jar"
+#else
+#	echo "[WARNING] Creating installer-less archive - relying on Setup.exe"
+#fi
 
 if [ -e ${jarPath}"/src/com/dmdirc/res/icon.ico" ]; then
 	ln -sf ${jarPath}"/src/com/dmdirc/res/icon.ico" ./icon.ico

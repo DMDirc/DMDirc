@@ -139,7 +139,7 @@ showHelp() {
 	echo "---------------------"
 	echo "-h, --help                Help information"
 	echo "-r, --release [version]   This is a release"
-	echo "-s, --script              Don't use installer.jar (not implemented yet)"
+#	echo "-s, --script              Don't use installer.jar (not implemented yet)"
 	echo "---------------------"
 	exit 0;
 }
@@ -168,12 +168,12 @@ if [ "${isRelease}" != "" ]; then
 	isRelease=" --release "${isRelease}
 fi
 
-if [ -e "installer.jar" ]; then
+if [ -e "DMDirc.jar" ]; then
 	if [ "${scriptOnly}" = "true" ]; then
 		echo "Script-only install requested."
 	else
 		echo "Running installer.."
-		${JAVA} -cp DMDirc.jar -jar installer.jar ${isRoot}${isRelease}
+		${JAVA} -cp DMDirc.jar com.dmdirc.installer.Main ${isRoot}${isRelease}
 		if [ $? -ne 0 ]; then
 			if [ "" == "${isLinux}" ]; then
 				errordialog "DMDirc Setup" "Sorry, DMDirc setup can not continue without java 6."
@@ -181,7 +181,7 @@ if [ -e "installer.jar" ]; then
 			fi;
 			installjre "upgrade"
 			echo "Trying to run installer again.."
-			${JAVA} -cp DMDirc.jar -jar installer.jar ${isRoot}${isRelease}
+			${JAVA} -cp DMDirc.jar com.dmdirc.installer.Main ${isRoot}${isRelease}
 			if [ $? -ne 0 ]; then
 				exit 1;
 			fi;
