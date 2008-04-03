@@ -414,7 +414,7 @@ public class PreferencesManager {
         final Map<String, String> themes = new HashMap<String, String>();
 
         for (Map.Entry<String, Theme> entry
-                : new ThemeManager().getAvailableThemes().entrySet()) {
+                : ThemeManager.getAvailableThemes().entrySet()) {
             if (entry.getKey().indexOf('/') == -1) {
                 themes.put(entry.getKey(), entry.getKey());
             } else {

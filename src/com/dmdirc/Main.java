@@ -99,7 +99,7 @@ public final class Main {
 
         IdentityManager.load();
         
-        new ThemeManager().loadDefaultTheme();
+        ThemeManager.loadThemes();
 
         clp.applySettings();
 

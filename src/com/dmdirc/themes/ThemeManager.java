@@ -24,12 +24,14 @@ package com.dmdirc.themes;
 
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,25 +42,35 @@ import java.util.Map;
 public class ThemeManager {
     
     /** The directory to look for themes in. */
-    private final String themeDir;
+    private static final String THEME_DIR = Main.getConfigDir() + "themes/";
+    
+    /** Available themes. */
+    private static final Map<String, Theme> THEMES = new HashMap<String, Theme>();
+    
+    static {
+        IdentityManager.getGlobalConfig().addChangeListener("themes", "enabled",
+                new ConfigChangeListener() {
+            /** {@inheritDoc} */
+            @Override
+            public void configChanged(final String domain, final String key) {
+                loadThemes();
+            }
+        });
+    }
     
     /**
      * Creates a new instance of theme manager.
      */
-    public ThemeManager() {
-        themeDir = getThemeDirectory();
+    private ThemeManager() {
+        // Do nothing
     }
     
     /**
-     * Retrieves a list of available themes.
-     *
-     * @return A list of available themes
+     * Scans for available themes and loads any themes that the user has enabled.
      */
-    public Map<String, Theme> getAvailableThemes() {
-        final Map<String, Theme> res = new HashMap<String, Theme>();
-        
-        final File dir = new File(themeDir);
-        
+    public static void loadThemes() {
+        final File dir = new File(THEME_DIR);
+
         if (!dir.exists()) {
             try {
                 dir.mkdirs();
@@ -66,37 +78,54 @@ public class ThemeManager {
             } catch (IOException ex) {
                 Logger.userError(ErrorLevel.HIGH,
                         "I/O error when creating themes directory: " + ex.getMessage());
+                return;
             }
         }
         
-        if (dir.listFiles() == null) {
-            Logger.userError(ErrorLevel.MEDIUM, "Unable to load themes");
-        } else {
-            for (File file : dir.listFiles()) {
-                if (!file.isDirectory()) {
-                    final Theme theme = new Theme(file);
-                    if (theme.isValidTheme()) {
-                        res.put(file.getName(), theme);
+        final List<String> enabled
+                = IdentityManager.getGlobalConfig().getOptionList("themes", "enabled");
+            
+        synchronized (THEMES) {            
+            if (dir.listFiles() == null) {
+                Logger.userError(ErrorLevel.MEDIUM, "Unable to load themes");
+            } else {
+                for (File file : dir.listFiles()) {
+                    if (file.isDirectory()) {
+                        continue;
+                    }
+                    
+                    Theme theme;
+                    
+                    if (THEMES.containsKey(file.getName())) {
+                        theme = THEMES.get(file.getName());
+                    } else {
+                        theme = new Theme(file);
+                        
+                        if (theme.isValidTheme()) {
+                            THEMES.put(file.getName(), theme);
+                        }
+                    }
+                    
+                    if (enabled.contains(file.getName()) && !theme.isEnabled()
+                            && theme.isValidTheme()) {
+                        theme.applyTheme();
+                    } else if (theme.isEnabled() && !enabled.contains(file.getName())) {
+                        // TODO: Unapply theme
                     }
                 }
-            }
+            }            
         }
-        
-        return res;
     }
     
     /**
-     * Loads the default theme for the client.
-     */
-    public void loadDefaultTheme() {
-        if (IdentityManager.getGlobalConfig().hasOption("general", "theme")) {
-            final String theme = IdentityManager.getGlobalConfig().getOption("general", "theme");
-            final Map<String, Theme> themes = getAvailableThemes();
-            
-            if (themes.containsKey(theme)) {
-                themes.get(theme).applyTheme();
-            }
-        }        
+     * Retrieves a list of available themes.
+     *
+     * @return A list of available themes
+     */    
+    public static Map<String, Theme> getAvailableThemes() {
+        synchronized (THEMES) {
+            return new HashMap<String, Theme>(THEMES);
+        }
     }
     
     /**
@@ -105,7 +134,7 @@ public class ThemeManager {
      * @return The directory used for storing themes
      */
     public static String getThemeDirectory() {
-        return Main.getConfigDir() + "themes/";
-    }
+        return THEME_DIR;
+}
     
 }

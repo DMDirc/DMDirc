@@ -45,6 +45,9 @@ public class Theme {
     /** The resource manager we're using for this theme. */
     private ZipResourceManager rm;
     
+    /** Whether or not this theme is enabled. */
+    private boolean enabled;
+    
     /**
      * Creates a new instance of Theme.
      *
@@ -77,9 +80,11 @@ public class Theme {
      * Applies this theme to the client.
      */
     public void applyTheme() {
-        if (!isValidTheme() || rm == null) {
+        if (!isValidTheme() || rm == null || enabled) {
             return;
         }
+        
+        enabled = true;
         
         final InputStream identity = rm.getResourceInputStream("config");
         
@@ -95,5 +100,16 @@ public class Theme {
             }
         }
     }
+
+    /**
+     * Determines if this theme is enabled or not.
+     * 
+     * @return True if the theme is enabled, false otherwise.
+     */
+    public boolean isEnabled() {
+        return enabled;
+    }
+    
+    
     
 }
