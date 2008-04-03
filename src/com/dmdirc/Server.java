@@ -502,6 +502,11 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @param chan channel to add
      */
     public void addChannel(final ChannelInfo chan) {
+        if (myState == ServerState.CLOSING) {
+            // Can't join channels while the server is closing
+            return;
+        }
+        
         if (hasChannel(chan.getName())) {
             getChannel(chan.getName()).setChannelInfo(chan);
             getChannel(chan.getName()).selfJoin();
