@@ -29,7 +29,6 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +38,7 @@ import java.util.Map;
  *
  * @author Chris
  */
-public class ThemeManager {
+public final class ThemeManager {
     
     /** The directory to look for themes in. */
     private static final String THEME_DIR = Main.getConfigDir() + "themes/";
@@ -71,50 +70,57 @@ public class ThemeManager {
     public static void loadThemes() {
         final File dir = new File(THEME_DIR);
 
-        if (!dir.exists()) {
-            try {
-                dir.mkdirs();
-                dir.createNewFile();
-            } catch (IOException ex) {
-                Logger.userError(ErrorLevel.HIGH,
-                        "I/O error when creating themes directory: " + ex.getMessage());
-                return;
-            }
+        if (!dir.exists() && !dir.mkdirs()) {
+            Logger.userError(ErrorLevel.HIGH, "Could not create themes directory");
         }
         
         final List<String> enabled
                 = IdentityManager.getGlobalConfig().getOptionList("themes", "enabled");
             
-        synchronized (THEMES) {            
-            if (dir.listFiles() == null) {
-                Logger.userError(ErrorLevel.MEDIUM, "Unable to load themes");
-            } else {
-                for (File file : dir.listFiles()) {
-                    if (file.isDirectory()) {
-                        continue;
-                    }
-                    
-                    Theme theme;
-                    
-                    if (THEMES.containsKey(file.getName())) {
-                        theme = THEMES.get(file.getName());
-                    } else {
-                        theme = new Theme(file);
-                        
-                        if (theme.isValidTheme()) {
-                            THEMES.put(file.getName(), theme);
-                        }
-                    }
-                    
-                    if (enabled.contains(file.getName()) && !theme.isEnabled()
-                            && theme.isValidTheme()) {
-                        theme.applyTheme();
-                    } else if (theme.isEnabled() && !enabled.contains(file.getName())) {
-                        // TODO: Unapply theme
-                    }
-                }
-            }            
+        if (dir.listFiles() == null) {
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to load themes");
+            return;
         }
+        
+        synchronized (THEMES) {
+            for (File file : dir.listFiles()) {
+                if (file.isDirectory()) {
+                    continue;
+                }
+
+                loadTheme(file, enabled.contains(file.getName()));
+            }
+        }            
+    }
+    
+    /**
+     * Attempts to load the theme from the specified file. If the enabled 
+     * argument is true, the theme will be applied automatically. If it
+     * has been previously applied and is no longer enabled, it will be 
+     * unapplied.
+     * 
+     * @param file The file pointing to the theme to be loaded
+     * @param enabled Whether this theme is enabled or not
+     */
+    private static void loadTheme(final File file, final boolean enabled) {
+        Theme theme;
+
+        if (THEMES.containsKey(file.getName())) {
+            theme = THEMES.get(file.getName());
+        } else {
+            theme = new Theme(file);
+
+            if (theme.isValidTheme()) {
+                THEMES.put(file.getName(), theme);
+            }
+        }
+
+        if (enabled && !theme.isEnabled()
+                && theme.isValidTheme()) {
+            theme.applyTheme();
+        } else if (theme.isEnabled() && !enabled) {
+            // TODO: Unapply theme
+        }        
     }
     
     /**
