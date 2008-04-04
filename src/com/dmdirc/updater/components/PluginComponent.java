@@ -62,7 +62,7 @@ public class PluginComponent implements UpdateComponent {
     /** {@inheritDoc} */
     @Override    
     public String getFriendlyName() {
-        return "Plugin: " + plugin.getNiceName();
+        return plugin.getNiceName();
     }
 
     /** {@inheritDoc} */
