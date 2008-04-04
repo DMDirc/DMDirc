@@ -22,18 +22,17 @@
 
 package com.dmdirc.ui.swing.dialogs.actionsmanager;
 
-import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.ui.swing.components.PackingTable;
 import com.dmdirc.ui.swing.components.renderers.ActionTypeTableCellRenderer;
 import com.dmdirc.ui.swing.components.renderers.ArrayCellRenderer;
-
 import com.dmdirc.ui.swing.dialogs.actionseditor.ActionsEditorDialog;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -199,11 +198,13 @@ public final class ActionsGroupPanel extends JPanel implements ActionListener,
         if (e.getSource() == add) {
             ActionsEditorDialog.showActionsEditorDialog(group.getName());
         } else if (e.getSource() == edit) {
-            ActionsEditorDialog.showActionsEditorDialog(model.getAction(table.getSelectedRow()),
+            ActionsEditorDialog.showActionsEditorDialog(model.getAction(
+                    table.getRowSorter().convertRowIndexToModel(table.getSelectedRow())),
                     group.getName());
         } else if (e.getSource() == delete) {
             JOptionPane.showMessageDialog(this, "Deleting an action: " +
-                    model.getValueAt(table.getSelectedRow(), 0));
+                    model.getValueAt(
+                    table.getRowSorter().convertRowIndexToModel(table.getSelectedRow()), 0));
         }
     }
 
