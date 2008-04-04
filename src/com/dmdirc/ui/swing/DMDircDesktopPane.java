@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing;
 
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
+import javax.swing.JInternalFrame;
 
 /**
  * DMDirc Extentions to JDesktopPane.
@@ -46,4 +47,15 @@ public class DMDircDesktopPane extends JDesktopPane {
     public void add(final JComponent comp, final int index) {
         addImpl(comp, null, index);
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public JInternalFrame getSelectedFrame() {
+        if (getComponentCount() > 0) {
+            return super.getSelectedFrame();
+        } else {
+            return null;
+        }
+    }
+    
 }
