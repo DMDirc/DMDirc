@@ -30,6 +30,7 @@ import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.ColourManager;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -38,6 +39,7 @@ import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JLabel;
+
 import net.miginfocom.layout.PlatformDefaults;
 
 /**
@@ -67,6 +69,8 @@ public class NodeLabel extends JLabel implements SelectionListener,
     private Color activeBackground;
     /** Active foreground. */
     private Color activeForeground;
+    /** notification set? */
+    private boolean notification;
 
     /** 
      * Instantiates a new node label.
@@ -114,6 +118,7 @@ public class NodeLabel extends JLabel implements SelectionListener,
         setPreferredSize(new Dimension(100000, getFont().getSize() +
                 (int) PlatformDefaults.getUnitValueX("related").
                 getValue()));
+        notification = false;
     }
 
     /** {@inheritDoc} */
@@ -127,7 +132,7 @@ public class NodeLabel extends JLabel implements SelectionListener,
             }
             setBackground(activeBackground);
             setForeground(activeForeground);
-        } else {
+        } else if (!notification) {
             setFont(getFont().deriveFont(Font.PLAIN));
             setBackground(manager.getTree().getBackground());
             setForeground(manager.getTree().getForeground());
@@ -139,6 +144,7 @@ public class NodeLabel extends JLabel implements SelectionListener,
     public void notificationSet(final Window window, final Color colour) {
         if (equals(window)) {
             setForeground(colour);
+            notification = true;
         }
     }
 
@@ -147,6 +153,7 @@ public class NodeLabel extends JLabel implements SelectionListener,
     public void notificationCleared(final Window window) {
         if (equals(window)) {
             setForeground(manager.getTree().getForeground());
+            notification = false;
         }
     }
 
@@ -223,7 +230,7 @@ public class NodeLabel extends JLabel implements SelectionListener,
     }
     
     /** {@inheritDoc} */
-    @Override
+    @Override   
     public boolean equals(final Object obj) {
         if (window == null) {
             return false;
