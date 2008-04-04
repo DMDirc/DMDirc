@@ -44,6 +44,8 @@ import java.util.TreeMap;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
@@ -68,6 +70,8 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
     private final int itemCount;
     /** Menu items for toggling, closing and minimising. */
     private final JMenuItem toggleStateMenuItem, closeMenuItem, minimiseMenuItem;
+    /** Seperator. */
+    private final JSeparator separator;
 
     /** 
      * Creates a new instance of WindowMenuFrameManager.
@@ -104,7 +108,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
 
         checkToggleState();
         
-        addSeparator();
+        separator = new JPopupMenu.Separator();
 
         itemCount = getMenuComponentCount();
     }
@@ -129,7 +133,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
 
     /** {@inheritDoc} */
     @Override
-    public void addWindow(final FrameContainer window) {
+    public void addWindow(final FrameContainer window) {       
         addFrameContainer(window);
     }
 
@@ -159,6 +163,10 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
      * @param window Window to add to the list
      */
     private void addFrameContainer(final FrameContainer window) {
+        if (getMenuComponentCount() == itemCount) {
+            add(separator);
+        }
+        
         final FrameContainerMenuItem mi = new FrameContainerMenuItem(window);
         synchronized (menuItemMap) {
             if (isShowing()) {
@@ -189,6 +197,10 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                 window.removeSelectionListener(this);
             }
         }
+        
+        if (getMenuComponentCount() == itemCount + 1) {
+            remove(separator);
+        }        
     }
 
     /** 
@@ -264,7 +276,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
             return 0;
         }
 
-        for (int i = itemCount; i < getMenuComponentCount(); i++) {
+        for (int i = itemCount + 1; i < getMenuComponentCount(); i++) {
             if (!(getMenuComponent(i) instanceof FrameContainerMenuItem)) {
                 continue;
             }
