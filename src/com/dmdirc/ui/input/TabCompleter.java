@@ -218,7 +218,7 @@ public final class TabCompleter implements Serializable {
      * @return Additional tab targets for the text, or null if none are available
      */
     private static AdditionalTabTargets getIntelligentResults(final List<String> args) {
-        if (args.size() == 0 || args.get(0).charAt(0) != CommandManager.getCommandChar()) {
+        if (args.isEmpty() || args.get(0).charAt(0) != CommandManager.getCommandChar()) {
             return null;
         }
         
