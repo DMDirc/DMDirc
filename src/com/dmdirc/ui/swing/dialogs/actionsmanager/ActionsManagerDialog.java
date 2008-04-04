@@ -105,8 +105,8 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
     }
 
     /** Creates the dialog if one doesn't exist, and displays it. */
-    public static synchronized void showActionsManagerDialog() {
-        me = getActionsManagerDialog();
+    public static void showActionsManagerDialog() {
+        getActionsManagerDialog();
 
         me.pack();
         me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
@@ -126,11 +126,13 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
      *
      * @return The current ActionsManagerDialog instance
      */
-    public static synchronized ActionsManagerDialog getActionsManagerDialog() {
-        if (me == null) {
-            me = new ActionsManagerDialog();
-        } else {
-            me.reloadGroups();
+    public static ActionsManagerDialog getActionsManagerDialog() {
+        synchronized (ActionsManagerDialog.class) {
+            if (me == null) {
+                me = new ActionsManagerDialog();
+            } else {
+                me.reloadGroups();
+            }
         }
 
         return me;
@@ -398,7 +400,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
     /** {@inheritDoc} */
     @Override
     public void dispose() {
-        synchronized (me) {
+        synchronized (ActionsManagerDialog.class) {
             super.dispose();
             me = null;
         }
