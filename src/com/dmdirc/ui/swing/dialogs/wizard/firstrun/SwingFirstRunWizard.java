@@ -23,7 +23,11 @@
 package com.dmdirc.ui.swing.dialogs.wizard.firstrun;
 
 import com.dmdirc.Main;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.FirstRunWizard;
@@ -94,7 +98,15 @@ public final class SwingFirstRunWizard implements WizardListener,
 
         if (firstRun &&
                 ((ProfileStep) wizardDialog.getStep(2)).getProfileManagerState()) {
-            ProfileManagerDialog.showProfileManagerDialog();
+            ActionManager.addListener(new ActionListener() {
+                /** {@inheritDoc} */
+                @Override
+                public void processEvent(final ActionType type,
+                        final StringBuffer format, final Object... arguments) {
+                    ProfileManagerDialog.showProfileManagerDialog();
+                }
+            }, CoreActionType.CLIENT_OPENED);
+            
         }
         wizardDialog.dispose();
     }
