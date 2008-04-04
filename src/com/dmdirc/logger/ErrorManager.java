@@ -193,6 +193,8 @@ public final class ErrorManager implements Serializable, Runnable {
         if (errors.containsValue(error)) {
             error.setReportStatus(ErrorReportStatus.FINISHED);
             error.setFixedStatus(ErrorFixedStatus.UNREPORTED);
+        } else if (error.getLevel().equals(ErrorLevel.FATAL)) {
+            sendErrorInternal(error);
         } else {
             reportQueue.add(error);
         
