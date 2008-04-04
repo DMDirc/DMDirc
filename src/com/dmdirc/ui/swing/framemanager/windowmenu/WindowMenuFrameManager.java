@@ -82,8 +82,8 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
         addMenuListener(this);
         
         toggleStateMenuItem = new JMenuItem();
-        toggleStateMenuItem.setMnemonic('t');
-        toggleStateMenuItem.setText("ToggleState");
+        toggleStateMenuItem.setMnemonic('m');
+        toggleStateMenuItem.setText("Maximise");
         toggleStateMenuItem.setActionCommand("ToggleState");
         toggleStateMenuItem.addActionListener(this);
         
