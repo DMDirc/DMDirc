@@ -99,7 +99,7 @@ public class LinuxInstaller extends Installer {
 	}
 
 	/**
-	 * Setup shortcut
+	 * Setup shortcut.
 	 *
 	 * @param location Location where app will be installed to.
 	 * @param shortcutType Type of shortcut to add.
@@ -137,6 +137,7 @@ public class LinuxInstaller extends Installer {
 					writer.println("ISGNOME=`pidof -x -s gnome-panel`");
 					writer.println("ZENITY=`which zenity`");
 					writer.println("DIALOG=`which dialog`");
+                    writer.println("JAVA=`which java`");
 					
 					writer.println("messagedialog() {");
 					writer.println("	# Send message to console.");
@@ -146,7 +147,7 @@ public class LinuxInstaller extends Installer {
 					writer.println("	echo \"-----------------------------------------------------------------------\"");
 					writer.println("	echo \"${2}\"");
 					writer.println("	echo \"-----------------------------------------------------------------------\"");
-					writer.println("");
+					writer.println();
 					writer.println("	if [ \"\" != \"${ISKDE}\" -a \"\" != \"${KDIALOG}\" -a \"\" != \"${DISPLAY}\" ]; then");
 					writer.println("		echo \"Dialog on Display: ${DISPLAY}\"");
 					writer.println("		${KDIALOG} --title \"DMDirc: ${1}\" --msgbox \"${2}\"");
@@ -166,7 +167,7 @@ public class LinuxInstaller extends Installer {
 					writer.println("	echo \"-----------------------------------------------------------------------\"");
 					writer.println("	echo \"${2}\"");
 					writer.println("	echo \"-----------------------------------------------------------------------\"");
-					writer.println("");
+					writer.println();
 					writer.println("	if [ \"\" != \"${ISKDE}\" -a \"\" != \"${KDIALOG}\" -a \"\" != \"${DISPLAY}\" ]; then");
 					writer.println("		echo \"Dialog on Display: ${DISPLAY}\"");
 					writer.println("		${KDIALOG} --title \"DMDirc: ${1}\" --yesno \"${2}\"");
@@ -176,7 +177,7 @@ public class LinuxInstaller extends Installer {
 					writer.println("	elif [ \"\" != \"${DIALOG}\" ]; then");
 					writer.println("		${DIALOG} --title \"DMDirc: ${1}\" --yesno \"${2}\" 8 40");
 					writer.println("	else");
-					writer.println("		echo \"Unable to show Dialog for question, assuming no");
+					writer.println("		echo \"Unable to show Dialog for question, assuming no\"");
 					writer.println("		return 1");
 					writer.println("	fi");
 					writer.println("}");
@@ -189,7 +190,7 @@ public class LinuxInstaller extends Installer {
 					writer.println("	echo \"-----------------------------------------------------------------------\"");
 					writer.println("	echo \"${2}\"");
 					writer.println("	echo \"-----------------------------------------------------------------------\"");
-					writer.println("");
+					writer.println();
 					writer.println("	if [ \"\" != \"${ISKDE}\" -a \"\" != \"${KDIALOG}\" -a \"\" != \"${DISPLAY}\" ]; then");
 					writer.println("		echo \"Dialog on Display: ${DISPLAY}\"");
 					writer.println("		${KDIALOG} --title \"DMDirc: ${1}\" --error \"${2}\"");
@@ -218,7 +219,7 @@ public class LinuxInstaller extends Installer {
 					writer.println("	exit 1;");
 					writer.println("fi");
 					
-					writer.println("RUNNING=\"ps aux | grep DMDirc.jar | grep -v grep\"");
+					writer.println("RUNNING=\"${JAVA} -jar " + location + "/DMDirc.jar -e -v 1>/dev/null | grep 'Unable to connect'\"");
 					writer.println("if [ \"${RUNNING}\" != \"\" ]; then");
 					writer.println("	errordialog \"Uninstaller\" \"Uninstall Aborted - DMDirc is still running.\nPlease close DMDirc before continuing\"");
 					writer.println("	echo \"Uninstall Aborted - DMDirc already running.\"");
