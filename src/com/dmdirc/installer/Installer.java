@@ -22,29 +22,50 @@
 
 package com.dmdirc.installer;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.nio.channels.FileChannel;
 
 /**
- * Installs DMDirc
+ * Installs DMDirc.
  *
  * @author Shane Mc Cormack
  */
 public abstract class Installer extends Thread {
-	/** Types of shortcut */
-	public static enum ShortcutType { DESKTOP, MENU, QUICKLAUNCH, UNINSTALLER, PROTOCOL; }
+    
+	/** Types of shortcut. */
+	public static enum ShortcutType {
+        /** Desktop shortcut. */
+        DESKTOP,
+        /** Menu (start/k/etc) shortcut. */
+        MENU,
+        /** Quick launch shortcut. */
+        QUICKLAUNCH,
+        /** The actual uninstaller (not a shortcut, as far as I can tell). */
+        UNINSTALLER,
+        /** Associate DMDirc with the irc:// protocol (not a shortcut). */
+        PROTOCOL;
+    }
 	
 	/** Step where things happen. */
-	protected StepInstall step = null;
+	protected StepInstall step;
+    
+	/**
+	 * Create a new Installer.
+	 */
+	public Installer() {
+		super("Installer-Thread");
+	}    
 	
 	/**
-	 * Get the default install location
+	 * Get the default install location.
+     * 
+     * @return The default install location
 	 */
-	abstract String defaultInstallLocation();
+	public abstract String defaultInstallLocation();
 	
 	/**
 	 * This is what helps actually perform the installation in run().
@@ -55,14 +76,7 @@ public abstract class Installer extends Thread {
 	public final void setInstallStep(final StepInstall step) {
 		this.step = step;
 	}
-	
-	/**
-	 * Create a new Installer
-	 */
-	public Installer() {
-		super("Installer-Thread");
-	}
-	
+		
 	/**
 	 * This step performs the installation, via the StepInstall step.
 	 */
@@ -80,10 +94,10 @@ public abstract class Installer extends Thread {
 	public abstract boolean validFile(final String filename);
 	
 	/**
-	 * Main Setup stuff
+	 * Main Setup stuff.
 	 *
 	 * @param location Location where app will be installed to.
-	 * @return True if installation passed, else false; 
+	 * @return True if installation passed, else false
 	 */
 	public boolean doSetup(final String location) {
 		// Create the directory
@@ -93,21 +107,21 @@ public abstract class Installer extends Thread {
 		try {
 			final File dir = new File(".");
 			final FilenameFilter filter = new FilenameFilter() {
+                /** {@inheritDoc} */
+                @Override
 				public boolean accept(final File dir, final String name) {
-					return name.charAt(0) != '.' &&
-					       !name.equalsIgnoreCase("installer.jar") &&
-					       validFile(name);
+					return name.charAt(0) != '.' && validFile(name);
 				}
 			};
 			final String[] children = dir.list(filter);
 			if (children != null) {
 				for (String filename : children) {
-					step.addText("Copying "+filename);
-					copyFile(filename, location+File.separator+filename);
+					step.addText("Copying " + filename);
+					copyFile(filename, location + File.separator + filename);
 				}
 			}
 		} catch (IOException e) {
-			step.addText("Error copying files: "+e.getMessage());
+			step.addText("Error copying files: " + e.getMessage());
 			return false;
 		}
 		step.addText("File Copying Complete.");
@@ -115,7 +129,7 @@ public abstract class Installer extends Thread {
 	}
 	
 	/**
-	 * Check if this OS supports a given shortcut Type
+	 * Check if this OS supports a given shortcut Type.
 	 *
 	 * @param shortcutType Type of shortcut to check
 	 * @return True if this OS supports a given shortcut Type
@@ -125,19 +139,20 @@ public abstract class Installer extends Thread {
 	}
 	
 	/**
-	 * Setup shortcut
+	 * Setup shortcut.
 	 *
 	 * @param location Location where app will be installed to.
 	 * @param shortcutType Type of shortcut to add.
 	 */
-	abstract void setupShortcut(final String location, final ShortcutType shortcutType);
+	protected abstract void setupShortcut(final String location, final ShortcutType shortcutType);
 	
 	/**
 	 * Copy a file from one location to another.
 	 * Based on http://www.exampledepot.com/egs/java.io/CopyFile.html
 	 *
 	 * @param srcFile Original file
-	 * @param dstFile New file
+     * @param dstFile New file
+     * @throws java.io.IOException If an exception occurs while copying
 	 */
 	protected final void copyFile(final String srcFile, final String dstFile) throws IOException {
 		if (new File(srcFile).exists()) {
@@ -149,7 +164,7 @@ public abstract class Installer extends Thread {
 			srcChannel.close();
 			dstChannel.close();
 		} else {
-			throw new IOException(srcFile+" does not exist.");
+			throw new IOException(srcFile + " does not exist.");
 		}
 	}
 	
@@ -159,5 +174,8 @@ public abstract class Installer extends Thread {
 	 *
 	 * @param location Location where app was installed to.
 	 */
-	public void postInstall(final String location) { }
+	public void postInstall(final String location) {
+        // Nothing to do by default, installers may override
+    }
+    
 }

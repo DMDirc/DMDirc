@@ -47,6 +47,7 @@ public class LinuxInstaller extends Installer {
 	 * @param filename File to check
 	 * @return true If the file should be copied, else false.
 	 */
+    @Override
 	public boolean validFile(final String filename) {
 		return (!filename.equalsIgnoreCase("setup.sh") &&
 		        !filename.equalsIgnoreCase("getjre.sh") &&
@@ -54,9 +55,8 @@ public class LinuxInstaller extends Installer {
 		        !filename.equalsIgnoreCase("installjre.sh"));
 	}
 
-	/**
-	 * Get the default install location
-	 */
+	/** {@inheritDoc} */
+    @Override
 	public String defaultInstallLocation() {
 		String result = "";
 		if (CLIParser.getCLIParser().getParamNumber("-directory") > 0) {
@@ -78,6 +78,7 @@ public class LinuxInstaller extends Installer {
 	 * @param shortcutType Type of shortcut to check
 	 * @return True if this OS supports a given shortcut Type
 	 */
+    @Override
 	public boolean supportsShortcut(final ShortcutType shortcutType) {
 		switch (shortcutType) {
 			case QUICKLAUNCH:
