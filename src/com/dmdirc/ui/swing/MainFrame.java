@@ -23,15 +23,15 @@
 package com.dmdirc.ui.swing;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.ui.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.FramemanagerPosition;
@@ -70,6 +70,7 @@ import javax.swing.KeyStroke;
 import javax.swing.MenuSelectionManager;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+
 import net.miginfocom.layout.PlatformDefaults;
 import net.miginfocom.swing.MigLayout;
 
@@ -596,24 +597,6 @@ public final class MainFrame extends JFrame implements WindowListener,
 
     /** {@inheritDoc}. */
     @Override
-    public void setSelected(final FrameContainer source) {
-    //Ignore
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public void showNotification(final FrameContainer source, final Color colour) {
-    //Ignore
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public void clearNotification(final FrameContainer source) {
-    //Ignore
-    }
-
-    /** {@inheritDoc}. */
-    @Override
     public void addWindow(final FrameContainer window) {
         addWindow(window, desktopPane.getAllFrames().length - 1);
     }
@@ -669,9 +652,4 @@ public final class MainFrame extends JFrame implements WindowListener,
         delWindow(window);
     }
 
-    /** {@inheritDoc}. */
-    @Override
-    public void iconUpdated(final FrameContainer window) {
-    //Ignore
-    }
 }

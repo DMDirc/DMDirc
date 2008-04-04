@@ -22,10 +22,9 @@
 
 package com.dmdirc.ui.swing.framemanager.tree;
 
-import com.dmdirc.ui.swing.components.renderers.TreeViewTreeCellRenderer;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -34,6 +33,7 @@ import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.actions.CloseFrameContainerAction;
 import com.dmdirc.ui.swing.components.TextFrame;
 import com.dmdirc.ui.swing.components.TreeScroller;
+import com.dmdirc.ui.swing.components.renderers.TreeViewTreeCellRenderer;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -155,19 +155,6 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
 
     /** {@inheritDoc} */
     @Override
-    public void setSelected(final FrameContainer source) {
-        if (source != null) {
-            final TreeNode[] treePath =
-                    ((DefaultTreeModel) tree.getModel()).getPathToRoot(nodes.get(source));
-            if (treePath != null && treePath.length > 0) {
-                tree.setSelectionPath(new TreePath(treePath));
-            }
-
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public void setParent(final JComponent parent) {
         final JScrollPane scrollPane = new JScrollPane(tree);
         scrollPane.setAutoscrolls(true);
@@ -219,7 +206,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     }
 
     /** 
-     * Adds a window to the frame container
+     * Adds a window to the frame container.
      * 
      * @param parent Parent node
      * @param window Window to add
@@ -240,12 +227,6 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
                 tree.getRowBounds(tree.getRowForPath(new TreePath(node.getPath())));
         tree.scrollRectToVisible(new Rectangle(0, (int) view.getY(), 0, 0));
         window.addSelectionListener(this);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void iconUpdated(final FrameContainer window) {
-        tree.repaint();
     }
 
     /**
@@ -332,7 +313,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
                     event.getY());
             if (path != null) {
                 final TextFrame frame =
-                        ((TextFrame) ((FrameContainer) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject()).getFrame());
+                        (TextFrame) ((FrameContainer) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject()).getFrame();
                 final JPopupMenu popupMenu =
                         frame.getPopupMenu(null, "");
                 frame.addCustomPopupItems(popupMenu);
@@ -454,16 +435,4 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
         }
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void showNotification(final FrameContainer source,
-            final Color colour) {
-    //Redundant?
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void clearNotification(final FrameContainer source) {
-    //Redundant?
-    }
 }

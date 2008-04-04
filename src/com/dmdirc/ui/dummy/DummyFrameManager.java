@@ -86,32 +86,5 @@ public class DummyFrameManager implements FrameManager {
     public boolean canPositionHorizontally() {
         return true;
     }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void showNotification(final FrameContainer source, final Color colour) {
-        Main.getUI().getStatusBar()
-                .setMessage("DummyFrameManager: Notifcation for " + source);
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void clearNotification(final FrameContainer source) {
-        Main.getUI().getStatusBar()
-                .setMessage("DummyFrameManager: Clear notification for " + source);
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void setSelected(final FrameContainer source) {
-        Main.getUI().getStatusBar()
-                .setMessage("DummyFrameManager: Now focused: " + source);
-    }
 
-    /** {@inheritDoc} */
-    @Override
-    public void iconUpdated(final FrameContainer window) {
-        Main.getUI().getStatusBar()
-                .setMessage("DummyFrameManager: Icon changed: " + window);
-    }
 }

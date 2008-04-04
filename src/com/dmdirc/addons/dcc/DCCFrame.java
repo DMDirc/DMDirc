@@ -135,9 +135,7 @@ public abstract class DCCFrame extends WritableFrameContainer {
 		 */
  		@Override
 		protected void handleNonCommand(final InputWindow origin, final String line) {
-			if (origin.getContainer() instanceof WritableFrameContainer) {
-				((WritableFrameContainer)origin.getContainer()).sendLine(line);
-			}
+            origin.getContainer().sendLine(line);
 		}
 	}
 	

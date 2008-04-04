@@ -31,7 +31,6 @@ import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.components.TreeScroller;
 import com.dmdirc.ui.swing.framemanager.tree.TreeViewModel;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -150,28 +149,6 @@ public final class CtrlTabFrameManager implements FrameManager,
 
     /** {@inheritDoc} */
     @Override
-    public void setSelected(final FrameContainer source) {
-        final TreeNode[] path = model.getPathToRoot(nodes.get(source));
-        if (path != null && path.length > 0) {
-            selectionModel.setSelectionPath(new TreePath(path));
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void showNotification(final FrameContainer source,
-            final Color colour) {
-        //Ignore
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void clearNotification(final FrameContainer source) {
-        //Ignore
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public void addWindow(final FrameContainer window) {
         addWindow(root, window);
     }
@@ -208,7 +185,7 @@ public final class CtrlTabFrameManager implements FrameManager,
     }
 
     /**
-     * Adds a window to the frame container
+     * Adds a window to the frame container.
      *
      * @param parent Parent node
      * @param window Window to add
@@ -222,12 +199,6 @@ public final class CtrlTabFrameManager implements FrameManager,
         node.setUserObject(window);
         model.insertNodeInto(node, parent);
         window.addSelectionListener(this);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void iconUpdated(final FrameContainer window) {
-        //Ignore
     }
 
     /** Scrolls up. */

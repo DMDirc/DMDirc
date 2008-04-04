@@ -88,7 +88,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
     private JComponent parent;
     
     /** The panel used for our buttons. */
-    private JPanel panel;
+    private final JPanel panel;
     
     /** The currently selected window. */
     private transient FrameContainer selected;
@@ -113,6 +113,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void setParent(final JComponent parent) {
         this.parent = parent;
         
@@ -200,41 +201,19 @@ public final class ButtonBar implements FrameManager, ActionListener,
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean canPositionVertically() {
         return true;
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean canPositionHorizontally() {
         return true;
     }
     
     /** {@inheritDoc} */
-    public void setSelected(final FrameContainer source) {
-        if (selected != null && buttons.containsKey(selected)) {
-            buttons.get(selected).setSelected(false);
-        }
-        
-        selected = source;
-        
-        if (buttons.containsKey(source)) {
-            buttons.get(source).setSelected(true);
-        }
-    }
-    
-    /** {@inheritDoc} */
-    public void showNotification(final FrameContainer source, final Color colour) {
-        if (buttons.containsKey(source)) {
-            buttons.get(source).setForeground(colour);
-        }
-    }
-    
-    /** {@inheritDoc} */
-    public void clearNotification(final FrameContainer source) {
-        showNotification(source, source.getNotification());
-    }
-    
-    /** {@inheritDoc} */
+    @Override
     public void addWindow(final FrameContainer window) {
         windows.add(window);
         addButton(window);
@@ -246,6 +225,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void delWindow(final FrameContainer window) {
         windows.remove(window);
         
@@ -256,6 +236,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
     }
         
     /** {@inheritDoc} */
+    @Override
     public void addWindow(final FrameContainer parent, final FrameContainer window) {
         windows.add(parent, window);
         addButton(window);
@@ -267,6 +248,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void delWindow(final FrameContainer parent, final FrameContainer window) {
         windows.remove(parent, window);
         
@@ -276,16 +258,12 @@ public final class ButtonBar implements FrameManager, ActionListener,
         window.removeSelectionListener(this);
     }
     
-    /** {@inheritDoc} */
-    public void iconUpdated(final FrameContainer window) {
-        buttons.get(window).setIcon(window.getIcon());
-    }    
-    
     /**
      * Called when the user clicks on one of the buttons.
      *
      * @param e The action event associated with this action
      */
+    @Override
     public void actionPerformed(final ActionEvent e) {
         final Window active = Main.getUI().getActiveWindow();
         
@@ -305,6 +283,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
      *
      * @param e A ComponentEvent corresponding to this event.
      */
+    @Override
     public void componentResized(final ComponentEvent e) {
         buttonWidth = position.isHorizontal() ? 150 : (parent.getWidth() - UIUtilities.SMALL_BORDER * 3) / cells;
         
@@ -320,6 +299,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
      *
      * @param e A ComponentEvent corresponding to this event.
      */
+    @Override
     public void componentMoved(final ComponentEvent e) {
         // Do nothing
     }
@@ -329,6 +309,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
      *
      * @param e A ComponentEvent corresponding to this event.
      */
+    @Override
     public void componentShown(final ComponentEvent e) {
         // Do nothing
     }
@@ -338,6 +319,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
      *
      * @param e A ComponentEvent corresponding to this event.
      */
+    @Override
     public void componentHidden(final ComponentEvent e) {
         // Do nothing
     }

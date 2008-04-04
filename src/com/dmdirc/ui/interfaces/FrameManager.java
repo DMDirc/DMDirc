@@ -24,8 +24,6 @@ package com.dmdirc.ui.interfaces;
 
 import com.dmdirc.FrameContainer;
 
-import java.awt.Color;
-
 import javax.swing.JComponent;
 
 /**
@@ -61,29 +59,6 @@ public interface FrameManager {
     boolean canPositionHorizontally();
     
     /**
-     * Indicates that there is a new active frame.
-     * 
-     * @param source The object that now has focus
-     */
-    void setSelected(FrameContainer source);
-    
-    /**
-     * Shows an event notification to the user by colouring the corresponding
-     * element to the source a specific colour.
-     * 
-     * @param source The object requesting notification
-     * @param colour The colour that should be used to indicate the notification
-     */
-    void showNotification(FrameContainer source, Color colour);
-    
-    /**
-     * Removes the notification status of the specified object.
-     * 
-     * @param source The object whose notification should be cleared
-     */
-    void clearNotification(FrameContainer source);
-    
-    /**
      * Adds a window to this frame manager.
      * 
      * @param window The server to be added
@@ -112,12 +87,5 @@ public interface FrameManager {
      * @param window The custom window to be removed
      */
     void delWindow(FrameContainer parent, FrameContainer window);
-    
-    /**
-     * Informs the frame manager that the specified window has had its icon
-     * updated.
-     * 
-     * @param window The window that was updated
-     */
-    void iconUpdated(FrameContainer window);
+
 }

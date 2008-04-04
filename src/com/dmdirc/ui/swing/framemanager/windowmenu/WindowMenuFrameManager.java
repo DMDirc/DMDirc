@@ -23,9 +23,7 @@
 package com.dmdirc.ui.swing.framemanager.windowmenu;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.FrameContainerComparator;
-
 import com.dmdirc.GlobalWindow;
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
@@ -33,8 +31,9 @@ import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
-import java.awt.Color;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
@@ -62,12 +61,12 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
     /** Menu item list. */
     private final Map<FrameContainer, FrameContainerMenuItem> menuItemMap;
     /** Comparator. */
-    private FrameContainerComparator comparator =
+    private final FrameContainerComparator comparator =
             new FrameContainerComparator();
     /** Non frame container menu count. */
     private final int itemCount;
     /** Toggle state menu item. */
-    private JMenuItem toggleStateMenuItem;
+    private final JMenuItem toggleStateMenuItem;
 
     /** 
      * Creates a new instance of WindowMenuFrameManager.
@@ -130,25 +129,6 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
 
     /** {@inheritDoc} */
     @Override
-    public void setSelected(final FrameContainer source) {
-    //Ignore
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void showNotification(final FrameContainer source,
-            final Color colour) {
-    //Ignore
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void clearNotification(final FrameContainer source) {
-    //Ignore
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public void addWindow(final FrameContainer window) {
         addFrameContainer(window);
     }
@@ -171,12 +151,6 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
     public void delWindow(final FrameContainer parent,
             final FrameContainer window) {
         removeFramecontainer(window);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void iconUpdated(final FrameContainer window) {
-    //Ignore
     }
 
     /**
