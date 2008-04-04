@@ -109,6 +109,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
         checkToggleState();
         
         separator = new JPopupMenu.Separator();
+        add(separator);
 
         itemCount = getMenuComponentCount();
     }
@@ -164,7 +165,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
      */
     private void addFrameContainer(final FrameContainer window) {
         if (getMenuComponentCount() == itemCount) {
-            add(separator);
+            separator.setVisible(true);
         }
         
         final FrameContainerMenuItem mi = new FrameContainerMenuItem(window);
@@ -198,8 +199,8 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
             }
         }
         
-        if (getMenuComponentCount() == itemCount + 1) {
-            remove(separator);
+        if (getMenuComponentCount() == itemCount) {
+            separator.setVisible(false);
         }        
     }
 
@@ -276,7 +277,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
             return 0;
         }
 
-        for (int i = itemCount + 1; i < getMenuComponentCount(); i++) {
+        for (int i = itemCount; i < getMenuComponentCount(); i++) {
             if (!(getMenuComponent(i) instanceof FrameContainerMenuItem)) {
                 continue;
             }
