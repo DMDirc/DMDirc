@@ -22,7 +22,9 @@
 
 package com.dmdirc.ui.swing.dialogs.actionsmanager;
 
+import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionGroup;
+import com.dmdirc.actions.ActionManager;
 import com.dmdirc.ui.swing.components.PackingTable;
 import com.dmdirc.ui.swing.components.renderers.ActionTypeTableCellRenderer;
 import com.dmdirc.ui.swing.components.renderers.ArrayCellRenderer;
@@ -202,9 +204,16 @@ public final class ActionsGroupPanel extends JPanel implements ActionListener,
                     table.getRowSorter().convertRowIndexToModel(table.getSelectedRow())),
                     group.getName());
         } else if (e.getSource() == delete) {
-            JOptionPane.showMessageDialog(this, "Deleting an action: " +
-                    model.getValueAt(
-                    table.getRowSorter().convertRowIndexToModel(table.getSelectedRow()), 0));
+            final Action action = model.getAction(
+                    table.getRowSorter().convertRowIndexToModel(table.getSelectedRow()));
+            final int response = JOptionPane.showConfirmDialog(this,
+                    "Are you sure you wish to delete the action '"
+                    + action.getName() + "'?",
+                    "Confirm deletion", JOptionPane.YES_NO_OPTION);
+            if (response == JOptionPane.YES_OPTION) {
+                model.remove(action);
+                ActionManager.deleteAction(action);
+            }
         }
     }
 
