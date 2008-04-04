@@ -66,8 +66,8 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
             new FrameContainerComparator();
     /** Non frame container menu count. */
     private final int itemCount;
-    /** Toggle state menu item. */
-    private final JMenuItem toggleStateMenuItem;
+    /** Menu items for toggling, closing and minimising. */
+    private final JMenuItem toggleStateMenuItem, closeMenuItem, minimiseMenuItem;
 
     /** 
      * Creates a new instance of WindowMenuFrameManager.
@@ -86,25 +86,24 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
         toggleStateMenuItem.setText("Maximise");
         toggleStateMenuItem.setActionCommand("ToggleState");
         toggleStateMenuItem.addActionListener(this);
-        
-        checkToggleState();
-
         add(toggleStateMenuItem);
 
-        JMenuItem menuItem = new JMenuItem();
-        menuItem.setMnemonic('n');
-        menuItem.setText("Minimise");
-        menuItem.setActionCommand("Minimise");
-        menuItem.addActionListener(this);
-        add(menuItem);
+        minimiseMenuItem = new JMenuItem();
+        minimiseMenuItem.setMnemonic('n');
+        minimiseMenuItem.setText("Minimise");
+        minimiseMenuItem.setActionCommand("Minimise");
+        minimiseMenuItem.addActionListener(this);
+        add(minimiseMenuItem);
 
-        menuItem = new JMenuItem();
-        menuItem.setMnemonic('c');
-        menuItem.setText("Close");
-        menuItem.setActionCommand("Close");
-        menuItem.addActionListener(this);
-        add(menuItem);
+        closeMenuItem = new JMenuItem();
+        closeMenuItem.setMnemonic('c');
+        closeMenuItem.setText("Close");
+        closeMenuItem.setActionCommand("Close");
+        closeMenuItem.addActionListener(this);
+        add(closeMenuItem);
 
+        checkToggleState();
+        
         addSeparator();
 
         itemCount = getMenuComponentCount();
@@ -235,8 +234,13 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
     private void checkToggleState() {
         if (Main.getUI().getActiveWindow() == null) {
             toggleStateMenuItem.setEnabled(false);
+            closeMenuItem.setEnabled(false);
+            minimiseMenuItem.setEnabled(false);
         } else {
             toggleStateMenuItem.setEnabled(true);
+            closeMenuItem.setEnabled(true);
+            minimiseMenuItem.setEnabled(true);
+            
             if (Main.getUI().getActiveWindow().isMaximum()) {
                 toggleStateMenuItem.setText("Restore");
                 toggleStateMenuItem.setMnemonic('r');
