@@ -22,20 +22,17 @@
 
 package com.dmdirc.ui.dummy;
 
-import com.dmdirc.FrameContainer;
-import com.dmdirc.util.StringTranscoder;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.util.StringTranscoder;
 
 import java.beans.PropertyVetoException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-
-import javax.swing.Icon;
 
 /**
  * Dummy input window, used for testing.
@@ -49,7 +46,7 @@ public class DummyInputWindow implements InputWindow {
     /** are we maximised? */
     private boolean maximised;
     /** Our container. */
-    private final FrameContainer container;
+    private final WritableFrameContainer container;
     
     /** 
      * Instantiates a new DummyInputWindow.
@@ -112,7 +109,7 @@ public class DummyInputWindow implements InputWindow {
     
     /** {@inheritDoc} */
     @Override
-    public FrameContainer getContainer() {
+    public WritableFrameContainer getContainer() {
         return container;
     }
     

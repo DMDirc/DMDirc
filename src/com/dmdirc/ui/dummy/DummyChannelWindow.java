@@ -23,21 +23,19 @@
 package com.dmdirc.ui.dummy;
 
 import com.dmdirc.Channel;
-import com.dmdirc.FrameContainer;
-import com.dmdirc.util.StringTranscoder;
+import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.ChannelWindow;
+import com.dmdirc.util.StringTranscoder;
 
 import java.beans.PropertyVetoException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.swing.Icon;
 
 /**
  * Dummy channel window, used for testing.
@@ -135,7 +133,7 @@ public final class DummyChannelWindow implements ChannelWindow {
 
     /** {@inheritDoc} */
     @Override
-    public FrameContainer getContainer() {
+    public WritableFrameContainer getContainer() {
         return parent;
     }
 

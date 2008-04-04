@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.interfaces;
 
+import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.ui.input.InputHandler;
 
@@ -54,5 +55,13 @@ public interface InputWindow extends Window {
      * @param isAway Whether the away indicator should be displayed or not
      */
     void setAwayIndicator(boolean isAway);
+    
+    /**
+     * Retrieves the container that owns this command window.
+     *
+     * @return The container that owns this command window.
+     */
+    @Override
+    WritableFrameContainer getContainer();    
     
 }

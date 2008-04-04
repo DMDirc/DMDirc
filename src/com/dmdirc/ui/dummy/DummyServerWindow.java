@@ -22,20 +22,18 @@
 
 package com.dmdirc.ui.dummy;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
-import com.dmdirc.util.StringTranscoder;
+import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.ServerWindow;
+import com.dmdirc.util.StringTranscoder;
 
 import java.beans.PropertyVetoException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-
-import javax.swing.Icon;
 
 /**
  * Dummy server window, used for testing.
@@ -113,7 +111,7 @@ public final class DummyServerWindow implements ServerWindow {
     
     /** {@inheritDoc} */
     @Override
-    public FrameContainer getContainer() {
+    public WritableFrameContainer getContainer() {
         return parent;
     }
     

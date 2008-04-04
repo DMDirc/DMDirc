@@ -235,7 +235,10 @@ public abstract class InputHandler implements ConfigChangeListener {
             
             // TODO: Wrapping commands
         } else {
-            // TODO: Wrapping text
+            final int lines = parentWindow.getContainer().getNumLines(text);
+            if (lines > 1) {
+                fireLineWrap(lines);
+            }
         }
     }
     
@@ -248,6 +251,17 @@ public abstract class InputHandler implements ConfigChangeListener {
         for (InputValidationListener listener : listeners.get(InputValidationListener.class)) {
             listener.illegalCommand(reason);
         }
+    }
+    
+    /**
+     * Fires the "wrappedText" method of all validation listeners.
+     * 
+     * @param lines The number of lines that the text will wrap to
+     */
+    private void fireLineWrap(final int lines) {
+        for (InputValidationListener listener : listeners.get(InputValidationListener.class)) {
+            listener.wrappedText(lines);
+        }        
     }
     
     /**

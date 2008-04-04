@@ -22,19 +22,17 @@
 
 package com.dmdirc.addons.redirectplugin;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.MessageTarget;
-import com.dmdirc.util.StringTranscoder;
+import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.Formatter;
+import com.dmdirc.util.StringTranscoder;
 
 import java.beans.PropertyVetoException;
 import java.nio.charset.Charset;
-
-import javax.swing.Icon;
 
 /**
  * Implements a fake input window, which sends echoed text to the specified
@@ -44,6 +42,7 @@ import javax.swing.Icon;
  */
 public class FakeInputWindow implements InputWindow {
     
+    /** The target for this window. */
     private final MessageTarget target;
 
     /**
@@ -105,7 +104,7 @@ public class FakeInputWindow implements InputWindow {
 
     /** {@inheritDoc} */
     @Override
-    public FrameContainer getContainer() {
+    public WritableFrameContainer getContainer() {
         return target;
     }
 
