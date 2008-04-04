@@ -162,6 +162,7 @@ public class NodeLabel extends JLabel implements SelectionListener,
     public void iconChanged(final Window window, final Icon icon) {
         if (equals(window)) {
             setIcon(icon);
+            manager.getTree().repaint();
         }
     }
 
