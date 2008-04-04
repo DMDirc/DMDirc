@@ -77,6 +77,8 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
      * Creates a new instance of WindowMenuFrameManager.
      */
     public WindowMenuFrameManager() {
+        super();
+        
         menuItemMap =
                 new TreeMap<FrameContainer, FrameContainerMenuItem>(comparator);
 

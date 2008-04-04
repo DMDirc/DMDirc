@@ -145,6 +145,7 @@ public class NodeLabel extends JLabel implements SelectionListener,
         if (equals(window)) {
             setForeground(colour);
             notification = true;
+            manager.getTree().repaint();
         }
     }
 
@@ -154,6 +155,7 @@ public class NodeLabel extends JLabel implements SelectionListener,
         if (equals(window)) {
             setForeground(manager.getTree().getForeground());
             notification = false;
+            manager.getTree().repaint();
         }
     }
 
