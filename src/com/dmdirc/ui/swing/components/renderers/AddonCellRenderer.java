@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.components.renderers;
 
 import com.dmdirc.ui.swing.components.pluginpanel.PluginInfoToggle;
+import com.dmdirc.ui.swing.components.themepanel.ThemeToggle;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.Color;
@@ -39,10 +40,10 @@ import javax.swing.ListCellRenderer;
 import net.miginfocom.swing.MigLayout;
 
 /**
- * Handles the rendering of the JList used for plugin management.
+ * Handles the rendering of the JList used for plugin and theme management.
  * @author chris
  */
-public final class PluginCellRenderer extends JPanel implements ListCellRenderer {
+public final class AddonCellRenderer extends JPanel implements ListCellRenderer {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -51,8 +52,8 @@ public final class PluginCellRenderer extends JPanel implements ListCellRenderer
      */
     private static final long serialVersionUID = 1;    
     
-    /** Creates a new instance of PluginCellRenderer. */
-    public PluginCellRenderer() {
+    /** Creates a new instance of AddonCellRenderer. */
+    public AddonCellRenderer() {
         super();
     }
     
@@ -61,8 +62,7 @@ public final class PluginCellRenderer extends JPanel implements ListCellRenderer
     public Component getListCellRendererComponent(final JList list,
             final Object value, final int index, final boolean isSelected,
             final boolean cellHasFocus) {
-        final PluginInfoToggle plugin = (PluginInfoToggle) value;
-        
+       
         removeAll();
         setLayout(new MigLayout("fill, ins 3 0 0 0"));        
         
@@ -72,26 +72,36 @@ public final class PluginCellRenderer extends JPanel implements ListCellRenderer
             setBackground(list.getBackground());
         }
         
-        Color foreground;
-        
-        if (plugin.getState()) {
-            foreground = Color.BLACK;
-        } else {
-            foreground = Color.GRAY;
+        Color foreground = Color.BLACK;
+        final JLabel name = new JLabel(), version = new JLabel(),
+                author = new JLabel(), desc = new JLabel();
+
+        if (value instanceof PluginInfoToggle) {
+            final PluginInfoToggle plugin = (PluginInfoToggle) value;
+
+            if (!plugin.getState()) {
+                foreground = Color.GRAY;
+            }
+
+            name.setText(plugin.getPluginInfo().getNiceName());
+            version.setText(plugin.getPluginInfo().getFriendlyVersion());
+            author.setText(plugin.getPluginInfo().getAuthor());
+            desc.setText(plugin.getPluginInfo().getDescription());
+        } else if (value instanceof ThemeToggle) {
+            final ThemeToggle theme = (ThemeToggle) value;
+            
+            if (!theme.getState()) {
+                foreground = Color.GRAY;
+            }
+            
+            name.setText(theme.getTheme().getName());
         }
         
-        final JLabel name = new JLabel(plugin.getPluginInfo().getNiceName());
-        name.setFont(name.getFont().deriveFont(Font.BOLD));
         name.setForeground(foreground);
-        
-        final JLabel version = new JLabel(plugin.getPluginInfo().getFriendlyVersion());
+        name.setFont(name.getFont().deriveFont(Font.BOLD));
         version.setForeground(foreground);
         version.setHorizontalAlignment(JLabel.CENTER);
-        
-        final JLabel author = new JLabel(plugin.getPluginInfo().getAuthor());
         author.setForeground(foreground);
-        
-        final JLabel desc = new JLabel(plugin.getPluginInfo().getDescription());
         desc.setForeground(foreground);
         desc.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0, 0, 0));
         

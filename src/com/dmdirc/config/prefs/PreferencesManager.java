@@ -28,6 +28,7 @@ import com.dmdirc.config.prefs.validator.StringLengthValidator;
 import com.dmdirc.themes.Theme;
 import com.dmdirc.themes.ThemeManager;
 import com.dmdirc.ui.swing.components.pluginpanel.PluginPanel;
+import com.dmdirc.ui.swing.components.themepanel.ThemePanel;
 import com.dmdirc.ui.swing.dialogs.prefs.URLConfigPanel;
 import com.dmdirc.ui.swing.dialogs.prefs.UpdateConfigPanel;
 import com.dmdirc.util.ListenerList;
@@ -409,27 +410,9 @@ public class PreferencesManager {
      * @param parent The parent category
      */
     private void addThemesCategory(final PreferencesCategory parent) {
-        final PreferencesCategory category = new PreferencesCategory("Themes", "");
+        // TODO: Abstract the panel
 
-        final Map<String, String> themes = new HashMap<String, String>();
-
-        for (Map.Entry<String, Theme> entry
-                : ThemeManager.getAvailableThemes().entrySet()) {
-            if (entry.getKey().indexOf('/') == -1) {
-                themes.put(entry.getKey(), entry.getKey());
-            } else {
-                themes.put(entry.getKey(),
-                        entry.getKey().substring(entry.getKey().lastIndexOf('/'),
-                        entry.getKey().length()));
-            }
-        }
-
-        themes.put("", "None");
-
-        category.addSetting(new PreferencesSetting("general", "theme", "",
-                "Theme", "DMDirc theme to use", themes));
-
-        parent.addSubCategory(category);
+        parent.addSubCategory(new PreferencesCategory("Themes", "", new ThemePanel()));        
     }
 
     /**

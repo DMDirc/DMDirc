@@ -37,7 +37,7 @@ import java.io.InputStream;
  *
  * @author Chris
  */
-public class Theme {
+public class Theme implements Comparable<Theme> {
     
     /** The file to load the theme from. */
     private final File file;
@@ -73,7 +73,7 @@ public class Theme {
             return false;
         }
         
-        return true;
+        return rm != null && rm.getResourceInputStream("config") != null;
     }
     
     /**
@@ -110,6 +110,19 @@ public class Theme {
         return enabled;
     }
     
-    
+    /**
+     * Retrieves the name of this theme.
+     * 
+     * @return This theme's name
+     */
+    public String getName() {
+        return file.getName();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int compareTo(final Theme o) {
+        return getName().compareTo(o.getName());
+    }
     
 }

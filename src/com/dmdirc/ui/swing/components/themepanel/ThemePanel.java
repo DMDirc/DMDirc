@@ -20,17 +20,19 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.components.pluginpanel;
+package com.dmdirc.ui.swing.components.themepanel;
 
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesInterface;
-import com.dmdirc.plugins.PluginInfo;
-import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.themes.Theme;
+import com.dmdirc.themes.ThemeManager;
 import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.components.renderers.AddonCellRenderer;
 import com.dmdirc.util.URLHandler;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,9 +47,10 @@ import javax.swing.event.ListSelectionListener;
 import net.miginfocom.swing.MigLayout;
 
 /**
- * Plugin manager dialog. Allows the user to manage their plugins.
+ * Theme panel. Shows users available themes and allows them to enable/disbale
+ * them.
  */
-public final class PluginPanel extends JPanel implements
+public final class ThemePanel extends JPanel implements
         ActionListener, ListSelectionListener, PreferencesInterface {
     
     /**
@@ -57,46 +60,46 @@ public final class PluginPanel extends JPanel implements
      */
     private static final long serialVersionUID = 3;
     
-    /** List of plugins. */
-    private JList pluginList;
+    /** List of themes. */
+    private JList themeList;
     
     /** plugin list scroll pane. */
     private JScrollPane scrollPane;
     
-    /** Button to enable/disable plugin. */
+    /** Button to enable/disable theme. */
     private JButton toggleButton;
     
-    /** Currently selected plugin. */
-    private int selectedPlugin;
+    /** Currently selected theme. */
+    private int selectedTheme;
     
     /** Blurb label. */
     private TextLabel blurbLabel;
     
     /** Creates a new instance of PluginDialog. */
-    public PluginPanel() {
+    public ThemePanel() {
         super();
 
         initComponents();
         addListeners();
         layoutComponents();
         
-        pluginList.setSelectedIndex(0);
-        selectedPlugin = 0;
+        themeList.setSelectedIndex(0);
+        selectedTheme = 0;
     }
     
     /** Initialises the components. */
     private void initComponents() {                        
-        pluginList = new JList(new DefaultListModel());
-        pluginList.setCellRenderer(new AddonCellRenderer());
+        themeList = new JList(new DefaultListModel());
+        themeList.setCellRenderer(new AddonCellRenderer());
         
-        scrollPane = new JScrollPane(pluginList);
+        scrollPane = new JScrollPane(themeList);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
                 
         toggleButton = new JButton("Enable");
         toggleButton.setEnabled(false);
         
-        blurbLabel = new TextLabel("Plugins allow you to extend the functionality of DMDirc.");
+        blurbLabel = new TextLabel("Themes alter the appearance of DMDirc");
         
         populateList();
     }
@@ -111,7 +114,7 @@ public final class PluginPanel extends JPanel implements
                
         add(toggleButton, "split 2, width 50%");
         
-        final JButton button = new JButton("Get more plugins");
+        final JButton button = new JButton("Get more themes");
         button.addActionListener(this);
         add(button, "width 50%");
     }
@@ -119,24 +122,26 @@ public final class PluginPanel extends JPanel implements
     
     /** Populates the plugins list with plugins from the plugin manager. */
     private void populateList() {
-        final List<PluginInfo> list = 
-                PluginManager.getPluginManager().getPossiblePluginInfos(true);
+        final List<Theme> list = new ArrayList<Theme>(ThemeManager.getAvailableThemes().values());
         Collections.sort(list);
         
-        ((DefaultListModel) pluginList.getModel()).clear();
-        for (PluginInfo plugin : list) {
-            ((DefaultListModel) pluginList.getModel()).addElement(new PluginInfoToggle(plugin));
+        ((DefaultListModel) themeList.getModel()).clear();
+        
+        for (Theme plugin : list) {
+            ((DefaultListModel) themeList.getModel()).addElement(new ThemeToggle(plugin));
         }
-        if (((DefaultListModel) pluginList.getModel()).size() > 0) {
+        
+        if (((DefaultListModel) themeList.getModel()).size() > 0) {
             toggleButton.setEnabled(true);
         }
-        pluginList.repaint();
+        
+        themeList.repaint();
     }
     
     /** Adds listeners to components. */
     private void addListeners() {
         toggleButton.addActionListener(this);
-        pluginList.addListSelectionListener(this);
+        themeList.addListSelectionListener(this);
     }
     
     /**
@@ -144,18 +149,18 @@ public final class PluginPanel extends JPanel implements
      * @param e The event related to this action.
      */
     public void actionPerformed(final ActionEvent e) {
-        if (e.getSource() == toggleButton && selectedPlugin >= 0) {
-            final PluginInfoToggle pluginInfo = (PluginInfoToggle) pluginList.getSelectedValue();
+        if (e.getSource() == toggleButton && selectedTheme >= 0) {
+            final ThemeToggle theme = (ThemeToggle) themeList.getSelectedValue();
             
-            pluginInfo.toggle();
+            theme.toggle();
             
-            if (pluginInfo.getState()) {
+            if (theme.getState()) {
                 toggleButton.setText("Disable");
             } else {
                 toggleButton.setText("Enable");
             }
             
-            pluginList.repaint();
+            themeList.repaint();
         } else if (e.getSource() != toggleButton) {
             URLHandler.getURLHander().launchApp("http://addons.dmdirc.com/");
         }
@@ -166,29 +171,32 @@ public final class PluginPanel extends JPanel implements
         if (!e.getValueIsAdjusting()) {
             final int selected = ((JList) e.getSource()).getSelectedIndex();
             if (selected >= 0) {
-                final PluginInfoToggle pluginInfo = (PluginInfoToggle) 
+                final ThemeToggle theme = (ThemeToggle) 
                         ((JList) e.getSource()).getSelectedValue();
                 toggleButton.setEnabled(true);
                 
-                if (pluginInfo.getState()) {
-                    if (pluginInfo.getPluginInfo().isPersistant()) {
-                        toggleButton.setEnabled(false);
-                    }
+                if (theme.getState()) {
                     toggleButton.setText("Disable");
                 } else {
                     toggleButton.setText("Enable");
                 }
             }
-            selectedPlugin = selected;
+            selectedTheme = selected;
         }
     }
     
     /** {@inheritDoc} */
     @Override
     public void save() {
-        for (Object pit : ((DefaultListModel) pluginList.getModel()).toArray()) {
-            ((PluginInfoToggle) pit).apply();
+        final List<String> enabled = new ArrayList<String>();
+        
+        for (Object pit : ((DefaultListModel) themeList.getModel()).toArray()) {
+            if (((ThemeToggle) pit).getState()) {
+                enabled.add(((ThemeToggle) pit).getTheme().getName());
+            }
         }
+        
+        IdentityManager.getConfigIdentity().setOption("themes", "enabled", enabled);
     }
     
 }
