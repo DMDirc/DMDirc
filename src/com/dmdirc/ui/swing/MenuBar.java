@@ -25,13 +25,12 @@ package com.dmdirc.ui.swing;
 import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
 import com.dmdirc.ui.interfaces.Window;
-import com.dmdirc.ui.swing.dialogs.prefs.SwingPreferencesDialog;
-import com.dmdirc.ui.swing.components.TextFrame;
 import com.dmdirc.ui.swing.dialogs.FeedbackDialog;
 import com.dmdirc.ui.swing.dialogs.NewServerDialog;
 import com.dmdirc.ui.swing.dialogs.about.AboutDialog;
 import com.dmdirc.ui.swing.dialogs.actionsmanager.ActionsManagerDialog;
 import com.dmdirc.ui.swing.dialogs.aliases.AliasManagerDialog;
+import com.dmdirc.ui.swing.dialogs.prefs.SwingPreferencesDialog;
 import com.dmdirc.ui.swing.dialogs.profiles.ProfileManagerDialog;
 import com.dmdirc.ui.swing.framemanager.windowmenu.WindowMenuFrameManager;
 
@@ -205,10 +204,6 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
             ActionsManagerDialog.showActionsManagerDialog();
         } else if (e.getActionCommand().equals("Aliases")) {
             AliasManagerDialog.showAliasManagerDialog();
-        } else if (e.getActionCommand().equals("Minimise")) {
-            ((TextFrame) Main.getUI().getActiveWindow()).minimise();
-        } else if (e.getActionCommand().equals("Close")) {
-            ((TextFrame) Main.getUI().getActiveWindow()).close();
         } else if (e.getActionCommand().equals("JoinDevChat")) {
             ServerManager.getServerManager().joinDevChat();
         } else if (e.getActionCommand().equals("feedback")) {

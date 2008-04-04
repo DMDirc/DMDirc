@@ -34,6 +34,7 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
 
+import com.dmdirc.ui.swing.components.TextFrame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
@@ -207,6 +208,10 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                     Logger.userError(ErrorLevel.LOW, "Unable to maximise window");
                 }
             }
+        } else if (e.getActionCommand().equals("Minimise")) {
+            ((TextFrame) Main.getUI().getActiveWindow()).minimise();
+        } else if (e.getActionCommand().equals("Close")) {
+            ((TextFrame) Main.getUI().getActiveWindow()).close();
         }
     }
 
