@@ -113,10 +113,12 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         me.setVisible(true);
         me.requestFocus();
 
-        me.groups.setSelectedIndex(IdentityManager.getGlobalConfig().
-                getOptionInt("dialogstate", "actionsmanagerdialog", 0));
-        me.changeActiveGroup((ActionGroup) me.groups.getModel().getElementAt(IdentityManager.getGlobalConfig().
-                getOptionInt("dialogstate", "actionsmanagerdialog", 0)));
+        final int selected = IdentityManager.getGlobalConfig().
+                getOptionInt("dialogstate", "actionsmanagerdialog", 0);
+        if (selected >= 0 && selected < me.groups.getModel().getSize()) {
+            me.groups.setSelectedIndex(selected);
+            me.changeActiveGroup((ActionGroup) me.groups.getModel().getElementAt(selected));
+        }
     }
 
     /**
