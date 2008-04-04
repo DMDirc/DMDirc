@@ -95,6 +95,9 @@ public final class AddonCellRenderer extends JPanel implements ListCellRenderer 
             }
             
             name.setText(theme.getTheme().getName());
+            version.setText(theme.getTheme().getVersion());
+            author.setText(theme.getTheme().getAuthor());
+            desc.setText(theme.getTheme().getDescription());
         }
         
         name.setForeground(foreground);

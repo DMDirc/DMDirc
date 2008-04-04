@@ -24,6 +24,7 @@ package com.dmdirc.util;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -67,6 +68,15 @@ public class ConfigFile {
      */
     public ConfigFile(final URI uri) {
         this.file = new TextFile(uri);
+    }
+    
+    /**
+     * Creates a ConfigFile from the specified input stream.
+     * 
+     * @param is The input stream to read
+     */
+    public ConfigFile(final InputStream is) {
+        this.file = new TextFile(is);
     }
 
     /**

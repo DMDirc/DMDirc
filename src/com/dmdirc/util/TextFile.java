@@ -25,10 +25,11 @@ package com.dmdirc.util;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +42,10 @@ import java.util.List;
 public class TextFile {
     
     /** The file we're dealing with. */
-    private final File file;
+    private File file;
+    
+    /** The input stream we're dealing with. */
+    private InputStream is;
     
     /**
      * Creates a new instance of TextFile for the specified file.
@@ -62,14 +66,23 @@ public class TextFile {
     }
     
     /**
+     * Creates a new instance of TextFile for an input stream.
+     * 
+     * @param is The input stream to read from
+     */
+    public TextFile(final InputStream is) {
+        this.is = is;
+    }
+    
+    /**
      * Retrieves the contents of the file as a list of lines.
      * 
      * @return A list of lines in the file
-     * @throws FileNotFoundException if the file isn't found
      * @throws IOException if an I/O exception occurs
      */
-    public List<String> getLines() throws FileNotFoundException, IOException {
-        final BufferedReader reader = new BufferedReader(new FileReader(file));
+    public List<String> getLines() throws IOException {
+        final BufferedReader reader = new BufferedReader(
+                file == null ? new InputStreamReader(is) : new FileReader(file));
         final List<String> res = new ArrayList<String>();
         
         String line;
@@ -90,6 +103,11 @@ public class TextFile {
      * @throws IOException if an I/O exception occurs
      */
     public void writeLines(final List<String> lines) throws IOException {
+        if (file == null) {
+            throw new UnsupportedOperationException("Cannot write to TextFile "
+                    + "opened with an InputStream");
+        }
+        
         final BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         
         for (String line : lines) {

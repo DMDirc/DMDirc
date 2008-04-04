@@ -50,5 +50,22 @@ public class TextFileTest extends junit.framework.TestCase {
             // Do nothing
         }
     }
+    
+    @Test
+    public void testGetLines2() {
+        try {
+            final TextFile file =
+                    new TextFile(getClass().getClassLoader().
+                    getResource("com/dmdirc/util/test1.txt").openStream());
+            final List<String> lines = file.getLines();
+            
+            assertEquals(7, lines.size());
+            assertEquals("Line 1", lines.get(0));
+        } catch (FileNotFoundException ex) {
+            assertFalse(true);
+        } catch (IOException ex) {
+            assertFalse(true);
+        }
+    }    
 
 }
