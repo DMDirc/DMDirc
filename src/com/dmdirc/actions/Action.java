@@ -513,6 +513,7 @@ public class Action extends ActionModel implements Serializable {
      * Deletes this action.
      */
     public void delete() {
+        ActionManager.processEvent(CoreActionType.ACTION_DELETED, null, getGroup(), getName());
         new File(location).delete();
     }
 
