@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
@@ -22,8 +23,11 @@
 
 package com.dmdirc.util;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -99,5 +103,91 @@ public class ConfigFileTest extends junit.framework.TestCase {
         assertEquals("two", cf.getKeyDomain("section one").get("2"));
         assertEquals("three", cf.getKeyDomain("section one").get("3"));
     }
+    
+    @Test
+    public void testColons() throws IOException, InvalidConfigFileException {
+        final File file = File.createTempFile("DMDirc.unittest", null);
+        ConfigFile config = new ConfigFile(file.toURI());
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("test1", "hello");
+        data.put("test:2", "hello");
+        data.put("test3", "hello:");
+        config.addDomain("test", data);
+        config.write();
+        
+        config = new ConfigFile(file.toURI());
+        config.read();
+        
+        assertTrue(config.isKeyDomain("test"));
+        data = config.getKeyDomain("test");
+        assertEquals("hello", data.get("test1"));
+        assertEquals("hello", data.get("test:2"));
+        assertEquals("hello:", data.get("test3"));
+    }
+    
+    @Test
+    public void testEquals() throws IOException, InvalidConfigFileException {
+        final File file = File.createTempFile("DMDirc.unittest", null);
+        ConfigFile config = new ConfigFile(file.toURI());
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("test1", "hello");
+        data.put("test=2", "hello");
+        data.put("test3", "hello=");
+        config.addDomain("test", data);
+        config.write();
+        
+        config = new ConfigFile(file.toURI());
+        config.read();
+        
+        assertTrue(config.isKeyDomain("test"));
+        data = config.getKeyDomain("test");
+        assertEquals("hello", data.get("test1"));
+        assertEquals("hello", data.get("test=2"));
+        assertEquals("hello=", data.get("test3"));
+    }
+    
+    @Test
+    public void testNewlines() throws IOException, InvalidConfigFileException {
+        final File file = File.createTempFile("DMDirc.unittest", null);
+        ConfigFile config = new ConfigFile(file.toURI());
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("test1", "hello");
+        data.put("test2", "hello\ngoodbye");
+        data.put("test3", "hello\n");
+        data.put("test4", "hello\r\ngoodbye");
+        config.addDomain("test", data);
+        config.write();
+        
+        config = new ConfigFile(file.toURI());
+        config.read();
+        
+        assertTrue(config.isKeyDomain("test"));
+        data = config.getKeyDomain("test");
+        assertEquals("hello", data.get("test1"));
+        assertEquals("hello\ngoodbye", data.get("test2"));
+        assertEquals("hello\n", data.get("test3"));
+        assertEquals("hello\r\ngoodbye", data.get("test4"));
+    }
+    
+    @Test
+    public void testBackslash() throws IOException, InvalidConfigFileException {
+        final File file = File.createTempFile("DMDirc.unittest", null);
+        ConfigFile config = new ConfigFile(file.toURI());
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("test1", "hello\\");
+        data.put("test2", "\\nhello");
+        data.put("test3\\", "hello");
+        config.addDomain("test", data);
+        config.write();
+        
+        config = new ConfigFile(file.toURI());
+        config.read();
+        
+        assertTrue(config.isKeyDomain("test"));
+        data = config.getKeyDomain("test");
+        assertEquals("hello\\", data.get("test1"));
+        assertEquals("\\nhello", data.get("test2"));
+        assertEquals("hello", data.get("test3\\"));
+    }    
 
 }
