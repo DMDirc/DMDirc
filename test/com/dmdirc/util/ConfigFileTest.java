@@ -188,6 +188,19 @@ public class ConfigFileTest extends junit.framework.TestCase {
         assertEquals("hello\\", data.get("test1"));
         assertEquals("\\nhello", data.get("test2"));
         assertEquals("hello", data.get("test3\\"));
+    }
+    
+    @Test
+    public void testEscape() {
+        final String input = "blah blah\\foo\r\nbar=:";
+        final String output = "blah blah\\\\foo\\r\\nbar\\=\\:";
+        assertEquals(output, ConfigFile.escape(input));
+    }
+    
+    @Test
+    public void testUnescape() {
+        final String input = "blah blah\\foo\r\nbar=:";
+        assertEquals(input, ConfigFile.unescape(ConfigFile.escape(input)));
     }    
 
 }

@@ -92,7 +92,7 @@ public class ConfigFile {
         int offset;
 
         for (String line : file.getLines()) {
-            final String tline = line.trim();
+            final String tline = unescape(line.trim());
 
             if (tline.indexOf('#') == 0 || tline.isEmpty()) {
                 continue;
@@ -143,15 +143,16 @@ public class ConfigFile {
 
             lines.add("");
 
-            lines.add(domain + ':');
+            lines.add(escape(domain) + ':');
 
             if (flatdomains.containsKey(domain)) {
                 for (String entry : flatdomains.get(domain)) {
-                    lines.add("  " + entry);
+                    lines.add("  " + escape(entry));
                 }
             } else if (keydomains.containsKey(domain)) {
                 for (Map.Entry<String, String> entry : keydomains.get(domain).entrySet()) {
-                    lines.add("  " + entry.getKey() + "=" + entry.getValue());
+                    lines.add("  " + escape(entry.getKey()) + "="
+                            + escape(entry.getValue()));
                 }
             }
         }
@@ -252,5 +253,43 @@ public class ConfigFile {
     public void addDomain(final String name, final Map<String, String> data) {
         domains.add(name);
         keydomains.put(name, data);
+    }
+    
+    /**
+     * Unescapes any escaped characters in the specified input string.
+     * 
+     * @param input The string to unescape
+     * @return The string with all escape chars (\) resolved
+     */
+    protected static String unescape(final String input) {
+        boolean escaped = false;
+        final StringBuilder temp = new StringBuilder();
+
+        for (int i = 0; i < input.length(); i++) {
+            final char ch = input.charAt(i);
+
+            if (escaped) {
+                if (ch == 'n') {
+                    temp.append('\n');
+                } else if (ch == 'r') {
+                    temp.append('\r');
+                } else {
+                    temp.append(ch);
+                }
+                
+                escaped = false;
+            } else if (ch == '\\') {
+                escaped = true;
+            } else {
+                temp.append(ch);
+            }
+        }
+        
+        return temp.toString();
+    }
+    
+    protected static String escape(final String input) {
+        return input.replaceAll("\\\\", "\\\\\\\\").replaceAll("\n", "\\\\n")
+                .replaceAll("\r", "\\\\r").replaceAll("=", "\\\\=").replaceAll(":", "\\\\:");
     }
 }
