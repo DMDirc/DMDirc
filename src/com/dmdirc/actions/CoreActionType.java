@@ -199,7 +199,9 @@ public enum CoreActionType implements ActionType {
     /** Action created. */
     ACTION_CREATED(ActionEvents.ACTION_EVENT, "Action created"),
     /** Action updated. */
-    ACTION_UPDATED(ActionEvents.ACTION_EVENT, "Action updated");
+    ACTION_UPDATED(ActionEvents.ACTION_EVENT, "Action updated"),
+    /** Action deleted. */
+    ACTION_DELETED(ActionEvents.ACTION_DELETED, "Action deleted");
     
     /** The type of this action. */
     private final ActionMetaType type;

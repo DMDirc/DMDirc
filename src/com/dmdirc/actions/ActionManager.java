@@ -394,6 +394,7 @@ public final class ActionManager {
 
         unregisterAction(action);
 
+        ActionManager.processEvent(CoreActionType.ACTION_DELETED, null, action.getGroup(), action.getName());
         action.delete();
     }
 

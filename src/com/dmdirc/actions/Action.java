@@ -138,6 +138,8 @@ public class Action extends ActionModel implements Serializable {
         location = dir + name;
 
         new File(dir).mkdirs();
+        
+        ActionManager.processEvent(CoreActionType.ACTION_CREATED, null, this);
 
         save();
         
@@ -356,6 +358,7 @@ public class Action extends ActionModel implements Serializable {
             Logger.userError(ErrorLevel.HIGH, "I/O error when saving action: "
                     + group + "/" + name + ": " + ex.getMessage());
         }
+        ActionManager.processEvent(CoreActionType.ACTION_UPDATED, null, this);
     }
 
     /**

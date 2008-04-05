@@ -31,7 +31,9 @@ import com.dmdirc.actions.interfaces.ActionMetaType;
 public enum ActionEvents implements ActionMetaType {
     
     /** Action event type. */
-    ACTION_EVENT(new String[]{"action"}, Action.class);
+    ACTION_EVENT(new String[]{"action"}, Action.class),
+    /** Action event type. */
+    ACTION_DELETED(new String[]{"Action group", "Action name"}, Action.class);
     
     /** The names of the arguments for this meta type. */
     private String[] argNames;
@@ -50,21 +52,25 @@ public enum ActionEvents implements ActionMetaType {
     }
     
     /** {@inheritDoc} */
+    @Override
     public int getArity() {
         return argNames.length;
     }
     
     /** {@inheritDoc} */
+    @Override
     public Class[] getArgTypes() {
         return argTypes;
     }
     
     /** {@inheritDoc} */
+    @Override
     public String[] getArgNames() {
         return argNames;
     }
     
     /** {@inheritDoc} */
+    @Override
     public String getGroup() {
         return "Action Events";
     }    

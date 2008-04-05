@@ -25,7 +25,6 @@ package com.dmdirc.ui.swing.dialogs.actionseditor;
 import com.dmdirc.Main;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
@@ -193,6 +192,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
      * 
      * @param event Action event
      */
+    @Override
     public void actionPerformed(final ActionEvent event) {
         if (event.getSource() == getOkButton()) {
             if (ConditionEditorDialog.isConditionEditorDialogOpen()) {
@@ -223,7 +223,6 @@ public final class ActionsEditorDialog extends StandardDialog implements
 
     /** Saves this (new|edited) actions. */
     private void saveSettings() {
-        boolean newAction = false;
         if (((GeneralTabPanel) tabbedPane.getComponentAt(0)).getActionName().
                 isEmpty()) {
             showError("Empty name", "The action name must not be empty");
@@ -253,7 +252,6 @@ public final class ActionsEditorDialog extends StandardDialog implements
                     split("\\n"),
                     ((ConditionsTabPanel) tabbedPane.getComponentAt(1)).getConditions(),
                     ((ResponseTabPanel) tabbedPane.getComponentAt(2)).getFormatter());
-            newAction = true;
         } else {
             if (!action.getName().equals(((GeneralTabPanel) tabbedPane.getComponentAt(0)).getActionName())) {
                 action.setName(((GeneralTabPanel) tabbedPane.getComponentAt(0)).getActionName());
@@ -266,13 +264,6 @@ public final class ActionsEditorDialog extends StandardDialog implements
             action.setNewFormat(((ResponseTabPanel) tabbedPane.getComponentAt(2)).getFormatter());
         }
         action.save();
-        if (newAction) {
-            ActionManager.processEvent(CoreActionType.ACTION_CREATED, null,
-                    action);
-        } else {
-            ActionManager.processEvent(CoreActionType.ACTION_UPDATED, null,
-                    action);
-        }
         dispose();
     }
 
