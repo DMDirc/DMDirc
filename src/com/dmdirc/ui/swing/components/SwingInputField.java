@@ -77,7 +77,7 @@ public class SwingInputField extends JComponent implements InputField,
                 new JLabel(IconManager.getIconManager().getIcon("linewrap"));
         wrapIndicator.setVisible(false);
         errorIndicator =
-                new JLabel(IconManager.getIconManager().getIcon("error"));
+                new JLabel(IconManager.getIconManager().getIcon("input-error"));
         errorIndicator.setVisible(false);
 
         setLayout(new MigLayout("ins 0, hidemode 3"));
