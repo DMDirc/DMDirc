@@ -167,7 +167,7 @@ public class ActionTableModel extends AbstractTableModel {
             if (group == null) {
                 actions = new ArrayList<Action>();
             } else {
-                actions = group;
+                actions = new ArrayList<Action>(group);
             }
             fireTableDataChanged();
         }
@@ -225,5 +225,17 @@ public class ActionTableModel extends AbstractTableModel {
         synchronized (actions) {
             return actions.contains(action);
         }
+    }
+    
+    public int findAction(final String name) {
+        int location = -1;
+        synchronized (actions) {
+            for(Action action : actions) {
+                if (action.getName().equals(name)) {
+                    location = actions.indexOf(action);
+                }
+            }
+        }
+        return location;
     }
 }

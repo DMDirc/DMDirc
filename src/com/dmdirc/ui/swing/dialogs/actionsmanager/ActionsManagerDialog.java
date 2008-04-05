@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.dialogs.actionsmanager;
 
 import com.dmdirc.Main;
+import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
@@ -188,6 +189,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         groups.getSelectionModel().addListSelectionListener(this);
         ActionManager.addListener(this, CoreActionType.ACTION_CREATED);
         ActionManager.addListener(this, CoreActionType.ACTION_UPDATED);
+        ActionManager.addListener(this, CoreActionType.ACTION_DELETED);
     }
 
     /**
@@ -410,6 +412,16 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
     @Override
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {
-        reloadGroups();
+        if (type.equals(CoreActionType.ACTION_CREATED) ||
+                type.equals(CoreActionType.ACTION_UPDATED)) {
+            final Action action = (Action) arguments[0];
+            if (action.getGroup().equals(((ActionGroup) groups.getSelectedValue()).getName())) {
+                actions.actionChanged(action);
+            }
+        } else {
+            if (arguments[0].equals(((ActionGroup) groups.getSelectedValue()).getName())) {
+                actions.actionDeleted((String) arguments[1]);
+            }
+        }
     }
 }

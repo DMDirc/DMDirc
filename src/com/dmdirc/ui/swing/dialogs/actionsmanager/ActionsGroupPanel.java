@@ -91,6 +91,34 @@ public final class ActionsGroupPanel extends JPanel implements ActionListener,
     }
 
     /**
+     * Updates or creates the new action.
+     * 
+     * @param action Action changed or created
+     */
+    public void actionChanged(final Action action) {
+        if (model.contains(action)) {
+            final int row = model.getAction(action);
+            model.fireTableCellUpdated(row, 0);
+            model.fireTableCellUpdated(row, 1);
+            model.fireTableCellUpdated(row, 2);
+        } else {
+            model.add(action);
+        }
+    }
+
+    /**
+     * Deletes an action from the group.
+     * 
+     * @param name Name of the action
+     */
+    public void actionDeleted(final String name) {
+        final int location = model.findAction(name);
+        if (location != -1) {
+            model.remove(location);
+        }
+    }
+
+    /**
      * Initialises the components.
      */
     private void initComponents() {
@@ -204,14 +232,14 @@ public final class ActionsGroupPanel extends JPanel implements ActionListener,
                     table.getRowSorter().convertRowIndexToModel(table.getSelectedRow())),
                     group.getName());
         } else if (e.getSource() == delete) {
-            final Action action = model.getAction(
+            final Action action =
+                    model.getAction(
                     table.getRowSorter().convertRowIndexToModel(table.getSelectedRow()));
             final int response = JOptionPane.showConfirmDialog(this,
-                    "Are you sure you wish to delete the action '"
-                    + action.getName() + "'?",
+                    "Are you sure you wish to delete the action '" +
+                    action.getName() + "'?",
                     "Confirm deletion", JOptionPane.YES_NO_OPTION);
             if (response == JOptionPane.YES_OPTION) {
-                model.remove(action);
                 ActionManager.deleteAction(action);
             }
         }
