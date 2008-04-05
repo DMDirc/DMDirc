@@ -52,14 +52,16 @@ public class SwingInputField extends JComponent implements InputField,
     /** Colour picker. */
     private ColourPickerDialog colourPicker;
     /** Input field text field. */
-    private JTextField textField;
+    private final JTextField textField;
     /** Line wrap indicator. */
-    private JLabel wrapIndicator;
+    private final JLabel wrapIndicator;
 
     /**
      * Instantiates a new swing input field.
      */
     public SwingInputField() {
+        super();
+        
         textField = new JTextField();
         textField.setFocusTraversalKeysEnabled(false);
         wrapIndicator =
@@ -89,7 +91,7 @@ public class SwingInputField extends JComponent implements InputField,
 
     /** {@inheritDoc} */
     @Override
-    public void showColourPicker(boolean irc, boolean hex) {
+    public void showColourPicker(final boolean irc, final boolean hex) {
         if (IdentityManager.getGlobalConfig().getOptionBool("general",
                 "showcolourdialog", false)) {
             colourPicker = new ColourPickerDialog(irc, hex);
@@ -135,25 +137,25 @@ public class SwingInputField extends JComponent implements InputField,
 
     /** {@inheritDoc} */
     @Override
-    public void addActionListener(ActionListener listener) {
+    public void addActionListener(final ActionListener listener) {
         textField.addActionListener(listener);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void addKeyListener(KeyListener listener) {
+    public void addKeyListener(final KeyListener listener) {
         textField.addKeyListener(listener);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void removeActionListener(ActionListener listener) {
+    public void removeActionListener(final ActionListener listener) {
         textField.removeActionListener(listener);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void removeKeyListener(KeyListener listener) {
+    public void removeKeyListener(final KeyListener listener) {
         textField.removeKeyListener(listener);
     }
 
@@ -183,7 +185,7 @@ public class SwingInputField extends JComponent implements InputField,
 
     /** {@inheritDoc} */
     @Override
-    public void setText(String text) {
+    public void setText(final String text) {
         textField.setText(text);
     }
 
@@ -195,7 +197,7 @@ public class SwingInputField extends JComponent implements InputField,
 
     /** {@inheritDoc} */
     @Override
-    public void setCaretPosition(int position) {
+    public void setCaretPosition(final int position) {
         textField.setCaretPosition(position);
     }
 
@@ -204,7 +206,7 @@ public class SwingInputField extends JComponent implements InputField,
      * 
      * @param clipboard Text to replace selection with
      */
-    public void replaceSelection(String clipboard) {
+    public void replaceSelection(final String clipboard) {
         textField.replaceSelection(clipboard);
     }
 
@@ -213,7 +215,7 @@ public class SwingInputField extends JComponent implements InputField,
      * 
      * @param optionColour Colour for the caret
      */
-    public void setCaretColor(Color optionColour) {
+    public void setCaretColor(final Color optionColour) {
         textField.setCaretColor(optionColour);
     }
 
@@ -223,7 +225,7 @@ public class SwingInputField extends JComponent implements InputField,
      * @param optionColour Colour for the caret
      */
     @Override
-    public void setForeground(Color optionColour) {
+    public void setForeground(final Color optionColour) {
         textField.setForeground(optionColour);
     }
 
@@ -233,7 +235,7 @@ public class SwingInputField extends JComponent implements InputField,
      * @param optionColour Colour for the caret
      */
     @Override
-    public void setBackground(Color optionColour) {
+    public void setBackground(final Color optionColour) {
         textField.setBackground(optionColour);
     }
 

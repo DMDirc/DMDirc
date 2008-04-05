@@ -38,7 +38,6 @@ import com.dmdirc.ui.swing.actions.CopyAction;
 import com.dmdirc.ui.swing.actions.CutAction;
 import com.dmdirc.ui.swing.actions.InputTextFramePasteAction;
 import com.dmdirc.ui.swing.dialogs.paste.PasteDialog;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.swing.actions.CommandAction;
 
 import java.awt.AWTException;
@@ -49,7 +48,6 @@ import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -57,7 +55,6 @@ import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.io.Serializable;
 
-import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -68,6 +65,9 @@ import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
+import net.miginfocom.layout.PlatformDefaults;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Frame with an input field.
@@ -164,7 +164,9 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
         awayLabel.setText("(away)");
         awayLabel.setVisible(false);
 
-        inputPanel = new JPanel(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
+        inputPanel = new JPanel(new BorderLayout(
+                (int) PlatformDefaults.getUnitValueX("related").getValue(), 
+                (int) PlatformDefaults.getUnitValueX("related").getValue()));
         inputPanel.add(awayLabel, BorderLayout.LINE_START);
         inputPanel.add(inputField, BorderLayout.CENTER);
 
@@ -418,7 +420,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
                 initPopupMenu();
                 inputFieldPopup.show(this, (int) point.getX(),
                         (int) point.getY() + getTextPane().getHeight() +
-                        SMALL_BORDER);
+                        (int) PlatformDefaults.getUnitValueX("related").getValue());
             }
         }
         super.processMouseEvent(e);
