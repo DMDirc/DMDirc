@@ -191,6 +191,27 @@ public class ConfigFileTest extends junit.framework.TestCase {
     }
     
     @Test
+    public void testHash() throws IOException, InvalidConfigFileException {
+        final File file = File.createTempFile("DMDirc.unittest", null);
+        ConfigFile config = new ConfigFile(file.toURI());
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("test1#", "hello");
+        data.put("#test2", "hello");
+        data.put("test3", "#hello");
+        config.addDomain("test", data);
+        config.write();
+        
+        config = new ConfigFile(file.toURI());
+        config.read();
+        
+        assertTrue(config.isKeyDomain("test"));
+        data = config.getKeyDomain("test");
+        assertEquals("hello", data.get("test1#"));
+        assertEquals("hello", data.get("#test2"));
+        assertEquals("#hello", data.get("test3"));
+    }    
+    
+    @Test
     public void testEscape() {
         final String input = "blah blah\\foo\r\nbar=:";
         final String output = "blah blah\\\\foo\\r\\nbar\\=\\:";

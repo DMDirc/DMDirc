@@ -293,14 +293,15 @@ public class ConfigFile {
     
     /**
      * Escapes the specified input string by prefixing all occurances of
-     * \, \n, \r, = and : with backslashes.
+     * \, \n, \r, =, # and : with backslashes.
      * 
      * @param input The string to be escaped
      * @return A backslash-armoured version of the string
      */
     protected static String escape(final String input) {
         return input.replaceAll("\\\\", "\\\\\\\\").replaceAll("\n", "\\\\n")
-                .replaceAll("\r", "\\\\r").replaceAll("=", "\\\\=").replaceAll(":", "\\\\:");
+                .replaceAll("\r", "\\\\r").replaceAll("=", "\\\\=")
+                .replaceAll(":", "\\\\:").replaceAll("#", "\\\\#");
     }
     
     /**
