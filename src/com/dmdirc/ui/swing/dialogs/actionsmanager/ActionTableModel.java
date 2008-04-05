@@ -58,6 +58,8 @@ public class ActionTableModel extends AbstractTableModel {
      * @param actions Actions to show
      */
     public ActionTableModel(final List<Action> actions) {
+        super();
+
         if (actions == null) {
             this.actions = new ArrayList<Action>();
         } else {
@@ -68,7 +70,9 @@ public class ActionTableModel extends AbstractTableModel {
     /** {@inheritDoc} */
     @Override
     public int getRowCount() {
-        return actions.size();
+        synchronized (actions) {
+            return actions.size();
+        }
     }
 
     /** {@inheritDoc} */
@@ -111,27 +115,22 @@ public class ActionTableModel extends AbstractTableModel {
 
     /** {@inheritDoc} */
     @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
-        if (actions.size() <= rowIndex) {
-            throw new IndexOutOfBoundsException(rowIndex + " >= " +
-                    actions.size());
-        }
-        if (rowIndex < 0) {
-            throw new IllegalArgumentException("Must specify a positive integer");
-        }
-        switch (columnIndex) {
-            case 0:
-                return actions.get(rowIndex).getName();
-            case 1:
-                return actions.get(rowIndex).getTriggers()[0];
-            case 2:
-                return actions.get(rowIndex).getResponse();
-            default:
-                throw new IllegalArgumentException("Unknown column: " +
-                        columnIndex);
+    public Object getValueAt(final int rowIndex, final int columnIndex) {
+        synchronized (actions) {
+            switch (columnIndex) {
+                case 0:
+                    return actions.get(rowIndex).getName();
+                case 1:
+                    return actions.get(rowIndex).getTriggers()[0];
+                case 2:
+                    return actions.get(rowIndex).getResponse();
+                default:
+                    throw new IllegalArgumentException("Unknown column: " +
+                            columnIndex);
+            }
         }
     }
-    
+
     /**
      * Returns the action at the specified row.
      * 
@@ -140,28 +139,38 @@ public class ActionTableModel extends AbstractTableModel {
      * @return Action
      */
     public Action getAction(final int rowIndex) {
-        if (actions.size() <= rowIndex) {
-            throw new IndexOutOfBoundsException(rowIndex + " >= " +
-                    actions.size());
+        synchronized (actions) {
+            return actions.get(rowIndex);
         }
-        if (rowIndex < 0) {
-            throw new IllegalArgumentException("Must specify a positive integer");
-        }
-        return actions.get(rowIndex);
     }
-    
+
+    /**
+     * Returns the row index of the specified index.
+     * 
+     * @param action Action to get
+     * 
+     * @return Action row index or -1 if not found.
+     */
+    public int getAction(final Action action) {
+        synchronized (actions) {
+            return actions.indexOf(action);
+        }
+    }
+
     /**
      * Replaces the model data with the specified action group.
      * 
      * @param group New Action group
      */
     public void setActionGroup(final ActionGroup group) {
-        if (group == null) {
-            actions = new ArrayList<Action>();
-        } else {
-            actions = group;
+        synchronized (actions) {
+            if (group == null) {
+                actions = new ArrayList<Action>();
+            } else {
+                actions = group;
+            }
+            fireTableDataChanged();
         }
-        fireTableDataChanged();
     }
 
     /**
@@ -170,11 +179,13 @@ public class ActionTableModel extends AbstractTableModel {
      * @param action Action to add
      */
     public void add(final Action action) {
-        if (action == null) {
-            return;
+        synchronized (actions) {
+            if (action == null) {
+                return;
+            }
+            actions.add(action);
+            fireTableRowsInserted(actions.size() - 1, actions.size() - 1);
         }
-        actions.add(action);
-        fireTableRowsInserted(actions.size() - 1, actions.size() - 1);
     }
 
     /**
@@ -195,9 +206,24 @@ public class ActionTableModel extends AbstractTableModel {
      * @param index Index of the action to remove
      */
     public void remove(final int index) {
-        if (index != -1) {
-            actions.remove(index);
-            fireTableRowsDeleted(index, index);
+        synchronized (actions) {
+            if (index != -1) {
+                actions.remove(index);
+                fireTableRowsDeleted(index, index);
+            }
+        }
+    }
+
+    /**
+     * Checks if this model contains the specified action.
+     * 
+     * @param action Action to check for
+     * 
+     * @return true if the action exists
+     */
+    public boolean contains(final Action action) {
+        synchronized (actions) {
+            return actions.contains(action);
         }
     }
 }
