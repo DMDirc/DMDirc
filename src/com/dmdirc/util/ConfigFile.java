@@ -92,12 +92,14 @@ public class ConfigFile {
         int offset;
 
         for (String line : file.getLines()) {
-            final String tline = unescape(line.trim());
+            final String tline = line.trim();
 
             if (tline.indexOf('#') == 0 || tline.isEmpty()) {
                 continue;
-            } else if (tline.endsWith(":") && tline.indexOf('=') == -1) {
-                domain = tline.substring(0, tline.length() - 1);
+            } else if (
+                    (tline.endsWith(":") && !tline.endsWith("\\:"))
+                    && findEquals(tline) == -1) {
+                domain = unescape(tline.substring(0, tline.length() - 1));
 
                 domains.add(domain);
 
@@ -109,13 +111,14 @@ public class ConfigFile {
                 } else if (!keydomain && !flatdomains.containsKey(domain)) {
                     flatdomains.add(domain);
                 }
-            } else if (domain != null && keydomain && (offset = tline.indexOf('=')) != -1) {
-                final String key = tline.substring(0, offset);
-                final String value = tline.substring(offset + 1);
+            } else if (domain != null && keydomain
+                    && (offset = findEquals(tline)) != -1) {
+                final String key = unescape(tline.substring(0, offset));
+                final String value = unescape(tline.substring(offset + 1));
 
                 keydomains.get(domain).put(key, value);
             } else if (domain != null && !keydomain) {
-                flatdomains.add(domain, tline);
+                flatdomains.add(domain, unescape(tline));
             } else {
                 throw new InvalidConfigFileException("Unknown or unexpected" +
                         " line encountered: " + tline);
@@ -288,8 +291,37 @@ public class ConfigFile {
         return temp.toString();
     }
     
+    /**
+     * Escapes the specified input string by prefixing all occurances of
+     * \, \n, \r, = and : with backslashes.
+     * 
+     * @param input The string to be escaped
+     * @return A backslash-armoured version of the string
+     */
     protected static String escape(final String input) {
         return input.replaceAll("\\\\", "\\\\\\\\").replaceAll("\n", "\\\\n")
                 .replaceAll("\r", "\\\\r").replaceAll("=", "\\\\=").replaceAll(":", "\\\\:");
+    }
+    
+    /**
+     * Finds the first non-escaped instance of '=' in the specified string.
+     * 
+     * @param input The string to be searched
+     * @return The offset of the first non-escaped instance of '=', or -1.
+     */
+    protected static int findEquals(final String input) {
+        boolean escaped = false;
+        
+        for (int i = 0; i < input.length(); i++) {
+            if (escaped) {
+                escaped = false;
+            } else if (input.charAt(i) == '\\') {
+                escaped = true;
+            } else if (input.charAt(i) == '=') {
+                return i;
+            }
+        }
+        
+        return -1;
     }
 }
