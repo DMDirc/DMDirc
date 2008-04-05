@@ -25,23 +25,25 @@ package com.dmdirc.ui.swing.components;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputField;
+import com.dmdirc.ui.interfaces.InputValidationListener;
+import com.dmdirc.util.ListenerList;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
+
 import net.miginfocom.swing.MigLayout;
 
 /** Swing input field. */
 public class SwingInputField extends JComponent implements InputField,
-        DocumentListener {
+        KeyListener, InputValidationListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -55,6 +57,10 @@ public class SwingInputField extends JComponent implements InputField,
     private final JTextField textField;
     /** Line wrap indicator. */
     private final JLabel wrapIndicator;
+    /** Error indicator. */
+    private final JLabel errorIndicator;
+    /** Listener list. */
+    private final ListenerList listeners;
 
     /**
      * Instantiates a new swing input field.
@@ -62,17 +68,23 @@ public class SwingInputField extends JComponent implements InputField,
     public SwingInputField() {
         super();
         
+        listeners = new ListenerList();
+        
         textField = new JTextField();
         textField.setFocusTraversalKeysEnabled(false);
+        textField.addKeyListener(this);
         wrapIndicator =
                 new JLabel(IconManager.getIconManager().getIcon("linewrap"));
-        textField.getDocument().addDocumentListener(this);
-        checkLength(0);
+        wrapIndicator.setVisible(false);
+        errorIndicator =
+                new JLabel(IconManager.getIconManager().getIcon("error"));
+        errorIndicator.setVisible(false);
 
         setLayout(new MigLayout("ins 0, hidemode 3"));
 
         add(textField, "growx, pushx");
         add(wrapIndicator, "");
+        add(errorIndicator, "");
 
         setActionMap(textField.getActionMap());
         setInputMap(SwingInputField.WHEN_FOCUSED,
@@ -144,7 +156,7 @@ public class SwingInputField extends JComponent implements InputField,
     /** {@inheritDoc} */
     @Override
     public void addKeyListener(final KeyListener listener) {
-        textField.addKeyListener(listener);
+        listeners.add(KeyListener.class, listener);
     }
 
     /** {@inheritDoc} */
@@ -156,7 +168,7 @@ public class SwingInputField extends JComponent implements InputField,
     /** {@inheritDoc} */
     @Override
     public void removeKeyListener(final KeyListener listener) {
-        textField.removeKeyListener(listener);
+        listeners.remove(KeyListener.class, listener);
     }
 
     /** {@inheritDoc} */
@@ -241,34 +253,59 @@ public class SwingInputField extends JComponent implements InputField,
 
     /** {@inheritDoc} */
     @Override
-    public void insertUpdate(final DocumentEvent e) {
-        checkLength(e.getDocument().getLength());
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void removeUpdate(final DocumentEvent e) {
-        checkLength(e.getDocument().getLength());
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void changedUpdate(final DocumentEvent e) {
-    //Ignore
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public boolean hasFocus() {
         return textField.isFocusOwner();
     }
 
-    /**
-     * Checks the length of the input and shows wrap indicator if required.
+    /** 
+     * {@inheritDoc}
      * 
-     * @param newLength New length of input
+     * @param e Key event
      */
-    private void checkLength(final int newLength) {
+    @Override
+    public void keyTyped(final KeyEvent e) {
+        for(KeyListener listener : listeners.get(KeyListener.class)) {
+            listener.keyTyped(e);
+        }
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Key event
+     */
+    @Override
+    public void keyPressed(final KeyEvent e) {
         wrapIndicator.setVisible(false);
+        errorIndicator.setVisible(false);
+        for(KeyListener listener : listeners.get(KeyListener.class)) {
+            listener.keyPressed(e);
+        }
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Key event
+     */
+    @Override
+    public void keyReleased(final KeyEvent e) {
+        for(KeyListener listener : listeners.get(KeyListener.class)) {
+            listener.keyReleased(e);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void illegalCommand(final String reason) {
+        errorIndicator.setVisible(true);
+        errorIndicator.setToolTipText(reason);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void wrappedText(final int count) {
+        wrapIndicator.setVisible(true);
+        wrapIndicator.setToolTipText(count + " lines");
     }
 }

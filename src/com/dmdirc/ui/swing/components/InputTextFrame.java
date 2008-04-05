@@ -225,6 +225,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
      */
     public final void setInputHandler(final InputHandler newInputHandler) {
         this.inputHandler = newInputHandler;
+        inputHandler.addValidationListener(inputField);
     }
 
     /**
