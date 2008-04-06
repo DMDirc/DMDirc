@@ -21,6 +21,7 @@
  */
 package com.dmdirc.actions.metatypes;
 
+import com.dmdirc.actions.interfaces.ActionMetaType;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -28,9 +29,11 @@ public class ActionEventsTest extends junit.framework.TestCase {
 
     @Test
     public void testArity() {
-        for (ActionEvents event : ActionEvents.values()) {
-            assertEquals(event.getArity(), event.getArgNames().length);
-            assertEquals(event.getArity(), event.getArgTypes().length);
+        for (ActionMetaType event : ActionEvents.values()) {
+            assertEquals("Arity and number of arg names must be equal",
+                    event.getArity(), event.getArgNames().length);
+            assertEquals("Arity and number of arg types must be equal",
+                    event.getArity(), event.getArgTypes().length);
         }
     }
 
