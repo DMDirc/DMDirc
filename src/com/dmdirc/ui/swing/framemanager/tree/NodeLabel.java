@@ -68,6 +68,8 @@ public class NodeLabel extends JLabel implements SelectionListener,
     private Color activeForeground;
     /** notification set? */
     private boolean notification;
+    /** Selected. */
+    private boolean selected;
 
     /** 
      * Instantiates a new node label.
@@ -81,6 +83,7 @@ public class NodeLabel extends JLabel implements SelectionListener,
         this.manager = manager;
         this.window = window;
         config = IdentityManager.getGlobalConfig();
+        selected = false;
 
         setColours();
 
@@ -128,11 +131,14 @@ public class NodeLabel extends JLabel implements SelectionListener,
             }
             setBackground(activeBackground);
             setForeground(activeForeground);
+            selected = true;
         } else if (!notification) {
             setFont(getFont().deriveFont(Font.PLAIN));
             setBackground(manager.getTree().getBackground());
             setForeground(manager.getTree().getForeground());
+            selected = false;
         }
+        manager.getTree().repaint();
     }
 
     /** {@inheritDoc} */
@@ -149,7 +155,9 @@ public class NodeLabel extends JLabel implements SelectionListener,
     @Override
     public void notificationCleared(final Window window) {
         if (equals(window)) {
-            setForeground(manager.getTree().getForeground());
+            if (!selected) {
+                setForeground(manager.getTree().getForeground());
+            }
             notification = false;
             manager.getTree().repaint();
         }
@@ -184,12 +192,14 @@ public class NodeLabel extends JLabel implements SelectionListener,
      * @param rollover rollover state
      */
     public void setRollover(final boolean rollover) {
-        if (rollover) {
-            setBackground(rolloverColour);
-        } else {
-            setBackground(manager.getTree().getBackground());
+        if (!selected) {
+            if (rollover) {
+                setBackground(rolloverColour);
+            } else {
+                setBackground(manager.getTree().getBackground());
+            }
+            manager.getTree().repaint();
         }
-        manager.getTree().repaint();
     }
 
     /** {@inheritDoc} */

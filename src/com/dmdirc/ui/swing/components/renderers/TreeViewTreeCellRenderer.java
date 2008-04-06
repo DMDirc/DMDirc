@@ -139,7 +139,7 @@ public class TreeViewTreeCellRenderer implements TreeCellRenderer,
      */
     @Override
     public void mouseDragged(final MouseEvent e) {
-    //Ignore
+        checkMousePosition(e);
     }
 
     /** 
