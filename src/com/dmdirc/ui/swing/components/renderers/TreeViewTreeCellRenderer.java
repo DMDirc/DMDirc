@@ -22,18 +22,26 @@
 
 package com.dmdirc.ui.swing.components.renderers;
 
+import com.dmdirc.ui.swing.framemanager.tree.NodeLabel;
 import com.dmdirc.ui.swing.framemanager.tree.TreeFrameManager;
+import com.dmdirc.ui.swing.framemanager.tree.TreeViewModel;
 
 import java.awt.Component;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeCellRenderer;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 /**
  * Displays a node in a tree according to its type.
  */
-public class TreeViewTreeCellRenderer implements TreeCellRenderer {
+public class TreeViewTreeCellRenderer implements TreeCellRenderer,
+        MouseMotionListener, MouseListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -43,6 +51,8 @@ public class TreeViewTreeCellRenderer implements TreeCellRenderer {
     private static final long serialVersionUID = 3;
     /** Parent frame manager. */
     private final TreeFrameManager manager;
+    /** Selection path. */
+    private TreePath oldSelectedPath = null;
 
     /**
      * Creates a new instance of TreeViewTreeCellRenderer.
@@ -51,6 +61,8 @@ public class TreeViewTreeCellRenderer implements TreeCellRenderer {
      */
     public TreeViewTreeCellRenderer(final TreeFrameManager manager) {
         this.manager = manager;
+        manager.getTree().addMouseMotionListener(this);
+        manager.getTree().addMouseListener(this);
     }
 
     /**
@@ -70,6 +82,102 @@ public class TreeViewTreeCellRenderer implements TreeCellRenderer {
     public final Component getTreeCellRendererComponent(final JTree tree,
             final Object value, final boolean sel, final boolean expanded,
             final boolean leaf, final int row, final boolean hasFocus) {
-        return manager.getLabelforNode((DefaultMutableTreeNode) value);
+        final boolean rollover = (oldSelectedPath != null) && (value ==
+                oldSelectedPath.getLastPathComponent());
+        final NodeLabel label = manager.getLabelforNode((DefaultMutableTreeNode) value);
+        label.setRollover(rollover);
+        return label;
+    }
+    
+    private void checkMousePosition(final MouseEvent e) {
+        final JTree tree = manager.getTree();
+        final TreeViewModel model = (TreeViewModel) tree.getModel();
+        final int selectedRow = tree.getRowForLocation(e.getX(), e.getY());
+        if (selectedRow > 0) {
+            final TreePath selectedPath = tree.getPathForLocation(e.getX(),
+                    e.getY());
+            if (oldSelectedPath == null || !selectedPath.equals(oldSelectedPath)) {
+                oldSelectedPath = selectedPath;
+                model.nodeChanged((TreeNode) oldSelectedPath.getLastPathComponent());
+            }
+        } else {
+            final TreePath currentSelected = oldSelectedPath;
+            oldSelectedPath = null;
+            if (currentSelected != null) {
+                model.nodeChanged((TreeNode) currentSelected.getLastPathComponent());
+            }
+        }
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event
+     */
+    @Override
+    public void mouseMoved(final MouseEvent e) {
+        checkMousePosition(e);
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event
+     */
+    @Override
+    public void mouseDragged(final MouseEvent e) {
+        //Ignore
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event
+     */
+    @Override
+    public void mouseClicked(final MouseEvent e) {
+        //Ignore
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event
+     */
+    @Override
+    public void mousePressed(final MouseEvent e) {
+        //Ignore
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event
+     */
+    @Override
+    public void mouseReleased(final MouseEvent e) {
+        //Ignore
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event
+     */
+    @Override
+    public void mouseEntered(final MouseEvent e) {
+        checkMousePosition(e);
+        manager.getTree().repaint();
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event
+     */
+    @Override
+    public void mouseExited(final MouseEvent e) {
+        oldSelectedPath = null;
+        manager.getTree().repaint();
     }
 }

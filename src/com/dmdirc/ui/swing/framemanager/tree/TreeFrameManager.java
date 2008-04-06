@@ -379,7 +379,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
      *
      * @return Label for node
      */
-    public JLabel getLabelforNode(final DefaultMutableTreeNode node) {
+    public NodeLabel getLabelforNode(final DefaultMutableTreeNode node) {
         return labels.get(node);
     }
 

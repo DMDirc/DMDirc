@@ -34,8 +34,6 @@ import com.dmdirc.ui.messages.ColourManager;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JLabel;
@@ -43,11 +41,10 @@ import javax.swing.JLabel;
 import net.miginfocom.layout.PlatformDefaults;
 
 /**
- *
+ * Node label.
  */
 public class NodeLabel extends JLabel implements SelectionListener,
-        NotificationListener, IconChangeListener, ConfigChangeListener,
-        MouseListener {
+        NotificationListener, IconChangeListener, ConfigChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -87,7 +84,6 @@ public class NodeLabel extends JLabel implements SelectionListener,
 
         setColours();
 
-        addMouseListener(this);
         config.addChangeListener("ui", this);
         config.addChangeListener("treeview", this);
 
@@ -183,57 +179,21 @@ public class NodeLabel extends JLabel implements SelectionListener,
     }
 
     /** 
-     * {@inheritDoc}
+     * Sets the rollover state for the node.
      * 
-     * @param e Mouse event
+     * @param rollover rollover state
      */
-    @Override
-    public void mouseClicked(final MouseEvent e) {
-    //Ignore
+    public void setRollover(final boolean rollover) {
+        if (rollover) {
+            setBackground(rolloverColour);
+        } else {
+            setBackground(manager.getTree().getBackground());
+        }
+        manager.getTree().repaint();
     }
 
-    /** 
-     * {@inheritDoc}
-     * 
-     * @param e Mouse event
-     */
-    @Override
-    public void mousePressed(final MouseEvent e) {
-    //Ignore
-    }
-
-    /** 
-     * {@inheritDoc}
-     * 
-     * @param e Mouse event
-     */
-    @Override
-    public void mouseReleased(final MouseEvent e) {
-    //Ignore
-    }
-
-    /** 
-     * {@inheritDoc}
-     * 
-     * @param e Mouse event
-     */
-    @Override
-    public void mouseEntered(final MouseEvent e) {
-        setBackground(rolloverColour);
-    }
-
-    /** 
-     * {@inheritDoc}
-     * 
-     * @param e Mouse event
-     */
-    @Override
-    public void mouseExited(final MouseEvent e) {
-        setBackground(manager.getTree().getBackground());
-    }
-    
     /** {@inheritDoc} */
-    @Override   
+    @Override
     public boolean equals(final Object obj) {
         if (window == null) {
             return false;
