@@ -37,7 +37,7 @@ public class ConfigManagerTest {
         assertNull(ConfigManager.getStats().get("unit-test123.baz"));
         cm.hasOption("unit-test123", "baz");
         assertNotNull(ConfigManager.getStats().get("unit-test123.baz"));
-        assertEquals(1, ConfigManager.getStats().get("unit-test123.baz"));
+        assertEquals(1, (int) ConfigManager.getStats().get("unit-test123.baz"));
     }
     
     public static junit.framework.Test suite() {
