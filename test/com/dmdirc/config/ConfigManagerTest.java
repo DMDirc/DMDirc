@@ -19,42 +19,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.dmdirc.config.prefs;
+package com.dmdirc.config;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class PreferencesManagerTest extends junit.framework.TestCase {
-
-    @Test
-    public void testDefaults() {
-        final PreferencesManager pm = new PreferencesManager();
-        assertNotNull(pm.getCategory("General"));
-        assertNotNull(pm.getCategory("Connection"));
-        assertNotNull(pm.getCategory("Messages"));
-        assertNotNull(pm.getCategory("Advanced"));
-        assertNotNull(pm.getCategory("GUI"));
-        assertNotNull(pm.getCategory("Plugins"));
-        assertNotNull(pm.getCategory("Updates"));
-        assertNotNull(pm.getCategory("URL Handlers"));
+public class ConfigManagerTest {
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testNonExistantOption() {
+        new ConfigManager("", "", "").getOption("unit-test123", "foobar");
     }
     
     @Test
-    public void testGetCategory() {
-        final PreferencesManager pm = new PreferencesManager();
-        assertNull(pm.getCategory("unittest123"));
+    public void testStats() {
+        final ConfigManager cm = new ConfigManager("", "", "");
+        assertNull(ConfigManager.getStats().get("unit-test123.baz"));
+        cm.hasOption("unit-test123", "baz");
+        assertNotNull(ConfigManager.getStats().get("unit-test123.baz"));
+        assertEquals(1, ConfigManager.getStats().get("unit-test123.baz"));
     }
     
-    @Test
-    public void testGetCategories() {
-        final PreferencesManager pm = new PreferencesManager();
-        assertNotNull(pm.getCategories());
-        assertFalse(pm.getCategories().isEmpty());
-        
-        for (PreferencesCategory cat : pm.getCategories()) {
-            assertNotNull(pm.getCategory(cat.getTitle()));
-        }
-    }
-
-
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(ConfigManagerTest.class);
+    }    
+    
 }

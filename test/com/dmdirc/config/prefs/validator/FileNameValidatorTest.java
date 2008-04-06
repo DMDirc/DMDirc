@@ -19,42 +19,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.dmdirc.config.prefs;
+
+package com.dmdirc.config.prefs.validator;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class PreferencesManagerTest extends junit.framework.TestCase {
+public class FileNameValidatorTest extends junit.framework.TestCase {
 
     @Test
-    public void testDefaults() {
-        final PreferencesManager pm = new PreferencesManager();
-        assertNotNull(pm.getCategory("General"));
-        assertNotNull(pm.getCategory("Connection"));
-        assertNotNull(pm.getCategory("Messages"));
-        assertNotNull(pm.getCategory("Advanced"));
-        assertNotNull(pm.getCategory("GUI"));
-        assertNotNull(pm.getCategory("Plugins"));
-        assertNotNull(pm.getCategory("Updates"));
-        assertNotNull(pm.getCategory("URL Handlers"));
-    }
-    
-    @Test
-    public void testGetCategory() {
-        final PreferencesManager pm = new PreferencesManager();
-        assertNull(pm.getCategory("unittest123"));
-    }
-    
-    @Test
-    public void testGetCategories() {
-        final PreferencesManager pm = new PreferencesManager();
-        assertNotNull(pm.getCategories());
-        assertFalse(pm.getCategories().isEmpty());
+    public void testValidate() {
+        final FileNameValidator rv = new FileNameValidator();
         
-        for (PreferencesCategory cat : pm.getCategories()) {
-            assertNotNull(pm.getCategory(cat.getTitle()));
-        }
+        assertTrue(rv.validate("/foo").isFailure());
+        assertFalse(rv.validate("filename").isFailure());
     }
-
 
 }

@@ -108,6 +108,20 @@ public class IdentityTest extends junit.framework.TestCase {
         
         myIdent.unsetOption("foo", "bar");
     }
+    
+    @Test
+    public void testSetOptionInt() {
+        myIdent.setOption("foo", "baz", 123);
+        assertEquals("123", myIdent.getOption("foo", "baz"));
+    }
+    
+    @Test
+    public void testSetOptionBool() {
+        myIdent.setOption("foo", "baz", false);
+        assertEquals("false", myIdent.getOption("foo", "baz"));
+        myIdent.setOption("foo", "baz", true);
+        assertEquals("true", myIdent.getOption("foo", "baz"));        
+    }    
 
     @Test
     public void testRemoveOption() {
