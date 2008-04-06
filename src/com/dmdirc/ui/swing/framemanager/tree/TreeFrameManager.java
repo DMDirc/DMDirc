@@ -49,7 +49,6 @@ import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
@@ -191,17 +190,20 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     @Override
     public void delWindow(final FrameContainer window) {
         if (nodes != null && nodes.get(window) != null) {
-            final DefaultMutableTreeNode node = nodes.get(window);
-            if (node.getLevel() == 0) {
-                Logger.appError(ErrorLevel.MEDIUM,
-                        "delServer triggered for root node" + node.toString(),
-                        new IllegalArgumentException());
-            } else {
-                model.removeNodeFromParent(nodes.get(window));
+            synchronized (labels) {
+                final DefaultMutableTreeNode node = nodes.get(window);
+                if (node.getLevel() == 0) {
+                    Logger.appError(ErrorLevel.MEDIUM,
+                            "delServer triggered for root node" +
+                            node.toString(),
+                            new IllegalArgumentException());
+                } else {
+                    model.removeNodeFromParent(nodes.get(window));
+                }
+                nodes.remove(window);
+                labels.remove(node);
+                window.removeSelectionListener(this);
             }
-            nodes.remove(window);
-            labels.remove(node);
-            window.removeSelectionListener(this);
         }
     }
 
@@ -213,20 +215,22 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
      */
     public void addWindow(final DefaultMutableTreeNode parent,
             final FrameContainer window) {
-        final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
-        nodes.put(window, node);
-        labels.put(node, new NodeLabel(this, window.getFrame()));
-        node.setUserObject(window);
-        if (parent == null) {
-            model.insertNodeInto(node, root);
-        } else {
-            model.insertNodeInto(node, parent);
+        synchronized (labels) {
+            final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
+            nodes.put(window, node);
+            labels.put(node, new NodeLabel(this, window.getFrame()));
+            node.setUserObject(window);
+            if (parent == null) {
+                model.insertNodeInto(node, root);
+            } else {
+                model.insertNodeInto(node, parent);
+            }
+            tree.expandPath(new TreePath(node.getPath()).getParentPath());
+            final Rectangle view =
+                    tree.getRowBounds(tree.getRowForPath(new TreePath(node.getPath())));
+            tree.scrollRectToVisible(new Rectangle(0, (int) view.getY(), 0, 0));
+            window.addSelectionListener(this);
         }
-        tree.expandPath(new TreePath(node.getPath()).getParentPath());
-        final Rectangle view =
-                tree.getRowBounds(tree.getRowForPath(new TreePath(node.getPath())));
-        tree.scrollRectToVisible(new Rectangle(0, (int) view.getY(), 0, 0));
-        window.addSelectionListener(this);
     }
 
     /**
@@ -380,7 +384,9 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
      * @return Label for node
      */
     public NodeLabel getLabelforNode(final DefaultMutableTreeNode node) {
-        return labels.get(node);
+        synchronized (labels) {
+            return labels.get(node);
+        }
     }
 
     /** Sets treeview colours. */
@@ -434,5 +440,4 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
             }
         }
     }
-
 }

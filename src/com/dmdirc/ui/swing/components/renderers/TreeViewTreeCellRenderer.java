@@ -22,6 +22,8 @@
 
 package com.dmdirc.ui.swing.components.renderers;
 
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.ui.swing.framemanager.tree.NodeLabel;
 import com.dmdirc.ui.swing.framemanager.tree.TreeFrameManager;
 import com.dmdirc.ui.swing.framemanager.tree.TreeViewModel;
@@ -41,7 +43,7 @@ import javax.swing.tree.TreePath;
  * Displays a node in a tree according to its type.
  */
 public class TreeViewTreeCellRenderer implements TreeCellRenderer,
-        MouseMotionListener, MouseListener {
+        MouseMotionListener, MouseListener, ConfigChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -61,8 +63,13 @@ public class TreeViewTreeCellRenderer implements TreeCellRenderer,
      */
     public TreeViewTreeCellRenderer(final TreeFrameManager manager) {
         this.manager = manager;
-        manager.getTree().addMouseMotionListener(this);
-        manager.getTree().addMouseListener(this);
+        if (!IdentityManager.getGlobalConfig().getOption("ui",
+                "treeviewRolloverColour", "false").contains("false")) {
+            manager.getTree().addMouseMotionListener(this);
+            manager.getTree().addMouseListener(this);
+        }
+        IdentityManager.getGlobalConfig().addChangeListener("ui",
+                "treeviewRolloverColour", this);
     }
 
     /**
@@ -84,11 +91,17 @@ public class TreeViewTreeCellRenderer implements TreeCellRenderer,
             final boolean leaf, final int row, final boolean hasFocus) {
         final boolean rollover = (oldSelectedPath != null) && (value ==
                 oldSelectedPath.getLastPathComponent());
-        final NodeLabel label = manager.getLabelforNode((DefaultMutableTreeNode) value);
+        final NodeLabel label =
+                manager.getLabelforNode((DefaultMutableTreeNode) value);
         label.setRollover(rollover);
         return label;
     }
-    
+
+    /**
+     * Checks the mouse position and sets the rollover node as required.
+     * 
+     * @param e Triggering mouse event
+     */
     private void checkMousePosition(final MouseEvent e) {
         final JTree tree = manager.getTree();
         final TreeViewModel model = (TreeViewModel) tree.getModel();
@@ -126,7 +139,7 @@ public class TreeViewTreeCellRenderer implements TreeCellRenderer,
      */
     @Override
     public void mouseDragged(final MouseEvent e) {
-        //Ignore
+    //Ignore
     }
 
     /** 
@@ -136,7 +149,7 @@ public class TreeViewTreeCellRenderer implements TreeCellRenderer,
      */
     @Override
     public void mouseClicked(final MouseEvent e) {
-        //Ignore
+    //Ignore
     }
 
     /** 
@@ -146,7 +159,7 @@ public class TreeViewTreeCellRenderer implements TreeCellRenderer,
      */
     @Override
     public void mousePressed(final MouseEvent e) {
-        //Ignore
+    //Ignore
     }
 
     /** 
@@ -156,7 +169,7 @@ public class TreeViewTreeCellRenderer implements TreeCellRenderer,
      */
     @Override
     public void mouseReleased(final MouseEvent e) {
-        //Ignore
+    //Ignore
     }
 
     /** 
@@ -179,5 +192,18 @@ public class TreeViewTreeCellRenderer implements TreeCellRenderer,
     public void mouseExited(final MouseEvent e) {
         oldSelectedPath = null;
         manager.getTree().repaint();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void configChanged(final String domain, final String key) {
+        if (IdentityManager.getGlobalConfig().getOption("ui",
+                "treeviewRolloverColour", "false").contains("false")) {
+            manager.getTree().removeMouseMotionListener(this);
+            manager.getTree().removeMouseListener(this);
+        } else {
+            manager.getTree().addMouseMotionListener(this);
+            manager.getTree().addMouseListener(this);
+        }
     }
 }
