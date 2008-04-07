@@ -142,7 +142,9 @@ public final class Logger {
                 ErrorManager.getErrorManager().getNextErrorID(), level, message,
                 trace, new Date(System.currentTimeMillis()));
         
-        writeError(error);
+        if (IdentityManager.getGlobalConfig().getOptionBool("general", "logerrors", false)) {
+            writeError(error);
+        }
         
         return error;
     }
