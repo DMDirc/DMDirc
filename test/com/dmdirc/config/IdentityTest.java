@@ -22,6 +22,9 @@
 
 package com.dmdirc.config;
 
+import com.dmdirc.interfaces.ConfigChangeListener;
+
+import java.io.IOException;
 import java.util.Properties;
 
 import org.junit.After;
@@ -29,7 +32,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class IdentityTest extends junit.framework.TestCase {
+public class IdentityTest {
     
     private Identity myIdent;
     private ConfigTarget target;
@@ -62,6 +65,11 @@ public class IdentityTest extends junit.framework.TestCase {
         final Properties props = myIdent.getProperties();
         
         assertEquals(props.getProperty("identity.name"), myIdent.getName());
+    }
+    
+    @Test
+    public void testToString() {
+        assertEquals(myIdent.getName(), myIdent.toString());
     }
 
     @Test
@@ -154,10 +162,58 @@ public class IdentityTest extends junit.framework.TestCase {
         assertEquals(target.getData(), myIdent.getTarget().getData());
         assertEquals(target.getType(), myIdent.getTarget().getType());
     }
-
-    @Test
-    public void testToString() {
-        assertEquals(myIdent.getOption("identity", "name"), myIdent.getName());
+    
+    @Test(expected=InvalidIdentityFileException.class)
+    public void testNoName() throws IOException, InvalidIdentityFileException {
+        new Identity(getClass().getResourceAsStream("identity1"), false);
     }
+    
+    @Test(expected=InvalidIdentityFileException.class)
+    public void testNoTarget() throws IOException, InvalidIdentityFileException {
+        new Identity(getClass().getResourceAsStream("identity2"), false);
+    }
+    
+    @Test
+    public void testSetListener() {
+        final TestConfigListener listener = new TestConfigListener();
+        myIdent.addListener(listener);
+        assertEquals(0, listener.count);
+        
+        myIdent.setOption("unit", "test", "meep");        
+
+        assertEquals(1, listener.count);
+        assertEquals("unit", listener.domain);
+        assertEquals("test", listener.key);
+    }    
+    
+    @Test
+    public void testUnsetListener() {
+        final TestConfigListener listener = new TestConfigListener();
+        myIdent.setOption("unit", "test", "meep");
+        myIdent.addListener(listener);
+        
+        assertEquals(0, listener.count);
+        myIdent.unsetOption("unit", "test");
+        assertEquals(1, listener.count);
+        assertEquals("unit", listener.domain);
+        assertEquals("test", listener.key);
+    }
+    
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(IdentityTest.class);
+    }    
+    
+    private class TestConfigListener implements ConfigChangeListener {
+        
+        public int count = 0;
+        public String domain, key;
+
+        public void configChanged(String domain, String key) {
+            count++;
+            this.domain = domain;
+            this.key = key;
+        }
+        
+    }    
     
 }

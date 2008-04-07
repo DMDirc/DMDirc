@@ -21,6 +21,7 @@
  */
 package com.dmdirc.config;
 
+import com.dmdirc.interfaces.ConfigChangeListener;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -40,8 +41,47 @@ public class ConfigManagerTest {
         assertEquals(1, (int) ConfigManager.getStats().get("unit-test123.baz"));
     }
     
+    @Test
+    public void testDomainListener() {
+        final TestConfigListener listener = new TestConfigListener();
+        final ConfigManager cm = new ConfigManager("", "", "");
+        cm.addChangeListener("unit-test", listener);
+        
+        cm.configChanged("foo", "bar");
+        assertEquals(0, listener.count);
+        
+        cm.configChanged("unit-test", "bar");
+        assertEquals(1, listener.count);
+    }
+    
+    @Test
+    public void testDomainKeyListener() {
+        final TestConfigListener listener = new TestConfigListener();
+        final ConfigManager cm = new ConfigManager("", "", "");
+        cm.addChangeListener("unit-test", "foo", listener);
+        
+        cm.configChanged("foo", "bar");
+        assertEquals(0, listener.count);
+        
+        cm.configChanged("unit-test", "bar");
+        assertEquals(0, listener.count);
+        
+        cm.configChanged("unit-test", "foo");
+        assertEquals(1, listener.count);        
+    }    
+    
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(ConfigManagerTest.class);
-    }    
+    }
+    
+    private class TestConfigListener implements ConfigChangeListener {
+        
+        public int count = 0;
+
+        public void configChanged(String domain, String key) {
+            count++;
+        }
+        
+    }
     
 }

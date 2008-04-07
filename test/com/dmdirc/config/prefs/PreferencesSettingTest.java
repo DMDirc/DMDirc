@@ -23,6 +23,8 @@ package com.dmdirc.config.prefs;
 
 import com.dmdirc.config.prefs.validator.NotEmptyValidator;
 import com.dmdirc.config.prefs.validator.PermissiveValidator;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -76,6 +78,19 @@ public class PreferencesSettingTest {
         assertFalse(ps.isRestartNeeded());
         assertSame(ps, ps.setRestartNeeded());
         assertTrue(ps.isRestartNeeded());
+    }
+    
+    @Test
+    public void testMultichoiceAdding() {
+        final Map<String, String> map = new HashMap<String, String>();
+        map.put("a", "b");
+        map.put("c", "d");
+        
+        final PreferencesSetting ps = new PreferencesSetting("domain", 
+                "option", "new", "title", "helptext", map);
+        assertEquals(3, ps.getComboOptions().size());
+        assertNotNull(ps.getComboOptions().get("new"));
+        assertTrue(ps.getComboOptions().get("new").startsWith("Current"));
     }
 
     public static junit.framework.Test suite() {
