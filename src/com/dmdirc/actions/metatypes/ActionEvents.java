@@ -33,7 +33,7 @@ public enum ActionEvents implements ActionMetaType {
     /** Action event type. */
     ACTION_EVENT(new String[]{"action"}, Action.class),
     /** Action event type. */
-    ACTION_DELETED(new String[]{"Action group", "Action name"}, Action.class);
+    ACTION_DELETED(new String[]{"Action group", "Action name"}, Action.class, String.class);
     
     /** The names of the arguments for this meta type. */
     private String[] argNames;
