@@ -141,12 +141,6 @@ public class PreferencesManager {
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "hidequeries", "false", "Hide queries",
                 "Initially hide queries so that they don't steal focus"));
-        category.addSetting(new PreferencesSetting(PreferencesType.TEXT,
-                new StringLengthValidator(1, 1), "general", "commandchar", "/",
-                "Command character", "Character used to prefix a command"));
-        category.addSetting(new PreferencesSetting(PreferencesType.TEXT,
-                new StringLengthValidator(1, 1), "general", "silencechar", ".",
-                "Silence character", "Character used to silence commands"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "awayindicator", "false", "Away indicator",
                 "Shows an indicator in windows when you are marked as away"));
@@ -311,6 +305,9 @@ public class PreferencesManager {
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "submitErrors", "false", "Automatically submit errors",
                 "Automatically submit client errors to the developers?"));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "general", "logerrors", "false", "Log errors to disk",
+                "Save copies of all errors to disk?"));        
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "tabcompletion", "casesensitive", "false", "Case-sensitive tab completion",
                 "Respect case when tab completing?"));
