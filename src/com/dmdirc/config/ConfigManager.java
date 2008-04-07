@@ -376,7 +376,9 @@ public class ConfigManager extends ConfigSource implements Serializable,
      * @param listener The listener to be removed
      */
     public void removeListener(final ConfigChangeListener listener) {
-        listeners.removeFromAll(listener);
+        synchronized (listeners) {
+            listeners.removeFromAll(listener);
+        }
     }
     
     /**
@@ -387,7 +389,9 @@ public class ConfigManager extends ConfigSource implements Serializable,
      */
     private void addListener(final String key,
             final ConfigChangeListener listener) {
-        listeners.add(key, listener);
+        synchronized (listeners) {
+            listeners.add(key, listener);
+        }
     }
     
     /** {@inheritDoc} */
