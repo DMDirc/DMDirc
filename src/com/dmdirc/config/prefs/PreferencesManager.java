@@ -119,7 +119,7 @@ public class PreferencesManager {
         final PreferencesCategory category = new PreferencesCategory("General", "");
 
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "ui", "confirmquit", "false", "Confirm quit",
+                "ui", "confirmQuit", "false", "Confirm quit",
                 "Do you want to confirm closing the client?"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "channel", "splitusermodes", "false", "Split user modes",
