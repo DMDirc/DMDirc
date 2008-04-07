@@ -51,12 +51,17 @@ public class ConfigFile {
 
     /** The text file we're reading. */
     private final TextFile file;
+    
+    /** Whether or not we should automatically create domains. */
+    private boolean automake;
 
     /**
      * Creates a new instance of ConfigFile.
      * 
      * @param file The path of the file to be loaded
+     * @deprecated Pass a TextFile instead
      */
+    @Deprecated
     public ConfigFile(final String file) {
         this.file = new TextFile(file);
     }
@@ -65,7 +70,9 @@ public class ConfigFile {
      * Creates a new instance of ConfigFile.
      * 
      * @param uri The URI of the file to be loaded
+     * @deprecated Pass a TextFile instead
      */
+    @Deprecated
     public ConfigFile(final URI uri) {
         this.file = new TextFile(uri);
     }
@@ -74,9 +81,31 @@ public class ConfigFile {
      * Creates a ConfigFile from the specified input stream.
      * 
      * @param is The input stream to read
+     * @deprecated Pass a TextFile instead
      */
+    @Deprecated
     public ConfigFile(final InputStream is) {
         this.file = new TextFile(is);
+    }
+    
+    /**
+     * Creates a ConfigFile for the specified file.
+     * 
+     * @param file The file to use
+     */
+    public ConfigFile(final TextFile file) {
+        this.file = file;
+    }
+
+    /**
+     * Sets the "automake" value of this config file. If automake is set to
+     * true, any calls to getKeyDomain will automatically create the domain
+     * if it did not previously exist.
+     * 
+     * @param automake The new value of the automake setting of this file
+     */
+    public void setAutomake(final boolean automake) {
+        this.automake = automake;
     }
 
     /**
@@ -90,6 +119,10 @@ public class ConfigFile {
         String domain = null;
         boolean keydomain = false;
         int offset;
+        
+        keydomains.clear();
+        flatdomains.clear();
+        domains.clear();
 
         for (String line : file.getLines()) {
             final String tline = line.trim();
@@ -162,6 +195,22 @@ public class ConfigFile {
 
         file.writeLines(lines);
     }
+    
+    /**
+     * Deletes this config file.
+     */
+    public void delete() {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    /**
+     * Retrieves the text file for this config file.
+     * 
+     * @return This config file's text file
+     */
+    public TextFile getFile() {
+        return file;
+    }
 
     /**
      * Appends the meta-data (keysections) to the specified list of lines.
@@ -185,12 +234,26 @@ public class ConfigFile {
     }
     
     /**
+     * Retrieves all the key domains for this config file.
+     * 
+     * @return This config file's key domains
+     */
+    public Map<String, Map<String, String>> getKeyDomains() {
+        return keydomains;
+    }
+    
+    /**
      * Retrieves the key/values of the specified key domain.
      * 
      * @param domain The domain to be retrieved
      * @return A map of keys to values in the specified domain
      */
     public Map<String, String> getKeyDomain(final String domain) {
+        if (automake && !isKeyDomain(domain)) {
+            domains.add(domain);
+            keydomains.put(domain, new HashMap<String, String>());
+        }
+        
         return keydomains.get(domain);
     }
     

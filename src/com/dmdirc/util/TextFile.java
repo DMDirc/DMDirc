@@ -60,9 +60,20 @@ public class TextFile {
      * Creates a new instance of TextFile for the specified URI.
      * 
      * @param uri The URI of the file
+     * @deprecated Pass an InputStream or File instead
      */
+    @Deprecated
     public TextFile(final URI uri) {
         file = new File(uri);
+    }
+    
+    /**
+     * Creates a new instance of TextFile for the specified File.
+     * 
+     * @param file The file to read
+     */
+    public TextFile(final File file) {
+        this.file = file;
     }
     
     /**
@@ -91,7 +102,7 @@ public class TextFile {
             res.add(line);
         }
         
-        reader.close();
+        //reader.close();
         
         return res;
     }
@@ -117,5 +128,16 @@ public class TextFile {
         
         writer.close();
     }
+
+    /**
+     * Retrieves the File for this TextFile, if there is one.
+     * 
+     * @return This TextFile's file, or null
+     */
+    public File getFile() {
+        return file;
+    }
+    
+    
 
 }

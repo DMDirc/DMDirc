@@ -26,6 +26,7 @@ import com.dmdirc.Main;
 import com.dmdirc.Precondition;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.util.InvalidConfigFileException;
 import com.dmdirc.util.WeakList;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
@@ -179,13 +180,15 @@ public final class IdentityManager {
     private static void loadIdentity(final File file) {
         synchronized (identities) {
             for (Identity identity : identities) {
-                if (file.equals(identity.getFile())) {
+                if (file.equals(identity.getFile().getFile().getFile())) {
                     try {
                         identity.reload();
                     } catch (IOException ex) {
                         Logger.userError(ErrorLevel.MEDIUM,
                                 "I/O error when reloading identity file: "
                                 + file.getAbsolutePath() + " (" + ex.getMessage() + ")");
+                    } catch (InvalidConfigFileException ex) {
+                        // Do nothing
                     }
 
                     return;

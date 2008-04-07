@@ -22,29 +22,27 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.Main;
 import com.dmdirc.Precondition;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.util.ConfigFile;
+import com.dmdirc.util.InvalidConfigFileException;
+import com.dmdirc.util.TextFile;
 import com.dmdirc.util.WeakList;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 
 /**
@@ -73,7 +71,7 @@ public class Identity extends ConfigSource implements Serializable,
     protected final ConfigTarget myTarget;
     
     /** The configuration details for this identity. */
-    protected final Properties properties;
+    protected final ConfigFile file;
     
     /** The global config manager. */
     protected ConfigManager globalConfig;
@@ -81,9 +79,6 @@ public class Identity extends ConfigSource implements Serializable,
     /** The config change listeners for this source. */
     protected final List<ConfigChangeListener> listeners
             = new WeakList<ConfigChangeListener>();
-    
-    /** The file that this identity is read from. */
-    protected File file;
     
     /** Whether this identity needs to be saved. */
     protected boolean needSave;
@@ -93,7 +88,9 @@ public class Identity extends ConfigSource implements Serializable,
      * supported using this method (i.e., it should only be used for defaults).
      *
      * @param properties The properties to use for this identity
+     * @deprecated Should use a map of maps instead
      */
+    @Deprecated
     public Identity(final Properties properties) {        
         this(properties, null);
     }
@@ -105,12 +102,16 @@ public class Identity extends ConfigSource implements Serializable,
      *
      * @param properties The properties to use for this identity
      * @param target The target of this identity
+     * @deprecated Should use a map of maps instead
      */
+    @Deprecated
     @Precondition("The specified Properties is not null")
     public Identity(final Properties properties, final ConfigTarget target) {
         assert(properties != null);
         
-        this.properties = properties;
+        file = new ConfigFile("");
+        file.setAutomake(true);
+        migrateProperties(properties);
         
         if (target == null) {
             myTarget = new ConfigTarget();
@@ -131,8 +132,10 @@ public class Identity extends ConfigSource implements Serializable,
      */
     public Identity(final File file, final boolean forceDefault) throws IOException,
             InvalidIdentityFileException {        
-        this(new FileInputStream(file), forceDefault);
-        this.file = file;
+        this.file = new ConfigFile(new TextFile(file));
+        this.file.setAutomake(true);
+        initFile(forceDefault, new FileInputStream(file));
+        myTarget = getTarget(forceDefault);
     }
     
     /**
@@ -146,39 +149,91 @@ public class Identity extends ConfigSource implements Serializable,
      */
     public Identity(final InputStream stream, final boolean forceDefault) throws IOException,
             InvalidIdentityFileException {
-        properties = new Properties();
-        
-        properties.load(stream);
-        
-        myTarget = new ConfigTarget();
-        
-        if (!properties.containsKey(DOMAIN + ".name") && !forceDefault) {
-            throw new InvalidIdentityFileException("No name specified");
-        }
+        this.file = new ConfigFile(new TextFile(stream));
+        this.file.setAutomake(true);
+        initFile(forceDefault, stream);
+        myTarget = getTarget(forceDefault);
+    }    
+    
+    /**
+     * Migrates the contents of the specified property file into a ConfigFile.
+     * 
+     * @param properties The properties to migrate
+     */
+    private void migrateProperties(final Properties properties) {
+        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+            final String key = (String) entry.getKey();
+            final String value = (String) entry.getValue();
+            final int offset = key.indexOf('.');
+            
+            if (offset > -1) {
+                final String domain = key.substring(0, offset);
+                final String option = key.substring(1 + offset);
+                
+                file.getKeyDomain(domain).put(option, value);
+            }
+        }        
+    }
+    
+    /**
+     * Determines and returns the target for this identity from its contents.
+     * 
+     * @param forceDefault Whether to force this to be a default identity
+     * @return A ConfigTarget for this identity
+     * @throws InvalidIdentityFileException If the identity isn't valid
+     */
+    private ConfigTarget getTarget(final boolean forceDefault)
+            throws InvalidIdentityFileException {
+        final ConfigTarget target = new ConfigTarget();
         
         if (hasOption(DOMAIN, "ircd")) {
-            myTarget.setIrcd(getOption(DOMAIN, "ircd"));
+            target.setIrcd(getOption(DOMAIN, "ircd"));
         } else if (hasOption(DOMAIN, "network")) {
-            myTarget.setNetwork(getOption(DOMAIN, "network"));
+            target.setNetwork(getOption(DOMAIN, "network"));
         } else if (hasOption(DOMAIN, "server")) {
-            myTarget.setServer(getOption(DOMAIN, "server"));
+            target.setServer(getOption(DOMAIN, "server"));
         } else if (hasOption(DOMAIN, "channel")) {
-            myTarget.setChannel(getOption(DOMAIN, "channel"));
+            target.setChannel(getOption(DOMAIN, "channel"));
         } else if (hasOption(DOMAIN, "globaldefault")) {
-            myTarget.setGlobalDefault();
+            target.setGlobalDefault();
         } else if (hasOption(DOMAIN, "global") || (forceDefault && !isProfile())) {
-            myTarget.setGlobal();
+            target.setGlobal();
         } else if (isProfile()) {
-            myTarget.setProfile();
+            target.setProfile();
         } else {
             throw new InvalidIdentityFileException("No target and no profile");
         }
         
-        stream.close();
-        
         if (hasOption(DOMAIN, "order")) {
-            myTarget.setOrder(getOptionInt(DOMAIN, "order", 50000));
+            target.setOrder(getOptionInt(DOMAIN, "order", 50000));
+        }        
+        
+        return target;
+    }
+    
+    /**
+     * Initialises this identity from a file.
+     * 
+     * @param forceDefault Whether to force this to be a default identity
+     * @param stream The stream to load properties from if needed
+     * @throws InvalidIdentityFileException if the identity file is invalid
+     * @throws IOException On I/O exception when reading the identity
+     */
+    private void initFile(final boolean forceDefault, final InputStream stream)
+            throws InvalidIdentityFileException, IOException {
+        try {
+            this.file.read();
+        } catch (InvalidConfigFileException ex) {
+            // Not a config file
+            final Properties properties = new Properties();
+            properties.load(stream);
+
+            migrateProperties(properties);
         }
+                        
+        if (!hasOption(DOMAIN, "name") && !forceDefault) {
+            throw new InvalidIdentityFileException("No name specified");
+        }        
     }
     
     /**
@@ -189,37 +244,38 @@ public class Identity extends ConfigSource implements Serializable,
      * be changed by this method, even if it has changed on disk.
      * 
      * @throws java.io.IOException On I/O exception when reading the identity
+     * @throws InvalidConfigFileException if the config file is no longer valid
      */
-    @Precondition("This identity was instansiated with a File object")
-    public void reload() throws IOException {
+    public void reload() throws IOException, InvalidConfigFileException {
         if (needSave) {
             return;
         }
-        
-        assert(file != null);
                
-        final InputStream input = new FileInputStream(file);
-        final Map<Object,Object> oldProps = new Hashtable<Object, Object>(properties);
+        final Map<String, Map<String, String>> oldProps = file.getKeyDomains();
         
-        properties.clear();
-        properties.load(input);
-        input.close();
+        file.read();
         
-        for (Entry<Object, Object> entry : properties.entrySet()) {
-            if (oldProps.containsKey(entry.getKey())) {
+        for (Map.Entry<String, Map<String, String>> entry : file.getKeyDomains().entrySet()) {
+            final String domain = entry.getKey();
+            
+            for (Map.Entry<String, String> subentry : entry.getValue().entrySet()) {
+                final String key = subentry.getKey();
+                final String value = subentry.getValue();
                 
-                if (!entry.getValue().equals(oldProps.get(entry.getKey()))) {
-                    fireReloadChange(entry.getKey());
+                if (!oldProps.containsKey(domain)) {
+                    fireReloadChange(domain, key);
+                } else if (!oldProps.get(domain).containsKey(key)
+                        || !oldProps.get(domain).get(key).equals(value)) {
+                    fireReloadChange(domain, key);
+                    oldProps.get(domain).remove(key);
                 }
-                
-                oldProps.remove(entry.getKey());
-            } else {
-                fireReloadChange(entry.getKey());
             }
-        }
-        
-        for (Object entry : oldProps.keySet()) {
-            fireReloadChange(entry);
+            
+            if (oldProps.containsKey(domain)) {
+                for (String key : oldProps.get(domain).keySet()) {
+                    fireReloadChange(domain, key);
+                }
+            }
         }
     }
     
@@ -227,20 +283,10 @@ public class Identity extends ConfigSource implements Serializable,
      * Fires the config changed listener for the specified option after this
      * identity is reloaded.
      * 
-     * @param object A string describing the changed option (domain.key)
+     * @param domain The domain of the option that's changed
+     * @param key The key of the option that's changed
      */
-    private void fireReloadChange(final Object object) {
-        final String string = (String) object;
-        final int offset = string.indexOf('.');
-        
-        if (offset < 0) {
-            // Not a valid setting
-            return;
-        }
-        
-        final String domain = string.substring(0, offset);
-        final String key = string.substring(domain.length() + 1);
-        
+    private void fireReloadChange(final String domain, final String key) {        
         for (ConfigChangeListener listener : new ArrayList<ConfigChangeListener>(listeners)) {
             listener.configChanged(domain, key);
         }
@@ -250,9 +296,20 @@ public class Identity extends ConfigSource implements Serializable,
      * Returns the properties object belonging to this identity.
      *
      * @return This identity's property object
+     * @deprecated Get a map
      */
+    @Deprecated
     public Properties getProperties() {
-        return properties;
+        final Properties properties = new Properties();
+        
+        for (Map.Entry<String, Map<String, String>> entry : file.getKeyDomains().entrySet()) {
+            for (Map.Entry<String, String> subentry : entry.getValue().entrySet()) {
+                properties.setProperty(entry.getKey() + "." + subentry.getKey(),
+                        subentry.getValue());
+            }
+        }
+        
+        return properties;        
     }
     
     /**
@@ -282,13 +339,13 @@ public class Identity extends ConfigSource implements Serializable,
     /** {@inheritDoc} */
     @Override
     public boolean hasOption(final String domain, final String option) {
-        return properties.containsKey(domain + "." + option);
+        return file.isKeyDomain(domain) && file.getKeyDomain(domain).containsKey(option);
     }
     
     /** {@inheritDoc} */
     @Override
     public String getOption(final String domain, final String option) {
-        return properties.getProperty(domain + "." + option);
+        return file.getKeyDomain(domain).get(option);
     }
     
     /**
@@ -325,7 +382,7 @@ public class Identity extends ConfigSource implements Serializable,
         
         if ((oldValue == null && value != null)
                 || (oldValue != null && !oldValue.equals(value))) {
-            properties.setProperty(domain + "." + option, value);
+            file.getKeyDomain(domain).put(option, value);
             needSave = true;
             
             for (ConfigChangeListener listener : 
@@ -383,7 +440,7 @@ public class Identity extends ConfigSource implements Serializable,
      * @param option name of the option
      */
     public void unsetOption(final String domain, final String option) {
-        properties.remove(domain + "." + option);
+        file.getKeyDomain(domain).remove(option);
         needSave = true;
         
         for (ConfigChangeListener listener : new ArrayList<ConfigChangeListener>(listeners)) {
@@ -394,13 +451,17 @@ public class Identity extends ConfigSource implements Serializable,
     /**
      * Returns a list of options avaiable in this identity.
      *
-     *  @return Option list
+     * @return Option list
+     * @deprecated Get a map
      */
+    @Deprecated
     public List<String> getOptions() {
         final List<String> res = new ArrayList<String>();
         
-        for (Object key : properties.keySet()) {
-            res.add((String) key);
+        for (Map.Entry<String, Map<String, String>> entry : file.getKeyDomains().entrySet()) {
+            for (String key : entry.getValue().keySet()) {
+                res.add(entry.getKey() + "." + key);
+            }
         }
         
         return res;
@@ -421,33 +482,26 @@ public class Identity extends ConfigSource implements Serializable,
                 
                 globalConfig.removeIdentity(this);
                 
-                for (Object key : new HashSet<Object>(properties.keySet())) {
-                    final String skey = (String) key;
-                    
-                    // Hack for malformed files
-                    if (skey.indexOf('.') == -1) {
-                        continue;
-                    }
-                    
-                    final String domain = skey.substring(0, skey.indexOf('.'));
-                    final String option = skey.substring(1 + skey.indexOf('.'));
-                    final String global = globalConfig.getOption(domain, option, null);
-                    if (properties.getProperty((String) key).equals(global)
-                            || "temp".equals(domain)) {
-                        properties.remove(key);
+                for (Map.Entry<String, Map<String, String>> entry
+                        : file.getKeyDomains().entrySet()) {
+                    final String domain = entry.getKey();
+
+                    for (Map.Entry<String, String> subentry : entry.getValue().entrySet()) {
+                        final String key = subentry.getKey();
+                        final String value = subentry.getValue();
+                        
+                        if (globalConfig.hasOption(domain, key) &&
+                                globalConfig.getOption(domain, key).equals(value)) {
+                            file.getKeyDomain(domain).remove(key);
+                        }
                     }
                 }
             }
             
             try {
-                final OutputStream stream = new FileOutputStream(file);
-                properties.store(stream, null);
-                stream.close();
+                file.write();
                 
                 needSave = false;
-            } catch (FileNotFoundException ex) {
-                Logger.userError(ErrorLevel.MEDIUM,
-                        "Unable to save identity file: " + ex.getMessage());
             } catch (IOException ex) {
                 Logger.userError(ErrorLevel.MEDIUM,
                         "Unable to save identity file: " + ex.getMessage());
@@ -476,11 +530,11 @@ public class Identity extends ConfigSource implements Serializable,
     }
 
     /**
-     * Retrieve this identity's file. May be null.
+     * Retrieve this identity's ConfigFile.
      * 
-     * @return The file objectused by this identity
+     * @return The ConfigFile object used by this identity
      */
-    public File getFile() {
+    public ConfigFile getFile() {
         return file;
     }    
     
