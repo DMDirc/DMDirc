@@ -24,15 +24,16 @@ package com.dmdirc.addons.identd;
 
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 
-import java.net.Socket;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
 
 /**
  * The IdentClient responds to an ident request.
@@ -41,15 +42,15 @@ import java.io.IOException;
  * @version $Id: IdentClient.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public final class IdentClient implements Runnable {
-	/** The IdentdServer that owns this Client */
+	/** The IdentdServer that owns this Client. */
 	private final IdentdServer myServer;
-	/** The Socket that we are in charge of */
+	/** The Socket that we are in charge of. */
 	private final Socket mySocket;
-	/** The Thread in use for this client */
-	private volatile Thread myThread = null;
+	/** The Thread in use for this client. */
+	private volatile Thread myThread;
 	
 	/**
-	 * Create the IdentClient
+	 * Create the IdentClient.
 	 *
 	 * @param server The server that owns this
 	 * @param socket The socket we are handing
@@ -63,7 +64,7 @@ public final class IdentClient implements Runnable {
 	}
 	
 	/**
-	 * Process this connection
+	 * Process this connection.
 	 */
 	public void run() {
 		final Thread thisThread = Thread.currentThread();
@@ -74,7 +75,7 @@ public final class IdentClient implements Runnable {
 			in = new BufferedReader(new InputStreamReader(mySocket.getInputStream()));
 			final String inputLine;
 			if ((inputLine = in.readLine()) != null) {
-				out.println(getIdentResponse(inputLine));
+				out.println(getIdentResponse(inputLine, IdentityManager.getGlobalConfig()));
 			}
 		} catch (IOException e) {
 			if (thisThread == myThread) {
@@ -95,9 +96,10 @@ public final class IdentClient implements Runnable {
 	 * Complies with rfc1413 (http://www.faqs.org/rfcs/rfc1413.html)
 	 *
 	 * @param input Line to generate response for
+     * @param config The config manager to use for settings
 	 * @return the ident response for the given line
 	 */
-	private String getIdentResponse(final String input) {
+	protected static String getIdentResponse(final String input, final ConfigManager config) {
 		final String[] bits = input.split(",", 2);
 		if (bits.length < 2) {
 			return String.format("%s : ERROR : X-INVALID-INPUT", input);
@@ -116,12 +118,12 @@ public final class IdentClient implements Runnable {
 		}
 		
 		final Server server = getServerByPort(myPort);
-		if (!IdentityManager.getGlobalConfig().getOptionBool(IdentdPlugin.getDomain(), "advanced.alwaysOn")
-                && (server == null || IdentityManager.getGlobalConfig().getOptionBool(IdentdPlugin.getDomain(), "advanced.isNoUser"))) {
+		if (!config.getOptionBool(IdentdPlugin.getDomain(), "advanced.alwaysOn")
+                && (server == null || config.getOptionBool(IdentdPlugin.getDomain(), "advanced.isNoUser"))) {
 			return String.format("%d , %d : ERROR : NO-USER", myPort, theirPort);
 		}
 		
-		if (IdentityManager.getGlobalConfig().getOptionBool(IdentdPlugin.getDomain(), "advanced.isHiddenUser")) {
+		if (config.getOptionBool(IdentdPlugin.getDomain(), "advanced.isHiddenUser")) {
 			return String.format("%d , %d : ERROR : HIDDEN-USER", myPort, theirPort);
 		}
 		
@@ -129,8 +131,8 @@ public final class IdentClient implements Runnable {
 		final String os;
 		final String username;
 
-		final String customSystem = IdentityManager.getGlobalConfig().getOption(IdentdPlugin.getDomain(), "advanced.customSystem");
-		if (IdentityManager.getGlobalConfig().getOptionBool(IdentdPlugin.getDomain(), "advanced.useCustomSystem") && customSystem != null && customSystem.length() > 0 && customSystem.length() < 513) {
+		final String customSystem = config.getOption(IdentdPlugin.getDomain(), "advanced.customSystem");
+		if (config.getOptionBool(IdentdPlugin.getDomain(), "advanced.useCustomSystem") && customSystem != null && customSystem.length() > 0 && customSystem.length() < 513) {
 			os = customSystem;
 		} else {
 			// Tad excessive maybe, but complete!
@@ -146,12 +148,12 @@ public final class IdentClient implements Runnable {
 			else { os = "UNKNOWN"; }
 		}
 		
-		final String customName = IdentityManager.getGlobalConfig().getOption(IdentdPlugin.getDomain(), "general.customName");
-		if (IdentityManager.getGlobalConfig().getOptionBool(IdentdPlugin.getDomain(), "general.useCustomName") && customName != null && customName.length() > 0 && customName.length() < 513) {
+		final String customName = config.getOption(IdentdPlugin.getDomain(), "general.customName");
+		if (config.getOptionBool(IdentdPlugin.getDomain(), "general.useCustomName") && customName != null && customName.length() > 0 && customName.length() < 513) {
 			username = customName;
-		} else if (server != null && IdentityManager.getGlobalConfig().getOptionBool(IdentdPlugin.getDomain(), "general.useNickname")) {
+		} else if (server != null && config.getOptionBool(IdentdPlugin.getDomain(), "general.useNickname")) {
 			username = server.getParser().getMyNickname();
-		} else if (server != null && IdentityManager.getGlobalConfig().getOptionBool(IdentdPlugin.getDomain(), "general.useUsername")) {
+		} else if (server != null && config.getOptionBool(IdentdPlugin.getDomain(), "general.useUsername")) {
 			username = server.getParser().getMyUsername();
 		} else {
 			username = System.getProperty("user.name");
@@ -161,7 +163,7 @@ public final class IdentClient implements Runnable {
 	}
 	
 	/**
-	 * Close this IdentClient
+	 * Close this IdentClient.
 	 */
 	public void close() {
 		if (myThread != null) {
@@ -178,7 +180,7 @@ public final class IdentClient implements Runnable {
 	 * @param port Port to check for
 	 * @return The server instance listening on the given port
 	 */
-	private Server getServerByPort(final int port) {
+	protected static Server getServerByPort(final int port) {
 		for (Server server : ServerManager.getServerManager().getServers()) {
 			if (server.getParser().getLocalPort() == port) {
 				return server;

@@ -178,7 +178,7 @@ public class IdentdPlugin extends Plugin implements ActionListener {
                 " HIDDEN-USER' response instead."));
         advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 MY_DOMAIN, "advanced.isNoUser", "false", "Respond to ident" +
-                " requests with NO-USER error: ", "By default the plugin will" +
+                " requests with NO-USER error", "By default the plugin will" +
                 " give a USERID response, this can force an 'ERROR : NO-USER'" +
                 " response instead. (Overrides HIDDEN-USER)"));
 		
