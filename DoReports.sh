@@ -23,6 +23,9 @@ export ANT_OPTS=-Xmx512m
 cd $MYDIR
 $SVN update
 $ANT clean
+# Anti-Clover stupidness!
+rm -Rf ${MYDIR}/.clover
+mkdir ${MYDIR}/.clover
 if [ "$1" = "--all" ]; then
 	$ANT -k -buildfile $MYDIR/doreports.xml doallreports
 elif [ "$1" = "--findbugs" ]; then
