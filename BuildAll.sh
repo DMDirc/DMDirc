@@ -10,6 +10,8 @@ env
 WWWDIR="/home/dmdirc/www"
 # Path to trunk
 MYDIR="/home/dmdirc/google"
+# Path to scripts
+SCRIPTDIR="/home/dmdirc/scripts"
 # Path to ant binary
 ANT="/usr/bin/ant"
 # Path to svn binary
@@ -25,6 +27,7 @@ cd $MYDIR/
 $SVN update
 SVNREV=`$SVN info | grep Revision`
 SVNREV=${SVNREV##*: }
+export DMDIRC_SVN=${SVNREV}
 
 # Substitute the version string
 awk '{gsub(/String VERSION = "SVN ("+SVN_REVISION+")"/,"String VERSION = \"Nightly - SVN Rev: '${SVNREV}'\"");print}' ${MYDIR}/src/com/dmdirc/Main.java > ${MYDIR}/src/com/dmdirc/Main.java.tmp
@@ -72,26 +75,31 @@ for updatedir in ${REVERTLIST}; do
 	${SVN} revert ${updatedir}/*
 done;
 
-# Build installers
-if [ -e "$MYDIR/dist/DMDirc.jar" ]; then
+PHP=`which php`
+
+# Check if build failed
+if [ ! -e "$MYDIR/dist/DMDirc.jar" ]; then
+	# Report failure
+	if [ -e "$SCRIPTDIR/nightly-failure.php" -a "${PHP}" != "" ]; then
+		$PHP -q $SCRIPTDIR/nightly-failure.php
+	fi
+else
+	# Build installers
 	cd "${MYDIR}/installer"
 	./release.sh --jar "${MYDIR}/dist/DMDirc.jar" --opt "--tag ${FILEDATA}" trunk
 	cd "${MYDIR}"
-fi;
 
-# Add plugins to jar
-$JAR -uvf "dist/DMDirc.jar" plugins
+	# Add plugins to jar
+	$JAR -uvf "dist/DMDirc.jar" plugins
 
-# Submit plugins to addons site
-if [ -e "${HOME}/www/addons/submitplugin.php" ]; then
-	PHP=`which php`
-
-	for plugin in `ls plugins/*.jar`; do
-		$PHP ${HOME}/www/addons/submitplugin.php $plugin
-	done;
-fi;
-
-if [ -f $MYDIR/dist/DMDirc.jar ]; then
+	# Submit plugins to addons site
+	if [ -e "${HOME}/www/addons/submitplugin.php" ]; then
+		for plugin in `ls plugins/*.jar`; do
+			$PHP ${HOME}/www/addons/submitplugin.php $plugin
+		done;
+	fi;
+	
+	# Move installers/jar to nightlies site
 	FILENAME=DMDirc_${FILEDATA}.jar
 	mv "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.exe" "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.exe"
 	mv "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.run" "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.run"
@@ -112,11 +120,12 @@ if [ -f $MYDIR/dist/DMDirc.jar ]; then
 		ln -sf "${WWWDIR}/nightly/DMDirc-${FILEDATA}.dmg" $WWWDIR/nightly/DMDirc_latest.dmg
 	fi;
 	cd ${MYDIR}
-	/bin/sh $MYDIR/oblong.sh "Nightly Build" "Build Successful";
+	# /bin/sh $MYDIR/oblong.sh "Nightly Build" "Build Successful";
+	
+	# Do normal reports
 	/bin/sh $MYDIR/DoReports.sh
-else
-	/bin/sh $MYDIR/oblong.sh "Nightly Build" "Build Failed"
 fi
+
 $SVN revert ${MYDIR}/src/com/dmdirc/Main.java
 
 
