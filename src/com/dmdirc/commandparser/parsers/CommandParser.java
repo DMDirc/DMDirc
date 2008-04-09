@@ -32,8 +32,8 @@ import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.PreviousCommand;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
-
 import com.dmdirc.util.RollingList;
+
 import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Map;
@@ -161,7 +161,7 @@ public abstract class CommandParser implements Serializable {
             final String signature = command;
 
             if (commands.containsKey(signature.toLowerCase())) {
-                addHistory(command, comargs);
+                addHistory(line.substring(offset));
                 executeCommand(origin, silent, commands.get(signature.toLowerCase()), comargs);
            } else {
                 handleInvalidCommand(origin, command, comargs);
@@ -174,19 +174,11 @@ public abstract class CommandParser implements Serializable {
     /**
      * Adds a command to this parser's history.
      *
-     * @param command The command name that was used
-     * @param args The arguments for the command, if any
+     * @param command The command name and arguments that were used
      */
-    private void addHistory(final String command, final String... args) {
-        final StringBuilder builder = new StringBuilder(command);
-
-        for (String arg : args) {
-            builder.append(' ');
-            builder.append(arg);
-        }
-
+    private void addHistory(final String command) {
         synchronized(history) {
-            final PreviousCommand pc = new PreviousCommand(builder.toString());
+            final PreviousCommand pc = new PreviousCommand(command);
             history.remove(pc);
             history.add(pc);
         }
