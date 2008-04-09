@@ -23,9 +23,14 @@ package com.dmdirc.actions;
 
 import com.dmdirc.actions.interfaces.ActionType;
 
+import com.dmdirc.util.ConfigFile;
+import com.dmdirc.util.InvalidConfigFileException;
+import com.dmdirc.util.TextFile;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import java.util.Arrays;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -53,17 +58,17 @@ public class ActionTest extends junit.framework.TestCase {
                 new File(ActionManager.getDirectory() + "unit-test-two"
                 + File.separator + "test1").isFile());
     }
-    
+
     @Test
     public void testSetName() {
         action.setName("test2");
-        
+
         assertFalse("setName must remove old file",
                 new File(ActionManager.getDirectory() + "unit-test-two"
                 + File.separator + "test1").isFile());
         assertTrue("setName must create new file",
                 new File(ActionManager.getDirectory() + "unit-test-two"
-                + File.separator + "test2").isFile());        
+                + File.separator + "test2").isFile());
     }
 
     @Test
@@ -73,6 +78,25 @@ public class ActionTest extends junit.framework.TestCase {
         assertFalse("delete must remove file",
                 new File(ActionManager.getDirectory() + "unit-test-two"
                 + File.separator + "test2").isFile());
+    }
+
+    @Test
+    public void testRead() throws IOException, InvalidConfigFileException {
+        ActionManager.init();
+
+        final Action action = new Action("unit-test", "doesn't_exist");
+        action.config = new ConfigFile(new TextFile(getClass().getResourceAsStream("action1")));
+        action.config.read();
+        action.loadActionFromConfig();
+
+        assertTrue(Arrays.equals(action.getTriggers(),
+                new ActionType[]{CoreActionType.SERVER_AWAY}));
+        assertEquals("(0&1)", action.getConditionTree().toString());
+        assertTrue(Arrays.equals(action.getResponse(), new String[]{"/away"}));
+        assertEquals(new ActionCondition(1, CoreActionComponent.STRING_LENGTH,
+                CoreActionComparison.INT_EQUALS, "0"), action.getConditions().get(0));
+        assertEquals(new ActionCondition("foo", CoreActionComparison.STRING_CONTAINS,
+                "bar"), action.getConditions().get(1));
     }
 
 }

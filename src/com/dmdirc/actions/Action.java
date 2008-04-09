@@ -70,7 +70,7 @@ public class Action extends ActionModel implements Serializable {
     private String location;
 
     /** The config file we're using. */
-    private ConfigFile config;
+    protected ConfigFile config;
 
     /**
      * Creates a new instance of Action. The group and name specified must
@@ -149,7 +149,7 @@ public class Action extends ActionModel implements Serializable {
     /**
      * Loads this action from the config instance.
      */
-    private void loadActionFromConfig() {
+    protected void loadActionFromConfig() {
         if (config.isFlatDomain(DOMAIN_TRIGGERS)) {
             if (!loadTriggers(config.getFlatDomain(DOMAIN_TRIGGERS))) {
                 return;
