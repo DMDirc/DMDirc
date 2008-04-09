@@ -55,6 +55,8 @@ public class TreeViewTreeCellRenderer implements TreeCellRenderer,
     private final TreeFrameManager manager;
     /** Selection path. */
     private TreePath oldSelectedPath = null;
+    /** Show rollovers. */
+    private boolean rollovers;
 
     /**
      * Creates a new instance of TreeViewTreeCellRenderer.
@@ -63,10 +65,12 @@ public class TreeViewTreeCellRenderer implements TreeCellRenderer,
      */
     public TreeViewTreeCellRenderer(final TreeFrameManager manager) {
         this.manager = manager;
+        rollovers = false;
         if (!IdentityManager.getGlobalConfig().getOption("ui",
                 "treeviewRolloverColour", "false").contains("false")) {
             manager.getTree().addMouseMotionListener(this);
             manager.getTree().addMouseListener(this);
+            rollovers = true;
         }
         IdentityManager.getGlobalConfig().addChangeListener("ui",
                 "treeviewRolloverColour", this);
@@ -93,7 +97,9 @@ public class TreeViewTreeCellRenderer implements TreeCellRenderer,
                 oldSelectedPath.getLastPathComponent());
         final NodeLabel label =
                 manager.getLabelforNode((DefaultMutableTreeNode) value);
-        label.setRollover(rollover);
+        if (rollovers) {
+            label.setRollover(rollover);
+        }
         return label;
     }
 
@@ -201,9 +207,11 @@ public class TreeViewTreeCellRenderer implements TreeCellRenderer,
                 "treeviewRolloverColour", "false").contains("false")) {
             manager.getTree().removeMouseMotionListener(this);
             manager.getTree().removeMouseListener(this);
+            rollovers = false;
         } else {
             manager.getTree().addMouseMotionListener(this);
             manager.getTree().addMouseListener(this);
+            rollovers = true;
         }
     }
 }

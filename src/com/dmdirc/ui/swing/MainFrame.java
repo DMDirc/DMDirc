@@ -370,9 +370,9 @@ public final class MainFrame extends JFrame implements WindowListener,
 
         setPreferredSize(new Dimension(800, 600));
 
-        getContentPane().setLayout(new MigLayout("ins rel, wrap 1"));
+        getContentPane().setLayout(new MigLayout("fill, ins rel, wrap 1"));
         getContentPane().add(mainSplitPane, "grow");
-        getContentPane().add(statusBar, "growx, pushx, hmax 20");
+        getContentPane().add(statusBar, "growx, hmax 20");
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
