@@ -17,7 +17,7 @@ ANT="/usr/bin/ant"
 SVN="/usr/bin/svn"
 
 # Increase the memory allowed to be used when running stuff
-export ANT_OPTS=-Xmx256m
+export ANT_OPTS=-Xmx512m
 
 #/bin/sh $MYDIR/oblong.sh "Reports" "Style Report Generation Started";
 cd $MYDIR
