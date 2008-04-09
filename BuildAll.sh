@@ -88,6 +88,14 @@ else
 	cd "${MYDIR}/installer"
 	./release.sh --jar "${MYDIR}/dist/DMDirc.jar" --opt "--tag ${FILEDATA}" trunk
 	cd "${MYDIR}"
+	
+	if [ ! -e "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.exe" -o  ! -e "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.run" -o ! -e "${MYDIR}/installer/output/DMDirc-${FILEDATA}.dmg" -o ! -e "${MYDIR}/installer/output/DMDirc-${FILEDATA}.jar" ]; then
+		# Report failure
+		if [ -e "$SCRIPTDIR/nightly-failure.php" -a "${PHP}" != "" ]; then
+			export DMDIRC_INSTALLERFAILURE=true;
+			$PHP -q $SCRIPTDIR/nightly-failure.php
+		fi
+	fi;
 
 	# Add plugins to jar
 	$JAR -uvf "dist/DMDirc.jar" plugins
