@@ -137,7 +137,7 @@
 		
 	</target>
 	<target name="move-index">
-		<copy file="checkstyle/index.html" tofile="reports/index.html"/>
+		<!-- <copy file="checkstyle/index.html" tofile="reports/index.html"/> -->
 		<copy file="checkstyle/sorttable.js" tofile="reports/sorttable.js"/>
 	</target>
 	
@@ -168,7 +168,7 @@
 		
 		<taskdef name="findbugs" classpath="findbugs-ant.jar"
 						 classname="edu.umd.cs.findbugs.anttask.FindBugsTask" />
-		<findbugs home="/usr/share/java/findbugs/" effort="max"
+		<findbugs home="/usr/share/java/findbugs/" effort="default"
 							jvmargs="-Xmx512M"
 							output="xml:withMessages"
 							outputFile="reports/report-fb.xml" >
