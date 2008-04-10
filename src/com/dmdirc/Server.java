@@ -1116,7 +1116,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     @Precondition("The current server state is CONNECTING")
     public void onConnectError(final ParserError errorInfo) {
         synchronized (myState) {
-            if (myState == ServerState.CLOSING) {
+            if (myState == ServerState.CLOSING || myState == ServerState.DISCONNECTING) {
                 // Do nothing
                 return;
             } else if (myState != ServerState.CONNECTING) {
