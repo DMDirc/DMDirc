@@ -62,7 +62,7 @@ public class ProcessPart extends IRCProcessor {
 			if (token.length > 3) { sReason = token[token.length-1]; }
 			iChannelClient = iChannel.getUser(iClient);
 			if (iChannelClient == null) {
-				callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got part for channel ("+token[2]+") for a non-existant user. [User: "+token[0]+"]", myParser.getLastLine()));
+				// callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got part for channel ("+token[2]+") for a non-existant user. [User: "+token[0]+"]", myParser.getLastLine()));
 				return;
 			}
 			if (myParser.removeAfterCallback) { callChannelPart(iChannel,iChannelClient,sReason); }
