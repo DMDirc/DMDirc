@@ -24,15 +24,16 @@ package com.dmdirc.parser;
 
 import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 
+import com.dmdirc.parser.callbacks.interfaces.IChannelPart;
 import com.dmdirc.parser.callbacks.interfaces.IChannelQuit;
 import com.dmdirc.parser.callbacks.interfaces.IQuit;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ProcessQuitTest extends junit.framework.TestCase {
+public class ProcessPartTest extends junit.framework.TestCase {
     
     @Test
-    public void testChannelQuit() throws CallbackNotFoundException {
+    public void testNormalPart() throws CallbackNotFoundException {
         final TestParser parser = new TestParser();
 
         parser.injectConnectionStrings();
@@ -40,63 +41,27 @@ public class ProcessQuitTest extends junit.framework.TestCase {
         parser.injectLine(":nick JOIN #DMDirc_testing");
         parser.injectLine(":server 353 nick = #DMDirc_testing :@nick +luser");
         parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list.");
-        parser.injectLine(":nick JOIN #DMDirc_testing2");
-        parser.injectLine(":server 353 nick = #DMDirc_testing2 :@nick +luser2");
-        parser.injectLine(":server 366 nick #DMDirc_testing2 :End of /NAMES list.");        
         
-        final ICQTest test = new ICQTest();
-        parser.getCallbackManager().addCallback("OnChannelQuit", test);
+        final ICPTest test = new ICPTest();
+        parser.getCallbackManager().addCallback("OnChannelPart", test);
         
         assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
         
-        parser.injectLine(":luser!foo@barsville QUIT :Bye bye, cruel world");
+        parser.injectLine(":luser!foo@barsville PART #DMDirc_testing :Bye bye, cruel world");
         
         assertEquals(1, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
-        assertEquals(2, parser.getChannelInfo("#DMDirc_testing2").getChannelClients().size());
         
         assertNotNull(test.channel);
         assertNotNull(test.cclient);
         assertNotNull(test.reason);
         
-        assertEquals(1, test.count);
         assertEquals("#DMDirc_testing", test.channel.getName());
         assertEquals("luser", test.cclient.getClient().getNickname());
         assertEquals("Bye bye, cruel world", test.reason);
     }
     
     @Test
-    public void testGlobalQuit() throws CallbackNotFoundException {
-        final TestParser parser = new TestParser();
-
-        parser.injectConnectionStrings();
-
-        parser.injectLine(":nick JOIN #DMDirc_testing");
-        parser.injectLine(":server 353 nick = #DMDirc_testing :@nick +luser");
-        parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list.");
-        parser.injectLine(":nick JOIN #DMDirc_testing2");
-        parser.injectLine(":server 353 nick = #DMDirc_testing2 :@nick +luser2");
-        parser.injectLine(":server 366 nick #DMDirc_testing2 :End of /NAMES list.");
-        
-        final ICQTest test = new ICQTest();
-        parser.getCallbackManager().addCallback("OnQuit", test);
-        
-        assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
-        
-        parser.injectLine(":luser!foo@barsville QUIT :Bye bye, cruel world");
-        
-        assertEquals(1, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
-        assertEquals(2, parser.getChannelInfo("#DMDirc_testing2").getChannelClients().size());
-        
-        assertNotNull(test.client);
-        assertNotNull(test.reason);
-        
-        assertEquals(1, test.count);
-        assertEquals("luser", test.client.getNickname());
-        assertEquals("Bye bye, cruel world", test.reason);
-    }
-    
-    @Test
-    public void testEmptyQuit() throws CallbackNotFoundException {
+    public void testEmptyPart() throws CallbackNotFoundException {
         final TestParser parser = new TestParser();
 
         parser.injectConnectionStrings();
@@ -105,44 +70,36 @@ public class ProcessQuitTest extends junit.framework.TestCase {
         parser.injectLine(":server 353 nick = #DMDirc_testing :@nick +luser");
         parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list.");
         
-        final ICQTest test = new ICQTest();
-        parser.getCallbackManager().addCallback("OnQuit", test);
+        final ICPTest test = new ICPTest();
+        parser.getCallbackManager().addCallback("OnChannelPart", test);
         
         assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
         
-        parser.injectLine(":luser!foo@barsville QUIT");
+        parser.injectLine(":luser!foo@barsville PART #DMDirc_testing");
         
         assertEquals(1, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
         
-        assertNotNull(test.client);
+        assertNotNull(test.channel);
+        assertNotNull(test.cclient);
         assertNotNull(test.reason);
         
-        assertEquals(1, test.count);
-        assertEquals("luser", test.client.getNickname());
+        assertEquals("#DMDirc_testing", test.channel.getName());
+        assertEquals("luser", test.cclient.getClient().getNickname());
         assertEquals("", test.reason);
     }    
-    
-    private class ICQTest implements IChannelQuit, IQuit {
+        
+    private class ICPTest implements IChannelPart {
         
         public ChannelInfo channel;
         public ChannelClientInfo cclient;
-        public ClientInfo client;
         public String reason;
-        public int count = 0;
 
-        public void onChannelQuit(IRCParser tParser, ChannelInfo cChannel,
+        public void onChannelPart(IRCParser tParser, ChannelInfo cChannel,
                                   ChannelClientInfo cChannelClient,
                                   String sReason) {
-            this.channel = cChannel;
-            this.cclient = cChannelClient;
-            this.reason = sReason;
-            this.count++;
-        }
-
-        public void onQuit(IRCParser tParser, ClientInfo cClient, String sReason) {
-            this.client = cClient;
-            this.reason = sReason;
-            this.count++;
+            channel = cChannel;
+            cclient = cChannelClient;
+            reason = sReason;
         }
         
     }
