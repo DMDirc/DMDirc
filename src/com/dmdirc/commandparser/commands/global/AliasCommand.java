@@ -68,7 +68,7 @@ public final class AliasCommand extends GlobalCommand implements IntelligentComm
             return;
         }
         
-        for (Action alias : AliasWrapper.getAliasWrapper().getActions()) {
+        for (Action alias : AliasWrapper.getAliasWrapper()) {
             if (AliasWrapper.getCommandName(alias).substring(1).equalsIgnoreCase(args[0])) {
                 sendLine(origin, isSilent, FORMAT_ERROR, "Alias '" + args[0] + "' already exists.");
                 return;
@@ -89,7 +89,7 @@ public final class AliasCommand extends GlobalCommand implements IntelligentComm
      * @return True if the alias was deleted, false otherwise
      */
     private boolean doRemove(final String name) {
-        for (Action alias : AliasWrapper.getAliasWrapper().getActions()) {
+        for (Action alias : AliasWrapper.getAliasWrapper()) {
             if (AliasWrapper.getCommandName(alias).substring(1).equalsIgnoreCase(name)) {
                 alias.delete();
                 ActionManager.unregisterAction(alias);
@@ -128,7 +128,7 @@ public final class AliasCommand extends GlobalCommand implements IntelligentComm
             res.add("--remove");
             res.excludeAll();
         } else if (arg == 1 && previousArgs.get(0).equals("--remove")) {
-            for (Action alias : AliasWrapper.getAliasWrapper().getActions()) {
+            for (Action alias : AliasWrapper.getAliasWrapper()) {
                 res.add(alias.getName());
             }   
         } else if (arg >= 1 && !previousArgs.get(0).equals("--remove")) {

@@ -167,7 +167,7 @@ public class ActionTableModel extends AbstractTableModel {
             if (group == null) {
                 actions = new ArrayList<Action>();
             } else {
-                actions = new ArrayList<Action>(group);
+                actions = group.getActions();
             }
             fireTableDataChanged();
         }

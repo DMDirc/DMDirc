@@ -27,7 +27,6 @@ import com.dmdirc.Precondition;
 import com.dmdirc.actions.interfaces.ActionComparison;
 import com.dmdirc.actions.interfaces.ActionComponent;
 import com.dmdirc.actions.interfaces.ActionType;
-import com.dmdirc.actions.wrappers.ActionWrapper;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.actions.wrappers.PerformWrapper;
 import com.dmdirc.config.IdentityManager;
@@ -65,10 +64,6 @@ public final class ActionManager {
     private final static List<ActionComparison> actionComparisons
             = new ArrayList<ActionComparison>();
 
-    /** A list of all action wrappers that have registered with us. */
-    private final static List<ActionWrapper> actionWrappers
-            = new ArrayList<ActionWrapper>();
-
     /** A map linking types and a list of actions that're registered for them. */
     private final static MapList<ActionType, Action> actions
             = new MapList<ActionType, Action>();
@@ -102,8 +97,8 @@ public final class ActionManager {
         registerActionComparisons(CoreActionComparison.values());
         registerActionComponents(CoreActionComponent.values());
 
-        registerWrapper(AliasWrapper.getAliasWrapper());
-        registerWrapper(PerformWrapper.getPerformWrapper());
+        registerGroup(AliasWrapper.getAliasWrapper());
+        registerGroup(PerformWrapper.getPerformWrapper());
        
         // Register a listener for the closing event, so we can save actions
         addListener(new ActionListener() {
@@ -150,20 +145,12 @@ public final class ActionManager {
     }
 
     /**
-     * Registers the specified action wrapper with the manager.
+     * Registers the specified group of actions with the manager.
      *
-     * @param wrapper The wrapper to be registered
+     * @param group The group of actions to be registered
      */
-    @Precondition({
-        "The specified wrapper is not null",
-        "The specified wrapper's group name is non-null and not empty"
-    })
-    public static void registerWrapper(final ActionWrapper wrapper) {
-        Logger.assertTrue(wrapper != null);
-        Logger.assertTrue(wrapper.getGroupName() != null);
-        Logger.assertTrue(!wrapper.getGroupName().isEmpty());
-
-        actionWrappers.add(wrapper);
+    public static void registerGroup(final ActionGroup group) {
+        groups.put(group.getName(), group);
     }
 
     /**
@@ -232,10 +219,9 @@ public final class ActionManager {
      */
     public static void loadActions() {
         actions.clear();
-        groups.clear();
 
-        for (ActionWrapper wrapper : actionWrappers) {
-            wrapper.clearActions();
+        for (ActionGroup group : groups.values()) {
+            group.clear();
         }
 
         final File dir = new File(getDirectory());
@@ -273,41 +259,6 @@ public final class ActionManager {
     }
 
     /**
-     * Retrieves the action wrapper with the specified group name.
-     *
-     * @param name The group name to find
-     * @return An ActionWrapper with the specified group name, or null
-     */
-    @Precondition("The specified name is non-null and not empty")
-    private static ActionWrapper getWrapper(final String name) {
-        Logger.assertTrue(name != null);
-        Logger.assertTrue(!name.isEmpty());
-
-        for (ActionWrapper wrapper : actionWrappers) {
-            if (name.equals(wrapper.getGroupName())) {
-                return wrapper;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Determines whether the specified group name is one used by an action
-     * wrapper.
-     *
-     * @param name The group name to test
-     * @return True if the group is part of a wrapper, false otherwise
-     */
-    @Precondition("The specified name is non-null and not empty")
-    private static boolean isWrappedGroup(final String name) {
-        Logger.assertTrue(name != null);
-        Logger.assertTrue(!name.isEmpty());
-
-        return getWrapper(name) != null;
-    }
-
-    /**
      * Loads action files from a specified group directory.
      *
      * @param dir The directory to scan.
@@ -317,7 +268,9 @@ public final class ActionManager {
         Logger.assertTrue(dir != null);
         Logger.assertTrue(dir.isDirectory());
         
-        groups.put(dir.getName(), new ActionGroup(dir.getName()));
+        if (!groups.containsKey(dir.getName())) {
+            groups.put(dir.getName(), new ActionGroup(dir.getName()));
+        }
 
         for (File file : dir.listFiles()) {
             new Action(dir.getName(), file.getName());
@@ -337,11 +290,7 @@ public final class ActionManager {
             actions.add(trigger, action);
         }
 
-        if (isWrappedGroup(action.getGroup())) {
-            getWrapper(action.getGroup()).registerAction(action);
-        } else {
-            getGroup(action.getGroup()).add(action);
-        }
+        getGroup(action.getGroup()).add(action);
     }
 
     /**
@@ -494,7 +443,7 @@ public final class ActionManager {
         Logger.assertTrue(!group.isEmpty());
         Logger.assertTrue(groups.containsKey(group));
 
-        for (Action action : new ArrayList<Action>(groups.get(group))) {
+        for (Action action : groups.get(group).getActions()) {
             unregisterAction(action);
         }
 
@@ -541,7 +490,7 @@ public final class ActionManager {
 
         makeGroup(newName);
 
-        for (Action action : new ArrayList<Action>(groups.get(oldName))) {
+        for (Action action : groups.get(oldName).getActions()) {
             action.setGroup(newName);
             getGroup(oldName).remove(action);
             getGroup(newName).add(action);

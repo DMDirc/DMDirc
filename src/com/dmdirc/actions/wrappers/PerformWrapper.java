@@ -25,6 +25,7 @@ package com.dmdirc.actions.wrappers;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.interfaces.ActionComponent;
 import com.dmdirc.actions.ActionCondition;
+import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
@@ -40,7 +41,7 @@ import java.util.List;
  *
  * @author Chris
  */
-public class PerformWrapper extends ActionWrapper {
+public class PerformWrapper extends ActionGroup {
     
     /** A singleton instance of the Perform Wrapper. */
     private static PerformWrapper me = new PerformWrapper();
@@ -49,7 +50,7 @@ public class PerformWrapper extends ActionWrapper {
      * Creates a new instance of PerformWrapper.
      */
     private PerformWrapper() {
-        super();
+        super("performs");
     }
     
     /**
@@ -62,19 +63,14 @@ public class PerformWrapper extends ActionWrapper {
     }
     
     /** {@inheritDoc} */
-    public String getGroupName() {
-        return "performs";
-    }
-    
-    /** {@inheritDoc} */
     @Override
-    public void registerAction(final Action action) {
+    public void add(final Action action) {
         if (action.getTriggers().length == 1
                 && action.getTriggers()[0] == CoreActionType.SERVER_CONNECTED
                 && action.getConditions().size() == 1
                 && (action.getConditions().get(0).getComponent() == CoreActionComponent.SERVER_NETWORK
                 || action.getConditions().get(0).getComponent() == CoreActionComponent.SERVER_NAME)) {
-            super.registerAction(action);
+            super.add(action);
         } else {
             Logger.userError(ErrorLevel.MEDIUM, "Invalid perform action: " + action.getName());
         }
@@ -138,7 +134,7 @@ public class PerformWrapper extends ActionWrapper {
         
         conditions.add(new ActionCondition(0, component, CoreActionComparison.STRING_EQUALS, server + network));
         
-        return new Action(getGroupName(), server + network, new ActionType[]{CoreActionType.SERVER_CONNECTED},
+        return new Action(getName(), server + network, new ActionType[]{CoreActionType.SERVER_CONNECTED},
                 new String[0], conditions, null);
     }
     
@@ -151,7 +147,7 @@ public class PerformWrapper extends ActionWrapper {
      * @return The matching action if one exists, or null
      */    
     private Action getAction(final ActionComponent component, final String target) {
-        for (Action action : actions) {
+        for (Action action : this) {
             if (action.getConditions().get(0).getComponent() == component
                     && action.getConditions().get(0).getTarget().equalsIgnoreCase(target)) {
                 return action;

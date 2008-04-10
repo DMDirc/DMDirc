@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.dialogs.actionseditor;
 
 import com.dmdirc.Main;
 import com.dmdirc.actions.Action;
+import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.ui.swing.MainFrame;
@@ -324,9 +325,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
      * @return true iif there are duplicate names
      */
     private boolean checkDuplicateName(final String name) {
-        final List<Action> actions = ActionManager.getGroups().get(group);
-
-        for (Action loopAction : actions) {
+        for (Action loopAction : ActionManager.getGroups().get(group)) {
             if (loopAction.getName().equals(name) && !loopAction.equals(action)) {
                 return true;
             }

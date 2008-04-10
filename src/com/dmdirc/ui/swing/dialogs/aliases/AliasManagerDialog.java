@@ -192,9 +192,8 @@ public final class AliasManagerDialog extends StandardDialog implements
      */
     private List<Alias> getTableData() {
         final List<Alias> aliases = new ArrayList<Alias>();
-        final List<Action> actions = AliasWrapper.getAliasWrapper().getActions();
         
-        for (Action loopAction : actions) {
+        for (Action loopAction : AliasWrapper.getAliasWrapper()) {
             final List<ActionCondition> arguments = loopAction.getConditions();
             
             ActionCondition argument;
@@ -326,8 +325,7 @@ public final class AliasManagerDialog extends StandardDialog implements
     
     /** Saves the aliases. */
     private void save() {
-        final List<Action> actions = new ArrayList<Action>(
-                AliasWrapper.getAliasWrapper().getActions());
+        final List<Action> actions = AliasWrapper.getAliasWrapper().getActions();
         final List<Alias> aliases = tableModel.getAliases();
         
         final List<Alias> newAliases = new ArrayList<Alias>();
@@ -395,8 +393,7 @@ public final class AliasManagerDialog extends StandardDialog implements
      * @return Corresponding action or null if none found
      */
     private Action getAction(final Alias alias) {
-        final List<Action> actions = new ArrayList<Action>(
-                AliasWrapper.getAliasWrapper().getActions());
+        final List<Action> actions = AliasWrapper.getAliasWrapper().getActions();
         Action action = null;
         
         for (Action loopAction : actions) {

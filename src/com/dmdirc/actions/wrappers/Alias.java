@@ -227,7 +227,7 @@ public final class Alias implements Serializable {
      */
     public Action createAction() {
         return new Action(
-                AliasWrapper.getAliasWrapper().getGroupName(),
+                AliasWrapper.getAliasWrapper().getName(),
                 getName(),
                 new ActionType[] {CoreActionType.UNKNOWN_COMMAND, },
                 getResponse(),

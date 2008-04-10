@@ -35,6 +35,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -123,7 +124,7 @@ public final class ActionsGroupPanel extends JPanel implements ActionListener,
      */
     private void initComponents() {
         scrollPane = new JScrollPane();
-        model = new ActionTableModel(group);
+        model = new ActionTableModel(group == null ? new ArrayList<Action>() : group.getActions());
         table = new PackingTable(model, false, scrollPane, false) {
 
             /**

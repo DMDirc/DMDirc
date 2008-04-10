@@ -77,8 +77,8 @@ public class ActionManagerTest extends junit.framework.TestCase {
                 new File(ActionManager.getDirectory() + "unit-test").isDirectory());        
         assertSame("renameGroup must move actions to new group",
                 action, ActionManager.getGroup("unit-test").get(0));
-        assertTrue("renameGroup must remove actions from old group",
-                ActionManager.getGroup("unit-test-two").isEmpty());
+        assertEquals("renameGroup must remove actions from old group",
+                0, ActionManager.getGroup("unit-test-two").size());
     }
     
     @Test

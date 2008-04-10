@@ -23,15 +23,19 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.config.prefs.PreferencesSetting;
+
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Represents a group of actions, along with their meta-data.
  * 
  * @author chris
  */
-public class ActionGroup extends ArrayList<Action> {
+public class ActionGroup implements Iterable<Action> {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -39,6 +43,9 @@ public class ActionGroup extends ArrayList<Action> {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;    
+    
+    /** The actions in this group. */
+    private final List<Action> actions = new ArrayList<Action>();
     
     /** The name of this action group. */
     private final String name;
@@ -159,5 +166,76 @@ public class ActionGroup extends ArrayList<Action> {
     public void setComponent(final int component) {
         this.component = component;
     }
+    
+    /**
+     * Determines the size of this group.
+     * 
+     * @return The size of this group
+     */
+    public int size() {
+        return actions.size();
+    }
 
+    /**
+     * Removes the specified action from this group.
+     * 
+     * @param action The action to be removed
+     */
+    public void remove(final Action action) {
+        actions.remove(action);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Iterator<Action> iterator() {
+        return actions.iterator();
+    }
+
+    /**
+     * Retrieves the action at the specified index.
+     * 
+     * @param index The index of the action to return
+     * @return The action at the specified index
+     */
+    public Action get(final int index) {
+        return actions.get(index);
+    }
+
+    /**
+     * Determines if this group contains the specified action.
+     * 
+     * @param action The action to search for
+     * @return True if the action is contained in this list, false otherwise
+     */
+    public boolean contains(final Action action) {
+        return actions.contains(action);
+    }
+
+    /**
+     * Removes all actions from this group.
+     */
+    public void clear() {
+        for (Action action : new ArrayList<Action>(actions)) {
+            remove(action);
+        }
+    }
+
+    /**
+     * Adds the specified action to this group.
+     * 
+     * @param action The action to be added
+     */
+    public void add(final Action action) {
+        actions.add(action);
+    }
+    
+    /**
+     * Retrieves a copy of the list of all actions in this group.
+     * 
+     * @return A list of actions in this group
+     */
+    public List<Action> getActions() {
+        return new ArrayList<Action>(actions);
+    }
+    
 }

@@ -26,12 +26,13 @@ import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionCondition;
+import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-
 import com.dmdirc.ui.input.TabCompletionType;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +41,7 @@ import java.util.List;
  *
  * @author chris
  */
-public final class AliasWrapper extends ActionWrapper {
+public final class AliasWrapper extends ActionGroup {
     
     /** Singleton instance of the alias wrapper. */
     private static AliasWrapper me;
@@ -52,7 +53,7 @@ public final class AliasWrapper extends ActionWrapper {
      * Creates a new instance of AliasWrapper.
      */
     private AliasWrapper() {
-        super();
+        super("aliases");
     }
     
     /**
@@ -79,9 +80,9 @@ public final class AliasWrapper extends ActionWrapper {
     
     /** {@inheritDoc} */
     @Override
-    public void registerAction(final Action action) {
+    public void add(final Action action) {
         if (action.getTriggers()[0].equals(CoreActionType.UNKNOWN_COMMAND)) {
-            super.registerAction(action);
+            super.add(action);
             
             final String commandName = getCommandName(action);
             
@@ -97,9 +98,9 @@ public final class AliasWrapper extends ActionWrapper {
     
     /** {@inheritDoc} */
     @Override
-    public void unregisterAction(final Action action) {
+    public void remove(final Action action) {
         if (action.getTriggers()[0].equals(CoreActionType.UNKNOWN_COMMAND)) {
-            super.unregisterAction(action);
+            super.remove(action);
             
             final String commandName = getCommandName(action);
             
@@ -109,12 +110,6 @@ public final class AliasWrapper extends ActionWrapper {
                 server.getTabCompleter().removeEntry(TabCompletionType.COMMAND, commandName);
             }
         }
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public String getGroupName() {
-        return "aliases";
     }
     
     /**
