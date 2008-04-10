@@ -52,7 +52,7 @@ public class IdentClientTest extends junit.framework.TestCase {
                 IdentityManager.getGlobalConfig());
         
         assertStartsWith("Special chars in illegal requests must be quoted",
-                response, "in\\\\valid\\:invited");
+                response, "in\\\\valid\\:invalid");
     }    
     
     @Test
