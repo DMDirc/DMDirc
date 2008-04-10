@@ -62,7 +62,7 @@ public class TestParser extends IRCParser {
             ":server 004 nick server.net foo dioswkgxRXInP bRIeiklmnopstvrDcCNuMT bklov",
             ":server 005 nick WHOX WALLCHOPS WALLVOICES USERIP PREFIX=(ov)@+ " +
                     ":are supported by this server",
-            ":server 005 nick MAXNICKLEN=15 TOPICLEN=250 AWAYLEN=160 " +
+            ":server 005 nick MAXNICKLEN=15 TOPICLEN=250 AWAYLEN=160 MODES=6 " +
                     "CHANMODES=bIeR,k,l,imnpstrDducCNMT :are supported by this server",
         };
         

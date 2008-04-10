@@ -147,7 +147,118 @@ public class ChannelInfoTest extends junit.framework.TestCase {
         info.sendNotice("");
 
         assertEquals(0, parser.sentLines.size());
-    }    
+    }
+    
+    @Test
+    public void testModeSendFull() {
+        final TestParser parser = new TestParser();
+        final ChannelInfo info = getChannelInfo(parser);
+
+        parser.sentLines.clear();
+        info.alterMode(true, 'i', null);
+        info.alterMode(true, 'm', null);
+        info.alterMode(true, 'n', null);
+        info.alterMode(true, 'p', null);
+        info.alterMode(true, 't', null);
+        info.alterMode(true, 'r', null);
+        
+        assertTrue("Parser must send modes as soon as the max number is reached",
+                parser.sentLines.size() == 1);
+        final String modes = getModes(parser.sentLines.get(0));
+        
+        assertTrue(modes.indexOf('i') > -1);
+        assertTrue(modes.indexOf('m') > -1);
+        assertTrue(modes.indexOf('n') > -1);
+        assertTrue(modes.indexOf('p') > -1);
+        assertTrue(modes.indexOf('t') > -1);
+        assertTrue(modes.indexOf('r') > -1);
+    }
+    
+    @Test
+    public void testModeSendExtra() {
+        final TestParser parser = new TestParser();
+        final ChannelInfo info = getChannelInfo(parser);
+
+        parser.sentLines.clear();
+        info.alterMode(true, 'i', null);
+        info.alterMode(true, 'm', null);
+        info.alterMode(true, 'n', null);
+        info.alterMode(true, 'p', null);
+        info.alterMode(true, 't', null);
+        info.alterMode(true, 'r', null);
+        info.alterMode(true, 'N', null);
+        info.sendModes();
+        
+        assertTrue("sendModes must send modes",
+                parser.sentLines.size() == 2);
+        
+        final String modes = getModes(parser.sentLines.get(0))
+                + getModes(parser.sentLines.get(1));
+        
+        assertTrue(modes.indexOf('i') > -1);
+        assertTrue(modes.indexOf('m') > -1);
+        assertTrue(modes.indexOf('n') > -1);
+        assertTrue(modes.indexOf('p') > -1);
+        assertTrue(modes.indexOf('t') > -1);
+        assertTrue(modes.indexOf('r') > -1);
+        assertTrue(modes.indexOf('N') > -1);
+    }
+    
+    @Test
+    public void testModeSendOptimisation1() {
+        final TestParser parser = new TestParser();
+        final ChannelInfo info = getChannelInfo(parser);
+
+        parser.sentLines.clear();
+        info.alterMode(true, 'i', null);
+        info.alterMode(true, 'm', null);
+        info.alterMode(true, 'n', null);
+        info.alterMode(true, 'n', null);
+        info.alterMode(false, 'i', null);
+        info.sendModes();
+        
+        assertTrue("sendModes must send modes",
+                parser.sentLines.size() == 1);
+        
+        final String modes = getModes(parser.sentLines.get(0));
+        
+        assertEquals("Setting a negative mode should cancel a positive one",
+                -1, modes.indexOf('i'));
+        
+        assertTrue(modes.indexOf('m') > -1);
+    }
+    
+    @Test
+    public void testModeSendOptimisation2() {
+        final TestParser parser = new TestParser();
+        final ChannelInfo info = getChannelInfo(parser);
+
+        parser.sentLines.clear();
+        info.alterMode(true, 'm', null);
+        info.alterMode(true, 'n', null);
+        info.alterMode(true, 'n', null);
+        info.sendModes();
+        
+        assertTrue("sendModes must send modes",
+                parser.sentLines.size() == 1);
+        
+        final String modes = getModes(parser.sentLines.get(0));
+        
+        assertEquals("Setting a mode twice should have no effect",
+                modes.indexOf('n'), modes.lastIndexOf('n'));
+        
+        assertTrue(modes.indexOf('m') > -1);
+    }
+    
+    private String getModes(final String line) {
+        final String res = line.substring("MODE #DMDirc_testing ".length());
+        
+        if (res.charAt(0) == '+') {
+            return res.substring(1);
+        }
+        
+        return res;
+    }
 
     private ChannelInfo getChannelInfo(final TestParser parser) {
         parser.injectConnectionStrings();
