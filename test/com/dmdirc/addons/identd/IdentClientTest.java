@@ -53,6 +53,15 @@ public class IdentClientTest extends junit.framework.TestCase {
         
         assertStartsWith("Special chars in illegal requests must be quoted",
                 response, "in\\\\valid\\:invalid");
+    }
+    
+    @Test
+    public void testQuoting2() {
+        final String response = IdentClient.getIdentResponse("in\\\\valid\\ inv\\:alid",
+                IdentityManager.getGlobalConfig());
+        
+        assertStartsWith("Escaped characters in illegal requests shouldn't be doubly-escaped",
+                response, "in\\\\valid\\ inv\\:alid");
     }    
     
     @Test
