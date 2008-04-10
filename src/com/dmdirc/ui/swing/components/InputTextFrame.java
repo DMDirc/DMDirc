@@ -65,9 +65,8 @@ import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
-import net.miginfocom.layout.PlatformDefaults;
 
-import net.miginfocom.swing.MigLayout;
+import net.miginfocom.layout.PlatformDefaults;
 
 /**
  * Frame with an input field.
@@ -190,12 +189,12 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     private void initInputField() {
         UIUtilities.addUndoManager(getInputField().getTextField());
 
-        getInputField().getTextField().getActionMap().put("PasteAction",
+        getInputField().getActionMap().put("paste",
                 new InputTextFramePasteAction(this));
-        getInputField().getTextField().getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("shift INSERT"),
-                "PasteAction");
-        getInputField().getTextField().getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("ctrl V"),
-                "PasteAction");
+        getInputField().getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("shift INSERT"),
+                "paste");
+        getInputField().getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("ctrl V"),
+                "paste");
     }
 
     /**
