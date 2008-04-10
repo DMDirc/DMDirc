@@ -96,13 +96,14 @@ public final class IdentClient implements Runnable {
 	 * Complies with rfc1413 (http://www.faqs.org/rfcs/rfc1413.html)
 	 *
 	 * @param input Line to generate response for
-     * @param config The config manager to use for settings
+	 * @param config The config manager to use for settings
 	 * @return the ident response for the given line
 	 */
 	protected static String getIdentResponse(final String input, final ConfigManager config) {
-		final String[] bits = input.split(",", 2);
+		final String unescapedInput = unescapeString(input);
+		final String[] bits = unescapedInput.replaceAll("\\s+", "").split(",", 2);
 		if (bits.length < 2) {
-			return String.format("%s : ERROR : X-INVALID-INPUT", escapeString(input));
+			return String.format("%s : ERROR : X-INVALID-INPUT", escapeString(unescapedInput));
 		}
 		final int myPort;
 		final int theirPort;
@@ -110,7 +111,7 @@ public final class IdentClient implements Runnable {
 			myPort = Integer.parseInt(bits[0].trim());
 			theirPort = Integer.parseInt(bits[1].trim());
 		} catch (NumberFormatException e) {
-			return String.format("%s : ERROR : X-INVALID-INPUT", escapeString(input));
+			return String.format("%s , %s : ERROR : X-INVALID-INPUT", escapeString(bits[0]), escapeString(bits[1]));
 		}
 		
 		if (myPort > 65535 || myPort < 1 || theirPort > 65535 || theirPort < 1) {
@@ -118,8 +119,7 @@ public final class IdentClient implements Runnable {
 		}
 		
 		final Server server = getServerByPort(myPort);
-		if (!config.getOptionBool(IdentdPlugin.getDomain(), "advanced.alwaysOn")
-                && (server == null || config.getOptionBool(IdentdPlugin.getDomain(), "advanced.isNoUser"))) {
+		if (!config.getOptionBool(IdentdPlugin.getDomain(), "advanced.alwaysOn") && (server == null || config.getOptionBool(IdentdPlugin.getDomain(), "advanced.isNoUser"))) {
 			return String.format("%d , %d : ERROR : NO-USER", myPort, theirPort);
 		}
 		
@@ -169,7 +169,17 @@ public final class IdentClient implements Runnable {
 	 * @return Escaped string.
 	 */
 	public static String escapeString(final String str) {
-		return str.replaceAll("\\\\", "\\\\\\\\").replaceAll(":", "\\\\:").replaceAll(",", "\\\\,");
+		return str.replaceAll("\\\\", "\\\\\\\\").replaceAll(":", "\\\\:").replaceAll(",", "\\\\,").replaceAll(" ", "\\\\ ");
+	}
+	
+	/**
+	 * Unescape special chars.
+	 *
+	 * @param str String to escape
+	 * @return Escaped string.
+	 */
+	public static String unescapeString(final String str) {
+		return str.replaceAll("\\\\:", ":").replaceAll("\\\\ ", " ").replaceAll("\\\\,", ",").replaceAll("\\\\\\\\", "\\\\");
 	}
 	
 	/**
