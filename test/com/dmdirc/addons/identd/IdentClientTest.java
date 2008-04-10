@@ -62,6 +62,8 @@ public class IdentClientTest extends junit.framework.TestCase {
         
         assertContains("Non-numeric ports must result in an ERROR response",
                 response, "ERROR");
+        assertStartsWith("Specified ports must be returned in the response",
+                response.replaceAll("\\s+", ""), "abc,def:");
     }
     
     private void doPortTest(final String ports) {
