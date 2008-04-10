@@ -349,7 +349,13 @@ public final class Server extends WritableFrameContainer implements Serializable
     /**
      * Schedules a reconnect attempt to be performed after a user-defiend delay.
      */
+    @Precondition("The server state is transiently disconnected")
     private void doDelayedReconnect() {
+        if (myState != ServerState.TRANSIENTLY_DISCONNECTED) {
+            throw new IllegalStateException("doDelayedReconnect when not "
+                    + "transiently disconnected\n\nState: " + myState);
+        }
+        
         final int delay = Math.max(1,
                 getConfigManager().getOptionInt(DOMAIN_GENERAL, "reconnectdelay", 5000));
 
@@ -1113,6 +1119,10 @@ public final class Server extends WritableFrameContainer implements Serializable
             if (myState == ServerState.CLOSING) {
                 // Do nothing
                 return;
+            } else if (myState != ServerState.CONNECTING) {
+                // Shouldn't happen
+                throw new IllegalStateException("Connect error when not "
+                        + "connecting\n\nState: " + myState);
             }
 
             myState = ServerState.TRANSIENTLY_DISCONNECTED;
@@ -1172,8 +1182,15 @@ public final class Server extends WritableFrameContainer implements Serializable
     /**
      * Called after the parser receives the 005 headers from the server.
      */
+    @Precondition("State is CONNECTING")
     public void onPost005() {
         synchronized (myState) {
+            if (myState != ServerState.CONNECTING) {
+                // Shouldn't happen
+                throw new IllegalStateException("Received onPost005 while not "
+                        + "connecting\n\nState: " + myState);
+            }
+            
             myState = ServerState.CONNECTED;
         }
         updateIcon();
