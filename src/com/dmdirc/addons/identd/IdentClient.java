@@ -102,7 +102,7 @@ public final class IdentClient implements Runnable {
 	protected static String getIdentResponse(final String input, final ConfigManager config) {
 		final String[] bits = input.split(",", 2);
 		if (bits.length < 2) {
-			return String.format("%s : ERROR : X-INVALID-INPUT", input);
+			return String.format("%s : ERROR : X-INVALID-INPUT", escapeString(input));
 		}
 		final int myPort;
 		final int theirPort;
@@ -110,7 +110,7 @@ public final class IdentClient implements Runnable {
 			myPort = Integer.parseInt(bits[0].trim());
 			theirPort = Integer.parseInt(bits[1].trim());
 		} catch (NumberFormatException e) {
-			return String.format("%s : ERROR : X-INVALID-INPUT", input);
+			return String.format("%s : ERROR : X-INVALID-INPUT", escapeString(input));
 		}
 		
 		if (myPort > 65535 || myPort < 1 || theirPort > 65535 || theirPort < 1) {
@@ -159,7 +159,17 @@ public final class IdentClient implements Runnable {
 			username = System.getProperty("user.name");
 		}
 		
-		return String.format("%d , %d : USERID : %s : %s", myPort, theirPort, os, username);
+		return String.format("%d , %d : USERID : %s : %s", myPort, theirPort, escapeString(os), escapeString(username));
+	}
+	
+	/**
+	 * Escape special chars.
+	 *
+	 * @param str String to escape
+	 * @return Escaped string.
+	 */
+	public static String escapeString(final String str) {
+		return str.replaceAll("\\\\", "\\\\\\\\").replaceAll(":", "\\\\:").replaceAll(",", "\\\\,");
 	}
 	
 	/**
