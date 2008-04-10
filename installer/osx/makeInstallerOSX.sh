@@ -355,13 +355,22 @@ if [ "" = "${HDIUTIL}" ]; then
 	if [ "" = "${MKHFS}" -a "" != "${MKHFSPLUS}" ]; then
 		MKHFS=${MKHFSPLUS}
 	fi;
-	# mkfs.hfs will only create 4mb+ sized iamges :/
-	if [ ${SIZE} -lt 4194304 ]; then
-		echo "Size is less than 4MB"
-		SIZE=4194304;
+	# mkfs.hfs will only create 512kb+ sized images
+	if [ ${SIZE} -lt 524288 ]; then
+		echo "Size is less than 512kb"
+		SIZE=524288;
 	fi;
 	dd if=/dev/zero of=${LINUXIMAGE} bs=${SIZE} count=1
 	${MKHFS} -v 'DMDirc' ${LINUXIMAGE}
+	# however older versions of mkfs.hfs will only create 4mb+ sized images :/
+	if [ $? -eq 1 ]; then
+		if [ ${SIZE} -lt 4194304 ]; then
+			echo "Size is less than 4MB"
+			SIZE=4194304;
+		fi;
+		dd if=/dev/zero of=${LINUXIMAGE} bs=${SIZE} count=1
+		${MKHFS} -v 'DMDirc' ${LINUXIMAGE}
+	fi;
 	# Now try and mount
 	# This could be a problem, as linux requires either root to mount, or an fstab
 	# entry.
