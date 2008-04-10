@@ -63,6 +63,9 @@ public class ProcessKick extends IRCProcessor {
 		} else {
 			if (token.length > 4) { sReason = token[token.length-1]; }
 			iChannelClient = iChannel.getUser(iClient);
+			if (iChannelClient == null && myParser.getCreateFake()) {
+				iChannelClient = new ChannelClientInfo(iChannel.getParser(), iClient, iChannel);
+			}
 			iChannelKicker = iChannel.getUser(token[0]);
 			if (myParser.removeAfterCallback) { callChannelKick(iChannel,iChannelClient,iChannelKicker,sReason,token[0]); }
 			iChannel.delClient(iClient);

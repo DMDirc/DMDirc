@@ -56,7 +56,7 @@ public final class CallbackOnChannelKick extends CallbackObjectSpecific {
 	 * @return true if a callback was called, else false
 	 */
 	public boolean call(final ChannelInfo cChannel, final ChannelClientInfo cKickedClient, final ChannelClientInfo myKickedByClient, final String sReason, final String sKickedByHost) {
-		ChannelClientInfo cKickedByClient;
+		final ChannelClientInfo cKickedByClient;
 		if (myKickedByClient == null && myParser.getCreateFake()) {
 			cKickedByClient = new ChannelClientInfo(cChannel.getParser(), new ClientInfo(cChannel.getParser(), sKickedByHost).setFake(true) ,cChannel);
 		} else {
