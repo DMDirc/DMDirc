@@ -22,50 +22,65 @@
 
 package com.dmdirc.util;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class TextFileTest extends junit.framework.TestCase {
+    
+    private static File tfile;
 
     @Test
-    public void testGetLines() {
-        try {
-            final TextFile file =
-                    new TextFile(getClass().getClassLoader().
-                    getResource("com/dmdirc/util/test1.txt").toURI());
-            final List<String> lines = file.getLines();
-            
-            assertEquals(7, lines.size());
-            assertEquals("Line 1", lines.get(0));
-        } catch (FileNotFoundException ex) {
-            assertFalse(true);
-        } catch (IOException ex) {
-            assertFalse(true);
-        } catch (URISyntaxException ex) {
-            // Do nothing
-        }
+    public void testGetLines() throws IOException {
+        final TextFile file =
+                new TextFile(getClass().getClassLoader().
+                getResource("com/dmdirc/util/test1.txt").openStream());
+        final List<String> lines = file.getLines();
+
+        assertEquals(7, lines.size());
+        assertEquals("Line 1", lines.get(0));
     }
     
     @Test
-    public void testGetLines2() {
-        try {
-            final TextFile file =
-                    new TextFile(getClass().getClassLoader().
-                    getResource("com/dmdirc/util/test1.txt").openStream());
-            final List<String> lines = file.getLines();
-            
-            assertEquals(7, lines.size());
-            assertEquals("Line 1", lines.get(0));
-        } catch (FileNotFoundException ex) {
-            assertFalse(true);
-        } catch (IOException ex) {
-            assertFalse(true);
-        }
-    }    
+    public void testGetLines2() throws IOException {
+        final TextFile file =
+                new TextFile(getClass().getClassLoader().
+                getResource("com/dmdirc/util/test1.txt").openStream());
+        final List<String> lines = file.getLines();
+
+        assertEquals(7, lines.size());
+        assertEquals("Line 1", lines.get(0));
+    }
+    
+    @Test
+    public void testWrite() throws IOException {
+        tfile = File.createTempFile("dmdirc_unit_test", null);
+        TextFile file = new TextFile(tfile);
+        
+        final List<String> lines = Arrays.asList(new String[]{
+            "hello", "this is a test", "meep"
+        });
+        
+        file.writeLines(lines);
+        
+        file = new TextFile(tfile);
+        final List<String> newLines = file.getLines();
+        
+        assertEquals(lines, newLines);
+    }
+    
+    @Test
+    public void testDelete() {
+        assertTrue(tfile.exists());
+        TextFile file = new TextFile(tfile);
+        file.delete();
+        assertFalse(tfile.exists());
+    }
 
 }

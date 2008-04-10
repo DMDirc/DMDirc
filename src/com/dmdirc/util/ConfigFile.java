@@ -200,7 +200,7 @@ public class ConfigFile {
      * Deletes this config file.
      */
     public void delete() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        file.delete();
     }
 
     /**

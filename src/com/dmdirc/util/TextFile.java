@@ -138,6 +138,13 @@ public class TextFile {
         return file;
     }
     
-    
+    /**
+     * Deletes the file associated with this textfile, if there is one.
+     */
+    public void delete() {
+        if (file != null) {
+            file.delete();
+        }
+    }
 
 }

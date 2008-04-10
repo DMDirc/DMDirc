@@ -222,6 +222,16 @@ public class ConfigFileTest extends junit.framework.TestCase {
     public void testUnescape() {
         final String input = "blah blah\\foo\r\nbar=:";
         assertEquals(input, ConfigFile.unescape(ConfigFile.escape(input)));
-    }    
+    }
+    
+    @Test
+    public void testDelete() throws IOException {
+        final File file = File.createTempFile("DMDirc_unittest", null);
+        ConfigFile config = new ConfigFile(new TextFile(file));
+        config.write();
+        assertTrue(file.exists());
+        config.delete();
+        assertFalse(file.exists());
+    }
 
 }
