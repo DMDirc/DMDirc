@@ -31,8 +31,8 @@ import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.util.Downloader;
 
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.List;
@@ -45,13 +45,14 @@ import java.util.Map;
  */
 public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
     
+    /** The information obtained from VLC. */
     private final Map<String, String> information
             = new HashMap<String, String>();
 
     /** {@inheritDoc} */
     @Override
     public boolean isRunning() {
-        return getInformation();
+        return fetchInformation();
     }
 
     /** {@inheritDoc} */
@@ -73,6 +74,11 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
                 getFallbackArtist();
     }
      
+    /**
+     * Retrieves the fallback artist (parsed from the file name).
+     * 
+     * @return The fallback artist
+     */
     private String getFallbackArtist() {
         String result = "unknown";
         
@@ -103,6 +109,11 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
                 : getFallbackTitle();
     }
     
+    /**
+     * Retrieves the fallback title (parsed from the file name).
+     * 
+     * @return The fallback title
+     */
     private String getFallbackTitle() {
         String result = "unknown";
         
@@ -193,7 +204,12 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
         general.addSubCategory(instr.setInline());
     }
     
-    private boolean getInformation() {
+    /**
+     * Attempts to fetch information from VLC's web interface.
+     * 
+     * @return True on success, false otherwise
+     */
+    private boolean fetchInformation() {
         information.clear();
         List<String> res;
         List<String> res2;
@@ -211,6 +227,20 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
             return false;
         }
         
+        parseInformation(res, res2);
+        
+        return true;
+    }
+    
+    /**
+     * Parses the information from the two pages obtained from VLC's web
+     * interface.
+     * 
+     * @param res The first page of VLC info (/old/info.html)
+     * @param res2 The second page of VLC info (/old/)
+     */
+    protected void parseInformation(final List<String> res,
+            final List<String> res2) {
         for (String line : res) {
             final String tline = line.trim();
             
@@ -264,8 +294,6 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
                         tline.substring(equals + 1, tline.length() - 1).trim());
             }
         }
-        
-        return true;
     }
 
 }
