@@ -27,6 +27,7 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.ValidatingCommand;
+import com.dmdirc.commandparser.commands.WrappableCommand;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.interfaces.ConfigChangeListener;
@@ -233,7 +234,13 @@ public abstract class InputHandler implements ConfigChangeListener {
                 }
             }
             
-            // TODO: Wrapping commands
+            if (command instanceof WrappableCommand) {
+                final int count = ((WrappableCommand) command).getLineCount(parentWindow, args);
+                
+                if (count > 1) {
+                    fireLineWrap(count);
+                }
+            }
         } else {
             final int lines = parentWindow.getContainer().getNumLines(text);
             if (lines > 1) {

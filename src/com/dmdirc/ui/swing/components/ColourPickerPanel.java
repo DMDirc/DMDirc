@@ -113,7 +113,8 @@ public final class ColourPickerPanel extends JPanel implements MouseListener, Mo
         this.showIrc = newShowIrc;
         this.showHex = newShowHex;
         
-        final int height = 65 + (showIrc ? 30 : 0) + (showHex ? 145 : 0)  + (showHex & showIrc ? 10 : 0);
+        final int height = 65 + (showIrc ? 30 : 0) + (showHex ? 145 : 0) 
+                + (showHex & showIrc ? 10 : 0);
         
         setPreferredSize(new Dimension(160, height));
         

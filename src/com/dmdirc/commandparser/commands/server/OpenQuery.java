@@ -26,17 +26,20 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
+import com.dmdirc.commandparser.commands.WrappableCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.Styliser;
+
 import java.util.List;
 
 /**
  * Allows the user to open a query dialog with another user.
  * @author chris
  */
-public final class OpenQuery extends ServerCommand implements IntelligentCommand {
+public final class OpenQuery extends ServerCommand implements
+        IntelligentCommand, WrappableCommand {
     
     /**
      * Creates a new instance of Query.
@@ -57,9 +60,9 @@ public final class OpenQuery extends ServerCommand implements IntelligentCommand
         }
             
         if (server.getParser().isValidChannelName(args[0])) {
-            sendLine(origin, isSilent, FORMAT_ERROR, "You can't open a query " +
-                    "with a channel; maybe you meant " + Styliser.CODE_FIXED +
-                    Styliser.CODE_BOLD + CommandManager.getCommandChar()
+            sendLine(origin, isSilent, FORMAT_ERROR, "You can't open a query "
+                    + "with a channel; maybe you meant " + Styliser.CODE_FIXED
+                    + Styliser.CODE_BOLD + CommandManager.getCommandChar()
                     + (args.length > 1 ? "msg" : "join") + " " + implodeArgs(args)
                     + Styliser.CODE_BOLD + Styliser.CODE_FIXED + "?");
             return;
@@ -107,6 +110,18 @@ public final class OpenQuery extends ServerCommand implements IntelligentCommand
         }
         
         return targets;
-    }    
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public int getLineCount(final InputWindow origin, final List<String> arguments) {
+        if (arguments.size() >= 2) {
+            final String target = arguments.get(0);
+            return origin.getContainer().getServer().getNumLines("PRIVMSG "
+                    + target + " :" + implodeArgs(1, arguments.toArray(new String[0])));
+        } else {
+            return 1;
+        }
+    }
     
 }
