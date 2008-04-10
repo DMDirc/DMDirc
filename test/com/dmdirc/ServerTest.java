@@ -83,10 +83,10 @@ public class ServerTest extends junit.framework.TestCase {
     }
 
     @Test
-    public void testRemoveInvitesOnDisconnect() {
+    public void testRemoveInvitesOnSocketClosed() {
         server.reconnect();
         server.addInvite(new Invite(server, "#chan1", "a!b@c"));
-        server.disconnect();
+        server.onSocketClosed();
         assertEquals(0, server.getInvites().size());
     }
 
