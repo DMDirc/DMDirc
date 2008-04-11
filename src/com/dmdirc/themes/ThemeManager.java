@@ -112,11 +112,12 @@ public final class ThemeManager {
 
             if (theme.isValidTheme()) {
                 THEMES.put(file.getName(), theme);
+            } else {
+                return;
             }
         }
 
-        if (enabled && !theme.isEnabled()
-                && theme.isValidTheme()) {
+        if (enabled && !theme.isEnabled()) {
             theme.applyTheme();
         } else if (theme.isEnabled() && !enabled) {
             theme.removeTheme();

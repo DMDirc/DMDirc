@@ -28,6 +28,7 @@ import com.dmdirc.util.MapList;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -36,29 +37,29 @@ import java.util.TreeMap;
 
 /**
  * The config manager manages the various config sources for each entity.
- * 
+ *
  * @author chris
  */
 public class ConfigManager extends ConfigSource implements Serializable,
         ConfigChangeListener {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 4;
-    
+
     /** Temporary map for lookup stats. */
     private static final Map<String, Integer> stats = new TreeMap<String, Integer>();
-    
+
     /** A list of sources for this config manager. */
     private List<Identity> sources;
-    
+
     /** The listeners registered for this manager. */
     private final MapList<String, ConfigChangeListener> listeners
             = new MapList<String, ConfigChangeListener>();
-    
+
     /** The ircd this manager is for. */
     private String ircd;
     /** The network this manager is for. */
@@ -67,10 +68,10 @@ public class ConfigManager extends ConfigSource implements Serializable,
     private String server;
     /** The channel this manager is for. */
     private String channel;
-    
+
     /**
      * Creates a new instance of ConfigManager.
-     * 
+     *
      * @param ircd The name of the ircd for this manager
      * @param network The name of the network for this manager
      * @param server The name of the server for this manager
@@ -79,10 +80,10 @@ public class ConfigManager extends ConfigSource implements Serializable,
             final String server) {
         this(ircd, network, server, "<Unknown>");
     }
-    
+
     /**
      * Creates a new instance of ConfigManager.
-     * 
+     *
      * @param ircd The name of the ircd for this manager
      * @param network The name of the network for this manager
      * @param server The name of the server for this manager
@@ -92,24 +93,24 @@ public class ConfigManager extends ConfigSource implements Serializable,
             final String server, final String channel) {
         final String chanName = channel + "@" + network;
         sources = IdentityManager.getSources(ircd, network, server, chanName);
-        
+
         for (Identity identity : sources) {
             identity.addListener(this);
         }
-        
+
         this.ircd = ircd;
         this.network = network;
         this.server = server;
         this.channel = chanName;
-        
+
         IdentityManager.addConfigManager(this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getOption(final String domain, final String option) {
         doStats(domain, option);
-        
+
         synchronized (sources) {
             for (Identity source : sources) {
                 if (source.hasOption(domain, option)) {
@@ -117,7 +118,7 @@ public class ConfigManager extends ConfigSource implements Serializable,
                 }
             }
         }
-        
+
         throw new IllegalArgumentException("Config option not found: " + domain + "." + option);
     }
 
@@ -125,7 +126,7 @@ public class ConfigManager extends ConfigSource implements Serializable,
     @Override
     public boolean hasOption(final String domain, final String option) {
         doStats(domain, option);
-        
+
         synchronized (sources) {
             for (Identity source : sources) {
                 if (source.hasOption(domain, option)) {
@@ -133,10 +134,10 @@ public class ConfigManager extends ConfigSource implements Serializable,
                 }
             }
         }
-        
+
         return false;
-    }    
-    
+    }
+
     /**
      * Returns the name of all known options.
      *
@@ -144,7 +145,7 @@ public class ConfigManager extends ConfigSource implements Serializable,
      */
     public Set<String> getOptions() {
         final HashSet<String> res = new HashSet<String>();
-        
+
         synchronized (sources) {
             for (Identity source : sources) {
                 for (String key : source.getOptions()) {
@@ -152,10 +153,10 @@ public class ConfigManager extends ConfigSource implements Serializable,
                 }
             }
         }
-        
+
         return res;
     }
-    
+
     /**
      * Returns the name of all the options in the specified domain. If the
      * domain doesn't exist, an empty list is returned.
@@ -165,30 +166,71 @@ public class ConfigManager extends ConfigSource implements Serializable,
      */
     public List<String> getOptions(final String domain) {
         final ArrayList<String> res = new ArrayList<String>();
-        
+
         for (String key : getOptions()) {
             if (key.startsWith(domain + ".")) {
                 res.add(key.substring(domain.length() + 1));
             }
         }
-        
+
         return res;
     }
-       
+
     /**
      * Removes the specified identity from this manager.
      *
      * @param identity The identity to be removed
      */
     public void removeIdentity(final Identity identity) {
-        synchronized (sources) {
-            if (sources.contains(identity)) {
-                identity.removeListener(this);
-                sources.remove(identity);
+        if (!sources.contains(identity)) {
+            return;
+        }
+
+        final List<String[]> changed = new ArrayList<String[]>();
+
+        // Determine which settings will have changed
+        for (Map.Entry<String, Map<String, String>> entry
+                : identity.getFile().getKeyDomains().entrySet()) {
+            final String domain = entry.getKey();
+
+            for (String option : entry.getValue().keySet()) {
+                if (identity.equals(getScope(domain, option))) {
+                    changed.add(new String[]{option, domain});
+                }
             }
         }
+
+        synchronized (sources) {
+            identity.removeListener(this);
+            sources.remove(identity);
+        }
+
+        // Fire change listeners
+        for (String[] setting : changed) {
+            configChanged(setting[0], setting[1]);
+        }
     }
-    
+
+    /**
+     * Retrieves the identity that currently defines the specified domain and
+     * option.
+     *
+     * @param domain The domain to search for
+     * @param option The option to search for
+     * @return The identity that defines that setting, or null on failure
+     */
+    protected Identity getScope(final String domain, final String option) {
+        synchronized (sources) {
+            for (Identity source : sources) {
+                if (source.hasOption(domain, option)) {
+                    return source;
+                }
+            }
+        }
+
+        return null;
+    }
+
     /**
      * Called whenever there is a new identity available. Checks if the
      * identity is relevant for this manager, and adds it if it is.
@@ -196,7 +238,7 @@ public class ConfigManager extends ConfigSource implements Serializable,
      */
     public void checkIdentity(final Identity identity) {
         String comp;
-        
+
         switch (identity.getTarget().getType()) {
         case IRCD:
             comp = ircd;
@@ -218,16 +260,28 @@ public class ConfigManager extends ConfigSource implements Serializable,
             comp = "";
             break;
         }
-        
+
         if (comp != null && comp.equalsIgnoreCase(identity.getTarget().getData())) {
             synchronized (sources) {
                 sources.add(identity);
                 identity.addListener(this);
                 Collections.sort(sources);
             }
+            
+            // Determine which settings will have changed
+            for (Map.Entry<String, Map<String, String>> entry
+                    : identity.getFile().getKeyDomains().entrySet()) {
+                final String domain = entry.getKey();
+
+                for (String option : entry.getValue().keySet()) {
+                    if (identity.equals(getScope(domain, option))) {
+                        configChanged(option, domain);
+                    }
+                }
+            }            
         }
     }
-    
+
     /**
      * Returns the name of all domains known by this manager.
      *
@@ -236,17 +290,17 @@ public class ConfigManager extends ConfigSource implements Serializable,
     public List<String> getDomains() {
         final ArrayList<String> res = new ArrayList<String>();
         String domain;
-        
+
         for (String key : getOptions()) {
             domain = key.substring(0, key.indexOf('.'));
             if (!res.contains(domain)) {
                 res.add(domain);
             }
         }
-        
+
         return res;
     }
-    
+
     /**
      * Retrieves a list of sources for this config manager.
      * @return This config manager's sources.
@@ -254,25 +308,25 @@ public class ConfigManager extends ConfigSource implements Serializable,
     public List<Identity> getSources() {
         return new ArrayList<Identity>(sources);
     }
-    
+
     /**
      * Migrates this ConfigManager from its current configuration to the
      * appropriate one for the specified new parameters, firing listeners where
      * settings have changed.
-     * 
+     *
      * @param ircd The new name of the ircd for this manager
      * @param network The new name of the network for this manager
      * @param server The new name of the server for this manager
      */
     public void migrate(final String ircd, final String network, final String server) {
         migrate(ircd, network, server, "<Unknown>");
-    }   
-    
+    }
+
     /**
      * Migrates this ConfigManager from its current configuration to the
      * appropriate one for the specified new parameters, firing listeners where
      * settings have changed.
-     * 
+     *
      * @param ircd The new name of the ircd for this manager
      * @param network The new name of the network for this manager
      * @param server The new name of the server for this manager
@@ -282,39 +336,39 @@ public class ConfigManager extends ConfigSource implements Serializable,
             final String channel) {
         final ConfigManager old = new ConfigManager(this.ircd, this.network,
                 this.server, this.channel.substring(0, this.channel.indexOf('@')));
-        
+
         this.ircd = ircd;
         this.network = network;
         this.server = server;
         this.channel = channel + "@" + network;
-        
+
         for (Identity identity : new ArrayList<Identity>(sources)) {
             removeIdentity(identity);
         }
-        
+
         sources = IdentityManager.getSources(ircd, network, server, this.channel);
         for (Identity identity : sources) {
             identity.addListener(this);
         }
-        
+
         final List<String> myDomains = getDomains();
         for (String domain : myDomains) {
             final List<String> myKeys = getOptions(domain);
-            
+
             for (String key : myKeys) {
-                if (!old.hasOption(domain, key) || 
+                if (!old.hasOption(domain, key) ||
                         !old.getOption(domain, key).equals(getOption(domain, key))) {
                     configChanged(domain, key);
                 }
             }
-            
+
             for (String key : old.getOptions(domain)) {
                 if (!myKeys.contains(key)) {
                     configChanged(domain, key);
                 }
             }
         }
-        
+
         for (String domain : old.getDomains()) {
             if (!myDomains.contains(domain)) {
                 for (String key : old.getOptions(domain)) {
@@ -323,7 +377,7 @@ public class ConfigManager extends ConfigSource implements Serializable,
             }
         }
     }
-    
+
     /**
      * Records the lookup request for the specified domain & option.
      *
@@ -332,14 +386,14 @@ public class ConfigManager extends ConfigSource implements Serializable,
      */
     protected static void doStats(final String domain, final String option) {
         final String key = domain + "." + option;
-        
+
         try {
             stats.put(key, 1 + (stats.containsKey(key) ? stats.get(key) : 0));
         } catch (NullPointerException ex) {
             // JVM bugs ftl.
         }
     }
-    
+
     /**
      * Retrieves the statistic map.
      *
@@ -347,8 +401,8 @@ public class ConfigManager extends ConfigSource implements Serializable,
      */
     public static Map<String, Integer> getStats() {
         return stats;
-    }    
-    
+    }
+
     /**
      * Adds a change listener for the specified domain.
      *
@@ -359,7 +413,7 @@ public class ConfigManager extends ConfigSource implements Serializable,
             final ConfigChangeListener listener) {
         addListener(domain, listener);
     }
-    
+
     /**
      * Adds a change listener for the specified domain and key.
      *
@@ -371,7 +425,7 @@ public class ConfigManager extends ConfigSource implements Serializable,
             final ConfigChangeListener listener) {
         addListener(domain + "." + key, listener);
     }
-    
+
     /**
      * Removes the specified listener for all domains and options.
      *
@@ -382,7 +436,7 @@ public class ConfigManager extends ConfigSource implements Serializable,
             listeners.removeFromAll(listener);
         }
     }
-    
+
     /**
      * Adds the specified listener to the internal map/list.
      *
@@ -395,21 +449,21 @@ public class ConfigManager extends ConfigSource implements Serializable,
             listeners.add(key, listener);
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
         final List<ConfigChangeListener> targets
                 = new ArrayList<ConfigChangeListener>();
-        
+
         if (listeners.containsKey(domain)) {
             targets.addAll(listeners.get(domain));
         }
-        
+
         if (listeners.containsKey(domain + "." + key)) {
             targets.addAll(listeners.get(domain + "." + key));
         }
-        
+
         for (ConfigChangeListener listener : targets) {
             listener.configChanged(domain, key);
         }

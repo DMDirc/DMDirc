@@ -56,33 +56,33 @@ import java.util.Properties;
  */
 public class Identity extends ConfigSource implements Serializable,
         Comparable<Identity> {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
+
     /** The domain used for identity settings. */
     private static final String DOMAIN = "identity".intern();
-    
+
     /** The target for this identity. */
     protected final ConfigTarget myTarget;
-    
+
     /** The configuration details for this identity. */
     protected final ConfigFile file;
-    
+
     /** The global config manager. */
     protected ConfigManager globalConfig;
-    
+
     /** The config change listeners for this source. */
     protected final List<ConfigChangeListener> listeners
             = new WeakList<ConfigChangeListener>();
-    
+
     /** Whether this identity needs to be saved. */
     protected boolean needSave;
-    
+
     /**
      * Creates a new identity with the specified properties. Saving is not
      * supported using this method (i.e., it should only be used for defaults).
@@ -91,10 +91,10 @@ public class Identity extends ConfigSource implements Serializable,
      * @deprecated Should use a map of maps instead
      */
     @Deprecated
-    public Identity(final Properties properties) {        
+    public Identity(final Properties properties) {
         this(properties, null);
     }
-    
+
     /**
      * Creates a new identity with the specified properties and target.
      * Saving is not supported using this method (i.e., it should only be used
@@ -108,11 +108,11 @@ public class Identity extends ConfigSource implements Serializable,
     @Precondition("The specified Properties is not null")
     public Identity(final Properties properties, final ConfigTarget target) {
         assert(properties != null);
-        
+
         file = new ConfigFile("");
         file.setAutomake(true);
         migrateProperties(properties);
-        
+
         if (target == null) {
             myTarget = new ConfigTarget();
             myTarget.setGlobalDefault();
@@ -120,7 +120,7 @@ public class Identity extends ConfigSource implements Serializable,
             myTarget = target;
         }
     }
-    
+
     /**
      * Creates a new instance of Identity.
      *
@@ -131,13 +131,13 @@ public class Identity extends ConfigSource implements Serializable,
      * @throws IOException Input/output exception
      */
     public Identity(final File file, final boolean forceDefault) throws IOException,
-            InvalidIdentityFileException {        
+            InvalidIdentityFileException {
         this.file = new ConfigFile(new TextFile(file));
         this.file.setAutomake(true);
         initFile(forceDefault, new FileInputStream(file));
         myTarget = getTarget(forceDefault);
     }
-    
+
     /**
      * Creates a new read-only identity.
      *
@@ -153,11 +153,11 @@ public class Identity extends ConfigSource implements Serializable,
         this.file.setAutomake(true);
         initFile(forceDefault, stream);
         myTarget = getTarget(forceDefault);
-    }    
-    
+    }
+
     /**
      * Migrates the contents of the specified property file into a ConfigFile.
-     * 
+     *
      * @param properties The properties to migrate
      */
     private void migrateProperties(final Properties properties) {
@@ -165,19 +165,19 @@ public class Identity extends ConfigSource implements Serializable,
             final String key = (String) entry.getKey();
             final String value = (String) entry.getValue();
             final int offset = key.indexOf('.');
-            
+
             if (offset > -1) {
                 final String domain = key.substring(0, offset);
                 final String option = key.substring(1 + offset);
-                
+
                 file.getKeyDomain(domain).put(option, value);
             }
-        }        
+        }
     }
-    
+
     /**
      * Determines and returns the target for this identity from its contents.
-     * 
+     *
      * @param forceDefault Whether to force this to be a default identity
      * @return A ConfigTarget for this identity
      * @throws InvalidIdentityFileException If the identity isn't valid
@@ -185,7 +185,7 @@ public class Identity extends ConfigSource implements Serializable,
     private ConfigTarget getTarget(final boolean forceDefault)
             throws InvalidIdentityFileException {
         final ConfigTarget target = new ConfigTarget();
-        
+
         if (hasOption(DOMAIN, "ircd")) {
             target.setIrcd(getOption(DOMAIN, "ircd"));
         } else if (hasOption(DOMAIN, "network")) {
@@ -203,17 +203,17 @@ public class Identity extends ConfigSource implements Serializable,
         } else {
             throw new InvalidIdentityFileException("No target and no profile");
         }
-        
+
         if (hasOption(DOMAIN, "order")) {
             target.setOrder(getOptionInt(DOMAIN, "order", 50000));
-        }        
-        
+        }
+
         return target;
     }
-    
+
     /**
      * Initialises this identity from a file.
-     * 
+     *
      * @param forceDefault Whether to force this to be a default identity
      * @param stream The stream to load properties from if needed
      * @throws InvalidIdentityFileException if the identity file is invalid
@@ -230,19 +230,19 @@ public class Identity extends ConfigSource implements Serializable,
 
             migrateProperties(properties);
         }
-                        
+
         if (!hasOption(DOMAIN, "name") && !forceDefault) {
             throw new InvalidIdentityFileException("No name specified");
-        }        
+        }
     }
-    
+
     /**
      * Attempts to reload this identity from disk. If this identity has been
      * modified (i.e., {@code needSave} is true), then this method silently
      * returns straight away. All relevant ConfigChangeListeners are fired for
      * new, altered and deleted properties. The target of the identity will not
      * be changed by this method, even if it has changed on disk.
-     * 
+     *
      * @throws java.io.IOException On I/O exception when reading the identity
      * @throws InvalidConfigFileException if the config file is no longer valid
      */
@@ -250,18 +250,18 @@ public class Identity extends ConfigSource implements Serializable,
         if (needSave) {
             return;
         }
-               
+
         final Map<String, Map<String, String>> oldProps = file.getKeyDomains();
-        
+
         file.read();
-        
+
         for (Map.Entry<String, Map<String, String>> entry : file.getKeyDomains().entrySet()) {
             final String domain = entry.getKey();
-            
+
             for (Map.Entry<String, String> subentry : entry.getValue().entrySet()) {
                 final String key = subentry.getKey();
                 final String value = subentry.getValue();
-                
+
                 if (!oldProps.containsKey(domain)) {
                     fireReloadChange(domain, key);
                 } else if (!oldProps.get(domain).containsKey(key)
@@ -270,7 +270,7 @@ public class Identity extends ConfigSource implements Serializable,
                     oldProps.get(domain).remove(key);
                 }
             }
-            
+
             if (oldProps.containsKey(domain)) {
                 for (String key : oldProps.get(domain).keySet()) {
                     fireReloadChange(domain, key);
@@ -278,20 +278,20 @@ public class Identity extends ConfigSource implements Serializable,
             }
         }
     }
-    
+
     /**
      * Fires the config changed listener for the specified option after this
      * identity is reloaded.
-     * 
+     *
      * @param domain The domain of the option that's changed
      * @param key The key of the option that's changed
      */
-    private void fireReloadChange(final String domain, final String key) {        
+    private void fireReloadChange(final String domain, final String key) {
         for (ConfigChangeListener listener : new ArrayList<ConfigChangeListener>(listeners)) {
             listener.configChanged(domain, key);
         }
     }
-    
+
     /**
      * Returns the properties object belonging to this identity.
      *
@@ -301,17 +301,17 @@ public class Identity extends ConfigSource implements Serializable,
     @Deprecated
     public Properties getProperties() {
         final Properties properties = new Properties();
-        
+
         for (Map.Entry<String, Map<String, String>> entry : file.getKeyDomains().entrySet()) {
             for (Map.Entry<String, String> subentry : entry.getValue().entrySet()) {
                 properties.setProperty(entry.getKey() + "." + subentry.getKey(),
                         subentry.getValue());
             }
         }
-        
-        return properties;        
+
+        return properties;
     }
-    
+
     /**
      * Returns the name of this identity.
      *
@@ -324,7 +324,7 @@ public class Identity extends ConfigSource implements Serializable,
             return "Unnamed";
         }
     }
-    
+
     /**
      * Determines whether this identity can be used as a profile when
      * connecting to a server. Profiles are identities that can supply
@@ -335,19 +335,19 @@ public class Identity extends ConfigSource implements Serializable,
     public boolean isProfile() {
         return hasOption("profile", "nickname") && hasOption("profile", "realname");
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean hasOption(final String domain, final String option) {
         return file.isKeyDomain(domain) && file.getKeyDomain(domain).containsKey(option);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getOption(final String domain, final String option) {
         return file.getKeyDomain(domain).get(option);
     }
-    
+
     /**
      * Sets the specified option in this identity to the specified value.
      *
@@ -358,7 +358,7 @@ public class Identity extends ConfigSource implements Serializable,
     public void setOption(final String domain, final String option,
             final String value) {
         final String oldValue = getOption(domain, option);
-        
+
         if (myTarget.getType() == ConfigTarget.TYPE.GLOBAL) {
             // If we're the global config, don't set useless settings that are
             // covered by global defaults.
@@ -366,9 +366,9 @@ public class Identity extends ConfigSource implements Serializable,
             if (globalConfig == null) {
                 globalConfig = new ConfigManager("", "", "");
             }
-            
+
             globalConfig.removeIdentity(this);
-            
+
             if (globalConfig.hasOption(domain, option)
                     && globalConfig.getOption(domain, option).equals(value)) {
                 if (oldValue == null) {
@@ -379,19 +379,19 @@ public class Identity extends ConfigSource implements Serializable,
                 }
             }
         }
-        
+
         if ((oldValue == null && value != null)
                 || (oldValue != null && !oldValue.equals(value))) {
             file.getKeyDomain(domain).put(option, value);
             needSave = true;
-            
-            for (ConfigChangeListener listener : 
+
+            for (ConfigChangeListener listener :
                 new ArrayList<ConfigChangeListener>(listeners)) {
                 listener.configChanged(domain, option);
             }
         }
     }
-    
+
     /**
      * Sets the specified option in this identity to the specified value.
      *
@@ -403,7 +403,7 @@ public class Identity extends ConfigSource implements Serializable,
             final int value) {
         setOption(domain, option, String.valueOf(value));
     }
-    
+
     /**
      * Sets the specified option in this identity to the specified value.
      *
@@ -415,7 +415,7 @@ public class Identity extends ConfigSource implements Serializable,
             final boolean value) {
         setOption(domain, option, String.valueOf(value));
     }
-    
+
     /**
      * Sets the specified option in this identity to the specified value.
      *
@@ -432,7 +432,7 @@ public class Identity extends ConfigSource implements Serializable,
         }
         setOption(domain, option, temp.length() > 0 ? temp.substring(1) : temp.toString());
     }
-    
+
     /**
      * Unsets a specified option.
      *
@@ -442,12 +442,12 @@ public class Identity extends ConfigSource implements Serializable,
     public void unsetOption(final String domain, final String option) {
         file.getKeyDomain(domain).remove(option);
         needSave = true;
-        
+
         for (ConfigChangeListener listener : new ArrayList<ConfigChangeListener>(listeners)) {
             listener.configChanged(domain, option);
         }
     }
-    
+
     /**
      * Returns a list of options avaiable in this identity.
      *
@@ -457,16 +457,16 @@ public class Identity extends ConfigSource implements Serializable,
     @Deprecated
     public List<String> getOptions() {
         final List<String> res = new ArrayList<String>();
-        
+
         for (Map.Entry<String, Map<String, String>> entry : file.getKeyDomains().entrySet()) {
             for (String key : entry.getValue().keySet()) {
                 res.add(entry.getKey() + "." + key);
             }
         }
-        
+
         return res;
     }
-    
+
     /**
      * Saves this identity to disk if it has been updated.
      */
@@ -475,13 +475,13 @@ public class Identity extends ConfigSource implements Serializable,
             if (myTarget.getType() == ConfigTarget.TYPE.GLOBAL) {
                 // If we're the global config, unset useless settings that are
                 // covered by global defaults.
-                
+
                 if (globalConfig == null) {
                     globalConfig = new ConfigManager("", "", "");
                 }
-                
+
                 globalConfig.removeIdentity(this);
-                
+
                 for (Map.Entry<String, Map<String, String>> entry
                         : file.getKeyDomains().entrySet()) {
                     final String domain = entry.getKey();
@@ -489,7 +489,7 @@ public class Identity extends ConfigSource implements Serializable,
                     for (Map.Entry<String, String> subentry : entry.getValue().entrySet()) {
                         final String key = subentry.getKey();
                         final String value = subentry.getValue();
-                        
+
                         if (globalConfig.hasOption(domain, key) &&
                                 globalConfig.getOption(domain, key).equals(value)) {
                             file.getKeyDomain(domain).remove(key);
@@ -497,10 +497,10 @@ public class Identity extends ConfigSource implements Serializable,
                     }
                 }
             }
-            
+
             try {
                 file.write();
-                
+
                 needSave = false;
             } catch (IOException ex) {
                 Logger.userError(ErrorLevel.MEDIUM,
@@ -508,7 +508,7 @@ public class Identity extends ConfigSource implements Serializable,
             }
         }
     }
-    
+
     /**
      * Deletes this identity from disk.
      */
@@ -516,10 +516,10 @@ public class Identity extends ConfigSource implements Serializable,
         if (file != null) {
             file.delete();
         }
-        
+
         IdentityManager.removeIdentity(this);
     }
-    
+
     /**
      * Retrieves this identity's target.
      *
@@ -531,13 +531,13 @@ public class Identity extends ConfigSource implements Serializable,
 
     /**
      * Retrieve this identity's ConfigFile.
-     * 
+     *
      * @return The ConfigFile object used by this identity
      */
     public ConfigFile getFile() {
         return file;
-    }    
-    
+    }
+
     /**
      * Adds a new config change listener for this identity.
      *
@@ -546,7 +546,7 @@ public class Identity extends ConfigSource implements Serializable,
     public void addListener(final ConfigChangeListener listener) {
         listeners.add(listener);
     }
-    
+
     /**
      * Removes the specific config change listener from this identity.
      *
@@ -555,7 +555,7 @@ public class Identity extends ConfigSource implements Serializable,
     public void removeListener(final ConfigChangeListener listener) {
         listeners.remove(listener);
     }
-    
+
     /**
      * Returns a string representation of this object (its name).
      *
@@ -565,13 +565,13 @@ public class Identity extends ConfigSource implements Serializable,
     public String toString() {
         return getName();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return getName().hashCode() + getTarget().hashCode();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean equals(final Object obj) {
@@ -582,7 +582,7 @@ public class Identity extends ConfigSource implements Serializable,
         }
         return false;
     }
-    
+
     /**
      * Compares this identity to another config source to determine which
      * is more specific.
@@ -595,7 +595,7 @@ public class Identity extends ConfigSource implements Serializable,
     public int compareTo(final Identity target) {
         return target.getTarget().compareTo(myTarget);
     }
-    
+
     /**
      * Creates a new identity containing the specified properties.
      *
@@ -609,16 +609,16 @@ public class Identity extends ConfigSource implements Serializable,
                     new InvalidIdentityFileException("identity.name is not set"));
             return null;
         }
-        
+
         final String fs = System.getProperty("file.separator");
         final String location = Main.getConfigDir() + "identities" + fs;
         final String name = properties.getProperty(DOMAIN + ".name");
-        
+
         final File file = new File(location + name);
-        
+
         if (!file.exists()) {
             final FileWriter writer;
-            
+
             try {
                 writer = new FileWriter(location + name);
                 properties.store(writer, "");
@@ -629,11 +629,11 @@ public class Identity extends ConfigSource implements Serializable,
                 return null;
             }
         }
-        
+
         try {
             final Identity identity = new Identity(file, false);
             IdentityManager.addIdentity(identity);
-            
+
             return identity;
         } catch (MalformedURLException ex) {
             Logger.userError(ErrorLevel.MEDIUM,
@@ -649,7 +649,7 @@ public class Identity extends ConfigSource implements Serializable,
             return null;
         }
     }
-    
+
     /**
      * Generates an empty identity for the specified target.
      *
@@ -660,10 +660,10 @@ public class Identity extends ConfigSource implements Serializable,
         final Properties properties = new Properties();
         properties.setProperty(DOMAIN + ".name", target.getData());
         properties.setProperty(DOMAIN + "." + target.getTypeName(), target.getData());
-        
+
         return createIdentity(properties);
     }
-    
+
     /**
      * Generates an empty profile witht he specified name. Note the name is used
      * as a file name, so should be sanitised.
@@ -676,8 +676,8 @@ public class Identity extends ConfigSource implements Serializable,
         properties.setProperty(DOMAIN + ".name", name);
         properties.setProperty("profile.nickname", "DMDircUser");
         properties.setProperty("profile.realname", "DMDircUser");
-        
+
         return createIdentity(properties);
     }
-    
+
 }

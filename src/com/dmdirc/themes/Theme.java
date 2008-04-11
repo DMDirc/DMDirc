@@ -82,7 +82,7 @@ public class Theme implements Comparable<Theme> {
                 return false;
             }
 
-            if (rm != null && rm.getResourceInputStream("theme.config") != null) {
+            if (rm != null && rm.resourceExists("theme.config")) {
                 metadata = new ConfigFile(rm.getResourceInputStream("theme.config"));
                 
                 try {
@@ -95,7 +95,7 @@ public class Theme implements Comparable<Theme> {
             }
         }
 
-        return rm != null && rm.getResourceInputStream("config") != null;
+        return rm != null && rm.resourceExists("config");
     }
 
     /**

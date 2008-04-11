@@ -192,7 +192,7 @@ public final class ThemePanel extends JPanel implements
         
         for (Object pit : ((DefaultListModel) themeList.getModel()).toArray()) {
             if (((ThemeToggle) pit).getState()) {
-                enabled.add(((ThemeToggle) pit).getTheme().getName());
+                enabled.add(((ThemeToggle) pit).getTheme().getFileName());
             }
         }
         
