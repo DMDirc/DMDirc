@@ -362,40 +362,6 @@ public class IRCParserTest extends junit.framework.TestCase {
     }
 
     @Test
-    public void testChannelUmodes() {
-        final TestParser parser = new TestParser();
-
-        parser.injectConnectionStrings();
-        parser.injectLine(":nick JOIN #DMDirc_testing");
-        parser.injectLine(":server 353 nick = #DMDirc_testing :@nick +luser");
-        parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list");
-
-        assertEquals(1, parser.getChannels().size());
-        assertNotNull(parser.getChannelInfo("#DMDirc_testing"));
-        assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
-        assertNotNull(parser.getClientInfo("luser"));
-        assertEquals(1, parser.getClientInfo("luser").getChannelClients().size());
-
-        final ChannelClientInfo cci = parser.getClientInfo("luser").getChannelClients().get(0);
-        assertEquals(parser.getChannelInfo("#DMDirc_testing"), cci.getChannel());
-        assertEquals("+", cci.getChanModeStr(true));
-
-        parser.injectLine(":server MODE #DMDirc_testing +v luser");
-        assertEquals("+", cci.getChanModeStr(true));
-
-        parser.injectLine(":server MODE #DMDirc_testing +o luser");
-        assertEquals("ov", cci.getChanModeStr(false));
-        assertEquals("@+", cci.getChanModeStr(true));
-
-        parser.injectLine(":server MODE #DMDirc_testing +bov moo luser luser");
-        assertEquals("ov", cci.getChanModeStr(false));
-
-        parser.injectLine(":server MODE #DMDirc_testing -bov moo luser luser");
-        assertEquals("", cci.getChanModeStr(false));
-        assertEquals("", cci.getChanModeStr(true));
-    }
-
-    @Test
     public void testPrivateMessages() throws CallbackNotFoundException {
         final TestParser parser = new TestParser();
         final IPMTest ipmtest = new IPMTest();

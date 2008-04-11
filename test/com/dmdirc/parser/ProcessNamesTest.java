@@ -41,6 +41,26 @@ public class ProcessNamesTest extends junit.framework.TestCase {
         assertFalse("Should not error on unknown NAMES replies", test.error);
     }
     
+    @Test
+    public void testChannelUmodes() {
+        final TestParser parser = new TestParser();
+
+        parser.injectConnectionStrings();
+        parser.injectLine(":nick JOIN #DMDirc_testing");
+        parser.injectLine(":server 353 nick = #DMDirc_testing :@nick +luser");
+        parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list");
+
+        assertEquals(1, parser.getChannels().size());
+        assertNotNull(parser.getChannelInfo("#DMDirc_testing"));
+        assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
+        assertNotNull(parser.getClientInfo("luser"));
+        assertEquals(1, parser.getClientInfo("luser").getChannelClients().size());
+
+        final ChannelClientInfo cci = parser.getClientInfo("luser").getChannelClients().get(0);
+        assertEquals(parser.getChannelInfo("#DMDirc_testing"), cci.getChannel());
+        assertEquals("+", cci.getChanModeStr(true));
+    }
+    
     private class OEITest implements IErrorInfo {
         
         boolean error = false;
