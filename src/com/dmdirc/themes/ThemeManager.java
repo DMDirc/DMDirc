@@ -119,7 +119,7 @@ public final class ThemeManager {
                 && theme.isValidTheme()) {
             theme.applyTheme();
         } else if (theme.isEnabled() && !enabled) {
-            // TODO: Unapply theme
+            theme.removeTheme();
         }        
     }
     

@@ -182,8 +182,10 @@ public class ConfigManager extends ConfigSource implements Serializable,
      */
     public void removeIdentity(final Identity identity) {
         synchronized (sources) {
-            identity.removeListener(this);
-            sources.remove(identity);
+            if (sources.contains(identity)) {
+                identity.removeListener(this);
+                sources.remove(identity);
+            }
         }
     }
     

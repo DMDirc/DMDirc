@@ -153,8 +153,8 @@ public final class IdentityManager {
         "The specified File is a directory"
     })
     private static void loadUser(final File dir) {
-        assert(dir != null);
-        assert(dir.isDirectory());
+        Logger.assertTrue(dir != null);
+        Logger.assertTrue(dir.isDirectory());
         
         if (dir.listFiles() == null) {
             Logger.userError(ErrorLevel.MEDIUM,
@@ -265,7 +265,7 @@ public final class IdentityManager {
      */
     @Precondition("The specified Identity is not null")
     public static void addIdentity(final Identity identity) {
-        assert(identity != null);
+        Logger.assertTrue(identity != null);
         
         if (identities.contains(identity)) {
             removeIdentity(identity);
@@ -291,11 +291,17 @@ public final class IdentityManager {
         "The specified Identity has previously been added and not removed"
     })
     public static void removeIdentity(final Identity identity) {
-        assert(identity != null);
-        assert(identities.contains(identity));
+        Logger.assertTrue(identity != null);
+        Logger.assertTrue(identities.contains(identity));
         
         synchronized (identities) {
             identities.remove(identity);
+        }
+        
+        synchronized (managers) {
+            for (ConfigManager manager : managers) {
+                manager.removeIdentity(identity);
+            }
         }
     }
     
@@ -305,7 +311,7 @@ public final class IdentityManager {
      */
     @Precondition("The specified ConfigManager is not null")
     public static void addConfigManager(final ConfigManager manager) {
-        assert(manager != null);
+        Logger.assertTrue(manager != null);
         
         synchronized (managers) {
             managers.add(manager);

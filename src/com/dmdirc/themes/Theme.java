@@ -52,6 +52,9 @@ public class Theme implements Comparable<Theme> {
 
     /** Whether or not this theme is enabled. */
     private boolean enabled;
+    
+    /** The Identity we've registered. */
+    private ThemeIdentity identity;
 
     /**
      * Creates a new instance of Theme.
@@ -105,11 +108,12 @@ public class Theme implements Comparable<Theme> {
 
         enabled = true;
 
-        final InputStream identity = rm.getResourceInputStream("config");
+        final InputStream stream = rm.getResourceInputStream("config");
 
-        if (identity != null) {
+        if (stream != null) {
             try {
-                IdentityManager.addIdentity(new ThemeIdentity(identity));
+                identity = new ThemeIdentity(stream);
+                IdentityManager.addIdentity(identity);
             } catch (InvalidIdentityFileException ex) {
                 Logger.userError(ErrorLevel.MEDIUM, "Error loading theme identity file: "
                         + ex.getMessage());
@@ -118,6 +122,17 @@ public class Theme implements Comparable<Theme> {
                         + ex.getMessage());
             }
         }
+    }
+    
+    /**
+     * Removes the effects of this theme.
+     */
+    public void removeTheme() {
+        if (!isValidTheme() || !enabled || identity == null) {
+            return;
+        }
+        
+        IdentityManager.removeIdentity(identity);
     }
 
     /**
