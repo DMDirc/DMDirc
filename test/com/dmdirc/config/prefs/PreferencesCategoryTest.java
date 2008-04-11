@@ -21,6 +21,7 @@
  */
 package com.dmdirc.config.prefs;
 
+import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -62,9 +63,71 @@ public class PreferencesCategoryTest {
         category1.setInline();
         category1.addSubCategory(category2);
     }
+    
+    @Test
+    public void testDescription() {
+        final PreferencesCategory category = new PreferencesCategory("unit", "This is a desc.");
+        
+        assertEquals("This is a desc.", category.getDescription());
+    }
+    
+    @Test
+    public void testGetSettings() {
+        final PreferencesCategory category = new PreferencesCategory("unit", "test");
+        final List<PreferencesSetting> settings1 = category.getSettings();
+        final List<PreferencesSetting> settings2 = category.getSettings();
+        
+        assertSame(settings1, settings2);
+    }
+    
+    @Test
+    public void testSelectionListener() {
+        final PreferencesCategory category = new PreferencesCategory("unit", "test");
+        final ChangeListenerTest test = new ChangeListenerTest();
+        category.addChangeListener(test);
+        category.fireCategorySelected();
+        category.removeChangeListener(test);
+        category.fireCategorySelected();
+        
+        assertEquals(1, test.selected);
+        assertEquals(0, test.deselected);
+        assertSame(category, test.cat);
+    }
+    
+    @Test
+    public void testDeSelectionListener() {
+        final PreferencesCategory category = new PreferencesCategory("unit", "test");
+        final ChangeListenerTest test = new ChangeListenerTest();
+        category.addChangeListener(test);
+        category.fireCategoryDeselected();
+        category.removeChangeListener(test);
+        category.fireCategoryDeselected();
+        
+        assertEquals(0, test.selected);
+        assertEquals(1, test.deselected);
+        assertSame(category, test.cat);
+    }
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(PreferencesCategoryTest.class);
+    }
+    
+    private class ChangeListenerTest implements CategoryChangeListener {
+        
+        public int selected;
+        public int deselected;
+        public PreferencesCategory cat;
+
+        public void categorySelected(PreferencesCategory category) {
+            selected++;
+            cat = category;
+        }
+
+        public void categoryDeselected(PreferencesCategory category) {
+            deselected++;
+            cat = category;
+        }
+        
     }
 
 }

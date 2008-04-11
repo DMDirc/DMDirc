@@ -23,31 +23,32 @@ package com.dmdirc.config.prefs;
 
 import com.dmdirc.config.prefs.validator.NotEmptyValidator;
 import com.dmdirc.config.prefs.validator.PermissiveValidator;
+import com.dmdirc.config.prefs.validator.StringLengthValidator;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class PreferencesSettingTest {
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testIllegalMultichoice1() {
-        new PreferencesSetting(PreferencesType.MULTICHOICE, "domain", 
+        new PreferencesSetting(PreferencesType.MULTICHOICE, "domain",
                 "option", "fallback", "title", "helptext");
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testIllegalMultichoice2() {
         new PreferencesSetting(PreferencesType.MULTICHOICE,
-                new PermissiveValidator<String>(), "domain", 
+                new PermissiveValidator<String>(), "domain",
                 "option", "fallback", "title", "helptext");
     }
-    
+
     @Test
     public void testNormalConstructor() {
-        final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, "domain", 
+        final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, "domain",
                 "option", "fallback", "title", "helptext");
-        
+
         assertEquals(PreferencesType.TEXT, ps.getType());
         assertEquals("fallback", ps.getValue());
         assertEquals("title", ps.getTitle());
@@ -55,45 +56,112 @@ public class PreferencesSettingTest {
         assertFalse(ps.isRestartNeeded());
         assertTrue(ps.getValidator() instanceof PermissiveValidator);
     }
-    
+
     @Test
     public void testValidatorConstructor() {
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT,
-                new NotEmptyValidator(), "domain", 
+                new NotEmptyValidator(), "domain",
                 "option", "fallback", "title", "helptext");
-        
+
         assertEquals(PreferencesType.TEXT, ps.getType());
         assertEquals("fallback", ps.getValue());
         assertEquals("title", ps.getTitle());
         assertEquals("helptext", ps.getHelptext());
         assertFalse(ps.isRestartNeeded());
         assertTrue(ps.getValidator() instanceof NotEmptyValidator);
-    }    
-    
+    }
+
     @Test
     public void testRestartNeeded() {
-        final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, "domain", 
+        final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, "domain",
                 "option", "fallback", "title", "helptext");
-        
+
         assertFalse(ps.isRestartNeeded());
         assertSame(ps, ps.setRestartNeeded());
         assertTrue(ps.isRestartNeeded());
     }
-    
+
     @Test
     public void testMultichoiceAdding() {
         final Map<String, String> map = new HashMap<String, String>();
         map.put("a", "b");
         map.put("c", "d");
-        
-        final PreferencesSetting ps = new PreferencesSetting("domain", 
+
+        final PreferencesSetting ps = new PreferencesSetting("domain",
                 "option", "new", "title", "helptext", map);
         assertEquals(3, ps.getComboOptions().size());
         assertNotNull(ps.getComboOptions().get("new"));
         assertTrue(ps.getComboOptions().get("new").startsWith("Current"));
     }
 
+    @Test
+    public void testSetValue() {
+        final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, "domain",
+                "option", "fallback", "title", "helptext");
+        ps.setValue("newvalue");
+        assertEquals("newvalue", ps.getValue());
+    }
+    
+    @Test
+    public void testDismiss() {
+        final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, "domain",
+                "option", "fallback", "title", "helptext");
+        ps.setValue("newvalue");
+        ps.dismiss();
+        assertEquals("fallback", ps.getValue());
+        
+        final PreferencesSetting ps2 = new PreferencesSetting(PreferencesType.TEXT, "domain",
+                "option", null, "title", "helptext");
+        ps2.setValue(null);
+        ps2.dismiss();
+        assertEquals(null, ps2.getValue());        
+    }
+    
+    @Test
+    public void testListener() {
+        final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, "domain",
+                "option", "fallback", "title", "helptext");
+        final TestListener tl = new TestListener();
+        ps.registerChangeListener(tl);
+        ps.setValue("newvalue");
+        ps.dismiss();
+        ps.dismiss();
+
+        assertEquals(2, tl.count);
+        assertSame(ps, tl.setting);
+    }
+    
+    @Test
+    public void testNeedsSaving() {
+        final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, 
+                new StringLengthValidator(5, 100), "domain",
+                "option", "fallback", "title", "helptext");
+        assertFalse(ps.needsSaving());
+        ps.setValue("abc");
+        assertFalse(ps.needsSaving());
+        ps.setValue("abcdefg");
+        assertTrue(ps.needsSaving());
+
+        final PreferencesSetting ps2 = new PreferencesSetting(PreferencesType.TEXT, "domain",
+                "option", null, "title", "helptext");
+        
+        ps2.setValue(null);
+        assertFalse(ps2.needsSaving());
+    }    
+
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(PreferencesSettingTest.class);
+    }
+
+    private class TestListener implements SettingChangeListener {
+
+        public int count;
+        public PreferencesSetting setting;
+
+        public void settingChanged(PreferencesSetting setting) {
+            count++;
+            this.setting = setting;
+        }
+
     }
 }
