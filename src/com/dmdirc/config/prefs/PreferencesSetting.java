@@ -274,9 +274,7 @@ public class PreferencesSetting {
      * @return True if the setting has changed, false otherwise
      */
     public boolean save() {
-        if ((current != null && current.equals(original)) 
-                || (current == null && original == null)
-                || (validator != null && validator.validate(current).isFailure())) {
+        if (!needsSaving()) {
             return false;
         }
         

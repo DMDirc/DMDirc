@@ -21,6 +21,7 @@
  */
 package com.dmdirc.config.prefs;
 
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.validator.NotEmptyValidator;
 import com.dmdirc.config.prefs.validator.PermissiveValidator;
 import com.dmdirc.config.prefs.validator.StringLengthValidator;
@@ -147,6 +148,36 @@ public class PreferencesSettingTest {
         
         ps2.setValue(null);
         assertFalse(ps2.needsSaving());
+    }
+    
+    @Test
+    public void testSaveUnset() {
+        IdentityManager.load();
+        IdentityManager.getConfigIdentity().setOption("unit-test", "ps", "abc");
+        
+        final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT,
+                "unit-test", "ps", "abc", "title", "helptext");
+        
+        assertFalse(ps.save());
+        ps.setValue(null);
+        assertTrue(ps.save());
+        
+        assertFalse(IdentityManager.getConfigIdentity().hasOption("unit-test", "ps"));
+    }
+    
+    @Test
+    public void testSaveNormal() {
+        IdentityManager.load();
+        IdentityManager.getConfigIdentity().setOption("unit-test", "ps", "abc");
+        
+        final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT,
+                "unit-test", "ps", "abc", "title", "helptext");
+        
+        assertFalse(ps.save());
+        ps.setValue("def");
+        assertTrue(ps.save());
+        
+        assertEquals("def", IdentityManager.getConfigIdentity().getOption("unit-test", "ps"));
     }    
 
     public static junit.framework.Test suite() {
