@@ -143,6 +143,41 @@ public class ConditionTreeTest extends junit.framework.TestCase {
         
         assertNotNull(tree);
         assertEquals(expected, tree.toString());
+    }
+    
+    @Test
+    public void testMismatchedBrackets() {
+        final ConditionTree tree = ConditionTree.parseString("(0");
+        
+        assertNull(tree);
+    }
+    
+    @Test
+    public void testMissingUnaryArg() {
+        final ConditionTree tree = ConditionTree.parseString("!");
+        
+        assertNull(tree);
+    }
+    
+    @Test
+    public void testGarbageUnaryArg() {
+        final ConditionTree tree = ConditionTree.parseString("!xy");
+        
+        assertNull(tree);
+    }    
+    
+    @Test
+    public void testMissingBinaryArg() {
+        final ConditionTree tree = ConditionTree.parseString("0|");
+        
+        assertNull(tree);
+    }    
+    
+    @Test
+    public void testNonExistantOp() {
+        final ConditionTree tree = ConditionTree.parseString("0/1");
+        
+        assertNull(tree);
     }    
     
 }

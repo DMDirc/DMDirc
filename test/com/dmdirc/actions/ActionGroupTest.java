@@ -90,5 +90,32 @@ public class ActionGroupTest extends junit.framework.TestCase {
         int result = instance.getComponent();
         assertEquals(expResult, result);
     }
+    
+    @Test
+    public void testClear() {
+        ActionGroup instance = new ActionGroup("zzz");
+        instance.add(null);
+        assertEquals(1, instance.size());
+        instance.clear();
+        assertEquals(0, instance.size());
+    }
+    
+    @Test
+    public void testRemove() {
+        ActionGroup instance = new ActionGroup("zzz");
+        instance.add(null);
+        assertEquals(1, instance.size());
+        instance.remove(null);
+        assertEquals(0, instance.size());
+    }
+
+    @Test
+    public void testContains() {
+        ActionGroup instance = new ActionGroup("zzz");
+        instance.add(null);
+        assertTrue(instance.contains(null));
+        instance.remove(null);
+        assertFalse(instance.contains(null));
+    }    
 
 }

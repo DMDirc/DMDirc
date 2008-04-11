@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ActionComponentChainTest extends junit.framework.TestCase {
+public class ActionComponentChainTest {
 
     @Before
     public void setUp() throws Exception {
@@ -48,46 +48,22 @@ public class ActionComponentChainTest extends junit.framework.TestCase {
         assertEquals("STRING_STRING.STRING_STRING", chain.toString());
     }
 
-    @Test
+    @Test(expected=IllegalArgumentException.class)
     public void testInvalidName() {
-        boolean iaed = false;
-
-        try {
-            final ActionComponentChain chain = new ActionComponentChain(String.class,
-                    "STRONG_STRING");
-        } catch (IllegalArgumentException iae) {
-            iaed = true;
-        }
-
-        assertTrue("Should throw an IAE", iaed);
+        final ActionComponentChain chain = new ActionComponentChain(String.class,
+                "STRONG_STRING");
     }
 
-    @Test
+    @Test(expected=IllegalArgumentException.class)
     public void testInvalidType() {
-        boolean iaed = false;
-
-        try {
-            final ActionComponentChain chain = new ActionComponentChain(String.class,
-                    "USER_MODES.STRING_STRING");
-        } catch (IllegalArgumentException iae) {
-            iaed = true;
-        }
-
-        assertTrue("Should throw an IAE", iaed);
+        final ActionComponentChain chain = new ActionComponentChain(String.class,
+                "USER_MODES.STRING_STRING");
     }
 
-    @Test
+    @Test(expected=IllegalArgumentException.class)
     public void testInvalidLink() {
-        boolean iaed = false;
-
-        try {
-            final ActionComponentChain chain = new ActionComponentChain(String.class,
-                    "STRING_STRING.USER_MODES");
-        } catch (IllegalArgumentException iae) {
-            iaed = true;
-        }
-
-        assertTrue("Should throw an IAE", iaed);
+        final ActionComponentChain chain = new ActionComponentChain(String.class,
+                "STRING_STRING.USER_MODES");
     }
 
     @Test
@@ -111,6 +87,34 @@ public class ActionComponentChainTest extends junit.framework.TestCase {
         
         assertTrue(chain.getName().indexOf(CoreActionComponent.STRING_STRING.getName()) > -1);
         assertTrue(chain.getName().indexOf(CoreActionComponent.STRING_LENGTH.getName()) > -1);
+    }  
+    
+    @Test(expected=AssertionError.class)
+    public void testEmptyAppliesTo() {
+        final ActionComponentChain chain = new ActionComponentChain(String.class, "");
+        chain.appliesTo();
+    }
+    
+    @Test(expected=AssertionError.class)
+    public void testEmptyGetType() {
+        final ActionComponentChain chain = new ActionComponentChain(String.class, "");
+        chain.getType();
+    }
+    
+    @Test(expected=AssertionError.class)
+    public void testEmptyGetName() {
+        final ActionComponentChain chain = new ActionComponentChain(String.class, "");
+        chain.getName();
+    }
+    
+    @Test(expected=AssertionError.class)
+    public void testEmptyToString() {
+        final ActionComponentChain chain = new ActionComponentChain(String.class, "");
+        chain.toString();
+    }    
+    
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(ActionComponentChainTest.class);
     }    
 
 }
