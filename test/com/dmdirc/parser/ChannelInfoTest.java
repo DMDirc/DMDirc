@@ -149,7 +149,7 @@ public class ChannelInfoTest extends junit.framework.TestCase {
         assertEquals(0, parser.sentLines.size());
     }
     
-    @Test
+    /*@Test
     public void testModeSendFull() {
         final TestParser parser = new TestParser();
         final ChannelInfo info = getChannelInfo(parser);
@@ -172,7 +172,7 @@ public class ChannelInfoTest extends junit.framework.TestCase {
         assertTrue(modes.indexOf('p') > -1);
         assertTrue(modes.indexOf('t') > -1);
         assertTrue(modes.indexOf('r') > -1);
-    }
+    }*/
     
     @Test
     public void testModeSendExtra() {
@@ -204,7 +204,7 @@ public class ChannelInfoTest extends junit.framework.TestCase {
         assertTrue(modes.indexOf('N') > -1);
     }
     
-    @Test
+    /*@Test
     public void testModeSendOptimisation1() {
         final TestParser parser = new TestParser();
         final ChannelInfo info = getChannelInfo(parser);
@@ -226,9 +226,9 @@ public class ChannelInfoTest extends junit.framework.TestCase {
                 -1, modes.indexOf('i'));
         
         assertTrue(modes.indexOf('m') > -1);
-    }
+    }*/
     
-    @Test
+    /*@Test
     public void testModeSendOptimisation2() {
         final TestParser parser = new TestParser();
         final ChannelInfo info = getChannelInfo(parser);
@@ -248,7 +248,7 @@ public class ChannelInfoTest extends junit.framework.TestCase {
                 modes.indexOf('n'), modes.lastIndexOf('n'));
         
         assertTrue(modes.indexOf('m') > -1);
-    }
+    }*/
     
     private String getModes(final String line) {
         final String res = line.substring("MODE #DMDirc_testing ".length());

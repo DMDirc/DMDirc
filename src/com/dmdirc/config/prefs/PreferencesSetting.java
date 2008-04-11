@@ -294,7 +294,8 @@ public class PreferencesSetting {
      * Dismisses changes to this setting.
      */
     public void dismiss() {
-        if (original.equals(current)) {
+        if ((original != null && original.equals(current))
+                || (original == null && current == null)) {
             return;
         }
         
