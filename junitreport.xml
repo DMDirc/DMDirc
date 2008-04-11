@@ -45,6 +45,7 @@
    <target name="test-html" depends="with.clover,compile-test,test,clover.html"/>
    <target name="test-xml" depends="with.clover,compile-test,test,clover.xml"/>
    <target name="-post-test-run">
+      <mkdir dir="${test.reports}" />
       <junitreport todir="${test.reports}">
         <fileset dir="${build.test.results.dir}">
           <include name="TEST-*.xml" />
