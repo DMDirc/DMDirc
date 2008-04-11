@@ -16,16 +16,24 @@
         </clover-setup>
     </target>
 
-    <target name="clover.html" if="clover.installed">
+    <target name="clover.xml" if="clover.installed">
         <mkdir dir="reports/clover" />
         <mkdir dir="reports/clover/history" />
         <clover-historypoint historydir="reports/clover/history" />
         <clover-report>
          <current outfile="reports/clover/clover.xml"/>
+        </clover-report>
+    </target>
+
+    <target name="clover.html" if="clover.installed">
+        <mkdir dir="reports/clover" />
+        <mkdir dir="reports/clover/history" />
+        <clover-historypoint historydir="reports/clover/history" />
+        <clover-report>
          <current outfile="reports/clover">
           <format type="html"/>
          </current>
-         <!-- <historical outfile="reports/clover" historydir="reports/clover/history" /> -->
+         <historical outfile="reports/clover" historydir="reports/clover/history" />
         </clover-report>
     </target>
 
@@ -35,6 +43,7 @@
 
 		
    <target name="test-html" depends="with.clover,compile-test,test,clover.html"/>
+   <target name="test-xml" depends="with.clover,compile-test,test,clover.xml"/>
    <target name="-post-test-run">
       <junitreport todir="${test.reports}">
         <fileset dir="${build.test.results.dir}">
