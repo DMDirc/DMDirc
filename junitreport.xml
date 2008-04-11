@@ -19,7 +19,14 @@
     <target name="clover.html" if="clover.installed">
         <mkdir dir="reports/clover" />
         <mkdir dir="reports/clover/history" />
-        <clover-html-report outdir="reports/clover" historydir="reports/clover/history" title="DMDirc"/>
+        <clover-historypoint historydir="reports/clover/history" />
+        <clover-report>
+         <current outfile="reports/clover/clover.xml"/>
+         <current outfile="reports/clover">
+          <format type="html"/>
+         </current>
+         <!-- <historical outfile="reports/clover" historydir="reports/clover/history" /> -->
+        </clover-report>
     </target>
 
     <import file="nbproject/build-impl.xml"/>
