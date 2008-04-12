@@ -210,16 +210,16 @@ public final class ArrayListTransferHandler extends TransferHandler {
     /** {@inheritDoc} */
     @Override
     public boolean canImport(final JComponent comp, final DataFlavor[] transferFlavors) {
+        if (!(comp instanceof JList) || !(((JList) comp).getModel() instanceof DefaultListModel)) {
+            return false;
+        }
+        
         if (hasLocalArrayListFlavor(transferFlavors))  {
             return true; 
         }
         
         if (hasSerialArrayListFlavor(transferFlavors)) { 
             return true; 
-        }
-        
-        if (comp instanceof JList && ((JList) comp).getModel() instanceof DefaultListModel) {
-            return true;
         }
         
         return false;
