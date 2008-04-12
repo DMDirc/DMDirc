@@ -117,9 +117,30 @@ public class MapListTest extends junit.framework.TestCase {
     public void testGet() {
         final MapList<String, String> test = new MapList<String, String>();
         test.add("a", "b");
-        assertTrue(test.get("a").size() == 1);
-        assertTrue(test.get("a").get(0).equals("b"));
-        assertTrue(test.get("a", 0).equals("b"));
+        assertEquals(1, test.get("a").size());
+        assertEquals("b", test.get("a").get(0));
+        assertEquals("b", test.get("a", 0));
     }
+    
+    @Test
+    public void testInherit() {
+        final MapList<String, String> test1 = new MapList<String, String>();
+        test1.add("a", "b");
+        
+        final MapList<String, String> test2 = new MapList<String, String>(test1);
+        assertEquals(1, test2.get("a").size());
+        assertEquals("b", test2.get("a").get(0));
+        assertEquals("b", test2.get("a", 0));        
+    }
+    
+    @Test
+    public void testGetMap() {
+        final MapList<String, String> test1 = new MapList<String, String>();
+        test1.add("a", "b");
+        assertNotSame(test1.getMap(), test1.getMap());
+        
+        final MapList<String, String> test2 = new MapList<String, String>(test1);
+        assertEquals(test1.getMap(), test2.getMap());
+    }    
 
 }

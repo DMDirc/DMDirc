@@ -30,7 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class IrcAddressTest extends junit.framework.TestCase {
+public class IrcAddressTest {
 
     @Before
     public void setUp() {
@@ -38,168 +38,123 @@ public class IrcAddressTest extends junit.framework.TestCase {
         Main.setUI(new DummyController());
     }
 
+    @Test(expected=InvalidAddressException.class)
+    public void testInvalidProtocol() throws InvalidAddressException {
+        new IrcAddress("http://moo!");
+    }
+
+    @Test(expected=InvalidAddressException.class)
+    public void testNoProtocol() throws InvalidAddressException {
+        new IrcAddress("moo!");
+    }
+    
+    @Test(expected=InvalidAddressException.class)
+    public void testInvalidURL() throws InvalidAddressException {
+        new IrcAddress(":");
+    }    
+
     @Test
-    public void testInvalidProtocol() {
-        boolean exception = false;
-
-        try {
-            final IrcAddress address = new IrcAddress("http://moo!");
-        } catch (InvalidAddressException ex) {
-            exception = true;
-        }
-
-        assertTrue(exception);
+    public void testBasic() throws InvalidAddressException {
+        final IrcAddress address = new IrcAddress("irc://servername");
+        assertEquals("servername", address.getServer());
+        assertEquals("", address.getPassword());
+        assertEquals(6667, address.getPort());
+        assertFalse(address.isSSL());
     }
 
     @Test
-    public void testNoProtocol() {
-        boolean exception = false;
-
-        try {
-            final IrcAddress address = new IrcAddress("moo!");
-        } catch (InvalidAddressException ex) {
-            exception = true;
-        }
-
-        assertTrue(exception);
+    public void testPasswordSSL() throws InvalidAddressException {
+        final IrcAddress address = new IrcAddress("ircs://password@servername");
+        assertEquals("servername", address.getServer());
+        assertEquals("password", address.getPassword());
+        assertEquals(6667, address.getPort());
+        assertTrue(address.isSSL());
     }
 
     @Test
-    public void testBasic() {
-        try {
-            final IrcAddress address = new IrcAddress("irc://servername");
-            assertEquals("servername", address.getServer());
-            assertEquals("", address.getPassword());
-            assertEquals(6667, address.getPort());
-            assertFalse(address.isSSL());
-        } catch (InvalidAddressException ex) {
-            assertFalse(true);
-        }
+    public void testPort() throws InvalidAddressException {
+        final IrcAddress address = new IrcAddress("irc://servername:7000/");
+        assertEquals("servername", address.getServer());
+        assertEquals("", address.getPassword());
+        assertEquals(7000, address.getPort());
+        assertFalse(address.isSSL());
+    }
+
+    @Test(expected=InvalidAddressException.class)
+    public void testInvalidPort() throws InvalidAddressException {
+        new IrcAddress("irc://servername:port/");
     }
 
     @Test
-    public void testPasswordSSL() {
-        try {
-            final IrcAddress address = new IrcAddress("ircs://password@servername");
-            assertEquals("servername", address.getServer());
-            assertEquals("password", address.getPassword());
-            assertEquals(6667, address.getPort());
-            assertTrue(address.isSSL());
-        } catch (InvalidAddressException ex) {
-            assertFalse(true);
-        }
+    public void testPortSSL() throws InvalidAddressException {
+        final IrcAddress address = new IrcAddress("ircs://servername:+7000/");
+        assertEquals("servername", address.getServer());
+        assertEquals("", address.getPassword());
+        assertEquals(7000, address.getPort());
+        assertTrue(address.isSSL());
     }
 
     @Test
-    public void testPort() {
-        try {
-            final IrcAddress address = new IrcAddress("irc://servername:7000/");
-            assertEquals("servername", address.getServer());
-            assertEquals("", address.getPassword());
-            assertEquals(7000, address.getPort());
-            assertFalse(address.isSSL());
-        } catch (InvalidAddressException ex) {
-            assertFalse(true);
-        }
+    public void testComplex() throws InvalidAddressException {
+        final IrcAddress address = new IrcAddress("ircs://password@servername:+7000/c1,c2,c3");
+        assertEquals("servername", address.getServer());
+        assertEquals("password", address.getPassword());
+        assertEquals(7000, address.getPort());
+        assertEquals(3, address.getChannels().size());
+        assertTrue(address.isSSL());
     }
 
     @Test
-    public void testInvalidPort() {
-        boolean except = false;
+    public void testConnect() throws InvalidAddressException {
+        final IrcAddress address = new IrcAddress("irc://255.255.255.205/a,b,c");
 
-        try {
-            new IrcAddress("irc://servername:port/");
-        } catch (InvalidAddressException ex) {
-            except = true;
-        }
+        int initial = ServerManager.getServerManager().numServers();
 
-        assertTrue(except);
+        address.connect();
+
+        assertEquals(initial + 1, ServerManager.getServerManager().numServers());
+
+        address.connect();
+
+        assertEquals(initial + 1, ServerManager.getServerManager().numServers());
     }
 
     @Test
-    public void testPortSSL() {
-        try {
-            final IrcAddress address = new IrcAddress("ircs://servername:+7000/");
-            assertEquals("servername", address.getServer());
-            assertEquals("", address.getPassword());
-            assertEquals(7000, address.getPort());
-            assertTrue(address.isSSL());
-        } catch (InvalidAddressException ex) {
-            assertFalse(true);
-        }
-    }
+    public void testReservedChanNames() throws InvalidAddressException {
+        final IrcAddress address1 = new IrcAddress("irc://server/,needpass");
+        assertEquals(0, address1.getChannels().size());
 
-    @Test
-    public void testComplex() {
-        try {
-            final IrcAddress address = new IrcAddress("ircs://password@servername:+7000/c1,c2,c3");
-            assertEquals("servername", address.getServer());
-            assertEquals("password", address.getPassword());
-            assertEquals(7000, address.getPort());
-            assertEquals(3, address.getChannels().size());
-            assertTrue(address.isSSL());
-        } catch (InvalidAddressException ex) {
-            assertFalse(true);
-        }
-    }
+        final IrcAddress address2 = new IrcAddress("irc://server/MDbot,needkey");
+        assertEquals(1, address2.getChannels().size());
+        assertEquals("MDbot", address2.getChannels().get(0));
 
-    @Test
-    public void testConnect() {
-        try {
-            final IrcAddress address = new IrcAddress("irc://255.255.255.205/a,b,c");
-
-            int initial = ServerManager.getServerManager().numServers();
-
-            address.connect();
-
-            assertEquals(initial + 1, ServerManager.getServerManager().numServers());
-
-            address.connect();
-
-            assertEquals(initial + 1, ServerManager.getServerManager().numServers());
-        } catch (InvalidAddressException ex) {
-            assertFalse(true);
-        }
-    }
-
-    @Test
-    public void testReservedChanNames() {
-        try {
-            final IrcAddress address1 = new IrcAddress("irc://server/,needpass");
-            assertEquals(0, address1.getChannels().size());
-
-            final IrcAddress address2 = new IrcAddress("irc://server/MDbot,needkey");
-            assertEquals(1, address2.getChannels().size());
-            assertEquals("MDbot", address2.getChannels().get(0));
-
-            final IrcAddress address3 = new IrcAddress("irc://server/MDbot,isnick");
-            assertEquals(1, address3.getChannels().size());
-            assertEquals("MDbot", address3.getChannels().get(0));
-        } catch (InvalidAddressException ex) {
-            assertFalse(true);
-        }
+        final IrcAddress address3 = new IrcAddress("irc://server/MDbot,isnick");
+        assertEquals(1, address3.getChannels().size());
+        assertEquals("MDbot", address3.getChannels().get(0));
     }
 
     @Test
     public void testChannels() throws InvalidAddressException {
-        try {
-            final IrcAddress address3 = new IrcAddress("irc://server/#MDbot");
-            assertEquals(1, address3.getChannels().size());
-            assertEquals("#MDbot", address3.getChannels().get(0));
-        } catch (InvalidAddressException ex) {
-            fail();
-        }
+        final IrcAddress address3 = new IrcAddress("irc://server/#MDbot");
+        assertEquals(1, address3.getChannels().size());
+        assertEquals("#MDbot", address3.getChannels().get(0));
     }
+    
+    @Test
+    public void testChannelsQuery() throws InvalidAddressException {
+        final IrcAddress address3 = new IrcAddress("irc://server/MDbot?moo");
+        assertEquals(1, address3.getChannels().size());
+        assertEquals("MDbot?moo", address3.getChannels().get(0));
+    }    
 
     @Test
-    public void testEncoding() {
-        try {
-            final IrcAddress address1 = new IrcAddress("irc://server/%23DMDirc");
-            assertEquals(1, address1.getChannels().size());
-            assertEquals("#DMDirc", address1.getChannels().get(0));
-        } catch (InvalidAddressException ex) {
-            assertFalse(true);
-        }
+    public void testEncoding() throws InvalidAddressException {
+        final IrcAddress address1 = new IrcAddress("irc://server/%23DMDirc");
+        assertEquals(1, address1.getChannels().size());
+        assertEquals("#DMDirc", address1.getChannels().get(0));
     }
 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(IrcAddressTest.class);
+    }
 }

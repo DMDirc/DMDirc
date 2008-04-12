@@ -142,9 +142,12 @@ public class TextFile {
      * Deletes the file associated with this textfile, if there is one.
      */
     public void delete() {
-        if (file != null) {
-            file.delete();
+        if (file == null) {
+            throw new UnsupportedOperationException("Cannot delete TextFile "
+                    + "opened with an InputStream");
         }
+        
+        file.delete();
     }
 
 }

@@ -32,7 +32,7 @@ import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class TextFileTest extends junit.framework.TestCase {
+public class TextFileTest {
     
     private static File tfile;
 
@@ -75,12 +75,34 @@ public class TextFileTest extends junit.framework.TestCase {
         assertEquals(lines, newLines);
     }
     
+    @Test(expected=UnsupportedOperationException.class)
+    public void testIllegalWrite() throws IOException {
+        final TextFile file =
+                new TextFile(getClass().getClassLoader().
+                getResource("com/dmdirc/util/test1.txt").openStream());
+        file.writeLines(Arrays.asList(new String[]{
+            "hello", "this is a test", "meep"
+        }));
+    }
+    
+    @Test(expected=UnsupportedOperationException.class)
+    public void testIllegalDelete() throws IOException {
+        final TextFile file =
+                new TextFile(getClass().getClassLoader().
+                getResource("com/dmdirc/util/test1.txt").openStream());
+        file.delete();
+    }
+    
     @Test
     public void testDelete() {
         assertTrue(tfile.exists());
         TextFile file = new TextFile(tfile);
         file.delete();
         assertFalse(tfile.exists());
+    }
+    
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(TextFileTest.class);
     }
 
 }
