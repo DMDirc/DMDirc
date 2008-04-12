@@ -201,10 +201,10 @@ public final class ProgramError implements Serializable {
         if (this.level != other.level) {
             return false;
         }
-        if (this.message == null || !this.message.equals(other.message)) {
+        if (!this.message.equals(other.message)) {
             return false;
         }
-        if (this.trace == null || !Arrays.equals(this.trace, other.trace)) {
+        if (!Arrays.equals(this.trace, other.trace)) {
             return false;
         }
         return true;
@@ -214,9 +214,9 @@ public final class ProgramError implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 67 * hash + (this.level == null ? 0 : this.level.hashCode());
-        hash = 67 * hash + (this.message == null ? 0 : this.message.hashCode());
-        hash = 67 * hash + (this.trace == null ? 0 : Arrays.hashCode(this.trace));
+        hash = 67 * hash + this.level.hashCode();
+        hash = 67 * hash + this.message.hashCode();
+        hash = 67 * hash + Arrays.hashCode(this.trace);
         return hash;
     }
     
