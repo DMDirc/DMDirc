@@ -32,7 +32,7 @@ import java.io.Serializable;
  * @author chris
  */
 public class ConfigTarget implements Comparable, Serializable {
-    
+
     /** The possible target types. */
     public static enum TYPE {
         /** Client-wide default settings. */
@@ -52,70 +52,70 @@ public class ConfigTarget implements Comparable, Serializable {
         /** Settings for a channel. */
         CHANNEL,
     }
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 2;
-    
+
     /** The type of this target. */
     protected TYPE type = ConfigTarget.TYPE.GLOBAL;
-    
+
     /** The data of this target. */
     protected String data;
-    
+
     /** The user-defined ordering for this target. */
     protected int order = 50000;
-    
+
     /** Creates a new instance of ConfigTarget. */
     public ConfigTarget() {
         //Do nothing.
     }
-    
+
     /**
      * Sets the ordering value for this target. Lower means higher preference.
-     * 
+     *
      * @param order The new order to use
      */
     public void setOrder(final int order) {
         this.order = order;
     }
-    
+
     /**
      * Retrieves the ordering value for this target. Lower means higher preference.
-     * 
+     *
      * @return This target's order
      */
     public int getOrder() {
         return order;
     }
-    
+
     /** Sets this target to be a global config source. */
     public void setGlobal() {
         type = TYPE.GLOBAL;
         data = "";
     }
-    
+
     /** Sets this target to be a global default source. */
     public void setGlobalDefault() {
         type = TYPE.GLOBALDEFAULT;
         data = "";
     }
-    
+
     /** Sets this target to be a theme source. */
     public void setTheme() {
         type = TYPE.THEME;
         data = "";
     }
-    
+
     /** Sets this target to be a profile source. */
     public void setProfile() {
         type = TYPE.PROFILE;
         data = "";
     }
-    
+
     /**
      * Sets this target to target an ircd.
      *
@@ -125,7 +125,7 @@ public class ConfigTarget implements Comparable, Serializable {
         type = TYPE.IRCD;
         data = ircd;
     }
-    
+
     /**
      * Sets this target to target a network.
      *
@@ -135,7 +135,7 @@ public class ConfigTarget implements Comparable, Serializable {
         type = TYPE.NETWORK;
         data = network;
     }
-    
+
     /**
      * Sets this target to target a server.
      *
@@ -145,7 +145,7 @@ public class ConfigTarget implements Comparable, Serializable {
         type = TYPE.SERVER;
         data = server;
     }
-    
+
     /**
      * Sets this target to target a channel.
      *
@@ -155,7 +155,7 @@ public class ConfigTarget implements Comparable, Serializable {
         type = TYPE.CHANNEL;
         data = channel;
     }
-    
+
     /**
      * Retrieves the type of this target.
      *
@@ -164,7 +164,7 @@ public class ConfigTarget implements Comparable, Serializable {
     public TYPE getType() {
         return type;
     }
-    
+
     /**
      * Returns a string representation of the type of this target.
      *
@@ -174,8 +174,6 @@ public class ConfigTarget implements Comparable, Serializable {
         switch(type) {
         case GLOBALDEFAULT:
             return "globaldefault";
-        case GLOBAL:
-            return "global";
         case THEME:
             return "theme";
         case PROFILE:
@@ -189,10 +187,10 @@ public class ConfigTarget implements Comparable, Serializable {
         case CHANNEL:
             return "channel";
         default:
-            return "Unknown";
+            return "global";
         }
     }
-    
+
     /**
      * Retrieves the data associated with this target.
      *
@@ -201,13 +199,13 @@ public class ConfigTarget implements Comparable, Serializable {
     public String getData() {
         return data;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return type.ordinal() + data.hashCode();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean equals(final Object obj) {
@@ -218,7 +216,7 @@ public class ConfigTarget implements Comparable, Serializable {
         }
         return false;
     }
-    
+
     /**
      * Compares this target to another to determine which is more specific.
      *
@@ -233,7 +231,7 @@ public class ConfigTarget implements Comparable, Serializable {
             return type.compareTo(((ConfigTarget) target).getType());
         }
     }
-    
+
     /**
      * Returns a string representation of this object.
      *
@@ -244,8 +242,6 @@ public class ConfigTarget implements Comparable, Serializable {
         switch (type) {
         case GLOBALDEFAULT:
             return "Global defaults";
-        case GLOBAL:
-            return "Global config";
         case THEME:
             return "Theme";
         case PROFILE:
@@ -259,8 +255,8 @@ public class ConfigTarget implements Comparable, Serializable {
         case CHANNEL:
             return "Channel specific: " + data;
         default:
-            return "Unknown";
+            return "Global config";
         }
     }
-    
+
 }
