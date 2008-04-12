@@ -31,7 +31,7 @@ import com.dmdirc.logger.DMDircExceptionHandler;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.PluginManager;
-import com.dmdirc.themes.ThemeManager;
+import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.ui.dummy.DummyController;
 import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.ui.swing.SwingController;

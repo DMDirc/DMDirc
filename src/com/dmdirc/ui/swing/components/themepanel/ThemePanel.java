@@ -24,8 +24,8 @@ package com.dmdirc.ui.swing.components.themepanel;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesInterface;
-import com.dmdirc.themes.Theme;
-import com.dmdirc.themes.ThemeManager;
+import com.dmdirc.ui.themes.Theme;
+import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.components.renderers.AddonCellRenderer;
 import com.dmdirc.util.URLHandler;

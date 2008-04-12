@@ -21,7 +21,7 @@
  */
 package com.dmdirc.ui.swing.components.themepanel;
 
-import com.dmdirc.themes.Theme;
+import com.dmdirc.ui.themes.Theme;
 
 /**
  * Wraps a Theme object with a boolean to indicate whether it should be

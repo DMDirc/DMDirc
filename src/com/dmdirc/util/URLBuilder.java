@@ -24,7 +24,7 @@ package com.dmdirc.util;
 
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.themes.ThemeManager;
+import com.dmdirc.ui.themes.ThemeManager;
 
 import java.net.MalformedURLException;
 import java.net.URL;
