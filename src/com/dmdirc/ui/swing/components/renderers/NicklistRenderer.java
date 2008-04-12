@@ -44,7 +44,7 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 4;
+    private static final long serialVersionUID = 5;
     /** Config manager. */
     private final ConfigManager config;
     /** Nicklist alternate background colour. */
@@ -52,7 +52,7 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
     /** Show nick colours. */
     private boolean showColours;
     /** The list that we're using for the nicklist. */
-    private JList nicklist;
+    private final JList nicklist;
 
     /**
      * Creates a new instance of NicklistRenderer.
@@ -62,10 +62,10 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
      */
     public NicklistRenderer(final ConfigManager config, final JList nicklist) {
         super();
-        
+
         this.config = config;
         this.nicklist = nicklist;
-        
+
         config.addChangeListener("ui", this);
         config.addChangeListener("nicklist", this);
 
@@ -84,7 +84,8 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
             final Object value, final int index, final boolean isSelected,
             final boolean cellHasFocus) {
 
-        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        super.getListCellRendererComponent(list, value, index, isSelected,
+                cellHasFocus);
 
         if (!isSelected && (index & 1) == 1) {
             setBackground(altBackgroundColour);
@@ -110,26 +111,18 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
     /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
-        if (("ui".equals(domain) || "nicklist".equals(domain)) &&
-                ("altBackgroundColour".equals(key) ||
-                "nicklistbackgroundcolour".equals(key) ||
-                "backgroundcolour".equals(key) ||
-                "nicklistforegroundcolour".equals(key) ||
-                "foregroundcolour".equals(key) ||
-                "altBackgroundColour".equals(key))) {
+        if ("shownickcoloursinnicklist".equals(key)) {
+            showColours =
+                    config.getOptionBool("ui", "shownickcoloursinnicklist",
+                    false);
+
+        } else {
             altBackgroundColour =
                     config.getOptionColour("nicklist", "altBackgroundColour",
                     config.getOptionColour("ui", "nicklistbackgroundcolour",
                     config.getOptionColour("ui", "backgroundcolour",
                     Color.WHITE)));
-            nicklist.repaint();
         }
-        
-        if ("ui".equals(domain) && "shownickcoloursinnicklist".equals(key)) {
-            showColours =
-                    config.getOptionBool("ui", "shownickcoloursinnicklist",
-                    false);
-            nicklist.repaint();
-        }
+        nicklist.repaint();
     }
 }
