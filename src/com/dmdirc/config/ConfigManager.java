@@ -195,7 +195,7 @@ public class ConfigManager extends ConfigSource implements Serializable,
 
             for (String option : entry.getValue().keySet()) {
                 if (identity.equals(getScope(domain, option))) {
-                    changed.add(new String[]{option, domain});
+                    changed.add(new String[]{domain, option});
                 }
             }
         }
@@ -286,7 +286,7 @@ public class ConfigManager extends ConfigSource implements Serializable,
 
                 for (String option : entry.getValue().keySet()) {
                     if (identity.equals(getScope(domain, option))) {
-                        configChanged(option, domain);
+                        configChanged(domain, option);
                     }
                 }
             }            
