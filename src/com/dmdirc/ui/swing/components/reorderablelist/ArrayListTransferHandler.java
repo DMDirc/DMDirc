@@ -30,8 +30,8 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import java.util.List;
+
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JList;
@@ -216,6 +216,10 @@ public final class ArrayListTransferHandler extends TransferHandler {
         
         if (hasSerialArrayListFlavor(transferFlavors)) { 
             return true; 
+        }
+        
+        if (comp instanceof JList && ((JList) comp).getModel() instanceof DefaultListModel) {
+            return true;
         }
         
         return false;
