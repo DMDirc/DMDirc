@@ -64,47 +64,6 @@ public class IRCParserTest extends junit.framework.TestCase {
     }
 
     @Test
-    public void testCaseConversion() {
-        final IRCParser asciiParser = new IRCParser();
-        asciiParser.updateCharArrays((byte) 0);
-
-        final IRCParser rfcParser = new IRCParser();
-        rfcParser.updateCharArrays((byte) 4);
-
-        final IRCParser strictParser = new IRCParser();
-        strictParser.updateCharArrays((byte) 3);
-
-        final String[][] testcases = {
-            {"12345", "12345", "12345", "12345"},
-            {"HELLO", "hello", "hello", "hello"},
-            {"^[[MOO]]^", "^[[moo]]^", "~{{moo}}~", "^{{moo}}^"},
-            {"«—»", "«—»", "«—»", "«—»"}
-        };
-
-        for (String[] testcase : testcases) {
-            final String asciiL = asciiParser.toLowerCase(testcase[0]);
-            final String rfcL = rfcParser.toLowerCase(testcase[0]);
-            final String strictL = strictParser.toLowerCase(testcase[0]);
-
-            final String asciiU = asciiParser.toUpperCase(testcase[1]);
-            final String rfcU = rfcParser.toUpperCase(testcase[2]);
-            final String strictU = strictParser.toUpperCase(testcase[3]);
-
-            assertEquals(testcase[1], asciiL);
-            assertEquals(testcase[2], rfcL);
-            assertEquals(testcase[3], strictL);
-
-            assertTrue(asciiParser.equalsIgnoreCase(testcase[0], testcase[1]));
-            assertTrue(rfcParser.equalsIgnoreCase(testcase[0], testcase[2]));
-            assertTrue(strictParser.equalsIgnoreCase(testcase[0], testcase[3]));
-
-            assertEquals(testcase[0], asciiU);
-            assertEquals(testcase[0], rfcU);
-            assertEquals(testcase[0], strictU);
-        }
-    }
-
-    @Test
     public void testTokeniser() {
         final IRCParser myParser = new IRCParser();
 
