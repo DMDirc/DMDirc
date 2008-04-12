@@ -421,11 +421,20 @@ if [ "" = "${HDIUTIL}" ]; then
 	# everything.
 	# I can't manage to get du to return the size that the files actually end up
 	# using on the image.
-	while [ ${MVRES} -ne 0 ]; do
+	TRIES=0
+	while [ ${MVRES} -ne 0 -a ${TRIES} -ne 5 ]; do
+		TRIES=$((${TRIES} + 1))
+		echo "Previous ImageSize of ${IMAGESIZE} failed"
 		INCREASE=$((${INCREASE} + 5))
 		IMAGESIZE=$(((`du -s --block-size ${IMGBLOCKSIZE} ${DMG} | awk '{print $1}'` + ${INCREASE}) * ${IMGBLOCKSIZE} ))
+		echo "Trying to build with ImageSize ${IMAGESIZE}"
 		createImage ${IMAGESIZE}
 	done;
+	
+	if [ ${MVRES} -eq 0 ]; then
+		echo "OSX Build Failed - Imagesize: ${IMAGESIZE}"
+		exit 1;
+	fi;
 	
 	if [ "${LINUXIMAGE}" != "${RUNNAME}" ]; then
 		# Rename the image
