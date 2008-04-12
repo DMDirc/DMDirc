@@ -221,14 +221,25 @@ public class Identity extends ConfigSource implements Serializable,
      */
     private void initFile(final boolean forceDefault, final InputStream stream)
             throws InvalidIdentityFileException, IOException {
+        if (stream.markSupported()) {
+            stream.mark(Integer.MAX_VALUE);
+        }
+        
         try {
             this.file.read();
         } catch (InvalidConfigFileException ex) {
-            // Not a config file
-            final Properties properties = new Properties();
-            properties.load(stream);
+            if (stream.markSupported()) {
+                // Not a config file
+                stream.reset();
+                
+                final Properties properties = new Properties();
+                properties.load(stream);
 
-            migrateProperties(properties);
+                migrateProperties(properties);
+            } else {
+                throw new IllegalArgumentException("InputStream does not support "
+                        + "mark and contents are not a ConfigFile");
+            }
         }
 
         if (!hasOption(DOMAIN, "name") && !forceDefault) {

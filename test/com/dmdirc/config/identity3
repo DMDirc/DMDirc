@@ -1,0 +1,5 @@
+identity.name=unit test
+identity.ircd=DMDircircd!
+
+meep.moop=2
+unit.test=true

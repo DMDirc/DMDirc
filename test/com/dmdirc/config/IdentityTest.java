@@ -174,6 +174,19 @@ public class IdentityTest {
     }
     
     @Test
+    public void testMigrate() throws IOException, InvalidIdentityFileException {
+        final Identity id = new Identity(getClass().getResourceAsStream("identity3"), false);
+        
+        assertTrue(id.getFile().isKeyDomain("identity"));
+        assertTrue(id.getFile().isKeyDomain("meep"));
+        assertTrue(id.getFile().isKeyDomain("unit"));
+        
+        assertEquals("unit test", id.getFile().getKeyDomain("identity").get("name"));
+        assertEquals("true", id.getFile().getKeyDomain("unit").get("test"));
+        assertEquals("2", id.getFile().getKeyDomain("meep").get("moop"));
+    }
+    
+    @Test
     public void testSetListener() {
         final TestConfigListener listener = new TestConfigListener();
         myIdent.addListener(listener);
