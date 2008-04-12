@@ -230,13 +230,8 @@ public class ConfigManager extends ConfigSource implements Serializable,
 
         return null;
     }
-
-    /**
-     * Called whenever there is a new identity available. Checks if the
-     * identity is relevant for this manager, and adds it if it is.
-     * @param identity The identity to be checked
-     */
-    public void checkIdentity(final Identity identity) {
+    
+    protected boolean identityApplies(final Identity identity) {
         String comp;
 
         switch (identity.getTarget().getType()) {
@@ -261,7 +256,17 @@ public class ConfigManager extends ConfigSource implements Serializable,
             break;
         }
 
-        if (comp != null && comp.equalsIgnoreCase(identity.getTarget().getData())) {
+        return comp != null && comp.equalsIgnoreCase(identity.getTarget().getData());
+    }
+
+    /**
+     * Called whenever there is a new identity available. Checks if the
+     * identity is relevant for this manager, and adds it if it is.
+     * 
+     * @param identity The identity to be checked
+     */
+    public void checkIdentity(final Identity identity) {
+        if (!sources.contains(identity) && identityApplies(identity)) {
             synchronized (sources) {
                 sources.add(identity);
                 identity.addListener(this);
@@ -334,47 +339,21 @@ public class ConfigManager extends ConfigSource implements Serializable,
      */
     public void migrate(final String ircd, final String network, final String server,
             final String channel) {
-        final ConfigManager old = new ConfigManager(this.ircd, this.network,
-                this.server, this.channel.substring(0, this.channel.indexOf('@')));
-
         this.ircd = ircd;
         this.network = network;
         this.server = server;
         this.channel = channel + "@" + network;
 
         for (Identity identity : new ArrayList<Identity>(sources)) {
-            removeIdentity(identity);
-        }
-
-        sources = IdentityManager.getSources(ircd, network, server, this.channel);
-        for (Identity identity : sources) {
-            identity.addListener(this);
-        }
-
-        final List<String> myDomains = getDomains();
-        for (String domain : myDomains) {
-            final List<String> myKeys = getOptions(domain);
-
-            for (String key : myKeys) {
-                if (!old.hasOption(domain, key) ||
-                        !old.getOption(domain, key).equals(getOption(domain, key))) {
-                    configChanged(domain, key);
-                }
-            }
-
-            for (String key : old.getOptions(domain)) {
-                if (!myKeys.contains(key)) {
-                    configChanged(domain, key);
-                }
+            if (!identityApplies(identity)) {
+                removeIdentity(identity);
             }
         }
 
-        for (String domain : old.getDomains()) {
-            if (!myDomains.contains(domain)) {
-                for (String key : old.getOptions(domain)) {
-                    configChanged(domain, key);
-                }
-            }
+        final List<Identity> newSources
+                = IdentityManager.getSources(ircd, network, server, this.channel);
+        for (Identity identity : newSources) {
+            checkIdentity(identity);
         }
     }
 
