@@ -47,12 +47,13 @@ public class ThemeIdentity extends Identity {
      * Creates a new instance of ThemeIdentity.
      *
      * @param stream The input stream to read the identity from.
+     * @param stream2 A second input stream (for migration)
      * @throws InvalidIdentityFileException Missing required properties
      * @throws IOException Input/output exception
      */
-    public ThemeIdentity(final InputStream stream) throws IOException,
+    public ThemeIdentity(final InputStream stream, final InputStream stream2) throws IOException,
             InvalidIdentityFileException {
-        super(stream, true);
+        super(stream, stream2, true);
         myTarget.setTheme();
     }
     

@@ -112,7 +112,7 @@ public class Theme implements Comparable<Theme> {
 
         if (stream != null) {
             try {
-                identity = new ThemeIdentity(stream);
+                identity = new ThemeIdentity(stream, rm.getResourceInputStream("config"));
                 IdentityManager.addIdentity(identity);
             } catch (InvalidIdentityFileException ex) {
                 Logger.userError(ErrorLevel.MEDIUM, "Error loading theme identity file: "
