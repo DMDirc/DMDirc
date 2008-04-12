@@ -113,12 +113,14 @@ public class ArrayListTransferHandlerTest {
     public void testCanImport() {
         final ArrayListTransferHandler handler = new ArrayListTransferHandler();
         final ArrayListTransferable transferable = new ArrayListTransferable(null);
+        final JList list = new JList(new DefaultListModel());
         
         for (DataFlavor df : transferable.getTransferDataFlavors()) {
-            assertTrue(handler.canImport(null, new DataFlavor[]{df}));
+            assertTrue(handler.canImport(list, new DataFlavor[]{df}));
+            assertFalse(handler.canImport(null, new DataFlavor[]{df}));
         }
         
-        assertFalse(handler.canImport(null, new DataFlavor[]{}));
+        assertFalse(handler.canImport(list, new DataFlavor[]{}));
     }
     
     @Test
