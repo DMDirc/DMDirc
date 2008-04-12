@@ -66,9 +66,10 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
         this.config = config;
         this.nicklist = nicklist;
 
-        config.addChangeListener("ui", this);
-        config.addChangeListener("nicklist", this);
-
+        config.addChangeListener("ui", "shownickcoloursinnicklist", this);
+        config.addChangeListener("ui", "nicklistbackgroundcolour", this);
+        config.addChangeListener("ui", "backgroundcolour", this);
+        config.addChangeListener("nicklist", "altBackgroundColour", this);
         altBackgroundColour =
                 config.getOptionColour("nicklist", "altBackgroundColour",
                 config.getOptionColour("ui", "nicklistbackgroundcolour",
