@@ -27,13 +27,14 @@ import com.dmdirc.config.IdentityManager;
 import java.awt.Color;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ColourManagerTest extends junit.framework.TestCase {
+public class ColourManagerTest {
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         IdentityManager.load();
     }
 
@@ -118,5 +119,17 @@ public class ColourManagerTest extends junit.framework.TestCase {
         
         assertEquals("ab3400", ColourManager.getHex(c1).toLowerCase());
     }
-
+    
+    @Test
+    public void testCustomColours() {
+        IdentityManager.getConfigIdentity().setOption("colour", "4", "00ff00");
+        
+        assertEquals("00ff00", ColourManager.getHex(ColourManager.getColour(4)).toLowerCase());
+        
+        IdentityManager.getConfigIdentity().unsetOption("colour", "4");
+    }
+    
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(ColourManagerTest.class);
+    }
 }
