@@ -153,6 +153,13 @@ public class ConditionTreeTest extends junit.framework.TestCase {
     }
     
     @Test
+    public void testMismatchedBrackets2() {
+        final ConditionTree tree = ConditionTree.parseString("0)");
+        
+        assertNull(tree);
+    }    
+    
+    @Test
     public void testMissingUnaryArg() {
         final ConditionTree tree = ConditionTree.parseString("!");
         
@@ -171,11 +178,32 @@ public class ConditionTreeTest extends junit.framework.TestCase {
         final ConditionTree tree = ConditionTree.parseString("0|");
         
         assertNull(tree);
-    }    
+    }
+    
+    @Test
+    public void testMissingBinaryArg2() {
+        final ConditionTree tree = ConditionTree.parseString("0|!");
+        
+        assertNull(tree);
+    }        
     
     @Test
     public void testNonExistantOp() {
         final ConditionTree tree = ConditionTree.parseString("0/1");
+        
+        assertNull(tree);
+    }
+    
+    @Test
+    public void testNoopEvaluation() {
+        final ConditionTree tree = ConditionTree.parseString("");
+        
+        assertTrue(tree.evaluate(new boolean[]{true, false, true}));
+    }   
+    
+    @Test
+    public void testBracketedUnary() {
+        final ConditionTree tree = ConditionTree.parseString("(+)");
         
         assertNull(tree);
     }    
