@@ -92,16 +92,16 @@ public class ConfigManager extends ConfigSource implements Serializable,
     public ConfigManager(final String ircd, final String network,
             final String server, final String channel) {
         final String chanName = channel + "@" + network;
-        sources = IdentityManager.getSources(ircd, network, server, chanName);
-
-        for (Identity identity : sources) {
-            identity.addListener(this);
-        }
-
         this.ircd = ircd;
         this.network = network;
         this.server = server;
         this.channel = chanName;
+        
+        sources = IdentityManager.getSources(this);
+
+        for (Identity identity : sources) {
+            identity.addListener(this);
+        }
 
         IdentityManager.addConfigManager(this);
     }
@@ -231,7 +231,13 @@ public class ConfigManager extends ConfigSource implements Serializable,
         return null;
     }
     
-    protected boolean identityApplies(final Identity identity) {
+    /**
+     * Checks whether the specified identity applies to this config manager.
+     * 
+     * @param identity The identity to test
+     * @return True if the identity applies, false otherwise
+     */
+    public boolean identityApplies(final Identity identity) {
         String comp;
 
         switch (identity.getTarget().getType()) {
@@ -350,8 +356,7 @@ public class ConfigManager extends ConfigSource implements Serializable,
             }
         }
 
-        final List<Identity> newSources
-                = IdentityManager.getSources(ircd, network, server, this.channel);
+        final List<Identity> newSources = IdentityManager.getSources(this);
         for (Identity identity : newSources) {
             checkIdentity(identity);
         }

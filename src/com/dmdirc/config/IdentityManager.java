@@ -338,50 +338,18 @@ public final class IdentityManager {
     
     /**
      * Retrieves a list of all config sources that should be applied to the
-     * specified target.
-     * @param ircd The server's ircd
-     * @param network The name of the network
-     * @param server The server's name
-     * @param channel The channel name (in the form channel@network)
+     * specified config manager.
+     * 
+     * @param manager The manager requesting sources
      * @return A list of all matching config sources
      */
-    public static List<Identity> getSources(final String ircd,
-            final String network, final String server, final String channel) {
+    public static List<Identity> getSources(final ConfigManager manager) {
         
         final List<Identity> sources = new ArrayList<Identity>();
         
-        if (channel != null && !channel.isEmpty() && (channel.indexOf('@') == -1
-                || channel.indexOf('@') != channel.lastIndexOf('@'))) {
-            throw new IllegalArgumentException("Channel names must be in the"
-                    + " format channel@network.\n\nGiven name: " + channel);
-        }
-        
-        String comp = "";
-        
         synchronized (identities) {
             for (Identity identity : identities) {
-                switch (identity.getTarget().getType()) {
-                case IRCD:
-                    comp = ircd;
-                    break;
-                case NETWORK:
-                    comp = network;
-                    break;
-                case SERVER:
-                    comp = server;
-                    break;
-                case CHANNEL:
-                    comp = channel;
-                    break;
-                case PROFILE:
-                    comp = null;
-                    break;
-                default:
-                    comp = "";
-                    break;
-                }
-
-                if (comp != null && comp.equalsIgnoreCase(identity.getTarget().getData())) {
+                if (manager.identityApplies(identity)) {
                     sources.add(identity);
                 }
             }
@@ -390,19 +358,6 @@ public final class IdentityManager {
         Collections.sort(sources);
         
         return sources;
-    }
-    
-    /**
-     * Retrieves a list of all config sources that should be applied to the
-     * specified target.
-     * @param ircd The server's ircd
-     * @param network The name of the network
-     * @param server The server's name
-     * @return A list of all matching config sources
-     */
-    public static List<Identity> getSources(final String ircd,
-            final String network, final String server) {
-        return getSources(ircd, network, server, "<Unknown>");
     }
     
     /**
