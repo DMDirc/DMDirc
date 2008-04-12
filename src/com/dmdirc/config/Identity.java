@@ -134,7 +134,7 @@ public class Identity extends ConfigSource implements Serializable,
             InvalidIdentityFileException {
         this.file = new ConfigFile(new TextFile(file));
         this.file.setAutomake(true);
-        initFile(forceDefault, new FileInputStream(file));
+        initFile(forceDefault, null, file);
         myTarget = getTarget(forceDefault);
     }
 
@@ -151,7 +151,7 @@ public class Identity extends ConfigSource implements Serializable,
             InvalidIdentityFileException {
         this.file = new ConfigFile(new TextFile(stream));
         this.file.setAutomake(true);
-        initFile(forceDefault, stream);
+        initFile(forceDefault, stream, null);
         myTarget = getTarget(forceDefault);
     }
 
@@ -215,31 +215,41 @@ public class Identity extends ConfigSource implements Serializable,
      * Initialises this identity from a file.
      *
      * @param forceDefault Whether to force this to be a default identity
-     * @param stream The stream to load properties from if needed
+     * @param stream The stream to load properties from if needed (or null)
+     * @param file The file to load this identity from (or null)
      * @throws InvalidIdentityFileException if the identity file is invalid
      * @throws IOException On I/O exception when reading the identity
      */
-    private void initFile(final boolean forceDefault, final InputStream stream)
-            throws InvalidIdentityFileException, IOException {
-        if (stream.markSupported()) {
+    @Precondition("Exactly one of stream and file are specified")
+    private void initFile(final boolean forceDefault, final InputStream stream,
+            final File file) throws InvalidIdentityFileException, IOException {
+        Logger.assertTrue(file == null ^ stream == null);
+        
+        if (stream != null && stream.markSupported()) {
             stream.mark(Integer.MAX_VALUE);
         }
         
         try {
             this.file.read();
         } catch (InvalidConfigFileException ex) {
-            if (stream.markSupported()) {
+            InputStream newStream;
+            
+            if (stream != null && stream.markSupported()) {
                 // Not a config file
                 stream.reset();
-                
-                final Properties properties = new Properties();
-                properties.load(stream);
-
-                migrateProperties(properties);
+                newStream = stream;
+            } else if (file != null) {
+                newStream = new FileInputStream(file);
             } else {
                 throw new IllegalArgumentException("InputStream does not support "
-                        + "mark and contents are not a ConfigFile");
+                        + "mark and contents are not a ConfigFile");                
             }
+                
+            final Properties properties = new Properties();
+            properties.load(newStream);
+            newStream.close();
+            
+            migrateProperties(properties);
         }
 
         if (!hasOption(DOMAIN, "name") && !forceDefault) {
