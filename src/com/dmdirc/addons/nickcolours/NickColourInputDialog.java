@@ -25,24 +25,18 @@ package com.dmdirc.addons.nickcolours;
 import com.dmdirc.Main;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
-import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.swing.components.ColourChooser;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SpringLayout;
 import javax.swing.WindowConstants;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * New nick colour input dialog.
@@ -64,11 +58,6 @@ public class NickColourInputDialog extends StandardDialog
     
     /** The NickColourPanel we're reporting to. */
     private final NickColourPanel panel;
-    
-    /** Buttons panel. */
-    private JPanel buttonsPanel;
-    /** content panel. */
-    private JPanel contentPanel;
     
     /** nickname textfield. */
     private JTextField nickname;
@@ -130,57 +119,13 @@ public class NickColourInputDialog extends StandardDialog
      */
     private void initComponents(final String defaultNickname,
             final String defaultNetwork, final String defaultTextColour,
-            final String defaultNickColour) {
-        contentPanel = new JPanel();
-        buttonsPanel = new JPanel();
-        
+            final String defaultNickColour) {        
         orderButtons(new JButton(), new JButton());
         
         nickname = new JTextField(defaultNickname);
         network = new JTextField(defaultNetwork);
         textColour = new ColourChooser(defaultTextColour, true, true);
         nicklistColour = new ColourChooser(defaultNickColour, true, true);
-        
-        nickname.setPreferredSize(new Dimension(10,
-                nickname.getFont().getSize() - SMALL_BORDER));
-        network.setPreferredSize(new Dimension(10,
-                network.getFont().getSize() - SMALL_BORDER));
-        textColour.setPreferredSize(new Dimension(10,
-                textColour.getFont().getSize() - SMALL_BORDER));
-        nicklistColour.setPreferredSize(new Dimension(10,
-                nicklistColour.getFont().getSize() - SMALL_BORDER));
-    }
-    
-    /** Initialises the content panel. */
-    private void layoutContentPanel() {
-        contentPanel.setLayout(new SpringLayout());
-        
-        contentPanel.add(new JLabel("Nickname: "));
-        contentPanel.add(nickname);
-        
-        contentPanel.add(new JLabel("Network: "));
-        contentPanel.add(network);
-        
-        contentPanel.add(new JLabel("Text colour: "));
-        contentPanel.add(textColour);
-        
-        contentPanel.add(new JLabel("Nicklist colour: "));
-        contentPanel.add(nicklistColour);
-        
-        layoutGrid(contentPanel, 4, 2, SMALL_BORDER, SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER);
-    }
-    
-    /** Initialises the button panel. */
-    private void layoutButtonsPanel() {
-        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
-        
-        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
-        buttonsPanel.add(Box.createHorizontalGlue());
-        buttonsPanel.add(getLeftButton());
-        buttonsPanel.add(Box.createHorizontalStrut(SMALL_BORDER));
-        buttonsPanel.add(getRightButton());
     }
     
     /** Initialises the listeners. */
@@ -190,26 +135,38 @@ public class NickColourInputDialog extends StandardDialog
     }
     
     /** Lays out the components. */
-    private void layoutComponents() {
-        layoutContentPanel();
-        layoutButtonsPanel();
+    private void layoutComponents() {        
+        setLayout(new MigLayout("wrap 2"));
         
-        setLayout(new BorderLayout());
+        add(new JLabel("Nickname: "));
+        add(nickname, "growx");
         
-        add(contentPanel, BorderLayout.CENTER);
-        add(buttonsPanel, BorderLayout.PAGE_END);
+        add(new JLabel("Network: "));
+        add(network, "growx");
+        
+        add(new JLabel("Text colour: "));
+        add(textColour, "growx");
+        
+        add(new JLabel("Nicklist colour: "));
+        add(nicklistColour, "growx");
+        
+        add(getLeftButton(), "right");
+        add(getRightButton(), "right");
         
         pack();
     }
     
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc} 
+     * 
+     * @param e Action event
+     */
+    @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == getOkButton()) {
             saveSettings();
-            dispose();
-        } else if (e.getSource() == getCancelButton()) {
-            dispose();
         }
+        dispose();
     }
     
     /** Saves settings. */

@@ -26,8 +26,6 @@ import com.dmdirc.ui.swing.components.renderers.ActionTypeRenderer;
 import com.dmdirc.ui.swing.components.renderers.ActionCellRenderer;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
-import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
 import com.dmdirc.ui.swing.actions.SanitisedFilenamePasteAction;
 import com.dmdirc.ui.swing.components.SanitisedFilenameFilter;
 
@@ -45,9 +43,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.text.AbstractDocument;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * General tab panel, name and trigger editing for the actions editor dialog.
@@ -161,17 +160,13 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
     
     /** Lays out components. */
     private void layoutComponents() {
+        setLayout(new MigLayout("wrap 2, fill"));
         add(new JLabel("Name: "));
-        add(name);
+        add(name, "growx");
         add(new JLabel("Primary trigger: "));
-        add(trigger);
+        add(trigger, "growx");
         add(new JLabel("Additional triggers: "));
-        add(new JScrollPane(otherTriggers));
-        
-        this.setLayout(new SpringLayout());
-        
-        layoutGrid(this, 3,
-                2, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
+        add(new JScrollPane(otherTriggers), "growx");
     }
     
     /**
@@ -215,10 +210,18 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
         return triggers;
     }
     
-    /** {@inheritDoc}. */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param event Action event
+     */
+    @Override
     public void actionPerformed(final ActionEvent event) {
         if (event.getSource() == trigger) {
             SwingUtilities.invokeLater(new Runnable() {
+                
+                /** {@inheritDoc} */
+                @Override
                 public void run() {
                     handleTriggerChange();
                 }

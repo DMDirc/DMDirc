@@ -25,11 +25,8 @@ package com.dmdirc.ui.swing.dialogs.actionseditor;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.ui.swing.components.ImageButton;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
-import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
-import com.dmdirc.ui.swing.components.TextLabel;
+import com.dmdirc.ui.swing.components.JWrappingLabel;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,13 +34,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SpringLayout;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Conditions tab panel, conditions editing for the actions editor dialog.
@@ -66,13 +61,11 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
     /** Parent ActionsEditorDialog. */
     private final ActionsEditorDialog owner;
     
-    /** New button panel. */
-    private JPanel buttonsPanel;
     /** Comparisons components panel. */
     private JPanel comparisonsPanel;
     
     /** Info blurb. */
-    private TextLabel infoLabel;
+    private JWrappingLabel infoLabel;
     /** No conditions label. */
     private JLabel noConditions;
     /** New comparison button. */
@@ -103,21 +96,13 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
     
     /** Initialises the components. */
     private void initComponents() {
-        comparisonsPanel = new JPanel();
+        comparisonsPanel = new JPanel(new MigLayout());
         noConditions = new JLabel("No conditions set.");
         newComparison = new JButton("New");
-        infoLabel = new TextLabel("This action will only be executed if the "
+        infoLabel = new JWrappingLabel("This action will only be executed if the "
                 + "following are true:");
         
-        infoLabel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
-        
-        comparisonsPanel.setBorder(BorderFactory.createEmptyBorder(0,
-                SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
-        
         setNewConditionButton(false);
-        
-        initButtonsPanel();
         
         doConditions();
         
@@ -137,32 +122,19 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
     
     /** Lays out components. */
     private void layoutComponents() {
-        this.setLayout(new BorderLayout());
+        setLayout(new MigLayout("wrap 1, fill, debug"));
         
-        this.add(infoLabel, BorderLayout.PAGE_START);
-        this.add(comparisonsPanel, BorderLayout.CENTER);
-        this.add(buttonsPanel, BorderLayout.PAGE_END);
+        add(infoLabel, "growx");
+        add(comparisonsPanel, "grow");
+        
+        add(newComparison, "right");
     }
-    
-    /** Initialises the button panel. */
-    private void initButtonsPanel() {
-        buttonsPanel = new JPanel();
-        
-        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER));
-        
-        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
-        
-        buttonsPanel.add(Box.createHorizontalGlue());
-        buttonsPanel.add(newComparison);
-    }
-    
+
     /** Initialises and lays out the conditions panel. */
     public void doConditions() {
         comparisonsPanel.setVisible(false);
         
         initConditions();
-        layoutComparisonPanel();
         
         comparisonsPanel.setVisible(true);
     }
@@ -194,20 +166,11 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
             
             comparisonsPanel.add(edit);
             comparisonsPanel.add(delete);
-            comparisonsPanel.add(label);
+            comparisonsPanel.add(label, "growx");
         }
-    }
-    
-    /** Lays out the comparisons panel. */
-    private void layoutComparisonPanel() {
-        comparisonsPanel.setLayout(new SpringLayout());
         
         if (comparisonsPanel.getComponentCount() == 0) {
             comparisonsPanel.add(noConditions);
-        } else {
-            layoutGrid(comparisonsPanel,
-                    comparisonsPanel.getComponentCount() / 3, 3, SMALL_BORDER,
-                    SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
         }
     }
     
@@ -259,7 +222,12 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
         return conditions;
     }
     
-    /** {@inheritDoc}. */
+    /**
+     * {@inheritDoc}
+     * 
+     * @param event Action event
+     */
+    @Override
     public void actionPerformed(final ActionEvent event) {
         if (event.getSource() == newComparison) {
             ConditionEditorDialog.showConditionEditorDialog(this, owner.getTrigger(), null);

@@ -25,8 +25,6 @@ package com.dmdirc.ui.swing.components.expandingsettings;
 import com.dmdirc.ui.swing.components.renderers.AddOptionCellRenderer;
 import com.dmdirc.ui.swing.components.ColourChooser;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel.OptionType;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
-import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -42,7 +40,8 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SpringLayout;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Add option panel.
@@ -131,19 +130,17 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
     
     /** Lays out the components. */
     private void layoutComponents() {
-        this.setVisible(false);
+        setVisible(false);
         
-        setLayout(new SpringLayout());
+        setLayout(new MigLayout("ins 0, debug"));
         
         removeAll();
         
-        add(addOptionComboBox);
+        add(addOptionComboBox, "growx, pushx");
         add(addInputCurrent);
         add(addOptionButton);
         
-        layoutGrid(this, 1, 3, 0, 0, SMALL_BORDER, SMALL_BORDER);
-        
-        this.setVisible(true);
+        setVisible(true);
     }
     
     /**

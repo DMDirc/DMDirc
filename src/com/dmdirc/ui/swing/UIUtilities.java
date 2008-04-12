@@ -26,14 +26,10 @@ import com.dmdirc.ui.swing.actions.RedoAction;
 import com.dmdirc.ui.swing.actions.UndoAction;
 import com.dmdirc.ui.swing.components.DMDircUndoableEditListener;
 
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.KeyStroke;
-import javax.swing.Spring;
-import javax.swing.SpringLayout;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -56,91 +52,6 @@ public final class UIUtilities {
     
     /** Not intended to be instatiated. */
     private UIUtilities() {
-    }
-    
-    /**
-     * Aligns the components in a container horizontally and adds springs
-     * vertically.
-     *
-     * @param parent parent container
-     * @param rows number of rows
-     * @param columns number of columns
-     * @param outerXPadding outer x padding
-     * @param outerYPadding outer y padding
-     * @param xPadding x padding
-     * @param yPadding y padding
-     */
-    public static void layoutGrid(final Container parent, final int rows,
-            final int columns, final int outerXPadding,
-            final int outerYPadding, final int xPadding, final int yPadding) {
-        final SpringLayout layout = (SpringLayout) parent.getLayout();
-        
-        Spring x = Spring.constant(outerXPadding);
-        Spring y = Spring.constant(outerYPadding);
-        SpringLayout.Constraints constraints;
-        
-        for (int c = 0; c < columns; c++) {
-            Spring width = Spring.constant(0);
-            for (int r = 0; r < rows; r++) {
-                width = Spring.max(width,
-                        getConstraintsForCell(r, c, parent, columns).
-                        getWidth());
-            }
-            for (int r = 0; r < rows; r++) {
-                constraints = getConstraintsForCell(r, c, parent, columns);
-                constraints.setX(x);
-                constraints.setWidth(width);
-            }
-            if (c == columns - 1) {
-                x = Spring.sum(x, width);
-            } else {
-                x = Spring.sum(x, Spring.sum(width, Spring.constant(xPadding)));
-            }
-        }
-        
-        for (int r = 0; r < rows; r++) {
-            int height = 0;
-            for (int c = 0; c < columns; c++) {
-                height +=
-                        getConstraintsForCell(r, c, parent, columns).
-                        getHeight().getValue();
-            }
-            for (int c = 0; c < columns; c++) {
-                constraints = getConstraintsForCell(r, c, parent, columns);
-                constraints.setY(y);
-                constraints.setHeight(Spring.constant(height));
-            }
-            if (r == rows - 1) {
-                y = Spring.sum(y, Spring.constant(height));
-            } else {
-                y = Spring.sum(y, Spring.sum(Spring.constant(height),
-                        Spring.constant(yPadding)));
-            }
-        }
-        
-        x = Spring.sum(x, Spring.constant(outerXPadding));
-        y = Spring.sum(y, Spring.constant(outerYPadding));
-        
-        final SpringLayout.Constraints pCons = layout.getConstraints(parent);
-        pCons.setConstraint(SpringLayout.SOUTH, y);
-        pCons.setConstraint(SpringLayout.EAST, x);
-    }
-    
-    /**
-     * Returns the constraints for a specific cell.
-     *
-     * @param row Row of cell
-     * @param column Column of cell
-     * @param parent parent container
-     * @param columns number of columns
-     *
-     * @return Constraits for a specific cell
-     */
-    private static SpringLayout.Constraints getConstraintsForCell(final int row,
-            final int column, final Container parent, final int columns) {
-        final SpringLayout layout = (SpringLayout) parent.getLayout();
-        final Component constraints = parent.getComponent(row * columns + column);
-        return layout.getConstraints(constraints);
     }
     
     /**
@@ -212,27 +123,22 @@ public final class UIUtilities {
      * @return Look and feel class name or a zero length string
      */
     public static String getLookAndFeel(final String displayName) {
+        if (displayName == null || displayName.isEmpty() || "Native".equals(displayName)) {
+            return UIManager.getSystemLookAndFeelClassName();
+        }
+        
         final StringBuilder classNameBuilder = new StringBuilder();
         
-        if (displayName != null && !displayName.isEmpty()) {
-            if ("Native".equals(displayName)) {
-                classNameBuilder.setLength(0);
-                classNameBuilder.append(
-                                UIManager.getSystemLookAndFeelClassName());
-            } else {
-                for (LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
-                    if (laf.getName().equals(displayName)) {
-                        classNameBuilder.setLength(0);
-                        classNameBuilder.append(laf.getClassName());
-                        break;
-                    }
-                }
+        for (LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
+            if (laf.getName().equals(displayName)) {
+                classNameBuilder.append(laf.getClassName());
+                break;
             }
         }
         
         if (classNameBuilder.length() == 0) {
             classNameBuilder.append(UIManager.getSystemLookAndFeelClassName());
-        } 
+        }      
         
         return classNameBuilder.toString();
     }
