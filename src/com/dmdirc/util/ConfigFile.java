@@ -185,7 +185,7 @@ public class ConfigFile {
                 for (String entry : flatdomains.get(domain)) {
                     lines.add("  " + escape(entry));
                 }
-            } else if (keydomains.containsKey(domain)) {
+            } else {
                 for (Map.Entry<String, String> entry : keydomains.get(domain).entrySet()) {
                     lines.add("  " + escape(entry.getKey()) + "="
                             + escape(entry.getValue()));

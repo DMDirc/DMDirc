@@ -233,5 +233,15 @@ public class ConfigFileTest extends junit.framework.TestCase {
         config.delete();
         assertFalse(file.exists());
     }
+    
+    @Test
+    public void testDuplicateKeys() throws IOException, InvalidConfigFileException {
+        final ConfigFile file = new ConfigFile(getClass().getResourceAsStream("test2.txt"));
+        file.read();
+        
+        assertTrue(file.isKeyDomain("section one"));
+        assertEquals(3, file.getKeyDomain("section one").size());
+        assertTrue(file.isFlatDomain("section one point one"));
+    }
 
 }
