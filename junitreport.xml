@@ -21,8 +21,6 @@
 
     <target name="clover.xml" if="clover.installed">
         <mkdir dir="reports/clover" />
-        <mkdir dir="reports/clover/history" />
-        <clover-historypoint historydir="reports/clover/history" />
         <clover-report>
          <current outfile="reports/clover/clover.xml"/>
         </clover-report>
