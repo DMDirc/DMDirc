@@ -12,7 +12,10 @@
     <target name="with.clover" depends="clean" if="clover.installed">
         <clover-setup>
             <fileset dir="src/com/" includes="**/*.java" />
-            <fileset dir="test/com/" includes="**/*.java" />
+            <fileset dir="test/com/">
+                <include name="**/*.java" />
+                <exclude name="**/harness/**/*.java" />
+            </fileset>
         </clover-setup>
     </target>
 
