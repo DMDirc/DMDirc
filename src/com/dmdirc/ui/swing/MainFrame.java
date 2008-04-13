@@ -19,7 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.dmdirc.ui.swing;
 
 import com.dmdirc.FrameContainer;
@@ -97,7 +96,7 @@ public final class MainFrame extends JFrame implements WindowListener,
      * direction. */
     private int yOffset;
     /** The main application icon. */
-    private final ImageIcon imageIcon;
+    private ImageIcon imageIcon;
     /** The frame manager that's being used. */
     private FrameManager mainFrameManager;
     /** Dekstop pane. */
@@ -155,6 +154,8 @@ public final class MainFrame extends JFrame implements WindowListener,
                 getOptionBool("ui", "showversion", false);
         IdentityManager.getGlobalConfig().
                 addChangeListener("ui", "showversion", this);
+        IdentityManager.getGlobalConfig().
+                addChangeListener("icon", "icon", this);
 
         //TODO: Remove me when we switch to java7
         addWindowFocusListener(new WindowFocusListener() {
@@ -162,7 +163,7 @@ public final class MainFrame extends JFrame implements WindowListener,
             /** {@inheritDoc} */
             @Override
             public void windowGainedFocus(WindowEvent e) {
-            //Ignore
+                //Ignore
             }
 
             /** {@inheritDoc} */
@@ -289,7 +290,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void windowOpened(final WindowEvent windowEvent) {
-    //ignore
+        //ignore
     }
 
     /** {@inheritDoc} */
@@ -301,7 +302,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void windowClosed(final WindowEvent windowEvent) {
-    //ignore
+        //ignore
     }
 
     /** {@inheritDoc}. */
@@ -319,13 +320,13 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void windowActivated(final WindowEvent windowEvent) {
-    //ignore
+        //ignore
     }
 
     /** {@inheritDoc}. */
     @Override
     public void windowDeactivated(final WindowEvent windowEvent) {
-    //ignore
+        //ignore
     }
 
     /** Initialiases the frame managers. */
@@ -572,15 +573,21 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
-        showVersion =
-                IdentityManager.getGlobalConfig().
-                getOptionBool("ui", "showversion", false);
+        if ("ui".equals(domain)) {
+            showVersion =
+                    IdentityManager.getGlobalConfig().
+                    getOptionBool("ui", "showversion", false);
+        } else {
+            imageIcon =
+                    new ImageIcon(IconManager.getIconManager().getImage("icon"));
+            setIconImage(imageIcon.getImage());
+        }
     }
 
     /** {@inheritDoc}. */
     @Override
     public void setParent(final JComponent parent) {
-    //Ignore
+        //Ignore
     }
 
     /** {@inheritDoc}. */
@@ -651,5 +658,4 @@ public final class MainFrame extends JFrame implements WindowListener,
     public void delWindow(final FrameContainer parent, final FrameContainer window) {
         delWindow(window);
     }
-
 }
