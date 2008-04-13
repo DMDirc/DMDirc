@@ -431,7 +431,7 @@ if [ "" = "${HDIUTIL}" ]; then
 		createImage ${IMAGESIZE}
 	done;
 	
-	if [ ${MVRES} -eq 0 ]; then
+	if [ ${MVRES} -ne 0 ]; then
 		echo "OSX Build Failed - Imagesize: ${IMAGESIZE}"
 		exit 1;
 	fi;
