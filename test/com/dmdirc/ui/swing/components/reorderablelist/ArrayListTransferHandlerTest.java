@@ -149,6 +149,13 @@ public class ArrayListTransferHandlerTest {
     }
     
     @Test
+    public void testImportData2() {
+        final ArrayListTransferHandler handler = new ArrayListTransferHandler();
+        final ArrayListTransferable alt = new ArrayListTransferable(null);
+        assertFalse(handler.importData(null, alt));
+    }
+    
+    @Test
     public void testExportDone() {
         final ArrayList<String> test = new ArrayList<String>();
         test.add("123");
@@ -171,7 +178,33 @@ public class ArrayListTransferHandlerTest {
         handler.exportDone(list, alt, TransferHandler.MOVE);
         assertEquals(1, list.getModel().getSize());
         assertEquals("456", list.getModel().getElementAt(0));
-    }    
+    }
+    
+    @Test
+    public void testExportDone2() {
+        final ArrayList<String> test = new ArrayList<String>();
+        test.add("123");
+        test.add("456");
+        
+        final JList list = new JList(new DefaultListModel());
+        ((DefaultListModel) list.getModel()).addElement("123");
+        ((DefaultListModel) list.getModel()).addElement("456");
+        list.setSelectedIndex(0);
+        
+        final ArrayListTransferHandler handler = new ArrayListTransferHandler();
+        final ArrayListTransferable alt = new ArrayListTransferable(test);
+        
+        handler.createTransferable(list);
+        
+        final JList list2 = new JList(new DefaultListModel());
+        list2.setSelectedIndex(0);
+        assertTrue(handler.importData(list2, alt));
+        
+        handler.exportDone(list, alt, TransferHandler.COPY);
+        assertEquals(2, list.getModel().getSize());
+        assertEquals("123", list.getModel().getElementAt(0));
+        assertEquals("456", list.getModel().getElementAt(1));
+    }        
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(ArrayListTransferHandlerTest.class);

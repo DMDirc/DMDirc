@@ -47,18 +47,26 @@ public class ProcessNamesTest extends junit.framework.TestCase {
 
         parser.injectConnectionStrings();
         parser.injectLine(":nick JOIN #DMDirc_testing");
-        parser.injectLine(":server 353 nick = #DMDirc_testing :@nick +luser");
+        parser.injectLine(":server 353 nick = #DMDirc_testing :@nick +luser @+nick2 nick3");
         parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list");
 
         assertEquals(1, parser.getChannels().size());
         assertNotNull(parser.getChannelInfo("#DMDirc_testing"));
-        assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
+        assertEquals(4, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
         assertNotNull(parser.getClientInfo("luser"));
         assertEquals(1, parser.getClientInfo("luser").getChannelClients().size());
 
-        final ChannelClientInfo cci = parser.getClientInfo("luser").getChannelClients().get(0);
+        ChannelClientInfo cci = parser.getClientInfo("luser").getChannelClients().get(0);
         assertEquals(parser.getChannelInfo("#DMDirc_testing"), cci.getChannel());
         assertEquals("+", cci.getChanModeStr(true));
+        
+        cci = parser.getChannelInfo("#DMDirc_testing").getUser("nick2");
+        assertNotNull(cci);
+        assertEquals("@+", cci.getChanModeStr(true));
+
+        cci = parser.getChannelInfo("#DMDirc_testing").getUser("nick3");
+        assertNotNull(cci);
+        assertEquals("", cci.getChanModeStr(true));
     }
     
     private class OEITest implements IErrorInfo {

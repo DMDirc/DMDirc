@@ -22,6 +22,9 @@
 
 package com.dmdirc;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -77,6 +80,49 @@ public class IgnoreListTest extends junit.framework.TestCase {
             
             assertTrue(except);
         }
+    }
+    
+    @Test
+    public void testConstructor() {
+        final List<String> items = Arrays.asList(new String[]{"abc", "def"});
+        final IgnoreList list = new IgnoreList(items);
+        
+        assertEquals(items, list.getRegexList());
+    }
+    
+    @Test
+    public void testAddSimple() {
+        final IgnoreList list = new IgnoreList();
+        
+        for (String[] test : tests) {
+            list.addSimple(test[0]);
+            assertTrue(list.getRegexList().contains(test[1]));
+        }
+    }
+    
+    @Test
+    public void testCanConvert() {
+        final IgnoreList list = new IgnoreList();
+        assertTrue(list.canConvert());
+        
+        list.addSimple("abc!def@ghi");
+        assertTrue(list.canConvert());
+        
+        list.add(illegals[0]);
+        assertFalse(list.canConvert());
+    }
+    
+    @Test
+    public void testGetSimpleList() throws UnsupportedOperationException {
+        final IgnoreList list = new IgnoreList();
+        final List<String> items = new ArrayList<String>();
+        
+        for (String[] test : tests) {
+            items.add(test[0]);
+            list.add(test[1]);
+        }
+        
+        assertEquals(items, list.getSimpleList());
     }
     
 }

@@ -121,6 +121,27 @@ public class ProcessModeTest extends junit.framework.TestCase {
         final ChannelClientInfo cci = parser.getClientInfo("moo").getChannelClients().get(0);
         
         assertEquals("+", cci.getChanModeStr(true));        
-    }    
+    }   
+    
+    @Test
+    public void testChannelModes() {
+        final TestParser parser = new TestParser();
+
+        parser.injectConnectionStrings();
+        parser.injectLine(":nick JOIN #DMDirc_testing");
+        parser.injectLine(":server 353 nick = #DMDirc_testing :@nick +luser");
+        parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list");
+        parser.injectLine(":server 324 nick #DMDirc_testing +stnl 1234");
+    
+        assertEquals("1234", parser.getChannelInfo("#DMDirc_testing").getModeParam('l'));
+        
+        final String modes = parser.getChannelInfo("#DMDirc_testing").getModeStr().split(" ")[0];
+        assertEquals(5, modes.length());
+        assertEquals('+', modes.charAt(0));
+        assertTrue(modes.indexOf('s') > -1);
+        assertTrue(modes.indexOf('t') > -1);
+        assertTrue(modes.indexOf('n') > -1);
+        assertTrue(modes.indexOf('l') > -1);
+    }
 
 }
