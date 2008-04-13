@@ -31,16 +31,12 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.text.JTextComponent;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-/**
- * Tests the UIUtilities class.
- */
-public class UIUtilitiesTest extends TestCase {
+public class UIUtilitiesTest extends junit.framework.TestCase {
     
-    /**
-     * Test the addUnfoManager method.
-     */
+    @Test
     public void testAddUndoManager() {
         final JTextComponent comp = new JTextField();
         UIUtilities.addUndoManager(comp);
@@ -52,9 +48,7 @@ public class UIUtilitiesTest extends TestCase {
         assertEquals("Redo", comp.getInputMap().get(KeyStroke.getKeyStroke("control Y")));
     }
 
-    /**
-     * Test the getLookAndFeel method.
-     */
+    @Test
     public void testGetLookAndFeel() {
         final String sysLAF = UIManager.getSystemLookAndFeelClassName();
         //null look and feel name = system
