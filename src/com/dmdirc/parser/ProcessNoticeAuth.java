@@ -36,6 +36,7 @@ public class ProcessNoticeAuth extends IRCProcessor {
 	 * @param sParam Type of line to process ("Notice Auth")
 	 * @param token IRCTokenised line to process
 	 */
+    @Override
 	public void process(final String sParam, final String[] token) {
 		callNoticeAuth(token[token.length-1]);
 	}
@@ -48,9 +49,8 @@ public class ProcessNoticeAuth extends IRCProcessor {
          * @return true if a method was called, false otherwise
 	 */
 	protected boolean callNoticeAuth(final String data) {
-		final CallbackOnNoticeAuth cb = (CallbackOnNoticeAuth)getCallbackManager().getCallbackType("OnNoticeAuth");
-		if (cb != null) { return cb.call(data); }
-		return false;
+		return ((CallbackOnNoticeAuth) getCallbackManager()
+                .getCallbackType("OnNoticeAuth")).call(data);
 	}
 	
 	/**
@@ -58,6 +58,7 @@ public class ProcessNoticeAuth extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
+    @Override
 	public String[] handles() {
 		String[] iHandle = new String[1];
 		iHandle[0] = "Notice Auth";

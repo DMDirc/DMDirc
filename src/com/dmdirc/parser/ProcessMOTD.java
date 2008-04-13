@@ -32,12 +32,14 @@ import com.dmdirc.parser.callbacks.CallbackOnMOTDStart;
  * Process a MOTD Related Line.
  */
 public class ProcessMOTD extends IRCProcessor {
-	/**
+
+    /**
 	 * Process a MOTD Related Line.
 	 *
 	 * @param sParam Type of line to process ("375", "372", "376", "422")
 	 * @param token IRCTokenised line to process
 	 */
+    @Override
 	public void process(String sParam, String[] token) {
 		if (sParam.equals("375")) {
 			callMOTDStart(token[token.length-1]);
@@ -60,10 +62,9 @@ public class ProcessMOTD extends IRCProcessor {
 	 * @see IMOTDEnd
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callMOTDEnd(boolean noMOTD, String data) {
-		CallbackOnMOTDEnd cb = (CallbackOnMOTDEnd)getCallbackManager().getCallbackType("OnMOTDEnd");
-		if (cb != null) { return cb.call(noMOTD, data); }
-		return false;
+	protected boolean callMOTDEnd(final boolean noMOTD, final String data) {
+		return ((CallbackOnMOTDEnd) getCallbackManager()
+                .getCallbackType("OnMOTDEnd")).call(noMOTD, data);
 	}
 	
 	/**
@@ -73,10 +74,9 @@ public class ProcessMOTD extends IRCProcessor {
 	 * @param data Incomming Line.
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callMOTDLine(String data) {
-		CallbackOnMOTDLine cb = (CallbackOnMOTDLine)getCallbackManager().getCallbackType("OnMOTDLine");
-		if (cb != null) { return cb.call(data); }
-		return false;
+	protected boolean callMOTDLine(final String data) {
+		return ((CallbackOnMOTDLine) getCallbackManager()
+                .getCallbackType("OnMOTDLine")).call(data);
 	}
 	
 	/**
@@ -87,9 +87,8 @@ public class ProcessMOTD extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callMOTDStart(String data) {
-		CallbackOnMOTDStart cb = (CallbackOnMOTDStart)getCallbackManager().getCallbackType("OnMOTDStart");
-		if (cb != null) { return cb.call(data); }
-		return false;
+		return ((CallbackOnMOTDStart) getCallbackManager()
+                .getCallbackType("OnMOTDStart")).call(data);
 	}
 	
 	/**
@@ -97,6 +96,7 @@ public class ProcessMOTD extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
+    @Override
 	public String[] handles() {
 		String[] iHandle = new String[4];
 		iHandle[0] = "372";

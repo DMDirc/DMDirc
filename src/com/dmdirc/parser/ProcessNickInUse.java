@@ -48,12 +48,13 @@ public class ProcessNickInUse extends IRCProcessor {
 	 * @param sParam Type of line to process ("433")
 	 * @param token IRCTokenised line to process
 	 */
+    @Override
 	public void process(final String sParam, final String[] token) {
 		if (!callNickInUse(token[3])) {
 			// Manually handle nick in use.
-			callDebugInfo(myParser.DEBUG_INFO,"No Nick in use Handler.");
+			callDebugInfo(IRCParser.DEBUG_INFO,"No Nick in use Handler.");
 			if (!myParser.got001) {
-				callDebugInfo(myParser.DEBUG_INFO,"Using inbuilt handler");
+				callDebugInfo(IRCParser.DEBUG_INFO,"Using inbuilt handler");
 				// If this is before 001 we will try and get a nickname, else we will leave the nick as-is
 				if (myParser.triedAlt) {
 					if (myParser.equalsIgnoreCase(myParser.sThinkNickname, myParser.me.getAltNickname())) {
@@ -76,9 +77,8 @@ public class ProcessNickInUse extends IRCProcessor {
          * @return true if a method was called, false otherwise
 	 */
 	protected boolean callNickInUse(final String nickname) {
-		final CallbackOnNickInUse cb = (CallbackOnNickInUse)getCallbackManager().getCallbackType("OnNickInUse");
-		if (cb != null) { return cb.call(nickname); }
-		return false;
+		return ((CallbackOnNickInUse) getCallbackManager()
+                .getCallbackType("OnNickInUse")).call(nickname);
 	}
 	
 	/**
@@ -86,6 +86,7 @@ public class ProcessNickInUse extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
+    @Override
 	public String[] handles() {
 		String[] iHandle = new String[1];
 		iHandle[0] = "433";

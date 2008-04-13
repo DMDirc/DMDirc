@@ -36,6 +36,7 @@ public class ProcessNames extends IRCProcessor {
 	 * @param sParam Type of line to process ("366", "353")
 	 * @param token IRCTokenised line to process
 	 */
+    @Override
 	public void process(String sParam, String[] token) {
 		ChannelInfo iChannel;
 		if (sParam.equals("366")) {
@@ -87,7 +88,7 @@ public class ProcessNames extends IRCProcessor {
 						break;
 					}
 				}
-				callDebugInfo(myParser.DEBUG_INFO, "Name: %s Modes: \"%s\" [%d]",sName,sModes.toString(),nPrefix);
+				callDebugInfo(IRCParser.DEBUG_INFO, "Name: %s Modes: \"%s\" [%d]",sName,sModes.toString(),nPrefix);
 				
 				iClient = getClientInfo(sName);
 				if (iClient == null) { iClient = new ClientInfo(myParser, sName); myParser.addClient(iClient); }
@@ -109,9 +110,8 @@ public class ProcessNames extends IRCProcessor {
          * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelGotNames(ChannelInfo cChannel) {
-		CallbackOnChannelGotNames cb = (CallbackOnChannelGotNames)getCallbackManager().getCallbackType("OnChannelGotNames");
-		if (cb != null) { return cb.call(cChannel); }
-		return false;
+		return ((CallbackOnChannelGotNames) getCallbackManager()
+                .getCallbackType("OnChannelGotNames")).call(cChannel);
 	}
 	
 	/**
@@ -119,6 +119,7 @@ public class ProcessNames extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
+    @Override
 	public String[] handles() {
 		String[] iHandle = new String[2];
 		iHandle[0] = "353";

@@ -30,7 +30,7 @@ package com.dmdirc.parser.callbacks;
  * @author            Shane Mc Cormack
  * @version           $Id$
  */
-public class CallbackNotFoundException extends Exception {
+public class CallbackNotFoundException extends RuntimeException {
 	/**
 	 * A version number for this class. It should be changed whenever the class
 	 * structure is changed (or anything else that would prevent serialized

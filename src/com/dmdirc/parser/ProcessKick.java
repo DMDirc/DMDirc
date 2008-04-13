@@ -30,13 +30,15 @@ import com.dmdirc.parser.callbacks.CallbackOnChannelKick;
  * Process a channel kick.
  */
 public class ProcessKick extends IRCProcessor {
-	/**
+
+    /**
 	 * Process a channel kick.
 	 *
 	 * @param sParam Type of line to process ("KICK")
 	 * @param token IRCTokenised line to process
 	 */
-	public void process(String sParam, String[] token) {
+    @Override
+	public void process(final String sParam, final String[] token) {
 		ChannelClientInfo iChannelClient;
 		ChannelClientInfo iChannelKicker;
 		ChannelInfo iChannel;
@@ -50,7 +52,7 @@ public class ProcessKick extends IRCProcessor {
 		
 		if (iClient == null) { return; }
 		
-		if (myParser.ALWAYS_UPDATECLIENT && iKicker != null) {
+		if (IRCParser.ALWAYS_UPDATECLIENT && iKicker != null) {
 			// To facilitate dmdirc formatter, get user information
 			if (iKicker.getHost().isEmpty()) { iKicker.setUserBits(token[0],false); }
 		}
@@ -90,9 +92,8 @@ public class ProcessKick extends IRCProcessor {
          * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelKick(ChannelInfo cChannel, ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient, String sReason, String sKickedByHost) {
-		CallbackOnChannelKick cb = (CallbackOnChannelKick)getCallbackManager().getCallbackType("OnChannelKick");
-		if (cb != null) { return cb.call(cChannel, cKickedClient, cKickedByClient, sReason, sKickedByHost); }
-		return false;
+		return ((CallbackOnChannelKick) getCallbackManager()
+                .getCallbackType("OnChannelKick")).call(cChannel, cKickedClient, cKickedByClient, sReason, sKickedByHost);
 	}
 	
 	/**
@@ -100,6 +101,7 @@ public class ProcessKick extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
+    @Override
 	public String[] handles() {
 		String[] iHandle = new String[1];
 		iHandle[0] = "KICK";

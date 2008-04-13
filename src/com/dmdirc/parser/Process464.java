@@ -36,6 +36,7 @@ public class Process464 extends IRCProcessor {
 	 * @param sParam Type of line to process ("464")
 	 * @param token IRCTokenised line to process
 	 */
+    @Override
 	public void process(String sParam, String[] token) {
 		callPasswordRequired();
 //		ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Password Required");
@@ -47,6 +48,7 @@ public class Process464 extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
+    @Override
 	public String[] handles() {
 		String[] iHandle = new String[1];
 		iHandle[0] = "464";
@@ -60,9 +62,8 @@ public class Process464 extends IRCProcessor {
          * @return true if a method was called, false otherwise
 	 */
 	protected boolean callPasswordRequired() {
-		CallbackOnPasswordRequired cb = (CallbackOnPasswordRequired)getCallbackManager().getCallbackType("OnPasswordRequired");
-		if (cb != null) { return cb.call(); }
-		return false;
+		return ((CallbackOnPasswordRequired) getCallbackManager()
+                .getCallbackType("OnPasswordRequired")).call();
 	}
 	
 	/**

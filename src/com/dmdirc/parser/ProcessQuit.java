@@ -32,12 +32,14 @@ import com.dmdirc.parser.callbacks.CallbackOnQuit;
  * Process a Quit message.
  */
 public class ProcessQuit extends IRCProcessor {
-	/**
+
+    /**
 	 * Process a Quit message.
 	 *
 	 * @param sParam Type of line to process ("QUIT")
 	 * @param token IRCTokenised line to process
 	 */
+    @Override
 	public void process(final String sParam, final String[] token) {
 		// :nick!ident@host QUIT
 		// :nick!ident@host QUIT :reason
@@ -48,7 +50,7 @@ public class ProcessQuit extends IRCProcessor {
 		iClient = getClientInfo(token[0]);
 		
 		if (iClient == null) { return; }
-		if (myParser.ALWAYS_UPDATECLIENT && iClient.getHost().isEmpty()) {
+		if (IRCParser.ALWAYS_UPDATECLIENT && iClient.getHost().isEmpty()) {
 			// This may seem pointless - updating before they leave - but the formatter needs it!
 			iClient.setUserBits(token[0],false);
 		}
@@ -89,9 +91,8 @@ public class ProcessQuit extends IRCProcessor {
          * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelQuit(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sReason) {
-		final CallbackOnChannelQuit cb = (CallbackOnChannelQuit)getCallbackManager().getCallbackType("OnChannelQuit");
-		if (cb != null) { return cb.call(cChannel, cChannelClient, sReason); }
-		return false;
+		return ((CallbackOnChannelQuit) getCallbackManager()
+                .getCallbackType("OnChannelQuit")).call(cChannel, cChannelClient, sReason);
 	}
 	
 	/**
@@ -103,9 +104,8 @@ public class ProcessQuit extends IRCProcessor {
          * @return true if a method was called, false otherwise
 	 */
 	protected boolean callQuit(final ClientInfo cClient, final String sReason) {
-		final CallbackOnQuit cb = (CallbackOnQuit)getCallbackManager().getCallbackType("OnQuit");
-		if (cb != null) { return cb.call(cClient, sReason); }
-		return false;
+		return ((CallbackOnQuit) getCallbackManager()
+                .getCallbackType("OnQuit")).call(cClient, sReason);
 	}
 	
 	/**
@@ -113,6 +113,7 @@ public class ProcessQuit extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
+    @Override
 	public String[] handles() {
 		String[] iHandle = new String[1];
 		iHandle[0] = "QUIT";

@@ -147,10 +147,11 @@ public final class CallbackManager {
 	 * @return CallbackObject returns the callback object for this type
 	 */
 	public CallbackObject getCallbackType(final String callbackName) {
-		if (callbackHash.containsKey(callbackName.toLowerCase())) {
-			return callbackHash.get(callbackName.toLowerCase());
+		if (!callbackHash.containsKey(callbackName.toLowerCase())) {
+			throw new CallbackNotFoundException("Callback not found: " + callbackName);
 		}
-		return null;
+        
+		return callbackHash.get(callbackName.toLowerCase());
 	}
 	
 	/**
@@ -185,10 +186,13 @@ public final class CallbackManager {
 	 * @throws NullPointerException If 'o' is null
 	 */
 	public void addCallback(final String callbackName, final ICallbackInterface o) throws CallbackNotFoundException {
-		if (o == null) { throw new NullPointerException("CallbackInterface is null"); }
-		final CallbackObject cb = getCallbackType(callbackName);
-		if (cb != null) { cb.add(o); }
-		else { throw new CallbackNotFoundException("Callback '"+callbackName+"' could not be found."); }
+		if (o == null) {
+            throw new NullPointerException("CallbackInterface is null");
+        }
+        
+        final CallbackObject cb = getCallbackType(callbackName);
+		
+        if (cb != null) { cb.add(o); }
 	}
 	
 	/**
@@ -203,9 +207,8 @@ public final class CallbackManager {
 	 */
 	public void addCallback(final String callbackName, final ICallbackInterface o, final String target) throws CallbackNotFoundException {
 		if (o == null) { throw new NullPointerException("CallbackInterface is null"); }
-		CallbackObjectSpecific cb = (CallbackObjectSpecific)getCallbackType(callbackName);
-		if (cb != null) { cb.add(o,target); }
-		else { throw new CallbackNotFoundException("Callback '"+callbackName+"' could not be found."); }
+
+        ((CallbackObjectSpecific) getCallbackType(callbackName)).add(o,target);
 	}
 	
 	/**
@@ -247,8 +250,7 @@ public final class CallbackManager {
 	 * @param o instance of ICallbackInterface to remove.
 	 */
 	public void delCallback(final String callbackName, final ICallbackInterface o) {
-		CallbackObject cb = getCallbackType(callbackName);
-		if (cb != null) { cb.del(o); }
+		getCallbackType(callbackName).del(o);
 	}
 
 }

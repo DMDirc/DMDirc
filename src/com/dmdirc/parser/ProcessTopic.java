@@ -36,6 +36,7 @@ public class ProcessTopic extends IRCProcessor {
 	 * @param sParam Type of line to process ("TOPIC", "332", "333")
 	 * @param token IRCTokenised line to process
 	 */
+    @Override
 	public void process(final String sParam, final String[] token) {
 		ChannelInfo iChannel;
 		if (sParam.equals("332")) {
@@ -55,7 +56,7 @@ public class ProcessTopic extends IRCProcessor {
 				callChannelTopic(iChannel,true);
 			}
 		} else {
-			if (myParser.ALWAYS_UPDATECLIENT) {
+			if (IRCParser.ALWAYS_UPDATECLIENT) {
 				final ClientInfo iClient = getClientInfo(token[0]);
 				if (iClient != null && iClient.getHost().isEmpty()) {iClient.setUserBits(token[0],false); }
 			}
@@ -78,9 +79,8 @@ public class ProcessTopic extends IRCProcessor {
          * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelTopic(final ChannelInfo cChannel, final boolean bIsJoinTopic) {
-		final CallbackOnChannelTopic cb = (CallbackOnChannelTopic)getCallbackManager().getCallbackType("OnChannelTopic");
-		if (cb != null) { return cb.call(cChannel, bIsJoinTopic); }
-		return false;
+		return ((CallbackOnChannelTopic) getCallbackManager()
+                .getCallbackType("OnChannelTopic")).call(cChannel, bIsJoinTopic);
 	}
 	
 	/**
@@ -88,6 +88,7 @@ public class ProcessTopic extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
+    @Override
 	public String[] handles() {
 		String[] iHandle = new String[3];
 		iHandle[0] = "TOPIC";

@@ -41,6 +41,7 @@ public class ProcessListModes extends IRCProcessor {
 	 * @param token IRCTokenised line to process
 	 */
 	@SuppressWarnings("unchecked")
+    @Override
 	public void process(String sParam, String[] token) {
 		ChannelInfo channel = getChannelInfo(token[3]);
 		String thisIRCD = myParser.getIRCD(true).toLowerCase();
@@ -83,24 +84,24 @@ public class ProcessListModes extends IRCProcessor {
 		final Queue<Character> listModeQueue = channel.getListModeQueue();
 		if (!isCleverMode && listModeQueue != null) {
 			if (sParam.equals("482")) {
-				myParser.callDebugInfo(myParser.DEBUG_LMQ, "Dropped LMQ mode "+listModeQueue.poll());
+				myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "Dropped LMQ mode "+listModeQueue.poll());
 				return;
 			} else {
 				if (listModeQueue.peek() != null) {
 					Character oldMode = mode;
 					mode = listModeQueue.peek();
-					myParser.callDebugInfo(myParser.DEBUG_LMQ, "LMQ says this is "+mode);
+					myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "LMQ says this is "+mode);
 					if (oldMode != mode) {
-						myParser.callDebugInfo(myParser.DEBUG_LMQ, "LMQ disagrees with guess LMQ: "+mode+" Guess: "+oldMode);
+						myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "LMQ disagrees with guess LMQ: "+mode+" Guess: "+oldMode);
 					}
 					if ((thisIRCD.equals("hyperion") || thisIRCD.equals("dancer")) && (mode == 'b' || mode == 'q')) {
 						LinkedList<Character> lmq = (LinkedList<Character>)listModeQueue;
 						if (mode == 'b') {
 							lmq.remove((Character)'q');
-							myParser.callDebugInfo(myParser.DEBUG_LMQ, "Dropping q from list");
+							myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "Dropping q from list");
 						} else if (mode == 'q') {
 							lmq.remove((Character)'b');
-							myParser.callDebugInfo(myParser.DEBUG_LMQ, "Dropping b from list");
+							myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "Dropping b from list");
 						}
 					}
 					if (!isItem) {
@@ -125,7 +126,7 @@ public class ProcessListModes extends IRCProcessor {
 			} // End Hyperian stupidness of using the same numeric for 3 different things..
 			
 			if (!channel.getAddState(mode)) {
-				callDebugInfo(myParser.DEBUG_INFO, "New List Mode Batch ("+mode+"): Clearing!");
+				callDebugInfo(IRCParser.DEBUG_INFO, "New List Mode Batch ("+mode+"): Clearing!");
 				channel.getListModeParam(mode).clear();
 				channel.setAddState(mode, true);
 			}
@@ -137,14 +138,14 @@ public class ProcessListModes extends IRCProcessor {
 			if (token.length > tokenStart) { item = token[tokenStart]; }
 			if (!item.isEmpty()) {
 				ChannelListModeItem clmi = new ChannelListModeItem(item, owner, time);
-				callDebugInfo(myParser.DEBUG_INFO, "List Mode: %c [%s/%s/%d]",mode, item, owner, time);
+				callDebugInfo(IRCParser.DEBUG_INFO, "List Mode: %c [%s/%s/%d]",mode, item, owner, time);
 				channel.setListModeParam(mode, clmi, true);
 			}
 		} else {
-			callDebugInfo(myParser.DEBUG_INFO, "List Mode Batch over");
+			callDebugInfo(IRCParser.DEBUG_INFO, "List Mode Batch over");
 			channel.resetAddState();
 			if (isCleverMode || listModeQueue == null || ((LinkedList<Character>)listModeQueue).size() == 0) {
-				callDebugInfo(myParser.DEBUG_INFO, "Calling GotListModes");
+				callDebugInfo(IRCParser.DEBUG_INFO, "Calling GotListModes");
 				channel.setHasGotListModes(true);
 				callChannelGotListModes(channel);
 			}
@@ -156,6 +157,7 @@ public class ProcessListModes extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
+    @Override
 	public String[] handles() {
 		String[] iHandle = new String[10];
 		int i = 0;
@@ -196,9 +198,8 @@ public class ProcessListModes extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelGotListModes(ChannelInfo cChannel) {
-		CallbackOnChannelGotListModes cb = (CallbackOnChannelGotListModes)getCallbackManager().getCallbackType("OnChannelGotListModes");
-		if (cb != null) { return cb.call(cChannel); }
-		return false;
+		return ((CallbackOnChannelGotListModes) getCallbackManager()
+                .getCallbackType("OnChannelGotListModes")).call(cChannel);
 	}
 	
 	/**

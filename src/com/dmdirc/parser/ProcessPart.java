@@ -30,12 +30,14 @@ import com.dmdirc.parser.callbacks.CallbackOnChannelPart;
  * Process a channel part.
  */
 public class ProcessPart extends IRCProcessor {
-	/**
+
+    /**
 	 * Process a channel part.
 	 *
 	 * @param sParam Type of line to process ("PART")
 	 * @param token IRCTokenised line to process
 	 */
+    @Override
 	public void process(final String sParam, final String[] token) {
 		// :nick!ident@host PART #Channel
 		// :nick!ident@host PART #Channel :reason
@@ -48,7 +50,7 @@ public class ProcessPart extends IRCProcessor {
 		iChannel = getChannelInfo(token[2]);
 		
 		if (iClient == null) { return; }
-		if (myParser.ALWAYS_UPDATECLIENT && iClient.getHost().isEmpty()) {
+		if (IRCParser.ALWAYS_UPDATECLIENT && iClient.getHost().isEmpty()) {
 			// This may seem pointless - updating before they leave - but the formatter needs it!
 			iClient.setUserBits(token[0],false);
 		}
@@ -66,7 +68,7 @@ public class ProcessPart extends IRCProcessor {
 				return;
 			}
 			if (myParser.removeAfterCallback) { callChannelPart(iChannel,iChannelClient,sReason); }
-			callDebugInfo(myParser.DEBUG_INFO, "Removing %s from %s",iClient.getNickname(),iChannel.getName());
+			callDebugInfo(IRCParser.DEBUG_INFO, "Removing %s from %s",iClient.getNickname(),iChannel.getName());
 			iChannel.delClient(iClient);
 			if (!myParser.removeAfterCallback) { callChannelPart(iChannel,iChannelClient,sReason); }
 			if (iClient == myParser.getMyself()) {
@@ -86,9 +88,8 @@ public class ProcessPart extends IRCProcessor {
          * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelPart(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sReason) {
-		final CallbackOnChannelPart cb = (CallbackOnChannelPart)getCallbackManager().getCallbackType("OnChannelPart");
-		if (cb != null) { return cb.call(cChannel, cChannelClient, sReason); }
-		return false;
+		return ((CallbackOnChannelPart) getCallbackManager()
+                .getCallbackType("OnChannelPart")).call(cChannel, cChannelClient, sReason);
 	}
 	
 	/**
@@ -96,6 +97,7 @@ public class ProcessPart extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
+    @Override
 	public String[] handles() {
 		String[] iHandle = new String[1];
 		iHandle[0] = "PART";

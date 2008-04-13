@@ -38,7 +38,8 @@ public class ProcessWallops extends IRCProcessor {
 	 * @param sParam Type of line to process ("WALLOPS")
 	 * @param token IRCTokenised line to process
 	 */
-	public void process(String sParam, String[] token) {
+    @Override
+	public void process(final String sParam, final String[] token) {
 		if (token.length < 3) { return; }
 		
 		String user = token[0];
@@ -66,10 +67,9 @@ public class ProcessWallops extends IRCProcessor {
 	 * @param message The message
          * @return true if a method was called, false otherwise
 	 */
-	protected boolean callWallop(String message, String host) {
-		CallbackOnWallop cb = (CallbackOnWallop)getCallbackManager().getCallbackType("OnWallop");
-		if (cb != null) { return cb.call(message, host); }
-		return false;
+	protected boolean callWallop(final String message, final String host) {
+		return ((CallbackOnWallop) getCallbackManager()
+                .getCallbackType("OnWallop")).call(message, host);
 	}
 	
 	/**
@@ -80,10 +80,9 @@ public class ProcessWallops extends IRCProcessor {
 	 * @param message The message
          * @return true if a method was called, false otherwise
 	 */
-	protected boolean callWalluser(String message, String host) {
-		CallbackOnWalluser cb = (CallbackOnWalluser)getCallbackManager().getCallbackType("OnWalluser");
-		if (cb != null) { return cb.call(message, host); }
-		return false;
+	protected boolean callWalluser(final String message, final String host) {
+		return ((CallbackOnWalluser) getCallbackManager()
+                .getCallbackType("OnWalluser")).call(message, host);
 	}
 	
 	/**
@@ -94,10 +93,9 @@ public class ProcessWallops extends IRCProcessor {
 	 * @param message The message
          * @return true if a method was called, false otherwise
 	 */
-	protected boolean callWallDesync(String message, String host) {
-		CallbackOnWallDesync cb = (CallbackOnWallDesync)getCallbackManager().getCallbackType("OnWallDesync");
-		if (cb != null) { return cb.call(message, host); }
-		return false;
+	protected boolean callWallDesync(final String message, final String host) {
+		return ((CallbackOnWallDesync) getCallbackManager()
+                .getCallbackType("OnWallDesync")).call(message, host);
 	}
 	
 	
@@ -106,6 +104,7 @@ public class ProcessWallops extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
+    @Override
 	public String[] handles() {
 		String[] iHandle = new String[]{"WALLOPS"};
 		return iHandle;

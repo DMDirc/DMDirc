@@ -37,6 +37,7 @@ public class ProcessWho extends IRCProcessor {
 	 * @param sParam Type of line to process ("352")
 	 * @param token IRCTokenised line to process
 	 */
+    @Override
 	public void process(final String sParam, final String[] token) {
 		// :blueyonder2.uk.quakenet.org 352 Dataforce #mdbot shane Tobavaj.users.quakenet.org *.quakenet.org Tobavaj G+x :3 Tobavaj - http://shane.dmdirc.com/scriptbot.php
 		//              0               1      2        3     4              5                      6           7     8        9
@@ -89,9 +90,8 @@ public class ProcessWho extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callAwayStateOther(final ClientInfo client, final boolean state) {
-		final CallbackOnAwayStateOther cb = (CallbackOnAwayStateOther)myParser.getCallbackManager().getCallbackType("OnAwayStateOther");
-		if (cb != null) { return cb.call(client, state); }
-		return false;
+		return ((CallbackOnAwayStateOther) myParser.getCallbackManager()
+                .getCallbackType("OnAwayStateOther")).call(client, state);
 	}
 	
 	/**
@@ -104,9 +104,8 @@ public class ProcessWho extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelAwayStateOther(final ChannelInfo channel, final ChannelClientInfo channelClient, final boolean state) {
-		final CallbackOnChannelAwayStateOther cb = (CallbackOnChannelAwayStateOther)myParser.getCallbackManager().getCallbackType("OnChannelAwayStateOther");
-		if (cb != null) { return cb.call(channel, channelClient, state); }
-		return false;
+		return ((CallbackOnChannelAwayStateOther) myParser.getCallbackManager()
+                .getCallbackType("OnChannelAwayStateOther")).call(channel, channelClient, state);
 	}
 	
 	/**
@@ -114,6 +113,7 @@ public class ProcessWho extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
+    @Override
 	public String[] handles() {
 		String[] iHandle = new String[1];
 		iHandle[0] = "352";

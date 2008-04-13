@@ -238,8 +238,11 @@ public class IRCParser implements Runnable {
 	/** This is the default TrustManager for SSL Sockets, it trusts all ssl certs. */
 	private final TrustManager[] trustAllCerts = {
 		new X509TrustManager() {
-			public X509Certificate[] getAcceptedIssuers() { return null;	}
+            @Override
+            public X509Certificate[] getAcceptedIssuers() { return null;	}
+            @Override
 			public void checkClientTrusted(final X509Certificate[] certs, final String authType) { }
+            @Override
 			public void checkServerTrusted(final X509Certificate[] certs, final String authType) { }
 		},
 	};
@@ -429,9 +432,8 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callServerError(final String message) {
-		final CallbackOnServerError cb = (CallbackOnServerError) myCallbackManager.getCallbackType("OnServerError");
-		if (cb != null) { return cb.call(message); }
-		return false;
+		return ((CallbackOnServerError) myCallbackManager
+                .getCallbackType("OnServerError")).call(message);
 	}
 
 	/**
@@ -442,9 +444,8 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callDataIn(final String data) {
-		final CallbackOnDataIn cb = (CallbackOnDataIn) myCallbackManager.getCallbackType("OnDataIn");
-		if (cb != null) { return cb.call(data); }
-		return false;
+		return ((CallbackOnDataIn) myCallbackManager
+                .getCallbackType("OnDataIn")).call(data);
 	}
 
 	/**
@@ -456,9 +457,8 @@ public class IRCParser implements Runnable {
 	 * @see com.dmdirc.parser.callbacks.interfaces.IDataOut
 	 */
 	protected boolean callDataOut(final String data, final boolean fromParser) {
-		final CallbackOnDataOut cb = (CallbackOnDataOut) myCallbackManager.getCallbackType("OnDataOut");
-		if (cb != null) { return cb.call(data, fromParser); }
-		return false;
+		return ((CallbackOnDataOut) myCallbackManager
+                .getCallbackType("OnDataOut")).call(data, fromParser);
 	}
 
 	/**
@@ -482,9 +482,8 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callDebugInfo(final int level, final String data) {
-		final CallbackOnDebugInfo cb = (CallbackOnDebugInfo) myCallbackManager.getCallbackType("OnDebugInfo");
-		if (cb != null) { return cb.call(level, data); }
-		return false;
+		return ((CallbackOnDebugInfo) myCallbackManager
+                .getCallbackType("OnDebugInfo")).call(level, data);
 	}
 
 	/**
@@ -495,9 +494,8 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callErrorInfo(final ParserError errorInfo) {
-		final CallbackOnErrorInfo cb = (CallbackOnErrorInfo) myCallbackManager.getCallbackType("OnErrorInfo");
-		if (cb != null) { return cb.call(errorInfo); }
-		return false;
+		return ((CallbackOnErrorInfo) myCallbackManager
+                .getCallbackType("OnErrorInfo")).call(errorInfo);
 	}
 
 	/**
@@ -508,9 +506,8 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callConnectError(final ParserError errorInfo) {
-		final CallbackOnConnectError cb = (CallbackOnConnectError) myCallbackManager.getCallbackType("OnConnectError");
-		if (cb != null) { return cb.call(errorInfo); }
-		return false;
+		return ((CallbackOnConnectError) myCallbackManager
+                .getCallbackType("OnConnectError")).call(errorInfo);
 	}
 
 	/**
@@ -520,9 +517,8 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callSocketClosed() {
-		final CallbackOnSocketClosed cb = (CallbackOnSocketClosed) myCallbackManager.getCallbackType("OnSocketClosed");
-		if (cb != null) { return cb.call(); }
-		return false;
+		return ((CallbackOnSocketClosed) myCallbackManager
+                .getCallbackType("OnSocketClosed")).call();
 	}
 
 	/**
@@ -532,9 +528,8 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callPingFailed() {
-		final CallbackOnPingFailed cb = (CallbackOnPingFailed) myCallbackManager.getCallbackType("OnPingFailed");
-		if (cb != null) { return cb.call(); }
-		return false;
+		return ((CallbackOnPingFailed) myCallbackManager
+                .getCallbackType("OnPingFailed")).call();
 	}
 
 	/**
@@ -544,9 +539,8 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callPingSent() {
-		final CallbackOnPingSent cb = (CallbackOnPingSent) myCallbackManager.getCallbackType("OnPingSent");
-		if (cb != null) { return cb.call(); }
-		return false;
+		return ((CallbackOnPingSent) myCallbackManager
+                .getCallbackType("OnPingSent")).call();
 	}
 
 	/**
@@ -556,9 +550,8 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callPingSuccess() {
-		final CallbackOnPingSuccess cb = (CallbackOnPingSuccess) myCallbackManager.getCallbackType("OnPingSuccess");
-		if (cb != null) { return cb.call(); }
-		return false;
+		return ((CallbackOnPingSuccess) myCallbackManager
+                .getCallbackType("OnPingSuccess")).call();
 	}
 
 	/**
@@ -570,9 +563,9 @@ public class IRCParser implements Runnable {
 	protected synchronized boolean callPost005() {
 		if (post005) { return false; }
 		post005 = true;
-		final CallbackOnPost005 cb = (CallbackOnPost005)getCallbackManager().getCallbackType("OnPost005");
-		if (cb != null) { return cb.call(); }
-		return false;
+        
+		return ((CallbackOnPost005) getCallbackManager()
+                .getCallbackType("OnPost005")).call();
 	}
 
 	//---------------------------------------------------------------------------
@@ -654,7 +647,7 @@ public class IRCParser implements Runnable {
 
 			if (server.getUseSocks()) {
 				callDebugInfo(DEBUG_SOCKET, "Using Proxy");
-				if (bindIP != null && bindIP != "") {
+				if (bindIP != null && !bindIP.isEmpty()) {
 					callDebugInfo(DEBUG_SOCKET, "IP Binding is not possible when using a proxy.");
 				}
 				final Proxy.Type proxyType = Proxy.Type.SOCKS;
@@ -733,6 +726,7 @@ public class IRCParser implements Runnable {
 	 * Begin execution.
 	 * Connect to server, and start parsing incomming lines
 	 */
+    @Override
 	public void run() {
 		callDebugInfo(DEBUG_INFO, "Begin Thread Execution");
 		if (hasBegan) { return; } else { hasBegan = true; }

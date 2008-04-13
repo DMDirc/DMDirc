@@ -36,6 +36,7 @@ public class Process001 extends IRCProcessor {
 	 * @param sParam Type of line to process ("001")
 	 * @param token IRCTokenised line to process
 	 */
+    @Override
 	public void process(final String sParam, final String[] token) {
 		myParser.got001 = true;
 		// << :demon1.uk.quakenet.org 001 Java-Test :Welcome to the QuakeNet IRC Network, Java-Test
@@ -67,9 +68,8 @@ public class Process001 extends IRCProcessor {
          * @return true if a method was called, false otherwise
 	 */	
 	protected boolean callServerReady() {
-		final CallbackOnServerReady cb = (CallbackOnServerReady)getCallbackManager().getCallbackType("OnServerReady");
-		if (cb != null) { return cb.call(); }
-		return false;
+		return ((CallbackOnServerReady) getCallbackManager()
+                .getCallbackType("OnServerReady")).call();
 	}
 	
 	/**
@@ -77,6 +77,7 @@ public class Process001 extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
+    @Override
 	public String[] handles() {
 		String[] iHandle = new String[1];
 		iHandle[0] = "001";

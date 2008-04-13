@@ -36,6 +36,7 @@ public class Process004005 extends IRCProcessor {
 	 * @param sParam Type of line to process ("005", "004")
 	 * @param token IRCTokenised line to process
 	 */
+    @Override
 	public void process(final String sParam, final String[] token) {
 		if (sParam.equals("003")) {
 			myParser.h005Info.put("003IRCD",token[token.length-1]);
@@ -53,7 +54,7 @@ public class Process004005 extends IRCProcessor {
 				Bits = token[i].split("=",2);
 				sKey = Bits[0].toUpperCase();
 				if (Bits.length == 2) { sValue = Bits[1]; } else { sValue = ""; }
-				callDebugInfo(myParser.DEBUG_INFO, "%s => %s",sKey,sValue);
+				callDebugInfo(IRCParser.DEBUG_INFO, "%s => %s",sKey,sValue);
 				myParser.h005Info.put(sKey,sValue);
 				if (sKey.equals("NETWORK")) {
 					myParser.sNetworkName = sValue;
@@ -106,6 +107,7 @@ public class Process004005 extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
+    @Override
 	public String[] handles() {
 		return new String[]{"003", "004", "005"};
 	} 
@@ -122,9 +124,8 @@ public class Process004005 extends IRCProcessor {
 		final String ircdVersion = myParser.getIRCD(false);
 		final String ircdType = myParser.getIRCD(true);
 		
-		final CallbackOnGotNetwork cb = (CallbackOnGotNetwork)getCallbackManager().getCallbackType("OnGotNetwork");
-		if (cb != null) { return cb.call(networkName, ircdVersion, ircdType); }
-		return false;
+		return ((CallbackOnGotNetwork) getCallbackManager()
+                .getCallbackType("OnGotNetwork")).call(networkName, ircdVersion, ircdType);
 	}
 	
 	/**

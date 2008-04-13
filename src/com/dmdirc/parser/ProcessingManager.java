@@ -37,7 +37,7 @@ import java.util.Hashtable;
  */
 public class ProcessingManager {
 	/** Reference to the parser object that owns this ProcessingManager */
-	IRCParser myParser = null;
+	IRCParser myParser;
 
 	/** Hashtable used to store the different types of IRCProcessor known. */
 	private final Hashtable<String,IRCProcessor> processHash = new Hashtable<String,IRCProcessor>();
@@ -45,8 +45,8 @@ public class ProcessingManager {
 	/**
 	 * Debugging Data to the console.
 	 */
-	private void DoDebug(final String line, final Object... args) {
-		myParser.callDebugInfo(myParser.DEBUG_PROCESSOR, line, args);
+	private void doDebug(final String line, final Object... args) {
+		myParser.callDebugInfo(IRCParser.DEBUG_PROCESSOR, line, args);
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class ProcessingManager {
 	 * @param handles String Array of tokens to add this processor as a hadler for
 	 */
 	public void addProcessor(final String[] handles, final IRCProcessor processor) {
-		DoDebug("Adding processor: "+processor.getName());
+		doDebug("Adding processor: "+processor.getName());
 
 		try {
 			for (int i = 0; i < handles.length; ++i) {
@@ -145,11 +145,11 @@ public class ProcessingManager {
 					// New Processors take priority over old ones
 					processHash.remove(handles[i].toLowerCase());
 				}
-				DoDebug("\t Added handler for: "+handles[i]);
+				doDebug("\t Added handler for: "+handles[i]);
 				processHash.put(handles[i].toLowerCase(), processor);
 			}
 		} catch (Exception e) {
-			DoDebug("\t[ERROR] "+e.getMessage()+" - Removing processor");
+			doDebug("\t[ERROR] "+e.getMessage()+" - Removing processor");
 			delProcessor(processor);
 		}
 	}
@@ -161,12 +161,12 @@ public class ProcessingManager {
 	 */
 	public void delProcessor(final IRCProcessor processor) {
 		IRCProcessor testProcessor;
-		DoDebug("Deleting processor: "+processor.getName());
+		doDebug("Deleting processor: "+processor.getName());
 		for (String elementName : processHash.keySet()) {
-			DoDebug("\t Checking handler for: "+elementName);
+			doDebug("\t Checking handler for: "+elementName);
 			testProcessor = processHash.get(elementName);
 			if (testProcessor.getName().equalsIgnoreCase(processor.getName())) {
-				DoDebug("\t Removed handler for: "+elementName);
+				doDebug("\t Removed handler for: "+elementName);
 				processHash.remove(elementName);
 			}
 		}
@@ -223,9 +223,8 @@ public class ProcessingManager {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callNumeric(final int numeric, final String[] token) {
-		final CallbackOnNumeric cb = (CallbackOnNumeric)myParser.getCallbackManager().getCallbackType("OnNumeric");
-		if (cb != null) { return cb.call(numeric, token); }
-		return false;
+		return ((CallbackOnNumeric) myParser.getCallbackManager()
+                .getCallbackType("OnNumeric")).call(numeric, token);
 	}
 
 }
