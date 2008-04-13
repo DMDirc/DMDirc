@@ -96,7 +96,7 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
     
     /** Initialises the components. */
     private void initComponents() {
-        comparisonsPanel = new JPanel(new MigLayout());
+        comparisonsPanel = new JPanel(new MigLayout("ins 0"));
         noConditions = new JLabel("No conditions set.");
         newComparison = new JButton("New");
         infoLabel = new JWrappingLabel("This action will only be executed if the "
@@ -166,7 +166,7 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
             
             comparisonsPanel.add(edit);
             comparisonsPanel.add(delete);
-            comparisonsPanel.add(label, "growx");
+            comparisonsPanel.add(label, "growx, wrap");
         }
         
         if (comparisonsPanel.getComponentCount() == 0) {
