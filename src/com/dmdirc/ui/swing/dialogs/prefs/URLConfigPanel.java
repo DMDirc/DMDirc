@@ -27,13 +27,12 @@ import com.dmdirc.ui.swing.components.renderers.URIHandlerCellRenderer;
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesInterface;
-import com.dmdirc.config.prefs.validator.ValidationResponse;
+import com.dmdirc.config.prefs.validator.URLProtocolValidator;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.PackingTable;
 import com.dmdirc.ui.swing.components.StandardInputDialog;
 import com.dmdirc.ui.swing.components.URLProtocolPanel;
 
-import com.dmdirc.config.prefs.validator.Validator;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URI;
@@ -89,6 +88,8 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
      * Instantiates a new URL config panel.
      */
     public URLConfigPanel() {
+        super();
+        
         initComponents();
         addListeners();
         layoutComponents();
@@ -290,26 +291,6 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
         } else if (e.getSource() == remove) {
             model.removeURI(table.getRowSorter().convertRowIndexToModel(table.getSelectedRow()));
         }
-    }
-
-    /**
-     * Input dialog validator.
-     */
-    private static class URLProtocolValidator implements Validator<String> {
-
-        /** {@inheritDoc} */
-        @Override
-        public ValidationResponse validate(final String object) {
-            if (object == null || object.isEmpty()) {
-                return new ValidationResponse("Cannot be empty");
-            } else if (IdentityManager.getGlobalConfig().hasOption("protocol",
-                        object)) {
-                return new ValidationResponse("Cannot already exist");
-            } else {
-                return new ValidationResponse();
-            }
-        }
-
     }
 
 }
