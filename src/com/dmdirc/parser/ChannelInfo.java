@@ -605,7 +605,7 @@ public final class ChannelInfo {
 			}
 		}
 		if (!myParser.isUserSettable(mode)) { return; }
-		if (lModeQueue.size() == modecount) { sendModes(); }
+
 		if (positive) { modestr = "+"; } else { modestr = "-"; }
 		modestr = modestr + mode;
 		if (!myParser.hChanModesBool.containsKey(mode)) {
@@ -614,17 +614,18 @@ public final class ChannelInfo {
 				modestr = modestr + " " + parameter;
 			} else {
 				modecount = myParser.hChanModesOther.get(mode);
-				if ((modecount & myParser.MODE_LIST) == myParser.MODE_LIST) {
+				if ((modecount & IRCParser.MODE_LIST) == IRCParser.MODE_LIST) {
 					modestr = modestr + " " + parameter;
-				} else if (!positive && ((modecount & myParser.MODE_UNSET) == myParser.MODE_UNSET)) {
+				} else if (!positive && ((modecount & IRCParser.MODE_UNSET) == IRCParser.MODE_UNSET)) {
 					modestr = modestr + " " + parameter;
-				} else if (positive && ((modecount & myParser.MODE_SET) == myParser.MODE_SET)) {
+				} else if (positive && ((modecount & IRCParser.MODE_SET) == IRCParser.MODE_SET)) {
 					modestr = modestr + " " + parameter;
 				}
 			}
 		}
-		myParser.callDebugInfo(myParser.DEBUG_INFO, "Queueing mode: %s", modestr);
+		myParser.callDebugInfo(IRCParser.DEBUG_INFO, "Queueing mode: %s", modestr);
 		lModeQueue.add(modestr);
+		if (lModeQueue.size() == modecount) { sendModes(); }        
 	}
 	
 	/**

@@ -149,7 +149,7 @@ public class ChannelInfoTest extends junit.framework.TestCase {
         assertEquals(0, parser.sentLines.size());
     }
     
-    /*@Test
+    @Test
     public void testModeSendFull() {
         final TestParser parser = new TestParser();
         final ChannelInfo info = getChannelInfo(parser);
@@ -172,7 +172,7 @@ public class ChannelInfoTest extends junit.framework.TestCase {
         assertTrue(modes.indexOf('p') > -1);
         assertTrue(modes.indexOf('t') > -1);
         assertTrue(modes.indexOf('r') > -1);
-    }*/
+    }
     
     @Test
     public void testModeSendExtra() {
