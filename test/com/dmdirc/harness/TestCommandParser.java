@@ -20,33 +20,46 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.util;
+package com.dmdirc.harness;
 
-import com.dmdirc.config.IdentityManager;
-import com.dmdirc.harness.TestCipherUtils;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import com.dmdirc.commandparser.parsers.*;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.ui.interfaces.InputWindow;
 
-public class CipherUtilsTest extends junit.framework.TestCase {
-    
-    @Before
-    public void setUp() throws Exception {
-        IdentityManager.load();
-    }    
+public class TestCommandParser extends CommandParser {
 
-    @Test
-    public void testEncryptDecrypt() {
-        final String source = "DMDirc unit test {}!";
-        final CipherUtils utils = new TestCipherUtils();
-        
-        final String encrypted = utils.encrypt(source);
-        assertNotNull(encrypted);
-        
-        final String decrypted = utils.decrypt(encrypted);
-        assertNotNull(decrypted);
-        
-        assertEquals(source, decrypted);
+    public String nonCommandLine;
+
+    public Command executedCommand;
+
+    public boolean wasSilent;
+
+    public String[] commandArgs;
+
+    public String invalidCommand;
+
+    @Override
+    protected void loadCommands() {
+        CommandManager.loadGlobalCommands(this);
     }
-    
+
+    @Override
+    protected void executeCommand(InputWindow origin, boolean isSilent,
+                                  Command command, String... args) {
+        executedCommand = command;
+        wasSilent = isSilent;
+        commandArgs = args;
+    }
+
+    @Override
+    protected void handleNonCommand(InputWindow origin, String line) {
+        nonCommandLine = line;
+    }
+
+    @Override
+    protected void handleInvalidCommand(InputWindow origin, String command,
+                                        String... args) {
+        invalidCommand = command;
+    }
 }

@@ -21,6 +21,7 @@
  */
 package com.dmdirc.parser;
 
+import com.dmdirc.harness.parser.TestParser;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

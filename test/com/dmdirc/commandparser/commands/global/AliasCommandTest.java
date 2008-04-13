@@ -21,7 +21,7 @@
  */
 package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.commandparser.commands.TestInputWindow;
+import com.dmdirc.harness.TestInputWindow;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

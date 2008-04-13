@@ -21,6 +21,7 @@
  */
 package com.dmdirc.config.prefs;
 
+import com.dmdirc.harness.TestPreferencesInterface;
 import com.dmdirc.config.IdentityManager;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -67,16 +68,6 @@ public class PreferencesManagerTest extends junit.framework.TestCase {
         pm.registerSaveListener(tpi);
         pm.fireSaveListeners();
         assertTrue(tpi.saved);
-    }
-
-    private class TestPreferencesInterface implements PreferencesInterface {
-        
-        public boolean saved;
-
-        public void save() {
-            saved = true;
-        }
-        
     }
 
 }

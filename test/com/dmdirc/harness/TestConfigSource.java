@@ -20,33 +20,19 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.util;
+package com.dmdirc.harness;
 
-import com.dmdirc.config.IdentityManager;
-import com.dmdirc.harness.TestCipherUtils;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import com.dmdirc.config.*;
 
-public class CipherUtilsTest extends junit.framework.TestCase {
-    
-    @Before
-    public void setUp() throws Exception {
-        IdentityManager.load();
-    }    
+public class TestConfigSource extends ConfigSource {
 
-    @Test
-    public void testEncryptDecrypt() {
-        final String source = "DMDirc unit test {}!";
-        final CipherUtils utils = new TestCipherUtils();
-        
-        final String encrypted = utils.encrypt(source);
-        assertNotNull(encrypted);
-        
-        final String decrypted = utils.decrypt(encrypted);
-        assertNotNull(decrypted);
-        
-        assertEquals(source, decrypted);
+    @Override
+    public String getOption(String domain, String option) {
+        return option;
     }
-    
+
+    @Override
+    public boolean hasOption(String domain, String option) {
+        return Boolean.parseBoolean(domain);
+    }
 }

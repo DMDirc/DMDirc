@@ -20,33 +20,35 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.util;
+package com.dmdirc.harness.parser;
 
-import com.dmdirc.config.IdentityManager;
-import com.dmdirc.harness.TestCipherUtils;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import com.dmdirc.parser.*;
+import com.dmdirc.parser.callbacks.interfaces.IChannelQuit;
+import com.dmdirc.parser.callbacks.interfaces.IQuit;
 
-public class CipherUtilsTest extends junit.framework.TestCase {
-    
-    @Before
-    public void setUp() throws Exception {
-        IdentityManager.load();
-    }    
+public class TestIQuit implements IChannelQuit, IQuit {
 
-    @Test
-    public void testEncryptDecrypt() {
-        final String source = "DMDirc unit test {}!";
-        final CipherUtils utils = new TestCipherUtils();
-        
-        final String encrypted = utils.encrypt(source);
-        assertNotNull(encrypted);
-        
-        final String decrypted = utils.decrypt(encrypted);
-        assertNotNull(decrypted);
-        
-        assertEquals(source, decrypted);
+    public ChannelInfo channel;
+
+    public ChannelClientInfo cclient;
+
+    public ClientInfo client;
+
+    public String reason;
+
+    public int count = 0;
+
+    public void onChannelQuit(IRCParser tParser, ChannelInfo cChannel,
+                              ChannelClientInfo cChannelClient, String sReason) {
+        this.channel = cChannel;
+        this.cclient = cChannelClient;
+        this.reason = sReason;
+        this.count++;
     }
-    
+
+    public void onQuit(IRCParser tParser, ClientInfo cClient, String sReason) {
+        this.client = cClient;
+        this.reason = sReason;
+        this.count++;
+    }
 }

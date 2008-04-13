@@ -20,33 +20,41 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.util;
+package com.dmdirc.harness;
 
+import com.dmdirc.*;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.harness.TestCipherUtils;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import com.dmdirc.ui.interfaces.InputWindow;
 
-public class CipherUtilsTest extends junit.framework.TestCase {
-    
-    @Before
-    public void setUp() throws Exception {
-        IdentityManager.load();
-    }    
+public class TestWritableFrameContainer extends WritableFrameContainer {
 
-    @Test
-    public void testEncryptDecrypt() {
-        final String source = "DMDirc unit test {}!";
-        final CipherUtils utils = new TestCipherUtils();
-        
-        final String encrypted = utils.encrypt(source);
-        assertNotNull(encrypted);
-        
-        final String decrypted = utils.decrypt(encrypted);
-        assertNotNull(decrypted);
-        
-        assertEquals(source, decrypted);
+    private final int lineLength;
+
+    public TestWritableFrameContainer(final int lineLength) {
+        super("raw", IdentityManager.getGlobalConfig());
+
+        this.lineLength = lineLength;
     }
-    
+
+    public void sendLine(String line) {
+    }
+
+    public InputWindow getFrame() {
+        return null;
+    }
+
+    public int getMaxLineLength() {
+        return lineLength;
+    }
+
+    public String toString() {
+        return null;
+    }
+
+    public void windowClosing() {
+    }
+
+    public Server getServer() {
+        return null;
+    }
 }

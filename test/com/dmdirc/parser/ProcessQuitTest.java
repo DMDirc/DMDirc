@@ -22,6 +22,8 @@
 
 package com.dmdirc.parser;
 
+import com.dmdirc.harness.parser.TestParser;
+import com.dmdirc.harness.parser.TestIQuit;
 import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 
 import com.dmdirc.parser.callbacks.interfaces.IChannelQuit;
@@ -44,7 +46,7 @@ public class ProcessQuitTest extends junit.framework.TestCase {
         parser.injectLine(":server 353 nick = #DMDirc_testing2 :@nick +luser2");
         parser.injectLine(":server 366 nick #DMDirc_testing2 :End of /NAMES list.");        
         
-        final ICQTest test = new ICQTest();
+        final TestIQuit test = new TestIQuit();
         parser.getCallbackManager().addCallback("OnChannelQuit", test);
         
         assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
@@ -77,7 +79,7 @@ public class ProcessQuitTest extends junit.framework.TestCase {
         parser.injectLine(":server 353 nick = #DMDirc_testing2 :@nick +luser2");
         parser.injectLine(":server 366 nick #DMDirc_testing2 :End of /NAMES list.");
         
-        final ICQTest test = new ICQTest();
+        final TestIQuit test = new TestIQuit();
         parser.getCallbackManager().addCallback("OnQuit", test);
         
         assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
@@ -105,7 +107,7 @@ public class ProcessQuitTest extends junit.framework.TestCase {
         parser.injectLine(":server 353 nick = #DMDirc_testing :@nick +luser");
         parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list.");
         
-        final ICQTest test = new ICQTest();
+        final TestIQuit test = new TestIQuit();
         parser.getCallbackManager().addCallback("OnQuit", test);
         
         assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
@@ -121,30 +123,5 @@ public class ProcessQuitTest extends junit.framework.TestCase {
         assertEquals("luser", test.client.getNickname());
         assertEquals("", test.reason);
     }    
-    
-    private class ICQTest implements IChannelQuit, IQuit {
-        
-        public ChannelInfo channel;
-        public ChannelClientInfo cclient;
-        public ClientInfo client;
-        public String reason;
-        public int count = 0;
-
-        public void onChannelQuit(IRCParser tParser, ChannelInfo cChannel,
-                                  ChannelClientInfo cChannelClient,
-                                  String sReason) {
-            this.channel = cChannel;
-            this.cclient = cChannelClient;
-            this.reason = sReason;
-            this.count++;
-        }
-
-        public void onQuit(IRCParser tParser, ClientInfo cClient, String sReason) {
-            this.client = cClient;
-            this.reason = sReason;
-            this.count++;
-        }
-        
-    }
 
 }

@@ -22,6 +22,8 @@
 
 package com.dmdirc.parser;
 
+import com.dmdirc.harness.parser.TestParser;
+import com.dmdirc.harness.parser.TestIChannelTopic;
 import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.callbacks.interfaces.IChannelTopic;
 import org.junit.Test;
@@ -32,7 +34,7 @@ public class ProcessTopicTest extends junit.framework.TestCase {
     @Test
     public void testBasicTopic() throws CallbackNotFoundException {
         final TestParser parser = new TestParser();
-        final ICTTest test = new ICTTest();
+        final TestIChannelTopic test = new TestIChannelTopic();
         parser.injectConnectionStrings();
         parser.getCallbackManager().addCallback("OnChannelTopic", test);
         
@@ -51,7 +53,7 @@ public class ProcessTopicTest extends junit.framework.TestCase {
     @Test
     public void testTopicChange() throws CallbackNotFoundException {
         final TestParser parser = new TestParser();
-        final ICTTest test = new ICTTest();
+        final TestIChannelTopic test = new TestIChannelTopic();
         parser.injectConnectionStrings();
         
         parser.injectLine(":nick JOIN #DMDirc_testing");
@@ -69,21 +71,5 @@ public class ProcessTopicTest extends junit.framework.TestCase {
         assertEquals("foobar", test.channel.getTopicUser());
         assertTrue(1207350306l < test.channel.getTopicTime());
     }    
-    
-    private class ICTTest implements IChannelTopic {
-        
-        public boolean triggered;
-        public boolean isJoin;
-        public ChannelInfo channel;
-
-        public void onChannelTopic(IRCParser tParser, ChannelInfo cChannel,
-                                   boolean bIsJoinTopic) {
-            triggered = true;
-            isJoin = bIsJoinTopic;
-            channel = cChannel;
-        }
-        
-        
-    }
 
 }

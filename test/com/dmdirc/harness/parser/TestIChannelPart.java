@@ -20,23 +20,23 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser.commands;
+package com.dmdirc.harness.parser;
 
-import com.dmdirc.ui.dummy.DummyInputWindow;
-import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.util.MapList;
+import com.dmdirc.parser.*;
+import com.dmdirc.parser.callbacks.interfaces.IChannelPart;
 
-public class TestInputWindow extends DummyInputWindow implements InputWindow {
-    
-    public MapList<String, Object[]> lines = new MapList<String, Object[]>();
+public class TestIChannelPart implements IChannelPart {
 
-    public TestInputWindow() {
-        super(null, null);
+    public ChannelInfo channel;
+
+    public ChannelClientInfo cclient;
+
+    public String reason;
+
+    public void onChannelPart(IRCParser tParser, ChannelInfo cChannel,
+                              ChannelClientInfo cChannelClient, String sReason) {
+        channel = cChannel;
+        cclient = cChannelClient;
+        reason = sReason;
     }
-
-    @Override
-    public void addLine(String messageType, Object... args) {
-        lines.add(messageType, args);
-    }
-
 }

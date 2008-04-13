@@ -22,6 +22,8 @@
 
 package com.dmdirc.parser;
 
+import com.dmdirc.harness.parser.TestParser;
+import com.dmdirc.harness.parser.TestIErrorInfo;
 import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.callbacks.interfaces.IErrorInfo;
 import org.junit.Test;
@@ -32,7 +34,7 @@ public class ProcessNamesTest extends junit.framework.TestCase {
     @Test
     public void testExternalNames() throws CallbackNotFoundException {
         final TestParser parser = new TestParser();
-        final OEITest test = new OEITest();
+        final TestIErrorInfo test = new TestIErrorInfo();
         parser.injectConnectionStrings();
         parser.getCallbackManager().addCallback("OnErrorInfo", test);
         
@@ -67,16 +69,6 @@ public class ProcessNamesTest extends junit.framework.TestCase {
         cci = parser.getChannelInfo("#DMDirc_testing").getUser("nick3");
         assertNotNull(cci);
         assertEquals("", cci.getChanModeStr(true));
-    }
-    
-    private class OEITest implements IErrorInfo {
-        
-        boolean error = false;
-
-        public void onErrorInfo(IRCParser tParser, ParserError errorInfo) {
-            error = true;
-        }
-        
     }
 
 }

@@ -22,6 +22,16 @@
 
 package com.dmdirc.parser;
 
+import com.dmdirc.harness.parser.TestIPrivateCTCP;
+import com.dmdirc.harness.parser.TestParser;
+import com.dmdirc.harness.parser.TestIChannelKick;
+import com.dmdirc.harness.parser.TestINoticeAuth;
+import com.dmdirc.harness.parser.TestINumeric;
+import com.dmdirc.harness.parser.TestIServerError;
+import com.dmdirc.harness.parser.TestIChannelSelfJoin;
+import com.dmdirc.harness.parser.TestIPost005;
+import com.dmdirc.harness.parser.TestIPrivateMessage;
+import com.dmdirc.harness.parser.TestIPrivateAction;
 import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.callbacks.interfaces.IAwayState;
 import com.dmdirc.parser.callbacks.interfaces.IChannelKick;
@@ -133,7 +143,7 @@ public class IRCParserTest extends junit.framework.TestCase {
 
     @Test
     public void testError() throws CallbackNotFoundException {
-        final ISETest test = new ISETest();
+        final TestIServerError test = new TestIServerError();
 
         final TestParser parser = new TestParser();
         parser.getCallbackManager().addCallback("onServerError", test);
@@ -146,7 +156,7 @@ public class IRCParserTest extends junit.framework.TestCase {
 
     @Test
     public void testAuthNotices() throws CallbackNotFoundException {
-        final INATest test = new INATest();
+        final TestINoticeAuth test = new TestINoticeAuth();
         final TestParser parser = new TestParser();
         parser.getCallbackManager().addCallback("onNoticeAuth", test);
         parser.sendConnectionStrings();
@@ -165,7 +175,7 @@ public class IRCParserTest extends junit.framework.TestCase {
 
     @Test
     public void testNumeric() throws CallbackNotFoundException {
-        final INTest test = new INTest();
+        final TestINumeric test = new TestINumeric();
         final TestParser parser = new TestParser();
         parser.getCallbackManager().addCallback("onNumeric", test);
 
@@ -178,7 +188,7 @@ public class IRCParserTest extends junit.framework.TestCase {
 
     @Test
     public void testPost005() throws CallbackNotFoundException {
-        final IPFTest test = new IPFTest();
+        final TestIPost005 test = new TestIPost005();
         final TestParser parser = new TestParser();
         parser.getCallbackManager().addCallback("onPost005", test);
 
@@ -305,7 +315,7 @@ public class IRCParserTest extends junit.framework.TestCase {
     @Test
     public void testJoinChannel() throws CallbackNotFoundException {
         final TestParser parser = new TestParser();
-        final ICSJTest test = new ICSJTest();
+        final TestIChannelSelfJoin test = new TestIChannelSelfJoin();
 
         parser.injectConnectionStrings();
         parser.getCallbackManager().addCallback("onChannelSelfJoin", test);
@@ -323,9 +333,9 @@ public class IRCParserTest extends junit.framework.TestCase {
     @Test
     public void testPrivateMessages() throws CallbackNotFoundException {
         final TestParser parser = new TestParser();
-        final IPMTest ipmtest = new IPMTest();
-        final IPATest ipatest = new IPATest();
-        final IPCTest ipctest = new IPCTest();
+        final TestIPrivateMessage ipmtest = new TestIPrivateMessage();
+        final TestIPrivateAction ipatest = new TestIPrivateAction();
+        final TestIPrivateCTCP ipctest = new TestIPrivateCTCP();
 
         parser.injectConnectionStrings();
 
@@ -430,7 +440,7 @@ public class IRCParserTest extends junit.framework.TestCase {
     @Test
     public void testKick() throws CallbackNotFoundException {
         final TestParser parser = new TestParser();
-        final ICKTest ick = new ICKTest();
+        final TestIChannelKick ick = new TestIChannelKick();
         parser.injectConnectionStrings();
 
         parser.injectLine(":nick JOIN #D");
@@ -467,90 +477,6 @@ public class IRCParserTest extends junit.framework.TestCase {
 
         assertEquals(ircd, parser.getIRCD(false));
         assertEquals(expected.toLowerCase(), parser.getIRCD(true).toLowerCase());
-    }
-
-    private class ISETest implements IServerError {
-        String message = null;
-
-        public void onServerError(IRCParser tParser, String sMessage) {
-            message = sMessage;
-        }
-    }
-
-    private class INATest implements INoticeAuth {
-        String message = null;
-
-        public void onNoticeAuth(IRCParser tParser, String sData) {
-            message = sData;
-        }
-    }
-
-    private class INTest implements INumeric {
-        int numeric = 0;
-        String[] data;
-
-        public void onNumeric(IRCParser tParser, int numeric, String[] token) {
-            this.numeric = numeric;
-            data = token;
-        }
-    }
-
-    private class IPFTest implements IPost005 {
-        boolean done = false;
-
-        public void onPost005(IRCParser tParser) {
-            done = true;
-        }
-    }
-
-    private class ICSJTest implements IChannelSelfJoin {
-        ChannelInfo channel = null;
-
-        public void onChannelSelfJoin(IRCParser tParser, ChannelInfo cChannel) {
-            channel = cChannel;
-        }
-    }
-
-    private class IPMTest implements IPrivateMessage {
-        String host = null, message = null;
-
-        public void onPrivateMessage(IRCParser tParser, String sMessage, String sHost) {
-            host = sHost;
-            message = sMessage;
-        }
-    }
-
-    private class IPCTest implements IPrivateCTCP {
-        String type = null, message = null, host = null;
-
-        public void onPrivateCTCP(IRCParser tParser, String sType, String sMessage,
-                String sHost) {
-            type = sType;
-            message = sMessage;
-            host = sHost;
-        }
-    }
-
-    private class IPATest implements IPrivateAction {
-        String message = null, host = null;
-
-        public void onPrivateAction(IRCParser tParser, String sMessage, String sHost) {
-            message = sMessage;
-            host = sHost;
-        }
-    }
-    
-    private class ICKTest implements IChannelKick {
-        ChannelClientInfo cKickedClient = null;
-        boolean called = false;
-
-        public void onChannelKick(IRCParser tParser, ChannelInfo cChannel,
-                ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient,
-                String sReason, String sKickedByHost) {
-            this.cKickedClient = cKickedClient;
-            called = true;
-        }
-        
     }
 
 }

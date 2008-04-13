@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser;
 
+import com.dmdirc.harness.parser.TestParser;
 import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 
 import org.junit.Test;

@@ -21,6 +21,7 @@
  */
 package com.dmdirc.parser;
 
+import com.dmdirc.harness.parser.TestParser;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;

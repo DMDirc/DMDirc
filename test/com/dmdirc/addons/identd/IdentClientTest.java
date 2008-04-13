@@ -19,13 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.addons.identd;
 
-import com.dmdirc.config.ConfigManager;
+import com.dmdirc.harness.TestConfigManagerMap;
 import com.dmdirc.config.IdentityManager;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -97,7 +96,7 @@ public class IdentClientTest extends junit.framework.TestCase {
     
     @Test
     public void testAlwaysOn() {
-        final TestConfigManager tcm = new TestConfigManager();
+        final TestConfigManagerMap tcm = new TestConfigManagerMap();
         tcm.settings.put("plugin-Identd.advanced.alwaysOn", "false");
         
         final String response = IdentClient.getIdentResponse("50, 50", tcm);
@@ -109,7 +108,7 @@ public class IdentClientTest extends junit.framework.TestCase {
     
     @Test
     public void testHidden() {
-        final TestConfigManager tcm = new TestConfigManager();
+        final TestConfigManagerMap tcm = new TestConfigManagerMap();
         tcm.settings.put("plugin-Identd.advanced.alwaysOn", "true");
         tcm.settings.put("plugin-Identd.advanced.isHiddenUser", "true");
         
@@ -122,7 +121,7 @@ public class IdentClientTest extends junit.framework.TestCase {
     
     @Test
     public void testSystemNameQuoting() {
-        final TestConfigManager tcm = new TestConfigManager();
+        final TestConfigManagerMap tcm = new TestConfigManagerMap();
         tcm.settings.put("plugin-Identd.advanced.alwaysOn", "true");
         tcm.settings.put("plugin-Identd.advanced.isHiddenUser", "false");
         tcm.settings.put("plugin-Identd.advanced.useCustomSystem", "true");
@@ -137,7 +136,7 @@ public class IdentClientTest extends junit.framework.TestCase {
     
     @Test
     public void testCustomNameQuoting() {
-        final TestConfigManager tcm = new TestConfigManager();
+        final TestConfigManagerMap tcm = new TestConfigManagerMap();
         tcm.settings.put("plugin-Identd.advanced.alwaysOn", "true");
         tcm.settings.put("plugin-Identd.advanced.isHiddenUser", "false");
         tcm.settings.put("plugin-Identd.advanced.useCustomSystem", "false");
@@ -152,7 +151,7 @@ public class IdentClientTest extends junit.framework.TestCase {
     
     @Test
     public void testCustomNames() {
-        final TestConfigManager tcm = new TestConfigManager();
+        final TestConfigManagerMap tcm = new TestConfigManagerMap();
         tcm.settings.put("plugin-Identd.advanced.alwaysOn", "true");
         tcm.settings.put("plugin-Identd.advanced.isHiddenUser", "false");
         tcm.settings.put("plugin-Identd.advanced.useCustomSystem", "true");
@@ -180,33 +179,5 @@ public class IdentClientTest extends junit.framework.TestCase {
             final String needle) {
         assertTrue(msg, haystack.startsWith(needle));
     }    
-    
-    private class TestConfigManager extends ConfigManager {
-        
-        public final Map<String, String> settings = new HashMap<String, String>();
-
-        public TestConfigManager() {
-            super("", "", "");
-        }
-
-        @Override
-        public String getOption(String domain, String option) {
-            if (settings.containsKey(domain + "." + option)) {
-                return settings.get(domain + "." + option);
-            } else {
-                return super.getOption(domain, option);
-            }
-        }
-
-        @Override
-        public boolean hasOption(String domain, String option) {
-            if (settings.containsKey(domain + "." + option)) {
-                return true;
-            } else {
-                return super.hasOption(domain, option);
-            }
-        }
-        
-    }
 
 }

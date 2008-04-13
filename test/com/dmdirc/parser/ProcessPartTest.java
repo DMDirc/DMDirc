@@ -22,6 +22,8 @@
 
 package com.dmdirc.parser;
 
+import com.dmdirc.harness.parser.TestParser;
+import com.dmdirc.harness.parser.TestIChannelPart;
 import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 
 import com.dmdirc.parser.callbacks.interfaces.IChannelPart;
@@ -42,7 +44,7 @@ public class ProcessPartTest extends junit.framework.TestCase {
         parser.injectLine(":server 353 nick = #DMDirc_testing :@nick +luser");
         parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list.");
         
-        final ICPTest test = new ICPTest();
+        final TestIChannelPart test = new TestIChannelPart();
         parser.getCallbackManager().addCallback("OnChannelPart", test);
         
         assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
@@ -70,7 +72,7 @@ public class ProcessPartTest extends junit.framework.TestCase {
         parser.injectLine(":server 353 nick = #DMDirc_testing :@nick +luser");
         parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list.");
         
-        final ICPTest test = new ICPTest();
+        final TestIChannelPart test = new TestIChannelPart();
         parser.getCallbackManager().addCallback("OnChannelPart", test);
         
         assertEquals(2, parser.getChannelInfo("#DMDirc_testing").getChannelClients().size());
@@ -87,21 +89,5 @@ public class ProcessPartTest extends junit.framework.TestCase {
         assertEquals("luser", test.cclient.getClient().getNickname());
         assertEquals("", test.reason);
     }    
-        
-    private class ICPTest implements IChannelPart {
-        
-        public ChannelInfo channel;
-        public ChannelClientInfo cclient;
-        public String reason;
-
-        public void onChannelPart(IRCParser tParser, ChannelInfo cChannel,
-                                  ChannelClientInfo cChannelClient,
-                                  String sReason) {
-            channel = cChannel;
-            cclient = cChannelClient;
-            reason = sReason;
-        }
-        
-    }
 
 }

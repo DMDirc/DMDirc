@@ -22,6 +22,7 @@
 
 package com.dmdirc.config;
 
+import com.dmdirc.harness.TestConfigListener;
 import com.dmdirc.interfaces.ConfigChangeListener;
 
 import java.io.IOException;
@@ -214,19 +215,6 @@ public class IdentityTest {
     
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(IdentityTest.class);
-    }    
-    
-    private class TestConfigListener implements ConfigChangeListener {
-        
-        public int count = 0;
-        public String domain, key;
-
-        public void configChanged(String domain, String key) {
-            count++;
-            this.domain = domain;
-            this.key = key;
-        }
-        
-    }    
+    }  
     
 }

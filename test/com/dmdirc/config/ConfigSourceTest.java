@@ -21,13 +21,14 @@
  */
 package com.dmdirc.config;
 
+import com.dmdirc.harness.TestConfigSource;
 import java.awt.Color;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class ConfigSourceTest extends junit.framework.TestCase {
     
-    private final MySource s = new MySource();
+    private final TestConfigSource s = new TestConfigSource();
     
     @Test
     public void testGetOption() {
@@ -79,25 +80,6 @@ public class ConfigSourceTest extends junit.framework.TestCase {
         assertEquals(4, s.getOptionList("true", "\n\n\na", false).size());
         assertEquals(4, s.getOptionList("true", "a\nb\nc\nd", true).size());
         assertEquals("c", s.getOptionList("true", "a\nb\nc\nd", true).get(2));
-    }
-
-    private class MySource extends ConfigSource {
-
-        @Override
-        public String getOption(String domain, String option) {
-            if (Boolean.parseBoolean(domain)) {
-                return option;
-            } else {
-                assertTrue("Requested non-existant option", false);
-                return null;
-            }
-        }
-
-        @Override
-        public boolean hasOption(String domain, String option) {
-            return Boolean.parseBoolean(domain);
-        }
-        
     }
 
 }

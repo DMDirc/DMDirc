@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.harness.TestWritableFrameContainer;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -33,7 +34,7 @@ public class WritableFrameContainerTest extends junit.framework.TestCase {
     
     @Test
     public void testGetNumLines() {
-        final WritableFrameContainer container10 = new BasicWritableFrameContainer(10);
+        final WritableFrameContainer container10 = new TestWritableFrameContainer(10);
         
         final int res1a = container10.getNumLines("0123456789");
         final int res1b = container10.getNumLines("");
@@ -50,40 +51,5 @@ public class WritableFrameContainerTest extends junit.framework.TestCase {
         assertEquals(2, res2b);
         assertEquals(2, res2c);        
     }
-    
-}
 
-class BasicWritableFrameContainer extends WritableFrameContainer {
-    
-    private final int lineLength;
-    
-    public BasicWritableFrameContainer(final int lineLength) {
-        super("raw", IdentityManager.getGlobalConfig());
-        
-        this.lineLength = lineLength;
-    }
-    
-    public void sendLine(String line) {
-        // Do nothing
-    }
-    
-    public InputWindow getFrame() {
-        return null;
-    }
-    
-    public int getMaxLineLength() {
-        return lineLength;
-    }
-    
-    public String toString() {
-        return null;
-    }
-    
-    public void windowClosing() {
-        // Do nothing
-    }
-    
-    public Server getServer() {
-        return null;
-    }
 }

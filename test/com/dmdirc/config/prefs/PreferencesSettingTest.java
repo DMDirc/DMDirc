@@ -21,6 +21,7 @@
  */
 package com.dmdirc.config.prefs;
 
+import com.dmdirc.harness.TestSettingChangeListener;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.validator.NotEmptyValidator;
 import com.dmdirc.config.prefs.validator.PermissiveValidator;
@@ -122,7 +123,7 @@ public class PreferencesSettingTest {
     public void testListener() {
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, "domain",
                 "option", "fallback", "title", "helptext");
-        final TestListener tl = new TestListener();
+        final TestSettingChangeListener tl = new TestSettingChangeListener();
         ps.registerChangeListener(tl);
         ps.setValue("newvalue");
         ps.dismiss();
@@ -182,17 +183,5 @@ public class PreferencesSettingTest {
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(PreferencesSettingTest.class);
-    }
-
-    private class TestListener implements SettingChangeListener {
-
-        public int count;
-        public PreferencesSetting setting;
-
-        public void settingChanged(PreferencesSetting setting) {
-            count++;
-            this.setting = setting;
-        }
-
     }
 }

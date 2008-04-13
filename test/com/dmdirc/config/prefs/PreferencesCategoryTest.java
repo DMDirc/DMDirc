@@ -21,6 +21,7 @@
  */
 package com.dmdirc.config.prefs;
 
+import com.dmdirc.harness.TestChangeListener;
 import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -83,7 +84,7 @@ public class PreferencesCategoryTest {
     @Test
     public void testSelectionListener() {
         final PreferencesCategory category = new PreferencesCategory("unit", "test");
-        final ChangeListenerTest test = new ChangeListenerTest();
+        final TestChangeListener test = new TestChangeListener();
         category.addChangeListener(test);
         category.fireCategorySelected();
         category.removeChangeListener(test);
@@ -97,7 +98,7 @@ public class PreferencesCategoryTest {
     @Test
     public void testDeSelectionListener() {
         final PreferencesCategory category = new PreferencesCategory("unit", "test");
-        final ChangeListenerTest test = new ChangeListenerTest();
+        final TestChangeListener test = new TestChangeListener();
         category.addChangeListener(test);
         category.fireCategoryDeselected();
         category.removeChangeListener(test);
@@ -110,24 +111,6 @@ public class PreferencesCategoryTest {
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(PreferencesCategoryTest.class);
-    }
-    
-    private class ChangeListenerTest implements CategoryChangeListener {
-        
-        public int selected;
-        public int deselected;
-        public PreferencesCategory cat;
-
-        public void categorySelected(PreferencesCategory category) {
-            selected++;
-            cat = category;
-        }
-
-        public void categoryDeselected(PreferencesCategory category) {
-            deselected++;
-            cat = category;
-        }
-        
     }
 
 }

@@ -21,12 +21,8 @@
  */
 package com.dmdirc.commandparser.commands.chat;
 
-import com.dmdirc.MessageTarget;
-import com.dmdirc.Server;
-import com.dmdirc.commandparser.commands.TestInputWindow;
-import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.harness.TestMessageTarget;
+import com.dmdirc.harness.TestInputWindow;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -44,53 +40,8 @@ public class MeTest extends junit.framework.TestCase {
     
     @Test
     public void testSend() {
-        final MessageTargetTest mtt = new MessageTargetTest();
+        final TestMessageTarget mtt = new TestMessageTarget();
         command.execute(null, null, mtt, false, new String[]{"hello", "meep", "moop"});
         assertEquals("hello meep moop", mtt.action);
-    }
-    
-    private class MessageTargetTest extends MessageTarget {
-        
-        public String action;
-
-        public MessageTargetTest() {
-            super("", IdentityManager.getGlobalConfig());
-        }
-        
-        @Override
-        public void sendAction(String action) {
-            this.action = action;
-        }
-
-        @Override
-        public void sendLine(String line) {
-            // Do nothing
-        }
-
-        @Override
-        public InputWindow getFrame() {
-            return null;
-        }
-
-        @Override
-        public int getMaxLineLength() {
-            return 0;
-        }
-
-        @Override
-        public String toString() {
-            return null;
-        }
-
-        @Override
-        public Server getServer() {
-            return null;
-        }
-
-        @Override
-        public void windowClosing() {
-            // Do nothing
-        }
-        
     }
 }

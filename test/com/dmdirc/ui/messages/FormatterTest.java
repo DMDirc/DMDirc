@@ -21,13 +21,14 @@
  */
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.harness.TestConfigManagerOptionToggle;
 import com.dmdirc.config.ConfigManager;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class FormatterTest extends junit.framework.TestCase {
     
-    private final MyConfigManager mcm = new MyConfigManager();
+    private final TestConfigManagerOptionToggle mcm = new TestConfigManagerOptionToggle();
     
     @Test
     public void testBasicFormats() {
@@ -91,24 +92,6 @@ public class FormatterTest extends junit.framework.TestCase {
     public void testFormatDurationDays() {
         assertEquals("1 day", Formatter.formatDuration(86400));
         assertEquals("1 day, 10 minutes, 1 second", Formatter.formatDuration(87001));
-    }
-
-    private class MyConfigManager extends ConfigManager {
-        
-        public MyConfigManager() {
-            super(null, null, null);
-        }
-
-        @Override
-        public String getOption(String domain, String option) {
-            return option.substring(1);
-        }
-
-        @Override
-        public boolean hasOption(String domain, String option) {
-            return option.charAt(0) == '1';
-        }
-        
     }
 
 }

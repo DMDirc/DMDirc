@@ -21,6 +21,7 @@
  */
 package com.dmdirc.commandparser.parsers;
 
+import com.dmdirc.harness.TestCommandParser;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.global.Echo;
@@ -157,42 +158,6 @@ public class CommandParserTest {
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(CommandParserTest.class);
-    }
-
-    private class TestCommandParser extends CommandParser {
-
-        public String nonCommandLine;
-
-        public Command executedCommand;
-        public boolean wasSilent;
-        public String[] commandArgs;
-
-        public String invalidCommand;
-
-        @Override
-        protected void loadCommands() {
-            CommandManager.loadGlobalCommands(this);
-        }
-
-        @Override
-        protected void executeCommand(InputWindow origin, boolean isSilent,
-                Command command, String... args) {
-            executedCommand = command;
-            wasSilent = isSilent;
-            commandArgs = args;
-        }
-
-        @Override
-        protected void handleNonCommand(InputWindow origin, String line) {
-            nonCommandLine = line;
-        }
-
-        @Override
-        protected void handleInvalidCommand(InputWindow origin, String command,
-                                            String... args) {
-            invalidCommand = command;
-        }
-
     }
 
 }

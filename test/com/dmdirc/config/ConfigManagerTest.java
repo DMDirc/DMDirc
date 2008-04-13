@@ -21,6 +21,7 @@
  */
 package com.dmdirc.config;
 
+import com.dmdirc.harness.TestConfigListener;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -72,16 +73,6 @@ public class ConfigManagerTest {
     
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(ConfigManagerTest.class);
-    }
-    
-    private class TestConfigListener implements ConfigChangeListener {
-        
-        public int count = 0;
-
-        public void configChanged(String domain, String key) {
-            count++;
-        }
-        
     }
     
 }

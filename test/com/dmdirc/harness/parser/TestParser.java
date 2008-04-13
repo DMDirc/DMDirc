@@ -20,8 +20,9 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.parser;
+package com.dmdirc.harness.parser;
 
+import com.dmdirc.parser.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;

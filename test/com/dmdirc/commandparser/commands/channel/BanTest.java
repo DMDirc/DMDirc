@@ -22,7 +22,7 @@
 
 package com.dmdirc.commandparser.commands.channel;
 
-import com.dmdirc.commandparser.commands.TestInputWindow;
+import com.dmdirc.harness.TestInputWindow;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
