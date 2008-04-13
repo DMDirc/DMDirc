@@ -122,7 +122,7 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
     
     /** Lays out components. */
     private void layoutComponents() {
-        setLayout(new MigLayout("wrap 1, fill, debug"));
+        setLayout(new MigLayout("wrap 1, fill"));
         
         add(infoLabel, "growx");
         add(comparisonsPanel, "grow");

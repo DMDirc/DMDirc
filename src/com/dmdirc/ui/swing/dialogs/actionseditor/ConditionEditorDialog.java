@@ -225,9 +225,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
     }
     
     /** Populates the arguments combo box. */
-    private void populateArguments() {
-        setVisible(false);
-        
+    private void populateArguments() {       
         ((DefaultComboBoxModel) arguments.getModel()).removeAllElements();
         
         for (String arg : trigger.getType().getArgNames()) {
@@ -307,7 +305,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
     private void populateTarget() {
         targetText.setText(target);
         
-        setVisible(true);
+        pack();
     }
     
     /** Adds listeners to the components. */
@@ -336,7 +334,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
         add(comparisons, "growx");
         add(new JLabel("Target: "));
         add(targetText, "growx");
-        add(subsButton, "growx");
+        add(subsButton, "span 2, growx");
         
         add(getLeftButton(), "right");
         add(getRightButton(), "right");
