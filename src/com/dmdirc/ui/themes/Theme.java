@@ -133,6 +133,8 @@ public class Theme implements Comparable<Theme> {
             return;
         }
         
+        enabled = false;
+        
         IdentityManager.removeIdentity(identity);
     }
 

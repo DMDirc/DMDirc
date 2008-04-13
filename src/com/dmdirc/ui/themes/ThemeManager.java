@@ -130,6 +130,8 @@ public final class ThemeManager {
      * @return A list of available themes
      */    
     public static Map<String, Theme> getAvailableThemes() {
+        loadThemes();
+        
         synchronized (THEMES) {
             return new HashMap<String, Theme>(THEMES);
         }
@@ -142,6 +144,6 @@ public final class ThemeManager {
      */
     public static String getThemeDirectory() {
         return THEME_DIR;
-}
-    
+    }
+
 }
