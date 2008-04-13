@@ -1,0 +1,2 @@
+Normal line
+This is a line that is longer than 50 characters, so should cause the reader to have to scan back multiple times.
