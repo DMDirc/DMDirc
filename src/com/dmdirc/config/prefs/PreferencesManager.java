@@ -427,7 +427,7 @@ public class PreferencesManager {
                 "ui", "nicklistforegroundcolour", "false:1", "Nicklist foreground colour",
                 "Foreground colour to use for the nicklist"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "ui", "altBackgroundColour", "false:f0f0f0", "Alternate background colour",
+                "ui", "nickListAltBackgroundColour", "false:f0f0f0", "Alternate background colour",
                 "Background colour to use for every other nicklist entry"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "sortByMode", "true", "Sort nicklist by user mode",

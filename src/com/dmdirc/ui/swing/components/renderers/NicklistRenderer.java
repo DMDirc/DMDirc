@@ -69,9 +69,9 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
         config.addChangeListener("ui", "shownickcoloursinnicklist", this);
         config.addChangeListener("ui", "nicklistbackgroundcolour", this);
         config.addChangeListener("ui", "backgroundcolour", this);
-        config.addChangeListener("ui", "altBackgroundColour", this);
+        config.addChangeListener("ui", "nickListAltBackgroundColour", this);
         altBackgroundColour =
-                config.getOptionColour("ui", "altBackgroundColour",
+                config.getOptionColour("ui", "nickListAltBackgroundColour",
                 config.getOptionColour("ui", "nicklistbackgroundcolour",
                 config.getOptionColour("ui", "backgroundcolour",
                 Color.WHITE)));
@@ -119,7 +119,7 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
 
         } else {
             altBackgroundColour =
-                    config.getOptionColour("ui", "altBackgroundColour",
+                    config.getOptionColour("ui", "nickListAltBackgroundColour",
                     config.getOptionColour("ui", "nicklistbackgroundcolour",
                     config.getOptionColour("ui", "backgroundcolour",
                     Color.WHITE)));

@@ -110,7 +110,7 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
         getConfigManager().addChangeListener("ui", "nicklistbackgroundcolour",
                 this);
         getConfigManager().addChangeListener("ui", "backgroundcolour", this);
-        getConfigManager().addChangeListener("ui", "altBackgroundColour",
+        getConfigManager().addChangeListener("ui", "nickListAltBackgroundColour",
                 this);
 
         commandParser =
@@ -343,7 +343,7 @@ public final class ChannelFrame extends InputTextFrame implements MouseListener,
     public void configChanged(final String domain, final String key) {
         super.configChanged(domain, key);
 
-        if ("altBackgroundColour".equals(key) ||
+        if ("nickListAltBackgroundColour".equals(key) ||
                 "nicklistbackgroundcolour".equals(key) ||
                 "backgroundcolour".equals(key) ||
                 "nicklistforegroundcolour".equals(key) ||
