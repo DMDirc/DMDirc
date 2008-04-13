@@ -33,7 +33,6 @@ import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.actions.CloseFrameContainerAction;
 import com.dmdirc.ui.swing.components.TextFrame;
 import com.dmdirc.ui.swing.components.TreeScroller;
-import com.dmdirc.ui.swing.components.renderers.TreeViewTreeCellRenderer;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -97,7 +96,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
         root = new DefaultMutableTreeNode("DMDirc");
         model = new TreeViewModel(root);
         tree = new JTree(model);
-        labels.put(root, new NodeLabel(this, null));
+        labels.put(root, new NodeLabel(null));
 
         final TreeViewTreeCellRenderer renderer =
                 new TreeViewTreeCellRenderer(this);
@@ -218,7 +217,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
         synchronized (labels) {
             final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
             nodes.put(window, node);
-            labels.put(node, new NodeLabel(this, window.getFrame()));
+            labels.put(node, new NodeLabel(window.getFrame()));
             node.setUserObject(window);
             if (parent == null) {
                 model.insertNodeInto(node, root);
@@ -303,7 +302,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
      */
     @Override
     public void mouseExited(final MouseEvent event) {
-        tree.repaint();
+        checkRollover(null);
     }
 
     /**
@@ -329,6 +328,28 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
             }
         }
     }
+    
+    /**
+     * Checks for and sets a rollover node.
+     * 
+     * @param event event to check 
+     */
+    protected void checkRollover(final MouseEvent event) {
+        final NodeLabel node;
+        
+        if (event == null) {
+            node = null;
+        } else {
+            node = labels.get(getNodeForLocation(event.getX(), event.getY()));
+        }
+
+        synchronized (labels) {
+            for (NodeLabel label : labels.values()) {
+                label.setRollover(node == null ? false : label == node);
+            }
+        }
+        tree.repaint();
+    }
 
     /**
      * Invoked when a mouse button is pressed on a component and then dragged.
@@ -344,6 +365,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
                 ((FrameContainer) node.getUserObject()).activateFrame();
             }
         }
+        checkRollover(event);
     }
 
     /**
@@ -354,7 +376,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
      */
     @Override
     public void mouseMoved(final MouseEvent event) {
-    //Ignore
+        checkRollover(event);
     }
 
     /**

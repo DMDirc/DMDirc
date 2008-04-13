@@ -22,18 +22,13 @@
 
 package com.dmdirc.ui.swing.framemanager.tree;
 
-import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.IdentityManager;
-import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.interfaces.IconChangeListener;
 import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.ui.interfaces.Window;
-import com.dmdirc.ui.messages.ColourManager;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JLabel;
@@ -44,7 +39,7 @@ import net.miginfocom.layout.PlatformDefaults;
  * Node label.
  */
 public class NodeLabel extends JLabel implements SelectionListener,
-        NotificationListener, IconChangeListener, ConfigChangeListener {
+        NotificationListener, IconChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -52,44 +47,25 @@ public class NodeLabel extends JLabel implements SelectionListener,
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    /** Parent frame manager. */
-    private final TreeFrameManager manager;
     /** Node window. */
     private final Window window;
-    /** Config manager. */
-    private final ConfigManager config;
     /** Rollover colours. */
-    private Color rolloverColour;
-    /** Active bold. */
-    private boolean activeBold;
-    /** Active background. */
-    private Color activeBackground;
-    /** Active foreground. */
-    private Color activeForeground;
-    /** notification set? */
-    private boolean notification;
+    private boolean rollover;
+    /** notification colour */
+    private Color notificationColour;
     /** Selected. */
     private boolean selected;
 
     /** 
      * Instantiates a new node label.
      * 
-     * @param manager Parent manager.
      * @param window Window for this node
      */
-    public NodeLabel(final TreeFrameManager manager, final Window window) {
+    public NodeLabel(final Window window) {
         super();
 
-        this.manager = manager;
         this.window = window;
-        config = IdentityManager.getGlobalConfig();
-        selected = false;
-
-        setColours();
-
-        config.addChangeListener("ui", this);
-        config.addChangeListener("treeview", this);
-
+        
         init();
     }
 
@@ -107,8 +83,6 @@ public class NodeLabel extends JLabel implements SelectionListener,
 
         setText(window.getContainer().toString());
 
-        setBackground(manager.getTree().getBackground());
-        setForeground(manager.getTree().getForeground());
         setOpaque(true);
         setToolTipText(null);
         setIcon(window.getContainer().getIcon());
@@ -117,37 +91,25 @@ public class NodeLabel extends JLabel implements SelectionListener,
         setPreferredSize(new Dimension(100000, getFont().getSize() +
                 (int) PlatformDefaults.getUnitValueX("related").
                 getValue()));
-        notification = false;
+        notificationColour = null;
+        selected = false;
     }
 
     /** {@inheritDoc} */
     @Override
     public void selectionChanged(final Window window) {
         if (equals(window)) {
-            if (activeBold) {
-                setFont(getFont().deriveFont(Font.BOLD));
-            } else {
-                setFont(getFont().deriveFont(Font.PLAIN));
-            }
-            setBackground(activeBackground);
-            setForeground(activeForeground);
             selected = true;
-        } else if (!notification) {
-            setFont(getFont().deriveFont(Font.PLAIN));
-            setBackground(manager.getTree().getBackground());
-            setForeground(manager.getTree().getForeground());
+        } else {
             selected = false;
         }
-        manager.getTree().repaint();
     }
 
     /** {@inheritDoc} */
     @Override
     public void notificationSet(final Window window, final Color colour) {
         if (equals(window)) {
-            setForeground(colour);
-            notification = true;
-            manager.getTree().repaint();
+            notificationColour = colour;
         }
     }
 
@@ -155,11 +117,7 @@ public class NodeLabel extends JLabel implements SelectionListener,
     @Override
     public void notificationCleared(final Window window) {
         if (equals(window)) {
-            if (!selected) {
-                setForeground(manager.getTree().getForeground());
-            }
-            notification = false;
-            manager.getTree().repaint();
+            notificationColour = null;
         }
     }
 
@@ -168,21 +126,6 @@ public class NodeLabel extends JLabel implements SelectionListener,
     public void iconChanged(final Window window, final Icon icon) {
         if (equals(window)) {
             setIcon(icon);
-            manager.getTree().repaint();
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void configChanged(final String domain, final String key) {
-        if (("ui".equals(domain) || "treeview".equals(domain)) &&
-                ("treeviewRolloverColour".equals(key) ||
-                "treeviewActiveBackground".equals(key) ||
-                "treeviewActiveForeground".equals(key) ||
-                "treeviewActiveBold".equals(key) ||
-                "backgroundcolour".equals(key) ||
-                "foregroundcolour".equals(key))) {
-            setColours();
         }
     }
 
@@ -192,53 +135,49 @@ public class NodeLabel extends JLabel implements SelectionListener,
      * @param rollover rollover state
      */
     public void setRollover(final boolean rollover) {
-        if (!selected) {
-            if (rollover) {
-                setBackground(rolloverColour);
-            } else {
-                setBackground(manager.getTree().getBackground());
-            }
-            manager.getTree().repaint();
-        }
+        this.rollover = rollover;
     }
-
+    
+    /**
+     * Is this node a rollover node?
+     * 
+     * @return true iff this node is a rollover node
+     */
+    public boolean isRollover() {
+        return rollover;
+    }
+    
+    /**
+     * Is this node a selected node?
+     * 
+     * @return true iff this node is a selected node
+     */
+    public boolean isSelected() {
+        return selected;
+    }
+    
+    /**
+     * Returns the notification colour for this node.
+     * 
+     * @return notification colour or null if non set
+     */
+    public Color getNotificationColour() {
+        return notificationColour;
+    }
+    
     /** {@inheritDoc} */
     @Override
     public boolean equals(final Object obj) {
         if (window == null) {
             return false;
         }
-        if (obj == null) {
-            return false;
-        }
+        
         return window.equals(obj);
     }
 
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 71 * hash + (this.window == null ? 0 : this.window.hashCode());
-        return hash;
-    }
-
-    /** Sets the colours for the renderer. */
-    private void setColours() {
-        rolloverColour = config.getOptionColour(
-                "ui", "treeviewRolloverColour",
-                config.getOptionColour("treeview", "backgroundcolour",
-                config.getOptionColour("ui", "backgroundcolour",
-                ColourManager.parseColour("f0f0f0"))));
-        activeBackground = config.getOptionColour(
-                "ui", "treeviewActiveBackground",
-                config.getOptionColour("treeview", "backgroundcolour",
-                config.getOptionColour("ui", "backgroundcolour",
-                manager.getTree().getBackground())));
-        activeForeground = config.getOptionColour(
-                "ui", "treeviewActiveForeground",
-                config.getOptionColour("treeview", "foregroundcolour",
-                config.getOptionColour("ui", "foregroundcolour",
-                manager.getTree().getForeground())));
-        activeBold = config.getOptionBool("ui", "treeviewActiveBold", false);
+        return window.hashCode();
     }
 }
