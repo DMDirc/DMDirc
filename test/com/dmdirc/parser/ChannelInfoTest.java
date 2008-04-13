@@ -24,10 +24,11 @@ package com.dmdirc.parser;
 import com.dmdirc.harness.parser.TestParser;
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ChannelInfoTest extends junit.framework.TestCase {
+public class ChannelInfoTest {
 
     final ChannelInfo ci = new ChannelInfo(null, "name");
 
@@ -205,7 +206,7 @@ public class ChannelInfoTest extends junit.framework.TestCase {
         assertTrue(modes.indexOf('N') > -1);
     }
     
-    /*@Test
+    @Test @Ignore
     public void testModeSendOptimisation1() {
         final TestParser parser = new TestParser();
         final ChannelInfo info = getChannelInfo(parser);
@@ -227,9 +228,9 @@ public class ChannelInfoTest extends junit.framework.TestCase {
                 -1, modes.indexOf('i'));
         
         assertTrue(modes.indexOf('m') > -1);
-    }*/
+    }
     
-    /*@Test
+    @Test @Ignore
     public void testModeSendOptimisation2() {
         final TestParser parser = new TestParser();
         final ChannelInfo info = getChannelInfo(parser);
@@ -249,7 +250,7 @@ public class ChannelInfoTest extends junit.framework.TestCase {
                 modes.indexOf('n'), modes.lastIndexOf('n'));
         
         assertTrue(modes.indexOf('m') > -1);
-    }*/
+    }
     
     private String getModes(final String line) {
         final String res = line.substring("MODE #DMDirc_testing ".length());
