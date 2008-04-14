@@ -41,10 +41,10 @@ if [ -e "$SCRIPTDIR/junit-failures.php" -a "${PHP}" != "" ]; then
 fi
 
 # Oblong junit announcement
-LINE=`cat junitreports/overview-summary.html | grep "%</td"`
-PASSRATE=`expr "$LINE" : '.*<td>\(.*\)%</td>'`
-if [ "${PASSRATE}" = "" ]; then
-	/bin/sh $MYDIR/oblong.sh "Reports" "Report Generation Complete (Junit tests failed to run)"
-else
-	/bin/sh $MYDIR/oblong.sh "Reports" "Report Generation Complete (Junit Pass Rate: ${PASSRATE}%)"
-fi
+#LINE=`cat junitreports/overview-summary.html | grep "%</td"`
+#PASSRATE=`expr "$LINE" : '.*<td>\(.*\)%</td>'`
+#if [ "${PASSRATE}" = "" ]; then
+#	/bin/sh $MYDIR/oblong.sh "Reports" "Report Generation Complete (Junit tests failed to run)"
+#else
+#	/bin/sh $MYDIR/oblong.sh "Reports" "Report Generation Complete (Junit Pass Rate: ${PASSRATE}%)"
+#fi
