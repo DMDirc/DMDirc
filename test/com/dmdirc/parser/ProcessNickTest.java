@@ -68,7 +68,7 @@ public class ProcessNickTest {
         assertEquals("+", cci.getChanModeStr(true));
     }    
     
-    @Test @Ignore
+    @Test
     public void testOverrideNick() throws CallbackNotFoundException {
         final TestParser parser = new TestParser();
         final TestIErrorInfo info = new TestIErrorInfo();
