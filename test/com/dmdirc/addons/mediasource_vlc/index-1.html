@@ -1,0 +1,261 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD  XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml10/DTD/xhtml10transitional.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<!-- $Id: index.html 14777 2006-03-17 14:40:59Z jpsaman $-->
+
+
+
+
+
+ 
+    <title>VLC media player</title>
+    <link href="index-1_files/style.css" title="Default" rel="stylesheet" type="text/css">
+    <!-- Work around. should be done in the code -->
+    
+        <meta http-equiv="Refresh" content="60;url=/old/">
+    
+    
+    
+    
+<script type="text/javascript">
+
+function changeMe(item)
+{
+  if (item.parentNode.lastChild.style.display=="none")
+  {
+    item.parentNode.lastChild.style.display="block";
+    item.alt="[-]";
+    item.src="cone_minus.png";
+  }
+  else
+  {
+    item.parentNode.lastChild.style.display="none";
+    item.alt="[+]";
+    item.src="cone_plus.png";
+  }
+}
+</script>
+
+</head><body>
+
+    <!-- left menu -->
+    <div class="left">
+      <div class="sectitle">Playback control</div>
+      <div class="section-controls">
+        <p>
+          </p><form method="get" action="" style="display: inline;">
+            <input name="control" value="stop" type="submit">
+          </form>
+          <form method="get" action="" style="display: inline;">
+            <input name="control" value="pause" type="submit">
+          </form>
+        
+        <p>
+          </p><form method="get" action="" style="display: inline;">
+            <input name="control" value="previous" type="submit">
+          </form>
+          <form method="get" action="" style="display: inline;">
+            <input name="control" value="next" type="submit">
+          </form>
+        
+        <p>
+          </p><form method="get" action="" style="display: inline;">
+            <input name="seek_value" value="-1min" type="submit"><input name="control" value="seek" type="hidden">
+          </form>
+          <form method="get" action="" style="display: inline;">
+            <input name="seek_value" value="+1min" type="submit"><input name="control" value="seek" type="hidden">
+          </form>
+        
+        <p>
+          </p><form method="get" action="">
+            <input name="seek_value" size="14" type="text"><input name="control" value="seek" type="hidden">
+            <input value="Seek" type="submit">
+          </form>
+        
+        <p>
+          <span class="small">( Seek Textbox: for example "+12min 42sec", "01:13:43", "-12%" etc... )</span>
+        </p>
+      </div> <!-- End section -->
+
+      <div class="sectitle">Misc controls</div>
+      <div class="section-controls">
+        <form method="get" action="">
+               <input name="control" value="volume" type="hidden">
+          Vol: <input name="value" size="5" type="text">
+               <input value="Set" type="submit"><br> (0 - 1024)<br><span class="small">(for example: "536", "-12", "+42", "36%")</span>
+        </form>
+        <br>
+        <form method="get" action="">
+          <input name="control" value="fullscreen" type="submit">
+        </form>
+      </div>
+
+      <div class="sectitle">Status</div>
+      <div class="section">
+        State: playing<br>
+        Length: <span id="length">249 s
+                </span><br>
+        Time: <span id="time">38 s</span><br>
+        Volume: <span id="volume">56</span>
+        <br><a href="http://127.0.0.1:8082/old/info.html">Information</a>  
+      </div>
+
+      <div class="section"><a href="http://127.0.0.1:8082/old/admin/">Administration Page</a></div>
+
+    </div>
+    <!-- end left -->
+
+    <!-- main content -->
+    <div class="right">
+      <h2 class="title"><a href="http://www.videolan.org/">VLC media player
+        0.8.6c Janus</a> (http interface)
+      </h2>
+
+      <div class="sectitle">Add</div>
+      <div class="section">
+        <table class="add">
+          <tbody><tr>
+	    <form method="get" action="?" enctype="text/plain"></form>
+              <td>Add a MRL (Media Resource Locator) to the playlist</td>
+              <td>
+               <input name="control" value="add" type="hidden">
+	       <input name="mrl" size="40" type="text">
+	       <input value="Add" type="submit">
+	      </td>
+              
+          </tr>
+	  <tr>
+            <form method="get" action="" enctype="text/plain"></form>
+              <td>Stream Output:</td>
+              <td>
+	       <input name="sout" size="40" value="" type="text">
+	       <input value="Sout" type="submit">
+	      </td>
+             
+           </tr>
+          </tbody></table>
+      </div>
+<!-- Playlist -->
+      <div class="section">
+       <form method="get" action="">
+         <ul id="playlist">
+           
+           
+           
+                 
+
+               
+                 <li>
+                   
+                   <img alt="Cone" src="index-1_files/cone_plus.png">
+                     Playlist
+                     
+                   
+
+                   
+                       <ul>
+                   
+
+               
+
+               
+
+           
+                 
+
+               
+                 <li>
+                   
+                   <img alt="[-]" src="index-1_files/cone_minus.png" onclick="changeMe(this)">
+                   
+                     <input name="item" value="3" type="checkbox">
+		     <a href="http://127.0.0.1:8082/old/?control=play&amp;item=3">
+                   
+		   General
+                   
+		      </a>
+                   
+		   (1
+		    item)
+                   
+
+                   
+                       <ul>
+                   
+
+               
+
+               
+
+           
+                 
+
+               
+                 
+                 <li>
+                   <input name="item" value="4" type="checkbox">
+                   
+                     <strong>
+                   
+                   <a href="http://127.0.0.1:8082/old/?control=play&amp;item=4">
+The Second Great Depression (/mnt/drive1/Music/aMule/Manic Street
+Preachers - Send Away The Tigers
+(2007)/05-manic_street_preachers-the_second_great_depression.mp3)</a>
+                   
+                     </strong>
+                   
+                 </li>
+               
+
+               
+
+           
+     
+     
+         </ul></li>
+     
+         </ul></li>
+     
+
+         </ul>
+         <input name="control" value="delete" type="submit">
+         <input name="control" value="empty" type="submit">
+         <input name="control" value="keep" type="submit">
+	              <input name="control" value="sort" type="submit"> by
+                     <select name="type">
+                       <option value="title">title</option>
+                       <option value="shuffle">shuffle</option>
+                     </select> with
+                     <select name="order">
+                       <option value="0">normal order</option>
+                       <option value="1">reverse order</option>
+                     </select>
+        
+       </form>
+      </div>
+    </div>
+    <!-- end main content -->
+    
+    <p style="text-align: center; font-size: 1.2em;"> VLC media player - version 0.8.6c Janus - (c) 1996-2007 the VideoLAN team </p>
+
+    <script type="text/javascript">
+      got_time = 38;
+      hours = Math.floor(got_time/ 3600);
+      minutes = Math.floor((got_time/60) % 60);
+      seconds = got_time % 60;
+      if ( hours < 10 ) hours = "0" + hours;
+      if ( minutes < 10 ) minutes = "0" + minutes;
+      if ( seconds < 10 ) seconds = "0" + seconds;
+      document.getElementById('time').innerHTML = hours+":"+minutes+":"+seconds;
+      got_length = 249;
+      hours = Math.floor(got_length/ 3600);
+      minutes = Math.floor((got_length/60) % 60);
+      seconds = got_length % 60;
+      if ( hours < 10 ) hours = "0" + hours;
+      if ( minutes < 10 ) minutes = "0" + minutes;
+      if ( seconds < 10 ) seconds = "0" + seconds;
+      document.getElementById('length').innerHTML = hours+":"+minutes+":"+seconds;
+      got_volume = 56;
+      document.getElementById( 'volume').innerHTML = Math.ceil(got_volume * 400/1024) + " %";
+    </script>
+</body></html>
