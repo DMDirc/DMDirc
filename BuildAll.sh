@@ -133,7 +133,6 @@ else
 	# /bin/sh $MYDIR/oblong.sh "Nightly Build" "Build Successful";
 	
 	# Do normal reports
-	export IGNOREDATE="1";
 	/bin/sh $MYDIR/DoReports.sh
 fi
 

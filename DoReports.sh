@@ -1,10 +1,5 @@
 #!/bin/sh
 
-# Don't run at midnight unless its from the nightlies
-if [ `date +%H` = "00" -a "${IGNOREDATE}" = "" ]; then
-	echo 'Not running, nightlies running instead.';
-fi;
-
 # cron doesn't do this
 . /etc/profile
 . ${HOME}/.bashrc
