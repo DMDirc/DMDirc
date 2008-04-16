@@ -80,6 +80,7 @@ PHP=`which php`
 # Check if build failed
 if [ ! -e "$MYDIR/dist/DMDirc.jar" ]; then
 	# Report failure
+	echo "Build Failure."
 	if [ -e "$SCRIPTDIR/nightly-failure.php" -a "${PHP}" != "" ]; then
 		$PHP -q $SCRIPTDIR/nightly-failure.php
 	fi
@@ -91,6 +92,7 @@ else
 	
 	if [ ! -e "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.exe" -o  ! -e "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.run" -o ! -e "${MYDIR}/installer/output/DMDirc-${FILEDATA}.dmg" -o ! -e "${MYDIR}/installer/output/DMDirc-${FILEDATA}.jar" ]; then
 		# Report failure
+		echo "Installer Build Failure."
 		if [ -e "$SCRIPTDIR/nightly-failure.php" -a "${PHP}" != "" ]; then
 			export DMDIRC_INSTALLERFAILURE=true;
 			$PHP -q $SCRIPTDIR/nightly-failure.php
@@ -131,6 +133,7 @@ else
 	# /bin/sh $MYDIR/oblong.sh "Nightly Build" "Build Successful";
 	
 	# Do normal reports
+	export IGNOREDATE="1";
 	/bin/sh $MYDIR/DoReports.sh
 fi
 
