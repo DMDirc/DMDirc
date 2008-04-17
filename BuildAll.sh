@@ -24,7 +24,7 @@ BAMBOO=/home/dmdirc/Bamboo/xml-data/builds/DMDIRC-NIGHTLY/download-data/build_lo
 
 cd ${MYDIR}
 
-/bin/sh $MYDIR/oblong.sh "Nightly Build" "Build Started"
+# /bin/sh $MYDIR/oblong.sh "Nightly Build" "Build Started"
 
 cd $MYDIR/
 $SVN update
