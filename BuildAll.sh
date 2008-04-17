@@ -19,6 +19,9 @@ SVN="/usr/bin/svn"
 # Path to jar binary
 JAR="/usr/bin/jar"
 
+# Where are the bamboo log files?
+BAMBOO=/home/dmdirc/Bamboo/xml-data/builds/DMDIRC-NIGHTLY/download-data/build_logs/
+
 cd ${MYDIR}
 
 /bin/sh $MYDIR/oblong.sh "Nightly Build" "Build Started"
@@ -77,6 +80,11 @@ done;
 
 PHP=`which php`
 
+if [ "${IS_BAMBOO}" != "" -e ${BAMBOO} ]; then
+	export BAMBOO_DIR=${BAMBOO};
+	export BAMBOO_BUILD=`ls -1 ${BAMBOO} | tail -n 1 | awk -F. '{print $1}'`
+fi
+
 # Check if build failed
 if [ ! -e "$MYDIR/dist/DMDirc.jar" ]; then
 	# Report failure
@@ -95,6 +103,7 @@ else
 		echo "Installer Build Failure."
 		if [ -e "$SCRIPTDIR/nightly-failure.php" -a "${PHP}" != "" ]; then
 			export DMDIRC_INSTALLERFAILURE=true;
+			export BAMBOO_BUILD;
 			$PHP -q $SCRIPTDIR/nightly-failure.php
 		fi
 	fi;
@@ -133,7 +142,9 @@ else
 	# /bin/sh $MYDIR/oblong.sh "Nightly Build" "Build Successful";
 	
 	# Do normal reports
-	/bin/sh $MYDIR/DoReports.sh
+	if [ "${IS_BAMBOO}" == "" ]; then
+		/bin/sh $MYDIR/DoReports.sh
+	fi;
 fi
 
 $SVN revert ${MYDIR}/src/com/dmdirc/Main.java
