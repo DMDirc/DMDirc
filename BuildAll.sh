@@ -80,9 +80,10 @@ done;
 
 PHP=`which php`
 
-if [ "${IS_BAMBOO}" != "" -e ${BAMBOO} ]; then
+if [ "${IS_BAMBOO}" != "" -a -e "${BAMBOO}" ]; then
 	export BAMBOO_DIR=${BAMBOO};
 	export BAMBOO_BUILD=`ls -1 ${BAMBOO} | tail -n 1 | awk -F. '{print $1}'`
+	echo "This is Bamboo Build: "${BAMBOO_BUILD};
 fi
 
 # Check if build failed
