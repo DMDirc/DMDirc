@@ -24,6 +24,7 @@
         <clover-report>
          <current outfile="reports/clover/clover.xml"/>
         </clover-report>
+        <clover-clean/>
     </target>
 
     <target name="clover.html" if="clover.installed">
@@ -36,10 +37,10 @@
          </current>
          <historical outfile="reports/clover" historydir="reports/clover/history" />
         </clover-report>
+        <clover-clean/>
     </target>
 
-    <import file="nbproject/build-impl.xml"/>
-    <property file="nbproject/project.properties"/>
+    <import file="build.xml"/>
     <property name="test.reports" value="./junitreports" />
 
 		
