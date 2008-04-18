@@ -21,6 +21,7 @@
  *
  * SVN: $Id$
  */
+
 package com.dmdirc.plugins;
 
 import com.dmdirc.config.prefs.PreferencesManager;
@@ -68,7 +69,8 @@ public abstract class Plugin implements Comparable<Plugin> {
 	 * @param o Object to compare to
 	 * @return a negative integer, zero, or a positive integer.
 	 */
-	public int compareTo(Plugin o) {
+    @Override
+	public int compareTo(final Plugin o) {
 		return toString().compareTo(o.toString());
 	}
 }

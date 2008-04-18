@@ -21,26 +21,24 @@
  *
  * SVN: $Id$
  */
+
 package com.dmdirc.plugins;
 
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
 import java.io.IOException;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
-
 import java.util.HashMap;
 import java.util.List;
 
 /**
- * This classloader knows about plugins and is used to store persistant classes
+ * This classloader knows about plugins and is used to store persistant classes.
  */
 public class GlobalClassLoader extends ClassLoader {
-	/** Singleton instance of the GlobalClassLoader. */
+
+    /** Singleton instance of the GlobalClassLoader. */
 	private static GlobalClassLoader me;
 	
-	/** HashMap containing sources of Global class files */
+	/** HashMap containing sources of Global class files. */
 	private HashMap<String,String> resourcesList = new HashMap<String,String>();
 
 	/**
@@ -64,14 +62,14 @@ public class GlobalClassLoader extends ClassLoader {
 	}
 
 	/**
-	 * Load the plugin with the given className
+	 * Load the plugin with the given className.
 	 *
 	 * @param name Class Name of plugin
 	 * @param pi The PluginInfo that contains this class
 	 * @return plugin class
 	 * @throws ClassNotFoundException if the class to be loaded could not be found.
 	 */
-	public Class< ? > loadClass(final String name, final PluginInfo pi) throws ClassNotFoundException {
+	public Class<?> loadClass(final String name, final PluginInfo pi) throws ClassNotFoundException {
 		for (String classname : pi.getPersistantClasses()) {
 			if (!resourcesList.containsKey(classname)) {
 				resourcesList.put(classname, pi.getFullFilename());
@@ -81,13 +79,14 @@ public class GlobalClassLoader extends ClassLoader {
 	}
 	
 	/**
-	 * Load the plugin with the given className
+	 * Load the plugin with the given className.
 	 *
 	 * @param name Class Name of plugin
 	 * @return plugin class
 	 * @throws ClassNotFoundException if the class to be loaded could not be found.
 	 */
-	public Class< ? > loadClass(final String name) throws ClassNotFoundException {
+    @Override
+	public Class<?> loadClass(final String name) throws ClassNotFoundException {
 		try {
 			return super.loadClass(name);
 		} catch (Exception e) {
@@ -116,7 +115,7 @@ public class GlobalClassLoader extends ClassLoader {
 	 * @param classname Class name to define.
 	 * @param data Data to define class with.
 	 */
-	public Class< ? > defineClass(final String classname, final byte[] data) {
+	public Class<?> defineClass(final String classname, final byte[] data) {
 		return defineClass(classname, data, 0, data.length);
 	}
 	

@@ -53,10 +53,4 @@ public class PluginException extends Exception {
 	 */
 	public PluginException(final String message, final Throwable cause) { super(message, cause); }
 	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo() { return "$Id: PluginException.java 2022 2007-09-12 00:35:14Z ShaneMcC $"; }	
 }

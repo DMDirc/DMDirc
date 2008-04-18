@@ -21,17 +21,16 @@
  *
  * SVN: $Id$
  */
+
 package com.dmdirc.plugins;
 
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
 import java.io.IOException;
 
-//import java.lang.reflect.Method;
-//import java.lang.reflect.InvocationTargetException;
-
 public class PluginClassLoader extends ClassLoader {
-	/** The plugin Info object for the plugin we are loading */
+
+    /** The plugin Info object for the plugin we are loading. */
 	final PluginInfo pluginInfo;
 	
 	/**
@@ -51,7 +50,7 @@ public class PluginClassLoader extends ClassLoader {
 	 * @return plugin class
 	 * @throws ClassNotFoundException if the class to be loaded could not be found.
 	 */
-	public Class< ? > loadClass(final String name) throws ClassNotFoundException {
+	public Class<?> loadClass(final String name) throws ClassNotFoundException {
 		return loadClass(name, true);
 	}
 	
@@ -63,7 +62,7 @@ public class PluginClassLoader extends ClassLoader {
 	 * @return plugin class
 	 * @throws ClassNotFoundException if the class to be loaded could not be found.
 	 */
-	public Class< ? > loadClass(final String name, final boolean askGlobal) throws ClassNotFoundException {
+	public Class<?> loadClass(final String name, final boolean askGlobal) throws ClassNotFoundException {
 		ResourceManager res;
 		try {
 			res = pluginInfo.getResourceManager();

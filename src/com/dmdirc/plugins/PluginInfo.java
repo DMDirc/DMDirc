@@ -725,6 +725,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 *
 	 * @return String Representation of this plugin
 	 */
+    @Override
 	public String toString() { return getNiceName()+" - "+filename; }
 
 	/**
@@ -747,9 +748,9 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	/**
 	 * Get misc meta-information.
 	 *
-	 * @param metainfo[] The metainfos to look for in order. If the first item in
-	 *                   the array is not found, the next will be looked for, and
-	 *                   so on until either one is found, or none are found.
+	 * @param metainfo The metainfos to look for in order. If the first item in
+	 *                 the array is not found, the next will be looked for, and
+	 *                 so on until either one is found, or none are found.
 	 * @return Misc Meta Info (or "" if none are found);
 	 */
 	public String getMetaInfo(final String[] metainfo) { return getMetaInfo(metainfo,""); }
@@ -757,9 +758,9 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	/**
 	 * Get misc meta-information.
 	 *
-	 * @param metainfo[] The metainfos to look for in order. If the first item in
-	 *                   the array is not found, the next will be looked for, and
-	 *                   so on until either one is found, or none are found.
+	 * @param metainfo The metainfos to look for in order. If the first item in
+	 *                 the array is not found, the next will be looked for, and
+	 *                 so on until either one is found, or none are found.
 	 * @param fallback Fallback value if requested values are not found
 	 * @return Misc Meta Info (or "" if none are found);
 	 */
@@ -778,7 +779,8 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 * @param o Object to compare to
 	 * @return a negative integer, zero, or a positive integer.
 	 */
-	public int compareTo(PluginInfo o) {
+    @Override
+	public int compareTo(final PluginInfo o) {
 		return toString().compareTo(o.toString());
 	}
 }

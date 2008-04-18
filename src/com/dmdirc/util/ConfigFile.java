@@ -125,7 +125,12 @@ public class ConfigFile {
         domains.clear();
 
         for (String line : file.getLines()) {
-            final String tline = line.trim();
+            String tline = line;
+            
+            while (!tline.isEmpty() && (tline.charAt(0) == '\t' || 
+                    tline.charAt(0) == ' ')) {
+                tline = tline.substring(1);
+            }
 
             if (tline.indexOf('#') == 0 || tline.isEmpty()) {
                 continue;

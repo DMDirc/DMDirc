@@ -40,7 +40,6 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -175,6 +174,9 @@ public class Identity extends ConfigSource implements Serializable,
                 file.getKeyDomain(domain).put(option, value);
             }
         }
+        
+        needSave = true;
+        save();
     }
 
     /**
@@ -491,7 +493,7 @@ public class Identity extends ConfigSource implements Serializable,
      */
     public void save() {
         if (needSave && file != null) {
-            if (myTarget.getType() == ConfigTarget.TYPE.GLOBAL) {
+            if (myTarget != null && myTarget.getType() == ConfigTarget.TYPE.GLOBAL) {
                 // If we're the global config, unset useless settings that are
                 // covered by global defaults.
 
