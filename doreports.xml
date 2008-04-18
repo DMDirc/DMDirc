@@ -3,8 +3,8 @@
     <description>Builds, tests, and runs the project DMDirc.</description>
     <import file="junitreport.xml" />
     <import file="style_build.xml" />
-		<target name="doallreports" depends="test-html,allreports,javadoc" />
-		<target name="domostreports" depends="test-html,mostreports,javadoc" />
+		<target name="doallreports" depends="test-both,allreports,javadoc" />
+		<target name="domostreports" depends="test-both,mostreports,javadoc" />
 </project>
 
 

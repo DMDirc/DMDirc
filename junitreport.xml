@@ -10,6 +10,7 @@
     <available property="clover.installed" classname="com.cenqua.clover.CloverInstr" />
 
     <target name="with.clover" depends="clean" if="clover.installed">
+        <clover-clean/>
         <clover-setup>
             <fileset dir="src/com/" includes="**/*.java" />
             <fileset dir="test/com/">
@@ -22,9 +23,8 @@
     <target name="clover.xml" if="clover.installed">
         <mkdir dir="reports/clover" />
         <clover-report>
-         <current outfile="reports/clover/clover.xml"/>
+            <current outfile="reports/clover/clover.xml"/>
         </clover-report>
-        <clover-clean/>
     </target>
 
     <target name="clover.html" if="clover.installed">
@@ -32,20 +32,19 @@
         <mkdir dir="reports/clover/history" />
         <clover-historypoint historydir="reports/clover/history" />
         <clover-report>
-         <current outfile="reports/clover">
-          <format type="html"/>
-         </current>
-         <historical outfile="reports/clover" historydir="reports/clover/history" />
+            <current outfile="reports/clover">
+                <format type="html"/>
+             </current>
+             <historical outfile="reports/clover" historydir="reports/clover/history" />
         </clover-report>
-        <clover-clean/>
     </target>
 
     <import file="build.xml"/>
     <property name="test.reports" value="./junitreports" />
 
-		
    <target name="test-html" depends="with.clover,compile-test,test,clover.html"/>
    <target name="test-xml" depends="with.clover,compile-test,test,clover.xml"/>
+   <target name="test-both" depends="test-html,test-xml"/>
    <target name="-post-test-run">
       <mkdir dir="${test.reports}" />
       <junitreport todir="${test.reports}">
