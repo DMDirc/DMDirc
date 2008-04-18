@@ -56,6 +56,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.List;
 
+import java.util.concurrent.Semaphore;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -68,8 +69,12 @@ public final class SwingController implements UIController {
 
     /** Singleton instance of MainFrame. */
     private static MainFrame me;
+    
     /** Status bar. */
     private static SwingStatusBar statusBar;
+    
+    /** Semaphore used for controlling access to statusBar. */
+    private static final Semaphore STATUSBAR_SEMAPHORE = new Semaphore(1);
 
     /** Instantiates a new SwingController. */
     public SwingController() {
@@ -120,7 +125,7 @@ public final class SwingController implements UIController {
 
     /** {@inheritDoc} */
     @Override
-    public synchronized StatusBar getStatusBar() {
+    public StatusBar getStatusBar() {
         return getSwingStatusBar();
     }
     
@@ -129,10 +134,14 @@ public final class SwingController implements UIController {
      * 
      * @return This UI's status bar
      */
-    private static synchronized  SwingStatusBar getSwingStatusBar() {
+    private static SwingStatusBar getSwingStatusBar() {
+        STATUSBAR_SEMAPHORE.acquireUninterruptibly();
+        
         if (statusBar == null) {
             statusBar = new SwingStatusBar();
         }
+        
+        STATUSBAR_SEMAPHORE.release();
 
         return statusBar;        
     }
