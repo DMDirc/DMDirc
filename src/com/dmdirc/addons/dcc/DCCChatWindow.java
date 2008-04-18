@@ -71,10 +71,13 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
     @Override
 	public void sendLine(final String line) {
 		if (dcc.isWriteable()) {
-			myWindow.addLine("OUT<< "+line, false);
+			final StringBuffer buff = new StringBuffer("DCCChatSelfMessage");
+			//ActionManager.processEvent(DCCActionType.DCC_CHAT_SELFMESSAGE, buff, this, line);
+			addLine(buff, nickname, myWindow.getTranscoder().encode(line));
 			dcc.sendLine(line);
 		} else {
-			myWindow.addLine("<<ERROR>> Socket is closed.", false);
+			final StringBuffer buff = new StringBuffer("DCCChatError");
+			addLine(buff, "Socket is closed.", myWindow.getTranscoder().encode(line));
 		}
 	}
 	
@@ -86,7 +89,9 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 	 */
     @Override
 	public void handleChatMessage(final DCCChat dcc, final String message) {
-		myWindow.addLine(" IN>> "+message, false);
+		final StringBuffer buff = new StringBuffer("DCCChatMessage");
+		//ActionManager.processEvent(DCCActionType.DCC_CHAT_MESSAGE, buff, this, otherNickname, message);
+		addLine(buff, otherNickname, myWindow.getTranscoder().encode(message));
 	}
 	
 	/**
@@ -96,7 +101,9 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 	 */
     @Override
 	public void socketClosed(final DCCChat dcc) {
-		myWindow.addLine(" -- Socket closed -- ", false);
+		final StringBuffer buff = new StringBuffer("DCCChatInfo");
+		//ActionManager.processEvent(DCCActionType.DCC_CHAT_SOCKETCLOSED, buff, this);
+		addLine(buff, "Socket closed");
 	}
 	
 	/**
@@ -106,7 +113,9 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 	 */
     @Override
 	public void socketOpened(final DCCChat dcc) {
-		myWindow.addLine(" ++ Socket opened ++ ", false);
+		final StringBuffer buff = new StringBuffer("DCCChatInfo");
+		//ActionManager.processEvent(DCCActionType.DCC_CHAT_SOCKETOPENED, buff, this);
+		addLine(buff, "Socket opened");
 	}
 	
 	/**

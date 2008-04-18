@@ -222,7 +222,8 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 							chat.setAddress(Long.parseLong(ctcpData[2]), Integer.parseInt(ctcpData[3]));
 						} catch (NumberFormatException nfe) { return; }
 						final String myNickname = ((Server)arguments[0]).getParser().getMyNickname();
-						new DCCChatWindow(this, chat, "Chat: "+nickname, myNickname, nickname);
+						final DCCFrame f = new DCCChatWindow(this, chat, "Chat: "+nickname, myNickname, nickname);
+						f.getFrame().addLine("DCCChatStarting", nickname, chat.getHost(), chat.getPort());
 						chat.connect();
 					} else {
 						askQuestion("User "+nickname+" on "+((Server)arguments[0]).toString()+" would like to start a DCC Chat with you.\n\nDo you want to continue?", "DCC Chat Request", JOptionPane.YES_OPTION, type, format, arguments);
@@ -405,6 +406,12 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		defaults.setOption(MY_DOMAIN, "receive.reverse.sendtoken", "false");
 		defaults.setOption(MY_DOMAIN, "send.blocksize", "1024");
 		defaults.setOption(MY_DOMAIN, "receive.autoaccept", "false");
+		
+		defaults.setOption("formatter", "DCCChatStarting", "Starting DCC Chat with: %1$s on %2$s:%3$s");
+		defaults.setOption("formatter", "DCCChatInfo", "%1$s");
+		defaults.setOption("formatter", "DCCChatError", "\u00034 Error: %1$s");
+		defaults.setOption("formatter", "DCCChatSelfMessage", "<%1$s> %2$s");
+		defaults.setOption("formatter", "DCCChatMessage", "<%1$s> %2$s");
 
 		final File dir = new File(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "receive.savelocation"));
 		if (dir.exists()) {

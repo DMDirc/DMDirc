@@ -73,8 +73,9 @@ public final class DCCCommand extends GlobalCommand {
 				chat.listen();
 				final DCCChatWindow window = new DCCChatWindow(myPlugin, chat, "*Chat: "+target, myNickname, target);
 				parser.sendCTCP(target, "DCC", "CHAT chat "+DCC.ipToLong(chat.getHost())+" "+chat.getPort());
-				sendLine(origin, isSilent, FORMAT_OUTPUT, "Starting DCC Chat with: "+target+" on "+chat.getHost()+":"+chat.getPort());
-				window.getFrame().addLine(FORMAT_OUTPUT, "Starting DCC Chat with: "+target+" on "+chat.getHost()+":"+chat.getPort());
+				
+				sendLine(origin, isSilent, "DCCChatStarting", target, chat.getHost(), chat.getPort());
+				window.getFrame().addLine("DCCChatStarting", target, chat.getHost(), chat.getPort());
 			} else if (type.equalsIgnoreCase("send")) {
 				sendFile(target, origin, isSilent);
 			} else {
