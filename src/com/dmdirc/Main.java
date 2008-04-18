@@ -126,6 +126,8 @@ public final class Main {
         GlobalWindow.init();
 
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            /** {@inheritDoc} */
+            @Override
             public void run() {
                 ActionManager.processEvent(CoreActionType.CLIENT_CLOSED, null);
                 ServerManager.getServerManager().disconnectAll("Unexpected shutdown");

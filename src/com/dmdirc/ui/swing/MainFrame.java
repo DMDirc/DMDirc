@@ -108,15 +108,19 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** Show version? */
     private boolean showVersion;
     /** Status bar. */
-    private SwingStatusBar statusBar;
+    private final SwingStatusBar statusBar;
     /** Menu bar. */
     private MenuBar menu;
 
     /**
      * Creates new form MainFrame.
+     * 
+     * @param statusBar The status bar to use
      */
-    protected MainFrame() {
+    protected MainFrame(final SwingStatusBar statusBar) {
         super();
+        
+        this.statusBar = statusBar;
 
         initComponents();
         initKeyHooks();
@@ -282,7 +286,9 @@ public final class MainFrame extends JFrame implements WindowListener,
      * Returns the status bar for the frame.
      * 
      * @return Status bar.
+     * @deprecated Should be retrieved via the controller instead
      */
+    @Deprecated
     public SwingStatusBar getStatusBar() {
         return statusBar;
     }
@@ -359,7 +365,6 @@ public final class MainFrame extends JFrame implements WindowListener,
         frameManagerPanel = new JPanel();
         desktopPane = new DMDircDesktopPane();
         desktopPane.setBackground(new Color(238, 238, 238));
-        statusBar = new SwingStatusBar();
 
         initFrameManagers();
 

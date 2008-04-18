@@ -95,8 +95,7 @@ public final class SwingController implements UIController {
                     /** {@inheritDoc} */
                     @Override
                     public void run() {
-                        me = new MainFrame();
-                        statusBar = me.getStatusBar();
+                        me = new MainFrame(getSwingStatusBar());
                     }
                 });
                 SwingUtilities.invokeLater(new Runnable() {
@@ -122,11 +121,20 @@ public final class SwingController implements UIController {
     /** {@inheritDoc} */
     @Override
     public synchronized StatusBar getStatusBar() {
+        return getSwingStatusBar();
+    }
+    
+    /**
+     * Retrieves the Swing Status Bar used by this UI.
+     * 
+     * @return This UI's status bar
+     */
+    private static synchronized  SwingStatusBar getSwingStatusBar() {
         if (statusBar == null) {
-            getMainWindow();
+            statusBar = new SwingStatusBar();
         }
 
-        return statusBar;
+        return statusBar;        
     }
 
     /** {@inheritDoc} */
