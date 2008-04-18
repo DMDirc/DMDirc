@@ -77,10 +77,6 @@ public class NodeLabel extends JLabel implements SelectionListener,
             return;
         }
 
-        //window.getContainer().addSelectionListener(this);
-        window.getContainer().addIconChangeListener(this);
-        window.getContainer().addNotificationListener(this);
-
         setText(window.getContainer().toString());
 
         setOpaque(true);

@@ -25,6 +25,8 @@ package com.dmdirc.ui.swing.framemanager.tree;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.interfaces.IconChangeListener;
+import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -47,6 +49,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -68,7 +71,8 @@ import net.miginfocom.layout.PlatformDefaults;
  */
 public final class TreeFrameManager implements FrameManager, MouseListener,
         MouseMotionListener, AdjustmentListener, Serializable,
-        ConfigChangeListener, TreeSelectionListener, SelectionListener {
+        ConfigChangeListener, TreeSelectionListener, SelectionListener,
+        NotificationListener, IconChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -202,6 +206,8 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
                 nodes.remove(window);
                 labels.remove(node);
                 window.removeSelectionListener(this);
+                window.removeIconChangeListener(this);
+                window.removeNotificationListener(this);
             }
         }
     }
@@ -229,6 +235,8 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
                     tree.getRowBounds(tree.getRowForPath(new TreePath(node.getPath())));
             tree.scrollRectToVisible(new Rectangle(0, (int) view.getY(), 0, 0));
             window.addSelectionListener(this);
+            window.addIconChangeListener(this);
+            window.addNotificationListener(this);
         }
     }
 
@@ -328,7 +336,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
             }
         }
     }
-    
+
     /**
      * Checks for and sets a rollover node.
      * 
@@ -336,7 +344,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
      */
     protected void checkRollover(final MouseEvent event) {
         final NodeLabel node;
-        
+
         if (event == null) {
             node = null;
         } else {
@@ -461,5 +469,26 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
                 tree.setSelectionPath(new TreePath(treePath));
             }
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void notificationSet(final Window window, final Color colour) {
+        labels.get(nodes.get(window.getContainer())).notificationSet(window, colour);
+        tree.repaint();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void notificationCleared(final Window window) {
+        labels.get(nodes.get(window.getContainer())).notificationCleared(window);
+        tree.repaint();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void iconChanged(final Window window, final Icon icon) {
+        labels.get(nodes.get(window.getContainer())).iconChanged(window, icon);
+        tree.repaint();
     }
 }
