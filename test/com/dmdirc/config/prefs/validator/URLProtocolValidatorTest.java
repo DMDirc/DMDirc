@@ -35,12 +35,15 @@ public class URLProtocolValidatorTest extends junit.framework.TestCase {
     @Test
     public void testValidate() {
         IdentityManager.load();
-        IdentityManager.getConfigIdentity().setOption("protocol", "http", "BROWSER");
+        IdentityManager.getConfigIdentity().setOption("protocol", "unit-test-1", "BROWSER");
+        
         final URLProtocolValidator validator = new URLProtocolValidator();
         assertTrue(validator.validate(null).isFailure());
         assertTrue(validator.validate("").isFailure());
-        assertTrue(validator.validate("http").isFailure());
-        assertFalse(validator.validate("steam").isFailure());
+        assertTrue(validator.validate("unit-test-1").isFailure());
+        assertFalse(validator.validate("unit-test-2").isFailure());
+        
+        IdentityManager.getConfigIdentity().unsetOption("protocol", "unit-test-1");
     }
 
 }
