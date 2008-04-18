@@ -492,7 +492,7 @@ public class Identity extends ConfigSource implements Serializable,
      * Saves this identity to disk if it has been updated.
      */
     public void save() {
-        if (needSave && file != null) {
+        if (needSave && file != null && file.isWritable()) {
             if (myTarget != null && myTarget.getType() == ConfigTarget.TYPE.GLOBAL) {
                 // If we're the global config, unset useless settings that are
                 // covered by global defaults.

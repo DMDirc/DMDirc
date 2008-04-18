@@ -170,6 +170,11 @@ public class ConfigFile {
      * @throws IOException if the write operation fails
      */
     public void write() throws IOException {
+        if (!file.isWritable()) {
+            throw new UnsupportedOperationException("Cannot write to a file "
+                    + "that isn't writable");
+        }
+        
         final List<String> lines = new ArrayList<String>();
 
         lines.add("# This is a DMDirc configuration file.");
@@ -200,6 +205,15 @@ public class ConfigFile {
 
         file.writeLines(lines);
     }
+    
+    /**
+     * Determines if this file is writable or not.
+     * 
+     * @return True if the file is writable, false otherwise
+     */
+    public boolean isWritable() {
+        return file != null && file.isWritable();
+    }    
     
     /**
      * Deletes this config file.

@@ -108,6 +108,15 @@ public class TextFile {
     }
     
     /**
+     * Determines if this file is writable or not.
+     * 
+     * @return True if the file is writable, false otherwise
+     */
+    public boolean isWritable() {
+        return file != null;
+    }
+    
+    /**
      * Writes the specified list of lines to the file.
      * 
      * @param lines The lines to be written
