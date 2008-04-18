@@ -70,21 +70,27 @@ public final class ProgramError implements Serializable {
      */
     public ProgramError(final long id, final ErrorLevel level,
             final String message, final String[] trace, final Date date) {
+        
         if (id < 0) {
             throw new IllegalArgumentException("ID must be a positive integer: " + id);
         }
+        
         if (level == null) {
             throw new IllegalArgumentException("Level cannot be null");
         }
+        
         if (message == null || message.isEmpty()) {
             throw new IllegalArgumentException("Message cannot be null or an empty string");
         }
+        
         if (trace == null) {
             throw new IllegalArgumentException("Trace cannot be null");
         }
+        
         if (date == null) {
             throw new IllegalArgumentException("date cannot be null");
         }
+        
         this.id = id;
         this.level = level;
         this.message = message;
@@ -194,19 +200,24 @@ public final class ProgramError implements Serializable {
         if (obj == null) {
             return false;
         }
+        
         if (getClass() != obj.getClass()) {
             return false;
         }
+        
         final ProgramError other = (ProgramError) obj;
         if (this.level != other.level) {
             return false;
         }
+        
         if (!this.message.equals(other.message)) {
             return false;
         }
+        
         if (!Arrays.equals(this.trace, other.trace)) {
             return false;
         }
+        
         return true;
     }
 
@@ -219,7 +230,5 @@ public final class ProgramError implements Serializable {
         hash = 67 * hash + Arrays.hashCode(this.trace);
         return hash;
     }
-    
-    
     
 }

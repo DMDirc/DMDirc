@@ -23,10 +23,16 @@
 package com.dmdirc.logger;
 
 import com.dmdirc.Main;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.util.Downloader;
 import com.dmdirc.util.ListenerList;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -52,6 +58,9 @@ public final class ErrorManager implements Serializable, Runnable {
     
     /** Previously instantiated instance of ErrorManager. */
     private static ErrorManager me = new ErrorManager();
+    
+    /** ProgramError folder. */
+    private static File errorDir;    
     
     /** Queue of errors to be reported. */
     private final List<ProgramError> reportQueue = new ArrayList<ProgramError>();
@@ -89,11 +98,40 @@ public final class ErrorManager implements Serializable, Runnable {
      * Called when an error occurs in the program.
      *
      * @param error ProgramError that occurred
+     * @param sendable True if the error is reportable, false otherwise
      */
-    public void addError(final ProgramError error) {
+    public void addError(final ProgramError error, final boolean sendable) {
+        boolean report = IdentityManager.getGlobalConfig().getOptionBool(
+                "general", "submitErrors", false) 
+                && !IdentityManager.getGlobalConfig().getOptionBool("temp", 
+                "noerrorreporting", false);
+        
         synchronized (errors) {
+            if (errors.containsValue(error)) {
+                // It's a duplicate
+                
+                error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
+                error.setFixedStatus(ErrorFixedStatus.UNREPORTED);
+                report = false;
+            }
+            
             errors.put(error.getID(), error);
         }
+        
+        if (!sendable) {
+            error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
+            error.setFixedStatus(ErrorFixedStatus.UNREPORTED);
+        } else if (report) {
+            ErrorManager.getErrorManager().sendError(error);
+        }
+        
+        if (IdentityManager.getGlobalConfig().getOptionBool("general", "logerrors", false)) {
+            writeError(error);
+        }        
+        
+        if (error.getLevel() == ErrorLevel.FATAL && !report) {
+            error.setReportStatus(ErrorReportStatus.FINISHED);
+        }        
         
         if (error.getLevel() == ErrorLevel.FATAL) {
             fireFatalError(error);
@@ -190,10 +228,7 @@ public final class ErrorManager implements Serializable, Runnable {
             return;
         }
         
-        if (errors.containsValue(error)) {
-            error.setReportStatus(ErrorReportStatus.FINISHED);
-            error.setFixedStatus(ErrorFixedStatus.UNREPORTED);
-        } else if (error.getLevel().equals(ErrorLevel.FATAL)) {
+        if (error.getLevel().equals(ErrorLevel.FATAL)) {
             sendErrorInternal(error);
         } else {
             reportQueue.add(error);
@@ -204,7 +239,6 @@ public final class ErrorManager implements Serializable, Runnable {
             }
         }
     }
-    
 
     /** {@inheritDoc} */
     @Override
@@ -388,5 +422,68 @@ public final class ErrorManager implements Serializable, Runnable {
             listener.errorStatusChanged(error);
         }
     }
+    
+    /**
+     * Writes the specified error to a file.
+     *
+     * @param error ProgramError to write to a file.
+     */
+    private static void writeError(final ProgramError error) {
+        final PrintWriter out = new PrintWriter(createNewErrorFile(error), true);
+        out.println("Date:" + error.getDate());
+        out.println("Level: " + error.getLevel());
+        out.println("Description: " + error.getMessage());
+        out.println("Details:");
+        final String[] trace = error.getTrace();
+        for (String traceLine : trace) {
+            out.println('\t' + traceLine);
+        }
+        out.close();
+    }
+    
+    /**
+     * Creates a new file for an error and returns the output stream.
+     *
+     * @param error Error to create file for
+     *
+     * @return BufferedOutputStream to write to the error file
+     */
+    @SuppressWarnings("PMD.SystemPrintln")
+    private static synchronized OutputStream createNewErrorFile(final ProgramError error) {
+        if (errorDir == null || !errorDir.exists()) {
+            errorDir = new File(Main.getConfigDir() + "errors");
+            if (!errorDir.exists()) {
+                errorDir.mkdirs();
+            }
+        }
+        final String logName = error.getDate().getTime() + "-" + error.getLevel();
+        
+        
+        final File errorFile = new File(errorDir, logName + ".log");
+        
+        if (errorFile.exists()) {
+            boolean rename = false;
+            int i = 0;
+            while (!rename) {
+                i++;
+                rename = errorFile.renameTo(new File(errorDir, logName + "-" + i + ".log"));
+            }
+        }
+        try {
+            errorFile.createNewFile();
+        } catch (IOException ex) {
+            System.err.println("Error creating new file: ");
+            ex.printStackTrace();
+            return new NullOutputStream();
+        }
+        
+        try {
+            return new FileOutputStream(errorFile);
+        } catch (FileNotFoundException ex) {
+            System.err.println("Error creating new stream: ");
+            ex.printStackTrace();
+            return new NullOutputStream();
+        }
+    }    
     
 }

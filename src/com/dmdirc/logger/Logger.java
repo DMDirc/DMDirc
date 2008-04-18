@@ -37,10 +37,7 @@ import java.util.Date;
  * Logger class for the application.
  */
 public final class Logger {
-    
-    /** ProgramError folder. */
-    private static File errorDir;
-    
+       
     /** Prevent instantiation of a new instance of Logger. */
     private Logger() {
         //Ignore
@@ -106,24 +103,8 @@ public final class Logger {
             final String message, final String[] exception,
             final boolean sendable) {
         final ProgramError error = createError(level, message, exception);
-        final boolean report = 
-                IdentityManager.getGlobalConfig().getOptionBool("general", "submitErrors", false)
-                & !IdentityManager.getGlobalConfig().getOptionBool("temp", "noerrorreporting", false);
         
-        if (!sendable) {
-            error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
-            error.setFixedStatus(ErrorFixedStatus.UNREPORTED);
-        }
-        
-        if (sendable && report) {
-            ErrorManager.getErrorManager().sendError(error);
-        }
-        
-        if (level == ErrorLevel.FATAL && !report) {
-            error.setReportStatus(ErrorReportStatus.FINISHED);
-        }
-        
-        ErrorManager.getErrorManager().addError(error);
+        ErrorManager.getErrorManager().addError(error, sendable);
     }
     
     /**
@@ -141,77 +122,10 @@ public final class Logger {
         final ProgramError error = new ProgramError(
                 ErrorManager.getErrorManager().getNextErrorID(), level, message,
                 trace, new Date(System.currentTimeMillis()));
-        
-        if (IdentityManager.getGlobalConfig().getOptionBool("general", "logerrors", false)) {
-            writeError(error);
-        }
-        
+                
         return error;
     }
-    
-    /**
-     * Writes the specified error to a file.
-     *
-     * @param error ProgramError to write to a file.
-     */
-    private static void writeError(final ProgramError error) {
-        final PrintWriter out = new PrintWriter(createNewErrorFile(error), true);
-        out.println("Date:" + error.getDate());
-        out.println("Level: " + error.getLevel());
-        out.println("Description: " + error.getMessage());
-        out.println("Details:");
-        final String[] trace = error.getTrace();
-        for (String traceLine : trace) {
-            out.println('\t' + traceLine);
-        }
-        out.close();
-    }
-    
-    /**
-     * Creates a new file for an error and returns the output stream.
-     *
-     * @param error Error to create file for
-     *
-     * @return BufferedOutputStream to write to the error file
-     */
-    @SuppressWarnings("PMD.SystemPrintln")
-    private static synchronized OutputStream createNewErrorFile(final ProgramError error) {
-        if (errorDir == null || !errorDir.exists()) {
-            errorDir = new File(Main.getConfigDir() + "errors");
-            if (!errorDir.exists()) {
-                errorDir.mkdirs();
-            }
-        }
-        final String logName = error.getDate().getTime() + "-" + error.getLevel();
         
-        
-        final File errorFile = new File(errorDir, logName + ".log");
-        
-        if (errorFile.exists()) {
-            boolean rename = false;
-            int i = 0;
-            while (!rename) {
-                i++;
-                rename = errorFile.renameTo(new File(errorDir, logName + "-" + i + ".log"));
-            }
-        }
-        try {
-            errorFile.createNewFile();
-        } catch (IOException ex) {
-            System.err.println("Error creating new file: ");
-            ex.printStackTrace(System.err);
-            return new NullOutputStream();
-        }
-        
-        try {
-            return new FileOutputStream(errorFile);
-        } catch (FileNotFoundException ex) {
-            System.err.println("Error creating new stream: ");
-            ex.printStackTrace(System.err);
-            return new NullOutputStream();
-        }
-    }
-    
     /**
      * Converts an exception into a string array.
      * 
