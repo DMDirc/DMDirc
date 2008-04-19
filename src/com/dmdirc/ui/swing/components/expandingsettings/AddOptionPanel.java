@@ -132,7 +132,7 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
     private void layoutComponents() {
         setVisible(false);
         
-        setLayout(new MigLayout("ins 0, debug"));
+        setLayout(new MigLayout("ins 0"));
         
         removeAll();
         
