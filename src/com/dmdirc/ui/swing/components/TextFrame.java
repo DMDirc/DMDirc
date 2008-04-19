@@ -858,10 +858,10 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             return;
         }
         if ("ui".equals(domain)) {
-            if ("foregroundcolour".equals(key)) {
+            if ("foregroundcolour".equals(key) && getTextPane() != null) {
                 getTextPane().setForeground(getConfigManager().
                         getOptionColour("ui", "foregroundcolour", Color.BLACK));
-            } else if ("backgroundcolour".equals(key)) {
+            } else if ("backgroundcolour".equals(key) && getTextPane() != null) {
                 getTextPane().setBackground(getConfigManager().
                         getOptionColour("ui", "backgroundcolour", Color.WHITE));
             } else if ("frameBufferSize".equals(key)) {
