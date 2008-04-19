@@ -23,9 +23,7 @@
 package com.dmdirc.ui.swing.dialogs.actionsmanager;
 
 import com.dmdirc.actions.ActionGroup;
-import com.dmdirc.ui.swing.components.JWrappingLabel;
-
-import java.awt.Dimension;
+import com.dmdirc.ui.swing.components.TextLabel;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -46,7 +44,7 @@ public final class ActionGroupInformationPanel extends JPanel {
     /** Action group. */
     private ActionGroup group;
     /** Description field. */
-    private JWrappingLabel infoLabel;
+    private TextLabel infoLabel;
     /** Version label. */
     private JLabel version;
     /** Author label. */
@@ -71,7 +69,7 @@ public final class ActionGroupInformationPanel extends JPanel {
      * Initialises the components.
      */
     private void initComponents() {
-        infoLabel = new JWrappingLabel();
+        infoLabel = new TextLabel();
         version = new JLabel();
         author = new JLabel();
 
@@ -90,8 +88,6 @@ public final class ActionGroupInformationPanel extends JPanel {
      */
     private void layoutComponents() {
         setLayout(new MigLayout("fill, wrap 2"));
-
-        infoLabel.setMaximumSize(new Dimension(400, 0));
 
         add(infoLabel, "span 2, growx");
         add(new JLabel("Author: "), "");
