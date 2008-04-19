@@ -19,6 +19,17 @@ SVN="/usr/bin/svn"
 # Increase the memory allowed to be used when running stuff
 export ANT_OPTS=-Xmx512m
 
+if [ "${BAMBOO_INSTALL}" != "" ]; then
+	# Running as bamboo, symlink/create needed things to let it find the results
+	# of the build
+	if [ ! -e ${PWD}/reports ]; then
+		ln -s ${MYDIR}/reports
+	fi;
+	if [ ! -e ${PWD}/build ]; then
+		ln -s ${MYDIR}/build
+	fi;
+fi;
+
 #/bin/sh $MYDIR/oblong.sh "Reports" "Style Report Generation Started";
 cd $MYDIR
 $SVN update
