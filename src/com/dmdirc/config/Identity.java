@@ -694,9 +694,11 @@ public class Identity extends ConfigSource implements Serializable,
      */
     public static Identity buildProfile(final String name) {
         final Properties properties = new Properties();
+        final String nick = System.getProperty("user.name").replace(' ', '_');
+        
         properties.setProperty(DOMAIN + ".name", name);
-        properties.setProperty("profile.nickname", "DMDircUser");
-        properties.setProperty("profile.realname", "DMDircUser");
+        properties.setProperty("profile.nickname", nick);
+        properties.setProperty("profile.realname", nick);
 
         return createIdentity(properties);
     }
