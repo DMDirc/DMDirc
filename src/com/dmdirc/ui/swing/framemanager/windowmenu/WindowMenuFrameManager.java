@@ -275,10 +275,6 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
      * @return index where new node is to be inserted.
      */
     private int getIndex(final FrameContainer newChild) {
-        if (newChild instanceof GlobalWindow) {
-            return 0;
-        }
-
         for (int i = itemCount; i < getMenuComponentCount(); i++) {
             if (!(getMenuComponent(i) instanceof FrameContainerMenuItem)) {
                 continue;
