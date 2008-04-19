@@ -326,13 +326,27 @@ public final class ErrorListDialog extends StandardDialog implements
     /** {@inheritDoc} */
     @Override
     public void errorStatusChanged(final ProgramError error) {
+        final int errorRow;
         synchronized (tableModel) {
-            final int errorRow = tableModel.indexOf(error);
+            errorRow = tableModel.indexOf(error);
 
             if (errorRow != -1 && errorRow < tableModel.getRowCount()) {
                 tableModel.fireTableRowsUpdated(errorRow, errorRow);
             }
         }
+        if (errorRow > -1) {
+                deleteButton.setEnabled(true);
+                if (error.getReportStatus() == ErrorReportStatus.NOT_APPLICABLE ||
+                        error.getReportStatus() == ErrorReportStatus.FINISHED) {
+                    sendButton.setEnabled(false);
+                } else {
+                    sendButton.setEnabled(true);
+                }
+            } else {
+                errorDetails.setError(null);
+                deleteButton.setEnabled(false);
+                sendButton.setEnabled(false);
+            }
     }
 
     /** {@inheritDoc} */
