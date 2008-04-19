@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.dummy.DummyController;
 
+import com.dmdirc.ui.dummy.DummyQueryWindow;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -49,7 +50,8 @@ public class ServerManagerTest extends junit.framework.TestCase {
     
     @Test
     public void testRegisterServer() {
-        final Server server = new Server("255.255.255.255", 6667, "", false, IdentityManager.getProfiles().get(0));
+        final Server server = new Server("255.255.255.255", 6667, "", false,
+                IdentityManager.getProfiles().get(0));
         
         final ServerManager instance = ServerManager.getServerManager();
         
@@ -60,7 +62,8 @@ public class ServerManagerTest extends junit.framework.TestCase {
     
     @Test
     public void testUnregisterServer() {
-        final Server server = new Server("255.255.255.255", 6667, "", false, IdentityManager.getProfiles().get(0));
+        final Server server = new Server("255.255.255.255", 6667, "", false,
+                IdentityManager.getProfiles().get(0));
         
         server.close();
         
@@ -75,7 +78,8 @@ public class ServerManagerTest extends junit.framework.TestCase {
         
         assertEquals(instance.getServers().size(), instance.numServers());
         
-        final Server server = new Server("255.255.255.255", 6667, "", false, IdentityManager.getProfiles().get(0));
+        final Server server = new Server("255.255.255.255", 6667, "", false,
+                IdentityManager.getProfiles().get(0));
         
         assertEquals(instance.getServers().size(), instance.numServers());
         
@@ -86,16 +90,36 @@ public class ServerManagerTest extends junit.framework.TestCase {
     
     @Test
     public void testGetServerFromFrame() {
-        final Server serverA = new Server("255.255.255.255", 6667, "", false, IdentityManager.getProfiles().get(0));
-        final Server serverB = new Server("255.255.255.254", 6667, "", false, IdentityManager.getProfiles().get(0));
+        final Server serverA = new Server("255.255.255.255", 6667, "", false,
+                IdentityManager.getProfiles().get(0));
+        final Server serverB = new Server("255.255.255.254", 6667, "", false,
+                IdentityManager.getProfiles().get(0));
         
         final ServerManager sm = ServerManager.getServerManager();
         
         assertEquals(serverA, sm.getServerFromFrame(serverA.getFrame()));
         assertEquals(serverB, sm.getServerFromFrame(serverB.getFrame()));
+        assertNull(sm.getServerFromFrame(new DummyQueryWindow(serverB)));
         
         serverA.close();
         serverB.close();
     }
+    
+    @Test
+    public void testGetServerByAddress() {
+        final Server serverA = new Server("255.255.255.255", 6667, "", false,
+                IdentityManager.getProfiles().get(0));
+        final Server serverB = new Server("255.255.255.254", 6667, "", false,
+                IdentityManager.getProfiles().get(0));
+        
+        final ServerManager sm = ServerManager.getServerManager();
+        
+        assertEquals(serverA, sm.getServersByAddress("255.255.255.255").get(0));
+        assertEquals(serverB, sm.getServersByAddress("255.255.255.254").get(0));
+        assertEquals(0, sm.getServersByAddress("255.255.255.253").size());
+        
+        serverA.close();
+        serverB.close();
+    }    
     
 }

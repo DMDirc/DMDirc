@@ -68,11 +68,6 @@ public class ConditionTree {
      */
     private ConditionTree(final OPERATION op, final ConditionTree leftArg,
             final ConditionTree rightArg) {
-        assert(op != OPERATION.VAR);
-        assert(op != OPERATION.NOT);
-        assert(leftArg != null);
-        assert(rightArg != null);
-
         this.op = op;
         this.leftArg = leftArg;
         this.rightArg = rightArg;
@@ -85,8 +80,6 @@ public class ConditionTree {
      * @param argument
      */
     private ConditionTree(final OPERATION op, final ConditionTree argument) {
-        assert(op == OPERATION.NOT);
-
         this.op = op;
         this.leftArg = argument;
     }
@@ -160,8 +153,6 @@ public class ConditionTree {
     @Override
     public String toString() {
         switch (op) {
-        case NOOP:
-            return "";
         case VAR:
             return String.valueOf(argument);
         case NOT:
@@ -171,7 +162,7 @@ public class ConditionTree {
         case OR:
             return "(" + leftArg + "|" + rightArg + ")";
         default:
-            return "<unknown>";
+            return "";
         }
     }
 
@@ -213,7 +204,6 @@ public class ConditionTree {
      * @return The corresponding condition tree, or null if there was an error
      * while parsing the data.
      */
-    @SuppressWarnings("fallthrough")
     private static ConditionTree parseStack(final Deque<Object> stack) {
         final Deque<Object> myStack = new ArrayDeque<Object>();
 
@@ -234,14 +224,13 @@ public class ConditionTree {
         }
 
         while (!myStack.isEmpty()) {
-            switch (myStack.size()) {
-                case 1:
-                    final Object first = myStack.pollFirst();
-                    if (first instanceof ConditionTree) {
-                        return (ConditionTree) first;
-                    }
-                case 0:
+            if (myStack.size() == 1) {
+                final Object first = myStack.pollFirst();
+                if (first instanceof ConditionTree) {
+                    return (ConditionTree) first;
+                } else {
                     return null;
+                }
             }
 
             final ConditionTree first = readTerm(myStack);

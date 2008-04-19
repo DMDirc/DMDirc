@@ -313,24 +313,6 @@ public class IRCParserTest extends junit.framework.TestCase {
     }
 
     @Test
-    public void testJoinChannel() throws CallbackNotFoundException {
-        final TestParser parser = new TestParser();
-        final TestIChannelSelfJoin test = new TestIChannelSelfJoin();
-
-        parser.injectConnectionStrings();
-        parser.getCallbackManager().addCallback("onChannelSelfJoin", test);
-        parser.injectLine(":nick JOIN #DMDirc_testing");
-
-        assertNotNull(test.channel);
-        assertEquals("#DMDirc_testing", test.channel.getName());
-        assertEquals("#DMDirc_testing", test.channel.toString());
-        assertEquals(parser, test.channel.getParser());
-        assertEquals(1, parser.getChannels().size());
-        assertTrue(parser.getChannels().contains(test.channel));
-        assertEquals(test.channel, parser.getChannelInfo("#DMDirc_testing"));
-    }
-
-    @Test
     public void testPrivateMessages() throws CallbackNotFoundException {
         final TestParser parser = new TestParser();
         final TestIPrivateMessage ipmtest = new TestIPrivateMessage();
