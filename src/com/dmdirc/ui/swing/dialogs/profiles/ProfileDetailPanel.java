@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.dialogs.profiles;
 
 import com.dmdirc.Main;
 import com.dmdirc.config.prefs.validator.FileNameValidator;
+import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardInputDialog;
 import com.dmdirc.config.prefs.validator.NotEmptyValidator;
@@ -68,6 +69,8 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
             "[A-Za-z0-9\\[\\]{|}\\-\\^\\\\]*";
     /** Displayed profile. */
     private Profile profile;
+    /** The profile list model. */
+    private final ProfileListModel model;
     /** Name text field. */
     private ValidatingJTextField name;
     /** Nick name text field. */
@@ -85,9 +88,15 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
     /** Edit button. */
     private JButton editButton;
 
-    /** Creates a new profile detail panel. */
-    public ProfileDetailPanel() {
+    /**
+     * Creates a new profile detail panel.
+     * 
+     * @param model The list model to use to validate names
+     */
+    public ProfileDetailPanel(final ProfileListModel model) {
         super();
+        
+        this.model = model;
 
         initMainComponents();
         layoutComponents();
@@ -97,7 +106,7 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
 
     /** Initialises the components in the main panel. */
     private void initMainComponents() {
-        name = new ValidatingJTextField(new FileNameValidator());
+        name = new ValidatingJTextField(new ProfileNameValidator());
         nickname =
                 new ValidatingJTextField(new RegexStringValidator(NICKNAME_REGEX,
                 "Nickname must only contain letters, numbers and []{}|-^\\.`_"));
@@ -335,4 +344,24 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
     public void contentsChanged(final ListDataEvent e) {
         validateDetails();
     }
+    
+    /**
+     * Ensures profile names are unique.
+     */
+    private class ProfileNameValidator extends FileNameValidator {
+
+        /** {@inheritDoc} */
+        @Override
+        public ValidationResponse validate(final String object) {
+            for (Profile targetprofile : model) {
+                if (targetprofile != profile && targetprofile.getName().equalsIgnoreCase(object)) {
+                    return new ValidationResponse("Profile names must be unique");
+                }
+            }
+            
+            return super.validate(object);
+        }
+        
+    }
+    
 }

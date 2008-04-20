@@ -128,7 +128,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
 
         model = new ProfileListModel();
         profileList = new JList(model);
-        details = new ProfileDetailPanel();
+        details = new ProfileDetailPanel(model);
         addButton = new JButton("Add");
         deleteButton = new JButton("Delete");
         infoLabel =

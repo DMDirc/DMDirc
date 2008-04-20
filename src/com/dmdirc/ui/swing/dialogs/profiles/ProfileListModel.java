@@ -29,7 +29,7 @@ import java.util.List;
 import javax.swing.AbstractListModel;
 
 /** Profile list model. */
-public class ProfileListModel extends AbstractListModel {
+public class ProfileListModel extends AbstractListModel implements Iterable<Profile> {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -202,6 +202,7 @@ public class ProfileListModel extends AbstractListModel {
      *
      * @return Iterator for the model
      */
+    @Override
     public Iterator<Profile> iterator() {
         return profiles.iterator();
     }
