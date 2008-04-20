@@ -370,12 +370,18 @@ public final class ClientInfo {
 				modecount = 1;
 			}
 		}
-		if (lModeQueue.size() == modecount) { sendModes(); }
-		if (positive) { modestr = "+"; } else { modestr = "-"; }
-		modestr = modestr + mode;
+		modestr = ((positive) ? "+" : "-") + mode;
 		if (!myParser.hUserModes.containsKey(mode)) { return; }
+		final String teststr = ((positive) ? "-" : "+") + mode;
+		if (lModeQueue.contains(teststr)) {
+			lModeQueue.remove(teststr);
+			return;
+		} else if (lModeQueue.contains(modestr)) {
+			return;
+		}
 		myParser.callDebugInfo(myParser.DEBUG_INFO, "Queueing user mode: %s", modestr);
 		lModeQueue.add(modestr);
+		if (lModeQueue.size() == modecount) { sendModes(); }
 	}
 	
 	/**
