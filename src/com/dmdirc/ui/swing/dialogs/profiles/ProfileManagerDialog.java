@@ -236,9 +236,16 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
      * Prompts and adds a new profile
      */
     private void addProfile() {
-        final String nick =
-                System.getProperty("user.name").replace(' ', '_');
-        final Profile profile = new Profile("Unnamed", nick, nick);
+        final String nick = System.getProperty("user.name").replace(' ', '_');
+        
+        String name = "New Profile";
+        int i = 1;
+        
+        while (model.contains(name)) {
+            name = "New Profile " + ++i;
+        }
+        
+        final Profile profile = new Profile(name, nick, nick);
         model.add(profile);
         profileList.setSelectedIndex(model.indexOf(profile));
     }
