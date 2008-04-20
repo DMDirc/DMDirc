@@ -107,9 +107,9 @@ public final class ServerEventHandler extends EventHandler
 
         final Exception ex = (errorInfo.isException()) ? errorInfo.getException()
                 : new Exception("Parser exception.\n\n\tLast line:\t" //NOPMD
-                + errorInfo.getLastLine() + "\n\tServer:\t" + owner.getName() + "\n"));
+                + errorInfo.getLastLine() + "\n\tServer:\t" + owner.getName() + "\n");
 
-        if (errorInfo.isUser()) {
+        if (errorInfo.isUserError()) {
             Logger.userError(errorLevel, errorInfo.getData(), ex);
         } else {
             Logger.appError(errorLevel, errorInfo.getData(), ex);
