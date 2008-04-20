@@ -124,7 +124,7 @@
 		<checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
 								failOnViolation="false">
 			
-			<fileset dir="src/" includes="**/*.java"/>
+			<fileset dir="src/com/dmdirc/" includes="**/*.java"/>
 			<formatter type="xml" tofile="reports/report-all.xml"/>
 		</checkstyle>
 		<xslt in="reports/report-all.xml" out="reports/report-all.html" style="checkstyle/checkstyle.xsl"/>
