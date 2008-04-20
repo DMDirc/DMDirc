@@ -110,6 +110,15 @@ public class WindowsInstaller extends Installer {
 				return false;
 		}
 	}
+	
+	/**
+	 * Check what name to show for the menu shortcut
+	 *
+	 * @return Name for menu shortcutType
+	 */
+	public String getMenuName() {
+		return "Start menu";
+	}
 
 	/**
 	 * Add a registry key.

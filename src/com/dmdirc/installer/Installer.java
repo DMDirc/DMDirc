@@ -139,6 +139,15 @@ public abstract class Installer extends Thread {
 	}
 	
 	/**
+	 * Check what name to show for the menu shortcut
+	 *
+	 * @return Name for menu shortcutType
+	 */
+	public String getMenuName() {
+		return "menu";
+	}
+	
+	/**
 	 * Setup shortcut.
 	 *
 	 * @param location Location where app will be installed to.

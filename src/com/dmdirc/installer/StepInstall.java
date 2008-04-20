@@ -106,10 +106,10 @@ public final class StepInstall extends Step implements StepListener {
 
 		if (Main.getInstaller().supportsShortcut(ShortcutType.MENU)) {
 			if (settings.getShortcutMenuState()) {
-				addText("Setting up Menu shortcut");
+				addText("Setting up "+Main.getInstaller().getMenuName()+" shortcut");
 				myInstaller.setupShortcut(location, ShortcutType.MENU);
 			} else {
-				addText("Not setting up Menu shortcut");
+				addText("Not setting up "+Main.getInstaller().getMenuName()+" shortcut");
 			}
 		}
 

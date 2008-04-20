@@ -50,7 +50,7 @@ public final class StepSettings extends Step {
 	private static final long serialVersionUID = 3;
 
 	/** Menu Shorcuts checkbox. */
-	private final JCheckBox shortcutMenu = new JCheckBox("Create menu shortcut");
+	private final JCheckBox shortcutMenu = new JCheckBox("Create "+Main.getInstaller().getMenuName()+" shortcut");
 	/** Desktop Shorcuts checkbox. */
 	private final JCheckBox shortcutDesktop = new JCheckBox("Create desktop shortcut");
 	/** Quick-Launch Shorcuts checkbox. */
