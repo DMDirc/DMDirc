@@ -29,6 +29,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.prefs.validator.ActionGroupValidator;
 import com.dmdirc.config.prefs.validator.FileNameValidator;
 import com.dmdirc.ui.swing.components.JWrappingLabel;
 import com.dmdirc.ui.swing.MainFrame;
@@ -292,7 +293,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         final StandardInputDialog inputDialog = new StandardInputDialog(SwingController.getMainFrame(), false,
                 "New action group",
                 "Please enter the name of the new action group",
-                new FileNameValidator()) {
+                new ActionGroupValidator()) {
 
             /**
              * A version number for this class. It should be changed whenever the class
@@ -304,7 +305,8 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
             /** {@inheritDoc} */
             @Override
             public boolean save() {
-                if (getText() == null || getText().isEmpty()) {
+                if (getText() == null || getText().isEmpty() && !ActionManager.getGroups().
+                        containsKey(getText())) {
                     return false;
                 } else {
                     ActionManager.makeGroup(getText());
