@@ -209,7 +209,7 @@ public abstract class FrameContainer {
      * Invoked when our window has been opened.
      */
     public void windowOpened() {
-        if (getServer() == null || getConfigManager() == null || getFrame() == null) {
+        if (config == null || getFrame() == null) {
             return;
         }
 
