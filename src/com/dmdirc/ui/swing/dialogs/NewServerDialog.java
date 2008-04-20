@@ -244,10 +244,14 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
             serverField.requestFocus();
             return;
         }
+        if (!portField.validateText()) {
+            portField.requestFocus();
+            return;
+        }
 
         final String host = serverField.getText();
         final String pass = passwordField.getText();
-        int port = Integer.parseInt(portField.getText());
+        final int port = Integer.parseInt(portField.getText());
 
         dispose();
 
