@@ -92,7 +92,7 @@ public class ProcessModeTest extends junit.framework.TestCase {
         parser.injectLine(":server 353 nick = #DMDirc_testing :@nick +luser");
         parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list");
 
-        parser.injectLine(":server MODE #DMDirc_testing +v moo");
+        parser.injectLine(":luser!me@my MODE #DMDirc_testing +v :moo");
         
         assertNotNull(parser.getClientInfo("moo"));
         assertEquals(1, parser.getClientInfo("moo").channelCount());
@@ -100,6 +100,10 @@ public class ProcessModeTest extends junit.framework.TestCase {
         final ChannelClientInfo cci = parser.getClientInfo("moo").getChannelClients().get(0);
         
         assertEquals("+", cci.getChanModeStr(true));        
+        assertEquals("Parser should update ident when it sees a MODE line",
+                "me", parser.getClientInfo("luser").getIdent());
+        assertEquals("Parser should update host when it sees a MODE line",
+                "my", parser.getClientInfo("luser").getHost());
     }
     
     @Test
@@ -132,17 +136,28 @@ public class ProcessModeTest extends junit.framework.TestCase {
         parser.injectLine(":nick JOIN #DMDirc_testing");
         parser.injectLine(":server 353 nick = #DMDirc_testing :@nick +luser");
         parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list");
-        parser.injectLine(":server 324 nick #DMDirc_testing +stnl 1234");
+        parser.injectLine(":server 324 nick #DMDirc_testing +Zstnl 1234");
 
         assertEquals("1234", parser.getChannelInfo("#DMDirc_testing").getModeParam('l'));
         
-        final String modes = parser.getChannelInfo("#DMDirc_testing").getModeStr().split(" ")[0];
+        String modes = parser.getChannelInfo("#DMDirc_testing").getModeStr().split(" ")[0];
+        assertEquals(6, modes.length());
+        assertEquals('+', modes.charAt(0));
+        assertTrue(modes.indexOf('Z') > -1);
+        assertTrue(modes.indexOf('s') > -1);
+        assertTrue(modes.indexOf('t') > -1);
+        assertTrue(modes.indexOf('n') > -1);
+        assertTrue(modes.indexOf('l') > -1);
+        
+        parser.injectLine(":server MODE #DMDirc_testing :-Z");
+        
+        modes = parser.getChannelInfo("#DMDirc_testing").getModeStr().split(" ")[0];
         assertEquals(5, modes.length());
         assertEquals('+', modes.charAt(0));
         assertTrue(modes.indexOf('s') > -1);
         assertTrue(modes.indexOf('t') > -1);
         assertTrue(modes.indexOf('n') > -1);
-        assertTrue(modes.indexOf('l') > -1);
+        assertTrue(modes.indexOf('l') > -1);        
     }
 
 }
