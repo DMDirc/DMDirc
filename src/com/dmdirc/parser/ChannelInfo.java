@@ -606,9 +606,16 @@ public final class ChannelInfo {
 		}
 		if (!myParser.isUserSettable(mode)) { return; }
 
-		if (positive) { modestr = "+"; } else { modestr = "-"; }
-		modestr = modestr + mode;
-		if (!myParser.hChanModesBool.containsKey(mode)) {
+		modestr = ((positive) ? "+" : "-") + mode;
+		if (myParser.hChanModesBool.containsKey(mode)) {
+			final String teststr = ((positive) ? "-" : "+") + mode;
+			if (lModeQueue.contains(teststr)) {
+				lModeQueue.remove(teststr);
+				return;
+			} else if (lModeQueue.contains(modestr)) {
+				return;
+			}
+		} else {
 			// May need a param
 			if (myParser.hPrefixModes.containsKey(mode)) {
 				modestr = modestr + " " + parameter;
@@ -625,7 +632,7 @@ public final class ChannelInfo {
 		}
 		myParser.callDebugInfo(IRCParser.DEBUG_INFO, "Queueing mode: %s", modestr);
 		lModeQueue.add(modestr);
-		if (lModeQueue.size() == modecount) { sendModes(); }        
+		if (lModeQueue.size() == modecount) { sendModes(); }
 	}
 	
 	/**

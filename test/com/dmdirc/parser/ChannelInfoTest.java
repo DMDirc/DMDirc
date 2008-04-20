@@ -206,7 +206,7 @@ public class ChannelInfoTest {
         assertTrue(modes.indexOf('N') > -1);
     }
     
-    @Test @Ignore
+    @Test
     public void testModeSendOptimisation1() {
         final TestParser parser = new TestParser();
         final ChannelInfo info = getChannelInfo(parser);
@@ -230,7 +230,7 @@ public class ChannelInfoTest {
         assertTrue(modes.indexOf('m') > -1);
     }
     
-    @Test @Ignore
+    @Test
     public void testModeSendOptimisation2() {
         final TestParser parser = new TestParser();
         final ChannelInfo info = getChannelInfo(parser);
