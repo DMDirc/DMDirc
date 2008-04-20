@@ -61,8 +61,6 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     /** Previously created instance of ProfileEditorDialog. */
     private static ProfileManagerDialog me;
     /** Profile list. */
-    private List<Identity> profiles;
-    /** Profile list. */
     private JList profileList;
     /** Profile list mode. */
     private ProfileListModel model;
@@ -77,7 +75,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     /** Selected index. */
     private int selectedIndex;
     /** Deleted profiles. */
-    private List<Profile> deletedProfiles;
+    private final List<Profile> deletedProfiles;
 
     /** Creates a new instance of ProfileEditorDialog. */
     private ProfileManagerDialog() {
@@ -155,7 +153,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
         getContentPane().add(deleteButton, "left, w 200");
         getContentPane().add(getLeftButton(), "split, right, sg button");
         getContentPane().add(getRightButton(), "right, sg button");
-        
+
         pack();
     }
 
@@ -174,7 +172,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     public void populateList() {
         final String profileString = "profile";
         model.clear();
-        profiles = IdentityManager.getProfiles();
+        final List<Identity> profiles = IdentityManager.getProfiles();
         for (Identity profile : profiles) {
             model.add(new Profile(profile.getName(),
                     profile.getOption(profileString, "nickname"),
@@ -188,7 +186,8 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     /** Saves the profile list. */
     private void save() {
         if (model.getSize() == 0) {
-            JOptionPane.showMessageDialog(this, "There must be at least one profile", 
+            JOptionPane.showMessageDialog(this,
+                    "There must be at least one profile",
                     "DMDirc: Profile error", JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -199,7 +198,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
             while (it.hasNext()) {
                 it.next().save();
             }
-            
+
             for (Profile profile : deletedProfiles) {
                 profile.delete();
             }
@@ -223,27 +222,32 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
         } else if (e.getSource().equals(getCancelButton())) {
             dispose();
         } else if (e.getSource().equals(addButton)) {
-            final Profile profile = new Profile("Unnamed");
-            model.add(profile);
-            profileList.setSelectedIndex(model.indexOf(profile));
-        } else if (e.getSource().equals(deleteButton)) {
-            if (JOptionPane.showConfirmDialog(this,
-                    "Are you sure you want to delete this profile?",
-                    "Delete Confirmaton", JOptionPane.YES_NO_OPTION) ==
-                    JOptionPane.YES_OPTION) {
-                deletedProfiles.add((Profile) profileList.getSelectedValue());
-                model.remove((Profile) profileList.getSelectedValue());
-            }
+            addProfile();
+        } else if (e.getSource().equals(deleteButton) && JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to delete this profile?",
+                "Delete Confirmaton", JOptionPane.YES_NO_OPTION) ==
+                JOptionPane.YES_OPTION) {
+            deletedProfiles.add((Profile) profileList.getSelectedValue());
+            model.remove((Profile) profileList.getSelectedValue());
         }
+    }
+
+    /**
+     * Prompts and adds a new profile
+     */
+    private void addProfile() {
+        final String nick =
+                System.getProperty("user.name").replace(' ', '_');
+        final Profile profile = new Profile("Unnamed", nick, nick);
+        model.add(profile);
+        profileList.setSelectedIndex(model.indexOf(profile));
     }
 
     /** {@inheritDoc} */
     @Override
     public void valueChanged(final ListSelectionEvent e) {
-        if (e.getValueIsAdjusting()) {
-            if (!details.validateDetails()) {
-                profileList.setSelectedIndex(selectedIndex);
-            }
+        if (e.getValueIsAdjusting() && !details.validateDetails()) {
+            profileList.setSelectedIndex(selectedIndex);
         }
         if (!e.getValueIsAdjusting()) {
             details.save();
