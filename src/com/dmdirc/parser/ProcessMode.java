@@ -169,10 +169,8 @@ public class ProcessMode extends IRCProcessor {
 					else { nCurrent = nCurrent ^ (nCurrent & nValue); }
 				} else {
 					
-					if (bPositive || nValue == IRCParser.MODE_LIST || ((nValue & IRCParser.MODE_UNSET) == IRCParser.MODE_UNSET)) {
-						if (sModestr.length <= nParam) {
-							myParser.callErrorInfo(new ParserError(ParserError.ERROR_FATAL, "Broken Modes. Parameter required but not given.", myParser.getLastLine()));
-						}
+					if ((bPositive || nValue == IRCParser.MODE_LIST || ((nValue & IRCParser.MODE_UNSET) == IRCParser.MODE_UNSET)) && (sModestr.length <= nParam)) {
+						myParser.callErrorInfo(new ParserError(ParserError.ERROR_FATAL, "Broken Modes. Parameter required but not given.", myParser.getLastLine()));
 					}
 					
 					
