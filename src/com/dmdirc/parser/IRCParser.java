@@ -1536,7 +1536,7 @@ public class IRCParser implements Runnable {
 	public int getMaxLength(final int nLength) {
 		final int lineLint = 5;
 		if (cMyself.isFake()) {
-			callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "getMaxLength() called, but I don't know who I am?", lastLine));
+			callErrorInfo(new ParserError(ParserError.ERROR_ERROR + ParserError.ERROR_USER, "getMaxLength() called, but I don't know who I am?", lastLine));
 			return MAX_LINELENGTH - nLength - lineLint;
 		} else {
 			return MAX_LINELENGTH - cMyself.toString().length() - nLength - lineLint;

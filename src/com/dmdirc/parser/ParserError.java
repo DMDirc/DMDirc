@@ -37,8 +37,10 @@ public final class ParserError {
 	public static final int ERROR_ERROR = 2;
 	/** Error was an unexpected occurance, but shouldn't be anything to worry about. */
 	public static final int ERROR_WARNING = 4;
+	/** Error is a user-error rather than a server error. */
+	public static final int ERROR_USER = 8;
 	/** Error was an exception from elsewhere. */
-	public static final int ERROR_EXCEPTION = 8;
+	public static final int ERROR_EXCEPTION = 16;
 	
 	/** Store the Error level. */
 	private int errorLevel;
@@ -99,6 +101,16 @@ public final class ParserError {
 	 */
 	public boolean isWarning() {
 		return (errorLevel & ERROR_WARNING) == ERROR_WARNING;
+	}
+	
+	/**
+	 * Check if this error is considered a user-error rather than a server error.
+	 * For DMDirc this will cause the error not to be reported to the developers
+	 *
+	 * @return Returns true for a user error, else false.
+	 */
+	public boolean isUserError() {
+		return (errorLevel & ERROR_USER) == ERROR_USER;
 	}
 	
 	/**
