@@ -133,7 +133,7 @@ public class ProcessModeTest extends junit.framework.TestCase {
         parser.injectLine(":server 353 nick = #DMDirc_testing :@nick +luser");
         parser.injectLine(":server 366 nick #DMDirc_testing :End of /NAMES list");
         parser.injectLine(":server 324 nick #DMDirc_testing +stnl 1234");
-    
+
         assertEquals("1234", parser.getChannelInfo("#DMDirc_testing").getModeParam('l'));
         
         final String modes = parser.getChannelInfo("#DMDirc_testing").getModeStr().split(" ")[0];

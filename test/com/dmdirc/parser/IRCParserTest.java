@@ -25,25 +25,18 @@ package com.dmdirc.parser;
 import com.dmdirc.harness.parser.TestIPrivateCTCP;
 import com.dmdirc.harness.parser.TestParser;
 import com.dmdirc.harness.parser.TestIChannelKick;
+import com.dmdirc.harness.parser.TestIConnectError;
+import com.dmdirc.harness.parser.TestIErrorInfo;
 import com.dmdirc.harness.parser.TestINoticeAuth;
 import com.dmdirc.harness.parser.TestINumeric;
 import com.dmdirc.harness.parser.TestIServerError;
-import com.dmdirc.harness.parser.TestIChannelSelfJoin;
 import com.dmdirc.harness.parser.TestIPost005;
 import com.dmdirc.harness.parser.TestIPrivateMessage;
 import com.dmdirc.harness.parser.TestIPrivateAction;
 import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.callbacks.interfaces.IAwayState;
-import com.dmdirc.parser.callbacks.interfaces.IChannelKick;
-import com.dmdirc.parser.callbacks.interfaces.IChannelSelfJoin;
-import com.dmdirc.parser.callbacks.interfaces.INoticeAuth;
-import com.dmdirc.parser.callbacks.interfaces.INumeric;
-import com.dmdirc.parser.callbacks.interfaces.IPost005;
-import com.dmdirc.parser.callbacks.interfaces.IPrivateAction;
-import com.dmdirc.parser.callbacks.interfaces.IPrivateCTCP;
-import com.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
-import com.dmdirc.parser.callbacks.interfaces.IServerError;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import java.util.List;
@@ -52,7 +45,7 @@ import javax.net.ssl.TrustManager;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class IRCParserTest extends junit.framework.TestCase {
+public class IRCParserTest {
 
     @Test
     public void testIssue042() {
@@ -371,17 +364,17 @@ public class IRCParserTest extends junit.framework.TestCase {
         for (ChannelListModeItem item : items) {
             if (item.getItem().equals("ban1!ident@.host")) {
                 assertEquals("bansetter1", item.getOwner());
-                assertEquals(1001, item.getTime());
+                assertEquals(1001l, item.getTime());
                 assertFalse(gotOne);
                 gotOne = true;
             } else if (item.getItem().equals("ban2!*@.host")) {
                 assertEquals("bansetter2", item.getOwner());
-                assertEquals(1002, item.getTime());
+                assertEquals(1002l, item.getTime());
                 assertFalse(gotTwo);
                 gotTwo = true;
             } else if (item.toString().equals("ban3!ident@*")) {
                 assertEquals("bansetter3", item.getOwner());
-                assertEquals(1003, item.getTime());
+                assertEquals(1003l, item.getTime());
                 assertFalse(gotThree);
                 gotThree = true;
             }
@@ -442,6 +435,33 @@ public class IRCParserTest extends junit.framework.TestCase {
         doIRCdTest("Unreal3.2.6", "unreal");
         doIRCdTest("bahamut-1.8(04)", "bahamut");
     }
+    
+    @Test
+    public void testIllegalPort1() {
+        final TestParser tp = new TestParser(new MyInfo(), new ServerInfo("127.0.0.1", 0, ""));
+        final TestIConnectError tiei = new TestIConnectError();
+        tp.getCallbackManager().addCallback("OnConnectError", tiei);
+        tp.run();
+        assertTrue(tiei.error);
+    }
+    
+    @Test
+    public void testIllegalPort2() {
+        final TestParser tp = new TestParser(new MyInfo(), new ServerInfo("127.0.0.1", 1, ""));
+        final TestIConnectError tiei = new TestIConnectError();
+        tp.getCallbackManager().addCallback("OnConnectError", tiei);
+        tp.run();
+        assertTrue(tiei.error);
+    }    
+    
+    @Test
+    public void testIllegalPort3() {
+        final TestParser tp = new TestParser(new MyInfo(), new ServerInfo("127.0.0.1", 65570, ""));
+        final TestIConnectError tiei = new TestIConnectError();
+        tp.getCallbackManager().addCallback("OnConnectError", tiei);
+        tp.run();
+        assertTrue(tiei.error);
+    }
 
     private void doIRCdTest(final String ircd, final String expected) {
         final TestParser parser = new TestParser();
@@ -459,6 +479,10 @@ public class IRCParserTest extends junit.framework.TestCase {
 
         assertEquals(ircd, parser.getIRCD(false));
         assertEquals(expected.toLowerCase(), parser.getIRCD(true).toLowerCase());
+    }
+    
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(IRCParserTest.class);
     }
 
 }
