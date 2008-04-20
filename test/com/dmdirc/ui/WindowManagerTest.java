@@ -21,10 +21,10 @@
  */
 package com.dmdirc.ui;
 
-import com.dmdirc.FrameContainer;
-import com.dmdirc.ui.dummy.DummyFrameManager;
+import com.dmdirc.harness.TestFrameManager;
 import com.dmdirc.ui.dummy.DummyInputWindow;
 import com.dmdirc.ui.interfaces.Window;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -32,7 +32,7 @@ public class WindowManagerTest extends junit.framework.TestCase {
 
     @Test
     public void testFrameManagers() {
-        final TestingFrameManager tfm = new TestingFrameManager();
+        final TestFrameManager tfm = new TestFrameManager();
         final Window parent = new DummyInputWindow(null, null);
         final Window child = new DummyInputWindow(null, null);
         
@@ -54,32 +54,36 @@ public class WindowManagerTest extends junit.framework.TestCase {
         WindowManager.removeWindow(parent);
         
         assertEquals(0, tfm.orphans);
-        assertEquals(0, tfm.children);        
+        assertEquals(0, tfm.children);  
+        
+        WindowManager.removeWindow(child);
+        
+        assertEquals(0, tfm.orphans);
+        assertEquals(0, tfm.children);       
+        
+        WindowManager.removeFrameManager(tfm);
+        WindowManager.addWindow(parent);
+        
+        assertEquals(0, tfm.orphans);
+        assertEquals(0, tfm.children);       
     }
     
-    private class TestingFrameManager extends DummyFrameManager {
-        public int orphans = 0;
-        public int children = 0;
-
-        @Override
-        public void addWindow(FrameContainer window) {
-            orphans++;
-        }
-
-        @Override
-        public void addWindow(FrameContainer parent, FrameContainer window) {
-            children++;
-        }
-
-        @Override
-        public void delWindow(FrameContainer window) {
-            orphans--;
-        }
-
-        @Override
-        public void delWindow(FrameContainer parent, FrameContainer window) {
-            children--;
-        }
+    @Test
+    public void testGetParent() {
+        final Window parent1 = new DummyInputWindow(null, null);
+        final Window parent2 = new DummyInputWindow(null, null);
+        final Window child1 = new DummyInputWindow(null, null);
+        final Window child2 = new DummyInputWindow(null, null);
+        
+        WindowManager.addWindow(parent1);
+        WindowManager.addWindow(parent2);
+        WindowManager.addWindow(parent1, child1);
+        WindowManager.addWindow(parent2, child2);
+        
+        assertSame(parent1, WindowManager.getParent(child1));
+        assertSame(parent2, WindowManager.getParent(child2));
+        assertNull(WindowManager.getParent(parent1));
+        assertNull(WindowManager.getParent(parent2));
     }
-
+    
 }

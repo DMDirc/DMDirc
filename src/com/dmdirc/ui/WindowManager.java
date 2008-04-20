@@ -71,8 +71,8 @@ public class WindowManager {
         "The specified FrameManager has not already been added"
     })
     public static void addFrameManager(final FrameManager frameManager) {
-        assert(frameManager != null);
-        assert(!frameManagers.contains(frameManager));
+        Logger.assertTrue(frameManager != null);
+        Logger.assertTrue(!frameManagers.contains(frameManager));
 
         frameManagers.add(frameManager);
     }
@@ -87,8 +87,8 @@ public class WindowManager {
         "The specified FrameManager has already been added and not removed"
     })
     public static void removeFrameManager(final FrameManager frameManager) {
-        assert(frameManager != null);
-        assert(frameManagers.contains(frameManager));
+        Logger.assertTrue(frameManager != null);
+        Logger.assertTrue(frameManagers.contains(frameManager));
 
         frameManagers.remove(frameManager);
     }
@@ -103,8 +103,8 @@ public class WindowManager {
         "The specified Window has not already been added"
     })
     public static void addWindow(final Window window) {
-        assert(window != null);
-        assert(!rootWindows.contains(window));
+        Logger.assertTrue(window != null);
+        Logger.assertTrue(!rootWindows.contains(window));
 
         rootWindows.add(window);
         childWindows.add(window);
@@ -124,10 +124,10 @@ public class WindowManager {
         "The child Window has not already been added"
     })
     public static void addWindow(final Window parent, final Window child) {
-        assert(parent != null);
-        assert(child != null);
-        assert(childWindows.containsKey(parent));
-        assert(!childWindows.containsKey(child));
+        Logger.assertTrue(parent != null);
+        Logger.assertTrue(child != null);
+        Logger.assertTrue(childWindows.containsKey(parent));
+        Logger.assertTrue(!childWindows.containsKey(child));
 
         childWindows.add(parent, child);
         childWindows.add(child);
@@ -145,7 +145,7 @@ public class WindowManager {
      */
     @Precondition("The specified Window is not null")
     public static void removeWindow(final Window window) {
-        assert(window != null);
+        Logger.assertTrue(window != null);
         
         if (!childWindows.containsKey(window)) {
             return;
@@ -189,7 +189,7 @@ public class WindowManager {
      */
     @Precondition("The specified window name is not null")
     public static Window findCustomWindow(final String name) {
-        assert(name != null);
+        Logger.assertTrue(name != null);
 
         return findCustomWindow(rootWindows, name);
     }
@@ -208,9 +208,9 @@ public class WindowManager {
         "The specified parent window has been added to the Window Manager"
     })
     public static Window findCustomWindow(final Window parent, final String name) {
-        assert(parent != null);
-        assert(name != null);
-        assert(childWindows.containsKey(parent));
+        Logger.assertTrue(parent != null);
+        Logger.assertTrue(name != null);
+        Logger.assertTrue(childWindows.containsKey(parent));
 
         return findCustomWindow(childWindows.get(parent), name);
     }
