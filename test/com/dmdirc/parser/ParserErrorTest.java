@@ -30,6 +30,8 @@ public class ParserErrorTest extends junit.framework.TestCase {
     private final ParserError error = new ParserError(ParserError.ERROR_ERROR, "moo", "last line");
     private final ParserError except = new ParserError(ParserError.ERROR_EXCEPTION, "moo", null);
     private final ParserError warning = new ParserError(ParserError.ERROR_WARNING, "moo", "");
+    private final ParserError uwarning = new ParserError(ParserError.ERROR_WARNING
+            + ParserError.ERROR_USER, "moo", "");
 
     @Test
     public void testIsFatal() {
@@ -78,6 +80,15 @@ public class ParserErrorTest extends junit.framework.TestCase {
         assertEquals(ParserError.ERROR_FATAL, fatal.getLevel());
         assertEquals(ParserError.ERROR_WARNING, warning.getLevel());
     }    
+    
+    @Test
+    public void testIsUser() {
+        assertTrue(uwarning.isUserError());
+        assertFalse(error.isUserError());
+        assertFalse(fatal.isUserError());
+        assertFalse(except.isUserError());
+        assertFalse(warning.isUserError());
+    }
 
     @Test
     public void testException() {
