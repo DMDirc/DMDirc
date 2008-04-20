@@ -27,41 +27,49 @@ import com.dmdirc.actions.interfaces.ActionType;
 
 /**
  * DCC actions.
- * 
+ *
  * @author chris
  */
-public enum DccActions implements ActionType {
-    
-    /** Chat request. */
-    DCC_CHAT_REQUEST(DccEvents.DCC_CHAT_REQUEST, "Chat request"),
-    /** File offered. */
-    DCC_FILE_OFFERED(DccEvents.DCC_FILE_REQUEST, "File offered");
-    
-    /** The type of this action. */
-    private final ActionMetaType type;
-    
-    /** The name of this action. */
-    private final String name;
-    
-    /**
-     * Constructs a new core action.
-     * @param type The type of this action
-     * @param name The name of this action
-     */
-    DccActions(final ActionMetaType type, final String name) {
-        this.type = type;
-        this.name = name;
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public ActionMetaType getType() {
-        return type;
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public String getName() {
-        return name;
-    }
+public enum DCCActions implements ActionType {
+	
+	/** DCC Chat Request. */
+	DCC_CHAT_REQUEST(DCCEvents.DCC_CHAT_REQUEST, "DCC Chat Requested"),
+	/** DCC Chat Request Sent. */
+	DCC_CHAT_REQUEST_SENT(DCCEvents.DCC_CHAT_REQUEST_SENT, "DCC Chat Request Sent"),
+	/** DCC Message from another person. */
+	DCC_CHAT_MESSAGE(DCCEvents.DCC_CHAT_MESSAGE, "DCC Chat Message Recieved"),
+	/** DCC Message to another person. */
+	DCC_CHAT_SELFMESSAGE(DCCEvents.DCC_CHAT_SELFMESSAGE, "DCC Chat Message Sent"),
+	/** DCC Chat Socket Opened. */
+	DCC_CHAT_SOCKETCLOSED(DCCEvents.DCC_CHAT_SOCKETCLOSED, "DCC Chat Socket Closed"),
+	/** DCC Chat Socket Closed. */
+	DCC_CHAT_SOCKETOPENED(DCCEvents.DCC_CHAT_SOCKETOPENED, "DCC Chat Socket Opened");
+	
+	/** The type of this action. */
+	private final ActionMetaType type;
+	
+	/** The name of this action. */
+	private final String name;
+	
+	/**
+	 * Constructs a new core action.
+	 * @param type The type of this action
+	 * @param name The name of this action
+	 */
+	DCCActions(final ActionMetaType type, final String name) {
+		this.type = type;
+		this.name = name;
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public ActionMetaType getType() {
+		return type;
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public String getName() {
+		return name;
+	}
 }

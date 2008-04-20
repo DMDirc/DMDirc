@@ -22,6 +22,8 @@
 
 package com.dmdirc.addons.dcc;
 
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.addons.dcc.actions.DCCActions;
 import com.dmdirc.Main;
 
 /**
@@ -72,7 +74,7 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 	public void sendLine(final String line) {
 		if (dcc.isWriteable()) {
 			final StringBuffer buff = new StringBuffer("DCCChatSelfMessage");
-			//ActionManager.processEvent(DCCActionType.DCC_CHAT_SELFMESSAGE, buff, this, line);
+			ActionManager.processEvent(DCCActions.DCC_CHAT_SELFMESSAGE, buff, this, line);
 			addLine(buff, nickname, myWindow.getTranscoder().encode(line));
 			dcc.sendLine(line);
 		} else {
@@ -90,7 +92,7 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
     @Override
 	public void handleChatMessage(final DCCChat dcc, final String message) {
 		final StringBuffer buff = new StringBuffer("DCCChatMessage");
-		//ActionManager.processEvent(DCCActionType.DCC_CHAT_MESSAGE, buff, this, otherNickname, message);
+		ActionManager.processEvent(DCCActions.DCC_CHAT_MESSAGE, buff, this, otherNickname, message);
 		addLine(buff, otherNickname, myWindow.getTranscoder().encode(message));
 	}
 	
@@ -102,7 +104,7 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
     @Override
 	public void socketClosed(final DCCChat dcc) {
 		final StringBuffer buff = new StringBuffer("DCCChatInfo");
-		//ActionManager.processEvent(DCCActionType.DCC_CHAT_SOCKETCLOSED, buff, this);
+		ActionManager.processEvent(DCCActions.DCC_CHAT_SOCKETCLOSED, buff, this);
 		addLine(buff, "Socket closed");
 	}
 	
@@ -114,7 +116,7 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
     @Override
 	public void socketOpened(final DCCChat dcc) {
 		final StringBuffer buff = new StringBuffer("DCCChatInfo");
-		//ActionManager.processEvent(DCCActionType.DCC_CHAT_SOCKETOPENED, buff, this);
+		ActionManager.processEvent(DCCActions.DCC_CHAT_SOCKETOPENED, buff, this);
 		addLine(buff, "Socket opened");
 	}
 	

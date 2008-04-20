@@ -23,11 +23,15 @@
 package com.dmdirc.addons.dcc;
 
 import com.dmdirc.Main;
+import com.dmdirc.Server;
 import com.dmdirc.parser.IRCParser;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
+
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.addons.dcc.actions.DCCActions;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -67,12 +71,15 @@ public final class DCCCommand extends GlobalCommand {
 			final String type = args[0];
 			final String target = args[1];
 			if (type.equalsIgnoreCase("chat")) {
-				final IRCParser parser = origin.getContainer().getServer().getParser();
+				final Server server = origin.getContainer().getServer();
+				final IRCParser parser = server.getParser();
 				final String myNickname = parser.getMyNickname();
 				final DCCChat chat = new DCCChat();
 				chat.listen();
 				final DCCChatWindow window = new DCCChatWindow(myPlugin, chat, "*Chat: "+target, myNickname, target);
 				parser.sendCTCP(target, "DCC", "CHAT chat "+DCC.ipToLong(chat.getHost())+" "+chat.getPort());
+				
+				ActionManager.processEvent(DCCActions.DCC_CHAT_REQUEST_SENT, null, server, target);
 				
 				sendLine(origin, isSilent, "DCCChatStarting", target, chat.getHost(), chat.getPort());
 				window.getFrame().addLine("DCCChatStarting", target, chat.getHost(), chat.getPort());

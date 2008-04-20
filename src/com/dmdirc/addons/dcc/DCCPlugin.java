@@ -44,6 +44,8 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.swing.components.JWrappingLabel;
 import com.dmdirc.ui.swing.components.TextFrame;
 
+import com.dmdirc.addons.dcc.actions.DCCActions;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -226,6 +228,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 						f.getFrame().addLine("DCCChatStarting", nickname, chat.getHost(), chat.getPort());
 						chat.connect();
 					} else {
+						ActionManager.processEvent(DCCActions.DCC_CHAT_REQUEST, null, ((Server)arguments[0]), nickname);
 						askQuestion("User "+nickname+" on "+((Server)arguments[0]).toString()+" would like to start a DCC Chat with you.\n\nDo you want to continue?", "DCC Chat Request", JOptionPane.YES_OPTION, type, format, arguments);
 						return;
 					}
@@ -428,6 +431,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		}
 
 		command = new DCCCommand(this);
+		ActionManager.registerActionTypes(DCCActions.values());
 		ActionManager.addListener(this, CoreActionType.SERVER_CTCP);
 	}
 
