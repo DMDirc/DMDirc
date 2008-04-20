@@ -133,12 +133,32 @@ public class ActionModelTest extends junit.framework.TestCase {
                             CoreActionComparison.STRING_STARTSWITH, "abc"),
                 }), ConditionTree.parseString("0|1"), null);
         final ActionSubstitutor sub = new ActionSubstitutor(CoreActionType.CHANNEL_ACTION);
-        
+
         assertTrue("test must pass if one condition in disjunction passes (cond 1)",
                 model.test(sub, null, null, "abcdef"));
         assertTrue("test must pass if one condition in disjunction passes (cond 2)",
                 model.test(sub, null, null, "bcdeeeeeeeeef"));
         assertFalse("test must fail if all conditions fail",
                 model.test(sub, null, null, "abeeef"));
+    }
+    
+    @Test
+    public void testTestNoCondTree() {
+        final ActionModel model = new ActionModel("group", "name",
+                new ActionType[]{CoreActionType.CHANNEL_ACTION},
+                new String[0], Arrays.asList(new ActionCondition[]{
+                    new ActionCondition(2, CoreActionComponent.STRING_STRING,
+                            CoreActionComparison.STRING_REGEX, ".*e{5}.*"),
+                    new ActionCondition(2, CoreActionComponent.STRING_STRING,
+                            CoreActionComparison.STRING_STARTSWITH, "abc"),
+                }), null, null);
+        final ActionSubstitutor sub = new ActionSubstitutor(CoreActionType.CHANNEL_ACTION);
+
+        assertFalse("test must fail if one condition in conjunction fails (cond 1)",
+                model.test(sub, null, null, "abcdef"));
+        assertFalse("test must fail if one condition in conjunction fails (cond 2)",
+                model.test(sub, null, null, "abdeeeeeeeeef"));
+        assertTrue("test must pass if both conditions in conjunction pass",
+                model.test(sub, null, null, "abcdeeeeeeeeef"));
     }
 }
