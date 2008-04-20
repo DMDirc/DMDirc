@@ -86,6 +86,11 @@ public final class ChangeServer extends ServerCommand {
                 sendLine(origin, isSilent, FORMAT_ERROR, "Invalid port specified");
                 return;
             }
+            
+            if (port <= 0 || port > 65535) {
+                sendLine(origin, isSilent, FORMAT_ERROR, "Port must be between 1 and 65535");
+                return;
+            }
         } else {
             host = args[offset];
         }
