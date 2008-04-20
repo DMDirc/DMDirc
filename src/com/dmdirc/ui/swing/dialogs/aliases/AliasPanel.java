@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.swing.dialogs.aliases;
 
-
 import com.dmdirc.ui.swing.components.renderers.ActionComparisonCellRenderer;
 import com.dmdirc.actions.wrappers.Alias;
 import com.dmdirc.actions.ActionCondition;
@@ -178,8 +177,11 @@ public final class AliasPanel extends JPanel implements ActionListener {
         for (String line : alias.getResponse()) {
             sb.append(line).append('\n');
         }
+        
         if (sb.length() > 1) {
-          response.setText(sb.substring(0, sb.length() - 1));
+            response.setText(sb.substring(0, sb.length() - 1));
+        } else {
+            response.setText("");
         }
     }
     
