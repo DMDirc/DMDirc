@@ -64,7 +64,7 @@ public class LinuxInstaller extends Installer {
 		}
 		if (result.isEmpty()) {
 			if (isRoot()) {
-				result = "/usr/local/DMDirc";
+				result = "/opt/dmdirc";
 			} else {
 				result = System.getProperty("user.home") + "/DMDirc";
 			}
