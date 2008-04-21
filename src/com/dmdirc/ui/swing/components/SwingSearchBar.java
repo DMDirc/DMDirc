@@ -218,11 +218,13 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
         searcher.setPosition(textPane.getSelectedRange());
 
         final LinePosition result = up ? searcher.searchUp() : searcher.searchDown();
-
+        
         if (result == null) {
             foundText = false;
         } else if (
-                ((up && result.getEndLine() > textPane.getSelectedRange().getEndLine())
+                (textPane.getSelectedRange().getEndLine() != 0
+                || textPane.getSelectedRange().getEndPos() != 0)
+                && ((up && result.getEndLine() > textPane.getSelectedRange().getEndLine())
                 || (!up && result.getStartLine() < textPane.getSelectedRange().getStartLine()))
                 && JOptionPane.showConfirmDialog((MainFrame) Main.getUI().getMainWindow(),
                 "Do you want to continue searching from the " + (up ? "end" : "beginning"),
