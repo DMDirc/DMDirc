@@ -379,6 +379,6 @@ public class LinuxInstaller extends Installer {
 	 * @param location Location where app was installed to.
 	 */
 	public void postInstall(final String location) {
-		(new File(location+"/DMDirc.sh")).setExecutable(true);
+		new File(location+"/DMDirc.sh").setExecutable(true, !isRoot());
 	}
 }
