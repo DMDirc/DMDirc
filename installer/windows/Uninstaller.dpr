@@ -38,6 +38,31 @@ begin
 	CreateProcess(nil, PChar(sProgramToRun), nil, nil, False, NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo, ProcessInfo);
 end;
 
+function CheckStdErr(sProgramToRun: String): Boolean;
+var
+        StartupInfo: TStartupInfo;
+	Pipe, Pipe2: THandle;
+        ProcessInfo: TProcessInformation;
+	BytesRead: Cardinal;
+        Buffer: array[0..255] of Char; 
+begin
+	CreatePipe(Pipe2, Pipe, nil, 0);
+
+        FillChar(StartupInfo, SizeOf(TStartupInfo), 0);
+        with StartupInfo do begin
+                cb := SizeOf(TStartupInfo);
+                dwFlags := STARTF_USESHOWWINDOW;
+                wShowWindow := SW_SHOWNORMAL;
+		hStdError := Pipe;
+        end;
+
+        CreateProcess(nil, PChar(sProgramToRun), nil, nil, False, NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo, ProcessInfo);
+
+	ReadFile(Pipe2, Buffer, 255, BytesRead, nil);
+
+	Result := BytesRead > 0;
+end;
+
 function KillDir(Dir: string): Integer;
 var
 	searchResult: TSearchRec;
@@ -140,10 +165,14 @@ begin
 		MessageBox(0, PChar('DMDirc has been uninstalled from "'+InstallDir+'".'), 'DMDirc Uninstaller', MB_OK);
 	end
 	else begin
-		TempDir := GetTempDirectory;
-		if MessageBox(0, PChar('This will uninstall DMDirc.'+#13#10+#13#10+'Please make sure DMDirc is not running before continuing, or some files might not get correctly removed.'+#13#10+#13#10+'Do you want to continue?'), 'DMDirc Uninstaller', MB_YESNO) = IDYES then begin
+MessageBox(0, PChar('java -jar ' + ExtractFileDir(paramstr(0)) + '/DMDirc.jar -e -v'), 'DMDirc Uninstaller', MB_OK + MB_ICONEXCLAMATION);
+
+		if checkStdErr('java -jar ' + ExtractFileDir(paramstr(0)) + 'DMDirc.jar -e -v') then begin
+	                TempDir := GetTempDirectory;
 			CopyFile(pchar(paramstr(0)), pchar(TempDir+'/uninstall.exe'), false);
 			Launch(TempDir+'/uninstall.exe '+ExtractFileDir(paramstr(0))+'\');
+		end else begin
+                        MessageBox(0, PChar('Uninstall Aborted - DMDirc is still running.'+#13#10+'Please close DMDirc before continuing'), 'DMDirc Uninstaller', MB_OK + MB_ICONEXCLAMATION);
 		end;
 	end;
 end.
