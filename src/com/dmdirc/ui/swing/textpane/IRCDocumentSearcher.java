@@ -25,41 +25,39 @@ package com.dmdirc.ui.swing.textpane;
 import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Searches the textpane for specified phrases.
  */
-public class IRCDocumentSearcher implements IRCDocumentListener {
+public class IRCDocumentSearcher {
 
-    /** Occurances of the phrase. */
-    private Map<Integer, LinePosition> occurrences;
     /** Document to search. */
-    private IRCDocument document;
+    private final IRCDocument document;
+
     /** Phrase to search for. */
-    private String phrase;
+    private final String phrase;
+    
     /** Textpane position. */
     private LinePosition position;
+    
+    /** Case sensitive? */
+    private final boolean caseSensitive;
 
     /**
      * Constructs a new IRC Document searcher.
      * 
      * @param phrase Phrase to search for
      * @param document Document to search
+     * @param caseSensitive Whether or not this searcher is case sensitive
      */
-    public IRCDocumentSearcher(final String phrase,
-            final IRCDocument document) {
+    public IRCDocumentSearcher(final String phrase, final IRCDocument document,
+            final boolean caseSensitive) {
         this.phrase = phrase;
         this.document = document;
-        this.occurrences = new TreeMap<Integer, LinePosition>();
-
         this.position = getEndPosition();
-
-        document.addIRCDocumentListener(this);
+        this.caseSensitive = caseSensitive;
     }
 
     /**
@@ -93,44 +91,77 @@ public class IRCDocumentSearcher implements IRCDocumentListener {
         if (position == null) {
             position = getEndPosition();
         }
-        int tempLine = position.getStartLine();
-        List<Match> matches = new ArrayList<Match>();
-        String line = "";
-        while (matches.size() == 0 && tempLine > -1) {
-            line = document.getLineText(tempLine);
-            System.out.println("Searching: " + line);
-            matches = searchLine(line);
-            tempLine--;
-        }
-        if (matches.size() == 0) {
-            return null;
-        }
         
-        final Match current = new Match(position.getStartPos(), position.getEndPos());
-        ListIterator<Match> i = matches.listIterator(matches.size());
-        while (i.hasPrevious()) {
-            Match match = i.previous();
-            if (match.compareTo(current) == -1) {
-                return new LinePosition(tempLine, match.start, tempLine, match.end);
+        int line = position.getEndLine();        
+        for (int remaining = document.getNumLines(); remaining > 0; remaining--) {
+            final String lineText = document.getLineText(line);
+            
+            final List<LinePosition> matches = searchLine(line, lineText);
+            
+            for (int i = matches.size() - 1; i >= 0; i--) {
+                if (position.getEndLine() != line
+                        || matches.get(i).getEndPos() < position.getEndPos()) {
+                    return matches.get(i);
+                }                
+            }
+            
+            line--;
+            
+            if (line < 0) {
+                line += document.getNumLines();
             }
         }
 
         return null;
     }
+    
+    /**
+     * Searches down in the document.
+     * 
+     * @return Line position of the next match
+     */
+    public LinePosition searchDown() {
+        if (position == null) {
+            position = getEndPosition();
+        }
+        
+        int line = position.getStartLine();        
+        for (int remaining = document.getNumLines(); remaining > 0; remaining--) {
+            final String lineText = document.getLineText(line);
+                        
+            final List<LinePosition> matches = searchLine(line, lineText);
+            
+            for (LinePosition match : matches) {
+                if (position.getStartLine() != line
+                        || match.getStartPos() > position.getStartPos()) {
+                    return match;
+                }
+            }
+            
+            line++;
+            
+            if (line >= document.getNumLines()) {
+                line -= document.getNumLines();
+            }
+        }
+
+        return null;
+    }    
 
     /**
      * Searches a line and returns all matches on a line.
      * 
+     * @param lineNum the line number of the line we're searching
      * @param line Line to search
-     * 
      * @return List of matches
      */
-    private List<Match> searchLine(final String line) {
-        final List<Match> matches = new ArrayList<Match>();
-        Matcher matcher = Pattern.compile(phrase).matcher(line);
+    private List<LinePosition> searchLine(final int lineNum, final String line) {
+        final List<LinePosition> matches = new ArrayList<LinePosition>();
+        final Matcher matcher = Pattern.compile((caseSensitive ? "" : "(?i)") +
+                "\\Q" + phrase + "\\E").matcher(line);
 
         while (matcher.find()) {
-            matches.add(new Match(matcher.start(), matcher.end()));
+            matches.add(new LinePosition(lineNum, matcher.start(), lineNum, matcher.end()));
         }
 
         return matches;
@@ -140,107 +171,22 @@ public class IRCDocumentSearcher implements IRCDocumentListener {
      * Random test method.
      * 
      * @param args CLI params
-     */
+     *
     public static void main(final String[] args) {
-        final String search = "to";
+        final String search = "these";
         IRCDocument document = new IRCDocument();
-        document.addText(new AttributedString("rar! this is a text sentence to search"));
+        document.addText(new AttributedString("rar! this these a text these sentence to search"));
         document.addText(new AttributedString("we need to have several of these"));
         document.addText(new AttributedString("then we can pretend to search through them if we want"));
 
         IRCDocumentSearcher searcher = new IRCDocumentSearcher(search, document);
 
-        searcher.setPosition(new LinePosition(1, 0, 1, 0));
-        
-        System.out.println("Searching for: \"" + search + "\"");
-        LinePosition position = searcher.searchUp();
-        System.out.println(position);
-        
-        searcher.setPosition(position);
-        
-        System.out.println("Searching for: \"" + search + "\"");
-        position = searcher.searchUp();
-        System.out.println(position);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void lineAdded(final int line, final int size) {
-    //Ignore
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void trimmed(final int numLines) {
-    //check for invalid lineposition pointer
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void cleared() {
-        occurrences.clear();
-    }
-}
-
-/**
- * Represents the boundaries of a match.
- */
-class Match implements Comparable<Match> {
-
-    /**  Start of a match. */
-    public final int start;
-    /**  End of a match. */
-    public final int end;
-
-    /**
-     * Instantiates a new match.
-     * 
-     * @param start Match start
-     * @param end Match end
-     */
-    public Match(final int start, final int end) {
-        this.start = start;
-        this.end = end;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String toString() {
-        return "[" + start + "-" + end + "]";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
+        for (int i = 0; i < 10; i++) {
+            System.out.println("Searching for: \"" + search + "\"");
+            LinePosition position = searcher.searchDown();
+            System.out.println(position);
+            searcher.setPosition(position);
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Match other = (Match) obj;
-        return this.start == other.start && this.end == other.end;
-    }
+    }*/
 
-    /** {@inheritDoc} */
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 89 * hash + this.start;
-        hash = 89 * hash + this.end;
-        return hash;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public int compareTo(Match o) {
-        if (this.equals(o) || end == o.end) {
-            return 0;
-        }
-        if (end > o.end) {
-            return 1;
-        } else {
-            return -1;
-        }
-    }
 }

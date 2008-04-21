@@ -59,16 +59,6 @@ public interface SearchBar {
      * @return true if the search needs to be case sensitive
      */
     boolean isCaseSensitive();
-    
-    /**
-     * Returns whether the specified phrase occurs.
-     * 
-     * @param text Phrase to search for
-     * @param caseSensitive whether the search is case sensitive
-     * 
-     * @return true iff the phrase occurs
-     */
-    boolean checkPhraseOccurs(final String text, final boolean caseSensitive);
 
     /**
      * Searches the textpane for text.
