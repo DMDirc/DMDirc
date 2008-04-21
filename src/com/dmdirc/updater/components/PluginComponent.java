@@ -27,6 +27,7 @@ import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateComponent;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * An update component for plugins.
@@ -74,7 +75,15 @@ public class PluginComponent implements UpdateComponent {
     /** {@inheritDoc} */
     @Override    
     public boolean doInstall(final String path) throws Throwable {
-        new File(path).renameTo(new File(plugin.getFullFilename()));
+        final File target = new File(plugin.getFullFilename());
+        
+        if (target.exists()) {
+            target.delete();
+        }
+        
+        if (!new File(path).renameTo(target)) {
+            throw new IOException("Unable to install new plugin");
+        }
         
         return false;
     }
