@@ -77,7 +77,12 @@ public class PluginInfo implements Comparable<PluginInfo> {
 		this.filename = filename;
 
 		if (!load) { return; }
-
+		
+		// Check for updates.
+		if (new File(getFullFilename()+".update").exists() && new File(getFullFilename()).delete()) {
+			new File(getFullFilename()+".update").renameTo(new File(getFullFilename()));
+		}
+		
 		ResourceManager res;
 		try {
 			res = getResourceManager();
