@@ -82,7 +82,20 @@ public class PluginComponent implements UpdateComponent {
         }
         
         if (!new File(path).renameTo(target)) {
-            throw new IOException("Unable to install new plugin");
+            // Windows rocks!
+            final File newTarget = new File(plugin.getFullFilename() + ".update");
+            
+            if (newTarget.exists()) {
+                newTarget.delete();
+            }
+            
+            new File(path).renameTo(newTarget);
+            return true;
+        }
+        
+        if (plugin.isLoaded()) {
+            plugin.unloadPlugin();
+            plugin.loadPlugin();
         }
         
         return false;
