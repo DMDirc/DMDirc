@@ -84,7 +84,12 @@ public final class IdentityManager {
         target.setOrder(500000);
         properties.setProperty("identity.name", "Action defaults");        
         addonConfig = new Identity(properties, target);
-        IdentityManager.addIdentity(addonConfig);        
+        IdentityManager.addIdentity(addonConfig);
+        
+        if (!getGlobalConfig().hasOption("identity", "defaultsversion")) {
+            Logger.userError(ErrorLevel.FATAL, "Default settings "
+                    + "could not be loaded");
+        }
     }
     
     /** Loads the default (built in) identities. */
@@ -94,7 +99,7 @@ public final class IdentityManager {
         
         for (String target : targets) {
             final File file = new File(dir + target);
-            if (!file.exists() || file.listFiles().length == 0) {
+            if (!file.exists() || (file.isDirectory() && file.listFiles().length == 0)) {
                 file.mkdirs();
                 extractIdentities(target);
             }
