@@ -23,10 +23,16 @@ package com.dmdirc.config.prefs;
 
 import com.dmdirc.harness.TestPreferencesInterface;
 import com.dmdirc.config.IdentityManager;
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class PreferencesManagerTest extends junit.framework.TestCase {
+    
+    @Before
+    public void setUp() throws Exception {        
+        IdentityManager.load();
+    }    
 
     @Test
     public void testDefaults() {
@@ -59,9 +65,7 @@ public class PreferencesManagerTest extends junit.framework.TestCase {
     }
     
     @Test
-    public void testSaveListener() {
-        IdentityManager.load();
-        
+    public void testSaveListener() {        
         final PreferencesManager pm = new PreferencesManager();
         final TestPreferencesInterface tpi = new TestPreferencesInterface();
         

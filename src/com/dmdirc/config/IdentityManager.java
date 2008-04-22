@@ -99,7 +99,7 @@ public final class IdentityManager {
         
         for (String target : targets) {
             final File file = new File(dir + target);
-            if (!file.exists() || (file.isDirectory() && file.listFiles().length == 0)) {
+            if (!file.exists() || file.listFiles() == null || file.listFiles().length == 0) {
                 file.mkdirs();
                 extractIdentities(target);
             }

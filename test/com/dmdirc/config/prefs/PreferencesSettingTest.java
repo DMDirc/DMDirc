@@ -28,10 +28,16 @@ import com.dmdirc.config.prefs.validator.PermissiveValidator;
 import com.dmdirc.config.prefs.validator.StringLengthValidator;
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class PreferencesSettingTest {
+    
+    @Before
+    public void setUp() throws Exception {        
+        IdentityManager.load();
+    }    
 
     @Test(expected=IllegalArgumentException.class)
     public void testIllegalMultichoice1() {
@@ -153,7 +159,6 @@ public class PreferencesSettingTest {
     
     @Test
     public void testSaveUnset() {
-        IdentityManager.load();
         IdentityManager.getConfigIdentity().setOption("unit-test", "ps", "abc");
         
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT,
@@ -168,7 +173,6 @@ public class PreferencesSettingTest {
     
     @Test
     public void testSaveNormal() {
-        IdentityManager.load();
         IdentityManager.getConfigIdentity().setOption("unit-test", "ps", "abc");
         
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT,
