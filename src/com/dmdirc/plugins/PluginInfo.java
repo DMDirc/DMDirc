@@ -635,10 +635,8 @@ public class PluginInfo implements Comparable<PluginInfo> {
 				ResourceManager res = getResourceManager();
 
 				for (final String filename : res.getResourcesStartingWith("")) {
-					String classname = filename.replace('.', '/');
-					if (classname.matches("^.*\\.class$")) {
-						classname = classname.replaceAll("\\.class$", "");
-						result.add(classname);
+					if (filename.matches("^.*\\.class$")) {
+						result.add(filename.replaceAll("\\.class$", "").replace('/', '.'));
 					}
 				}
 			} catch (IOException e) {
