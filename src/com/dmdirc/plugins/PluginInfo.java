@@ -385,10 +385,22 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			return true;
 		}
 		
+		final String uiPackage;
+		if (Main.getUI().getClass().getPackage() != null) {
+			uiPackage = Main.getUI().getClass().getPackage().getName();
+		} else {
+			final String uiController = Main.getUI().getClass().getName();
+			if (uiController.lastIndexOf('.') >= 0) {
+				uiPackage = uiController.substring(0,uiController.lastIndexOf('.'));
+			} else {
+				uiPackage = uiController;
+			}
+		}
+		
 		if (!checkMinimumVersion(getMinVersion(), Main.SVN_REVISION) ||
 		    !checkMaximumVersion(getMaxVersion(), Main.SVN_REVISION) ||
 		    !checkFiles(getMetaInfo(new String[]{"required-files", "require-files", "required-file", "require-file"})) ||
-		    !checkUI(getMetaInfo(new String[]{"required-ui", "require-ui"}), Main.getUI().getClass().getPackage().getName()) ||
+		    !checkUI(getMetaInfo(new String[]{"required-ui", "require-ui"}), uiPackage) ||
 		    !checkPlugins(getMetaInfo(new String[]{"required-plugins", "require-plugins", "required-plugin", "require-plugin"})) ||
 		    !checkOS(getMetaInfo(new String[]{"required-os", "require-os"}), System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch"))
 		    ) {
