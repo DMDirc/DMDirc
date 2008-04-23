@@ -29,8 +29,7 @@ import com.dmdirc.util.resourcemanager.ResourceManager;
 import java.io.IOException;
 
 public class PluginClassLoader extends ClassLoader {
-
-    /** The plugin Info object for the plugin we are loading. */
+	/** The plugin Info object for the plugin we are loading. */
 	final PluginInfo pluginInfo;
 	
 	/**
