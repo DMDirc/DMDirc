@@ -151,7 +151,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 *
 	 * @throws IOException if there is any problem getting a ResourceManager for this plugin
 	 */
-	protected synchronized ResourceManager getResourceManager() throws IOException {
+	public synchronized ResourceManager getResourceManager() throws IOException {
 		if (myResourceManager == null) {
 			final String directory = PluginManager.getPluginManager().getDirectory();
 			myResourceManager = ResourceManager.getResourceManager("jar://"+directory+filename);
