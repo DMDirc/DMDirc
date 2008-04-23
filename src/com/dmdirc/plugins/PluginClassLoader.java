@@ -54,6 +54,19 @@ public class PluginClassLoader extends ClassLoader {
 	}
 	
 	/**
+	 * Have we already loaded the given class name?
+	 *
+	 * @param name Name to check.
+	 * @param checkGlobal Should we check if the GCL has loaded it aswell?
+	 */
+	public boolean isClassLoaded(final String name, final boolean checkGlobal) {
+		// Don't duplicate a class
+		final Class existing = findLoadedClass(name);
+		final boolean gcl = (checkGlobal) GlobalClassLoader.getGlobalClassLoader().isClassLoaded(name) : false;
+		return (existing != null || gcl);
+	}
+	
+	/**
 	 * Load the plugin with the given className
 	 *
 	 * @param name Class Name of plugin
@@ -93,8 +106,7 @@ public class PluginClassLoader extends ClassLoader {
 		
 		
 		// Don't duplicate a class
-		Class existing = findLoadedClass(name);
-		if (existing != null) { return existing; }
+		if (isClassLoaded(name)) { return existing; }
 		
 		// We are ment to be loading this one!
 		byte[] data = null;

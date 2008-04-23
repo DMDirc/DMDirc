@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class GlobalClassLoader extends ClassLoader {
 
-    /** Singleton instance of the GlobalClassLoader. */
+	/** Singleton instance of the GlobalClassLoader. */
 	private static GlobalClassLoader me;
 	
 	/** HashMap containing sources of Global class files. */
@@ -46,6 +46,17 @@ public class GlobalClassLoader extends ClassLoader {
 	 */
 	private GlobalClassLoader() {
 		super();
+	}
+	
+	/**
+	 * Have we already loaded the given class name?
+	 *
+	 * @param name Name to check.
+	 */
+	public boolean isClassLoaded(final String name) {
+		// Don't duplicate a class
+		final Class existing = findLoadedClass(name);
+		return (existing != null);
 	}
 	
 	/**

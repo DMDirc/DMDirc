@@ -485,6 +485,11 @@ public class PluginInfo implements Comparable<PluginInfo> {
 				classloader = new PluginClassLoader(this);
 			}
 
+			// Don't reload a class if its already loaded.
+			if (classloader.isClassLoaded(classname, true)) {
+				return;
+			}
+
 			final Class<?> c = classloader.loadClass(classname);
 			final Constructor<?> constructor = c.getConstructor(new Class[] {});
 
