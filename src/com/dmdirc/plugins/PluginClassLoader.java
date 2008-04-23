@@ -62,7 +62,7 @@ public class PluginClassLoader extends ClassLoader {
 	public boolean isClassLoaded(final String name, final boolean checkGlobal) {
 		// Don't duplicate a class
 		final Class existing = findLoadedClass(name);
-		final boolean gcl = (checkGlobal) GlobalClassLoader.getGlobalClassLoader().isClassLoaded(name) : false;
+		final boolean gcl = (checkGlobal) ? GlobalClassLoader.getGlobalClassLoader().isClassLoaded(name) : false;
 		return (existing != null || gcl);
 	}
 	
@@ -106,7 +106,7 @@ public class PluginClassLoader extends ClassLoader {
 		
 		
 		// Don't duplicate a class
-		if (isClassLoaded(name)) { return existing; }
+		if (isClassLoaded(name, false)) { return findLoadedClass(name); }
 		
 		// We are ment to be loading this one!
 		byte[] data = null;
