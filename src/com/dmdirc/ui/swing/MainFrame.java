@@ -261,7 +261,11 @@ public final class MainFrame extends JFrame implements WindowListener,
     @Override
     public String getTitlePrefix() {
         if (showVersion) {
-            return "DMDirc " + Main.VERSION;
+            if ("SVN".equals(Main.VERSION)) {
+                return "DMDirc " + Main.VERSION + " (" + Main.SVN_REVISION + ")";
+            } else {
+                return "DMDirc " + Main.VERSION;
+            }
         } else {
             return "DMDirc";
         }
