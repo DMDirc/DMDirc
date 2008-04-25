@@ -33,7 +33,7 @@ SVNREV=${SVNREV##*: }
 export DMDIRC_SVN=${SVNREV}
 
 # Substitute the version string
-awk '{gsub(/String VERSION = "SVN ("+SVN_REVISION+")"/,"String VERSION = \"Nightly - SVN Rev: '${SVNREV}'\"");print}' ${MYDIR}/src/com/dmdirc/Main.java > ${MYDIR}/src/com/dmdirc/Main.java.tmp
+awk '{gsub(/String VERSION = "SVN"/,"String VERSION = \"Nightly - SVN Rev: '${SVNREV}'\"");print}' ${MYDIR}/src/com/dmdirc/Main.java > ${MYDIR}/src/com/dmdirc/Main.java.tmp
 mv ${MYDIR}/src/com/dmdirc/Main.java.tmp ${MYDIR}/src/com/dmdirc/Main.java
 
 # Substitute the update channel
