@@ -19,7 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.dmdirc.ui.swing.dialogs.error;
 
 import com.dmdirc.ui.swing.components.renderers.ErrorLevelIconCellRenderer;
@@ -222,7 +221,7 @@ public final class ErrorListDialog extends StandardDialog implements
 
         splitPane.setTopComponent(scrollPane);
         splitPane.setBottomComponent(panel);
-        
+
         splitPane.setDividerSize((int) PlatformDefaults.getPanelInsets(0).getValue());
 
         getContentPane().add(splitPane);
@@ -286,67 +285,97 @@ public final class ErrorListDialog extends StandardDialog implements
             /** {@inheritDoc} */
             @Override
             public void run() {
-                synchronized (tableModel) {
-                    final int selectedRow = table.getSelectedRow();
-                    tableModel.addRow(error);
-                    table.getSelectionModel().setSelectionInterval(selectedRow,
-                            selectedRow);
-                    deleteAllButton.setEnabled(true);
+                if (isReady()) {
+                    synchronized (tableModel) {
+                        final int selectedRow = table.getSelectedRow();
+                        tableModel.addRow(error);
+                        table.getSelectionModel().setSelectionInterval(selectedRow,
+                                selectedRow);
+                        deleteAllButton.setEnabled(true);
+                    }
                 }
             }
-            });
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public void fatalError(final ProgramError error) {
-        new FatalErrorDialog(error);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                if (isReady()) {
+                    new FatalErrorDialog(error);
+                }
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public void errorDeleted(final ProgramError error) {
-        synchronized (tableModel) {
-            int selectedRow = table.getSelectedRow();
-            tableModel.removeRow(error);
-            if (selectedRow >= tableModel.getRowCount()) {
-                selectedRow = tableModel.getRowCount() - 1;
-            }
-            table.getSelectionModel().setSelectionInterval(selectedRow,
-                    selectedRow);
+        SwingUtilities.invokeLater(new Runnable() {
 
-            if (tableModel.getRowCount() > 0) {
-                deleteAllButton.setEnabled(true);
-            } else {
-                deleteAllButton.setEnabled(false);
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                if (isReady()) {
+                    synchronized (tableModel) {
+                        int selectedRow = table.getSelectedRow();
+                        tableModel.removeRow(error);
+                        if (selectedRow >= tableModel.getRowCount()) {
+                            selectedRow = tableModel.getRowCount() - 1;
+                        }
+                        table.getSelectionModel().setSelectionInterval(selectedRow,
+                                selectedRow);
+
+                        if (tableModel.getRowCount() > 0) {
+                            deleteAllButton.setEnabled(true);
+                        } else {
+                            deleteAllButton.setEnabled(false);
+                        }
+                    }
+                }
             }
-        }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public void errorStatusChanged(final ProgramError error) {
-        final int errorRow;
-        synchronized (tableModel) {
-            errorRow = tableModel.indexOf(error);
+        SwingUtilities.invokeLater(new Runnable() {
 
-            if (errorRow != -1 && errorRow < tableModel.getRowCount()) {
-                tableModel.fireTableRowsUpdated(errorRow, errorRow);
-            }
-        }
-        if (errorRow > -1) {
-                deleteButton.setEnabled(true);
-                if (error.getReportStatus() == ErrorReportStatus.NOT_APPLICABLE ||
-                        error.getReportStatus() == ErrorReportStatus.FINISHED) {
-                    sendButton.setEnabled(false);
-                } else {
-                    sendButton.setEnabled(true);
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                if (isReady()) {
+                    final int errorRow;
+                    synchronized (tableModel) {
+                        errorRow = tableModel.indexOf(error);
+
+                        if (errorRow != -1 && errorRow < tableModel.getRowCount()) {
+                            tableModel.fireTableRowsUpdated(errorRow, errorRow);
+                        }
+                    }
+                    if (errorRow > -1) {
+                        deleteButton.setEnabled(true);
+                        if (error.getReportStatus() == ErrorReportStatus.NOT_APPLICABLE ||
+                                error.getReportStatus() == ErrorReportStatus.FINISHED) {
+                            sendButton.setEnabled(false);
+                        } else {
+                            sendButton.setEnabled(true);
+                        }
+                    } else {
+                        errorDetails.setError(null);
+                        deleteButton.setEnabled(false);
+                        sendButton.setEnabled(false);
+                    }
+
                 }
-            } else {
-                errorDetails.setError(null);
-                deleteButton.setEnabled(false);
-                sendButton.setEnabled(false);
             }
+        });
     }
 
     /** {@inheritDoc} */
