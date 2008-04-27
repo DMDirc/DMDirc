@@ -125,8 +125,6 @@ public final class MainFrame extends JFrame implements WindowListener,
         initComponents();
         initKeyHooks();
 
-        setTitle(getTitlePrefix());
-
         imageIcon =
                 new ImageIcon(IconManager.getIconManager().getImage("icon"));
         setIconImage(imageIcon.getImage());
@@ -176,6 +174,8 @@ public final class MainFrame extends JFrame implements WindowListener,
                 MenuSelectionManager.defaultManager().clearSelectedPath();
             }
         });
+        
+        setTitle(getTitlePrefix());
     }
 
     /** {@inheritDoc}. */
