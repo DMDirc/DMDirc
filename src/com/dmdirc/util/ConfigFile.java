@@ -106,6 +106,8 @@ public class ConfigFile extends TextFile {
         keydomains.clear();
         flatdomains.clear();
         domains.clear();
+        
+        readLines();
 
         for (String line : getLines()) {
             String tline = line;

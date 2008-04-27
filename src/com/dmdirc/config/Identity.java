@@ -132,7 +132,7 @@ public class Identity extends ConfigSource implements Serializable,
             InvalidIdentityFileException {
         this.file = new ConfigFile(file);
         this.file.setAutomake(true);
-        initFile(forceDefault, new FileInputStream(file), new FileInputStream(file));
+        initFile(forceDefault, new FileInputStream(file));
         myTarget = getTarget(forceDefault);
     }
 
@@ -140,18 +140,16 @@ public class Identity extends ConfigSource implements Serializable,
      * Creates a new read-only identity.
      *
      * @param stream The input stream to read the identity from
-     * @param stream2 A second input stream if the first doesn't support marking
      * @param forceDefault Whether to force this identity to be loaded as default
      * identity or not
      * @throws InvalidIdentityFileException Missing required properties
      * @throws IOException Input/output exception
      */
-    public Identity(final InputStream stream, final InputStream stream2,
-            final boolean forceDefault) throws IOException,
+    public Identity(final InputStream stream, final boolean forceDefault) throws IOException,
             InvalidIdentityFileException {
         this.file = new ConfigFile(stream);
         this.file.setAutomake(true);
-        initFile(forceDefault, stream, stream2);
+        initFile(forceDefault, stream);
         myTarget = getTarget(forceDefault);
     }
 
@@ -223,8 +221,8 @@ public class Identity extends ConfigSource implements Serializable,
      * @throws InvalidIdentityFileException if the identity file is invalid
      * @throws IOException On I/O exception when reading the identity
      */
-    private void initFile(final boolean forceDefault, final InputStream stream,
-            final InputStream newStream) throws InvalidIdentityFileException, IOException {
+    private void initFile(final boolean forceDefault, final InputStream stream)
+            throws InvalidIdentityFileException, IOException {
         
         if (stream.markSupported()) {
             stream.mark(Integer.MAX_VALUE);
@@ -233,21 +231,8 @@ public class Identity extends ConfigSource implements Serializable,
         try {
             this.file.read();
         } catch (InvalidConfigFileException ex) {            
-            InputStream myStream;
-            
-            if (stream != null && stream.markSupported()) {
-                // Not a config file
-                stream.reset();
-                myStream = stream;
-            } else {
-                myStream = newStream;
-            }
-                
             final Properties properties = new Properties();
-            properties.load(myStream);
-            
-            myStream.close();
-            
+            properties.load(new LineReader(this.file.getLines()));            
             migrateProperties(properties);
         }
 

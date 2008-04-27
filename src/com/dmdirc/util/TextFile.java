@@ -46,6 +46,9 @@ public class TextFile {
     /** The input stream we're dealing with. */
     private InputStream is;
     
+    /** The lines we've read from the file. */
+    private List<String> lines;
+    
     /**
      * Creates a new instance of TextFile for the specified file.
      * 
@@ -74,25 +77,37 @@ public class TextFile {
     }
     
     /**
-     * Retrieves the contents of the file as a list of lines.
+     * Retrieves the contents of the file as a list of lines. If getLines() or
+     * readLines() has previously been called, a cached version is returned.
      * 
      * @return A list of lines in the file
      * @throws IOException if an I/O exception occurs
      */
     public List<String> getLines() throws IOException {
+        if (lines == null) {
+            readLines();
+        }
+        
+        return lines;
+    }
+    
+    /**
+     * Reads the contents of the file into this TextFile's line cache.
+     * 
+     * @throws IOException If an I/O exception occurs
+     */
+    public void readLines() throws IOException {
         final BufferedReader reader = new BufferedReader(
                 file == null ? new InputStreamReader(is) : new FileReader(file));
-        final List<String> res = new ArrayList<String>();
+        lines = new ArrayList<String>();
         
         String line;
         
         while ((line = reader.readLine()) != null) {
-            res.add(line);
+            lines.add(line);
         }
         
-        //reader.close();
-        
-        return res;
+        reader.close();
     }
     
     /**

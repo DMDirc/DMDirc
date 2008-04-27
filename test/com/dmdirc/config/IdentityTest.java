@@ -166,17 +166,17 @@ public class IdentityTest {
     
     @Test(expected=InvalidIdentityFileException.class)
     public void testNoName() throws IOException, InvalidIdentityFileException {
-        new Identity(getClass().getResourceAsStream("identity1"), null, false);
+        new Identity(getClass().getResourceAsStream("identity1"), false);
     }
     
     @Test(expected=InvalidIdentityFileException.class)
     public void testNoTarget() throws IOException, InvalidIdentityFileException {
-        new Identity(getClass().getResourceAsStream("identity2"), null, false);
+        new Identity(getClass().getResourceAsStream("identity2"), false);
     }
     
     @Test
     public void testMigrate() throws IOException, InvalidIdentityFileException {
-        final Identity id = new Identity(getClass().getResourceAsStream("identity3"), null, false);
+        final Identity id = new Identity(getClass().getResourceAsStream("identity3"), false);
         
         assertTrue(id.getFile().isKeyDomain("identity"));
         assertTrue(id.getFile().isKeyDomain("meep"));
