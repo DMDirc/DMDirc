@@ -74,11 +74,6 @@
 
     <available file="/bin/bash" property="has.bash"/>	
 
-    <target name="-pre-init">
-        <!-- Source default properties files before private/user/project ones -->
-        <property file="default.properties"/>
-    </target>
-
     <!--
         This will revert the svn revision in Main.java to prevent commiting the
         change everyt time someone builds and causing conflicts.
