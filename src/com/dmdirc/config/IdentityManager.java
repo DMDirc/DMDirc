@@ -26,6 +26,7 @@ import com.dmdirc.Main;
 import com.dmdirc.Precondition;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.util.ConfigFile;
 import com.dmdirc.util.InvalidConfigFileException;
 import com.dmdirc.util.WeakList;
 import com.dmdirc.util.resourcemanager.ResourceManager;
@@ -34,8 +35,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
     
 /**
  * The identity manager manages all known identities, providing easy methods
@@ -79,11 +81,15 @@ public final class IdentityManager {
         
         // Set up the identity used for the addons defaults
         final ConfigTarget target = new ConfigTarget();
-        final Properties properties = new Properties();
         target.setGlobalDefault();
         target.setOrder(500000);
-        properties.setProperty("identity.name", "Action defaults");        
-        addonConfig = new Identity(properties, target);
+        
+        final ConfigFile addonConfigFile = new ConfigFile((File) null);
+        final Map<String, String> addonSettings = new HashMap<String, String>();
+        addonSettings.put("name", "Action defaults");
+        addonConfigFile.addDomain("identity", addonSettings);
+        
+        addonConfig = new Identity(addonConfigFile, target);
         IdentityManager.addIdentity(addonConfig);
         
         if (!getGlobalConfig().hasOption("identity", "defaultsversion")) {

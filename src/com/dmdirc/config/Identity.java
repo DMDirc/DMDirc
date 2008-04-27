@@ -82,44 +82,6 @@ public class Identity extends ConfigSource implements Serializable,
     protected boolean needSave;
 
     /**
-     * Creates a new identity with the specified properties. Saving is not
-     * supported using this method (i.e., it should only be used for defaults).
-     *
-     * @param properties The properties to use for this identity
-     * @deprecated Should use a map of maps instead
-     */
-    @Deprecated
-    public Identity(final Properties properties) {
-        this(properties, null);
-    }
-
-    /**
-     * Creates a new identity with the specified properties and target.
-     * Saving is not supported using this method (i.e., it should only be used
-     * for defaults).
-     *
-     * @param properties The properties to use for this identity
-     * @param target The target of this identity
-     * @deprecated Should use a map of maps instead
-     */
-    @Deprecated
-    @Precondition("The specified Properties is not null")
-    public Identity(final Properties properties, final ConfigTarget target) {
-        assert(properties != null);
-
-        file = new ConfigFile("");
-        file.setAutomake(true);
-        migrateProperties(properties);
-
-        if (target == null) {
-            myTarget = new ConfigTarget();
-            myTarget.setGlobalDefault();
-        } else {
-            myTarget = target;
-        }
-    }
-
-    /**
      * Creates a new instance of Identity.
      *
      * @param file The file to load this identity from
@@ -151,6 +113,18 @@ public class Identity extends ConfigSource implements Serializable,
         this.file.setAutomake(true);
         initFile(forceDefault, stream);
         myTarget = getTarget(forceDefault);
+    }
+    
+    /**
+     * Creates a new identity from the specified config file.
+     * 
+     * @param configFile The config file to use
+     * @param target The target of this identity
+     */
+    public Identity(final ConfigFile configFile, final ConfigTarget target) {
+        this.file = configFile;
+        this.file.setAutomake(true);
+        this.myTarget = target;
     }
 
     /**
