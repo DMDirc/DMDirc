@@ -25,12 +25,12 @@ import com.dmdirc.actions.interfaces.ActionType;
 
 import com.dmdirc.util.ConfigFile;
 import com.dmdirc.util.InvalidConfigFileException;
-import com.dmdirc.util.TextFile;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import java.util.Arrays;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -85,7 +85,7 @@ public class ActionTest extends junit.framework.TestCase {
         ActionManager.init();
 
         final Action action = new Action("unit-test", "doesn't_exist");
-        action.config = new ConfigFile(new TextFile(getClass().getResourceAsStream("action1")));
+        action.config = new ConfigFile(getClass().getResourceAsStream("action1"));
         action.config.read();
         action.loadActionFromConfig();
 

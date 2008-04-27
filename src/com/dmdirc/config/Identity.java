@@ -29,7 +29,6 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.util.ConfigFile;
 import com.dmdirc.util.InvalidConfigFileException;
-import com.dmdirc.util.TextFile;
 import com.dmdirc.util.WeakList;
 
 import java.io.File;
@@ -131,7 +130,7 @@ public class Identity extends ConfigSource implements Serializable,
      */
     public Identity(final File file, final boolean forceDefault) throws IOException,
             InvalidIdentityFileException {
-        this.file = new ConfigFile(new TextFile(file));
+        this.file = new ConfigFile(file);
         this.file.setAutomake(true);
         initFile(forceDefault, new FileInputStream(file), new FileInputStream(file));
         myTarget = getTarget(forceDefault);
@@ -150,7 +149,7 @@ public class Identity extends ConfigSource implements Serializable,
     public Identity(final InputStream stream, final InputStream stream2,
             final boolean forceDefault) throws IOException,
             InvalidIdentityFileException {
-        this.file = new ConfigFile(new TextFile(stream));
+        this.file = new ConfigFile(stream);
         this.file.setAutomake(true);
         initFile(forceDefault, stream, stream2);
         myTarget = getTarget(forceDefault);

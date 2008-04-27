@@ -22,10 +22,10 @@
 
 package com.dmdirc.util;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -37,7 +37,7 @@ import java.util.Map;
  *
  * @author chris
  */
-public class ConfigFile {
+public class ConfigFile extends TextFile {
 
     /** A list of domains in this config file. */
     private final List<String> domains = new ArrayList<String>();
@@ -48,54 +48,37 @@ public class ConfigFile {
     /** The key/value sets associated with each key domain. */
     private final Map<String, Map<String, String>> keydomains
             = new HashMap<String, Map<String, String>>();
-
-    /** The text file we're reading. */
-    private final TextFile file;
     
     /** Whether or not we should automatically create domains. */
     private boolean automake;
 
     /**
-     * Creates a new instance of ConfigFile.
-     * 
-     * @param file The path of the file to be loaded
-     * @deprecated Pass a TextFile instead
-     */
-    @Deprecated
-    public ConfigFile(final String file) {
-        this.file = new TextFile(file);
-    }
-    
-    /**
-     * Creates a new instance of ConfigFile.
-     * 
-     * @param uri The URI of the file to be loaded
-     * @deprecated Pass a TextFile instead
-     */
-    @Deprecated
-    public ConfigFile(final URI uri) {
-        this.file = new TextFile(uri);
-    }
-    
-    /**
-     * Creates a ConfigFile from the specified input stream.
+     * Creates a new read-only Config File from the specified input stream.
      * 
      * @param is The input stream to read
-     * @deprecated Pass a TextFile instead
      */
-    @Deprecated
     public ConfigFile(final InputStream is) {
-        this.file = new TextFile(is);
+        super(is);
     }
-    
+
     /**
-     * Creates a ConfigFile for the specified file.
+     * Creates a new Config File from the specified file.
      * 
-     * @param file The file to use
+     * @param file The file to read/write
      */
-    public ConfigFile(final TextFile file) {
-        this.file = file;
+    public ConfigFile(final File file) {
+        super(file);
     }
+
+    /**
+     * Creates a new Config File from the specified file.
+     * 
+     * @param filename The name of the file to read/write
+     */
+    public ConfigFile(final String filename) {
+        super(filename);
+    }
+
 
     /**
      * Sets the "automake" value of this config file. If automake is set to
@@ -124,7 +107,7 @@ public class ConfigFile {
         flatdomains.clear();
         domains.clear();
 
-        for (String line : file.getLines()) {
+        for (String line : getLines()) {
             String tline = line;
             
             while (!tline.isEmpty() && (tline.charAt(0) == '\t' || 
@@ -170,7 +153,7 @@ public class ConfigFile {
      * @throws IOException if the write operation fails
      */
     public void write() throws IOException {
-        if (!file.isWritable()) {
+        if (!isWritable()) {
             throw new UnsupportedOperationException("Cannot write to a file "
                     + "that isn't writable");
         }
@@ -203,34 +186,9 @@ public class ConfigFile {
             }
         }
 
-        file.writeLines(lines);
+        writeLines(lines);
     }
     
-    /**
-     * Determines if this file is writable or not.
-     * 
-     * @return True if the file is writable, false otherwise
-     */
-    public boolean isWritable() {
-        return file != null && file.isWritable();
-    }    
-    
-    /**
-     * Deletes this config file.
-     */
-    public void delete() {
-        file.delete();
-    }
-
-    /**
-     * Retrieves the text file for this config file.
-     * 
-     * @return This config file's text file
-     */
-    public TextFile getFile() {
-        return file;
-    }
-
     /**
      * Appends the meta-data (keysections) to the specified list of lines.
      * 

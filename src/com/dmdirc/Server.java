@@ -425,7 +425,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         final String nick = ClientInfo.parseHost(host);
 
         for (Query query : queries) {
-            if (parser.equalsIgnoreCase(ClientInfo.parseHost(query.getHost()), nick)) {
+            if (converter.equalsIgnoreCase(ClientInfo.parseHost(query.getHost()), nick)) {
                 return true;
             }
         }
@@ -443,7 +443,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         final String nick = ClientInfo.parseHost(host);
 
         for (Query query : queries) {
-            if (parser.equalsIgnoreCase(ClientInfo.parseHost(query.getHost()), nick)) {
+            if (converter.equalsIgnoreCase(ClientInfo.parseHost(query.getHost()), nick)) {
                 return query;
             }
         }
@@ -1000,7 +1000,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         final String lastNick = parser.getMyNickname();
 
         // If our last nick is still valid, ignore the in use message
-        if (!parser.equalsIgnoreCase(lastNick, nickname)) {
+        if (!converter.equalsIgnoreCase(lastNick, nickname)) {
             return;
         }
 
@@ -1010,11 +1010,11 @@ public final class Server extends WritableFrameContainer implements Serializable
             final String[] alts = profile.getOption(DOMAIN_PROFILE, "altnicks").split("\n");
             int offset = 0;
 
-            if (!parser.equalsIgnoreCase(lastNick,
+            if (!converter.equalsIgnoreCase(lastNick,
                     profile.getOption(DOMAIN_PROFILE, "nickname"))) {
                 for (String alt : alts) {
                     offset++;
-                    if (parser.equalsIgnoreCase(alt, lastNick)) {
+                    if (converter.equalsIgnoreCase(alt, lastNick)) {
                         break;
                     }
                 }

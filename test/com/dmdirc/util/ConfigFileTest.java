@@ -28,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -39,7 +40,7 @@ public class ConfigFileTest extends junit.framework.TestCase {
     @Before
     public void setUp() throws Exception {
         cf = new ConfigFile(getClass().getClassLoader().
-                    getResource("com/dmdirc/util/test2.txt").toURI());
+                    getResourceAsStream("com/dmdirc/util/test2.txt"));
     }    
 
     @Test
@@ -107,7 +108,7 @@ public class ConfigFileTest extends junit.framework.TestCase {
     @Test
     public void testColons() throws IOException, InvalidConfigFileException {
         final File file = File.createTempFile("DMDirc.unittest", null);
-        ConfigFile config = new ConfigFile(file.toURI());
+        ConfigFile config = new ConfigFile(file);
         Map<String, String> data = new HashMap<String, String>();
         data.put("test1", "hello");
         data.put("test:2", "hello");
@@ -115,7 +116,7 @@ public class ConfigFileTest extends junit.framework.TestCase {
         config.addDomain("test", data);
         config.write();
         
-        config = new ConfigFile(file.toURI());
+        config = new ConfigFile(file);
         config.read();
         
         assertTrue(config.isKeyDomain("test"));
@@ -128,7 +129,7 @@ public class ConfigFileTest extends junit.framework.TestCase {
     @Test
     public void testEquals() throws IOException, InvalidConfigFileException {
         final File file = File.createTempFile("DMDirc.unittest", null);
-        ConfigFile config = new ConfigFile(file.toURI());
+        ConfigFile config = new ConfigFile(file);
         Map<String, String> data = new HashMap<String, String>();
         data.put("test1", "hello");
         data.put("test=2", "hello");
@@ -136,7 +137,7 @@ public class ConfigFileTest extends junit.framework.TestCase {
         config.addDomain("test", data);
         config.write();
         
-        config = new ConfigFile(file.toURI());
+        config = new ConfigFile(file);
         config.read();
         
         assertTrue(config.isKeyDomain("test"));
@@ -149,7 +150,7 @@ public class ConfigFileTest extends junit.framework.TestCase {
     @Test
     public void testNewlines() throws IOException, InvalidConfigFileException {
         final File file = File.createTempFile("DMDirc.unittest", null);
-        ConfigFile config = new ConfigFile(file.toURI());
+        ConfigFile config = new ConfigFile(file);
         Map<String, String> data = new HashMap<String, String>();
         data.put("test1", "hello");
         data.put("test2", "hello\ngoodbye");
@@ -158,7 +159,7 @@ public class ConfigFileTest extends junit.framework.TestCase {
         config.addDomain("test", data);
         config.write();
         
-        config = new ConfigFile(file.toURI());
+        config = new ConfigFile(file);
         config.read();
         
         assertTrue(config.isKeyDomain("test"));
@@ -172,7 +173,7 @@ public class ConfigFileTest extends junit.framework.TestCase {
     @Test
     public void testBackslash() throws IOException, InvalidConfigFileException {
         final File file = File.createTempFile("DMDirc.unittest", null);
-        ConfigFile config = new ConfigFile(file.toURI());
+        ConfigFile config = new ConfigFile(file);
         Map<String, String> data = new HashMap<String, String>();
         data.put("test1", "hello\\");
         data.put("test2", "\\nhello");
@@ -180,7 +181,7 @@ public class ConfigFileTest extends junit.framework.TestCase {
         config.addDomain("test", data);
         config.write();
         
-        config = new ConfigFile(file.toURI());
+        config = new ConfigFile(file);
         config.read();
         
         assertTrue(config.isKeyDomain("test"));
@@ -193,7 +194,7 @@ public class ConfigFileTest extends junit.framework.TestCase {
     @Test
     public void testHash() throws IOException, InvalidConfigFileException {
         final File file = File.createTempFile("DMDirc.unittest", null);
-        ConfigFile config = new ConfigFile(file.toURI());
+        ConfigFile config = new ConfigFile(file);
         Map<String, String> data = new HashMap<String, String>();
         data.put("test1#", "hello");
         data.put("#test2", "hello");
@@ -201,7 +202,7 @@ public class ConfigFileTest extends junit.framework.TestCase {
         config.addDomain("test", data);
         config.write();
         
-        config = new ConfigFile(file.toURI());
+        config = new ConfigFile(file);
         config.read();
         
         assertTrue(config.isKeyDomain("test"));
@@ -227,7 +228,7 @@ public class ConfigFileTest extends junit.framework.TestCase {
     @Test
     public void testDelete() throws IOException {
         final File file = File.createTempFile("DMDirc_unittest", null);
-        ConfigFile config = new ConfigFile(new TextFile(file));
+        ConfigFile config = new ConfigFile(file);
         config.write();
         assertTrue(file.exists());
         config.delete();

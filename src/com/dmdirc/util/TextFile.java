@@ -30,7 +30,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,18 +54,7 @@ public class TextFile {
     public TextFile(final String filename) {
         file = new File(filename);
     }
-    
-    /**
-     * Creates a new instance of TextFile for the specified URI.
-     * 
-     * @param uri The URI of the file
-     * @deprecated Pass an InputStream or File instead
-     */
-    @Deprecated
-    public TextFile(final URI uri) {
-        file = new File(uri);
-    }
-    
+
     /**
      * Creates a new instance of TextFile for the specified File.
      * 

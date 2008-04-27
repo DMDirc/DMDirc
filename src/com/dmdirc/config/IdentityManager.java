@@ -185,7 +185,7 @@ public final class IdentityManager {
     private static void loadIdentity(final File file) {
         synchronized (identities) {
             for (Identity identity : identities) {
-                if (file.equals(identity.getFile().getFile().getFile())) {
+                if (file.equals(identity.getFile().getFile())) {
                     try {
                         identity.reload();
                     } catch (IOException ex) {
