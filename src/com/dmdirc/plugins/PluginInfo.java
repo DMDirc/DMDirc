@@ -130,7 +130,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 				}
 			}
 
-			if (isPersistant()) { loadEntirePlugin(); }
+			if (isPersistant() && loadAll()) { loadEntirePlugin(); }
 		} else {
 			// throw new PluginException("Plugin "+filename+" was not loaded, one or more requirements not met ("+requirements+")");
 		}
@@ -492,18 +492,22 @@ public class PluginInfo implements Comparable<PluginInfo> {
 
 			final Class<?> c = classloader.loadClass(classname);
 			final Constructor<?> constructor = c.getConstructor(new Class[] {});
-
-			final Object temp = constructor.newInstance(new Object[] {});
-
-			if (temp instanceof Plugin) {
-				if (((Plugin) temp).checkPrerequisites()) {
-					plugin = (Plugin) temp;
-					if (!tempLoaded) {
-						plugin.onLoad();
-					}
-				} else {
-					if (!tempLoaded) {
-						Logger.userError(ErrorLevel.LOW, "Prerequisites for plugin not met. ('"+filename+":"+getMainClass()+"')");
+			
+			// Only try and construct the main class, anything else should be constructed
+			// by the plugin itself.
+			if (classname.equals(getMainClass())) {
+				final Object temp = constructor.newInstance(new Object[] {});
+	
+				if (temp instanceof Plugin) {
+					if (((Plugin) temp).checkPrerequisites()) {
+						plugin = (Plugin) temp;
+						if (!tempLoaded) {
+							plugin.onLoad();
+						}
+					} else {
+						if (!tempLoaded) {
+							Logger.userError(ErrorLevel.LOW, "Prerequisites for plugin not met. ('"+filename+":"+getMainClass()+"')");
+						}
 					}
 				}
 			}
@@ -752,6 +756,16 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 */
     @Override
 	public String toString() { return getNiceName()+" - "+filename; }
+
+	/**
+	 * Does this plugin want all its classes loaded?
+	 *
+	 * @return true/false if loadall=true || loadall=yes
+	 */
+	public boolean loadAll() {
+		final String loadAll = metaData.getProperty("loadall","no");
+		return loadAll.equalsIgnoreCase("true") || loadAll.equalsIgnoreCase("yes");
+	}
 
 	/**
 	 * Get misc meta-information.
