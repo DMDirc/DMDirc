@@ -234,44 +234,45 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
 
             myState = ServerState.CONNECTING;
-        }
+        
 
-        ActionManager.processEvent(CoreActionType.SERVER_CONNECTING, null, this);
+            ActionManager.processEvent(CoreActionType.SERVER_CONNECTING, null, this);
 
-        assert parser == null || parser.getSocketState() != IRCParser.STATE_OPEN;
+            assert parser == null || parser.getSocketState() != IRCParser.STATE_OPEN;
 
-        serverInfo = new ServerInfo(server, port, password);
-        serverInfo.setSSL(ssl);
+            serverInfo = new ServerInfo(server, port, password);
+            serverInfo.setSSL(ssl);
 
-        this.profile = profile;
+            this.profile = profile;
 
-        getConfigManager().migrate("", "", server);
+            getConfigManager().migrate("", "", server);
 
-        updateIcon();
+            updateIcon();
 
-        addLine("serverConnecting", server, port);
+            addLine("serverConnecting", server, port);
 
-        final MyInfo myInfo = getMyInfo();
+            final MyInfo myInfo = getMyInfo();
 
-        parser = new IRCParser(myInfo, serverInfo);
-        parser.setRemoveAfterCallback(true);
-        parser.setCreateFake(true);
-        parser.setIgnoreList(ignoreList);
+            parser = new IRCParser(myInfo, serverInfo);
+            parser.setRemoveAfterCallback(true);
+            parser.setCreateFake(true);
+            parser.setIgnoreList(ignoreList);
 
-        if (getConfigManager().hasOption(DOMAIN_GENERAL, "bindip")) {
-            parser.setBindIP(getConfigManager().getOption(DOMAIN_GENERAL, "bindip"));
-        }
+            if (getConfigManager().hasOption(DOMAIN_GENERAL, "bindip")) {
+                parser.setBindIP(getConfigManager().getOption(DOMAIN_GENERAL, "bindip"));
+            }
 
-        doCallbacks();
+            doCallbacks();
 
-        awayMessage = null;
-        removeInvites();
-        window.setAwayIndicator(false);
+            awayMessage = null;
+            removeInvites();
+            window.setAwayIndicator(false);
 
-        try {
-            new Thread(parser, "IRC Parser thread").start();
-        } catch (IllegalThreadStateException ex) {
-            Logger.appError(ErrorLevel.FATAL, "Unable to start IRC Parser", ex);
+            try {
+                new Thread(parser, "IRC Parser thread").start();
+            } catch (IllegalThreadStateException ex) {
+                Logger.appError(ErrorLevel.FATAL, "Unable to start IRC Parser", ex);
+            }
         }
     }
 
@@ -285,11 +286,11 @@ public final class Server extends WritableFrameContainer implements Serializable
             if (myState == ServerState.CLOSING) {
                 return;
             }
+        
+            disconnect(reason);
+            connect(serverInfo.getHost(), serverInfo.getPort(),
+                    serverInfo.getPassword(), serverInfo.getSSL(), profile);
         }
-
-        disconnect(reason);
-        connect(serverInfo.getHost(), serverInfo.getPort(),
-                serverInfo.getPassword(), serverInfo.getSSL(), profile);
     }
 
     /**
@@ -326,23 +327,25 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
 
             myState = ServerState.DISCONNECTING;
-        }
+        
+            removeInvites();
+            updateIcon();
 
-        removeInvites();
-        updateIcon();
+            if (parser != null) {
+                parser.disconnect(reason);
+            }
 
-        if (parser != null) {
-            parser.disconnect(reason);
-        }
+            if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
+                    "closechannelsonquit", false)) {
+                closeChannels();
+            } else {
+                clearChannels();
+            }
 
-        if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "closechannelsonquit", false)) {
-            closeChannels();
-        } else {
-            clearChannels();
-        }
-
-        if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "closequeriesonquit", false)) {
-            closeQueries();
+            if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
+                    "closequeriesonquit", false)) {
+                closeQueries();
+            }
         }
     }
 
@@ -351,31 +354,33 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     @Precondition("The server state is transiently disconnected")
     private void doDelayedReconnect() {
-        if (myState != ServerState.TRANSIENTLY_DISCONNECTED) {
-            throw new IllegalStateException("doDelayedReconnect when not "
-                    + "transiently disconnected\n\nState: " + myState);
-        }
-        
-        final int delay = Math.max(1,
-                getConfigManager().getOptionInt(DOMAIN_GENERAL, "reconnectdelay", 5000));
+        synchronized (myState) {
+            if (myState != ServerState.TRANSIENTLY_DISCONNECTED) {
+                throw new IllegalStateException("doDelayedReconnect when not "
+                        + "transiently disconnected\n\nState: " + myState);
+            }
 
-        handleNotification("connectRetry", getName(), delay / 1000);
+            final int delay = Math.max(1,
+                    getConfigManager().getOptionInt(DOMAIN_GENERAL, "reconnectdelay", 5000));
 
-        reconnectTimer = new Timer("Server Reconnect Timer");
-        reconnectTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                synchronized (myState) {
-                    if (myState == ServerState.RECONNECT_WAIT) {
-                        myState = ServerState.TRANSIENTLY_DISCONNECTED;
-                        reconnect();
+            handleNotification("connectRetry", getName(), delay / 1000);
+
+            reconnectTimer = new Timer("Server Reconnect Timer");
+            reconnectTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    synchronized (myState) {
+                        if (myState == ServerState.RECONNECT_WAIT) {
+                            myState = ServerState.TRANSIENTLY_DISCONNECTED;
+                            reconnect();
+                        }
                     }
                 }
-            }
-        }, delay);
+            }, delay);
 
-        myState = ServerState.RECONNECT_WAIT;
-        updateIcon();
+            myState = ServerState.RECONNECT_WAIT;
+            updateIcon();
+        }
     }
 
     // ------------------------------------------------- CHILDREN HANDLING -----
@@ -508,20 +513,22 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @param chan channel to add
      */
     public void addChannel(final ChannelInfo chan) {
-        if (myState == ServerState.CLOSING) {
-            // Can't join channels while the server is closing
-            return;
-        }
-        
-        if (hasChannel(chan.getName())) {
-            getChannel(chan.getName()).setChannelInfo(chan);
-            getChannel(chan.getName()).selfJoin();
-        } else {
-            final Channel newChan = new Channel(this, chan);
+        synchronized (myState) {
+            if (myState == ServerState.CLOSING) {
+                // Can't join channels while the server is closing
+                return;
+            }
 
-            tabCompleter.addEntry(TabCompletionType.CHANNEL, chan.getName());
-            channels.put(converter.toLowerCase(chan.getName()), newChan);
-            newChan.show();
+            if (hasChannel(chan.getName())) {
+                getChannel(chan.getName()).setChannelInfo(chan);
+                getChannel(chan.getName()).selfJoin();
+            } else {
+                final Channel newChan = new Channel(this, chan);
+
+                tabCompleter.addEntry(TabCompletionType.CHANNEL, chan.getName());
+                channels.put(converter.toLowerCase(chan.getName()), newChan);
+                newChan.show();
+            }
         }
     }
 
@@ -601,7 +608,8 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     private void updateIcon() {
         final String icon = myState == ServerState.CONNECTED
-                    ? serverInfo.getSSL() ? "secure-server" : "server" : "server-disconnected";
+                    ? serverInfo.getSSL() ? "secure-server" : "server"
+                    : "server-disconnected";
         setIcon(icon);
     }
 
@@ -647,17 +655,19 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @param channel The channel to be joined
      */
     public void join(final String channel) {
-        if (myState == ServerState.CONNECTED) {
-            removeInvites(channel);
+        synchronized (myState) {
+            if (myState == ServerState.CONNECTED) {
+                removeInvites(channel);
 
-            if (hasChannel(channel)) {
-                getChannel(channel).join();
-                getChannel(channel).activateFrame();
+                if (hasChannel(channel)) {
+                    getChannel(channel).join();
+                    getChannel(channel).activateFrame();
+                } else {
+                    parser.joinChannel(channel);
+                }
             } else {
-                parser.joinChannel(channel);
+                autochannels.add(channel);
             }
-        } else {
-            autochannels.add(channel);
         }
     }
 
@@ -820,37 +830,38 @@ public final class Server extends WritableFrameContainer implements Serializable
     /** {@inheritDoc} */
     @Override
     public void windowClosing() {
-        // 1: Make the window non-visible
-        window.setVisible(false);
+        synchronized (myState) {
+            // 1: Make the window non-visible
+            window.setVisible(false);
 
-        // 2: Remove any callbacks or listeners
-        eventHandler.unregisterCallbacks();
+            // 2: Remove any callbacks or listeners
+            eventHandler.unregisterCallbacks();
 
-        // 3: Trigger any actions neccessary
-        if (parser != null && parser.isReady()) {
-            disconnect();
+            // 3: Trigger any actions neccessary
+            if (parser != null && parser.isReady()) {
+                disconnect();
+            }
+
+            myState = ServerState.CLOSING;
+            closeChannels();
+            closeQueries();
+            removeInvites();
+
+            if (raw != null) {
+                raw.close();
+            }
+
+            // 4: Trigger action for the window closing
+            // 5: Inform any parents that the window is closing
+            ServerManager.getServerManager().unregisterServer(this);
+
+            // 6: Remove the window from the window manager
+            WindowManager.removeWindow(window);
+
+            // 7: Remove any references to the window and parents
+            window = null; //NOPMD
+            parser = null; //NOPMD
         }
-
-        myState = ServerState.CLOSING;
-        closeChannels();
-        closeQueries();
-        removeInvites();
-
-        if (raw != null) {
-            raw.close();
-        }
-
-
-        // 4: Trigger action for the window closing
-        // 5: Inform any parents that the window is closing
-        ServerManager.getServerManager().unregisterServer(this);
-
-        // 6: Remove the window from the window manager
-        WindowManager.removeWindow(window);
-
-        // 7: Remove any references to the window and parents
-        window = null; //NOPMD
-        parser = null; //NOPMD
     }
 
     /**
@@ -1084,27 +1095,28 @@ public final class Server extends WritableFrameContainer implements Serializable
             } else {
                 myState = ServerState.TRANSIENTLY_DISCONNECTED;
             }
-        }
 
-        updateIcon();
+            updateIcon();
 
-        if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
-                "closechannelsondisconnect", false)) {
-            closeChannels();
-        } else {
-            clearChannels();
-        }
+            if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
+                    "closechannelsondisconnect", false)) {
+                closeChannels();
+            } else {
+                clearChannels();
+            }
 
-        if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
-                "closequeriesondisconnect", false)) {
-            closeQueries();
-        }
+            if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
+                    "closequeriesondisconnect", false)) {
+                closeQueries();
+            }
 
-        removeInvites();
+            removeInvites();
 
-        if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "reconnectondisconnect", false)
-                && myState == ServerState.TRANSIENTLY_DISCONNECTED) {
-            doDelayedReconnect();
+            if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
+                    "reconnectondisconnect", false)
+                    && myState == ServerState.TRANSIENTLY_DISCONNECTED) {
+                doDelayedReconnect();
+            }        
         }
     }
 
@@ -1126,37 +1138,37 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
 
             myState = ServerState.TRANSIENTLY_DISCONNECTED;
-        }
+        
+            updateIcon();
 
-        updateIcon();
+            String description;
 
-        String description;
-
-        if (errorInfo.getException() == null) {
-            description = errorInfo.getData();
-        } else {
-            final Exception exception = errorInfo.getException();
-
-            if (exception instanceof java.net.UnknownHostException) {
-                description = "Unknown host (unable to resolve)";
-            } else if (exception instanceof java.net.NoRouteToHostException) {
-                description = "No route to host";
-            } else if (exception instanceof java.net.SocketException) {
-                description = exception.getMessage();
+            if (errorInfo.getException() == null) {
+                description = errorInfo.getData();
             } else {
-                Logger.appError(ErrorLevel.LOW, "Unknown socket error", exception);
-                description = "Unknown error: " + exception.getMessage();
+                final Exception exception = errorInfo.getException();
+
+                if (exception instanceof java.net.UnknownHostException) {
+                    description = "Unknown host (unable to resolve)";
+                } else if (exception instanceof java.net.NoRouteToHostException) {
+                    description = "No route to host";
+                } else if (exception instanceof java.net.SocketException) {
+                    description = exception.getMessage();
+                } else {
+                    Logger.appError(ErrorLevel.LOW, "Unknown socket error", exception);
+                    description = "Unknown error: " + exception.getMessage();
+                }
             }
-        }
 
-        ActionManager.processEvent(CoreActionType.SERVER_CONNECTERROR, null,
-                this, description);
+            ActionManager.processEvent(CoreActionType.SERVER_CONNECTERROR, null,
+                    this, description);
 
-        handleNotification("connectError", getName(), description);
+            handleNotification("connectError", getName(), description);
 
-        if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
-                "reconnectonconnectfailure", false)) {
-            doDelayedReconnect();
+            if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
+                    "reconnectonconnectfailure", false)) {
+                doDelayedReconnect();
+            }
         }
     }
 
@@ -1192,27 +1204,28 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
             
             myState = ServerState.CONNECTED;
-        }
-        updateIcon();
+        
+            updateIcon();
 
-        getConfigManager().migrate(parser.getIRCD(true), getNetwork(), getName());
-        updateIgnoreList();
+            getConfigManager().migrate(parser.getIRCD(true), getNetwork(), getName());
+            updateIgnoreList();
 
-        converter = parser.getIRCStringConverter();
+            converter = parser.getIRCStringConverter();
 
-        ActionManager.processEvent(CoreActionType.SERVER_CONNECTED, null, this);
+            ActionManager.processEvent(CoreActionType.SERVER_CONNECTED, null, this);
 
-        if (getConfigManager().hasOption(DOMAIN_GENERAL, "rejoinchannels")) {
-            for (Channel chan : channels.values()) {
-                chan.join();
+            if (getConfigManager().hasOption(DOMAIN_GENERAL, "rejoinchannels")) {
+                for (Channel chan : channels.values()) {
+                    chan.join();
+                }
             }
-        }
 
-        for (String channel : autochannels) {
-            parser.joinChannel(channel);
-        }
+            for (String channel : autochannels) {
+                parser.joinChannel(channel);
+            }
 
-        checkModeAliases();
+            checkModeAliases();
+        }
     }
 
     /**
