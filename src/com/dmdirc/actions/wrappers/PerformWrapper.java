@@ -130,11 +130,14 @@ public class PerformWrapper extends ActionGroup {
     private Action createAction(final String server, final String network) {
         final List<ActionCondition> conditions = new ArrayList<ActionCondition>();
         final CoreActionComponent component =
-                server.isEmpty() ? CoreActionComponent.SERVER_NETWORK : CoreActionComponent.SERVER_NAME;
+                server.isEmpty() ? CoreActionComponent.SERVER_NETWORK
+                : CoreActionComponent.SERVER_NAME;
         
-        conditions.add(new ActionCondition(0, component, CoreActionComparison.STRING_EQUALS, server + network));
+        conditions.add(new ActionCondition(0, component, 
+                CoreActionComparison.STRING_EQUALS, server + network));
         
-        return new Action(getName(), server + network, new ActionType[]{CoreActionType.SERVER_CONNECTED},
+        return new Action(getName(), server + network,
+                new ActionType[]{CoreActionType.SERVER_CONNECTED},
                 new String[0], conditions, null);
     }
     
@@ -155,6 +158,22 @@ public class PerformWrapper extends ActionGroup {
         }
         
         return null;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public boolean isDelible() {
+        return false;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public String getDescription() {
+        return "Performs allow you to automatically execute commands when"
+                + " you connect to a specific server or network. You can edit"
+                + " the perform for the current server or network in the "
+                + "\"Server Settings\" dialog, which can be accessed through "
+                + "the Settings menu.";
     }
     
 }

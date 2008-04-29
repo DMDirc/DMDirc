@@ -128,5 +128,19 @@ public final class AliasWrapper extends ActionGroup {
         // How can we have an alias without a command name?
         return "";
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isDelible() {
+        return false;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getDescription() {
+        return "Aliases allow you to create new commands that invoke one or "
+                + "more other commands. You can manage aliases using the \""
+                + "Alias Manager\", located in the Settings menu.";
+    }
     
 }

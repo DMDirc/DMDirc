@@ -25,10 +25,8 @@ package com.dmdirc.actions;
 import com.dmdirc.config.prefs.PreferencesSetting;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * Represents a group of actions, along with their meta-data.
@@ -236,6 +234,15 @@ public class ActionGroup implements Iterable<Action> {
      */
     public List<Action> getActions() {
         return new ArrayList<Action>(actions);
+    }
+    
+    /**
+     * Determines if this action group is delible or not.
+     * 
+     * @return True if the group may be deleted, false if it may not.
+     */
+    public boolean isDelible() {
+        return true;
     }
     
 }
