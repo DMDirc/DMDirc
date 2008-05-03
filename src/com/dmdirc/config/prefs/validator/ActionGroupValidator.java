@@ -32,7 +32,8 @@ public class ActionGroupValidator implements Validator<String> {
     /** Filename regex. */
     private static final String FILENAME_REGEX = "[A-Za-z0-9 ]+";
     /** Failure reason. */
-    private static final String FAILURE_REASON = "Must be a valid filename";
+    private static final String FAILURE_REASON =
+            "Must be a valid filename and must not already exist.";
 
     /**
      * Instantiates a new filename validator.
@@ -44,7 +45,8 @@ public class ActionGroupValidator implements Validator<String> {
     /** {@inheritDoc} */
     @Override
     public ValidationResponse validate(final String object) {
-        if (object.matches(FILENAME_REGEX) && !ActionManager.getGroups().containsKey(object)) {
+        if (object.matches(FILENAME_REGEX) && !ActionManager.getGroups().
+                containsKey(object)) {
             return new ValidationResponse();
         } else {
             return new ValidationResponse(FAILURE_REASON);

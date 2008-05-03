@@ -387,6 +387,15 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             }
         }
     }
+    
+    /**
+     * Returns the current scroll bar position.
+     * 
+     * @return Scroll bar position
+     */
+    protected int getScrollBarPosition() {
+        return scrollBarPosition;
+    }
 
     /** 
      * {@inheritDoc}

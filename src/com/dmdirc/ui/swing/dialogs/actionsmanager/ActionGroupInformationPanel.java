@@ -19,7 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.dmdirc.ui.swing.dialogs.actionsmanager;
 
 import com.dmdirc.actions.ActionGroup;
@@ -45,8 +44,12 @@ public final class ActionGroupInformationPanel extends JPanel {
     private ActionGroup group;
     /** Description field. */
     private TextLabel infoLabel;
+    /** Version label label. */
+    private JLabel versionLabel;
     /** Version label. */
     private JLabel version;
+    /** Author label label. */
+    private JLabel authorLabel;
     /** Author label. */
     private JLabel author;
 
@@ -57,7 +60,7 @@ public final class ActionGroupInformationPanel extends JPanel {
      */
     public ActionGroupInformationPanel(final ActionGroup group) {
         super();
-        
+
         this.group = group;
 
         initComponents();
@@ -70,7 +73,9 @@ public final class ActionGroupInformationPanel extends JPanel {
      */
     private void initComponents() {
         infoLabel = new TextLabel();
+        versionLabel = new JLabel("Version: ");
         version = new JLabel();
+        authorLabel = new JLabel("Author: ");
         author = new JLabel();
 
         setActionGroup(group);
@@ -80,19 +85,19 @@ public final class ActionGroupInformationPanel extends JPanel {
      * Adds listeners.
      */
     private void addListeners() {
-    //Empty
+        //Empty
     }
 
     /**
      * Lays out the components.
      */
     private void layoutComponents() {
-        setLayout(new MigLayout("fill, wrap 2"));
+        setLayout(new MigLayout("fill, wrap 2, hidemode 3"));
 
         add(infoLabel, "span 2, growx");
-        add(new JLabel("Author: "), "");
+        add(authorLabel, "");
         add(author, "growx, pushx");
-        add(new JLabel("Version: "), "");
+        add(versionLabel, "");
         add(version, "growx, pushx");
     }
 
@@ -109,13 +114,17 @@ public final class ActionGroupInformationPanel extends JPanel {
             author.setText("");
             version.setText("");
         } else {
-
             infoLabel.setText(group.getDescription());
             author.setText(group.getAuthor());
             version.setText(Integer.toString(group.getVersion()));
+
+            author.setVisible(group.getAuthor() != null);
+            version.setVisible(group.getVersion() != -1);
+            authorLabel.setVisible(group.getAuthor() != null);
+            versionLabel.setVisible(group.getVersion() != -1);
         }
     }
-    
+
     /**
      * Should the info panel be shown?
      * 

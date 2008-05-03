@@ -391,14 +391,14 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
             return;
         }
 
-        if (groups.getSelectedIndex() == -1) {
+        changeActiveGroup((ActionGroup) groups.getSelectedValue());
+        if (groups.getSelectedIndex() == -1 || !((ActionGroup) groups.getSelectedValue()).isDelible()) {
             edit.setEnabled(false);
             delete.setEnabled(false);
         } else {
             edit.setEnabled(true);
             delete.setEnabled(true);
         }
-        changeActiveGroup((ActionGroup) groups.getSelectedValue());
     }
 
     /** {@inheritDoc} */

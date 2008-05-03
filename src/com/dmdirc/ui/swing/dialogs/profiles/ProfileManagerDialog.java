@@ -185,12 +185,6 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
 
     /** Saves the profile list. */
     private void save() {
-        if (model.getSize() == 0) {
-            JOptionPane.showMessageDialog(this,
-                    "There must be at least one profile",
-                    "DMDirc: Profile error", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
         if (details.validateDetails()) {
             details.save();
             final Iterator<Profile> it = model.iterator();
@@ -229,6 +223,11 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
                 JOptionPane.YES_OPTION) {
             deletedProfiles.add((Profile) profileList.getSelectedValue());
             model.remove((Profile) profileList.getSelectedValue());
+            if (model.getSize() == 0) {
+                getOkButton().setEnabled(false);
+            } else {
+                getOkButton().setEnabled(true);
+            }
         }
     }
 
