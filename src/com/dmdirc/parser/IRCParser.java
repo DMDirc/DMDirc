@@ -1702,7 +1702,7 @@ public class IRCParser implements Runnable {
 	public void disconnect(final String sReason) {
 		if (currentSocketState == STATE_OPEN && got001) { quit(sReason); }
 		try {
-			socket.close();
+			if (socket != null) { socket.close(); }
 		} catch (IOException e) {
 			/* Do Nothing */
 		} finally {
