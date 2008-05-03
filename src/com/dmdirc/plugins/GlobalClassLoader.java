@@ -100,7 +100,7 @@ public class GlobalClassLoader extends ClassLoader {
 	public Class<?> loadClass(final String name) throws ClassNotFoundException {
 		try {
 			return super.loadClass(name);
-		} catch (Exception e) {
+		} catch (ClassNotFoundException e) {
 			byte[] data = getClassData(name);
 			if (data != null) {
 				return defineClass(name, data);

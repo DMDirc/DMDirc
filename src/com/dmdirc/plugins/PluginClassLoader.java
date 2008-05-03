@@ -95,8 +95,8 @@ public class PluginClassLoader extends ClassLoader {
 						if (askGlobal) {
 							return GlobalClassLoader.getGlobalClassLoader().loadClass(name, pluginInfo);
 						}
-					} catch (Exception e) {
-						/* Class doesn't exist, we load it outself below */
+					} catch (ClassNotFoundException e) {
+						/* Class doesn't exist, we load it ourself below */
 					}
 				}
 			}

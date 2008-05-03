@@ -97,10 +97,9 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			} else {
 				throw new PluginException("Plugin "+filename+" failed to load, plugin.info doesn't exist in jar");
 			}
-		} catch (PluginException pe) {
-			// Stop the next catch Catching the one we threw ourself
-			throw pe;
-		} catch (Exception e) {
+		} catch (IOException e) {
+			throw new PluginException("Plugin "+filename+" failed to load, plugin.info failed to open - "+e.getMessage(), e);
+		} catch (IllegalArgumentException e) {
 			throw new PluginException("Plugin "+filename+" failed to load, plugin.info failed to open - "+e.getMessage(), e);
 		}
 
