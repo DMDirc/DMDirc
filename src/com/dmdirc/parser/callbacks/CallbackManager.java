@@ -207,8 +207,7 @@ public final class CallbackManager {
 	 */
 	public void addCallback(final String callbackName, final ICallbackInterface o, final String target) throws CallbackNotFoundException {
 		if (o == null) { throw new NullPointerException("CallbackInterface is null"); }
-
-        ((CallbackObjectSpecific) getCallbackType(callbackName)).add(o,target);
+		((CallbackObjectSpecific) getCallbackType(callbackName)).add(o,target);
 	}
 	
 	/**
@@ -223,7 +222,7 @@ public final class CallbackManager {
 		try {
 			addCallback(callbackName, o);
 			return true;
-		} catch (Exception e) { return false; }
+		} catch (CallbackNotFoundException e) { return false; }
 	}
 	
 	/**
@@ -239,7 +238,7 @@ public final class CallbackManager {
 		try {
 			addCallback(callbackName, o, target);
 			return true;
-		} catch (Exception e) { return false;	}
+		} catch (CallbackNotFoundException e) { return false;	}
 	}
 	
 	
