@@ -132,7 +132,7 @@ public class ProcessListModes extends IRCProcessor {
 			}
 			
 			if (token.length > (tokenStart+2)) { 
-				try { time = Long.parseLong(token[tokenStart+2]); } catch (Exception e) { time = 0; }
+				try { time = Long.parseLong(token[tokenStart+2]); } catch (NumberFormatException e) { time = 0; }
 			}
 			if (token.length > (tokenStart+1)) { owner = token[tokenStart+1]; }
 			if (token.length > tokenStart) { item = token[tokenStart]; }

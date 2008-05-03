@@ -139,18 +139,13 @@ public class ProcessingManager {
 	public void addProcessor(final String[] handles, final IRCProcessor processor) {
 		doDebug("Adding processor: "+processor.getName());
 
-		try {
-			for (int i = 0; i < handles.length; ++i) {
-				if (processHash.containsKey(handles[i].toLowerCase())) {
-					// New Processors take priority over old ones
-					processHash.remove(handles[i].toLowerCase());
-				}
-				doDebug("\t Added handler for: "+handles[i]);
-				processHash.put(handles[i].toLowerCase(), processor);
+		for (int i = 0; i < handles.length; ++i) {
+			if (processHash.containsKey(handles[i].toLowerCase())) {
+				// New Processors take priority over old ones
+				processHash.remove(handles[i].toLowerCase());
 			}
-		} catch (Exception e) {
-			doDebug("\t[ERROR] "+e.getMessage()+" - Removing processor");
-			delProcessor(processor);
+			doDebug("\t Added handler for: "+handles[i]);
+			processHash.put(handles[i].toLowerCase(), processor);
 		}
 	}
 
@@ -202,7 +197,7 @@ public class ProcessingManager {
 		} catch (ProcessorNotFoundException p) {
 			throw p;
 		} catch (Exception e) {
-			final ParserError ei = new ParserError(ParserError.ERROR_WARNING,"Exception in Parser. ["+messageProcessor+"]: "+e.getMessage(), myParser.getLastLine());
+			final ParserError ei = new ParserError(ParserError.ERROR_ERROR,"Exception in Processor. ["+messageProcessor+"]: "+e.getMessage(), myParser.getLastLine());
 			ei.setException(e);
 			myParser.callErrorInfo(ei);
 		} finally {

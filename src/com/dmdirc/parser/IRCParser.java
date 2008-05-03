@@ -730,19 +730,38 @@ public class IRCParser implements Runnable {
 	}
 
 	/**
+	 * Handle an onConnect error.
+	 *
+	 * @param e Exception to handle
+	 */
+	private void handleConnectException(final Exception e) {
+		callDebugInfo(DEBUG_SOCKET, "Error Connecting (" + e.getMessage() + "), Aborted");
+		final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Error connecting to server");
+		ei.setException(e);
+		callConnectError(ei);
+	}
+
+	/**
 	 * Begin execution.
 	 * Connect to server, and start parsing incomming lines
 	 */
-    @Override
+  @Override
 	public void run() {
 		callDebugInfo(DEBUG_INFO, "Begin Thread Execution");
 		if (hasBegan) { return; } else { hasBegan = true; }
-		try { connect(); }
-		catch (Exception e) {
-			callDebugInfo(DEBUG_SOCKET, "Error Connecting (" + e.getMessage() + "), Aborted");
-			final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Error connecting to server");
-			ei.setException(e);
-			callConnectError(ei);
+		try {
+		 connect();
+		} catch (UnknownHostException e) {
+			handleConnectException(e);
+			return;
+		} catch (IOException e) {
+			handleConnectException(e);
+			return;
+		} catch (NoSuchAlgorithmException e) {
+			handleConnectException(e);
+			return;
+		} catch (KeyManagementException e) {
+			handleConnectException(e);
 			return;
 		}
 
@@ -989,41 +1008,41 @@ public class IRCParser implements Runnable {
 					// Freenode sends a random notice in a stupid place, others might do aswell
 					// These shouldn't cause post005 to be fired, so handle them here.
 					if (token[0].equalsIgnoreCase("NOTICE")) {
-							try { myProcessingManager.process("Notice Auth", token); } catch (Exception e) { }
+							try { myProcessingManager.process("Notice Auth", token); } catch (ProcessorNotFoundException e) { }
 							return;
 					}
 					if (!post005) {
-						try { nParam = Integer.parseInt(token[1]); } catch (Exception e) { nParam = -1; }
+						try { nParam = Integer.parseInt(token[1]); } catch (NumberFormatException e) { nParam = -1; }
 						if (nParam < 0 || nParam > 5) {
 							callPost005();
 						}
 					}
 					// After 001 we potentially care about everything!
 					try { myProcessingManager.process(sParam, token); }
-					catch (Exception e) { /* No Processor found */  }
+					catch (ProcessorNotFoundException e) { }
 				} else {
 					// Before 001 we don't care about much.
-					try { nParam = Integer.parseInt(token[1]); } catch (Exception e) { nParam = -1; }
+					try { nParam = Integer.parseInt(token[1]); } catch (NumberFormatException e) { nParam = -1; }
 					switch (nParam) {
 						case 1: // 001 - Welcome to IRC
 						case 464: // Password Required
 						case 433: // Nick In Use
-							try { myProcessingManager.process(sParam, token); } catch (Exception e) { }
+							try { myProcessingManager.process(sParam, token); } catch (ProcessorNotFoundException e) { }
 							break;
 						default: // Unknown - Send to Notice Auth
 							// Some networks send a CTCP during the auth process, handle it
 							if (token.length > 3 && !token[3].isEmpty() && token[3].charAt(0) == (char)1 && token[3].charAt(token[3].length()-1) == (char)1) {
-								try { myProcessingManager.process(sParam, token); } catch (Exception e) { }
+								try { myProcessingManager.process(sParam, token); } catch (ProcessorNotFoundException e) { }
 								break;
 							}
 							// Otherwise, send to Notice Auth
-							try { myProcessingManager.process("Notice Auth", token); } catch (Exception e) { }
+							try { myProcessingManager.process("Notice Auth", token); } catch (ProcessorNotFoundException e) { }
 							break;
 					}
 				}
 			}
 		} catch (Exception e) {
-			final ParserError ei = new ParserError(ParserError.ERROR_FATAL, "Exception in Parser.", lastLine);
+			final ParserError ei = new ParserError(ParserError.ERROR_FATAL, "Fatal Exception in Parser.", lastLine);
 			ei.setException(e);
 			callErrorInfo(ei);
 		}
@@ -1684,7 +1703,7 @@ public class IRCParser implements Runnable {
 		if (currentSocketState == STATE_OPEN && got001) { quit(sReason); }
 		try {
 			socket.close();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			/* Do Nothing */
 		} finally {
 			if (currentSocketState != STATE_CLOSED) {

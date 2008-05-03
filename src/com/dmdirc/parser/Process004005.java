@@ -96,7 +96,7 @@ public class Process004005 extends IRCProcessor {
 					// Add listmode handlers
 					try {
 						myParser.getProcessingManager().addProcessor(handles, myParser.getProcessingManager().getProcessor("__LISTMODE__"));
-					} catch (Exception e) { }
+					} catch (ProcessorNotFoundException e) { }
 				}
 			}
 		}
