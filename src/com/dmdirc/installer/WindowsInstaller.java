@@ -24,6 +24,7 @@ package com.dmdirc.installer;
 
 import com.dmdirc.installer.cliparser.CLIParser;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -128,17 +129,7 @@ public class WindowsInstaller extends Installer {
 	public void addRegistryKey(final String key) {
 		step.addText(" - Adding Key: "+key);
 		final String[] addKey = new String[] {"reg.exe", "add", key, "/f"};
-		try {
-			final Process registryProcess = Runtime.getRuntime().exec(addKey);
-			new StreamReader(registryProcess.getInputStream()).start();
-			new StreamReader(registryProcess.getErrorStream()).start();
-			registryProcess.waitFor();
-			if (registryProcess.exitValue() != 0) {
-				step.addText(" - Error adding key: Unknown Reason");
-			}
-		} catch (Exception e) {
-			step.addText(" - Error adding registry key: "+e.getMessage());
-		}
+		execAndWait(addKey);
 	}
 
 	/**
@@ -179,18 +170,35 @@ public class WindowsInstaller extends Installer {
 			params.add("/d");
 			params.add(data);
 		}
-
+		
+		execAndWait(params.toArray(new String[0]));
+	}
+	
+	/**
+	 * Execute and wait for the requested command
+	 *
+	 * @param cmd Command array to execute/
+	 * @return return value from command, or -1 if there was an error.
+	 */
+	private int execAndWait(final String cmd[]) {
 		try {
-			final Process registryProcess = Runtime.getRuntime().exec(params.toArray(new String[0]));
-			new StreamReader(registryProcess.getInputStream()).start();
-			new StreamReader(registryProcess.getErrorStream()).start();
-			registryProcess.waitFor();
-			if (registryProcess.exitValue() != 0) {
-				step.addText(" - Error editing value: Unknown Reason");
+			final Process myProcess = Runtime.getRuntime().exec(cmd);
+			new StreamReader(myProcess.getInputStream()).start();
+			new StreamReader(myProcess.getErrorStream()).start();
+			try {
+				myProcess.waitFor();
+			} catch (InterruptedException e) { }
+			if (myProcess.exitValue() != 0) {
+				step.addText("\t - Error: Unknown Reason");
 			}
-		} catch (Exception e) {
-			step.addText(" - Error editing registry key: "+e.getMessage());
+			return myProcess.exitValue();
+		} catch (SecurityException e) {
+			step.addText("\t - Error: "+e.getMessage());
+		} catch (IOException e) {
+			step.addText("\t - Error: "+e.getMessage());
 		}
+		
+		return -1;
 	}
 
 	/**
@@ -285,37 +293,21 @@ public class WindowsInstaller extends Installer {
 			final File oldFile = new File(filename+"\\DMDirc.lnk");
 			if (oldFile.exists()) { oldFile.delete(); }
 
-			try {
-//				final String thisDirName = new File("").getAbsolutePath();
-					final String[] command = new String[] {
-//				                      thisDirName+"/Shortcut.exe",
-				                      "Shortcut.exe",
-				                      "/F:"+filename+"\\DMDirc.lnk",
-				                      "/A:C",
-//				                      "/T:"+location+"\\DMDirc.bat",
-//				                      "/T:javaw.exe",
-//				                      "/P:-jar DMDirc.jar",
-				                      "/T:"+location+"\\DMDirc.exe",
-				                      "/W:"+location,
-				                      "/I:"+location+"\\icon.ico",
-				                      "/D:DMDirc IRC Client"
-				                      };
-				final Process shortcutProcess = Runtime.getRuntime().exec(command);
-				new StreamReader(shortcutProcess.getInputStream()).start();
-				new StreamReader(shortcutProcess.getErrorStream()).start();
-				shortcutProcess.waitFor();
-				if (shortcutProcess.exitValue() != 0) {
-					step.addText(" - Error creating shortcut: Unknown Reason");
-					System.out.println(java.util.Arrays.toString(command));
-					System.out.println("");
-					for (String bit : command) {
-						System.out.print(bit+' ');
-					}
-					System.out.println("");
-				}
-			} catch (Exception e) {
-				step.addText(" - Error creating shortcut: "+e.getMessage());
-			}
+//			final String thisDirName = new File("").getAbsolutePath();
+			final String[] command = new String[] {
+//			                      thisDirName+"/Shortcut.exe",
+			                      "Shortcut.exe",
+			                      "/F:"+filename+"\\DMDirc.lnk",
+			                      "/A:C",
+//			                      "/T:"+location+"\\DMDirc.bat",
+//			                      "/T:javaw.exe",
+//			                      "/P:-jar DMDirc.jar",
+			                      "/T:"+location+"\\DMDirc.exe",
+			                      "/W:"+location,
+			                      "/I:"+location+"\\icon.ico",
+			                      "/D:DMDirc IRC Client"
+			                      };
+				execAndWait(command);
 		} else {
 			step.addText(" - Error creating shortcut: Unable to find Shortcut.exe");
 		}

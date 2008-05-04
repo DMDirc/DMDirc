@@ -30,7 +30,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
-import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Integrate DMDirc with OS X better.
@@ -84,7 +84,13 @@ public final class Apple implements InvocationHandler {
 				final Class app = Class.forName("com.apple.eawt.Application");
 				final Method method = app.getMethod("getApplication", new Class[0]);
 				application = method.invoke(null, new Object[0]);
-			} catch (Exception e) { /* Do nothing */ }
+			} catch (ClassNotFoundException ex) { // Probably not on OS X, do nothing.
+			} catch (NoSuchMethodException ex) { // Probably not on OS X, do nothing.
+			} catch (SecurityException ex) { // Probably not on OS X, do nothing.
+			} catch (IllegalAccessException ex) { // Probably not on OS X, do nothing.
+			} catch (IllegalArgumentException ex) { // Probably not on OS X, do nothing.
+			} catch (InvocationTargetException ex) { // Probably not on OS X, do nothing.
+			}
 		}
 		return application;
 	}
@@ -101,7 +107,13 @@ public final class Apple implements InvocationHandler {
 				final Class app = Class.forName("com.apple.cocoa.application.NSApplication");
 				final Method method = app.getMethod("sharedApplication", new Class[0]);
 				nsApplication = method.invoke(null, new Object[0]);
-			} catch (Exception e) { /* Do nothing */ }
+			} catch (ClassNotFoundException ex) { // Probably not on OS X, do nothing.
+			} catch (NoSuchMethodException ex) { // Probably not on OS X, do nothing.
+			} catch (SecurityException ex) { // Probably not on OS X, do nothing.
+			} catch (IllegalAccessException ex) { // Probably not on OS X, do nothing.
+			} catch (IllegalArgumentException ex) { // Probably not on OS X, do nothing.
+			} catch (InvocationTargetException ex) { // Probably not on OS X, do nothing.
+			}
 		}
 		return nsApplication;
 	}
@@ -153,7 +165,13 @@ public final class Apple implements InvocationHandler {
 			final Field type = (isCritical) ? getNSApplication().getClass().getField("UserAttentionRequestCritical") : getNSApplication().getClass().getField("Informational");
 			final Method method = getNSApplication().getClass().getMethod("requestUserAttention", new Class[]{Integer.TYPE});
 			method.invoke(getNSApplication(), new Object[]{type.get(null)});
-		} catch (Exception e) { }
+		} catch (NoSuchFieldException ex) { // Probably not on OS X, do nothing.
+		} catch (NoSuchMethodException ex) { // Probably not on OS X, do nothing.
+		} catch (SecurityException ex) { // Probably not on OS X, do nothing.
+		} catch (IllegalAccessException ex) { // Probably not on OS X, do nothing.
+		} catch (IllegalArgumentException ex) { // Probably not on OS X, do nothing.
+		} catch (InvocationTargetException ex) { // Probably not on OS X, do nothing.
+		}
 	}
 	
 	/**
@@ -180,7 +198,13 @@ public final class Apple implements InvocationHandler {
 			method.invoke(getApplication(), new Object[]{Boolean.TRUE});
 			
 			return true;
-		} catch (Exception e) { /* Do Nothing */ }
+		} catch (ClassNotFoundException ex) { // Probably not on OS X, do nothing.
+		} catch (NoSuchMethodException ex) { // Probably not on OS X, do nothing.
+		} catch (SecurityException ex) { // Probably not on OS X, do nothing.
+		} catch (IllegalAccessException ex) { // Probably not on OS X, do nothing.
+		} catch (IllegalArgumentException ex) { // Probably not on OS X, do nothing.
+		} catch (InvocationTargetException ex) { // Probably not on OS X, do nothing.
+		}
 		return false;
 	}
 	
@@ -259,34 +283,26 @@ public final class Apple implements InvocationHandler {
 	 *
 	 * @param event an ApplicationEvent object
 	 */
-	public void handleOpenApplication(final ApplicationEvent event) {
-//		javax.swing.JOptionPane.showMessageDialog(null, "Open '"+event.getFilename()+"' ?", "OA", javax.swing.JOptionPane.ERROR_MESSAGE);
-	}
+	public void handleOpenApplication(final ApplicationEvent event) { }
 	
 	/**
 	 * This is called when the application is asked to open a file
 	 *
 	 * @param event an ApplicationEvent object
 	 */
-	public void handleOpenFile(final ApplicationEvent event) {
-//		javax.swing.JOptionPane.showMessageDialog(null, "Open '"+event.getFilename()+"' ?", "OF", javax.swing.JOptionPane.ERROR_MESSAGE);
-	}
+	public void handleOpenFile(final ApplicationEvent event) { }
 	
 	/**
 	 * This is called when asked to print
 	 *
 	 * @param event an ApplicationEvent object
 	 */
-	public void handlePrintFile(final ApplicationEvent event) {
-//		javax.swing.JOptionPane.showMessageDialog(null, "Open '"+event.getFilename()+"' ?", "PF", javax.swing.JOptionPane.ERROR_MESSAGE);
-	}
+	public void handlePrintFile(final ApplicationEvent event) { }
 	
 	/**
 	 * This is called when the application is reopened
 	 *
 	 * @param event an ApplicationEvent object
 	 */
-	public void handleReopenApplication(final ApplicationEvent event) {
-//		javax.swing.JOptionPane.showMessageDialog(null, "Open '"+event.getFilename()+"' ?", "ROA", javax.swing.JOptionPane.ERROR_MESSAGE);
-	}
+	public void handleReopenApplication(final ApplicationEvent event) { }
 }

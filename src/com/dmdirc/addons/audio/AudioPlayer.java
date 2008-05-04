@@ -23,10 +23,14 @@
 package com.dmdirc.addons.audio;
 
 import java.io.File;
+import java.io.IOException;
 import java.applet.AudioClip;
 import java.applet.Applet;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.sound.sampled.AudioSystem;
+
+import java.net.MalformedURLException;
 
 /**
  * The AudioPlayer handles the playing of the audio
@@ -36,7 +40,7 @@ import javax.sound.sampled.AudioSystem;
  */
 public final class AudioPlayer implements Runnable {
 	/** The AudioType enum */
-	private enum AudioType { WAV, OTHER; }
+	private enum AudioType { WAV, INVALID; }
 	
 	/** The file object of the file to play */
 	final File myFile;
@@ -79,7 +83,7 @@ public final class AudioPlayer implements Runnable {
 	 */
 	public static boolean isValid(final File file) {
 		final AudioType type = getAudioType(file);
-		return (type != AudioType.OTHER);
+		return (type != AudioType.INVALID);
 	}
 	
 	/**
@@ -93,8 +97,10 @@ public final class AudioPlayer implements Runnable {
 		try {
 			AudioSystem.getAudioInputStream(file);
 			type = AudioType.WAV;
-		} catch (Exception e) {
-			type = AudioType.OTHER;
+		} catch (UnsupportedAudioFileException e) {
+			type = AudioType.INVALID;
+		} catch (IOException e) {
+			type = AudioType.INVALID;
 		}
 		return type;
 	}
@@ -109,49 +115,6 @@ public final class AudioPlayer implements Runnable {
 		try {
 			final AudioClip ac = Applet.newAudioClip(myFile.toURI().toURL());
 			if (ac != null) { ac.play(); }
-		} catch (Exception e) { /* Bad File, can't play */ }
+		} catch (MalformedURLException e) { }
 	}
-	
-	/**
-	 * Play the file as a wav file.
-	 * Based on http://www.anyexample.com/programming/java/java_play_wav_sound_file.xml
-	 */
-	/*private void oldPlayWav() {
-		final int EXTERNAL_BUFFER_SIZE = 524288; // 128Kb
-		AudioInputStream audioInputStream = null;
-		try {
-			audioInputStream = AudioSystem.getAudioInputStream(myFile);
-		} catch (Exception e) { return; }
-		final AudioFormat format = audioInputStream.getFormat();
-		
-		SourceDataLine auline = null;
-		final DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
-		
-		try {
-			auline = (SourceDataLine) AudioSystem.getLine(info);
-			auline.open(format);
-		} catch (Exception e) { return; }
-		
-		auline.start();
-		int nBytesRead = 0;
-		final byte[] abData = new byte[EXTERNAL_BUFFER_SIZE];
-		
-		try {
-			while (nBytesRead != -1) {
-				nBytesRead = audioInputStream.read(abData, 0, abData.length);
-				int offset = 0;
-				while (offset < nBytesRead) {
-					offset += auline.write(abData, offset, nBytesRead-offset);
-				}
-			}
-		} catch (Exception e) {
-			/** Do Nothing *
-		} finally {
-			auline.drain();
-			auline.close();
-		}
-		try {
-			audioInputStream.close();
-		} catch (Exception e) { }
-	}*/
 }

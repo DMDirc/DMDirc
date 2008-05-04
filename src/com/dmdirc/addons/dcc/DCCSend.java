@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,7 +102,11 @@ public class DCCSend extends DCC {
 			transferFile = new File(filename);
 			try {
 				fileIn = new DataInputStream(new FileInputStream(transferFile.getAbsolutePath()));
-			} catch (Exception e) { fileIn = null; }
+			} catch (FileNotFoundException e) {
+				fileIn = null;
+			} catch (SecurityException e) {
+				fileIn = null;
+			}
 		}
 	}
 	
@@ -273,8 +278,8 @@ public class DCCSend extends DCC {
     @Override
 	protected void socketClosed() {
 		// Try to close both, even if one fails.
-		try { out.close(); } catch (Exception e) { }
-		try { in.close(); } catch (Exception e) { }
+		try { out.close(); } catch (IOException e) { }
+		try { in.close(); } catch (IOException e) { }
 		out = null;
 		in = null;
 		if (handler != null) {

@@ -64,7 +64,6 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Stack;
 
-
 /**
  * Adds logging facility to client.
  *
@@ -470,7 +469,11 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 				}
 				file.close();
 				frame.addLine(getColouredString(colour,"--- End of backbuffer\n"), showTimestamp);
-			} catch (Exception e) {
+			} catch (FileNotFoundException e) {
+				Logger.userError(ErrorLevel.LOW, "Unable to show backbuffer (Filename: "+filename+"): " + e.getMessage());
+			} catch (IOException e) {
+				Logger.userError(ErrorLevel.LOW, "Unable to show backbuffer (Filename: "+filename+"): " + e.getMessage());
+			} catch (SecurityException e) {
 				Logger.userError(ErrorLevel.LOW, "Unable to show backbuffer (Filename: "+filename+"): " + e.getMessage());
 			}
 		}

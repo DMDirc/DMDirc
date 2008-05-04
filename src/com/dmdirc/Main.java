@@ -53,7 +53,7 @@ public final class Main {
     public static final String VERSION = "SVN";
 
     /** The SVN revision that this build was made from. */
-    public static final int SVN_REVISION = 3999;
+    public static final int SVN_REVISION = 4007; // 4007; // 4007; // 4007; // 4007; // 4007; // 4007; // 4007; // 3999;
 
     /** Stores the update channel that this version came from, if any. */
     public static final UpdateChannel UPDATE_CHANNEL = UpdateChannel.NONE;

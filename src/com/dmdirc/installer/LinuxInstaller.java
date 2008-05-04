@@ -320,9 +320,13 @@ public class LinuxInstaller extends Installer {
 						final Process gconfProcess = Runtime.getRuntime().exec(new String[]{"/bin/sh", location+"/protocolHandlers.sh"});
 						new StreamReader(gconfProcess.getInputStream()).start();
 						new StreamReader(gconfProcess.getErrorStream()).start();
-						gconfProcess.waitFor();
+						try {
+							gconfProcess.waitFor();
+						} catch (InterruptedException e) { }
 						protocolFile.delete();
-					} catch (Exception e) {
+					} catch (SecurityException e) {
+						step.addText(" - Error adding Protocol Handler: "+e.getMessage());
+					} catch (IOException e) {
 						step.addText(" - Error adding Protocol Handler: "+e.getMessage());
 					}
 					return;
@@ -337,7 +341,9 @@ public class LinuxInstaller extends Installer {
 			}
 			writer = new PrintWriter(filename);
 			writeFile(writer, location);
-		} catch (Exception e) {
+		} catch (IOException e) {
+			step.addText(" - Error creating shortcut: "+e.toString());
+		} catch (SecurityException e) {
 			step.addText(" - Error creating shortcut: "+e.toString());
 		} finally {
 			if (writer != null) {
