@@ -135,11 +135,7 @@ public class PluginManager implements ActionListener {
 
 		PluginInfo pluginInfo = getPluginInfo(filename);
 		
-		try {
-			pluginInfo.unloadPlugin();
-		} catch (Exception e) {
-			Logger.userError(ErrorLevel.MEDIUM, e.getMessage(), e);
-		}
+		pluginInfo.unloadPlugin();
 		
 		knownPlugins.remove(filename.toLowerCase());
 		pluginInfo = null;

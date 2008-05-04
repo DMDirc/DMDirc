@@ -501,7 +501,12 @@ public class PluginInfo implements Comparable<PluginInfo> {
 					if (((Plugin) temp).checkPrerequisites()) {
 						plugin = (Plugin) temp;
 						if (!tempLoaded) {
-							plugin.onLoad();
+							try {
+								plugin.onLoad();
+							} catch (Exception e) {
+								Logger.userError(ErrorLevel.MEDIUM, "Error in onLoad for "+getName()+":"+e.getMessage(), e);
+								unloadPlugin();
+							}
 						}
 					} else {
 						if (!tempLoaded) {
