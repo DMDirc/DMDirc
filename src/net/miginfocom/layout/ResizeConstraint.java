@@ -34,10 +34,13 @@
 
 package net.miginfocom.layout;
 
-import java.io.*;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.ObjectStreamException;
 
-/**
- * A parsed constraint that specifies how an entity (normally column/row or component) can shrink or
+/** A parsed constraint that specifies how an entity (normally column/row or component) can shrink or
  * grow compared to other entities.
  */
 final class ResizeConstraint implements Externalizable {
@@ -62,30 +65,30 @@ final class ResizeConstraint implements Externalizable {
     Float shrink = WEIGHT_100;
     int shrinkPrio = 100;
 
-    public ResizeConstraint() {
+    public ResizeConstraint() // For Externalizable
+    {
     }
 
-    ResizeConstraint(int shrinkPrio, Float shrinkWeight, int growPrio,
-            Float growWeight) {
+    ResizeConstraint(int shrinkPrio, Float shrinkWeight, int growPrio, Float growWeight) {
         this.shrinkPrio = shrinkPrio;
         this.shrink = shrinkWeight;
         this.growPrio = growPrio;
         this.grow = growWeight;
     }
+
     // ************************************************
     // Persistence Delegate and Serializable combined.
     // ************************************************
-
     private Object readResolve() throws ObjectStreamException {
         return LayoutUtil.getSerializedObject(this);
     }
 
-    public void readExternal(ObjectInput in) throws IOException,
-            ClassNotFoundException {
-        LayoutUtil.setSerializedObject(this,
-                LayoutUtil.readAsXML(in));
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        LayoutUtil.setSerializedObject(this, LayoutUtil.readAsXML(in));
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         if (getClass() == ResizeConstraint.class) {
             LayoutUtil.writeAsXML(out, this);

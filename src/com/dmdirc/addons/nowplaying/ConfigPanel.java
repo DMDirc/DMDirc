@@ -24,7 +24,7 @@ package com.dmdirc.addons.nowplaying;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesInterface;
-import com.dmdirc.ui.swing.components.JWrappingLabel;
+import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.components.reorderablelist.ReorderableJList;
 
 import java.awt.event.KeyEvent;
@@ -72,7 +72,7 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
     private JPanel previewPanel;
 
     /** Label for previews. */
-    private JWrappingLabel preview;
+    private TextLabel preview;
     
     /** Update timer. */
     private Timer updateTimer;
@@ -109,7 +109,7 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
         textfield = new JTextField(IdentityManager.getGlobalConfig()
                 .getOption(NowPlayingPlugin.DOMAIN, "format", "/me is playing $artist - $title"));
         textfield.addKeyListener(this);
-        preview = new JWrappingLabel("Preview:\n");
+        preview = new TextLabel("Preview:\n");
 
         setLayout(new MigLayout("fillx, ins 0"));
 
@@ -168,6 +168,7 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
         preview.repaint();
 
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 previewPanel.revalidate();
                 revalidate();

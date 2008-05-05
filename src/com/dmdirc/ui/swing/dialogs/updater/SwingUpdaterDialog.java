@@ -25,7 +25,7 @@ package com.dmdirc.ui.swing.dialogs.updater;
 import com.dmdirc.Main;
 import com.dmdirc.interfaces.UpdateCheckerListener;
 import com.dmdirc.ui.interfaces.UpdaterDialog;
-import com.dmdirc.ui.swing.components.JWrappingLabel;
+import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.PackingTable;
 import com.dmdirc.ui.swing.components.StandardDialog;
@@ -69,7 +69,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
     /** Table scrollpane. */
     private JScrollPane scrollPane;
     /** The label we use for the dialog header. */
-    private JWrappingLabel header;
+    private TextLabel header;
     /** UpdateComponent renderer. */
     private UpdateComponentTableCellRenderer updateComponentRenderer;
     /** Update.Status renderer. */
@@ -134,7 +134,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         updateStatusRenderer = new UpdateStatusTableCellRenderer();
         updateComponentRenderer = new UpdateComponentTableCellRenderer();
 
-        header = new JWrappingLabel("An update is available for one or more "
+        header = new TextLabel("An update is available for one or more "
                 + "components of DMDirc:");
 
         scrollPane = new JScrollPane();

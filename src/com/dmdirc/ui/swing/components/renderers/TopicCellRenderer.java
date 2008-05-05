@@ -23,7 +23,7 @@
 package com.dmdirc.ui.swing.components.renderers;
 
 import com.dmdirc.Topic;
-import com.dmdirc.ui.swing.components.JWrappingLabel;
+import com.dmdirc.ui.swing.components.TextLabel;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -66,7 +66,7 @@ public class TopicCellRenderer extends JPanel implements ListCellRenderer {
         if (value instanceof Topic) {
             final Topic topic = (Topic) value;
 
-            final JWrappingLabel label = new JWrappingLabel(topic.getTopic());
+            final TextLabel label = new TextLabel(topic.getTopic());
             label.setMaximumSize(new Dimension(list.getWidth(), 0));
             add(label, "growx");
             add(new JLabel(new Date(topic.getTime() * 1000).toString()),

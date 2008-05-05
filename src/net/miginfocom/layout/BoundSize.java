@@ -37,9 +37,14 @@ package net.miginfocom.layout;
 import java.beans.Encoder;
 import java.beans.Expression;
 import java.beans.PersistenceDelegate;
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 
-/** A size that contains minimum, preferred and maximum size of type {@link UnitValue}.
+/** 
+ * A size that contains minimum, preferred and maximum size of type {@link UnitValue}.
  * <p>
  * This class is a simple value container and it is immutable.
  * <p>
@@ -47,201 +52,236 @@ import java.io.*;
  * <p>
  * You can create a BoundSize from a String with the use of {@link ConstraintParser#parseBoundSize(String, boolean, boolean)}
  */
-public class BoundSize implements Serializable
-{
-	public static final BoundSize ZERO_PIXEL = new BoundSize(UnitValue.ZERO, "0px");
+public class BoundSize implements Serializable {
 
-	private final transient UnitValue min;
-	private final transient UnitValue pref;
-	private final transient UnitValue max;
-	private final transient boolean gapPush;
+    public static final BoundSize NULL_SIZE = new BoundSize(null, null);
+    public static final BoundSize ZERO_PIXEL = new BoundSize(UnitValue.ZERO, "0px");
+    private final transient UnitValue min;
+    private final transient UnitValue pref;
+    private final transient UnitValue max;
+    private final transient boolean gapPush;
 
-	/** Constructor that use the same value for min/preferred/max size.
-	 * @param minMaxPref The value to use for min/preferred/max size.
-	 * @param createString The string used to create the BoundsSize.
-	 */
-	public BoundSize(UnitValue minMaxPref, String createString)
-	{
-		this(minMaxPref, minMaxPref, minMaxPref, createString);
-	}
+    /** 
+     * Constructor that use the same value for min/preferred/max size.
+     * 
+     * @param minMaxPref The value to use for min/preferred/max size.
+     * @param createString The string used to create the BoundsSize.
+     */
+    public BoundSize(UnitValue minMaxPref, String createString) {
+        this(minMaxPref, minMaxPref, minMaxPref, createString);
+    }
 
-	/** Constructor. <b>This method is here for serilization only and should normally not be used. Use
-	 * {@link ConstraintParser#parseBoundSize(String, boolean, boolean)} instead.
-	 * @param min The minimum size. May be <code>null</code>.
-	 * @param preferred  The preferred size. May be <code>null</code>.
-	 * @param max  The maximum size. May be <code>null</code>.
-	 * @param createString The string used to create the BoundsSize.
-	 */
-	public BoundSize(UnitValue min, UnitValue preferred, UnitValue max, String createString)    // Bound to old delegate!!!!!
-	{
-		this(min, preferred, max, false, createString);
-	}
+    /** 
+     * Constructor. <b>This method is here for serilization only and should normally not be used. Use
+     * {@link ConstraintParser#parseBoundSize(String, boolean, boolean)} instead.
+     * 
+     * @param min The minimum size. May be <code>null</code>.
+     * @param preferred  The preferred size. May be <code>null</code>.
+     * @param max  The maximum size. May be <code>null</code>.
+     * @param createString The string used to create the BoundsSize.
+     */
+    public BoundSize(UnitValue min, UnitValue preferred, UnitValue max, String createString) // Bound to old delegate!!!!!
+    {
+        this(min, preferred, max, false, createString);
+    }
 
-	/** Constructor. <b>This method is here for serilization only and should normally not be used. Use
-	 * {@link ConstraintParser#parseBoundSize(String, boolean, boolean)} instead.
-	 * @param min The minimum size. May be <code>null</code>.
-	 * @param preferred  The preferred size. May be <code>null</code>.
-	 * @param max  The maximum size. May be <code>null</code>.
-	 * @param gapPush If the size should be hinted as "pushing" and thus want to occupy free space if noone else is claiming it.
-	 * @param createString The string used to create the BoundsSize.
-	 */
-	public BoundSize(UnitValue min, UnitValue preferred, UnitValue max, boolean gapPush, String createString)
-	{
-		this.min = min;
-		this.pref = preferred;
-		this.max = max;
-		this.gapPush = gapPush;
+    /** 
+     * Constructor. <b>This method is here for serilization only and should normally not be used. Use
+     * {@link ConstraintParser#parseBoundSize(String, boolean, boolean)} instead.
+     * 
+     * @param min The minimum size. May be <code>null</code>.
+     * @param preferred  The preferred size. May be <code>null</code>.
+     * @param max  The maximum size. May be <code>null</code>.
+     * @param gapPush If the size should be hinted as "pushing" and thus want to occupy free space if noone else is claiming it.
+     * @param createString The string used to create the BoundsSize.
+     */
+    public BoundSize(UnitValue min, UnitValue preferred, UnitValue max, boolean gapPush, String createString) {
+        this.min = min;
+        this.pref = preferred;
+        this.max = max;
+        this.gapPush = gapPush;
 
-		LayoutUtil.putCCString(this, createString);    // this escapes!!
-	}
+        LayoutUtil.putCCString(this, createString);    // this escapes!!
 
-	/** Returns the minimum size as sent into the constructor.
-	 * @return The minimum size as sent into the constructor. May be <code>null</code>.
-	 */
-	public final UnitValue getMin()
-	{
-		return min;
-	}
+    }
 
-	/** Returns the preferred size as sent into the constructor.
-	 * @return The preferred size as sent into the constructor. May be <code>null</code>.
-	 */
-	public final UnitValue getPreferred()
-	{
-		return pref;
-	}
+    /** 
+     * Returns the minimum size as sent into the constructor.
+     * 
+     * @return The minimum size as sent into the constructor. May be <code>null</code>.
+     */
+    public final UnitValue getMin() {
+        return min;
+    }
 
-	/** Returns the maximum size as sent into the constructor.
-	 * @return The maximum size as sent into the constructor. May be <code>null</code>.
-	 */
-	public final UnitValue getMax()
-	{
-		return max;
-	}
+    /** 
+     * Returns the preferred size as sent into the constructor.
+     * 
+     * @return The preferred size as sent into the constructor. May be <code>null</code>.
+     */
+    public final UnitValue getPreferred() {
+        return pref;
+    }
 
-	/** If the size should be hinted as "pushing" and thus want to occupy free space if noone else is claiming it.
-	 * @return The value.
-	 */
-	public boolean getGapPush()
-	{
-		return gapPush;
-	}
+    /** 
+     * Returns the maximum size as sent into the constructor.
+     * 
+     * @return The maximum size as sent into the constructor. May be <code>null</code>.
+     */
+    public final UnitValue getMax() {
+        return max;
+    }
 
-	/** Returns if this bound size has no min, preferred or maximum size set (they are all <code>null</code>)
-	 * @return If unset.
-	 */
-	public boolean isUnset()
-	{
-		return pref == null && min == null && max == null;
-	}
+    /** 
+     * If the size should be hinted as "pushing" and thus want to occupy free space if noone else is claiming it.
+     * 
+     * @return The value.
+     */
+    public boolean getGapPush() {
+        return gapPush;
+    }
 
-	/** Returns the minimum, preferred or maximum size for this bounded size.
-	 * @param sizeType The type. <code>LayoutUtil.MIN</code>, <code>LayoutUtil.PREF</code> or <code>LayoutUtil.MAX</code>.
-	 * @return
-	 */
-	final UnitValue getSize(int sizeType)
-	{
-		switch(sizeType) {
-			case LayoutUtil.MIN:
-				return min;
-			case LayoutUtil.PREF:
-				return pref;
-			case LayoutUtil.MAX:
-				return max;
-			default:
-				throw new IllegalArgumentException("Unknown size: " + sizeType);
-		}
-	}
+    /** 
+     * Returns if this bound size has no min, preferred and maximum size set (they are all <code>null</code>)
+     * 
+     * @return If unset.
+     */
+    public boolean isUnset() {
+        // Most common case by far is this == ZERO_PIXEL...
+        return this == ZERO_PIXEL || (pref == null && min == null && max == null && gapPush == false);
+    }
 
-	/** Convert the bound sizes to pixels.
-	 * <p>
-	 * <code>null</code> bound sizes will be 0 for min and preferred and {@link net.miginfocom.layout.LayoutUtil#INF} for max.
-	 * @param refSize The reference size.
-	 * @param parent The parent. Not <code>null</code>.
-	 * @param comp The component, if applicable, can be <code>null</code>.
-	 * @return An array of lenth three (min,pref,max).
-	 */
-	final int[] getPixelSizes(float refSize, ContainerWrapper parent, ComponentWrapper comp)
-	{
-		return new int[] {
-				min != null ? min.getPixels(refSize, parent, comp) : 0,
-				pref != null ? pref.getPixels(refSize, parent, comp) : 0,
-				max != null ? max.getPixels(refSize, parent, comp) : LayoutUtil.INF
-		};
-	}
+    /** 
+     * Makes sure that <code>size</code> is within min and max of this size.
+     * 
+     * @param size The size to constrain.
+     * @param refValue The reference to use for relative sizes.
+     * @param parent The parent container.
+     * 
+     * @return The size, constrained within min and max.
+     */
+    public int constrain(int size, float refValue, ContainerWrapper parent) {
+        if (max != null) {
+            size = Math.min(size, max.getPixels(refValue, parent, parent));
+        }
+        if (min != null) {
+            size = Math.max(size, min.getPixels(refValue, parent, parent));
+        }
+        return size;
+    }
 
-	/** Returns the a constraint string that can be re-parsed to be the exact same UnitValue.
-	 * @return A String. Never <code>null</code>.
-	 */
-	String getConstraintString()
-	{
-		String cs = LayoutUtil.getCCString(this);
-		if (cs != null)
-			return cs;
+    /** 
+     * Returns the minimum, preferred or maximum size for this bounded size.
+     * 
+     * @param sizeType The type. <code>LayoutUtil.MIN</code>, <code>LayoutUtil.PREF</code> or <code>LayoutUtil.MAX</code>.
+     * 
+     * @return
+     */
+    final UnitValue getSize(int sizeType) {
+        switch (sizeType) {
+            case LayoutUtil.MIN:
+                return min;
+            case LayoutUtil.PREF:
+                return pref;
+            case LayoutUtil.MAX:
+                return max;
+            default:
+                throw new IllegalArgumentException("Unknown size: " + sizeType);
+        }
+    }
 
-		if (min == pref && pref == max)
-			return min != null ? (min.getConstraintString() + "!") : "null";
+    /** 
+     * Convert the bound sizes to pixels.
+     * <p>
+     * <code>null</code> bound sizes will be 0 for min and preferred and {@link net.miginfocom.layout.LayoutUtil#INF} for max.
+     * 
+     * @param refSize The reference size.
+     * @param parent The parent. Not <code>null</code>.
+     * @param comp The component, if applicable, can be <code>null</code>.
+     * 
+     * @return An array of lenth three (min,pref,max).
+     */
+    final int[] getPixelSizes(float refSize, ContainerWrapper parent, ComponentWrapper comp) {
+        return new int[]{
+                    min != null ? min.getPixels(refSize, parent, comp) : 0,
+                    pref != null ? pref.getPixels(refSize, parent, comp) : 0,
+                    max != null ? max.getPixels(refSize, parent, comp) : LayoutUtil.INF
+                };
+    }
 
-		StringBuilder sb = new StringBuilder(16);
+    /** 
+     * Returns the a constraint string that can be re-parsed to be the exact same UnitValue.
+     * 
+     * @return A String. Never <code>null</code>.
+     */
+    String getConstraintString() {
+        String cs = LayoutUtil.getCCString(this);
+        if (cs != null) {
+            return cs;
+        }
+        if (min == pref && pref == max) {
+            return min != null ? (min.getConstraintString() + "!") : "null";
+        }
+        StringBuilder sb = new StringBuilder(16);
 
-		if (min != null)
-			sb.append(min.getConstraintString()).append(':');
+        if (min != null) {
+            sb.append(min.getConstraintString()).append(':');
+        }
+        if (pref != null) {
+            sb.append(pref.getConstraintString());
+        } else if (min != null) {
+            sb.append('n');
+        }
 
-		if (pref != null) {
-			sb.append(pref.getConstraintString());
-		} else if (min != null) {
-			sb.append('n');
-		}
+        if (max != null) {
+            sb.append(sb.length() == 0 ? "::" : ":").append(max.getConstraintString());
+        }
+        if (gapPush) {
+            if (sb.length() > 0) {
+                sb.append(':');
+            }
+            sb.append("push");
+        }
 
-		if (max != null)
-			sb.append(sb.length() == 0 ? "::" : ":").append(max.getConstraintString());
+        return sb.toString();
+    }
+    
 
-		if (gapPush) {
-			if (sb.length() > 0)
-				sb.append(':');
-			sb.append("push");
-		}
+    static {
+        LayoutUtil.setDelegate(BoundSize.class, new PersistenceDelegate() {
 
-		return sb.toString();
-	}
+            @Override
+            protected Expression instantiate(Object oldInstance, Encoder out) {
+                BoundSize bs = (BoundSize) oldInstance;
+                if (Grid.TEST_GAPS) {
+                    return new Expression(oldInstance, BoundSize.class, "new", new Object[]{
+                                bs.getMin(), bs.getPreferred(), bs.getMax(), bs.getGapPush(), bs.getConstraintString()
+                            });
+                } else {
+                    return new Expression(oldInstance, BoundSize.class, "new", new Object[]{
+                                bs.getMin(), bs.getPreferred(), bs.getMax(), bs.getConstraintString()
+                            });
+                }
+            }
+        });
+    }
 
-	static {
-		LayoutUtil.setDelegate(BoundSize.class, new PersistenceDelegate() {
-			protected Expression instantiate(Object oldInstance, Encoder out)
-			{
-				BoundSize bs = (BoundSize) oldInstance;
-				if (Grid.TEST_GAPS) {
-					return new Expression(oldInstance, BoundSize.class, "new", new Object[] {
-							bs.getMin(), bs.getPreferred(), bs.getMax(), bs.getGapPush(), bs.getConstraintString()
-					});
-				} else {
-					return new Expression(oldInstance, BoundSize.class, "new", new Object[] {
-							bs.getMin(), bs.getPreferred(), bs.getMax(), bs.getConstraintString()
-					});
-				}
-			}
-		});
-	}
+    // ************************************************
+    // Persistence Delegate and Serializable combined.
+    // ************************************************
+    private static final long serialVersionUID = 1L;
 
-	// ************************************************
-	// Persistence Delegate and Serializable combined.
-	// ************************************************
+    protected Object readResolve() throws ObjectStreamException {
+        return LayoutUtil.getSerializedObject(this);
+    }
 
-	private static final long serialVersionUID = 1L;
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        if (getClass() == BoundSize.class) {
+            LayoutUtil.writeAsXML(out, this);
+        }
+    }
 
-	protected Object readResolve() throws ObjectStreamException
-	{
-		return LayoutUtil.getSerializedObject(this);
-	}
-
-	private void writeObject(ObjectOutputStream out) throws IOException
-	{
-		if (getClass() == BoundSize.class)
-			LayoutUtil.writeAsXML(out, this);
-	}
-
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
-	{
-		LayoutUtil.setSerializedObject(this, LayoutUtil.readAsXML(in));
-	}
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        LayoutUtil.setSerializedObject(this, LayoutUtil.readAsXML(in));
+    }
 }

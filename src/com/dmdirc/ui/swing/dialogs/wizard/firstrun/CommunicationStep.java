@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.wizard.firstrun;
 
-import com.dmdirc.ui.swing.components.JWrappingLabel;
+import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 
 import java.awt.Dimension;
@@ -42,11 +42,11 @@ public final class CommunicationStep extends Step {
      */
     private static final long serialVersionUID = 1;
     /** Update info. */
-    private JWrappingLabel updatesInfo;
+    private TextLabel updatesInfo;
     /** Update checker. */
     private JCheckBox updates;
     /** Error reports info. */
-    private JWrappingLabel errorsInfo;
+    private TextLabel errorsInfo;
     /** Error reports. */
     private JCheckBox errors;
 
@@ -65,12 +65,12 @@ public final class CommunicationStep extends Step {
      */
     protected void initComponents() {
         updatesInfo =
-                new JWrappingLabel("DMDirc can automatically check for " +
+                new TextLabel("DMDirc can automatically check for " +
                 "updates for various parts of the client, you can globally " +
                 "disable that behaviour here, you can also fine tune the " +
                 "behaviour in the preferences dialog once the client is running.");
         updates = new JCheckBox("Enable update checks?", true);
-        errorsInfo = new JWrappingLabel("DMDirc will automatically report application " +
+        errorsInfo = new TextLabel("DMDirc will automatically report application " +
                 "errors to the developers, whilst this is of great help to the developers " +
                 "you may disable this behaviour here.");
         errors = new JCheckBox("Enable error reporting?", true);

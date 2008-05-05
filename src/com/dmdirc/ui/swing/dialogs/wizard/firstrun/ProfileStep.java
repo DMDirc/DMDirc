@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.wizard.firstrun;
 
-import com.dmdirc.ui.swing.components.JWrappingLabel;
+import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 
 import java.awt.Dimension;
@@ -54,7 +54,7 @@ public final class ProfileStep extends Step {
         
         profile = new JCheckBox("Launch profile manager?");
         
-        final JWrappingLabel infoLabel = new JWrappingLabel("DMDirc uses a set of 'profiles' to determine"
+        final TextLabel infoLabel = new TextLabel("DMDirc uses a set of 'profiles' to determine"
                 + " your nickname, realname, etc when connecting to a server. "
                 + "If you would like the wizard to open the profile manager "
                 + "for you, tick the box below.");

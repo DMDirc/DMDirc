@@ -206,7 +206,7 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
      * Lays out the components in the dialog.
      */
     private void layoutComponents() {
-        getContentPane().setLayout(new MigLayout(""));
+        getContentPane().setLayout(new MigLayout("fill"));
 
         getContentPane().add(new JLabel("Enter the details of the server that " +
                 "you wish to connect to."), "span 3, wrap 1.5*unrel");

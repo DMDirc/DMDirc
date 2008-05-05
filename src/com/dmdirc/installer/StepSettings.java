@@ -24,7 +24,7 @@ package com.dmdirc.installer;
 
 import com.dmdirc.installer.Installer.ShortcutType;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
-import com.dmdirc.ui.swing.components.JWrappingLabel;
+import com.dmdirc.ui.swing.components.TextLabel;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
@@ -69,8 +69,8 @@ public final class StepSettings extends Step {
 		setLayout(new GridBagLayout());
 		setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
 
-		JWrappingLabel infoLabel;
-		infoLabel = new JWrappingLabel("Here you can choose options for the install.\n");
+		TextLabel infoLabel;
+		infoLabel = new TextLabel("Here you can choose options for the install.\n");
 //		infoLabel.setEditable(false);
 //		infoLabel.setWrapStyleWord(true);
 //		infoLabel.setLineWrap(true);

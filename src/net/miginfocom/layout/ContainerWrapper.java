@@ -34,7 +34,8 @@
 
 package net.miginfocom.layout;
 
-/** A class that wraps a container that contains components. */
+/** A class that wraps a container that contains components.
+ */
 public interface ContainerWrapper extends ComponentWrapper {
 
     /** Returns the components of the container that wrapper is wrapping.

@@ -23,12 +23,8 @@
 package com.dmdirc.ui.swing.components.expandingsettings;
 
 import com.dmdirc.config.Identity;
-import com.dmdirc.ui.swing.components.JWrappingLabel;
-import java.awt.Dimension;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.swing.components.TextLabel;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -37,6 +33,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Settings panel.
@@ -70,7 +68,7 @@ public final class SettingsPanel extends JPanel {
     private Map<String, OptionType> types;
     
     /** Info label. */
-    private JWrappingLabel infoLabel;
+    private TextLabel infoLabel;
     
     /** Current options panel. */
     private CurrentOptionsPanel currentOptionsPanel;
@@ -86,14 +84,13 @@ public final class SettingsPanel extends JPanel {
      * @param infoText Info blurb.
      * @param size Maximum width of the layout
      */
-    public SettingsPanel(final Identity config, final String infoText, 
-            final int size) {
+    public SettingsPanel(final Identity config, final String infoText) {
         super();
         
         this.config = config;
         
         initComponents(infoText);
-        layoutComponents(size);
+        layoutComponents();
     }
     
     /**
@@ -105,7 +102,7 @@ public final class SettingsPanel extends JPanel {
         names = new LinkedHashMap<String, String>();
         types = new LinkedHashMap<String, OptionType>();
         
-        infoLabel = new JWrappingLabel(infoText);
+        infoLabel = new TextLabel(infoText);
         
         addOptionPanel =
                 new AddOptionPanel(this);
@@ -113,44 +110,21 @@ public final class SettingsPanel extends JPanel {
                 new CurrentOptionsPanel(this);
         scrollPane = new JScrollPane(currentOptionsPanel);
         
-        setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER));
-        
         scrollPane.setBorder(BorderFactory.createTitledBorder(
                 UIManager.getBorder("TextField.border"), "Current settings"));
         
-        addOptionPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Add new setting"),
-                BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER)));
+        addOptionPanel.setBorder(BorderFactory.createTitledBorder("Add new setting"));
     }
     
     /** 
      * Lays out the components.
-     * 
-     * @param size Maximum width of the layout
      */
-    private void layoutComponents(final int size) {
-        final GridBagConstraints constraints = new GridBagConstraints();
-        
-        setLayout(new GridBagLayout());
-        
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.weightx = 1.0;
-        constraints.weighty = 0.0;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        infoLabel.setMaximumSize(new Dimension(size, 0));
-        add(infoLabel, constraints);
-        
-        constraints.gridy = 1;
-        constraints.weighty = 1.0;
-        constraints.fill = GridBagConstraints.BOTH;
-        add(scrollPane, constraints);
-        
-        constraints.gridy = 2;
-        constraints.weighty = 0.0;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        add(addOptionPanel, constraints);
+    private void layoutComponents() {
+        setLayout(new MigLayout("fill, wrap 1"));
+
+        add(infoLabel, "growx");
+        add(scrollPane, "grow");
+        add(addOptionPanel, "growx");
     }
     
     /**

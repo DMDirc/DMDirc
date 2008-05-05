@@ -31,7 +31,6 @@ import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.util.Downloader;
 
-import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -84,8 +83,6 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
         initComponents();
         layoutComponents();
         addListeners();
-
-        setPreferredSize(new Dimension(600, 400));
 
         setTitle("DMDirc: Feedback");
 
@@ -151,22 +148,22 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
         serverCheckbox.setMargin(new Insets(0, 0, 0, 0));
         serverCheckbox.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
-        setLayout(new MigLayout("fill"));
+        setLayout(new MigLayout("fill, wmax 600, hmax 400"));
 
         add(info, "span 3, growx, wrap, gapbottom unrel");
 
-        add(new JLabel("Name: "));
+        add(new JLabel("Name: "), "aligny top");
         add(name, "span 2, growx, wrap");
 
-        add(new JLabel("Email: "));
+        add(new JLabel("Email: "), "aligny top");
         add(email, "span 2, growx, wrap");
 
-        add(new JLabel("Feedback: "));
+        add(new JLabel("Feedback: "), "aligny top");
         add(new JScrollPane(feedback), "span 2, grow, pushx, wrap");
         add(serverCheckbox, "skip 1, span 2, growx, wrap");
 
-        add(getCancelButton(), "skip, right, tag cancel, sg button");
-        add(getOkButton(), "tag ok, sg button");
+        add(getCancelButton(), "skip, right, sg button");
+        add(getOkButton(),  "right,  sg button");
     }
 
     /**

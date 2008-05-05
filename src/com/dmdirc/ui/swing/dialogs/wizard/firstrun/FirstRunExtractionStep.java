@@ -23,7 +23,7 @@
 package com.dmdirc.ui.swing.dialogs.wizard.firstrun;
 
 
-import com.dmdirc.ui.swing.components.JWrappingLabel;
+import com.dmdirc.ui.swing.components.TextLabel;
 import java.awt.Dimension;
 import net.miginfocom.swing.MigLayout;
 
@@ -51,9 +51,9 @@ public final class FirstRunExtractionStep extends ExtractionStep {
     protected void initComponents() {
         setLayout(new MigLayout("fillx, wrap 1"));
         
-        JWrappingLabel infoLabel;
+        TextLabel infoLabel;
         
-        infoLabel = new JWrappingLabel("It appears that this is the first time "
+        infoLabel = new TextLabel("It appears that this is the first time "
                 + "that you have run DMDirc. "
                 + "This short wizard will help you setup DMDirc.\n\n"
                 + "DMDirc comes with a set of core plugins that add "
@@ -64,7 +64,7 @@ public final class FirstRunExtractionStep extends ExtractionStep {
         infoLabel.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
         add(infoLabel, "growx, pushx");
         add(plugins, "");
-        infoLabel = new JWrappingLabel("DMDirc also comes with a set of core"
+        infoLabel = new TextLabel("DMDirc also comes with a set of core"
                 + " 'actions' that serve as examples and add some basic"
                 + " functionality such as highlighting. If you would like"
                 + " the wizard to copy the core actions for you, tick the"

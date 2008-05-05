@@ -27,7 +27,6 @@ import com.dmdirc.ui.swing.components.ColourChooser;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel.OptionType;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -87,6 +86,7 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
         
         initComponents();
         initListeners();
+        setLayout(new MigLayout("ins 0"));
         layoutComponents();
     }
     
@@ -102,17 +102,6 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
         addInputCheckbox = new JCheckBox();
         addInputSpinner = new JSpinner(new SpinnerNumberModel());
         addInputNone = new JLabel("");
-        
-        addOptionComboBox.setPreferredSize(new Dimension(150,
-                addOptionButton.getFont().getSize()));
-        addOptionButton.setPreferredSize(new Dimension(100,
-                addOptionButton.getFont().getSize()));
-        
-        addInputColourChooser.setPreferredSize(new Dimension(150, 0));
-        addInputText.setPreferredSize(new Dimension(150, 0));
-        addInputCheckbox.setPreferredSize(new Dimension(150, 0));
-        addInputSpinner.setPreferredSize(new Dimension(150, 0));
-        addInputNone.setPreferredSize(new Dimension(150, 0));
         
         addInputCurrent = addInputNone;
         
@@ -132,13 +121,11 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
     private void layoutComponents() {
         setVisible(false);
         
-        setLayout(new MigLayout("ins 0"));
-        
         removeAll();
         
-        add(addOptionComboBox, "growx, pushx");
-        add(addInputCurrent);
-        add(addOptionButton);
+        add(addOptionComboBox, "left, aligny top");
+        add(addInputCurrent, "growx, pushx, aligny top");
+        add(addOptionButton, "right, aligny top");
         
         setVisible(true);
     }
@@ -214,6 +201,7 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == addOptionComboBox) {
             if (addOptionComboBox.getSelectedItem() == null) {

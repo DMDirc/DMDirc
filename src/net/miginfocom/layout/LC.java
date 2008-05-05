@@ -34,10 +34,16 @@
 
 package net.miginfocom.layout;
 
-import java.io.*;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.ObjectStreamException;
 
-/** Contains the constraints for an instance of the {@link LC} layout manager. */
+/** Contains the constraints for an instance of the {@link LC} layout manager.
+ */
 public final class LC implements Externalizable {
+    // See the corresponding set/get method for documentation of the property!
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -45,20 +51,20 @@ public final class LC implements Externalizable {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    // See the corresponding set/get method for documentation of the property!
     private int wrapAfter = LayoutUtil.INF;
     private Boolean leftToRight = null;
-    private UnitValue[] insets = null; // Never null elememts but if unset array is null
-    private UnitValue alignX = null;
-    private UnitValue alignY = null;
-    private BoundSize gridGapX = null;
-    private BoundSize gridGapY = null;
+    private UnitValue[] insets = null;    // Never null elememts but if unset array is null
+
+    private UnitValue alignX = null,  alignY = null;
+    private BoundSize gridGapX = null,  gridGapY = null;
+    private BoundSize width = BoundSize.NULL_SIZE,  height = BoundSize.NULL_SIZE;
+    private BoundSize packW = BoundSize.NULL_SIZE,  packH = BoundSize.NULL_SIZE;
+    private float pwAlign = 0.5f,  phAlign = 1.0f;
     private int debugMillis = 0;
     private int hideMode = 0;
     private boolean noCache = false;
     private boolean flowX = true;
-    private boolean fillX = false;
-    private boolean fillY = false;
+    private boolean fillX = false,  fillY = false;
     private boolean topToBottom = true;
     private boolean noGrid = false;
     private boolean visualPadding = true;
@@ -67,10 +73,10 @@ public final class LC implements Externalizable {
      */
     public LC() {
     }
+
     // ************************************************************************
     // * JavaBean get/set methods.
     // ************************************************************************
-
     /** If components have sizes or positions linked to the bounds of the parent in some way (as for instance the <code>"%"</code> unit has) the cache
      * must be turned off for the panel. If components does not get the correct or expected size or position try to set this property to <code>true</code>.
      * @return <code>true</code> means no cache and slightly slower layout.
@@ -242,9 +248,7 @@ public final class LC implements Externalizable {
      * @see net.miginfocom.layout.ConstraintParser#parseInsets(String, boolean)
      */
     public final UnitValue[] getInsets() {
-        return insets != null
-                ? new UnitValue[]{insets[0], insets[1], insets[2], insets[3]}
-                : null;
+        return insets != null ? new UnitValue[]{insets[0], insets[1], insets[2], insets[3]} : null;
     }
 
     /** The insets for the layed out panel. The insets will be an empty space around the components in the panel. <code>null</code> values
@@ -254,9 +258,7 @@ public final class LC implements Externalizable {
      * @see net.miginfocom.layout.ConstraintParser#parseInsets(String, boolean)
      */
     public final void setInsets(UnitValue[] ins) {
-        this.insets =
-                ins != null ? new UnitValue[]{ins[0], ins[1], ins[2], ins[3]}
-                : null;
+        this.insets = ins != null ? new UnitValue[]{ins[0], ins[1], ins[2], ins[3]} : null;
     }
 
     /** If the layout should be forced to be left-to-right or right-to-left. A value of <code>null</code> is default and
@@ -334,9 +336,204 @@ public final class LC implements Externalizable {
     public final void setWrapAfter(int count) {
         this.wrapAfter = count;
     }
+
+    /** Returns the "pack width" for the <b>window</b> that this container is located in. When the size of this container changes
+     * the size of the window will be corrected to be within this BoundsSize. It can be used to set the minimum and/or maximum size of the window
+     * as well as the size window should optimally get. This optimal size is normaly its "preferred" size which is why "preferred"
+     * is the normal value to set here.
+     * <p>
+     * ":push" can be appended to the bound size to only push the size bigger and never shrink it if the preferred size gets smaller.
+     * <p>
+     * E.g. "pref", "100:pref", "pref:700", "300::700", "pref:push"
+     * @return The current value. Never <code>null</code>. Check if not set with <code>.isUnset()</code>.
+     * @since 3.5
+     */
+    public final BoundSize getPackWidth() {
+        return packW;
+    }
+
+    /** Returns the "pack width" for the <b>window</b> that this container is located in. When the size of this container changes
+     * the size of the window will be corrected to be within this BoundsSize. It can be used to set the minimum and/or maximum size of the window
+     * as well as the size window should optimally get. This optimal size is normaly its "preferred" size which is why "preferred"
+     * is the normal value to set here.
+     * <p>
+     * ":push" can be appended to the bound size to only push the size bigger and never shrink it if the preferred size gets smaller.
+     * <p>
+     * E.g. "pref", "100:pref", "pref:700", "300::700", "pref:push"
+     * @param size The new pack size. If <code>null</code> it will be corrected to an "unset" BoundSize.
+     * @since 3.5
+     */
+    public final void setPackWidth(BoundSize size) {
+        packW = size != null ? size : BoundSize.NULL_SIZE;
+    }
+
+    /** Returns the "pack height" for the <b>window</b> that this container is located in. When the size of this container changes
+     * the size of the window will be corrected to be within this BoundsSize. It can be used to set the minimum and/or maximum size of the window
+     * as well as the size window should optimally get. This optimal size is normaly its "preferred" size which is why "preferred"
+     * is the normal value to set here.
+     * <p>
+     * ":push" can be appended to the bound size to only push the size bigger and never shrink it if the preferred size gets smaller.
+     * <p>
+     * E.g. "pref", "100:pref", "pref:700", "300::700", "pref:push"
+     * @return The current value. Never <code>null</code>. Check if not set with <code>.isUnset()</code>.
+     * @since 3.5
+     */
+    public final BoundSize getPackHeight() {
+        return packH;
+    }
+
+    /** Returns the "pack height" for the <b>window</b> that this container is located in. When the size of this container changes
+     * the size of the window will be corrected to be within this BoundsSize. It can be used to set the minimum and/or maximum size of the window
+     * as well as the size window should optimally get. This optimal size is normaly its "preferred" size which is why "preferred"
+     * is the normal value to set here.
+     * <p>
+     * ":push" can be appended to the bound size to only push the size bigger and never shrink it if the preferred size gets smaller.
+     * <p>
+     * E.g. "pref", "100:pref", "pref:700", "300::700", "pref:push"
+     * @param size The new pack size. If <code>null</code> it will be corrected to an "unset" BoundSize.
+     * @since 3.5
+     */
+    public final void setPackHeight(BoundSize size) {
+        packH = size != null ? size : BoundSize.NULL_SIZE;
+    }
+
+    /** If there is a resize of the window due to packing (see {@link #setPackHeight(BoundSize)} this value, which is between 0f and 1f,
+     * decides where the extra/surpurflous size is placed. 0f means that the window will resize so that the upper part moves up and the
+     * lower side stays in the same place. 0.5f will expand/reduce the window equally upwards and downwards. 1f will do the opposite of 0f
+     * of course.
+     * @return The pack alignment. Always between 0f and 1f, inclusive.
+     * @since 3.5
+     */
+    public final float getPackHeightAlign() {
+        return phAlign;
+    }
+
+    /** If there is a resize of the window due to packing (see {@link #setPackHeight(BoundSize)} this value, which is between 0f and 1f,
+     * decides where the extra/surpurflous size is placed. 0f means that the window will resize so that the upper part moves up and the
+     * lower side stays in the same place. 0.5f will expand/reduce the window equally upwards and downwards. 1f will do the opposite of 0f
+     * of course.
+     * @param align The pack alignment. Always between 0f and 1f, inclusive. Values outside this will be truncated.
+     * @since 3.5
+     */
+    public final void setPackHeightAlign(float align) {
+        phAlign = Math.max(0f, Math.min(1f, align));
+    }
+
+    /** If there is a resize of the window due to packing (see {@link #setPackHeight(BoundSize)} this value, which is between 0f and 1f,
+     * decides where the extra/surpurflous size is placed. 0f means that the window will resize so that the left part moves left and the
+     * right side stays in the same place. 0.5f will expand/reduce the window equally to the right and lefts. 1f will do the opposite of 0f
+     * of course.
+     * @return The pack alignment. Always between 0f and 1f, inclusive.
+     * @since 3.5
+     */
+    public final float getPackWidthAlign() {
+        return pwAlign;
+    }
+
+    /** If there is a resize of the window due to packing (see {@link #setPackHeight(BoundSize)} this value, which is between 0f and 1f,
+     * decides where the extra/surpurflous size is placed. 0f means that the window will resize so that the left part moves left and the
+     * right side stays in the same place. 0.5f will expand/reduce the window equally to the right and lefts. 1f will do the opposite of 0f
+     * of course.
+     * @param align The pack alignment. Always between 0f and 1f, inclusive. Values outside this will be truncated.
+     * @since 3.5
+     */
+    public final void setPackWidthAlign(float align) {
+        pwAlign = Math.max(0f, Math.min(1f, align));
+    }
+
+    /** Returns the minimum/preferred/maximum size for the container that this layout constraint is set for. Any of these
+     * sizes that is not <code>null</code> will be returned directly instead of determining the correspondig size through
+     * asking the components in this container.
+     * @return The width for the container that this layout constraint is set for. Not <code>null</code> but
+     * all sizes can be <code>null</code>.
+     * @since 3.5
+     */
+    public final BoundSize getWidth() {
+        return width;
+    }
+
+    /** Sets the minimum/preferred/maximum size for the container that this layout constraint is set for. Any of these
+     * sizes that is not <code>null</code> will be returned directly instead of determining the correspondig size through
+     * asking the components in this container.
+     * @param size The width for the container that this layout constraint is set for. <code>null</code> is translated to
+     * a bound size containing only null sizes.
+     * @since 3.5
+     */
+    public final void setWidth(BoundSize size) {
+        this.width = size != null ? size : BoundSize.NULL_SIZE;
+    }
+
+    /** Returns the minimum/preferred/maximum size for the container that this layout constraint is set for. Any of these
+     * sizes that is not <code>null</code> will be returned directly instead of determining the correspondig size through
+     * asking the components in this container.
+     * @return The height for the container that this layout constraint is set for. Not <code>null</code> but
+     * all sizes can be <code>null</code>.
+     * @since 3.5
+     */
+    public final BoundSize getHeight() {
+        return height;
+    }
+
+    /** Sets the minimum/preferred/maximum size for the container that this layout constraint is set for. Any of these
+     * sizes that is not <code>null</code> will be returned directly instead of determining the correspondig size through
+     * asking the components in this container.
+     * @param size The height for the container that this layout constraint is set for. <code>null</code> is translated to
+     * a bound size containing only null sizes.
+     * @since 3.5
+     */
+    public final void setHeight(BoundSize size) {
+        this.height = size != null ? size : BoundSize.NULL_SIZE;
+    }
+
     // ************************************************************************
     // * Builder methods.
     // ************************************************************************
+    /** Short for, and thus same as, <code>.pack("pref", "pref")</code>.
+     * <p>
+     * Same functionality as {@link #setPackHeight(BoundSize)} and {@link #setPackWidth(net.miginfocom.layout.BoundSize)}
+     * only this method returns <code>this</code> for chaining multiple calls.
+     * <p>
+     * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
+     * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
+     * @since 3.5
+     */
+    public final LC pack() {
+        return pack("pref", "pref");
+    }
+
+    /** Sets the pack width and height.
+     * <p>
+     * Same functionality as {@link #setPackHeight(BoundSize)} and {@link #setPackWidth(net.miginfocom.layout.BoundSize)}
+     * only this method returns <code>this</code> for chaining multiple calls.
+     * <p>
+     * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
+     * @param width The pack width. May be <code>null</code>.
+     * @param height The pack height. May be <code>null</code>.
+     * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
+     * @since 3.5
+     */
+    public final LC pack(String width, String height) {
+        setPackWidth(width != null ? ConstraintParser.parseBoundSize(width, false, false) : BoundSize.NULL_SIZE);
+        setPackHeight(height != null ? ConstraintParser.parseBoundSize(height, false, false) : BoundSize.NULL_SIZE);
+        return this;
+    }
+
+    /** Sets the pack width and height alignment.
+     * <p>
+     * Same functionality as {@link #setPackHeightAlign(float)} and {@link #setPackWidthAlign(float)}
+     * only this method returns <code>this</code> for chaining multiple calls.
+     * <p>
+     * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
+     * @param alignX The pack width alignment. 0.5f is default.
+     * @param alignY The pack height alignment. 0.5f is default.
+     * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
+     * @since 3.5
+     */
+    public final LC packAlign(float alignX, float alignY) {
+        setPackWidthAlign(alignX);
+        setPackHeightAlign(alignY);
+        return this;
+    }
 
     /** Sets a wrap after the number of columns/rows that is defined in the {@link net.miginfocom.layout.AC}.
      * <p>
@@ -371,13 +568,23 @@ public final class LC implements Externalizable {
         return this;
     }
 
-    /** Same functionality as {@link #setFlowX(boolean true)} only this method returns <code>this</code> for chaining multiple calls.
+    /** Same functionality as {@link #setFlowX(boolean false)} only this method returns <code>this</code> for chaining multiple calls.
      * <p>
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
      */
     public final LC flowY() {
         setFlowX(false);
+        return this;
+    }
+
+    /** Same functionality as {@link #setFlowX(boolean true)} only this method returns <code>this</code> for chaining multiple calls.
+     * <p>
+     * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
+     * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
+     */
+    public final LC flowX() {
+        setFlowX(true);
         return this;
     }
 
@@ -421,6 +628,7 @@ public final class LC implements Externalizable {
      */
     public final LC leftToRight(boolean b) {
         setLeftToRight(b ? Boolean.TRUE : Boolean.FALSE); // Not .valueOf du to retroweaver...
+
         return this;
     }
 
@@ -466,6 +674,7 @@ public final class LC implements Externalizable {
         UnitValue insH = ConstraintParser.parseUnitValue(allSides, true);
         UnitValue insV = ConstraintParser.parseUnitValue(allSides, false);
         insets = new UnitValue[]{insV, insH, insV, insH}; // No setter to avoid copy again
+
         return this;
     }
 
@@ -497,10 +706,12 @@ public final class LC implements Externalizable {
      * @see #setInsets(UnitValue[])
      */
     public final LC insets(String top, String left, String bottom, String right) {
-        insets =new UnitValue[]{ConstraintParser.parseUnitValue(top, false),
-                ConstraintParser.parseUnitValue(left, true),
-                ConstraintParser.parseUnitValue(bottom, false),
-                ConstraintParser.parseUnitValue(right, true)};
+        insets = new UnitValue[]{ // No setter to avoid copy again
+                    ConstraintParser.parseUnitValue(top, false),
+                    ConstraintParser.parseUnitValue(left, true),
+                    ConstraintParser.parseUnitValue(bottom, false),
+                    ConstraintParser.parseUnitValue(right, true)
+                };
         return this;
     }
 
@@ -572,7 +783,7 @@ public final class LC implements Externalizable {
      * @see #setGridGapY(BoundSize)
      */
     public final LC gridGapY(String boundsSize) {
-        setGridGapX(ConstraintParser.parseBoundSize(boundsSize, true, false));
+        setGridGapY(ConstraintParser.parseBoundSize(boundsSize, true, false));
         return this;
     }
 
@@ -624,19 +835,88 @@ public final class LC implements Externalizable {
         setHideMode(mode);
         return this;
     }
+
+    /** The minimum width for the container. The value will override any value that is set on the container itself.
+     * <p>
+     * For a more thorough explanation of what this constraint does see the white paper or Cheat Sheet at www.migcontainers.com.
+     * @param width The width expressed as a <code>UnitValue</code>. E.g. "100px" or "200mm".
+     * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
+     */
+    public final LC minWidth(String width) {
+        setWidth(LayoutUtil.derive(getWidth(), ConstraintParser.parseUnitValue(width, true), null, null));
+        return this;
+    }
+
+    /** The width for the container as a min and/or preferref and/or maximum width. The value will override any value that is set on
+     * the container itself.
+     * <p>
+     * For a more thorough explanation of what this constraint does see the white paper or Cheat Sheet at www.migcontainers.com.
+     * @param width The width expressed as a <code>Boundwidth</code>. E.g. "50:100px:200mm" or "100px".
+     * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
+     */
+    public final LC width(String width) {
+        setWidth(ConstraintParser.parseBoundSize(width, false, true));
+        return this;
+    }
+
+    /** The maximum width for the container. The value will override any value that is set on the container itself.
+     * <p>
+     * For a more thorough explanation of what this constraint does see the white paper or Cheat Sheet at www.migcontainers.com.
+     * @param width The width expressed as a <code>UnitValue</code>. E.g. "100px" or "200mm".
+     * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
+     */
+    public final LC maxWidth(String width) {
+        setWidth(LayoutUtil.derive(getWidth(), null, null, ConstraintParser.parseUnitValue(width, true)));
+        return this;
+    }
+
+    /** The minimum height for the container. The value will override any value that is set on the container itself.
+     * <p>
+     * For a more thorough explanation of what this constraint does see the white paper or Cheat Sheet at www.migcontainers.com.
+     * @param height The height expressed as a <code>UnitValue</code>. E.g. "100px" or "200mm".
+     * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
+     */
+    public final LC minHeight(String height) {
+        setHeight(LayoutUtil.derive(getHeight(), ConstraintParser.parseUnitValue(height, false), null, null));
+        return this;
+    }
+
+    /** The height for the container as a min and/or preferref and/or maximum height. The value will override any value that is set on
+     * the container itself.
+     * <p>
+     * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcontainers.com.
+     * @param height The height expressed as a <code>Boundheight</code>. E.g. "50:100px:200mm" or "100px".
+     * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
+     */
+    public final LC height(String height) {
+        setHeight(ConstraintParser.parseBoundSize(height, false, false));
+        return this;
+    }
+
+    /** The maximum height for the container. The value will override any value that is set on the container itself.
+     * <p>
+     * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcontainers.com.
+     * @param height The height expressed as a <code>UnitValue</code>. E.g. "100px" or "200mm".
+     * @return <code>this</code> so it is possible to chain calls. E.g. <code>new LayoutConstraint().noGrid().gap().fill()</code>.
+     */
+    public final LC maxHeight(String height) {
+        setHeight(LayoutUtil.derive(getHeight(), null, null, ConstraintParser.parseUnitValue(height, false)));
+        return this;
+    }
+
     // ************************************************
     // Persistence Delegate and Serializable combined.
     // ************************************************
-
     private Object readResolve() throws ObjectStreamException {
         return LayoutUtil.getSerializedObject(this);
     }
 
-    public void readExternal(ObjectInput in) throws IOException,
-            ClassNotFoundException {
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         LayoutUtil.setSerializedObject(this, LayoutUtil.readAsXML(in));
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         if (getClass() == LC.class) {
             LayoutUtil.writeAsXML(out, this);

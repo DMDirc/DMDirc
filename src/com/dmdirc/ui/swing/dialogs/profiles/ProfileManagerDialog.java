@@ -26,7 +26,7 @@ import com.dmdirc.ui.swing.components.renderers.ProfileListCellRenderer;
 import com.dmdirc.Main;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.swing.components.JWrappingLabel;
+import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 
@@ -67,7 +67,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     /** Profile detail panel. */
     private ProfileDetailPanel details;
     /** Info label. */
-    private JWrappingLabel infoLabel;
+    private TextLabel infoLabel;
     /** Add button. */
     private JButton addButton;
     /** Delete button. */
@@ -132,7 +132,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
         addButton = new JButton("Add");
         deleteButton = new JButton("Delete");
         infoLabel =
-                new JWrappingLabel("Profiles describe information needed to " +
+                new TextLabel("Profiles describe information needed to " +
                 "connect to a server.  You can use a different profile for " +
                 "each connection.");
 

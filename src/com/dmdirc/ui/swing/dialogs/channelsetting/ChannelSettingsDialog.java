@@ -176,7 +176,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
         channelSettingsPane =
                 new SettingsPanel(identity,
                 "These settings are specific to this channel on this network, " +
-                "any settings specified here will overwrite global settings", 500);
+                "any settings specified here will overwrite global settings");
 
         channelSettingsPane.addOption("channel.splitusermodes",
                 "Split user modes",

@@ -41,11 +41,11 @@ import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.parser.IRCParser;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.swing.components.JWrappingLabel;
 import com.dmdirc.ui.swing.components.TextFrame;
 
 import com.dmdirc.addons.dcc.actions.DCCActions;
 
+import com.dmdirc.ui.swing.components.TextLabel;
 import java.io.File;
 import java.io.IOException;
 
@@ -354,7 +354,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 */
 	protected void createContainer() {
 		container = new DCCFrame(this, "DCCs"){};
-		final JWrappingLabel label = new JWrappingLabel("This is a placeholder window to group DCCs together.", SwingConstants.CENTER);
+		final TextLabel label = new TextLabel("This is a placeholder window to group DCCs together.");
 		label.setText(label.getText()+"\n\nClosing this window will close all the active DCCs");
 		((TextFrame)container.getFrame()).getContentPane().add(label);
 		WindowManager.addWindow(container.getFrame());

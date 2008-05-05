@@ -46,8 +46,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -64,6 +68,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import net.miginfocom.layout.PlatformDefaults;
+import net.miginfocom.layout.UnitValue;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -145,7 +150,6 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         tabList.addTreeSelectionListener(this);
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setLayout(new MigLayout());
         setTitle("Preferences");
         setResizable(false);
 
@@ -153,15 +157,12 @@ public final class SwingPreferencesDialog extends StandardDialog implements
                 BorderFactory.createEmptyBorder(padding, padding, padding,
                 padding)));
 
-        setMinimumSize(new Dimension(650, 600));
-        setPreferredSize(new Dimension(650, 600));
-        setMaximumSize(new Dimension(650, 600));
-
         orderButtons(new JButton(), new JButton());
 
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
 
+        setLayout(new MigLayout("fill, wmax 650, hmax 600"));
         add(tabList, "width 150, growy, spany");
         add(mainPanel, "wrap, width 480, grow");
         add(getLeftButton(), "split, right");
@@ -181,10 +182,10 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         final JComponent option = PrefsComponentFactory.getComponent(setting);
         components.put(setting, option);
 
-        categories.get(category).add(label);
+        categories.get(category).add(label, "align label");
 
         label.setLabelFor(option);
-        categories.get(category).add(option, "grow, wrap, wmax 70%");
+        categories.get(category).add(option, "growx, w 70%");
     }
 
     /**
@@ -194,8 +195,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * @return A JLabel with the appropriate text and tooltip
      */
     private JLabel getLabel(final PreferencesSetting setting) {
-        final JLabel label = new JLabel(setting.getTitle() + ": ",
-                JLabel.TRAILING);
+        final JLabel label = new JLabel(setting.getTitle() + ": ");
 
         if (setting.getHelptext().isEmpty()) {
             label.setToolTipText("No help available.");
@@ -214,7 +214,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      */
     private void addInlineCategory(final PreferencesCategory category,
             final JPanel parent) {
-        final JPanel panel = new JPanel(new MigLayout("fillx, gap unrel"));
+        final JPanel panel = new JPanel(new MigLayout("fillx, gap unrel, wrap 2, hidemode 3"));
         panel.setBorder(BorderFactory.createTitledBorder(category.getTitle()));
 
         categories.put(category, panel);
@@ -233,7 +233,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      */
     private void addCategory(final PreferencesCategory category,
             final DefaultMutableTreeNode parentNode, final String namePrefix) {
-        final JPanel panel = new JPanel(new MigLayout("fillx, gap unrel"));
+        final JPanel panel = new JPanel(new MigLayout("fillx, gap unrel, wrap 2, hidemode 3"));
         final String path = namePrefix + "/" + category.getTitle();
         DefaultMutableTreeNode newNode;
 
@@ -264,9 +264,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             final String path) {
 
         if (!category.getDescription().isEmpty()) {
-            final TextLabel infoLabel =
-                    new TextLabel(category.getDescription());
-            panel.add(infoLabel, "span, growx, wrap");
+            panel.add(new TextLabel(category.getDescription()), "span, growx");
         }
 
         for (PreferencesCategory child : category.getSubcats()) {
@@ -279,8 +277,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
         if (category.hasObject()) {
             if (!(category.getObject() instanceof JPanel)) {
-                throw new IllegalArgumentException("Custom preferences objects"
-                        + " for this UI must extend JPanel.");
+                throw new IllegalArgumentException("Custom preferences objects" + " for this UI must extend JPanel.");
             }
 
             panels.add((JPanel) category.getObject());
@@ -318,6 +315,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      *
      * @param actionEvent Action event
      */
+    @Override
     public void actionPerformed(final ActionEvent actionEvent) {
         if (selected != null) {
             selected.fireCategoryDeselected();
@@ -342,6 +340,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      *
      * @param selectionEvent list selection event
      */
+    @Override
     public void valueChanged(final TreeSelectionEvent selectionEvent) {
         final String path = nodes.get(((JTree) selectionEvent.getSource()).getSelectionPath().
                 getLastPathComponent());
@@ -370,8 +369,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
         if (restart) {
             JOptionPane.showMessageDialog((MainFrame) Main.getUI().
-                    getMainWindow(), "One or more of the changes you made "
-                    + "won't take effect until you restart the client.",
+                    getMainWindow(), "One or more of the changes you made " + "won't take effect until you restart the client.",
                     "Restart needed", JOptionPane.INFORMATION_MESSAGE);
         }
     }
@@ -456,5 +454,4 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             return this;
         }
     }
-
 }

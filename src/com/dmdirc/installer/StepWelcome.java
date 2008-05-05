@@ -23,7 +23,7 @@
 package com.dmdirc.installer;
 
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
-import com.dmdirc.ui.swing.components.JWrappingLabel;
+import com.dmdirc.ui.swing.components.TextLabel;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
@@ -50,8 +50,8 @@ public final class StepWelcome extends Step {
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
 		
-		JWrappingLabel infoLabel;
-		infoLabel = new JWrappingLabel("Welcome to the "+releaseName+" installer. This program will install DMDirc on this computer.\n\n"
+		TextLabel infoLabel;
+		infoLabel = new TextLabel("Welcome to the "+releaseName+" installer. This program will install DMDirc on this computer.\n\n"
 		                        + "DMDirc is a cross-platform IRC client developed by Chris Smith, Shane Mc Cormack and "
 		                        + "Gregory Holmes. DMDirc is released for free under the MIT license; for more information, "
 		                        + "please visit www.DMDirc.com.\n\n"

@@ -22,10 +22,9 @@
 
 package com.dmdirc.addons.dcc;
 
-import com.dmdirc.ui.swing.components.JWrappingLabel;
 import com.dmdirc.ui.swing.components.TextFrame;
 
-import javax.swing.SwingConstants;
+import com.dmdirc.ui.swing.components.TextLabel;
 
 /**
  * This class links DCC Send objects to a window.
@@ -59,7 +58,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface {
 		nickname = nick;
 		otherNickname = targetNick;
 		
-		final JWrappingLabel label = new JWrappingLabel("This is a placeholder dcc send window.", SwingConstants.CENTER);
+		final TextLabel label = new TextLabel("This is a placeholder dcc send window.");
 		
 		((TextFrame)getFrame()).getContentPane().add(label);
 		plugin.addWindow(this);

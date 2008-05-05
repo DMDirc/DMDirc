@@ -31,7 +31,7 @@ import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.validator.ActionGroupValidator;
 import com.dmdirc.config.prefs.validator.FileNameValidator;
-import com.dmdirc.ui.swing.components.JWrappingLabel;
+import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.ui.swing.components.ListScroller;
@@ -72,7 +72,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
     /** Previously created instance of ActionsManagerDialog. */
     private static ActionsManagerDialog me;
     /** Info label. */
-    private JWrappingLabel infoLabel;
+    private TextLabel infoLabel;
     /** Group list. */
     private JList groups;
     /** Add button. */
@@ -145,7 +145,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
      */
     private void initComponents() {
         orderButtons(new JButton(), new JButton());
-        infoLabel = new JWrappingLabel("Actions allow you to make DMDirc" +
+        infoLabel = new TextLabel("Actions allow you to make DMDirc" +
                 " intelligently respond to various events.");
         groups = new JList(new DefaultListModel());
         actions = new ActionsGroupPanel(null);
@@ -212,7 +212,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
 
         getContentPane().setLayout(new MigLayout("fill, wrap 2, hidemode 3"));
 
-        getContentPane().add(infoLabel, "spanx 2");
+        getContentPane().add(infoLabel, "spanx 2, growx");
         if (info.isVisible() && activeSettings.isVisible()) {
             getContentPane().add(groupPanel, "growy, spany 3");
         } else if (info.isVisible() || activeSettings.isVisible()) {
@@ -221,7 +221,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
             getContentPane().add(groupPanel, "growy");
         }
         getContentPane().add(info, "growx");
-        getContentPane().add(actions, "grow");
+        getContentPane().add(actions, "grow, pushx");
         getContentPane().add(activeSettings, "growx");
         getContentPane().add(getRightButton(), "skip, right, sgx button");
     }

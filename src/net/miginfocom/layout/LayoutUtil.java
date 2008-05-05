@@ -34,13 +34,25 @@
 
 package net.miginfocom.layout;
 
-import java.beans.*;
-import java.io.*;
+import java.beans.Beans;
+import java.beans.ExceptionListener;
+import java.beans.Introspector;
+import java.beans.PersistenceDelegate;
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.OutputStream;
 import java.util.IdentityHashMap;
 import java.util.TreeSet;
 import java.util.WeakHashMap;
 
-/** A utility class that has only static helper methods. */
+/** A utility class that has only static helper methods.
+ */
 public final class LayoutUtil {
 
     /** A substitute value for aa really large value. Integer.MAX_VALUE is not used since that means a lot of defensive code
@@ -48,15 +60,18 @@ public final class LayoutUtil {
      * overflow.
      */
     static final int INF = (Integer.MAX_VALUE >> 10) - 100; // To reduce likelyhood of overflow errors when calculating.
+
     /** Tag int for a value that in considered "not set". Used as "null" element in int arays.
      */
-    static final int NOT_SET = Integer.MIN_VALUE + 12346; // Magic value...
+    static final int NOT_SET = Integer.MIN_VALUE + 12346;   // Magic value...
+
     // Index for the different sizes
     public static final int MIN = 0;
     public static final int PREF = 1;
     public static final int MAX = 2;
     private static WeakHashMap<Object, String> CR_MAP = null;
-    private static WeakHashMap<Object, Boolean> DT_MAP = null; // The Containers that have design time. Value not used.
+    private static WeakHashMap<Object, Boolean> DT_MAP = null;      // The Containers that have design time. Value not used.
+
     private static int eSz = 15;
 
     private LayoutUtil() {
@@ -66,7 +81,7 @@ public final class LayoutUtil {
      * @return The current version of MiG Layout.
      */
     public static String getVersion() {
-        return "2.5.5";
+        return "3.5";
     }
 
     /** Sets if design time is turned on for a Container in {@link ContainerWrapper}.
@@ -81,9 +96,9 @@ public final class LayoutUtil {
      */
     public static void setDesignTime(ContainerWrapper cw, boolean b) {
         if (DT_MAP == null) {
-            DT_MAP =new WeakHashMap<Object, Boolean>();
+            DT_MAP = new WeakHashMap<Object, Boolean>();
         }
-        DT_MAP.put(cw != null ? cw.getComponent() : null, new Boolean(b));
+        DT_MAP.put((cw != null ? cw.getComponent() : null), new Boolean(b));
     }
 
     /** Returns if design time is turned on for a Container in {@link ContainerWrapper}.
@@ -125,7 +140,7 @@ public final class LayoutUtil {
     static void putCCString(Object con, String s) {
         if (s != null && con != null && isDesignTime(null)) {
             if (CR_MAP == null) {
-                CR_MAP =new WeakHashMap<Object, String>(64);
+                CR_MAP = new WeakHashMap<Object, String>(64);
             }
             CR_MAP.put(con, s);
         }
@@ -137,8 +152,7 @@ public final class LayoutUtil {
      */
     static synchronized void setDelegate(Class c, PersistenceDelegate del) {
         try {
-            Introspector.getBeanInfo(c).getBeanDescriptor().
-                    setValue("persistenceDelegate", del);
+            Introspector.getBeanInfo(c).getBeanDescriptor().setValue("persistenceDelegate", del);
         } catch (Exception e1) {
         }
     }
@@ -168,20 +182,16 @@ public final class LayoutUtil {
      * @param bounds To use for relative sizes.
      * @return The sizes. Array length will match <code>sizes</code>.
      */
-    static int[] calculateSerial(int[][] sizes, ResizeConstraint[] resConstr,
-            Float[] defGrowWeights, int startSizeType, int bounds) {
-        float[] lengths = new float[sizes.length]; // heights/widths that are set
+    static int[] calculateSerial(int[][] sizes, ResizeConstraint[] resConstr, Float[] defGrowWeights, int startSizeType, int bounds) {
+        float[] lengths = new float[sizes.length];	// heights/widths that are set
+
         float usedLength = 0.0f;
 
         // Give all preferred size to start with
-        for (int i = 0; i < sizes.length;
-                i++) {
+        for (int i = 0; i < sizes.length; i++) {
             if (sizes[i] != null) {
-                float len =
-                        sizes[i][startSizeType] != NOT_SET
-                        ? sizes[i][startSizeType] : 0;
-                int newSizeBounded =
-                        getBrokenBoundary(len, sizes[i][MIN], sizes[i][MAX]);
+                float len = sizes[i][startSizeType] != NOT_SET ? sizes[i][startSizeType] : 0;
+                int newSizeBounded = getBrokenBoundary(len, sizes[i][MIN], sizes[i][MAX]);
                 if (newSizeBounded != NOT_SET) {
                     len = newSizeBounded;
                 }
@@ -195,48 +205,34 @@ public final class LayoutUtil {
             boolean isGrow = useLengthI < bounds;
 
             // Create a Set with the available priorities
-            TreeSet<Integer> prioList =
-                    new TreeSet<Integer>();
-            for (int i = 0; i < sizes.length;
-                    i++) {
+            TreeSet<Integer> prioList = new TreeSet<Integer>();
+            for (int i = 0; i < sizes.length; i++) {
                 ResizeConstraint resC = (ResizeConstraint) getIndexSafe(resConstr, i);
                 if (resC != null) {
-                    prioList.add(new Integer(isGrow ? resC.growPrio
-                            : resC.shrinkPrio));
+                    prioList.add(new Integer(isGrow ? resC.growPrio : resC.shrinkPrio));
                 }
             }
-            Integer[] prioIntegers =
-                    prioList.toArray(new Integer[prioList.size()]);
+            Integer[] prioIntegers = prioList.toArray(new Integer[prioList.size()]);
 
-            for (int force = 0;
-                    force <= ((isGrow && defGrowWeights != null) ? 1 : 0);
-                    force++) {
-                // Run twice if defGrow and the need for growing.
-                for (int pr = prioIntegers.length - 1; pr >= 0;
-                        pr--) {
+            for (int force = 0; force <= ((isGrow && defGrowWeights != null) ? 1 : 0); force++) {    // Run twice if defGrow and the need for growing.
+
+                for (int pr = prioIntegers.length - 1; pr >= 0; pr--) {
                     int curPrio = prioIntegers[pr].intValue();
 
                     float totWeight = 0f;
                     Float[] resizeWeight = new Float[sizes.length];
-                    for (int i = 0; i < sizes.length;
-                            i++) {
-                        if (sizes[i] == null) {
-                            // if no min/pref/max size at all do not grow or shrink.
+                    for (int i = 0; i < sizes.length; i++) {
+                        if (sizes[i] == null) // if no min/pref/max size at all do not grow or shrink.
+                        {
                             continue;
                         }
-                        ResizeConstraint resC =
-                                (ResizeConstraint) getIndexSafe(resConstr, i);
+                        ResizeConstraint resC = (ResizeConstraint) getIndexSafe(resConstr, i);
                         if (resC != null) {
                             int prio = isGrow ? resC.growPrio : resC.shrinkPrio;
 
                             if (curPrio == prio) {
                                 if (isGrow) {
-                                    resizeWeight[i] =
-                                            (force == 0 || resC.grow != null)
-                                            ? resC.grow
-                                            : (defGrowWeights[i <
-                                            defGrowWeights.length ? i
-                                            : defGrowWeights.length - 1]);
+                                    resizeWeight[i] = (force == 0 || resC.grow != null) ? resC.grow : (defGrowWeights[i < defGrowWeights.length ? i : defGrowWeights.length - 1]);
                                 } else {
                                     resizeWeight[i] = resC.shrink;
                                 }
@@ -253,21 +249,15 @@ public final class LayoutUtil {
                             float toChange = bounds - usedLength;
                             hit = false;
                             float changedWeight = 0f;
-                            for (int i = 0;
-                                    i < sizes.length && totWeight > 0.0001f;
-                                    i++) {
+                            for (int i = 0; i < sizes.length && totWeight > 0.0001f; i++) {
 
                                 Float weight = resizeWeight[i];
                                 if (weight != null) {
-                                    float sizeDelta =
-                                            toChange * weight.floatValue() /
-                                            totWeight;
+                                    float sizeDelta = toChange * weight.floatValue() / totWeight;
                                     float newSize = lengths[i] + sizeDelta;
 
                                     if (sizes[i] != null) {
-                                        int newSizeBounded =
-                                                getBrokenBoundary(newSize,
-                                                sizes[i][MIN], sizes[i][MAX]);
+                                        int newSizeBounded = getBrokenBoundary(newSize, sizes[i][MIN], sizes[i][MAX]);
                                         if (newSizeBounded != NOT_SET) {
                                             resizeWeight[i] = null;
                                             hit = true;
@@ -319,8 +309,7 @@ public final class LayoutUtil {
 
     static int sum(int[] terms, int start, int len) {
         int s = 0;
-        for (int i = start, iSz = start + len; i < iSz;
-                i++) {
+        for (int i = start, iSz = start + len; i < iSz; i++) {
             s += terms[i];
         }
         return s;
@@ -337,14 +326,16 @@ public final class LayoutUtil {
         return sizes[sizeType];
     }
 
-    static BoundSize derive(BoundSize bs, UnitValue min, UnitValue pref,
-            UnitValue max) {
-        if (bs == null) {
+    static BoundSize derive(BoundSize bs, UnitValue min, UnitValue pref, UnitValue max) {
+        if (bs == null || bs.isUnset()) {
             return new BoundSize(min, pref, max, null);
         }
-        return new BoundSize(min != null ? min : bs.getMin(),
+        return new BoundSize(
+                min != null ? min : bs.getMin(),
                 pref != null ? pref : bs.getPreferred(),
-                max != null ? max : bs.getMax(), null);
+                max != null ? max : bs.getMax(),
+                bs.getGapPush(),
+                null);
     }
 
     /** Returns if left-to-right orientation is used. If not set explicitly in the layout constraints the Locale
@@ -353,7 +344,7 @@ public final class LayoutUtil {
      * @param container The parent that may be used to get the left-to-right if ffc does not specify this.
      * @return If left-to-right orientation is currently used.
      */
-    public static final boolean isLeftToRight(LC lc, ContainerWrapper container) {
+    public final static boolean isLeftToRight(LC lc, ContainerWrapper container) {
         if (lc != null && lc.getLeftToRight() != null) {
             return lc.getLeftToRight().booleanValue();
         }
@@ -368,8 +359,7 @@ public final class LayoutUtil {
         int[] retInts = new int[sizes.length];
         float posD = 0;
 
-        for (int i = 0; i < retInts.length;
-                i++) {
+        for (int i = 0; i < retInts.length; i++) {
             int posI = (int) (posD + 0.5f);
 
             posD += sizes[i];
@@ -388,6 +378,7 @@ public final class LayoutUtil {
     static final boolean equals(Object o1, Object o2) {
         return o1 == o2 || (o1 != null && o2 != null && o1.equals(o2));
     }
+
 //	static int getBaselineCorrect(Component comp)
 //	{
 //		Dimension pSize = comp.getPreferredSize();
@@ -411,16 +402,6 @@ public final class LayoutUtil {
 //		// the height z:
 //		return (pSize.height + padding) / 2 + baselineOffset;
 //	}
-
-    /** Converts a <code>float</code> to a string and is removing the ".0" if the float is an integer.
-     * @param f the float.
-     * @return <code>f</code> as a string. Never <code>null</code>.
-     */
-    static final String floatToString(float f) {
-        String valS = String.valueOf(f);
-        return valS.endsWith(".0") ? valS.substring(0, valS.length() - 2) : valS;
-    }
-
     /** Returns the inset for the side.
      * @param side top == 0, left == 1, bottom = 2, right = 3.
      * @param getDefault If <code>true</code> the default insets will get retrieved if <code>lc</code> has none set.
@@ -428,9 +409,7 @@ public final class LayoutUtil {
      */
     static final UnitValue getInsets(LC lc, int side, boolean getDefault) {
         UnitValue[] i = lc.getInsets();
-        return (i != null && i[side] != null) ? i[side]
-                : (getDefault ? PlatformDefaults.getPanelInsets(side)
-                : UnitValue.ZERO);
+        return (i != null && i[side] != null) ? i[side] : (getDefault ? PlatformDefaults.getPanelInsets(side) : UnitValue.ZERO);
     }
 
     /** Writes the objet and CLOSES the stream. Uses the persistence delegate registered in this class.
@@ -438,12 +417,9 @@ public final class LayoutUtil {
      * @param o The object to be serialized.
      * @param listener The listener to recieve the exeptions if there are any. If <code>null</code> not used.
      */
-    static void writeXMLObject(OutputStream os, Object o,
-            ExceptionListener listener) {
-        ClassLoader oldClassLoader =
-                Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().
-                setContextClassLoader(LayoutUtil.class.getClassLoader());
+    static void writeXMLObject(OutputStream os, Object o, ExceptionListener listener) {
+        ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(LayoutUtil.class.getClassLoader());
 
         XMLEncoder encoder = new XMLEncoder(os);
 
@@ -451,7 +427,8 @@ public final class LayoutUtil {
             encoder.setExceptionListener(listener);
         }
         encoder.writeObject(o);
-        encoder.close(); // Must be closed to write.
+        encoder.close();    // Must be closed to write.
+
         Thread.currentThread().setContextClassLoader(oldClassLoader);
     }
     private static ByteArrayOutputStream writeOutputStream = null;
@@ -460,16 +437,15 @@ public final class LayoutUtil {
      * @param out The boject out to write to. Will not be closed.
      * @param o The object to write.
      */
-    public static synchronized void writeAsXML(ObjectOutput out, Object o)
-            throws IOException {
+    public static synchronized void writeAsXML(ObjectOutput out, Object o) throws IOException {
         if (writeOutputStream == null) {
             writeOutputStream = new ByteArrayOutputStream(16384);
         }
         writeOutputStream.reset();
 
-        writeXMLObject(writeOutputStream, o,
-                new ExceptionListener() {
+        writeXMLObject(writeOutputStream, o, new ExceptionListener() {
 
+            @Override
             public void exceptionThrown(Exception e) {
                 e.printStackTrace();
             }
@@ -508,7 +484,8 @@ public final class LayoutUtil {
             }
             in.readFully(readBuf, 0, length);
 
-            o =     new XMLDecoder(new ByteArrayInputStream(readBuf, 0, length)).readObject();
+            o = new XMLDecoder(new ByteArrayInputStream(readBuf, 0, length)).readObject();
+
         } catch (EOFException e) {
         }
 
@@ -517,8 +494,7 @@ public final class LayoutUtil {
         }
         return o;
     }
-    private static final IdentityHashMap<Object, Object> SER_MAP =
-            new IdentityHashMap<Object, Object>(2);
+    private static final IdentityHashMap<Object, Object> SER_MAP = new IdentityHashMap<Object, Object>(2);
 
     /** Sets the serialized object and associates it with <code>caller</code>.
      * @param caller The objec created <code>o</code>

@@ -97,8 +97,8 @@ public final class AboutDialog extends StandardDialog implements
         tabbedPane.add("License", new LicensePanel());
         tabbedPane.add("Information", new InfoPanel());
         
-        getContentPane().setLayout(new MigLayout("ins rel, wrap 1, fill"));
-        getContentPane().add(tabbedPane, "grow, wmax 550, hmax 300");
+        getContentPane().setLayout(new MigLayout("ins rel, wrap 1, fill, wmax 550, hmax 300"));
+        getContentPane().add(tabbedPane, "grow");
         getContentPane().add(getOkButton(), "right");
         
         pack();

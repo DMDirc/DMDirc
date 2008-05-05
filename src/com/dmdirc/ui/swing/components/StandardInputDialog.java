@@ -49,7 +49,7 @@ public abstract class StandardInputDialog extends StandardDialog {
     /** Text field. */
     private ValidatingJTextField textField;
     /** Blurb label. */
-    private JWrappingLabel blurb;
+    private TextLabel blurb;
     /** Message. */
     private String message;
 
@@ -115,7 +115,7 @@ public abstract class StandardInputDialog extends StandardDialog {
     private final void initComponents() {
         orderButtons(new JButton(), new JButton());
         textField = new ValidatingJTextField(validator);
-        blurb = new JWrappingLabel(message);
+        blurb = new TextLabel(message);
         validateText();
     }
 

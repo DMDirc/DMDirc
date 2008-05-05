@@ -23,7 +23,7 @@
 package com.dmdirc.installer;
 
 import com.dmdirc.installer.Installer.ShortcutType;
-import com.dmdirc.ui.swing.components.JWrappingLabel;
+import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.dialogs.wizard.StepListener;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardFrame;
@@ -46,7 +46,7 @@ public final class StepConfirm extends Step implements StepListener {
 	private static final long serialVersionUID = 2;
 
 	/** Text area showing the install information */
-	private final JWrappingLabel infoLabel = new JWrappingLabel("");
+	private final TextLabel infoLabel = new TextLabel("");
 
 	/**
 	* Creates a new instance of StepConfirm.

@@ -25,7 +25,7 @@ package com.dmdirc.ui.swing.dialogs.actionseditor;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.ui.swing.components.ImageButton;
-import com.dmdirc.ui.swing.components.JWrappingLabel;
+import com.dmdirc.ui.swing.components.TextLabel;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -65,7 +65,7 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
     private JPanel comparisonsPanel;
     
     /** Info blurb. */
-    private JWrappingLabel infoLabel;
+    private TextLabel infoLabel;
     /** No conditions label. */
     private JLabel noConditions;
     /** New comparison button. */
@@ -99,7 +99,7 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
         comparisonsPanel = new JPanel(new MigLayout("ins 0"));
         noConditions = new JLabel("No conditions set.");
         newComparison = new JButton("New");
-        infoLabel = new JWrappingLabel("This action will only be executed if the "
+        infoLabel = new TextLabel("This action will only be executed if the "
                 + "following are true:");
         
         setNewConditionButton(false);

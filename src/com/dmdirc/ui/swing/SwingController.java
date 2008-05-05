@@ -62,6 +62,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import net.miginfocom.layout.PlatformDefaults;
+import net.miginfocom.layout.UnitValue;
+
 /**
  * Controls the main swing UI.
  */
@@ -299,6 +302,7 @@ public final class SwingController implements UIController {
             UIUtilities.initUISettings();
             UIManager.setLookAndFeel(UIUtilities.getLookAndFeel(IdentityManager.getGlobalConfig().
                     getOption("ui", "lookandfeel", "")));
+            PlatformDefaults.setDefaultRowAlignment(UnitValue.CENTER);
 
         } catch (UnsupportedOperationException ex) {
             Logger.userError(ErrorLevel.LOW, "Unable to set UI Settings");

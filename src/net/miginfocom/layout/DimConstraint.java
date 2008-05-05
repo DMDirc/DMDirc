@@ -34,28 +34,37 @@
 
 package net.miginfocom.layout;
 
-import java.io.*;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.ObjectStreamException;
 
-/** A simple value holder for a constraint for one dimension. */
+/** A simple value holder for a constraint for one dimension.
+ */
 public final class DimConstraint implements Externalizable {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-
-    /** How this entity can be resized in the dimension that this constraint represents. */
+    /** How this entity can be resized in the dimension that this constraint represents.
+     */
     final ResizeConstraint resize = new ResizeConstraint();
+
     // Look at the properties' getter/setter methods for exmplanation
-    private String sizeGroup = null; // A "context" compared with equals.
-    private BoundSize size = null; // Min, pref, max. May be null.
-    private BoundSize gapBefore = null;
-    private BoundSize gapAfter = null;
+    private String sizeGroup = null;            // A "context" compared with equals.
+
+    private BoundSize size = BoundSize.NULL_SIZE;     // Min, pref, max. Never null, but sizes can be null.
+
+    private BoundSize gapBefore = null,  gapAfter = null;
     private UnitValue align = null;
     // **************  Only applicable on components! *******************
-    private String endGroup = null; // A "context" compared with equals.
+    private String endGroup = null;            // A "context" compared with equals.
+
+
     // **************  Only applicable on rows/columns! *******************
     private boolean fill = false;
     private boolean noGrid = false;
@@ -161,7 +170,11 @@ public final class DimConstraint implements Externalizable {
         if (align != null) {
             return align;
         }
-        return isCols ? UnitValue.LEADING : UnitValue.CENTER;
+        if (isCols) {
+            return UnitValue.LEADING;
+        }
+        UnitValue pf = PlatformDefaults.getDefaultRowAlignment();
+        return fill && pf == UnitValue.BASELINE_IDENTITY ? UnitValue.CENTER : pf;
     }
 
     /** Returns the alignment used either as a default value for sub-entities or for this entity.
@@ -240,17 +253,17 @@ public final class DimConstraint implements Externalizable {
         return gapBefore != null && gapBefore.getGapPush();
     }
 
-    /** Returns the min/prerefferd/max size for the entity in the dimension that this object describes.
+    /** Returns the min/preferred/max size for the entity in the dimension that this object describes.
      * <p>
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
-     * @return The current size. May be <code>null</code>.
+     * @return The current size. Never <code>null</code> since v3.5.
      * @see net.miginfocom.layout.ConstraintParser#parseBoundSize(String, boolean, boolean).
      */
     public BoundSize getSize() {
         return size;
     }
 
-    /** Sets the min/prerefferd/max size for the eintity in the dimension that this object describes.
+    /** Sets the min/preferred/max size for the eintity in the dimension that this object describes.
      * <p>
      * For a more thorough explanation of what this constraint does see the white paper or cheat Sheet at www.migcomponents.com.
      * @param size The new size. May be <code>null</code>.
@@ -284,8 +297,8 @@ public final class DimConstraint implements Externalizable {
     public void setSizeGroup(String s) {
         sizeGroup = s;
     }
-    // **************  Only applicable on components ! *******************
 
+    // **************  Only applicable on components ! *******************
     /** Returns the end group that this entitiy should be in for the demension that this object is describing.
      * If this constraint is in an end group that is specified here. <code>null</code> means no end group
      * and all other values are legal. Comparison with .equals(). Components in the same end group
@@ -309,8 +322,8 @@ public final class DimConstraint implements Externalizable {
     public void setEndGroup(String s) {
         endGroup = s;
     }
-    // **************  Not applicable on components below ! *******************
 
+    // **************  Not applicable on components below ! *******************
     /** Returns if the component in the row/column that this constraint should default be grown in the same dimension that
      * this constraint represents (width for column and height for a row).
      * <p>
@@ -359,8 +372,7 @@ public final class DimConstraint implements Externalizable {
      * @return The [min,preferred,max] sizes for the specified gap. Uses {@link net.miginfocom.layout.LayoutUtil#NOT_SET}
      * for gap sizes that are <code>null</code>. Returns <code>null</code> if there was no gap specified. A new and free to use array.
      */
-    int[] getRowGaps(ContainerWrapper parent,
-            BoundSize defGap, int refSize, boolean before) {
+    int[] getRowGaps(ContainerWrapper parent, BoundSize defGap, int refSize, boolean before) {
         BoundSize gap = before ? gapBefore : gapAfter;
         if (gap == null || gap.isUnset()) {
             gap = defGap;
@@ -369,11 +381,9 @@ public final class DimConstraint implements Externalizable {
             return null;
         }
         int[] ret = new int[3];
-        for (int i = LayoutUtil.MIN; i <= LayoutUtil.MAX;
-                i++) {
+        for (int i = LayoutUtil.MIN; i <= LayoutUtil.MAX; i++) {
             UnitValue uv = gap.getSize(i);
-            ret[i] =uv != null ? uv.getPixels(refSize, parent, null)
-                    : LayoutUtil.NOT_SET;
+            ret[i] = uv != null ? uv.getPixels(refSize, parent, null) : LayoutUtil.NOT_SET;
         }
         return ret;
     }
@@ -390,45 +400,37 @@ public final class DimConstraint implements Externalizable {
      * @return The [min,preferred,max] sizes for the specified gap. Uses {@link net.miginfocom.layout.LayoutUtil#NOT_SET}
      * for gap sizes that are <code>null</code>. Returns <code>null</code> if there was no gap specified. A new and free to use array.
      */
-    int[] getComponentGaps(ContainerWrapper parent,
-            ComponentWrapper comp, BoundSize adjGap,
-            ComponentWrapper adjacentComp, String tag, int refSize,
-            int adjacentSide, boolean isLTR) {
+    int[] getComponentGaps(ContainerWrapper parent, ComponentWrapper comp, BoundSize adjGap, ComponentWrapper adjacentComp, String tag, int refSize, int adjacentSide, boolean isLTR) {
         BoundSize gap = adjacentSide < 2 ? gapBefore : gapAfter;
 
         boolean hasGap = gap != null && gap.getGapPush();
-        if ((gap == null || gap.isUnset()) &&
-                (adjGap == null || adjGap.isUnset()) && comp != null) {
-            gap = PlatformDefaults.getDefaultComponentGap(comp, adjacentComp,
-                    adjacentSide + 1, tag, isLTR);
+        if ((gap == null || gap.isUnset()) && (adjGap == null || adjGap.isUnset()) && comp != null) {
+            gap = PlatformDefaults.getDefaultComponentGap(comp, adjacentComp, adjacentSide + 1, tag, isLTR);
         }
         if (gap == null) {
-            return hasGap
-                    ? new int[]{0, 0, LayoutUtil.NOT_SET} : null;
+            return hasGap ? new int[]{0, 0, LayoutUtil.NOT_SET} : null;
         }
         int[] ret = new int[3];
-        for (int i = LayoutUtil.MIN; i <= LayoutUtil.MAX;
-                i++) {
+        for (int i = LayoutUtil.MIN; i <= LayoutUtil.MAX; i++) {
             UnitValue uv = gap.getSize(i);
-            ret[i] =uv != null ? uv.getPixels(refSize, parent, null)
-                    : LayoutUtil.NOT_SET;
+            ret[i] = uv != null ? uv.getPixels(refSize, parent, null) : LayoutUtil.NOT_SET;
         }
         return ret;
     }
+
     // ************************************************
     // Persistence Delegate and Serializable combined.
     // ************************************************
-
     private Object readResolve() throws ObjectStreamException {
         return LayoutUtil.getSerializedObject(this);
     }
 
-    public void readExternal(ObjectInput in) throws IOException,
-            ClassNotFoundException {
-        LayoutUtil.setSerializedObject(this,
-                LayoutUtil.readAsXML(in));
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        LayoutUtil.setSerializedObject(this, LayoutUtil.readAsXML(in));
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         if (getClass() == DimConstraint.class) {
             LayoutUtil.writeAsXML(out, this);

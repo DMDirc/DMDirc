@@ -23,7 +23,7 @@
 package com.dmdirc.ui.swing.dialogs;
 
 import com.dmdirc.Main;
-import com.dmdirc.ui.swing.components.JWrappingLabel;
+import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.URLProtocolPanel;
@@ -52,7 +52,7 @@ public class URLDialog extends StandardDialog implements ActionListener {
     /** URL. */
     private URI url;
     /** Blurb label. */
-    private JWrappingLabel blurb;
+    private TextLabel blurb;
 
     /**
      * Instantiates the URLDialog.
@@ -104,7 +104,7 @@ public class URLDialog extends StandardDialog implements ActionListener {
     /** Initialises the components. */
     private void initComponents() {
         orderButtons(new JButton(), new JButton());
-        blurb = new JWrappingLabel("Please select the appropriate action to " +
+        blurb = new TextLabel("Please select the appropriate action to " +
                 "handle " + url.getScheme() + " URL protocols from the list " +
                 "below.");
         panel = new URLProtocolPanel(url, false);
