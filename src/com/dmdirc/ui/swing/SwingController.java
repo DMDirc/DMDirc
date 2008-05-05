@@ -28,6 +28,7 @@ import com.dmdirc.ui.IconManager;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.actions.ActionManager;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;

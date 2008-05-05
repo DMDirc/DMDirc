@@ -128,7 +128,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         /** Released. */
         RELEASED,
         /** Pressed. */
-        PRESSED,}
+        PRESSED,
+    }
 
     /**
      * Creates a new instance of Frame.
@@ -147,6 +148,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
 
         setFrameIcon(owner.getIcon());
         owner.addIconChangeListener(new IconChangeListener() {
+
             /** {@inheritDoc} */
             @Override
             public void iconChanged(final Window window, final Icon icon) {
@@ -235,21 +237,15 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 for (String myLine : encodedLine.split("\n")) {
                     if (timestamp) {
                         getTextPane().addStyledString(new String[]{
-                            Formatter.formatMessage(getConfigManager(),
-                            "timestamp", new Date()), myLine
-                        
-                      
-                        
-                    
-                    ,
-                            });
+                                    Formatter.formatMessage(getConfigManager(),
+                                    "timestamp", new Date()), myLine,
+                                });
                     } else {
                         getTextPane().addStyledString(myLine);
                     }
-                    
+
                     ActionManager.processEvent(CoreActionType.CLIENT_LINE_ADDED,
-                            null,
-                            getContainer(), myLine);
+                            null, getContainer(), myLine);
 
                     if (frameBufferSize > 0) {
                         textPane.trim(frameBufferSize);
@@ -434,7 +430,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void internalFrameDeiconified(final InternalFrameEvent event) {
-    //Ignore.
+        //Ignore.
     }
 
     /**
@@ -549,7 +545,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void mouseEntered(final MouseEvent mouseEvent) {
-    //Ignore.
+        //Ignore.
     }
 
     /**
@@ -559,7 +555,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void mouseExited(final MouseEvent mouseEvent) {
-    //Ignore.
+        //Ignore.
     }
 
     /**
@@ -780,7 +776,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void keyTyped(final KeyEvent event) {
-    //Ignore.
+        //Ignore.
     }
 
     /** 
@@ -790,7 +786,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void keyPressed(final KeyEvent event) {
-        if (!quickCopy && (event.getModifiers() & KeyEvent.CTRL_MASK) != 0 &&
+               if (!quickCopy && (event.getModifiers() & KeyEvent.CTRL_MASK) != 0 &&
                 event.getKeyCode() == KeyEvent.VK_C) {
             getTextPane().copy();
         }
@@ -803,7 +799,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void keyReleased(final KeyEvent event) {
-    //Ignore.
+        //Ignore.
     }
 
     /**

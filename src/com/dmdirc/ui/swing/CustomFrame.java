@@ -24,8 +24,8 @@ package com.dmdirc.ui.swing;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.PopupType;
-import com.dmdirc.ui.swing.components.TextFrame;
 
+import com.dmdirc.ui.swing.components.TextFrame;
 import javax.swing.JPopupMenu;
 
 import net.miginfocom.swing.MigLayout;
