@@ -22,12 +22,25 @@
 
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
+import java.awt.Cursor;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSource;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Action substitution label.
  */
-public class ActionSubstitutionLabel extends JLabel {
+public class ActionSubstitutionLabel extends JLabel implements MouseListener,
+        DragGestureListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -35,11 +48,15 @@ public class ActionSubstitutionLabel extends JLabel {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    private DragSource dragSource;
+    private ActionSubstitution substition;
 
     /** Instantiates the panel. */
-    public ActionSubstitutionLabel() {
+    public ActionSubstitutionLabel(final ActionSubstitution substition) {
         super();
-        
+
+        this.substition = substition;
+
         initComponents();
         addListeners();
         layoutComponents();
@@ -47,13 +64,56 @@ public class ActionSubstitutionLabel extends JLabel {
 
     /** Initialises the components. */
     private void initComponents() {
+        dragSource = DragSource.getDefaultDragSource();
+        dragSource.createDefaultDragGestureRecognizer(this,
+                DnDConstants.ACTION_COPY, this);
+
+        setText(substition.getValue());
     }
 
     /** Adds the listeners. */
     private void addListeners() {
+        addMouseListener(this);
     }
 
     /** Lays out the components. */
     private void layoutComponents() {
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void mouseClicked(final MouseEvent e) {
+    //Ignore
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void mousePressed(final MouseEvent e) {
+    //Ignore
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void mouseReleased(final MouseEvent e) {
+    //Ignore
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void mouseEntered(final MouseEvent e) {
+        setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void mouseExited(final MouseEvent e) {
+    //Ignore
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void dragGestureRecognized(final DragGestureEvent dge) {
+        dragSource.startDrag(dge, Cursor.getPredefinedCursor(Cursor.HAND_CURSOR),
+                new StringTransferable(substition.toString()), null);
     }
 }

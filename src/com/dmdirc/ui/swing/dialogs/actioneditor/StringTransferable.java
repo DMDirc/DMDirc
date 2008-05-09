@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.components.reorderablelist;
+package com.dmdirc.ui.swing.dialogs.actioneditor;
 
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -28,70 +28,62 @@ import com.dmdirc.logger.Logger;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.util.ArrayList;
 
 /**
- * Arraylist transferable.
+ * String transfer handler.
  */
-public final class ArrayListTransferable implements Transferable {
-    
+public class StringTransferable implements Transferable {
+
     /** Local tranfer flavour. */
-    private DataFlavor localArrayListFlavor;
+    private DataFlavor localStringFlavor;
     /** Serial transfer flavour. */
-    private final DataFlavor serialArrayListFlavor;
-    /** Transferred ArrayList. */
-    private final ArrayList data; //NOPMD
-    
-    /** 
-     * Initialises the ArrayListTransferable. 
-     *
-     * @param alist ArrayList to transfer
-     */
-    public ArrayListTransferable(final ArrayList alist) { //NOPMD
+    private final DataFlavor serialStringFlavor;
+    /** Transferred string. */
+    private final String data;
+
+    public StringTransferable(final String data) {
         super();
-        
-        data = alist;
-        
+
+        this.data = data;
+
         try {
-            localArrayListFlavor = new DataFlavor(
-                    DataFlavor.javaJVMLocalObjectMimeType
-                    + ";class=java.util.ArrayList");
+            localStringFlavor = new DataFlavor(
+                    DataFlavor.javaJVMLocalObjectMimeType +
+                    ";class=java.lang.String");
         } catch (ClassNotFoundException e) {
-            Logger.userError(ErrorLevel.LOW, "unable to create data flavor: "
-                    + e.getMessage());
+            Logger.userError(ErrorLevel.LOW, "unable to create data flavor: " +
+                    e.getMessage());
         }
-        serialArrayListFlavor = new DataFlavor(ArrayList.class, "ArrayList"); //NOPMD
-        
+        serialStringFlavor = new DataFlavor(String.class, "String");
     }
-    
-    /** {@inheritDoc} */
-    @Override
-    public Object getTransferData(final DataFlavor flavor) throws 
-            UnsupportedFlavorException {
-        if (!isDataFlavorSupported(flavor)) {
-            throw new UnsupportedFlavorException(flavor);
-        }
-        
-        return data;
-    }
-    
+
     /** {@inheritDoc} */
     @Override
     public DataFlavor[] getTransferDataFlavors() {
-        return new DataFlavor[]{localArrayListFlavor, serialArrayListFlavor, };
+        return new DataFlavor[]{localStringFlavor, serialStringFlavor,};
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean isDataFlavorSupported(final DataFlavor flavor) {
-        if (localArrayListFlavor.equals(flavor)) {
+        if (localStringFlavor.equals(flavor)) {
             return true;
         }
-        
-        if (serialArrayListFlavor.equals(flavor)) {
+
+        if (serialStringFlavor.equals(flavor)) {
             return true;
         }
-        
+
         return false;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object getTransferData(final DataFlavor flavor) throws UnsupportedFlavorException {
+        if (!isDataFlavorSupported(flavor)) {
+            throw new UnsupportedFlavorException(flavor);
+        }
+
+        return data;
     }
 }
