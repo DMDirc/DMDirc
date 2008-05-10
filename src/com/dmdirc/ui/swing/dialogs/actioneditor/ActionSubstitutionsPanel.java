@@ -22,7 +22,22 @@
 
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.ActionSubstitutor;
+import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.swing.UIUtilities;
+import com.dmdirc.ui.swing.components.TextLabel;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Action substitutions panel
@@ -35,11 +50,16 @@ public class ActionSubstitutionsPanel extends JPanel {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    private ActionType type;
+    private List<ActionSubstitutionLabel> substitutions;
 
     /** Instantiates the panel. */
-    public ActionSubstitutionsPanel() {
+    public ActionSubstitutionsPanel(final ActionType type) {
         super();
-        
+
+        this.type = type;
+        substitutions = new ArrayList<ActionSubstitutionLabel>();
+
         initComponents();
         addListeners();
         layoutComponents();
@@ -47,6 +67,24 @@ public class ActionSubstitutionsPanel extends JPanel {
 
     /** Initialises the components. */
     private void initComponents() {
+        final ActionSubstitutor sub = new ActionSubstitutor(type);
+
+        for (final Entry<String, String> entry : sub.getComponentSubstitutions().
+                entrySet()) {
+            substitutions.add(new ActionSubstitutionLabel(new ActionSubstitution(entry.getValue(),
+                    entry.getKey())));
+        }
+
+        for (final String entry : sub.getConfigSubstitutions()) {
+            substitutions.add(new ActionSubstitutionLabel(new ActionSubstitution(entry,
+                    entry)));
+        }
+
+        for (final Entry<String, String> entry : sub.getServerSubstitutions().
+                entrySet()) {
+            substitutions.add(new ActionSubstitutionLabel(new ActionSubstitution(entry.getValue(),
+                    entry.getKey())));
+        }
     }
 
     /** Adds the listeners. */
@@ -55,5 +93,15 @@ public class ActionSubstitutionsPanel extends JPanel {
 
     /** Lays out the components. */
     private void layoutComponents() {
+        setBorder(BorderFactory.createTitledBorder(getBorder(), "Substitutions"));
+        setLayout(new MigLayout("fill, wrap 4"));
+
+        add(new TextLabel("Substitutions may be used in the response and " +
+                "target fields. Drag and drop, or click on an item when " +
+                "editing the field, to insert it."), "spany, aligny top");
+        
+        for (ActionSubstitutionLabel label : substitutions) {
+            add(label, "sgx subslabel, aligny top");
+        }
     }
 }

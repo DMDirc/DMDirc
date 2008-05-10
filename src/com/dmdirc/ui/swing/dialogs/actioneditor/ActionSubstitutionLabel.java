@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
@@ -30,11 +31,8 @@ import java.awt.dnd.DragSource;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.swing.JFrame;
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import net.miginfocom.swing.MigLayout;
 
 /**
  * Action substitution label.
@@ -69,6 +67,13 @@ public class ActionSubstitutionLabel extends JLabel implements MouseListener,
                 DnDConstants.ACTION_COPY, this);
 
         setText(substition.getValue());
+        setFont(getFont().deriveFont(getFont().getSize() - 2f));
+        
+        setBorder(
+                BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.GRAY),
+                BorderFactory.createEmptyBorder(1, 1, 1, 1)
+                ));
     }
 
     /** Adds the listeners. */
