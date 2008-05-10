@@ -22,7 +22,19 @@
 
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
+import com.dmdirc.config.IdentityManager;
+
+import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Action response panel.
@@ -35,6 +47,8 @@ public class ActionResponsePanel extends JPanel {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    private JTextArea response;
+    private JComboBox formatter;
 
     /** Instantiates the panel. */
     public ActionResponsePanel() {
@@ -47,6 +61,17 @@ public class ActionResponsePanel extends JPanel {
 
     /** Initialises the components. */
     private void initComponents() {
+        response = new JTextArea();
+        formatter = new JComboBox(new DefaultComboBoxModel());
+        
+        ((DefaultComboBoxModel) formatter.getModel()).addElement("No change");
+        ((DefaultComboBoxModel) formatter.getModel()).addElement("No response");
+        
+        final List<String> formatters = IdentityManager.getGlobalConfig().getOptions("formatter");
+        
+        for (String format : formatters) {
+            ((DefaultComboBoxModel) formatter.getModel()).addElement(format);
+        }
     }
 
     /** Adds the listeners. */
@@ -55,5 +80,12 @@ public class ActionResponsePanel extends JPanel {
 
     /** Lays out the components. */
     private void layoutComponents() {
+        setBorder(BorderFactory.createTitledBorder(getBorder(), "Response"));
+        setLayout(new MigLayout("fill, wrap 1"));
+        
+        add(new JLabel("Execute these commands: "));
+        add(new JScrollPane(response), "grow");
+        add(new JLabel("Alter the event's formatter"));
+        add(formatter, "growx");
     }
 }

@@ -22,19 +22,14 @@
 
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
-import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.ActionSubstitutor;
-import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
-import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.components.TextLabel;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import javax.swing.BorderFactory;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
