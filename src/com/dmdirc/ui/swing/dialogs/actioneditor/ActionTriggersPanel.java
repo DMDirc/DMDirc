@@ -122,16 +122,22 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
                 ((ActionTypeModel) trigger.getModel()).removeAllElements();
 
                 if (triggerList.getTriggerCount() == 0) {
-                    System.out.println("all");
                     ((ActionTypeModel) trigger.getModel()).setTypeGroup(ActionManager.getTypeGroups());
                     return;
                 }
 
-                System.out.println("typed");
                 for (ActionType thisType : ActionManager.getCompatibleTypes(triggerList.getTrigger(0))) {
                     ((ActionTypeModel) trigger.getModel()).addElement(thisType);
                 }
             }
         });
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void setEnabled(final boolean enabled) {
+        triggerList.setEnabled(enabled);
+        trigger.setEnabled(enabled);
+        add.setEnabled(enabled);
     }
 }

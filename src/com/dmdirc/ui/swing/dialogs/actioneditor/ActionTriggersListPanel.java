@@ -105,7 +105,6 @@ public class ActionTriggersListPanel extends JPanel {
             if (getComponentCount() == 0) {
                 add(new TextLabel("No triggers."));
             }
-            getLayout().layoutContainer(this);
             setVisible(true);
         }
     }
@@ -146,11 +145,11 @@ public class ActionTriggersListPanel extends JPanel {
             return triggers;
         }
     }
-    
+
     public ActionType getTrigger(final int index) {
         return triggers.get(index);
     }
-    
+
     public int getTriggerCount() {
         synchronized (triggers) {
             return triggers.size();
@@ -188,5 +187,25 @@ public class ActionTriggersListPanel extends JPanel {
         for (ActionTriggerRemovalListener listener : listeners.get(ActionTriggerRemovalListener.class)) {
             listener.triggerRemoved(type);
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setEnabled(final boolean enabled) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                if (enabled) {
+                    layoutComponents();
+                } else {
+                    setVisible(false);
+                    removeAll();
+                    add(new TextLabel("No triggers."));
+                    setVisible(true);
+                }
+            }
+        });
     }
 }
