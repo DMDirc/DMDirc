@@ -88,4 +88,19 @@ public class ActionResponsePanel extends JPanel {
         add(new JLabel("Alter the event's formatter"));
         add(formatter, "growx");
     }
+    
+    public String getResponse() {
+        return response.getText();
+    }
+    
+    public String getFormatter() {
+        return (String) formatter.getSelectedItem();
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void setEnabled(final boolean enabled) {
+        response.setEnabled(enabled);
+        formatter.setEnabled(enabled);
+    }
 }

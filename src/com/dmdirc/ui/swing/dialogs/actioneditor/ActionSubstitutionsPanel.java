@@ -32,6 +32,7 @@ import java.util.Map.Entry;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
+import javax.swing.SwingUtilities;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -52,34 +53,15 @@ public class ActionSubstitutionsPanel extends JPanel {
     public ActionSubstitutionsPanel(final ActionType type) {
         super();
 
-        this.type = type;
-        substitutions = new ArrayList<ActionSubstitutionLabel>();
-
         initComponents();
         addListeners();
-        layoutComponents();
+        setActionType(type);
     }
 
     /** Initialises the components. */
     private void initComponents() {
-        final ActionSubstitutor sub = new ActionSubstitutor(type);
-
-        for (final Entry<String, String> entry : sub.getComponentSubstitutions().
-                entrySet()) {
-            substitutions.add(new ActionSubstitutionLabel(new ActionSubstitution(entry.getValue(),
-                    entry.getKey())));
-        }
-
-        for (final String entry : sub.getConfigSubstitutions()) {
-            substitutions.add(new ActionSubstitutionLabel(new ActionSubstitution(entry,
-                    entry)));
-        }
-
-        for (final Entry<String, String> entry : sub.getServerSubstitutions().
-                entrySet()) {
-            substitutions.add(new ActionSubstitutionLabel(new ActionSubstitution(entry.getValue(),
-                    entry.getKey())));
-        }
+        setBorder(BorderFactory.createTitledBorder(getBorder(), "Substitutions"));
+        setLayout(new MigLayout("fill, wrap 4"));
     }
 
     /** Adds the listeners. */
@@ -88,15 +70,50 @@ public class ActionSubstitutionsPanel extends JPanel {
 
     /** Lays out the components. */
     private void layoutComponents() {
-        setBorder(BorderFactory.createTitledBorder(getBorder(), "Substitutions"));
-        setLayout(new MigLayout("fill, wrap 4"));
+        removeAll();
 
         add(new TextLabel("Substitutions may be used in the response and " +
                 "target fields. Drag and drop, or click on an item when " +
                 "editing the field, to insert it."), "spany, aligny top");
-        
+
         for (ActionSubstitutionLabel label : substitutions) {
             add(label, "sgx subslabel, aligny top");
         }
+    }
+
+    public void setActionType(final ActionType type) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                ActionSubstitutionsPanel.this.type = type;
+
+                substitutions = new ArrayList<ActionSubstitutionLabel>();
+
+                if (type != null) {
+                    final ActionSubstitutor sub = new ActionSubstitutor(type);
+
+                    for (final Entry<String, String> entry : sub.getComponentSubstitutions().
+                            entrySet()) {
+                        substitutions.add(new ActionSubstitutionLabel(new ActionSubstitution(entry.getValue(),
+                                entry.getKey())));
+                    }
+
+                    for (final String entry : sub.getConfigSubstitutions()) {
+                        substitutions.add(new ActionSubstitutionLabel(new ActionSubstitution(entry,
+                                entry)));
+                    }
+
+                    for (final Entry<String, String> entry : sub.getServerSubstitutions().
+                            entrySet()) {
+                        substitutions.add(new ActionSubstitutionLabel(new ActionSubstitution(entry.getValue(),
+                                entry.getKey())));
+                    }
+                }
+
+                layoutComponents();
+            }
+        });
     }
 }
