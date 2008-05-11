@@ -22,12 +22,27 @@
 
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.ui.swing.components.TextLabel;
+import com.dmdirc.ui.swing.components.renderers.ActionTypeRenderer;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Action triggers panel.
  */
-public class ActionTriggersPanel extends JPanel {
+public class ActionTriggersPanel extends JPanel implements ActionListener,
+        ActionTriggerRemovalListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -35,11 +50,14 @@ public class ActionTriggersPanel extends JPanel {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    private JComboBox trigger;
+    private JButton add;
+    private ActionTriggersListPanel triggerList;
 
     /** Instantiates the panel. */
     public ActionTriggersPanel() {
         super();
-        
+
         initComponents();
         addListeners();
         layoutComponents();
@@ -47,13 +65,73 @@ public class ActionTriggersPanel extends JPanel {
 
     /** Initialises the components. */
     private void initComponents() {
+        setBorder(BorderFactory.createTitledBorder(getBorder(), "Triggers"));
+
+        trigger =
+                new JComboBox(new ActionTypeModel(ActionManager.getTypeGroups()));
+        //Only fire events on selection not on highlight
+        trigger.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
+        trigger.setRenderer(new ActionTypeRenderer());
+
+        add = new JButton("Add");
+        add.setEnabled(trigger.getSelectedIndex() != -1);
+
+        triggerList = new ActionTriggersListPanel();
     }
 
     /** Adds the listeners. */
     private void addListeners() {
+        add.addActionListener(this);
+        trigger.addActionListener(this);
     }
 
     /** Lays out the components. */
     private void layoutComponents() {
+        setLayout(new MigLayout("fill, pack"));
+
+        add(new TextLabel("This action will be triggered when any of these events occurs: "),
+                "growx, wrap, spanx");
+        add(triggerList, "grow, wrap, spanx");
+        add(trigger, "growx");
+        add(add, "right");
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+        if (e.getSource() == trigger) {
+            add.setEnabled(trigger.getSelectedIndex() != -1);
+        } else {
+            triggerList.addTrigger((ActionType) trigger.getSelectedItem());
+            repopulateTriggers();
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void triggerRemoved(final ActionType trigger) {
+        repopulateTriggers();
+    }
+
+    private void repopulateTriggers() {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                ((ActionTypeModel) trigger.getModel()).removeAllElements();
+
+                if (triggerList.getTriggerCount() == 0) {
+                    System.out.println("all");
+                    ((ActionTypeModel) trigger.getModel()).setTypeGroup(ActionManager.getTypeGroups());
+                    return;
+                }
+
+                System.out.println("typed");
+                for (ActionType thisType : ActionManager.getCompatibleTypes(triggerList.getTrigger(0))) {
+                    ((ActionTypeModel) trigger.getModel()).addElement(thisType);
+                }
+            }
+        });
     }
 }

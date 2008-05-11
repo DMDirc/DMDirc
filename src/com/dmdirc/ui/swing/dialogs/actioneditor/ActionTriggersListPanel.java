@@ -27,6 +27,7 @@ import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.swing.components.ImageButton;
 import com.dmdirc.ui.swing.components.TextLabel;
 
+import com.dmdirc.util.ListenerList;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ public class ActionTriggersListPanel extends JPanel {
      */
     private static final long serialVersionUID = 1;
     private List<ActionType> triggers;
+    private final ListenerList listeners = new ListenerList();
 
     /** Instantiates the panel. */
     public ActionTriggersListPanel() {
@@ -69,7 +71,7 @@ public class ActionTriggersListPanel extends JPanel {
 
     /** Initialises the components. */
     private void initComponents() {
-        setLayout(new MigLayout("fillx, wrap 2, debug"));
+        setLayout(new MigLayout("fillx, wrap 2"));
     }
 
     /** Adds the listeners. */
@@ -131,6 +133,7 @@ public class ActionTriggersListPanel extends JPanel {
             public void run() {
                 synchronized (triggers) {
                     triggers.remove(trigger);
+                    fireTriggerRemoved(trigger);
 
                     layoutComponents();
                 }
@@ -141,6 +144,49 @@ public class ActionTriggersListPanel extends JPanel {
     public List<ActionType> getTriggers() {
         synchronized (triggers) {
             return triggers;
+        }
+    }
+    
+    public ActionType getTrigger(final int index) {
+        return triggers.get(index);
+    }
+    
+    public int getTriggerCount() {
+        synchronized (triggers) {
+            return triggers.size();
+        }
+    }
+
+    /**
+     * Adds an ActionTriggerRemovalListener to the listener list.
+     *
+     * @param listener Listener to add
+     */
+    public void addErrorListener(final ActionTriggerRemovalListener listener) {
+        if (listener == null) {
+            return;
+        }
+
+        listeners.add(ActionTriggerRemovalListener.class, listener);
+    }
+
+    /**
+     * Removes an ActionTriggerRemovalListener from the listener list.
+     *
+     * @param listener Listener to remove
+     */
+    public void removeErrorListener(final ActionTriggerRemovalListener listener) {
+        listeners.remove(ActionTriggerRemovalListener.class, listener);
+    }
+
+    /**
+     * Fired when the an action trigger is removed.
+     *
+     * @param type Removed trigger
+     */
+    protected void fireTriggerRemoved(final ActionType type) {
+        for (ActionTriggerRemovalListener listener : listeners.get(ActionTriggerRemovalListener.class)) {
+            listener.triggerRemoved(type);
         }
     }
 }

@@ -72,4 +72,19 @@ public final class ActionTypeModel extends DefaultComboBoxModel {
             super.setSelectedItem(anObject);
         }
     }
+    
+    public void setTypeGroup(final MapList<String, ActionType> typeGroups) {
+        removeAllElements();
+        
+        for (Map.Entry<String, List<ActionType>> entry : typeGroups.entrySet()) {
+            addElement(entry.getKey());
+            
+            final List<ActionType> types = entry.getValue();
+            Collections.sort(types, new ActionTypeComparator());
+            
+            for (ActionType type : types) {
+                addElement(type);
+            }
+        }
+    }
 }
