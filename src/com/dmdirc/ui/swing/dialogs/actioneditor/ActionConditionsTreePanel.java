@@ -22,12 +22,20 @@
 
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
+import com.dmdirc.ui.swing.components.TextLabel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.ButtonGroup;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Action conditions tree panel.
  */
-public class ActionConditionsTreePanel extends JPanel {
+public class ActionConditionsTreePanel extends JPanel implements ActionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -35,6 +43,16 @@ public class ActionConditionsTreePanel extends JPanel {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    private ButtonGroup group;
+    private JRadioButton allButton;
+    private JRadioButton oneButton;
+    private JRadioButton customButton;
+    private JTextField rule;
+    public enum RuleType {
+        ALL,
+        ONE,
+        CUSTOM;
+    };
 
     /** Instantiates the panel. */
     public ActionConditionsTreePanel() {
@@ -46,14 +64,65 @@ public class ActionConditionsTreePanel extends JPanel {
     }
 
     /** Initialises the components. */
-    private void initComponents() {
+    private void initComponents() {        
+        group = new ButtonGroup();
+        allButton = new JRadioButton("All of the conditions are true");
+        oneButton = new JRadioButton("At least one of the conditions is true");
+        customButton = new JRadioButton("The conditions match a custom rule");
+        
+        rule = new JTextField();
+        
+        allButton.setSelected(true);
+        rule.setVisible(false);
+        
+        group.add(allButton);
+        group.add(oneButton);
+        group.add(customButton);
     }
 
     /** Adds the listeners. */
     private void addListeners() {
+        allButton.addActionListener(this);
+        oneButton.addActionListener(this);
+        customButton.addActionListener(this);
     }
 
     /** Lays out the components. */
     private void layoutComponents() {
+        setLayout(new MigLayout("fill, pack, hidemode 3, wrap 1, debug"));
+        add(new TextLabel("Only execute this action if..."), "growx");
+        add(allButton, "growx");
+        add(oneButton, "growx");
+        add(customButton, "growx");
+        add(rule, "growx");
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+        rule.setVisible(e.getSource().equals(customButton));
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void setEnabled(final boolean enabled) {
+        allButton.setEnabled(enabled);
+        oneButton.setEnabled(enabled);
+        customButton.setEnabled(enabled);
+        rule.setEnabled(enabled);
+    }
+    
+    public RuleType getRuleType() {
+        if (allButton.isSelected()) {
+            return RuleType.ALL;
+        } else if (oneButton.isSelected()) {
+            return RuleType.ONE;
+        } else {
+            return RuleType.CUSTOM;
+        }
+    }
+    
+    public String getRule() {
+        return rule.getText();
     }
 }
