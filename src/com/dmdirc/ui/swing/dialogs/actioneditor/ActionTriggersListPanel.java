@@ -161,7 +161,7 @@ public class ActionTriggersListPanel extends JPanel {
      *
      * @param listener Listener to add
      */
-    public void addErrorListener(final ActionTriggerRemovalListener listener) {
+    public void addTriggerListener(final ActionTriggerRemovalListener listener) {
         if (listener == null) {
             return;
         }
@@ -174,7 +174,7 @@ public class ActionTriggersListPanel extends JPanel {
      *
      * @param listener Listener to remove
      */
-    public void removeErrorListener(final ActionTriggerRemovalListener listener) {
+    public void removeTriggerListener(final ActionTriggerRemovalListener listener) {
         listeners.remove(ActionTriggerRemovalListener.class, listener);
     }
 
