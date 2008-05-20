@@ -57,15 +57,13 @@ public final class MigrationExtrationStep extends ExtractionStep {
                 + " the core plugins and actions.\n\nWould you like to extract the"
                 + " core plugins to update them? Note that older plugins may not"
                 + " function correctly with this version of DMDirc.");
-        infoLabel.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
-        add(infoLabel, "growx, pushx, wmax 400");
+        add(infoLabel, "growx, pushx");
         add(plugins, "");
         
         infoLabel = new TextLabel("Would you like to extract the default actions"
                 + " to update them? Any changes you have made to the default"
                 + " actions will be lost.");
-        infoLabel.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
-        add(infoLabel, "growx, pushx, wmax 400");
+        add(infoLabel, "growx, pushx");
         add(actions, "");
     }
     

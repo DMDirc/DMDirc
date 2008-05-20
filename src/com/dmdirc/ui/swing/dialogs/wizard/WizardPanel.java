@@ -119,7 +119,7 @@ public class WizardPanel extends JPanel implements ActionListener,
 
     /** Lays out the components. */
     private void layoutComponents() {
-        final JPanel titlePanel = new JPanel(new MigLayout("fill"));
+        final JPanel titlePanel = new JPanel(new MigLayout("fill, pack"));
         titlePanel.add(titleLabel, "growx, wrap");
         titlePanel.setBackground(Color.WHITE);
         titlePanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0,

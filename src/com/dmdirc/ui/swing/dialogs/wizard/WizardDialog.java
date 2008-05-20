@@ -38,6 +38,8 @@ import java.util.List;
 
 import javax.swing.JButton;
 
+import net.miginfocom.swing.MigLayout;
+
 
 /**
  * Basic wizard container.
@@ -69,6 +71,7 @@ public final class WizardDialog extends StandardDialog implements ActionListener
 
         setTitle(title);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setLayout(new MigLayout("fill, pack"));
         orderButtons(new JButton(), new JButton());
         this.wizard = new WizardPanel(title, steps, wizard);
         this.parentWindow = parentWindow;
@@ -83,7 +86,6 @@ public final class WizardDialog extends StandardDialog implements ActionListener
     /** Displays the wizard. */
     public void display() {
         wizard.display();
-        pack();
         if (parentWindow != null) {
             setLocationRelativeTo(parentWindow);
         } else {
@@ -112,6 +114,14 @@ public final class WizardDialog extends StandardDialog implements ActionListener
         });
         setResizable(false);
         setVisible(true);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void validate() {
+        super.validate();
+        
+        setLocationRelativeTo(parentWindow);
     }
 
     /** 

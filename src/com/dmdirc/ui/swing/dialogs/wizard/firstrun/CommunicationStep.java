@@ -82,9 +82,6 @@ public final class CommunicationStep extends Step {
     private void layoutComponents() {
         setLayout(new MigLayout("fillx, wrap 1"));
 
-        updatesInfo.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
-        errorsInfo.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
-
         add(updatesInfo, "growx, pushx");
         add(updates, "");
         add(errorsInfo, "growx, pushx");

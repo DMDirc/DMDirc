@@ -32,6 +32,8 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
+import net.miginfocom.swing.MigLayout;
+
 /**
  * Basic wizard container.
  */
@@ -59,6 +61,7 @@ public final class WizardFrame extends JFrame {
 
         setTitle(title);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setLayout(new MigLayout("fill, pack"));
         this.wizard = new WizardPanel(title, steps, wizard);
         layoutComponents();
     }
@@ -71,7 +74,6 @@ public final class WizardFrame extends JFrame {
     /** Displays the wizard. */
     public void display() {
         wizard.display();
-        pack();
         // Position wizard center-screen on the correct monitor of a
         // multi-monitor system. (See MainFrame constructor for more info)
         final PointerInfo myPointerInfo =
@@ -87,6 +89,26 @@ public final class WizardFrame extends JFrame {
         setLocation(xPos, yPos);
         setResizable(false);
         setVisible(true);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void validate() {
+        super.validate();
+        
+        // Position wizard center-screen on the correct monitor of a
+        // multi-monitor system. (See MainFrame constructor for more info)
+        final PointerInfo myPointerInfo =
+                MouseInfo.getPointerInfo();
+        final GraphicsDevice myDevice = myPointerInfo.getDevice();
+        final GraphicsConfiguration myGraphicsConfig =
+                myDevice.getDefaultConfiguration();
+        final Rectangle gcBounds = myGraphicsConfig.getBounds();
+        final int xPos =
+                gcBounds.x + ((gcBounds.width - getWidth()) / 2);
+        final int yPos =
+                gcBounds.y + ((gcBounds.height - getHeight()) / 2);
+        setLocation(xPos, yPos);
     }
 
     /**

@@ -58,8 +58,7 @@ public final class ProfileStep extends Step {
                 + " your nickname, realname, etc when connecting to a server. "
                 + "If you would like the wizard to open the profile manager "
                 + "for you, tick the box below.");
-        infoLabel.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
-        add(infoLabel, "growx, pushx, wmax 400");
+        add(infoLabel, "growx, pushx");
         add(profile, "");
     }
     

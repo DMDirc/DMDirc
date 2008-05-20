@@ -23,11 +23,14 @@
 package com.dmdirc.ui.swing.dialogs.about;
 
 import com.dmdirc.Main;
+
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Locale;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -84,19 +87,28 @@ public final class InfoPanel extends JPanel implements ActionListener {
         final JButton copy;
         final JPanel info;
         final JScrollPane scrollPane;
+        JLabel label;
         
         copy = new JButton("Copy to clipboard");
         copy.addActionListener(this);
         
         info = new JPanel(new MigLayout("fillx, wrap 2"));
-        info.add(new JLabel("DMDirc version: "));
+        label = new JLabel("DMDirc version: ");
+        label.setFont(label.getFont().deriveFont(Font.BOLD));
+        info.add(label);
         info.add(new JLabel(Main.VERSION + " (" + Main.SVN_REVISION + "; "
                 + Main.UPDATE_CHANNEL + ")"), "growx, pushx");
-        info.add(new JLabel("Profile directory: "));
+        label = new JLabel("Profile directory: ");
+        label.setFont(label.getFont().deriveFont(Font.BOLD));
+        info.add(label);
         info.add(new JLabel(Main.getConfigDir()), "growx, pushx");
-        info.add(new JLabel("Java version: "));
+        label = new JLabel("Java version: ");
+        label.setFont(label.getFont().deriveFont(Font.BOLD));
+        info.add(label);
         info.add(new JLabel(getJavaVersion()), "growx, pushx");
-        info.add(new JLabel("OS Version: "));
+        label = new JLabel("OS Version: ");
+        label.setFont(label.getFont().deriveFont(Font.BOLD));
+        info.add(label);
         info.add(new JLabel(getOSVersion()), "growx, pushx");
         
         scrollPane = new JScrollPane(info);

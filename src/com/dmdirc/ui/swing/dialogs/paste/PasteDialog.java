@@ -38,13 +38,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
-import javax.swing.border.EtchedBorder;
 
 import net.miginfocom.swing.MigLayout;
 

@@ -61,7 +61,6 @@ public final class FirstRunExtractionStep extends ExtractionStep {
                 + "Thse plugins need to be copied into your home directory to"
                 + " be used. If you would like the wizard to copy the core "
                 + "plugins for you, tick the box below.");
-        infoLabel.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
         add(infoLabel, "growx, pushx");
         add(plugins, "");
         infoLabel = new TextLabel("DMDirc also comes with a set of core"
@@ -69,7 +68,6 @@ public final class FirstRunExtractionStep extends ExtractionStep {
                 + " functionality such as highlighting. If you would like"
                 + " the wizard to copy the core actions for you, tick the"
                 + " box below.");
-        infoLabel.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
         add(infoLabel, "growx, pushx");
         add(actions, "");
     }
