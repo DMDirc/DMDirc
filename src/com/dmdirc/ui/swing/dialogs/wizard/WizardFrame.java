@@ -61,14 +61,14 @@ public final class WizardFrame extends JFrame {
 
         setTitle(title);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setLayout(new MigLayout("fill, pack"));
+        setLayout(new MigLayout("fill, pack, wmin 400, wmax 600"));
         this.wizard = new WizardPanel(title, steps, wizard);
         layoutComponents();
     }
 
     /** Lays out the components. */
     private void layoutComponents() {
-        add(wizard);
+        add(wizard, "grow");
     }
 
     /** Displays the wizard. */

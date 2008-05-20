@@ -22,9 +22,8 @@
 
 package com.dmdirc.ui.swing.dialogs.wizard.firstrun;
 
-
 import com.dmdirc.ui.swing.components.TextLabel;
-import java.awt.Dimension;
+
 import net.miginfocom.swing.MigLayout;
 
 /**

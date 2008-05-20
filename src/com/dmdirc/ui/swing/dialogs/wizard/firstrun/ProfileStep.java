@@ -25,7 +25,6 @@ package com.dmdirc.ui.swing.dialogs.wizard.firstrun;
 import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 
-import java.awt.Dimension;
 import javax.swing.JCheckBox;
 
 import net.miginfocom.swing.MigLayout;
