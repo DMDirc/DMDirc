@@ -87,7 +87,7 @@ public abstract class DCCFrame extends WritableFrameContainer {
 			public PopupType getHyperlinkPopupType() {
 				return null;
 			}
-    
+			
 			/** {@inheritDoc} */
 			@Override
 			public PopupType getNormalPopupType() {
@@ -133,9 +133,9 @@ public abstract class DCCFrame extends WritableFrameContainer {
 		 * @param origin The window in which the command was typed
 		 * @param line The line input by the user
 		 */
- 		@Override
+		@Override
 		protected void handleNonCommand(final InputWindow origin, final String line) {
-            origin.getContainer().sendLine(line);
+			origin.getContainer().sendLine(line);
 		}
 	}
 	
@@ -174,7 +174,7 @@ public abstract class DCCFrame extends WritableFrameContainer {
 		if (defaultWindow) {
 			myWindow = new EmptyFrame(this);
 			myWindow.setTitle(title);
-			myWindow.setVisible(true);
+//			myWindow.setVisible(true);
 		}
 	}
 	

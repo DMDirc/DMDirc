@@ -69,7 +69,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface {
 	 *
 	 * @param dcc The DCCSend that this message is from
 	 */
-    @Override
+	@Override
 	public void socketClosed(final DCCSend dcc) {
 
 	}
@@ -79,7 +79,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface {
 	 *
 	 * @param dcc The DCCSend that this message is from
 	 */
-    @Override
+	@Override
 	public void socketOpened(final DCCSend dcc) {
 
 	}
@@ -87,7 +87,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface {
 	/**
 	 * Closes this container (and it's associated frame).
 	 */
-    @Override
+	@Override
 	public void windowClosing() {
 		dcc.close();
 		super.windowClosing();

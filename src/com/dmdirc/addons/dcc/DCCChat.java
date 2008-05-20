@@ -61,7 +61,7 @@ public class DCCChat extends DCC {
 	/**
 	 * Called when the socket is first opened, before any data is handled.
 	 */
-    @Override
+	@Override
 	protected void socketOpened() {
 		try {
 			out = new PrintWriter(socket.getOutputStream(), true);
@@ -75,7 +75,7 @@ public class DCCChat extends DCC {
 	/**
 	 * Called when the socket is closed, before the thread terminates.
 	 */
-    @Override
+	@Override
 	protected void socketClosed() {
 		out = null;
 		in = null;
@@ -90,7 +90,7 @@ public class DCCChat extends DCC {
 	 * @return false when socket is closed, true will cause the method to be
 	 *         called again.
 	 */
-    @Override
+	@Override
 	protected boolean handleSocket() {
 		if (out == null || in == null) { return false; }
 		final String inLine;
@@ -112,15 +112,15 @@ public class DCCChat extends DCC {
 	/**
 	 * Check if this socket can be written to.
 	 */
-    @Override
+	@Override
 	public boolean isWriteable() {
 		return out != null;
 	}
 	
 	/**
 	 * Send a line out the socket.
-     * 
-     * @param line The line to be sent
+	 *
+	 * @param line The line to be sent
 	 */
 	public void sendLine(final String line) {
 		if (out != null) {

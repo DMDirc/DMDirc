@@ -52,6 +52,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -66,8 +69,8 @@ import javax.swing.SwingConstants;
 public final class DCCPlugin extends Plugin implements ActionListener {
 
 	/** What domain do we store all settings in the global config under. */
-	private static final String MY_DOMAIN = "plugin-DCC";    
-    
+	private static final String MY_DOMAIN = "plugin-DCC";
+
 	/** The DCCCommand we created. */
 	private DCCCommand command;
 
@@ -97,8 +100,8 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	public void askQuestion(final String question, final String title, final int desiredAnswer, final ActionType type, final StringBuffer format, final Object... arguments) {
 		// New thread to ask the question in to stop us locking the UI
 		final Thread questionThread = new Thread(new Runnable() {
-            /** {@inheritDoc} */
-            @Override
+			/** {@inheritDoc} */
+			@Override
 			public void run() {
 				int result = JOptionPane.showConfirmDialog(null, question, title, JOptionPane.YES_NO_OPTION);
 				if (result == desiredAnswer) {
@@ -117,14 +120,14 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 * @param send The DCCSend to save for.
 	 * @param parser The parser this send was received on
 	 * @param reverse Is this a reverse dcc?
-     * @param sendFilename The name of the file which is being received
-     * @param token Token used in reverse dcc.
+	 * @param sendFilename The name of the file which is being received
+	 * @param token Token used in reverse dcc.
 	 */
 	public void saveFile(final String nickname, final DCCSend send, final IRCParser parser, final boolean reverse, final String sendFilename, final String token) {
 		// New thread to ask the user where to save in to stop us locking the UI
 		final Thread dccThread = new Thread(new Runnable() {
-            /** {@inheritDoc} */
-            @Override
+			/** {@inheritDoc} */
+			@Override
 			public void run() {
 				final JFileChooser jc = new JFileChooser(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "receive.savelocation"));
 				jc.setDialogTitle("Save "+sendFilename+" As - DMDirc ");
@@ -169,7 +172,8 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 							}
 						} else {
 							send.listen();
-							parser.sendCTCP(nickname, "DCC", "SEND "+sendFilename+" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+send.getFileSize()+" "+token);
+							
+							parser.sendCTCP(nickname, "DCC", "SEND "+sendFilename+" "+DCC.ipToLong(getListenIP(parser))+" "+send.getPort()+" "+send.getFileSize()+" "+token);
 						}
 					} else {
 						new DCCSendWindow(DCCPlugin.this, send, "Receive: "+nickname, parser.getMyNickname(), nickname);
@@ -447,37 +451,76 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		}
 	}
 
+	/**
+	 * Get the IP Address we should send as our listening IP.
+	 *
+	 * @param return The IP Address we should send as our listening IP.
+	 */
+	public static String getListenIP() {
+		return getListenIP(null);
+	}
+	
+	/**
+	 * Get the IP Address we should send as our listening IP.
+	 *
+	 * @param parser IRCParser the IRC Parser where this dcc is initiated
+	 * @param return The IP Address we should send as our listening IP.
+	 */
+	public static String getListenIP(final IRCParser parser) {
+		final String configIP = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.ip", ""); 
+		if (!configIP.isEmpty()) {
+			return configIP;
+		} else if (parser != null) {
+			final String myHost = parser.getMyself().getHost();
+			if (!myHost.isEmpty()) {
+				try {
+					return InetAddress.getByName(myHost).getHostAddress();
+				} catch (UnknownHostException e) { /* Will return default host below */ }
+			}
+		}
+		try {
+			return InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e) {
+			// This is almost certainly not what we want, but we can't work out
+			// the right one.
+			return "127.0.0.1";
+		}
+	}
+
 	/** {@inheritDoc} */
-    @Override
+	@Override
 	public void showConfig(final PreferencesManager manager) {
 		final PreferencesCategory general = new PreferencesCategory("DCC", "");
-        final PreferencesCategory sending = new PreferencesCategory("Sending", "");
-        final PreferencesCategory receiving = new PreferencesCategory("Receiving", "");
+		final PreferencesCategory sending = new PreferencesCategory("Sending", "");
+		final PreferencesCategory receiving = new PreferencesCategory("Receiving", "");
 
-        manager.getCategory("Plugins").addSubCategory(general.setInlineAfter());
-        general.addSubCategory(sending.setInline());
-        general.addSubCategory(receiving.setInline());
+		manager.getCategory("Plugins").addSubCategory(general.setInlineAfter());
+		general.addSubCategory(sending.setInline());
+		general.addSubCategory(receiving.setInline());
 
-        receiving.addSetting(new PreferencesSetting(PreferencesType.TEXT,
-                MY_DOMAIN, "receive.savelocation", "", "Default save location",
-                "Where the save as window defaults to?"));
-        sending.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                MY_DOMAIN, "send.reverse", "false", "Reverse DCC",
-                "With reverse DCC, the sender connects rather than " +
-                "listens like normal dcc"));
-        sending.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                MY_DOMAIN, "send.forceturbo", "false", "Use Turbo DCC",
-                "Turbo DCC doesn't wait for ack packets. this is " +
-                "faster but not always supported."));
-        receiving.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                MY_DOMAIN, "receive.reverse.sendtoken", "false",
-                "Send token in reverse receive",
-                "If you have problems with reverse dcc receive resume," +
-                " try toggling this."));
-        general.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
-                MY_DOMAIN, "send.blocksize", "1024", "Blocksize to use for DCC",
-                "Change the block size for send/receive, this can " +
-                "sometimes speed up transfers."));
+		general.addSetting(new PreferencesSetting(PreferencesType.TEXT,
+		          MY_DOMAIN, "general.ip", "", "Force IP",
+		          "What IP should be sent as ours (Blank = work it out)?"));
+		receiving.addSetting(new PreferencesSetting(PreferencesType.TEXT,
+		          MY_DOMAIN, "receive.savelocation", "", "Default save location",
+		          "Where the save as window defaults to?"));
+		sending.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+		          MY_DOMAIN, "send.reverse", "false", "Reverse DCC",
+		          "With reverse DCC, the sender connects rather than " +
+		          "listens like normal dcc"));
+		sending.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+		          MY_DOMAIN, "send.forceturbo", "false", "Use Turbo DCC",
+		          "Turbo DCC doesn't wait for ack packets. this is " +
+		          "faster but not always supported."));
+		receiving.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+		          MY_DOMAIN, "receive.reverse.sendtoken", "false",
+		          "Send token in reverse receive",
+		          "If you have problems with reverse dcc receive resume," +
+		          " try toggling this."));
+		general.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
+		          MY_DOMAIN, "send.blocksize", "1024", "Blocksize to use for DCC",
+		          "Change the block size for send/receive, this can " +
+		          "sometimes speed up transfers."));
 	}
 
 	/**

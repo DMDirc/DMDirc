@@ -64,8 +64,8 @@ public abstract class DCC implements Runnable {
 		try {
 			if (listen) {
 				// serverSocket = new ServerSocket(0, 1, InetAddress.getByName(longToIP(bindIP)));
-				serverSocket = new ServerSocket(0, 1, InetAddress.getLocalHost());
-				address = ipToLong(InetAddress.getLocalHost().getHostAddress());
+				serverSocket = new ServerSocket(0, 1);
+				address = 0;
 				port = serverSocket.getLocalPort();
 			} else {
 				// socket = new Socket(longToIP(address), port, bindIP, 0);
@@ -92,7 +92,7 @@ public abstract class DCC implements Runnable {
 	/**
 	 * This handles the socket to keep it out of the main thread
 	 */
-    @Override
+	@Override
 	public void run() {
 		if (running) { return; }
 		running = true;
@@ -157,8 +157,8 @@ public abstract class DCC implements Runnable {
 	
 	/**
 	 * Check if this socket can be written to.
-     * 
-     * @return True if the socket is writable, false otehrwise
+	 *
+	 * @return True if the socket is writable, false otehrwise
 	 */
 	public boolean isWriteable() {
 		return false;

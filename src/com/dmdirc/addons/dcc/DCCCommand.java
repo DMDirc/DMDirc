@@ -44,14 +44,14 @@ import javax.swing.JFrame;
  */
 public final class DCCCommand extends GlobalCommand {
 
-    /** My Plugin */
+	/** My Plugin */
 	final DCCPlugin myPlugin;
 
 	/**
 	 * Creates a new instance of DCCCommand.
-     * 
-     * @param plugin The DCC Plugin that this command belongs to
-     */
+	 *
+	 * @param plugin The DCC Plugin that this command belongs to
+	 */
 	public DCCCommand(final DCCPlugin plugin) {
 		super();
 		myPlugin = plugin;
@@ -77,7 +77,8 @@ public final class DCCCommand extends GlobalCommand {
 				final DCCChat chat = new DCCChat();
 				chat.listen();
 				final DCCChatWindow window = new DCCChatWindow(myPlugin, chat, "*Chat: "+target, myNickname, target);
-				parser.sendCTCP(target, "DCC", "CHAT chat "+DCC.ipToLong(chat.getHost())+" "+chat.getPort());
+				
+				parser.sendCTCP(target, "DCC", "CHAT chat "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" "+chat.getPort());
 				
 				ActionManager.processEvent(DCCActions.DCC_CHAT_REQUEST_SENT, null, server, target);
 				
@@ -103,8 +104,8 @@ public final class DCCCommand extends GlobalCommand {
 	public void sendFile(final String target, final InputWindow origin, final boolean isSilent) {
 		// New thread to ask the user what file to senfd
 		final Thread dccThread = new Thread(new Runnable() {
-            /** {@inheritDoc} */
-            @Override
+			/** {@inheritDoc} */
+			@Override
 			public void run() {
 				final JFileChooser jc = new JFileChooser();
 				jc.setDialogTitle("Send file to "+target+" - DMDirc ");
@@ -122,13 +123,14 @@ public final class DCCCommand extends GlobalCommand {
 				
 					send.setFileName(jc.getSelectedFile().getAbsolutePath());
 					send.setFileSize(jc.getSelectedFile().length());
+					
 					if (IdentityManager.getGlobalConfig().getOptionBool(DCCPlugin.getDomain(), "send.reverse", false)) {
 						new DCCSendWindow(myPlugin, send, "*Send: "+target, myNickname, target);
-						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(send.getHost())+" 0 "+send.getFileSize()+" "+send.makeToken()+((send.isTurbo()) ? "T" : ""));
+						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" 0 "+send.getFileSize()+" "+send.makeToken()+((send.isTurbo()) ? "T" : ""));
 					} else {
 						new DCCSendWindow(myPlugin, send, "Send: "+target, myNickname, target);
 						send.listen();
-						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+send.getFileSize()+((send.isTurbo()) ? " T" : ""));
+						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" "+send.getPort()+" "+send.getFileSize()+((send.isTurbo()) ? " T" : ""));
 					}
 				}
 			}

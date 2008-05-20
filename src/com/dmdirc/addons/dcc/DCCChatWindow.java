@@ -70,7 +70,7 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 	 *
 	 * @param line The line to be sent
 	 */
-    @Override
+	@Override
 	public void sendLine(final String line) {
 		if (dcc.isWriteable()) {
 			final StringBuffer buff = new StringBuffer("DCCChatSelfMessage");
@@ -89,7 +89,7 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 	 * @param dcc The DCCChat that this message is from
 	 * @param message The message
 	 */
-    @Override
+	@Override
 	public void handleChatMessage(final DCCChat dcc, final String message) {
 		final StringBuffer buff = new StringBuffer("DCCChatMessage");
 		ActionManager.processEvent(DCCActions.DCC_CHAT_MESSAGE, buff, this, otherNickname, message);
@@ -101,7 +101,7 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 	 *
 	 * @param dcc The DCCChat that this message is from
 	 */
-    @Override
+	@Override
 	public void socketClosed(final DCCChat dcc) {
 		final StringBuffer buff = new StringBuffer("DCCChatInfo");
 		ActionManager.processEvent(DCCActions.DCC_CHAT_SOCKETCLOSED, buff, this);
@@ -113,7 +113,7 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 	 *
 	 * @param dcc The DCCChat that this message is from
 	 */
-    @Override
+	@Override
 	public void socketOpened(final DCCChat dcc) {
 		final StringBuffer buff = new StringBuffer("DCCChatInfo");
 		ActionManager.processEvent(DCCActions.DCC_CHAT_SOCKETOPENED, buff, this);
@@ -123,7 +123,7 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 	/**
 	 * Closes this container (and it's associated frame).
 	 */
-    @Override
+	@Override
 	public void windowClosing() {
 		dcc.close();
 		super.windowClosing();

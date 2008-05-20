@@ -256,7 +256,7 @@ public class DCCSend extends DCC {
 	/**
 	 * Called when the socket is first opened, before any data is handled.
 	 */
-    @Override
+	@Override
 	protected void socketOpened() {
 		try {
 			transferFile = new File(filename);
@@ -275,7 +275,7 @@ public class DCCSend extends DCC {
 	/**
 	 * Called when the socket is closed, before the thread terminates.
 	 */
-    @Override
+	@Override
 	protected void socketClosed() {
 		// Try to close both, even if one fails.
 		try { out.close(); } catch (IOException e) { }
@@ -294,7 +294,7 @@ public class DCCSend extends DCC {
 	 * @return false when socket is closed, true will cause the method to be
 	 *         called again.
 	 */
-    @Override
+	@Override
 	protected boolean handleSocket() {
 		if (out == null || in == null) { return false; }	
 		if (transferType == TransferType.RECEIVE) {
@@ -344,6 +344,7 @@ public class DCCSend extends DCC {
 	 *         called again.
 	 */
 	protected boolean handleSend() {
+		if (fileIn == null) { return true; }
 		try {
 			final byte[] data = new byte[blockSize];
 			int bytesRead = fileIn.read(data);
@@ -361,13 +362,14 @@ public class DCCSend extends DCC {
 				
 				if (readSize == size) {
 					fileIn.close();
-					return false;
-				} else {
-					return true;
+					fileIn = null;
 				}
+				
+				return true;
 			} else if (bytesRead < 0) {
 				fileIn.close();
-				return false;
+				fileIn = null;
+				return true;
 			}
 		} catch (IOException e) {
 			return false;
