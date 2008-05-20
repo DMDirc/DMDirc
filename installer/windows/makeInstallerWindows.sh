@@ -267,7 +267,7 @@ fi;
 DELETEFILES=${FILES}
 FPC=`which fpc`
 lazarusDir="/usr/share/lazarus"
-if [ -e "${lazarusDir}/lcl" ]; then
+if [ ! -e "${lazarusDir}/lcl" ]; then
 	lazarusDir="/usr/lib/lazarus/"
 fi;
 compilerFlags="-Sd -Twin32 ${compilerFlags}";
