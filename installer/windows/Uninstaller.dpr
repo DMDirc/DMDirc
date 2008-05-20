@@ -23,44 +23,36 @@ begin
 end;
 
 
-procedure Launch(sProgramToRun: String);
+// Run an application and don't wait for it to finish.
+function Launch(sProgramToRun: String; hide: boolean = false): TProcessInformation;
 var
 	StartupInfo: TStartupInfo;
-	ProcessInfo: TProcessInformation;
 begin
 	FillChar(StartupInfo, SizeOf(TStartupInfo), 0);
 	with StartupInfo do begin
 		cb := SizeOf(TStartupInfo);
 		dwFlags := STARTF_USESHOWWINDOW;
-		wShowWindow := SW_SHOWNORMAL;
+		if hide then wShowWindow := SW_HIDE
+		else wShowWindow := SW_SHOWNORMAL;
 	end;
 
-	CreateProcess(nil, PChar(sProgramToRun), nil, nil, False, NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo, ProcessInfo);
+	CreateProcess(nil, PChar(sProgramToRun), nil, nil, False, NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo, Result);
 end;
 
-function CheckStdErr(sProgramToRun: String): Boolean;
+// Run an application and wait for it to finish.
+function ExecAndWait(sProgramToRun: String; hide: boolean = false): Longword;
 var
-        StartupInfo: TStartupInfo;
-	Pipe, Pipe2: THandle;
-        ProcessInfo: TProcessInformation;
-	BytesRead: Cardinal;
-        Buffer: array[0..255] of Char; 
+	ProcessInfo: TProcessInformation;
 begin
-	CreatePipe(Pipe2, Pipe, nil, 0);
+	ProcessInfo := Launch(sProgramToRun, hide);
+	getExitCodeProcess(ProcessInfo.hProcess, Result);
 
-        FillChar(StartupInfo, SizeOf(TStartupInfo), 0);
-        with StartupInfo do begin
-                cb := SizeOf(TStartupInfo);
-                dwFlags := STARTF_USESHOWWINDOW;
-                wShowWindow := SW_SHOWNORMAL;
-		hStdError := Pipe;
-        end;
-
-        CreateProcess(nil, PChar(sProgramToRun), nil, nil, False, NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo, ProcessInfo);
-
-	ReadFile(Pipe2, Buffer, 255, BytesRead, nil);
-
-	Result := BytesRead > 0;
+	while Result=STILL_ACTIVE do begin
+		sleep(1000);
+		GetExitCodeProcess(ProcessInfo.hProcess, Result);
+	end;
+	
+	MessageBox(0, PChar('Exec: '+sProgramToRun+#13#10+'Res: '+inttostr(Result)), 'DMDirc Uninstaller', MB_OK + MB_ICONEXCLAMATION);
 end;
 
 function KillDir(Dir: string): Integer;
@@ -102,77 +94,77 @@ var
 	profileDir: String;
 	deleteProtocol: boolean;
 begin
-	if (ParamCount > 0) then begin
-		for i := 1 to ParamCount do begin
-			InstallDir := InstallDir+' '+paramstr(i);
-		end;
-		InstallDir := trim(InstallDir);
-		KillDir(InstallDir);
-		hK32 := GetModuleHandle('kernel32');
-		profileDir := GetEnvironmentVariable('USERPROFILE');
-		
-		if GetProcAddress(hK32, 'GetLocaleInfoEx') <> nil then begin
-			// Vista
-			KillDir(GetEnvironmentVariable('APPDATA')+'\Microsoft\Windows\Start Menu\Programs\DMDirc');
-			DeleteFile(GetEnvironmentVariable('USERPROFILE')+'\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\DMDirc.lnk');
-			DeleteFile(GetEnvironmentVariable('USERPROFILE')+'\Desktop\DMDirc.lnk');
-			profileDir := profileDir+'\AppData\Roaming\DMDirc';
-		end
-		else begin
-			// Not Vista
-			KillDir(GetEnvironmentVariable('USERPROFILE')+'\Microsoft\Windows\Start Menu\Programs\DMDirc');
-			DeleteFile(GetEnvironmentVariable('USERPROFILE')+'\Application Data\Microsoft\Internet Explorer\Quick Launch\DMDirc.lnk');
-			DeleteFile(GetEnvironmentVariable('USERPROFILE')+'\Desktop\DMDirc.lnk');
-			profileDir := profileDir+'\Application Data\DMDirc';
-		end;
-		// Remove irc:// handler if it is us.
-		deleteProtocol := false;
-		Reg := TRegistry.Create;
-		Reg.RootKey := HKEY_CLASSES_ROOT;
-		if Reg.OpenKey('irc\Shell\open\command', false) then begin
-			handlerInfo := Reg.ReadString('');
-			if (handlerInfo = '"'+InstallDir+'DMDirc.exe" -c %1') then begin
-				deleteProtocol := true;
+	if MessageBox(0, PChar('This will uninstall DMDirc.'+#13#10+#13#10+'Do you want to continue?'), 'DMDirc Uninstaller', MB_YESNO) = IDYES then begin
+		if (ParamCount > 0) then begin
+			for i := 1 to ParamCount do begin
+				InstallDir := InstallDir+' '+paramstr(i);
+			end;
+			InstallDir := trim(InstallDir);
+			KillDir(InstallDir);
+			hK32 := GetModuleHandle('kernel32');
+			profileDir := GetEnvironmentVariable('USERPROFILE');
+			
+			if GetProcAddress(hK32, 'GetLocaleInfoEx') <> nil then begin
+				// Vista
+				KillDir(GetEnvironmentVariable('APPDATA')+'\Microsoft\Windows\Start Menu\Programs\DMDirc');
+				DeleteFile(GetEnvironmentVariable('USERPROFILE')+'\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\DMDirc.lnk');
+				DeleteFile(GetEnvironmentVariable('USERPROFILE')+'\Desktop\DMDirc.lnk');
+				profileDir := profileDir+'\AppData\Roaming\DMDirc';
 			end
-		end;
-		Reg.CloseKey;
-		Reg.Free;
-		
-		if deleteProtocol then begin
+			else begin
+				// Not Vista
+				KillDir(GetEnvironmentVariable('USERPROFILE')+'\Microsoft\Windows\Start Menu\Programs\DMDirc');
+				DeleteFile(GetEnvironmentVariable('USERPROFILE')+'\Application Data\Microsoft\Internet Explorer\Quick Launch\DMDirc.lnk');
+				DeleteFile(GetEnvironmentVariable('USERPROFILE')+'\Desktop\DMDirc.lnk');
+				profileDir := profileDir+'\Application Data\DMDirc';
+			end;
+			// Remove irc:// handler if it is us.
+			deleteProtocol := false;
 			Reg := TRegistry.Create;
 			Reg.RootKey := HKEY_CLASSES_ROOT;
-			Reg.DeleteKey('irc\Shell\open\command');
-			Reg.DeleteKey('irc\Shell\open');
-			Reg.DeleteKey('irc\Shell');
-			Reg.DeleteKey('irc\DefaultIcon');
-			Reg.DeleteKey('irc');
+			if Reg.OpenKey('irc\Shell\open\command', false) then begin
+				handlerInfo := Reg.ReadString('');
+				if (handlerInfo = '"'+InstallDir+'DMDirc.exe" -c %1') then begin
+					deleteProtocol := true;
+				end
+			end;
 			Reg.CloseKey;
 			Reg.Free;
-		end;
 			
-		Reg := TRegistry.Create;
-		Reg.RootKey := HKEY_LOCAL_MACHINE;
-		Reg.DeleteKey('SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DMDirc');
-		Reg.CloseKey;
-		Reg.Free;
-		
-		if (FileExists(profileDir+'\dmdirc.config')) then begin
-			if MessageBox(0, PChar('A dmdirc profile has been detected ('+profileDir+')'+#13#10+' Do you want to delete it aswell?'), 'DMDirc Uninstaller', MB_YESNO) = IDYES then begin
-				KillDir(profileDir);
+			if deleteProtocol then begin
+				Reg := TRegistry.Create;
+				Reg.RootKey := HKEY_CLASSES_ROOT;
+				Reg.DeleteKey('irc\Shell\open\command');
+				Reg.DeleteKey('irc\Shell\open');
+				Reg.DeleteKey('irc\Shell');
+				Reg.DeleteKey('irc\DefaultIcon');
+				Reg.DeleteKey('irc');
+				Reg.CloseKey;
+				Reg.Free;
 			end;
-		end;
-		
-		MessageBox(0, PChar('DMDirc has been uninstalled from "'+InstallDir+'".'), 'DMDirc Uninstaller', MB_OK);
-	end
-	else begin
-MessageBox(0, PChar('java -jar ' + ExtractFileDir(paramstr(0)) + '/DMDirc.jar -e -v'), 'DMDirc Uninstaller', MB_OK + MB_ICONEXCLAMATION);
-
-		if checkStdErr('java -jar ' + ExtractFileDir(paramstr(0)) + 'DMDirc.jar -e -v') then begin
-	                TempDir := GetTempDirectory;
-			CopyFile(pchar(paramstr(0)), pchar(TempDir+'/uninstall.exe'), false);
-			Launch(TempDir+'/uninstall.exe '+ExtractFileDir(paramstr(0))+'\');
-		end else begin
-                        MessageBox(0, PChar('Uninstall Aborted - DMDirc is still running.'+#13#10+'Please close DMDirc before continuing'), 'DMDirc Uninstaller', MB_OK + MB_ICONEXCLAMATION);
+				
+			Reg := TRegistry.Create;
+			Reg.RootKey := HKEY_LOCAL_MACHINE;
+			Reg.DeleteKey('SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DMDirc');
+			Reg.CloseKey;
+			Reg.Free;
+			
+			if (FileExists(profileDir+'\dmdirc.config')) then begin
+				if MessageBox(0, PChar('A dmdirc profile has been detected ('+profileDir+')'+#13#10+' Do you want to delete it aswell?'), 'DMDirc Uninstaller', MB_YESNO) = IDYES then begin
+					KillDir(profileDir);
+				end;
+			end;
+			
+			MessageBox(0, PChar('DMDirc has been uninstalled from "'+InstallDir+'".'), 'DMDirc Uninstaller', MB_OK);
+		end
+		else begin
+			if (ExecAndWait('java -jar ' + ExtractFileDir(paramstr(0)) + '\DMDirc.jar -k', true) <> 0) then begin
+				TempDir := GetTempDirectory;
+				CopyFile(pchar(paramstr(0)), pchar(TempDir+'/uninstall.exe'), false);
+				Launch(TempDir+'/uninstall.exe '+ExtractFileDir(paramstr(0))+'\');
+			end else begin
+				MessageBox(0, PChar('Uninstall Aborted - DMDirc is still running.'+#13#10+'Please close DMDirc before continuing'), 'DMDirc Uninstaller', MB_OK + MB_ICONEXCLAMATION);
+			end;
 		end;
 	end;
 end.

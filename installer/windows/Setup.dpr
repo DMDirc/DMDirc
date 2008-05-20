@@ -190,7 +190,7 @@ begin
 	end;
 end;
 
-// Run an application and wait for it to finish.
+// Run an application and don't wait for it to finish.
 function Launch(sProgramToRun: String; hide: boolean = false): TProcessInformation;
 var
 	StartupInfo: TStartupInfo;

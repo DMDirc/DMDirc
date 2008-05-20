@@ -57,6 +57,7 @@ public class CommandLineParser {
         {'p', "portable", "Enable portable mode", Boolean.FALSE},
         {'r', "disable-reporting", "Disable automatic error reporting", Boolean.FALSE},
         {'v', "version", "Display client version and exit", Boolean.FALSE},
+        {'k', "check", "Check if an existing instance of DMDirc exists.", Boolean.FALSE},
     };
     
     /** A list of addresses to autoconnect to. */
@@ -196,6 +197,9 @@ public class CommandLineParser {
         case 'e':
             doExisting();
             break;
+        case 'k':
+            doExistingCheck();
+            break;
         case 'h':
             doHelp();
             break;
@@ -263,6 +267,19 @@ public class CommandLineParser {
         
         if (server == null) {
             System.err.println("Unable to connect to existing instance");
+        }
+    }
+    
+    /**
+     * Handles the --check argument.
+     */
+    private void doExistingCheck() {
+        if (RemoteServer.getServer() == null) {
+            System.out.println("Existing instance not found.");
+            System.exit(1);
+        } else {
+            System.out.println("Existing instance found.");
+            System.exit(0);
         }
     }
     
