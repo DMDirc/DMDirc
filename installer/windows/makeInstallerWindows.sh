@@ -267,6 +267,9 @@ fi;
 DELETEFILES=${FILES}
 FPC=`which fpc`
 lazarusDir="/usr/share/lazarus"
+if [ -e "${lazarusDir}/lcl" ]; then
+	lazarusDir="/usr/lib/lazarus/"
+fi;
 compilerFlags="-Sd -Twin32 ${compilerFlags}";
 if [ ! -e "Setup.exe"  -o "${compileSetup}" = "true" ]; then
 	echo "Setup.exe does not exist. Lets try and compile it."
