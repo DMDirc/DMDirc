@@ -287,8 +287,8 @@ public class DCCSend extends DCC {
 	@Override
 	protected void socketClosed() {
 		// Try to close both, even if one fails.
-		try { out.close(); } catch (IOException e) { }
-		try { in.close(); } catch (IOException e) { }
+		if (out != null) { try { out.close(); } catch (IOException e) { } }
+		if (in != null) { try { in.close(); } catch (IOException e) { } }
 		out = null;
 		in = null;
 		if (handler != null) {
