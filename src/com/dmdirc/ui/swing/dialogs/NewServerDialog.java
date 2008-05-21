@@ -111,8 +111,6 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
     public static synchronized NewServerDialog getNewServerDialog() {
         if (me == null) {
             me = new NewServerDialog();
-        } else {
-            me.update();
         }
 
         return me;
