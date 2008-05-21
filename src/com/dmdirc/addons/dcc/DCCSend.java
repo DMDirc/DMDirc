@@ -79,7 +79,9 @@ public class DCCSend extends DCC {
 	public DCCSend() {
 		super();
 		blockSize = IdentityManager.getGlobalConfig().getOptionInt(DCCPlugin.getDomain(), "send.blocksize", 1024);
-		sends.add(this);
+		synchronized (sends) {
+			sends.add(this);
+		}
 	}
 	
 	/**
@@ -88,7 +90,9 @@ public class DCCSend extends DCC {
 	 * @return A copy of the list of active sends.
 	 */
 	public static List<DCCSend> getSends() {
-		return new ArrayList<DCCSend>(sends);
+		synchronized (sends) {
+			return new ArrayList<DCCSend>(sends);
+		}
 	}
 	
 	/**
@@ -294,7 +298,9 @@ public class DCCSend extends DCC {
 		if (handler != null) {
 			handler.socketClosed(this);
 		}
-		sends.remove(this);
+		synchronized (sends) {
+			sends.remove(this);
+		}
 	}
 	
 	/**
@@ -375,7 +381,6 @@ public class DCCSend extends DCC {
 				
 				if (readSize == size) {
 					fileIn.close();
-					fileIn = null;
 					
 					// Process all the ack packets that may have been sent.
 					// In true turbo dcc mode, none will have been sent and the socket
@@ -400,7 +405,6 @@ public class DCCSend extends DCC {
 				return true;
 			} else if (bytesRead < 0) {
 				fileIn.close();
-				fileIn = null;
 				return true;
 			}
 		} catch (IOException e) {
