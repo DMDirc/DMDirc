@@ -8,3 +8,4 @@ minversion=0
 require-ui=com.dmdirc.ui.swing
 persistant-com.dmdirc.addons.dcc.actions.DCCActions=true
 persistant-com.dmdirc.addons.dcc.actions.DCCEvents=true
+addonid=23
