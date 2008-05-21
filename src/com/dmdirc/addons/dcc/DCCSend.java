@@ -238,6 +238,7 @@ public class DCCSend extends DCC {
 		if (transferType == TransferType.SEND && fileIn != null) {
 			try {
 				this.startpos = fileIn.skipBytes(startpos);
+				readSize = startpos;
 				return this.startpos;
 			} catch (IOException ioe) { }
 		}
@@ -329,7 +330,7 @@ public class DCCSend extends DCC {
 				if (handler != null) { handler.dataTransfered(this, bytesRead); }
 				fileOut.write(data, 0, bytesRead);
 				// Send ack
-				out.writeInt(readSize);
+				out.writeInt((int)readSize);
 				out.flush();
 				if (readSize == size) {
 					fileOut.close();
@@ -389,6 +390,7 @@ public class DCCSend extends DCC {
 							} catch (IOException e) {
 								break;
 							}
+							System.out.println(readSize - ack);
 						} while (ack > 0 && (readSize - ack) > 0);
 					}
 					
