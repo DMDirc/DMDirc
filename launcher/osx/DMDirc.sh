@@ -216,8 +216,7 @@ else
 	echo "Failed!"
 	ERROR="Sorry, java is not installed on this machine.";
 	ERROR=${ERROR}"\n"
-	ERROR=${ERROR}"\nDMDirc requires a 1.6.0 compatible JVM, this is currently";
-	ERROR=${ERROR}"only availble as a Developer Preview from the Apple Developer site.";
+	ERROR=${ERROR}"\nDMDirc requires a 1.6.0 compatible JVM.";
 	errordialog "Unable to launch dmdirc!" "${ERROR}";
 	exit 1;
 fi
@@ -233,8 +232,7 @@ if [ -e "${jar}" ]; then
 		ERROR="Sorry, the currently installed version of java is not compatible with";
 		ERROR=${ERROR}"\nDMDirc.";
 		ERROR=${ERROR}"\n";
-		ERROR=${ERROR}"\nDMDirc requires a 1.6.0 compatible JVM, this is currently";
-		ERROR=${ERROR}"only availble as a Developer Preview from the Apple Developer site.";
+		ERROR=${ERROR}"\nDMDirc requires a 1.6.0 compatible JVM.";
 		errordialog "Unable to launch dmdirc!" "${ERROR}";
 		exit 1;
 	fi
