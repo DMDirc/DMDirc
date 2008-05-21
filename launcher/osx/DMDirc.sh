@@ -84,7 +84,8 @@ messagedialog() {
 	fi;
 }
 
-jar=`dirname $0`/../Resources/Java/DMDirc.jar
+jarDir=`dirname $0`/../Resources/Java/
+jar=${jarDir}DMDirc.jar
 launcherUpdater=${profiledir}/updateLauncher.sh
 echo "---------------------"
 echo "DMDirc - Open Source IRC Client"
@@ -215,8 +216,8 @@ else
 	echo "Failed!"
 	ERROR="Sorry, java is not installed on this machine.";
 	ERROR=${ERROR}"\n"
-	ERROR=${ERROR}"\nDMDirc requires a 1.6.0 compatible JVM, this is currently:";
-	ERROR=${ERROR}"\nonly availble as a Developer Preview from the Apple Developer site.";
+	ERROR=${ERROR}"\nDMDirc requires a 1.6.0 compatible JVM, this is currently";
+	ERROR=${ERROR}"only availble as a Developer Preview from the Apple Developer site.";
 	errordialog "Unable to launch dmdirc!" "${ERROR}";
 	exit 1;
 fi
@@ -232,8 +233,8 @@ if [ -e "${jar}" ]; then
 		ERROR="Sorry, the currently installed version of java is not compatible with";
 		ERROR=${ERROR}"\nDMDirc.";
 		ERROR=${ERROR}"\n";
-		ERROR=${ERROR}"\nDMDirc requires a 1.6.0 compatible JVM, this is currently:";
-		ERROR=${ERROR}"\nonly availble as a Developer Preview from the Apple Developer site.";
+		ERROR=${ERROR}"\nDMDirc requires a 1.6.0 compatible JVM, this is currently";
+		ERROR=${ERROR}"only availble as a Developer Preview from the Apple Developer site.";
 		errordialog "Unable to launch dmdirc!" "${ERROR}";
 		exit 1;
 	fi
@@ -242,6 +243,7 @@ if [ -e "${jar}" ]; then
 	# to be seen, and the shell script exits with the correct exit code.
 	
 	APPLEOPTS=""
+	APPLEOPTS="${APPLEOPTS} -Djava.library.path=${jarDir}"
 #	APPLEOPTS="${APPLEOPTS} -Dcom.apple.mrj.application.growbox.intrudes=false"
 #	APPLEOPTS="${APPLEOPTS} -Dcom.apple.mrj.application.live-resize=true"
 #	APPLEOPTS="${APPLEOPTS} -Dcom.apple.mrj.application.apple.menu.about.name=DMDirc"

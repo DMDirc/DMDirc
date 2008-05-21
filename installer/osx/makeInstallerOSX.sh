@@ -44,6 +44,22 @@ MKHFS=`which mkfs.hfs`
 MKHFSPLUS=`which mkfs.hfsplus`
 HDIUTIL=`which hdiutil`
 
+JNIName="libDMDirc-Apple.jnilib"
+
+if [ ! -e "${JNIName}" ]; then
+	if [ -e "/System/Library/Frameworks/JavaVM.framework/Headers" ]; then
+		GCC=`which gcc`
+		${GCC} -dynamiclib -framework JavaVM -framework Carbon -o ${JNIName} DMDirc-Apple.c -arch x86_64
+		if [ ! -e "${JNIName}" ]; then
+			echo "JNI Lib not found and failed to compile. Aborting."
+			exit 1;
+		fi;
+	else
+		echo "JNI Lib not found, unable to compile on this system. Aborting."
+		exit 1;
+	fi;
+fi;
+
 if [ "" = "${HDIUTIL}" ]; then
 	if [ "" = "${MKHFS}" -a "" = "${MKHFSPLUS}" ]; then
 		echo "This machine is unable to produce dmg images. Aborting."
@@ -280,6 +296,7 @@ EOF
 #	</dict>
 
 cp DMDirc.jar ${RESDIR}/Java/DMDirc.jar
+cp ${JNIName} ${RESDIR}/Java/${JNIName}
 
 #if [ -e "../common/installer.jar" ]; then
 #	ln -sf ../common/installer.jar ./installer.jar

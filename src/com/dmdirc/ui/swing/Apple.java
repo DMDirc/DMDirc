@@ -23,19 +23,31 @@
 package com.dmdirc.ui.swing;
 
 import com.dmdirc.Main;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.ActionListener;
+import com.dmdirc.util.IrcAddress;
+import com.dmdirc.util.InvalidAddressException;
+
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 
 import java.awt.event.ActionEvent;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.InvocationTargetException;
 
+import java.util.ArrayList;
+
 /**
  * Integrate DMDirc with OS X better.
  */
-public final class Apple implements InvocationHandler {
+public final class Apple implements InvocationHandler, ActionListener {
 	/** ApplicationEvent */
 	private interface ApplicationEvent {
 		String getFilename();
@@ -60,6 +72,12 @@ public final class Apple implements InvocationHandler {
 	/** The MenuBar for the application */
 	private MenuBar menuBar = null;
 
+	/** Has the CLIENT_OPENED action been called? */
+	private volatile boolean clientOpened = false;
+	
+	/** Store any addresses that are opened before CLIENT_OPENED. */
+	private volatile ArrayList<IrcAddress> addresses = new ArrayList<IrcAddress>();
+
 	/**
 	 * Get the "Apple" instance.
 	 *
@@ -70,6 +88,25 @@ public final class Apple implements InvocationHandler {
 			me = new Apple();
 		}
 		return me;
+	}
+	
+	/**
+	 * Create the Apple class.
+	 * This attempts to:
+	 *   - load the JNI library
+	 *   - register the callback
+	 *   - register a CLIENT_OPENED listener
+	 */
+	private Apple() {
+		if (isApple()) {
+			try {
+				System.loadLibrary("DMDirc-Apple");
+				registerOpenURLCallback();
+				ActionManager.addListener(this, CoreActionType.CLIENT_OPENED);
+			} catch (UnsatisfiedLinkError ule) {
+				Logger.appError(ErrorLevel.MEDIUM, "Unable to load JNI library.", ule);
+			}
+		}
 	}
 
 	/**
@@ -124,7 +161,6 @@ public final class Apple implements InvocationHandler {
 	 * @return true if we are running on OS X
 	 */
 	public static boolean isApple() {
-//		return (Main.getUI() instanceof SwingController && System.getProperty("os.name").startsWith("Mac OS"));
 		return (System.getProperty("mrj.version") != null);
 	}
 
@@ -147,7 +183,6 @@ public final class Apple implements InvocationHandler {
 		System.setProperty("apple.laf.useScreenMenuBar", "true");
 		System.setProperty("com.apple.mrj.application.growbox.intrudes", "false");
 		System.setProperty("com.apple.mrj.application.live-resize", "true");
-//		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "DMDirc: " + Main.VERSION);
 		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "DMDirc");
 	}
 	
@@ -209,6 +244,7 @@ public final class Apple implements InvocationHandler {
 	}
 	
 	/** {@inheritDoc} */
+	@Override
 	public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
 		if (!isApple()) { return null; }
 		
@@ -305,4 +341,55 @@ public final class Apple implements InvocationHandler {
 	 * @param event an ApplicationEvent object
 	 */
 	public void handleReopenApplication(final ApplicationEvent event) { }
+	
+	/** {@inheritDoc} */
+	@Override
+	public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
+		if (type == CoreActionType.CLIENT_OPENED) {
+			synchronized (addresses) {
+				clientOpened = true;
+				for (IrcAddress addr : addresses) {
+					addr.connect();
+				}
+				addresses.clear();
+			}
+		}
+	}
+
+	/**
+	 * Callback from JNI library.
+	 * If called before the client has finished opening, the URL will be added to
+	 * a list that will be connected to once the CLIENT_OPENED action is called.
+	 * Otherwise we connect right away.
+	 *
+	 * @param url The irc url to connect to.
+	 */
+	@SuppressWarnings("unused")
+	public void handleOpenURL(final String url) {
+		if (isApple()) {
+			try {
+				synchronized (addresses) {
+					final IrcAddress addr = new IrcAddress(url);
+					if (!clientOpened) {
+						addresses.add(addr);
+					} else {
+						// When the JNI callback is called there is no ContextClassLoader set.
+						// This causes an NPE in IconManager if no servers have been connected to yet
+						// This solves it.
+						if (Thread.currentThread().getContextClassLoader() == null) {
+							Thread.currentThread().setContextClassLoader(ClassLoader.getSystemClassLoader());
+						}
+						addr.connect();
+					}
+				}
+			} catch (InvalidAddressException iae) { }
+		}
+	}
+
+	/**
+	 * Register the getURL Callback.
+	 *
+	 * @return 0 on success, 1 on failure.
+	 */
+	private synchronized final native int registerOpenURLCallback();
 }
