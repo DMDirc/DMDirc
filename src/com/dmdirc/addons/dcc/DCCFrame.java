@@ -34,6 +34,9 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.swing.components.InputTextFrame;
+import com.dmdirc.ui.swing.components.TextFrame;
+
+import java.awt.Container;
 
 import javax.swing.JPopupMenu;
 
@@ -57,9 +60,9 @@ public abstract class DCCFrame extends WritableFrameContainer {
 			 * @param owner The frame container that owns this frame
 			 */
 			public EmptyFrame(final WritableFrameContainer owner) {
-					super(owner);
-					setTextPane(null);
-					pack();
+				super(owner);
+				setTextPane(null);
+				pack();
 			}
 			
 			/**
@@ -219,6 +222,15 @@ public abstract class DCCFrame extends WritableFrameContainer {
 	@Override
 	public InputWindow getFrame() {
 		return myWindow;
+	}
+	
+	/**
+	 * Returns the content pane of the internal frame associated with this object.
+	 *
+	 * @return The content pane of the internal frame associated with this object
+	 */
+	public Container getContentPane() {
+		return ((TextFrame)getFrame()).getContentPane();
 	}
 	
 	/**

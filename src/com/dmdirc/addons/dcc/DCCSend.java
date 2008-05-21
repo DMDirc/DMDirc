@@ -245,6 +245,15 @@ public class DCCSend extends DCC {
 	}
 	
 	/**
+	 * Get the starting position of the file
+	 *
+	 * @return starting position of file.
+	 */
+	public int getFileStart() {
+		return this.startpos;
+	}
+	
+	/**
 	 * Change the handler for this DCC Send
 	 *
 	 * @param handler A class implementing DCCSendInterface
@@ -351,6 +360,7 @@ public class DCCSend extends DCC {
 			readSize = readSize + bytesRead;
 			
 			if (bytesRead > 0) {
+				if (handler != null) { handler.dataTransfered(this, bytesRead); }
 				out.write(data, 0, bytesRead);
 				out.flush();
 				

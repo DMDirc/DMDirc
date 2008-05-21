@@ -42,4 +42,12 @@ public interface DCCSendInterface {
 	 * @param dcc The DCCSend that this message is from
 	 */
 	void socketOpened(final DCCSend dcc);
+	
+	/**
+	 * Called when data is sent/recieved
+	 *
+	 * @param dcc The DCCSend that this message is from
+	 * @param bytes The number of new bytes that were transfered
+	 */
+	void dataTransfered(final DCCSend dcc, final int bytes);
 }
