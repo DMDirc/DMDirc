@@ -158,17 +158,15 @@ public final class ActionManager {
      *
      * @param types An array of ActionTypes to be registered
      */
-    @Precondition({
-        "None of the specified ActionTypes are null",
-        "None of the specified ActionTypes have been previously registered"
-    })
+    @Precondition("None of the specified ActionTypes are null")
     public static void registerActionTypes(final ActionType[] types) {
         for (ActionType type : types) {
             Logger.assertTrue(type != null);
-            Logger.assertTrue(!actionTypes.contains(type));
-
-            actionTypes.add(type);
-            actionTypeGroups.add(type.getType().getGroup(), type);
+            
+            if(!actionTypes.contains(type)) {
+                actionTypes.add(type);
+                actionTypeGroups.add(type.getType().getGroup(), type);
+            }
         }
     }
 
