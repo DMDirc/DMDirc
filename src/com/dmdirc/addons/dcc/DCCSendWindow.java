@@ -127,8 +127,6 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 			status.setText("Status: Recieving");
 		}
 		
-		System.out.printf("Data Transfered. [ %d / %f ]\n", bytes, percent);
-		
 		progress.setValue((int)Math.floor(percent));
 	}
 	
