@@ -271,7 +271,6 @@ public class DCCSend extends DCC {
 			transferFile = new File(filename);
 			if (transferType == TransferType.RECEIVE) {
 				fileOut = new DataOutputStream(new FileOutputStream(transferFile.getAbsolutePath(), (startpos > 0)));
-				//System.out.println("Appending: "+(startpos > 0));
 			}
 			out = new DataOutputStream(socket.getOutputStream());
 			in = new DataInputStream(socket.getInputStream());
@@ -327,8 +326,10 @@ public class DCCSend extends DCC {
 			readSize = readSize + bytesRead;
 			
 			if (bytesRead > 0) {
+				if (handler != null) { handler.dataTransfered(this, bytesRead); }
 				fileOut.write(data, 0, bytesRead);
-				out.writeInt(bytesRead);
+				// Send ack
+				out.writeInt(readSize);
 				out.flush();
 				if (readSize == size) {
 					fileOut.close();
@@ -353,7 +354,6 @@ public class DCCSend extends DCC {
 	 *         called again.
 	 */
 	protected boolean handleSend() {
-		if (fileIn == null) { return true; }
 		try {
 			final byte[] data = new byte[blockSize];
 			int bytesRead = fileIn.read(data);
@@ -364,15 +364,35 @@ public class DCCSend extends DCC {
 				out.write(data, 0, bytesRead);
 				out.flush();
 				
+				// Wait for acknowlegement packet.
 				if (!turbo) {
-					while (bytesRead > 0) {
-						bytesRead = bytesRead - in.readInt();
-					}
+					int bytesRecieved;
+					do {
+						bytesRecieved = in.readInt();
+					} while ((readSize - bytesRecieved) > 0);
 				}
 				
 				if (readSize == size) {
 					fileIn.close();
 					fileIn = null;
+					
+					// Process all the ack packets that may have been sent.
+					// In true turbo dcc mode, none will have been sent and the socket
+					// will just close, in fast-dcc mode all the acks will be here,
+					// So keep reading acks untill the socket closes (IOException) or we
+					// have recieved all the acks.
+					if (turbo) {
+						int ack = 0;
+						do {
+							try {
+								ack = in.readInt();
+							} catch (IOException e) {
+								break;
+							}
+						} while (ack > 0 && (readSize - ack) > 0);
+					}
+					
+					return false;
 				}
 				
 				return true;

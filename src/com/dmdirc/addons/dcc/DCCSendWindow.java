@@ -54,11 +54,26 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	/** Total data transfered */
 	private long transferCount = 0;
 	
+	/** Time Started */
+	private long timeStarted = 0;
+	
 	/** Progress Bar */
 	private final JProgressBar progress = new JProgressBar();
 	
 	/** Status Label */
 	private final JLabel status = new JLabel("Status: Waiting");
+	
+	/** Speed Label */
+	private final JLabel speed = new JLabel("Speed: Unknown");
+	
+	/** Time Label */
+	private final JLabel remaining = new JLabel("Time Remaining: Unknown");
+	
+	/** Time Taken */
+	private final JLabel taken = new JLabel("Time Taken: 00:00");
+	
+	/** Button */
+	private final JButton button = new JButton("Cancel");
 	
 	/**
 	 * Creates a new instance of DCCSendWindow with a given DCCSend object.
@@ -78,8 +93,6 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 		
 		getContentPane().setLayout(new MigLayout());
 		
-		transferCount = dcc.getFileStart();
-		
 		progress.setMinimum(0);
 		progress.setMaximum(100);
 		progress.setStringPainted(true);
@@ -93,11 +106,12 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 			getContentPane().add(new JLabel("From: "+targetNick), "wrap");
 		}
 		getContentPane().add(status, "wrap");
+		getContentPane().add(speed, "wrap");
+		getContentPane().add(remaining, "wrap");
+		getContentPane().add(taken, "wrap");
 		getContentPane().add(progress, "growx, wrap");
 		
-		final JButton button = new JButton("Cancel");
 		button.addActionListener(this);
-		
 		getContentPane().add(button, "wrap, align right");
 		
 		plugin.addWindow(this);
@@ -106,7 +120,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	/** {@inheritDoc} */
 	public void actionPerformed(final ActionEvent e) {
 		if (e.getActionCommand().equals("Cancel")) {
-			((JButton)e.getSource()).setEnabled(false);
+			button.setEnabled(false);
 			dcc.close();
 		}
 	}
@@ -119,7 +133,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	 */
 	public void dataTransfered(final DCCSend dcc, final int bytes) {
 		transferCount += bytes;
-		final double percent = (100.00 / dcc.getFileSize()) * transferCount;
+		final double percent = (100.00 / dcc.getFileSize()) * (transferCount + dcc.getFileStart());
 		
 		if (dcc.getType() == DCCSend.TransferType.SEND) {
 			status.setText("Status: Sending");
@@ -127,7 +141,49 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 			status.setText("Status: Recieving");
 		}
 		
+		updateSpeedAndTime();
+		
 		progress.setValue((int)Math.floor(percent));
+	}
+	
+	/**
+	 * Update the transfer speed, time remaining and time taken labels.
+	 */
+	public void updateSpeedAndTime() {
+		final long time = (System.currentTimeMillis() - timeStarted) / 1000;
+		final double bytesPerSecond = (time > 0) ? (transferCount / time) : 0;
+		
+		if (bytesPerSecond > 1048576) {
+			speed.setText(String.format("Speed: %.2f MB/s", (bytesPerSecond/1048576)));
+		} else if (bytesPerSecond > 1024) {
+			speed.setText(String.format("Speed: %.2f KB/s", (bytesPerSecond/1024)));
+		} else {
+			speed.setText(String.format("Speed: %f B/s", bytesPerSecond));
+		}
+		
+		final long remaningBytes = dcc.getFileSize() - dcc.getFileStart() - transferCount;
+		final double remainingSeconds = (bytesPerSecond > 0) ? (remaningBytes / bytesPerSecond) : 1;
+		
+		remaining.setText(String.format("Time Remaining: %s", duration((int)Math.floor(remainingSeconds))));
+		taken.setText(String.format("Time Taken: %s", duration(time)));
+	}
+	
+	/**
+	 * Get the duration in seconds as a string.
+	 *
+	 * @param secondsInput to get duration for
+	 * @return Duration as a string
+	 */
+	private String duration(final long secondsInput) {
+		final StringBuilder result = new StringBuilder();
+		final long hours = (secondsInput / 3600);
+		final long minutes = (secondsInput / 60 % 60);
+		final long seconds = (secondsInput % 60);
+		
+		if (hours > 0) { result.append(hours+":"); }
+		result.append(String.format("%0,2d:%0,2d",minutes,seconds));
+		
+		return result.toString();
 	}
 	
 	/**
@@ -137,11 +193,13 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	 */
 	@Override
 	public void socketClosed(final DCCSend dcc) {
+		button.setEnabled(false);
 		if (transferCount == dcc.getFileSize()) {
 			status.setText("Status: Transfer Compelete.");
 		} else {
 			status.setText("Status: Transfer Failed.");
 		}
+		updateSpeedAndTime();
 	}
 	
 	/**
@@ -152,6 +210,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	@Override
 	public void socketOpened(final DCCSend dcc) {
 		status.setText("Status: Socket Opened");
+		timeStarted = System.currentTimeMillis();
 	}
 	
 	/**
