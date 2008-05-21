@@ -180,13 +180,14 @@ public final class SwingUpdaterDialog extends StandardDialog implements
     private void layoutComponents() {
         setLayout(new MigLayout("fill"));
 
-        add(header, "wrap 1.5*unrel");
+        add(header, "wrap 1.5*unrel, growx");
         add(scrollPane, "grow, wrap");
         add(getLeftButton(), "split 2, right");
         add(getRightButton(), "right");
     }
 
     /** {@inheritDoc} */
+    @Override
     public void display() {
         setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         setVisible(true);
@@ -198,6 +199,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
      * 
      * @param e Action event
      */
+    @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource().equals(getOkButton())) {
             getOkButton().setEnabled(false);
