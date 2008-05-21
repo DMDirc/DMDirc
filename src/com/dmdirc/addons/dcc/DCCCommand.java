@@ -36,6 +36,8 @@ import com.dmdirc.addons.dcc.actions.DCCActions;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
+import java.io.File;
+
 /**
  * This command allows starting dcc chats/file transfers
  *
@@ -85,7 +87,7 @@ public final class DCCCommand extends GlobalCommand {
 				sendLine(origin, isSilent, "DCCChatStarting", target, chat.getHost(), chat.getPort());
 				window.getFrame().addLine("DCCChatStarting", target, chat.getHost(), chat.getPort());
 			} else if (type.equalsIgnoreCase("send")) {
-				sendFile(target, origin, isSilent);
+				sendFile(target, origin, isSilent, args);
 			} else {
 				sendLine(origin, isSilent, FORMAT_ERROR, "Unknown DCC Type: '"+type+"'");
 			}
@@ -100,18 +102,26 @@ public final class DCCCommand extends GlobalCommand {
 	 * @param target Person this dcc is to.
 	 * @param origin The InputWindow this command was issued on
 	 * @param isSilent Whether this command is silenced or not
+	 * @param args Arguments passed.
 	 */
-	public void sendFile(final String target, final InputWindow origin, final boolean isSilent) {
-		// New thread to ask the user what file to senfd
+	public void sendFile(final String target, final InputWindow origin, final boolean isSilent, final String... args) {
+		// New thread to ask the user what file to send
+		final File givenFile = new File(implodeArgs(2, args));
 		final Thread dccThread = new Thread(new Runnable() {
 			/** {@inheritDoc} */
 			@Override
 			public void run() {
 				final JFileChooser jc = new JFileChooser();
-				jc.setDialogTitle("Send file to "+target+" - DMDirc ");
-				jc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-				jc.setMultiSelectionEnabled(false);
-				int result = jc.showOpenDialog((JFrame)Main.getUI().getMainWindow());
+				int result;
+				if (!givenFile.exists()) {
+					jc.setDialogTitle("Send file to "+target+" - DMDirc ");
+					jc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+					jc.setMultiSelectionEnabled(false);
+					result = jc.showOpenDialog((JFrame)Main.getUI().getMainWindow());
+				} else {
+					jc.setSelectedFile(givenFile);
+					result = JFileChooser.APPROVE_OPTION;
+				}
 				if (result == JFileChooser.APPROVE_OPTION) {
 					final IRCParser parser = origin.getContainer().getServer().getParser();
 					final String myNickname = parser.getMyNickname();
