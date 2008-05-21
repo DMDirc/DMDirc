@@ -273,6 +273,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 					DCCSend send = DCCSend.findByToken(token);
 
 					if (send == null && !dontAsk) {
+						ActionManager.processEvent(DCCActions.DCC_SEND_REQUEST, null, ((Server)arguments[0]), nickname, filename);
 						askQuestion("User "+nickname+" on "+((Server)arguments[0]).toString()+" would like to send you a file over DCC.\n\nFile: "+filename+"\n\nDo you want to continue?", "DCC Send Request", JOptionPane.YES_OPTION, type, format, arguments);
 						return;
 					} else {
@@ -413,6 +414,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		defaults.setOption(MY_DOMAIN, "receive.reverse.sendtoken", "false");
 		defaults.setOption(MY_DOMAIN, "send.blocksize", "1024");
 		defaults.setOption(MY_DOMAIN, "receive.autoaccept", "false");
+		defaults.setOption(MY_DOMAIN, "general.ip", "");
 		
 		defaults.setOption("formatter", "DCCChatStarting", "Starting DCC Chat with: %1$s on %2$s:%3$s");
 		defaults.setOption("formatter", "DCCChatInfo", "%1$s");
@@ -467,7 +469,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 * @param return The IP Address we should send as our listening IP.
 	 */
 	public static String getListenIP(final IRCParser parser) {
-		final String configIP = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.ip", ""); 
+		final String configIP = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.ip", "");
 		if (!configIP.isEmpty()) {
 			return configIP;
 		} else if (parser != null) {

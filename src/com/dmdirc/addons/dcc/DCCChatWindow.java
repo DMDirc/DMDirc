@@ -66,6 +66,15 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 	}
 	
 	/**
+	 * Get the DCCChat Object associated with this window
+	 *
+	 * @return The DCCChat Object associated with this window
+	 */
+	public DCCChat getDCC() {
+		return dcc;
+	}
+	
+	/**
 	 * Sends a line of text to this container's source.
 	 *
 	 * @param line The line to be sent

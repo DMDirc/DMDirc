@@ -27,6 +27,9 @@ import com.dmdirc.actions.interfaces.ActionMetaType;
 import com.dmdirc.parser.ClientInfo;
 
 import com.dmdirc.addons.dcc.DCCChatWindow;
+import com.dmdirc.addons.dcc.DCCSendWindow;
+
+import java.io.File;
 
 /**
  * Defines DCC-related events.
@@ -42,11 +45,23 @@ public enum DCCEvents implements ActionMetaType {
 	DCC_CHAT_MESSAGE(new String[]{"DCCChatWindow", "Nickname", "Message"}, DCCChatWindow.class, String.class, String.class),
 	/** DCC Message to another person. */
 	DCC_CHAT_SELFMESSAGE(new String[]{"DCCChatWindow", "Message"}, DCCChatWindow.class, String.class),
-	/** DCC Chat Socket Opened. */
-	DCC_CHAT_SOCKETCLOSED(new String[]{"DCCChatWindow"}, DCCChatWindow.class),
 	/** DCC Chat Socket Closed. */
-	DCC_CHAT_SOCKETOPENED(new String[]{"DCCChatWindow"}, DCCChatWindow.class);
-    
+	DCC_CHAT_SOCKETCLOSED(new String[]{"DCCChatWindow"}, DCCChatWindow.class),
+	/** DCC Chat Socket Opened. */
+	DCC_CHAT_SOCKETOPENED(new String[]{"DCCChatWindow"}, DCCChatWindow.class),
+
+	/** DCC Send Socket Closed. */
+	DCC_SEND_SOCKETCLOSED(new String[]{"DCCSendWindow"}, DCCSendWindow.class),
+	/** DCC Send Socket Opened. */
+	DCC_SEND_SOCKETOPENED(new String[]{"DCCSendWindow"}, DCCSendWindow.class),
+	/** DCC Send Data Transfered */
+	DCC_SEND_DATATRANSFERED(new String[]{"DCCSendWindow", "Bytes Transfered"}, DCCSendWindow.class, int.class),
+	/** DCC Send Request. */
+	DCC_SEND_REQUEST(new String[]{"server", "client", "file"}, Server.class, String.class, String.class),
+	/** DCC Send Request Sent. */
+	DCC_SEND_REQUEST_SENT(new String[]{"server", "client", "file"}, Server.class, String.class, File.class);
+
+
 	/** The names of the arguments for this meta type. */
 	private String[] argNames;
 	/** The classes of the arguments for this meta type. */

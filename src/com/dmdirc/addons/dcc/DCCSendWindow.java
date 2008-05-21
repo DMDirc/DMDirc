@@ -22,6 +22,9 @@
 
 package com.dmdirc.addons.dcc;
 
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.addons.dcc.actions.DCCActions;
+
 import com.dmdirc.ui.swing.components.TextFrame;
 import com.dmdirc.ui.swing.components.TextLabel;
 
@@ -117,6 +120,15 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 		plugin.addWindow(this);
 	}
 	
+	/**
+	 * Get the DCCSend Object associated with this window
+	 *
+	 * @return The DCCSend Object associated with this window
+	 */
+	public DCCSend getDCC() {
+		return dcc;
+	}
+	
 	/** {@inheritDoc} */
 	public void actionPerformed(final ActionEvent e) {
 		if (e.getActionCommand().equals("Cancel")) {
@@ -144,6 +156,8 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 		updateSpeedAndTime();
 		
 		progress.setValue((int)Math.floor(percent));
+		
+		ActionManager.processEvent(DCCActions.DCC_SEND_DATATRANSFERED, null, this, bytes);
 	}
 	
 	/**
@@ -193,6 +207,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	 */
 	@Override
 	public void socketClosed(final DCCSend dcc) {
+		ActionManager.processEvent(DCCActions.DCC_SEND_SOCKETCLOSED, null, this);
 		button.setEnabled(false);
 		if (transferCount == dcc.getFileSize()) {
 			status.setText("Status: Transfer Compelete.");
@@ -210,6 +225,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	 */
 	@Override
 	public void socketOpened(final DCCSend dcc) {
+		ActionManager.processEvent(DCCActions.DCC_SEND_SOCKETOPENED, null, this);
 		status.setText("Status: Socket Opened");
 		timeStarted = System.currentTimeMillis();
 	}

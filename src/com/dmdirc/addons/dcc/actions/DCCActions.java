@@ -40,10 +40,21 @@ public enum DCCActions implements ActionType {
 	DCC_CHAT_MESSAGE(DCCEvents.DCC_CHAT_MESSAGE, "DCC Chat Message Recieved"),
 	/** DCC Message to another person. */
 	DCC_CHAT_SELFMESSAGE(DCCEvents.DCC_CHAT_SELFMESSAGE, "DCC Chat Message Sent"),
-	/** DCC Chat Socket Opened. */
-	DCC_CHAT_SOCKETCLOSED(DCCEvents.DCC_CHAT_SOCKETCLOSED, "DCC Chat Socket Closed"),
 	/** DCC Chat Socket Closed. */
-	DCC_CHAT_SOCKETOPENED(DCCEvents.DCC_CHAT_SOCKETOPENED, "DCC Chat Socket Opened");
+	DCC_CHAT_SOCKETCLOSED(DCCEvents.DCC_CHAT_SOCKETCLOSED, "DCC Chat Socket Closed"),
+	/** DCC Chat Socket Opened. */
+	DCC_CHAT_SOCKETOPENED(DCCEvents.DCC_CHAT_SOCKETOPENED, "DCC Chat Socket Opened"),
+	
+	/** DCC Send Socket Closed. */
+	DCC_SEND_SOCKETCLOSED(DCCEvents.DCC_SEND_SOCKETCLOSED, "DCC Send Socket Closed"),
+	/** DCC Send Socket Opened. */
+	DCC_SEND_SOCKETOPENED(DCCEvents.DCC_SEND_SOCKETOPENED, "DCC Send Socket Opened"),
+	/** DCC Send Data Transfered */
+	DCC_SEND_DATATRANSFERED(DCCEvents.DCC_SEND_DATATRANSFERED, "DCC Send Socket Closed"),
+	/** DCC Send Request. */
+	DCC_SEND_REQUEST(DCCEvents.DCC_SEND_REQUEST, "DCC Chat Requested"),
+	/** DCC Send Request Sent. */
+	DCC_SEND_REQUEST_SENT(DCCEvents.DCC_SEND_REQUEST_SENT, "DCC Chat Request Sent");
 	
 	/** The type of this action. */
 	private final ActionMetaType type;

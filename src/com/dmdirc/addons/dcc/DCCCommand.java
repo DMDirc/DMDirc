@@ -123,11 +123,14 @@ public final class DCCCommand extends GlobalCommand {
 					result = JFileChooser.APPROVE_OPTION;
 				}
 				if (result == JFileChooser.APPROVE_OPTION) {
-					final IRCParser parser = origin.getContainer().getServer().getParser();
+					final Server server = origin.getContainer().getServer();
+					final IRCParser parser = server.getParser();
 					final String myNickname = parser.getMyNickname();
 					DCCSend send = new DCCSend();
 					send.setTurbo(IdentityManager.getGlobalConfig().getOptionBool(DCCPlugin.getDomain(), "send.forceturbo", false));
 					send.setType(DCCSend.TransferType.SEND);
+					
+					ActionManager.processEvent(DCCActions.DCC_SEND_REQUEST_SENT, null, server, target, jc.getSelectedFile());
 					
 					sendLine(origin, isSilent, FORMAT_OUTPUT, "Starting DCC Send with: "+target);
 				
