@@ -23,6 +23,7 @@ server.umodeh = Helpful mode
 server.umodeI = Hide server info
 server.umodej = Show drone messages
 server.umodek = Show kill messages
+server.umodeK = Kill messages from U:lined servers
 server.umodem = Report spambots
 server.umoden = Show routing messages
 server.umoder = Registered
