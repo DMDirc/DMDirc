@@ -1,9 +1,9 @@
 identity.name = DMDirc default settings
 identity.globaldefault = true
+identity.defaultsversion = 25 
 identity.order = 100000
-identity.defaultsversion = 0
 
-general.submitErrors=true
+general.submitErrors=false
 
 general.commandchar=/
 general.silencechar=.
@@ -27,8 +27,8 @@ general.reconnectonconnectfailure=true
 general.reconnectondisconnect=true
 general.reconnectdelay=5
 
-general.server=blueyonder.uk.quakenet.org
-general.port=7000
+general.server=irc.quakenet.org
+general.port=6667
 general.password=
 
 notifications.authNotice=server
@@ -53,6 +53,16 @@ notifications.numeric_007=group:map
 notifications.numeric_015=group:map
 notifications.numeric_017=group:map
 
+notifications.numeric_251=group:lusers
+notifications.numeric_252=group:lusers
+notifications.numeric_253=group:lusers
+notifications.numeric_254=group:lusers
+notifications.numeric_255=group:lusers
+
+notifications.numeric_290=server
+notifications.numeric_292=server
+notifications.numeric_294=server
+
 notifications.numeric_301=group:whois
 notifications.numeric_307=group:whois
 notifications.numeric_311=group:whois
@@ -65,12 +75,13 @@ notifications.numeric_320=group:whois
 notifications.numeric_330=group:whois
 notifications.numeric_343=group:whois
 
-notifications.numeric_401=lastcommand:(whois|msg|notice|ctcp|invite) %4$s( .*?)?
+notifications.numeric_401=lastcommand:(raw )?(whois|(priv)?msg|notice|ctcp|invite) %4$s( .*?)?
 notifications.numeric_404=channel:%4$s
 notifications.numeric_405=server
 notifications.numeric_421=server
 notifications.numeric_433=server
-notifications.numeric_461=server
+notifications.numeric_438=lastcommand:(raw )?nick %4$s
+notifications.numeric_461=lastcommand:(raw )?%4$s( .*)?
 notifications.numeric_471=server
 notifications.numeric_472=server
 notifications.numeric_473=server
@@ -78,15 +89,19 @@ notifications.numeric_474=server
 notifications.numeric_475=server
 notifications.numeric_479=server
 notifications.numeric_482=channel:%4$s
+notifications.numeric_486=lastcommand:(raw priv)?msg %4$s .*
+notifications.numeric_499=channel:%4$s
 
+notifications.numeric_501=server
 notifications.numeric_524=server
 
 notifications.numeric_671=group:whois
 
 notifications.numeric_705=server
 
+notifications.lusers=server
 notifications.map=window:Network Map
-notifications.whois=lastcommand:whois %4$s( %4$s)?
+notifications.whois=lastcommand:(raw )?whois %4$s( %4$s)?
 
 ui.backgroundcolour=0
 ui.foregroundcolour=1
@@ -122,7 +137,7 @@ server.pingtimeout=60000
 
 updater.frequency=86400
 updater.lastcheck=0
-updater.enable=true
+updater.enable=false
 
 actions.textcolour=12
 actions.eventcolour=3
@@ -135,7 +150,9 @@ popups.umodes=<umodes-op\n<umodes-voice
 
 popups.umodes-op=Op:mode +o %1$s\nDeop:mode -o %1$s
 popups.umodes-hop=Half-Op:mode +h %1$s\nDehalf-op:mode -o %1$s
-popups.umodes-voice=Voice:mode +v %1$s\nDevoice:mode
+popups.umodes-voice=Voice:mode +v %1$s\nDevoice:mode -v %1$s
+popups.umodes-admin=Make admin:mode +a %1$s\nRemove admin:mode -a %1$s
+popups.umodes-owner=Make owner:mode +q %1$s\nRemove owner:mode -q %1$s
 
 popups.CHAN_NICKLIST=<nick\n-\nModes:<umodes\n<chan-nick
 popups.CHAN_CHAN=

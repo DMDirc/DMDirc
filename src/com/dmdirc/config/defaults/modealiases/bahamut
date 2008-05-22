@@ -9,3 +9,23 @@ server.modej = Join throttling
 server.moder = Channel has been registered
 
 server.modeL = Appear in /list
+
+server.umodea = Services admin
+server.umodeA = Server admin
+server.umodeb = View oper chatops
+server.umodec = Show client connections
+server.umoded = Show debug messages
+server.umodee = Show blocked DCC sends
+server.umodef = Show flood alerts
+server.umodeF = Bypass throttling
+server.umodeg = View oper globops
+server.umodeh = Helpful mode
+server.umodeI = Hide server info
+server.umodej = Show drone messages
+server.umodek = Show kill messages
+server.umodem = Report spambots
+server.umoden = Show routing messages
+server.umoder = Registered
+server.umodex = Squelsh
+server.umodeX = Silent squelsh
+server.umodey = Spy mode

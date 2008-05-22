@@ -2,7 +2,7 @@
 
 identity.name = Generic mode aliases
 identity.globaldefault = true
-identity.modealiasversion = 2
+identity.modealiasversion = 23
 
 # -- 1459 --
 server.modeb = Ban
@@ -44,3 +44,5 @@ server.umodew = Receive wallops
 server.umodeo = IRC Operator
 server.umodeO = Local IRC Operator
 server.umoder = Restricted connection
+server.umodeR = Only registered users may query
+server.umodex = Hide hostname

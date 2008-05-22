@@ -50,17 +50,17 @@ public final class Main {
     /**
      * Stores the current textual program version.
      */
-    public static final String VERSION = "0.5.5rc2";
+    public static final String VERSION = "0.5.6";
     
     /**
      * Stores the release date of this version.
      */
-    public static final int RELEASE_DATE = 20080112;
+    public static final int RELEASE_DATE = 20080522;
     
     /**
      * Stores the update channel that this version came from, if any.
      */
-    public static final UpdateChannel UPDATE_CHANNEL = UpdateChannel.UNSTABLE;
+    public static final UpdateChannel UPDATE_CHANNEL = UpdateChannel.STABLE;
     
     /**
      * A revision number for actions and core plugins. If this is increased,

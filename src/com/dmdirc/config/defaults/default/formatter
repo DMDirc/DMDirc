@@ -21,6 +21,19 @@ formatter.channelSelfMessage = <%1$s%2$s> %5$s
 formatter.channelSelfAction = \u00036* %1$s%2$s %5$s
 formatter.channelSelfExternalMessage = <%1$s%2$s> %5$s
 formatter.channelSelfExternalAction = \u00036* %1$s%2$s %5$s
+formatter.channelTopicChanged = \u00033* %1$s%2$s has changed the topic to '%5$s\u000F'.
+formatter.channelModeChanged = \u00033* %1$s%2$s sets mode: %5$s\u000F.
+formatter.channelSelfModeChanged = \u00033* You set mode: %5$s\u000F.
+
+# Type: Channel Message with time
+#    1: User mode prefixes
+#    2: User nickname
+#    3: User ident
+#    4: User host
+#    5: Message content
+#    6: Time
+#    7: Channel name
+formatter.channelTopicDiscovered = \u00033* The topic for %7$s is '%5$s\u000F'.\n\u00033* Topic was set by %2$s at %6$tR on %6$tA, %6$tB %6$te %6$tY.
 
 # Type: Channel CTCP
 #    1: User mode prefixes
@@ -45,8 +58,8 @@ formatter.channelQuit = \u00032* %1$s%2$s (%3$s@%4$s) has quit IRC.
 formatter.channelQuitReason = \u00032* %1$s%2$s (%3$s@%4$s) has quit IRC (%5$s\u000F).
 formatter.channelSelfPart = \u00033* You have left the channel.
 formatter.channelSelfPartReason = \u00033* You have left the channel.
-formatter.channelNickChange = \u00033* %1$s%5$s is now know as %2$s\u000F.
-formatter.channelSelfNickChange = \u00033* You are now know as %2$s\u000F.
+formatter.channelNickChange = \u00033* %1$s%5$s is now known as %2$s\u000F.
+formatter.channelSelfNickChange = \u00033* You are now known as %2$s\u000F.
 
 # Type: Channel Event
 #    1: User mode prefixes
@@ -56,6 +69,8 @@ formatter.channelSelfNickChange = \u00033* You are now know as %2$s\u000F.
 #    5: Channel name
 formatter.channelJoin = \u00033* %2$s (%3$s@%4$s) has joined %5$s\u000F.
 formatter.channelSelfJoin = \u00033* You are now talking in %5$s\u000F.
+formatter.channelUserAway = \u000314-- %1$s%2$s is now away.
+formatter.channelUserBack = \u000314-- %1$s%2$s is now back.
 
 # Type: Channel Event with content
 #    1: User mode prefixes
@@ -64,6 +79,7 @@ formatter.channelSelfJoin = \u00033* You are now talking in %5$s\u000F.
 #    4: User host
 #    5: Channel name
 #    6: Content
+# @Deprecated - remove post-0.6
 formatter.channelTopicChange = \u00033* %1$s%2$s has changed the topic to '%6$s\u000F'.
 formatter.channelModeChange = \u00033* %1$s%2$s sets mode: %6$s\u000F.
 formatter.channelSelfModeChange = \u00033* You set mode: %6$s\u000F.
@@ -92,6 +108,8 @@ formatter.channelKick = \u00033* %1$s%2$s has kicked %5$s%6$s from %9$s\u000F.
 #    9: Content
 #   10: Channel name
 formatter.channelKickReason = \u00033* %1$s%2$s has kicked %5$s%6$s from %10$s (%9$s\u000F).
+formatter.channelSplitUserMode_default = \u00033* %1$s%2$s sets mode %9$s on %6$s\u000F.
+# @Deprecated - remove post-0.6
 formatter.channelUserMode_default = \u00033* %1$s%2$s sets mode %10$s on %6$s\u000F.
 
 # Type: Channel topic sync
@@ -99,6 +117,7 @@ formatter.channelUserMode_default = \u00033* %1$s%2$s sets mode %10$s on %6$s\u0
 #    2: User responsible
 #    3: Time last changed
 #    4: Channel name
+# @Deprecated - remove post-0.6
 formatter.channelJoinTopic = \u00033* The topic for %4$s is '%1$s\u000F'.\n\u00033* Topic was set by %2$s at %3$tR on %3$tA, %3$tB %3$te %3$tY.
 
 # Type: Channel mode discovery
@@ -126,7 +145,7 @@ formatter.queryMessage = <%1$s> %4$s
 formatter.queryAction = \u00036* %1$s %4$s
 formatter.querySelfMessage = <%1$s> %4$s
 formatter.querySelfAction = \u00036* %1$s %4$s
-formatter.queryNickChanged = \u00033* %1$s is now know as %4$s\u000F.
+formatter.queryNickChanged = \u00033* %1$s is now known as %4$s\u000F.
 formatter.userModeChanged = \u00033* %1$s sets user mode: %4$s\u000F.
 formatter.queryQuitReason = \u00032* %1$s has quit IRC (%4$s\u000F).
 formatter.queryMessageHighlight = \u00034<%1$s> %4$s
@@ -182,7 +201,7 @@ formatter.serverError = \u00034ERROR: %1$s
 # Type: Binary Miscellaneous
 #    1: Miscellaneous data
 #    2: Miscellaneous data
-formatter.selfNickChange = \u00033* You are now know as %2$s\u000F.
+formatter.selfNickChange = \u00033* You are now known as %2$s\u000F.
 
 # Type: Unknown target events
 #    1: Source
@@ -197,10 +216,20 @@ formatter.unknownNotice = \u00035-[%1$s:%2$s]- %3$s
 formatter.commandUsage = \u00037Usage: %1$s%2$s %3$s
 
 # Type: Numerical data
-formatter.numeric_006= \u0011%4$s
-formatter.numeric_007= \u0011%4$s
-formatter.numeric_015= \u0011%4$s
-formatter.numeric_017= \u0011%4$s
+formatter.numeric_006 = \u0011%4$s
+formatter.numeric_007 = \u0011%4$s
+formatter.numeric_015 = \u0011%4$s
+formatter.numeric_017 = \u0011%4$s
+
+formatter.numeric_251 = \u000310%4$s
+formatter.numeric_252 = \u000310%4$s %5$s
+formatter.numeric_253 = \u000310%4$s %5$s
+formatter.numeric_254 = \u000310%4$s %5$s
+formatter.numeric_255 = \u000310%4$s
+
+formatter.numeric_290 = \u0002%4$s
+formatter.numeric_292 = %4$s
+formatter.numeric_294 = %4$s
 
 formatter.numeric_301 = %4$s is away: %5$s
 formatter.numeric_307 = %4$s %5$s.
@@ -219,6 +248,7 @@ formatter.numeric_404 = 6A7000%5$s
 formatter.numeric_405 = 6A7000%4$s\u000F: %5$s
 formatter.numeric_421 = 6A7000%4$s\u000F: %5$s
 formatter.numeric_433 = 6A7000%4$s\u000F: %5$s
+formatter.numeric_438 = 6A7000%5$s
 formatter.numeric_461 = 6A7000%4$s\u000F: %5$s
 formatter.numeric_471 = 6A7000%4$s\u000F: %5$s
 formatter.numeric_472 = 6A7000%4$s\u000F: %5$s
@@ -227,6 +257,11 @@ formatter.numeric_474 = 6A7000%4$s\u000F: %5$s
 formatter.numeric_475 = 6A7000%4$s\u000F: %5$s
 formatter.numeric_479 = 6A7000%4$s\u000F: %5$s
 formatter.numeric_482 = 6A7000%4$s\u000F: %5$s
+formatter.numeric_486 = 6A7000%4$s\u000F: %5$s
+formatter.numeric_unreal_486 = 6A7000%4$s
+formatter.numeric_499 = 6A7000%4$s\u000F: %5$s
+formatter.numeric_501 = 6A7000%4$s\u000F: %5$s
+formatter.numeric_hybrid_501 = 6A7000%4$s
 formatter.numeric_524 = 6A7000%4$s\u000F: %5$s
 
 formatter.numeric_671 = %4$s %5$s.
