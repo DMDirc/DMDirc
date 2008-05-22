@@ -102,10 +102,10 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 		progress.setValue(0);
 		
 		if (dcc.getType() == DCCSend.TransferType.SEND) {
-			getContentPane().add(new JLabel("Sending: "+dcc.getFileName()), "wrap");
+			getContentPane().add(new JLabel("Sending: "+dcc.getShortFileName()), "wrap");
 			getContentPane().add(new JLabel("To: "+targetNick), "wrap");
 		} else {
-			getContentPane().add(new JLabel("Recieving: "+dcc.getFileName()), "wrap");
+			getContentPane().add(new JLabel("Recieving: "+dcc.getShortFileName()), "wrap");
 			getContentPane().add(new JLabel("From: "+targetNick), "wrap");
 		}
 		getContentPane().add(status, "wrap");

@@ -124,6 +124,15 @@ public class DCCSend extends DCC {
 	}
 	
 	/**
+	 * Get the filename of this file, without the path
+	 *
+	 * @return Filename without path
+	 */
+	public String getShortFileName() {
+		return (new File(filename)).getName();
+	}
+	
+	/**
 	 * Set dcc Type.
 	 *
 	 * @param type Type of DCC Send this is.
