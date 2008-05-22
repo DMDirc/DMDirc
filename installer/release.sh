@@ -30,6 +30,7 @@ showHelp() {
 	echo "-po  --plugins-osx <plugins>        Plugins to osx installer."
 	echo "-h,  --help                         Help information"
 	echo "-o,  --opt <options>                Additional options to pass to the make*Installer.sh files"
+	echo "     --upload                       Try to upload to google code when done (Only works on tags)"
 	echo "---------------------"
 	exit 0;
 }
@@ -42,6 +43,8 @@ JARFILE=""
 JRE=""
 FULLJAR=""
 BUILDTARGET=""
+UPLOAD="0"
+TAG="0"
 while test -n "$1"; do
 	LAST=${1}
 	case "$1" in
@@ -84,6 +87,9 @@ while test -n "$1"; do
 		--help|-h)
 			showHelp;
 			;;
+		--upload)
+			UPLOAD="1";
+			;;
 		--branch|-b)
 			BRANCH="-b "
 			;;
@@ -103,8 +109,10 @@ if [ "${plugins}" = "*" -o "${plugins_linux}" = "*" -o "${plugins_windows}" = "*
 	if [ "${plugins_osx}" = "*" ]; then plugins_osx=${allPlugins}; fi
 fi;
 
+VERSION=""
 if [ "${LAST}" != "" ]; then
 	if [ "${LAST}" = "trunk" ]; then
+		VERSION="Trunk"
 		RELEASE=""
 	elif [ "${LAST}" = "this" ]; then
 		# Work out what type of build this is!
@@ -112,20 +120,23 @@ if [ "${LAST}" != "" ]; then
 		cd ..
 		tempDIR=${PWD##*/}
 		if [ "${tempDIR}" = "trunk" ]; then
+			VERSION="Trunk"
 			echo "This is a trunk release.";
 		else
 			echo "This is not a trunk release.";
-			version=${tempDIR}
+			VERSION=${tempDIR}
 			cd ..
 			tempDIR=${PWD##*/}
 			if [ "${tempDIR}" = "tags" ]; then
 				echo "Release of tag "${version}
-				RELEASE="-r "${version}
+				RELEASE="-r "${VERSION}
+				TAG="1"
 			elif [ "${tempDIR}" = "branches" ]; then
 				echo "Release of branch "${version}
 				BRANCH="-b "
-				RELEASE="-r "${version}
+				RELEASE="-r "${VERSION}
 			else
+				VERSION="Unknown"
 				echo "Unknown release target - Building as trunk build"
 				OPT="--current ${OPT}"
 			fi
@@ -316,6 +327,17 @@ for updatedir in ${REVERTLIST}; do
 	SVN=`which svn`
 	${SVN} revert ${updatedir}/*
 done;
+
+if [ "1" = "${UPLOAD}" && "1" = "${TAG}" ]; then
+	echo "================================================================"
+	echo "Uploading to GoogleCode"
+	echo "================================================================"
+	
+	cd gcode
+	sh uploads_release.sh -v ${VERSION}
+else
+	echo "Not uploading to GoogleCode"
+fi;
 
 echo "================================================================"
 echo "Release ready - see output folder"
