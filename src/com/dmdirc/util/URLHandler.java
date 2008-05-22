@@ -127,13 +127,7 @@ public class URLHandler {
             }
         }
 
-        if (!config.hasOption("protocol", uri.getScheme())) {
-            Main.getUI().showURLDialog(uri);
-            return;
-        }
-
-        final String command =
-                config.getOption("protocol", uri.getScheme(), "");
+        final String command = config.getOption("protocol", uri.getScheme(), "");
 
         if (command.isEmpty()) {
             Main.getUI().showURLDialog(uri);
@@ -229,13 +223,7 @@ public class URLHandler {
      * @param command Application and arguments
      */
     private void execApp(final String command) {
-        String[] commandLine;
-
-        if (System.getProperty("os.name").startsWith("Windows")) {
-            commandLine = new String[]{"cmd.exe", command};
-        } else {
-            commandLine = new String[]{"/bin/sh", "-c", command};
-        }
+        String[] commandLine = command.split(" ");
 
         try {
             Runtime.getRuntime().exec(commandLine);
