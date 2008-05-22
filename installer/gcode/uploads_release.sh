@@ -1,8 +1,8 @@
 #!/bin/sh
 
 # Leave blank here, loaded from config file.
-USERNAME="user"
-PASSWORD="pass"
+USERNAME=""
+PASSWORD=""
 
 # Load stored password.
 if [ -e "${HOME}/.GoogleCode" ]; then
