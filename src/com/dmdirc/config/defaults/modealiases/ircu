@@ -10,6 +10,8 @@ server.modeD = Auditorium mode
 server.moded = Auditorium mode
 server.modeS = Strip all colours
 server.modeT = No multi-target messages
+server.modeA = Admin pass
+server.modeU = User pass
 
 server.umodeg = Receive debug information
 server.umodek = Services operator
