@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /** Handles URLs. */
 public class URLHandler {
@@ -127,13 +129,7 @@ public class URLHandler {
             }
         }
 
-        if (!config.hasOption("protocol", uri.getScheme())) {
-            Main.getUI().showURLDialog(uri);
-            return;
-        }
-
-        final String command =
-                config.getOption("protocol", uri.getScheme(), "");
+        final String command = config.getOption("protocol", uri.getScheme(), "");
 
         if (command.isEmpty()) {
             Main.getUI().showURLDialog(uri);
@@ -229,20 +225,49 @@ public class URLHandler {
      * @param command Application and arguments
      */
     private void execApp(final String command) {
-        String[] commandLine;
-
-        if (System.getProperty("os.name").startsWith("Windows")) {
-            commandLine = new String[]{"cmd.exe", command};
-        } else {
-            commandLine = new String[]{"/bin/sh", "-c", command};
-        }
-
         try {
-            Runtime.getRuntime().exec(commandLine);
+            Runtime.getRuntime().exec(parseArguments(command));
         } catch (IOException ex) {
-            Logger.userError(ErrorLevel.LOW,
-                    "Unable to run application: " + ex.getMessage(), ex);
+            Logger.userError(ErrorLevel.LOW, "Unable to run application: ",
+                    ex.getMessage());
         }
+    }
+    
+    /**
+     * Parses the specified command into an array of arguments. Arguments are
+     * separated by spaces. Multi-word arguments may be specified by starting
+     * the argument with a quote (") and finishing it with a quote (").
+     * 
+     * @param command The command to parse
+     * @return An array of arguments corresponding to the command
+     */
+    protected static String[] parseArguments(final String command) {
+        final List<String> args = new ArrayList<String>();
+        final StringBuilder builder = new StringBuilder();
+        boolean inquote = false;
+        
+        for (String word : command.split(" ")) {
+            if (word.endsWith("\"") && inquote) {
+                args.add(builder.toString() + ' ' + word.substring(0, word.length() - 1));
+                builder.delete(0, builder.length());
+                inquote = false;
+            } else if (inquote) {
+                if (builder.length() > 0) {
+                    builder.append(' ');
+                }
+                
+                builder.append(word);
+            } else if (word.startsWith("\"") && !word.endsWith("\"")) {
+                inquote = true;
+                builder.append(word.substring(1));
+            } else if (word.startsWith("\"") && word.endsWith("\"")) {
+                args.add(word.substring(1, word.length() - 1));
+            } else {
+                args.add(word);
+            }
+        }
+        
+        return args.toArray(new String[0]);
     }
 
     /**
@@ -260,7 +285,11 @@ public class URLHandler {
                         "Unable to open URL: " + ex.getMessage());
             }
         } else {
-            Logger.userError(ErrorLevel.LOW, "Unable to open your browser.");
+            Logger.userError(ErrorLevel.LOW,
+                    "Unable to open your browser: Your desktop enviroment is " +
+                    "not supported, please go to the URL Handlers section of " +
+                    "the preferences dialog and set the path to your browser " +
+                    "manually");
         }
     }
 
@@ -278,7 +307,11 @@ public class URLHandler {
                         "Unable to open URL: " + ex.getMessage());
             }
         } else {
-            Logger.userError(ErrorLevel.LOW, "Unable to open your mail client.");
+            Logger.userError(ErrorLevel.LOW,
+                    "Unable to open your mail client: Your desktop enviroment is " +
+                    "not supported, please go to the URL Handlers section of " +
+                    "the preferences dialog and set the path to your browser " +
+                    "manually");
         }
     }
 }
