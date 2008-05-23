@@ -106,9 +106,9 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
 
         setLayout(new MigLayout("fill, ins 0, hidemode 3"));
 
-        add(messageLabel, "growx, pushx, sgy components, hmax 20, hmin 20, dock west");
-        add(inviteLabel, "sgy components, hmax 20, hmin 20, dock east");
-        add(errorLabel, "sgy components, hmax 20, hmin 20, dock east");
+        add(messageLabel, "growx, pushx, sgy components, hmax 20, hmin 20");
+        add(errorLabel, "sgy components, hmax 20, hmin 20");
+        add(inviteLabel, "sgy components, hmax 20, hmin 20");
 
         checkErrors();
     }
@@ -257,8 +257,8 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         if (mouseEvent.getButton() == MouseEvent.BUTTON1) {
             if (mouseEvent.getSource() == errorLabel) {
                 ErrorListDialog.showErrorListDialog();
-            } else if (mouseEvent.getSource() == updateLabel 
-                    && updateLabel.getToolTipText().equals("Updates available")) {
+            } else if (mouseEvent.getSource() == updateLabel && updateLabel.getToolTipText().
+                    equals("Updates available")) {
                 SwingUpdaterDialog.showSwingUpdaterDialog(UpdateChecker.getAvailableUpdates());
             }
         }
@@ -273,7 +273,11 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
                 /** {@inheritDoc} */
                 @Override
                 public void run() {
+                    remove(errorLabel);
+                    remove(inviteLabel);
                     add(component, "sgy components, hmax 20, hmin 20");
+                    add(inviteLabel, "sgy components, hmax 20, hmin 20");
+                    add(errorLabel, "sgy components, hmax 20, hmin 20");
                     validate();
                 }
             });
