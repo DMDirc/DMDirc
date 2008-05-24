@@ -30,7 +30,6 @@ import java.io.EOFException;
 import java.nio.charset.Charset;
 import java.util.Stack;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Reads a file in reverse.
@@ -41,10 +40,6 @@ import java.util.List;
 public class ReverseFileReader {
 	/** File to manipulate. */
 	private RandomAccessFile file;
-	/** \r Character */
-	private static final byte R = 0X0D;
-	/** \n Character */
-	private static final byte N = 0X0A;
 	/** Number of bytes to skip backwards at a time. */
 	private byte seekLength = 50;
 
@@ -125,7 +120,7 @@ public class ReverseFileReader {
 		if (file == null) { throw new IOException("File has been closed."); }
 		// Used to store result to output.
 //		StringBuilder line = new StringBuilder();
-		final List<Byte> line = new ArrayList<Byte>(seekLength);
+		final ArrayList<Byte> line = new ArrayList<Byte>(seekLength);
 		// Used to store position in file pre-read
 		long fp = 0;
 		// Used to store position in file when this is called
@@ -171,24 +166,23 @@ public class ReverseFileReader {
 			// This uses seekDistance so that only wanted data is checked.
 			for (int i = seekDistance-1; i >= 0; --i) {
 				// Check for New line Character, or a non carraige-return char
-				if (bytes[i] == N) {
+				if (bytes[i] == '\n') {
 					// Seek to the location of this character and exit this loop.
 					file.seek(fp+i);
 					gotNewLine = true;
 					break;
-				} else if (bytes[i] != R) {
+				} else if (bytes[i] != '\r') {
 					// Add to the result, the loop will continue going.
 					line.add(0, bytes[i]);
 				}
 			}
-
+			
 			// We have now processed the data we read (Either added it all to the
 			// buffer, or found a newline character.)
-
-
+			
 			if (fp == 0 && !gotNewLine) {
 				// This part of the loop started from the start of the file, but didn't
-				// find a new line anywhere. no more loops are posssiblke, so Treat
+				// find a new line anywhere. no more loops are posssible, so Treat
 				// this as "got new line"
 				gotNewLine = true;
 				file.seek(0);
