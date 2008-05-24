@@ -218,7 +218,7 @@ public class ReverseFileReader {
 	 * If the file is closed, an empty stack will be returned.
 	 *
 	 * @param numLines Number of lines to try and get.
-     * @return The requested lines
+	 * @return The requested lines
 	 */
 	public Stack<String> getLines(final int numLines) {
 		final Stack<String> result = new Stack<String>();
@@ -230,5 +230,28 @@ public class ReverseFileReader {
 			}
 		}
 		return result;
+	}
+	
+	/**
+	 * Try and get x number of lines and return a \n delimited String.
+	 * If the file is closed, an empty string will be returned.
+	 *
+	 * @param numLines Number of lines to try and get.
+	 * @return The requested lines
+	 */
+	public String getLinesAsString(final int numLines) {
+		final StringBuilder result = new StringBuilder();
+		for (int i = 0; i < numLines; ++i) {
+			try {
+				result.insert(0, "\n");
+				result.insert(0, getNextLine());
+			} catch (IOException e) {
+				break;
+			}
+		}
+		if (result.charAt(0) == '\n') {
+			result.deleteCharAt(0);
+		}
+		return result.toString();
 	}
 }
