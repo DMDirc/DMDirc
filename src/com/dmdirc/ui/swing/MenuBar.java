@@ -105,7 +105,7 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         menu.addMenuListener(this);
         add(menu);
 
-        if (!Apple.isApple()) {
+        if (!Apple.isAppleUI()) {
             menuItem = new JMenuItem();
             menuItem.setText("Preferences");
             menuItem.setMnemonic('p');
@@ -173,7 +173,7 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         menuItem.addActionListener(this);
         menu.add(menuItem);
         
-        if (!Apple.isApple()) {
+        if (!Apple.isAppleUI()) {
             menuItem = new JMenuItem();
             menuItem.setMnemonic('a');
             menuItem.setText("About");

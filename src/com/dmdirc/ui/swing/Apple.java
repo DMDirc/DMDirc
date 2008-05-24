@@ -42,6 +42,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.InvocationTargetException;
 
+import javax.swing.UIManager;
+
 import java.util.ArrayList;
 
 /**
@@ -162,6 +164,15 @@ public final class Apple implements InvocationHandler, ActionListener {
 	 */
 	public static boolean isApple() {
 		return (System.getProperty("mrj.version") != null);
+	}
+	
+	/**
+	 * Are we using the OS X look and feel?
+	 *
+	 * @return true if we are using the OS X look and feel
+	 */
+	public static boolean isAppleUI() {
+		return isApple() && UIManager.getLookAndFeel().getClass().getName().equals("apple.laf.AquaLookAndFeel");
 	}
 
 	/**
