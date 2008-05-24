@@ -157,9 +157,10 @@ public abstract class DCCFrame extends WritableFrameContainer {
 	 *
 	 * @param plugin The DCCPlugin that owns this frame
 	 * @param title The title of this window
+     * @param icon The icon to use
 	 */
-	public DCCFrame(final DCCPlugin plugin, final String title) {
-		this(plugin, title, true);
+	public DCCFrame(final DCCPlugin plugin, final String title, final String icon) {
+		this(plugin, title, icon, true);
 	}
 	
 	/**
@@ -168,9 +169,11 @@ public abstract class DCCFrame extends WritableFrameContainer {
 	 * @param plugin The DCCPlugin that owns this frame
 	 * @param title The title of this window
 	 * @param defaultWindow Create default (empty) window.
+     * @param icon The icon to use
 	 */
-	public DCCFrame(final DCCPlugin plugin, final String title, final boolean defaultWindow) {
-		super("raw", IdentityManager.getGlobalConfig());
+	public DCCFrame(final DCCPlugin plugin, final String title,
+            final String icon ,final boolean defaultWindow) {
+		super(icon, IdentityManager.getGlobalConfig());
 		this.title = title;
 		this.plugin = plugin;
 

@@ -88,7 +88,8 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	 * @param targetNick Nickname of target
 	 */
 	public DCCSendWindow(final DCCPlugin plugin, final DCCSend dcc, final String title, final String nick, final String targetNick) {
-		super(plugin, title);
+		super(plugin, title, dcc.getType() == DCCSend.TransferType.SEND ? 
+            "dcc-send-inactive" : "dcc-receive-inactive");
 		this.dcc = dcc;
 		dcc.setHandler(this);
 		nickname = nick;
@@ -216,6 +217,8 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 			status.setText("Status: Transfer Failed.");
 		}
 		updateSpeedAndTime();
+        setIcon(dcc.getType() == DCCSend.TransferType.SEND ? 
+            "dcc-send-active" : "dcc-receive-active");
 	}
 	
 	/**
@@ -228,6 +231,8 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 		ActionManager.processEvent(DCCActions.DCC_SEND_SOCKETOPENED, null, this);
 		status.setText("Status: Socket Opened");
 		timeStarted = System.currentTimeMillis();
+        setIcon(dcc.getType() == DCCSend.TransferType.SEND ? 
+            "dcc-send-inactive" : "dcc-receive-inactive");
 	}
 	
 	/**

@@ -24,6 +24,7 @@ package com.dmdirc.util;
 
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.themes.ThemeManager;
 
 import java.net.MalformedURLException;
@@ -99,6 +100,19 @@ public final class URLBuilder {
     }
     
     /**
+     * Builds an URL pointing to a resource within a DMDirc plugin.
+     * 
+     * @param plugin The plugin which the resource is located in
+     * @param path The path within the theme of the resource
+     * @return An URL corresponding to the specified resource, or null on failure
+     */
+    public static URL buildPluginURL(final String plugin, final String path) {
+        return buildJarURL(
+                PluginManager.getPluginManager().getPluginInfoByName(plugin).getFullFilename(),
+                path);
+    }
+    
+    /**
      * Constructs an URL corresponding to the described resource.
      * 
      * @param spec The resource location. May take the form of: <ul>
@@ -106,6 +120,7 @@ public final class URLBuilder {
      * <li>jar://path/to/jarfile:path/inside/jarfile
      * <li>zip://path/to/zipfile:path/inside/zipfile
      * <li>theme://theme_name:file/inside/theme
+     * <li>plugin://plugin_name:file/inside/plugin
      * <li>http://server/path
      * <li>https://server/path
      * <li>[file://]/path/on/filesystem</ul>
@@ -124,6 +139,15 @@ public final class URLBuilder {
             } else {
                 return buildJarURL(spec.substring(6, offset), spec.substring(offset + 1));
             }
+        } else if (spec.startsWith("plugin://")) {
+            final int offset = spec.indexOf(':', 8);
+            
+            if (offset < 0) {
+                Logger.userError(ErrorLevel.LOW, "Invalid URL, must contain ':': " + spec);
+                return null;
+            } else {
+                return buildPluginURL(spec.substring(9, offset), spec.substring(offset + 1));
+            }            
         } else if (spec.startsWith("theme://")) {
             final int offset = spec.indexOf(':', 8);
             

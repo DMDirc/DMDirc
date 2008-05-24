@@ -358,7 +358,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 * Create the container window.
 	 */
 	protected void createContainer() {
-		container = new DCCFrame(this, "DCCs"){};
+		container = new DCCFrame(this, "DCCs", "dcc"){};
 		final TextLabel label = new TextLabel("This is a placeholder window to group DCCs together.");
 		label.setText(label.getText()+"\n\nClosing this window will close all the active DCCs");
 		((TextFrame)container.getFrame()).getContentPane().add(label);
@@ -415,6 +415,15 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		defaults.setOption(MY_DOMAIN, "send.blocksize", "1024");
 		defaults.setOption(MY_DOMAIN, "receive.autoaccept", "false");
 		defaults.setOption(MY_DOMAIN, "general.ip", "");
+        
+        final String url = "plugin://dcc:com/dmdirc/addons/dcc/res/";
+        defaults.setOption("icon", "dcc", url + "transfers.png");
+        defaults.setOption("icon", "dcc-chat-active", url + "chat.png");
+        defaults.setOption("icon", "dcc-chat-inactive", url + "chat-inactive.png");
+        defaults.setOption("icon", "dcc-send-active", url + "send.png");
+        defaults.setOption("icon", "dcc-send-inactive", url + "send-inactive.png");
+        defaults.setOption("icon", "dcc-receive-active", url + "receive.png");
+        defaults.setOption("icon", "dcc-receive-inactive", url + "receive-inactive.png");
 		
 		defaults.setOption("formatter", "DCCChatStarting", "Starting DCC Chat with: %1$s on %2$s:%3$s");
 		defaults.setOption("formatter", "DCCChatInfo", "%1$s");

@@ -52,7 +52,7 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 	 * @param targetNick Nickname of target
 	 */
 	public DCCChatWindow(final DCCPlugin plugin, final DCCChat dcc, final String title, final String nick, final String targetNick) {
-		super(plugin, title, false);
+		super(plugin, title, "dcc-chat-inactive", false);
 		this.dcc = dcc;
 		dcc.setHandler(this);
 		nickname = nick;
@@ -115,6 +115,7 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 		final StringBuffer buff = new StringBuffer("DCCChatInfo");
 		ActionManager.processEvent(DCCActions.DCC_CHAT_SOCKETCLOSED, buff, this);
 		addLine(buff, "Socket closed");
+        setIcon("dcc-chat-inactive");
 	}
 	
 	/**
@@ -127,6 +128,7 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 		final StringBuffer buff = new StringBuffer("DCCChatInfo");
 		ActionManager.processEvent(DCCActions.DCC_CHAT_SOCKETOPENED, buff, this);
 		addLine(buff, "Socket opened");
+        setIcon("dcc-chat-active");
 	}
 	
 	/**
