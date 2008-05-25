@@ -111,7 +111,7 @@ public final class SettingsPanel extends JPanel {
         scrollPane = new JScrollPane(currentOptionsPanel);
         
         scrollPane.setBorder(BorderFactory.createTitledBorder(
-                UIManager.getBorder("TextField.border"), "Current settings"));
+                scrollPane.getBorder(), "Current settings"));
         
         addOptionPanel.setBorder(BorderFactory.createTitledBorder("Add new setting"));
     }
