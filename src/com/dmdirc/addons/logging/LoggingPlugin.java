@@ -642,7 +642,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 				directory.append(File.separatorChar);
 			}
 			
-			if (!new File(directory.toString())).exists() && !(new File(directory.toString())).mkdirs()) {
+			if (!new File(directory.toString()).exists() && !(new File(directory.toString())).mkdirs()) {
 				Logger.userError(ErrorLevel.LOW, "Unable to create date dirs");
 			}
 		}
