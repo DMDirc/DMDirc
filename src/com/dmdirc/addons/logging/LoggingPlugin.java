@@ -64,6 +64,9 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Stack;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Adds logging facility to client.
  *
@@ -78,8 +81,20 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	/** The command we registered. */
 	private LoggingCommand command;
 
+	/** Open File */
+	private class OpenFile {
+		public long lastUsedTime = System.currentTimeMillis();
+		public BufferedWriter writer = null;
+		public OpenFile(final BufferedWriter writer) {
+			this.writer = writer;
+		}
+	}
+
+	/** Timer used to close idle files */
+	private Timer idleFileTimer;
+
 	/** Hashtable of open files. */
-	private final Map<String, BufferedWriter> openFiles = new Hashtable<String, BufferedWriter>();
+	private final Map<String, OpenFile> openFiles = new Hashtable<String, OpenFile>();
 
 	/** Date format used for "File Opened At" log. */
 	final DateFormat openedAtFormat = new SimpleDateFormat("EEEE MMMM dd, yyyy - HH:mm:ss");
@@ -108,6 +123,8 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 		defaults.setOption(MY_DOMAIN, "backbuffer.colour", "14");
 		defaults.setOption(MY_DOMAIN, "backbuffer.timestamp", "false");
 		defaults.setOption(MY_DOMAIN, "history.lines", "50000");
+		defaults.setOption(MY_DOMAIN, "advanced.usedate", "false");
+		defaults.setOption(MY_DOMAIN, "advanced.usedateformat", "yyyy/MMMM");
 
 		final File dir = new File(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.directory"));
 		if (dir.exists()) {
@@ -115,10 +132,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 				Logger.userError(ErrorLevel.LOW, "Unable to create logging dir (file exists instead)");
 			}
 		} else {
-			try {
-				dir.mkdirs();
-				dir.createNewFile();
-			} catch (IOException ex) {
+			if (!dir.mkdirs()) {
 				Logger.userError(ErrorLevel.LOW, "Unable to create logging dir");
 			}
 		}
@@ -146,6 +160,35 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 		                 CoreActionType.QUERY_ACTION,
 		                 CoreActionType.QUERY_SELF_ACTION);
 		
+		// Close idle files every hour.
+		idleFileTimer = new Timer("LoggingPlugin Timer");
+		idleFileTimer.schedule(new TimerTask(){
+			public void run() {
+				timerTask();
+			}
+		}, 3600000);
+	}
+	
+	/**
+	 * What to do every hour when the timer fires.
+	 */
+	private void timerTask() {
+		// Oldest time to allow
+		final long oldestTime = System.currentTimeMillis() - 3600000;
+		
+		synchronized (openFiles) {
+			for (String filename : (new Hashtable<String, OpenFile>(openFiles)).keySet()) {
+				OpenFile file = openFiles.get(filename);
+				if (file.lastUsedTime < oldestTime) {
+					try {
+						file.writer.close();
+						openFiles.remove(filename);
+					} catch (IOException e) {
+						Logger.userError(ErrorLevel.LOW, "Unable to close idle file (File: "+filename+")");
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -153,15 +196,17 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 */
 	@Override
 	public void onUnload() {
+		idleFileTimer.cancel();
+		idleFileTimer.purge();
+		
 		CommandManager.unregisterCommand(command);
 		ActionManager.removeListener(this);
 		
-		BufferedWriter file;
 		synchronized (openFiles) {
 			for (String filename : openFiles.keySet()) {
-				file = openFiles.get(filename);
+				OpenFile file = openFiles.get(filename);
 				try {
-					file.close();
+					file.writer.close();
 				} catch (IOException e) {
 					Logger.userError(ErrorLevel.LOW, "Unable to close file (File: "+filename+")");
 				}
@@ -190,6 +235,9 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 		backbuffer.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "backbuffer.timestamp", "false", "Show Formatter-Timestamp", "Should the line be added to the frame with the timestamp from the formatter aswell as the file contents"));
 
 		advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "advanced.filenamehash", "false", "Add Filename hash", "Add the MD5 hash of the channel/client name to the filename. (This is used to allow channels with similar names (ie a _ not a  -) to be logged separately)"));
+
+		advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "advanced.usedate", "false", "Use Date directories", "Should the log files be in separate directories based on the date?"));
+		advanced.addSetting(new PreferencesSetting(PreferencesType.TEXT, MY_DOMAIN, "advanced.usedateformat", "yyyy/MMMM", "Archive format", "The String to pass to 'SimpleDateFormat' to format the directory name(s) for archiving"));
 
 		general.addSubCategory(backbuffer.setInline());
 		general.addSubCategory(advanced.setInline());
@@ -249,7 +297,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 			case QUERY_CLOSED:
 				if (openFiles.containsKey(filename)) {
 					appendLine(filename, "*** Query closed at: %s", openedAtFormat.format(new Date()));
-					final BufferedWriter file = openFiles.get(filename);
+					final BufferedWriter file = openFiles.get(filename).writer;
 					try {
 						file.close();
 					} catch (IOException e) {
@@ -286,10 +334,10 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 		final ChannelInfo channel = chan.getChannelInfo();
 		final String filename = getLogFile(channel);
 		
-		final ChannelClientInfo channelClient = (arguments[1] instanceof ChannelClientInfo) ? (ChannelClientInfo)arguments[1] : null;
+		final ChannelClientInfo channelClient = (arguments.length > 1 && arguments[1] instanceof ChannelClientInfo) ? (ChannelClientInfo)arguments[1] : null;
 		final ClientInfo client = (channelClient != null) ? channelClient.getClient() : null;
 
-		final String message = (arguments[2] instanceof String) ? (String)arguments[2] : null;
+		final String message = (arguments.length > 2 && arguments[2] instanceof String) ? (String)arguments[2] : null;
 		
 		switch (type) {
 			case CHANNEL_OPENED:
@@ -303,7 +351,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 			case CHANNEL_CLOSED:
 				if (openFiles.containsKey(filename)) {
 					appendLine(filename, "*** Channel closed at: %s", openedAtFormat.format(new Date()));
-					final BufferedWriter file = openFiles.get(filename);
+					final BufferedWriter file = openFiles.get(filename).writer;
 					try {
 						file.close();
 					} catch (IOException e) {
@@ -526,10 +574,12 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 		BufferedWriter out = null;
 		try {
 			if (openFiles.containsKey(filename)) {
-				out = openFiles.get(filename);
+				OpenFile of = openFiles.get(filename);
+				of.lastUsedTime = System.currentTimeMillis();
+				out = of.writer;
 			} else {
 				out = new BufferedWriter(new FileWriter(filename, true));
-				openFiles.put(filename, out);
+				openFiles.put(filename, new OpenFile(out));
 			}
 			out.write(finalLine.toString());
 			out.newLine();
@@ -554,41 +604,123 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 * @return the name of the log file to use for this object.
 	 */
 	private String getLogFile(final Object obj) {
-		final StringBuffer result = new StringBuffer();
+		final StringBuffer directory = new StringBuffer();
+		final StringBuffer file = new StringBuffer();
 		String md5String = "";
 	
-		result.append(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.directory"));
-
+		directory.append(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.directory"));
+		if (directory.charAt(directory.length()-1) != File.separatorChar) {
+			directory.append(File.separatorChar);
+		}
+		
 		if (obj == null) {
-			result.append("null.log");
+			file.append("null.log");
 		} else if (obj instanceof ChannelInfo) {
 			final ChannelInfo channel = (ChannelInfo) obj;
 			if (channel.getParser() != null) {
-				addNetworkDir(result, channel.getParser().getNetworkName());
+				addNetworkDir(directory, file, channel.getParser().getNetworkName());
 			}
-			result.append(sanitise(channel.getName().toLowerCase()));
+			file.append(sanitise(channel.getName().toLowerCase()));
 			md5String = channel.getName();
 		} else if (obj instanceof ClientInfo) {
 			final ClientInfo client = (ClientInfo) obj;
 			if (client.getParser() != null) {
-				addNetworkDir(result, client.getParser().getNetworkName());
+				addNetworkDir(directory, file, client.getParser().getNetworkName());
 			}
-			result.append(sanitise(client.getNickname().toLowerCase()));
+			file.append(sanitise(client.getNickname().toLowerCase()));
 			md5String = client.getNickname();
 		} else {
-			result.append(sanitise(obj.toString().toLowerCase()));
+			file.append(sanitise(obj.toString().toLowerCase()));
 			md5String = obj.toString();
 		}
 		
+		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "advanced.usedate")) {
+			final String dateFormat = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "advanced.usedateformat");
+			final String dateDir = (new SimpleDateFormat(dateFormat)).format(new Date());
+			directory.append(dateDir);
+			if (directory.charAt(directory.length()-1) != File.separatorChar) {
+				directory.append(File.separatorChar);
+			}
+			
+			if (!new File(directory.toString())).exists() && !(new File(directory.toString())).mkdirs()) {
+				Logger.userError(ErrorLevel.LOW, "Unable to create date dirs");
+			}
+		}
 		
 		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "advanced.filenamehash")) {
-			result.append('.');
-			result.append(md5(md5String));
+			file.append('.');
+			file.append(md5(md5String));
 		}
-		result.append(".log");
-		return result.toString();
+		file.append(".log");
+		
+		return directory.toString() + file.toString();
+	}
+	
+	/**
+	 * This function adds the networkName to the log file.
+	 * It first tries to create a directory for each network, if that fails
+	 * it will prepend the networkName to the filename instead.
+	 *
+	 * @param directory Current directory name
+	 * @param file Current file name
+	 * @param networkName Name of network
+	 */
+	private void addNetworkDir(final StringBuffer directory, final StringBuffer file, final String networkName) {
+		if (!IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.networkfolders")) {
+			return;
+		}
+	
+		final String network = sanitise(networkName.toLowerCase());
+		
+		boolean prependNetwork = false;
+		
+		// Check dir exists
+		final File dir = new File(directory.toString()+network+System.getProperty("file.separator"));
+		if (dir.exists() && !dir.isDirectory()) {
+			Logger.userError(ErrorLevel.LOW, "Unable to create networkfolders dir (file exists instead)");
+			// Prepend network name to file instead.
+			prependNetwork = true;
+		} else if (!dir.exists() && !dir.mkdirs()) {
+			Logger.userError(ErrorLevel.LOW, "Unable to create networkfolders dir");
+			prependNetwork = true;
+		}
+		
+		if (prependNetwork) {
+			file.insert(0, " -- ");
+			file.insert(0, network);
+		} else {
+			directory.append(network);
+			directory.append(System.getProperty("file.separator"));
+		}
 	}
 
+	/**
+	 * Sanitise a string to be used as a filename.
+	 *
+	 * @param name String to sanitise
+	 * @return Sanitised version of name that can be used as a filename.
+	 */
+	private String sanitise(final String name) {
+		// Replace illegal chars with
+		return name.replaceAll("[^\\w\\.\\s\\-\\#\\&\\_]", "_");
+	}
+
+	/**
+	 * Get the md5 hash of a string.
+	 *
+	 * @param string String to hash
+	 * @return md5 hash of given string
+	 */
+	private String md5(final String string) {
+		try {
+			final MessageDigest m = MessageDigest.getInstance("MD5");
+			m.update(string.getBytes(), 0, string.length());
+			return new BigInteger(1, m.digest()).toString(16);
+		} catch (NoSuchAlgorithmException e) {
+			return "";
+		}
+	}
+	
 	/**
 	 * Get name to display for client.
 	 *
@@ -640,74 +772,6 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 			return (addModePrefix) ? channelClient.toString() : channelClient.getNickname();
 		} else {
 			return (addModePrefix) ? channelClient.getImportantModePrefix() + overrideNick : overrideNick;
-		}
-	}
-
-	/**
-	 * This function adds the networkName to the log file.
-	 * It first tries to create a directory for each network, if that fails
-	 * it will prepend the networkName to the filename instead.
-	 *
-	 * @param input Current filename (Logging directory)
-	 * @param networkName Name of network
-	 * @return Updated filename to include network name
-	 */
-	private void addNetworkDir(final StringBuffer input, final String networkName) {
-		final String network = sanitise(networkName.toLowerCase());
-		
-		boolean prependNetwork = false;
-		
-		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.networkfolders")) {
-			// Check dir exists
-			final File dir = new File(input.toString()+network+System.getProperty("file.separator"));
-			if (dir.exists() && !dir.isDirectory()) {
-				Logger.userError(ErrorLevel.LOW, "Unable to create networkfolders dir (file exists instead)");
-				// Prepend network name to file instead.
-				prependNetwork = true;
-			} else if (!dir.exists()) {
-				try {
-					dir.mkdirs();
-					dir.createNewFile();
-				} catch (IOException ex) {
-					Logger.userError(ErrorLevel.LOW, "Unable to create networkfolders dir");
-					prependNetwork = true;
-				}
-			}
-		}
-		
-		if (prependNetwork) {
-			input.append(network);
-			input.append(" -- ");
-		} else {
-			input.append(network);
-			input.append(System.getProperty("file.separator"));
-		}
-	}
-
-	/**
-	 * Sanitise a string to be used as a filename.
-	 *
-	 * @param name String to sanitise
-	 * @return Sanitised version of name that can be used as a filename.
-	 */
-	private String sanitise(final String name) {
-		// Replace illegal chars with
-		return name.replaceAll("[^\\w\\.\\s\\-\\#\\&\\_]", "_");
-	}
-
-	/**
-	 * Get the md5 hash of a string.
-	 *
-	 * @param string String to hash
-	 * @return md5 hash of given string
-	 */
-	private String md5(final String string) {
-		try {
-			final MessageDigest m = MessageDigest.getInstance("MD5");
-			m.update(string.getBytes(), 0, string.length());
-			return new BigInteger(1, m.digest()).toString(16);
-		} catch (NoSuchAlgorithmException e) {
-			return "";
 		}
 	}
 
