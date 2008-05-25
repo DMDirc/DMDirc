@@ -40,7 +40,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.text.BadLocationException;
 
 /**
  * Response tab panel, response and formatter editing for the actions editor
@@ -91,9 +90,8 @@ public final class ResponseTabPanel extends JPanel implements
         subsPanel.addSubstitutionsPanelListener(this);
         
         scrollPane.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(SMALL_BORDER, 0,
-                SMALL_BORDER, 0), scrollPane.getBorder()
-                ));
+                scrollPane.getBorder(), BorderFactory.createEmptyBorder(
+                SMALL_BORDER, 0,SMALL_BORDER, 0)));
         
         responses.setRows(3);
         formatter.setPreferredSize(
@@ -199,6 +197,7 @@ public final class ResponseTabPanel extends JPanel implements
     }
 
     /** {@inheritDoc} */
+    @Override
     public void substitutionInsert(final ActionSubstitution substitution) {
             responses.replaceSelection(substitution.toString());
     }
