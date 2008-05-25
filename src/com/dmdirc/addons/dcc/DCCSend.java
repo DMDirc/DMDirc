@@ -22,8 +22,6 @@
 
 package com.dmdirc.addons.dcc;
 
-import com.dmdirc.config.IdentityManager;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -75,10 +73,19 @@ public class DCCSend extends DCC {
 	/** Is this a turbo dcc? */
 	private boolean turbo = false;
 	
-	/** Creates a new instance of DCCSend. */
+	/** Creates a new instance of DCCSend with a default block size. */
 	public DCCSend() {
+		this(1024);
+	}
+	
+	/**
+	 * Creates a new instance of DCCSend.
+	 *
+	 * @param blockSize Block size to use
+	 */
+	public DCCSend(final int blockSize) {
 		super();
-		blockSize = IdentityManager.getGlobalConfig().getOptionInt(DCCPlugin.getDomain(), "send.blocksize", 1024);
+		this.blockSize = blockSize;
 		synchronized (sends) {
 			sends.add(this);
 		}

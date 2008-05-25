@@ -171,9 +171,11 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 								parser.sendCTCP(nickname, "DCC", "RESUME "+sendFilename+" 0 "+jc.getSelectedFile().length());
 							}
 						} else {
-							send.listen();
-							
-							parser.sendCTCP(nickname, "DCC", "SEND "+sendFilename+" "+DCC.ipToLong(getListenIP(parser))+" "+send.getPort()+" "+send.getFileSize()+" "+token);
+							if (listen(send)) {
+								parser.sendCTCP(nickname, "DCC", "SEND "+sendFilename+" "+DCC.ipToLong(getListenIP(parser))+" "+send.getPort()+" "+send.getFileSize()+" "+token);
+							} else {
+								// Listen failed.
+							}
 						}
 					} else {
 						new DCCSendWindow(DCCPlugin.this, send, "Receive: "+nickname, parser.getMyNickname(), nickname);
@@ -200,6 +202,32 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	@Override
 	public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
 		handleProcessEvent(type, format, false, arguments);
+	}
+
+	/**
+	 * Make the given DCC start listening.
+	 * This will either call dcc.listen() or dcc.listen(startPort, endPort)
+	 * depending on config.
+	 *
+	 * @param dcc DCC to start listening.
+	 * @return True if Socket was opened.
+	 */
+	protected boolean listen(final DCC dcc) {
+	
+		final boolean usePortRange = IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.ports.usePortRange", false);
+		final int startPort  = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "general.ports.startPort", 11000);
+		final int endPort  = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "general.ports.endPort", 11019);
+
+		try {
+			if (usePortRange) {
+				dcc.listen(startPort, endPort);
+			} else {
+				dcc.listen();
+			}
+			return true;
+		} catch (IOException ioe) {
+			return false;
+		}
 	}
 
 	/**
@@ -279,7 +307,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 					} else {
 						final boolean newSend = send == null;
 						if (newSend) {
-							send = new DCCSend();
+							send = new DCCSend(IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "send.blocksize", 1024));
 							send.setTurbo(IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "send.forceturbo", false));
 						}
 						try {
@@ -336,11 +364,14 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 									send.setFileStart(position);
 									if (port == 0) {
 										// Reverse dcc
-										send.listen();
-										if (send.getToken().isEmpty()) {
-											parser.sendCTCP(nickname, "DCC", "SEND "+((quoted) ? "\""+filename+"\"" : filename)+" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+send.getFileSize());
+										if (listen(send)) {
+											if (send.getToken().isEmpty()) {
+												parser.sendCTCP(nickname, "DCC", "SEND "+((quoted) ? "\""+filename+"\"" : filename)+" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+send.getFileSize());
+											} else {
+												parser.sendCTCP(nickname, "DCC", "SEND "+((quoted) ? "\""+filename+"\"" : filename)+" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+send.getFileSize()+" "+send.getToken());
+											}
 										} else {
-											parser.sendCTCP(nickname, "DCC", "SEND "+((quoted) ? "\""+filename+"\"" : filename)+" "+DCC.ipToLong(send.getHost())+" "+send.getPort()+" "+send.getFileSize()+" "+send.getToken());
+											// Listen failed.
 										}
 									} else {
 										send.connect();
@@ -415,19 +446,23 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		defaults.setOption(MY_DOMAIN, "send.blocksize", "1024");
 		defaults.setOption(MY_DOMAIN, "receive.autoaccept", "false");
 		defaults.setOption(MY_DOMAIN, "general.ip", "");
-        
-        final String url = "plugin://dcc:com/dmdirc/addons/dcc/res/";
-        defaults.setOption("icon", "dcc", url + "transfers.png");
-        defaults.setOption("icon", "dcc-chat-active", url + "chat.png");
-        defaults.setOption("icon", "dcc-chat-inactive", url + "chat-inactive.png");
-        defaults.setOption("icon", "dcc-send-active", url + "send.png");
-        defaults.setOption("icon", "dcc-send-inactive", url + "send-inactive.png");
-        defaults.setOption("icon", "dcc-receive-active", url + "receive.png");
-        defaults.setOption("icon", "dcc-receive-inactive", url + "receive-inactive.png");
+		defaults.setOption(MY_DOMAIN, "general.ports.usePortRange", "false");
+		defaults.setOption(MY_DOMAIN, "general.ports.startPort", "11000");
+		defaults.setOption(MY_DOMAIN, "general.ports.endPort", "11019");
+		
+		final String url = "plugin://dcc:com/dmdirc/addons/dcc/res/";
+		defaults.setOption("icon", "dcc", url + "transfers.png");
+		defaults.setOption("icon", "dcc-chat-active", url + "chat.png");
+		defaults.setOption("icon", "dcc-chat-inactive", url + "chat-inactive.png");
+		defaults.setOption("icon", "dcc-send-active", url + "send.png");
+		defaults.setOption("icon", "dcc-send-inactive", url + "send-inactive.png");
+		defaults.setOption("icon", "dcc-receive-active", url + "receive.png");
+		defaults.setOption("icon", "dcc-receive-inactive", url + "receive-inactive.png");
 		
 		defaults.setOption("formatter", "DCCChatStarting", "Starting DCC Chat with: %1$s on %2$s:%3$s");
 		defaults.setOption("formatter", "DCCChatInfo", "%1$s");
 		defaults.setOption("formatter", "DCCChatError", "\u00034 Error: %1$s");
+		defaults.setOption("formatter", "DCCSendError", "\u00034 Error: %1$s");
 		defaults.setOption("formatter", "DCCChatSelfMessage", "<%1$s> %2$s");
 		defaults.setOption("formatter", "DCCChatMessage", "<%1$s> %2$s");
 
@@ -511,7 +546,16 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 
 		general.addSetting(new PreferencesSetting(PreferencesType.TEXT,
 		          MY_DOMAIN, "general.ip", "", "Force IP",
-		          "What IP should be sent as ours (Blank = work it out)?"));
+		          "What IP should be sent as our IP (Blank = work it out)"));
+		sending.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+		          MY_DOMAIN, "general.ports.usePortRange", "false", "Use Port Range",
+		          "Useful if you have a firewall that only forwards specific ports"));
+		general.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
+		          MY_DOMAIN, "general.ports.startPort", "11000", "Start Port",
+		          "Port to try to listen on first"));
+		general.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
+		          MY_DOMAIN, "general.ports.endPort", "11019", "End Port",
+		          "Port to try to listen on last"));
 		receiving.addSetting(new PreferencesSetting(PreferencesType.TEXT,
 		          MY_DOMAIN, "receive.savelocation", "", "Default save location",
 		          "Where the save as window defaults to?"));

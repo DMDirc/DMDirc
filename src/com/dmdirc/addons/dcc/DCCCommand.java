@@ -77,15 +77,18 @@ public final class DCCCommand extends GlobalCommand {
 				final IRCParser parser = server.getParser();
 				final String myNickname = parser.getMyNickname();
 				final DCCChat chat = new DCCChat();
-				chat.listen();
-				final DCCChatWindow window = new DCCChatWindow(myPlugin, chat, "*Chat: "+target, myNickname, target);
-				
-				parser.sendCTCP(target, "DCC", "CHAT chat "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" "+chat.getPort());
-				
-				ActionManager.processEvent(DCCActions.DCC_CHAT_REQUEST_SENT, null, server, target);
-				
-				sendLine(origin, isSilent, "DCCChatStarting", target, chat.getHost(), chat.getPort());
-				window.getFrame().addLine("DCCChatStarting", target, chat.getHost(), chat.getPort());
+				if (myPlugin.listen(chat)) {
+					final DCCChatWindow window = new DCCChatWindow(myPlugin, chat, "*Chat: "+target, myNickname, target);
+					
+					parser.sendCTCP(target, "DCC", "CHAT chat "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" "+chat.getPort());
+					
+					ActionManager.processEvent(DCCActions.DCC_CHAT_REQUEST_SENT, null, server, target);
+					
+					sendLine(origin, isSilent, "DCCChatStarting", target, chat.getHost(), chat.getPort());
+					window.getFrame().addLine("DCCChatStarting", target, chat.getHost(), chat.getPort());
+				} else {
+					sendLine(origin, isSilent, "DCCChatError", "Unable to start chat with "+target+" - unable to create listen socket");
+				}
 			} else if (type.equalsIgnoreCase("send")) {
 				sendFile(target, origin, isSilent, args);
 			} else {
@@ -126,7 +129,7 @@ public final class DCCCommand extends GlobalCommand {
 					final Server server = origin.getContainer().getServer();
 					final IRCParser parser = server.getParser();
 					final String myNickname = parser.getMyNickname();
-					DCCSend send = new DCCSend();
+					DCCSend send = new DCCSend(IdentityManager.getGlobalConfig().getOptionInt(DCCPlugin.getDomain(), "send.blocksize", 1024));
 					send.setTurbo(IdentityManager.getGlobalConfig().getOptionBool(DCCPlugin.getDomain(), "send.forceturbo", false));
 					send.setType(DCCSend.TransferType.SEND);
 					
@@ -141,9 +144,12 @@ public final class DCCCommand extends GlobalCommand {
 						new DCCSendWindow(myPlugin, send, "*Send: "+target, myNickname, target);
 						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" 0 "+send.getFileSize()+" "+send.makeToken()+((send.isTurbo()) ? "T" : ""));
 					} else {
-						new DCCSendWindow(myPlugin, send, "Send: "+target, myNickname, target);
-						send.listen();
-						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" "+send.getPort()+" "+send.getFileSize()+((send.isTurbo()) ? " T" : ""));
+						if (myPlugin.listen(send)) {
+							new DCCSendWindow(myPlugin, send, "Send: "+target, myNickname, target);
+							parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" "+send.getPort()+" "+send.getFileSize()+((send.isTurbo()) ? " T" : ""));
+						} else {
+							sendLine(origin, isSilent, "DCCSendError", "Unable to start dcc send with "+target+" - unable to create listen socket");
+						}
 					}
 				}
 			}

@@ -1,5 +1,5 @@
 mainclass=com.dmdirc.addons.dcc.DCCPlugin
-friendlyversion=0.1
+friendlyversion=0.2
 author=Shane <shane@dmdirc.com>
 description=Adds DCC Support to dmdirc
 name=dcc

@@ -44,7 +44,7 @@ public abstract class DCC implements Runnable {
 	/** The Thread in use for this */
 	private volatile Thread myThread = null;
 	/** The current socket in use is this is a listen socket */
-	private ServerSocket serverSocket;
+	private ServerSocket serverSocket = null;
 	/** Are we already running? */
 	protected boolean running = false;
 	/** Are we a listen socket? */
@@ -63,8 +63,6 @@ public abstract class DCC implements Runnable {
 	public void connect() {
 		try {
 			if (listen) {
-				// serverSocket = new ServerSocket(0, 1, InetAddress.getByName(longToIP(bindIP)));
-				serverSocket = new ServerSocket(0, 1);
 				address = 0;
 				port = serverSocket.getLocalPort();
 			} else {
@@ -84,9 +82,40 @@ public abstract class DCC implements Runnable {
 	/**
 	 * Start a listen socket rather than a connect socket.
 	 */
-	public void listen() {
+	public void listen() throws IOException {
 		listen = true;
+		serverSocket = new ServerSocket(0, 1);
 		connect();
+	}
+	
+	/**
+	 * Start a listen socket rather than a connect socket, use a port from the
+	 * given range.
+	 *
+	 * @param startPort Port to try first
+	 * @param endPort Last port to try.
+	 * @throws IOException If no sockets were available in the given range
+	 */
+	public void listen(final int startPort, final int endPort) throws IOException {
+		listen = true;
+		
+		for (int i = startPort; i <= endPort; ++i) {
+			try {
+				serverSocket = new ServerSocket(i, 1);
+				// Found a socket we can use!
+				break;
+			} catch (IOException ioe) {
+				// Try next socket.
+			} catch (SecurityException se) {
+				// Try next socket.
+			}
+		}
+		
+		if (serverSocket == null) {
+			throw new IOException("No available sockets in range "+startPort+":"+endPort);
+		} else {
+			connect();
+		}
 	}
 	
 	/**
