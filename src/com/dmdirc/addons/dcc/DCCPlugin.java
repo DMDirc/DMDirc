@@ -214,9 +214,9 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 */
 	protected boolean listen(final DCC dcc) {
 	
-		final boolean usePortRange = IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.ports.usePortRange", false);
-		final int startPort  = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "general.ports.startPort", 11000);
-		final int endPort  = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "general.ports.endPort", 11019);
+		final boolean usePortRange = IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "firewall.ports.usePortRange", false);
+		final int startPort  = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "firewall.ports.startPort", 11000);
+		final int endPort  = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "firewall.ports.endPort", 11019);
 
 		try {
 			if (usePortRange) {
@@ -445,10 +445,10 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		defaults.setOption(MY_DOMAIN, "receive.reverse.sendtoken", "false");
 		defaults.setOption(MY_DOMAIN, "send.blocksize", "1024");
 		defaults.setOption(MY_DOMAIN, "receive.autoaccept", "false");
-		defaults.setOption(MY_DOMAIN, "general.ip", "");
-		defaults.setOption(MY_DOMAIN, "general.ports.usePortRange", "false");
-		defaults.setOption(MY_DOMAIN, "general.ports.startPort", "11000");
-		defaults.setOption(MY_DOMAIN, "general.ports.endPort", "11019");
+		defaults.setOption(MY_DOMAIN, "firewall.ip", "");
+		defaults.setOption(MY_DOMAIN, "firewall.ports.usePortRange", "false");
+		defaults.setOption(MY_DOMAIN, "firewall.ports.startPort", "11000");
+		defaults.setOption(MY_DOMAIN, "firewall.ports.endPort", "11019");
 		
 		final String url = "plugin://dcc:com/dmdirc/addons/dcc/res/";
 		defaults.setOption("icon", "dcc", url + "transfers.png");
@@ -513,7 +513,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 * @param return The IP Address we should send as our listening IP.
 	 */
 	public static String getListenIP(final IRCParser parser) {
-		final String configIP = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.ip", "");
+		final String configIP = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "firewall.ip", "");
 		if (!configIP.isEmpty()) {
 			return configIP;
 		} else if (parser != null) {
@@ -537,24 +537,26 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	@Override
 	public void showConfig(final PreferencesManager manager) {
 		final PreferencesCategory general = new PreferencesCategory("DCC", "");
+		final PreferencesCategory firewall = new PreferencesCategory("Firewall", "");
 		final PreferencesCategory sending = new PreferencesCategory("Sending", "");
 		final PreferencesCategory receiving = new PreferencesCategory("Receiving", "");
 
 		manager.getCategory("Plugins").addSubCategory(general.setInlineAfter());
+		general.addSubCategory(firewall.setInline());
 		general.addSubCategory(sending.setInline());
 		general.addSubCategory(receiving.setInline());
 
-		general.addSetting(new PreferencesSetting(PreferencesType.TEXT,
-		          MY_DOMAIN, "general.ip", "", "Force IP",
+		firewall.addSetting(new PreferencesSetting(PreferencesType.TEXT,
+		          MY_DOMAIN, "firewall.ip", "", "Forced IP",
 		          "What IP should be sent as our IP (Blank = work it out)"));
-		sending.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-		          MY_DOMAIN, "general.ports.usePortRange", "false", "Use Port Range",
+		firewall.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+		          MY_DOMAIN, "firewall.ports.usePortRange", "false", "Use Port Range",
 		          "Useful if you have a firewall that only forwards specific ports"));
-		general.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
-		          MY_DOMAIN, "general.ports.startPort", "11000", "Start Port",
+		firewall.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
+		          MY_DOMAIN, "firewall.ports.startPort", "11000", "Start Port",
 		          "Port to try to listen on first"));
-		general.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
-		          MY_DOMAIN, "general.ports.endPort", "11019", "End Port",
+		firewall.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
+		          MY_DOMAIN, "firewall.ports.endPort", "11019", "End Port",
 		          "Port to try to listen on last"));
 		receiving.addSetting(new PreferencesSetting(PreferencesType.TEXT,
 		          MY_DOMAIN, "receive.savelocation", "", "Default save location",
