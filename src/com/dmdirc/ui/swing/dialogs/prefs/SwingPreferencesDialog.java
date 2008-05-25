@@ -46,12 +46,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -68,7 +64,6 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import net.miginfocom.layout.PlatformDefaults;
-import net.miginfocom.layout.UnitValue;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -106,7 +101,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     /** Preferences Manager. */
     private final PreferencesManager manager;
     /** Panel gap. */
-    private final int padding = (int) PlatformDefaults.getPanelInsets(0).getValue();
+    private final int padding = (int) PlatformDefaults.getUnitValueX("related").
+            getValue();
 
     /**
      * Creates a new instance of SwingPreferencesDialog.
@@ -162,7 +158,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
 
-        setLayout(new MigLayout("fill, wmax 650, hmax 600"));
+        setLayout(new MigLayout("fillx, wmin 650, wmax 650"));
         add(tabList, "width 150, growy, spany");
         add(mainPanel, "wrap, width 480, grow");
         add(getLeftButton(), "split, right");
@@ -214,7 +210,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      */
     private void addInlineCategory(final PreferencesCategory category,
             final JPanel parent) {
-        final JPanel panel = new JPanel(new MigLayout("fillx, gap unrel, wrap 2, hidemode 3"));
+        final JPanel panel =
+                new JPanel(new MigLayout("fillx, gap unrel, wrap 2, hidemode 3"));
         panel.setBorder(BorderFactory.createTitledBorder(category.getTitle()));
 
         categories.put(category, panel);
@@ -233,7 +230,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      */
     private void addCategory(final PreferencesCategory category,
             final DefaultMutableTreeNode parentNode, final String namePrefix) {
-        final JPanel panel = new JPanel(new MigLayout("fillx, gap unrel, wrap 2, hidemode 3"));
+        final JPanel panel =
+                new JPanel(new MigLayout("fillx, gap unrel, wrap 2, hidemode 3, pack"));
         final String path = namePrefix + "/" + category.getTitle();
         DefaultMutableTreeNode newNode;
 
@@ -277,7 +275,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
         if (category.hasObject()) {
             if (!(category.getObject() instanceof JPanel)) {
-                throw new IllegalArgumentException("Custom preferences objects" + " for this UI must extend JPanel.");
+                throw new IllegalArgumentException("Custom preferences objects" +
+                        " for this UI must extend JPanel.");
             }
 
             panels.add((JPanel) category.getObject());
@@ -369,7 +368,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
         if (restart) {
             JOptionPane.showMessageDialog((MainFrame) Main.getUI().
-                    getMainWindow(), "One or more of the changes you made " + "won't take effect until you restart the client.",
+                    getMainWindow(), "One or more of the changes you made " +
+                    "won't take effect until you restart the client.",
                     "Restart needed", JOptionPane.INFORMATION_MESSAGE);
         }
     }
@@ -437,7 +437,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
                 final Object value, final boolean sel, final boolean expanded,
                 final boolean leaf, final int row, final boolean focused) {
 
-            setPreferredSize(new Dimension(1000, (int) (getFont().getSize() + 0.5 * padding)));
+            setPreferredSize(new Dimension(100000, getFont().getSize() + padding));
             setBorder(BorderFactory.createEmptyBorder(0, 0, padding, padding));
             setText(value.toString());
             setBackground(tree.getBackground());
