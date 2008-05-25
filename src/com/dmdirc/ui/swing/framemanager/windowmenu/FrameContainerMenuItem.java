@@ -64,7 +64,7 @@ public class FrameContainerMenuItem extends JMenuItem implements IconChangeListe
     /** {@inheritDoc} */
     @Override
     public void iconChanged(final Window window, final Icon icon) {
-        if (frame.equals(window.getContainer())) {
+        if ((frame != null && window != null) && frame.equals(window.getContainer())) {
             setIcon(icon);
         }
     }
