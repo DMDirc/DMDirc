@@ -22,13 +22,18 @@
 
 package com.dmdirc.ui.swing.components;
 
-import javax.swing.JTextArea;
-import javax.swing.UIManager;
+import java.awt.Insets;
+
+import javax.swing.JTextPane;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 /**
  * Dyamnic text label.
  */
-public class TextLabel extends JTextArea {
+public class TextLabel extends JTextPane {
 
     /**
      * A version number for this class. It should be changed whenever the
@@ -36,32 +41,57 @@ public class TextLabel extends JTextArea {
      * serialized objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** Simple attribute set. */
+    private SimpleAttributeSet sas;
 
     /**
      * Creates a new instance of TextLabel.
      */
     public TextLabel() {
-        this(null);
+        this(null, true);
     }
-
     /**
      * Creates a new instance of TextLabel.
      *
      * @param text Text to display
      */
     public TextLabel(final String text) {
-        super(text);
-
-        init();
+        this(text, true);
     }
 
-    /** Initialiases the component. */
-    private void init() {
+    /**
+     * Creates a new instance of TextLabel.
+     *
+     * @param text Text to display
+     * @param justified Justify the text?
+     */
+    public TextLabel(final String text, final boolean justified) {
+        super(new DefaultStyledDocument());
+
         setOpaque(false);
         setEditable(false);
-        setWrapStyleWord(true);
-        setLineWrap(true);
         setHighlighter(null);
-        setFont(UIManager.getFont("TextField.font"));
+        setMargin(new Insets(0, 0, 0, 0));
+
+        sas = new SimpleAttributeSet();
+        if (justified) {
+            StyleConstants.setAlignment(sas, StyleConstants.ALIGN_JUSTIFIED);
+        }
+        StyleConstants.setFontFamily(sas, getFont().getFamily());
+        StyleConstants.setFontSize(sas, getFont().getSize());
+        StyleConstants.setBold(sas, getFont().isBold());
+        StyleConstants.setItalic(sas, getFont().isItalic());
+
+        setText(text);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setText(String t) {
+        super.setText(t);
+        if (t != null && !t.isEmpty()) {
+            ((StyledDocument) getDocument()).setParagraphAttributes(0,
+                    t.length(), sas, true);
+        }
     }
 }
