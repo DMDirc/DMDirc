@@ -174,7 +174,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 */
 	private void timerTask() {
 		// Oldest time to allow
-		final long oldestTime = System.currentTimeMillis() - 3600000;
+		final long oldestTime = System.currentTimeMillis() - 3480000;
 		
 		synchronized (openFiles) {
 			for (String filename : (new Hashtable<String, OpenFile>(openFiles)).keySet()) {
