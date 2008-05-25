@@ -1,5 +1,5 @@
 mainclass=com.dmdirc.addons.logging.LoggingPlugin
-friendlyversion=0.4
+friendlyversion=0.5
 author=Shane <shane@dmdirc.com>
 description=Allows logging of conversations
 name=logging
