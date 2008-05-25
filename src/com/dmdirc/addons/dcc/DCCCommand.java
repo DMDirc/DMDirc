@@ -141,11 +141,11 @@ public final class DCCCommand extends GlobalCommand {
 					send.setFileSize(jc.getSelectedFile().length());
 					
 					if (IdentityManager.getGlobalConfig().getOptionBool(DCCPlugin.getDomain(), "send.reverse", false)) {
-						new DCCSendWindow(myPlugin, send, "*Send: "+target, myNickname, target);
-						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" 0 "+send.getFileSize()+" "+send.makeToken()+((send.isTurbo()) ? "T" : ""));
+						new DCCSendWindow(myPlugin, send, "Send: "+target, myNickname, target);
+						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" 0 "+send.getFileSize()+" "+send.makeToken()+((send.isTurbo()) ? " T" : ""));
 					} else {
 						if (myPlugin.listen(send)) {
-							new DCCSendWindow(myPlugin, send, "Send: "+target, myNickname, target);
+							new DCCSendWindow(myPlugin, send, "*Send: "+target, myNickname, target);
 							parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" "+send.getPort()+" "+send.getFileSize()+((send.isTurbo()) ? " T" : ""));
 						} else {
 							sendLine(origin, isSilent, "DCCSendError", "Unable to start dcc send with "+target+" - unable to create listen socket");
