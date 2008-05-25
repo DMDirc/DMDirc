@@ -31,6 +31,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.ChannelClientInfo;
 
+import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.ui.messages.Styliser;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -144,6 +145,30 @@ public enum CoreActionComponent implements ActionComponent {
         public Class getType() { return Color.class; }
         /** {@inheritDoc} */
         public String getName() { return "notification colour"; }
+    },
+    
+    /** Returns the name of a client. */
+    CLIENT_NAME {
+        /** {@inheritDoc} */
+        public Object get(final Object argument) { return ((ClientInfo) argument).getNickname(); }
+        /** {@inheritDoc} */
+        public Class appliesTo() { return ClientInfo.class; }
+        /** {@inheritDoc} */
+        public Class getType() { return String.class; }
+        /** {@inheritDoc} */
+        public String getName() { return "nickname"; }
+    },
+    
+    /** Returns the host of a client. */
+    CLIENT_HOST {
+        /** {@inheritDoc} */
+        public Object get(final Object argument) { return ((ClientInfo) argument).getHost(); }
+        /** {@inheritDoc} */
+        public Class appliesTo() { return ClientInfo.class; }
+        /** {@inheritDoc} */
+        public Class getType() { return String.class; }
+        /** {@inheritDoc} */
+        public String getName() { return "host"; }
     },
     
     /** Returns the name of a client. */
