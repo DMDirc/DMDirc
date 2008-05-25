@@ -72,7 +72,7 @@ import java.util.Stack;
  */
 public final class LoggingPlugin extends Plugin implements ActionListener {
 
-    /** What domain do we store all settings in the global config under. */
+	/** What domain do we store all settings in the global config under. */
 	private static final String MY_DOMAIN = "plugin-Logging";
 
 	/** The command we registered. */
@@ -81,6 +81,9 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	/** Hashtable of open files. */
 	private final Map<String, BufferedWriter> openFiles = new Hashtable<String, BufferedWriter>();
 
+	/** Date format used for "File Opened At" log. */
+	final DateFormat openedAtFormat = new SimpleDateFormat("EEEE MMMM dd, yyyy - HH:mm:ss");
+	
 	/**
 	 * Creates a new instance of the Logging Plugin.
 	 */
@@ -110,7 +113,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 		if (dir.exists()) {
 			if (!dir.isDirectory()) {
 				Logger.userError(ErrorLevel.LOW, "Unable to create logging dir (file exists instead)");
-			}            
+			}
 		} else {
 			try {
 				dir.mkdirs();
@@ -121,7 +124,28 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 		}
 
 		command = new LoggingCommand();
-		ActionManager.addListener(this, CoreActionType.SERVER_CONNECTED, CoreActionType.QUERY_CLOSED, CoreActionType.CHANNEL_CLOSED, CoreActionType.QUERY_OPENED, CoreActionType.CHANNEL_OPENED, CoreActionType.QUERY_MESSAGE, CoreActionType.QUERY_SELF_MESSAGE, CoreActionType.QUERY_ACTION, CoreActionType.QUERY_SELF_ACTION, CoreActionType.CHANNEL_MESSAGE, CoreActionType.CHANNEL_SELF_MESSAGE, CoreActionType.CHANNEL_ACTION, CoreActionType.CHANNEL_SELF_ACTION, CoreActionType.CHANNEL_GOTTOPIC, CoreActionType.CHANNEL_TOPICCHANGE, CoreActionType.CHANNEL_JOIN, CoreActionType.CHANNEL_PART, CoreActionType.CHANNEL_QUIT, CoreActionType.CHANNEL_KICK, CoreActionType.CHANNEL_NICKCHANGE, CoreActionType.CHANNEL_MODECHANGE);
+		ActionManager.addListener(this,
+		                 CoreActionType.CHANNEL_OPENED,
+		                 CoreActionType.CHANNEL_CLOSED,
+		                 CoreActionType.CHANNEL_MESSAGE,
+		                 CoreActionType.CHANNEL_SELF_MESSAGE,
+		                 CoreActionType.CHANNEL_ACTION,
+		                 CoreActionType.CHANNEL_SELF_ACTION,
+		                 CoreActionType.CHANNEL_GOTTOPIC,
+		                 CoreActionType.CHANNEL_TOPICCHANGE,
+		                 CoreActionType.CHANNEL_JOIN,
+		                 CoreActionType.CHANNEL_PART,
+		                 CoreActionType.CHANNEL_QUIT,
+		                 CoreActionType.CHANNEL_KICK,
+		                 CoreActionType.CHANNEL_NICKCHANGE,
+		                 CoreActionType.CHANNEL_MODECHANGE,
+		                 CoreActionType.QUERY_OPENED,
+		                 CoreActionType.QUERY_CLOSED,
+		                 CoreActionType.QUERY_MESSAGE,
+		                 CoreActionType.QUERY_SELF_MESSAGE,
+		                 CoreActionType.QUERY_ACTION,
+		                 CoreActionType.QUERY_SELF_ACTION);
+		
 	}
 
 	/**
@@ -131,7 +155,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	public void onUnload() {
 		CommandManager.unregisterCommand(command);
 		ActionManager.removeListener(this);
-
+		
 		BufferedWriter file;
 		synchronized (openFiles) {
 			for (String filename : openFiles.keySet()) {
@@ -149,56 +173,27 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	/** {@inheritDoc} */
 	@Override
 	public void showConfig(final PreferencesManager manager) {
-		final PreferencesCategory general = new PreferencesCategory("Logging",
-                "General configuration for Logging plugin.");
-        final PreferencesCategory backbuffer = new PreferencesCategory("Back Buffer",
-                "Options related to the automatic backbuffer");
-		final PreferencesCategory advanced = new PreferencesCategory("Advanced",
-                "Advanced configuration for Logging plugin. You shouldn't need " +
-                "to edit this unless you know what you are doing.");
+		final PreferencesCategory general = new PreferencesCategory("Logging", "General configuration for Logging plugin.");
+		final PreferencesCategory backbuffer = new PreferencesCategory("Back Buffer", "Options related to the automatic backbuffer");
+		final PreferencesCategory advanced = new PreferencesCategory("Advanced", "Advanced configuration for Logging plugin. You shouldn't need to edit this unless you know what you are doing.");
+		
+		general.addSetting(new PreferencesSetting(PreferencesType.TEXT, MY_DOMAIN, "general.directory", "false", "Directory", "Directory for log files"));
+		general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "general.networkfolders", "", "Separate logs by network", "Should the files be stored in a sub-dir with the networks name?"));
+		general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "general.addtime", "false", "Timestamp logs", "Should a timestamp be added to the log files?"));
+		general.addSetting(new PreferencesSetting(PreferencesType.TEXT, MY_DOMAIN, "general.timestamp", "", "Timestamp format", "The String to pass to 'SimpleDateFormat' to format the timestamp"));
+		general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "general.stripcodes", "false", "Strip Control Codes", "Remove known irc control codes from lines before saving?"));
+		general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "general.channelmodeprefix", "", "Show channel mode prefix", "Show the @,+ etc next to nicknames"));
+		
+		backbuffer.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "backbuffer.autobackbuffer", "", "Automatically display", "Automatically display the backbuffer when a channel is joined"));
+		backbuffer.addSetting(new PreferencesSetting(PreferencesType.COLOUR, MY_DOMAIN, "backbuffer.colour", "0", "Colour to use for display", "Colour used when displaying the backbuffer"));
+		backbuffer.addSetting(new PreferencesSetting(PreferencesType.INTEGER, MY_DOMAIN, "backbuffer.lines", "0", "Number of lines to show", "Number of lines used when displaying backbuffer"));
+		backbuffer.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "backbuffer.timestamp", "false", "Show Formatter-Timestamp", "Should the line be added to the frame with the timestamp from the formatter aswell as the file contents"));
 
-        general.addSetting(new PreferencesSetting(PreferencesType.TEXT,
-                MY_DOMAIN, "general.directory", "false", "Directory",
-                "Directory for log files"));
-        general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                MY_DOMAIN, "general.networkfolders", "", "Separate logs by network",
-                "Should the files be stored in a sub-dir with the networks name?"));
-        general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                MY_DOMAIN, "general.addtime", "false", "Timestamp logs",
-                "Should a timestamp be added to the log files?"));
-        general.addSetting(new PreferencesSetting(PreferencesType.TEXT,
-                MY_DOMAIN, "general.timestamp", "", "Timestamp format",
-                "The String to pass to 'SimpleDateFormat' to format the timestamp"));
-        general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                MY_DOMAIN, "general.stripcodes", "false", "Strip Control Codes",
-                "Remove known irc control codes from lines before saving?"));
-        general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                MY_DOMAIN, "general.channelmodeprefix", "", "Show channel mode prefix",
-                "Show the @,+ etc next to nicknames"));
-
-        backbuffer.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                MY_DOMAIN, "backbuffer.autobackbuffer", "", "Automatically display",
-                "Automatically display the backbuffer when a channel is joined"));
-        backbuffer.addSetting(new PreferencesSetting(PreferencesType.COLOUR,
-                MY_DOMAIN, "backbuffer.colour", "0", "Colour to use for display",
-                "Colour used when displaying the backbuffer"));
-		backbuffer.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
-                MY_DOMAIN, "backbuffer.lines", "0", "Number of lines to show",
-                "Number of lines used when displaying backbuffer"));
-        backbuffer.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                MY_DOMAIN, "backbuffer.timestamp", "false", "Show Formatter-Timestamp",
-                "Should the line be added to the frame with the timestamp from " +
-                "the formatter aswell as the file contents"));
-
-        advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                MY_DOMAIN, "advanced.filenamehash", "false", "Add Filename hash",
-                "Add the MD5 hash of the channel/client name to the filename." +
-                "(This is used to allow channels with similar names (ie a _ not" +
-                "a  -) to be logged separately)"));
+		advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "advanced.filenamehash", "false", "Add Filename hash", "Add the MD5 hash of the channel/client name to the filename. (This is used to allow channels with similar names (ie a _ not a  -) to be logged separately)"));
 
 		general.addSubCategory(backbuffer.setInline());
-        general.addSubCategory(advanced.setInline());
-        manager.getCategory("Plugins").addSubCategory(general.setInlineAfter());
+		general.addSubCategory(advanced.setInline());
+		manager.getCategory("Plugins").addSubCategory(general.setInlineAfter());
 	}
 
 	/**
@@ -207,6 +202,176 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 * @return the plugins domain
 	 */
 	protected static String getDomain() { return MY_DOMAIN; }
+
+	/**
+	 * Log a query-related event
+	 *
+	 * @param type The type of the event to process
+	 * @param format Format of messages that are about to be sent. (May be null)
+	 * @param arguments The arguments for the event
+	 */
+	private void handleQueryEvent(final CoreActionType type, final StringBuffer format, final Object... arguments) {
+		final Query query = (Query)arguments[0];
+		if (query.getServer() == null) {
+			Logger.appError(ErrorLevel.MEDIUM, "Query object has no server ("+type.toString()+")", new Exception("Query object has no server ("+type.toString()+")"));
+			return;
+		}
+		
+		final IRCParser parser = query.getServer().getParser();
+		ClientInfo client;
+		
+		if (parser == null) {
+			// Without a parser object, we might not be able to find the file to log this to.
+			if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.networkfolders")) {
+				// We *wont* be able to, so rather than logging to an incorrect file we just won't log.
+				return;
+			}
+			client = null;
+		} else {
+			client = parser.getClientInfo(query.getHost());
+			if (client == null) {
+				client = new ClientInfo(parser, query.getHost()).setFake(true);
+			}
+		}
+		
+		final String filename = getLogFile(client);
+		
+		switch (type) {
+			case QUERY_OPENED:
+				if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer")) {
+					showBackBuffer(query.getFrame(), filename);
+				}
+
+				appendLine(filename, "*** Query opened at: %s", openedAtFormat.format(new Date()));
+				appendLine(filename, "*** Query with User: %s", query.getHost());
+				appendLine(filename, "");
+				break;
+			case QUERY_CLOSED:
+				if (openFiles.containsKey(filename)) {
+					appendLine(filename, "*** Query closed at: %s", openedAtFormat.format(new Date()));
+					final BufferedWriter file = openFiles.get(filename);
+					try {
+						file.close();
+					} catch (IOException e) {
+						Logger.userError(ErrorLevel.LOW, "Unable to close file (Filename: "+filename+")");
+					}
+					openFiles.remove(filename);
+				}
+				break;
+			case QUERY_MESSAGE:
+			case QUERY_SELF_MESSAGE:
+			case QUERY_ACTION:
+			case QUERY_SELF_ACTION:
+				final boolean isME = (type == CoreActionType.QUERY_SELF_MESSAGE || type == CoreActionType.QUERY_SELF_ACTION);
+				final String overrideNick = (isME) ? getDisplayName(parser.getMyself()) : "";
+				
+				if (type == CoreActionType.QUERY_MESSAGE || type == CoreActionType.QUERY_SELF_MESSAGE) {
+					appendLine(filename, "<%s> %s", getDisplayName(client, overrideNick), (String)arguments[1]);
+				} else {
+					appendLine(filename, "* %s %s", getDisplayName(client, overrideNick), (String)arguments[1]);
+				}
+				break;
+		}
+	}
+	
+	/**
+	 * Log a channel-related event
+	 *
+	 * @param type The type of the event to process
+	 * @param format Format of messages that are about to be sent. (May be null)
+	 * @param arguments The arguments for the event
+	 */
+	private void handleChannelEvent(final CoreActionType type, final StringBuffer format, final Object... arguments) {
+		final Channel chan = ((Channel)arguments[0]);
+		final ChannelInfo channel = chan.getChannelInfo();
+		final String filename = getLogFile(channel);
+		
+		final ChannelClientInfo channelClient = (arguments[1] instanceof ChannelClientInfo) ? (ChannelClientInfo)arguments[1] : null;
+		final ClientInfo client = (channelClient != null) ? channelClient.getClient() : null;
+
+		final String message = (arguments[2] instanceof String) ? (String)arguments[2] : null;
+		
+		switch (type) {
+			case CHANNEL_OPENED:
+				if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer")) {
+					showBackBuffer(chan.getFrame(), filename);
+				}
+
+				appendLine(filename, "*** Channel opened at: %s", openedAtFormat.format(new Date()));
+				appendLine(filename, "");
+				break;
+			case CHANNEL_CLOSED:
+				if (openFiles.containsKey(filename)) {
+					appendLine(filename, "*** Channel closed at: %s", openedAtFormat.format(new Date()));
+					final BufferedWriter file = openFiles.get(filename);
+					try {
+						file.close();
+					} catch (IOException e) {
+						Logger.userError(ErrorLevel.LOW, "Unable to close file (Filename: "+filename+")");
+					}
+					openFiles.remove(filename);
+				}
+				break;
+			case CHANNEL_MESSAGE:
+			case CHANNEL_SELF_MESSAGE:
+			case CHANNEL_ACTION:
+			case CHANNEL_SELF_ACTION:
+				if (type == CoreActionType.CHANNEL_MESSAGE || type == CoreActionType.CHANNEL_SELF_MESSAGE) {
+					appendLine(filename, "<%s> %s", getDisplayName(client), message);
+				} else {
+					appendLine(filename, "* %s %s", getDisplayName(client), message);
+				}
+				break;
+			case CHANNEL_GOTTOPIC:
+				// ActionManager.processEvent(CoreActionType.CHANNEL_GOTTOPIC, this);
+				final DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+				final DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+				
+				appendLine(filename, "*** Topic is: %s", channel.getTopic());
+				appendLine(filename, "*** Set at: %s on %s by %s", timeFormat.format(1000 * channel.getTopicTime()), dateFormat.format(1000 * channel.getTopicTime()), channel.getTopicUser());
+				break;
+			case CHANNEL_TOPICCHANGE:
+				appendLine(filename, "*** %s Changed the topic to: %s", getDisplayName(channelClient), message);
+				break;
+			case CHANNEL_JOIN:
+				appendLine(filename, "*** %s (%s) joined the channel", getDisplayName(channelClient), client.toString());
+				break;
+			case CHANNEL_PART:
+				if (message.isEmpty()) {
+					appendLine(filename, "*** %s (%s) left the channel", getDisplayName(channelClient), client.toString());
+				} else {
+					appendLine(filename, "*** %s (%s) left the channel (%s)", getDisplayName(channelClient), client.toString(), message);
+				}
+				break;
+			case CHANNEL_QUIT:
+				if (message.isEmpty()) {
+					appendLine(filename, "*** %s (%s) Quit IRC", getDisplayName(channelClient), client.toString());
+				} else {
+					appendLine(filename, "*** %s (%s) Quit IRC (%s)", getDisplayName(channelClient), client.toString(), message);
+				}
+				break;
+			case CHANNEL_KICK:
+				final String kickReason = (String)arguments[3];
+				final ChannelClientInfo kickedClient = (ChannelClientInfo)arguments[2];
+				
+				if (kickReason.isEmpty()) {
+					appendLine(filename, "*** %s was kicked by %s", getDisplayName(kickedClient), getDisplayName(channelClient));
+				} else {
+					appendLine(filename, "*** %s was kicked by %s (%s)", getDisplayName(kickedClient), getDisplayName(channelClient), kickReason);
+				}
+				break;
+			case CHANNEL_NICKCHANGE:
+				appendLine(filename, "*** %s is now %s", getDisplayName(channelClient, message), getDisplayName(channelClient));
+				break;
+			case CHANNEL_MODECHANGE:
+				if (channelClient.getNickname().isEmpty()) {
+					appendLine(filename, "*** Channel modes are: %s", message);
+				} else {
+					appendLine(filename, "*** %s set modes: %s", getDisplayName(channelClient), message);
+				}
+				break;
+		}
+	}
 
 	/**
 	 * Process an event of the specified type.
@@ -219,220 +384,31 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	public void processEvent(final ActionType type, final StringBuffer format, final Object ... arguments) {
 		if (type instanceof CoreActionType) {
 			final CoreActionType thisType = (CoreActionType) type;
-			ChannelInfo channel;
-			ChannelClientInfo channelClient;
-			ClientInfo client;
-			IRCParser parser;
-			String line = "";
-			String reason = "";
-			Query query;
-			final DateFormat openedAtFormat = new SimpleDateFormat("EEEE MMMM dd, yyyy - HH:mm:ss");
 
 			switch (thisType) {
-				case SERVER_CONNECTED:
-					// Do Nothing
-					break;
-				case QUERY_CLOSED:
-					// ActionManager.processEvent(CoreActionType.QUERY_CLOSED, this);
-					query = (Query)arguments[0];
-					if (query.getServer() == null) {
-						Logger.appError(ErrorLevel.MEDIUM, "Query object has no server ("+thisType.toString()+")", new Exception("Query object has no server ("+thisType.toString()+")"));
-						break;
-					}
-					parser = query.getServer().getParser();
-					if (parser == null) {
-						// Without a parser object, we might not be able to find the file
-						// to log this to.
-						if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.networkfolders")) {
-							// We *wont* be able to, so rather than logging to an incorrect file
-							// we just won't log.
-							return;
-						}
-						client = null;
-					} else {
-						client = parser.getClientInfo(query.getHost());
-					}
-					if (client == null) {
-						client = new ClientInfo(parser, query.getHost()).setFake(true);
-					}
-					line = getLogFile(client);
-					if (openFiles.containsKey(line)) {
-						appendLine(line, "*** Query closed at: " + openedAtFormat.format(new Date()));
-						final BufferedWriter file = openFiles.get(line);
-						try {
-							file.close();
-						} catch (IOException e) {
-							Logger.userError(ErrorLevel.LOW, "Unable to close file (Filename: "+line+")");
-						}
-						openFiles.remove(line);
-					}
-					break;
-				case CHANNEL_CLOSED:
-					// ActionManager.processEvent(CoreActionType.CHANNEL_CLOSED, this);
-					channel = ((Channel)arguments[0]).getChannelInfo();
-
-					line = getLogFile(channel);
-					if (openFiles.containsKey(line)) {
-						appendLine(line, "*** Channel closed at: " + openedAtFormat.format(new Date()));
-						final BufferedWriter file = openFiles.get(line);
-						try {
-							file.close();
-						} catch (IOException e) {
-							Logger.userError(ErrorLevel.LOW, "Unable to close file (Filename: "+line+")");
-						}
-						openFiles.remove(line);
-					}
-					break;
-				case QUERY_OPENED:
-					// ActionManager.processEvent(CoreActionType.QUERY_OPENED, this);
-					query = (Query)arguments[0];
-					if (query.getServer() == null) {
-						Logger.appError(ErrorLevel.MEDIUM, "Query object has no server ("+thisType.toString()+")", new Exception("Query object has no server ("+thisType.toString()+")"));
-						break;
-					}
-					parser = query.getServer().getParser();
-					client = parser.getClientInfo(query.getHost());
-					if (client == null) {
-						client = new ClientInfo(parser, query.getHost()).setFake(true);
-					}
-
-					// Backbuffer Display goes here!
-					if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer")) {
-						showBackBuffer(query.getFrame(), getLogFile(client));
-					}
-
-					appendLine(getLogFile(client), "*** Query opened at: " + openedAtFormat.format(new Date()));
-					appendLine(getLogFile(client), "*** Query with User: " + query.getHost());
-					appendLine(getLogFile(client), "");
-					break;
 				case CHANNEL_OPENED:
-					// ActionManager.processEvent(CoreActionType.CHANNEL_OPENED, this);
-					channel = ((Channel)arguments[0]).getChannelInfo();
-
-					// Backbuffer Display goes here!
-					if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer")) {
-						showBackBuffer(((Channel)arguments[0]).getFrame(), getLogFile(channel));
-					}
-
-					appendLine(getLogFile(channel), "*** Channel opened at: " + openedAtFormat.format(new Date()));
-					appendLine(getLogFile(channel), "");
-					break;
-				case QUERY_MESSAGE:
-				case QUERY_SELF_MESSAGE:
-				case QUERY_ACTION:
-				case QUERY_SELF_ACTION:
-					// ActionManager.processEvent(CoreActionType.QUERY_MESSAGE, this, message);
-					query = (Query)arguments[0];
-					if (query.getServer() == null) {
-						Logger.appError(ErrorLevel.MEDIUM, "Query object has no server ("+thisType.toString()+")", new Exception("Query object has no server ("+thisType.toString()+")"));
-						break;
-					}
-					parser = query.getServer().getParser();
-					String overrideNick = "";
-					if (thisType == CoreActionType.QUERY_SELF_MESSAGE || thisType == CoreActionType.QUERY_SELF_ACTION) {
-						overrideNick = getDisplayName(parser.getMyself());
-					}
-					client = parser.getClientInfo(query.getHost());
-					if (client == null) {
-						client = new ClientInfo(parser, query.getHost()).setFake(true);
-					}
-					if (thisType == CoreActionType.QUERY_MESSAGE || thisType == CoreActionType.QUERY_SELF_MESSAGE) {
-						appendLine(getLogFile(client), "<" + getDisplayName(client, overrideNick) + "> " + arguments[1]);
-					} else {
-						appendLine(getLogFile(client), "* " + getDisplayName(client, overrideNick) + " " + arguments[1]);
-					}
-					break;
+				case CHANNEL_CLOSED:
 				case CHANNEL_MESSAGE:
 				case CHANNEL_SELF_MESSAGE:
 				case CHANNEL_ACTION:
 				case CHANNEL_SELF_ACTION:
-					// ActionManager.processEvent(CoreActionType.CHANNEL_MESSAGE, this, cChannelClient, sMessage);
-					channel = ((Channel)arguments[0]).getChannelInfo();
-					channelClient = (ChannelClientInfo) arguments[1];
-					if (thisType == CoreActionType.CHANNEL_MESSAGE || thisType == CoreActionType.CHANNEL_SELF_MESSAGE) {
-						appendLine(getLogFile(channel), "<" + getDisplayName(channelClient) + "> " + (String) arguments[2]);
-					} else {
-						appendLine(getLogFile(channel), "* " + getDisplayName(channelClient) + " " + (String) arguments[2]);
-					}
-					break;
 				case CHANNEL_GOTTOPIC:
-					// ActionManager.processEvent(CoreActionType.CHANNEL_GOTTOPIC, this);
-					channel = ((Channel)arguments[0]).getChannelInfo();
-					final DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-					final DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-					final String topicTime = timeFormat.format(1000 * channel.getTopicTime()) + " on " + dateFormat.format(1000 * channel.getTopicTime());
-
-					appendLine(getLogFile(channel), "*** Topic is: " + channel.getTopic());
-					appendLine(getLogFile(channel), "*** Set at: " + topicTime + " by " + channel.getTopicUser());
-					break;
 				case CHANNEL_TOPICCHANGE:
-					// ActionManager.processEvent(CoreActionType.CHANNEL_TOPICCHANGE, this, user, topic);
-					channel = ((Channel)arguments[0]).getChannelInfo();
-					channelClient = (ChannelClientInfo) arguments[1];
-					appendLine(getLogFile(channel), "*** " + getDisplayName(channelClient) + " Changed the topic to: " + (String) arguments[2]);
-					break;
 				case CHANNEL_JOIN:
-					// ActionManager.processEvent(CoreActionType.CHANNEL_JOIN, this, cChannelClient);
-					channel = ((Channel)arguments[0]).getChannelInfo();
-					channelClient = (ChannelClientInfo) arguments[1];
-					client = channelClient.getClient();
-					appendLine(getLogFile(channel), "*** " + getDisplayName(channelClient) + " (" + client.toString() + ") joined the channel");
-					break;
 				case CHANNEL_PART:
-					// ActionManager.processEvent(CoreActionType.CHANNEL_PART, this, cChannelClient, sReason);
-					channel = ((Channel)arguments[0]).getChannelInfo();
-					channelClient = (ChannelClientInfo) arguments[1];
-					client = channelClient.getClient();
-					line = "*** " + getDisplayName(channelClient) + " (" + client.toString() + ") left the channel";
-
-					reason = (String) arguments[2];
-					if (!reason.isEmpty()) {
-						line = line + " (" + reason + ")";
-					}
-					appendLine(getLogFile(channel), line);
-					break;
 				case CHANNEL_QUIT:
-					// ActionManager.processEvent(CoreActionType.CHANNEL_QUIT, this, cChannelClient, sReason);
-					channel = ((Channel)arguments[0]).getChannelInfo();
-					channelClient = (ChannelClientInfo) arguments[1];
-					client = channelClient.getClient();
-					line = "*** " + getDisplayName(channelClient) + " (" + client.toString() + ") Quit IRC";
-
-					reason = (String) arguments[2];
-					if (!reason.isEmpty()) {
-						line = line + " (" + reason + ")";
-					}
-					appendLine(getLogFile(channel), line);
-					break;
 				case CHANNEL_KICK:
-					// ActionManager.processEvent(CoreActionType.CHANNEL_KICK, this, cKickedByClient, cKickedClient, sReason);
-					channel = ((Channel)arguments[0]).getChannelInfo();
-					channelClient = (ChannelClientInfo) arguments[2];
-					final ChannelClientInfo kickerClient = (ChannelClientInfo) arguments[1];
-					line = "*** " + getDisplayName(channelClient) + " was kicked by " + getDisplayName(kickerClient);
-
-					reason = (String) arguments[3];
-					if (!reason.isEmpty()) {
-						line = line + " (" + reason + ")";
-					}
-					appendLine(getLogFile(channel), line);
-					break;
 				case CHANNEL_NICKCHANGE:
-					// ActionManager.processEvent(CoreActionType.CHANNEL_NICKCHANGE, this, cChannelClient, sOldNick);
-					channel = ((Channel)arguments[0]).getChannelInfo();
-					channelClient = (ChannelClientInfo) arguments[1];
-					final String oldnick = (String) arguments[2];
-					appendLine(getLogFile(channel), "*** " + getDisplayName(channelClient, oldnick) + " is now " + getDisplayName(channelClient));
-					break;
 				case CHANNEL_MODECHANGE:
-					// ActionManager.processEvent(CoreActionType.CHANNEL_MODECHANGE, this, cChannelClient, sModes);
-					channel = ((Channel)arguments[0]).getChannelInfo();
-					channelClient = (ChannelClientInfo) arguments[1];
-					if (channelClient.getNickname().isEmpty()) {
-						appendLine(getLogFile(channel), "*** Channel modes are: " + (String) arguments[2]);
-					} else {
-						appendLine(getLogFile(channel), "*** " + getDisplayName(channelClient) + " set modes: " + (String) arguments[2]);
-					}
+					handleChannelEvent(thisType, format, arguments);
+					break;
+				case QUERY_OPENED:
+				case QUERY_CLOSED:
+				case QUERY_MESSAGE:
+				case QUERY_SELF_MESSAGE:
+				case QUERY_ACTION:
+				case QUERY_SELF_ACTION:
+					handleQueryEvent(thisType, format, arguments);
 					break;
 				default:
 					break;
@@ -499,25 +475,32 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 			}
 
 			if (num >= 0 && num <= 15) {
-				if (num > 10) {
-					res = Styliser.CODE_COLOUR+""+num+""+line+Styliser.CODE_COLOUR;
-				} else {
-					res = Styliser.CODE_COLOUR+"0"+num+""+line+Styliser.CODE_COLOUR;
-				}
+				res = String.format("%c%02d%s%1$c", Styliser.CODE_COLOUR, num, line);
 			}
 		} else if (colour.length() == 6) {
 			try {
 				Color.decode("#" + colour);
-				res = Styliser.CODE_HEXCOLOUR+""+colour+""+line+Styliser.CODE_HEXCOLOUR;
+				res = String.format("%c%s%s%1$c", Styliser.CODE_HEXCOLOUR, colour, line);
 			} catch (NumberFormatException ex) { /* Do Nothing */ }
 		}
 
 		if (res == null) {
-			res = Styliser.CODE_COLOUR+"14"+line+""+Styliser.CODE_COLOUR;
+			res = String.format("%c%02d%s%1$c", Styliser.CODE_COLOUR, 14, line);
 		}
 		return res;
 	}
 
+	/**
+	 * Add a line to a file.
+	 *
+	 * @param filename Name of file to write to
+	 * @param format Format of line to add. (NewLine will be added Automatically)
+	 * @param args Arguments for format
+	 * @return true on success, else false.
+	 */
+	private boolean appendLine(final String filename, final String format, final Object... args) {
+		return appendLine(filename, String.format(format, args));
+	}
 
 	/**
 	 * Add a line to a file.
@@ -527,13 +510,17 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 * @return true on success, else false.
 	 */
 	private boolean appendLine(final String filename, final String line) {
-		String finalLine = line;
+		final StringBuffer finalLine = new StringBuffer();
+		
 		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.addtime")) {
 			final DateFormat dateFormat = new SimpleDateFormat(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.timestamp"));
-			finalLine = dateFormat.format(new Date()) + " " + finalLine;
+			finalLine.append(dateFormat.format(new Date()));
 		}
+		
 		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.stripcodes")) {
-			finalLine = Styliser.stipControlCodes(finalLine);
+			finalLine.append(Styliser.stipControlCodes(line));
+		} else {
+			finalLine.append(line);
 		}
 		//System.out.println("[Adding] "+filename+" => "+finalLine);
 		BufferedWriter out = null;
@@ -544,18 +531,18 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 				out = new BufferedWriter(new FileWriter(filename, true));
 				openFiles.put(filename, out);
 			}
-			out.write(finalLine);
+			out.write(finalLine.toString());
 			out.newLine();
 			out.flush();
 			return true;
 		} catch (IOException e) {
 			/*
 			 * Do Nothing
-			*
-			* Makes no sense to keep adding errors to the logger when we can't
-			* write to the file, as chances are it will happen on every incomming
-			* line.
-			*/
+			 *
+			 * Makes no sense to keep adding errors to the logger when we can't
+			 * write to the file, as chances are it will happen on every incomming
+			 * line.
+			 */
 		}
 		return false;
 	}
@@ -567,46 +554,39 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 * @return the name of the log file to use for this object.
 	 */
 	private String getLogFile(final Object obj) {
-		String result = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.directory");
+		final StringBuffer result = new StringBuffer();
+		String md5String = "";
+	
+		result.append(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.directory"));
 
 		if (obj == null) {
-			result = result + "null.log";
+			result.append("null.log");
 		} else if (obj instanceof ChannelInfo) {
 			final ChannelInfo channel = (ChannelInfo) obj;
 			if (channel.getParser() != null) {
-				result = addNetworkDir(result, channel.getParser().getNetworkName());
+				addNetworkDir(result, channel.getParser().getNetworkName());
 			}
-			result = result + sanitise(channel.getName().toLowerCase());
-			if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "advanced.filenamehash")) {
-				result = result + '.' + md5(channel.getName());
-			}
-			result = result + ".log";
+			result.append(sanitise(channel.getName().toLowerCase()));
+			md5String = channel.getName();
 		} else if (obj instanceof ClientInfo) {
 			final ClientInfo client = (ClientInfo) obj;
 			if (client.getParser() != null) {
-				result = addNetworkDir(result, client.getParser().getNetworkName());
+				addNetworkDir(result, client.getParser().getNetworkName());
 			}
-			result = result + sanitise(client.getNickname().toLowerCase());
-			if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "advanced.filenamehash")) {
-				result = result + '.' + md5(client.getNickname());
-			}
-			result = result + ".log";
-		} else if (obj instanceof IRCParser) {
-			final IRCParser parser = (IRCParser) obj;
-			result = addNetworkDir(result, parser.getNetworkName());
-			result = result + "log";
-			if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "advanced.filenamehash")) {
-				result = result + '.' + md5("log");
-			}
-			result = result + ".log";
+			result.append(sanitise(client.getNickname().toLowerCase()));
+			md5String = client.getNickname();
 		} else {
-			result = result + sanitise(obj.toString().toLowerCase());
-			if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "advanced.filenamehash")) {
-				result = result + '.' + md5(obj.toString());
-			}
-			result = result + ".log";
+			result.append(sanitise(obj.toString().toLowerCase()));
+			md5String = obj.toString();
 		}
-		return result;
+		
+		
+		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "advanced.filenamehash")) {
+			result.append('.');
+			result.append(md5(md5String));
+		}
+		result.append(".log");
+		return result.toString();
 	}
 
 	/**
@@ -627,21 +607,11 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 * @return name to display
 	 */
 	private String getDisplayName(final ClientInfo client, final String overrideNick) {
-		String result = "";
-		if (client == null) {
-			if (overrideNick.isEmpty()) {
-				result = "Unknown Client";
-			} else {
-				result = overrideNick;
-			}
+		if (overrideNick.isEmpty()) {
+			return (client == null) ? "Unknown Client" : client.getNickname() ;
 		} else {
-			if (overrideNick.isEmpty()) {
-				result = client.getNickname();
-			} else {
-				result = overrideNick;
-			}
+			return overrideNick;
 		}
-		return result;
 	}
 
 	/**
@@ -662,28 +632,15 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 * @return name to display
 	 */
 	private String getDisplayName(final ChannelClientInfo channelClient, final String overrideNick) {
-		String result = "";
+		final boolean addModePrefix = (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.channelmodeprefix"));
+		
 		if (channelClient == null) {
-			if (overrideNick.isEmpty()) {
-				result = "Unknown Client";
-			} else {
-				result = overrideNick;
-			}
+			return (overrideNick.isEmpty()) ? "Unknown Client" : overrideNick;
+		} else if (overrideNick.isEmpty()) {
+			return (addModePrefix) ? channelClient.toString() : channelClient.getNickname();
 		} else {
-			if (overrideNick.isEmpty()) {
-				if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.channelmodeprefix")) {
-					result = channelClient.toString();
-				} else {
-					result = channelClient.getNickname();
-				}
-			} else {
-				result = overrideNick;
-				if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.channelmodeprefix")) {
-					result = channelClient.getImportantModePrefix() + result;
-				}
-			}
+			return (addModePrefix) ? channelClient.getImportantModePrefix() + overrideNick : overrideNick;
 		}
-		return result;
 	}
 
 	/**
@@ -695,30 +652,36 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 * @param networkName Name of network
 	 * @return Updated filename to include network name
 	 */
-	private String addNetworkDir(final String input, final String networkName) {
-		String result = input;
+	private void addNetworkDir(final StringBuffer input, final String networkName) {
+		final String network = sanitise(networkName.toLowerCase());
+		
+		boolean prependNetwork = false;
+		
 		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.networkfolders")) {
-			result = result + sanitise(networkName.toLowerCase()) + System.getProperty("file.separator");
 			// Check dir exists
-			final File dir = new File(result);
-			if (dir.exists()) {
-				if (!dir.isDirectory()) {
-					Logger.userError(ErrorLevel.LOW, "Unable to create networkfolders dir (file exists instead)");
-					// Prepend network name instead.
-					result = input + sanitise(networkName.toLowerCase()) + " -- ";
-				}
-			} else {
+			final File dir = new File(input.toString()+network+System.getProperty("file.separator"));
+			if (dir.exists() && !dir.isDirectory()) {
+				Logger.userError(ErrorLevel.LOW, "Unable to create networkfolders dir (file exists instead)");
+				// Prepend network name to file instead.
+				prependNetwork = true;
+			} else if (!dir.exists()) {
 				try {
 					dir.mkdirs();
 					dir.createNewFile();
 				} catch (IOException ex) {
 					Logger.userError(ErrorLevel.LOW, "Unable to create networkfolders dir");
-					// Prepend network name instead.
-					result = input + sanitise(networkName.toLowerCase()) + " -- ";
+					prependNetwork = true;
 				}
 			}
 		}
-		return result;
+		
+		if (prependNetwork) {
+			input.append(network);
+			input.append(" -- ");
+		} else {
+			input.append(network);
+			input.append(System.getProperty("file.separator"));
+		}
 	}
 
 	/**
@@ -795,13 +758,4 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 
 		return true;
 	}
-
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo() { return "$Id: IRCParser.java 969 2007-04-30 18:38:20Z ShaneMcC $"; }
-
 }
-
