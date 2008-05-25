@@ -1,50 +1,25 @@
 #!/bin/sh
 
 SVN=`which svn`
-AWK=`which gawk`
-TYPE="gawk"
-AWK=""
-if [ "" = "${AWK}" ]; then
-	AWK=`which mawk`
-	TYPE="mawk"
-	if [ "" = "${AWK}" ]; then
-		echo "Unknown awk variation, not running."
-		exit 0;
-	fi;
+SED=`which sed`
+if [ "" = "${SED}" ]; then
+	echo "This needs sed."
+	exit 0;
 fi;
 
 SVNREV=`$SVN info | grep Revision`
 SVNREV=${SVNREV##*: }
 
-if [ "${TYPE}" = "mawk" ]; then
-	PRE='int SVN_REVISION = '
-	POST='int SVN_REVISION = '${SVNREV}';'
-	if [ "${1}" = "--pre" ]; then
-		POST=${POST}' // ';
-	elif [ "${1}" = "--post" ]; then
-		POST=${POST}' \/\/ ';
-	fi;
-elif [ "${TYPE}" = "gawk" ]; then
-	PRE='int SVN_REVISION = '
-	POST='int SVN_REVISION = '${SVNREV}'; \/\/ '
-fi;
-
-OLD=""
-
 if [ "${1}" = "--pre" ]; then
 	# Substitute the version string
-	OLD=${PRE}
-	NEW=${POST}
+	${SED} -r 's/int SVN_REVISION = /int SVN_REVISION = '${SVNREV}'; \/\/ /' ${PWD}/src/com/dmdirc/Main.java > ${PWD}/src/com/dmdirc/Main.java.tmp 2>/dev/null
 elif [ "${1}" = "--post" ]; then
 	# Unsubstitute the version string
-	OLD=${POST}
-	NEW=${PRE}
+	${SED} -r 's/int SVN_REVISION = .* ([0-9]+);/int SVN_REVISION = \1;/' ${PWD}/src/com/dmdirc/Main.java > ${PWD}/src/com/dmdirc/Main.java.tmp 2>/dev/null
 fi;
 
-if [ "" != "${OLD}" ]; then
-	${AWK} '{gsub(/'"${OLD}"'/,"'"${NEW}"'");print}' ${PWD}/src/com/dmdirc/Main.java > ${PWD}/src/com/dmdirc/Main.java.tmp 2>/dev/null
-	if [ -e ${PWD}/src/com/dmdirc/Main.java.tmp ]; then
-		mv ${PWD}/src/com/dmdirc/Main.java.tmp ${PWD}/src/com/dmdirc/Main.java
-	fi;
-	# cat ${PWD}/src/com/dmdirc/Main.java | grep SVN
+if [ -e ${PWD}/src/com/dmdirc/Main.java.tmp ]; then
+	mv ${PWD}/src/com/dmdirc/Main.java.tmp ${PWD}/src/com/dmdirc/Main.java
 fi;
+
+cat ${PWD}/src/com/dmdirc/Main.java | grep SVN
