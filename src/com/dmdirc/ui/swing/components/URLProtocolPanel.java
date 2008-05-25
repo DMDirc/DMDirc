@@ -129,9 +129,9 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
     /** Lays out the components. */
     private void layoutComponents() {
         if (useInsets) {
-            setLayout(new MigLayout("fill, wrap 1, hidemode 3"));
+            setLayout(new MigLayout("fillx, wrap 1, hidemode 3"));
         } else {
-            setLayout(new MigLayout("ins 0, fill, wrap 1, hidemode 3"));
+            setLayout(new MigLayout("ins 0, fillx, wrap 1, hidemode 3"));
         }
 
         add(dmdirc, "growx");

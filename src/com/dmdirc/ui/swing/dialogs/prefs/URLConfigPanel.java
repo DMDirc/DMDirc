@@ -169,7 +169,7 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
         removeAll();
         setLayout(new MigLayout("ins 0, wrap 1"));
 
-        add(tableScrollPane, "grow, pushy");
+        add(tableScrollPane, "growx, pushy");
         add(add, "split 2, growx");
         add(remove, "growx");
         add(activeComponent, "growx, pushx");

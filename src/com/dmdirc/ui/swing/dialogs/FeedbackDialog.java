@@ -85,7 +85,8 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
         addListeners();
 
         setTitle("DMDirc: Feedback");
-
+        setResizable(false);
+        
         pack();
     }
 
@@ -148,7 +149,7 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
         serverCheckbox.setMargin(new Insets(0, 0, 0, 0));
         serverCheckbox.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
-        setLayout(new MigLayout("fill, wmax 600, hmax 400"));
+        setLayout(new MigLayout("fill, wmin 600, wmax 600, hmin 400, hmax 400"));
 
         add(info, "span 3, growx, wrap, gapbottom unrel");
 
@@ -178,7 +179,7 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
         getOkButton().setText("Close");
         getOkButton().setActionCommand("Close");
 
-        setLayout(new MigLayout("fill"));
+        setLayout(new MigLayout("fill, wmin 600, wmax 600, hmin 400, hmax 400"));
 
         info.setText(error.toString());
 

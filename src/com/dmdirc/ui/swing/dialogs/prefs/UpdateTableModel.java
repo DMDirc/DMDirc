@@ -22,15 +22,14 @@
 
 package com.dmdirc.ui.swing.dialogs.prefs;
 
-import com.dmdirc.updater.Update;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateComponent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import java.util.Map;
+
 import javax.swing.table.AbstractTableModel;
 
 /**

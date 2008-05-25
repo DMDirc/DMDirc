@@ -31,7 +31,6 @@ import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 
 import com.dmdirc.ui.swing.dialogs.NewServerDialog;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -143,14 +142,13 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
 
     /** Lays out the dialog. */
     private void layoutComponents() {
-        getContentPane().setLayout(new MigLayout("fill"));
+        getContentPane().setLayout(new MigLayout("fill, wmin 600, wmax 600"));
 
-        infoLabel.setMaximumSize(new Dimension(600, 0));
         getContentPane().add(infoLabel, "wrap, growx, spanx 2");
-        getContentPane().add(new JScrollPane(profileList), "growy, w 200");
+        getContentPane().add(new JScrollPane(profileList), "growy, wmin 200, wmax 200");
         getContentPane().add(details, "grow, wrap");
-        getContentPane().add(addButton, "wrap, w 200");
-        getContentPane().add(deleteButton, "left, w 200");
+        getContentPane().add(addButton, "wrap, wmin 200, wmax 200");
+        getContentPane().add(deleteButton, "left, wmin 200, wmax 200");
         getContentPane().add(getLeftButton(), "split, right, sg button");
         getContentPane().add(getRightButton(), "right, sg button");
 

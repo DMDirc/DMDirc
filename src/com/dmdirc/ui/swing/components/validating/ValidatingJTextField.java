@@ -24,11 +24,11 @@ package com.dmdirc.ui.swing.components.validating;
 
 import com.dmdirc.config.prefs.validator.Validator;
 import com.dmdirc.ui.IconManager;
-
 import com.dmdirc.config.prefs.validator.ValidationResponse;
-import java.awt.Font;
 
+import java.awt.Font;
 import java.awt.event.KeyListener;
+
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;

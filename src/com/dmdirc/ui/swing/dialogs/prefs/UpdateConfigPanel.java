@@ -28,13 +28,16 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.ui.swing.components.PackingTable;
 import com.dmdirc.updater.UpdateChecker;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -115,11 +118,11 @@ public class UpdateConfigPanel extends JPanel implements ActionListener,
      * Lays out the components.
      */
     private void layoutComponents() {
-        setLayout(new MigLayout("fill, ins 0"));
+        setLayout(new MigLayout("fillx, ins 0"));
 
         add(new JLabel("Update checking:"), "split");
         add(enable, "growx, pushx, wrap");
-        add(scrollPane, "grow, wrap");
+        add(scrollPane, "growx, wrap");
         add(checkNow, "right");
     }
 
