@@ -212,11 +212,12 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 		if (transferCount == dcc.getFileSize()) {
 			status.setText("Status: Transfer Compelete.");
 			progress.setValue(100);
+            setIcon(dcc.getType() == DCCSend.TransferType.SEND ? "dcc-send-done" : "dcc-receive-done");
 		} else {
 			status.setText("Status: Transfer Failed.");
+            setIcon(dcc.getType() == DCCSend.TransferType.SEND ? "dcc-send-failed" : "dcc-receive-failed");
 		}
 		updateSpeedAndTime();
-		setIcon(dcc.getType() == DCCSend.TransferType.SEND ? "dcc-send-inactive" : "dcc-receive-inactive");
 	}
 	
 	/**
