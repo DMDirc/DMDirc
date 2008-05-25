@@ -151,6 +151,8 @@ public abstract class DCCFrame extends WritableFrameContainer {
 	protected InputWindow myWindow = null;
 	/** The dcc plugin that owns this frame */
 	protected final DCCPlugin plugin;
+	/** The Window we're using. */
+	private boolean windowClosing = false;
 	
 	/**
 	 * Creates a new instance of DCCFrame with an empty window.
@@ -255,12 +257,23 @@ public abstract class DCCFrame extends WritableFrameContainer {
 		return null;
 	}
 	
+	/**
+	 * Is the window closing?
+	 *
+	 * @return True if windowClosing has been called.
+	 */
+	public final boolean isWindowClosing() {
+		return windowClosing;
+	}
+	
 	/** {@inheritDoc} */
 	@Override
 	public void windowClosing() {
+		windowClosing = true;
+		
 		// 1: Make the window non-visible
 		myWindow.setVisible(false);
-
+		
 		// 2: Remove any callbacks or listeners
 		// 3: Trigger any actions neccessary
 		// 4: Trigger action for the window closing

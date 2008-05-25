@@ -208,16 +208,18 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	@Override
 	public void socketClosed(final DCCSend dcc) {
 		ActionManager.processEvent(DCCActions.DCC_SEND_SOCKETCLOSED, null, this);
-		button.setEnabled(false);
-		if (transferCount == dcc.getFileSize()) {
-			status.setText("Status: Transfer Compelete.");
-			progress.setValue(100);
-            setIcon(dcc.getType() == DCCSend.TransferType.SEND ? "dcc-send-done" : "dcc-receive-done");
-		} else {
-			status.setText("Status: Transfer Failed.");
-            setIcon(dcc.getType() == DCCSend.TransferType.SEND ? "dcc-send-failed" : "dcc-receive-failed");
+		if (!isWindowClosing()) {
+			button.setEnabled(false);
+			if (transferCount == dcc.getFileSize()) {
+				status.setText("Status: Transfer Compelete.");
+				progress.setValue(100);
+				setIcon(dcc.getType() == DCCSend.TransferType.SEND ? "dcc-send-done" : "dcc-receive-done");
+			} else {
+				status.setText("Status: Transfer Failed.");
+				setIcon(dcc.getType() == DCCSend.TransferType.SEND ? "dcc-send-failed" : "dcc-receive-failed");
+			}
+			updateSpeedAndTime();
 		}
-		updateSpeedAndTime();
 	}
 	
 	/**
@@ -238,7 +240,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	 */
 	@Override
 	public void windowClosing() {
-		dcc.close();
 		super.windowClosing();
+		dcc.close();
 	}
 }

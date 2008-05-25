@@ -456,12 +456,12 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		defaults.setOption("icon", "dcc-chat-inactive", url + "chat-inactive.png");
 		defaults.setOption("icon", "dcc-send-active", url + "send.png");
 		defaults.setOption("icon", "dcc-send-inactive", url + "send-inactive.png");
-        defaults.setOption("icon", "dcc-send-done", url + "send-done.png");
-        defaults.setOption("icon", "dcc-send-failed", url + "send-failed.png");
+		defaults.setOption("icon", "dcc-send-done", url + "send-done.png");
+		defaults.setOption("icon", "dcc-send-failed", url + "send-failed.png");
 		defaults.setOption("icon", "dcc-receive-active", url + "receive.png");
 		defaults.setOption("icon", "dcc-receive-inactive", url + "receive-inactive.png");
-        defaults.setOption("icon", "dcc-receive-done", url + "receive-done.png");
-        defaults.setOption("icon", "dcc-receive-failed", url + "receive-failed.png");
+		defaults.setOption("icon", "dcc-receive-done", url + "receive-done.png");
+		defaults.setOption("icon", "dcc-receive-failed", url + "receive-failed.png");
 		
 		defaults.setOption("formatter", "DCCChatStarting", "Starting DCC Chat with: %1$s on %2$s:%3$s");
 		defaults.setOption("formatter", "DCCChatInfo", "%1$s");

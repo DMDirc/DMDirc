@@ -115,7 +115,9 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 		final StringBuffer buff = new StringBuffer("DCCChatInfo");
 		ActionManager.processEvent(DCCActions.DCC_CHAT_SOCKETCLOSED, buff, this);
 		addLine(buff, "Socket closed");
-		setIcon("dcc-chat-inactive");
+		if (!isWindowClosing()) {
+			setIcon("dcc-chat-inactive");
+		}
 	}
 	
 	/**
@@ -136,7 +138,7 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 	 */
 	@Override
 	public void windowClosing() {
-		dcc.close();
 		super.windowClosing();
+		dcc.close();
 	}
 }
