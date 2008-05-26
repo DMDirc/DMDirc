@@ -118,7 +118,7 @@ public final class DCCCommand extends GlobalCommand {
 				int result;
 				if (!givenFile.exists() || !givenFile.isFile() ) {
 					jc.setDialogTitle("Send file to "+target+" - DMDirc ");
-					jc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+					jc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 					jc.setMultiSelectionEnabled(false);
 					result = jc.showOpenDialog((JFrame)Main.getUI().getMainWindow());
 				} else {
