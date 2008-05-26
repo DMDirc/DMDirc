@@ -177,6 +177,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         setClosable(true);
         setResizable(true);
         setIconifiable(true);
+        setFocusable(true);
         setPreferredSize(new Dimension(((MainFrame) Main.getUI().getMainWindow()).getWidth() /
                 2,
                 ((MainFrame) Main.getUI().getMainWindow()).getHeight() / 3));
