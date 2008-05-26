@@ -174,6 +174,10 @@ public class NodeLabel extends JLabel implements SelectionListener,
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
+        if (window == null) {
+            return super.hashCode();
+        }
+        
         return window.hashCode();
     }
 }
