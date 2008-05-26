@@ -170,7 +170,7 @@ public abstract class DCCFrame extends WritableFrameContainer {
 	 *
 	 * @param plugin The DCCPlugin that owns this frame
 	 * @param title The title of this window
-	 * @param defaultWindow Create default (empty) window.
+	 * @param defaultWindow Create default (empty) window. (non-default = chat frame)
 	 * @param icon The icon to use
 	 */
 	public DCCFrame(final DCCPlugin plugin, final String title, final String icon ,final boolean defaultWindow) {

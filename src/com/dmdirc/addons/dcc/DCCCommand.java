@@ -114,9 +114,9 @@ public final class DCCCommand extends GlobalCommand {
 			/** {@inheritDoc} */
 			@Override
 			public void run() {
-				final JFileChooser jc = new JFileChooser();
+				final JFileChooser jc = (givenFile.exists()) ? new JFileChooser(givenFile) : new JFileChooser();
 				int result;
-				if (!givenFile.exists()) {
+				if (!givenFile.exists() || !givenFile.isFile() ) {
 					jc.setDialogTitle("Send file to "+target+" - DMDirc ");
 					jc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 					jc.setMultiSelectionEnabled(false);

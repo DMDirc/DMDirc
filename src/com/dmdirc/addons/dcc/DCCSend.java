@@ -411,7 +411,6 @@ public class DCCSend extends DCC {
 							} catch (IOException e) {
 								break;
 							}
-							System.out.println(readSize - ack);
 						} while (ack > 0 && (readSize - ack) > 0);
 					}
 					
