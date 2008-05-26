@@ -41,6 +41,11 @@ public class StringTransferable implements Transferable {
     /** Transferred string. */
     private final String data;
 
+    /**
+     * Creates a new string transferable object.
+     * 
+     * @param data String to transger
+     */
     public StringTransferable(final String data) {
         super();
 
@@ -77,7 +82,11 @@ public class StringTransferable implements Transferable {
         return false;
     }
 
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @return String to transfer
+     */
     @Override
     public Object getTransferData(final DataFlavor flavor) throws UnsupportedFlavorException {
         if (!isDataFlavorSupported(flavor)) {

@@ -73,10 +73,15 @@ public final class ActionTypeModel extends DefaultComboBoxModel {
         }
     }
     
-    public void setTypeGroup(final MapList<String, ActionType> typeGroups) {
+    /**
+     * Sets the type group for this model.
+     * 
+     * @param typeGroup New type group
+     */
+    public void setTypeGroup(final MapList<String, ActionType> typeGroup) {
         removeAllElements();
         
-        for (Map.Entry<String, List<ActionType>> entry : typeGroups.entrySet()) {
+        for (Map.Entry<String, List<ActionType>> entry : typeGroup.entrySet()) {
             addElement(entry.getKey());
             
             final List<ActionType> types = entry.getValue();

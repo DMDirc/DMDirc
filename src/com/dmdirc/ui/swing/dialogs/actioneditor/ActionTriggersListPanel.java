@@ -50,7 +50,9 @@ public class ActionTriggersListPanel extends JPanel {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** Trigger list. */
     private List<ActionType> triggers;
+    /** Listeners. */
     private final ListenerList listeners = new ListenerList();
 
     /** Instantiates the panel. */
@@ -58,7 +60,11 @@ public class ActionTriggersListPanel extends JPanel {
         this(new ArrayList<ActionType>());
     }
 
-    /** Instantiates the panel. */
+    /**
+     * Instantiates the panel.
+     * 
+     * @param triggers Trigger list
+     */
     public ActionTriggersListPanel(final List<ActionType> triggers) {
         super();
 
@@ -109,6 +115,11 @@ public class ActionTriggersListPanel extends JPanel {
         }
     }
 
+    /**
+     * Adds a trigger to the list.
+     * 
+     * @param trigger Trigger to add
+     */
     public void addTrigger(final ActionType trigger) {
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -124,6 +135,11 @@ public class ActionTriggersListPanel extends JPanel {
         });
     }
 
+    /**
+     * Deletes a trigger from the list.
+     * 
+     * @param trigger Trigger to delete
+     */
     public void delTrigger(final ActionType trigger) {
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -140,16 +156,33 @@ public class ActionTriggersListPanel extends JPanel {
         });
     }
 
+    /**
+     * Returns the current list of triggers.
+     * 
+     * @return Trigger list
+     */
     public List<ActionType> getTriggers() {
         synchronized (triggers) {
             return triggers;
         }
     }
 
+    /**
+     * Gets the trigger at the specified index.
+     * 
+     * @param index Index to retrieve
+     * 
+     * @return Requested action trigger
+     */
     public ActionType getTrigger(final int index) {
         return triggers.get(index);
     }
 
+    /**
+     * Returns the number of triggers.
+     * 
+     * @return Trigger count
+     */
     public int getTriggerCount() {
         synchronized (triggers) {
             return triggers.size();

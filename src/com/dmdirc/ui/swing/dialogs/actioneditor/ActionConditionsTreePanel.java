@@ -42,14 +42,23 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** Button group. */
     private ButtonGroup group;
+    /** All triggers button. */
     private JRadioButton allButton;
+    /** One trigger button. */
     private JRadioButton oneButton;
+    /** Custom rule button. */
     private JRadioButton customButton;
+    /** Custom rule field. */
     private JTextField rule;
+    /** Selected rule type identifier. */
     public enum RuleType {
+        /** All triggers. */
         ALL,
+        /** One trigger. */
         ONE,
+        /** Custom rule. */
         CUSTOM;
     };
 
@@ -96,7 +105,11 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
         add(rule, "growx");
     }
 
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Action event
+     */
     @Override
     public void actionPerformed(final ActionEvent e) {
         rule.setVisible(e.getSource().equals(customButton));
@@ -111,6 +124,11 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
         rule.setEnabled(enabled);
     }
     
+    /**
+     * Returns the selected rule type.
+     * 
+     * @return Selected rule type
+     */
     public RuleType getRuleType() {
         if (allButton.isSelected()) {
             return RuleType.ALL;
@@ -121,6 +139,11 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
         }
     }
     
+    /**
+     * Returns the current custom rule.
+     * 
+     * @return Custom rule
+     */
     public String getRule() {
         return rule.getText();
     }

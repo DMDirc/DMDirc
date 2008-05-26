@@ -47,7 +47,9 @@ public class ActionResponsePanel extends JPanel {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** Response text area. */
     private JTextArea response;
+    /** Formatter combo box. */
     private JComboBox formatter;
 
     /** Instantiates the panel. */
@@ -89,10 +91,20 @@ public class ActionResponsePanel extends JPanel {
         add(formatter, "growx");
     }
     
+    /**
+     * Returns the current response.
+     * 
+     * @return Response text
+     */
     public String getResponse() {
         return response.getText();
     }
     
+    /**
+     * Returns the current formatter.
+     * 
+     * @return Formatter text
+     */
     public String getFormatter() {
         return (String) formatter.getSelectedItem();
     }

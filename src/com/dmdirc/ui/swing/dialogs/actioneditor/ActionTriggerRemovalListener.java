@@ -29,6 +29,10 @@ import com.dmdirc.actions.interfaces.ActionType;
  */
 public interface ActionTriggerRemovalListener {
 
-    /** A trigger was removed from the list. */
+    /** 
+     * A trigger was removed from the list.
+     * 
+     * @param trigger Removed trigger
+     */
     void triggerRemoved(ActionType trigger);
 }

@@ -27,6 +27,10 @@ package com.dmdirc.ui.swing.dialogs.actioneditor;
  */
 public interface ActionConditionRemovalListener {
 
-    /** A condition was removed from the list. */
+    /** 
+     * A condition was removed from the list.
+     * 
+     * @param condition Condition to be removed
+     */
     void conditionRemoved(ActionConditionDisplayPanel condition);
 }

@@ -46,10 +46,16 @@ public class ActionSubstitutionsPanel extends JPanel {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** Action type. */
     private ActionType type;
+    /** Substitions list. */
     private List<ActionSubstitutionLabel> substitutions;
 
-    /** Instantiates the panel. */
+    /** 
+     * Instantiates the panel.
+     * 
+     * @param type Action type
+     */
     public ActionSubstitutionsPanel(final ActionType type) {
         super();
 
@@ -81,6 +87,11 @@ public class ActionSubstitutionsPanel extends JPanel {
         }
     }
 
+    /**
+     * Sets the action type for this substitution panel.
+     * 
+     * @param type New action type
+     */
     public void setActionType(final ActionType type) {
         SwingUtilities.invokeLater(new Runnable() {
 

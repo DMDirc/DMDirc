@@ -23,22 +23,29 @@
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Insets;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.JLabel;
+import javax.swing.JButton;
+import javax.swing.text.JTextComponent;
 
 /**
  * Action substitution label.
  */
-public class ActionSubstitutionLabel extends JLabel implements MouseListener,
-        DragGestureListener {
+public class ActionSubstitutionLabel extends JButton implements MouseListener,
+        DragGestureListener, ActionListener, FocusListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -46,10 +53,18 @@ public class ActionSubstitutionLabel extends JLabel implements MouseListener,
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** Drag source. */
     private DragSource dragSource;
+    /** Substitution. */
     private ActionSubstitution substition;
+    /** Previously selected component. */
+    private Component previousComponent;
 
-    /** Instantiates the panel. */
+    /** 
+     * Instantiates the panel.
+     * 
+     * @param substition Action substitition
+     */
     public ActionSubstitutionLabel(final ActionSubstitution substition) {
         super();
 
@@ -74,42 +89,66 @@ public class ActionSubstitutionLabel extends JLabel implements MouseListener,
                 BorderFactory.createLineBorder(Color.GRAY),
                 BorderFactory.createEmptyBorder(1, 1, 1, 1)
                 ));
+        setContentAreaFilled(false);
+        setMargin(new Insets(0, 0, 0, 0));
     }
 
     /** Adds the listeners. */
     private void addListeners() {
         addMouseListener(this);
+        addFocusListener(this);
+        addActionListener(this);
     }
 
     /** Lays out the components. */
     private void layoutComponents() {
     }
 
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event
+     */
     @Override
     public void mouseClicked(final MouseEvent e) {
     //Ignore
     }
 
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event
+     */
     @Override
     public void mousePressed(final MouseEvent e) {
     //Ignore
     }
 
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event
+     */
     @Override
     public void mouseReleased(final MouseEvent e) {
     //Ignore
     }
 
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event
+     */
     @Override
     public void mouseEntered(final MouseEvent e) {
         setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
     }
 
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event
+     */
     @Override
     public void mouseExited(final MouseEvent e) {
     //Ignore
@@ -120,5 +159,37 @@ public class ActionSubstitutionLabel extends JLabel implements MouseListener,
     public void dragGestureRecognized(final DragGestureEvent dge) {
         dragSource.startDrag(dge, Cursor.getPredefinedCursor(Cursor.HAND_CURSOR),
                 new StringTransferable(substition.toString()), null);
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Action event
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (previousComponent instanceof JTextComponent) {
+            ((JTextComponent) previousComponent).replaceSelection(substition.toString());
+        }
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Focus event
+     */
+    @Override
+    public void focusGained(FocusEvent e) {
+        previousComponent = e.getOppositeComponent();
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Focus event
+     */
+    @Override
+    public void focusLost(FocusEvent e) {
+        //Ignore
     }
 }

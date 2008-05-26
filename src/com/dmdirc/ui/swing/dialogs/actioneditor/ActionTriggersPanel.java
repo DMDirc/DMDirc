@@ -50,8 +50,11 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** Trigger combo box. */
     private JComboBox trigger;
+    /** Add button. */
     private JButton add;
+    /** Triggers list. */
     private ActionTriggersListPanel triggerList;
 
     /** Instantiates the panel. */
@@ -96,7 +99,11 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
         add(add, "right");
     }
 
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Action event
+     */
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == trigger) {
@@ -113,6 +120,9 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
         repopulateTriggers();
     }
 
+    /**
+     * Repopulates the triggers in the panel.
+     */
     private void repopulateTriggers() {
         SwingUtilities.invokeLater(new Runnable() {
 

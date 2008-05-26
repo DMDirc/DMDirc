@@ -130,6 +130,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
         tree.addMouseMotionListener(this);
         tree.addTreeSelectionListener(this);
         new TreeScroller(tree);
+        tree.setFocusable(false);
 
         dragSelect = IdentityManager.getGlobalConfig().getOptionBool("treeview",
                 "dragSelection", true);
@@ -165,6 +166,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
 
         parent.setLayout(new BorderLayout());
         parent.add(scrollPane);
+        parent.setFocusable(false);
 
         setColours();
     }

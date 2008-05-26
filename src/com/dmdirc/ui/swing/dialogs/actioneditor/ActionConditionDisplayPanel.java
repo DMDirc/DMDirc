@@ -27,10 +27,13 @@ import com.dmdirc.ui.swing.components.ImageButton;
 import com.dmdirc.ui.swing.components.ImageToggleButton;
 import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.util.ListenerList;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -44,10 +47,15 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** Info label. */
     private TextLabel label;
+    /** Edit button. */
     private JToggleButton editButton;
+    /** Delete button. */
     private ImageButton deleteButton;
+    /** Edit panel. */
     private ActionConditionEditorPanel editPanel;
+    /** Listeners. */
     private ListenerList listeners;
 
     /** Instantiates the panel. */
@@ -86,7 +94,11 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
         add(editPanel, "grow");
     }
 
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Action event
+     */
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource().equals(deleteButton)) {
