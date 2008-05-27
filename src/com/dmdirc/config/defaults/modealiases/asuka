@@ -1,18 +1,24 @@
 # Default mode settings for Asuka
 # b,k,l,imnpstrDdcCNu
 
-identity.name = Asuka mode aliases
-identity.ircd = asuka
+keysections:
+  identity
+  server
 
-server.modeD = Auditorium mode
-server.moded = Auditorium mode
-server.modeC = No channel CTCPs
-server.modeN = No channel notices
-server.modeu = No quit messages
+identity:
+  name=Asuka mode aliases
+  ircd=asuka
 
-server.umodeh = Set host
-server.umodeI = Hide idle time
-server.umodek = Services operator
-server.umoden = Hide channel list
-server.umodeg = Receive debug information
-server.umodeX = Extended operator
+server:
+  modeD=Auditorium mode
+  moded=Auditorium mode
+  modeC=No channel CTCPs
+  modeN=No channel notices
+  modeu=No quit messages
+
+  umodeh=Set host
+  umodeI=Hide idle time
+  umodek=Services operator
+  umoden=Hide channel list
+  umodeg=Receive debug information
+  umodeX=Extended operator

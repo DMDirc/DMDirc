@@ -1,48 +1,54 @@
 # RFC-specified channel modes
 
-identity.name = Generic mode aliases
-identity.globaldefault = true
-identity.modealiasversion = 2
+keysections:
+  identity
+  server
 
+identity:
+  name=Generic mode aliases
+  globaldefault=true
+  modealiasversion=2
+
+server:
 # -- 1459 --
-server.modeb = Ban
-server.modei = Invite only
-server.modek = Channel key
-server.model = User limit
-server.modem = Moderated
-server.moden = No external messages
-server.modep = Private
-server.modes = Secret
-server.modet = Only ops can set topic
+  modeb=Ban
+  modei=Invite only
+  modek=Channel key
+  model=User limit
+  modem=Moderated
+  moden=No external messages
+  modep=Private
+  modes=Secret
+  modet=Only ops can set topic
 
 # -- 2811 --
-server.modea = Anonymous chat
-server.modee = Exception
-server.modeI = Invite
-server.modeq = Quiet
-#server.moder = Reop users
+  modea=Anonymous chat
+  modee=Exception
+  modeI=Invite
+  modeq=Quiet
+#  moder=Reop users
 
 # Standard user modes, I can't believe they're not in the RFCs. Maybe I missed them.
-server.modeo = Op
-server.modeh = Half-op
-server.modev = Voice
+  modeo=Op
+  modeh=Half-op
+  modev=Voice
 
 # Defacto standards
-server.modec = No formatting
-server.modeM = Mute non-registered users
-server.modeO = IRCops only
-server.moder = Registered users only
-server.modeR = Registered users only
-server.modez = SSL users only
+  modec=No formatting
+  modeM=Mute non-registered users
+  modeO=IRCops only
+  moder=Registered users only
+  modeR=Registered users only
+  modez=SSL users only
 
 # Umodes
-server.umodea = Away
-server.umoded = Deaf
-server.umodei = Invisible
-server.umodes = Receive server notices
-server.umodew = Receive wallops
-server.umodeo = IRC Operator
-server.umodeO = Local IRC Operator
-server.umoder = Restricted connection
-server.umodeR = Only registered users may query
-server.umodex = Hide hostname
+  umodea=Away
+  umoded=Deaf
+  umodei=Invisible
+  umodes=Receive server notices
+  umodew=Receive wallops
+  umodeo=IRC Operator
+  umodeO=Local IRC Operator
+  umoder=Restricted connection
+  umodeR=Only registered users may query
+  umodex=Hide hostname

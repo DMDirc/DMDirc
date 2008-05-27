@@ -1,166 +1,193 @@
-identity.name = DMDirc default settings
-identity.globaldefault = true
-identity.order = 100000
-identity.defaultsversion = 0
+# This is the DMDirc default config file. If you wish to make changes to the settings
+# for your copy of DMDirc, you should edit the dmdirc.config file in the main DMDirc
+# profile directory instead. This file will be replaced by the updater.
 
-general.submitErrors=false
+keysections:
+  identity
+  general
+  notifications
+  ui
+  treeview
+  channel
+  tabcompletion
+  logging
+  server
+  updater
+  popups
+  protocol
 
-general.commandchar=/
-general.silencechar=.
+identity:
+  name = DMDirc default settings
+  globaldefault = true
+  order = 100000
+  defaultsversion = 0
 
-general.reconnectmessage=Reconnecting
-general.closemessage=DMDirc exiting
-general.quitmessage=Using DMDirc
-general.partmessage=Using DMDirc
-general.cyclemessage=Cycling
-general.kickmessage=Bye!
+general:
+  submitErrors=false
 
-general.hidequeries=false
+  commandchar=/
+  silencechar=.
 
-general.closechannelsonquit=false
-general.closequeriesonquit=false
+  reconnectmessage=Reconnecting
+  closemessage=DMDirc exiting
+  quitmessage=Using DMDirc
+  partmessage=Using DMDirc
+  cyclemessage=Cycling
+  kickmessage=Bye!
 
-general.closechannelsondisconnect=false
-general.closequeriesondisconnect=false
+  hidequeries=false
 
-general.reconnectonconnectfailure=true
-general.reconnectondisconnect=true
-general.reconnectdelay=5000
+  closechannelsonquit=false
+  closequeriesonquit=false
 
-general.server=irc.quakenet.org
-general.port=6667
-general.password=
+  closechannelsondisconnect=false
+  closequeriesondisconnect=false
 
-notifications.authNotice=server
-notifications.away=server
-notifications.back=server
-notifications.unknownNotice=server
-notifications.connectError=server
-notifications.connectRetry=server
-notifications.selfNickChange=server
-notifications.serverError=all
-notifications.socketClosed=all
-notifications.stonedServer=all
-notifications.privateNotice=all
-notifications.privateCTCP=server
-notifications.privateCTCPreply=lastcommand:ctcp %1$s %4$S
-notifications.wallusers=server
-notifications.wallops=server
-notifications.walldesync=server
+  reconnectonconnectfailure=true
+  reconnectondisconnect=true
+  reconnectdelay=5000
 
-notifications.numeric_006=group:map
-notifications.numeric_007=group:map
-notifications.numeric_015=group:map
-notifications.numeric_017=group:map
+  server=irc.quakenet.org
+  port=6667
+  password=
 
-notifications.numeric_251=group:lusers
-notifications.numeric_252=group:lusers
-notifications.numeric_253=group:lusers
-notifications.numeric_254=group:lusers
-notifications.numeric_255=group:lusers
+  whotime=60000
 
-notifications.numeric_290=server
-notifications.numeric_292=server
-notifications.numeric_294=server
+notifications:
+  authNotice=server
+  away=server
+  back=server
+  unknownNotice=server
+  connectError=server
+  connectRetry=server
+  selfNickChange=server
+  serverError=all
+  socketClosed=all
+  stonedServer=all
+  privateNotice=all
+  privateCTCP=server
+  privateCTCPreply=lastcommand:ctcp %1$s %4$S
+  wallusers=server
+  wallops=server
+  walldesync=server
 
-notifications.numeric_301=group:whois
-notifications.numeric_307=group:whois
-notifications.numeric_311=group:whois
-notifications.numeric_312=group:whois
-notifications.numeric_313=group:whois
-notifications.numeric_317=group:whois
-notifications.numeric_318=group:whois
-notifications.numeric_319=group:whois
-notifications.numeric_320=group:whois
-notifications.numeric_330=group:whois
-notifications.numeric_343=group:whois
+  numeric_006=group:map
+  numeric_007=group:map
+  numeric_015=group:map
+  numeric_017=group:map
 
-notifications.numeric_401=lastcommand:(raw )?(whois|(priv)?msg|notice|ctcp|invite) %4$s( .*?)?
-notifications.numeric_404=channel:%4$s
-notifications.numeric_405=server
-notifications.numeric_421=server
-notifications.numeric_432=lastcommand:(raw )?nick %4$s
-notifications.numeric_433=server
-notifications.numeric_437=lastcommand:(raw )?nick %4$s
-notifications.numeric_438=lastcommand:(raw )?nick %4$s
-notifications.numeric_461=lastcommand:(raw )?%4$s( .*)?
-notifications.numeric_471=server
-notifications.numeric_472=server
-notifications.numeric_473=server
-notifications.numeric_474=server
-notifications.numeric_475=server
-notifications.numeric_479=server
-notifications.numeric_482=channel:%4$s
-notifications.numeric_486=lastcommand:(raw priv)?msg %4$s .*
-notifications.numeric_499=channel:%4$s
+  numeric_251=group:lusers
+  numeric_252=group:lusers
+  numeric_253=group:lusers
+  numeric_254=group:lusers
+  numeric_255=group:lusers
 
-notifications.numeric_501=server
-notifications.numeric_524=server
+  numeric_290=server
+  numeric_292=server
+  numeric_294=server
 
-notifications.numeric_671=group:whois
+  numeric_301=group:whois
+  numeric_307=group:whois
+  numeric_311=group:whois
+  numeric_312=group:whois
+  numeric_313=group:whois
+  numeric_317=group:whois
+  numeric_318=group:whois
+  numeric_319=group:whois
+  numeric_320=group:whois
+  numeric_330=group:whois
+  numeric_343=group:whois
 
-notifications.numeric_705=server
+  numeric_401=lastcommand:(raw )?(whois|(priv)?msg|notice|ctcp|invite) %4$s( .*?)?
+  numeric_404=channel:%4$s
+  numeric_405=server
+  numeric_421=server
+  numeric_432=lastcommand:(raw )?nick %4$s
+  numeric_433=server
+  numeric_437=lastcommand:(raw )?nick %4$s
+  numeric_438=lastcommand:(raw )?nick %4$s
+  numeric_461=lastcommand:(raw )?%4$s( .*)?
+  numeric_471=server
+  numeric_472=server
+  numeric_473=server
+  numeric_474=server
+  numeric_475=server
+  numeric_479=server
+  numeric_482=channel:%4$s
+  numeric_486=lastcommand:(raw priv)?msg %4$s .*
+  numeric_499=channel:%4$s
 
-notifications.lusers=server
-notifications.map=window:Network Map
-notifications.whois=lastcommand:(raw )?whois %4$s( %4$s)?
+  numeric_501=server
+  numeric_524=server
 
-ui.backgroundcolour=0
-ui.foregroundcolour=1
-ui.frameBufferSize=25000
-ui.framemanagerPosition=left
-ui.maximisewindows=false
-ui.sortByMode=true
-ui.sortByCase=false
-ui.inputbuffersize=50
-ui.showversion=true
-ui.quickCopy=false
-ui.pasteProtectionLimit=1
-ui.stylelinks=true
+  numeric_671=group:whois
 
-ui.treeviewActiveBold=true
-treeview.sortwindows=true
-treeview.sortservers=true
+  numeric_705=server
 
-channel.splitusermodes=false
-channel.sendwho=false
-channel.showmodeprefix=true
-channel.topichistorysize=10
-general.whotime=60000
+  lusers=server
+  map=window:Network Map
+  whois=lastcommand:(raw )?whois %4$s( %4$s)?
 
-tabcompletion.casesensitive=false
+ui:
+  backgroundcolour=0
+  foregroundcolour=1
+  frameBufferSize=25000
+  framemanagerPosition=left
+  maximisewindows=false
+  sortByMode=true
+  sortByCase=false
+  inputbuffersize=50
+  showversion=true
+  quickCopy=false
+  pasteProtectionLimit=1
+  stylelinks=true
 
-logging.dateFormat=EEE, d MMM yyyy HH:mm:ss Z
-logging.programLogging=true
-logging.debugLogging=true
-logging.debugLoggingSysOut=true
+  treeviewActiveBold=true
 
-server.friendlymodes=true
-server.pingtimeout=60000
+treeview:
+  sortwindows=true
+  sortservers=true
 
-updater.frequency=86400
-updater.lastcheck=0
-updater.enable=false
+channel:
+  splitusermodes=false
+  sendwho=false
+  showmodeprefix=true
+  topichistorysize=10
 
-actions.textcolour=12
-actions.eventcolour=3
-actions.highlightcolour=4
-actions.misccolour=2
+tabcompletion:
+  casesensitive=false
 
-popups.nick=Query:query %1$s\nWhois:whois %1$s
-popups.chan-nick=-\nBan:ban %1$s\nKick:kick %1$s
-popups.umodes=<umodes-op\n<umodes-voice
+logging:
+  dateFormat=EEE, d MMM yyyy HH:mm:ss Z
+  programLogging=true
+  debugLogging=true
+  debugLoggingSysOut=true
 
-popups.umodes-op=Op:mode +o %1$s\nDeop:mode -o %1$s
-popups.umodes-hop=Half-Op:mode +h %1$s\nDehalf-op:mode -o %1$s
-popups.umodes-voice=Voice:mode +v %1$s\nDevoice:mode -v %1$s
-popups.umodes-admin=Make admin:mode +a %1$s\nRemove admin:mode -a %1$s
-popups.umodes-owner=Make owner:mode +q %1$s\nRemove owner:mode -q %1$s
+server:
+  friendlymodes=true
+  pingtimeout=60000
 
-popups.CHAN_NICK=<nick\n-\nModes:<umodes\n<chan-nick
-popups.CHAN_NORMAL=
-popups.QUERY_NORMAL=<nick
+updater:
+  frequency=86400
+  lastcheck=0
+  enable=false
 
-protocol.http=BROWSER
-protocol.https=BROWSER
-protocol.irc=DMDIRC
+popups:
+  nick=Query:query %1$s\nWhois:whois %1$s
+  chan-nick=-\nBan:ban %1$s\nKick:kick %1$s
+  umodes=<umodes-op\n<umodes-voice
+
+  umodes-op=Op:mode +o %1$s\nDeop:mode -o %1$s
+  umodes-hop=Half-Op:mode +h %1$s\nDehalf-op:mode -o %1$s
+  umodes-voice=Voice:mode +v %1$s\nDevoice:mode -v %1$s
+  umodes-admin=Make admin:mode +a %1$s\nRemove admin:mode -a %1$s
+  umodes-owner=Make owner:mode +q %1$s\nRemove owner:mode -q %1$s
+
+  CHAN_NICK=<nick\n-\nModes:<umodes\n<chan-nick
+  CHAN_NORMAL=
+  QUERY_NORMAL=<nick
+
+protocol:
+  http=BROWSER
+  https=BROWSER
+  irc=DMDIRC

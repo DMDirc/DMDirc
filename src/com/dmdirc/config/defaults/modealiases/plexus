@@ -1,13 +1,19 @@
 # Default mode settings for hybrid+plexus
 # eIb,k,l,BMNORScimnpst
 
-identity.name = Plexus mode aliases
-identity.ircd = plexus
+keysections:
+  identity
+  server
 
-server.modeB = Bandwidth saver mode
-server.modeS = SSL users only
-server.modep = Paranoid mode
-server.modeN = No channel notices
+identity:
+  name=Plexus mode aliases
+  ircd=plexus
 
-server.modea = Admin
-server.modeq = Owner
+server:
+  modeB=Bandwidth saver mode
+  modeS=SSL users only
+  modep=Paranoid mode
+  modeN=No channel notices
+
+  modea=Admin
+  modeq=Owner

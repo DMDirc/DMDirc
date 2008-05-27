@@ -1,27 +1,33 @@
 # 0000797: Missing mode aliases: channel: +CLNQSTZ user: +fghknBIWX [CollectiveIRC]
 
-identity.name = Nefarious mode aliases
-identity.ircd = nefarious
+keysections:
+  identity
+  server
 
-server.modea = Admins only
-server.modeC = No channel CTCPs
-server.modeL = No channel modes in /list
-server.modeN = No channel notices
-server.modeQ = No quit/part messages
-server.modeS = Strip colours
-server.modeT = No multi-target messages
-server.modez = Persistant
-server.modeZ = SSL users only
+identity:
+  name=Nefarious mode aliases
+  ircd=nefarious
 
-server.umodea = Server admin
-server.umodeB = Bot
-server.umodef = Fake host
-server.umodeg = Receive debug messages
-server.umodeh = Hidden host
-server.umodeI = Hide idle time
-server.umodek = Network service
-server.umoden = Hide channel list
-server.umodeS = Sethost
-server.umodeW = See WHOIS requests
-server.umodex = Hide host
-server.umodeX = Xtra oper
+server:
+  modea=Admins only
+  modeC=No channel CTCPs
+  modeL=No channel modes in /list
+  modeN=No channel notices
+  modeQ=No quit/part messages
+  modeS=Strip colours
+  modeT=No multi-target messages
+  modez=Persistant
+  modeZ=SSL users only
+
+  umodea=Server admin
+  umodeB=Bot
+  umodef=Fake host
+  umodeg=Receive debug messages
+  umodeh=Hidden host
+  umodeI=Hide idle time
+  umodek=Network service
+  umoden=Hide channel list
+  umodeS=Sethost
+  umodeW=See WHOIS requests
+  umodex=Hide host
+  umodeX=Xtra oper

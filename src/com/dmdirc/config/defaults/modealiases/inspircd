@@ -1,28 +1,34 @@
 # Default mode settings for inspircd
 # CHANMODES=Ibeg,k,FJLfjl,CGKMNOPQRSTVcimnpstuz
 
-identity.name = InspIRCd mode aliases
-identity.ircd = inspircd
+keysections:
+  identity
+  server
 
-server.modeC = No channel CTCPs
-server.modeG = No censored words
-server.modeJ = No auto-rejoin
-server.modeK = No /knock
-server.modeL = Overflow redirect
-server.modeN = No nick changes
-server.modeP = No all-uppercase lines
-server.modeQ = No /kick
-server.modeS = Strip all colours
-server.modeT = No channel notices
-server.modeV = No /invite
-server.modef = Prevent message and notice floods
-server.modej = Prevents join floods
-server.moder = Registered channel
+identity:
+  name=InspIRCd mode aliases
+  ircd=inspircd
 
-server.modeg = Censored word
+server:
+  modeC=No channel CTCPs
+  modeG=No censored words
+  modeJ=No auto-rejoin
+  modeK=No /knock
+  modeL=Overflow redirect
+  modeN=No nick changes
+  modeP=No all-uppercase lines
+  modeQ=No /kick
+  modeS=Strip all colours
+  modeT=No channel notices
+  modeV=No /invite
+  modef=Prevent message and notice floods
+  modej=Prevents join floods
+  moder=Registered channel
 
-server.modeu = Auditorium mode
-server.modeF = Flood limit
+  modeg=Censored word
 
-server.modea = Protected
-server.modeq = Channel founder
+  modeu=Auditorium mode
+  modeF=Flood limit
+
+  modea=Protected
+  modeq=Channel founder

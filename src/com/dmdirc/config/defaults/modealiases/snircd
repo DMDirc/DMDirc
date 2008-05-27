@@ -1,25 +1,31 @@
 # Default mode settings for Snircd
 # b,k,l,imnpstrDducCN
 
-identity.name = Snircd mode aliases
-identity.ircd = snircd
+keysections:
+  identity
+  server
 
-server.modeD = Auditorium mode
-server.moded = Auditorium mode
-server.enablemodec = true
-server.modeC = No channel CTCPs
-server.enablemodeC = true
-server.modeN = No channel notices
-server.enablemodeN = true
-server.modeu = No quit mesages
-server.enablemodeu = true
-server.modeT = No multi-target messages
+identity:
+  name=Snircd mode aliases
+  ircd=snircd
 
-server.umodeg = Receive debug information
-server.umodeI = Hide idle time
-server.umodek = Services operator
-server.umoden = Hide channel list
-server.umodeP = Paranoid
-server.umodeR = Only registered users may query
-server.umodex = Hide hostname
-server.umodeX = Extended operator
+server:
+  modeD=Auditorium mode
+  moded=Auditorium mode
+  enablemodec=true
+  modeC=No channel CTCPs
+  enablemodeC=true
+  modeN=No channel notices
+  enablemodeN=true
+  modeu=No quit mesages
+  enablemodeu=true
+  modeT=No multi-target messages
+
+  umodeg=Receive debug information
+  umodeI=Hide idle time
+  umodek=Services operator
+  umoden=Hide channel list
+  umodeP=Paranoid
+  umodeR=Only registered users may query
+  umodex=Hide hostname
+  umodeX=Extended operator

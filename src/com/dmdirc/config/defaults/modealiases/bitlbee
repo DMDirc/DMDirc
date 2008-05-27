@@ -1,4 +1,10 @@
-identity.name = Bitlbee mode aliases
-identity.ircd = bitlbee
+keysections:
+  identity
+  server
 
-server.umodeb = Bot-friendly responses
+identity:
+  name=Bitlbee mode aliases
+  ircd=bitlbee
+
+server:
+  umodeb=Bot-friendly responses

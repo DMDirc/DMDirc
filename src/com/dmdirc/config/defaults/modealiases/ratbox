@@ -1,21 +1,27 @@
 # 0000799: Missing mode aliases: user: +zcekfynbuglZCD [EFNet]
 
-identity.name = Ratbox mode aliases
-identity.ircd = ratbox
+keysections:
+  identity
+  server
 
-server.umodea = Server admin
-server.umodeb = Receive bot detection notices
-server.umodec = Show client connections
-server.umodeC = Show client connections
-server.umodeD = Deaf
-#server.umodee = ??
-server.umodef = Show excess connections
-server.umodeg = Caller ID mode
-server.umodek = Show kills
-server.umodel = Receive locops
-server.umoden = Show client nick changes
-server.umoder = Show reject notices
-server.umodeu = Show unauthorised connections
-server.umodey = Show WHOIS requests
-server.umodez = Receive wallops
-server.umodeZ = Monitor operspy notices
+identity:
+  name=Ratbox mode aliases
+  ircd=ratbox
+
+server:
+  umodea=Server admin
+  umodeb=Receive bot detection notices
+  umodec=Show client connections
+  umodeC=Show client connections
+  umodeD=Deaf
+#  umodee=??
+  umodef=Show excess connections
+  umodeg=Caller ID mode
+  umodek=Show kills
+  umodel=Receive locops
+  umoden=Show client nick changes
+  umoder=Show reject notices
+  umodeu=Show unauthorised connections
+  umodey=Show WHOIS requests
+  umodez=Receive wallops
+  umodeZ=Monitor operspy notices

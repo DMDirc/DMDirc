@@ -1,32 +1,38 @@
 # Default mode settings for Bahamut
 # beI,k,jl,cimMnOprRst
 
-identity.name = Bahamut mode aliases
-identity.ircd = bahamut
+keysections:
+  identity
+  server
 
-server.modej = Join throttling
+identity:
+  name=Bahamut mode aliases
+  ircd=bahamut
 
-server.moder = Channel has been registered
+server:
+  modej=Join throttling
 
-server.modeL = Appear in /list
+  moder=Channel has been registered
 
-server.umodea = Services admin
-server.umodeA = Server admin
-server.umodeb = View oper chatops
-server.umodec = Show client connections
-server.umoded = Show debug messages
-server.umodee = Show blocked DCC sends
-server.umodef = Show flood alerts
-server.umodeF = Bypass throttling
-server.umodeg = View oper globops
-server.umodeh = Helpful mode
-server.umodeI = Hide server info
-server.umodej = Show drone messages
-server.umodek = Show kill messages
-server.umodeK = Kill messages from U:lined servers
-server.umodem = Report spambots
-server.umoden = Show routing messages
-server.umoder = Registered
-server.umodex = Squelsh
-server.umodeX = Silent squelsh
-server.umodey = Spy mode
+  modeL=Appear in /list
+
+  umodea=Services admin
+  umodeA=Server admin
+  umodeb=View oper chatops
+  umodec=Show client connections
+  umoded=Show debug messages
+  umodee=Show blocked DCC sends
+  umodef=Show flood alerts
+  umodeF=Bypass throttling
+  umodeg=View oper globops
+  umodeh=Helpful mode
+  umodeI=Hide server info
+  umodej=Show drone messages
+  umodek=Show kill messages
+  umodeK=Kill messages from U:lined servers
+  umodem=Report spambots
+  umoden=Show routing messages
+  umoder=Registered
+  umodex=Squelsh
+  umodeX=Silent squelsh
+  umodey=Spy mode
