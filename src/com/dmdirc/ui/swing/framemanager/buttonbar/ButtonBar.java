@@ -123,7 +123,8 @@ public final class ButtonBar implements FrameManager, ActionListener,
                 UIUtilities.SMALL_BORDER, UIUtilities.SMALL_BORDER));
         parent.add(panel, BorderLayout.NORTH);
         
-        buttonWidth = position.isHorizontal() ? 150 : (parent.getWidth() - UIUtilities.SMALL_BORDER * 3) / cells;
+        buttonWidth = position.isHorizontal() ? 150 : (parent.getWidth() 
+                - UIUtilities.SMALL_BORDER * 3) / cells;
         
         if (position.isHorizontal()) {
             maxButtons = parent.getWidth() / (buttonWidth + UIUtilities.SMALL_BORDER * 2);

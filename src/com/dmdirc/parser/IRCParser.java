@@ -1089,7 +1089,9 @@ public class IRCParser implements Runnable {
 	 *
 	 * @param input String to convert lowercase
 	 * @return input String converterd to lowercase
+     * @deprecated Use IRCStringConverter instead
 	 */
+    @Deprecated
 	public String toLowerCase(final String input) {
 		return getIRCStringConverter().toLowerCase(input);
 	}
@@ -1099,7 +1101,9 @@ public class IRCParser implements Runnable {
 	 *
 	 * @param input String to convert uppercase
 	 * @return input String converterd to uppercase
+     * @deprecated Use IRCStringConverter instead
 	 */
+    @Deprecated
 	public String toUpperCase(final String input) {
 		return getIRCStringConverter().toUpperCase(input);
 	}
@@ -1110,7 +1114,9 @@ public class IRCParser implements Runnable {
 	 * @param first First string to check
 	 * @param second Second string to check
 	 * @return True if both strings are equal after being lowercased
+     * @deprecated Use IRCStringConverter instead
 	 */
+    @Deprecated
 	public boolean equalsIgnoreCase(final String first, final String second) {
 		return getIRCStringConverter().equalsIgnoreCase(first, second);
 	}

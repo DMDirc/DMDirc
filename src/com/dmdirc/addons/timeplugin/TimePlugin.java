@@ -51,6 +51,7 @@ public final class TimePlugin  extends Plugin {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onLoad() {
         if (!registered) {
             ActionManager.registerActionTypes(TimeActionType.values());
@@ -62,6 +63,8 @@ public final class TimePlugin  extends Plugin {
         timer = new Timer("Time plugin timer");
         
         timer.schedule(new TimerTask() {
+            /** {@inheritDoc} */
+            @Override
             public void run() {
                 runTimer();
             }
@@ -86,6 +89,7 @@ public final class TimePlugin  extends Plugin {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onUnload() {
         if (timer != null) {
             timer.cancel();
