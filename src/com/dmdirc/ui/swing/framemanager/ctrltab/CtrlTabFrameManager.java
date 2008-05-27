@@ -28,6 +28,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.ui.swing.components.TreeScroller;
 import com.dmdirc.ui.swing.framemanager.tree.TreeViewModel;
 
@@ -85,7 +86,7 @@ public final class CtrlTabFrameManager implements FrameManager,
      */
     public CtrlTabFrameManager(final JDesktopPane desktopPane) {
         nodes = new HashMap<FrameContainer, DefaultMutableTreeNode>();
-        labels =new HashMap<DefaultMutableTreeNode, JLabel>();
+        labels = new HashMap<DefaultMutableTreeNode, JLabel>();
         root = new DefaultMutableTreeNode("DMDirc");
         model = new TreeViewModel(root);
         selectionModel = new DefaultTreeSelectionModel();
@@ -94,9 +95,9 @@ public final class CtrlTabFrameManager implements FrameManager,
         selectionModel.addTreeSelectionListener(this);
 
         InputMap inputMap = SwingUtilities.getUIInputMap(desktopPane,
-                JDesktopPane.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+                JDesktopPane.WHEN_IN_FOCUSED_WINDOW);
         if (inputMap == null) {
-            inputMap = desktopPane.getInputMap(JDesktopPane.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+            inputMap = desktopPane.getInputMap(JDesktopPane.WHEN_IN_FOCUSED_WINDOW);
         }
         inputMap.put(KeyStroke.getKeyStroke("ctrl shift pressed TAB"), "selectPreviousFrame");
 
@@ -119,20 +120,20 @@ public final class CtrlTabFrameManager implements FrameManager,
                 put("selectPreviousFrame",
                 new AbstractAction("selectPreviousFrame") {
 
-            private static final long serialVersionUID = 1;
+                    private static final long serialVersionUID = 1;
 
-            /** {@inheritDoc} */
-            @Override
-            public void actionPerformed(final ActionEvent evt) {
-                scrollUp();
-            }
-        });
+                    /** {@inheritDoc} */
+                    @Override
+                    public void actionPerformed(final ActionEvent evt) {
+                        scrollUp();
+                    }
+                });
     }
 
     /** {@inheritDoc} */
     @Override
     public void setParent(final JComponent parent) {
-        //Ignore
+    //Ignore
     }
 
     /** {@inheritDoc} */
