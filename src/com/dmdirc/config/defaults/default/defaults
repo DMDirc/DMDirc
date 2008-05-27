@@ -17,10 +17,10 @@ keysections:
   protocol
 
 identity:
-  name = DMDirc default settings
-  globaldefault = true
-  order = 100000
-  defaultsversion = 0
+  name=DMDirc default settings
+  globaldefault=true
+  order=100000
+  defaultsversion=0
 
 general:
   submitErrors=false
