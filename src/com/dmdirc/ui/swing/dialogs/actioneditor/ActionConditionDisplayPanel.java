@@ -22,6 +22,8 @@
 
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
+import com.dmdirc.actions.ActionCondition;
+import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.swing.components.ImageButton;
 import com.dmdirc.ui.swing.components.ImageToggleButton;
@@ -57,19 +59,30 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
     private ActionConditionEditorPanel editPanel;
     /** Listeners. */
     private ListenerList listeners;
+    /** Action condition. */
+    private ActionCondition condition;
+    /** Action trigger. */
+    private ActionType trigger;
 
-    /** Instantiates the panel. */
-    public ActionConditionDisplayPanel() {
+    /** 
+     * Instantiates the panel.
+     * 
+     * @param condition Action condition
+     * @param trigger Action trigger
+     */
+    public ActionConditionDisplayPanel(final ActionCondition condition,
+            final ActionType trigger) {
         super();
 
         initComponents();
+        setCondition(trigger, condition);
         addListeners();
         layoutComponents();
     }
 
     /** Initialises the components. */
     private void initComponents() {
-        label = new TextLabel("");
+        label = new TextLabel();
         editButton = new ImageToggleButton("edit", IconManager.getIconManager().
                 getIcon("edit-inactive"),
                 IconManager.getIconManager().getIcon("edit-active"));
@@ -147,5 +160,31 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
         editPanel.setEnabled(enabled);
         editButton.setEnabled(enabled);
         deleteButton.setEnabled(enabled);
+    }
+
+    /**
+     * Sets the new action condition.
+     * 
+     * @param trigger Action trigger
+     * @param condition Action condition
+     */
+    public void setCondition(final ActionType trigger,
+            final ActionCondition condition) {
+        this.trigger = trigger;
+        this.condition = condition;
+
+        label.setText("The " +
+                trigger.getType().getArgNames()[condition.getArg()] + "'s " + condition.getComponent().
+                getName() + " " + condition.getComparison().getName() + " '" +
+                condition.getTarget() + "'");
+    }
+    
+    /**
+     * Returns the action condition represented by this panel.
+     * 
+     * @return Action condition
+     */
+    public ActionCondition getCondition() {
+        return condition;
     }
 }
