@@ -41,6 +41,7 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
+import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.actions.ChannelCopyAction;
 import com.dmdirc.ui.swing.actions.CommandAction;
@@ -237,12 +238,14 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             public void run() {
                 for (String myLine : encodedLine.split("\n")) {
                     if (timestamp) {
-                        getTextPane().addStyledString(new String[]{
-                                    Formatter.formatMessage(getConfigManager(),
-                                    "timestamp", new Date()), myLine,
-                                });
+                        getTextPane().addText(TextPane.styledDocumentToAttributedString(
+                                Styliser.getStyledString(new String[]{
+                            Formatter.formatMessage(getConfigManager(),
+                            "timestamp", new Date()), myLine,
+                        })));
                     } else {
-                        getTextPane().addStyledString(myLine);
+                        getTextPane().addText(TextPane.styledDocumentToAttributedString(
+                                Styliser.getStyledString(new String[]{myLine,})));
                     }
 
                     ActionManager.processEvent(CoreActionType.CLIENT_LINE_ADDED,
@@ -258,11 +261,13 @@ public abstract class TextFrame extends JInternalFrame implements Window,
 
     /** {@inheritDoc} */
     @Override
-    public final void addLine(final String messageType, final Object... args) {
+    public final void addLine(final String messageType,
+            final Object... args) {
         if (!messageType.isEmpty()) {
             addLine(Formatter.formatMessage(getConfigManager(), messageType,
                     args), true);
         }
+
     }
 
     /** {@inheritDoc} */
@@ -272,6 +277,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         if (messageType != null) {
             addLine(messageType.toString(), args);
         }
+
     }
 
     /** {@inheritDoc} */
@@ -289,7 +295,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         getTextPane().addMouseListener(this);
         getTextPane().addKeyListener(this);
 
-        searchBar = new SwingSearchBar(this);
+        searchBar =
+                new SwingSearchBar(this);
         searchBar.setVisible(false);
 
         getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).
@@ -332,9 +339,11 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 Main.getUI().getMainWindow().setMaximised(false);
                 Main.getUI().getMainWindow().setActiveFrame(this);
             }
+
         } else if ("UI".equals(event.getPropertyName()) && isMaximum()) {
             hideTitlebar();
         }
+
     }
 
     /** Hides the titlebar for this frame. */
@@ -358,7 +367,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 c = getClass().getClassLoader().loadClass(componentUI);
                 constructor =
                         c.getConstructor(new Class[]{javax.swing.JInternalFrame.class});
-                temp = constructor.newInstance(new Object[]{this});
+                temp =
+                        constructor.newInstance(new Object[]{this});
             } catch (ClassNotFoundException ex) {
                 Logger.appError(ErrorLevel.MEDIUM, "Unable to readd titlebar",
                         ex);
@@ -375,12 +385,14 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 Logger.appError(ErrorLevel.MEDIUM, "Unable to readd titlebar",
                         ex);
             }
+
         }
 
         setBorder(UIManager.getBorder("InternalFrame.border"));
         if (temp == null) {
             temp = new BasicInternalFrameUI(this);
         }
+
         this.setUI((BasicInternalFrameUI) temp);
     }
 
@@ -431,7 +443,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void internalFrameDeiconified(final InternalFrameEvent event) {
-        //Ignore.
+    //Ignore.
     }
 
     /**
@@ -491,6 +503,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         if (parent == null) {
             return "";
         }
+
         return parent.toString();
     }
 
@@ -513,6 +526,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         if (mouseEvent.getSource() == getTextPane()) {
             processMouseClickEvent(mouseEvent, MouseClickType.CLICKED);
         }
+
     }
 
     /**
@@ -536,6 +550,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             getTextPane().copy();
             getTextPane().clearSelection();
         }
+
         processMouseClickEvent(mouseEvent, MouseClickType.RELEASED);
     }
 
@@ -546,7 +561,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void mouseEntered(final MouseEvent mouseEvent) {
-        //Ignore.
+    //Ignore.
     }
 
     /**
@@ -556,7 +571,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void mouseExited(final MouseEvent mouseEvent) {
-        //Ignore.
+    //Ignore.
     }
 
     /**
@@ -571,7 +586,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         if (e.getSource() == getTextPane() && point != null) {
             final LineInfo lineInfo = getTextPane().getClickPosition(point);
             final ClickType clickType = getTextPane().getClickType(lineInfo);
-            final String attribute = (String) getTextPane().getAttributeValueAtPoint(lineInfo);
+            final String attribute = (String) getTextPane().
+                    getAttributeValueAtPoint(lineInfo);
             if (e.isPopupTrigger()) {
                 showPopupMenuInternal(clickType, point, attribute);
             } else {
@@ -592,10 +608,12 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                                 getContainer().getServer().getQuery(attribute).
                                         show();
                             }
+
                             break;
                         default:
                             break;
                     }
+
                 }
             }
         }
@@ -648,6 +666,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             final Point point,
             final String argument) {
         final JPopupMenu popupMenu;
+
         switch (type) {
             case CHANNEL:
                 popupMenu = getPopupMenu(getChannelPopupType(), argument);
@@ -655,6 +674,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 if (popupMenu.getComponentCount() > 1) {
                     popupMenu.addSeparator();
                 }
+
                 break;
             case HYPERLINK:
                 popupMenu = getPopupMenu(getHyperlinkPopupType(), argument);
@@ -662,12 +682,14 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 if (popupMenu.getComponentCount() > 1) {
                     popupMenu.addSeparator();
                 }
+
                 break;
             case NICKNAME:
                 popupMenu = getPopupMenu(getNicknamePopupType(), argument);
                 if (popupMenu.getComponentCount() > 0) {
                     popupMenu.addSeparator();
                 }
+
                 popupMenu.add(new NicknameCopyAction(argument));
                 break;
             default:
@@ -689,9 +711,11 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      * @param point Point Point of the click
      * @param argument Word under the click
      */
-    public void showPopupMenu(final ClickType type, final Point point,
+    public void showPopupMenu(final ClickType type,
+            final Point point,
             final String argument) {
         final JPopupMenu popupMenu;
+
         switch (type) {
             case CHANNEL:
                 popupMenu = getPopupMenu(getChannelPopupType(), argument);
@@ -699,6 +723,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 if (popupMenu.getComponentCount() > 1) {
                     popupMenu.addSeparator();
                 }
+
                 break;
             case HYPERLINK:
                 popupMenu = getPopupMenu(getHyperlinkPopupType(), argument);
@@ -706,12 +731,14 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 if (popupMenu.getComponentCount() > 1) {
                     popupMenu.addSeparator();
                 }
+
                 break;
             case NICKNAME:
                 popupMenu = getPopupMenu(getNicknamePopupType(), argument);
                 if (popupMenu.getComponentCount() > 0) {
                     popupMenu.addSeparator();
                 }
+
                 popupMenu.add(new NicknameCopyAction(argument));
                 break;
             default:
@@ -730,7 +757,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      * 
      * @return PopupMenu
      */
-    public JPopupMenu getPopupMenu(final PopupType type,
+    public JPopupMenu getPopupMenu(
+            final PopupType type,
             final Object... arguments) {
         JPopupMenu popupMenu = new JPopupMenu();
 
@@ -753,7 +781,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      * @return Populated popup
      */
     private JComponent populatePopupMenu(final JComponent menu,
-            final PopupMenu popup, final Object... arguments) {
+            final PopupMenu popup,
+            final Object... arguments) {
         for (PopupMenuItem menuItem : popup.getItems()) {
             if (menuItem.isDivider()) {
                 menu.add(new JSeparator());
@@ -766,6 +795,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                         (InputWindow) inputWindow, menuItem.getName(),
                         menuItem.getCommand(arguments))));
             }
+
         }
         return menu;
     }
@@ -777,7 +807,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void keyTyped(final KeyEvent event) {
-        //Ignore.
+    //Ignore.
     }
 
     /** 
@@ -787,10 +817,11 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void keyPressed(final KeyEvent event) {
-               if (!quickCopy && (event.getModifiers() & KeyEvent.CTRL_MASK) != 0 &&
+        if (!quickCopy && (event.getModifiers() & KeyEvent.CTRL_MASK) != 0 &&
                 event.getKeyCode() == KeyEvent.VK_C) {
             getTextPane().copy();
         }
+
     }
 
     /** 
@@ -800,7 +831,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void keyReleased(final KeyEvent event) {
-        //Ignore.
+    //Ignore.
     }
 
     /**
@@ -822,6 +853,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 if (closing) {
                     return;
                 }
+
                 closing = true;
 
                 try {
@@ -829,6 +861,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 } catch (PropertyVetoException ex) {
                     Logger.userError(ErrorLevel.LOW, "Unable to close frame");
                 }
+
             }
         });
     }
@@ -844,16 +877,19 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 } catch (PropertyVetoException ex) {
                     Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
                 }
+
             }
         });
     }
 
     /** {@inheritDoc} */
     @Override
-    public void configChanged(final String domain, final String key) {
+    public void configChanged(final String domain,
+            final String key) {
         if (getConfigManager() == null) {
             return;
         }
+
         if ("ui".equals(domain)) {
             if ("foregroundcolour".equals(key) && getTextPane() != null) {
                 getTextPane().setForeground(getConfigManager().

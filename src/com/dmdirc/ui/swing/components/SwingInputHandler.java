@@ -34,6 +34,7 @@ import java.awt.event.KeyListener;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
+import javax.swing.SwingWorker;
 import javax.swing.text.JTextComponent;
 
 /**
@@ -63,7 +64,7 @@ public class SwingInputHandler extends InputHandler implements KeyListener {
         } else if (target instanceof SwingInputField) {
             localTarget = ((SwingInputField) target).getTextField();
         }
-        
+
         localTarget.getActionMap().put("upArrow", new AbstractAction() {
 
             /**
@@ -160,7 +161,19 @@ public class SwingInputHandler extends InputHandler implements KeyListener {
             /** {@inheritDoc} */
             @Override
             public void actionPerformed(ActionEvent e) {
-                enterPressed(target.getText());
+                try {
+                    new SwingWorker() {
+
+                        /** {@inheritDoc} */
+                        @Override
+                        protected Object doInBackground() throws Exception {
+                            enterPressed(target.getText());
+                            return null;
+                        }
+                    }.execute();
+                } catch (Exception ex) {
+                //Crap
+                }
             }
         });
         localTarget.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).

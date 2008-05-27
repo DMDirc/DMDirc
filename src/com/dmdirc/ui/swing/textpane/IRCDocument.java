@@ -128,6 +128,7 @@ public final class IRCDocument implements Serializable {
     
     /**
      * Adds the stylised string to the canvas.
+     * 
      * @param text stylised string to add to the text
      */
     public void addText(final AttributedString text) {
