@@ -36,22 +36,21 @@ import javax.swing.table.AbstractTableModel;
  * Table model for displaying program errors.
  */
 public final class ErrorTableModel extends AbstractTableModel {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
     /** Data list. */
     private List<ProgramError> errors;
-    
+
     /** Creates a new instance of ErrorTableModel. */
     public ErrorTableModel() {
         this(new ArrayList<ProgramError>());
     }
-    
+
     /** 
      * Creates a new instance of ErrorTableModel. 
      *
@@ -59,10 +58,10 @@ public final class ErrorTableModel extends AbstractTableModel {
      */
     public ErrorTableModel(final List<ProgramError> errors) {
         super();
-        
+
         this.errors = errors;
     }
-    
+
     /**
      * Sets the list of errors.
      *
@@ -70,23 +69,28 @@ public final class ErrorTableModel extends AbstractTableModel {
      */
     public void setErrors(final List<ProgramError> errors) {
         this.errors = errors;
-        
+
         fireTableDataChanged();
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public int getRowCount() {
-        return errors.size();
+        synchronized (errors) {
+            return errors.size();
+        }
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public int getColumnCount() {
         return 5;
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public String getColumnName(final int columnIndex) {
-        switch(columnIndex) {
+        switch (columnIndex) {
             case 0:
                 return "ID";
             case 1:
@@ -101,10 +105,11 @@ public final class ErrorTableModel extends AbstractTableModel {
                 throw new IndexOutOfBoundsException(columnIndex + ">= 5");
         }
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public Class<?> getColumnClass(final int columnIndex) {
-        switch(columnIndex) {
+        switch (columnIndex) {
             case 0:
                 return Integer.class;
             case 1:
@@ -119,49 +124,56 @@ public final class ErrorTableModel extends AbstractTableModel {
                 throw new IndexOutOfBoundsException(columnIndex + ">= 5");
         }
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public boolean isCellEditable(final int rowIndex, final int columnIndex) {
         return false;
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public Object getValueAt(final int rowIndex, final int columnIndex) {
-        switch(columnIndex) {
-            case 0:
-                return errors.get(rowIndex).getID();
-            case 1:
-                return errors.get(rowIndex).getDate();
-            case 2:
-                return errors.get(rowIndex).getLevel();
-            case 3:
-                return errors.get(rowIndex).getReportStatus();
-            case 4:
-                return errors.get(rowIndex).getMessage();
-            default:
-                throw new IndexOutOfBoundsException(columnIndex + ">= 5");
+        synchronized (errors) {
+            switch (columnIndex) {
+                case 0:
+                    return errors.get(rowIndex).getID();
+                case 1:
+                    return errors.get(rowIndex).getDate();
+                case 2:
+                    return errors.get(rowIndex).getLevel();
+                case 3:
+                    return errors.get(rowIndex).getReportStatus();
+                case 4:
+                    return errors.get(rowIndex).getMessage();
+                default:
+                    throw new IndexOutOfBoundsException(columnIndex + ">= 5");
+            }
         }
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void setValueAt(final Object aValue, final int rowIndex,
             final int columnIndex) {
-        switch(columnIndex) {
-            case 3:
-                if (aValue instanceof ErrorReportStatus) {
-                    errors.get(rowIndex).setReportStatus((ErrorReportStatus) aValue);
-                    break;
-                } else {
-                    throw new IllegalArgumentException("Received: "
-                            + aValue.getClass() + ", expecting: "
-                            + ErrorReportStatus.class);
-                }
-            default:
-                throw new UnsupportedOperationException("Only editing the "
-                        + "status is allowed");
+        synchronized (errors) {
+            switch (columnIndex) {
+                case 3:
+                    if (aValue instanceof ErrorReportStatus) {
+                        errors.get(rowIndex).setReportStatus((ErrorReportStatus) aValue);
+                        break;
+                    } else {
+                        throw new IllegalArgumentException("Received: " +
+                                aValue.getClass() + ", expecting: " +
+                                ErrorReportStatus.class);
+                    }
+                default:
+                    throw new UnsupportedOperationException("Only editing the " +
+                            "status is allowed");
+            }
         }
     }
-    
+
     /**
      * Gets the error at the specified row.
      *
@@ -170,9 +182,11 @@ public final class ErrorTableModel extends AbstractTableModel {
      * @return Specified error
      */
     public ProgramError getError(final int rowIndex) {
-        return errors.get(rowIndex);
+        synchronized (errors) {
+            return errors.get(rowIndex);
+        }
     }
-    
+
     /**
      * Returns the index of the specified error or -1 if the error is not found.
      *
@@ -181,40 +195,47 @@ public final class ErrorTableModel extends AbstractTableModel {
      * @return Error index or -1 if not found
      */
     public int indexOf(final ProgramError error) {
-        return errors.indexOf(error);
+        synchronized (errors) {
+            return errors.indexOf(error);
+        }
     }
-    
+
     /**
      * Adds an error to the list.
      *
      * @param error ProgramError to add
      */
     public void addRow(final ProgramError error) {
-        errors.add(error);
-        fireTableRowsInserted(errors.indexOf(error), errors.indexOf(error));
+        synchronized (errors) {
+            errors.add(error);
+            fireTableRowsInserted(errors.indexOf(error), errors.indexOf(error));
+        }
     }
-    
+
     /**
      * Removes a specified row from the list.
      *
      * @param row Row to remove
      */
     public void removeRow(final int row) {
-        errors.remove(row);
-        fireTableRowsDeleted(row, row);
+        synchronized (errors) {
+            errors.remove(row);
+            fireTableRowsDeleted(row, row);
+        }
     }
-    
+
     /**
      * Removes a specified error from the list.
      *
      * @param error ProgramError to remove
      */
     public void removeRow(final ProgramError error) {
-        if (errors.contains(error)) {
-            final int row = errors.indexOf(error);
-            errors.remove(row);
-            fireTableRowsDeleted(row, row);
+        synchronized (errors) {
+            if (errors.contains(error)) {
+                final int row = errors.indexOf(error);
+                errors.remove(row);
+                fireTableRowsDeleted(row, row);
+            }
         }
     }
-    
 }

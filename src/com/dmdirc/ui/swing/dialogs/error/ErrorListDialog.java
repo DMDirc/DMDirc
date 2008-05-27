@@ -261,13 +261,17 @@ public final class ErrorListDialog extends StandardDialog implements
         if (e.getSource() == getCancelButton()) {
             setVisible(false);
         } else if (e.getSource() == deleteButton) {
+            synchronized (tableModel) {
             ErrorManager.getErrorManager().deleteError(tableModel.getError(
                     table.getRowSorter().convertRowIndexToModel(
                     table.getSelectedRow())));
+            }
         } else if (e.getSource() == sendButton) {
+            synchronized (tableModel) {
             ErrorManager.getErrorManager().sendError(tableModel.getError(
                     table.getRowSorter().convertRowIndexToModel(
                     table.getSelectedRow())));
+            }
         } else if (e.getSource() == deleteAllButton) {
             final Collection<ProgramError> errors =
                     ErrorManager.getErrorManager().getErrorList().values();
