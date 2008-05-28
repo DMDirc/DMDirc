@@ -106,9 +106,7 @@ public final class SettingsPanel extends JPanel {
                 new CurrentOptionsPanel(this);
         scrollPane = new JScrollPane(currentOptionsPanel);
 
-        scrollPane.setBorder(BorderFactory.createTitledBorder(
-                currentOptionsPanel.getBorder(), "Current settings"));
-
+        scrollPane.setBorder(BorderFactory.createTitledBorder("Current settings"));
         addOptionPanel.setBorder(BorderFactory.createTitledBorder("Add new setting"));
     }
 
