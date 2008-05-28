@@ -94,9 +94,9 @@ public final class CtrlTabFrameManager implements FrameManager,
         selectionModel.addTreeSelectionListener(this);
 
         InputMap inputMap = SwingUtilities.getUIInputMap(desktopPane,
-                JDesktopPane.WHEN_IN_FOCUSED_WINDOW);
+                JDesktopPane.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         if (inputMap == null) {
-            inputMap = desktopPane.getInputMap(JDesktopPane.WHEN_IN_FOCUSED_WINDOW);
+            inputMap = desktopPane.getInputMap(JDesktopPane.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         }
         inputMap.put(KeyStroke.getKeyStroke("ctrl shift pressed TAB"), "selectPreviousFrame");
 
