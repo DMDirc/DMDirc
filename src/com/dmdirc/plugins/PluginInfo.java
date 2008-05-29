@@ -75,15 +75,28 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 */
 	public PluginInfo(final String filename, final boolean load) throws PluginException {
 		this.filename = filename;
+		ResourceManager res;
 
-		if (!load) { return; }
-		
+		if (!load) {
+			// Load the metaData if available.
+			metaData = new Properties();
+			try {
+				res = getResourceManager();
+				if (res.resourceExists("META-INF/plugin.info")) {
+					metaData.load(res.getResourceInputStream("META-INF/plugin.info"));
+				}
+				myResourceManager = null;
+			} catch (IOException e) {
+			} catch (IllegalArgumentException e) {
+			}
+			return;
+		}
+
 		// Check for updates.
 		if (new File(getFullFilename()+".update").exists() && new File(getFullFilename()).delete()) {
 			new File(getFullFilename()+".update").renameTo(new File(getFullFilename()));
 		}
 		
-		ResourceManager res;
 		try {
 			res = getResourceManager();
 		} catch (IOException ioe) {
@@ -334,7 +347,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	
 		for (String plugin : desired.split(",")) {
 			final String[] data = plugin.split(":");
-			final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(data[0]);
+			final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(data[0], true);
 			if (pi == null) {
 				requirementsError = "Required plugin '"+data[0]+"' was not found";
 				return false;
@@ -516,22 +529,22 @@ public class PluginInfo implements Comparable<PluginInfo> {
 				}
 			}
 		} catch (ClassNotFoundException cnfe) {
-			Logger.userError(ErrorLevel.LOW, "Class not found ('"+filename+":"+getMainClass()+":"+classname+"')", cnfe);
+			Logger.userError(ErrorLevel.LOW, "Class not found ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+cnfe, cnfe);
 		} catch (NoSuchMethodException nsme) {
 			// Don't moan about missing constructors for any class thats not the main Class
 			if (classname.equals(getMainClass())) {
-				Logger.userError(ErrorLevel.LOW, "Constructor missing ('"+filename+":"+getMainClass()+":"+classname+"')", nsme);
+				Logger.userError(ErrorLevel.LOW, "Constructor missing ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+nsme, nsme);
 			}
 		} catch (IllegalAccessException iae) {
-			Logger.userError(ErrorLevel.LOW, "Unable to access constructor ('"+filename+":"+getMainClass()+":"+classname+"')", iae);
+			Logger.userError(ErrorLevel.LOW, "Unable to access constructor ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+iae, iae);
 		} catch (InvocationTargetException ite) {
-			Logger.userError(ErrorLevel.LOW, "Unable to invoke target ('"+filename+":"+getMainClass()+":"+classname+"')", ite);
+			Logger.userError(ErrorLevel.LOW, "Unable to invoke target ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+ite, ite);
 		} catch (InstantiationException ie) {
-			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+filename+":"+getMainClass()+":"+classname+"')", ie);
+			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+ie, ie);
 		} catch (NoClassDefFoundError ncdf) {
-			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+filename+":"+getMainClass()+":"+classname+"'): Unable to find class: " + ncdf.getMessage(), ncdf);
+			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - Unable to find class: " + ncdf.getMessage(), ncdf);
 		} catch (VerifyError ve) {
-			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+filename+":"+getMainClass()+":"+classname+"') - Incompatible", ve);
+			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - Incompatible", ve);
 		}
 	}
 

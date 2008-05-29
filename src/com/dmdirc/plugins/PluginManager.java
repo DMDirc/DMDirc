@@ -50,6 +50,9 @@ public class PluginManager implements ActionListener {
 	/** Singleton instance of the plugin manager. */
 	private static PluginManager me;
 
+	/** Possible plugins available during autoload. */
+	private List<PluginInfo> possible = null;
+	
 	/**
 	 * Creates a new instance of PluginManager.
 	 */
@@ -63,12 +66,14 @@ public class PluginManager implements ActionListener {
 	 * Autoloads plugins.
 	 */
 	private void doAutoLoad() {
+		possible = getPossiblePluginInfos(false);
 		for (String plugin : IdentityManager.getGlobalConfig().getOptionList("plugins", "autoload")) {
 			plugin = plugin.trim();
 			if (!plugin.isEmpty() && plugin.charAt(0) != '#' && addPlugin(plugin)) {
 				getPluginInfo(plugin).loadPlugin();
 			}
 		}
+		possible = null;
 	}
 
 	/**
@@ -190,9 +195,32 @@ public class PluginManager implements ActionListener {
 	 * @return PluginInfo instance, or null
 	 */
 	public PluginInfo getPluginInfoByName(final String name) {
+		return getPluginInfoByName(name, false);
+	}
+	
+	/**
+	 * Get a plugin instance by plugin name.
+	 *
+	 * @param name Name of plugin to find.
+	 * @param checkPossible Check possible plugins aswell? (used in autoload)
+	 * @return PluginInfo instance, or null
+	 */
+	protected PluginInfo getPluginInfoByName(final String name, final boolean checkPossible) {
 		for (PluginInfo pluginInfo : knownPlugins.values()) {
 			if (pluginInfo.getName().equalsIgnoreCase(name)) {
-					return pluginInfo;
+				return pluginInfo;
+			}
+		}
+		
+		if (checkPossible && possible != null) {
+			for (PluginInfo pluginInfo : possible) {
+				if (pluginInfo.getName().equalsIgnoreCase(name)) {
+					if (addPlugin(pluginInfo.getFilename())) {
+						return pluginInfo;
+					} else {
+						return null;
+					}
+				}
 			}
 		}
 		return null;
