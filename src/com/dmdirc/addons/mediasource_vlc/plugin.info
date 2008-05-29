@@ -5,3 +5,4 @@ description=Provides VLC nowplaying information
 name=vlcmediasource
 nicename=VLC Media Sources
 minversion=0
+require-plugin=nowplaying
