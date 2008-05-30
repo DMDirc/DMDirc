@@ -44,6 +44,8 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
+import net.miginfocom.layout.ComponentWrapper;
+import net.miginfocom.layout.LayoutCallback;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -124,6 +126,14 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         scrollPane.setVisible(false);
 
         getContentPane().setLayout(new MigLayout("fill, hidemode 3, pack"));
+        ((MigLayout) getContentPane().getLayout()).addLayoutCallback(new LayoutCallback() {
+
+            @Override
+            public void correctBounds(ComponentWrapper comp) {
+                super.correctBounds(comp);
+                setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+            }
+        });
         getContentPane().add(infoLabel, "wrap, growx, pushx, span 3");
         getContentPane().add(scrollPane, "wrap, grow, push, span 3");
         getContentPane().add(getLeftButton(), "right, sg button");
@@ -215,14 +225,6 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         } else if (getCancelButton().equals(actionEvent.getSource())) {
             dispose();
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void validate() {
-        super.validate();
-        
-        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
     }
     
     /** {@inheritDoc} */
