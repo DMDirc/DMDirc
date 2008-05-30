@@ -27,7 +27,6 @@ import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateComponent;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * An update component for plugins.

@@ -23,7 +23,6 @@
 package com.dmdirc.config;
 
 import com.dmdirc.Main;
-import com.dmdirc.Precondition;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -92,6 +91,8 @@ public class Identity extends ConfigSource implements Serializable,
      */
     public Identity(final File file, final boolean forceDefault) throws IOException,
             InvalidIdentityFileException {
+        super();
+        
         this.file = new ConfigFile(file);
         this.file.setAutomake(true);
         initFile(forceDefault, new FileInputStream(file));
@@ -109,6 +110,8 @@ public class Identity extends ConfigSource implements Serializable,
      */
     public Identity(final InputStream stream, final boolean forceDefault) throws IOException,
             InvalidIdentityFileException {
+        super();
+        
         this.file = new ConfigFile(stream);
         this.file.setAutomake(true);
         initFile(forceDefault, stream);
@@ -122,6 +125,8 @@ public class Identity extends ConfigSource implements Serializable,
      * @param target The target of this identity
      */
     public Identity(final ConfigFile configFile, final ConfigTarget target) {
+        super();
+        
         this.file = configFile;
         this.file.setAutomake(true);
         this.myTarget = target;
