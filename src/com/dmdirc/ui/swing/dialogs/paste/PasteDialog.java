@@ -130,7 +130,6 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
 
             @Override
             public void correctBounds(ComponentWrapper comp) {
-                super.correctBounds(comp);
                 setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
             }
         });
