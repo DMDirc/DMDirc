@@ -5,3 +5,4 @@ description=Logs all URLs that are mentioned
 name=urlcatcher
 nicename=URL Catcher
 minversion=0
+addonid=25

@@ -5,6 +5,7 @@ description=Allows actions and other plugins to assign and check access levels f
 name=userlevel
 nicename=User Levels
 minversion=0
+addonid=21
 
 persistant-com.dmdirc.addons.userlevel.AccessLevelComponent=true
 persistant-com.dmdirc.addons.userlevel.ChannelAccessLevelComponent=tre

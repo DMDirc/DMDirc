@@ -6,3 +6,4 @@ name=vlcmediasource
 nicename=VLC Media Sources
 minversion=0
 require-plugin=nowplaying
+addonid=24
