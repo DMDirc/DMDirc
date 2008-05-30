@@ -109,11 +109,11 @@ public final class PluginPanel extends JPanel implements
         
         add(scrollPane, "wrap 5, growx, growy");
                
-        add(toggleButton, "split 2, width 50%");
+        add(toggleButton, "split 2, growx, sg button");
         
         final JButton button = new JButton("Get more plugins");
         button.addActionListener(this);
-        add(button, "width 50%");
+        add(button, "growx, sg button");
     }
     
     
@@ -143,6 +143,7 @@ public final class PluginPanel extends JPanel implements
      * Invoked when an action occurs.
      * @param e The event related to this action.
      */
+    @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == toggleButton && selectedPlugin >= 0) {
             final PluginInfoToggle pluginInfo = (PluginInfoToggle) pluginList.getSelectedValue();
@@ -162,6 +163,7 @@ public final class PluginPanel extends JPanel implements
     }
     
     /** {@inheritDoc}. */
+    @Override
     public void valueChanged(final ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
             final int selected = ((JList) e.getSource()).getSelectedIndex();

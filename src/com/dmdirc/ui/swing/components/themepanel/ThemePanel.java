@@ -112,11 +112,11 @@ public final class ThemePanel extends JPanel implements
         
         add(scrollPane, "wrap 5, growx, growy");
                
-        add(toggleButton, "split 2, width 50%");
+        add(toggleButton, "split 2, growx, sg button");
         
         final JButton button = new JButton("Get more themes");
         button.addActionListener(this);
-        add(button, "width 50%");
+        add(button, "growx, sg button");
     }
     
     

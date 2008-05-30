@@ -24,17 +24,13 @@ package com.dmdirc.addons.nickcolours;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesInterface;
-import com.dmdirc.ui.swing.UIUtilities;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 
 import javax.swing.JPanel;
@@ -42,6 +38,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Panel used for the custom nick colour settings component in the plugin's
@@ -116,36 +113,27 @@ public class NickColourPanel extends JPanel implements ActionListener,
         table.setFillsViewportHeight(true);
         table.setDefaultRenderer(Color.class, new ColourRenderer());
         
-        setLayout(new BorderLayout());
-        add(scrollPane, BorderLayout.CENTER);
-        
-        final JPanel buttonPanel = new JPanel();
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(UIUtilities.LARGE_BORDER, 0, 0, 0));
-        buttonPanel.setPreferredSize(new Dimension(Short.MAX_VALUE, 25 + UIUtilities.LARGE_BORDER));
-        buttonPanel.setLayout(new BorderLayout());
+        setLayout(new MigLayout("ins 0, fill"));
+        add(scrollPane, "grow, wrap, spanx");
         
         JButton button;
-        
         button = new JButton("Add");
-        button.setPreferredSize(new Dimension(100, 20));
-        button.setMaximumSize(new Dimension(100, 20));
         button.addActionListener(this);
-        buttonPanel.add(button, BorderLayout.WEST);
+        add(button, "sg button, growx");
         button = new JButton("Edit");
-        button.setPreferredSize(new Dimension(100, 20));
-        button.setMaximumSize(new Dimension(100, 20));
         button.addActionListener(this);
-        buttonPanel.add(button, BorderLayout.CENTER);
+        add(button, "sg button, growx");
         button = new JButton("Delete");
-        button.setPreferredSize(new Dimension(100, 20));
-        button.setMaximumSize(new Dimension(100, 20));
         button.addActionListener(this);
-        buttonPanel.add(button, BorderLayout.EAST);
-        
-        add(buttonPanel, BorderLayout.SOUTH);
+        add(button, "sg button, growx");
     }
     
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Action event
+     */
+    @Override
     public void actionPerformed(final ActionEvent e) {
         final DefaultTableModel model = ((DefaultTableModel) table.getModel());
         
