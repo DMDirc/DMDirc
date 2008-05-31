@@ -22,24 +22,26 @@
 
 package com.dmdirc.updater;
 
+import com.dmdirc.updater.components.ClientComponent;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class UpdateTest extends junit.framework.TestCase {
     
-    private final String subject = "outofdate component channel date version url";
+    private final String subject = "outofdate client channel date version url";
     
     private Update update;
 
     @Before
     public void setUp() throws Exception {
+        UpdateChecker.init();
         update = new Update(subject);
     }
 
     @Test
     public void testGetComponent() {
-        assertEquals("component", update.getComponent());
+        assertTrue(update.getComponent() instanceof ClientComponent);
     }
 
     @Test
