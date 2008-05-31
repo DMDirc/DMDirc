@@ -22,6 +22,8 @@
 
 package com.dmdirc.updater.components;
 
+import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateComponent;
@@ -37,6 +39,9 @@ public class PluginComponent implements UpdateComponent {
     
     /** The plugin this component is for. */
     private final PluginInfo plugin;
+    
+    /** The config to use. */
+    private static final ConfigManager config = IdentityManager.getGlobalConfig();
 
     /**
      * Creates a new PluginComponent for the specified plugin, to enable it to
@@ -47,16 +52,21 @@ public class PluginComponent implements UpdateComponent {
     public PluginComponent(final PluginInfo plugin) {
         this.plugin = plugin;
         
-        if (plugin.getAddonID() > 0 && plugin.getVersion() > -1) {
+        if ((plugin.getAddonID() > 0 && plugin.getVersion() > -1)
+                || (config.hasOption("plugin-addonid", plugin.getName()))) {
             UpdateChecker.removeComponent(getName());
             UpdateChecker.registerComponent(this);
-        }        
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public String getName() {
-        return "addon-" + plugin.getAddonID();
+        if (plugin.getAddonID() > 0) {
+            return "addon-" + plugin.getAddonID();
+        } else {
+            return "addon-" + config.getOption("plugin-addonid", plugin.getName());
+        }
     }
 
     /** {@inheritDoc} */

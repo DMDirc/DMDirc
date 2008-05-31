@@ -15,6 +15,7 @@ keysections:
   updater
   popups
   protocol
+  plugin-addonid
 
 identity:
   name=DMDirc default settings
@@ -191,3 +192,23 @@ protocol:
   http=BROWSER
   https=BROWSER
   irc=DMDIRC
+
+plugin-addonid:
+  audio=14
+  dcc=23
+  dcop=1
+  dns=10
+  identd=15
+  lagdisplay=2
+  logging=16
+  dcopmediasource=9
+  vlcmediasource=24
+  nickcolour=12
+  nowplaying=8
+  osd=3
+  redirect=4
+  systray=5
+  timeplugin=6
+  urlcatcher=25
+  userlevel=21
+  windowstatus=13
