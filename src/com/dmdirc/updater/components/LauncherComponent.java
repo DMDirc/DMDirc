@@ -102,6 +102,7 @@ public class LauncherComponent implements UpdateComponent {
             }
 
             tmpFile.renameTo(targetFile);
+            targetFile.setExecutable(true);
             return true;
         } else {
             final ZipResourceManager ziprm = ZipResourceManager.getInstance(path);
