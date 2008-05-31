@@ -210,12 +210,18 @@ public class ActionGroup implements Iterable<Action> {
     }
 
     /**
-     * Removes all actions from this group.
+     * Removes all actions from this group, and removes all meta-data.
      */
     public void clear() {
         for (Action action : new ArrayList<Action>(actions)) {
             remove(action);
         }
+        
+        settings.clear();
+        description = null;
+        author = null;
+        component = -1;
+        version = -1;
     }
 
     /**
