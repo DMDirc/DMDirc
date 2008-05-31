@@ -2,7 +2,7 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -13,7 +13,7 @@
    height="16"
    id="svg2160"
    sodipodi:version="0.32"
-   inkscape:version="0.45.1"
+   inkscape:version="0.46"
    sodipodi:docname="hourglass.svg"
    sodipodi:docbase="/home/chris/DMDirc/src/com/dmdirc/res/source"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
@@ -29,8 +29,8 @@
     </rdf:RDF>
   </metadata>
   <sodipodi:namedview
-     inkscape:window-height="581"
-     inkscape:window-width="745"
+     inkscape:window-height="667"
+     inkscape:window-width="1031"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      guidetolerance="10.0"
@@ -40,18 +40,30 @@
      bordercolor="#666666"
      pagecolor="#ffffff"
      id="base"
-     showgrid="true"
+     showgrid="false"
      inkscape:zoom="23.625"
-     inkscape:cx="9.9437559"
+     inkscape:cx="3.5310575"
      inkscape:cy="8"
-     inkscape:window-x="483"
-     inkscape:window-y="326"
-     inkscape:current-layer="svg2160" />
+     inkscape:window-x="32"
+     inkscape:window-y="199"
+     inkscape:current-layer="svg2160">
+    <inkscape:grid
+       type="xygrid"
+       id="grid2536" />
+  </sodipodi:namedview>
   <defs
-     id="defs2162" />
+     id="defs2162">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 8 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="16 : 8 : 1"
+       inkscape:persp3d-origin="8 : 5.3333333 : 1"
+       id="perspective2534" />
+  </defs>
   <rect
      id="rect2168"
-     style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.39999998;stroke-opacity:1"
+     style="fill:#ffff00;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.50000000000000000;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.39999997999999998;stroke-opacity:1"
      y="0.37938178"
      x="0.33432937"
      ry="1.5119057"
