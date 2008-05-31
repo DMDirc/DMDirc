@@ -152,13 +152,7 @@ public class UpdateTableModel extends AbstractTableModel implements UpdateListen
             case 0:
                 return enabled.get(updates.get(rowIndex));
             case 1:
-                if (UpdateChecker.findComponent(updates.get(rowIndex).
-                        getComponent()) == null) {
-                    return "Unknown";
-                } else {
-                    return UpdateChecker.findComponent(updates.get(rowIndex).
-                            getComponent());
-                }
+                return updates.get(rowIndex).getComponent();
             case 2:
                 return updates.get(rowIndex).getRemoteVersion();
             case 3:

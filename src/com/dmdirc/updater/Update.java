@@ -40,11 +40,7 @@ import java.util.List;
 public final class Update implements DownloadListener {
 
     /** Update component. */
-    private final String component;
-    /** Channel name. */
-    private final String channel;
-    /** Remote version number. */
-    private final String versionID;
+    private final UpdateComponent component;
     /** Remote version name. */
     private final String versionName;
     /** Update url. */
@@ -69,15 +65,11 @@ public final class Update implements DownloadListener {
         final String[] parts = updateInfo.split(" ");
 
         if (parts.length == 6) {
-            component = parts[1];
-            channel = parts[2];
-            versionID = parts[3];
+            component = UpdateChecker.findComponent(parts[1]);
             versionName = parts[4];
             url = parts[5];
         } else {
             component = null;
-            channel = null;
-            versionID = null;
             versionName = null;
             url = null;
 
@@ -92,7 +84,7 @@ public final class Update implements DownloadListener {
      *
      * @return The component of this update
      */
-    public String getComponent() {
+    public UpdateComponent getComponent() {
         return component;
     }
 
@@ -183,12 +175,11 @@ public final class Update implements DownloadListener {
                 setStatus(UpdateStatus.INSTALLING);
 
                 try {
-                    final boolean restart = UpdateChecker.findComponent(getComponent())
-                            .doInstall(path);
+                    final boolean restart = getComponent().doInstall(path);
 
                     if (restart) {
                         setStatus(UpdateStatus.RESTART_NEEDED);
-                        UpdateChecker.removeComponent(getComponent());
+                        UpdateChecker.removeComponent(getComponent().getName());
                     } else {
                         setStatus(UpdateStatus.INSTALLED);
                     }
