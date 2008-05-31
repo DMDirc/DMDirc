@@ -23,7 +23,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-LAUNCHERVERSION="2"
+LAUNCHERVERSION="3"
 
 params=""
 
@@ -51,7 +51,7 @@ while test -n "$1"; do
 done
 
 PIDOF=`which pidof`
-if [ "${PIDOF}" == "" ]; then
+if [ "${PIDOF}" = "" ]; then
 	# For some reason some distros hide pidof...
 	if [ -e /sbin/pidof ]; then
 		PIDOF=/sbin/pidof
@@ -61,13 +61,13 @@ if [ "${PIDOF}" == "" ]; then
 fi;
 
 ## Helper Functions
-if [ "${PIDOF}" == "" ]; then
+if [ "${PIDOF}" = "" ]; then
 	ISKDE=`${PIDOF} -x -s kdeinit`
 	ISGNOME=`${PIDOF} -x -s gnome-panel`
 else
 	ISKDE=`ps ux | grep kdeinit | grep -v grep`
 	ISGNOME=`ps ux | grep gnome-panel | grep -v grep`
-fi.
+fi;
 KDIALOG=`which kdialog`
 ZENITY=`which zenity`
 KSUDO=`which kdesudo`

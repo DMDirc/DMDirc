@@ -389,7 +389,7 @@ errordialog() {
 
 	# Now try to use the GUI Dialogs.
 	PIDOF=`which pidof`
-	if [ "${PIDOF}" == "" ]; then
+	if [ "${PIDOF}" = "" ]; then
 		# For some reason some distros hide pidof...
 		if [ -e /sbin/pidof ]; then
 			PIDOF=/sbin/pidof
@@ -399,13 +399,13 @@ errordialog() {
 	fi;
 	
 	## Helper Functions
-	if [ "${PIDOF}" == "" ]; then
+	if [ "${PIDOF}" = "" ]; then
 		ISKDE=`${PIDOF} -x -s kdeinit`
 		ISGNOME=`${PIDOF} -x -s gnome-panel`
 	else
 		ISKDE=`ps ux | grep kdeinit | grep -v grep`
 		ISGNOME=`ps ux | grep gnome-panel | grep -v grep`
-	fi.
+	fi;
 	KDIALOG=`which kdialog`
 	ZENITY=`which zenity`
 	if [ "" != "${ISKDE}" -a "" != "${KDIALOG}" -a "" != "${DISPLAY}" ]; then
