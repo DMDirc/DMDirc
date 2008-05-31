@@ -72,10 +72,8 @@ public final class SwingController implements UIController {
 
     /** Singleton instance of MainFrame. */
     private static MainFrame me;
-    
     /** Status bar. */
     private static SwingStatusBar statusBar;
-    
     /** Semaphore used for controlling access to statusBar. */
     private static final Semaphore STATUSBAR_SEMAPHORE = new Semaphore(1);
 
@@ -131,7 +129,7 @@ public final class SwingController implements UIController {
     public StatusBar getStatusBar() {
         return getSwingStatusBar();
     }
-    
+
     /**
      * Retrieves the Swing Status Bar used by this UI.
      * 
@@ -139,38 +137,123 @@ public final class SwingController implements UIController {
      */
     private static SwingStatusBar getSwingStatusBar() {
         STATUSBAR_SEMAPHORE.acquireUninterruptibly();
-        
+
         if (statusBar == null) {
-            statusBar = new SwingStatusBar();
+            final ReturnableThread<SwingStatusBar> returnable = new ReturnableThread<SwingStatusBar>() {
+
+                /** {@inheritDoc} */
+                @Override
+                public void run() {
+                    setObject(new SwingStatusBar());
+                }
+            };
+            try {
+                SwingUtilities.invokeAndWait(returnable);
+            } catch (InterruptedException ex) {
+                Logger.userError(ErrorLevel.HIGH,
+                        "Unable to create the status bar");
+            } catch (InvocationTargetException ex) {
+                Logger.userError(ErrorLevel.HIGH,
+                        "Unable to create the status bar");
+            }
+            statusBar = returnable.getObject();
         }
-        
+
         STATUSBAR_SEMAPHORE.release();
 
-        return statusBar;        
+        return statusBar;
     }
 
     /** {@inheritDoc} */
     @Override
     public ChannelWindow getChannel(final Channel channel) {
-        return new ChannelFrame(channel);
+        final ReturnableThread<ChannelFrame> returnable = new ReturnableThread<ChannelFrame>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                setObject(new ChannelFrame(channel));
+            }
+        };
+        try {
+            SwingUtilities.invokeAndWait(returnable);
+        } catch (InterruptedException ex) {
+            Logger.userError(ErrorLevel.HIGH, "Unable to create channel: " +
+                    channel.toString());
+        } catch (InvocationTargetException ex) {
+            Logger.userError(ErrorLevel.HIGH, "Unable to create channel: " +
+                    channel.toString());
+        }
+        return returnable.getObject();
     }
 
     /** {@inheritDoc} */
     @Override
     public ServerWindow getServer(final Server server) {
-        return new ServerFrame(server);
+        final ReturnableThread<ServerFrame> returnable = new ReturnableThread<ServerFrame>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                setObject(new ServerFrame(server));
+            }
+        };
+        try {
+            SwingUtilities.invokeAndWait(returnable);
+        } catch (InterruptedException ex) {
+            Logger.userError(ErrorLevel.HIGH, "Unable to create server: " +
+                    server.toString());
+        } catch (InvocationTargetException ex) {
+            Logger.userError(ErrorLevel.HIGH, "Unable to create server: " +
+                    server.toString());
+        }
+        return returnable.getObject();
     }
 
     /** {@inheritDoc} */
     @Override
     public QueryWindow getQuery(final Query query) {
-        return new QueryFrame(query);
+        final ReturnableThread<QueryFrame> returnable = new ReturnableThread<QueryFrame>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                setObject(new QueryFrame(query));
+            }
+        };
+        try {
+            SwingUtilities.invokeAndWait(returnable);
+        } catch (InterruptedException ex) {
+            Logger.userError(ErrorLevel.HIGH, "Unable to create query: " +
+                    query.toString());
+        } catch (InvocationTargetException ex) {
+            Logger.userError(ErrorLevel.HIGH, "Unable to create query: " +
+                    query.toString());
+        }
+        return returnable.getObject();
     }
 
     /** {@inheritDoc} */
     @Override
     public Window getWindow(final FrameContainer owner) {
-        return new CustomFrame(owner);
+        final ReturnableThread<CustomFrame> returnable = new ReturnableThread<CustomFrame>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                setObject(new CustomFrame(owner));
+            }
+        };
+        try {
+            SwingUtilities.invokeAndWait(returnable);
+        } catch (InterruptedException ex) {
+            Logger.userError(ErrorLevel.HIGH, "Unable to create window: " +
+                    owner.toString());
+        } catch (InvocationTargetException ex) {
+            Logger.userError(ErrorLevel.HIGH, "Unable to create window: " +
+                    owner.toString());
+        }
+        return returnable.getObject();
     }
 
     /** {@inheritDoc} */
@@ -387,5 +470,38 @@ public final class SwingController implements UIController {
     @Override
     public String getUserInput(final String prompt) {
         return JOptionPane.showInputDialog(prompt);
+    }
+}
+
+/**
+ * Normal thread with the potential to return a value.
+ * 
+ * @param T Type to be returned
+ */
+abstract class ReturnableThread<T> extends Thread {
+
+    /** Returnable object. */
+    private T value;
+
+    /** {@inheritDoc} */
+    @Override
+    public abstract void run();
+
+    /**
+     * Sets the returnable object.
+     * 
+     * @param value new returnable object
+     */
+    public void setObject(final T value) {
+        this.value = value;
+    }
+
+    /**
+     * Returns the object set by this thread.
+     * 
+     * @return Returnable object
+     */
+    public T getObject() {
+        return value;
     }
 }
