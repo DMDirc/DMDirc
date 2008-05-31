@@ -131,6 +131,8 @@ public class DurationEditor extends StandardDialog implements ActionListener {
         setVisible(true);
     }
 
+    /** {@inheritDoc} */
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == getOkButton()) {
             fireDurationListener(getDuration());
