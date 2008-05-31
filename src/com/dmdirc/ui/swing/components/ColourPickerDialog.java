@@ -33,24 +33,23 @@ import javax.swing.JDialog;
  * Colour picker dialog.
  */
 public final class ColourPickerDialog extends StandardDialog {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
     /** Colour chooser panel. */
     private ColourPickerPanel colourChooser;
-    
+
     /**
      * Creates a new instance of ColourPickerDialog.
      */
     public ColourPickerDialog() {
         this(true, true);
     }
-    
+
     /**
      * Creates a new instance of ColourPickerDialog.
      * @param showIRC show irc colours
@@ -58,15 +57,16 @@ public final class ColourPickerDialog extends StandardDialog {
      */
     public ColourPickerDialog(final boolean showIRC, final boolean showHex) {
         super((MainFrame) Main.getUI().getMainWindow(), false);
-        
+
         colourChooser = new ColourPickerPanel(showIRC, showHex);
-        this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        this.add(colourChooser);
-        this.pack();
-        this.setResizable(false);
-        this.setFocusableWindowState(false);
+        
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        add(colourChooser);
+        pack();
+        setResizable(false);
+        setFocusableWindowState(false);
     }
-    
+
     /** 
      * Creates and shows a new Colour picker dialog. 
      * @return Colour picker dialog
@@ -74,20 +74,20 @@ public final class ColourPickerDialog extends StandardDialog {
     public static ColourPickerDialog showColourPicker() {
         return showColourPicker(true, true);
     }
-    
+
     /** 
      * Creates and shows a new Colour picker dialog. 
      * @return Colour picker dialog
      * @param showIRC show irc colours
      * @param showHex show hex colours
      */
-    public static ColourPickerDialog showColourPicker(final boolean showIRC, 
+    public static ColourPickerDialog showColourPicker(final boolean showIRC,
             final boolean showHex) {
         final ColourPickerDialog cpd = new ColourPickerDialog(showIRC, showHex);
         cpd.setVisible(true);
         return cpd;
     }
-    
+
     /** 
      * Adds an actions listener to this dialog.
      *
@@ -96,5 +96,4 @@ public final class ColourPickerDialog extends StandardDialog {
     public void addActionListener(final ActionListener listener) {
         colourChooser.addActionListener(listener);
     }
-    
 }

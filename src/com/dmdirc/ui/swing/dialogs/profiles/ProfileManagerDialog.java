@@ -29,8 +29,8 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
-
 import com.dmdirc.ui.swing.dialogs.NewServerDialog;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -144,8 +144,9 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     private void layoutComponents() {
         getContentPane().setLayout(new MigLayout("fill, wmin 600, wmax 600"));
 
-        getContentPane().add(infoLabel, "wrap, growx, spanx 2");
-        getContentPane().add(new JScrollPane(profileList), "growy, wmin 200, wmax 200");
+        getContentPane().add(infoLabel, "wrap, spanx 2");
+        getContentPane().add(new JScrollPane(profileList),
+                "growy, wmin 200, wmax 200");
         getContentPane().add(details, "grow, wrap");
         getContentPane().add(addButton, "wrap, wmin 200, wmax 200");
         getContentPane().add(deleteButton, "left, wmin 200, wmax 200");
@@ -234,14 +235,14 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
      */
     private void addProfile() {
         final String nick = System.getProperty("user.name").replace(' ', '_');
-        
+
         String name = "New Profile";
         int i = 1;
-        
+
         while (model.contains(name)) {
             name = "New Profile " + ++i;
         }
-        
+
         final Profile profile = new Profile(name, nick, nick);
         model.add(profile);
         profileList.setSelectedIndex(model.indexOf(profile));

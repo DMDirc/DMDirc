@@ -95,7 +95,7 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
      */
     public ProfileDetailPanel(final ProfileListModel model) {
         super();
-        
+
         this.model = model;
 
         initMainComponents();
@@ -135,7 +135,7 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
 
     /** Lays out the components in the panel. */
     private void layoutComponents() {
-        setLayout(new MigLayout("fill"));
+        setLayout(new MigLayout("fillx"));
 
         add(new JLabel("Name:"));
         add(name, "growx, pushx, wrap");
@@ -150,7 +150,7 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
         add(ident, "growx, pushx, wrap");
 
         add(new JLabel("Alternate nicknames:"));
-        add(new JScrollPane(altNicknames), "growx, pushx, wrap");
+        add(new JScrollPane(altNicknames), "grow, pushx, wrap");
 
         add(addButton, "skip 1, split 3, sg button, growx");
         add(editButton, "sg button, growx");
@@ -344,7 +344,7 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
     public void contentsChanged(final ListDataEvent e) {
         validateDetails();
     }
-    
+
     /**
      * Ensures profile names are unique.
      */
@@ -354,14 +354,13 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
         @Override
         public ValidationResponse validate(final String object) {
             for (Profile targetprofile : model) {
-                if (targetprofile != profile && targetprofile.getName().equalsIgnoreCase(object)) {
+                if (targetprofile != profile && targetprofile.getName().
+                        equalsIgnoreCase(object)) {
                     return new ValidationResponse("Profile names must be unique");
                 }
             }
-            
+
             return super.validate(object);
         }
-        
     }
-    
 }
