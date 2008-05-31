@@ -90,7 +90,7 @@ public class PluginComponent implements UpdateComponent {
             target.delete();
         }
         
-        if (!new File(path).renameTo(target)) {
+        if (plugin.hasPersistant() || !new File(path).renameTo(target)) {
             // Windows rocks!
             final File newTarget = new File(plugin.getFullFilename() + ".update");
             
@@ -101,6 +101,8 @@ public class PluginComponent implements UpdateComponent {
             new File(path).renameTo(newTarget);
             return true;
         }
+        
+        plugin.pluginUpdated();
         
         if (plugin.isLoaded()) {
             plugin.unloadPlugin();

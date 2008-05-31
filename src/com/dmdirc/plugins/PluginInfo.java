@@ -150,6 +150,49 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	}
 
 	/**
+	 * Called when the plugin is updated using the updater.
+	 * Reloads metaData and updates the list of files.
+	 */
+	public void pluginUpdated() {
+		final ResourceManager res = getResourceManager();
+		
+		myClasses.clear();
+		for (final String classfilename : res.getResourcesStartingWith("")) {
+			String classname = classfilename.replace('/', '.');
+			if (classname.matches("^.*\\.class$")) {
+				classname = classname.replaceAll("\\.class$", "");
+				myClasses.add(classname);
+			}
+		}
+		
+		updateMetaData();
+	}
+	
+	/**
+	 * Try to reload the metaData from the plugin.info file.
+	 * If this fails, the old data will be used still.
+	 *
+	 * @return true if metaData was reloaded ok, else false.
+	 */
+	public boolean updateMetaData() {
+		try {
+			final ResourceManager res = getResourceManager();
+			if (res.resourceExists("META-INF/plugin.info")) {
+				final Properties newMetaData = new Properties();
+				newMetaData.load(res.getResourceInputStream("META-INF/plugin.info"));
+				metaData = newMetaData;
+				myResourceManager = null;
+				return true
+			} else {
+				myResourceManager = null;
+			}
+		} catch (IOException ioe) {
+		} catch (IllegalArgumentException e) {
+		}
+		return false;
+	}
+
+	/**
 	 * Get the contents of requirementsError
 	 *
 	 * @return requirementsError
