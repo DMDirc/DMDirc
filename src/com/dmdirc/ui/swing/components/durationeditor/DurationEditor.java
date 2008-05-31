@@ -72,6 +72,7 @@ public class DurationEditor extends StandardDialog implements ActionListener {
      */
     public DurationEditor(final long duration) {
         super(SwingController.getMainFrame(), false);
+
         listeners = new ListenerList();
 
         initComponents(duration);
@@ -90,7 +91,7 @@ public class DurationEditor extends StandardDialog implements ActionListener {
         hoursSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 24, 1));
         minutesSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 60, 1));
         secondsSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 60, 1));
-        
+
         daysSpinner.setValue((int) duration / 86400);
         duration = (duration % 86400);
         hoursSpinner.setValue((int) duration / 3600);
@@ -131,9 +132,12 @@ public class DurationEditor extends StandardDialog implements ActionListener {
         setVisible(true);
     }
 
-    /** {@inheritDoc} */
+    /** {@inheritDoc}
+     * 
+     * @param e Action event
+     */
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == getOkButton()) {
             fireDurationListener(getDuration());
         }
@@ -151,7 +155,8 @@ public class DurationEditor extends StandardDialog implements ActionListener {
         duration += ((Number) secondsSpinner.getValue()).intValue();
         duration += (((Number) minutesSpinner.getValue())).intValue() * 60;
         duration += (((Number) hoursSpinner.getValue())).intValue() * 60 * 60;
-        duration += (((Number) daysSpinner.getValue())).intValue() * 60 * 60 * 24;
+        duration += (((Number) daysSpinner.getValue())).intValue() * 60 * 60 *
+                24;
 
         return duration;
     }
