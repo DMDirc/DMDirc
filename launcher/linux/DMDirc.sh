@@ -23,7 +23,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-LAUNCHERVERSION="1"
+LAUNCHERVERSION="2"
 
 params=""
 
@@ -50,11 +50,27 @@ while test -n "$1"; do
 	shift
 done
 
-ISKDE=`pidof -x -s kdeinit`
+PIDOF=`which pidof`
+if [ "${PIDOF}" == "" ]; then
+	# For some reason some distros hide pidof...
+	if [ -e /sbin/pidof ]; then
+		PIDOF=/sbin/pidof
+	elif [ -e /usr/sbin/pidof ]; then
+		PIDOF=/usr/sbin/pidof
+	fi;
+fi;
+
+## Helper Functions
+if [ "${PIDOF}" == "" ]; then
+	ISKDE=`${PIDOF} -x -s kdeinit`
+	ISGNOME=`${PIDOF} -x -s gnome-panel`
+else
+	ISKDE=`ps ux | grep kdeinit | grep -v grep`
+	ISGNOME=`ps ux | grep gnome-panel | grep -v grep`
+fi.
 KDIALOG=`which kdialog`
-KSUDO=`which kdesudo`
-ISGNOME=`pidof -x -s gnome-panel`
 ZENITY=`which zenity`
+KSUDO=`which kdesudo`
 GSUDO=`which gksudo`
 errordialog() {
 	# Send message to console.

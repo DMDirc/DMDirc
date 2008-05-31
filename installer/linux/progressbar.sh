@@ -10,9 +10,25 @@
 # only terminate when the next line of data is read from the pipe.
 #
 
-ISKDE=`pidof -x -s kdeinit`
+PIDOF=`which pidof`
+if [ "${PIDOF}" == "" ]; then
+	# For some reason some distros hide pidof...
+	if [ -e /sbin/pidof ]; then
+		PIDOF=/sbin/pidof
+	elif [ -e /usr/sbin/pidof ]; then
+		PIDOF=/usr/sbin/pidof
+	fi;
+fi;
+
+## Helper Functions
+if [ "${PIDOF}" == "" ]; then
+	ISKDE=`${PIDOF} -x -s kdeinit`
+	ISGNOME=`${PIDOF} -x -s gnome-panel`
+else
+	ISKDE=`ps ux | grep kdeinit | grep -v grep`
+	ISGNOME=`ps ux | grep gnome-panel | grep -v grep`
+fi.
 KDIALOG=`which kdialog`
-ISGNOME=`pidof -x -s gnome-panel`
 ZENITY=`which zenity`
 CAPTION=${1}
 FILESIZE=${2}

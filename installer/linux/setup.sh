@@ -24,17 +24,25 @@
 # SOFTWARE.
 
 PIDOF=`which pidof`
-if [ "" != "${PIDOF}" ]; then
-	ISKDE=`${PIDOF} -x -s kdeinit`
-	KDIALOG=`which kdialog`
-	ISGNOME=`${PIDOF} -x -s gnome-panel`
-	ZENITY=`which zenity`
-else
-	ISKDE=""
-	KDIALOG=""
-	ISGNOME=""
-	ZENITY=""
+if [ "${PIDOF}" == "" ]; then
+	# For some reason some distros hide pidof...
+	if [ -e /sbin/pidof ]; then
+		PIDOF=/sbin/pidof
+	elif [ -e /usr/sbin/pidof ]; then
+		PIDOF=/usr/sbin/pidof
+	fi;
 fi;
+
+## Helper Functions
+if [ "${PIDOF}" == "" ]; then
+	ISKDE=`${PIDOF} -x -s kdeinit`
+	ISGNOME=`${PIDOF} -x -s gnome-panel`
+else
+	ISKDE=`ps ux | grep kdeinit | grep -v grep`
+	ISGNOME=`ps ux | grep gnome-panel | grep -v grep`
+fi.
+KDIALOG=`which kdialog`
+ZENITY=`which zenity`
 
 errordialog() {
 	# Send message to console.
