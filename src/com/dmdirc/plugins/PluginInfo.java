@@ -154,18 +154,21 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 * Reloads metaData and updates the list of files.
 	 */
 	public void pluginUpdated() {
-		final ResourceManager res = getResourceManager();
-		
-		myClasses.clear();
-		for (final String classfilename : res.getResourcesStartingWith("")) {
-			String classname = classfilename.replace('/', '.');
-			if (classname.matches("^.*\\.class$")) {
-				classname = classname.replaceAll("\\.class$", "");
-				myClasses.add(classname);
+		try {
+			final ResourceManager res = getResourceManager();
+			
+			myClasses.clear();
+			for (final String classfilename : res.getResourcesStartingWith("")) {
+				String classname = classfilename.replace('/', '.');
+				if (classname.matches("^.*\\.class$")) {
+					classname = classname.replaceAll("\\.class$", "");
+					myClasses.add(classname);
+				}
 			}
+			
+			updateMetaData();
+		} catch (IOException ioe) {
 		}
-		
-		updateMetaData();
 	}
 	
 	/**
@@ -182,7 +185,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 				newMetaData.load(res.getResourceInputStream("META-INF/plugin.info"));
 				metaData = newMetaData;
 				myResourceManager = null;
-				return true
+				return true;
 			} else {
 				myResourceManager = null;
 			}
