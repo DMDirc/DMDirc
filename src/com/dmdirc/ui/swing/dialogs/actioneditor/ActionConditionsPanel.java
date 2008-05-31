@@ -22,6 +22,8 @@
 
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
+import com.dmdirc.actions.interfaces.ActionType;
+
 import javax.swing.JPanel;
 
 /**
@@ -35,10 +37,18 @@ public class ActionConditionsPanel extends JPanel {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** Action trigger. */
+    private ActionType trigger;
 
-    /** Instantiates the panel. */
-    public ActionConditionsPanel() {
+    /** 
+     * Instantiates the panel.
+     * 
+     * @param trigger Action trigger
+     */
+    public ActionConditionsPanel(final ActionType trigger) {
         super();
+        
+        this.trigger = trigger;
         
         initComponents();
         addListeners();
@@ -55,5 +65,14 @@ public class ActionConditionsPanel extends JPanel {
 
     /** Lays out the components. */
     private void layoutComponents() {
+    }
+    
+    /**
+     * Sets the trigger for this conditions panel.
+     * 
+     * @param trigger Action trigger.
+     */
+    public void setActionTrigger(final ActionType trigger) {
+        this.trigger = trigger;
     }
 }
