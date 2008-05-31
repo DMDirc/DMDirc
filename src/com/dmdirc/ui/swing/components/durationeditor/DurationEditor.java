@@ -112,7 +112,7 @@ public class DurationEditor extends StandardDialog implements ActionListener {
      * Lays out the components.
      */
     private void layoutComponents() {
-        setLayout(new MigLayout("hidemode 3"));
+        setLayout(new MigLayout("hidemode 3, pack"));
 
         add(new JLabel("Days: "), "split 8");
         add(daysSpinner);
