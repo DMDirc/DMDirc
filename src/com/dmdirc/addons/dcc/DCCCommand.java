@@ -27,7 +27,10 @@ import com.dmdirc.Server;
 import com.dmdirc.parser.IRCParser;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.commandparser.commands.ServerCommand;
+import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 import com.dmdirc.actions.ActionManager;
@@ -38,13 +41,15 @@ import javax.swing.JFrame;
 
 import java.io.File;
 
+import java.util.List;
+
 /**
  * This command allows starting dcc chats/file transfers
  *
  * @author Shane "Dataforce" Mc Cormack
  * @version $Id: DCCCommand.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
-public final class DCCCommand extends GlobalCommand {
+public final class DCCCommand extends ServerCommand implements IntelligentCommand {
 
 	/** My Plugin */
 	final DCCPlugin myPlugin;
@@ -64,16 +69,16 @@ public final class DCCCommand extends GlobalCommand {
 	 * Executes this command.
 	 *
 	 * @param origin The frame in which this command was issued
+	 * @param server The server instance that this command is being executed on
 	 * @param isSilent Whether this command is silenced or not
 	 * @param args The user supplied arguments
 	 */
 	@Override
-	public void execute(final InputWindow origin, final boolean isSilent, final String... args) {
+	public void execute(final InputWindow origin, final Server server, final boolean isSilent, final String... args) {
 		if (args.length > 1) {
 			final String type = args[0];
 			final String target = args[1];
 			if (type.equalsIgnoreCase("chat")) {
-				final Server server = origin.getContainer().getServer();
 				final IRCParser parser = server.getParser();
 				final String myNickname = parser.getMyNickname();
 				final DCCChat chat = new DCCChat();
@@ -90,7 +95,7 @@ public final class DCCCommand extends GlobalCommand {
 					sendLine(origin, isSilent, "DCCChatError", "Unable to start chat with "+target+" - unable to create listen socket");
 				}
 			} else if (type.equalsIgnoreCase("send")) {
-				sendFile(target, origin, isSilent, args);
+				sendFile(target, origin, server, isSilent, args);
 			} else {
 				sendLine(origin, isSilent, FORMAT_ERROR, "Unknown DCC Type: '"+type+"'");
 			}
@@ -104,10 +109,11 @@ public final class DCCCommand extends GlobalCommand {
 	 *
 	 * @param target Person this dcc is to.
 	 * @param origin The InputWindow this command was issued on
+	 * @param server The server instance that this command is being executed on
 	 * @param isSilent Whether this command is silenced or not
 	 * @param args Arguments passed.
 	 */
-	public void sendFile(final String target, final InputWindow origin, final boolean isSilent, final String... args) {
+	public void sendFile(final String target, final InputWindow origin, final Server server, final boolean isSilent, final String... args) {
 		// New thread to ask the user what file to send
 		final File givenFile = new File(implodeArgs(2, args));
 		final Thread dccThread = new Thread(new Runnable() {
@@ -126,7 +132,6 @@ public final class DCCCommand extends GlobalCommand {
 					result = JFileChooser.APPROVE_OPTION;
 				}
 				if (result == JFileChooser.APPROVE_OPTION) {
-					final Server server = origin.getContainer().getServer();
 					final IRCParser parser = server.getParser();
 					final String myNickname = parser.getMyNickname();
 					DCCSend send = new DCCSend(IdentityManager.getGlobalConfig().getOptionInt(DCCPlugin.getDomain(), "send.blocksize", 1024));
@@ -181,6 +186,31 @@ public final class DCCCommand extends GlobalCommand {
 	 */
 	@Override
 	public String getHelp() { return "dcc - Allows DCC"; }
+	
+	/**
+	 * Returns a list of suggestions for the specified argument, given the list
+	 * of previous arguments.
+	 * @param arg The argument that is being completed
+	 * @param previousArgs The contents of the previous arguments, if any
+	 * @return A list of suggestions for the argument
+	 */
+	@Override
+	public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+		final AdditionalTabTargets res = new AdditionalTabTargets();
+		
+		if (arg == 0) {
+			res.add("SEND");
+			res.add("CHAT");
+			res.excludeAll();
+		} else if (arg == 1) {
+			res.exclude(TabCompletionType.COMMAND);
+			res.exclude(TabCompletionType.CHANNEL);
+		} else {
+			res.excludeAll();
+		}
+		
+		return res;
+	}
 
 }
 
