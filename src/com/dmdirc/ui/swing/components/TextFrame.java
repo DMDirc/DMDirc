@@ -283,7 +283,14 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     /** {@inheritDoc} */
     @Override
     public final void clear() {
-        getTextPane().clear();
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                getTextPane().clear();
+            }
+        });
     }
 
     /**
