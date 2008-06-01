@@ -22,14 +22,19 @@
 
 package com.dmdirc.ui.swing;
 
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.swing.actions.RedoAction;
 import com.dmdirc.ui.swing.actions.UndoAction;
 import com.dmdirc.ui.swing.components.DMDircUndoableEditListener;
+import com.dmdirc.util.ReturnableThread;
 
 import java.awt.Dimension;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.BorderFactory;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -141,5 +146,46 @@ public final class UIUtilities {
         }      
         
         return classNameBuilder.toString();
+    }
+    
+    /**
+     * Invokes and waits for the specified runnable, executed on the EDT.
+     * 
+     * @param runnable Thread to be executed
+     */
+    public static void invokeAndWait(final Runnable runnable) {
+        if (!SwingUtilities.isEventDispatchThread()) {
+            try {
+                SwingUtilities.invokeAndWait(runnable);
+            } catch (InterruptedException ex) {
+                Logger.userError(ErrorLevel.HIGH, "Unable to execute thread.");
+            } catch (InvocationTargetException ex) {
+                Logger.userError(ErrorLevel.HIGH, "Unable to execute thread.");
+            }
+        } else {
+            runnable.run();
+        }
+    }
+    
+    /**
+     * Invokes and waits for the specified runnable, executed on the EDT.
+     * 
+     * @param returnable Thread to be executed
+     * 
+     * @return Result from the compelted thread
+     */
+    public static <T> T invokeAndWait(final ReturnableThread<T> returnable) {
+        if (!SwingUtilities.isEventDispatchThread()) {
+            try {
+                SwingUtilities.invokeAndWait(returnable);
+            } catch (InterruptedException ex) {
+                Logger.userError(ErrorLevel.HIGH, "Unable to execute thread.");
+            } catch (InvocationTargetException ex) {
+                Logger.userError(ErrorLevel.HIGH, "Unable to execute thread.");
+            }
+        } else {
+            returnable.run();
+        }
+        return returnable.getObject();
     }
 }

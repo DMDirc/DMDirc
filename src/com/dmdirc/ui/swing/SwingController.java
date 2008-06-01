@@ -118,7 +118,6 @@ public final class SwingController implements UIController {
             } catch (InvocationTargetException ex) {
                 Logger.appError(ErrorLevel.FATAL, "Unable to create MainFrame",
                         ex.getCause());
-            //Ignore
             }
         }
 
@@ -140,28 +139,14 @@ public final class SwingController implements UIController {
         STATUSBAR_SEMAPHORE.acquireUninterruptibly();
 
         if (statusBar == null) {
-            final ReturnableThread<SwingStatusBar> returnable = new ReturnableThread<SwingStatusBar>() {
+            statusBar = UIUtilities.invokeAndWait(new ReturnableThread<SwingStatusBar>() {
 
                 /** {@inheritDoc} */
                 @Override
                 public void run() {
                     setObject(new SwingStatusBar());
                 }
-            };
-            if (!SwingUtilities.isEventDispatchThread()) {
-                try {
-                    SwingUtilities.invokeAndWait(returnable);
-                } catch (InterruptedException ex) {
-                    Logger.userError(ErrorLevel.HIGH,
-                            "Unable to create the status bar");
-                } catch (InvocationTargetException ex) {
-                    Logger.userError(ErrorLevel.HIGH,
-                            "Unable to create the status bar");
-                }
-            } else {
-                returnable.run();
-            }
-            statusBar = returnable.getObject();
+            });
         }
 
         STATUSBAR_SEMAPHORE.release();
@@ -172,143 +157,80 @@ public final class SwingController implements UIController {
     /** {@inheritDoc} */
     @Override
     public ChannelWindow getChannel(final Channel channel) {
-        final ReturnableThread<ChannelFrame> returnable = new ReturnableThread<ChannelFrame>() {
+        return UIUtilities.invokeAndWait(new ReturnableThread<ChannelFrame>() {
 
             /** {@inheritDoc} */
             @Override
             public void run() {
                 setObject(new ChannelFrame(channel));
             }
-        };
-        if (!SwingUtilities.isEventDispatchThread()) {
-            try {
-                SwingUtilities.invokeAndWait(returnable);
-            } catch (InterruptedException ex) {
-                Logger.userError(ErrorLevel.HIGH, "Unable to create channel: " +
-                        channel.toString());
-            } catch (InvocationTargetException ex) {
-                Logger.userError(ErrorLevel.HIGH, "Unable to create channel: " +
-                        channel.toString());
-            }
-        } else {
-            returnable.run();
-        }
-        return returnable.getObject();
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public ServerWindow getServer(final Server server) {
-        final ReturnableThread<ServerFrame> returnable = new ReturnableThread<ServerFrame>() {
+        return UIUtilities.invokeAndWait(new ReturnableThread<ServerFrame>() {
 
             /** {@inheritDoc} */
             @Override
             public void run() {
                 setObject(new ServerFrame(server));
             }
-        };
-        if (!SwingUtilities.isEventDispatchThread()) {
-            try {
-                SwingUtilities.invokeAndWait(returnable);
-            } catch (InterruptedException ex) {
-                Logger.userError(ErrorLevel.HIGH, "Unable to create server: " +
-                        server.toString());
-            } catch (InvocationTargetException ex) {
-                Logger.userError(ErrorLevel.HIGH, "Unable to create server: " +
-                        server.toString());
-            }
-        } else {
-            returnable.run();
-        }
-        return returnable.getObject();
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public QueryWindow getQuery(final Query query) {
-        final ReturnableThread<QueryFrame> returnable = new ReturnableThread<QueryFrame>() {
+        return UIUtilities.invokeAndWait(new ReturnableThread<QueryFrame>() {
 
             /** {@inheritDoc} */
             @Override
             public void run() {
                 setObject(new QueryFrame(query));
             }
-        };
-        if (!SwingUtilities.isEventDispatchThread()) {
-            try {
-                SwingUtilities.invokeAndWait(returnable);
-            } catch (InterruptedException ex) {
-                Logger.userError(ErrorLevel.HIGH, "Unable to create query: " +
-                        query.toString());
-            } catch (InvocationTargetException ex) {
-                Logger.userError(ErrorLevel.HIGH, "Unable to create query: " +
-                        query.toString());
-            }
-        } else {
-            returnable.run();
-        }
-        return returnable.getObject();
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public Window getWindow(final FrameContainer owner) {
-        final ReturnableThread<CustomFrame> returnable = new ReturnableThread<CustomFrame>() {
+        return UIUtilities.invokeAndWait(new ReturnableThread<CustomFrame>() {
 
             /** {@inheritDoc} */
             @Override
             public void run() {
                 setObject(new CustomFrame(owner));
             }
-        };
-        if (!SwingUtilities.isEventDispatchThread()) {
-            try {
-                SwingUtilities.invokeAndWait(returnable);
-            } catch (InterruptedException ex) {
-                Logger.userError(ErrorLevel.HIGH, "Unable to create window: " +
-                        owner.toString());
-            } catch (InvocationTargetException ex) {
-                Logger.userError(ErrorLevel.HIGH, "Unable to create window: " +
-                        owner.toString());
-            }
-        } else {
-            returnable.run();
-        }
-        return returnable.getObject();
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public InputWindow getInputWindow(final WritableFrameContainer owner,
             final CommandParser commandParser) {
-        final ReturnableThread<CustomInputFrame> returnable = new ReturnableThread<CustomInputFrame>() {
+        return UIUtilities.invokeAndWait(new ReturnableThread<CustomInputFrame>() {
 
             /** {@inheritDoc} */
             @Override
             public void run() {
                 setObject(new CustomInputFrame(owner, commandParser));
             }
-        };
-        if (!SwingUtilities.isEventDispatchThread()) {
-            try {
-                SwingUtilities.invokeAndWait(returnable);
-            } catch (InterruptedException ex) {
-                Logger.userError(ErrorLevel.HIGH, "Unable to create window: " +
-                        owner.toString());
-            } catch (InvocationTargetException ex) {
-                Logger.userError(ErrorLevel.HIGH, "Unable to create window: " +
-                        owner.toString());
-            }
-        } else {
-            returnable.run();
-        }
-        return returnable.getObject();
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public SwingUpdaterDialog getUpdaterDialog(final List<Update> updates) {
-        return SwingUpdaterDialog.getSwingUpdaterDialog(updates);
+        return UIUtilities.invokeAndWait(new ReturnableThread<SwingUpdaterDialog>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                setObject(SwingUpdaterDialog.getSwingUpdaterDialog(updates));
+            }
+        });
     }
 
     /** {@inheritDoc} */
