@@ -96,9 +96,11 @@ public final class CtrlTabFrameManager implements FrameManager,
         InputMap inputMap = SwingUtilities.getUIInputMap(desktopPane,
                 JDesktopPane.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         if (inputMap == null) {
-            inputMap = desktopPane.getInputMap(JDesktopPane.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+            inputMap =
+                    desktopPane.getInputMap(JDesktopPane.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         }
-        inputMap.put(KeyStroke.getKeyStroke("ctrl shift pressed TAB"), "selectPreviousFrame");
+        inputMap.put(KeyStroke.getKeyStroke("ctrl shift pressed TAB"),
+                "selectPreviousFrame");
 
         ActionMap actionMap = SwingUtilities.getUIActionMap(desktopPane);
         if (actionMap == null) {
@@ -170,17 +172,25 @@ public final class CtrlTabFrameManager implements FrameManager,
     @Override
     public void delWindow(final FrameContainer window) {
         if (nodes != null && nodes.get(window) != null) {
-            final DefaultMutableTreeNode node = nodes.get(window);
-            if (node.getLevel() == 0) {
-                Logger.appError(ErrorLevel.MEDIUM,
-                        "delServer triggered for root node" + node.toString(),
-                        new IllegalArgumentException());
-            } else {
-                model.removeNodeFromParent(nodes.get(window));
-            }
-            nodes.remove(window);
-            labels.remove(node);
-            window.removeSelectionListener(this);
+            SwingUtilities.invokeLater(new Runnable() {
+
+                /** {@inheritDoc} */
+                @Override
+                public void run() {
+                    final DefaultMutableTreeNode node = nodes.get(window);
+                    if (node.getLevel() == 0) {
+                        Logger.appError(ErrorLevel.MEDIUM,
+                                "delServer triggered for root node" +
+                                node.toString(),
+                                new IllegalArgumentException());
+                    } else {
+                        model.removeNodeFromParent(nodes.get(window));
+                    }
+                    nodes.remove(window);
+                    labels.remove(node);
+                    window.removeSelectionListener(CtrlTabFrameManager.this);
+                }
+            });
         }
     }
 
@@ -192,13 +202,20 @@ public final class CtrlTabFrameManager implements FrameManager,
      */
     public void addWindow(final DefaultMutableTreeNode parent,
             final FrameContainer window) {
-        final DefaultMutableTreeNode node =
-                new DefaultMutableTreeNode();
-        nodes.put(window, node);
-        labels.put(node, new JLabel());
-        node.setUserObject(window);
-        model.insertNodeInto(node, parent);
-        window.addSelectionListener(this);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                final DefaultMutableTreeNode node =
+                        new DefaultMutableTreeNode();
+                nodes.put(window, node);
+                labels.put(node, new JLabel());
+                node.setUserObject(window);
+                model.insertNodeInto(node, parent);
+                window.addSelectionListener(CtrlTabFrameManager.this);
+            }
+        });
     }
 
     /** Scrolls up. */

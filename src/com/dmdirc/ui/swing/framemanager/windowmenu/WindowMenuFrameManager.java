@@ -32,8 +32,8 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
-
 import com.dmdirc.ui.swing.components.TextFrame;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
@@ -45,6 +45,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
+import javax.swing.SwingUtilities;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
@@ -68,7 +69,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
     /** Non frame container menu count. */
     private final int itemCount;
     /** Menu items for toggling, closing and minimising. */
-    private final JMenuItem toggleStateMenuItem, closeMenuItem, minimiseMenuItem;
+    private final JMenuItem toggleStateMenuItem,  closeMenuItem,  minimiseMenuItem;
     /** Seperator. */
     private final JSeparator separator;
 
@@ -77,7 +78,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
      */
     public WindowMenuFrameManager() {
         super();
-        
+
         menuItemMap =
                 new TreeMap<FrameContainer, FrameContainerMenuItem>(comparator);
 
@@ -85,7 +86,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
         setMnemonic('w');
         WindowManager.addFrameManager(this);
         addMenuListener(this);
-        
+
         toggleStateMenuItem = new JMenuItem();
         toggleStateMenuItem.setMnemonic('m');
         toggleStateMenuItem.setText("Maximise");
@@ -108,7 +109,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
         add(closeMenuItem);
 
         checkToggleState();
-        
+
         separator = new JPopupMenu.Separator();
         add(separator);
 
@@ -135,7 +136,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
 
     /** {@inheritDoc} */
     @Override
-    public void addWindow(final FrameContainer window) {       
+    public void addWindow(final FrameContainer window) {
         addFrameContainer(window);
     }
 
@@ -165,20 +166,28 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
      * @param window Window to add to the list
      */
     private void addFrameContainer(final FrameContainer window) {
-        if (getMenuComponentCount() == itemCount) {
-            separator.setVisible(true);
-        }
-        
-        final FrameContainerMenuItem mi = new FrameContainerMenuItem(window);
-        synchronized (menuItemMap) {
-            if (isShowing()) {
-                setSelected(false);
-                setPopupMenuVisible(false);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                if (getMenuComponentCount() == itemCount) {
+                    separator.setVisible(true);
+                }
+
+                final FrameContainerMenuItem mi =
+                        new FrameContainerMenuItem(window);
+                synchronized (menuItemMap) {
+                    if (isShowing()) {
+                        setSelected(false);
+                        setPopupMenuVisible(false);
+                    }
+                    menuItemMap.put(window, mi);
+                    window.addSelectionListener(WindowMenuFrameManager.this);
+                    add(mi, getIndex(window));
+                }
             }
-            menuItemMap.put(window, mi);
-            window.addSelectionListener(this);
-            add(mi, getIndex(window));
-        }
+        });
     }
 
     /**
@@ -187,22 +196,29 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
      * @param window Window to remove from list
      */
     private void removeFramecontainer(final FrameContainer window) {
-        synchronized (menuItemMap) {
-            if (isShowing()) {
-                setSelected(false);
-                setPopupMenuVisible(false);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                synchronized (menuItemMap) {
+                    if (isShowing()) {
+                        setSelected(false);
+                        setPopupMenuVisible(false);
+                    }
+                    final FrameContainerMenuItem mi = menuItemMap.get(window);
+                    if (mi != null) {
+                        remove(mi);
+                        menuItemMap.remove(window);
+                        window.removeSelectionListener(WindowMenuFrameManager.this);
+                    }
+                }
+
+                if (getMenuComponentCount() == itemCount) {
+                    separator.setVisible(false);
+                }
             }
-            final FrameContainerMenuItem mi = menuItemMap.get(window);
-            if (mi != null) {
-                remove(mi);
-                menuItemMap.remove(window);
-                window.removeSelectionListener(this);
-            }
-        }
-        
-        if (getMenuComponentCount() == itemCount) {
-            separator.setVisible(false);
-        }        
+        });
     }
 
     /** 
@@ -241,7 +257,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
             menuItem.selectionChanged(window);
         }
     }
-    
+
     /**
      * Checks and sets the state of the toggle menu item.
      */
@@ -254,7 +270,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
             toggleStateMenuItem.setEnabled(true);
             closeMenuItem.setEnabled(true);
             minimiseMenuItem.setEnabled(true);
-            
+
             if (Main.getUI().getActiveWindow().isMaximum()) {
                 toggleStateMenuItem.setText("Restore");
                 toggleStateMenuItem.setMnemonic('r');
@@ -332,12 +348,12 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
     /** {@inheritDoc} */
     @Override
     public void menuDeselected(final MenuEvent e) {
-        //Ignore
+    //Ignore
     }
 
     /** {@inheritDoc} */
     @Override
     public void menuCanceled(final MenuEvent e) {
-        //Ignore
+    //Ignore
     }
 }

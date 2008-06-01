@@ -56,6 +56,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -159,16 +160,23 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     /** {@inheritDoc} */
     @Override
     public void setParent(final JComponent parent) {
-        final JScrollPane scrollPane = new JScrollPane(tree);
-        scrollPane.setAutoscrolls(true);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.getHorizontalScrollBar().addAdjustmentListener(this);
+        SwingUtilities.invokeLater(new Runnable() {
 
-        parent.setLayout(new BorderLayout());
-        parent.add(scrollPane);
-        parent.setFocusable(false);
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                final JScrollPane scrollPane = new JScrollPane(tree);
+                scrollPane.setAutoscrolls(true);
+                scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                scrollPane.getHorizontalScrollBar().addAdjustmentListener(TreeFrameManager.this);
 
-        setColours();
+                parent.setLayout(new BorderLayout());
+                parent.add(scrollPane);
+                parent.setFocusable(false);
+
+                setColours();
+            }
+        });
     }
 
     /** {@inheritDoc} */
@@ -195,22 +203,29 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     @Override
     public void delWindow(final FrameContainer window) {
         if (nodes != null && nodes.get(window) != null) {
-            synchronized (labels) {
-                final DefaultMutableTreeNode node = nodes.get(window);
-                if (node.getLevel() == 0) {
-                    Logger.appError(ErrorLevel.MEDIUM,
-                            "delServer triggered for root node" +
-                            node.toString(),
-                            new IllegalArgumentException());
-                } else {
-                    model.removeNodeFromParent(nodes.get(window));
+            SwingUtilities.invokeLater(new Runnable() {
+
+                /** {@inheritDoc} */
+                @Override
+                public void run() {
+                    synchronized (labels) {
+                        final DefaultMutableTreeNode node = nodes.get(window);
+                        if (node.getLevel() == 0) {
+                            Logger.appError(ErrorLevel.MEDIUM,
+                                    "delServer triggered for root node" +
+                                    node.toString(),
+                                    new IllegalArgumentException());
+                        } else {
+                            model.removeNodeFromParent(nodes.get(window));
+                        }
+                        nodes.remove(window);
+                        labels.remove(node);
+                        window.removeSelectionListener(TreeFrameManager.this);
+                        window.removeIconChangeListener(TreeFrameManager.this);
+                        window.removeNotificationListener(TreeFrameManager.this);
+                    }
                 }
-                nodes.remove(window);
-                labels.remove(node);
-                window.removeSelectionListener(this);
-                window.removeIconChangeListener(this);
-                window.removeNotificationListener(this);
-            }
+            });
         }
     }
 
@@ -222,24 +237,33 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
      */
     public void addWindow(final DefaultMutableTreeNode parent,
             final FrameContainer window) {
-        synchronized (labels) {
-            final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
-            nodes.put(window, node);
-            labels.put(node, new NodeLabel(window.getFrame()));
-            node.setUserObject(window);
-            if (parent == null) {
-                model.insertNodeInto(node, root);
-            } else {
-                model.insertNodeInto(node, parent);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                synchronized (labels) {
+                    final DefaultMutableTreeNode node =
+                            new DefaultMutableTreeNode();
+                    nodes.put(window, node);
+                    labels.put(node, new NodeLabel(window.getFrame()));
+                    node.setUserObject(window);
+                    if (parent == null) {
+                        model.insertNodeInto(node, root);
+                    } else {
+                        model.insertNodeInto(node, parent);
+                    }
+                    tree.expandPath(new TreePath(node.getPath()).getParentPath());
+                    final Rectangle view =
+                            tree.getRowBounds(tree.getRowForPath(new TreePath(node.getPath())));
+                    tree.scrollRectToVisible(new Rectangle(0, (int) view.getY(),
+                            0, 0));
+                    window.addSelectionListener(TreeFrameManager.this);
+                    window.addIconChangeListener(TreeFrameManager.this);
+                    window.addNotificationListener(TreeFrameManager.this);
+                }
             }
-            tree.expandPath(new TreePath(node.getPath()).getParentPath());
-            final Rectangle view =
-                    tree.getRowBounds(tree.getRowForPath(new TreePath(node.getPath())));
-            tree.scrollRectToVisible(new Rectangle(0, (int) view.getY(), 0, 0));
-            window.addSelectionListener(this);
-            window.addIconChangeListener(this);
-            window.addNotificationListener(this);
-        }
+        });
     }
 
     /**
@@ -476,21 +500,44 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     /** {@inheritDoc} */
     @Override
     public void notificationSet(final Window window, final Color colour) {
-        labels.get(nodes.get(window.getContainer())).notificationSet(window, colour);
-        tree.repaint();
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                labels.get(nodes.get(window.getContainer())).notificationSet(window,
+                        colour);
+                tree.repaint();
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public void notificationCleared(final Window window) {
-        labels.get(nodes.get(window.getContainer())).notificationCleared(window);
-        tree.repaint();
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                labels.get(nodes.get(window.getContainer())).notificationCleared(window);
+                tree.repaint();
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public void iconChanged(final Window window, final Icon icon) {
-        labels.get(nodes.get(window.getContainer())).iconChanged(window, icon);
-        tree.repaint();
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                labels.get(nodes.get(window.getContainer())).iconChanged(window,
+                        icon);
+                tree.repaint();
+            }
+        });
     }
 }
