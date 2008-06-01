@@ -31,6 +31,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Icon;
 import javax.swing.JMenuItem;
+import javax.swing.SwingUtilities;
 
 /**
  * Action representing a frame.
@@ -56,7 +57,7 @@ public class FrameContainerMenuItem extends JMenuItem implements IconChangeListe
         super(frame.toString(), frame.getIcon());
 
         this.frame = frame;
-        
+
         addActionListener(this);
         frame.addIconChangeListener(this);
     }
@@ -64,9 +65,17 @@ public class FrameContainerMenuItem extends JMenuItem implements IconChangeListe
     /** {@inheritDoc} */
     @Override
     public void iconChanged(final Window window, final Icon icon) {
-        if ((frame != null && window != null) && frame.equals(window.getContainer())) {
-            setIcon(icon);
-        }
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                if ((frame != null && window != null) &&
+                        frame.equals(window.getContainer())) {
+                    setIcon(icon);
+                }
+            }
+        });
     }
 
     /** 
@@ -75,7 +84,7 @@ public class FrameContainerMenuItem extends JMenuItem implements IconChangeListe
      * @param e Action event
      */
     @Override
-    public void actionPerformed(final ActionEvent e) {  
+    public void actionPerformed(final ActionEvent e) {
         frame.activateFrame();
     }
 
@@ -91,7 +100,7 @@ public class FrameContainerMenuItem extends JMenuItem implements IconChangeListe
             setFont(getFont().deriveFont(Font.PLAIN));
         }
     }
-    
+
     /**
      * Returns the wrapped frame container.
      * 
