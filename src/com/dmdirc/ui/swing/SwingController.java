@@ -148,14 +148,18 @@ public final class SwingController implements UIController {
                     setObject(new SwingStatusBar());
                 }
             };
-            try {
-                SwingUtilities.invokeAndWait(returnable);
-            } catch (InterruptedException ex) {
-                Logger.userError(ErrorLevel.HIGH,
-                        "Unable to create the status bar");
-            } catch (InvocationTargetException ex) {
-                Logger.userError(ErrorLevel.HIGH,
-                        "Unable to create the status bar");
+            if (!SwingUtilities.isEventDispatchThread()) {
+                try {
+                    SwingUtilities.invokeAndWait(returnable);
+                } catch (InterruptedException ex) {
+                    Logger.userError(ErrorLevel.HIGH,
+                            "Unable to create the status bar");
+                } catch (InvocationTargetException ex) {
+                    Logger.userError(ErrorLevel.HIGH,
+                            "Unable to create the status bar");
+                }
+            } else {
+                returnable.run();
             }
             statusBar = returnable.getObject();
         }
@@ -176,14 +180,18 @@ public final class SwingController implements UIController {
                 setObject(new ChannelFrame(channel));
             }
         };
-        try {
-            SwingUtilities.invokeAndWait(returnable);
-        } catch (InterruptedException ex) {
-            Logger.userError(ErrorLevel.HIGH, "Unable to create channel: " +
-                    channel.toString());
-        } catch (InvocationTargetException ex) {
-            Logger.userError(ErrorLevel.HIGH, "Unable to create channel: " +
-                    channel.toString());
+        if (!SwingUtilities.isEventDispatchThread()) {
+            try {
+                SwingUtilities.invokeAndWait(returnable);
+            } catch (InterruptedException ex) {
+                Logger.userError(ErrorLevel.HIGH, "Unable to create channel: " +
+                        channel.toString());
+            } catch (InvocationTargetException ex) {
+                Logger.userError(ErrorLevel.HIGH, "Unable to create channel: " +
+                        channel.toString());
+            }
+        } else {
+            returnable.run();
         }
         return returnable.getObject();
     }
@@ -199,14 +207,18 @@ public final class SwingController implements UIController {
                 setObject(new ServerFrame(server));
             }
         };
-        try {
-            SwingUtilities.invokeAndWait(returnable);
-        } catch (InterruptedException ex) {
-            Logger.userError(ErrorLevel.HIGH, "Unable to create server: " +
-                    server.toString());
-        } catch (InvocationTargetException ex) {
-            Logger.userError(ErrorLevel.HIGH, "Unable to create server: " +
-                    server.toString());
+        if (!SwingUtilities.isEventDispatchThread()) {
+            try {
+                SwingUtilities.invokeAndWait(returnable);
+            } catch (InterruptedException ex) {
+                Logger.userError(ErrorLevel.HIGH, "Unable to create server: " +
+                        server.toString());
+            } catch (InvocationTargetException ex) {
+                Logger.userError(ErrorLevel.HIGH, "Unable to create server: " +
+                        server.toString());
+            }
+        } else {
+            returnable.run();
         }
         return returnable.getObject();
     }
@@ -222,14 +234,18 @@ public final class SwingController implements UIController {
                 setObject(new QueryFrame(query));
             }
         };
-        try {
-            SwingUtilities.invokeAndWait(returnable);
-        } catch (InterruptedException ex) {
-            Logger.userError(ErrorLevel.HIGH, "Unable to create query: " +
-                    query.toString());
-        } catch (InvocationTargetException ex) {
-            Logger.userError(ErrorLevel.HIGH, "Unable to create query: " +
-                    query.toString());
+        if (!SwingUtilities.isEventDispatchThread()) {
+            try {
+                SwingUtilities.invokeAndWait(returnable);
+            } catch (InterruptedException ex) {
+                Logger.userError(ErrorLevel.HIGH, "Unable to create query: " +
+                        query.toString());
+            } catch (InvocationTargetException ex) {
+                Logger.userError(ErrorLevel.HIGH, "Unable to create query: " +
+                        query.toString());
+            }
+        } else {
+            returnable.run();
         }
         return returnable.getObject();
     }
@@ -245,14 +261,18 @@ public final class SwingController implements UIController {
                 setObject(new CustomFrame(owner));
             }
         };
-        try {
-            SwingUtilities.invokeAndWait(returnable);
-        } catch (InterruptedException ex) {
-            Logger.userError(ErrorLevel.HIGH, "Unable to create window: " +
-                    owner.toString());
-        } catch (InvocationTargetException ex) {
-            Logger.userError(ErrorLevel.HIGH, "Unable to create window: " +
-                    owner.toString());
+        if (!SwingUtilities.isEventDispatchThread()) {
+            try {
+                SwingUtilities.invokeAndWait(returnable);
+            } catch (InterruptedException ex) {
+                Logger.userError(ErrorLevel.HIGH, "Unable to create window: " +
+                        owner.toString());
+            } catch (InvocationTargetException ex) {
+                Logger.userError(ErrorLevel.HIGH, "Unable to create window: " +
+                        owner.toString());
+            }
+        } else {
+            returnable.run();
         }
         return returnable.getObject();
     }
@@ -269,14 +289,18 @@ public final class SwingController implements UIController {
                 setObject(new CustomInputFrame(owner, commandParser));
             }
         };
-        try {
-            SwingUtilities.invokeAndWait(returnable);
-        } catch (InterruptedException ex) {
-            Logger.userError(ErrorLevel.HIGH, "Unable to create window: " +
-                    owner.toString());
-        } catch (InvocationTargetException ex) {
-            Logger.userError(ErrorLevel.HIGH, "Unable to create window: " +
-                    owner.toString());
+        if (!SwingUtilities.isEventDispatchThread()) {
+            try {
+                SwingUtilities.invokeAndWait(returnable);
+            } catch (InterruptedException ex) {
+                Logger.userError(ErrorLevel.HIGH, "Unable to create window: " +
+                        owner.toString());
+            } catch (InvocationTargetException ex) {
+                Logger.userError(ErrorLevel.HIGH, "Unable to create window: " +
+                        owner.toString());
+            }
+        } else {
+            returnable.run();
         }
         return returnable.getObject();
     }
