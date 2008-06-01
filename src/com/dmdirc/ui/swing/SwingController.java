@@ -49,6 +49,7 @@ import com.dmdirc.ui.swing.dialogs.wizard.firstrun.SwingFirstRunWizard;
 import com.dmdirc.ui.swing.dialogs.serversetting.ServerSettingsDialog;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardListener;
 import com.dmdirc.updater.Update;
+import com.dmdirc.util.ReturnableThread;
 
 import java.awt.Font;
 import java.awt.Toolkit;
@@ -487,38 +488,5 @@ public final class SwingController implements UIController {
     @Override
     public String getUserInput(final String prompt) {
         return JOptionPane.showInputDialog(prompt);
-    }
-}
-
-/**
- * Normal thread with the potential to return a value.
- * 
- * @param T Type to be returned
- */
-abstract class ReturnableThread<T> extends Thread {
-
-    /** Returnable object. */
-    private T value;
-
-    /** {@inheritDoc} */
-    @Override
-    public abstract void run();
-
-    /**
-     * Sets the returnable object.
-     * 
-     * @param value new returnable object
-     */
-    public void setObject(final T value) {
-        this.value = value;
-    }
-
-    /**
-     * Returns the object set by this thread.
-     * 
-     * @return Returnable object
-     */
-    public T getObject() {
-        return value;
     }
 }
