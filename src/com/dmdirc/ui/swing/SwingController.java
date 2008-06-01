@@ -260,7 +260,24 @@ public final class SwingController implements UIController {
     @Override
     public InputWindow getInputWindow(final WritableFrameContainer owner,
             final CommandParser commandParser) {
-        return new CustomInputFrame(owner, commandParser);
+        final ReturnableThread<CustomInputFrame> returnable = new ReturnableThread<CustomInputFrame>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                setObject(new CustomInputFrame(owner, commandParser));
+            }
+        };
+        try {
+            SwingUtilities.invokeAndWait(returnable);
+        } catch (InterruptedException ex) {
+            Logger.userError(ErrorLevel.HIGH, "Unable to create window: " +
+                    owner.toString());
+        } catch (InvocationTargetException ex) {
+            Logger.userError(ErrorLevel.HIGH, "Unable to create window: " +
+                    owner.toString());
+        }
+        return returnable.getObject();
     }
 
     /** {@inheritDoc} */
