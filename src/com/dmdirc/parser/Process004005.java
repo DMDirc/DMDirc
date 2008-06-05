@@ -68,7 +68,7 @@ public class Process004005 extends IRCProcessor {
 					} else if (!sValue.equalsIgnoreCase("rfc1459")) {
 						myParser.callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Unknown casemapping: '"+sValue+"' - assuming rfc1459", myParser.getLastLine()));
 					}
-					final boolean limitChanged = (myParser.getLastLimit() != limit);
+					final boolean limitChanged = (myParser.getIRCStringConverter().getLimit() != limit);
 					myParser.updateCharArrays(limit);
 					if (limitChanged && myParser.knownClients() == 1) {
 							// This means that the casemapping is not rfc1459

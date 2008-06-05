@@ -1036,11 +1036,10 @@ public class IRCParser implements Runnable {
 			callErrorInfo(ei);
 		}
 	}
-
-
+	
 	/** The IRCStringConverter for this parser */
 	private IRCStringConverter stringConverter = null;
-
+	
 	/**
 	 * Get the IRCStringConverter used by this parser.
 	 *
@@ -1054,13 +1053,6 @@ public class IRCParser implements Runnable {
 		return stringConverter;
 	}
 	
-	/**
-	 * Get last used chararray limit.
-	 *
-	 * @return last used chararray limit
-	 */
-	protected int getLastLimit() { return getIRCStringConverter().getLimit(); }
-
 	/**
 	 * Update the character arrays.
 	 *

@@ -45,21 +45,21 @@ public class IRCStringConverterTest extends junit.framework.TestCase {
         };
 
         for (String[] testcase : testcases) {
-            final String asciiL = asciiParser.toLowerCase(testcase[0]);
-            final String rfcL = rfcParser.toLowerCase(testcase[0]);
-            final String strictL = strictParser.toLowerCase(testcase[0]);
+            final String asciiL = asciiParser.getIRCStringConverter().toLowerCase(testcase[0]);
+            final String rfcL = rfcParser.getIRCStringConverter().toLowerCase(testcase[0]);
+            final String strictL = strictParser.getIRCStringConverter().toLowerCase(testcase[0]);
 
-            final String asciiU = asciiParser.toUpperCase(testcase[1]);
-            final String rfcU = rfcParser.toUpperCase(testcase[2]);
-            final String strictU = strictParser.toUpperCase(testcase[3]);
+            final String asciiU = asciiParser.getIRCStringConverter().toUpperCase(testcase[1]);
+            final String rfcU = rfcParser.getIRCStringConverter().toUpperCase(testcase[2]);
+            final String strictU = strictParser.getIRCStringConverter().toUpperCase(testcase[3]);
 
             assertEquals(testcase[1], asciiL);
             assertEquals(testcase[2], rfcL);
             assertEquals(testcase[3], strictL);
 
-            assertTrue(asciiParser.equalsIgnoreCase(testcase[0], testcase[1]));
-            assertTrue(rfcParser.equalsIgnoreCase(testcase[0], testcase[2]));
-            assertTrue(strictParser.equalsIgnoreCase(testcase[0], testcase[3]));
+            assertTrue(asciiParser.getIRCStringConverter().equalsIgnoreCase(testcase[0], testcase[1]));
+            assertTrue(rfcParser.getIRCStringConverter().equalsIgnoreCase(testcase[0], testcase[2]));
+            assertTrue(strictParser.getIRCStringConverter().equalsIgnoreCase(testcase[0], testcase[3]));
 
             assertEquals(testcase[0], asciiU);
             assertEquals(testcase[0], rfcU);
