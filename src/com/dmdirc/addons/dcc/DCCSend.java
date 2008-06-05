@@ -92,6 +92,15 @@ public class DCCSend extends DCC {
 	}
 	
 	/**
+	 * Reset this send to be used again (eg a resend).
+	 */
+	public void reset() {
+		close();
+		setFileName(filename);
+		setFileStart(startpos);
+	}
+	
+	/**
 	 * Get a copy of the list of active sends.
 	 *
 	 * @return A copy of the list of active sends.

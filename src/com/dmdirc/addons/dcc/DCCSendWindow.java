@@ -24,7 +24,7 @@ package com.dmdirc.addons.dcc;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.addons.dcc.actions.DCCActions;
-
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.swing.components.TextFrame;
 import com.dmdirc.ui.swing.components.TextLabel;
 
@@ -38,13 +38,16 @@ import java.awt.event.ActionListener;
 
 import net.miginfocom.swing.MigLayout;
 
+import com.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.callbacks.interfaces.ISocketClosed;
+
 /**
  * This class links DCC Send objects to a window.
  *
  * @author Shane 'Dataforce' McCormack
  * @version $Id: DCC.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
-public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionListener {
+public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionListener, ISocketClosed {
 	/** The DCCSend object we are a window for */
 	private final DCCSend dcc;
 	
@@ -78,6 +81,9 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	/** Button */
 	private final JButton button = new JButton("Cancel");
 	
+	/** IRC Parser that caused this send */
+	private IRCParser parser = null;
+	
 	/**
 	 * Creates a new instance of DCCSendWindow with a given DCCSend object.
 	 *
@@ -86,10 +92,13 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	 * @param title The title of this window
 	 * @param nick My Current Nickname
 	 * @param targetNick Nickname of target
+	 * @param parser The IRC parser that initiated this send
 	 */
-	public DCCSendWindow(final DCCPlugin plugin, final DCCSend dcc, final String title, final String nick, final String targetNick) {
+	public DCCSendWindow(final DCCPlugin plugin, final DCCSend dcc, final String title, final String nick, final String targetNick, final IRCParser parser) {
 		super(plugin, title, dcc.getType() == DCCSend.TransferType.SEND ? "dcc-send-inactive" : "dcc-receive-inactive");
 		this.dcc = dcc;
+		this.parser = parser;
+		parser.getCallbackManager().addNonCriticalCallback("onSocketClosed", this);
 		dcc.setHandler(this);
 		nickname = nick;
 		otherNickname = targetNick;
@@ -120,6 +129,17 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 		plugin.addWindow(this);
 	}
 	
+	/** {@inheritDoc} */
+	public void onSocketClosed(final IRCParser tParser) {
+		// Remove our reference to the parser (and its reference to us)
+		parser.getCallbackManager().delAllCallback(this);
+		parser = null;
+		// Can't resend without the parser.
+		if (button.getText() == "Resend") {
+			button.setText("Close Window");
+		}
+	}
+	
 	/**
 	 * Get the DCCSend Object associated with this window
 	 *
@@ -132,8 +152,31 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	/** {@inheritDoc} */
 	public void actionPerformed(final ActionEvent e) {
 		if (e.getActionCommand().equals("Cancel")) {
-			button.setEnabled(false);
+			if (dcc.getType() == DCCSend.TransferType.SEND) {
+				button.setText("Resend");
+			} else {
+				button.setText("Close Window");
+			}
 			dcc.close();
+		} else if (e.getActionCommand().equals("Resend")) {
+			button.setText("Cancel");
+			status.setText("Status: Resending...");
+			transferCount = 0;
+			dcc.reset();
+			if (parser != null && parser.getSocketState() == IRCParser.STATE_OPEN) {
+				if (IdentityManager.getGlobalConfig().getOptionBool(DCCPlugin.getDomain(), "send.reverse", false)) {
+					parser.sendCTCP(otherNickname, "DCC", "SEND \""+dcc.getFileName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" 0 "+dcc.getFileSize()+" "+dcc.makeToken()+((dcc.isTurbo()) ? " T" : ""));
+					return;
+				} else if (plugin.listen(dcc)) {
+					parser.sendCTCP(otherNickname, "DCC", "SEND \""+dcc.getFileName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" "+dcc.getPort()+" "+dcc.getFileSize()+((dcc.isTurbo()) ? " T" : ""));
+					return;
+				}
+			} else {
+				status.setText("Status: Resend failed.");
+				button.setText("Close Window");
+			}
+		} else if (e.getActionCommand().equals("Close Window")) {
+			close();
 		}
 	}
 	
@@ -209,14 +252,19 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	public void socketClosed(final DCCSend dcc) {
 		ActionManager.processEvent(DCCActions.DCC_SEND_SOCKETCLOSED, null, this);
 		if (!isWindowClosing()) {
-			button.setEnabled(false);
 			if (transferCount == dcc.getFileSize()) {
 				status.setText("Status: Transfer Compelete.");
 				progress.setValue(100);
 				setIcon(dcc.getType() == DCCSend.TransferType.SEND ? "dcc-send-done" : "dcc-receive-done");
+				button.setText("Close Window");
 			} else {
 				status.setText("Status: Transfer Failed.");
 				setIcon(dcc.getType() == DCCSend.TransferType.SEND ? "dcc-send-failed" : "dcc-receive-failed");
+				if (dcc.getType() == DCCSend.TransferType.SEND) {
+					button.setText("Resend");
+				} else {
+					button.setText("Close Window");
+				}
 			}
 			updateSpeedAndTime();
 		}
