@@ -102,7 +102,7 @@ public final class Ignore extends ServerCommand implements IntelligentCommand {
             
         } else if (args[0].toLowerCase().equals("remove") && args.length > 1) {
             
-            final String host = server.getParser().toLowerCase(implodeArgs(1, args));
+            final String host = server.getParser().getIRCStringConverter().toLowerCase(implodeArgs(1, args));
             
             final StringBuffer newlist = new StringBuffer();
             boolean found = false;
@@ -112,7 +112,7 @@ public final class Ignore extends ServerCommand implements IntelligentCommand {
                 
                 
                 for (String entry : list.split("\n")) {
-                    if (server.getParser().toLowerCase(entry).equals(host)) {
+                    if (server.getParser().getIRCStringConverter().toLowerCase(entry).equals(host)) {
                         found = true;
                     } else {
                         if (newlist.length() > 0) {

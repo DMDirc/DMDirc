@@ -218,8 +218,7 @@ public class ProcessingManager {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callNumeric(final int numeric, final String[] token) {
-		return ((CallbackOnNumeric) myParser.getCallbackManager()
-                .getCallbackType("OnNumeric")).call(numeric, token);
+		return ((CallbackOnNumeric) myParser.getCallbackManager().getCallbackType("OnNumeric")).call(numeric, token);
 	}
 
 }

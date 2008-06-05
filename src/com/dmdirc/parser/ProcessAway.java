@@ -36,7 +36,7 @@ public class ProcessAway extends IRCProcessor {
 	 * @param sParam Type of line to process ("305", "306")
 	 * @param token IRCTokenised line to process
 	 */
-    @Override
+	@Override
 	public void process(String sParam, String[] token) {
 		if (sParam.equals("301")) {
 			ClientInfo iClient = myParser.getClientInfo(token[3]);
@@ -56,8 +56,7 @@ public class ProcessAway extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callAwayState(boolean currentState, String reason) {
-		return ((CallbackOnAwayState) myParser.getCallbackManager()
-                .getCallbackType("OnAwayState")).call(currentState, reason);
+		return ((CallbackOnAwayState) myParser.getCallbackManager().getCallbackType("OnAwayState")).call(currentState, reason);
 	}
 	
 	/**
@@ -65,13 +64,9 @@ public class ProcessAway extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
-    @Override
+	@Override
 	public String[] handles() {
-		String[] iHandle = new String[3];
-		iHandle[0] = "301"; // Whois Away
-		iHandle[1] = "305";
-		iHandle[2] = "306";
-		return iHandle;
+		return new String[]{"301", "305", "306"};
 	} 
 	
 	/**

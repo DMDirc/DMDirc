@@ -31,13 +31,13 @@ import com.dmdirc.parser.callbacks.CallbackOnChannelPart;
  */
 public class ProcessPart extends IRCProcessor {
 
-    /**
+	/**
 	 * Process a channel part.
 	 *
 	 * @param sParam Type of line to process ("PART")
 	 * @param token IRCTokenised line to process
 	 */
-    @Override
+	@Override
 	public void process(final String sParam, final String[] token) {
 		// :nick!ident@host PART #Channel
 		// :nick!ident@host PART #Channel :reason
@@ -85,11 +85,10 @@ public class ProcessPart extends IRCProcessor {
 	 * @param cChannel Channel that the user parted
 	 * @param cChannelClient Client that parted
 	 * @param sReason Reason given for parting (May be "")
-         * @return true if a method was called, false otherwise
+	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelPart(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sReason) {
-		return ((CallbackOnChannelPart) getCallbackManager()
-                .getCallbackType("OnChannelPart")).call(cChannel, cChannelClient, sReason);
+		return ((CallbackOnChannelPart) getCallbackManager().getCallbackType("OnChannelPart")).call(cChannel, cChannelClient, sReason);
 	}
 	
 	/**
@@ -97,11 +96,9 @@ public class ProcessPart extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
-    @Override
+	@Override
 	public String[] handles() {
-		String[] iHandle = new String[1];
-		iHandle[0] = "PART";
-		return iHandle;
+		return new String[]{"PART"};
 	} 
 	
 	/**

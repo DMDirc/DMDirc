@@ -36,7 +36,7 @@ public class ProcessInvite extends IRCProcessor {
 	 * @param sParam Type of line to process ("INVITE")
 	 * @param token IRCTokenised line to process
 	 */
-    @Override
+	@Override
 	public void process(final String sParam, final String[] token) {
 		// :Tobavaj!shane@Tobavaj.users.quakenet.org INVITE Dataforce #dataforceisgod 1188846462
 		if (token.length > 2) {
@@ -50,11 +50,10 @@ public class ProcessInvite extends IRCProcessor {
 	 * @see IInvite
 	 * @param userHost The hostname of the person who invited us
 	 * @param channel The name of the channel we were invited to
-         * @return true if a method was called, false otherwise
+	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callInvite(final String userHost, final String channel) {
-		return ((CallbackOnInvite) getCallbackManager()
-                .getCallbackType("OnInvite")).call(userHost, channel);
+		return ((CallbackOnInvite) getCallbackManager().getCallbackType("OnInvite")).call(userHost, channel);
 	}
 	
 	/**
@@ -62,7 +61,7 @@ public class ProcessInvite extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
-    @Override
+	@Override
 	public String[] handles() {
 		return new String[]{"INVITE"};
 	} 

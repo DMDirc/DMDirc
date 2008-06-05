@@ -64,7 +64,7 @@ public final class ChannelInfo {
 	
 	/** Channel Name. */
 	private final String sName;
-    
+	
 	/** Hashtable containing references to ChannelClients. */
 	private final Map<String, ChannelClientInfo> hChannelUserList = new Hashtable<String, ChannelClientInfo>();
 	/** Hashtable storing values for modes set in the channel that use parameters. */
@@ -294,7 +294,7 @@ public final class ChannelInfo {
 	 */
 	public ChannelClientInfo getUser(String sWho) {
 		sWho = ClientInfo.parseHost(sWho);
-		sWho = myParser.toLowerCase(sWho);
+		sWho = myParser.getIRCStringConverter().toLowerCase(sWho);
 		if (hChannelUserList.containsKey(sWho)) {
 			return hChannelUserList.get(sWho);
 		}
@@ -326,7 +326,7 @@ public final class ChannelInfo {
 		ChannelClientInfo cTemp = getUser(cClient);
 		if (cTemp == null) { 
 			cTemp = new ChannelClientInfo(myParser, cClient, this);
-			hChannelUserList.put(myParser.toLowerCase(cTemp.getNickname()), cTemp);
+			hChannelUserList.put(myParser.getIRCStringConverter().toLowerCase(cTemp.getNickname()), cTemp);
 		}
 		return cTemp;
 	}
@@ -345,7 +345,7 @@ public final class ChannelInfo {
 			if (clTemp != myParser.getMyself() && !clTemp.checkVisibility()) {
 				myParser.removeClient(clTemp);
 			}
-			hChannelUserList.remove(myParser.toLowerCase(cTemp.getNickname()));
+			hChannelUserList.remove(myParser.getIRCStringConverter().toLowerCase(cTemp.getNickname()));
 		}
 	}	
 	
@@ -364,7 +364,7 @@ public final class ChannelInfo {
 				hChannelUserList.remove(oldNickname);
 				// Add with the new key. (getNickname will return the new name not the
 				// old one)
-				hChannelUserList.put(myParser.toLowerCase(cTemp.getNickname()), cTemp);
+				hChannelUserList.put(myParser.getIRCStringConverter().toLowerCase(cTemp.getNickname()), cTemp);
 			}
 		}
 	}
@@ -520,7 +520,7 @@ public final class ChannelInfo {
 		}
 		final ArrayList<ChannelListModeItem> lModes = hListModes.get(cMode);
 		for (int i = 0; i < lModes.size(); i++) {
-			if (myParser.equalsIgnoreCase(lModes.get(i).getItem(), newItem.getItem())) { 
+			if (myParser.getIRCStringConverter().equalsIgnoreCase(lModes.get(i).getItem(), newItem.getItem())) { 
 				if (bAdd) { return; }
 				else { 
 					lModes.remove(i);
@@ -742,7 +742,7 @@ public final class ChannelInfo {
 	 *
 	 * @return String representation of the Channel.
 	 */
-    @Override
+	@Override
 	public String toString() { return sName; }
 	
 	/**

@@ -33,13 +33,13 @@ import com.dmdirc.parser.callbacks.CallbackOnQuit;
  */
 public class ProcessQuit extends IRCProcessor {
 
-    /**
+	/**
 	 * Process a Quit message.
 	 *
 	 * @param sParam Type of line to process ("QUIT")
 	 * @param token IRCTokenised line to process
 	 */
-    @Override
+	@Override
 	public void process(final String sParam, final String[] token) {
 		// :nick!ident@host QUIT
 		// :nick!ident@host QUIT :reason
@@ -88,11 +88,10 @@ public class ProcessQuit extends IRCProcessor {
 	 * @param cChannel Channel that user was on
 	 * @param cChannelClient User thats quitting
 	 * @param sReason Quit reason
-         * @return true if a method was called, false otherwise
+	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelQuit(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sReason) {
-		return ((CallbackOnChannelQuit) getCallbackManager()
-                .getCallbackType("OnChannelQuit")).call(cChannel, cChannelClient, sReason);
+		return ((CallbackOnChannelQuit) getCallbackManager().getCallbackType("OnChannelQuit")).call(cChannel, cChannelClient, sReason);
 	}
 	
 	/**
@@ -101,11 +100,10 @@ public class ProcessQuit extends IRCProcessor {
 	 * @see IQuit
 	 * @param cClient Client Quitting
 	 * @param sReason Reason for quitting (may be "")
-         * @return true if a method was called, false otherwise
+	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callQuit(final ClientInfo cClient, final String sReason) {
-		return ((CallbackOnQuit) getCallbackManager()
-                .getCallbackType("OnQuit")).call(cClient, sReason);
+		return ((CallbackOnQuit) getCallbackManager().getCallbackType("OnQuit")).call(cClient, sReason);
 	}
 	
 	/**
@@ -113,11 +111,9 @@ public class ProcessQuit extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
-    @Override
+	@Override
 	public String[] handles() {
-		String[] iHandle = new String[1];
-		iHandle[0] = "QUIT";
-		return iHandle;
+		return new String[]{"QUIT"};
 	} 
 	
 	/**

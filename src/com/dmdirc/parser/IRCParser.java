@@ -238,11 +238,11 @@ public class IRCParser implements Runnable {
 	/** This is the default TrustManager for SSL Sockets, it trusts all ssl certs. */
 	private final TrustManager[] trustAllCerts = {
 		new X509TrustManager() {
-            @Override
-            public X509Certificate[] getAcceptedIssuers() { return null;	}
-            @Override
+			@Override
+			public X509Certificate[] getAcceptedIssuers() { return null; }
+			@Override
 			public void checkClientTrusted(final X509Certificate[] certs, final String authType) { }
-            @Override
+			@Override
 			public void checkServerTrusted(final X509Certificate[] certs, final String authType) { }
 		},
 	};
@@ -432,8 +432,7 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callServerError(final String message) {
-		return ((CallbackOnServerError) myCallbackManager
-                .getCallbackType("OnServerError")).call(message);
+		return ((CallbackOnServerError) myCallbackManager.getCallbackType("OnServerError")).call(message);
 	}
 
 	/**
@@ -444,8 +443,7 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callDataIn(final String data) {
-		return ((CallbackOnDataIn) myCallbackManager
-                .getCallbackType("OnDataIn")).call(data);
+		return ((CallbackOnDataIn) myCallbackManager.getCallbackType("OnDataIn")).call(data);
 	}
 
 	/**
@@ -457,8 +455,7 @@ public class IRCParser implements Runnable {
 	 * @see com.dmdirc.parser.callbacks.interfaces.IDataOut
 	 */
 	protected boolean callDataOut(final String data, final boolean fromParser) {
-		return ((CallbackOnDataOut) myCallbackManager
-                .getCallbackType("OnDataOut")).call(data, fromParser);
+		return ((CallbackOnDataOut) myCallbackManager.getCallbackType("OnDataOut")).call(data, fromParser);
 	}
 
 	/**
@@ -482,8 +479,7 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callDebugInfo(final int level, final String data) {
-		return ((CallbackOnDebugInfo) myCallbackManager
-                .getCallbackType("OnDebugInfo")).call(level, data);
+		return ((CallbackOnDebugInfo) myCallbackManager.getCallbackType("OnDebugInfo")).call(level, data);
 	}
 
 	/**
@@ -494,8 +490,7 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callErrorInfo(final ParserError errorInfo) {
-		return ((CallbackOnErrorInfo) myCallbackManager
-                .getCallbackType("OnErrorInfo")).call(errorInfo);
+		return ((CallbackOnErrorInfo) myCallbackManager.getCallbackType("OnErrorInfo")).call(errorInfo);
 	}
 
 	/**
@@ -506,8 +501,7 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callConnectError(final ParserError errorInfo) {
-		return ((CallbackOnConnectError) myCallbackManager
-                .getCallbackType("OnConnectError")).call(errorInfo);
+		return ((CallbackOnConnectError) myCallbackManager.getCallbackType("OnConnectError")).call(errorInfo);
 	}
 
 	/**
@@ -517,8 +511,7 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callSocketClosed() {
-		return ((CallbackOnSocketClosed) myCallbackManager
-                .getCallbackType("OnSocketClosed")).call();
+		return ((CallbackOnSocketClosed) myCallbackManager.getCallbackType("OnSocketClosed")).call();
 	}
 
 	/**
@@ -528,8 +521,7 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callPingFailed() {
-		return ((CallbackOnPingFailed) myCallbackManager
-                .getCallbackType("OnPingFailed")).call();
+		return ((CallbackOnPingFailed) myCallbackManager.getCallbackType("OnPingFailed")).call();
 	}
 
 	/**
@@ -539,8 +531,7 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callPingSent() {
-		return ((CallbackOnPingSent) myCallbackManager
-                .getCallbackType("OnPingSent")).call();
+		return ((CallbackOnPingSent) myCallbackManager.getCallbackType("OnPingSent")).call();
 	}
 
 	/**
@@ -550,8 +541,7 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callPingSuccess() {
-		return ((CallbackOnPingSuccess) myCallbackManager
-                .getCallbackType("OnPingSuccess")).call();
+		return ((CallbackOnPingSuccess) myCallbackManager.getCallbackType("OnPingSuccess")).call();
 	}
 
 	/**
@@ -563,9 +553,8 @@ public class IRCParser implements Runnable {
 	protected synchronized boolean callPost005() {
 		if (post005) { return false; }
 		post005 = true;
-        
-		return ((CallbackOnPost005) getCallbackManager()
-                .getCallbackType("OnPost005")).call();
+		
+		return ((CallbackOnPost005) getCallbackManager().getCallbackType("OnPost005")).call();
 	}
 
 	//---------------------------------------------------------------------------
@@ -726,7 +715,7 @@ public class IRCParser implements Runnable {
 		} catch (UnknownHostException uhe) {
 			localhost = "*";
 		}
-		sendString("USER " + toLowerCase(me.getUsername()) + " "+localhost+" "+server.getHost()+" :" + me.getRealname());
+		sendString("USER " + getIRCStringConverter().toLowerCase(me.getUsername()) + " "+localhost+" "+server.getHost()+" :" + me.getRealname());
 	}
 
 	/**
@@ -808,7 +797,7 @@ public class IRCParser implements Runnable {
 	}
 
 	/** Close socket on destroy. */
-    @Override
+	@Override
 	protected void finalize() throws Throwable {
 		try { socket.close(); }
 		catch (IOException e) {
@@ -864,7 +853,7 @@ public class IRCParser implements Runnable {
 	 * @return ClientInfo Object for the client, or null
 	 */
 	public ClientInfo getClientInfo(final String sHost) {
-		final String sWho = toLowerCase(ClientInfo.parseHost(sHost));
+		final String sWho = getIRCStringConverter().toLowerCase(ClientInfo.parseHost(sHost));
 		if (hClientList.containsKey(sWho)) { return hClientList.get(sWho); }
 		else { return null; }
 	}
@@ -876,7 +865,7 @@ public class IRCParser implements Runnable {
 	 * @return ClientInfo Object for the client.
 	 */
 	public ClientInfo getClientInfoOrFake(final String sHost) {
-		final String sWho = toLowerCase(ClientInfo.parseHost(sHost));
+		final String sWho = getIRCStringConverter().toLowerCase(ClientInfo.parseHost(sHost));
 		if (hClientList.containsKey(sWho)) { return hClientList.get(sWho); }
 		else { return new ClientInfo(this, sHost).setFake(true); }
 	}
@@ -889,7 +878,7 @@ public class IRCParser implements Runnable {
 	 */
 	public ChannelInfo getChannelInfo(String sWhat) {
 		synchronized (hChannelList) {
-			sWhat = toLowerCase(sWhat);
+			sWhat = getIRCStringConverter().toLowerCase(sWhat);
 			if (hChannelList.containsKey(sWhat)) { return hChannelList.get(sWhat); } else { return null; }
 		}
 	}
@@ -1082,43 +1071,6 @@ public class IRCParser implements Runnable {
 	 */
 	protected void updateCharArrays(final byte limit) {
 		stringConverter = new IRCStringConverter(limit);
-	}
-
-	/**
-	 * Get the lowercase version of a String for this Server.
-	 *
-	 * @param input String to convert lowercase
-	 * @return input String converterd to lowercase
-     * @deprecated Use IRCStringConverter instead
-	 */
-    @Deprecated
-	public String toLowerCase(final String input) {
-		return getIRCStringConverter().toLowerCase(input);
-	}
-
-	/**
-	 * Get the uppercase version of a String for this Server.
-	 *
-	 * @param input String to convert uppercase
-	 * @return input String converterd to uppercase
-     * @deprecated Use IRCStringConverter instead
-	 */
-    @Deprecated
-	public String toUpperCase(final String input) {
-		return getIRCStringConverter().toUpperCase(input);
-	}
-
-	/**
-	 * Check if 2 strings are equal to each other ignoring case.
-	 *
-	 * @param first First string to check
-	 * @param second Second string to check
-	 * @return True if both strings are equal after being lowercased
-     * @deprecated Use IRCStringConverter instead
-	 */
-    @Deprecated
-	public boolean equalsIgnoreCase(final String first, final String second) {
-		return getIRCStringConverter().equalsIgnoreCase(first, second);
 	}
 
 	/**
@@ -1479,7 +1431,7 @@ public class IRCParser implements Runnable {
 		final String channelName;
 		if (isValidChannelName(sChannelName)) {
 			channelName = sChannelName;
-        } else {
+		} else {
 			if (autoPrefix) {
 				if (h005Info.containsKey("CHANTYPES")) {
 					final String chantypes = h005Info.get("CHANTYPES");
@@ -1734,7 +1686,7 @@ public class IRCParser implements Runnable {
 		// Check sChannelName is not empty or null
 		if (sChannelName == null || sChannelName.isEmpty()) { return false; }
 		// Check its not ourself (PM recieved before 005)
-		if (equalsIgnoreCase(getMyNickname(), sChannelName)) { return false; }
+		if (getIRCStringConverter().equalsIgnoreCase(getMyNickname(), sChannelName)) { return false; }
 		// Check if we are already on this channel
 		if (getChannelInfo(sChannelName) != null) { return true; }
 		// Check if we know of any valid chan prefixes
@@ -1999,7 +1951,7 @@ public class IRCParser implements Runnable {
 	 * @param client Client to add
 	 */
 	public void addClient(final ClientInfo client) {
-		hClientList.put(toLowerCase(client.getNickname()),client);
+		hClientList.put(getIRCStringConverter().toLowerCase(client.getNickname()),client);
 	}
 
 	/**
@@ -2021,7 +1973,7 @@ public class IRCParser implements Runnable {
 	 * @param client Client to remove
 	 */
 	protected void forceRemoveClient(final ClientInfo client) {
-		hClientList.remove(toLowerCase(client.getNickname()));
+		hClientList.remove(getIRCStringConverter().toLowerCase(client.getNickname()));
 	}
 
 	/**
@@ -2057,7 +2009,7 @@ public class IRCParser implements Runnable {
 	 */
 	public void addChannel(final ChannelInfo channel) {
 		synchronized (hChannelList) {
-			hChannelList.put(toLowerCase(channel.getName()), channel);
+			hChannelList.put(getIRCStringConverter().toLowerCase(channel.getName()), channel);
 		}
 	}
 
@@ -2068,7 +2020,7 @@ public class IRCParser implements Runnable {
 	 */
 	public void removeChannel(final ChannelInfo channel) {
 		synchronized (hChannelList) {
-			hChannelList.remove(toLowerCase(channel.getName()));
+			hChannelList.remove(getIRCStringConverter().toLowerCase(channel.getName()));
 		}
 	}
 

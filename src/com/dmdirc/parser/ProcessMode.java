@@ -43,7 +43,7 @@ public class ProcessMode extends IRCProcessor {
 	 * @param sParam Type of line to process ("MODE", "324")
 	 * @param token IRCTokenised line to process
 	 */
-    @Override
+	@Override
 	public void process(String sParam, String[] token) {
 		String[] sModestr;
 		String sChannelName;
@@ -98,7 +98,7 @@ public class ProcessMode extends IRCProcessor {
 		CallbackOnChannelSingleModeChanged cbSingle = null;
 		CallbackOnChannelNonUserModeChanged cbNonUser = null;
 
-        if (!sParam.equals("324")) {
+		if (!sParam.equals("324")) {
 			cbSingle = (CallbackOnChannelSingleModeChanged) getCallbackManager().getCallbackType("OnChannelSingleModeChanged");
 			cbNonUser = (CallbackOnChannelNonUserModeChanged) getCallbackManager().getCallbackType("OnChannelNonUserModeChanged");
 		}
@@ -276,11 +276,10 @@ public class ProcessMode extends IRCProcessor {
 	 * @param cChannelClient Client chaning the modes (null if server)
 	 * @param sHost Host doing the mode changing (User host or server name)
 	 * @param sModes Exact String parsed
-         * @return true if a method was called, false otherwise
+	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelModeChanged(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost, String sModes) {
-		return ((CallbackOnChannelModeChanged) getCallbackManager()
-                .getCallbackType("OnChannelModeChanged")).call(cChannel, cChannelClient, sHost, sModes);
+		return ((CallbackOnChannelModeChanged) getCallbackManager().getCallbackType("OnChannelModeChanged")).call(cChannel, cChannelClient, sHost, sModes);
 	}
 	
 	/**
@@ -292,11 +291,10 @@ public class ProcessMode extends IRCProcessor {
 	 * @param cSetByClient Client chaning the modes (null if server)
 	 * @param sMode String representing mode change (ie +o)
 	 * @param sHost Host doing the mode changing (User host or server name)
-         * @return true if a method was called, false otherwise
+	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelUserModeChanged(ChannelInfo cChannel, ChannelClientInfo cChangedClient, ChannelClientInfo cSetByClient, String sHost, String sMode) {
-		return ((CallbackOnChannelUserModeChanged) getCallbackManager()
-                .getCallbackType("OnChannelUserModeChanged")).call(cChannel, cChangedClient, cSetByClient, sHost, sMode);
+		return ((CallbackOnChannelUserModeChanged) getCallbackManager().getCallbackType("OnChannelUserModeChanged")).call(cChannel, cChangedClient, cSetByClient, sHost, sMode);
 	}
 	
 	/**
@@ -306,11 +304,10 @@ public class ProcessMode extends IRCProcessor {
 	 * @param cClient Client that had the mode changed (almost always us)
 	 * @param sSetby Host that set the mode (us or servername)
 	 * @param sModes The modes set.
-         * @return true if a method was called, false otherwise
+	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callUserModeChanged(ClientInfo cClient, String sSetby, String sModes) {
-		return ((CallbackOnUserModeChanged) getCallbackManager()
-                .getCallbackType("OnUserModeChanged")).call(cClient, sSetby, sModes);
+		return ((CallbackOnUserModeChanged) getCallbackManager().getCallbackType("OnUserModeChanged")).call(cClient, sSetby, sModes);
 	}
 	
 	/**
@@ -322,8 +319,7 @@ public class ProcessMode extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callUserModeDiscovered(ClientInfo cClient, String sModes) {
-		return ((CallbackOnUserModeDiscovered)getCallbackManager()
-                .getCallbackType("OnUserModeDiscovered")).call(cClient, sModes);
+		return ((CallbackOnUserModeDiscovered)getCallbackManager().getCallbackType("OnUserModeDiscovered")).call(cClient, sModes);
 	}	
 	
 	/**
@@ -331,13 +327,9 @@ public class ProcessMode extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
-    @Override
+	@Override
 	public String[] handles() {
-		String[] iHandle = new String[3];
-		iHandle[0] = "MODE";
-		iHandle[1] = "324";
-		iHandle[2] = "221";
-		return iHandle;
+		return new String[]{"MODE", "324", "221"};
 	} 
 	
 	/**

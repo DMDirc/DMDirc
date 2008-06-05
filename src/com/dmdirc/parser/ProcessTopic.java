@@ -36,7 +36,7 @@ public class ProcessTopic extends IRCProcessor {
 	 * @param sParam Type of line to process ("TOPIC", "332", "333")
 	 * @param token IRCTokenised line to process
 	 */
-    @Override
+	@Override
 	public void process(final String sParam, final String[] token) {
 		ChannelInfo iChannel;
 		if (sParam.equals("332")) {
@@ -76,11 +76,10 @@ public class ProcessTopic extends IRCProcessor {
 	 * @see IChannelTopic
 	 * @param cChannel Channel that topic was set on
 	 * @param bIsJoinTopic True when getting topic on join, false if set by user/server
-         * @return true if a method was called, false otherwise
+	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelTopic(final ChannelInfo cChannel, final boolean bIsJoinTopic) {
-		return ((CallbackOnChannelTopic) getCallbackManager()
-                .getCallbackType("OnChannelTopic")).call(cChannel, bIsJoinTopic);
+		return ((CallbackOnChannelTopic) getCallbackManager().getCallbackType("OnChannelTopic")).call(cChannel, bIsJoinTopic);
 	}
 	
 	/**
@@ -88,13 +87,9 @@ public class ProcessTopic extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
-    @Override
+	@Override
 	public String[] handles() {
-		String[] iHandle = new String[3];
-		iHandle[0] = "TOPIC";
-		iHandle[1] = "332";
-		iHandle[2] = "333";
-		return iHandle;
+		return new String[]{"TOPIC", "332", "333"};
 	} 
 	
 	/**

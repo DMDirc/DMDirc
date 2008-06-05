@@ -33,13 +33,13 @@ import com.dmdirc.parser.callbacks.CallbackOnMOTDStart;
  */
 public class ProcessMOTD extends IRCProcessor {
 
-    /**
+	/**
 	 * Process a MOTD Related Line.
 	 *
 	 * @param sParam Type of line to process ("375", "372", "376", "422")
 	 * @param token IRCTokenised line to process
 	 */
-    @Override
+	@Override
 	public void process(String sParam, String[] token) {
 		if (sParam.equals("375")) {
 			callMOTDStart(token[token.length-1]);
@@ -63,8 +63,7 @@ public class ProcessMOTD extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callMOTDEnd(final boolean noMOTD, final String data) {
-		return ((CallbackOnMOTDEnd) getCallbackManager()
-                .getCallbackType("OnMOTDEnd")).call(noMOTD, data);
+		return ((CallbackOnMOTDEnd) getCallbackManager().getCallbackType("OnMOTDEnd")).call(noMOTD, data);
 	}
 	
 	/**
@@ -75,8 +74,7 @@ public class ProcessMOTD extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callMOTDLine(final String data) {
-		return ((CallbackOnMOTDLine) getCallbackManager()
-                .getCallbackType("OnMOTDLine")).call(data);
+		return ((CallbackOnMOTDLine) getCallbackManager().getCallbackType("OnMOTDLine")).call(data);
 	}
 	
 	/**
@@ -87,8 +85,7 @@ public class ProcessMOTD extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callMOTDStart(String data) {
-		return ((CallbackOnMOTDStart) getCallbackManager()
-                .getCallbackType("OnMOTDStart")).call(data);
+		return ((CallbackOnMOTDStart) getCallbackManager().getCallbackType("OnMOTDStart")).call(data);
 	}
 	
 	/**
@@ -96,14 +93,9 @@ public class ProcessMOTD extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
-    @Override
+	@Override
 	public String[] handles() {
-		String[] iHandle = new String[4];
-		iHandle[0] = "372";
-		iHandle[1] = "375";
-		iHandle[2] = "376";
-		iHandle[3] = "422";
-		return iHandle;
+		return new String[]{"372", "375", "376", "422"};
 	} 
 	
 	/**

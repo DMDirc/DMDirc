@@ -31,13 +31,13 @@ import com.dmdirc.parser.callbacks.CallbackOnChannelKick;
  */
 public class ProcessKick extends IRCProcessor {
 
-    /**
+	/**
 	 * Process a channel kick.
 	 *
 	 * @param sParam Type of line to process ("KICK")
 	 * @param token IRCTokenised line to process
 	 */
-    @Override
+	@Override
 	public void process(final String sParam, final String[] token) {
 		ChannelClientInfo iChannelClient;
 		ChannelClientInfo iChannelKicker;
@@ -89,11 +89,10 @@ public class ProcessKick extends IRCProcessor {
 	 * @param cKickedByClient ChannelClient that did the kicking (may be null if server)
 	 * @param sReason Reason for kick (may be "")
 	 * @param sKickedByHost Hostname of Kicker (or servername)
-         * @return true if a method was called, false otherwise
+	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelKick(ChannelInfo cChannel, ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient, String sReason, String sKickedByHost) {
-		return ((CallbackOnChannelKick) getCallbackManager()
-                .getCallbackType("OnChannelKick")).call(cChannel, cKickedClient, cKickedByClient, sReason, sKickedByHost);
+		return ((CallbackOnChannelKick) getCallbackManager().getCallbackType("OnChannelKick")).call(cChannel, cKickedClient, cKickedByClient, sReason, sKickedByHost);
 	}
 	
 	/**
@@ -101,11 +100,9 @@ public class ProcessKick extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
-    @Override
+	@Override
 	public String[] handles() {
-		String[] iHandle = new String[1];
-		iHandle[0] = "KICK";
-		return iHandle;
+		return new String[]{"KICK"};
 	} 
 	
 	/**

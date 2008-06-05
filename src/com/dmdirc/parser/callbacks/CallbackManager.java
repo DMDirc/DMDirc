@@ -150,7 +150,7 @@ public final class CallbackManager {
 		if (!callbackHash.containsKey(callbackName.toLowerCase())) {
 			throw new CallbackNotFoundException("Callback not found: " + callbackName);
 		}
-        
+		
 		return callbackHash.get(callbackName.toLowerCase());
 	}
 	
@@ -187,12 +187,12 @@ public final class CallbackManager {
 	 */
 	public void addCallback(final String callbackName, final ICallbackInterface o) throws CallbackNotFoundException {
 		if (o == null) {
-            throw new NullPointerException("CallbackInterface is null");
-        }
-        
-        final CallbackObject cb = getCallbackType(callbackName);
+			throw new NullPointerException("CallbackInterface is null");
+		}
 		
-        if (cb != null) { cb.add(o); }
+		final CallbackObject cb = getCallbackType(callbackName);
+		
+		if (cb != null) { cb.add(o); }
 	}
 	
 	/**

@@ -87,8 +87,7 @@ public abstract class CallbackObject {
 	 * @return true if error call succeeded, false otherwise
 	 */
 	protected final boolean callErrorInfo(final ParserError errorInfo) {
-		return ((CallbackOnErrorInfo) myManager
-                .getCallbackType("OnErrorInfo")).call(errorInfo);
+		return ((CallbackOnErrorInfo) myManager.getCallbackType("OnErrorInfo")).call(errorInfo);
 	}
 	
 	/**

@@ -34,7 +34,7 @@ package com.dmdirc.parser;
  */
 public final class ChannelListModeItem {
 
-    /** The Item itself. */
+	/** The Item itself. */
 	private final String myItem;
 	
 	/** The Time the item was created. */
@@ -55,10 +55,10 @@ public final class ChannelListModeItem {
 		myTime = time;
 
 		if (!owner.isEmpty() && owner.charAt(0) == ':') {
-            myOwner = owner.substring(1);
-        } else {
-            myOwner = owner;
-        }
+			myOwner = owner.substring(1);
+		} else {
+			myOwner = owner;
+		}
 	}
 	
 	/**
@@ -87,9 +87,9 @@ public final class ChannelListModeItem {
 	*
 	* @return String representation of this object
 	*/
-    @Override
+	@Override
 	public String toString() {
-			return getItem();
+		return getItem();
 	}
 
 }

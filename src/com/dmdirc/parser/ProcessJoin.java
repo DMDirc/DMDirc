@@ -32,13 +32,13 @@ import com.dmdirc.parser.callbacks.CallbackOnChannelSelfJoin;
  */
 public class ProcessJoin extends IRCProcessor {
 
-    /**
+	/**
 	 * Process a channel join.
 	 *
 	 * @param sParam Type of line to process ("JOIN")
 	 * @param token IRCTokenised line to process
 	 */
-    @Override
+	@Override
 	public void process(final String sParam, final String[] token) {
 		if (sParam.equals("329")) {
 			if (token.length < 5) { return; }
@@ -111,8 +111,7 @@ public class ProcessJoin extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelJoin(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient) {
-		return ((CallbackOnChannelJoin)getCallbackManager()
-                .getCallbackType("OnChannelJoin")).call(cChannel, cChannelClient);
+		return ((CallbackOnChannelJoin)getCallbackManager().getCallbackType("OnChannelJoin")).call(cChannel, cChannelClient);
 	}
 	
 	/**
@@ -120,11 +119,10 @@ public class ProcessJoin extends IRCProcessor {
 	 *
 	 * @see IChannelSelfJoin
 	 * @param cChannel Channel Object
-         * @return true if a method was called, false otherwise
+	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelSelfJoin(final ChannelInfo cChannel) {
-		return ((CallbackOnChannelSelfJoin) getCallbackManager()
-                .getCallbackType("OnChannelSelfJoin")).call(cChannel);
+		return ((CallbackOnChannelSelfJoin) getCallbackManager().getCallbackType("OnChannelSelfJoin")).call(cChannel);
 	}
 	
 	/**
@@ -132,12 +130,9 @@ public class ProcessJoin extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
-    @Override
+	@Override
 	public String[] handles() {
-		String[] iHandle = new String[2];
-		iHandle[0] = "JOIN";
-		iHandle[1] = "329";
-		return iHandle;
+		return new String[]{"JOIN", "329"};
 	} 
 	
 	/**

@@ -179,7 +179,7 @@ public final class ClientInfo {
 	 *
 	 * @return String representation of the user.
 	 */
-    @Override
+	@Override
 	public String toString() { return sNickname + "!" + sIdent + "@" + sHost; }
 	
 	/**
@@ -188,14 +188,14 @@ public final class ClientInfo {
 	 * @return Known nickname for user.
 	 */
 	public String getNickname() { return sNickname; }
-    
+	
 	/**
 	 * Get the ident for this user.
 	 *
 	 * @return Known ident for user. (May be "")
 	 */		
 	public String getIdent() { return sIdent; }
-    
+	
 	/**
 	 * Get the hostname for this user.
 	 *
@@ -213,7 +213,7 @@ public final class ClientInfo {
 		bIsAway = bNewState;
 		if (!bIsAway) { myAwayReason = ""; }
 	}
-    
+	
 	/**
 	 * Get the away state of a user.
 	 *
@@ -227,7 +227,7 @@ public final class ClientInfo {
 	 * @return Known away reason for user.
 	 */
 	public String getAwayReason() { return myAwayReason; }
-    
+	
 	/**
 	 * Set the Away Reason for this user.
 	 * Automatically set to "" if awaystate is set to false
@@ -242,7 +242,7 @@ public final class ClientInfo {
 	 * @return Known RealName for user.
 	 */
 	public String getRealName() { return sRealName; }
-    
+	
 	/**
 	 * Set the RealName for this user.
 	 *
@@ -256,7 +256,7 @@ public final class ClientInfo {
 	 * @param nNewMode new long representing channel modes. (Boolean only)
 	 */	
 	protected void setUserMode(final long nNewMode) { nModes = nNewMode; }
-    
+	
 	/**
 	 * Get the user modes (as an integer).
 	 *
@@ -300,7 +300,7 @@ public final class ClientInfo {
 	 * @param cci ChannelClientInfo to add as a known reference
 	 */	
 	public void addChannelClientInfo(final ChannelClientInfo cci) {
-		final String key = myParser.toLowerCase(cci.getChannel().getName());
+		final String key = myParser.getIRCStringConverter().toLowerCase(cci.getChannel().getName());
 		if (!myChannelClientInfos.containsKey(key)) {
 			myChannelClientInfos.put(key, cci);
 		}
@@ -312,7 +312,7 @@ public final class ClientInfo {
 	 * @param cci ChannelClientInfo to remove as a known reference
 	 */	
 	public void delChannelClientInfo(final ChannelClientInfo cci) {
-		final String key = myParser.toLowerCase(cci.getChannel().getName());
+		final String key = myParser.getIRCStringConverter().toLowerCase(cci.getChannel().getName());
 		if (myChannelClientInfos.containsKey(key)) {
 			myChannelClientInfos.remove(key);
 		}

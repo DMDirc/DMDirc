@@ -191,7 +191,7 @@ public final class ChannelClientInfo {
 	 *
 	 * @return String Value of user (inc prefix) (ie @Nickname)
 	 */
-    @Override
+	@Override
 	public String toString() { 
 		return this.getImportantModePrefix() + this.getNickname();
 	}	
@@ -202,8 +202,7 @@ public final class ChannelClientInfo {
 	 * @param sReason Why are they being kicked? "" for no reason
 	 */
 	public void kick(final String sReason) {
-		myParser.sendString("KICK " + myChannel + " " + this.getNickname()
-                + (sReason.isEmpty() ? sReason : " :" + sReason));
+		myParser.sendString("KICK " + myChannel + " " + this.getNickname() + (sReason.isEmpty() ? sReason : " :" + sReason));
 	}
 	
 	/**

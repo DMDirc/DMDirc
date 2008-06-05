@@ -48,7 +48,7 @@ public class ProcessNickInUse extends IRCProcessor {
 	 * @param sParam Type of line to process ("433")
 	 * @param token IRCTokenised line to process
 	 */
-    @Override
+	@Override
 	public void process(final String sParam, final String[] token) {
 		if (!callNickInUse(token[3])) {
 			// Manually handle nick in use.
@@ -57,10 +57,10 @@ public class ProcessNickInUse extends IRCProcessor {
 				callDebugInfo(IRCParser.DEBUG_INFO,"Using inbuilt handler");
 				// If this is before 001 we will try and get a nickname, else we will leave the nick as-is
 				if (myParser.triedAlt) {
-					if (myParser.equalsIgnoreCase(myParser.sThinkNickname, myParser.me.getAltNickname())) {
+					if (myParser.getIRCStringConverter().equalsIgnoreCase(myParser.sThinkNickname, myParser.me.getAltNickname())) {
 						myParser.sThinkNickname = myParser.me.getNickname();
 					}
-					myParser.setNickname(myParser.me.getPrependChar()+myParser.sThinkNickname);                                    
+					myParser.setNickname(myParser.me.getPrependChar()+myParser.sThinkNickname);
 				} else {
 					myParser.setNickname(myParser.me.getAltNickname());
 					myParser.triedAlt = true; 
@@ -74,11 +74,10 @@ public class ProcessNickInUse extends IRCProcessor {
 	 *
 	 * @param nickname Nickname that was wanted.
 	 * @see INickInUse
-         * @return true if a method was called, false otherwise
+	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callNickInUse(final String nickname) {
-		return ((CallbackOnNickInUse) getCallbackManager()
-                .getCallbackType("OnNickInUse")).call(nickname);
+		return ((CallbackOnNickInUse) getCallbackManager().getCallbackType("OnNickInUse")).call(nickname);
 	}
 	
 	/**
@@ -86,12 +85,10 @@ public class ProcessNickInUse extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
-    @Override
+	@Override
 	public String[] handles() {
-		String[] iHandle = new String[1];
-		iHandle[0] = "433";
-		return iHandle;
-	} 
+		return new String[]{"433"};
+	}
 	
 	/**
 	 * Create a new instance of the ProcessNickInUse Object.

@@ -41,7 +41,7 @@ public class ProcessListModes extends IRCProcessor {
 	 * @param token IRCTokenised line to process
 	 */
 	@SuppressWarnings("unchecked")
-    @Override
+	@Override
 	public void process(String sParam, String[] token) {
 		ChannelInfo channel = getChannelInfo(token[3]);
 		String thisIRCD = myParser.getIRCD(true).toLowerCase();
@@ -157,10 +157,9 @@ public class ProcessListModes extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
-    @Override
+	@Override
 	public String[] handles() {
-		String[] iHandle = new String[10];
-		int i = 0;
+		/*
 		// Ban List - All IRCds
 		iHandle[i++] = "367"; // Item
 		iHandle[i++] = "368"; // End
@@ -186,8 +185,8 @@ public class ProcessListModes extends IRCProcessor {
 		iHandle[i++] = "482"; // End
 		
 		// This is here to allow finding the processor for adding LISTMODE support
-		iHandle[i++] = "__LISTMODE__";
-		return iHandle;
+		iHandle[i++] = "__LISTMODE__"; */
+		return new String[]{"367", "368", "344", "345", "346", "347", "348", "349", "482", "__LISTMODE__"};
 	}
 	
 	/**
@@ -198,8 +197,7 @@ public class ProcessListModes extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelGotListModes(ChannelInfo cChannel) {
-		return ((CallbackOnChannelGotListModes) getCallbackManager()
-                .getCallbackType("OnChannelGotListModes")).call(cChannel);
+		return ((CallbackOnChannelGotListModes) getCallbackManager().getCallbackType("OnChannelGotListModes")).call(cChannel);
 	}
 	
 	/**

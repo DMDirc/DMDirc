@@ -37,7 +37,7 @@ public class ProcessNick extends IRCProcessor {
 	 * @param sParam Type of line to process ("NICK")
 	 * @param token IRCTokenised line to process
 	 */
-    @Override
+	@Override
 	public void process(String sParam, String[] token) {
 		ClientInfo iClient;
 		ChannelClientInfo iChannelClient;
@@ -45,9 +45,9 @@ public class ProcessNick extends IRCProcessor {
 		
 		iClient = getClientInfo(token[0]);
 		if (iClient != null) {
-			oldNickname = myParser.toLowerCase(iClient.getNickname());
+			oldNickname = myParser.getIRCStringConverter().toLowerCase(iClient.getNickname());
 			// Remove the client from the known clients list
-			final boolean isSameNick = myParser.equalsIgnoreCase(oldNickname, token[token.length-1]);
+			final boolean isSameNick = myParser.getIRCStringConverter().equalsIgnoreCase(oldNickname, token[token.length-1]);
 			
 			if (!isSameNick) {
 				myParser.forceRemoveClient(getClientInfo(oldNickname));
@@ -90,11 +90,10 @@ public class ProcessNick extends IRCProcessor {
 	 * @param cChannel One of the channels that the user is on
 	 * @param cChannelClient Client changing nickname
 	 * @param sOldNick Nickname before change
-         * @return true if a method was called, false otherwise
+	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelNickChanged(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sOldNick) {
-		return ((CallbackOnChannelNickChanged) getCallbackManager()
-                .getCallbackType("OnChannelNickChanged")).call(cChannel, cChannelClient, sOldNick);
+		return ((CallbackOnChannelNickChanged) getCallbackManager().getCallbackType("OnChannelNickChanged")).call(cChannel, cChannelClient, sOldNick);
 	}
 	
 	/**
@@ -103,11 +102,10 @@ public class ProcessNick extends IRCProcessor {
 	 * @see INickChanged
 	 * @param cClient Client changing nickname
 	 * @param sOldNick Nickname before change
-         * @return true if a method was called, false otherwise
+	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callNickChanged(ClientInfo cClient, String sOldNick) {
-		return ((CallbackOnNickChanged) getCallbackManager()
-                .getCallbackType("OnNickChanged")).call(cClient, sOldNick);
+		return ((CallbackOnNickChanged) getCallbackManager().getCallbackType("OnNickChanged")).call(cClient, sOldNick);
 	}
 	
 	/**
@@ -115,11 +113,9 @@ public class ProcessNick extends IRCProcessor {
 	 *
 	 * @return String[] with the names of the tokens we handle.
 	 */
-    @Override
+	@Override
 	public String[] handles() {
-		String[] iHandle = new String[1];
-		iHandle[0] = "NICK";
-		return iHandle;
+		return new String[]{"NICK"};
 	} 
 	
 	/**
