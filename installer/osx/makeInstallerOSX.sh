@@ -39,7 +39,9 @@ LINUXIMAGEDIR=${PWD}/dmg
 # fstab entry should read:
 # ${LINUXIMAGE} ${LINUXIMAGEDIR} auto users,noauto,loop 0 0
 
-
+MKISOFS=`which mkisofs`
+MKISOFS_WORKS="0"
+PREFER_MKISOFS="1"
 MKHFS=`which mkfs.hfs`
 MKHFSPLUS=`which mkfs.hfsplus`
 HDIUTIL=`which hdiutil`
@@ -60,10 +62,23 @@ if [ ! -e "${JNIName}" ]; then
 	fi;
 fi;
 
+USE_MKISOFS="0"
+if [ "" != "${MKISOFS}" ]; then
+	MKISOFS_TEST=`${MKISOFS} --help 2>&1 | grep apple`
+	if [ "" != "${MKISOFS_TEST}" ]; then
+		MKISOFS_WORKS="1"
+		USE_MKISOFS="${PREFER_MKISOFS}"
+	fi;
+fi
+
 if [ "" = "${HDIUTIL}" ]; then
 	if [ "" = "${MKHFS}" -a "" = "${MKHFSPLUS}" ]; then
-		echo "This machine is unable to produce dmg images. Aborting."
-		exit 1;
+		if [ "1" != "${MKISOFS_WORKS}" ]; then
+			echo "This machine is unable to produce dmg images. Aborting."
+			exit 1;
+		else
+			USE_MKISOFS="1"
+		fi;
 	fi;
 fi;
 
@@ -371,86 +386,96 @@ if [ "" = "${HDIUTIL}" ]; then
 	IMGBLOCKSIZE=4096 # OSX Default = 4096
 	MVRES=0
 	createImage() {
-		MVRES=0
-		SIZE=${1}
-		if [ "" = "${MKHFS}" -a "" != "${MKHFSPLUS}" ]; then
-			MKHFS=${MKHFSPLUS}
-		fi;
-		# mkfs.hfs will only create 512kb+ sized images
-		if [ ${SIZE} -lt 524288 ]; then
-			echo "Size is less than 512kb"
-			SIZE=524288;
-		fi;
-		dd if=/dev/zero of=${LINUXIMAGE} bs=${SIZE} count=1
-		${MKHFS} -b ${IMGBLOCKSIZE} -v 'DMDirc' ${LINUXIMAGE}
-		if [ ${?} -ne 0 ]; then
-			echo "mkfs.hfs failed to create the image, aborting."
-			exit 1;
-		fi;
-		# Now try and mount
-		# This could be a problem, as linux requires either root to mount, or an fstab
-		# entry.
-		# Try to mount, if this fails, let the user know what to add to fstab.
-		if [ -e ${LINUXIMAGEDIR} ]; then
-			rm -Rf ${LINUXIMAGEDIR}
-		fi;
-		mkdir ${LINUXIMAGEDIR}
-		mount ${LINUXIMAGEDIR}
-		MOUNTRES=${?}
-		if [ ${MOUNTRES} -ne 0 ]; then
-			# Try using full parameters - could be running as root.
-			mount -t hfsplus -o loop ${RUNNAME} ${LINUXIMAGEDIR}
-			MOUNTRES=${?}
-		fi;
-		if [ ${MOUNTRES} -ne 0 ]; then
-			echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-			echo "@                               ERROR                               @"
-			echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-			echo "You do not have permission to mount the image."
-			echo "Please add the following lines to /etc/fstab and re run this script again"
-			echo "# DMDirc OSX dmg image"
-			echo "${LINUXIMAGE} ${LINUXIMAGEDIR} auto users,noauto,loop 0 0"
-			echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-			echo "@                               ERROR                               @"
-			echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-			exit 1;
-		fi;
-		mv -fv ${DMG}/* ${LINUXIMAGEDIR}
-		MVRES=${?}
-		if [ ${MVRES} -ne 0 ]; then
-			echo "Image incorrect size."
+		if [ "1" = "${USE_MKISOFS}" ]; then
+			# http://lists.apple.com/archives/java-dev/2008/Mar/msg00266.html
+			
+			${MKISOFS} -V 'DMDirc' -no-pad -r -z -apple -o "${LINUXIMAGE}" -hfs-creator "DMDI" -hfs-bless "/Volumes/DMDirc" "${DMG}"
 		else
-			mv -fv ${DMG}/.[A-Za-z]* ${LINUXIMAGEDIR}
+			MVRES=0
+			SIZE=${1}
+			if [ "" = "${MKHFS}" -a "" != "${MKHFSPLUS}" ]; then
+				MKHFS=${MKHFSPLUS}
+			fi;
+			# mkfs.hfs will only create 512kb+ sized images
+			if [ ${SIZE} -lt 524288 ]; then
+				echo "Size is less than 512kb"
+				SIZE=524288;
+			fi;
+			dd if=/dev/zero of=${LINUXIMAGE} bs=${SIZE} count=1
+			${MKHFS} -b ${IMGBLOCKSIZE} -v 'DMDirc' ${LINUXIMAGE}
+			if [ ${?} -ne 0 ]; then
+				echo "mkfs.hfs failed to create the image, aborting."
+				exit 1;
+			fi;
+			# Now try and mount
+			# This could be a problem, as linux requires either root to mount, or an fstab
+			# entry.
+			# Try to mount, if this fails, let the user know what to add to fstab.
+			if [ -e ${LINUXIMAGEDIR} ]; then
+				rm -Rf ${LINUXIMAGEDIR}
+			fi;
+			mkdir ${LINUXIMAGEDIR}
+			mount ${LINUXIMAGEDIR}
+			MOUNTRES=${?}
+			if [ ${MOUNTRES} -ne 0 ]; then
+				# Try using full parameters - could be running as root.
+				mount -t hfsplus -o loop ${RUNNAME} ${LINUXIMAGEDIR}
+				MOUNTRES=${?}
+			fi;
+			if [ ${MOUNTRES} -ne 0 ]; then
+				echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+				echo "@                               ERROR                               @"
+				echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+				echo "You do not have permission to mount the image."
+				echo "Please add the following lines to /etc/fstab and re run this script again"
+				echo "# DMDirc OSX dmg image"
+				echo "${LINUXIMAGE} ${LINUXIMAGEDIR} auto users,noauto,loop 0 0"
+				echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+				echo "@                               ERROR                               @"
+				echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+				exit 1;
+			fi;
+			mv -fv ${DMG}/* ${LINUXIMAGEDIR}
 			MVRES=${?}
 			if [ ${MVRES} -ne 0 ]; then
 				echo "Image incorrect size."
+			else
+				mv -fv ${DMG}/.[A-Za-z]* ${LINUXIMAGEDIR}
+				MVRES=${?}
+				if [ ${MVRES} -ne 0 ]; then
+					echo "Image incorrect size."
+				fi;
 			fi;
+			umount ${LINUXIMAGEDIR}
+			# If anyone finds out how to compress these nicely, add it here.
 		fi;
-		umount ${LINUXIMAGEDIR}
-		# If anyone finds out how to compress these nicely, add it here.
 	}
 	
-	INCREASE=10
-	IMAGESIZE=$(((`du -s --block-size ${IMGBLOCKSIZE} ${DMG} | awk '{print $1}'` + ${INCREASE}) * ${IMGBLOCKSIZE} ))
-	createImage ${IMAGESIZE}
-	
-	# This sucks, but it makes sure the image gets created at a size that contains
-	# everything.
-	# I can't manage to get du to return the size that the files actually end up
-	# using on the image.
-	TRIES=0
-	while [ ${MVRES} -ne 0 -a ${TRIES} -ne 5 ]; do
-		TRIES=$((${TRIES} + 1))
-		echo "Previous ImageSize of ${IMAGESIZE} failed"
-		INCREASE=$((${INCREASE} + 5))
+	if [ "1" = "${USE_MKISOFS}" ]; then
+		createImage
+	else
+		INCREASE=10
 		IMAGESIZE=$(((`du -s --block-size ${IMGBLOCKSIZE} ${DMG} | awk '{print $1}'` + ${INCREASE}) * ${IMGBLOCKSIZE} ))
-		echo "Trying to build with ImageSize ${IMAGESIZE}"
 		createImage ${IMAGESIZE}
-	done;
-	
-	if [ ${MVRES} -ne 0 ]; then
-		echo "OSX Build Failed - Imagesize: ${IMAGESIZE}"
-		exit 1;
+		
+		# This sucks, but it makes sure the image gets created at a size that contains
+		# everything.
+		# I can't manage to get du to return the size that the files actually end up
+		# using on the image.
+		TRIES=0
+		while [ ${MVRES} -ne 0 -a ${TRIES} -ne 5 ]; do
+			TRIES=$((${TRIES} + 1))
+			echo "Previous ImageSize of ${IMAGESIZE} failed"
+			INCREASE=$((${INCREASE} + 5))
+			IMAGESIZE=$(((`du -s --block-size ${IMGBLOCKSIZE} ${DMG} | awk '{print $1}'` + ${INCREASE}) * ${IMGBLOCKSIZE} ))
+			echo "Trying to build with ImageSize ${IMAGESIZE}"
+			createImage ${IMAGESIZE}
+		done;
+		
+		if [ ${MVRES} -ne 0 ]; then
+			echo "OSX Build Failed - Imagesize: ${IMAGESIZE}"
+			exit 1;
+		fi;
 	fi;
 	
 	if [ "${LINUXIMAGE}" != "${RUNNAME}" ]; then

@@ -173,72 +173,6 @@ echo "Removing existing releases from output directory"
 echo "================================================================"
 rm -Rf output/*.run output/*.exe output/*.dmg
 
-# OSX doesn't use the installer
-# and neither does anything else now,
-#if [ "osx" != "${BUILDTARGET}" ]; then
-#	echo "================================================================"
-#	echo "Building Installer JAR "
-#	echo "================================================================"
-#	mkdir -p installer_temp/build
-#	cd installer_temp
-#	ln -sf ../../src/com
-#	ln -sf ../../src/net
-#	# I don't know why, but -d doesn't nicely put ALL generated class files here,
-#	# just those that were in the dir of the java file that was requested for compile
-#	# So we specify each of the different ones we want built into the jar file here.
-#	FILELIST="com/dmdirc/installer/*.java"
-#	FILELIST=${FILELIST}" com/dmdirc/installer/cliparser/*.java"
-#	FILELIST=${FILELIST}" com/dmdirc/ui/swing/dialogs/wizard/*.java"
-#	FILELIST=${FILELIST}" com/dmdirc/ui/interfaces/MainWindow.java"
-#	FILELIST=${FILELIST}" com/dmdirc/ui/swing/MainFrame.java"
-#	FILELIST=${FILELIST}" com/dmdirc/ui/swing/UIUtilities.java"
-#	FILELIST=${FILELIST}" com/dmdirc/ui/swing/UIUtilities.java"
-#	FILELIST=${FILELIST}" com/dmdirc/ui/swing/components/StandardDialog.java"
-#	FILELIST=${FILELIST}" com/dmdirc/util/ListenerList.java"
-#	FILELIST=${FILELIST}" com/dmdirc/util/WeakMapList.java"
-#	FILELIST=${FILELIST}" com/dmdirc/util/MapList.java"
-#	FILELIST=${FILELIST}" com/dmdirc/ui/swing/components/EtchedLineBorder.java"
-#	FILELIST=${FILELIST}" com/dmdirc/util/EquatableWeakReference.java"
-#	FILELIST=${FILELIST}" com/dmdirc/ui/swing/components/JWrappingLabel.java"
-#	FILELIST=${FILELIST}" com/dmdirc/util/WeakList.java"
-#	FILELIST=${FILELIST}" net/miginfocom/layout/*.java"
-#	FILELIST=${FILELIST}" net/miginfocom/swing/*.java"
-#	
-#	${JAVAC} -d ./build ${FILELIST}
-#	
-#	if [ $? -ne 0 ]; then
-#		echo "================================================================"
-#		echo "Building installer failed."
-#		echo "================================================================"
-#		cd ${THISDIR}
-#		rm -Rf installer_temp
-#		exit 1;
-#	fi
-#	
-#	cd build
-#	echo "Manifest-Version: 1.0" > manifest.txt
-#	echo "Created-By: DMDirc Installer" >> manifest.txt
-#	echo "Main-Class: com.dmdirc.installer.Main" >> manifest.txt
-#	echo "Class-Path: " >> manifest.txt
-#	echo "" >> manifest.txt
-#	${JAR} cmf manifest.txt installer.jar com net
-#	if [ $? -ne 0 ]; then
-#		echo "================================================================"
-#		echo "Building installer failed."
-#		echo "================================================================"
-#		cd ${THISDIR}
-#		rm -Rf installer_temp
-#		exit 1;
-#	else
-#		rm -Rf ${THISDIR}/common/installer.jar
-#		mv installer.jar ${THISDIR}/common/installer.jar
-#	fi
-#	
-#	cd ${THISDIR}
-#	rm -Rf installer_temp
-#fi;
-
-
 # Copy default settings from www to trunk for compile (if they exist, and we are
 # building a new jar)
 REVERTLIST=""
@@ -302,22 +236,6 @@ if [ "osx" = "${BUILDTARGET}" -o "" = "${BUILDTARGET}" ]; then
 	cd ${THISDIR}
 fi;
 
-#MD5BIN=`which md5sum`
-#if [ "${MD5BIN}" != "" ]; then
-#	echo "================================================================"
-#	echo "Creating MD5SUM files"
-#	echo "================================================================"
-#	cd output
-#	for outputFile in *; do
-#		if [ "${outputFile##*.}" != "md5" ]; then
-#			if [ -e "${outputFile}.md5" ]; then
-#				rm -f "${outputFile}.md5"
-#			fi
-#			${MD5BIN} "${outputFile}" > "${outputFile}.md5"
-#		fi
-#	done
-#	cd ${THISDIR}
-#fi
 
 echo "================================================================"
 echo "Clean Up"
@@ -328,7 +246,7 @@ for updatedir in ${REVERTLIST}; do
 	${SVN} revert ${updatedir}/*
 done;
 
-if [ "1" = "${UPLOAD}" && "1" = "${TAG}" ]; then
+if [ "1" = "${UPLOAD}" -a "1" = "${TAG}" ]; then
 	echo "================================================================"
 	echo "Uploading to GoogleCode"
 	echo "================================================================"
