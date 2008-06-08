@@ -148,7 +148,7 @@ public abstract class StandardInputDialog extends StandardDialog {
             @Override
             public void windowClosed(WindowEvent e) {
                 cancelled();
-                dispose();
+                //dispose();
             }
         });
         textField.getDocument().addDocumentListener(new DocumentListener() {
