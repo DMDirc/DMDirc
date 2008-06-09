@@ -189,7 +189,18 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     @Override
     public void addWindow(final FrameContainer parent,
             final FrameContainer window) {
-        addWindow(nodes.get(parent), window);
+        final Runnable runnable = new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                addWindow(nodes.get(parent), window);
+            }
+        };
+        if (SwingUtilities.isEventDispatchThread()) {
+            runnable.run();
+        }
+        SwingUtilities.invokeLater(runnable);
     }
 
     /** {@inheritDoc} */

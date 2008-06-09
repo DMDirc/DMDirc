@@ -28,6 +28,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.components.TreeScroller;
 import com.dmdirc.ui.swing.framemanager.tree.TreeViewModel;
 
@@ -158,7 +159,18 @@ public final class CtrlTabFrameManager implements FrameManager,
     @Override
     public void addWindow(final FrameContainer parent,
             final FrameContainer window) {
-        addWindow(nodes.get(parent), window);
+        final Runnable runnable = new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                addWindow(nodes.get(parent), window);
+            }
+        };
+        if (SwingUtilities.isEventDispatchThread()) {
+            runnable.run();
+        }
+        SwingUtilities.invokeLater(runnable);
     }
 
     /** {@inheritDoc} */
