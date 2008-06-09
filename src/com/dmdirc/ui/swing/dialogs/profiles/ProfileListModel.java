@@ -127,6 +127,15 @@ public class ProfileListModel extends AbstractListModel implements Iterable<Prof
     public Profile get(int index) {
         return profiles.get(index);
     }
+    
+    /**
+     * Returns a list of all profiles
+     * 
+     * @return Profile list
+     */
+    public List<Profile> getProfiles() {
+        return new ArrayList<Profile>(profiles);
+    }
 
     /**
      *
@@ -209,13 +218,19 @@ public class ProfileListModel extends AbstractListModel implements Iterable<Prof
 
     /** {@inheritDoc} */
     @Override
-    public boolean equals(Object o) {
-        return profiles.equals(o);
+    public boolean equals(Object obj) {
+        return profiles.equals(obj);
     }
 
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return profiles.hashCode();
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return profiles.toString();
     }
 }
