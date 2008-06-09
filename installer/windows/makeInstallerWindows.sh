@@ -324,7 +324,7 @@ fi
 
 # Shortcut.exe is from http://www.optimumx.com/download/#Shortcut
 if [ ! -e Shortcut.exe ]; then
-	wget http://www.optimumx.com/download/Shortcut.zip
+	wget http://shanemcc.co.uk/dmdirc-binaries/Shortcut.zip
 	unzip -q Shortcut.zip Shortcut.exe
 	rm Shortcut.zip
 fi
@@ -476,7 +476,7 @@ fi
 
 # Add wget to allow downloading jre
 if [ ! -e "wget.exe" ]; then
-	wget "http://users.ugent.be/~bpuype/cgi-bin/fetch.pl?dl=wget/wget.exe"
+	wget http://shanemcc.co.uk/dmdirc-binaries/wget.exe
 fi;
 
 if [ ! -e "wget.exe" ]; then
@@ -502,9 +502,7 @@ echo ";!@InstallEnd@!" >> 7zip.conf
 
 if [ ! -e "7zS.sfx" ]; then
 	echo "Obtaining sfx stub.."
-	wget http://downloads.sourceforge.net/sevenzip/7z452_extra.tar.bz2 -O 7zextra.tar.bz2
-	tar -jxvf 7zextra.tar.bz2 7zS.sfx
-	rm 7zextra.tar.bz2
+	wget http://shanemcc.co.uk/dmdirc-binaries/7zS.sfx
 fi
 
 if [ ! -e "7zS.sfx" ]; then
