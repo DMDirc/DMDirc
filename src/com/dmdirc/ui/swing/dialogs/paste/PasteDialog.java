@@ -42,10 +42,9 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-import net.miginfocom.layout.ComponentWrapper;
-import net.miginfocom.layout.LayoutCallback;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -92,6 +91,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         getOkButton().requestFocus();
         getOkButton().setSelected(true);
 
+        pack();
         setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
     }
 
@@ -125,14 +125,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         scrollPane.setViewportView(textField);
         scrollPane.setVisible(false);
 
-        getContentPane().setLayout(new MigLayout("fill, hidemode 3, pack"));
-        ((MigLayout) getContentPane().getLayout()).addLayoutCallback(new LayoutCallback() {
-
-            @Override
-            public void correctBounds(ComponentWrapper comp) {
-                setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
-            }
-        });
+        getContentPane().setLayout(new MigLayout("fill, hidemode 3"));
         getContentPane().add(infoLabel, "wrap, growx, pushx, span 3");
         getContentPane().add(scrollPane, "wrap, grow, push, span 3");
         getContentPane().add(getLeftButton(), "right, sg button");
@@ -221,24 +214,43 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
             scrollPane.setVisible(true);
             infoLabel.setText("This will be sent as " + parent.getContainer().getNumLines(textField.getText()) + " lines.");
             pack();
+            SwingUtilities.invokeLater(new Runnable(){
+
+                @Override
+                public void run() {
+                    setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+                }
+            });
         } else if (getCancelButton().equals(actionEvent.getSource())) {
             dispose();
         }
     }
     
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Key event
+     */
     @Override
     public void keyTyped(final KeyEvent e) {
         infoLabel.setText("This will be sent as " + parent.getContainer().getNumLines(textField.getText()) + " lines.");
     }
 
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Key event
+     */
     @Override
     public void keyPressed(final KeyEvent e) {
         //Ignore.
     }
 
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Key event
+     */
     @Override
     public void keyReleased(final KeyEvent e) {
         //Ignore.
