@@ -31,6 +31,8 @@ import java.util.List;
 /** Profile wrapper class. */
 public class Profile {
 
+    /** Old Name. */
+    private String oldName;
     /** Name. */
     private String name;
     /** Nickname. */
@@ -122,6 +124,7 @@ public class Profile {
     public Profile(final String name, final String nickname,
             final String realname, final String ident,
             final List<String> altNicknames, final boolean modified) {
+        this.oldName = null;
         this.name = name;
         this.nickname = nickname;
         this.realname = realname;
@@ -146,6 +149,7 @@ public class Profile {
      */
     public void setName(final String name) {
         if (!this.name.equals(name)) {
+            this.oldName = this.name;
             this.name = name;
             setModified(true);
         }
@@ -297,7 +301,7 @@ public class Profile {
             Identity profile = null;
 
             for (Identity identity : identities) {
-                if (identity.getName().equals(name)) {
+                if (identity.getName().equals(oldName)) {
                     profile = identity;
                     break;
                 }
@@ -314,6 +318,8 @@ public class Profile {
             profile.setOption(profileString, "realname", realname);
             profile.setOption(profileString, "ident", ident);
             profile.setOption(profileString, "altnicks", altNicknames);
+            modified = false;
+            this.oldName = null;
         }
     }
 
