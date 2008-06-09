@@ -157,6 +157,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 			} else {
 				button.setText("Close Window");
 			}
+			status.setText("Status: Cancelled");
 			dcc.close();
 		} else if (e.getActionCommand().equals("Resend")) {
 			button.setText("Cancel");
