@@ -42,8 +42,8 @@ import javax.swing.JOptionPane;
  * @author Shane Mc Cormack
  */
 public final class Main implements WizardListener {
-
-    /** Wizard dialog. */
+	
+	/** Wizard dialog. */
 	private static WizardFrame wizardDialog;
 	
 	/** Installer. */
@@ -51,7 +51,7 @@ public final class Main implements WizardListener {
 	
 	/** CLI Parser. */
 	private static CLIParser cli = CLIParser.getCLIParser();
-
+	
 	/**
 	 * Creates and Displays the Installer wizard.
 	 */
@@ -68,7 +68,7 @@ public final class Main implements WizardListener {
 		}
 		
 		setWizardFrame(new WizardFrame(releaseName + " Installer", new ArrayList<Step>(), this));
-        wizardDialog.setIconImage(IconManager.getIconManager().getImage("icon"));
+		wizardDialog.setIconImage(IconManager.getIconManager().getImage("icon"));
 		wizardDialog.setPreferredSize(new Dimension(400, 350));
 		wizardDialog.addWizardListener(this);
 
@@ -77,16 +77,18 @@ public final class Main implements WizardListener {
 		if (osName.startsWith("Mac OS")) {
 			wizardDialog.addStep(new StepError("Sorry, OSX Installation should be done using the downloadable dmg file, not this installer.\n\n"));
 		} else {
-			wizardDialog.addStep(new StepSettings());
-			wizardDialog.addStep(new StepConfirm(wizardDialog));
+			if (CLIParser.getCLIParser().getParamNumber("-unattended") == 0) {
+				wizardDialog.addStep(new StepSettings());
+				wizardDialog.addStep(new StepConfirm(wizardDialog));
+			}
 			wizardDialog.addStep(new StepInstall(wizardDialog));
 		}
 	}
-    
+		
 	/**
 	 * Called when the wizard finishes.
 	 */
-    @Override
+	@Override
 	public void wizardFinished() {
 		final Thread temp = myInstaller;
 		myInstaller = null;
@@ -97,17 +99,17 @@ public final class Main implements WizardListener {
 	/**
 	 * Called when the wizard is cancelled.
 	 */
-    @Override
+	@Override
 	public void wizardCancelled() {	
 		if (wizardDialog.getCurrentStep() != 3 && JOptionPane.showConfirmDialog(wizardDialog, "Are you sure you want to cancel?", "Cancel confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
 			wizardDialog.dispose();
 		}
-	}    
+	}
 	
 	/**
 	 * Get the Installer object for this OS.
-     * 
-     * @return The installer for this OS
+	 *
+	 * @return The installer for this OS
 	 */
 	public static synchronized Installer getInstaller() {
 		if (myInstaller == null) {
@@ -133,6 +135,11 @@ public final class Main implements WizardListener {
 		cli.add(new BooleanParam((char) 0, "isroot", "Installing as Root"));
 		cli.add(new StringParam('r', "release", "Release Name"));
 		cli.add(new StringParam('d', "directory", "Default install directory"));
+		cli.add(new BooleanParam('u', "unattended", "Perform an unattended installation"));
+		cli.add(new BooleanParam((char) 0, "no-shortcut-desktop", "Don't offer a desktop shortcut as the default"));
+		cli.add(new BooleanParam((char) 0, "no-shortcut-menu", "Don't offer a menu shortcut as the default"));
+		cli.add(new BooleanParam((char) 0, "no-shortcut-quicklaunch", "Don't offer a quick launch shortcut as the default"));
+		cli.add(new BooleanParam((char) 0, "no-shortcut-protocol", "Don't offer to handle irc:// links as the default"));
 	}
 	
 	/**
@@ -158,8 +165,8 @@ public final class Main implements WizardListener {
 
 	/**
 	 * Run the installer.
-     * 
-     * @param args Command line arguments
+	 *
+	 * @param args Command line arguments
 	 */
 	public static void main(final String[] args) {
 		setupCLIParser();

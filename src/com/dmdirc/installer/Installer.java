@@ -35,35 +35,35 @@ import java.nio.channels.FileChannel;
  * @author Shane Mc Cormack
  */
 public abstract class Installer extends Thread {
-    
+	
 	/** Types of shortcut. */
 	public static enum ShortcutType {
-        /** Desktop shortcut. */
-        DESKTOP,
-        /** Menu (start/k/etc) shortcut. */
-        MENU,
-        /** Quick launch shortcut. */
-        QUICKLAUNCH,
-        /** The actual uninstaller (not a shortcut, as far as I can tell). */
-        UNINSTALLER,
-        /** Associate DMDirc with the irc:// protocol (not a shortcut). */
-        PROTOCOL;
-    }
+		/** Desktop shortcut. */
+		DESKTOP,
+		/** Menu (start/k/etc) shortcut. */
+		MENU,
+		/** Quick launch shortcut. */
+		QUICKLAUNCH,
+		/** The actual uninstaller (not a shortcut, as far as I can tell). */
+		UNINSTALLER,
+		/** Associate DMDirc with the irc:// protocol (not a shortcut). */
+		PROTOCOL;
+	}
 	
 	/** Step where things happen. */
 	protected StepInstall step;
-    
+	
 	/**
 	 * Create a new Installer.
 	 */
 	public Installer() {
 		super("Installer-Thread");
-	}    
+	}
 	
 	/**
 	 * Get the default install location.
-     * 
-     * @return The default install location
+	 *
+	 * @return The default install location
 	 */
 	public abstract String defaultInstallLocation();
 	
@@ -80,7 +80,7 @@ public abstract class Installer extends Thread {
 	/**
 	 * This step performs the installation, via the StepInstall step.
 	 */
-    @Override
+	@Override
 	public final void run() {
 		step.performInstall(this);
 	}
@@ -107,8 +107,8 @@ public abstract class Installer extends Thread {
 		try {
 			final File dir = new File(".");
 			final FilenameFilter filter = new FilenameFilter() {
-                /** {@inheritDoc} */
-                @Override
+				/** {@inheritDoc} */
+				@Override
 				public boolean accept(final File dir, final String name) {
 					return name.charAt(0) != '.' && validFile(name);
 				}
@@ -160,8 +160,8 @@ public abstract class Installer extends Thread {
 	 * Based on http://www.exampledepot.com/egs/java.io/CopyFile.html
 	 *
 	 * @param srcFile Original file
-     * @param dstFile New file
-     * @throws java.io.IOException If an exception occurs while copying
+	 * @param dstFile New file
+	 * @throws java.io.IOException If an exception occurs while copying
 	 */
 	protected final void copyFile(final String srcFile, final String dstFile) throws IOException {
 		if (new File(srcFile).exists()) {
@@ -184,7 +184,6 @@ public abstract class Installer extends Thread {
 	 * @param location Location where app was installed to.
 	 */
 	public void postInstall(final String location) {
-        // Nothing to do by default, installers may override
-    }
-    
+		// Nothing to do by default, installers may override
+	}
 }

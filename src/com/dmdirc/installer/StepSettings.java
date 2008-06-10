@@ -22,6 +22,7 @@
 
 package com.dmdirc.installer;
 
+import com.dmdirc.installer.cliparser.CLIParser;
 import com.dmdirc.installer.Installer.ShortcutType;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.components.TextLabel;
@@ -79,10 +80,10 @@ public final class StepSettings extends Step {
 //		infoLabel.setBackground(getBackground());
 		infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, SMALL_BORDER, 0));
 
-		shortcutMenu.setSelected(true);
-		shortcutDesktop.setSelected(true);
-		shortcutQuick.setSelected(true);
-		shortcutProtocol.setSelected(true);
+		shortcutMenu.setSelected((CLIParser.getCLIParser().getParamNumber("-no-shortcut-menu") == 0));
+		shortcutDesktop.setSelected((CLIParser.getCLIParser().getParamNumber("-no-shortcut-desktop") == 0));
+		shortcutQuick.setSelected((CLIParser.getCLIParser().getParamNumber("-no-shortcut-quicklaunch") == 0));
+		shortcutProtocol.setSelected((CLIParser.getCLIParser().getParamNumber("-no-shortcut-protocol") == 0));
 
 		constraints.weightx = 1.0;
 		constraints.fill = constraints.BOTH;

@@ -28,7 +28,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class StreamReader extends Thread {
-    
+	
 	/** This is the Input Stream we are reading */
 	private final InputStream stream;
 	
@@ -66,8 +66,8 @@ public class StreamReader extends Thread {
 		}
 	}
 
-    /** {@inheritDoc} */
-    @Override
+	/** {@inheritDoc} */
+	@Override
 	public void run() {
 		final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 		try {

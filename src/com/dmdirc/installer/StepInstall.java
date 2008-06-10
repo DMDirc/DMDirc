@@ -22,6 +22,7 @@
 
 package com.dmdirc.installer;
 
+import com.dmdirc.installer.cliparser.CLIParser;
 import com.dmdirc.installer.Installer.ShortcutType;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.dialogs.wizard.StepListener;
@@ -92,7 +93,11 @@ public final class StepInstall extends Step implements StepListener {
 	 */
 	public void performInstall(final Installer myInstaller) {
 		infoLabel.setText("Beginning Install..\n");
-		final String location = ((StepSettings) Main.getWizardFrame().getStep(1)).getInstallLocation();
+		
+		final boolean isUnattended = (CLIParser.getCLIParser().getParamNumber("-unattended") == 0);
+		final StepSettings settings = (isUnattended) ? new StepSettings() : ((StepSettings) Main.getWizardFrame().getStep(1));
+		
+		final String location = settings.getInstallLocation();
 
 		addText("Installing files to: "+location);
 		if (!myInstaller.doSetup(location)) {
@@ -101,8 +106,6 @@ public final class StepInstall extends Step implements StepListener {
 			Main.getWizardFrame().enableNextStep(true);
 			return;
 		}
-
-		StepSettings settings = ((StepSettings) Main.getWizardFrame().getStep(1));
 
 		if (Main.getInstaller().supportsShortcut(ShortcutType.MENU)) {
 			if (settings.getShortcutMenuState()) {
