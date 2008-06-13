@@ -113,6 +113,7 @@ public final class UIUtilities {
         
         UIManager.put("swing.useSystemFontSettings", true);
         
+        UIManager.put("TabbedPane.contentOpaque", false);
         UIManager.put("swing.boldMetal", false);
         UIManager.put("InternalFrame.useTaskBar", false);
         UIManager.put("SplitPaneDivider.border", BorderFactory.createEmptyBorder());

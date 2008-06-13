@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.Main;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
@@ -56,8 +57,8 @@ import java.awt.Toolkit;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.List;
-
 import java.util.concurrent.Semaphore;
+
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -311,6 +312,29 @@ public final class SwingController implements UIController {
                 ServerSettingsDialog.showServerSettingsDialog(server);
             }
         });
+    }
+
+    /**
+     * Updates the look and feel to the current config setting.
+     */
+    static void updateLookAndFeel() {
+        try {
+            UIManager.setLookAndFeel(UIUtilities.getLookAndFeel(IdentityManager.getGlobalConfig().
+                    getOption("ui", "lookandfeel", "")));
+            SwingUtilities.updateComponentTreeUI((MainFrame) Main.getUI().getMainWindow());
+        } catch (ClassNotFoundException ex) {
+            Logger.userError(ErrorLevel.LOW,
+                    "Unable to change Look and Feel: " + ex.getMessage());
+        } catch (InstantiationException ex) {
+            Logger.userError(ErrorLevel.LOW,
+                    "Unable to change Look and Feel: " + ex.getMessage());
+        } catch (IllegalAccessException ex) {
+            Logger.userError(ErrorLevel.LOW,
+                    "Unable to change Look and Feel: " + ex.getMessage());
+        } catch (UnsupportedLookAndFeelException ex) {
+            Logger.userError(ErrorLevel.LOW,
+                    "Unable to change Look and Feel: " + ex.getMessage());
+        }
     }
 
     /** {@inheritDoc} */

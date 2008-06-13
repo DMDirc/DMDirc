@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.ui.swing;
 
 import com.dmdirc.FrameContainer;
@@ -119,7 +120,7 @@ public final class MainFrame extends JFrame implements WindowListener,
      */
     protected MainFrame(final SwingStatusBar statusBar) {
         super();
-        
+
         this.statusBar = statusBar;
 
         initComponents();
@@ -155,6 +156,8 @@ public final class MainFrame extends JFrame implements WindowListener,
                 IdentityManager.getGlobalConfig().
                 getOptionBool("ui", "showversion", false);
         IdentityManager.getGlobalConfig().
+                addChangeListener("ui", "lookandfeel", this);
+        IdentityManager.getGlobalConfig().
                 addChangeListener("ui", "showversion", this);
         IdentityManager.getGlobalConfig().
                 addChangeListener("icon", "icon", this);
@@ -165,7 +168,7 @@ public final class MainFrame extends JFrame implements WindowListener,
             /** {@inheritDoc} */
             @Override
             public void windowGainedFocus(WindowEvent e) {
-                //Ignore
+            //Ignore
             }
 
             /** {@inheritDoc} */
@@ -174,7 +177,7 @@ public final class MainFrame extends JFrame implements WindowListener,
                 MenuSelectionManager.defaultManager().clearSelectedPath();
             }
         });
-        
+
         setTitle(getTitlePrefix());
     }
 
@@ -297,46 +300,74 @@ public final class MainFrame extends JFrame implements WindowListener,
         return statusBar;
     }
 
-    /** {@inheritDoc}. */
+    /** 
+     * {@inheritDoc}.
+     * 
+     * @param windowEvent Window event
+     */
     @Override
     public void windowOpened(final WindowEvent windowEvent) {
-        //ignore
+    //ignore
     }
 
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}.
+     * 
+     * @param windowEvent Window event
+     */
     @Override
     public void windowClosing(final WindowEvent windowEvent) {
         quit();
     }
 
-    /** {@inheritDoc}. */
+    /** 
+     * {@inheritDoc}.
+     * 
+     * @param windowEvent Window event
+     */
     @Override
     public void windowClosed(final WindowEvent windowEvent) {
-        //ignore
+    //ignore
     }
 
-    /** {@inheritDoc}. */
+    /** 
+     * {@inheritDoc}.
+     * 
+     * @param windowEvent Window event
+     */
     @Override
     public void windowIconified(final WindowEvent windowEvent) {
         ActionManager.processEvent(CoreActionType.CLIENT_MINIMISED, null);
     }
 
-    /** {@inheritDoc}. */
+    /** 
+     * {@inheritDoc}.
+     * 
+     * @param windowEvent Window event
+     */
     @Override
     public void windowDeiconified(final WindowEvent windowEvent) {
         ActionManager.processEvent(CoreActionType.CLIENT_UNMINIMISED, null);
     }
 
-    /** {@inheritDoc}. */
+    /** 
+     * {@inheritDoc}.
+     * 
+     * @param windowEvent Window event
+     */
     @Override
     public void windowActivated(final WindowEvent windowEvent) {
-        //ignore
+    //ignore
     }
 
-    /** {@inheritDoc}. */
+    /** 
+     * {@inheritDoc}.
+     * 
+     * @param windowEvent Window event
+     */
     @Override
     public void windowDeactivated(final WindowEvent windowEvent) {
-        //ignore
+    //ignore
     }
 
     /** Initialiases the frame managers. */
@@ -382,7 +413,8 @@ public final class MainFrame extends JFrame implements WindowListener,
 
         getContentPane().setLayout(new MigLayout("fill, ins rel, wrap 1, hidemode 2"));
         getContentPane().add(mainSplitPane, "grow, push");
-        getContentPane().add(statusBar, "hmax 20, wmax 100%-2*rel, wmin 100%-2*rel");
+        getContentPane().add(statusBar,
+                "hmax 20, wmax 100%-2*rel, wmin 100%-2*rel");
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -400,7 +432,8 @@ public final class MainFrame extends JFrame implements WindowListener,
     private void initSplitPane(final JSplitPane mainSplitPane) {
         mainSplitPane.setBorder(null);
 
-        mainSplitPane.setDividerSize((int) PlatformDefaults.getPanelInsets(0).getValue());
+        mainSplitPane.setDividerSize((int) PlatformDefaults.getPanelInsets(0).
+                getValue());
         mainSplitPane.setOneTouchExpandable(false);
 
         position =
@@ -572,7 +605,11 @@ public final class MainFrame extends JFrame implements WindowListener,
         return super.isVisible();
     }
 
-    /** {@inheritDoc}. */
+    /** 
+     * {@inheritDoc}.
+     * 
+     * @param newTitle New Title
+     */
     @Override
     public void setTitle(final String newTitle) {
         //NOPMD
@@ -583,9 +620,14 @@ public final class MainFrame extends JFrame implements WindowListener,
     @Override
     public void configChanged(final String domain, final String key) {
         if ("ui".equals(domain)) {
-            showVersion =
-                    IdentityManager.getGlobalConfig().
-                    getOptionBool("ui", "showversion", false);
+            if ("lookandfeel".equals(key))  {
+                //Almost there
+                //SwingController.updateLookAndFeel();
+            } else {
+                showVersion =
+                        IdentityManager.getGlobalConfig().
+                        getOptionBool("ui", "showversion", false);
+            }
         } else {
             imageIcon =
                     new ImageIcon(IconManager.getIconManager().getImage("icon"));
@@ -596,7 +638,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void setParent(final JComponent parent) {
-        //Ignore
+    //Ignore
     }
 
     /** {@inheritDoc}. */
@@ -658,13 +700,15 @@ public final class MainFrame extends JFrame implements WindowListener,
 
     /** {@inheritDoc}. */
     @Override
-    public void addWindow(final FrameContainer parent, final FrameContainer window) {
+    public void addWindow(final FrameContainer parent,
+            final FrameContainer window) {
         addWindow(window);
     }
 
     /** {@inheritDoc}. */
     @Override
-    public void delWindow(final FrameContainer parent, final FrameContainer window) {
+    public void delWindow(final FrameContainer parent,
+            final FrameContainer window) {
         delWindow(window);
     }
 }
