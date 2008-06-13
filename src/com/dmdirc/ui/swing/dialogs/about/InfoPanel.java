@@ -24,38 +24,40 @@ package com.dmdirc.ui.swing.dialogs.about;
 
 import com.dmdirc.Main;
 
-import java.awt.Font;
-import java.awt.Toolkit;
-import java.awt.datatransfer.StringSelection;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Locale;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
+import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 import net.miginfocom.swing.MigLayout;
 
-/**
- * Info panel.
- */
-public final class InfoPanel extends JPanel implements ActionListener {
-    
+/** Info panel. */
+public final class InfoPanel extends JPanel {
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
+
     /** Creates a new instance of InfoPanel. */
     public InfoPanel() {
         super();
-        
+
         initComponents();
+    }
+
+    /**
+     * Returns the DMDirc version info
+     * 
+     * @return DMDirc version string
+     */
+    private String getDMDircVersion() {
+        return Main.VERSION + " (" + Main.SVN_REVISION + "; " +
+                Main.UPDATE_CHANNEL + ")";
     }
 
     /**
@@ -64,9 +66,9 @@ public final class InfoPanel extends JPanel implements ActionListener {
      * @return Java version string
      */
     private String getJavaVersion() {
-        return System.getProperty("java.vm.name", "unknown") + " " 
-                + System.getProperty("java.vm.version", "unknown") + " ["
-                + System.getProperty("java.vm.vendor", "uknown") + "]";
+        return System.getProperty("java.vm.name", "unknown") + " " +
+                System.getProperty("java.vm.version", "unknown") + 
+                " [" + System.getProperty("java.vm.vendor", "uknown") + "]";
     }
 
     /**
@@ -75,78 +77,35 @@ public final class InfoPanel extends JPanel implements ActionListener {
      * @return OS version string
      */
     private String getOSVersion() {
-        return System.getProperty("os.name", "unknown") + " " 
-                + System.getProperty("os.version", "unknown") + " "
-                + System.getProperty("os.arch", "unknown") + "; "
-                + System.getProperty("file.encoding", "unknown") + "; "
-                + Locale.getDefault().toString();
+        return System.getProperty("os.name", "unknown") + " " +
+                System.getProperty("os.version", "unknown") + " " +
+                System.getProperty("os.arch", "unknown") + "; " +
+                System.getProperty("file.encoding", "unknown") + "; " + Locale.getDefault().
+                toString();
     }
-    
+
     /** Initialises the components. */
     private void initComponents() {
-        final JButton copy;
-        final JPanel info;
-        final JScrollPane scrollPane;
-        JLabel label;
-        
-        copy = new JButton("Copy to clipboard");
-        copy.addActionListener(this);
-        
-        info = new JPanel(new MigLayout("fillx, wrap 2"));
-        label = new JLabel("DMDirc version: ");
-        label.setFont(label.getFont().deriveFont(Font.BOLD));
-        info.add(label);
-        info.add(new JLabel(Main.VERSION + " (" + Main.SVN_REVISION + "; "
-                + Main.UPDATE_CHANNEL + ")"), "growx, pushx");
-        label = new JLabel("Profile directory: ");
-        label.setFont(label.getFont().deriveFont(Font.BOLD));
-        info.add(label);
-        info.add(new JLabel(Main.getConfigDir()), "growx, pushx");
-        label = new JLabel("Java version: ");
-        label.setFont(label.getFont().deriveFont(Font.BOLD));
-        info.add(label);
-        info.add(new JLabel(getJavaVersion()), "growx, pushx");
-        label = new JLabel("OS Version: ");
-        label.setFont(label.getFont().deriveFont(Font.BOLD));
-        info.add(label);
-        info.add(new JLabel(getOSVersion()), "growx, pushx");
-        
-        scrollPane = new JScrollPane(info);
+        final JScrollPane scrollPane = new JScrollPane();
+        final JEditorPane infoPane = new JEditorPane("text/html", "<html>" +
+                "<b>DMDirc version: </b>" + getDMDircVersion() + "<br>" +
+                "<b>Profile directory: </b>" + Main.getConfigDir() + "<br>" +
+                "<b>Java version: </b>" + getJavaVersion() + "<br>" +
+                "<b>OS Version: </b>" + getOSVersion() + "<br>" +
+                "</html>");
+        infoPane.setEditable(false);
+        scrollPane.setViewportView(infoPane);
+
         SwingUtilities.invokeLater(new Runnable() {
+
             /** {@inheritDoc} */
             @Override
             public void run() {
                 scrollPane.getVerticalScrollBar().setValue(0);
             }
-        }
-        );
-        
+        });
+
         setLayout(new MigLayout("ins rel, fill"));
         add(scrollPane, "grow, wrap");
-        add(copy, "right");
-    }
-
-    /** 
-     * {@inheritDoc}
-     * 
-     * @param e action event
-     */
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-        final StringBuilder b = new StringBuilder();
-        b.append("DMDirc version: ");
-        b.append(Main.VERSION);
-        b.append(System.getProperty("line.separator", "\n"));
-        b.append("Profile directory: ");
-        b.append(Main.getConfigDir());
-        b.append(System.getProperty("line.separator", "\n"));
-        b.append("Java version: ");
-        b.append(getJavaVersion());
-        b.append(System.getProperty("line.separator", "\n"));
-        b.append("OS Version: ");
-        b.append(getOSVersion());
-        
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
-                new StringSelection(b.toString()), null);
     }
 }
