@@ -82,7 +82,6 @@ var
 	cliParams: String = '';
 	directory: String = '';
 	i: integer;
-	hK32: THandle;
 	jarName: String;
 	launcherUpdate: boolean = false;
 begin
@@ -105,8 +104,7 @@ begin
 	launcherUpdate := FileExists(directory+'\.DMDirc.exe') and FileExists(directory+'\.DMDircUpdater.exe');
 	if FileExists(directory+'\.DMDirc.jar') or launcherUpdate then begin
 		// Vista Sucks.
-		hK32 := GetModuleHandle('kernel32');
-		if GetProcAddress(hK32, 'GetLocaleInfoEx') <> nil then begin
+		if IsWindowsVista then begin
 			// Vista >.<
 			// Try and delete the old file, if it fails then the user needs to give
 			// us permission to delete the file (UAC), otherwise we can just go ahead

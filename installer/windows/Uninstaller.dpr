@@ -2,7 +2,7 @@ program Uninstaller;
 {$MODE Delphi}
 {$APPTYPE GUI}
 
-uses Windows, SysUtils, classes, registry;
+uses Windows, SysUtils, classes, registry, Vista;
 
 {$R uninstall.res}
 
@@ -85,7 +85,6 @@ end;
 var
 	TempDir: String;
 	InstallDir: String = '';
-	hK32: THandle;
 	i: Integer;
 	Reg: TRegistry;
 	handlerInfo: String;
@@ -98,10 +97,9 @@ begin
 		end;
 		InstallDir := trim(InstallDir);
 		KillDir(InstallDir);
-		hK32 := GetModuleHandle('kernel32');
 		profileDir := GetEnvironmentVariable('USERPROFILE');
 		
-		if GetProcAddress(hK32, 'GetLocaleInfoEx') <> nil then begin
+		if IsWindowsVista then begin
 			// Vista
 			KillDir(GetEnvironmentVariable('APPDATA')+'\Microsoft\Windows\Start Menu\Programs\DMDirc');
 			DeleteFile(GetEnvironmentVariable('USERPROFILE')+'\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\DMDirc.lnk');
