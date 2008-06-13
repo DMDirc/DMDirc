@@ -373,7 +373,7 @@ if [ "" = "${HDIUTIL}" ]; then
 
 	# Compres it \o
 	if [ ! -e "${PWD}/compress-dmg" ]; then
-		wget http://shanemcc.co.uk/dmdirc-binaries/dmg -O compress-dmg
+		wget http://binary.dmdirc.com/dmg -O compress-dmg
 		chmod a+x compress-dmg
 	fi;
 	if [ ! -e "${PWD}/compress-dmg" ]; then

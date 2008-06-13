@@ -2,10 +2,33 @@ program DMDirc;
 {$MODE Delphi}
 {$APPTYPE GUI}
 
+{$R comctl.rc}
 {$R icon.rc}
 {$R version.rc}
 
-uses Windows, SysUtils, classes, StrUtils;
+uses Windows, SysUtils, classes, StrUtils, Vista;
+
+function askQuestion(Question: String): boolean;
+begin
+	Result := TaskDialog(0, 'DMDirc Setup', 'Question', Question, TD_ICON_QUESTION, TD_BUTTON_YES + TD_BUTTON_NO) = mrYes;
+end;
+
+procedure showError(ErrorMessage: String; addFooter: boolean = true);
+begin
+	if addFooter then begin
+		ErrorMessage := ErrorMessage+#13#10;
+		ErrorMessage := ErrorMessage+#13#10+'If you feel this is incorrect, or you require some further assistance,';
+		ErrorMessage := ErrorMessage+#13#10+'please feel free to contact us.';
+	end;
+	
+	TaskDialog(0, 'DMDirc Setup', 'Sorry, setup is unable to continue', ErrorMessage, TD_ICON_ERROR, TD_BUTTON_OK, true);
+end;
+
+procedure showmessage(message: String; context:String = 'Information');
+begin
+	TaskDialog(0, 'DMDirc Setup', context, message, TD_ICON_INFORMATION, TD_BUTTON_OK);
+end;
+
 
 // Run an application and wait for it to finish.
 function ExecAndWait(sProgramToRun: String): Longword;
@@ -52,7 +75,7 @@ begin
 end;
 
 const
-	launcherVersion: String = '1';
+	launcherVersion: String = '2';
 var
 	errorMessage: String;
 	javaCommand: String = 'javaw.exe';
@@ -96,7 +119,7 @@ begin
 				errorMessage := errorMessage+#13#10;
 				errorMessage := errorMessage+#13#10+'Please click ''Allow'' on the UAC prompt to complete the update, or click no';
 				errorMessage := errorMessage+#13#10+'here to continue without updating.';
-				if MessageBox(0, PChar(errorMessage), 'Windows Vista', MB_YESNO) = IDYES then begin
+				if askQuestion(errorMessage) then begin
 					RunProgram('"'+ExtractFileDir(paramstr(0))+'\DMDircUpdater.exe" --UpdateSourceDir "'+directory+'"', not launcherUpdate);
 				end;
 			end
@@ -116,7 +139,7 @@ begin
 			errorMessage := errorMessage+#13#10+'If you feel this is incorrect, or you require some further assistance,';
 			errorMessage := errorMessage+#13#10+'please feel free to contact us.';
 			
-			MessageBox(0, PChar(errorMessage), 'Sorry, DMDirc is unable to continue', MB_OK + MB_ICONSTOP);
+			showError(errorMessage);
 		end
 		// Else try and run client. (This only asks for help output to check that client
 		// runs on this OS, otherwise later segfaults or so would cause the error to
@@ -131,7 +154,7 @@ begin
 				errorMessage := errorMessage+#13#10+'If you feel this is incorrect, or you require some further assistance,';
 				errorMessage := errorMessage+#13#10+'please feel free to contact us.';
 				
-				MessageBox(0, PChar(errorMessage), 'Sorry, DMDirc is unable to continue', MB_OK + MB_ICONSTOP);
+				showError(errorMessage);
 			end
 			else begin
 				Launch(javaCommand+' -ea -jar "'+jarName+'"'+' -l windows-'+launcherVersion+' '+cliParams)
@@ -139,7 +162,7 @@ begin
 		end
 		else begin
 			errorMessage := 'Your DMDirc installation has been broken. DMDirc.jar no longer exists.';
-			MessageBox(0, PChar(errorMessage), 'Sorry, DMDirc is unable to continue', MB_OK + MB_ICONSTOP);
+			showError(errorMessage);
 		end;
 	end;
 end.

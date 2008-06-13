@@ -4,7 +4,28 @@ program DMDircUpdater;
 
 {$R UAC.rc}
 
-uses Windows, SysUtils, classes, StrUtils;
+uses Windows, SysUtils, classes, StrUtils, Vista;
+
+function askQuestion(Question: String): boolean;
+begin
+	Result := TaskDialog(0, 'DMDirc Setup', 'Question', Question, TD_ICON_QUESTION, TD_BUTTON_YES + TD_BUTTON_NO) = mrYes;
+end;
+
+procedure showError(ErrorMessage: String; addFooter: boolean = true);
+begin
+	if addFooter then begin
+		ErrorMessage := ErrorMessage+#13#10;
+		ErrorMessage := ErrorMessage+#13#10+'If you feel this is incorrect, or you require some further assistance,';
+		ErrorMessage := ErrorMessage+#13#10+'please feel free to contact us.';
+	end;
+	
+	TaskDialog(0, 'DMDirc Setup', 'Sorry, setup is unable to continue', ErrorMessage, TD_ICON_ERROR, TD_BUTTON_OK, true);
+end;
+
+procedure showmessage(message: String; context:String = 'Information');
+begin
+	TaskDialog(0, 'DMDirc Setup', context, message, TD_ICON_INFORMATION, TD_BUTTON_OK);
+end;
 
 // Run an application and don't wait for it to finish.
 procedure Launch(sProgramToRun: String);
@@ -57,32 +78,32 @@ begin
 					Launch('"'+thisDir+'\DMDircLauncherUpdater.exe" '+cliParams);
 				end
 				else begin
-					MessageBox(0, 'Unable to overwrite launcher', 'Launcher Update Failed', MB_ICONSTOP);
+					showmessage('Unable to overwrite launcher', 'Update Failed');
 				end;
 			end
 			else begin
 				launcherUpdate := true;
 				if FileExists(pchar(thisDir+'\DMDirc.exe')) then begin
 					if not DeleteFile(pchar(thisDir+'\DMDirc.exe')) then begin
-						MessageBox(0, 'Unable to delete DMDirc.exe', 'Update Failed', MB_ICONSTOP);
+						showmessage('Unable to delete DMDirc.exe', 'Launcher Update Failed');
 					end;
 				end;
 				
 				if not FileExists(pchar(thisDir+'\DMDirc.exe')) and MoveFile(pchar(sourceDir+'\.DMDirc.exe'), pchar(thisDir+'\DMDirc.exe')) then begin
 					if FileExists(pchar(thisDir+'\DMDircUpdater.exe')) then begin
 						if not DeleteFile(pchar(thisDir+'\DMDircUpdater.exe')) then begin
-							MessageBox(0, 'Unable to delete DMDircUpdater.exe', 'Update Failed', MB_ICONSTOP);
+							showmessage('Unable to delete DMDircUpdater.exe', 'Launcher Update Failed');
 						end;
 					end;
 					if not FileExists(pchar(thisDir+'\DMDircUpdater.exe')) and MoveFile(pchar(sourceDir+'\.DMDircUpdater.exe'), pchar(thisDir+'\DMDircUpdater.exe')) then begin
-						MessageBox(0, 'Launcher update was successful.', 'Launcher Update Completed', MB_OK);
+						showmessage('Launcher update was successful');
 					end
 					else begin
-						MessageBox(0, pchar('Unable to update DMDircUpdater.exe'), 'Launcher Update Failed', MB_ICONSTOP);
+						showmessage('Unable to update DMDircUpdater.exe', 'Launcher Update Failed');
 					end;
 				end
 				else begin
-					MessageBox(0, pchar('Unable to update DMDirc.exe'), 'Launcher Update Failed', MB_ICONSTOP);
+					showmessage('Unable to update DMDirc.exe', 'Launcher Update Failed');
 				end;
 			end;
 		end;
@@ -92,24 +113,24 @@ begin
 			if FileExists(pchar(sourceDir+'\.DMDirc.jar')) then begin
 				if FileExists(pchar(jarName)) then begin
 					if not DeleteFile(pchar(jarName)) then begin
-						MessageBox(0, 'Unable to delete DMDirc.jar', 'Update Failed', MB_ICONSTOP);
+						showmessage('Unable to update DMDirc.jar', 'Launcher Update Failed');
 					end;
 				end;
 				
 				if MoveFile(pchar(sourceDir+'\.DMDirc.jar'), pchar(jarName)) then begin
-					MessageBox(0, 'Client update was successful.', 'Update Completed', MB_OK);
+					showmessage('Client update was successful');
 				end
 				else begin
-					MessageBox(0, pchar('Unable to move '''+sourceDir+'\.DMDirc.jar'' to '+jarName), 'Update Failed', MB_ICONSTOP);
+					showmessage('Unable to move '''+sourceDir+'\.DMDirc.jar'' to '+jarName, 'Update Failed');
 				end;
 			end;
 			
 			if launcherUpdate then begin
-				MessageBox(0, 'The DMDirc launcher has been updated, to complete the update please relaunch DMDirc.', 'Restart Required', MB_OK);
+				showmessage('The DMDirc launcher has been updated, to complete the update please relaunch DMDirc.', 'Restart Required');
 			end;
 		end;
 	end
 	else begin
-		MessageBox(0, 'This program can not be run on its own.', 'Error', MB_ICONSTOP);
+		showError('This program can not be run on its own.');
 	end;
 end.

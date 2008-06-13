@@ -23,7 +23,12 @@
  * SOFTWARE.
  *}
 program Setup;
-{$MODE Delphi}
+
+{$R most.res}
+
+{$IFDEF FPC}
+	{$MODE Delphi}
+{$ENDIF}
 // Use this instead of {$APPTYPE XXX}
 // APP_XXX is the same as {$APPTYPE XXX}
 // Defaults to console
@@ -56,8 +61,8 @@ program Setup;
 // {$UNDEF LAZARUS}
 
 uses 
-	{$IFDEF LAZARUS}Interfaces, Forms, ComCtrls, Buttons, Messages, Controls, StdCtrls,{$ENDIF}
-	Windows, SysUtils, classes, registry, strutils;
+	{$IFDEF LAZARUS}Interfaces, Forms, ComCtrls, Buttons, Messages, Controls, StdCtrls, {$ENDIF}
+	Vista, Windows, SysUtils, classes, registry, strutils {$IFNDEF FPC},masks{$ENDIF};
 
 {$IFDEF LAZARUS}
 	type
@@ -122,8 +127,10 @@ var
 		CancelButton.Caption := 'Cancel';
 		CancelButton.onClick := self.onButtonClick;
 		
-		self.Caption := pChar('DMDirc Setup - '+CaptionLabel.Caption);;
+		self.Caption := pChar('DMDirc Setup');
 		Application.Title := self.Caption;
+		
+		SetVistaFonts(self);
 	end;
 	
 	procedure TProgressForm.onButtonClick(Sender: TObject);
@@ -135,17 +142,17 @@ var
 	begin
 		ProgressBar.Position := value;
 		CaptionLabel.Caption := pchar('Downloading JRE - '+inttostr(value)+'%');
-		self.Caption := pChar('DMDirc Setup - '+CaptionLabel.Caption);;
+		self.Caption := pChar('DMDirc Setup - '+CaptionLabel.Caption);
 		Application.Title := self.Caption;
 	end;
 {$ENDIF}
 
 function askQuestion(Question: String): boolean;
 begin
-	Result := MessageBox(0, PChar(Question), 'DMDirc Setup', MB_YESNO or MB_ICONQUESTION) = IDYES;
+	Result := TaskDialog(0, 'DMDirc Setup', 'Question', Question, TD_ICON_QUESTION, TD_BUTTON_YES + TD_BUTTON_NO) = mrYes;
 end;
 
-procedure showError(ErrorMessage: String; addFooter: boolean = true);
+procedure showError(ErrorMessage: String; addFooter: boolean = true; includeDescInXP: boolean = true);
 begin
 	if IsConsole then begin
 		writeln('');
@@ -161,32 +168,33 @@ begin
 			writeln('please feel free to contact us.');
 		end;
 		writeln('-----------------------------------------------------------------------');
-		readln();
+		readln;
 	end
 	else begin
 		if addFooter then begin
 			ErrorMessage := ErrorMessage+#13#10;
 			ErrorMessage := ErrorMessage+#13#10+'If you feel this is incorrect, or you require some further assistance,';
-			ErrorMessage := ErrorMessage+#13#10+'please feel free to contact us.';
+			if not IsWindowsVista then ErrorMessage := ErrorMessage+#13#10;
+			ErrorMessage := ErrorMessage+'please feel free to contact us.';
 		end;
 		
-		MessageBox(0, PChar(ErrorMessage), 'Sorry, setup is unable to continue', MB_OK + MB_ICONSTOP);
+		TaskDialog(0, 'DMDirc Setup', 'Sorry, setup is unable to continue.', ErrorMessage, TD_ICON_ERROR, TD_BUTTON_OK, includeDescInXP, false);
 	end;
 end;
 
-procedure showmessage(message: String);
+procedure showmessage(message: String; context:String = 'Information');
 begin
 	if IsConsole then begin
 		writeln('');
 		writeln('-----------------------------------------------------------------------');
-		writeln('Information:!');
+		writeln(context+':');
 		writeln('-----------------------------------------------------------------------');
 		writeln(message);
 		writeln('-----------------------------------------------------------------------');
-		readln();
+		readln;
 	end
 	else begin
-		MessageBox(0, PChar(message), 'DMDirc Setup', MB_OK + MB_ICONINFORMATION);
+		TaskDialog(0, 'DMDirc Setup', context, message, TD_ICON_INFORMATION, TD_BUTTON_OK);
 	end;
 end;
 
@@ -234,6 +242,7 @@ function GetFileSizeByName(name: String): Integer;
 var
 	hand: THandle;
 begin
+	hand := 0;
 	Result := 0;
 	if FileExists(name) then begin
 		try
@@ -241,13 +250,30 @@ begin
 			Result := GetFileSize(hand, nil);
 		finally
 			try
-				CloseHandle(hand);
+				if (hand <> 0) then CloseHandle(hand);
 			except
 				Result := -1;
 			end;
 		end;
 	end;
 end;
+
+function DoMatch(Input: String; Wildcard: String): boolean;
+begin
+	{$ifdef FPC}
+		Result := IsWild(Input,Wildcard,True);
+	{$else}
+		Result := MatchesMask(Input,Wildcard);
+	{$endif}
+end;
+
+{$IFNDEF VER150}
+function AnsiMidStr(Source: String; Start: Integer; Count: Integer): String;
+begin
+	// Not perfectly accurate, but does the job
+	Result := Copy(Source, Start, Count);
+end;
+{$ENDIF}
 
 function downloadJRE(message: String = 'Would you like to download the java JRE?'): boolean;
 var
@@ -275,7 +301,7 @@ begin
 	match := false;
 	while not Eof(f) do begin
 		ReadLn(f, line);
-		match := IsWild(line,'Length:*',True);
+		match := DoMatch(line,'Length:*');
 		if match then break;
 	end;
 	if match then begin
@@ -324,7 +350,18 @@ begin
 					{$ENDIF}
 				end
 				else Result := processResult = 0;
-				if not Result then showError('JRE Download Failed', false);
+				if not Result then begin
+					if not terminateDownload then begin
+						showError('JRE Download Failed', false);
+					end
+					else begin
+						// If the download was cancelled by the form, this error will already
+						// have been given.
+						{$IFNDEF LAZARUS}
+							showError('JRE Download was aborted', false);
+						{$ENDIF}
+					end;
+				end;
 			end;
 		finally
 			bits.free;
@@ -357,7 +394,7 @@ begin
 	if canContinue then begin
 		// Final result of this function is the return value of installing java.
 		if needDownload or askQuestion(question) then begin
-			showmessage('The Java installer will now run. Please follow the instructions given.'+#13#10+'The DMDirc installation will continue afterwards.');
+			showmessage('The Java installer will now run. Please follow the instructions given. '+#13#10+'The DMDirc installation will continue afterwards.');
 			Result := (ExecAndWait('jre.exe') = 0);
 		end;
 	end
@@ -374,7 +411,7 @@ begin
 		Application.Initialize;
 		Application.CreateForm(TProgressForm, form);
 	{$ENDIF}
-		
+	
 	if IsConsole then begin
 		writeln('-----------------------------------------------------------------------');
 		writeln('Welcome to the DMDirc installer.');
@@ -398,7 +435,7 @@ begin
 		if (ExecAndWait(javaCommand+' -version') <> 0) then begin
 			dowriteln('Failed!');
 			if not installJRE(false) then begin
-				showError('Sorry, DMDirc setup can not continue without java', false);
+				showError('DMDirc setup can not continue without java. Please install java and try again', false, false);
 				exit;
 			end;
 		end
@@ -426,7 +463,7 @@ begin
 		if (ExecAndWait(javaCommand+' -cp DMDirc.jar com.dmdirc.installer.Main '+params) <> 0) then begin
 			dowriteln('Failed!');
 			if not installJRE(true) then begin
-				showError('Sorry, DMDirc setup can not continue without an updated version of java', false);
+				showError('Sorry, DMDirc setup can not continue without an updated version of java.', false, false);
 				exit;
 			end
 			else begin

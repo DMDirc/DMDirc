@@ -255,118 +255,12 @@ fi
 
 echo "	ReleaseNumber: String = '${isRelease}';" > SetupConsts.inc
 
-FILES="DMDirc.jar Setup.exe";
-if [ "" != "${jre}" ]; then
-	if [ ! -e "../common/${jrename}.exe" ]; then
-		echo "Downloading JRE to include in installer"
-		wget ${jre} -O ../common/${jrename}.exe
-	fi
-	ln -sf ../common/${jrename}.exe jre.exe
-	FILES="${FILES} jre.exe"
-fi;
-DELETEFILES=${FILES}
-FPC=`which fpc`
-lazarusDir="/usr/share/lazarus"
-if [ ! -e "${lazarusDir}/lcl" ]; then
-	lazarusDir="/usr/lib/lazarus/"
-fi;
-compilerFlags="-Sd -Twin32 ${compilerFlags}";
-if [ ! -e "Setup.exe"  -o "${compileSetup}" = "true" ]; then
-	echo "Setup.exe does not exist. Lets try and compile it."
-	if [ "${FPC}" = "" ]; then
-		echo "FPC Compiler not found, Setup.exe can not be built."
-		exit 1;
-	else
-		echo "Building Setup.exe..."
-		extraFlags=""
-		if [ -e "${lazarusDir}/lcl" ]; then
-			echo "Using Lazarus"
-			mkdir -p ${PWD}/lazarus-build
-			extraFlags="-dLAZARUS -FU${PWD}/lazarus-build -Fu${PWD}/lazarus-build -Fu${lazarusDir}/lcl/widgetset/ -Fu${lazarusDir}/lcl/interfaces/win32/ -Fu${lazarusDir}/lcl/ -Fi${lazarusDir}/lcl/include/"
-		else
-			echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@";
-			echo "@        Building installer *WITHOUT* lazarus.        @";
-			echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@";
-		fi;
-		${FPC} ${compilerFlags} ${extraFlags} Setup.dpr
-		if [ $? -ne 0 ]; then
-			if [ -e "Setup.exe" -a "${useOldSetup}" = "true" ]; then
-				echo "Unable to compile Setup.exe, using existing version."
-			else
-				echo "Unable to compile Setup.exe, terminating."
-				exit 1;
-			fi
-		fi;
-	fi
-fi
-
-ls
-if [ ! -e "Setup.exe" ]; then
-	echo "Still can't find Setup.exe, terminating."
-	exit 1;
-fi
-
-echo "Compressing files.."
-
-#if [ -e "../common/installer.jar" ]; then
-#	ln -sf ../common/installer.jar ./installer.jar
-#	FILES="${FILES} installer.jar"
-#	DELETEFILES="${DELETEFILES} installer.jar"
-#else
-#	echo "[WARNING] Creating installer-less archive - relying on Setup.exe"
-#fi
-
+FILES=""
+# Icon Res file
 if [ -e ${jarPath}"/src/com/dmdirc/res/icon.ico" ]; then
 	ln -sf ${jarPath}"/src/com/dmdirc/res/icon.ico" ./icon.ico
 	FILES="${FILES} icon.ico"
-	DELETEFILES="${DELETEFILES} icon.ico"
 fi
-
-# Shortcut.exe is from http://www.optimumx.com/download/#Shortcut
-if [ ! -e Shortcut.exe ]; then
-	wget http://shanemcc.co.uk/dmdirc-binaries/Shortcut.zip
-	unzip -q Shortcut.zip Shortcut.exe
-	rm Shortcut.zip
-fi
-FILES="${FILES} Shortcut.exe"
-DELETEFILES="${DELETEFILES} Shortcut.exe"
-
-if [ "${isRelease}" != "" ]; then
-	DOCSDIR=${jarPath}
-else
-	DOCSDIR="../common"
-fi
-
-if [ -e "${DOCSDIR}/README.TXT" ]; then
-	ln -sf "${DOCSDIR}/README.TXT" .
-	FILES="${FILES} README.TXT"
-	DELETEFILES="${DELETEFILES} README.TXT"
-fi
-
-if [ -e "${DOCSDIR}/CHANGES.TXT" ]; then
-	ln -sf "${DOCSDIR}/CHANGES.TXT" .
-	FILES="${FILES} CHANGES.TXT"
-	DELETEFILES="${DELETEFILES} CHANGES.TXT"
-elif [ -e "${DOCSDIR}/CHANGELOG.TXT" ]; then
-	ln -sf "${DOCSDIR}/CHANGELOG.TXT" .
-	FILES="${FILES} CHANGELOG.TXT"
-	DELETEFILES="${DELETEFILES} CHANGELOG.TXT"
-fi
-
-if [ -e "${jarPath}/launcher/windows" ]; then
-	# Try to compile all
-	olddir=${PWD}
-	cd "${jarPath}/launcher/windows/"
-	sh compile.sh
-	cd ${olddir}
-	# Now add to file list.
-	for thisfile in `ls -1 ${jarPath}/launcher/windows/*.exe`; do
-		ln -sf ${thisfile} .
-		FILES="${FILES} ${thisfile}"
-	done
-fi
-
-# Icon Res file
 echo "icon.ico ICON icon.ico" > icon.rc
 
 # Other resources
@@ -468,6 +362,116 @@ cat uninstallversion.rc >> all.rc
 cat icon.rc >> uninstall.rc
 windres -F pe-i386 -i uninstall.rc -o uninstall.res
 
+cat UAC.rc > all.rc
+cat version.rc >> all.rc
+cat files.rc >> all.rc
+cat icon.rc >> all.rc
+# Build later after extractor.exe exists
+
+cat UAC.rc > most.rc
+cat version.rc >> most.rc
+cat icon.rc >> most.rc
+
+windres -F pe-i386 -i most.rc -o most.res
+
+FILES="${FILES} DMDirc.jar Setup.exe";
+if [ "" != "${jre}" ]; then
+	if [ ! -e "../common/${jrename}.exe" ]; then
+		echo "Downloading JRE to include in installer"
+		wget ${jre} -O ../common/${jrename}.exe
+	fi
+	ln -sf ../common/${jrename}.exe jre.exe
+	FILES="${FILES} jre.exe"
+fi;
+DELETEFILES=${FILES}
+FPC=`which fpc`
+lazarusDir="/usr/share/lazarus"
+if [ ! -e "${lazarusDir}/lcl" ]; then
+	lazarusDir="/usr/lib/lazarus/"
+fi;
+
+compilerFlags="-Sd -Twin32 ${compilerFlags}";
+if [ ! -e "Setup.exe"  -o "${compileSetup}" = "true" ]; then
+	echo "Setup.exe does not exist. Lets try and compile it."
+	if [ "${FPC}" = "" ]; then
+		echo "FPC Compiler not found, Setup.exe can not be built."
+		exit 1;
+	else
+		echo "Building Setup.exe..."
+		extraFlags=""
+		if [ -e "${lazarusDir}/lcl" ]; then
+			echo "Using Lazarus"
+			mkdir -p ${PWD}/lazarus-build
+			extraFlags="-dLAZARUS -FU${PWD}/lazarus-build -Fu${PWD}/lazarus-build -Fu${lazarusDir}/lcl/widgetset/ -Fu${lazarusDir}/lcl/interfaces/win32/ -Fu${lazarusDir}/lcl/ -Fi${lazarusDir}/lcl/include/"
+		else
+			echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@";
+			echo "@        Building installer *WITHOUT* lazarus.        @";
+			echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@";
+		fi;
+		${FPC} ${compilerFlags} ${extraFlags} Setup.dpr
+		if [ $? -ne 0 ]; then
+			if [ -e "Setup.exe" -a "${useOldSetup}" = "true" ]; then
+				echo "Unable to compile Setup.exe, using existing version."
+			else
+				echo "Unable to compile Setup.exe, terminating."
+				exit 1;
+			fi
+		fi;
+	fi
+fi
+
+ls
+if [ ! -e "Setup.exe" ]; then
+	echo "Still can't find Setup.exe, terminating."
+	exit 1;
+fi
+
+echo "Compressing files.."
+
+# Shortcut.exe is from http://www.optimumx.com/download/#Shortcut
+if [ ! -e Shortcut.exe ]; then
+	wget http://binary.dmdirc.com/Shortcut.zip
+	unzip -q Shortcut.zip Shortcut.exe
+	rm Shortcut.zip
+fi
+FILES="${FILES} Shortcut.exe"
+DELETEFILES="${DELETEFILES} Shortcut.exe"
+
+if [ "${isRelease}" != "" ]; then
+	DOCSDIR=${jarPath}
+else
+	DOCSDIR="../common"
+fi
+
+if [ -e "${DOCSDIR}/README.TXT" ]; then
+	ln -sf "${DOCSDIR}/README.TXT" .
+	FILES="${FILES} README.TXT"
+	DELETEFILES="${DELETEFILES} README.TXT"
+fi
+
+if [ -e "${DOCSDIR}/CHANGES.TXT" ]; then
+	ln -sf "${DOCSDIR}/CHANGES.TXT" .
+	FILES="${FILES} CHANGES.TXT"
+	DELETEFILES="${DELETEFILES} CHANGES.TXT"
+elif [ -e "${DOCSDIR}/CHANGELOG.TXT" ]; then
+	ln -sf "${DOCSDIR}/CHANGELOG.TXT" .
+	FILES="${FILES} CHANGELOG.TXT"
+	DELETEFILES="${DELETEFILES} CHANGELOG.TXT"
+fi
+
+if [ -e "${jarPath}/launcher/windows" ]; then
+	# Try to compile all
+	olddir=${PWD}
+	cd "${jarPath}/launcher/windows/"
+	sh compile.sh
+	cd ${olddir}
+	# Now add to file list.
+	for thisfile in `ls -1 ${jarPath}/launcher/windows/*.exe`; do
+		ln -sf ${thisfile} .
+		FILES="${FILES} ${thisfile}"
+	done
+fi
+
 ${FPC} ${compilerFlags} ${3}Uninstaller.dpr
 if [ -e "Uninstaller.exe" ]; then
 	FILES="${FILES} Uninstaller.exe"
@@ -476,7 +480,7 @@ fi
 
 # Add wget to allow downloading jre
 if [ ! -e "wget.exe" ]; then
-	wget http://shanemcc.co.uk/dmdirc-binaries/wget.exe
+	wget http://binary.dmdirc.com/wget.exe
 fi;
 
 if [ ! -e "wget.exe" ]; then
@@ -502,7 +506,7 @@ echo ";!@InstallEnd@!" >> 7zip.conf
 
 if [ ! -e "7zS.sfx" ]; then
 	echo "Obtaining sfx stub.."
-	wget http://shanemcc.co.uk/dmdirc-binaries/7zS.sfx
+	wget http://binary.dmdirc.com/7zS.sfx
 fi
 
 if [ ! -e "7zS.sfx" ]; then
@@ -556,10 +560,6 @@ if [ "${MD5SUM}" != "" ]; then
 	echo "end;" >> ExtractCode.inc
 fi
 
-cat UAC.rc > all.rc
-cat version.rc >> all.rc
-cat files.rc >> all.rc
-cat icon.rc >> all.rc
 windres -F pe-i386 -i all.rc -o all.res
 
 ${FPC} ${compilerFlags} ${3}Launcher.dpr
