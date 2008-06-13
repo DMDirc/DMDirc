@@ -83,13 +83,6 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
         errorIcon =
                 new JLabel(IconManager.getIconManager().getIcon("input-error"));
 
-        if (!"javax.swing.plaf.synth.SynthLookAndFeel".equals(UIManager.get("TextFieldUI"))
-            && !UIUtilities.isWindowsUI()) {
-            setBorder(textField.getBorder());
-            textField.setBorder(BorderFactory.createEmptyBorder());
-            setBackground(textField.getBackground());
-        }
-
         setLayout(new MigLayout("fill, ins 0, hidemode 3, gap 0"));
         add(textField, "grow, pushx");
         add(errorIcon);
