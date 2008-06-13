@@ -10,7 +10,7 @@ uses Windows, SysUtils, classes, StrUtils, Vista;
 
 function askQuestion(Question: String): boolean;
 begin
-	Result := TaskDialog(0, 'DMDirc Setup', 'Question', Question, TD_ICON_QUESTION, TD_BUTTON_YES + TD_BUTTON_NO) = mrYes;
+	Result := TaskDialog(0, 'DMDirc', 'Question', Question, TD_ICON_QUESTION, TD_BUTTON_YES + TD_BUTTON_NO) = mrYes;
 end;
 
 procedure showError(ErrorMessage: String; addFooter: boolean = true);
@@ -21,12 +21,12 @@ begin
 		ErrorMessage := ErrorMessage+#13#10+'please feel free to contact us.';
 	end;
 	
-	TaskDialog(0, 'DMDirc Setup', 'Sorry, setup is unable to continue', ErrorMessage, TD_ICON_ERROR, TD_BUTTON_OK, true);
+	TaskDialog(0, 'DMDirc', 'There was an error starting DMDirc', ErrorMessage, TD_ICON_ERROR, TD_BUTTON_OK, false, false);
 end;
 
 procedure showmessage(message: String; context:String = 'Information');
 begin
-	TaskDialog(0, 'DMDirc Setup', context, message, TD_ICON_INFORMATION, TD_BUTTON_OK);
+	TaskDialog(0, 'DMDirc', context, message, TD_ICON_INFORMATION, TD_BUTTON_OK);
 end;
 
 
@@ -132,7 +132,7 @@ begin
 			errorMessage := 'No JVM is currently installed.';
 			errorMessage := errorMessage+#13#10;
 			errorMessage := errorMessage+#13#10+'DMDirc requires a 1.6.0 compatible JVM, you can get one from:';
-			errorMessage := errorMessage+#13#10+'http://jdl.sun.com/webapps/getjava/BrowserRedirect';
+			errorMessage := errorMessage+#13#10+'http://java.com/';
 			errorMessage := errorMessage+#13#10;
 			errorMessage := errorMessage+#13#10+'If you feel this is incorrect, or you require some further assistance,';
 			errorMessage := errorMessage+#13#10+'please feel free to contact us.';
@@ -147,7 +147,7 @@ begin
 				errorMessage := 'The currently installed version of java is not compatible with DMDirc.';
 				errorMessage := errorMessage+#13#10;
 				errorMessage := errorMessage+#13#10+'DMDirc requires a 1.6.0 compatible JVM, you can get one from:';
-				errorMessage := errorMessage+#13#10+'http://jdl.sun.com/webapps/getjava/BrowserRedirect';
+				errorMessage := errorMessage+#13#10+'http://java.com/';
 				errorMessage := errorMessage+#13#10;
 				errorMessage := errorMessage+#13#10+'If you feel this is incorrect, or you require some further assistance,';
 				errorMessage := errorMessage+#13#10+'please feel free to contact us.';

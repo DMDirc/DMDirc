@@ -1,10 +1,65 @@
 program Uninstaller;
-{$MODE Delphi}
-{$APPTYPE GUI}
+{$IFDEF FPC}
+	{$MODE Delphi}
+{$ENDIF}
+// Use this instead of {$APPTYPE XXX}
+// APP_XXX is the same as {$APPTYPE XXX}
+// Defaults to console
+// This is a work-around for a bug in FPC Cross Compiling to windows in delphi
+// mode (IsConsole is always true)
+{$DEFINE APP_GUI}
 
-uses Windows, SysUtils, classes, registry, Vista;
+// This block actually does the work for the above work-around
+{$IFDEF APP_GUI}
+	{$APPTYPE GUI}
+{$ELSE}
+	{$IFDEF APP_FS}
+		{$APPTYPE FS}
+	{$ELSE}
+		{$IFDEF APP_TOOL}
+			{$DEFINE APP_CONSOLE}
+			{$APPTYPE TOOL}
+		{$ELSE}
+			{$DEFINE APP_CONSOLE}
+			{$APPTYPE CONSOLE}
+		{$ENDIF}
+	{$ENDIF}
+{$ENDIF}
+
+uses Windows, SysUtils, registry, Vista;
 
 {$R uninstall.res}
+
+procedure dowriteln(line: String);
+begin
+	if IsConsole then writeln(line);
+end;
+
+procedure dowrite(line: String);
+begin
+	if IsConsole then write(line);
+end;
+
+function askQuestion(Question: String): boolean;
+begin
+	Result := TaskDialog(0, 'DMDirc Uninstaller', 'Question', Question, TD_ICON_QUESTION, TD_BUTTON_YES + TD_BUTTON_NO) = mrYes;
+end;
+
+procedure showError(context: String; ErrorMessage: String; addFooter: boolean = true);
+begin
+	if addFooter then begin
+		ErrorMessage := ErrorMessage+#13#10;
+		ErrorMessage := ErrorMessage+#13#10+'If you feel this is incorrect, or you require some further assistance,';
+		ErrorMessage := ErrorMessage+#13#10+'please feel free to contact us.';
+	end;
+	
+	TaskDialog(0, 'DMDirc Setup', context, ErrorMessage, TD_ICON_ERROR, TD_BUTTON_OK, true);
+end;
+
+procedure showmessage(message: String; context:String = 'Information');
+begin
+	TaskDialog(0, 'DMDirc Uninstaller', context, message, TD_ICON_INFORMATION, TD_BUTTON_OK);
+end;
 
 function GetTempDirectory(): String;
 var
@@ -150,15 +205,15 @@ begin
 			end;
 		end;
 		
-		MessageBox(0, PChar('DMDirc has been uninstalled from "'+InstallDir+'".'), 'DMDirc Uninstaller', MB_OK);
+		showmessage('DMDirc has been uninstalled from "'+InstallDir+'".', 'Uninstall Successful');
 	end
-	else if MessageBox(0, PChar('This will uninstall DMDirc.'+#13#10+#13#10+'Do you want to continue?'), 'DMDirc Uninstaller', MB_YESNO) = IDYES then begin
+	else if askQuestion('This will uninstall DMDirc.'+#13#10+#13#10+'Do you want to continue?') then begin
 		if (ExecAndWait('java -jar ' + ExtractFileDir(paramstr(0)) + '\DMDirc.jar -k', true) <> 0) then begin
 			TempDir := GetTempDirectory;
 			CopyFile(pchar(paramstr(0)), pchar(TempDir+'/uninstall.exe'), false);
 			Launch(TempDir+'/uninstall.exe '+ExtractFileDir(paramstr(0))+'\');
 		end else begin
-			MessageBox(0, PChar('Uninstall Aborted - DMDirc is still running.'+#13#10+'Please close DMDirc before continuing'), 'DMDirc Uninstaller', MB_OK + MB_ICONEXCLAMATION);
+			showError('Uninstall Aborted - DMDirc is still running.', 'Please close DMDirc before continuing')
 		end;
 	end;
 end.

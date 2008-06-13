@@ -391,6 +391,7 @@ if [ ! -e "${lazarusDir}/lcl" ]; then
 fi;
 
 compilerFlags="-Sd -Twin32 ${compilerFlags}";
+extraFlags=""
 if [ ! -e "Setup.exe"  -o "${compileSetup}" = "true" ]; then
 	echo "Setup.exe does not exist. Lets try and compile it."
 	if [ "${FPC}" = "" ]; then
@@ -475,7 +476,7 @@ fi
 ${FPC} ${compilerFlags} ${3}Uninstaller.dpr
 if [ -e "Uninstaller.exe" ]; then
 	FILES="${FILES} Uninstaller.exe"
-	DELETEFILES="${DELETEFILES} Uninstaller.exe"
+#	DELETEFILES="${DELETEFILES} Uninstaller.exe"
 fi
 
 # Add wget to allow downloading jre

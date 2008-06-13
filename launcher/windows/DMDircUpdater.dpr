@@ -8,7 +8,7 @@ uses Windows, SysUtils, classes, StrUtils, Vista;
 
 function askQuestion(Question: String): boolean;
 begin
-	Result := TaskDialog(0, 'DMDirc Setup', 'Question', Question, TD_ICON_QUESTION, TD_BUTTON_YES + TD_BUTTON_NO) = mrYes;
+	Result := TaskDialog(0, 'DMDirc Updater', 'Question', Question, TD_ICON_QUESTION, TD_BUTTON_YES + TD_BUTTON_NO) = mrYes;
 end;
 
 procedure showError(ErrorMessage: String; addFooter: boolean = true);
@@ -19,12 +19,12 @@ begin
 		ErrorMessage := ErrorMessage+#13#10+'please feel free to contact us.';
 	end;
 	
-	TaskDialog(0, 'DMDirc Setup', 'Sorry, setup is unable to continue', ErrorMessage, TD_ICON_ERROR, TD_BUTTON_OK, true);
+	TaskDialog(0, 'DMDirc Updater', 'There was an error starting DMDirc', ErrorMessage, TD_ICON_ERROR, TD_BUTTON_OK, false, false);
 end;
 
 procedure showmessage(message: String; context:String = 'Information');
 begin
-	TaskDialog(0, 'DMDirc Setup', context, message, TD_ICON_INFORMATION, TD_BUTTON_OK);
+	TaskDialog(0, 'DMDirc Updater', context, message, TD_ICON_INFORMATION, TD_BUTTON_OK);
 end;
 
 // Run an application and don't wait for it to finish.
