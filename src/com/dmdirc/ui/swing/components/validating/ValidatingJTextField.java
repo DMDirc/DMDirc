@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.components.validating;
 
 import com.dmdirc.config.prefs.validator.Validator;
 import com.dmdirc.ui.IconManager;
+import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.config.prefs.validator.ValidationResponse;
 
 import java.awt.Font;
@@ -82,7 +83,8 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
         errorIcon =
                 new JLabel(IconManager.getIconManager().getIcon("input-error"));
 
-        if (!"javax.swing.plaf.synth.SynthLookAndFeel".equals(UIManager.get("TextFieldUI"))) {
+        if (!"javax.swing.plaf.synth.SynthLookAndFeel".equals(UIManager.get("TextFieldUI"))
+            && !UIUtilities.isWindowsUI()) {
             setBorder(textField.getBorder());
             textField.setBorder(BorderFactory.createEmptyBorder());
             setBackground(textField.getBackground());

@@ -188,4 +188,17 @@ public final class UIUtilities {
         }
         return returnable.getObject();
     }
+    
+    /**
+     * Check if we are using one of the Windows Look and Feels
+     * 
+     * @return True iff the current LAF is "Windows" or "Windows Classic"
+     */
+    public static boolean isWindowsUI() {
+        final String uiname = UIManager.getLookAndFeel().getClass().getName();
+        final String windows = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
+        final String classic = "com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel";
+        
+        return windows.equals(uiname) || classic.equals(uiname);
+    }
 }
