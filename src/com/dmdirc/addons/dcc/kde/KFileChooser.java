@@ -222,7 +222,7 @@ public class KFileChooser extends JFileChooser {
 			params.add("--getopenfilename");
 		}
 		if (getSelectedFile() != null && getFileSelectionMode() != DIRECTORIES_ONLY) {
-			if (getSelectedFile().getPath().indexOf('/') == -1) {
+			if (getSelectedFile().getPath().indexOf('/') != 0) {
 				params.add(getCurrentDirectory().getPath() + File.separator + getSelectedFile().getPath());
 			} else {
 				params.add(getSelectedFile().getPath());
@@ -270,7 +270,7 @@ public class KFileChooser extends JFileChooser {
 		}
 		params.add("--getsavefilename");
 		if (getSelectedFile() != null) {
-			if (getSelectedFile().getPath().indexOf('/') == -1) {
+			if (getSelectedFile().getPath().indexOf('/') != 0) {
 				params.add(getCurrentDirectory().getPath()  + File.separator +  getSelectedFile().getPath());
 			} else {
 				params.add(getSelectedFile().getPath());
