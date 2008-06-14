@@ -25,6 +25,7 @@ package com.dmdirc.ui.swing.dialogs.channelsetting;
 import com.dmdirc.Channel;
 import com.dmdirc.parser.IRCParser;
 import com.dmdirc.ui.swing.components.ParamModePanel;
+import com.dmdirc.ui.swing.UIUtilities;
 
 import java.awt.Insets;
 import java.util.Hashtable;
@@ -62,6 +63,7 @@ public final class ChannelModesPane extends JPanel {
 
         this.channel = channel;
 
+        this.setOpaque(UIUtilities.getTabbedPaneOpaque());
         initModesPanel();
         layoutComponents();
 
@@ -97,6 +99,8 @@ public final class ChannelModesPane extends JPanel {
                     ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
             String text;
             String tooltip;
+            
+            final boolean opaque = UIUtilities.getTabbedPaneOpaque();
 
             if (channel.getConfigManager().
                     getOptionBool("server", "friendlymodes", false) &&
@@ -119,6 +123,7 @@ public final class ChannelModesPane extends JPanel {
             final JCheckBox checkBox = new JCheckBox(text, state);
             checkBox.setMargin(new Insets(0, 0, 0, 0));
             checkBox.setToolTipText(tooltip);
+            checkBox.setOpaque(opaque);
 
             modeCheckBoxes.put(mode, checkBox);
             if (channel.getConfigManager().
@@ -166,6 +171,9 @@ public final class ChannelModesPane extends JPanel {
 
         booleanModes.setBorder(BorderFactory.createTitledBorder("Boolean modes"));
         paramModes.setBorder(BorderFactory.createTitledBorder("Parameter modes"));
+        
+        booleanModes.setOpaque(UIUtilities.getTabbedPaneOpaque());
+        paramModes.setOpaque(UIUtilities.getTabbedPaneOpaque());
         
         setLayout(new MigLayout("flowy, fillx", "fill", ""));
         add(booleanModes);

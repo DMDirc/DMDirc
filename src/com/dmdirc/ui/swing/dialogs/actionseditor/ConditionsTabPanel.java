@@ -26,6 +26,7 @@ import com.dmdirc.ui.IconManager;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.ui.swing.components.ImageButton;
 import com.dmdirc.ui.swing.components.TextLabel;
+import com.dmdirc.ui.swing.UIUtilities;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -89,6 +90,7 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
             this.conditions = new ArrayList<ActionCondition>(owner.getAction().getConditions());
         }
         
+        this.setOpaque(UIUtilities.getTabbedPaneOpaque());
         initComponents();
         addListeners();
         layoutComponents();

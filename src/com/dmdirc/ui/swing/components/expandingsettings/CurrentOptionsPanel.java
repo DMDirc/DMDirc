@@ -26,6 +26,7 @@ import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.swing.components.ColourChooser;
 import com.dmdirc.ui.swing.components.ImageButton;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel.OptionType;
+import com.dmdirc.ui.swing.UIUtilities;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -76,6 +77,7 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
         
         this.parent = parent;
         
+        this.setOpaque(UIUtilities.getTabbedPaneOpaque());
         initComponents();
     }
     

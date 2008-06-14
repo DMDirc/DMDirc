@@ -30,6 +30,7 @@ import com.dmdirc.config.prefs.validator.RegexValidator;
 import com.dmdirc.config.prefs.validator.ValidatorChain;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardInputDialog;
+import com.dmdirc.ui.swing.UIUtilities;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -94,6 +95,7 @@ public final class IgnoreListPanel extends JPanel implements ActionListener,
         
         this.server = server;
         
+        this.setOpaque(UIUtilities.getTabbedPaneOpaque());
         initComponents();
         addListeners();
         populateList();
@@ -114,6 +116,7 @@ public final class IgnoreListPanel extends JPanel implements ActionListener,
         
         sizeLabel = new JLabel("0 entries");
         viewToggle = new JCheckBox("Use advanced expressions");
+        viewToggle.setOpaque(UIUtilities.getTabbedPaneOpaque());
 
         setLayout(new MigLayout("fill, wrap 1"));
         add(scrollPane, "growx, growy");

@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.dialogs.serversetting;
 
 import com.dmdirc.Server;
+import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.parser.IRCParser;
 
 import java.awt.Insets;
@@ -59,6 +60,7 @@ public final class UserModesPane extends JPanel {
 
         this.server = server;
 
+        this.setOpaque(UIUtilities.getTabbedPaneOpaque());
         initModesPanel();
         layoutComponents();
 
@@ -82,6 +84,8 @@ public final class UserModesPane extends JPanel {
 
         modeCheckBoxes =
                 new Hashtable<String, JCheckBox>();
+
+        final boolean opaque = UIUtilities.getTabbedPaneOpaque();
 
         // Lay out all the boolean mode checkboxes
         for (int i = 0; i < userModes.length();
@@ -113,6 +117,7 @@ public final class UserModesPane extends JPanel {
             final JCheckBox checkBox = new JCheckBox(text, state);
             checkBox.setMargin(new Insets(0, 0, 0, 0));
             checkBox.setToolTipText(tooltip);
+            checkBox.setOpaque(opaque);
 
             modeCheckBoxes.put(mode, checkBox);
         }
@@ -127,6 +132,7 @@ public final class UserModesPane extends JPanel {
         }
 
         userModes.setBorder(BorderFactory.createTitledBorder("User modes"));
+        userModes.setOpaque(UIUtilities.getTabbedPaneOpaque());
         
         setLayout(new MigLayout("flowy, fillx", "fill", ""));
         add(userModes);

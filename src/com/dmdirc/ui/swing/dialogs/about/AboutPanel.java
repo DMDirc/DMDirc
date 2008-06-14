@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.dialogs.about;
 
 import com.dmdirc.ui.swing.components.HTMLLabel;
+import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.util.URLHandler;
 
 import javax.swing.JPanel;
@@ -49,6 +50,7 @@ public final class AboutPanel extends JPanel implements HyperlinkListener {
     public AboutPanel() {
         super();
         
+        this.setOpaque(UIUtilities.getTabbedPaneOpaque());
         initComponents();
     }
     

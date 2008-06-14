@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.components.expandingsettings;
 
 import com.dmdirc.config.Identity;
 import com.dmdirc.ui.swing.components.TextLabel;
+import com.dmdirc.ui.swing.UIUtilities;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -83,6 +84,7 @@ public final class SettingsPanel extends JPanel {
     public SettingsPanel(final Identity config, final String infoText) {
         super();
 
+        this.setOpaque(UIUtilities.getTabbedPaneOpaque());
         this.config = config;
 
         initComponents(infoText);
@@ -108,6 +110,9 @@ public final class SettingsPanel extends JPanel {
 
         scrollPane.setBorder(BorderFactory.createTitledBorder("Current settings"));
         addOptionPanel.setBorder(BorderFactory.createTitledBorder("Add new setting"));
+        
+        scrollPane.setOpaque(UIUtilities.getTabbedPaneOpaque());
+        scrollPane.getViewport().setOpaque(UIUtilities.getTabbedPaneOpaque());
     }
 
     /** 

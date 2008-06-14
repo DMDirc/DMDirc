@@ -89,6 +89,7 @@ public final class TopicPane extends JPanel implements DocumentListener,
             final ChannelSettingsDialog parent) {
         super();
 
+        this.setOpaque(UIUtilities.getTabbedPaneOpaque());
         this.channel = channel;
         this.parent = parent;
 

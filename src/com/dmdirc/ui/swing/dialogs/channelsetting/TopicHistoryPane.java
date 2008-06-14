@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.dialogs.channelsetting;
 
 import com.dmdirc.ui.swing.components.renderers.TopicCellRenderer;
+import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.Channel;
 import com.dmdirc.Topic;
 
@@ -78,6 +79,8 @@ public class TopicHistoryPane extends JPanel {
         setLayout(new MigLayout("ins 0"));
         topicHistory.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
         add(topicHistory, "growy, growx");
+        
+        this.setOpaque(UIUtilities.getTabbedPaneOpaque());
     }
 
 }

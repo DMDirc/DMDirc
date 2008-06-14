@@ -34,6 +34,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
+import com.dmdirc.ui.swing.UIUtilities;
 
 /**
  * A component to encapsulate one parameter-requiring channel mode, displaying
@@ -89,6 +90,7 @@ public final class ParamModePanel extends JPanel implements ActionListener {
         
         checkBox = new JCheckBox(text, state);
         checkBox.setToolTipText(tooltip);
+        checkBox.setOpaque(UIUtilities.getTabbedPaneOpaque());
         add(checkBox);
         
         textField = new JTextField(value);

@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing;
 
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.swing.Apple;
 import com.dmdirc.ui.swing.actions.RedoAction;
 import com.dmdirc.ui.swing.actions.UndoAction;
 import com.dmdirc.ui.swing.components.DMDircUndoableEditListener;
@@ -112,8 +113,11 @@ public final class UIUtilities {
         }
         
         UIManager.put("swing.useSystemFontSettings", true);
-        
-        UIManager.put("TabbedPane.contentOpaque", false);
+        if (getTabbedPaneOpaque()) {
+            // If this is set on windows then .setOpaque seems to be ignored
+            // and still used as true
+            UIManager.put("TabbedPane.contentOpaque", false);
+        }
         UIManager.put("swing.boldMetal", false);
         UIManager.put("InternalFrame.useTaskBar", false);
         UIManager.put("SplitPaneDivider.border", BorderFactory.createEmptyBorder());
@@ -201,5 +205,17 @@ public final class UIUtilities {
         final String classic = "com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel";
         
         return windows.equals(uiname) || classic.equals(uiname);
+    }
+    
+    /**
+     * Get the value to pass to set Opaque on items being added to a JTabbedPane
+     * 
+     * @return True iff the current LAF is not Windows or OS X.
+     */
+    public static boolean getTabbedPaneOpaque() {
+        final String uiname = UIManager.getLookAndFeel().getClass().getName();
+        final String windows = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
+        
+        return !(windows.equals(uiname) || Apple.isAppleUI());
     }
 }

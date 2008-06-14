@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.dialogs.about;
 
 import com.dmdirc.ui.swing.components.HTMLLabel;
+import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.util.URLHandler;
 
 import javax.swing.JPanel;
@@ -50,6 +51,7 @@ public final class CreditsPanel extends JPanel implements HyperlinkListener {
     public CreditsPanel() {
         super();
         
+        this.setOpaque(UIUtilities.getTabbedPaneOpaque());
         initComponents();
     }
     
@@ -58,7 +60,7 @@ public final class CreditsPanel extends JPanel implements HyperlinkListener {
         final HTMLLabel about = new HTMLLabel("<html>"
                 + "<div style='font-family: "
                 + UIManager.getFont("TextField.font").getFamily() + "; font-size:"
-                + UIManager.getFont("TextField.font").getSize() + "pt;'>"
+                + UIManager.getFont("TextField.font").getSize() + "pt; background-color: transparent'>"
                 + "<h3 style='margin: 3px; padding: 0px 0px 5px 0px;'>Main developers:</h1>"
                 + "<ul style='list-style-type: circle; margin-top: 0px;'>"
                 + "<li><a href=\"http://www.md87.co.uk\">Chris 'MD87' Smith</a></li>"
@@ -74,8 +76,10 @@ public final class CreditsPanel extends JPanel implements HyperlinkListener {
         about.addHyperlinkListener(this);
         
         setLayout(new MigLayout("ins rel, fill"));
-        
-        add(new JScrollPane(about), "grow");
+        final JScrollPane scrollPane = new JScrollPane(about);
+        scrollPane.setOpaque(UIUtilities.getTabbedPaneOpaque());
+        scrollPane.getViewport().setOpaque(UIUtilities.getTabbedPaneOpaque());
+        add(scrollPane, "grow");
     }
     
     /** {@inheritDoc} */

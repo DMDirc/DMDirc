@@ -28,13 +28,12 @@ import java.awt.Component;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.ListCellRenderer;
+import javax.swing.DefaultListCellRenderer;
 
 /**
  * Add option combo box cell renderer.
  */
-public final class AddOptionCellRenderer extends JLabel
-        implements ListCellRenderer {
+public final class AddOptionCellRenderer extends DefaultListCellRenderer {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -55,9 +54,6 @@ public final class AddOptionCellRenderer extends JLabel
         super();
         
         this.parent = parent;
-        
-        setOpaque(true);
-        setVerticalAlignment(CENTER);
     }
     
     /** {@inheritDoc} */
@@ -70,16 +66,10 @@ public final class AddOptionCellRenderer extends JLabel
             final boolean cellHasFocus) {
         final String selected = (String) value;
         
-        if (isSelected) {
-            setBackground(list.getSelectionBackground());
-            setForeground(list.getSelectionForeground());
-        } else {
-            setBackground(list.getBackground());
-            setForeground(list.getForeground());
-        }
+        super.getListCellRendererComponent(list, value, index, isSelected,
+                cellHasFocus);
         
         setText(parent.getOptionName(selected));
-        setFont(list.getFont());
         
         return this;
     }

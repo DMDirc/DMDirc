@@ -25,6 +25,7 @@ package com.dmdirc.ui.swing.dialogs.serversetting;
 import com.dmdirc.Server;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.wrappers.PerformWrapper;
+import com.dmdirc.ui.swing.UIUtilities;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
@@ -82,6 +83,7 @@ public final class PerformPanel extends JPanel implements ActionListener {
         
         this.server = server;
         
+        this.setOpaque(UIUtilities.getTabbedPaneOpaque());
         initComponents();
         addListeners();
         loadPerforms();

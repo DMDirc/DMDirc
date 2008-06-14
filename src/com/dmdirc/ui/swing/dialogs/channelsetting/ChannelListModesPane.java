@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.dialogs.channelsetting;
 
 import com.dmdirc.ui.swing.components.renderers.ListModeCellRenderer;
 import com.dmdirc.ui.swing.components.renderers.ExtendedListModeCellRenderer;
+import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.Channel;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
@@ -98,6 +99,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
     public ChannelListModesPane(final Channel channel) {
         super();
 
+        this.setOpaque(UIUtilities.getTabbedPaneOpaque());
         this.channel = channel;
 
         if (IdentityManager.getGlobalConfig().getOptionBool("general",
@@ -121,6 +123,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
         toggle = new JCheckBox("Show extended information",
                 IdentityManager.getGlobalConfig().getOptionBool("general",
                 "extendedListModes", false));
+        toggle.setOpaque(UIUtilities.getTabbedPaneOpaque());
         toggle.setMargin(new Insets(0, 0, 0, 0));
         toggle.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 

@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.dialogs.actionseditor;
 
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.swing.UIUtilities;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
@@ -76,6 +77,7 @@ public final class ResponseTabPanel extends JPanel implements
         
         this.owner = owner;
         
+        this.setOpaque(UIUtilities.getTabbedPaneOpaque());
         initComponents();
         layoutComponents();
     }

@@ -25,6 +25,7 @@ package com.dmdirc.ui.swing.components.expandingsettings;
 import com.dmdirc.ui.swing.components.renderers.AddOptionCellRenderer;
 import com.dmdirc.ui.swing.components.ColourChooser;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel.OptionType;
+import com.dmdirc.ui.swing.UIUtilities;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -84,6 +85,7 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
         
         this.parent = parent;
         
+        this.setOpaque(UIUtilities.getTabbedPaneOpaque());
         initComponents();
         initListeners();
         setLayout(new MigLayout("ins 0"));
@@ -100,6 +102,7 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
         addInputColourChooser = new ColourChooser();
         addInputText = new JTextField();
         addInputCheckbox = new JCheckBox();
+        addInputCheckbox.setOpaque(UIUtilities.getTabbedPaneOpaque());
         addInputSpinner = new JSpinner(new SpinnerNumberModel());
         addInputNone = new JLabel("");
         

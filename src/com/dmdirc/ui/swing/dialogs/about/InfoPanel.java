@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.dialogs.about;
 
 import com.dmdirc.Main;
+import com.dmdirc.ui.swing.UIUtilities;
 
 import java.util.Locale;
 
@@ -47,6 +48,7 @@ public final class InfoPanel extends JPanel {
     public InfoPanel() {
         super();
 
+        this.setOpaque(UIUtilities.getTabbedPaneOpaque());
         initComponents();
     }
 

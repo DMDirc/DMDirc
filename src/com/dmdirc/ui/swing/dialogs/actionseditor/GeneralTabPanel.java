@@ -28,6 +28,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.ui.swing.actions.SanitisedFilenamePasteAction;
 import com.dmdirc.ui.swing.components.SanitisedFilenameFilter;
+import com.dmdirc.ui.swing.UIUtilities;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -83,6 +84,7 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
         
         this.owner = owner;
         
+        this.setOpaque(UIUtilities.getTabbedPaneOpaque());
         initComponents();
         addListeners();
         layoutComponents();

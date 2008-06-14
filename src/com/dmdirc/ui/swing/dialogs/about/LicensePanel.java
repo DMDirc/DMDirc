@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.about;
 
+import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
 import java.io.BufferedReader;
@@ -58,6 +59,7 @@ public final class LicensePanel extends JPanel {
     public LicensePanel() {
         super();
 
+        this.setOpaque(UIUtilities.getTabbedPaneOpaque());
         initComponents();
     }
 
