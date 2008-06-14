@@ -34,6 +34,7 @@ import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 import com.dmdirc.actions.ActionManager;
+import com.dmdirc.addons.dcc.kde.KFileChooser;
 import com.dmdirc.addons.dcc.actions.DCCActions;
 
 import javax.swing.JFileChooser;
@@ -120,7 +121,7 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 			/** {@inheritDoc} */
 			@Override
 			public void run() {
-				final JFileChooser jc = (givenFile.exists()) ? new JFileChooser(givenFile) : new JFileChooser();
+				final JFileChooser jc = (givenFile.exists()) ? KFileChooser.getFileChooser(givenFile) : KFileChooser.getFileChooser();
 				int result;
 				if (!givenFile.exists() || !givenFile.isFile() ) {
 					jc.setDialogTitle("Send file to "+target+" - DMDirc ");

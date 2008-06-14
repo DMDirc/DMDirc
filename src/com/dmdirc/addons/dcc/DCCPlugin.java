@@ -43,6 +43,7 @@ import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.swing.components.TextFrame;
 
+import com.dmdirc.addons.dcc.kde.KFileChooser;
 import com.dmdirc.addons.dcc.actions.DCCActions;
 
 import com.dmdirc.ui.swing.components.TextLabel;
@@ -129,9 +130,9 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 			/** {@inheritDoc} */
 			@Override
 			public void run() {
-				final JFileChooser jc = new JFileChooser(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "receive.savelocation"));
+				final JFileChooser jc = KFileChooser.getFileChooser(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "receive.savelocation"));
 				jc.setDialogTitle("Save "+sendFilename+" As - DMDirc ");
-				jc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+				jc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				jc.setMultiSelectionEnabled(false);
 				jc.setSelectedFile(new File(send.getFileName()));
 				int result;
@@ -439,6 +440,8 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	@Override
 	public void onLoad() {
 		final Identity defaults = IdentityManager.getAddonIdentity();
+		defaults.setOption(MY_DOMAIN, "general.useKFileChooser", "false");
+		
 		defaults.setOption(MY_DOMAIN, "receive.savelocation", Main.getConfigDir() + "downloads" + System.getProperty("file.separator"));
 		defaults.setOption(MY_DOMAIN, "send.reverse", "false");
 		defaults.setOption(MY_DOMAIN, "send.forceturbo", "true");
@@ -589,7 +592,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 *
 	 * @return the plugins domain
 	 */
-	protected static String getDomain() { return MY_DOMAIN; }
+	public static String getDomain() { return MY_DOMAIN; }
 
 }
 

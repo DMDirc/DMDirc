@@ -211,7 +211,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	 */
 	public void updateSpeedAndTime() {
 		final long time = (System.currentTimeMillis() - timeStarted) / 1000;
-		final double bytesPerSecond = (time > 0) ? (transferCount / time) : 0;
+		final double bytesPerSecond = (time > 0) ? (transferCount / time) : transferCount;
 		
 		if (bytesPerSecond > 1048576) {
 			speed.setText(String.format("Speed: %.2f MB/s", (bytesPerSecond/1048576)));
