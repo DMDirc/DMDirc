@@ -516,9 +516,11 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
             /** {@inheritDoc} */
             @Override
             public void run() {
-                labels.get(nodes.get(window.getContainer())).notificationSet(window,
-                        colour);
-                tree.repaint();
+                synchronized (labels) {
+                    labels.get(nodes.get(window.getContainer())).notificationSet(window,
+                            colour);
+                    tree.repaint();
+                }
             }
         });
     }
@@ -531,8 +533,11 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
             /** {@inheritDoc} */
             @Override
             public void run() {
-                labels.get(nodes.get(window.getContainer())).notificationCleared(window);
-                tree.repaint();
+                synchronized (labels) {
+                    labels.get(nodes.get(window.getContainer())).
+                            notificationCleared(window);
+                    tree.repaint();
+                }
             }
         });
     }
