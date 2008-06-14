@@ -151,7 +151,7 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
         tabbedPane.add("Ignore list", ignoreList);
         tabbedPane.add("Perform", performPanel);
         if (settingsPanel != null) {
-            tabbedPane.add("settings", settingsPanel);
+            tabbedPane.add("Settings", settingsPanel);
         }
 
         setLayout(new BorderLayout());
