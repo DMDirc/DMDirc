@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.components.durationeditor;
 
 import com.dmdirc.ui.messages.Formatter;
+import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.util.ListenerList;
 
 import java.awt.Insets;
@@ -89,7 +90,11 @@ public class DurationDisplay extends JPanel implements ActionListener,
             durationLabel.setText(Formatter.formatDuration(duration));
         }
 
-        button.setMargin(new Insets(0, 2, 0, 2));
+        if (UIUtilities.isWindowsUI()) {
+            button.setMargin(new Insets(2, 4, 2, 4));
+        } else {
+            button.setMargin(new Insets(0, 2, 0, 2));
+        }
     }
 
     /**
@@ -106,7 +111,7 @@ public class DurationDisplay extends JPanel implements ActionListener,
         setLayout(new MigLayout("ins 0, fill"));
 
         add(durationLabel, "growx");
-        add(button, "tag ok");
+        add(button, "");
     }
 
     /** 

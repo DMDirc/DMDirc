@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.components;
 
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.util.ListenerList;
+import com.dmdirc.ui.swing.UIUtilities;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
@@ -96,7 +97,11 @@ public final class OptionalColourChooser extends JPanel implements ActionListene
         value = initialColour;
         
         editButton = new JButton("Edit");
-        editButton.setMargin(new Insets(0, 2, 0, 2));
+        if (UIUtilities.isWindowsUI()) {
+            editButton.setMargin(new Insets(2, 4, 2, 4));
+        } else {
+            editButton.setMargin(new Insets(0, 2, 0, 2));
+        }
         editButton.addActionListener(this);
         if (!initialState) {
             editButton.setEnabled(false);
