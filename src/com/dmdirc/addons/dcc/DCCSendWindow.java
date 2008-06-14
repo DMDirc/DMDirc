@@ -98,7 +98,9 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 		super(plugin, title, dcc.getType() == DCCSend.TransferType.SEND ? "dcc-send-inactive" : "dcc-receive-inactive");
 		this.dcc = dcc;
 		this.parser = parser;
-		parser.getCallbackManager().addNonCriticalCallback("onSocketClosed", this);
+		if (parser != null) {
+			parser.getCallbackManager().addNonCriticalCallback("onSocketClosed", this);
+		}
 		dcc.setHandler(this);
 		nickname = nick;
 		otherNickname = targetNick;
