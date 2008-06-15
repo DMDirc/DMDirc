@@ -36,7 +36,6 @@ import com.dmdirc.ui.swing.actions.CloseFrameContainerAction;
 import com.dmdirc.ui.swing.components.TextFrame;
 import com.dmdirc.ui.swing.components.TreeScroller;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.event.AdjustmentEvent;
@@ -66,6 +65,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import net.miginfocom.layout.PlatformDefaults;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Manages open windows in the application in a tree style view.
@@ -170,8 +170,8 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
                 scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
                 scrollPane.getHorizontalScrollBar().addAdjustmentListener(TreeFrameManager.this);
 
-                parent.setLayout(new BorderLayout());
-                parent.add(scrollPane);
+                parent.setLayout(new MigLayout("ins 0, fill"));
+                parent.add(scrollPane, "grow");
                 parent.setFocusable(false);
 
                 setColours();

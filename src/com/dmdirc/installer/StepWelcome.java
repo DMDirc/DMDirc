@@ -24,12 +24,8 @@ package com.dmdirc.installer;
 
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.components.TextLabel;
-import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
-import java.awt.BorderLayout;
-
-import javax.swing.BorderFactory;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Tells the user what this application does
@@ -47,8 +43,7 @@ public final class StepWelcome extends Step {
 	 */
 	public StepWelcome(final String releaseName) {
 		super();
-		setLayout(new BorderLayout());
-		setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
+		setLayout(new MigLayout());
 		
 		TextLabel infoLabel;
 		infoLabel = new TextLabel("Welcome to the "+releaseName+" installer. This program will install DMDirc on this computer.\n\n"
@@ -56,14 +51,8 @@ public final class StepWelcome extends Step {
 		                        + "Gregory Holmes. DMDirc is released for free under the MIT license; for more information, "
 		                        + "please visit www.DMDirc.com.\n\n"
 		                        + "Click \"Next\" to continue, or close this program to cancel the installation.");
-//		infoLabel.setEditable(false);
-//		infoLabel.setWrapStyleWord(true);
-//		infoLabel.setLineWrap(true);
-//		infoLabel.setHighlighter(null);
 		infoLabel.setOpaque(false);
-//		infoLabel.setBackground(getBackground());
-		infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, SMALL_BORDER, 0));
 			
-		add(infoLabel, BorderLayout.CENTER);
+		add(infoLabel, "grow");
 	}
 }

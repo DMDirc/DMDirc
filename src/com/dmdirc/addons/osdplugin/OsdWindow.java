@@ -26,11 +26,8 @@ import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.swing.MainFrame;
-import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -46,6 +43,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * The OSD Window is an always-on-top window designed to convey information
@@ -153,9 +152,6 @@ public final class OsdWindow extends JDialog implements MouseListener,
         
         setFocusableWindowState(false);
         setAlwaysOnTop(true);
-        setSize(new Dimension(500, 
-                IdentityManager.getGlobalConfig().getOptionInt("plugin-OSD", "fontSize", 20)
-                + LARGE_BORDER));
         setResizable(false);
         setUndecorated(true);
         
@@ -169,7 +165,7 @@ public final class OsdWindow extends JDialog implements MouseListener,
                 "bgcolour", Color.decode("#2222aa")));
         
         setContentPane(panel);
-        setLayout(new BorderLayout());
+        setLayout(new MigLayout("pack, wmin 500, ins rel"));
         
         label = new JLabel(text);
         label.setForeground(IdentityManager.getGlobalConfig().getOptionColour("plugin-OSD",
@@ -178,7 +174,7 @@ public final class OsdWindow extends JDialog implements MouseListener,
                 (float) IdentityManager.getGlobalConfig().getOptionInt("plugin-OSD",
                 "fontSize", 20)));
         label.setHorizontalAlignment(SwingConstants.CENTER);
-        add(label);
+        add(label, "grow");
         
         setVisible(true);
         
@@ -246,7 +242,6 @@ public final class OsdWindow extends JDialog implements MouseListener,
      */
     public void setFontSize(final int size) {
         label.setFont(label.getFont().deriveFont((float) size));
-        setSize(new Dimension(500, size + LARGE_BORDER));
     }
 
     /**

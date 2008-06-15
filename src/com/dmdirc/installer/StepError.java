@@ -24,12 +24,8 @@ package com.dmdirc.installer;
 
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.components.TextLabel;
-import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
-import java.awt.BorderLayout;
-
-import javax.swing.BorderFactory;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * This step shows an unable to install error
@@ -56,14 +52,12 @@ public final class StepError extends Step {
 	 */
 	public StepError(final String message) {
 		super();
-		setLayout(new BorderLayout());
-		setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
+		setLayout(new MigLayout());
 		
 		TextLabel infoLabel;
 		infoLabel = new TextLabel(message);
 		infoLabel.setOpaque(false);
-		infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, SMALL_BORDER, 0));
 			
-		add(infoLabel, BorderLayout.CENTER);
+		add(infoLabel, "grow");
 	}
 }

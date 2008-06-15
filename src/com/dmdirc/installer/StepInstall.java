@@ -27,15 +27,13 @@ import com.dmdirc.installer.Installer.ShortcutType;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.dialogs.wizard.StepListener;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardFrame;
-import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
-import java.awt.BorderLayout;
 import javax.swing.UIManager;
 
-import javax.swing.BorderFactory;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * This confirms the settings chosen in the previous step
@@ -61,21 +59,19 @@ public final class StepInstall extends Step implements StepListener {
 	public StepInstall(final WizardFrame dialog) {
 		super();
 		dialog.addStepListener(this);
-		setLayout(new BorderLayout());
-		setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
+		setLayout(new MigLayout("fill"));
 
 		infoLabel.setFont(UIManager.getFont("Label.font"));
 		infoLabel.setEditable(false);
 		infoLabel.setWrapStyleWord(true);
 		infoLabel.setLineWrap(true);
-		infoLabel.setHighlighter(null);
+		//infoLabel.setHighlighter(null);
 		infoLabel.setOpaque(false);
 		infoLabel.setFont(UIManager.getFont("TextField.font"));
 //		infoLabel.setBackground(getBackground());
-		infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, SMALL_BORDER, 0));
 
 		scrollPane = new JScrollPane(infoLabel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		add(scrollPane, BorderLayout.CENTER);
+		add(scrollPane, "grow");
 	}
 
 	/**

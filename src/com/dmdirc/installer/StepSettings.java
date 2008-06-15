@@ -26,18 +26,12 @@ import com.dmdirc.installer.cliparser.CLIParser;
 import com.dmdirc.installer.Installer.ShortcutType;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.components.TextLabel;
-import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Queries the user for where to install dmdirc, and if they want to setup shortcuts
@@ -66,9 +60,7 @@ public final class StepSettings extends Step {
 	 */
 	public StepSettings() {
 		super();
-		final GridBagConstraints constraints = new GridBagConstraints();
-		setLayout(new GridBagLayout());
-		setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
+		setLayout(new MigLayout("wrap 1"));
 
 		TextLabel infoLabel;
 		infoLabel = new TextLabel("Here you can choose options for the install.\n");
@@ -78,58 +70,31 @@ public final class StepSettings extends Step {
 //		infoLabel.setHighlighter(null);
 		infoLabel.setOpaque(false);
 //		infoLabel.setBackground(getBackground());
-		infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, SMALL_BORDER, 0));
 
 		shortcutMenu.setSelected((CLIParser.getCLIParser().getParamNumber("-no-shortcut-menu") == 0));
 		shortcutDesktop.setSelected((CLIParser.getCLIParser().getParamNumber("-no-shortcut-desktop") == 0));
 		shortcutQuick.setSelected((CLIParser.getCLIParser().getParamNumber("-no-shortcut-quicklaunch") == 0));
 		shortcutProtocol.setSelected((CLIParser.getCLIParser().getParamNumber("-no-shortcut-protocol") == 0));
 
-		constraints.weightx = 1.0;
-		constraints.fill = constraints.BOTH;
-		constraints.gridx = 0;
-		constraints.gridy = 0;
-		constraints.gridwidth = 2;
-		add(infoLabel, constraints);
-
-		constraints.weightx = 0.0;
-		constraints.gridwidth = 1;
-		constraints.gridy = 1;
-		constraints.fill = constraints.NONE;
-		constraints.insets = new Insets(LARGE_BORDER, 0, 0, 0);
-		add(new JLabel("Install Location: "), constraints);
-		constraints.fill = constraints.HORIZONTAL;
-		constraints.gridx = 1;
-		add(location, constraints);
-
-		constraints.gridwidth = 2;
-		constraints.gridx = 0;
-		constraints.insets = new Insets(SMALL_BORDER, 0, 0, 0);
+		add(infoLabel);
+		add(new JLabel("Install Location: "));
+		add(location, "growx, pushx");
 
 		if (Main.getInstaller().supportsShortcut(ShortcutType.MENU)) {
-			constraints.gridy = (constraints.gridy + 1);
-			add(shortcutMenu, constraints);
+			add(shortcutMenu, "");
 		}
 
 		if (Main.getInstaller().supportsShortcut(ShortcutType.DESKTOP)) {
-			constraints.gridy = (constraints.gridy + 1);
-			add(shortcutDesktop, constraints);
+			add(shortcutDesktop, "");
 		}
 
 		if (Main.getInstaller().supportsShortcut(ShortcutType.QUICKLAUNCH)) {
-			constraints.gridy = (constraints.gridy + 1);
-			add(shortcutQuick, constraints);
+			add(shortcutQuick, "");
 		}
 
 		if (Main.getInstaller().supportsShortcut(ShortcutType.PROTOCOL)) {
-			constraints.gridy = (constraints.gridy + 1);
-			add(shortcutProtocol, constraints);
+			add(shortcutProtocol, "");
 		}
-
-		constraints.gridy = (constraints.gridy + 1);
-		constraints.weighty = 1.0;
-		constraints.fill = constraints.BOTH;
-		add(Box.createVerticalGlue(), constraints);
 	}
 
 	/**

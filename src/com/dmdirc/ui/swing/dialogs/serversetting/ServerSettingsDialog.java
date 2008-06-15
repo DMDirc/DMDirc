@@ -29,7 +29,6 @@ import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel.OptionType;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -41,6 +40,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Allows the user to modify server settings and the ignore list.
@@ -111,7 +112,7 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
      */
     public static synchronized ServerSettingsDialog getServerSettingsDialog(final Server server) {
         if (me == null) {
-            me =    new ServerSettingsDialog(server);
+            me = new ServerSettingsDialog(server);
         }
 
         me.pack();
@@ -122,13 +123,9 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
     /** Initialises the main UI components. */
     private void initComponents() {
         orderButtons(new JButton(), new JButton());
-        initButtonsPanel();
 
         tabbedPane = new JTabbedPane();
 
-        tabbedPane.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
-                SMALL_BORDER, 0, SMALL_BORDER));
-        
         modesPanel = new UserModesPane(server);
 
         ignoreList =
@@ -154,10 +151,11 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
             tabbedPane.add("Settings", settingsPanel);
         }
 
-        setLayout(new BorderLayout());
+        setLayout(new MigLayout("fill, wrap 1"));
 
-        add(tabbedPane, BorderLayout.CENTER);
-        add(buttonsPanel, BorderLayout.PAGE_END);
+        add(tabbedPane, "grow");
+        add(getLeftButton(), "split 2, right");
+        add(getRightButton(), "right");
 
         tabbedPane.setSelectedIndex(server.getConfigManager().
                 getOptionInt("dialogstate", "serversettingsdialog", 0));
@@ -231,22 +229,6 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
         settingsPanel.addOption("general.pingtimeout", "Ping timeout",
                 OptionType.SPINNER);
     }
-
-    /** Initialises the button panel. */
-    private void initButtonsPanel() {
-        buttonsPanel = new JPanel();
-
-        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
-
-        buttonsPanel.setLayout(new BoxLayout(buttonsPanel,
-                BoxLayout.LINE_AXIS));
-        buttonsPanel.add(Box.createHorizontalGlue());
-        buttonsPanel.add(getLeftButton());
-        buttonsPanel.add(Box.createHorizontalStrut(SMALL_BORDER));
-        buttonsPanel.add(getRightButton());
-    }
-
     /** Initialises listeners for this dialog. */
     private void initListeners() {
         getOkButton().addActionListener(this);
@@ -265,7 +247,11 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
                 String.valueOf(tabbedPane.getSelectedIndex()));
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     * 
+     * @param e Action event
+     */
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == getOkButton()) {

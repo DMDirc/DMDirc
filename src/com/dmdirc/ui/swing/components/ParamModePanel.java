@@ -33,8 +33,9 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SpringLayout;
 import com.dmdirc.ui.swing.UIUtilities;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * A component to encapsulate one parameter-requiring channel mode, displaying
@@ -78,8 +79,7 @@ public final class ParamModePanel extends JPanel implements ActionListener {
                 tooltip = "Mode " + mode + ": Unknown";
             }
         
-        final SpringLayout layout = new SpringLayout();
-        setLayout(layout);
+        setLayout(new MigLayout("fill"));
         
         text = "Mode " + mode + ": ";
         
@@ -95,7 +95,7 @@ public final class ParamModePanel extends JPanel implements ActionListener {
         
         textField = new JTextField(value);
         textField.setInputVerifier(new ModeParameterVerifier());
-        add(textField);
+        add(textField, "growx, pushx");
         
         if (!state) {
             textField.setEnabled(false);

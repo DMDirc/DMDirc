@@ -24,7 +24,6 @@ package com.dmdirc.ui.swing.components;
 
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.swing.UIUtilities;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -37,6 +36,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.event.EventListenerList;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Colour chooser widget.
@@ -108,10 +109,10 @@ public final class ColourChooser extends JPanel implements ActionListener {
         previewPanel.setPreferredSize(new Dimension(40, 10));
         previewPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
         
-        setLayout(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
+        setLayout(new MigLayout("ins 0, fill"));
         
-        add(editButton, BorderLayout.LINE_END);
-        add(previewPanel, BorderLayout.CENTER);
+        add(previewPanel, "growx, pushx, sgy all");
+        add(editButton, "sgy all");
         
         updateColour(initialColour);
     }

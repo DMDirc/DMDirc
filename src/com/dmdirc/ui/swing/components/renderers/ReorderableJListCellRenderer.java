@@ -24,7 +24,6 @@ package com.dmdirc.ui.swing.components.renderers;
 
 import com.dmdirc.ui.swing.components.reorderablelist.ReorderableJList;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 
 import javax.swing.JLabel;
@@ -33,6 +32,8 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Renderer for the reorderable JList, procides visual clues to DnD.
@@ -66,12 +67,12 @@ public class ReorderableJListCellRenderer implements ListCellRenderer {
             final Object value, final int index, final boolean isSelected,
             final boolean cellHasFocus) {
         final JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
+        panel.setLayout(new MigLayout("fill, ins 0"));
         final boolean isTargetCell = value == parent.getTargetCell();
         
         final boolean showSelected = isSelected & (parent.getTargetCell() == null);
         
-        panel.add(new JLabel(value.toString()), BorderLayout.CENTER);
+        panel.add(new JLabel(value.toString()), "dock center");
         
         if (showSelected) {
             panel.setForeground(UIManager.getColor("List.selectionForeground"));
@@ -89,9 +90,9 @@ public class ReorderableJListCellRenderer implements ListCellRenderer {
         
         if (isTargetCell) {
             if (parent.getBelowTarget()) {
-                panel.add(new JSeparator(), BorderLayout.PAGE_END);
+                panel.add(new JSeparator(), "dock south");
             } else {
-                panel.add(new JSeparator(), BorderLayout.PAGE_START);
+                panel.add(new JSeparator(), "dock north");
             }
         }
         

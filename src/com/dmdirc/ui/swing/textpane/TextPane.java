@@ -56,6 +56,7 @@ import javax.swing.text.StyleConstants.CharacterConstants;
 import javax.swing.text.StyleConstants.ColorConstants;
 import javax.swing.text.StyleConstants.FontConstants;
 import javax.swing.text.StyledDocument;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Styled, scrollable text pane.
@@ -105,17 +106,17 @@ public final class TextPane extends JComponent implements AdjustmentListener,
 
         setMinimumSize(new Dimension(0, 0));
 
-        setLayout(new BorderLayout());
+        setLayout(new MigLayout("fill"));
 
         canvas = new TextPaneCanvas(this, document);
 
         setBorder(UIManager.getBorder("TextField.border"));
 
-        add(canvas, BorderLayout.CENTER);
+        add(canvas, "dock center");
 
 
         scrollBar = new JScrollBar(JScrollBar.VERTICAL);
-        add(scrollBar, BorderLayout.LINE_END);
+        add(scrollBar, "dock east");
 
         setAutoscrolls(true);
 

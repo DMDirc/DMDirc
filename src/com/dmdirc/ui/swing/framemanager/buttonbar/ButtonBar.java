@@ -35,11 +35,8 @@ import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.util.MapList;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -51,12 +48,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * The button bar manager is a grid of buttons that presents a manager similar
@@ -109,7 +107,11 @@ public final class ButtonBar implements FrameManager, ActionListener,
         position = FramemanagerPosition.getPosition(
                 IdentityManager.getGlobalConfig().getOption("ui", "framemanagerPosition"));
         
-        panel = new JPanel(new GridBagLayout());
+        if (position.isHorizontal()) {
+            panel = new JPanel(new MigLayout("ins 0, fill, flowx"));
+        } else {
+             panel = new JPanel(new MigLayout("ins 0, fill, flowy"));
+        }
     }
     
     /** {@inheritDoc} */
@@ -117,11 +119,8 @@ public final class ButtonBar implements FrameManager, ActionListener,
     public void setParent(final JComponent parent) {
         this.parent = parent;
         
-        parent.setLayout(new BorderLayout());
-        parent.setBorder(BorderFactory.createEmptyBorder(
-                UIUtilities.SMALL_BORDER, UIUtilities.SMALL_BORDER,
-                UIUtilities.SMALL_BORDER, UIUtilities.SMALL_BORDER));
-        parent.add(panel, BorderLayout.NORTH);
+        parent.setLayout(new MigLayout());
+        parent.add(panel);
         
         buttonWidth = position.isHorizontal() ? 150 : (parent.getWidth() 
                 - UIUtilities.SMALL_BORDER * 3) / cells;
@@ -139,50 +138,20 @@ public final class ButtonBar implements FrameManager, ActionListener,
     private void relayout() {
         panel.removeAll();
         
-        final GridBagConstraints constraints = new GridBagConstraints();
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.insets.set(UIUtilities.SMALL_BORDER,
-                UIUtilities.SMALL_BORDER, 0, 0);
-        
         for (Map.Entry<FrameContainer, List<FrameContainer>> entry : windows.entrySet()) {
             buttons.get(entry.getKey()).setPreferredSize(new Dimension(buttonWidth, 25));
             buttons.get(entry.getKey()).setMinimumSize(new Dimension(buttonWidth, 25));
-            panel.add(buttons.get(entry.getKey()), constraints);
-            increment(constraints);
+            panel.add(buttons.get(entry.getKey()));
             
             Collections.sort(entry.getValue(), new FrameContainerComparator());
             
             for (FrameContainer child : entry.getValue()) {
                 buttons.get(child).setPreferredSize(new Dimension(buttonWidth, 25));
                 buttons.get(child).setMinimumSize(new Dimension(buttonWidth, 25));
-                panel.add(buttons.get(child), constraints);
-                increment(constraints);
+                panel.add(buttons.get(child));
             }
         }
         panel.validate();
-    }
-    
-    /**
-     * Increments the x and y offsets (where appropriate) of the gridbag
-     * constraints.
-     *
-     * @param constraints The constraints to modify
-     */
-    public void increment(final GridBagConstraints constraints) {
-        if (position.isHorizontal()) {
-            constraints.gridx++;
-            if (constraints.gridx > maxButtons) {
-                constraints.gridy++;
-                constraints.gridx = 0;
-            }
-        } else {
-            constraints.gridy++;
-            if (constraints.gridy > maxButtons) {
-                constraints.gridx++;
-                constraints.gridy = 0;
-            }
-        }
     }
     
     /**

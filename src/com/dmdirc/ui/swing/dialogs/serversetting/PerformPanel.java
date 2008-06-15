@@ -26,18 +26,17 @@ import com.dmdirc.Server;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.wrappers.PerformWrapper;
 import com.dmdirc.ui.swing.UIUtilities;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Perform panel.
@@ -92,9 +91,7 @@ public final class PerformPanel extends JPanel implements ActionListener {
     
     /** Initialises teh components. */
     private void initComponents() {
-        setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER, 
-                SMALL_BORDER, SMALL_BORDER));
-        setLayout(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
+        setLayout(new MigLayout("fill"));
         
         final DefaultComboBoxModel model = new DefaultComboBoxModel();
         target = new JComboBox(model);
@@ -106,12 +103,12 @@ public final class PerformPanel extends JPanel implements ActionListener {
             model.addElement("Server perform (" + server.getName() + ")");
         }
         
-        add(target, BorderLayout.NORTH);
+        add(target, "growx, pushx, wrap");
         
         textarea = new JTextArea();
         textarea.setColumns(40);
         
-        add(new JScrollPane(textarea));
+        add(new JScrollPane(textarea), "grow");
     }
     
     /** Adds listeners to the components. */

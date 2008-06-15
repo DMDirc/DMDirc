@@ -27,12 +27,8 @@ import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.dialogs.wizard.StepListener;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardFrame;
-import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
-import java.awt.BorderLayout;
-
-import javax.swing.BorderFactory;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * This confirms the settings chosen in the previous step
@@ -55,13 +51,11 @@ public final class StepConfirm extends Step implements StepListener {
 	public StepConfirm(final WizardFrame dialog) {
 		super();
 		dialog.addStepListener(this);
-		setLayout(new BorderLayout());
-		setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
+		setLayout(new MigLayout());
 
 		infoLabel.setOpaque(false);
-		infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, SMALL_BORDER, 0));
 
-		add(infoLabel, BorderLayout.CENTER);
+		add(infoLabel, "grow");
 	}
 
 	/** {@inheritDoc} */

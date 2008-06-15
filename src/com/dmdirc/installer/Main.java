@@ -70,6 +70,7 @@ public final class Main implements WizardListener {
 		setWizardFrame(new WizardFrame(releaseName + " Installer", new ArrayList<Step>(), this));
 		wizardDialog.setIconImage(IconManager.getIconManager().getImage("icon"));
 		wizardDialog.setPreferredSize(new Dimension(400, 350));
+		wizardDialog.setMaximumSize(new Dimension(400, 350));
 		wizardDialog.addWizardListener(this);
 
 		final String osName = System.getProperty("os.name");

@@ -25,7 +25,6 @@ package com.dmdirc.ui.swing.components;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.util.ListenerList;
 import com.dmdirc.ui.swing.UIUtilities;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -38,6 +37,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Colour chooser widget.
@@ -116,11 +117,11 @@ public final class OptionalColourChooser extends JPanel implements ActionListene
         enabled.setSelected(initialState);
         enabled.addActionListener(this);
         
-        this.setLayout(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
+        setLayout(new MigLayout("fill, ins 0"));
         
-        this.add(enabled, BorderLayout.LINE_START);
-        this.add(previewPanel, BorderLayout.CENTER);
-        this.add(editButton, BorderLayout.LINE_END);
+        add(enabled, "sgy all");
+        add(previewPanel, "growx, pushx, sgy all");
+        add(editButton, "sgy all");
         
         updateColour(initialColour);
     }
