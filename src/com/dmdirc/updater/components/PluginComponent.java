@@ -86,7 +86,7 @@ public class PluginComponent implements UpdateComponent {
     public boolean doInstall(final String path) throws Throwable {
         final File target = new File(plugin.getFullFilename());
         
-        if (target.exists()) {
+        if (!plugin.hasPersistant() && target.exists()) {
             target.delete();
         }
         
