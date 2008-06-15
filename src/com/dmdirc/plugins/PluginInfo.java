@@ -77,6 +77,11 @@ public class PluginInfo implements Comparable<PluginInfo> {
 		this.filename = filename;
 		ResourceManager res;
 
+		// Check for updates.
+		if (new File(getFullFilename()+".update").exists() && new File(getFullFilename()).delete()) {
+			new File(getFullFilename()+".update").renameTo(new File(getFullFilename()));
+		}
+
 		if (!load) {
 			// Load the metaData if available.
 			metaData = new Properties();
@@ -92,11 +97,6 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			return;
 		}
 
-		// Check for updates.
-		if (new File(getFullFilename()+".update").exists() && new File(getFullFilename()).delete()) {
-			new File(getFullFilename()+".update").renameTo(new File(getFullFilename()));
-		}
-		
 		try {
 			res = getResourceManager();
 		} catch (IOException ioe) {
