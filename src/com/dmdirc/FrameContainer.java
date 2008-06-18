@@ -126,8 +126,10 @@ public abstract class FrameContainer {
     private void iconUpdated() {
         final Icon newIcon = getIcon();
         
-        for (IconChangeListener listener : listeners.get(IconChangeListener.class)) {
-            listener.iconChanged(getFrame(), newIcon);
+        synchronized (listeners) {
+            for (IconChangeListener listener : listeners.get(IconChangeListener.class)) {
+                listener.iconChanged(getFrame(), newIcon);
+            }
         }
     }
 
@@ -337,7 +339,9 @@ public abstract class FrameContainer {
      * @param listener The listener to be added
      */
     public void addIconChangeListener(final IconChangeListener listener) {
-        listeners.add(IconChangeListener.class, listener);
+        synchronized (listeners) {
+            listeners.add(IconChangeListener.class, listener);
+        }
     }
 
     /**
@@ -346,7 +350,9 @@ public abstract class FrameContainer {
      * @param listener The listener to be removed
      */
     public void removeIconChangeListener(final IconChangeListener listener) {
-        listeners.remove(IconChangeListener.class, listener);
+        synchronized (listeners) {
+            listeners.remove(IconChangeListener.class, listener);
+        }
     }
     
     /**
