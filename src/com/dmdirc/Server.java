@@ -802,7 +802,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     public String getAwayMessage() {
         return awayMessage;
     }
-
+    
     /**
      * Returns the tab completer for this connection.
      *
@@ -1111,6 +1111,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
 
             removeInvites();
+            updateAwayState(null);
 
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
                     "reconnectondisconnect", false)
@@ -1432,6 +1433,11 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @param message The away message to use, or null if we're not away.
      */
     public void updateAwayState(final String message) {
+        if ((awayMessage != null && awayMessage.equals(message))
+                || (awayMessage == null && message == null)) {
+            return;
+        }
+        
         awayMessage = message;
 
         if (message == null) {
