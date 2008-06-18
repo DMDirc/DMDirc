@@ -22,6 +22,7 @@
 package com.dmdirc.ui;
 
 import com.dmdirc.harness.TestFrameManager;
+import com.dmdirc.harness.TestWritableFrameContainer;
 import com.dmdirc.ui.dummy.DummyInputWindow;
 import com.dmdirc.ui.interfaces.Window;
 
@@ -33,8 +34,8 @@ public class WindowManagerTest extends junit.framework.TestCase {
     @Test
     public void testFrameManagers() {
         final TestFrameManager tfm = new TestFrameManager();
-        final Window parent = new DummyInputWindow(null, null);
-        final Window child = new DummyInputWindow(null, null);
+        final Window parent = new DummyInputWindow(new TestWritableFrameContainer(512), null);
+        final Window child = new DummyInputWindow(new TestWritableFrameContainer(512), null);
         
         WindowManager.addFrameManager(tfm);
         
@@ -70,10 +71,10 @@ public class WindowManagerTest extends junit.framework.TestCase {
     
     @Test
     public void testGetParent() {
-        final Window parent1 = new DummyInputWindow(null, null);
-        final Window parent2 = new DummyInputWindow(null, null);
-        final Window child1 = new DummyInputWindow(null, null);
-        final Window child2 = new DummyInputWindow(null, null);
+        final Window parent1 = new DummyInputWindow(new TestWritableFrameContainer(512), null);
+        final Window parent2 = new DummyInputWindow(new TestWritableFrameContainer(512), null);
+        final Window child1 = new DummyInputWindow(new TestWritableFrameContainer(512), null);
+        final Window child2 = new DummyInputWindow(new TestWritableFrameContainer(512), null);
         
         WindowManager.addWindow(parent1);
         WindowManager.addWindow(parent2);
