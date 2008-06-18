@@ -24,7 +24,7 @@ package com.dmdirc.ui.swing.dialogs.actioneditor;
 
 import com.dmdirc.config.IdentityManager;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
@@ -69,7 +69,8 @@ public class ActionResponsePanel extends JPanel {
         ((DefaultComboBoxModel) formatter.getModel()).addElement("No change");
         ((DefaultComboBoxModel) formatter.getModel()).addElement("No response");
         
-        final List<String> formatters = IdentityManager.getGlobalConfig().getOptions("formatter");
+        final Set<String> formatters
+                = IdentityManager.getGlobalConfig().getOptions("formatter").keySet();
         
         for (String format : formatters) {
             ((DefaultComboBoxModel) formatter.getModel()).addElement(format);

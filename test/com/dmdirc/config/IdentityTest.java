@@ -23,10 +23,9 @@
 package com.dmdirc.config;
 
 import com.dmdirc.harness.TestConfigListener;
-import com.dmdirc.interfaces.ConfigChangeListener;
 
 import java.io.IOException;
-import java.util.Properties;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -52,20 +51,10 @@ public class IdentityTest {
     }    
     
     @Test
-    public void testGetProperties() {
-        myIdent.setOption("domain", "option", "value");
-        final Properties props = myIdent.getProperties();
-        
-        assertEquals(props.getProperty("domain.option"), "value");
-        
-        myIdent.unsetOption("domain", "option");
-    }
-
-    @Test
     public void testGetName() {
-        final Properties props = myIdent.getProperties();
+        final Map<String, String> props = myIdent.getOptions("identity");
         
-        assertEquals(props.getProperty("identity.name"), myIdent.getName());
+        assertEquals(props.get("name"), myIdent.getName());
     }
     
     @Test
@@ -100,20 +89,20 @@ public class IdentityTest {
     @Test
     public void testGetOption() {
         myIdent.setOption("domain", "option", "value");
-        final Properties props = myIdent.getProperties();
+        final Map<String, String> props = myIdent.getOptions("domain");
         
-        assertEquals(props.getProperty("domain.option"), myIdent.getOption("domain", "option"));
+        assertEquals(props.get("option"), myIdent.getOption("domain", "option"));
         
         myIdent.unsetOption("domain", "option");
     }
 
     @Test
     public void testSetOption() {
-        final int count = myIdent.getProperties().size();
+        final int count = myIdent.getOptions("foo").size();
         
         myIdent.setOption("foo", "bar", "baz");
         
-        assertEquals(count + 1, myIdent.getProperties().size());
+        assertEquals(count + 1, myIdent.getOptions("foo").size());
         
         myIdent.unsetOption("foo", "bar");
     }
@@ -134,13 +123,16 @@ public class IdentityTest {
 
     @Test
     public void testRemoveOption() {
-        final Properties props = myIdent.getProperties();
+        final Map<String, String> props = myIdent.getOptions("foo");
         final int count = props.size();
         
         myIdent.setOption("foo", "bar", "baz");
+        
+        assertEquals(count + 1, myIdent.getOptions("foo").size());
+        
         myIdent.unsetOption("foo", "bar");
         
-        assertEquals(count, props.size());
+        assertEquals(count, myIdent.getOptions("foo").size());
     }
 
     @Test

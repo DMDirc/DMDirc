@@ -72,6 +72,7 @@ public class UserLevelPlugin extends Plugin implements ActionListener,
     }
 
     /** {@inheritDoc} */
+    @Override
     public void processEvent(final ActionType type, final StringBuffer format,
                              final Object... arguments) {
         switch ((CoreActionType) type) {
@@ -127,8 +128,13 @@ public class UserLevelPlugin extends Plugin implements ActionListener,
     private void loadLevels() {
         LEVELS.clear();
         
-        for (String key : IdentityManager.getGlobalConfig().getOptions(DOMAIN)) {
-            LEVELS.put(key, IdentityManager.getGlobalConfig().getOptionInt(DOMAIN, key, 0));
+        for (Map.Entry<String, String> item 
+                : IdentityManager.getGlobalConfig().getOptions(DOMAIN).entrySet()) {
+            try {
+                LEVELS.put(item.getKey(), Integer.parseInt(item.getValue()));
+            } catch (NumberFormatException ex) {
+                LEVELS.put(item.getKey(), 0);
+            }
         }
     }
 

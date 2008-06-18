@@ -28,6 +28,7 @@ import com.dmdirc.util.MapList;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -138,37 +139,18 @@ public class ConfigManager extends ConfigSource implements Serializable,
     }
 
     /**
-     * Returns the name of all known options.
-     *
-     * @return A list of options
-     */
-    public Set<String> getOptions() {
-        final HashSet<String> res = new HashSet<String>();
-
-        synchronized (sources) {
-            for (Identity source : sources) {
-                for (String key : source.getOptions()) {
-                    res.add(key);
-                }
-            }
-        }
-
-        return res;
-    }
-
-    /**
      * Returns the name of all the options in the specified domain. If the
      * domain doesn't exist, an empty list is returned.
      *
      * @param domain The domain to search
      * @return A list of options in the specified domain
      */
-    public List<String> getOptions(final String domain) {
-        final ArrayList<String> res = new ArrayList<String>();
+    public Map<String, String> getOptions(final String domain) {
+        final Map<String, String> res = new HashMap<String, String>();
 
-        for (String key : getOptions()) {
-            if (key.startsWith(domain + ".")) {
-                res.add(key.substring(domain.length() + 1));
+        synchronized (sources) {
+            for (Identity source : sources) {
+                res.putAll(source.getOptions(domain));
             }
         }
 
@@ -297,17 +279,15 @@ public class ConfigManager extends ConfigSource implements Serializable,
      *
      * @return A list of domains known to this manager
      */
-    public List<String> getDomains() {
-        final ArrayList<String> res = new ArrayList<String>();
-        String domain;
+    public Set<String> getDomains() {
+        final Set<String> res = new HashSet<String>();
 
-        for (String key : getOptions()) {
-            domain = key.substring(0, key.indexOf('.'));
-            if (!res.contains(domain)) {
-                res.add(domain);
+        synchronized (sources) {
+            for (Identity source : sources) {
+                res.addAll(source.getDomains());
             }
         }
-
+        
         return res;
     }
 

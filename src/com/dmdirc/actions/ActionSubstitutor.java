@@ -30,8 +30,8 @@ import com.dmdirc.ServerState;
 import com.dmdirc.config.IdentityManager;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Handles the substitution of variables into action targets and responses.
@@ -58,8 +58,8 @@ public class ActionSubstitutor {
      *
      * @return A list of global variable names that will be substituted
      */
-    public List<String> getConfigSubstitutions() {
-        return IdentityManager.getGlobalConfig().getOptions("actions");
+    public Set<String> getConfigSubstitutions() {
+        return IdentityManager.getGlobalConfig().getOptions("actions").keySet();
     }
     
     /**
@@ -68,9 +68,9 @@ public class ActionSubstitutor {
      * @param target The StringBuilder to modify
      */
     private void doConfigSubstitutions(final StringBuilder target) {
-        for (String option : IdentityManager.getGlobalConfig().getOptions("actions")) {
-            doReplacement(target, "$" + option,
-                    IdentityManager.getGlobalConfig().getOption("actions", option));
+        for (Map.Entry<String, String> option 
+                : IdentityManager.getGlobalConfig().getOptions("actions").entrySet()) {
+            doReplacement(target, "$" + option.getKey(), option.getValue());
         }
     }
     

@@ -36,20 +36,20 @@ import com.dmdirc.ui.swing.components.URLProtocolPanel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URI;
-
 import java.net.URISyntaxException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
 import javax.swing.table.TableCellRenderer;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -139,8 +139,8 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
 
         tableScrollPane.setViewportView(table);
 
-        final List<String> options = IdentityManager.getGlobalConfig().
-                getOptions("protocol");
+        final Set<String> options = IdentityManager.getGlobalConfig().
+                getOptions("protocol").keySet();
 
         for (String option : options) {
             try {
@@ -180,8 +180,8 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
     public void save() {
         valueChanged(null);
         final Map<URI, String> handlers = model.getURLHandlers();
-        final List<String> protocols = IdentityManager.getGlobalConfig().
-                getOptions("protocol");
+        final Set<String> protocols = IdentityManager.getGlobalConfig().
+                getOptions("protocol").keySet();
         for (String protocol : protocols) {
             URI uri;
             try {

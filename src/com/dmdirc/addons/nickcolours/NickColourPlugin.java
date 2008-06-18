@@ -139,11 +139,13 @@ public final class NickColourPlugin extends Plugin implements ActionListener {
      */
     @SuppressWarnings("unchecked")
     private void putColour(final Map map, final Color textColour, final Color nickColour) {
-        if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "settext", false) && textColour != null) {
+        if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "settext", false) 
+                && textColour != null) {
             map.put(ChannelClientProperty.TEXT_FOREGROUND, textColour);
         }
         
-        if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "setnicklist", false) && nickColour != null) {
+        if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "setnicklist", false) 
+                && nickColour != null) {
             map.put(ChannelClientProperty.NICKLIST_FOREGROUND, nickColour);
         }
     }
@@ -174,7 +176,7 @@ public final class NickColourPlugin extends Plugin implements ActionListener {
     public Object[][] getData() {
         final List<Object[]> data = new ArrayList<Object[]>();
         
-        for (String key : IdentityManager.getGlobalConfig().getOptions(DOMAIN)) {
+        for (String key : IdentityManager.getGlobalConfig().getOptions(DOMAIN).keySet()) {
             if (key.startsWith("color:")) {
                 final String network = key.substring(6, key.indexOf(':', 6));
                 final String user = key.substring(1 + key.indexOf(':', 6));

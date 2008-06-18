@@ -35,12 +35,14 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * An identity is a group of settings that are applied to a connection, server,
@@ -211,7 +213,9 @@ public class Identity extends ConfigSource implements Serializable,
             this.file.read();
         } catch (InvalidConfigFileException ex) {            
             final Properties properties = new Properties();
-            properties.load(new LineReader(this.file.getLines()));            
+            final Reader reader = new LineReader(this.file.getLines());
+            properties.load(reader);
+            reader.close();
             migrateProperties(properties);
         }
 
@@ -274,26 +278,6 @@ public class Identity extends ConfigSource implements Serializable,
         for (ConfigChangeListener listener : new ArrayList<ConfigChangeListener>(listeners)) {
             listener.configChanged(domain, key);
         }
-    }
-
-    /**
-     * Returns the properties object belonging to this identity.
-     *
-     * @return This identity's property object
-     * @deprecated Get a map
-     */
-    @Deprecated
-    public Properties getProperties() {
-        final Properties properties = new Properties();
-
-        for (Map.Entry<String, Map<String, String>> entry : file.getKeyDomains().entrySet()) {
-            for (Map.Entry<String, String> subentry : entry.getValue().entrySet()) {
-                properties.setProperty(entry.getKey() + "." + subentry.getKey(),
-                        subentry.getValue());
-            }
-        }
-
-        return properties;
     }
 
     /**
@@ -431,24 +415,27 @@ public class Identity extends ConfigSource implements Serializable,
             listener.configChanged(domain, option);
         }
     }
-
+    
     /**
-     * Returns a list of options avaiable in this identity.
-     *
-     * @return Option list
-     * @deprecated Get a map
+     * Returns the set of domains available in this identity.
+     * 
+     * @since 0.6
+     * @return The set of domains used by this identity
      */
-    @Deprecated
-    public List<String> getOptions() {
-        final List<String> res = new ArrayList<String>();
-
-        for (Map.Entry<String, Map<String, String>> entry : file.getKeyDomains().entrySet()) {
-            for (String key : entry.getValue().keySet()) {
-                res.add(entry.getKey() + "." + key);
-            }
-        }
-
-        return res;
+    public Set<String> getDomains() {
+        return file.getKeyDomains().keySet();
+    }
+    
+    /**
+     * Retrieves a map of all options within the specified domain in this
+     * identity.
+     * 
+     * @param domain The domain to retrieve
+     * @since 0.6
+     * @return A map of option names to values
+     */
+    public Map<String, String> getOptions(final String domain) {
+        return file.getKeyDomain(domain);
     }
 
     /**
