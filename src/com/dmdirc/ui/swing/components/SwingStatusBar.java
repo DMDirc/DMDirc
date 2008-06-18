@@ -257,8 +257,8 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         if (mouseEvent.getButton() == MouseEvent.BUTTON1) {
             if (mouseEvent.getSource() == errorLabel) {
                 ErrorListDialog.showErrorListDialog();
-            } else if (mouseEvent.getSource() == updateLabel && updateLabel.getToolTipText().
-                    equals("Updates available")) {
+            } else if (mouseEvent.getSource() == updateLabel 
+                    && !UpdateChecker.getStatus().equals(UpdateChecker.STATE.CHECKING)) {
                 SwingUpdaterDialog.showSwingUpdaterDialog(UpdateChecker.getAvailableUpdates());
             }
         }
@@ -312,6 +312,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         } else {
             addComponent(updateLabel);
         }
+        
         if (newStatus.equals(STATE.CHECKING)) {
             updateLabel.setToolTipText("Checking for updates...");
             updateLabel.setIcon(IconManager.getIconManager().
@@ -319,6 +320,9 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         } else if (newStatus.equals(STATE.UPDATES_AVAILABLE)) {
             updateLabel.setToolTipText("Updates available");
             updateLabel.setIcon(IconManager.getIconManager().getIcon("update"));
+        } else if (newStatus.equals(STATE.RESTART_REQUIRED)) {
+            updateLabel.setToolTipText("Client restart required to finish updating");
+            updateLabel.setIcon(IconManager.getIconManager().getIcon("restart-needed"));
         }
     }
 }

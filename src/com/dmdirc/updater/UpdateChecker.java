@@ -62,7 +62,9 @@ public final class UpdateChecker implements Runnable {
         /** Currently updating. */
         UPDATING,
         /** New updates are available. */
-        UPDATES_AVAILABLE
+        UPDATES_AVAILABLE,
+        /** Updates installed but restart needed. */
+        RESTART_REQUIRED,
     }
 
     /** Semaphore used to prevent multiple invocations. */
@@ -139,7 +141,11 @@ public final class UpdateChecker implements Runnable {
 
         setStatus(STATE.CHECKING);
 
-        updates.clear();
+        for (Update update : new ArrayList<Update>(updates)) {
+            if (update.getStatus() != UpdateStatus.RESTART_NEEDED) {
+                updates.remove(update);
+            }
+        }
 
         final StringBuilder data = new StringBuilder();
         final String updateChannel
@@ -177,7 +183,15 @@ public final class UpdateChecker implements Runnable {
         if (updates.isEmpty()) {
             setStatus(STATE.IDLE);
         } else {
-            setStatus(STATE.UPDATES_AVAILABLE);
+            boolean available = false;
+            
+            for (Update update : updates) {
+                if (update.getStatus() == UpdateStatus.PENDING) {
+                    available = true;
+                }
+            }
+            
+            setStatus(available ? STATE.UPDATES_AVAILABLE : STATE.RESTART_REQUIRED);
         }
 
         mutex.release();
@@ -336,20 +350,28 @@ public final class UpdateChecker implements Runnable {
      */
     public static void applyUpdates() {
         if (updates.size() > 0) {
-            status = STATE.UPDATING;
+            setStatus(STATE.UPDATING);
             doNextUpdate();
         }
     }
     
+    /**
+     * Finds and applies the next pending update, or sets the state to idle
+     * / restart needed if appropriate.
+     */
     private static void doNextUpdate() {
+        boolean restart = false;
+        
         for (Update update : updates) {
             if (update.getStatus() == UpdateStatus.PENDING) {
                 update.doUpdate();
                 return;
+            } else if (update.getStatus() == UpdateStatus.RESTART_NEEDED) {
+                restart = true;
             }
         }
         
-        status = STATE.IDLE;
+        setStatus(restart ? STATE.RESTART_REQUIRED : STATE.IDLE);
     }
 
     /**
