@@ -24,6 +24,7 @@ package com.dmdirc.ui;
 
 import com.dmdirc.CustomWindow;
 import com.dmdirc.Precondition;
+import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.FrameManager;
@@ -53,6 +54,14 @@ public class WindowManager {
     /** A list of frame managers. */
     private final static List<FrameManager> frameManagers
             = new ArrayList<FrameManager>();
+    
+    /** A list of selection listeners. */
+    private final static List<SelectionListener> selListeners
+            = new ArrayList<SelectionListener>();
+    
+    /** Our selection listener proxy. */
+    private static final SelectionListener selectionListener
+            = new WMSelectionListener();
 
     /**
      * Creates a new instance of WindowManager.
@@ -92,6 +101,24 @@ public class WindowManager {
 
         frameManagers.remove(frameManager);
     }
+    
+    /**
+     * Registers the specified SelectionListener with the WindowManager.
+     * 
+     * @param listener The listener to be added
+     */
+    public static void addSelectionListener(final SelectionListener listener) {
+        selListeners.add(listener);
+    }
+    
+    /**
+     * Unregisters the specified SelectionListener with the WindowManager.
+     * 
+     * @param listener The listener to be removed
+     */
+    public static void removeSelectionListener(final SelectionListener listener) {
+        selListeners.remove(listener);
+    }
 
     /**
      * Adds a new root window to the Window Manager.
@@ -108,6 +135,8 @@ public class WindowManager {
 
         rootWindows.add(window);
         childWindows.add(window);
+        
+        window.getContainer().addSelectionListener(selectionListener);
 
         fireAddWindow(window);
     }
@@ -131,6 +160,8 @@ public class WindowManager {
 
         childWindows.add(parent, child);
         childWindows.add(child);
+        
+        child.getContainer().addSelectionListener(selectionListener);
 
         fireAddWindow(parent, child);
     }
@@ -178,6 +209,8 @@ public class WindowManager {
                 fireDeleteWindow(parent, window);
             }
         }
+        
+        window.getContainer().removeSelectionListener(selectionListener);
     }
 
     /**
@@ -252,28 +285,65 @@ public class WindowManager {
         return null;
     }
 
+    /**
+     * Fires the addWindow(Window) callback.
+     * 
+     * @param window The window that was added
+     */
     private static void fireAddWindow(final Window window) {
         for (FrameManager manager : frameManagers) {
             manager.addWindow(window.getContainer());
         }
     }
 
+    /**
+     * Fires the addWindow(Window, Window) callback.
+     * 
+     * @param parent The parent window
+     * @param child The new child window that was added
+     */
     private static void fireAddWindow(final Window parent, final Window child) {
         for (FrameManager manager : frameManagers) {
             manager.addWindow(parent.getContainer(), child.getContainer());
         }
     }
 
+    /**
+     * Fires the delWindow(Window) callback.
+     * 
+     * @param window The window that was removed
+     */
     private static void fireDeleteWindow(final Window window) {
         for (FrameManager manager : frameManagers) {
             manager.delWindow(window.getContainer());
         }
     }
 
+    /**
+     * Fires the delWindow(Window, Window) callback.
+     * 
+     * @param parent The parent window
+     * @param child The child window that was removed
+     */
     private static void fireDeleteWindow(final Window parent, final Window child) {
         for (FrameManager manager : frameManagers) {
             manager.delWindow(parent.getContainer(), child.getContainer());
         }
+    }
+        
+    /**
+     * Proxy for selection events.
+     */
+    private static class WMSelectionListener implements SelectionListener {
+
+        /** {@inheritDoc} */
+        @Override
+        public void selectionChanged(final Window window) {
+            for (SelectionListener listener : selListeners) {
+                listener.selectionChanged(window);
+            }
+        }
+        
     }
 
 }
