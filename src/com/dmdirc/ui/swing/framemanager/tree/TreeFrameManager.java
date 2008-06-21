@@ -43,6 +43,7 @@ import java.awt.event.AdjustmentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.beans.PropertyVetoException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -355,11 +356,11 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
      * @param event mouse event
      */
     public void processMouseEvent(final MouseEvent event) {
-        if (event.isPopupTrigger()) {
-            final JTree source = (JTree) event.getSource();
-            final TreePath path = tree.getPathForLocation(event.getX(),
-                    event.getY());
-            if (path != null) {
+        final JTree source = (JTree) event.getSource();
+        final TreePath path = tree.getPathForLocation(event.getX(),
+                event.getY());
+        if (path != null) {
+            if (event.isPopupTrigger()) {
                 final TextFrame frame =
                         (TextFrame) ((FrameContainer) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject()).getFrame();
                 final JPopupMenu popupMenu =
@@ -370,6 +371,14 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
                 }
                 popupMenu.add(new JMenuItem(new CloseFrameContainerAction(frame.getContainer())));
                 popupMenu.show(source, event.getX(), event.getY());
+            }
+            if (((TextFrame) ((FrameContainer) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject()).getFrame()).isIcon()) {
+                try {
+                    ((TextFrame) ((FrameContainer) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject()).getFrame()).setIcon(false);
+                    ((FrameContainer) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject()).activateFrame();
+                } catch (PropertyVetoException ex) {
+                //Ignore
+                }
             }
         }
     }
@@ -385,7 +394,9 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
         if (event == null) {
             node = null;
         } else {
-            node = labels.get(getNodeForLocation(event.getX(), event.getY()));
+            synchronized (labels) {
+                node = labels.get(getNodeForLocation(event.getX(), event.getY()));
+            }
         }
 
         synchronized (labels) {
@@ -550,9 +561,14 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
             /** {@inheritDoc} */
             @Override
             public void run() {
-                labels.get(nodes.get(window.getContainer())).iconChanged(window,
-                        icon);
-                tree.repaint();
+                synchronized (labels) {
+                    final NodeLabel label =
+                            labels.get(nodes.get(window.getContainer()));
+                    if (label != null) {
+                        label.iconChanged(window, icon);
+                        tree.repaint();
+                    }
+                }
             }
         });
     }
