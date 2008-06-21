@@ -211,11 +211,10 @@ public final class SwingUpdaterDialog extends StandardDialog implements
                     UpdateChecker.removeUpdate(update);
                 }
             }
-
             
             UpdateChecker.applyUpdates();
             
-            if (UpdateChecker.getStatus() == STATE.IDLE) {
+            if (UpdateChecker.getStatus() != STATE.UPDATING) {
                 dispose();
             }
         } else if (e.getSource().equals(getCancelButton())) {
