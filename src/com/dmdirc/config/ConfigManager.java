@@ -149,8 +149,8 @@ public class ConfigManager extends ConfigSource implements Serializable,
         final Map<String, String> res = new HashMap<String, String>();
 
         synchronized (sources) {
-            for (Identity source : sources) {
-                res.putAll(source.getOptions(domain));
+            for (int i = sources.size() - 1; i >= 0; i--) {
+               res.putAll(sources.get(i).getOptions(domain));
             }
         }
 
