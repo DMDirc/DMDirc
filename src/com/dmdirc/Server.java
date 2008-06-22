@@ -215,30 +215,32 @@ public final class Server extends WritableFrameContainer implements Serializable
 
         synchronized (this) {
             switch (myState) {
-            case RECONNECT_WAIT:
-                reconnectTimer.cancel();
-                break;
-            case CLOSING:
-                // Ignore the connection attempt
-                return;
-            case CONNECTED:
-            case CONNECTING:
-                disconnect(getConfigManager().getOption(DOMAIN_GENERAL, "quitmessage"));
-                break;
-            case DISCONNECTING:
-                onSocketClosed();
-                break;
-            default:
-                // Do nothing
-                break;
+                case RECONNECT_WAIT:
+                    reconnectTimer.cancel();
+                    break;
+                case CLOSING:
+                    // Ignore the connection attempt
+                    return;
+                case CONNECTED:
+                case CONNECTING:
+                    disconnect(getConfigManager().getOption(DOMAIN_GENERAL, "quitmessage"));
+                    break;
+                case DISCONNECTING:
+                    onSocketClosed();
+                    break;
+                default:
+                    // Do nothing
+                    break;
             }
 
+            if (parser != null && parser.getSocketState() != IRCParser.STATE_OPEN) {
+                throw new IllegalArgumentException("Connection attempt while parser "
+                        + "is still connected.\n\nMy state:" + myState);
+            }
+            
             myState = ServerState.CONNECTING;
         
-
             ActionManager.processEvent(CoreActionType.SERVER_CONNECTING, null, this);
-
-            assert parser == null || parser.getSocketState() != IRCParser.STATE_OPEN;
 
             serverInfo = new ServerInfo(server, port, password);
             serverInfo.setSSL(ssl);
