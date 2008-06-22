@@ -354,7 +354,8 @@ public final class ServerEventHandler extends EventHandler
         super.checkParser(parser);
         
         if (owner.getState() != ServerState.CONNECTED
-                && owner.getState() != ServerState.CONNECTING) {
+                && owner.getState() != ServerState.CONNECTING
+                && owner.getState() != ServerState.DISCONNECTING) {
             throw new IllegalArgumentException("Event called from a parser that " +
                     "shouldn't be in use.\nCurrent state: " + owner.getState());
         }
