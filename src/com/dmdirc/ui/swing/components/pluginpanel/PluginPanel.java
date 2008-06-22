@@ -36,9 +36,11 @@ import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -89,7 +91,7 @@ public final class PluginPanel extends JPanel implements
         pluginList = new JList(new DefaultListModel());
         pluginList.setCellRenderer(new AddonCellRenderer());
         
-        scrollPane = new JScrollPane(pluginList);
+        scrollPane = new JScrollPane(new JLabel("Loading plugins..."));
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
                 
@@ -98,7 +100,21 @@ public final class PluginPanel extends JPanel implements
         
         blurbLabel = new TextLabel("Plugins allow you to extend the functionality of DMDirc.");
         
-        populateList();
+        /** {@inheritDoc}. */
+        new Thread(new SwingWorker() {
+
+            /** {@inheritDoc}. */
+            @Override
+            protected Object doInBackground() {
+                return populateList();
+            }
+
+            /** {@inheritDoc}. */
+            @Override
+            protected void done() {
+                scrollPane.setViewportView(pluginList);
+            }
+        }).start();
     }
     
     /** Lays out the dialog. */
@@ -117,8 +133,12 @@ public final class PluginPanel extends JPanel implements
     }
     
     
-    /** Populates the plugins list with plugins from the plugin manager. */
-    private void populateList() {
+    /** 
+     * Populates the plugins list with plugins from the plugin manager.
+     * 
+     * @return Populates the list
+     */
+    private JList populateList() {
         final List<PluginInfo> list = 
                 PluginManager.getPluginManager().getPossiblePluginInfos(true);
         Collections.sort(list);
@@ -131,6 +151,7 @@ public final class PluginPanel extends JPanel implements
             toggleButton.setEnabled(true);
         }
         pluginList.repaint();
+        return pluginList;
     }
     
     /** Adds listeners to components. */
@@ -141,6 +162,7 @@ public final class PluginPanel extends JPanel implements
     
     /**
      * Invoked when an action occurs.
+     * 
      * @param e The event related to this action.
      */
     @Override
