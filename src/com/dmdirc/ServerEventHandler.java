@@ -348,4 +348,16 @@ public final class ServerEventHandler extends EventHandler
         owner.doNotification("serverError", CoreActionType.SERVER_ERROR, sMessage);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    protected void checkParser(final IRCParser parser) {
+        super.checkParser(parser);
+        
+        if (owner.getState() != ServerState.CONNECTED
+                && owner.getState() != ServerState.CONNECTING) {
+            throw new IllegalArgumentException("Event called from a parser that " +
+                    "shouldn't be in use.\nCurrent state: " + owner.getState());
+        }
+    }
+
 }
