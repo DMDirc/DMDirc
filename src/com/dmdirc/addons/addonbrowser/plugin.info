@@ -1,0 +1,10 @@
+mainclass=com.dmdirc.addons.addonbrowser.BrowserPlugin
+friendlyversion=0.1
+author=Chris <chris@dmdirc.com>
+description=Browse and download addons from within DMDirc
+name=addonbrowser
+nicename=Addon Browser
+minversion=0
+addonid=26
+version=0
+require-ui=com.dmdirc.ui.swing
