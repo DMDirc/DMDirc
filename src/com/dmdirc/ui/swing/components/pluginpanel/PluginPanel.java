@@ -136,7 +136,7 @@ public final class PluginPanel extends JPanel implements
     /** 
      * Populates the plugins list with plugins from the plugin manager.
      * 
-     * @return Populates the list
+     * @return Populated list
      */
     private JList populateList() {
         final List<PluginInfo> list = 

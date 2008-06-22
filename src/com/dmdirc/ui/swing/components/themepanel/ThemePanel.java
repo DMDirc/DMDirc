@@ -38,9 +38,11 @@ import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -92,7 +94,7 @@ public final class ThemePanel extends JPanel implements
         themeList = new JList(new DefaultListModel());
         themeList.setCellRenderer(new AddonCellRenderer());
         
-        scrollPane = new JScrollPane(themeList);
+        scrollPane = new JScrollPane(new JLabel("Loading plugins..."));
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
                 
@@ -101,7 +103,21 @@ public final class ThemePanel extends JPanel implements
         
         blurbLabel = new TextLabel("Themes alter the appearance of DMDirc");
         
-        populateList();
+        /** {@inheritDoc}. */
+        new Thread(new SwingWorker() {
+
+            /** {@inheritDoc}. */
+            @Override
+            protected Object doInBackground() {
+                return populateList();
+            }
+
+            /** {@inheritDoc}. */
+            @Override
+            protected void done() {
+                scrollPane.setViewportView(themeList);
+            }
+        }).start();
     }
     
     /** Lays out the dialog. */
@@ -120,8 +136,12 @@ public final class ThemePanel extends JPanel implements
     }
     
     
-    /** Populates the plugins list with plugins from the plugin manager. */
-    private void populateList() {
+    /** 
+     * Populates the plugins list with plugins from the plugin manager. 
+     * 
+     * @return Populated list
+     */
+    private JList populateList() {
         final List<Theme> list = new ArrayList<Theme>(ThemeManager.getAvailableThemes().values());
         Collections.sort(list);
         
@@ -136,6 +156,7 @@ public final class ThemePanel extends JPanel implements
         }
         
         themeList.repaint();
+        return themeList;
     }
     
     /** Adds listeners to components. */
@@ -146,8 +167,10 @@ public final class ThemePanel extends JPanel implements
     
     /**
      * Invoked when an action occurs.
+     * 
      * @param e The event related to this action.
      */
+    @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == toggleButton && selectedTheme >= 0) {
             final ThemeToggle theme = (ThemeToggle) themeList.getSelectedValue();
@@ -167,6 +190,7 @@ public final class ThemePanel extends JPanel implements
     }
     
     /** {@inheritDoc}. */
+    @Override
     public void valueChanged(final ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
             final int selected = ((JList) e.getSource()).getSelectedIndex();
