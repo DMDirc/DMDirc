@@ -104,7 +104,7 @@ public class GlobalWindow extends WritableFrameContainer {
     /** {@inheritDoc} */
     @Override
     public int getMaxLineLength() {
-        return 0;
+        return -1;
     }
     
     /**

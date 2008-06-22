@@ -91,13 +91,15 @@ public abstract class WritableFrameContainer extends FrameContainer {
     public final int getNumLines(final String line) {
         final String[] splitLines = line.split("(\n|\r\n|\r)", Integer.MAX_VALUE);
         int lines = 0;
+        
         for (String splitLine : splitLines) {
-            if (splitLine.isEmpty()) {
+            if (splitLine.isEmpty() || getMaxLineLength() <= 0) {
                 lines++;
             } else {
                 lines += (int) Math.ceil(splitLine.length() / (double) getMaxLineLength());
             }
         }
+        
         return lines;
     }
     
