@@ -150,7 +150,7 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
         panel.add(new JLabel("$time"));
 
         add(panel, "growx");
-        updatePreview();
+        schedulePreviewUpdate();
     }
 
     /**
@@ -216,6 +216,13 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
     /** {@inheritDoc} */
     @Override
     public void keyReleased(final KeyEvent e) {
+        schedulePreviewUpdate();
+    }
+    
+    /**
+     * Schedules an update to the preview text.
+     */
+    private void schedulePreviewUpdate() {
         if (updateTimer != null) {
             updateTimer.cancel();
         }
