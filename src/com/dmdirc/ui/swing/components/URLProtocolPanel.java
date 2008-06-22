@@ -55,8 +55,6 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    /** File chooser. */
-    private JFileChooser fileChooser;
     /** Show file chooser. */
     private JButton showFileChooser;
     /** Command text field. */
@@ -99,8 +97,7 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
 
     /** Initialises the components. */
     private void initComponents() {
-        fileChooser = new JFileChooser();
-        showFileChooser = new JButton();
+        showFileChooser = new JButton("Browse");
         commandPath = new JTextField();
         optionType = new ButtonGroup();
         dmdirc = new JRadioButton("Handle internally (irc links only)");
@@ -120,9 +117,6 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
         optionType.add(mail);
         optionType.add(custom);
 
-        fileChooser.addChoosableFileFilter(new ExecutableFileFilter());
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        showFileChooser.setText("Browse");
         updateSelection();
     }
 
@@ -138,8 +132,8 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
         add(browser, "growx");
         add(mail, "growx");
         add(custom, "growx");
-        add(commandPath, "split 2, growx, pushx");
-        add(showFileChooser, "");
+        add(commandPath, "split 2, growx, pushx, sgy line");
+        add(showFileChooser, "sgy line");
         add(subsLabel, "growx");
         add(exampleLabel, "width ::100%" + (useInsets ? "-2*u" : ""));
     }
@@ -242,6 +236,9 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e != null && e.getSource() == showFileChooser) {
+            final JFileChooser fileChooser = new JFileChooser();
+            fileChooser.addChoosableFileFilter(new ExecutableFileFilter());
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             if (fileChooser.showDialog(this, "Select") ==
                     JFileChooser.APPROVE_OPTION) {
                 commandPath.setText(fileChooser.getSelectedFile().toString());
