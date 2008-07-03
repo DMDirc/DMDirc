@@ -165,7 +165,7 @@ public final class OsdWindow extends JDialog implements MouseListener,
                 "bgcolour", Color.decode("#2222aa")));
         
         setContentPane(panel);
-        setLayout(new MigLayout("wmin 500, wmax 500, ins rel, fill, pack"));
+        setLayout(new MigLayout("wmin 500, wmax 500, ins rel, fill"));
         
         label = new JLabel(text);
         label.setForeground(IdentityManager.getGlobalConfig().getOptionColour("plugin-OSD",
@@ -177,6 +177,7 @@ public final class OsdWindow extends JDialog implements MouseListener,
             add(label, "alignx center");
             
         setVisible(true);
+        pack();
         
         if (config) {
             this.addMouseMotionListener(this);
