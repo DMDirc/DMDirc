@@ -3,6 +3,29 @@
 # This script downloads a JRE.
 #
 
+# Check the which command exists, and if so make sure it behaves how we want
+# it to...
+WHICH=`which which 2>/dev/null`
+if [ "" = "${WHICH}" ]; then
+	echo "which command not found. Aborting.";
+	exit 0;
+else
+	# Solaris sucks
+	BADWHICH=`which /`
+	if [ "${BADWHICH}" != "" ]; then
+		echo "Replacing bad which command.";
+		# "Which" on solaris gives non-empty results for commands that don't exist
+		which() {
+			OUT=`${WHICH} ${1}`
+			if [ $? -eq 0 ]; then
+				echo ${OUT}
+			else
+				echo ""
+			fi;
+		}
+	fi;
+fi
+
 PIDOF=`which pidof`
 if [ "${PIDOF}" = "" ]; then
 	# For some reason some distros hide pidof...
@@ -18,8 +41,8 @@ if [ "${PIDOF}" != "" ]; then
 	ISKDE=`${PIDOF} -x -s kdeinit`
 	ISGNOME=`${PIDOF} -x -s gnome-panel`
 else
-	ISKDE=`ps ux | grep kdeinit | grep -v grep`
-	ISGNOME=`ps ux | grep gnome-panel | grep -v grep`
+	ISKDE=`ps -Af | grep kdeinit | grep -v grep`
+	ISGNOME=`ps -Af | grep gnome-panel | grep -v grep`
 fi;
 KDIALOG=`which kdialog`
 ZENITY=`which zenity`
@@ -83,13 +106,24 @@ questiondialog() {
 	fi
 }
 
+# Get the JRE.
 ARCH=`uname -m`
-# This page redirects us to the correct JRE
-URL="http://www.dmdirc.com/getjava/linux/`uname -m`"
+ISAINFO=`which isainfo`
+if [ "${ISAINFO}" != "" ]; then
+	# Solaris-ish
+	ARCH=`uname -p`
+fi;
+URL="http://www.dmdirc.com/getjava/`uname -s`/${ARCH}"
 
 length=`wget --spider ${URL} 2>&1 | grep "Length:"| awk '{print $2, $3}' | sed 's/,//g'`
 actualLength=${length%% *}
 niceLength=`echo ${length##* }  | sed 's/[()]//g'`
+
+if [ "${actualLength}" = "6" ]; then
+	# Unable to download.
+	errordialog "Download Failed" "Unable to find JRE for this platform (`uname -s`/${ARCH})."
+	exit 1;
+fi;
 
 PIPE=""
 wgetpid=""
@@ -101,7 +135,7 @@ badclose() {
 	if [ "${PIPE}" != "" ]; then
 		if [ -e ${PIPE} ]; then
 			echo "quit" > ${PIPE}
-			rm -Rf ${PIPE}
+			echo "Closing badly, pipe still exists."
 		fi
 	fi
 }
@@ -116,10 +150,11 @@ else
 fi;
 if [ $result -eq 0 ]; then
 	PIPE=`mktemp -p ${PWD} progresspipe.XXXXXXXXXXXXXX`
-	/bin/sh ${PWD}/progressbar.sh "Downloading JRE.." ${actualLength} ${PIPE} &
 	wget -q ${URL} -O jre.bin &
 	wgetpid=${!}
-	while [ `ps ${wgetpid} | wc -l` = 2 ]; do
+	/bin/sh ${PWD}/progressbar.sh "Downloading JRE.." ${actualLength} ${PIPE} ${wgetpid} &
+	progressbarpid=${!}
+	while [ `ps -p ${wgetpid} | wc -l` = 2 ]; do
 		SIZE=`ls -l jre.bin | awk '{print $5}'`
 		if [ -e ${PIPE} ]; then
 			echo "${SIZE}" > ${PIPE}
@@ -130,9 +165,16 @@ if [ $result -eq 0 ]; then
 		fi;
 	done;
 	wgetpid=""
-	echo "quit" > ${PIPE}
+#	echo "Killing progressbar"
+#	kill ${progressbarpid}
 	messagedialog "Download Completed" "Download Completed"
-	exit 1;
+	if [ -e ${PIPE} ]; then
+		echo "Deleting Pipe ${PIPE}"
+		rm -Rf "${PIPE}"
+	fi;
+	exit 0;
 else
 	messagedialog "Download JRE" "JRE Download Canceled"
+	exit 1;
 fi;
+exit 1;

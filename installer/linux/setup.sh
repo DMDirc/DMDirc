@@ -23,6 +23,29 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# Check the which command exists, and if so make sure it behaves how we want
+# it to...
+WHICH=`which which 2>/dev/null`
+if [ "" = "${WHICH}" ]; then
+	echo "which command not found. Aborting.";
+	exit 0;
+else
+	# Solaris sucks
+	BADWHICH=`which /`
+	if [ "${BADWHICH}" != "" ]; then
+		echo "Replacing bad which command.";
+		# "Which" on solaris gives non-empty results for commands that don't exist
+		which() {
+			OUT=`${WHICH} ${1}`
+			if [ $? -eq 0 ]; then
+				echo ${OUT}
+			else
+				echo ""
+			fi;
+		}
+	fi;
+fi
+
 PIDOF=`which pidof`
 if [ "${PIDOF}" = "" ]; then
 	# For some reason some distros hide pidof...
@@ -38,8 +61,8 @@ if [ "${PIDOF}" != "" ]; then
 	ISKDE=`${PIDOF} -x -s kdeinit`
 	ISGNOME=`${PIDOF} -x -s gnome-panel`
 else
-	ISKDE=`ps ux | grep kdeinit | grep -v grep`
-	ISGNOME=`ps ux | grep gnome-panel | grep -v grep`
+	ISKDE=`ps -Af | grep kdeinit | grep -v grep`
+	ISGNOME=`ps -Af | grep gnome-panel | grep -v grep`
 fi;
 KDIALOG=`which kdialog`
 ZENITY=`which zenity`
@@ -64,7 +87,6 @@ errordialog() {
 }
 
 UNAME=`uname -a`
-isLinux=`echo ${UNAME} | grep -i linux`
 
 echo ""
 echo "---------------------"
@@ -103,17 +125,18 @@ installjre() {
 		result=$?
 	fi;
 	if [ ${result} -ne 0 ]; then
-		if [ "upgrade" != "${1}" ]; then
+		if [ "upgrade" = "${1}" ]; then
 			errordialog "DMDirc Setup" "Sorry, DMDirc setup can not continue without an updated version of java."
 		else
 			errordialog "DMDirc Setup" "Sorry, DMDirc setup can not continue without java."
 		fi;
 		exit 1;
 	else
-		if [ -e ".jrepath" ]; then
-			. .jrepath
-			JAVA=`which java`
+		if [ -e "${PWD}/jrepath" ]; then
+			echo "Found JREPath: ${PWD}/jrepath"
+			. ${PWD}/jrepath
 		fi;
+		JAVA=`which java`
 	fi;
 }
 
@@ -121,10 +144,6 @@ if [ "" != "${JAVA}" ]; then
 	echo "Success!"
 else
 	echo "Failed!"
-	if [ "" == "${isLinux}" ]; then
-		errordialog "DMDirc Setup" "Sorry, DMDirc setup can not continue without java 6."
-		exit 1
-	fi;
 	installjre "install"
 fi
 
@@ -183,10 +202,6 @@ if [ -e "DMDirc.jar" ]; then
 		echo "Running installer.."
 		${JAVA} -cp DMDirc.jar com.dmdirc.installer.Main ${isRoot}${isRelease}
 		if [ $? -ne 0 ]; then
-			if [ "" == "${isLinux}" ]; then
-				errordialog "DMDirc Setup" "Sorry, DMDirc setup can not continue without java 6."
-				exit 1
-			fi;
 			installjre "upgrade"
 			echo "Trying to run installer again.."
 			${JAVA} -cp DMDirc.jar com.dmdirc.installer.Main ${isRoot}${isRelease}

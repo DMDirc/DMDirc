@@ -25,13 +25,43 @@
 
 MD5=""
 
-# Check the which command exists
+# Check the which command exists, and if so make sure it behaves how we want
+# it to...
 WHICH=`which which 2>/dev/null`
 if [ "" = "${WHICH}" ]; then
 	echo "which command not found. Aborting.";
 	exit 0;
+else
+	# Solaris sucks
+	BADWHICH=`which /`
+	if [ "${BADWHICH}" != "" ]; then
+		# "Which" on solaris gives non-empty results for commands that don't exist
+		which() {
+			OUT=`${WHICH} ${1}`
+			if [ $? -eq 0 ]; then
+				echo ${OUT}
+			else
+				echo ""
+			fi;
+		}
+	fi;
 fi
 
+# Find out what params we should pass to things.
+# Solaris has a nice and ancient version of grep in /usr/bin
+grep -na "" /dev/null >/dev/null 2>&1
+if [ $? -eq 2 ]; then
+	GREPOPTS="-n"
+else
+	GREPOPTS="-na"
+fi;
+# Solaris also has a crappy version of tail!
+tail -n +1 /dev/null >/dev/null 2>&1
+if [ $? -eq 2 ]; then
+	TAILOPTS="+"
+else
+	TAILOPTS="-n +"
+fi;
 
 ###ADDITIONAL_STUFF###
 
@@ -60,8 +90,8 @@ errordialog() {
 		ISKDE=`${PIDOF} -x -s kdeinit`
 		ISGNOME=`${PIDOF} -x -s gnome-panel`
 	else
-		ISKDE=`ps ux | grep kdeinit | grep -v grep`
-		ISGNOME=`ps ux | grep gnome-panel | grep -v grep`
+		ISKDE=`ps -Af | grep kdeinit | grep -v grep`
+		ISGNOME=`ps -Af | grep gnome-panel | grep -v grep`
 	fi;
 	KDIALOG=`which kdialog`
 	ZENITY=`which zenity`
@@ -75,7 +105,7 @@ errordialog() {
 }
 
 # Location of .run stub end
-ENDLINE=`grep -na "^###END STUB###$" $0`
+ENDLINE=`grep ${GREPOPTS} "^###END STUB###$" $0`
 ENDLINE=$((${ENDLINE%%:*} + 1))
 
 if [ "" = "${ENDLINE}" ]; then
@@ -143,10 +173,40 @@ random() {
 }
 
 uncompress() {
-	tail -n +${ENDLINE} "${OLDPWD}/$0" | gzip -cd | tar -xvf - 2>/dev/null || {
+#	DEBUGINFO="\n\nRunname: ${0}"
+#	DEBUGINFO="${DEBUGINFO}\nOldPwd: ${OLDPWD}"
+
+	# Try runname, in old dir.
+	FILE=${OLDPWD}/$0
+	if [ ! -e ${FILE} ]; then
+		# Else, try run filename in old dir
+		FILE=${OLDPWD}/`basename $0`
+		if [ ! -e ${FILE} ]; then
+			# Else try run name
+			FILE=$0
+			if [ ! -e ${FILE} ]; then
+				# Unable to find this file!
+				errordialog "DMDirc Setup" "Unable to find installer.\nThis shouldn't happen, please raise a bug report at http://bugs.dmdirc.com${DEBUGINFO}";
+				echo "Removing temp dir"
+				cd ${OLDPWD}
+				rm -Rf ${TEMPDIR}
+				exit 1;
+			fi;
+		fi;
+	fi;
+	echo "Decompressing: ${FILE}"
+#	DEBUGINFO="${DEBUGINFO}\nFile: ${FILE}"
+#	DEBUGINFO="${DEBUGINFO}\nCommand: tail ${TAILOPTS}${ENDLINE} "${FILE}" | gzip -cd | tar -xvf - 2>/dev/null"
+	OUTPUT=`tail ${TAILOPTS}${ENDLINE} "${FILE}" | gzip -cd | tar -xvf - 2>/dev/null`
+	if [ "${OUTPUT}" = "" ]; then
 		echo "Decompression failed."
-		kill -15 $$;
-	};
+		errordialog "DMDirc Setup" "Decompression failed.\nThis shouldn't happen, please raise a bug report at http://bugs.dmdirc.com${DEBUGINFO}";
+		echo "Removing temp dir"
+		cd ${OLDPWD}
+		rm -Rf ${TEMPDIR}
+		exit 1;
+	fi;
+	echo "Decompression successful."
 }
 
 showHelp() {
@@ -196,10 +256,10 @@ MD5BIN=`which md5sum`
 AWK=`which awk`
 getMD5() {
 	# Everything below the MD5SUM Line
-	MD5LINE=`grep -na "^MD5=\".*\"$" ${1}`
+	MD5LINE=`grep ${GREPOPTS} "^MD5=\".*\"$" ${1}`
 	MD5LINE=$((${MD5LINE%%:*} + 1))
 
-	MD5SUM=`tail -n +${MD5LINE} "${1}" | ${MD5BIN} - | ${AWK} '{print $1}'`
+	MD5SUM=`tail ${TAILOPTS}${MD5LINE} "${1}" | ${MD5BIN} - | ${AWK} '{print $1}'`
 	return;
 }
 

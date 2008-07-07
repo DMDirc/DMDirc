@@ -28,6 +28,44 @@ INSTALLERNAME=DMDirc-Setup
 # full name of the file to output to
 RUNNAME="${PWD}/${INSTALLERNAME}.run"
 
+# Find out what params we should pass to things.
+# Solaris has a nice and ancient version of grep in /usr/bin
+grep -na "" /dev/null >/dev/null 2>&1
+if [ $? -eq 2 ]; then
+	GREPOPTS="-n"
+else
+	GREPOPTS="-na"
+fi;
+# Solaris also has a crappy version of tail!
+tail -n +1 /dev/null >/dev/null 2>&1
+if [ $? -eq 2 ]; then
+	TAILOPTS="+"
+else
+	TAILOPTS="-n +"
+fi;
+# Check the which command exists, and if so make sure it behaves how we want
+# it to...
+WHICH=`which which 2>/dev/null`
+if [ "" = "${WHICH}" ]; then
+	echo "which command not found. Aborting.";
+	exit 0;
+else
+	# Solaris sucks
+	BADWHICH=`which /`
+	if [ "${BADWHICH}" != "" ]; then
+		echo "Replacing bad which command.";
+		# "Which" on solaris gives non-empty results for commands that don't exist
+		which() {
+			OUT=`${WHICH} ${1}`
+			if [ $? -eq 0 ]; then
+				echo ${OUT}
+			else
+				echo ""
+			fi;
+		}
+	fi;
+fi
+
 # Compress stuff!
 compress() {
 	tar cvfh - $@ | gzip - 2>/dev/null >>${RUNNAME} || {
@@ -264,19 +302,19 @@ getMD5() {
 
 getMD5Linux() {
 	# Everything below the MD5SUM Line
-	MD5LINE=`grep -na "^MD5=\".*\"$" ${1}`
+	MD5LINE=`grep ${GREPOPTS} "^MD5=\".*\"$" ${1}`
 	MD5LINE=$((${MD5LINE%%:*} + 1))
 
-	MD5SUM=`tail -n +${MD5LINE} "${1}" | ${MD5BIN} - | ${AWK} '{print $1}'`
+	MD5SUM=`tail ${TAILOPTS}${MD5LINE} "${1}" | ${MD5BIN} - | ${AWK} '{print $1}'`
 	return;
 }
 
 getMD5OSX() {
 	# Everything below the MD5SUM Line
-	MD5LINE=`grep -na "^MD5=\".*\"$" ${1}`
+	MD5LINE=`grep ${GREPOPTS} "^MD5=\".*\"$" ${1}`
 	MD5LINE=$((${MD5LINE%%:*} + 1))
 
-	MD5SUM=`tail -n +${MD5LINE} "${1}" | ${MD5BIN} | ${AWK} '{print $1}'`
+	MD5SUM=`tail ${TAILOPTS}${MD5LINE} "${1}" | ${MD5BIN} | ${AWK} '{print $1}'`
 	return;
 }
 
@@ -288,12 +326,12 @@ if [ "${MD5BIN}" != "" -a "${AWK}" != "" ]; then
 
 	echo "SUM obtained is: ${MD5SUM}"
 
-	LINENUM=`grep -na "^MD5=\"\"$" ${RUNNAME}`
+	LINENUM=`grep ${GREPOPTS} "^MD5=\"\"$" ${RUNNAME}`
 	LINENUM=${LINENUM%%:*}
 
 	head -n $((${LINENUM} -1)) ${RUNNAME} > ${RUNNAME}.tmp
 	echo 'MD5="'${MD5SUM}'"' >> ${RUNNAME}.tmp
-	tail -n +$((${LINENUM} +1)) ${RUNNAME} >> ${RUNNAME}.tmp
+	tail ${TAILOPTS}$((${LINENUM} +1)) ${RUNNAME} >> ${RUNNAME}.tmp
 	mv ${RUNNAME}.tmp ${RUNNAME}
 else
 	echo "Not Adding MD5.."

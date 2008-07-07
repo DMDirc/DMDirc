@@ -3,6 +3,44 @@
 # Install the JRE.
 #
 
+# Find out what params we should pass to things.
+# Solaris has a nice and ancient version of grep in /usr/bin
+grep -na "" /dev/null >/dev/null 2>&1
+if [ $? -eq 2 ]; then
+	GREPOPTS="-n"
+else
+	GREPOPTS="-na"
+fi;
+# Solaris also has a crappy version of tail!
+tail -n +1 /dev/null >/dev/null 2>&1
+if [ $? -eq 2 ]; then
+	TAILOPTS="+"
+else
+	TAILOPTS="-n +"
+fi;
+# Check the which command exists, and if so make sure it behaves how we want
+# it to...
+WHICH=`which which 2>/dev/null`
+if [ "" = "${WHICH}" ]; then
+	echo "which command not found. Aborting.";
+	exit 0;
+else
+	# Solaris sucks
+	BADWHICH=`which /`
+	if [ "${BADWHICH}" != "" ]; then
+		echo "Replacing bad which command.";
+		# "Which" on solaris gives non-empty results for commands that don't exist
+		which() {
+			OUT=`${WHICH} ${1}`
+			if [ $? -eq 0 ]; then
+				echo ${OUT}
+			else
+				echo ""
+			fi;
+		}
+	fi;
+fi
+
 PIDOF=`which pidof`
 if [ "${PIDOF}" = "" ]; then
 	# For some reason some distros hide pidof...
@@ -18,8 +56,8 @@ if [ "${PIDOF}" != "" ]; then
 	ISKDE=`${PIDOF} -x -s kdeinit`
 	ISGNOME=`${PIDOF} -x -s gnome-panel`
 else
-	ISKDE=`ps ux | grep kdeinit | grep -v grep`
-	ISGNOME=`ps ux | grep gnome-panel | grep -v grep`
+	ISKDE=`ps -Af | grep kdeinit | grep -v grep`
+	ISGNOME=`ps -Af | grep gnome-panel | grep -v grep`
 fi;
 KDIALOG=`which kdialog`
 ZENITY=`which zenity`
@@ -89,13 +127,13 @@ showLicense() {
 	FILE=`mktemp -p ${PWD} license.XXXXXXXXXXXXXX`
 	
 	# Location of license start
-	STARTLINE=`grep -na "^more <<\"EOF\"$" jre.bin`
+	STARTLINE=`grep ${GREPOPTS} "^more <<\"EOF\"$" jre.bin`
 	STARTLINE=$((${STARTLINE%%:*} + 1))
 	# Location of license end
-	ENDLINE=`grep -na "Do you agree to the above license terms?" jre.bin`
+	ENDLINE=`grep ${GREPOPTS} "Do you agree to the above license terms?" jre.bin`
 	ENDLINE=$((${ENDLINE%%:*} - 2))
 	
-	head -n ${ENDLINE} jre.bin | tail -n +${STARTLINE} > ${FILE}
+	head -n ${ENDLINE} jre.bin | tail ${TAILOPTS}${STARTLINE} > ${FILE}
 	
 	# Send text to console.
 	echo ""
@@ -132,8 +170,10 @@ showLicense
 questiondialog "Java Install" "Do you agree to the Java License?"
 if [ $? -eq 0 ]; then
 	# Look to see where the JRE wants to install to
-	JREJAVAHOME=`grep -na "^javahome=" jre.bin`
+	JREJAVAHOME=`grep ${GREPOPTS} "^javahome=" jre.bin`
  	JREJAVAHOME=${JREJAVAHOME##*=}
+	
+	echo "JREJAVAHOME: ${JREJAVAHOME}"
 	
 	if [ "${UID}" = "" ]; then
 		UID=`id -u`;
@@ -144,30 +184,32 @@ if [ $? -eq 0 ]; then
 		installdir=${HOME}/${JREJAVAHOME}
 	fi;
 	
-	if [ -e ${installdir} ]; then
+	echo "installdir: ${installdir}"
+	
+	if [ ! -e ${installdir} ]; then
 		# Hack jre.bin to allow us to install without asking for a license, or failing
 		# the checksum.
 		
 		# Location of license start
-		STARTLINE=`grep -na "^more <<\"EOF\"$" jre.bin`
+		STARTLINE=`grep ${GREPOPTS} "^more <<\"EOF\"$" jre.bin`
 		STARTLINE=${STARTLINE%%:*}
 		# Location of license end
-		ENDLINE=`grep -na "If you don't agree to the license you can't install this software" jre.bin`
+		ENDLINE=`grep ${GREPOPTS} "If you don't agree to the license you can't install this software" jre.bin`
 		ENDLINE=$((${ENDLINE%%:*} + 3))
 		# Location of checksum start
-		CSSTARTLINE=`grep -na "^if \[ -x /usr/bin/sum \]; then$" jre.bin`
+		CSSTARTLINE=`grep ${GREPOPTS} "^if \[ -x /usr/bin/sum \]; then$" jre.bin`
 		CSSTARTLINE=${CSSTARTLINE%%:*}
 		# Location of checksum end
-		CSENDLINE=`grep -na "Can't find /usr/bin/sum to do checksum" jre.bin`
+		CSENDLINE=`grep ${GREPOPTS} "Can't find /usr/bin/sum to do checksum" jre.bin`
 		CSENDLINE=$((${CSENDLINE%%:*} + 2))
 		# Location of script end
-		SCENDLINE=`grep -na "^echo \"Done.\"$" jre.bin`
+		SCENDLINE=`grep ${GREPOPTS} "^echo \"Done.\"$" jre.bin`
 		SCENDLINE=$((${SCENDLINE%%:*} + 2 - (${ENDLINE} - ${STARTLINE}) - (${CSENDLINE} - ${CSSTARTLINE})))
 		# Remove the license and checksum stuff!
 		head -n $((${STARTLINE} -1)) jre.bin > jre.bin.tmp
-		tail -n +$((${ENDLINE})) jre.bin | head -n $((${CSSTARTLINE} -1 - ${ENDLINE})) >> jre.bin.tmp
+		tail ${TAILOPTS}$((${ENDLINE})) jre.bin | head -n $((${CSSTARTLINE} -1 - ${ENDLINE})) >> jre.bin.tmp
 		echo "tail \${tail_args} +${SCENDLINE} \"\$0\" > \$outname" >> jre.bin.tmp
-		tail -n +$((${CSENDLINE})) jre.bin >> jre.bin.tmp
+		tail ${TAILOPTS}$((${CSENDLINE})) jre.bin >> jre.bin.tmp
 		
 		messagedialog "Java Install" "Java install will begin when you press OK.\nThis may take some time, so please wait.\n\nYou will be informed when the installation is completed."
 		yes | sh jre.bin.tmp
@@ -199,8 +241,9 @@ if [ $? -eq 0 ]; then
 				echo "endfi" >> ${HOME}/.cshrc
 			fi
 			
+			echo "Adding JREPath: ${PWD}/jrepath"
 			# This allows the main installer to continue with the new java version.
-			echo "export PATH=~/${JREJAVAHOME}/bin:\"\${PATH}\"" > .jrepath
+			echo "export PATH=~/${JREJAVAHOME}/bin:\"\${PATH}\"" > ${PWD}/jrepath
 			
 			# This allows dmdirc launcher to find the jre if the path is not set.
 			ln -sf ${installdir} ${HOME}/jre
@@ -209,8 +252,10 @@ if [ $? -eq 0 ]; then
 		messagedialog "Java Install" "Java installation complete"
 		exit 0;
 	else
-		messagedialog "Java Install" "An existing install was found at ${installdir}, but this directory is not in the current path."
-		echo "export PATH=~/${JREJAVAHOME}/bin:\"\${PATH}\"" > .jrepath
+		messagedialog "Java Install" "An existing install was found at ${installdir}, but this directory is not in the current path, DMDirc setup will try to use this version of java for the install."
+		echo "Adding JREPath: ${PWD}/jrepath"
+		# This allows the main installer to continue with the new java version.
+		echo "export PATH=~/${JREJAVAHOME}/bin:\"\${PATH}\"" > ${PWD}/jrepath
 		exit 0;
 	fi;
 else

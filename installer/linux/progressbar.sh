@@ -10,6 +10,36 @@
 # only terminate when the next line of data is read from the pipe.
 #
 
+# Check the which command exists, and if so make sure it behaves how we want
+# it to...
+WHICH=`which which 2>/dev/null`
+if [ "" = "${WHICH}" ]; then
+	echo "which command not found. Aborting.";
+	exit 0;
+else
+	# Solaris sucks
+	BADWHICH=`which /`
+	if [ "${BADWHICH}" != "" ]; then
+		echo "Replacing bad which command.";
+		# "Which" on solaris gives non-empty results for commands that don't exist
+		which() {
+			OUT=`${WHICH} ${1}`
+			if [ $? -eq 0 ]; then
+				echo ${OUT}
+			else
+				echo ""
+			fi;
+		}
+	fi;
+fi
+# Solaris also has a crappy version of tail!
+tail -n +1 /dev/null >/dev/null 2>&1
+if [ $? -eq 2 ]; then
+	TAILOPTS="-"
+else
+	TAILOPTS="-n"
+fi;
+
 PIDOF=`which pidof`
 if [ "${PIDOF}" = "" ]; then
 	# For some reason some distros hide pidof...
@@ -25,29 +55,31 @@ if [ "${PIDOF}" != "" ]; then
 	ISKDE=`${PIDOF} -x -s kdeinit`
 	ISGNOME=`${PIDOF} -x -s gnome-panel`
 else
-	ISKDE=`ps ux | grep kdeinit | grep -v grep`
-	ISGNOME=`ps ux | grep gnome-panel | grep -v grep`
+	ISKDE=`ps -Af | grep kdeinit | grep -v grep`
+	ISGNOME=`ps -Af | grep gnome-panel | grep -v grep`
 fi;
 KDIALOG=`which kdialog`
 ZENITY=`which zenity`
 CAPTION=${1}
 FILESIZE=${2}
+WGETPID=${3}
 progresswindow=""
 TYPE=""
 PIPE="progresspipe_${$}"
 retval="1"
+CONTINUE="1"
 
 readprogress() {
 	data=""
 	input=""
-	while [ -e ${PIPE} ]; do
+	while [ ${CONTINUE} -eq "1" -a -e ${PIPE} ]; do
 		if [ "${TYPE}" = "KDE" ]; then
 			if [ `dcop ${progresswindow} wasCancelled` = "true" ]; then
 				break;
 			fi
 		fi;
-		input=`cat "${PIPE}"`
-		if [ "${input}" == "quit" ]; then
+		input=`cat "${PIPE}" | tail ${TAILOPTS}1`
+		if [ "${input}" = "quit" ]; then
 			break;
 		elif [ "${input}" != "" ]; then
 			data=${input}
@@ -74,6 +106,7 @@ readprogress() {
 			fi;
 			if [ "${val}" = "100" ]; then
 				retval="0"
+				CONTINUE="0"
 				break;
 			fi;
 		fi;
@@ -99,14 +132,21 @@ else
 fi;
 
 echo "Using pipe: "${PIPE}
-
 mkfifo "${PIPE}"
 closeProgress() {
+	CONTINUE="0"
 	if [ "${TYPE}" = "KDE" -a ${retval} != "0" ]; then
 		dcop ${progresswindow} close
 	fi;
-	echo "Deleting ${PIPE}"
-	rm -Rf "${PIPE}"
+	echo "Exiting with value: $retval"
+	if [ -e ${PIPE} ]; then
+		echo "Attempting to kill wget"
+		kill -9 ${WGETPID}
+		echo "Emptying pipe"
+		cat ${PIPE};
+		echo "Deleting Pipe ${PIPE}"
+		rm -Rf "${PIPE}"
+	fi;
 	exit $retval;
 }
 trap 'closeProgress' INT TERM EXIT
@@ -118,14 +158,21 @@ if [ "" != "${ISKDE}" -a "" != "${KDIALOG}" -a "" != "${DISPLAY}" ]; then
 	dcop ${progresswindow} showCancelButton true
 	TYPE="KDE"
 	readprogress
+	CONTINUE="0"
+	echo "Progress Bar Complete"
 elif [ "" != "${ISGNOME}" -a "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then
 	echo "Progress dialog on Display: ${DISPLAY}"
 	TYPE="GNOME"
 	readprogress | ${ZENITY} --progress --auto-close --auto-kill --title "DMDirc: ${CAPTION}" --text "${CAPTION}"
+	CONTINUE="0"
+	echo "Progress Bar Complete"
 else
 	echo "Progress For: ${CAPTION}"
 	echo "-> 0%"
 	readprogress
+	CONTINUE="0"
 	echo ""
 	echo "Finished!"
 fi
+echo "Exiting progressbar"
+exit 0;
