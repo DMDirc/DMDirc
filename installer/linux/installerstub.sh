@@ -26,8 +26,8 @@
 MD5=""
 
 # Check the which command exists
-WHICH=`which`
-if [ "" != "${WHICH}" ]; then
+WHICH=`which which 2>/dev/null`
+if [ "" = "${WHICH}" ]; then
 	echo "which command not found. Aborting.";
 	exit 0;
 fi
@@ -56,7 +56,7 @@ errordialog() {
 	fi;
 	
 	## Helper Functions
-	if [ "${PIDOF}" = "" ]; then
+	if [ "${PIDOF}" != "" ]; then
 		ISKDE=`${PIDOF} -x -s kdeinit`
 		ISGNOME=`${PIDOF} -x -s gnome-panel`
 	else

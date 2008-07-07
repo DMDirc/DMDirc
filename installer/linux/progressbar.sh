@@ -21,7 +21,7 @@ if [ "${PIDOF}" = "" ]; then
 fi;
 
 ## Helper Functions
-if [ "${PIDOF}" = "" ]; then
+if [ "${PIDOF}" != "" ]; then
 	ISKDE=`${PIDOF} -x -s kdeinit`
 	ISGNOME=`${PIDOF} -x -s gnome-panel`
 else
