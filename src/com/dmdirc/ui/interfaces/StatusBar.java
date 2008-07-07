@@ -24,6 +24,8 @@ package com.dmdirc.ui.interfaces;
 
 import java.awt.Component;
 
+import javax.swing.Icon;
+
 /**
  * Status bar interface.
  */
@@ -37,14 +39,40 @@ public interface StatusBar {
     void setMessage(final String newMessage);
     
     /**
+     * sets the message in the status bar.
+     *
+     * @param icon Message icon
+     * @param newMessage Message to display
+     * 
+     * @since 0.6
+     */
+    void setMessage(final Icon icon, final String newMessage);
+    
+    /**
      * Sets the message in the status bar with a specified callback event
      * using the default timeout.
      *
      * @param newMessage Message to display
      * @param newNotifier status message notifier to be notified for events on
      * this message
+     * 
+     * @since 0.6
      */
     void setMessage(final String newMessage, 
+            final StatusMessageNotifier newNotifier);
+    
+    /**
+     * Sets the message in the status bar with a specified callback event
+     * using the default timeout.
+     *
+     * @param icon Message icon
+     * @param newMessage Message to display
+     * @param newNotifier status message notifier to be notified for events on
+     * this message
+     * 
+     * @since 0.6
+     */
+    void setMessage(final Icon icon, final String newMessage, 
             final StatusMessageNotifier newNotifier);
     
     /**
@@ -57,6 +85,21 @@ public interface StatusBar {
      * @param timeout message timeout in seconds
      */
     void setMessage(final String newMessage,
+            final StatusMessageNotifier newNotifier, final int timeout);
+    
+    /**
+     * Sets the message in the status bar with a specified callback event for
+     * a specified time.
+     *
+     * @param icon Message icon
+     * @param newMessage Message to display
+     * @param newNotifier status message notifier to be notified for events on
+     * this message
+     * @param timeout message timeout in seconds
+     * 
+     * @since 0.6
+     */
+    void setMessage(final Icon icon, final String newMessage,
             final StatusMessageNotifier newNotifier, final int timeout);
     
     /**

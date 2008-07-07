@@ -106,9 +106,9 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
 
         setLayout(new MigLayout("fill, ins 0, hidemode 3"));
 
-        add(messageLabel, "growx, pushx, sgy components, hmax 20, hmin 20");
-        add(errorLabel, "sgy components, hmax 20, hmin 20");
-        add(inviteLabel, "sgy components, hmax 20, hmin 20");
+        add(messageLabel, "growx, sgy components, hmax 20, hmin 20");
+        add(errorLabel, "sgy components, hmax 20, hmin 20, wmin 20, shrink 0");
+        add(inviteLabel, "sgy components, hmax 20, hmin 20, wmin 20, shrink 0");
 
         checkErrors();
     }
@@ -118,26 +118,47 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     public void setMessage(final String newMessage) {
         setMessage(newMessage, null);
     }
-
+    
     /** {@inheritDoc} */
     @Override
     public void setMessage(final String newMessage,
             final StatusMessageNotifier newNotifier) {
+        setMessage(null, newMessage, newNotifier);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void setMessage(final Icon icon, final String newMessage) {
+        setMessage(icon, newMessage, null);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void setMessage(final Icon icon, final String newMessage,
+            final StatusMessageNotifier newNotifier) {
         final int timeout =
                 IdentityManager.getGlobalConfig().
                 getOptionInt("statusBar", "messageDisplayLength", 5);
-        setMessage(newMessage, newNotifier, timeout);
+        setMessage(icon, newMessage, newNotifier, timeout);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void setMessage(final String newMessage, 
+            final StatusMessageNotifier newNotifier, final int timeout) {
+        setMessage(null, newMessage, newNotifier, timeout);
     }
 
     /** {@inheritDoc} */
     @Override
-    public synchronized void setMessage(final String newMessage,
+    public synchronized void setMessage(final Icon icon, final String newMessage,
             final StatusMessageNotifier newNotifier, final int timeout) {
         SwingUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
             public void run() {
+                messageLabel.setIcon(icon);
                 messageLabel.setText(newMessage);
                 messageNotifier = newNotifier;
 
@@ -168,7 +189,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     /** {@inheritDoc} */
     @Override
     public void clearMessage() {
-        setMessage(DEFAULT_MESSAGE);
+        setMessage(IconManager.getIconManager().getIcon("dmdirc"), DEFAULT_MESSAGE);
     }
 
     /** Clears the error. */
@@ -227,31 +248,51 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
             });
     }
 
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param mouseEvent Mouse event
+     */
     @Override
     public void mousePressed(final MouseEvent mouseEvent) {
     //Ignore.
     }
 
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param mouseEvent Mouse event
+     */
     @Override
     public void mouseReleased(final MouseEvent mouseEvent) {
     //Ignore.
     }
 
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param mouseEvent Mouse event
+     */
     @Override
     public void mouseEntered(final MouseEvent mouseEvent) {
     //Ignore.
     }
 
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param mouseEvent Mouse event
+     */
     @Override
     public void mouseExited(final MouseEvent mouseEvent) {
     //Ignore.
     }
 
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param mouseEvent Mouse event
+     */
     @Override
     public void mouseClicked(final MouseEvent mouseEvent) {
         if (mouseEvent.getButton() == MouseEvent.BUTTON1) {
@@ -275,9 +316,9 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
                 public void run() {
                     remove(errorLabel);
                     remove(inviteLabel);
-                    add(component, "sgy components, hmax 20, hmin 20");
-                    add(inviteLabel, "sgy components, hmax 20, hmin 20");
-                    add(errorLabel, "sgy components, hmax 20, hmin 20");
+                    add(component, "sgy components, hmax 20, hmin 20, wmin 20, shrink 0");
+                    add(inviteLabel, "sgy components, hmax 20, hmin 20, wmin 20, shrink 0");
+                    add(errorLabel, "sgy components, hmax 20, hmin 20, wmin 20, shrink 0");
                     validate();
                 }
             });
