@@ -75,7 +75,7 @@ errordialog() {
 }
 
 # Location of .run stub end
-ENDLINE=`grep -na "^###END INCLUDE###$" $0`
+ENDLINE=`grep -na "^###END STUB###$" $0`
 ENDLINE=$((${ENDLINE%%:*} + 1))
 
 if [ "" = "${ENDLINE}" ]; then
@@ -281,3 +281,4 @@ rm -Rf ${TEMPDIR}
 echo "Installation Completed."
 # Job Done!
 exit 0;
+###END STUB###
