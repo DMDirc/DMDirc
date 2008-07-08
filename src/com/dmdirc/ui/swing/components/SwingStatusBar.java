@@ -189,7 +189,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     /** {@inheritDoc} */
     @Override
     public void clearMessage() {
-        setMessage(IconManager.getIconManager().getIcon("dmdirc"), DEFAULT_MESSAGE);
+        setMessage(DEFAULT_MESSAGE);
     }
 
     /** Clears the error. */
