@@ -23,7 +23,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-LAUNCHERVERSION="3"
+LAUNCHERVERSION="4"
 
 params=""
 
@@ -61,12 +61,12 @@ if [ "${PIDOF}" = "" ]; then
 fi;
 
 ## Helper Functions
-if [ "${PIDOF}" = "" ]; then
+if [ "${PIDOF}" != "" ]; then
 	ISKDE=`${PIDOF} -x -s kdeinit`
 	ISGNOME=`${PIDOF} -x -s gnome-panel`
 else
-	ISKDE=`ps ux | grep kdeinit | grep -v grep`
-	ISGNOME=`ps ux | grep gnome-panel | grep -v grep`
+	ISKDE=`ps -Af | grep kdeinit | grep -v grep`
+	ISGNOME=`ps -Af | grep gnome-panel | grep -v grep`
 fi;
 KDIALOG=`which kdialog`
 ZENITY=`which zenity`
@@ -241,17 +241,20 @@ else
 fi;
 
 echo -n "Looking for java - ";
-JAVA=`which java`
+# Check for BSD Ports version of java first as its not always in the path
+JAVA="/usr/local/jdk1.6.0/jre/bin/java"
+if [ ! -e "${JAVA}" ]; then
+	JAVA=`which java`
+fi
 
 if [ "" != "${JAVA}" ]; then
-	echo "Success!"
+	echo "Success! (${JAVA})"
 else
 	echo "Failed!"
-	# This should in future offer to download and install the JVM automatically.
-	ERROR="Sorry, java is not installed on this machine.";
+	ERROR="Sorry, java does ont appear to be installed on this machine.";
 	ERROR=${ERROR}"\n"
-	ERROR=${ERROR}"\nDMDirc requires a 1.6.0 compatible JVM, you can get one from:";
-	ERROR=${ERROR}"\nhttp://jdl.sun.com/webapps/getjava/BrowserRedirect";
+	ERROR=${ERROR}"\nDMDirc requires a 1.6.0 compatible JVM, you can get one from: http://www.java.com";
+	ERROR=${ERROR}"\nor reinstall DMDirc and let the installer install one for you.";
 	errordialog "Unable to launch dmdirc!" "${ERROR}";
 	exit 1;
 fi
@@ -264,11 +267,10 @@ if [ -e "${jar}" ]; then
 	${JAVA} -jar ${jar} --help >/dev/null 2>&1
 	if [ $? -ne 0 ]; then
 		echo "Failed."
-		ERROR="Sorry, the currently installed version of java is not compatible with";
-		ERROR=${ERROR}"\nDMDirc.";
+		ERROR="Sorry, the currently installed version of java is not compatible with DMDirc.";
 		ERROR=${ERROR}"\n";
-		ERROR=${ERROR}"\nDMDirc requires a 1.6.0 compatible JVM, you can get one from:";
-		ERROR=${ERROR}"\nhttp://jdl.sun.com/webapps/getjava/BrowserRedirect";
+		ERROR=${ERROR}"\nDMDirc requires a 1.6.0 compatible JVM, you can get one from: http://www.java.com";
+		ERROR=${ERROR}"\nor reinstall DMDirc and let the installer install one for you.";
 		errordialog "Unable to launch dmdirc!" "${ERROR}";
 		exit 1;
 	fi
