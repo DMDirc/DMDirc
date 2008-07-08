@@ -134,7 +134,6 @@ elif [ ${actualLength} -ge 1024 ]; then
 	niceLength=`echo "scale=2; ${actualLength}/1024" | bc`"KB"
 else
 	niceLength=`echo "scale=2; ${actualLength}/1024" | bc`"B"
-	echo ${niceLength}
 fi;
 
 if [ "${actualLength}" = "6" ]; then
