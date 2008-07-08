@@ -219,8 +219,8 @@ uncompress() {
 	fi;
 	echo "Decompressing: ${FILE}"
 #	DEBUGINFO="${DEBUGINFO}\nFile: ${FILE}"
-#	DEBUGINFO="${DEBUGINFO}\nCommand: tail ${TAILOPTS}${ENDLINE} "${FILE}" | gzip -cd | tar -xvf - 2>/dev/null"
-	OUTPUT=`tail ${TAILOPTS}${ENDLINE} "${FILE}" | gzip -cd | tar -xvf - 2>/dev/null`
+#	DEBUGINFO="${DEBUGINFO}\nCommand: tail ${TAILOPTS}${ENDLINE} "${FILE}" | gzip -cd | tar -xvf - 2>1"
+	OUTPUT=`tail ${TAILOPTS}${ENDLINE} "${FILE}" | gzip -cd | tar -xvf - 2>1`
 	if [ "${OUTPUT}" = "" ]; then
 		echo "Decompression failed."
 		errordialog "DMDirc Setup" "Decompression failed.\nThis shouldn't happen, please raise a bug report at http://bugs.dmdirc.com${DEBUGINFO}";
@@ -284,8 +284,10 @@ getMD5() {
 	if [ "${MD5BIN}" != "" ]; then
 		echo "test" | ${MD5BIN} -
 		if [ $? -eq 0 ]; then
+			echo "Linux-Style MD5SUM: ${MD5BIN}"
 			getMD5Linux $@
 		else
+			echo "BSD-Style MD5SUM: ${MD5BIN}"
 			getMD5BSD $@
 		fi;
 	fi;

@@ -298,8 +298,10 @@ getMD5() {
 	if [ "${MD5BIN}" != "" ]; then
 		echo "test" | ${MD5BIN} -
 		if [ $? -eq 0 ]; then
+			echo "Linux-Style MD5SUM: ${MD5BIN}"
 			getMD5Linux $@
 		else
+			echo "BSD-Style MD5SUM: ${MD5BIN}"
 			getMD5BSD $@
 		fi;
 	fi;
