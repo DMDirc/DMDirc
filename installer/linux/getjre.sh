@@ -115,9 +115,27 @@ if [ "${ISAINFO}" != "" ]; then
 fi;
 URL="http://www.dmdirc.com/getjava/`uname -s`/${ARCH}"
 
-length=`wget --spider ${URL} 2>&1 | grep "Length:"| awk '{print $2, $3}' | sed 's/,//g'`
-actualLength=${length%% *}
-niceLength=`echo ${length##* }  | sed 's/[()]//g'`
+WGET=`which wget`
+FETCH=`which fetch`
+CURL=`which curl`
+if [ "${WGET}" != "" ]; then
+	length=`${WGET} --spider ${URL} 2>&1 | grep "Length:"| awk '{print $2, $3}' | sed 's/,//g'`
+	actualLength=${length%% *}
+elif [ "${FETCH}" != "" ]; then
+	actualLength=`${FETCH} -s ${URL}`
+elif [ "${CURL}" != "" ]; then
+	length=`${CURL} -# -I ${URL} 2>&1 | grep "Content-Length:"| awk '{print $2}'`
+fi;
+
+# Convert the length from Bytes to something user-friendly
+if [ ${actualLength} -ge 1048576 ]; then
+	niceLength=`echo "scale=2; ${actualLength}/1048576" | bc`"MB"
+elif [ ${actualLength} -ge 1024 ]; then
+	niceLength=`echo "scale=2; ${actualLength}/1024" | bc`"KB"
+else
+	niceLength=`echo "scale=2; ${actualLength}/1024" | bc`"B"
+	echo ${niceLength}
+fi;
 
 if [ "${actualLength}" = "6" ]; then
 	# Unable to download.
@@ -150,8 +168,16 @@ else
 fi;
 if [ $result -eq 0 ]; then
 	PIPE=`mktemp -p ${PWD} progresspipe.XXXXXXXXXXXXXX`
-	wget -q ${URL} -O jre.bin &
-	wgetpid=${!}
+	if [ "${WGET}" != "" ]; then
+		${WGET} -q -O jre.bin ${URL} &
+		wgetpid=${!}
+	elif [ "${FETCH}" != "" ]; then
+		${FETCH} -q -o jre.bin &
+		wgetpid=${!}
+	elif [ "${CURL}" != "" ]; then
+		${CURL} -s -o jre.bin ${URL} &
+		wgetpid=${!}
+	fi;
 	/bin/sh ${PWD}/progressbar.sh "Downloading JRE.." ${actualLength} ${PIPE} ${wgetpid} &
 	progressbarpid=${!}
 	while [ `ps -p ${wgetpid} | wc -l` = 2 ]; do
