@@ -219,8 +219,8 @@ uncompress() {
 	fi;
 	echo "Decompressing: ${FILE}"
 #	DEBUGINFO="${DEBUGINFO}\nFile: ${FILE}"
-#	DEBUGINFO="${DEBUGINFO}\nCommand: tail ${TAILOPTS}${ENDLINE} "${FILE}" | gzip -cd | tar -xvf - 2>1"
-	OUTPUT=`tail ${TAILOPTS}${ENDLINE} "${FILE}" | gzip -cd | tar -xvf - 2>1`
+#	DEBUGINFO="${DEBUGINFO}\nCommand: tail ${TAILOPTS}${ENDLINE} "${FILE}" | gzip -cd | tar -xvf - 2>&1"
+	OUTPUT=`tail ${TAILOPTS}${ENDLINE} "${FILE}" | gzip -cd | tar -xvf - 2>&1`
 	if [ "${OUTPUT}" = "" ]; then
 		echo "Decompression failed."
 		errordialog "DMDirc Setup" "Decompression failed.\nThis shouldn't happen, please raise a bug report at http://bugs.dmdirc.com${DEBUGINFO}";
