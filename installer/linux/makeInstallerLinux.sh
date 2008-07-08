@@ -290,13 +290,18 @@ fi
 compress $FILES
 
 MD5BIN=`which md5sum`
+if [ "${MD5BIN}" = "" ]; then
+	MD5BIN=`which md5`
+fi;
 AWK=`which awk`
 getMD5() {
-	echo "test" | ${MD5BIN} -
-	if [ $? -eq 0 ]; then
-		getMD5Linux $@
-	else
-		getMD5OSX $@
+	if [ "${MD5BIN}" != "" ]; then
+		echo "test" | ${MD5BIN} -
+		if [ $? -eq 0 ]; then
+			getMD5Linux $@
+		else
+			getMD5BSD $@
+		fi;
 	fi;
 }
 
@@ -309,7 +314,7 @@ getMD5Linux() {
 	return;
 }
 
-getMD5OSX() {
+getMD5BSD() {
 	# Everything below the MD5SUM Line
 	MD5LINE=`grep ${GREPOPTS} "^MD5=\".*\"$" ${1}`
 	MD5LINE=$((${MD5LINE%%:*} + 1))

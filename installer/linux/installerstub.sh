@@ -65,6 +65,27 @@ fi;
 
 ###ADDITIONAL_STUFF###
 
+PIDOF=`which pidof`
+if [ "${PIDOF}" = "" ]; then
+	# For some reason some distros hide pidof...
+	if [ -e /sbin/pidof ]; then
+		PIDOF=/sbin/pidof
+	elif [ -e /usr/sbin/pidof ]; then
+		PIDOF=/usr/sbin/pidof
+	fi;
+fi;
+
+## Helper Functions
+if [ "${PIDOF}" != "" ]; then
+	ISKDE=`${PIDOF} -x -s kdeinit`
+	ISGNOME=`${PIDOF} -x -s gnome-panel`
+else
+	ISKDE=`ps -Af | grep kdeinit | grep -v grep`
+	ISGNOME=`ps -Af | grep gnome-panel | grep -v grep`
+fi;
+KDIALOG=`which kdialog`
+ZENITY=`which zenity`
+
 errordialog() {
 	# Send message to console.
 	echo ""
@@ -75,32 +96,34 @@ errordialog() {
 	echo "-----------------------------------------------------------------------"
 
 	# Now try to use the GUI Dialogs.
-	PIDOF=`which pidof`
-	if [ "${PIDOF}" = "" ]; then
-		# For some reason some distros hide pidof...
-		if [ -e /sbin/pidof ]; then
-			PIDOF=/sbin/pidof
-		elif [ -e /usr/sbin/pidof ]; then
-			PIDOF=/usr/sbin/pidof
-		fi;
-	fi;
-	
-	## Helper Functions
-	if [ "${PIDOF}" != "" ]; then
-		ISKDE=`${PIDOF} -x -s kdeinit`
-		ISGNOME=`${PIDOF} -x -s gnome-panel`
-	else
-		ISKDE=`ps -Af | grep kdeinit | grep -v grep`
-		ISGNOME=`ps -Af | grep gnome-panel | grep -v grep`
-	fi;
-	KDIALOG=`which kdialog`
-	ZENITY=`which zenity`
 	if [ "" != "${ISKDE}" -a "" != "${KDIALOG}" -a "" != "${DISPLAY}" ]; then
 		echo "Dialog on Display: ${DISPLAY}"
-		${KDIALOG} --title "DMDirc: ${1}" --error "${1}\n\n${2}"
+		${KDIALOG} --title "${1}" --error "${1}\n\n${2}"
 	elif [ "" != "${ISGNOME}" -a "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then
 		echo "Dialog on Display: ${DISPLAY}"
-		${ZENITY} --error --title "DMDirc: ${1}" --text "${1}\n\n${2}"
+		${ZENITY} --error --title "${1}" --text "${1}\n\n${2}"
+	fi
+}
+
+questiondialog() {
+	# Send question to console.
+	echo ""
+	echo "-----------------------------------------------------------------------"
+	echo "Question: ${1}"
+	echo "-----------------------------------------------------------------------"
+	echo "${2}"
+	echo "-----------------------------------------------------------------------"
+
+	# Now try to use the GUI Dialogs.
+	if [ "" != "${ISKDE}" -a "" != "${KDIALOG}" -a "" != "${DISPLAY}" ]; then
+		echo "Dialog on Display: ${DISPLAY}"
+		${KDIALOG} --title "${1}" --yesno "${2}"
+	elif [ "" != "${ISGNOME}" -a "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then
+		echo "Dialog on Display: ${DISPLAY}"
+		${ZENITY} --question --title "${1}" --text "${2}"
+	else
+		echo "Unable to ask question, assuming no."
+		return 1;
 	fi
 }
 
@@ -253,13 +276,36 @@ while test -n "$1"; do
 done
 
 MD5BIN=`which md5sum`
+if [ "${MD5BIN}" = "" ]; then
+	MD5BIN=`which md5`
+fi;
 AWK=`which awk`
 getMD5() {
+	if [ "${MD5BIN}" != "" ]; then
+		echo "test" | ${MD5BIN} -
+		if [ $? -eq 0 ]; then
+			getMD5Linux $@
+		else
+			getMD5BSD $@
+		fi;
+	fi;
+}
+
+getMD5Linux() {
 	# Everything below the MD5SUM Line
 	MD5LINE=`grep ${GREPOPTS} "^MD5=\".*\"$" ${1}`
 	MD5LINE=$((${MD5LINE%%:*} + 1))
 
 	MD5SUM=`tail ${TAILOPTS}${MD5LINE} "${1}" | ${MD5BIN} - | ${AWK} '{print $1}'`
+	return;
+}
+
+getMD5BSD() {
+	# Everything below the MD5SUM Line
+	MD5LINE=`grep ${GREPOPTS} "^MD5=\".*\"$" ${1}`
+	MD5LINE=$((${MD5LINE%%:*} + 1))
+
+	MD5SUM=`tail ${TAILOPTS}${MD5LINE} "${1}" | ${MD5BIN} | ${AWK} '{print $1}'`
 	return;
 }
 
@@ -287,6 +333,18 @@ if [ "${MD5BIN}" != "" ]; then
 				echo "SUM expected is: ${MD5}"
 				if [ "${MD5SUM}" = "${MD5}" ]; then
 					echo "MD5 Check Passed!"
+				elif [ "${MD5SUM}" = "" -o "${MD5}" = "" ]; then
+					ERROR="The DMDirc installer is unable to verify the checksum of this download.";
+					if [ "${MD5SUM}" = "" ]; then
+						ERROR=${ERROR}"(Unable to calculate sum locally)";
+					else
+						ERROR=${ERROR}"(No checksum found in file)";
+					fi;
+					
+					ERROR=${ERROR}"\nDo you want to continue anyway?";
+					
+					questiondialog "DMDirc Setup: MD5 Check Failed!" "${ERROR}";
+					exit 1;
 				else
 					ERROR="This copy of the DMDirc installer appears to be damaged and will now exit.";
 					ERROR=${ERROR}"\nYou may choose to skip this check and run it anyway by passing the --nomd5 parameter";
