@@ -141,7 +141,7 @@ installjre() {
 }
 
 if [ "" != "${JAVA}" ]; then
-	echo "Success!"
+	echo "Success! ("${JAVA}")"
 else
 	echo "Failed!"
 	installjre "install"
