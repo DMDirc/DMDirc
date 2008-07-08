@@ -217,10 +217,10 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 *
 	 * @param forceNew Force a new resource manager rather than using the old one.
 	 * @throws IOException if there is any problem getting a ResourceManager for this plugin
+	 * @since 0.6
 	 */
 	public synchronized ResourceManager getResourceManager(final boolean forceNew) throws IOException {
 		if (myResourceManager == null || forceNew) {
-			myResourceManager = null;
 			final String directory = PluginManager.getPluginManager().getDirectory();
 			myResourceManager = ResourceManager.getResourceManager("jar://"+directory+filename);
 			
