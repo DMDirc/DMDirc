@@ -38,6 +38,9 @@ import java.util.Properties;
 import java.util.List;
 import java.util.ArrayList;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class PluginInfo implements Comparable<PluginInfo> {
 	/** Plugin Meta Data */
 	private Properties metaData = null;
@@ -90,7 +93,6 @@ public class PluginInfo implements Comparable<PluginInfo> {
 				if (res.resourceExists("META-INF/plugin.info")) {
 					metaData.load(res.getResourceInputStream("META-INF/plugin.info"));
 				}
-				myResourceManager = null;
 			} catch (IOException e) {
 			} catch (IllegalArgumentException e) {
 			}
@@ -144,9 +146,8 @@ public class PluginInfo implements Comparable<PluginInfo> {
 
 			if (isPersistant() && loadAll()) { loadEntirePlugin(); }
 		} else {
-			// throw new PluginException("Plugin "+filename+" was not loaded, one or more requirements not met ("+requirements+")");
+			throw new PluginException("Plugin "+filename+" was not loaded, one or more requirements not met ("+requirementsError+")");
 		}
-		myResourceManager = null;
 	}
 
 	/**
@@ -155,7 +156,8 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 */
 	public void pluginUpdated() {
 		try {
-			final ResourceManager res = getResourceManager();
+			// Force a new resourcemanager just incase.
+			final ResourceManager res = getResourceManager(true);
 			
 			myClasses.clear();
 			for (final String classfilename : res.getResourcesStartingWith("")) {
@@ -165,7 +167,6 @@ public class PluginInfo implements Comparable<PluginInfo> {
 					myClasses.add(classname);
 				}
 			}
-			
 			updateMetaData();
 		} catch (IOException ioe) {
 		}
@@ -179,15 +180,13 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 */
 	public boolean updateMetaData() {
 		try {
-			final ResourceManager res = getResourceManager();
+			// Force a new resourcemanager just incase.
+			final ResourceManager res = getResourceManager(true);
 			if (res.resourceExists("META-INF/plugin.info")) {
 				final Properties newMetaData = new Properties();
 				newMetaData.load(res.getResourceInputStream("META-INF/plugin.info"));
 				metaData = newMetaData;
-				myResourceManager = null;
 				return true;
-			} else {
-				myResourceManager = null;
 			}
 		} catch (IOException ioe) {
 		} catch (IllegalArgumentException e) {
@@ -210,9 +209,29 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 * @throws IOException if there is any problem getting a ResourceManager for this plugin
 	 */
 	public synchronized ResourceManager getResourceManager() throws IOException {
-		if (myResourceManager == null) {
+		return getResourceManager(false);
+	}
+	
+	/**
+	 * Get the resource manager for this plugin
+	 *
+	 * @param forceNew Force a new resource manager rather than using the old one.
+	 * @throws IOException if there is any problem getting a ResourceManager for this plugin
+	 */
+	public synchronized ResourceManager getResourceManager(final boolean forceNew) throws IOException {
+		if (myResourceManager == null || forceNew) {
+			myResourceManager = null;
 			final String directory = PluginManager.getPluginManager().getDirectory();
 			myResourceManager = ResourceManager.getResourceManager("jar://"+directory+filename);
+			
+			// Clear the resourcemanager in 10 seconds to stop us holding the file open 
+			final Timer timer = new Timer(filename+"-resourcemanagerTimer");
+			final TimerTask timerTask = new TimerTask(){
+				public void run() {
+					myResourceManager = null;
+				}
+			};
+			timer.schedule(timerTask, 10000);
 		}
 		return myResourceManager;
 	}
@@ -497,7 +516,6 @@ public class PluginInfo implements Comparable<PluginInfo> {
 		for (String classname : myClasses) {
 			loadClass(classname);
 		}
-		myResourceManager = null;
 	}
 
 	/**
@@ -529,7 +547,6 @@ public class PluginInfo implements Comparable<PluginInfo> {
 		if (isLoaded()) {
 			ActionManager.processEvent(CoreActionType.PLUGIN_LOADED, null, this);
 		}
-		myResourceManager = null;
 	}
 
 	/**
