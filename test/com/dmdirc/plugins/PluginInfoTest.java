@@ -19,25 +19,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.plugins;
 
+import com.dmdirc.Main;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class PluginInfoTest extends junit.framework.TestCase {
+public class PluginInfoTest {
     
     private PluginInfo pi;
-    
-    public PluginInfoTest() {
-        try {
-            pi = new PluginInfo("moo", false);
-        } catch (PluginException ex) {
-            // Shouldn't happen
-        }
-    }
 
     @Test
-    public void testCheckMinimum() {
+    public void testCheckMinimum() throws PluginException {
+        pi = new PluginInfo("moo", false);
+        
         assertTrue(pi.checkMinimumVersion("5", 6));
         assertTrue(pi.checkMinimumVersion("5", 5));
         assertTrue(pi.checkMinimumVersion("0", 17));
@@ -48,7 +49,9 @@ public class PluginInfoTest extends junit.framework.TestCase {
     }
     
     @Test
-    public void testCheckMaximim() {
+    public void testCheckMaximim() throws PluginException {
+        pi = new PluginInfo("moo", false);
+        
         assertTrue(pi.checkMaximumVersion("6", 6));
         assertTrue(pi.checkMaximumVersion("7", 6));
         assertTrue(pi.checkMaximumVersion("0", 6));
@@ -60,7 +63,9 @@ public class PluginInfoTest extends junit.framework.TestCase {
     }
     
     @Test
-    public void testOS() {
+    public void testOS() throws PluginException {
+        pi = new PluginInfo("moo", false);
+        
         assertTrue(pi.checkOS("windows", "windows", "xp", "x86"));
         assertFalse(pi.checkOS("windows", "linux", "2.6.2.11", "x86"));
         assertTrue(pi.checkOS("windows:xp|98|3\\.1", "windows", "xp", "x86"));
@@ -71,5 +76,41 @@ public class PluginInfoTest extends junit.framework.TestCase {
         assertFalse(pi.checkOS("windows:xp|98|3\\.1:.86", "windows", "vista", "x86"));
         assertFalse(pi.checkOS("windows:xp|98|3\\.1:.86", "linux", "2.6.2.11", "x86"));        
     }
+    
+    @Test
+    public void testLoad() throws PluginException {
+        Main.setConfigDir(new File(getClass().getResource("testplugin.jar").getFile()).getParent());
+        PluginInfo pi = new PluginInfo("testplugin.jar");
+        assertEquals("Author <em@il>", pi.getAuthor());
+        assertEquals("Friendly", pi.getFriendlyVersion());
+        assertEquals("Description goes here", pi.getDescription());
+        assertEquals("randomname", pi.getName());
+        assertEquals("Friendly name", pi.getNiceName());
+        assertEquals(3, pi.getVersion());
+    }
+    
+    @Test @Ignore
+    public void testUpdate() throws PluginException, IOException {
+        final File dir = new File(File.createTempFile("dmdirc-plugin-test", null).getParentFile(),
+                "dmdirc-plugin-test-folder");
+        final File pluginDir = new File(dir, "plugins");
+        
+        dir.deleteOnExit();
+        pluginDir.mkdirs();
+        
+        new File(pluginDir, "test.jar").createNewFile();
+        new File(pluginDir, "test.jar.update").createNewFile();
+        
+        Main.setConfigDir(dir.getAbsolutePath());
+        System.out.println(Main.getConfigDir());
+        System.out.println(PluginManager.getPluginManager().getDirectory());
+        new PluginInfo("test.jar", false);
+        
+        assertTrue(new File(pluginDir, "test.jar").exists());
+        assertFalse(new File(pluginDir, "test.jar.update").exists());
+    }
 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(PluginInfoTest.class);
+    }
 }
