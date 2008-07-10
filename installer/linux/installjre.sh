@@ -179,6 +179,7 @@ if [ $? -eq 0 ]; then
 		UID=`id -u`;
 	fi
 	if [ "0" = "${UID}" ]; then
+		mkdir -p /usr/lib/jvm/
 		installdir=/usr/lib/jvm/${JREJAVAHOME}
 	else
 		installdir=${HOME}/${JREJAVAHOME}
@@ -217,20 +218,23 @@ if [ $? -eq 0 ]; then
 		mv ${JREJAVAHOME} ${installdir}
 		
 		if [ "0" = "${UID}" ]; then
-			mkdir -p /usr/lib/jvm/
-			
 			# Add to global path.
 			if [ -e "/usr/bin/java" ]; then
 				rm -Rf /usr/bin/java
 			fi;
 			ln -s /usr/lib/jvm/${JREJAVAHOME}/bin/java /usr/bin/java
+			
+			# This allows the main installer to continue with the new java version,
+			# incase the shell doesn't find the new binary.
+			echo "Adding java-bin: ${installdir}/bin/java -> ${PWD}/java-bin"
+			ln -s ${installdir}/bin/java ${PWD}/java-bin
 		else
 			# Add to path.
 			if [ -e ${HOME}/.profile ]; then
 				echo "" >> ${HOME}/.profile
 				echo "# set PATH so it includes user's private java if it exists" >> ${HOME}/.profile
 				echo "if [ -d ~/${JREJAVAHOME}/bin ] ; then" >> ${HOME}/.profile
-				echo "	PATH=~/${JREJAVAHOME}/bin:\"\${PATH}\"" >> ${HOME}/.profile
+				echo "	PATH=~/${JREJAVAHOME}/bin:\${PATH}" >> ${HOME}/.profile
 				echo "fi" >> ${HOME}/.profile
 			fi
 			if [ -e ${HOME}/.cshrc ]; then
@@ -241,9 +245,9 @@ if [ $? -eq 0 ]; then
 				echo "endfi" >> ${HOME}/.cshrc
 			fi
 			
-			echo "Adding JREPath: ${PWD}/jrepath"
 			# This allows the main installer to continue with the new java version.
-			echo "export PATH=~/${JREJAVAHOME}/bin:\"\${PATH}\"" > ${PWD}/jrepath
+			echo "Adding java-bin: ${installdir}/bin/java -> ${PWD}/java-bin"
+			ln -s ${installdir}/bin/java ${PWD}/java-bin
 			
 			# This allows dmdirc launcher to find the jre if the path is not set.
 			ln -sf ${installdir} ${HOME}/jre
@@ -253,9 +257,8 @@ if [ $? -eq 0 ]; then
 		exit 0;
 	else
 		messagedialog "Java Install" "An existing install was found at ${installdir}, but this directory is not in the current path, DMDirc setup will try to use this version of java for the install."
-		echo "Adding JREPath: ${PWD}/jrepath"
-		# This allows the main installer to continue with the new java version.
-		echo "export PATH=~/${JREJAVAHOME}/bin:\"\${PATH}\"" > ${PWD}/jrepath
+		echo "Adding java-bin: ${installdir}/bin/java -> ${PWD}/java-bin"
+		ln -s ${installdir}/bin/java ${PWD}/java-bin
 		exit 0;
 	fi;
 else

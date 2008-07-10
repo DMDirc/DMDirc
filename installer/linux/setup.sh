@@ -132,11 +132,12 @@ installjre() {
 		fi;
 		exit 1;
 	else
-		if [ -e "${PWD}/jrepath" ]; then
-			echo "Found JREPath: ${PWD}/jrepath"
-			. ${PWD}/jrepath
+		if [ -e "${PWD}/java-bin" ]; then
+			echo "Found JREBin: ${PWD}/java-bin"
+			JAVA="${PWD}/java-bin"
+		else
+			JAVA=`which java`
 		fi;
-		JAVA=`which java`
 	fi;
 }
 
