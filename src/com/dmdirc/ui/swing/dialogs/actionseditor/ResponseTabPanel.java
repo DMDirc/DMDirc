@@ -91,9 +91,11 @@ public final class ResponseTabPanel extends JPanel implements
         
         subsPanel.addSubstitutionsPanelListener(this);
         
+        subsPanel.setOpaque(UIUtilities.getTabbedPaneOpaque());
+        
         scrollPane.setBorder(BorderFactory.createCompoundBorder(
                 scrollPane.getBorder(), BorderFactory.createEmptyBorder(
-                SMALL_BORDER, 0,SMALL_BORDER, 0)));
+                0, 0, 0, 0)));
         
         responses.setRows(3);
         formatter.setPreferredSize(

@@ -106,6 +106,8 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
         
         setNewConditionButton(false);
         
+        comparisonsPanel.setOpaque(UIUtilities.getTabbedPaneOpaque());
+        
         doConditions();
         
         if (owner.getAction() == null) {
