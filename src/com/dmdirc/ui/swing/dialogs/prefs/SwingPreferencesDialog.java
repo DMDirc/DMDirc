@@ -154,7 +154,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
 
-        setLayout(new MigLayout("fillx, wmin 650, wmax 650"));
+        setLayout(new MigLayout("fillx, wmin 650, wmax 650, hmax 600"));
         add(tabList, "width 150, growy, spany");
         add(mainPanel, "wrap, width 480, grow");
         add(getLeftButton(), "split, right");
