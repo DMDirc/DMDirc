@@ -223,7 +223,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         getContentPane().add(info, "growx");
         getContentPane().add(actions, "grow, pushx");
         getContentPane().add(activeSettings, "growx");
-        getContentPane().add(getRightButton(), "skip, right, sgx button");
+        getContentPane().add(getOkButton(), "skip, right, sgx button");
     }
 
     /**
