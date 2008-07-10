@@ -219,17 +219,9 @@ public final class ChannelModesPane extends JPanel {
             if (state != paramModePanel.getState() ||
                     !value.equals(paramModePanel.getValue())) {
                 changed = true;
-                if (paramModePanel.getValue().contains(" ")) {
-                    channel.getChannelInfo().
-                            alterMode(paramModePanel.getState(),
-                            mode.toCharArray()[0],
-                            paramModePanel.getValue().
-                            substring(0, paramModePanel.getValue().indexOf(" ")));
-                } else {
                     channel.getChannelInfo().
                             alterMode(paramModePanel.getState(),
                             mode.toCharArray()[0], paramModePanel.getValue());
-                }
             }
         }
         if (changed) {

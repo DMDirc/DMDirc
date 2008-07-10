@@ -41,23 +41,22 @@ import net.miginfocom.swing.MigLayout;
  * the user a checkbox, the mode's name, and a text field.
  */
 public final class ParamModePanel extends JPanel implements ActionListener {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
     /** The checkbox used in this mode panel. */
     private final JCheckBox checkBox;
-    
     /** The textfield for the value of the mode. */
     private final ValidatingJTextField textField;
-    
     /** the mode this component represents. */
     private final String mode;
-    
+    /** Original mode value. */
+    private final String originalValue;
+
     /**
      * Creates a new instance of ParamModePanel.
      * @param thisMode The mode that this panel should deal with
@@ -69,40 +68,42 @@ public final class ParamModePanel extends JPanel implements ActionListener {
             final String value, final ConfigManager configManager) {
         super();
         this.mode = thisMode;
+        this.originalValue = value;
         String text;
         String tooltip;
         if (configManager.hasOption("server", "mode" + mode)) {
-                tooltip = "Mode " + mode + ": " + configManager.getOption(
-                        "server", "mode" + mode);
-            } else {
-                tooltip = "Mode " + mode + ": Unknown";
-            }
-        
+            tooltip = "Mode " + mode + ": " + configManager.getOption(
+                    "server", "mode" + mode);
+        } else {
+            tooltip = "Mode " + mode + ": Unknown";
+        }
+
         setLayout(new MigLayout("fill"));
-        
+
         text = "Mode " + mode + ": ";
-        
-        if (configManager.getOptionBool("server", "friendlymodes", false)
-        && configManager.hasOption("server", "mode" + mode)) {
+
+        if (configManager.getOptionBool("server", "friendlymodes", false) &&
+                configManager.hasOption("server", "mode" + mode)) {
             text = configManager.getOption("server", "mode" + mode) + ": ";
         }
-        
+
         checkBox = new JCheckBox(text, state);
         checkBox.setToolTipText(tooltip);
         checkBox.setOpaque(UIUtilities.getTabbedPaneOpaque());
         add(checkBox);
-        
+
         textField = new ValidatingJTextField(new RegexStringValidator("^[^ ]*$",
                 "Cannot contain spaces"));
+        textField.setText(value);
         add(textField, "growx, pushx");
-        
+
         if (!state) {
             textField.setEnabled(false);
         }
-        
+
         checkBox.addActionListener(this);
     }
-    
+
     /**
      * Called when our checkbox is toggled.
      * @param actionEvent associated action event
@@ -110,9 +111,14 @@ public final class ParamModePanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(final ActionEvent actionEvent) {
         textField.setEnabled(checkBox.isSelected());
-        textField.requestFocus();
+        if (checkBox.isSelected()) {
+            textField.requestFocus();
+        } else {
+            textField.setText(originalValue);
+        }
+
     }
-    
+
     /**
      * returns the state of this component.
      * @return boolean state of mode
@@ -120,7 +126,7 @@ public final class ParamModePanel extends JPanel implements ActionListener {
     public boolean getState() {
         return checkBox.isSelected() && textField.validateText();
     }
-    
+
     /**
      * returns the parameter of this mode if enabled, else returns an empty
      * string.
@@ -129,7 +135,7 @@ public final class ParamModePanel extends JPanel implements ActionListener {
     public String getValue() {
         return textField.getText();
     }
-    
+
     /**
      * Returns the name of the mode this component represents.
      * @return String name of the mode
@@ -137,7 +143,7 @@ public final class ParamModePanel extends JPanel implements ActionListener {
     public String getModeName() {
         return checkBox.getText();
     }
-    
+
     /**
      * Returns the mode this component represents.
      * @return String mode
@@ -145,7 +151,7 @@ public final class ParamModePanel extends JPanel implements ActionListener {
     public String getMode() {
         return mode;
     }
-    
+
     /**
      * Returns the checkbox component.
      * 
@@ -154,7 +160,7 @@ public final class ParamModePanel extends JPanel implements ActionListener {
     public Component getCheckboxComponent() {
         return checkBox;
     }
-    
+
     /**
      * Returns the value component.
      * 
@@ -163,5 +169,4 @@ public final class ParamModePanel extends JPanel implements ActionListener {
     public Component getValueComponent() {
         return textField;
     }
-    
 }
