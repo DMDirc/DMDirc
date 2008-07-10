@@ -297,16 +297,14 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 				appendLine(filename, "");
 				break;
 			case QUERY_CLOSED:
-				if (openFiles.containsKey(filename)) {
-					appendLine(filename, "*** Query closed at: %s", openedAtFormat.format(new Date()));
-					final BufferedWriter file = openFiles.get(filename).writer;
-					try {
-						file.close();
-					} catch (IOException e) {
-						Logger.userError(ErrorLevel.LOW, "Unable to close file (Filename: "+filename+")");
-					}
-					openFiles.remove(filename);
+				appendLine(filename, "*** Query closed at: %s", openedAtFormat.format(new Date()));
+				final BufferedWriter file = openFiles.get(filename).writer;
+				try {
+					file.close();
+				} catch (IOException e) {
+					Logger.userError(ErrorLevel.LOW, "Unable to close file (Filename: "+filename+")");
 				}
+				openFiles.remove(filename);
 				break;
 			case QUERY_MESSAGE:
 			case QUERY_SELF_MESSAGE:
@@ -351,16 +349,14 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 				appendLine(filename, "");
 				break;
 			case CHANNEL_CLOSED:
-				if (openFiles.containsKey(filename)) {
-					appendLine(filename, "*** Channel closed at: %s", openedAtFormat.format(new Date()));
-					final BufferedWriter file = openFiles.get(filename).writer;
-					try {
-						file.close();
-					} catch (IOException e) {
-						Logger.userError(ErrorLevel.LOW, "Unable to close file (Filename: "+filename+")");
-					}
-					openFiles.remove(filename);
+				appendLine(filename, "*** Channel closed at: %s", openedAtFormat.format(new Date()));
+				final BufferedWriter file = openFiles.get(filename).writer;
+				try {
+					file.close();
+				} catch (IOException e) {
+					Logger.userError(ErrorLevel.LOW, "Unable to close file (Filename: "+filename+")");
 				}
+				openFiles.remove(filename);
 				break;
 			case CHANNEL_MESSAGE:
 			case CHANNEL_SELF_MESSAGE:
