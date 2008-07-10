@@ -164,13 +164,16 @@ public final class CtrlTabFrameManager implements FrameManager,
             /** {@inheritDoc} */
             @Override
             public void run() {
-                addWindow(nodes.get(parent), window);
+                synchronized (nodes) {
+                    addWindow(nodes.get(parent), window);
+                }
             }
         };
         if (SwingUtilities.isEventDispatchThread()) {
             runnable.run();
+        } else {
+            UIUtilities.invokeAndWait(runnable);
         }
-        SwingUtilities.invokeLater(runnable);
     }
 
     /** {@inheritDoc} */
@@ -183,12 +186,15 @@ public final class CtrlTabFrameManager implements FrameManager,
     /** {@inheritDoc} */
     @Override
     public void delWindow(final FrameContainer window) {
-        if (nodes != null && nodes.get(window) != null) {
-            SwingUtilities.invokeLater(new Runnable() {
+        UIUtilities.invokeAndWait(new Runnable() {
 
-                /** {@inheritDoc} */
-                @Override
-                public void run() {
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                synchronized (labels) {
+                    if (nodes == null || nodes.get(window) == null) {
+                        return;
+                    }
                     final DefaultMutableTreeNode node = nodes.get(window);
                     if (node.getLevel() == 0) {
                         Logger.appError(ErrorLevel.MEDIUM,
@@ -202,8 +208,8 @@ public final class CtrlTabFrameManager implements FrameManager,
                     labels.remove(node);
                     window.removeSelectionListener(CtrlTabFrameManager.this);
                 }
-            });
-        }
+            }
+        });
     }
 
     /**
@@ -214,14 +220,16 @@ public final class CtrlTabFrameManager implements FrameManager,
      */
     public void addWindow(final DefaultMutableTreeNode parent,
             final FrameContainer window) {
-        SwingUtilities.invokeLater(new Runnable() {
+        UIUtilities.invokeAndWait(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
             public void run() {
                 final DefaultMutableTreeNode node =
                         new DefaultMutableTreeNode();
-                nodes.put(window, node);
+                synchronized (nodes) {
+                    nodes.put(window, node);
+                }
                 labels.put(node, new JLabel());
                 node.setUserObject(window);
                 model.insertNodeInto(node, parent);
