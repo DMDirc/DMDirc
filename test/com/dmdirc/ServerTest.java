@@ -22,8 +22,13 @@
 
 package com.dmdirc;
 
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.harness.TestActionListener;
+import com.dmdirc.harness.parser.TestParserFactory;
 import com.dmdirc.ui.dummy.DummyController;
+import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -88,6 +93,37 @@ public class ServerTest extends junit.framework.TestCase {
         server.addInvite(new Invite(server, "#chan1", "a!b@c"));
         server.onSocketClosed();
         assertEquals(0, server.getInvites().size());
+    }
+    
+    @Test
+    public void testNumericActions() throws InterruptedException {
+        final TestActionListener tal = new TestActionListener();
+        
+        ActionManager.init();
+        ActionManager.addListener(tal, CoreActionType.SERVER_NUMERIC);
+        final Server server = new Server("255.255.255.255", 6667, "", false,
+                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
+                new TestParserFactory());
+        
+        Thread.sleep(1000); // Give the parser thread time to run + inject
+        
+        assertEquals(1, tal.events.keySet().size());
+        assertTrue(tal.events.containsKey(CoreActionType.SERVER_NUMERIC));
+        
+        final int[] counts = new int[6];
+        
+        for (Object[] args : tal.events.values(CoreActionType.SERVER_NUMERIC)) {
+            counts[(Integer) args[1]]++;
+            assertSame(server, args[0]);
+        }
+        
+        assertEquals(1, counts[1]);
+        assertEquals(1, counts[2]);
+        assertEquals(1, counts[3]);
+        assertEquals(1, counts[4]);
+        assertEquals(2, counts[5]);
+        
+        server.disconnect();
     }
 
 }

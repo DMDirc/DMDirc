@@ -458,7 +458,7 @@ public class IRCParserTest {
         final TestParser tp = new TestParser(new MyInfo(), new ServerInfo("127.0.0.1", 0, ""));
         final TestIConnectError tiei = new TestIConnectError();
         tp.getCallbackManager().addCallback("OnConnectError", tiei);
-        tp.run();
+        tp.runSuper();
         assertTrue(tiei.error);
     }
     
@@ -467,7 +467,7 @@ public class IRCParserTest {
         final TestParser tp = new TestParser(new MyInfo(), new ServerInfo("127.0.0.1", 1, ""));
         final TestIConnectError tiei = new TestIConnectError();
         tp.getCallbackManager().addCallback("OnConnectError", tiei);
-        tp.run();
+        tp.runSuper();
         assertTrue(tiei.error);
     }    
     
@@ -476,7 +476,7 @@ public class IRCParserTest {
         final TestParser tp = new TestParser(new MyInfo(), new ServerInfo("127.0.0.1", 65570, ""));
         final TestIConnectError tiei = new TestIConnectError();
         tp.getCallbackManager().addCallback("OnConnectError", tiei);
-        tp.run();
+        tp.runSuper();
         assertTrue(tiei.error);
     }
 

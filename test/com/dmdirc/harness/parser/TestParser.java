@@ -81,4 +81,13 @@ public class TestParser extends IRCParser {
         // Do nothing
     }
 
+    @Override
+    public void run() {
+        injectConnectionStrings();
+    }
+    
+    public void runSuper() {
+        super.run();
+    }
+
 }
