@@ -67,7 +67,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	/**
 	 * Create a new PluginInfo.
 	 *
-	 * @param filename File that this plugin is stored in.
+	 * @param url URL to file that this plugin is stored in.
 	 * @throws PluginException if there is an error loading the Plugin
 	 * @since 0.6
 	 */
@@ -78,7 +78,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	/**
 	 * Create a new PluginInfo.
 	 *
-	 * @param filename File that this plugin is stored in.
+	 * @param url URL to file that this plugin is stored in.
 	 * @param load Should this plugin be loaded, or is this just a placeholder? (true for load, false for placeholder)
 	 * @throws PluginException if there is an error loading the Plugin
 	 * @since 0.6
