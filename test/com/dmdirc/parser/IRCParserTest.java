@@ -65,22 +65,39 @@ public class IRCParserTest {
 
         assertTrue("addCallback() should throw exception for non-existant callbacks", res);
     }
+    
+    @Test
+    public void testProxyPortWithBindIP() {
+        final TestIConnectError tice = new TestIConnectError();
+        final ServerInfo si = new ServerInfo();
+        si.setProxyPort(155555);
+        si.setUseSocks(true);
+        
+        final IRCParser myParser = new IRCParser(si);
+        myParser.getCallbackManager().addCallback("onConnectError", tice);
+        myParser.setBindIP("0.0.0.0");
+        myParser.run();
+        
+        assertTrue("Using an invalid socks proxy port should raise a connect error event",
+                tice.error);
+    }
 
     @Test
     public void testTokeniser() {
-        final IRCParser myParser = new IRCParser();
-
         final String line1 = "a b c d e";
         final String line2 = "a b c :d e";
         final String line3 = ":a b:c :d e";
+        final String line4 = null;
 
-        final String[] res1 = myParser.tokeniseLine(line1);
-        final String[] res2 = myParser.tokeniseLine(line2);
-        final String[] res3 = myParser.tokeniseLine(line3);
+        final String[] res1 = IRCParser.tokeniseLine(line1);
+        final String[] res2 = IRCParser.tokeniseLine(line2);
+        final String[] res3 = IRCParser.tokeniseLine(line3);
+        final String[] res4 = IRCParser.tokeniseLine(line3);
 
         assertTrue(Arrays.equals(res1, new String[]{"a", "b", "c", "d", "e"}));
         assertTrue(Arrays.equals(res2, new String[]{"a", "b", "c", "d e"}));
         assertTrue(Arrays.equals(res3, new String[]{":a", "b:c", "d e"}));
+        assertTrue(Arrays.equals(res4, new String[]{""}));
     }
 
     @Test
