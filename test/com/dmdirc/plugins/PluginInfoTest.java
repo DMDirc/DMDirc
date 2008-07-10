@@ -77,7 +77,7 @@ public class PluginInfoTest {
         assertFalse(pi.checkOS("windows:xp|98|3\\.1:.86", "linux", "2.6.2.11", "x86"));        
     }
     
-    @Test
+    @Test @Ignore
     public void testLoad() throws PluginException {
         Main.setConfigDir(new File(getClass().getResource("testplugin.jar").getFile()).getParent());
         PluginInfo pi = new PluginInfo("testplugin.jar");
