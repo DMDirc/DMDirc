@@ -124,9 +124,13 @@ public final class Server extends WritableFrameContainer implements Serializable
 
     /** Our string convertor. */
     private IRCStringConverter converter = new IRCStringConverter();
+    
+    /** The parser factory to use. */
+    private final ParserFactory parserFactory;
 
     /**
-     * Creates a new instance of Server.
+     * Creates a new instance of Server. Does not auto-join any channels, and
+     * uses a default {@link ParserFactory}.
      *
      * @param server The hostname/ip of the server to connect to
      * @param port The port to connect to
@@ -140,7 +144,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
 
     /**
-     * Creates a new instance of Server.
+     * Creates a new instance of Server. Uses a default {@link ParserFactory}.
      *
      * @param server The hostname/ip of the server to connect to
      * @param port The port to connect to
@@ -151,6 +155,24 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public Server(final String server, final int port, final String password,
             final boolean ssl, final Identity profile, final List<String> autochannels) {
+        this(server, port, password, ssl, profile, autochannels, new ParserFactory());
+    }
+    
+    /**
+     * Creates a new instance of Server.
+     *
+     * @since 0.6
+     * @param server The hostname/ip of the server to connect to
+     * @param port The port to connect to
+     * @param password The server password
+     * @param ssl Whether to use SSL or not
+     * @param profile The profile to use
+     * @param autochannels A list of channels to auto-join when we connect
+     * @param factory The {@link ParserFactory} to use to create parsers
+     */
+    public Server(final String server, final int port, final String password,
+            final boolean ssl, final Identity profile,
+            final List<String> autochannels, final ParserFactory factory) {
         super("server-disconnected", new ConfigManager("", "", server));
 
         serverInfo = new ServerInfo(server, port, password);
@@ -177,6 +199,7 @@ public final class Server extends WritableFrameContainer implements Serializable
                 CommandManager.getCommandNames(CommandType.TYPE_GLOBAL));
 
         this.autochannels = autochannels;
+        this.parserFactory = factory;
 
         new Timer("Server Who Timer").schedule(new TimerTask() {
             @Override
@@ -255,7 +278,7 @@ public final class Server extends WritableFrameContainer implements Serializable
 
             final MyInfo myInfo = getMyInfo();
 
-            parser = new IRCParser(myInfo, serverInfo);
+            parser = parserFactory.getParser(myInfo, serverInfo);
             parser.setRemoveAfterCallback(true);
             parser.setCreateFake(true);
             parser.setIgnoreList(ignoreList);
