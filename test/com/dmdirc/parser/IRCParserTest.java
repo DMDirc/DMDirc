@@ -26,7 +26,6 @@ import com.dmdirc.harness.parser.TestIPrivateCTCP;
 import com.dmdirc.harness.parser.TestParser;
 import com.dmdirc.harness.parser.TestIChannelKick;
 import com.dmdirc.harness.parser.TestIConnectError;
-import com.dmdirc.harness.parser.TestIErrorInfo;
 import com.dmdirc.harness.parser.TestINoticeAuth;
 import com.dmdirc.harness.parser.TestINumeric;
 import com.dmdirc.harness.parser.TestIServerError;
@@ -36,7 +35,6 @@ import com.dmdirc.harness.parser.TestIPrivateAction;
 import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.callbacks.interfaces.IAwayState;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import java.util.List;
