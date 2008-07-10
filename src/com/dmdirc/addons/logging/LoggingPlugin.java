@@ -73,7 +73,7 @@ import java.util.TimerTask;
  * @author Shane 'Dataforce' McCormack
  * @version $Id: LoggingPlugin.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
-public final class LoggingPlugin extends Plugin implements ActionListener {
+public class LoggingPlugin extends Plugin implements ActionListener {
 
 	/** What domain do we store all settings in the global config under. */
 	private static final String MY_DOMAIN = "plugin-Logging";
@@ -82,7 +82,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	private LoggingCommand command;
 
 	/** Open File */
-	private class OpenFile {
+	protected class OpenFile {
 		public long lastUsedTime = System.currentTimeMillis();
 		public BufferedWriter writer = null;
 		public OpenFile(final BufferedWriter writer) {
@@ -91,10 +91,10 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	}
 
 	/** Timer used to close idle files */
-	private Timer idleFileTimer;
+	protected Timer idleFileTimer;
 
 	/** Hashtable of open files. */
-	private final Map<String, OpenFile> openFiles = new Hashtable<String, OpenFile>();
+	protected final Map<String, OpenFile> openFiles = new Hashtable<String, OpenFile>();
 
 	/** Date format used for "File Opened At" log. */
 	final DateFormat openedAtFormat = new SimpleDateFormat("EEEE MMMM dd, yyyy - HH:mm:ss");
@@ -163,6 +163,8 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 		// Close idle files every hour.
 		idleFileTimer = new Timer("LoggingPlugin Timer");
 		idleFileTimer.schedule(new TimerTask(){
+            /** {@inheritDoc} */
+            @Override
 			public void run() {
 				timerTask();
 			}
@@ -172,7 +174,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	/**
 	 * What to do every hour when the timer fires.
 	 */
-	private void timerTask() {
+	protected void timerTask() {
 		// Oldest time to allow
 		final long oldestTime = System.currentTimeMillis() - 3480000;
 		
@@ -258,7 +260,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 * @param format Format of messages that are about to be sent. (May be null)
 	 * @param arguments The arguments for the event
 	 */
-	private void handleQueryEvent(final CoreActionType type, final StringBuffer format, final Object... arguments) {
+	protected void handleQueryEvent(final CoreActionType type, final StringBuffer format, final Object... arguments) {
 		final Query query = (Query)arguments[0];
 		if (query.getServer() == null) {
 			Logger.appError(ErrorLevel.MEDIUM, "Query object has no server ("+type.toString()+")", new Exception("Query object has no server ("+type.toString()+")"));
@@ -329,7 +331,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 * @param format Format of messages that are about to be sent. (May be null)
 	 * @param arguments The arguments for the event
 	 */
-	private void handleChannelEvent(final CoreActionType type, final StringBuffer format, final Object... arguments) {
+	protected void handleChannelEvent(final CoreActionType type, final StringBuffer format, final Object... arguments) {
 		final Channel chan = ((Channel)arguments[0]);
 		final ChannelInfo channel = chan.getChannelInfo();
 		final String filename = getLogFile(channel);
@@ -470,7 +472,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 * @param frame The frame to add the backbuffer lines to
 	 * @param filename File to get backbuffer from
 	 */
-	private void showBackBuffer(final Window frame, final String filename) {
+	protected static void showBackBuffer(final Window frame, final String filename) {
 		final int numLines = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "backbuffer.lines", 0);
 		final String colour = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "backbuffer.colour");
 		final boolean showTimestamp = IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.timestamp");
@@ -511,7 +513,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 * @param line the line to colour
 	 * @return The given line with the appropriate irc codes appended/prepended to colour it.
 	 */
-	private String getColouredString(final String colour, final String line) {
+	protected static String getColouredString(final String colour, final String line) {
 		String res = null;
 		if (colour.length() < 3) {
 			int num;
@@ -546,7 +548,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 * @param args Arguments for format
 	 * @return true on success, else false.
 	 */
-	private boolean appendLine(final String filename, final String format, final Object... args) {
+	protected boolean appendLine(final String filename, final String format, final Object... args) {
 		return appendLine(filename, String.format(format, args));
 	}
 
@@ -557,7 +559,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 * @param line Line to add. (NewLine will be added Automatically)
 	 * @return true on success, else false.
 	 */
-	private boolean appendLine(final String filename, final String line) {
+	protected boolean appendLine(final String filename, final String line) {
 		final StringBuffer finalLine = new StringBuffer();
 		
 		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.addtime")) {
@@ -603,7 +605,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 * @param obj Object to get name for
 	 * @return the name of the log file to use for this object.
 	 */
-	private String getLogFile(final Object obj) {
+	protected String getLogFile(final Object obj) {
 		final StringBuffer directory = new StringBuffer();
 		final StringBuffer file = new StringBuffer();
 		String md5String = "";
@@ -665,7 +667,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 * @param file Current file name
 	 * @param networkName Name of network
 	 */
-	private void addNetworkDir(final StringBuffer directory, final StringBuffer file, final String networkName) {
+	protected void addNetworkDir(final StringBuffer directory, final StringBuffer file, final String networkName) {
 		if (!IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.networkfolders")) {
 			return;
 		}
@@ -700,7 +702,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 * @param name String to sanitise
 	 * @return Sanitised version of name that can be used as a filename.
 	 */
-	private String sanitise(final String name) {
+	protected static String sanitise(final String name) {
 		// Replace illegal chars with
 		return name.replaceAll("[^\\w\\.\\s\\-\\#\\&\\_]", "_");
 	}
@@ -711,7 +713,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 * @param string String to hash
 	 * @return md5 hash of given string
 	 */
-	private String md5(final String string) {
+	protected static String md5(final String string) {
 		try {
 			final MessageDigest m = MessageDigest.getInstance("MD5");
 			m.update(string.getBytes(), 0, string.length());
@@ -727,7 +729,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 * @param client The client to get the display name for
 	 * @return name to display
 	 */
-	private String getDisplayName(final ClientInfo client) {
+	protected String getDisplayName(final ClientInfo client) {
 		return getDisplayName(client, "");
 	}
 
@@ -738,7 +740,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 * @param overrideNick Nickname to display instead of real nickname
 	 * @return name to display
 	 */
-	private String getDisplayName(final ClientInfo client, final String overrideNick) {
+	protected String getDisplayName(final ClientInfo client, final String overrideNick) {
 		if (overrideNick.isEmpty()) {
 			return (client == null) ? "Unknown Client" : client.getNickname() ;
 		} else {
@@ -752,7 +754,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 * @param channelClient The client to get the display name for
 	 * @return name to display
 	 */
-	private String getDisplayName(final ChannelClientInfo channelClient) {
+	protected String getDisplayName(final ChannelClientInfo channelClient) {
 		return getDisplayName(channelClient, "");
 	}
 
@@ -763,7 +765,7 @@ public final class LoggingPlugin extends Plugin implements ActionListener {
 	 * @param overrideNick Nickname to display instead of real nickname
 	 * @return name to display
 	 */
-	private String getDisplayName(final ChannelClientInfo channelClient, final String overrideNick) {
+	protected String getDisplayName(final ChannelClientInfo channelClient, final String overrideNick) {
 		final boolean addModePrefix = (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.channelmodeprefix"));
 		
 		if (channelClient == null) {
