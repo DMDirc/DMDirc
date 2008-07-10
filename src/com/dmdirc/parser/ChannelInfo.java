@@ -626,6 +626,18 @@ public final class ChannelInfo {
 				} else if (!positive && ((modecount & IRCParser.MODE_UNSET) == IRCParser.MODE_UNSET)) {
 					modestr = modestr + " " + parameter;
 				} else if (positive && ((modecount & IRCParser.MODE_SET) == IRCParser.MODE_SET)) {
+					// Does mode require a param to unset aswell?
+					// We might need to queue an unset first
+					if (((modecount & IRCParser.MODE_UNSET) == IRCParser.MODE_UNSET)) {
+						final String existingParam = getModeParam(mode);
+						if (!existingParam.isEmpty()) {
+							final String reverseModeStr = "-" + mode + " " + existingParam;
+							
+							myParser.callDebugInfo(IRCParser.DEBUG_INFO, "Queueing mode: %s", reverseModeStr);
+							lModeQueue.add(reverseModeStr);
+							if (lModeQueue.size() == modecount) { sendModes(); }
+						}
+					}
 					modestr = modestr + " " + parameter;
 				}
 			}
