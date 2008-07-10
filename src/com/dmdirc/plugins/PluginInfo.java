@@ -41,10 +41,15 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import java.net.URL;
+import java.net.URISyntaxException;
+
 public class PluginInfo implements Comparable<PluginInfo> {
 	/** Plugin Meta Data */
 	private Properties metaData = null;
-	/** File that this plugin was loaded from */
+	/** URL that this plugin was loaded from */
+	private final URL url;
+	/** Filename for this plugin (taken from URL) */
 	private final String filename;
 	/** The actual Plugin from this jar */
 	private Plugin plugin = null;
@@ -64,20 +69,27 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 *
 	 * @param filename File that this plugin is stored in.
 	 * @throws PluginException if there is an error loading the Plugin
+	 * @since 0.6
 	 */
-	public PluginInfo(final String filename) throws PluginException {
-		this(filename, true);
+	public PluginInfo(final URL url) throws PluginException {
+		this(url, true);
 	}
-
+	
 	/**
 	 * Create a new PluginInfo.
 	 *
 	 * @param filename File that this plugin is stored in.
 	 * @param load Should this plugin be loaded, or is this just a placeholder? (true for load, false for placeholder)
 	 * @throws PluginException if there is an error loading the Plugin
+	 * @since 0.6
 	 */
-	public PluginInfo(final String filename, final boolean load) throws PluginException {
-		this.filename = filename;
+	public PluginInfo(final URL url, final boolean load) throws PluginException {
+		this.url = url;
+		try {
+			this.filename = (new File(url.toURI())).getName();
+		} catch (URISyntaxException use) {
+			throw new PluginException("Plugin failed to load: "+use.getMessage());
+		}
 		ResourceManager res;
 
 		// Check for updates.
@@ -221,8 +233,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 */
 	public synchronized ResourceManager getResourceManager(final boolean forceNew) throws IOException {
 		if (myResourceManager == null || forceNew) {
-			final String directory = PluginManager.getPluginManager().getDirectory();
-			myResourceManager = ResourceManager.getResourceManager("jar://"+directory+filename);
+			myResourceManager = ResourceManager.getResourceManager("jar://"+getFullFilename());
 			
 			// Clear the resourcemanager in 10 seconds to stop us holding the file open 
 			final Timer timer = new Timer(filename+"-resourcemanagerTimer");
@@ -785,7 +796,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 *
 	 * @return Filename of plugin
 	 */
-	public String getFullFilename() { return PluginManager.getPluginManager().getDirectory()+filename; }
+	public String getFullFilename() { return url.getPath(); }
 
 	/**
 	 * Get the plugin Author.

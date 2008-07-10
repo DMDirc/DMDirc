@@ -33,6 +33,8 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.updater.components.PluginComponent;
 
 import java.io.File;
+import java.net.URL;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
@@ -109,7 +111,7 @@ public class PluginManager implements ActionListener {
 		PluginInfo pluginInfo;
 		
 		try {
-			pluginInfo = new PluginInfo(filename);
+			pluginInfo = new PluginInfo(new URL("file://"+getDirectory()+filename));
 			new PluginComponent(pluginInfo);
 			
 			final String requirements = pluginInfo.getRequirementsError();
@@ -120,6 +122,8 @@ public class PluginManager implements ActionListener {
 			} else {
 				throw new PluginException("Plugin "+filename+" was not loaded, one or more requirements not met ("+requirements+")");
 			}
+		} catch (MalformedURLException mue) {
+			Logger.userError(ErrorLevel.MEDIUM, "Error creating URL for plugin " + filename + ": " + mue.getMessage(), mue);
 		} catch (PluginException e) {
 			Logger.userError(ErrorLevel.MEDIUM, "Error loading plugin " + filename + ": " + e.getMessage(), e);
 		}
@@ -265,8 +269,10 @@ public class PluginManager implements ActionListener {
 					addPlugin(target);
 				} else {
 					try {
-						final PluginInfo pi = new PluginInfo(target, false);
+						final PluginInfo pi = new PluginInfo(new URL("file://"+getDirectory()+target), false);
 						res.put(target, pi);
+					} catch (MalformedURLException mue) {
+						Logger.userError(ErrorLevel.MEDIUM, "Error creating URL for plugin " + target + ": " + mue.getMessage(), mue);
 					} catch (PluginException pe) { /* This can not be thrown when the second param is false */}
 				}
 			}
