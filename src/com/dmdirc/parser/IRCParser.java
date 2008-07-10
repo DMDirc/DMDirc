@@ -642,7 +642,8 @@ public class IRCParser implements Runnable {
 				callDebugInfo(DEBUG_SOCKET, "Using Proxy");
 				if (bindIP != null && !bindIP.isEmpty()) {
 					callDebugInfo(DEBUG_SOCKET, "IP Binding is not possible when using a proxy.");
-				} else if (server.getProxyPort() > 65535 || server.getProxyPort() <= 0) {
+				}
+				if (server.getProxyPort() > 65535 || server.getProxyPort() <= 0) {
 					throw new IOException("Proxy port ("+server.getProxyPort()+") is invalid.");
 				}
 				
