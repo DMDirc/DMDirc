@@ -24,17 +24,16 @@ package com.dmdirc.ui.swing.components;
 
 import com.dmdirc.config.ConfigManager;
 
+import com.dmdirc.config.prefs.validator.RegexStringValidator;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.InputVerifier;
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import com.dmdirc.ui.swing.UIUtilities;
 
+import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -54,7 +53,7 @@ public final class ParamModePanel extends JPanel implements ActionListener {
     private final JCheckBox checkBox;
     
     /** The textfield for the value of the mode. */
-    private final JTextField textField;
+    private final ValidatingJTextField textField;
     
     /** the mode this component represents. */
     private final String mode;
@@ -93,8 +92,8 @@ public final class ParamModePanel extends JPanel implements ActionListener {
         checkBox.setOpaque(UIUtilities.getTabbedPaneOpaque());
         add(checkBox);
         
-        textField = new JTextField(value);
-        textField.setInputVerifier(new ModeParameterVerifier());
+        textField = new ValidatingJTextField(new RegexStringValidator("^[^ ]*$",
+                "Cannot contain spaces"));
         add(textField, "growx, pushx");
         
         if (!state) {
@@ -119,7 +118,7 @@ public final class ParamModePanel extends JPanel implements ActionListener {
      * @return boolean state of mode
      */
     public boolean getState() {
-        return checkBox.isSelected();
+        return checkBox.isSelected() && textField.validateText();
     }
     
     /**
@@ -166,29 +165,3 @@ public final class ParamModePanel extends JPanel implements ActionListener {
     }
     
 }
-
-/**
- * Verifies that the parameter has no spaces.
- */
-class ModeParameterVerifier extends InputVerifier {
-    
-    /**
-     * Creates a new instance of LimitVerifier.
-     */
-    public ModeParameterVerifier() {
-        super();
-    }
-    
-    /**
-     * Verifies that the parameter contains no spaces.
-     * @param jComponent The component to be tested
-     * @return true iff the text contains no spaces, false otherwise
-     */
-    @Override
-    public boolean verify(final JComponent jComponent) {
-        final JTextField textField = (JTextField) jComponent;
-        return !textField.getText().contains(" ");
-    }
-    
-}
-
