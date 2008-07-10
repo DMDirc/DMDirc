@@ -92,7 +92,7 @@ public class IRCParserTest {
         final String[] res1 = IRCParser.tokeniseLine(line1);
         final String[] res2 = IRCParser.tokeniseLine(line2);
         final String[] res3 = IRCParser.tokeniseLine(line3);
-        final String[] res4 = IRCParser.tokeniseLine(line3);
+        final String[] res4 = IRCParser.tokeniseLine(line4);
 
         assertTrue(Arrays.equals(res1, new String[]{"a", "b", "c", "d", "e"}));
         assertTrue(Arrays.equals(res2, new String[]{"a", "b", "c", "d e"}));
