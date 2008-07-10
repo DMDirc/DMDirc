@@ -55,6 +55,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 
 import javax.swing.AbstractAction;
@@ -78,7 +80,7 @@ import net.miginfocom.swing.MigLayout;
  * The main application frame.
  */
 public final class MainFrame extends JFrame implements WindowListener,
-        MainWindow, ConfigChangeListener, FrameManager {
+        MainWindow, ConfigChangeListener, FrameManager, PropertyChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -620,9 +622,9 @@ public final class MainFrame extends JFrame implements WindowListener,
     @Override
     public void configChanged(final String domain, final String key) {
         if ("ui".equals(domain)) {
-            if ("lookandfeel".equals(key))  {
-                //Almost there
-                //SwingController.updateLookAndFeel();
+            if ("lookandfeel".equals(key)) {
+            //Almost there
+            //SwingController.updateLookAndFeel();
             } else {
                 showVersion =
                         IdentityManager.getGlobalConfig().
@@ -685,6 +687,8 @@ public final class MainFrame extends JFrame implements WindowListener,
         // Increase the offsets
         xOffset += FRAME_OPENING_OFFSET;
         yOffset += FRAME_OPENING_OFFSET;
+
+        frame.addPropertyChangeListener("title", this);
     }
 
     /** {@inheritDoc}. */
@@ -696,6 +700,9 @@ public final class MainFrame extends JFrame implements WindowListener,
             setActiveFrame((Window) desktopPane.selectFrame(true));
         }
         desktopPane.remove((JInternalFrame) window.getFrame());
+
+        ((JInternalFrame) window.getFrame()).removePropertyChangeListener("title",
+                this);
     }
 
     /** {@inheritDoc}. */
@@ -710,5 +717,14 @@ public final class MainFrame extends JFrame implements WindowListener,
     public void delWindow(final FrameContainer parent,
             final FrameContainer window) {
         delWindow(window);
+    }
+
+    /** {@inheritDoc}. */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getSource().equals(getActiveFrame()) &&
+                "title".equals(evt.getPropertyName())) {
+            setTitle((String) evt.getNewValue());
+        }
     }
 }
