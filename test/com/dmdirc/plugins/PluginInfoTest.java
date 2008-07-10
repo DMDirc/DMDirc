@@ -86,8 +86,8 @@ public class PluginInfoTest {
         } catch (MalformedURLException mue) { }
     }
     
-    @Test @Ignore
-/*    public void testLoad() throws PluginException {
+/*    @Test @Ignore
+    public void testLoad() throws PluginException {
         Main.setConfigDir(new File(getClass().getResource("testplugin.jar").getFile()).getParent());
         PluginInfo pi = new PluginInfo("testplugin.jar");
         assertEquals("Author <em@il>", pi.getAuthor());
