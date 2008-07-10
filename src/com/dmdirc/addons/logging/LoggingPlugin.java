@@ -163,6 +163,8 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 		// Close idle files every hour.
 		idleFileTimer = new Timer("LoggingPlugin Timer");
 		idleFileTimer.schedule(new TimerTask(){
+            /** {@inheritDoc} */
+            @Override
 			public void run() {
 				timerTask();
 			}
@@ -470,7 +472,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 	 * @param frame The frame to add the backbuffer lines to
 	 * @param filename File to get backbuffer from
 	 */
-	protected void showBackBuffer(final Window frame, final String filename) {
+	protected static void showBackBuffer(final Window frame, final String filename) {
 		final int numLines = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "backbuffer.lines", 0);
 		final String colour = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "backbuffer.colour");
 		final boolean showTimestamp = IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.timestamp");
@@ -511,7 +513,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 	 * @param line the line to colour
 	 * @return The given line with the appropriate irc codes appended/prepended to colour it.
 	 */
-	protected String getColouredString(final String colour, final String line) {
+	protected static String getColouredString(final String colour, final String line) {
 		String res = null;
 		if (colour.length() < 3) {
 			int num;
@@ -700,7 +702,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 	 * @param name String to sanitise
 	 * @return Sanitised version of name that can be used as a filename.
 	 */
-	protected String sanitise(final String name) {
+	protected static String sanitise(final String name) {
 		// Replace illegal chars with
 		return name.replaceAll("[^\\w\\.\\s\\-\\#\\&\\_]", "_");
 	}
@@ -711,7 +713,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 	 * @param string String to hash
 	 * @return md5 hash of given string
 	 */
-	protected String md5(final String string) {
+	protected static String md5(final String string) {
 		try {
 			final MessageDigest m = MessageDigest.getInstance("MD5");
 			m.update(string.getBytes(), 0, string.length());
