@@ -22,15 +22,12 @@
 
 package com.dmdirc.plugins;
 
-import com.dmdirc.Main;
-
 import java.io.File;
 import java.io.IOException;
 
 import java.net.URL;
 import java.net.MalformedURLException;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -86,10 +83,9 @@ public class PluginInfoTest {
         } catch (MalformedURLException mue) { }
     }
     
-/*    @Test @Ignore
+    @Test
     public void testLoad() throws PluginException {
-        Main.setConfigDir(new File(getClass().getResource("testplugin.jar").getFile()).getParent());
-        PluginInfo pi = new PluginInfo("testplugin.jar");
+        PluginInfo pi = new PluginInfo(getClass().getResource("testplugin.jar"));
         assertEquals("Author <em@il>", pi.getAuthor());
         assertEquals("Friendly", pi.getFriendlyVersion());
         assertEquals("Description goes here", pi.getDescription());
@@ -98,7 +94,7 @@ public class PluginInfoTest {
         assertEquals(3, pi.getVersion());
     }
     
-    @Test @Ignore
+    @Test
     public void testUpdate() throws PluginException, IOException {
         final File dir = new File(File.createTempFile("dmdirc-plugin-test", null).getParentFile(),
                 "dmdirc-plugin-test-folder");
@@ -107,17 +103,16 @@ public class PluginInfoTest {
         dir.deleteOnExit();
         pluginDir.mkdirs();
         
-        new File(pluginDir, "test.jar").createNewFile();
+        final File target = new File(pluginDir, "test.jar");
+        
+        target.createNewFile();
         new File(pluginDir, "test.jar.update").createNewFile();
         
-        Main.setConfigDir(dir.getAbsolutePath());
-        System.out.println(Main.getConfigDir());
-        System.out.println(PluginManager.getPluginManager().getDirectory());
-        new PluginInfo("test.jar", false);
+        new PluginInfo(target.toURI().toURL(), false);
         
         assertTrue(new File(pluginDir, "test.jar").exists());
         assertFalse(new File(pluginDir, "test.jar.update").exists());
-    } */
+    }
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(PluginInfoTest.class);
