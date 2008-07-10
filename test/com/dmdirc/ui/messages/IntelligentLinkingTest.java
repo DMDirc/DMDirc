@@ -65,6 +65,7 @@ public class IntelligentLinkingTest {
             {"(foo: 'www.google.com')", "(foo: '~www.google.com~')"},
             {"foo: www.google.com, bar", "foo: ~www.google.com~, bar"},
             {"www.google.com?", "~www.google.com~?"},
+            {"www.google.com!", "~www.google.com~!"},
             {"\"foo\" www.google.com \"www.google.com\"",
                      "\"foo\" ~www.google.com~ \"~www.google.com~\"",
             },
