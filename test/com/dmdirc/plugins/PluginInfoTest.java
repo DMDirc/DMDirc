@@ -27,6 +27,9 @@ import com.dmdirc.Main;
 import java.io.File;
 import java.io.IOException;
 
+import java.net.URL;
+import java.net.MalformedURLException;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -37,48 +40,54 @@ public class PluginInfoTest {
 
     @Test
     public void testCheckMinimum() throws PluginException {
-        pi = new PluginInfo("moo", false);
-        
-        assertTrue(pi.checkMinimumVersion("5", 6));
-        assertTrue(pi.checkMinimumVersion("5", 5));
-        assertTrue(pi.checkMinimumVersion("0", 17));
-        assertTrue(pi.checkMinimumVersion("100", 0));
-        assertTrue(pi.checkMinimumVersion("0", 0));
-        assertFalse(pi.checkMinimumVersion("abc", 6));
-        assertFalse(pi.checkMinimumVersion("7", 6));
+        try {
+            pi = new PluginInfo(new URL("file:///dev/null"), false);
+            
+            assertTrue(pi.checkMinimumVersion("5", 6));
+            assertTrue(pi.checkMinimumVersion("5", 5));
+            assertTrue(pi.checkMinimumVersion("0", 17));
+            assertTrue(pi.checkMinimumVersion("100", 0));
+            assertTrue(pi.checkMinimumVersion("0", 0));
+            assertFalse(pi.checkMinimumVersion("abc", 6));
+            assertFalse(pi.checkMinimumVersion("7", 6));
+        } catch (MalformedURLException mue) { }
     }
     
     @Test
     public void testCheckMaximim() throws PluginException {
-        pi = new PluginInfo("moo", false);
-        
-        assertTrue(pi.checkMaximumVersion("6", 6));
-        assertTrue(pi.checkMaximumVersion("7", 6));
-        assertTrue(pi.checkMaximumVersion("0", 6));
-        assertTrue(pi.checkMaximumVersion("6", 0));
-        assertTrue(pi.checkMaximumVersion("0", 0));
-        assertTrue(pi.checkMaximumVersion("", 17));
-        assertFalse(pi.checkMaximumVersion("abc", 6));
-        assertFalse(pi.checkMaximumVersion("7", 10));
+        try {
+            pi = new PluginInfo(new URL("file:///dev/null"), false);
+            
+            assertTrue(pi.checkMaximumVersion("6", 6));
+            assertTrue(pi.checkMaximumVersion("7", 6));
+            assertTrue(pi.checkMaximumVersion("0", 6));
+            assertTrue(pi.checkMaximumVersion("6", 0));
+            assertTrue(pi.checkMaximumVersion("0", 0));
+            assertTrue(pi.checkMaximumVersion("", 17));
+            assertFalse(pi.checkMaximumVersion("abc", 6));
+            assertFalse(pi.checkMaximumVersion("7", 10));
+        } catch (MalformedURLException mue) { }
     }
     
     @Test
     public void testOS() throws PluginException {
-        pi = new PluginInfo("moo", false);
-        
-        assertTrue(pi.checkOS("windows", "windows", "xp", "x86"));
-        assertFalse(pi.checkOS("windows", "linux", "2.6.2.11", "x86"));
-        assertTrue(pi.checkOS("windows:xp|98|3\\.1", "windows", "xp", "x86"));
-        assertFalse(pi.checkOS("windows:xp|98|3\\.1", "windows", "vista", "x86"));
-        assertFalse(pi.checkOS("windows:xp|98|3\\.1", "linux", "2.6.2.11", "x86"));
-        assertTrue(pi.checkOS("windows:xp|98|3\\.1:.86", "windows", "xp", "x86"));
-        assertFalse(pi.checkOS("windows:xp|98|3\\.1:.86", "windows", "xp", "mips"));
-        assertFalse(pi.checkOS("windows:xp|98|3\\.1:.86", "windows", "vista", "x86"));
-        assertFalse(pi.checkOS("windows:xp|98|3\\.1:.86", "linux", "2.6.2.11", "x86"));        
+        try {
+            pi = new PluginInfo(new URL("file:///dev/null"), false);
+            
+            assertTrue(pi.checkOS("windows", "windows", "xp", "x86"));
+            assertFalse(pi.checkOS("windows", "linux", "2.6.2.11", "x86"));
+            assertTrue(pi.checkOS("windows:xp|98|3\\.1", "windows", "xp", "x86"));
+            assertFalse(pi.checkOS("windows:xp|98|3\\.1", "windows", "vista", "x86"));
+            assertFalse(pi.checkOS("windows:xp|98|3\\.1", "linux", "2.6.2.11", "x86"));
+            assertTrue(pi.checkOS("windows:xp|98|3\\.1:.86", "windows", "xp", "x86"));
+            assertFalse(pi.checkOS("windows:xp|98|3\\.1:.86", "windows", "xp", "mips"));
+            assertFalse(pi.checkOS("windows:xp|98|3\\.1:.86", "windows", "vista", "x86"));
+            assertFalse(pi.checkOS("windows:xp|98|3\\.1:.86", "linux", "2.6.2.11", "x86"));        
+        } catch (MalformedURLException mue) { }
     }
     
     @Test @Ignore
-    public void testLoad() throws PluginException {
+/*    public void testLoad() throws PluginException {
         Main.setConfigDir(new File(getClass().getResource("testplugin.jar").getFile()).getParent());
         PluginInfo pi = new PluginInfo("testplugin.jar");
         assertEquals("Author <em@il>", pi.getAuthor());
@@ -108,7 +117,7 @@ public class PluginInfoTest {
         
         assertTrue(new File(pluginDir, "test.jar").exists());
         assertFalse(new File(pluginDir, "test.jar.update").exists());
-    }
+    } */
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(PluginInfoTest.class);
