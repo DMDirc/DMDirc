@@ -173,6 +173,7 @@ public class URLHandler {
         String query = "";
         String username = "";
         String password = "";
+        String port = "";
         String newCommand = command;
 
         if (url.getFragment() != null) {
@@ -194,6 +195,10 @@ public class URLHandler {
         if (url.getQuery() != null) {
             query = url.getQuery();
         }
+        
+        if (url.getPort() > 0) {
+            port = String.valueOf(url.getPort());
+        }
 
         if (userInfo != null && !userInfo.isEmpty()) {
             if (userInfo.indexOf(':') == -1) {
@@ -209,8 +214,7 @@ public class URLHandler {
         newCommand = newCommand.replaceAll("\\$fragment", fragment);
         newCommand = newCommand.replaceAll("\\$host", host);
         newCommand = newCommand.replaceAll("\\$path", path);
-        newCommand = newCommand.replaceAll("\\$port",
-                String.valueOf(url.getPort()));
+        newCommand = newCommand.replaceAll("\\$port", port);
         newCommand = newCommand.replaceAll("\\$query", query);
         newCommand = newCommand.replaceAll("\\$protocol", protocol);
         newCommand = newCommand.replaceAll("\\$username", username);
