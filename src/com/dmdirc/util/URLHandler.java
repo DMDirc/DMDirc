@@ -265,7 +265,11 @@ public class URLHandler {
                 inquote = true;
                 builder.append(word.substring(1));
             } else if (word.startsWith("\"") && word.endsWith("\"")) {
-                args.add(word.substring(1, word.length() - 1));
+                if (word.length() == 1) {
+                    inquote = true;
+                } else {
+                    args.add(word.substring(1, word.length() - 1));
+                }
             } else {
                 args.add(word);
             }

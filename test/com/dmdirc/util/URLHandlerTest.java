@@ -22,18 +22,24 @@
 
 package com.dmdirc.util;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class URLHandlerTest extends junit.framework.TestCase {
+public class URLHandlerTest {
     
     @Test
     public void testParseArguments() {
         final String[][][] tests = new String[][][]{
             {{"abcdef abcdef abcdef"}, {"abcdef", "abcdef", "abcdef"}},
             {{"abcdef \"abcdef abcdef\""}, {"abcdef", "abcdef abcdef"}},
+            {{"abcdef \"abcdef foo abcdef\""}, {"abcdef", "abcdef foo abcdef"}},
             {{"abcdef \"abcdef\" \"abcdef\""}, {"abcdef", "abcdef", "abcdef"}},
+            {{"abcdef \"\""}, {"abcdef", ""}},
+            {{"abcdef \" foo?\""}, {"abcdef", " foo?"}},
         };
         
         for (String[][] test : tests) {
@@ -42,6 +48,32 @@ public class URLHandlerTest extends junit.framework.TestCase {
                     + Arrays.toString(res),
                     Arrays.equals(test[1], res));
         }
+    }
+
+    @Test
+    public void testSubstituteParams() throws MalformedURLException, URISyntaxException {
+        final Object[][] tests = new Object[][]{
+            {new URI("protocol://host/path"), "$protocol $host $path", "protocol host /path"},
+            {new URI("protocol://host"), "$protocol $host $path", "protocol host "},
+            {new URI("protocol://host:33"), "$port", "33"},
+            {new URI("http://host/foo"), "$port", ""},
+            {new URI("http://blarg!@host/foo"), "$$$username$$$", "$$blarg!$$$"},
+            {new URI("http://blarg!:flub@host/foo"), "password$password", "passwordflub"},
+            {new URI("protocol://@host:33"), "$username", ""},
+            {new URI("protocol://@host:33/?foo+bar#frag"), "$query $fragment", "foo+bar frag"},
+            {new URI("host.com"), "$path $protocol$host", "host.com "},
+        };
+        
+        for (Object[] test : tests) {
+            final String result = URLHandler.getURLHander().substituteParams((URI) test[0],
+                    (String) test[1]);
+            assertEquals(test[0].toString() + " + " + test[1].toString() + " ==> " + result,
+                    (String) test[2], result);
+        }
+    }
+    
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(URLHandlerTest.class);
     }
     
 }
