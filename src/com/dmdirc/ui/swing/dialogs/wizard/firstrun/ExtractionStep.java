@@ -43,6 +43,9 @@ public abstract class ExtractionStep extends Step {
         plugins = new JCheckBox("Install core plugins?");
         actions = new JCheckBox("Install core actions?");
         
+        plugins.setSelected(true);
+        actions.setSelected(true);
+        
         initComponents();
     }
     

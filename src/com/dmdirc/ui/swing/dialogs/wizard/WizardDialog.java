@@ -71,7 +71,7 @@ public final class WizardDialog extends StandardDialog implements ActionListener
 
         setTitle(title);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setLayout(new MigLayout("ins 0, fill, pack, wmin 400, wmax 600"));
+        setLayout(new MigLayout("ins 0, fill, pack, wmin 400, wmax 400"));
         orderButtons(new JButton(), new JButton());
         this.wizard = new WizardPanel(title, steps, wizard);
         this.parentWindow = parentWindow;

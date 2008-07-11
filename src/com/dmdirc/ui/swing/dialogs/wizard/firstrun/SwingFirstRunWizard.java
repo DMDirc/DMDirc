@@ -84,16 +84,14 @@ public final class SwingFirstRunWizard implements WizardListener,
             extractActions();
         }
 
-        if (firstRun &&
-                ((CommunicationStep) wizardDialog.getStep(1)).checkUpdates()) {
+        if (firstRun) {
             IdentityManager.getConfigIdentity().setOption("updater", "enable",
-                    true);
+                    ((CommunicationStep) wizardDialog.getStep(1)).checkUpdates());
         }
 
-        if (firstRun &&
-                ((CommunicationStep) wizardDialog.getStep(1)).checkErrors()) {
-            IdentityManager.getConfigIdentity().setOption("general",
-                    "submitErrors", true);
+        if (firstRun) {
+            IdentityManager.getConfigIdentity().setOption("general", "submitErrors",
+                    ((CommunicationStep) wizardDialog.getStep(1)).checkErrors());
         }
 
         if (firstRun &&
