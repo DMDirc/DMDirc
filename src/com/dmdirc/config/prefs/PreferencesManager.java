@@ -538,4 +538,11 @@ public class PreferencesManager {
         }
     }
 
+    /**
+     * Fires the CLIENT_PREFS_CLOSED action
+     */
+    public void close() {
+        ActionManager.processEvent(CoreActionType.CLIENT_PREFS_CLOSED, null);
+    }
+
 }

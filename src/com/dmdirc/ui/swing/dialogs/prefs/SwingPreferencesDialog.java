@@ -324,8 +324,10 @@ public final class SwingPreferencesDialog extends StandardDialog implements
                         replaceAll(", ", "->"));
             }
             saveOptions();
+            manager.close();
             dispose();
         } else if (getCancelButton().equals(actionEvent.getSource())) {
+            manager.close();
             dispose();
         }
     }
