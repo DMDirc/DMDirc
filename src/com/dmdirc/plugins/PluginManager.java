@@ -61,7 +61,7 @@ public class PluginManager implements ActionListener {
 	private PluginManager() {
 		final String fs = System.getProperty("file.separator");
 		myDir = Main.getConfigDir() + "plugins" + fs;
-		ActionManager.addListener(this, CoreActionType.CLIENT_PREFS_OPENED);
+		ActionManager.addListener(this, CoreActionType.CLIENT_PREFS_OPENED, CoreActionType.CLIENT_PREFS_CLOSED);
 	}
 
 	/**
@@ -74,6 +74,11 @@ public class PluginManager implements ActionListener {
 			if (!plugin.isEmpty() && plugin.charAt(0) != '#' && addPlugin(plugin)) {
 				getPluginInfo(plugin).loadPlugin();
 			}
+		}
+		
+		// And now addPlugin() the rest
+		for (PluginInfo plugin : possible) {
+			addPlugin(plugin.getFilename());
 		}
 		possible = null;
 	}
@@ -321,7 +326,7 @@ public class PluginManager implements ActionListener {
 	public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
 		if (type.equals(CoreActionType.CLIENT_PREFS_OPENED)) {
 			for (PluginInfo pi : getPluginInfos()) {
-				if (!pi.isLoaded()) {
+				if (!pi.isLoaded() && !pi.isTempLoaded()) {
 					pi.loadPluginTemp();
 				}
 				if (pi.isLoaded() || pi.isTempLoaded()) {

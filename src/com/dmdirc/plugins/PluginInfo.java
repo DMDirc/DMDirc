@@ -85,11 +85,8 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 */
 	public PluginInfo(final URL url, final boolean load) throws PluginException {
 		this.url = url;
-		try {
-			this.filename = (new File(url.toURI())).getName();
-		} catch (URISyntaxException use) {
-			throw new PluginException("Plugin failed to load: "+use.getMessage());
-		}
+		this.filename = (new File(url.getPath())).getName();
+		
 		ResourceManager res;
 
 		// Check for updates.
@@ -455,8 +452,6 @@ public class PluginInfo implements Comparable<PluginInfo> {
 						return false;
 					}
 				}
-				// Make sure the required plugin is loaded if its not already,
-				pi.loadPlugin();
 			}
 		}
 		return true;
@@ -530,7 +525,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	}
 
 	/**
-	 * Load the plugin files temporarily.
+	 * Try to Load the plugin files temporarily.
 	 */
 	public void loadPluginTemp() {
 		tempLoaded = true;
@@ -538,12 +533,39 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	}
 
 	/**
-	 * Load a plugin permanently, if it was previously loaded as temp
+	 * Load a plugin permanently, if it was previously loaded as temp,
+	 * or just load it initially.
 	 */
 	public void loadPluginPerm() {
 		if (isTempLoaded()) {
 			tempLoaded = false;
+			loadRequired();
 			plugin.onLoad();
+		} else {
+			loadPlugin();
+		}
+	}
+
+	/**
+	 * Load any required plugins
+	 */
+	public void loadRequired() {
+		final String required = getMetaInfo(new String[]{"required-plugins", "require-plugins", "required-plugin", "require-plugin"});
+		for (String plugin : required.split(",")) {
+			final String[] data = plugin.split(":");
+			if (!data[0].trim().isEmpty()) {
+				final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(data[0], true);
+			
+				if (pi == null) {
+					return;
+				}
+				if (tempLoaded) {
+					pi.loadPluginTemp();
+				} else {
+					// Using LoadPluginPerm incase plugin is onyl temp loaded
+					pi.loadPluginPerm();
+				}
+			}
 		}
 	}
 
@@ -554,6 +576,9 @@ public class PluginInfo implements Comparable<PluginInfo> {
 		if (isLoaded() || isTempLoaded() || metaData == null) {
 			return;
 		}
+		
+		loadRequired();
+		
 		loadClass(getMainClass());
 		if (isLoaded()) {
 			ActionManager.processEvent(CoreActionType.PLUGIN_LOADED, null, this);
