@@ -12,7 +12,7 @@
 					checkstyle-parser,
 					checkstyle-plugins,
 					checkstyle-ui,
-					remove-xml-files, move-index" /> 
+					move-index" /> 
 	<target name="allreports" depends=" 
 					findbugs, 
 					cpd, 
@@ -130,12 +130,6 @@
 		<xslt in="reports/report-all.xml" out="reports/report-all.html" style="checkstyle/checkstyle.xsl"/>
 	</target>
 	
-	<target name="remove-xml-files">
-		<delete>
-			<fileset dir="reports/" includes="*.xml"/>
-		</delete>
-		
-	</target>
 	<target name="move-index">
 		<!-- <copy file="checkstyle/index.html" tofile="reports/index.html"/> -->
 		<copy file="checkstyle/sorttable.js" tofile="reports/sorttable.js"/>
