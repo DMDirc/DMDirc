@@ -54,7 +54,13 @@ while [ 1 -eq 1 ]; do
 	if [ ${?} -ne 0 ]; then
 		break;
 	else
-		jar -uvf ${srcdir}/src/${foldername}/${2}.jar `ls -1 ${foo}${bit}/*.class ${foo}${bit}/*.png 2>/dev/null` >/dev/null
+		DIR=${PWD}
+		for prepackage in `ls ${srcdir}/src/${foldername}${bit}/prePackage.sh 2>/dev/null`; do
+			cd `dirname ${prepackage}`
+			/bin/sh ${prepackage}
+			cd ${DIR}
+		done;
+		jar -uvf ${srcdir}/src/${foldername}/${2}.jar `ls -1 ${foo}${bit}/*.class ${foo}${bit}/*.png ${foo}${bit}/*.exe ${foo}${bit}/*.dll 2>/dev/null` >/dev/null
 	fi
 done
 
