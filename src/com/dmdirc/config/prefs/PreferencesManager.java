@@ -540,6 +540,8 @@ public class PreferencesManager {
 
     /**
      * Fires the CLIENT_PREFS_CLOSED action
+     *
+     * @since 0.6
      */
     public void close() {
         ActionManager.processEvent(CoreActionType.CLIENT_PREFS_CLOSED, null);

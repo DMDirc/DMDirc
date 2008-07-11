@@ -55,6 +55,7 @@ public class StreamReader extends Thread {
 	 *
 	 * @param stream The stream to read
 	 * @param data The stringbuffer to store the output in
+	 * @since 0.6
 	 */
 	public StreamReader(final InputStream stream, final StringBuffer data) {
 		this.stream = stream;
