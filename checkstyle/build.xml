@@ -168,10 +168,10 @@
 		
 		<taskdef name="findbugs" classpath="findbugs-ant.jar"
 						 classname="edu.umd.cs.findbugs.anttask.FindBugsTask" />
-		<findbugs home="/usr/share/java/findbugs/" effort="default"
+		<findbugs home="/usr/share/java/findbugs/" effort="max"
 							jvmargs="-Xmx512M"
 							output="xml:withMessages"
-							outputFile="reports/report-fb.xml" >
+							 outputFile="reports/report-fb.xml" reportLevel="low">
 			<sourcePath path="src/" />
 			<class location="dist/DMDirc.jar" />
 		</findbugs>
