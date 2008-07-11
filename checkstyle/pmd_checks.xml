@@ -15,6 +15,7 @@
                 <exclude name="OnlyOneReturn"/>
                 <exclude name="NullAssignment"/>
                 <exclude name="UnnecessaryConstructor"/>
+		<exclude name="AvoidFinalLocalVariable"/>
 	</rule>
 	<rule ref="rulesets/coupling.xml"/>
 	<rule ref="rulesets/design.xml"/>
