@@ -28,7 +28,6 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.messages.IRCTextAttribute;
 import com.dmdirc.ui.messages.Styliser;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -258,6 +257,8 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         if (attString.getIterator().getEndIndex() == 0) {
             return new AttributedString("\n");
         }
+        
+        attString.addAttribute(TextAttribute.SIZE, UIManager.getFont("TextPane.font").getSize());
 
         return attString;
     }

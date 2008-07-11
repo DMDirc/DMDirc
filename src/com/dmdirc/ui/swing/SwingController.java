@@ -397,6 +397,7 @@ public final class SwingController implements UIController {
         if (me == null) {
             return null;
         }
+        
         return me.getActiveFrame();
     }
 
@@ -406,11 +407,13 @@ public final class SwingController implements UIController {
         if (me == null) {
             return null;
         }
+
         if (getActiveWindow() == null) {
             return null;
         } else {
             return getActiveWindow().getContainer().getServer();
         }
+
     }
 
     /** {@inheritDoc} */

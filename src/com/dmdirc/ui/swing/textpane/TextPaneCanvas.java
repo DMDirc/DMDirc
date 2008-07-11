@@ -402,6 +402,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * 
      * @param e Mouse event
      */
+    @Override
     public void mouseClicked(final MouseEvent e) {
         String clickedText = "";
         final int start;
@@ -568,6 +569,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * 
      * @param e Mouse event
      */
+    @Override
     public void mousePressed(final MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
             highlightEvent(MouseEventType.CLICK, e);
@@ -581,6 +583,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * 
      * @param e Mouse event
      */
+    @Override
     public void mouseReleased(final MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
             highlightEvent(MouseEventType.RELEASE, e);
@@ -594,6 +597,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * 
      * @param e Mouse event
      */
+    @Override
     public void mouseDragged(final MouseEvent e) {
         if (e.getModifiersEx() == MouseEvent.BUTTON1_DOWN_MASK) {
             highlightEvent(MouseEventType.DRAG, e);
@@ -608,6 +612,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * 
      * @param e Mouse event
      */
+    @Override
     public void mouseEntered(final MouseEvent e) {
     //Ignore
     }
@@ -617,6 +622,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * 
      * @param e Mouse event
      */
+    @Override
     public void mouseExited(final MouseEvent e) {
     //Ignore
     }
@@ -626,6 +632,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * 
      * @param e Mouse event
      */
+    @Override
     public void mouseMoved(final MouseEvent e) {
         checkForLink();
     }
@@ -843,6 +850,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * 
      * @param e Component event
      */
+    @Override
     public void componentResized(final ComponentEvent e) {
         //line wrap cache now invalid, clear and repaint
         lineWrap.clear();
@@ -856,6 +864,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * 
      * @param e Component event
      */
+    @Override
     public void componentMoved(final ComponentEvent e) {
     //Ignore
     }
@@ -865,6 +874,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * 
      * @param e Component event
      */
+    @Override
     public void componentShown(final ComponentEvent e) {
     //Ignore
     }
@@ -874,6 +884,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * 
      * @param e Component event
      */
+    @Override
     public void componentHidden(final ComponentEvent e) {
     //Ignore
     }
