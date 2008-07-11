@@ -1,0 +1,155 @@
+/*
+ * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package com.dmdirc.addons.mediasource_windows;
+
+import com.dmdirc.addons.nowplaying.MediaSource;
+
+/**
+ * Uses WindowsMediaSourcePlugin to retrieve now playing info.
+ *
+ * @author Shane
+ */
+public class DllSource implements MediaSource {
+	/** Player name */
+	private final String playerName;
+	
+	/** Use getArtistTitle */
+	private final boolean useArtistTitle;
+		
+	
+	/**
+	 * Instantiates the media source.
+	 *
+	 * @param playerName Name of Player and DLL
+	 */
+	public DllSource(final String playerName) {
+		this(playerName, false);
+	}
+	
+	/**
+	 * Instantiates the media source.
+	 *
+	 * @param playerName Name of Player and DLL
+	 * @param useArtistTitle True if getArtistTitle should be parsed rather than
+	 *                       using getArtist() and getTitle()
+	 */
+	public DllSource(final String playerName, final boolean useArtistTitle) {
+		this.playerName = playerName;
+		this.useArtistTitle = useArtistTitle;
+	}
+	
+	/** {@inheritDoc} */
+	public String getAppName() {
+		return playerName;
+	}
+	
+	/**
+	 * Get the "goodoutput" from GetMediaInfo for the given command
+	 *
+	 * @param command Command to run
+	 * @return "Good" Output
+	 */
+	private String getOutput(final String command) {
+		return WindowsMediaSourcePlugin.getOutput(playerName, command).getGoodOutput();
+	}
+	
+	/** {@inheritDoc} */
+	public boolean isRunning() {
+		return WindowsMediaSourcePlugin.getOutput(playerName, "getPlayState").getExitCode() == 0;
+	}
+	
+	/** {@inheritDoc} */
+	public boolean isPlaying() {
+		return getOutput("getPlayState").equalsIgnoreCase("playing");
+	}
+	
+	/** {@inheritDoc} */
+	public String getArtist() {
+		if (useArtistTitle) {
+			return getOutput("getArtistTitle").split("\\s-\\s", 2)[0];
+		} else {
+			return getOutput("getArtist");
+		}
+	}
+	
+	/** {@inheritDoc} */
+	public String getTitle() {
+		if (useArtistTitle) {
+			String bits[] = getOutput("getArtistTitle").split("\\s-\\s", 2);
+			return (bits.length > 1) ? bits[1] : "";
+		} else {
+			return getOutput("getTitle");
+		}
+	}
+	
+	/** {@inheritDoc} */
+	public String getAlbum() {
+		return getOutput("getAlbum");
+	}
+	
+	/**
+	 * Get the duration in seconds as a string.
+	 *
+	 * @param secondsInput to get duration for
+	 * @return Duration as a string
+	 */
+	private String duration(final long secondsInput) {
+		final StringBuilder result = new StringBuilder();
+		final long hours = (secondsInput / 3600);
+		final long minutes = (secondsInput / 60 % 60);
+		final long seconds = (secondsInput % 60);
+		
+		if (hours > 0) { result.append(hours+":"); }
+		result.append(String.format("%0,2d:%0,2d",minutes,seconds));
+		
+		return result.toString();
+	}
+	
+	/** {@inheritDoc} */
+	public String getLength() {
+		try {
+			final int seconds = Integer.parseInt(getOutput("getLength"));
+			return duration(seconds);
+		} catch (NumberFormatException nfe) { }
+		return "Unknown";
+	}
+	
+	/** {@inheritDoc} */
+	public String getTime() {
+		try {
+			final int seconds = Integer.parseInt(getOutput("getTime"));
+			return duration(seconds);
+		} catch (NumberFormatException nfe) { }
+		return "Unknown";
+	}
+	
+	/** {@inheritDoc} */
+	public String getFormat() {
+		return getOutput("getFormat");
+	}
+	
+	/** {@inheritDoc} */
+	public String getBitrate() {
+		return getOutput("getBitrate");
+	}
+}

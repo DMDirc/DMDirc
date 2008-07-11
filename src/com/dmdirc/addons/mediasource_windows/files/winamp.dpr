@@ -25,6 +25,18 @@ library winamp;
 uses
   windows, messages, SysUtils, Classes;
   
+function VirtualFreeEx(hProcess:HANDLE; lpAddress:LPVOID; dwSize:DWORD ; dwFreeType : DWORD):WINBOOL; external 'kernel32' name 'VirtualFreeEx';
+function VirtualAllocEx(hProcess:HANDLE; lpAddress:LPVOID; dwSize:SIZE_T ; flAllocationType : DWORD;  flProtect : DWORD):POINTER; external 'kernel32' name 'VirtualAllocEx';
+
+type
+	extendedFileInfoStruct = packed record
+		filename: pchar;
+		metadata: pchar;
+		ret: pchar;
+		retlen: integer;
+	end;
+
+
 const
 	WM_WINAMP = WM_USER;
 
@@ -72,49 +84,107 @@ begin
 	end;
 end;
 
+function getMetaData(metadata: PChar): PChar;
+var
+	hand: THandle;
+	readhand: THandle;
+	B: array[0..255] of char;
+	C: array[0..255] of char;
+	tempHand: THandle;
+	memPtr: Pointer;
+	memLoc: LongInt;
+	temp: LongWord;
+	extinfo: extendedFileInfoStruct;
+begin
+	B := '';
+	C := '';
+	Result := '';
+	hand := FindWindow('Winamp v1.x', nil);
+	if hand <> 0 then begin
+		memLoc := SendMessage(hand, WM_WINAMP, 0, 125); // Get number of current track
+		memLoc := SendMessage(hand, WM_WINAMP, memLoc, 211); // And now its filename
+		GetWindowThreadProcessId(hand, @tempHand);
+		
+		readhand := OpenProcess(PROCESS_ALL_ACCESS, False, tempHand);
+		ReadProcessMemory(readhand, Pointer(memLoc), @C, sizeof(C)-1, temp);
+		
+		extinfo.filename := C;
+		extinfo.metadata := metadata;
+		extinfo.ret := B;
+		extinfo.retlen := sizeof(B)-1;
+
+		// This doesn't actually work yet :/
+		// memPtr is nil
+		memPtr := VirtualAllocEx(tempHand, nil, 2048, MEM_COMMIT or MEM_RESERVE, PAGE_READWRITE);
+		if memPtr <> nil then begin
+			WriteProcessMemory(readhand, memPtr, (@extinfo), sizeof(extendedFileInfoStruct), temp);
+			SendMessage(readhand, WM_WINAMP, LongInt(memPtr), 290);
+		end;
+		
+		StrCopy(Result, B);
+		
+		if memPtr <> nil then begin
+			VirtualFreeEx(readhand, memPtr, 0, MEM_RELEASE);
+		end;
+		CloseHandle(readhand);
+	end;
+end;
+
 function getArtist(data: PChar):integer; stdcall;
 var
-	B: array[0..255] of char;
+	B: PChar;
 begin
-	Result := 0;
-	B := 'Fixme-Artist';
+	B := getMetaData('artist');
 	StrCopy(data,B);
+	if (B <> '') then Result := 0 else Result := 1;
 end;
 
 function getTitle(data: PChar):integer; stdcall;
 var
-	B: array[0..255] of char;
+	B: PChar;
 begin
-	Result := 0;
-	B := 'Fixme-Title';
+	B := getMetaData('title');
 	StrCopy(data,B);
+	if (B <> '') then Result := 0 else Result := 1;
 end;
 
 function getAlbum(data: PChar):integer; stdcall;
 var
-	B: array[0..255] of char;
+	B: PChar;
 begin
-	Result := 0;
-	B := 'Fixme-Album';
+	B := getMetaData('album');
 	StrCopy(data,B);
+	if (B <> '') then Result := 0 else Result := 1;
 end;
 
 function getLength(data: PChar):integer; stdcall;
 var
-	B: array[0..255] of char;
+	hand: THandle;
+	res: LongInt;
 begin
-	Result := 0;
-	B := 'Fixme-Length';
-	StrCopy(data,B);
+	result := 1;
+	StrCopy(data, 'Error finding window');
+	hand := FindWindow('Winamp v1.x', nil);
+	if hand <> 0 then begin
+		result := 0;
+		res := SendMessage(hand, WM_WINAMP, 1, 105);
+		StrCopy(data, PChar(inttostr(res)));
+	end;
 end;
 
 function getTime(data: PChar):integer; stdcall;
 var
-	B: array[0..255] of char;
+	hand: THandle;
+	res: LongInt;
 begin
-	Result := 0;
-	B := 'Fixme-Time';
-	StrCopy(data,B);
+	result := 1;
+	StrCopy(data, 'Error finding window');
+	hand := FindWindow('Winamp v1.x', nil);
+	if hand <> 0 then begin
+		result := 0;
+		res := SendMessage(hand, WM_WINAMP, 0, 105);
+		StrCopy(data, PChar(inttostr(res div 1000)));
+	end;
 end;
 
 function getFormat(data: PChar):integer; stdcall;
@@ -130,16 +200,14 @@ function getBitrate(data: PChar):integer; stdcall;
 var
 	hand: THandle;
 	res: LongInt;
-	B: array[0..255] of char;
 begin
 	result := 1;
-	B := 'Error finding window';
+	StrCopy(data, 'Error finding window');
 	hand := FindWindow('Winamp v1.x', nil);
 	if hand <> 0 then begin
 		result := 0;
 		res := SendMessage(hand, WM_WINAMP, 1, 126);
-		B := inttostr(res);
-		StrCopy(data,B);
+		StrCopy(data, PChar(inttostr(res)));
 	end;
 end;
 
