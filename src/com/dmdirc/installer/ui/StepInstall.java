@@ -20,9 +20,10 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.installer;
+package com.dmdirc.installer.ui;
 
-import com.dmdirc.installer.cliparser.CLIParser;
+import com.dmdirc.installer.Main;
+import com.dmdirc.installer.TextStep;
 import com.dmdirc.installer.Installer.ShortcutType;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.dialogs.wizard.StepListener;
@@ -38,7 +39,7 @@ import net.miginfocom.swing.MigLayout;
 /**
  * This confirms the settings chosen in the previous step
  */
-public final class StepInstall extends Step implements StepListener {
+public final class StepInstall extends Step implements StepListener, TextStep {
 	/**
 	 * A version number for this class. It should be changed whenever the class
 	 * structure is changed (or anything else that would prevent serialized
@@ -75,7 +76,7 @@ public final class StepInstall extends Step implements StepListener {
 	}
 
 	/**
-	 * Add text to the infolabel.
+	 * Add text to the infolabel on this step
 	 *
 	 * @param text Text to add to infoLabel
 	 */
@@ -83,72 +84,14 @@ public final class StepInstall extends Step implements StepListener {
 		infoLabel.setText(infoLabel.getText() + text +"\n");
 		infoLabel.setCaretPosition(infoLabel.getText().length());
 	}
-
+	
 	/**
-	 * Perform the installation.
+	 * Sets the text in the infolabel on this step
+	 *
+	 * @param text Text to set the infoLabel to
 	 */
-	public void performInstall(final Installer myInstaller) {
-		infoLabel.setText("Beginning Install..\n");
-		
-		final boolean isUnattended = (CLIParser.getCLIParser().getParamNumber("-unattended") == 0);
-		final StepSettings settings = (isUnattended) ? new StepSettings() : ((StepSettings) Main.getWizardFrame().getStep(1));
-		
-		final String location = settings.getInstallLocation();
-
-		addText("Installing files to: "+location);
-		if (!myInstaller.doSetup(location)) {
-			addText("");
-			addText("Installation failed\n");
-			Main.getWizardFrame().enableNextStep(true);
-			return;
-		}
-
-		if (Main.getInstaller().supportsShortcut(ShortcutType.MENU)) {
-			if (settings.getShortcutMenuState()) {
-				addText("Setting up "+Main.getInstaller().getMenuName()+" shortcut");
-				myInstaller.setupShortcut(location, ShortcutType.MENU);
-			} else {
-				addText("Not setting up "+Main.getInstaller().getMenuName()+" shortcut");
-			}
-		}
-
-		if (Main.getInstaller().supportsShortcut(ShortcutType.DESKTOP)) {
-			if (settings.getShortcutDesktopState()) {
-				addText("Setting up Desktop shortcut");
-				myInstaller.setupShortcut(location, ShortcutType.DESKTOP);
-			} else {
-				addText("Not setting up Desktop shortcut");
-			}
-		}
-
-		if (Main.getInstaller().supportsShortcut(ShortcutType.QUICKLAUNCH)) {
-			if (settings.getShortcutQuickState()) {
-				addText("Setting up Quick Launch shortcut");
-				myInstaller.setupShortcut(location, ShortcutType.QUICKLAUNCH);
-			} else {
-				addText("Not setting up Quick Launch shortcut");
-			}
-		}
-
-		if (Main.getInstaller().supportsShortcut(ShortcutType.UNINSTALLER)) {
-			addText("Creating uninstaller");
-			myInstaller.setupShortcut(location, ShortcutType.UNINSTALLER);
-		}
-
-		if (Main.getInstaller().supportsShortcut(ShortcutType.PROTOCOL)) {
-			if (settings.getShortcutProtocolState()) {
-				addText("Setting up irc:// handler");
-				myInstaller.setupShortcut(location, ShortcutType.PROTOCOL);
-			} else {
-				addText("Not setting up irc:// handler");
-			}
-		}
-
-		myInstaller.postInstall(location);
-
-		addText("");
-		addText("Installation finished\n");
-		Main.getWizardFrame().enableNextStep(true);
+	public synchronized void setText(final String text) {
+		infoLabel.setText(text);
 	}
 
 	/** {@inheritDoc} */

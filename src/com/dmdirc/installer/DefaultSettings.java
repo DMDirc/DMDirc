@@ -22,42 +22,51 @@
 
 package com.dmdirc.installer;
 
-import com.dmdirc.ui.swing.dialogs.wizard.Step;
-import com.dmdirc.ui.swing.components.TextLabel;
+import com.dmdirc.installer.cliparser.CLIParser;
 
-import net.miginfocom.swing.MigLayout;
-
-/**
- * This step shows an unable to install error
- */
-public final class StepError extends Step {
+public class DefaultSettings implements Settings {
 	/**
-	 * A version number for this class. It should be changed whenever the class
-	 * structure is changed (or anything else that would prevent serialized
-	 * objects being unserialized with the new class).
-	 */
-	private static final long serialVersionUID = 2;
-	
-	/**
-	 * Creates a new instance of StepError with a default error message.
-	 */
-	public StepError() {
-		this("Sorry, it is not possible to install DMDirc on this system at this time.\n\n");
-	}
-	
-	/**
-	 * Creates a new instance of StepError with a given error message.
+	 * Returns the state of the shortcutMenu checkbox.
 	 *
-	 * @param message Error message to show.
+	 * @return shortcutMenu checkbox state
 	 */
-	public StepError(final String message) {
-		super();
-		setLayout(new MigLayout());
-		
-		TextLabel infoLabel;
-		infoLabel = new TextLabel(message);
-		infoLabel.setOpaque(false);
-			
-		add(infoLabel, "grow");
+	public boolean getShortcutMenuState() {
+		return (CLIParser.getCLIParser().getParamNumber("-no-shortcut-menu") == 0);
+	}
+
+	/**
+	 * Returns the state of the shortcutDesktop checkbox.
+	 *
+	 * @return shortcutDesktop checkbox state
+	 */
+	public boolean getShortcutDesktopState() {
+		return (CLIParser.getCLIParser().getParamNumber("-no-shortcut-desktop") == 0);
+	}
+
+	/**
+	 * Returns the state of the shortcutDesktop checkbox.
+	 *
+	 * @return shortcutDesktop checkbox state
+	 */
+	public boolean getShortcutQuickState() {
+		return (CLIParser.getCLIParser().getParamNumber("-no-shortcut-quicklaunch") == 0);
+	}
+
+	/**
+	 * Returns the state of the shortcutProtocol checkbox.
+	 *
+	 * @return shortcutDesktop checkbox state
+	 */
+	public boolean getShortcutProtocolState() {
+		return (CLIParser.getCLIParser().getParamNumber("-no-shortcut-protocol") == 0);
+	}
+
+	/**
+	 * Returns the location chosen for installation.
+	 *
+	 * @return location chosen for installation.
+	 */
+	public String getInstallLocation() {
+		return Main.getInstaller().defaultInstallLocation();
 	}
 }

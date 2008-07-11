@@ -39,7 +39,7 @@ public class StreamReader extends Thread {
 	private StringBuffer data = null;
 	
 	/** This is the Step we are outputting to, */
-	private StepInstall step = null;
+	private TextStep step = null;
 	
 	/**
 	 * Create a new Stream Reader
@@ -69,7 +69,7 @@ public class StreamReader extends Thread {
 	 * @param prefix Prefix of outputed messages
 	 * @param step Step to output to (null = console)
 	 */
-	public StreamReader(final InputStream stream, final String prefix, final StepInstall step) {
+	public StreamReader(final InputStream stream, final String prefix, final TextStep step) {
 		this.stream = stream;
 		this.prefix = prefix;
 		this.step = step;

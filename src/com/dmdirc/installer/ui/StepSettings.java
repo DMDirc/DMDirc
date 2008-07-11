@@ -20,8 +20,11 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.installer;
+package com.dmdirc.installer.ui;
 
+import com.dmdirc.installer.Main;
+import com.dmdirc.installer.Settings;
+import com.dmdirc.installer.DefaultSettings;
 import com.dmdirc.installer.cliparser.CLIParser;
 import com.dmdirc.installer.Installer.ShortcutType;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
@@ -36,7 +39,7 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Queries the user for where to install dmdirc, and if they want to setup shortcuts
  */
-public final class StepSettings extends Step {
+public final class StepSettings extends Step implements Settings {
 	/**
 	 * A version number for this class. It should be changed whenever the class
 	 * structure is changed (or anything else that would prevent serialized
@@ -71,10 +74,11 @@ public final class StepSettings extends Step {
 		infoLabel.setOpaque(false);
 //		infoLabel.setBackground(getBackground());
 
-		shortcutMenu.setSelected((CLIParser.getCLIParser().getParamNumber("-no-shortcut-menu") == 0));
-		shortcutDesktop.setSelected((CLIParser.getCLIParser().getParamNumber("-no-shortcut-desktop") == 0));
-		shortcutQuick.setSelected((CLIParser.getCLIParser().getParamNumber("-no-shortcut-quicklaunch") == 0));
-		shortcutProtocol.setSelected((CLIParser.getCLIParser().getParamNumber("-no-shortcut-protocol") == 0));
+		DefaultSettings defaultSettings = new DefaultSettings();
+		shortcutMenu.setSelected(defaultSettings.getShortcutMenuState());
+		shortcutDesktop.setSelected(defaultSettings.getShortcutDesktopState());
+		shortcutQuick.setSelected(defaultSettings.getShortcutQuickState());
+		shortcutProtocol.setSelected(defaultSettings.getShortcutProtocolState());
 
 		add(infoLabel);
 		add(new JLabel("Install Location: "));

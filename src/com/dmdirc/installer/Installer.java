@@ -22,6 +22,8 @@
 
 package com.dmdirc.installer;
 
+import com.dmdirc.installer.cliparser.CLIParser;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -50,8 +52,8 @@ public abstract class Installer extends Thread {
 		PROTOCOL;
 	}
 	
-	/** Step where things happen. */
-	protected StepInstall step;
+	/** Step where the installation output should be. */
+	protected TextStep step;
 	
 	/**
 	 * Create a new Installer.
@@ -73,16 +75,76 @@ public abstract class Installer extends Thread {
 	 *
 	 * @param step The step that called this
 	 */
-	public final void setInstallStep(final StepInstall step) {
+	public final void setInstallStep(final TextStep step) {
 		this.step = step;
 	}
 		
 	/**
-	 * This step performs the installation, via the StepInstall step.
+	 * This performs the installation
 	 */
 	@Override
 	public final void run() {
-		step.performInstall(this);
+		step.setText("Beginning Install..\n");
+		
+		final boolean isUnattended = (CLIParser.getCLIParser().getParamNumber("-unattended") == 0);
+		final Settings settings = (isUnattended) ? new DefaultSettings() : ((Settings) Main.getWizardFrame().getStep(1));
+		
+		final String location = settings.getInstallLocation();
+
+		step.addText("Installing files to: "+location);
+		if (!doSetup(location)) {
+			step.addText("");
+			step.addText("Installation failed\n");
+			Main.getWizardFrame().enableNextStep(true);
+			return;
+		}
+
+		if (Main.getInstaller().supportsShortcut(ShortcutType.MENU)) {
+			if (settings.getShortcutMenuState()) {
+				step.addText("Setting up "+Main.getInstaller().getMenuName()+" shortcut");
+				setupShortcut(location, ShortcutType.MENU);
+			} else {
+				step.addText("Not setting up "+Main.getInstaller().getMenuName()+" shortcut");
+			}
+		}
+
+		if (Main.getInstaller().supportsShortcut(ShortcutType.DESKTOP)) {
+			if (settings.getShortcutDesktopState()) {
+				step.addText("Setting up Desktop shortcut");
+				setupShortcut(location, ShortcutType.DESKTOP);
+			} else {
+				step.addText("Not setting up Desktop shortcut");
+			}
+		}
+
+		if (Main.getInstaller().supportsShortcut(ShortcutType.QUICKLAUNCH)) {
+			if (settings.getShortcutQuickState()) {
+				step.addText("Setting up Quick Launch shortcut");
+				setupShortcut(location, ShortcutType.QUICKLAUNCH);
+			} else {
+				step.addText("Not setting up Quick Launch shortcut");
+			}
+		}
+
+		if (Main.getInstaller().supportsShortcut(ShortcutType.UNINSTALLER)) {
+			step.addText("Creating uninstaller");
+			setupShortcut(location, ShortcutType.UNINSTALLER);
+		}
+
+		if (Main.getInstaller().supportsShortcut(ShortcutType.PROTOCOL)) {
+			if (settings.getShortcutProtocolState()) {
+				step.addText("Setting up irc:// handler");
+				setupShortcut(location, ShortcutType.PROTOCOL);
+			} else {
+				step.addText("Not setting up irc:// handler");
+			}
+		}
+
+		postInstall(location);
+
+		step.addText("");
+		step.addText("Installation finished\n");
+		Main.getWizardFrame().enableNextStep(true);
 	}
 	
 	/**

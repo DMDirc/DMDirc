@@ -20,10 +20,12 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.installer;
+package com.dmdirc.installer.ui;
 
+import com.dmdirc.installer.Main;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.components.TextLabel;
+
 
 import net.miginfocom.swing.MigLayout;
 
