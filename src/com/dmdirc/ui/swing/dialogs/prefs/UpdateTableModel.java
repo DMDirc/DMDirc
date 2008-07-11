@@ -47,7 +47,7 @@ public class UpdateTableModel extends AbstractTableModel {
     private final List<UpdateComponent> updates;
     /** Enabled list. */
     private Map<UpdateComponent, Boolean> enabled;
-    
+
     /**
      * Instantiates a new table model.
      */
@@ -61,10 +61,10 @@ public class UpdateTableModel extends AbstractTableModel {
      * @param updates Update components to show
      */
     public UpdateTableModel(final List<UpdateComponent> updates) {
-        this.updates = updates;
+        this.updates = new ArrayList<UpdateComponent>(updates);
         this.enabled = new HashMap<UpdateComponent, Boolean>();
 
-        for (UpdateComponent update : updates) {
+        for (UpdateComponent update : this.updates) {
             enabled.put(update, UpdateChecker.isEnabled(update));
         }
     }
@@ -72,7 +72,9 @@ public class UpdateTableModel extends AbstractTableModel {
     /** {@inheritDoc} */
     @Override
     public int getRowCount() {
-        return updates.size();
+        synchronized (updates) {
+            return updates.size();
+        }
     }
 
     /** {@inheritDoc} */
@@ -112,7 +114,7 @@ public class UpdateTableModel extends AbstractTableModel {
                         columnIndex);
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean isCellEditable(final int rowIndex, final int columnIndex) {
@@ -122,46 +124,50 @@ public class UpdateTableModel extends AbstractTableModel {
     /** {@inheritDoc} */
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        if (updates.size() <= rowIndex) {
-            throw new IndexOutOfBoundsException(rowIndex + " >= " +
-                    updates.size());
-        }
-        if (rowIndex < 0) {
-            throw new IllegalArgumentException("Must specify a positive integer");
-        }
-        switch (columnIndex) {
-            case 0:
-                return updates.get(rowIndex).getFriendlyName();
-            case 1:
-                return enabled.get(updates.get(rowIndex));
-            case 2:
-                return updates.get(rowIndex).getVersion();
-            default:
-                throw new IllegalArgumentException("Unknown column: " +
-                        columnIndex);
+        synchronized (updates) {
+            if (updates.size() <= rowIndex) {
+                throw new IndexOutOfBoundsException(rowIndex + " >= " +
+                        updates.size());
+            }
+            if (rowIndex < 0) {
+                throw new IllegalArgumentException("Must specify a positive integer");
+            }
+            switch (columnIndex) {
+                case 0:
+                    return updates.get(rowIndex).getFriendlyName();
+                case 1:
+                    return enabled.get(updates.get(rowIndex));
+                case 2:
+                    return updates.get(rowIndex).getVersion();
+                default:
+                    throw new IllegalArgumentException("Unknown column: " +
+                            columnIndex);
+            }
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void setValueAt(final Object aValue, final int rowIndex,
             final int columnIndex) {
-        if (updates.size() <= rowIndex) {
-            throw new IndexOutOfBoundsException(rowIndex + " >= " +
-                    updates.size());
+        synchronized (updates) {
+            if (updates.size() <= rowIndex) {
+                throw new IndexOutOfBoundsException(rowIndex + " >= " +
+                        updates.size());
+            }
+            if (rowIndex < 0) {
+                throw new IllegalArgumentException("Must specify a positive integer");
+            }
+            switch (columnIndex) {
+                case 1:
+                    enabled.put(updates.get(rowIndex), (Boolean) aValue);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown column: " +
+                            columnIndex);
+            }
+            fireTableCellUpdated(rowIndex, columnIndex);
         }
-        if (rowIndex < 0) {
-            throw new IllegalArgumentException("Must specify a positive integer");
-        }
-        switch (columnIndex) {
-            case 1:
-                enabled.put(updates.get(rowIndex), (Boolean) aValue);
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown column: " +
-                        columnIndex);
-        }
-        fireTableCellUpdated(rowIndex, columnIndex);
     }
 
     /**
@@ -170,8 +176,10 @@ public class UpdateTableModel extends AbstractTableModel {
      * @param component update component to add
      */
     public void add(final UpdateComponent component) {
-        updates.add(component);
-        fireTableRowsInserted(updates.size() - 1, updates.size() - 1);
+        synchronized (updates) {
+            updates.add(component);
+            fireTableRowsInserted(updates.size() - 1, updates.size() - 1);
+        }
     }
 
     /**
@@ -180,7 +188,9 @@ public class UpdateTableModel extends AbstractTableModel {
      * @param component update component to remove
      */
     public void remove(final UpdateComponent component) {
-        remove(updates.indexOf(component));
+        synchronized (updates) {
+            remove(updates.indexOf(component));
+        }
     }
 
     /**
@@ -189,9 +199,11 @@ public class UpdateTableModel extends AbstractTableModel {
      * @param index Index of the update component to remove
      */
     public void remove(final int index) {
-        if (index != -1) {
-            updates.remove(index);
-            fireTableRowsDeleted(index, index);
+        synchronized (updates) {
+            if (index != -1) {
+                updates.remove(index);
+                fireTableRowsDeleted(index, index);
+            }
         }
     }
 }
