@@ -151,6 +151,21 @@ public final class ZipResourceManager extends ResourceManager {
     
     /** {@inheritDoc} */
     @Override
+    public Map<String, byte[]> getResourcesEndingWithAsBytes(
+            final String resourcesSuffix) {
+        final Map<String, byte[]> resources = new HashMap<String, byte[]>();
+        
+        for (String entry : entries) {
+            if (entry.endsWith(resourcesSuffix)) {
+                resources.put(entry, getResourceBytes(entry));
+            }
+        }
+        
+        return resources;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
     public Map<String, byte[]> getResourcesStartingWithAsBytes(
             final String resourcesPrefix) {
         final Map<String, byte[]> resources = new HashMap<String, byte[]>();

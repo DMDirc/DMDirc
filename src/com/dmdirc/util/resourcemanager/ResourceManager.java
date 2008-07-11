@@ -233,6 +233,17 @@ public abstract class ResourceManager {
     public abstract InputStream getResourceInputStream(final String resource);
     
     /**
+     * Gets a Map of byte[]s of the resources ending with the specified
+     * suffix.
+     *
+     * @param resourcesSuffix Suffix of the resources to return
+     * @since 0.6
+     * @return Map of byte[]s of resources found
+     */
+    public abstract Map<String, byte[]> getResourcesEndingWithAsBytes(
+            final String resourcesSuffix);
+    
+    /**
      * Gets a Map of byte[]s of the resources starting with the specified
      * prefix.
      *

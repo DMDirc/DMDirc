@@ -35,6 +35,9 @@ public class StreamReader extends Thread {
 	/** This is the output Prefix */
 	private String prefix = null;
 	
+	/** This is the StringBuffer to store data in if wanted */
+	private StringBuffer data = null;
+	
 	/** This is the Step we are outputting to, */
 	private StepInstall step = null;
 	
@@ -45,6 +48,17 @@ public class StreamReader extends Thread {
 	 */
 	public StreamReader(final InputStream stream) {
 		this.stream = stream;
+	}
+	
+	/**
+	 * Create a new Stream Reader that saves what it reads
+	 *
+	 * @param stream The stream to read
+	 * @param data The stringbuffer to store the output in
+	 */
+	public StreamReader(final InputStream stream, final StringBuffer data) {
+		this.stream = stream;
+		this.data = data;
 	}
 	
 	/**
@@ -73,6 +87,10 @@ public class StreamReader extends Thread {
 		try {
 			String line;
 			while ((line = reader.readLine()) != null) {
+				if (data != null) {
+					if (data.length() > 0) { data.append("\n"); }
+					data.append(line);
+				}
 				if (prefix != null) {
 					if (step == null) {
 						System.out.printf("[%s] %s%n", prefix, line);

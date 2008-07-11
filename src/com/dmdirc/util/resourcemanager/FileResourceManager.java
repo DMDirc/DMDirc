@@ -144,6 +144,24 @@ public final class FileResourceManager extends ResourceManager {
     
     /** {@inheritDoc} */
     @Override
+    public Map<String, byte[]> getResourcesEndingWithAsBytes(
+            final String resourcesSuffix) {
+        final List<File> files = getFileListing(new File(basePath));
+        final Map<String, byte[]> resources = new HashMap<String, byte[]>();
+        
+        for (File file : files) {
+            final String path = file.getPath().substring(basePath.length(),
+                    file.getPath().length());
+            if (path.endsWith(resourcesSuffix)) {
+                resources.put(path, getResourceBytes(path));
+            }
+        }
+        
+        return resources;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
     public Map<String, byte[]> getResourcesStartingWithAsBytes(
             final String resourcesPrefix) {
         final List<File> files = getFileListing(new File(basePath));
