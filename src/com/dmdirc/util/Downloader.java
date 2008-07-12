@@ -171,7 +171,7 @@ public final class Downloader {
                 output.write(buffer, 0, count);
                 
                 if (listener != null) {
-                    listener.downloadProgress(100 * current / length);
+                    listener.downloadProgress(100 * (float) current / length);
                 }
             }
         } while (count > 0);
