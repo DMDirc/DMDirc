@@ -475,6 +475,16 @@ is divided into following sections:
         </javadoc>
     </target>
 
+    <target name="move-javadoc-check">
+        <condition property="move.javadoc">
+            <isset property="javadoc.moveto"/>
+        </condition>
+    </target>
+    <target name="move-javadoc" depends="move-javadoc-check" if="move.javadoc">
+        <delete dir="${javadoc.moveto}"/>
+        <move file="${dist.javadoc.dir}" tofile="${javadoc.moveto}"/>
+    </target>
+
     <target depends="init,-doccheck-check" name="-doccheck-build" if="doccheck.run">
         <mkdir dir="${doccheck.dir}"/>
         <javadoc additionalparam="-doclet com.sun.tools.doclets.doccheck.DocCheck -docletpath ${doccheck.path} -skipPkg net.miginfocom.*" author="${javadoc.author}" destdir="${doccheck.dir}" failonerror="true" private="${javadoc.private}" source="${javac.source}" sourcepath="${src.dir}" useexternalfile="true" version="${javadoc.version}">
@@ -497,7 +507,7 @@ is divided into following sections:
     <target depends="init,-javadoc-build" if="netbeans.home" name="-javadoc-browse" unless="no.javadoc.preview">
         <nbbrowse file="${dist.javadoc.dir}/index.html"/>
     </target>
-    <target depends="init,-javadoc-build,-javadoc-browse,-doccheck-build" description="Build Javadoc." name="javadoc"/>
+    <target depends="init,-javadoc-build,-javadoc-browse,move-javadoc,-doccheck-build" description="Build Javadoc." name="javadoc"/>
     <target depends="-doccheck-build" description="Build Javadoc error report (doccheck)." name="doccheck"/>
     <!--
                 =========================
