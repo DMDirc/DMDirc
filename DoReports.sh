@@ -39,8 +39,9 @@ rm -Rf ${MYDIR}/.clover
 mkdir ${MYDIR}/.clover
 if [ "$1" = "--all" ]; then
 	$ANT -k -buildfile $MYDIR/doreports.xml doallreports
+	$ANT -k -buildfile $MYDIR/style_build.xml clean findbugs
 elif [ "$1" = "--findbugs" ]; then
-	$ANT -k -buildfile $MYDIR/style_build.xml findbugs
+	$ANT -k -buildfile $MYDIR/style_build.xml clean findbugs
 else
 	$ANT -k -buildfile $MYDIR/doreports.xml domostreports
 fi
