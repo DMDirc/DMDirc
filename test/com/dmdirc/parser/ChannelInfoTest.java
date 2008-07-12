@@ -22,8 +22,10 @@
 package com.dmdirc.parser;
 
 import com.dmdirc.harness.parser.TestParser;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -152,6 +154,21 @@ public class ChannelInfoTest {
     }
     
     @Test
+    public void testGetSetParamMode() {
+        final TestParser parser = new TestParser();
+        final ChannelInfo info = getChannelInfo(parser);
+        parser.injectLine(":server 324 nick #DMDirc_testing +k lalala");
+        parser.sentLines.clear();
+        
+        assertEquals("lalala", info.getModeParam('k'));
+        assertEquals("", info.getModeParam('z'));
+        
+        parser.injectLine(":server MODE #DMDirc_testing -k *");
+        
+        assertEquals("", info.getModeParam('k'));
+    }
+    
+    @Test
     public void testModeSendFull() {
         final TestParser parser = new TestParser();
         final ChannelInfo info = getChannelInfo(parser);
@@ -164,8 +181,8 @@ public class ChannelInfoTest {
         info.alterMode(true, 't', null);
         info.alterMode(true, 'r', null);
         
-        assertTrue("Parser must send modes as soon as the max number is reached",
-                parser.sentLines.size() == 1);
+        assertEquals("Parser must send modes as soon as the max number is reached",
+                1, parser.sentLines.size());
         final String modes = getModes(parser.sentLines.get(0));
         
         assertTrue(modes.indexOf('i') > -1);
@@ -191,8 +208,8 @@ public class ChannelInfoTest {
         info.alterMode(true, 'N', null);
         info.sendModes();
         
-        assertTrue("sendModes must send modes",
-                parser.sentLines.size() == 2);
+        assertEquals("sendModes must send modes",
+                2, parser.sentLines.size());
         
         final String modes = getModes(parser.sentLines.get(0))
                 + getModes(parser.sentLines.get(1));
@@ -219,8 +236,8 @@ public class ChannelInfoTest {
         info.alterMode(false, 'i', null);
         info.sendModes();
         
-        assertTrue("sendModes must send modes",
-                parser.sentLines.size() == 1);
+        assertEquals("sendModes must send modes in one go",
+                1, parser.sentLines.size());
         
         final String modes = getModes(parser.sentLines.get(0));
         
@@ -241,8 +258,8 @@ public class ChannelInfoTest {
         info.alterMode(true, 'n', null);
         info.sendModes();
         
-        assertTrue("sendModes must send modes",
-                parser.sentLines.size() == 1);
+        assertEquals("sendModes must send modes in one go",
+                1, parser.sentLines.size());
         
         final String modes = getModes(parser.sentLines.get(0));
         
@@ -250,6 +267,58 @@ public class ChannelInfoTest {
                 modes.indexOf('n'), modes.lastIndexOf('n'));
         
         assertTrue(modes.indexOf('m') > -1);
+    }
+    
+    @Test
+    public void testModeUnsetKey() {
+        final TestParser parser = new TestParser();
+        final ChannelInfo info = getChannelInfo(parser);
+        parser.injectLine(":server 324 nick #DMDirc_testing +k lalala");
+        parser.sentLines.clear();
+        
+        info.alterMode(true, 'k', "foobar");
+        info.sendModes();
+        
+        assertEquals("sendModes must send modes in one go",
+                1, parser.sentLines.size());
+        assertEquals("Setting +k must set -k first",
+                "-k+k lalala foobar", getModes(parser.sentLines.get(0)));
+    }
+    
+    @Test @Ignore
+    public void testModeUnsetKeyMultiple() {
+        final TestParser parser = new TestParser();
+        final ChannelInfo info = getChannelInfo(parser);
+        parser.injectLine(":server 324 nick #DMDirc_testing +k lalala");
+        parser.sentLines.clear();
+        
+        info.alterMode(true, 'k', "foobar");
+        info.alterMode(true, 'k', "blahblah");
+        info.alterMode(true, 'k', "unittest");
+        info.sendModes();
+        
+        assertEquals("sendModes must send modes in one go",
+                1, parser.sentLines.size());
+        assertEquals("Setting a mode multiple times should have no effect",
+                "-k+k lalala unittest", getModes(parser.sentLines.get(0)));
+    }
+    
+    @Test @Ignore
+    public void testModeUnsetLimitMultiple() {
+        final TestParser parser = new TestParser();
+        final ChannelInfo info = getChannelInfo(parser);
+        parser.injectLine(":server 324 nick #DMDirc_testing +l 73");
+        parser.sentLines.clear();
+        
+        info.alterMode(true, 'l', "74");
+        info.alterMode(true, 'l', "75");
+        info.alterMode(true, 'l', "76");
+        info.sendModes();
+        
+        assertEquals("sendModes must send modes in one go",
+                1, parser.sentLines.size());
+        assertEquals("Setting a mode multiple times should have no effect",
+                "+l 76", getModes(parser.sentLines.get(0)));
     }
     
     private String getModes(final String line) {

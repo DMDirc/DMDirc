@@ -41,7 +41,9 @@ public class ServerTest extends junit.framework.TestCase {
     public void setUp() throws Exception {
         Main.setUI(new DummyController());
         IdentityManager.load();
-        server = new Server("255.255.255.255", 6667, "", false, IdentityManager.getProfiles().get(0));
+        server = new Server("255.255.255.255", 6667, "", false, 
+                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
+                new TestParserFactory());
     }
 
     @Test
