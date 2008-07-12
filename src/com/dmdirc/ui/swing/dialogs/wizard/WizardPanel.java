@@ -29,7 +29,6 @@ import com.dmdirc.util.ListenerList;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.Serializable;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -43,8 +42,7 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Wizard panel.
  */
-public class WizardPanel extends JPanel implements ActionListener,
-        Serializable {
+public class WizardPanel extends JPanel implements ActionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class

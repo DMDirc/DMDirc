@@ -171,7 +171,7 @@ public class WindowsInstaller extends Installer {
 			params.add(data);
 		}
 		
-		execAndWait(params.toArray(new String[0]));
+		execAndWait(params.toArray(new String[params.size()]));
 	}
 	
 	/**

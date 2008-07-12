@@ -248,7 +248,7 @@ public class ConditionTree {
             } else {
                 final ConditionTree third = readTerm(myStack);
 
-                if (first != null && third != null && second instanceof Character) {
+                if (third != null && second instanceof Character) {
                     OPERATION op;
 
                     if ((Character) second == '&') {

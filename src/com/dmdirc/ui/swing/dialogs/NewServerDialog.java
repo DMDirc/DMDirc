@@ -39,6 +39,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -192,8 +193,7 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
 
     /** Populates the profiles list. */
     public void populateProfiles() {
-        final Identity[] profiles =
-                IdentityManager.getProfiles().toArray(new Identity[0]);
+        final List<Identity> profiles = IdentityManager.getProfiles();
         ((DefaultComboBoxModel) identityField.getModel()).removeAllElements();
         for (Identity profile : profiles) {
             ((DefaultComboBoxModel) identityField.getModel()).addElement(profile);

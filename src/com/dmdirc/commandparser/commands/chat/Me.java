@@ -83,7 +83,7 @@ public final class Me extends ChatCommand implements ValidatingCommand {
             return new ValidationResponse();
         }
         
-        final int length = implodeArgs(arguments.toArray(new String[0])).length();
+        final int length = implodeArgs(arguments.toArray(new String[arguments.size()])).length();
         
         if (origin.getContainer().getServer().getParser().getMaxLength("PRIVMSG",
                 origin.getContainer().toString()) <= length) {

@@ -102,7 +102,8 @@ public final class Message extends ServerCommand implements IntelligentCommand,
         if (arguments.size() >= 2) {
             final String target = arguments.get(0);
             return origin.getContainer().getServer().getNumLines("PRIVMSG "
-                    + target + " :" + implodeArgs(1, arguments.toArray(new String[0])));
+                    + target + " :" + implodeArgs(1,
+                    arguments.toArray(new String[arguments.size()])));
         } else {
             return 1;
         }

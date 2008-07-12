@@ -152,7 +152,7 @@ public class PluginManager implements ActionListener {
 		pluginInfo.unloadPlugin();
 		
 		knownPlugins.remove(filename.toLowerCase());
-		pluginInfo = null;
+
 		return true;
 	}
 

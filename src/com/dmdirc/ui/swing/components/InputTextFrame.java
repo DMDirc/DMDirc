@@ -49,11 +49,8 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
-import java.io.Serializable;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -64,7 +61,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
 
 import net.miginfocom.layout.PlatformDefaults;
 
@@ -72,8 +68,7 @@ import net.miginfocom.layout.PlatformDefaults;
  * Frame with an input field.
  */
 public abstract class InputTextFrame extends TextFrame implements InputWindow,
-        InternalFrameListener, MouseListener, KeyListener,
-        Serializable, AwayStateListener {
+        AwayStateListener {
 
     /**
      * A version number for this class. It should be changed whenever the class

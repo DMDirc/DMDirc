@@ -275,7 +275,7 @@ public class URLHandler {
             }
         }
         
-        return args.toArray(new String[0]);
+        return args.toArray(new String[args.size()]);
     }
 
     /**

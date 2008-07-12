@@ -42,7 +42,6 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.List;
 
 import javax.swing.JList;
@@ -61,8 +60,7 @@ import net.miginfocom.swing.MigLayout;
 /**
  * The channel frame is the GUI component that represents a channel to the user.
  */
-public final class ChannelFrame extends InputTextFrame implements MouseListener,
-        ActionListener, ChannelWindow {
+public final class ChannelFrame extends InputTextFrame implements ActionListener, ChannelWindow {
 
     /**
      * A version number for this class. It should be changed whenever the class

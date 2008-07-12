@@ -149,7 +149,7 @@ public class ProcessMessage extends IRCProcessor {
 				// callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got message for channel ("+token[2]+") that I am not on.", myParser.getLastLine()));
 				return;
 			}
-			if (iClient != null && iChannel != null) { iChannelClient = iChannel.getUser(iClient); }
+			if (iClient != null) { iChannelClient = iChannel.getUser(iClient); }
 			if (sParam.equalsIgnoreCase("PRIVMSG")) {
 				if (!isAction) {
 					if (isCTCP) {
