@@ -21,6 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *}
+
+// References:
+// http://krizzprograming.blogspot.com/2007/08/controlling-winamp-programmatically.html
+// http://forums.winamp.com/showthread.php?threadid=85389
+
 library winamp;
 uses
   windows, messages, SysUtils, Classes;
