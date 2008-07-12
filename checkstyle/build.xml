@@ -14,11 +14,15 @@
 					checkstyle-ui,
 					move-index" /> 
 	<target name="allreports" depends=" 
+					clean,
+					compile,
 					findbugs, 
 					cpd, 
 					pmd,
 					checkstyle" /> 
 	<target name="mostreports" depends=" 
+					clean,
+					compile,
 					cpd,
 					pmd,
 					checkstyle" /> 
