@@ -12,17 +12,13 @@
 					checkstyle-parser,
 					checkstyle-plugins,
 					checkstyle-ui,
-					move-index" /> 
+					remove-xml-files, move-index" /> 
 	<target name="allreports" depends=" 
-					clean,
-					compile,
 					findbugs, 
 					cpd, 
 					pmd,
 					checkstyle" /> 
 	<target name="mostreports" depends=" 
-					clean,
-					compile,
 					cpd,
 					pmd,
 					checkstyle" /> 
@@ -134,6 +130,12 @@
 		<xslt in="reports/report-all.xml" out="reports/report-all.html" style="checkstyle/checkstyle.xsl"/>
 	</target>
 	
+	<target name="remove-xml-files">
+		<delete>
+			<fileset dir="reports/" includes="*.xml"/>
+		</delete>
+		
+	</target>
 	<target name="move-index">
 		<!-- <copy file="checkstyle/index.html" tofile="reports/index.html"/> -->
 		<copy file="checkstyle/sorttable.js" tofile="reports/sorttable.js"/>
@@ -163,16 +165,16 @@
 	</target>
 	
 	<target name="findbugs" depends="jar">
-		
+		<mkdir dir="reports/findbugs" />
 		<taskdef name="findbugs" classpath="findbugs-ant.jar"
 						 classname="edu.umd.cs.findbugs.anttask.FindBugsTask" />
 		<findbugs home="/usr/share/java/findbugs/" effort="max"
 							jvmargs="-Xmx512M"
 							output="xml:withMessages"
-							 outputFile="reports/report-fb.xml" reportLevel="low">
+							 outputFile="reports/findbugs/report-fb.xml" reportLevel="low">
 			<sourcePath path="src/" />
 			<class location="dist/DMDirc.jar" />
 		</findbugs>
-		<xslt in="reports/report-fb.xml" style="checkstyle/findbugs.xslt" out="reports/report-fb.html" />
+		<xslt in="reports/findbugs/report-fb.xml" style="checkstyle/findbugs.xslt" out="reports/report-fb.html" />
 	</target>
 </project>
