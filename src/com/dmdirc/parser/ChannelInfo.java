@@ -596,9 +596,10 @@ public final class ChannelInfo {
 	 */
 	public void alterMode(final boolean positive, final Character mode, final String parameter) { 
 		int modecount = 1;
+		int modeint = 0;
 		String modestr = "";
 		if (myParser.h005Info.containsKey("MODES")) {
-			try { 
+			try {
 				modecount = Integer.parseInt(myParser.h005Info.get("MODES")); 
 			} catch (NumberFormatException e) { 
 				modecount = 1; 
@@ -620,15 +621,15 @@ public final class ChannelInfo {
 			if (myParser.hPrefixModes.containsKey(mode)) {
 				modestr = modestr + " " + parameter;
 			} else {
-				modecount = myParser.hChanModesOther.get(mode);
-				if ((modecount & IRCParser.MODE_LIST) == IRCParser.MODE_LIST) {
+				modeint = myParser.hChanModesOther.get(mode);
+				if ((modeint & IRCParser.MODE_LIST) == IRCParser.MODE_LIST) {
 					modestr = modestr + " " + parameter;
-				} else if (!positive && ((modecount & IRCParser.MODE_UNSET) == IRCParser.MODE_UNSET)) {
+				} else if (!positive && ((modeint & IRCParser.MODE_UNSET) == IRCParser.MODE_UNSET)) {
 					modestr = modestr + " " + parameter;
-				} else if (positive && ((modecount & IRCParser.MODE_SET) == IRCParser.MODE_SET)) {
+				} else if (positive && ((modeint & IRCParser.MODE_SET) == IRCParser.MODE_SET)) {
 					// Does mode require a param to unset aswell?
 					// We might need to queue an unset first
-					if (((modecount & IRCParser.MODE_UNSET) == IRCParser.MODE_UNSET)) {
+					if (((modeint & IRCParser.MODE_UNSET) == IRCParser.MODE_UNSET)) {
 						final String existingParam = getModeParam(mode);
 						if (!existingParam.isEmpty()) {
 							final String reverseModeStr = "-" + mode + " " + existingParam;
