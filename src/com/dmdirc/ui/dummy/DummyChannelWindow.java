@@ -23,32 +23,19 @@
 package com.dmdirc.ui.dummy;
 
 import com.dmdirc.Channel;
-import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
-import com.dmdirc.commandparser.parsers.CommandParser;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.parser.ChannelClientInfo;
-import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.ChannelWindow;
-import com.dmdirc.util.StringTranscoder;
 
-import java.beans.PropertyVetoException;
-import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * Dummy channel window, used for testing.
  */
-public final class DummyChannelWindow implements ChannelWindow {
+public final class DummyChannelWindow extends DummyInputWindow implements ChannelWindow {
+
     /** Parent channel. */
     private final Channel parent;
-    /** Window title. */
-    private String title;
-    /** is maximised? */
-    private boolean maximised;
-    /** is visible? */
-    private boolean visible;
 
     /** 
      * Instantiates a new DummyChannelWindow. 
@@ -56,6 +43,7 @@ public final class DummyChannelWindow implements ChannelWindow {
      * @param parent Parent channel
      */
     public DummyChannelWindow(final Channel parent) {
+        super(parent, new ChannelCommandParser(parent.getServer(), parent));
         this.parent = parent;
     }
 
@@ -81,114 +69,6 @@ public final class DummyChannelWindow implements ChannelWindow {
     @Override
     public void updateNames() {
         // Do nothing
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandParser getCommandParser() {
-        return new ChannelCommandParser(parent.getServer(), parent);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public InputHandler getInputHandler() {
-        return new DummyInputHandler(new DummyInputField(), getCommandParser(), this);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setAwayIndicator(final boolean isAway) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void addLine(final String messageType, final Object... args) {
-        System.out.println("DummyChannelWindow.addLine(" + messageType + ", " + Arrays.toString(args) + ")");
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void addLine(final StringBuffer messageType, final Object... args) {
-        addLine(messageType.toString(), args);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void addLine(final String line, final boolean timestamp) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void clear() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public ConfigManager getConfigManager() {
-        return parent.getConfigManager();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public WritableFrameContainer getContainer() {
-        return parent;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isVisible() {
-        return visible;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setVisible(final boolean isVisible) {
-        visible = isVisible;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getTitle() {
-        return title;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isMaximum() {
-        return maximised;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setMaximum(final boolean b) throws PropertyVetoException {
-        maximised = b;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setTitle(final String title) {
-        this.title = title;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void open() {
-        // Do nothing
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public StringTranscoder getTranscoder() {
-        return new StringTranscoder(Charset.defaultCharset());
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void close() {
-        parent.windowClosing();
     }
 
     /** {@inheritDoc} */
