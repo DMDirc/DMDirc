@@ -212,14 +212,12 @@ public final class UpdateChecker implements Runnable {
      * @param line The line to be checked
      */
     private void checkLine(final String line) {
-        if (line.startsWith("uptodate")) {
-            // Do nothing
-        } else if (line.startsWith("outofdate")) {
+        if (line.startsWith("outofdate")) {
             doUpdateAvailable(line);
         } else if (line.startsWith("error")) {
             Logger.userError(ErrorLevel.LOW, "Error when checking for updates: "
                     + line.substring(6));
-        } else {
+        } else if (!line.startsWith("uptodate")) {
             Logger.userError(ErrorLevel.LOW, "Unknown update line received from server: "
                     + line);
         }
@@ -349,7 +347,7 @@ public final class UpdateChecker implements Runnable {
      * Downloads and installs all known updates.
      */
     public static void applyUpdates() {
-        if (updates.size() > 0) {
+        if (!updates.isEmpty()) {
             setStatus(STATE.UPDATING);
             doNextUpdate();
         }

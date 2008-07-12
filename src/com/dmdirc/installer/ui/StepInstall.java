@@ -24,7 +24,6 @@ package com.dmdirc.installer.ui;
 
 import com.dmdirc.installer.Main;
 import com.dmdirc.installer.TextStep;
-import com.dmdirc.installer.Installer.ShortcutType;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.dialogs.wizard.StepListener;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardFrame;
@@ -80,6 +79,7 @@ public final class StepInstall extends Step implements StepListener, TextStep {
 	 *
 	 * @param text Text to add to infoLabel
 	 */
+    @Override
 	public synchronized void addText(final String text) {
 		infoLabel.setText(infoLabel.getText() + text +"\n");
 		infoLabel.setCaretPosition(infoLabel.getText().length());
@@ -90,6 +90,7 @@ public final class StepInstall extends Step implements StepListener, TextStep {
 	 *
 	 * @param text Text to set the infoLabel to
 	 */
+    @Override
 	public synchronized void setText(final String text) {
 		infoLabel.setText(text);
 	}

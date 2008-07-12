@@ -29,7 +29,6 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.util.MapList;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;

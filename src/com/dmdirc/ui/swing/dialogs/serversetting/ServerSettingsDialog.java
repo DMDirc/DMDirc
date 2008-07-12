@@ -30,15 +30,10 @@ import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel.OptionType;
 
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import net.miginfocom.swing.MigLayout;
@@ -58,8 +53,6 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
     private static ServerSettingsDialog me;
     /** Parent server. */
     private final Server server;
-    /** Buttons panel. */
-    private JPanel buttonsPanel;
     /** User modes panel. */
     private UserModesPane modesPanel;
     /** Ignore list panel. */

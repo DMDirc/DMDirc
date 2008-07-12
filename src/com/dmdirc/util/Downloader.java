@@ -46,7 +46,7 @@ import java.util.Map;
  *
  * @author Chris
  */
-public class Downloader {
+public final class Downloader {
     
     /** Creates a new instance of Downloader. */
     private Downloader() {

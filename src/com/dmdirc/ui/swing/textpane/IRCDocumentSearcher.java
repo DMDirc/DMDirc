@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.swing.textpane;
 
-import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;

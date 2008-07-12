@@ -83,11 +83,7 @@ public final class ZipResourceManager extends ResourceManager {
     public boolean resourceExists(final String resource) {
         final ZipEntry zipEntry = zipFile.getEntry(resource);        
         
-        if (zipEntry == null || zipEntry.isDirectory()) {
-            return false;
-        } else {
-            return true;
-        }
+        return zipEntry != null && !zipEntry.isDirectory();
     }
     
     /** {@inheritDoc} */

@@ -24,7 +24,6 @@ package com.dmdirc.ui.swing.dialogs.actionseditor;
 
 import com.dmdirc.Main;
 import com.dmdirc.actions.Action;
-import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.ui.swing.MainFrame;
@@ -35,7 +34,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
