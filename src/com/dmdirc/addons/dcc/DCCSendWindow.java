@@ -25,10 +25,7 @@ package com.dmdirc.addons.dcc;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.addons.dcc.actions.DCCActions;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.swing.components.TextFrame;
-import com.dmdirc.ui.swing.components.TextLabel;
 
-import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JButton;
@@ -132,12 +129,13 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	}
 	
 	/** {@inheritDoc} */
+    @Override
 	public void onSocketClosed(final IRCParser tParser) {
 		// Remove our reference to the parser (and its reference to us)
 		parser.getCallbackManager().delAllCallback(this);
 		parser = null;
 		// Can't resend without the parser.
-		if (button.getText() == "Resend") {
+		if ("Resend".equals(button.getText())) {
 			button.setText("Close Window");
 		}
 	}
@@ -152,6 +150,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	}
 	
 	/** {@inheritDoc} */
+    @Override
 	public void actionPerformed(final ActionEvent e) {
 		if (e.getActionCommand().equals("Cancel")) {
 			if (dcc.getType() == DCCSend.TransferType.SEND) {
@@ -189,6 +188,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	 * @param dcc The DCCSend that this message is from
 	 * @param bytes The number of new bytes that were transfered
 	 */
+    @Override
 	public void dataTransfered(final DCCSend dcc, final int bytes) {
 		transferCount += bytes;
 		final double percent = (100.00 / dcc.getFileSize()) * (transferCount + dcc.getFileStart());

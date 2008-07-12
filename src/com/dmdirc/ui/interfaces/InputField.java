@@ -35,84 +35,84 @@ public interface InputField {
      * 
      * @param listener ActionListener to add
      */
-    public void addActionListener(final ActionListener listener);
+    void addActionListener(final ActionListener listener);
 
     /**
      * Adds a keylistener to this input field.
      * 
      * @param listener KeyListener to add
      */
-    public void addKeyListener(final KeyListener listener);
+    void addKeyListener(final KeyListener listener);
 
     /**
      * Does this input field have focus?
      * 
      * @return true iif the input field has focus
      */
-    public boolean hasFocus();
+    boolean hasFocus();
     
     /**
      * Removes an action listener to this input field.
      * 
      * @param listener ActionListener to remove
      */
-    public void removeActionListener(final ActionListener listener);
+    void removeActionListener(final ActionListener listener);
 
     /**
      * Removes a keylistener to this input field.
      * 
      * @param listener KeyListener to remove
      */
-    public void removeKeyListener(final KeyListener listener);
+    void removeKeyListener(final KeyListener listener);
 
     /**
      * Returns the selected text in the input field.
      * 
      * @return Selected text
      */
-    public String getSelectedText();
+    String getSelectedText();
 
     /**
      * Returns the end of the selection.
      * 
      * @return Selection end
      */
-    public int getSelectionEnd();
+    int getSelectionEnd();
 
     /**
      * Returns the start of the selection.
      * 
      * @return Selection start
      */
-    public int getSelectionStart();
+    int getSelectionStart();
 
     /**
      * Returns the text in the input field.
      * 
      * @return Input field text
      */
-    public String getText();
+    String getText();
 
     /**
      * Sets the text in the input field to the specified text.
      * 
      * @param text New text for the input field
      */
-    public void setText(final String text);
+    void setText(final String text);
 
     /**
      * Returns the caret position.
      * 
      * @return Caret position
      */
-    public int getCaretPosition();
+    int getCaretPosition();
 
     /**
      * Sets the caret position.
      * 
      * @param position Caret position
      */
-    public void setCaretPosition(final int position);
+    void setCaretPosition(final int position);
 
     /**
      * Shows a colour picker for this input field.
@@ -120,10 +120,10 @@ public interface InputField {
      * @param irc Show irc colours?
      * @param hex Show hex colours?
      */
-    public void showColourPicker(final boolean irc, final boolean hex);
+    void showColourPicker(final boolean irc, final boolean hex);
 
     /**
      * Hides the colour picker for this input field.
      */
-    public void hideColourPicker();
+    void hideColourPicker();
 }

@@ -66,11 +66,7 @@ public final class FileResourceManager extends ResourceManager {
             file = new File(basePath, resource);
         }
         
-        if (!file.exists() || file.isDirectory()) {
-            return false;
-        } else {
-            return true;
-        }
+        return file.exists() && !file.isDirectory();
     }
     
     /** {@inheritDoc} */

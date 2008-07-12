@@ -29,17 +29,18 @@ import com.dmdirc.util.resourcemanager.ResourceManager;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This classloader knows about plugins and is used to store persistant classes.
  */
-public class GlobalClassLoader extends ClassLoader {
+public final class GlobalClassLoader extends ClassLoader {
 
 	/** Singleton instance of the GlobalClassLoader. */
 	private static GlobalClassLoader me;
 	
 	/** HashMap containing sources of Global class files. */
-	private HashMap<String,String> resourcesList = new HashMap<String,String>();
+	private Map<String,String> resourcesList = new HashMap<String,String>();
 
 	/**
 	 * Create a new GlobalClassLoader.
@@ -52,11 +53,12 @@ public class GlobalClassLoader extends ClassLoader {
 	 * Have we already loaded the given class name?
 	 *
 	 * @param name Name to check.
+     * @return True if the class is loaded, false otherwise
 	 */
 	public boolean isClassLoaded(final String name) {
 		// Don't duplicate a class
 		final Class existing = findLoadedClass(name);
-		return (existing != null);
+		return existing != null;
 	}
 	
 	/**
