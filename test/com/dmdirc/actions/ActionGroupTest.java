@@ -117,5 +117,10 @@ public class ActionGroupTest extends junit.framework.TestCase {
         instance.remove(null);
         assertFalse(instance.contains(null));
     }    
+    
+    @Test
+    public void testIsDelible() {
+        assertTrue(new ActionGroup("foo").isDelible());
+    }
 
 }

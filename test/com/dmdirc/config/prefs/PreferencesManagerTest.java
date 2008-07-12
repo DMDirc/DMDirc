@@ -21,8 +21,11 @@
  */
 package com.dmdirc.config.prefs;
 
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.harness.TestPreferencesInterface;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.harness.TestActionListener;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -72,6 +75,30 @@ public class PreferencesManagerTest extends junit.framework.TestCase {
         pm.registerSaveListener(tpi);
         pm.fireSaveListeners();
         assertTrue(tpi.saved);
+    }
+    
+    @Test
+    public void testOpenAction() {
+        final TestActionListener tal = new TestActionListener();
+        ActionManager.init();
+        ActionManager.addListener(tal, CoreActionType.CLIENT_PREFS_OPENED);
+        
+        new PreferencesManager();
+        
+        assertNotNull(tal.events.get(CoreActionType.CLIENT_PREFS_OPENED));
+        assertEquals(1, tal.events.get(CoreActionType.CLIENT_PREFS_OPENED).size());
+    }
+    
+    @Test
+    public void testCloseAction() {
+        final TestActionListener tal = new TestActionListener();
+        ActionManager.init();
+        ActionManager.addListener(tal, CoreActionType.CLIENT_PREFS_CLOSED);
+        
+        new PreferencesManager().close();
+        
+        assertNotNull(tal.events.get(CoreActionType.CLIENT_PREFS_CLOSED));
+        assertEquals(1, tal.events.get(CoreActionType.CLIENT_PREFS_CLOSED).size());
     }
 
 }
