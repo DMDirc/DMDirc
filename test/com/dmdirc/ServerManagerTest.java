@@ -23,9 +23,12 @@
 package com.dmdirc;
 
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.harness.parser.TestParserFactory;
 import com.dmdirc.ui.dummy.DummyController;
-
 import com.dmdirc.ui.dummy.DummyQueryWindow;
+
+import java.util.ArrayList;
+
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -51,7 +54,8 @@ public class ServerManagerTest extends junit.framework.TestCase {
     @Test
     public void testRegisterServer() {
         final Server server = new Server("255.255.255.255", 6667, "", false,
-                IdentityManager.getProfiles().get(0));
+                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
+                new TestParserFactory());
         
         final ServerManager instance = ServerManager.getServerManager();
         
@@ -63,7 +67,8 @@ public class ServerManagerTest extends junit.framework.TestCase {
     @Test
     public void testUnregisterServer() {
         final Server server = new Server("255.255.255.255", 6667, "", false,
-                IdentityManager.getProfiles().get(0));
+                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
+                new TestParserFactory());
         
         server.close();
         
@@ -79,7 +84,8 @@ public class ServerManagerTest extends junit.framework.TestCase {
         assertEquals(instance.getServers().size(), instance.numServers());
         
         final Server server = new Server("255.255.255.255", 6667, "", false,
-                IdentityManager.getProfiles().get(0));
+                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
+                new TestParserFactory());
         
         assertEquals(instance.getServers().size(), instance.numServers());
         
@@ -91,9 +97,11 @@ public class ServerManagerTest extends junit.framework.TestCase {
     @Test
     public void testGetServerFromFrame() {
         final Server serverA = new Server("255.255.255.255", 6667, "", false,
-                IdentityManager.getProfiles().get(0));
+                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
+                new TestParserFactory());
         final Server serverB = new Server("255.255.255.254", 6667, "", false,
-                IdentityManager.getProfiles().get(0));
+                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
+                new TestParserFactory());
         
         final ServerManager sm = ServerManager.getServerManager();
         
@@ -108,9 +116,11 @@ public class ServerManagerTest extends junit.framework.TestCase {
     @Test
     public void testGetServerByAddress() {
         final Server serverA = new Server("255.255.255.255", 6667, "", false,
-                IdentityManager.getProfiles().get(0));
+                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
+                new TestParserFactory());
         final Server serverB = new Server("255.255.255.254", 6667, "", false,
-                IdentityManager.getProfiles().get(0));
+                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
+                new TestParserFactory());
         
         final ServerManager sm = ServerManager.getServerManager();
         
@@ -121,5 +131,35 @@ public class ServerManagerTest extends junit.framework.TestCase {
         serverA.close();
         serverB.close();
     }    
+    
+    @Test
+    public void testGetServerByNetwork() throws InterruptedException {
+        final Server serverA = new Server("255.255.255.255", 6667, "", false,
+                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
+                new TestParserFactory("Net1"));
+        final Server serverB = new Server("255.255.255.254", 6667, "", false,
+                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
+                new TestParserFactory("Net2"));
+        final Server serverC = new Server("255.255.255.254", 6667, "", false,
+                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
+                new TestParserFactory("Net2"));
+        
+        Thread.sleep(1000); // Time for parsers to connect
+        
+        final ServerManager sm = ServerManager.getServerManager();
+        
+        assertEquals(1, sm.getServersByNetwork("Net1").size());
+        assertEquals(serverA, sm.getServersByNetwork("Net1").get(0));
+        
+        assertEquals(2, sm.getServersByNetwork("Net2").size());
+        assertEquals(serverB, sm.getServersByNetwork("Net2").get(0));
+        assertEquals(serverC, sm.getServersByNetwork("Net2").get(1));
+        
+        assertEquals(0, sm.getServersByAddress("Net3").size());
+        
+        serverA.close();
+        serverB.close();
+        serverC.close();
+    }
     
 }

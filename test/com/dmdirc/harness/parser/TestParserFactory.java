@@ -29,9 +29,25 @@ import com.dmdirc.parser.ServerInfo;
 
 public class TestParserFactory extends ParserFactory {
 
+    protected String network;
+
+    public TestParserFactory() {
+        this(null);
+    }
+
+    public TestParserFactory(String network) {
+        this.network = network;
+    }
+    
     @Override
     public IRCParser getParser(MyInfo myInfo, ServerInfo serverInfo) {
-        return new TestParser(myInfo, serverInfo);
+        final TestParser parser = new TestParser(myInfo, serverInfo);
+        
+        if (this.network != null) {
+            parser.network = network;
+        }
+        
+        return parser;
     }
 
 }
