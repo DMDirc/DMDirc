@@ -264,11 +264,7 @@ public final class ChannelInfo {
 	 * @return ArrayList of ChannelClients
 	 */
 	public List<ChannelClientInfo> getChannelClients() {
-		final List<ChannelClientInfo> lClients = new ArrayList<ChannelClientInfo>();
-		for (ChannelClientInfo client : hChannelUserList.values()) {
-			lClients.add(client);
-		}
-		return lClients;
+		return new ArrayList<ChannelClientInfo>(hChannelUserList.values());
 	}
 	
 	/**
