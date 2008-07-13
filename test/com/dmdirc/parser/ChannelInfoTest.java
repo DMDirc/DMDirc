@@ -285,6 +285,21 @@ public class ChannelInfoTest {
                 "-k+k lalala foobar", getModes(parser.sentLines.get(0)));
     }
     
+    @Test
+    public void testIssue1410() {
+        final TestParser parser = new TestParser();
+
+        parser.injectConnectionStrings();
+        parser.injectLine(":nick JOIN #DMDirc_testing");
+        parser.injectLine(":foo!bar@baz JOIN #DMDirc_testing");
+        parser.injectLine(":flub!floo@fleeee JOIN #DMDirc_testing");
+
+        assertNotSame(parser.getChannelInfo("#DMDirc_testing").getChannelClients(),
+                parser.getChannelInfo("#DMDirc_testing").getChannelClients());
+        assertEquals(parser.getChannelInfo("#DMDirc_testing").getChannelClients(),
+                parser.getChannelInfo("#DMDirc_testing").getChannelClients());
+    }
+    
     @Test @Ignore
     public void testModeUnsetKeyMultiple() {
         final TestParser parser = new TestParser();
