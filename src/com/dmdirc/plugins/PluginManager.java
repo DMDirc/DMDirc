@@ -169,10 +169,11 @@ public class PluginManager implements ActionListener {
 		
 		final boolean wasLoaded = getPluginInfo(filename).isLoaded();
 		delPlugin(filename);
-		final boolean result = addPlugin(filename);
+		boolean result = addPlugin(filename);
 		
 		if (wasLoaded) {
 			getPluginInfo(filename).loadPlugin();
+			result = getPluginInfo(filename).isLoaded();
 		}
 		
 		return result;

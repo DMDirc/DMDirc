@@ -56,7 +56,7 @@ public final class LoadPlugin extends GlobalCommand implements IntelligentComman
         }
 
         // Add previously unknown plugin to plugin manager
-        PluginManager.getPluginManager().addPlugin(args[0])
+        PluginManager.getPluginManager().addPlugin(args[0]);
         final PluginInfo plugin = PluginManager.getPluginManager().getPluginInfo(args[0]);
         if (plugin == null) {
             sendLine(origin, isSilent, FORMAT_ERROR, "Plugin Loading failed");
