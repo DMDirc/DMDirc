@@ -139,6 +139,21 @@ public final class IRCDocument implements Serializable {
     }
     
     /**
+     * Adds the stylised string to the canvas.
+     * 
+     * @param text stylised string to add to the text
+     */
+    public void addText(final List<AttributedString> text) {
+        synchronized (iterators) {
+            final int start = iterators.size();
+            for (AttributedString string : text) {
+                iterators.add(string);
+            }
+            fireLinesAdded(start, text.size());
+        }
+    }
+    
+    /**
      * Trims the document to the specified number of lines.
      *
      * @param numLines Number of lines to trim the document to
@@ -193,6 +208,21 @@ public final class IRCDocument implements Serializable {
         for (int i = 0; i < listenerList.length; i += 2) {
             if (listenerList[i] == IRCDocumentListener.class) {
                 ((IRCDocumentListener) listenerList[i + 1]).lineAdded(index, iterators.size());
+            }
+        }
+    }
+    
+    /**
+     * Fires the lines added method on all listeners.
+     *
+     * @param index Index of the added line
+     * @param size Number of lines added
+     */
+    protected void fireLinesAdded(final int index, final int size) {
+        final Object[] listenerList = listeners.getListenerList();
+        for (int i = 0; i < listenerList.length; i += 2) {
+            if (listenerList[i] == IRCDocumentListener.class) {
+                ((IRCDocumentListener) listenerList[i + 1]).linesAdded(index, size, iterators.size());
             }
         }
     }

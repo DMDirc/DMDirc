@@ -108,6 +108,7 @@ public final class Styliser {
     static {
         IdentityManager.getGlobalConfig().addChangeListener("ui", "stylelinks",
                 new ConfigChangeListener() {
+            @Override
             public void configChanged(final String domain, final String key) {
                 Styliser.styleLinks
                         = IdentityManager.getGlobalConfig().getOptionBool("ui", "stylelinks");

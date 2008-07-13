@@ -44,6 +44,7 @@ import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.Enumeration;
 
+import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 import javax.swing.SwingUtilities;
@@ -153,6 +154,14 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * @param text styled text to add
      */
     public void addText(final AttributedString text) {
+        document.addText(text);
+    }
+    
+    /**
+     * Adds styled text to the textpane.
+     * @param text styled text to add
+     */
+    public void addText(final List<AttributedString> text) {
         document.addText(text);
     }
 
@@ -675,6 +684,12 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     @Override
     public void cleared() {
         canvas.clearWrapCache();
+    }
+    
+    /** {@inheritDoc}. */
+    @Override
+    public void linesAdded(int line, int length, int size) {
+        setScrollBarMax();
     }
 
     /**
