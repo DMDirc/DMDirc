@@ -42,8 +42,8 @@ public class AmarokSource implements MediaSource {
     /** {@inheritDoc} */
     @Override
     public boolean isRunning() {
-        final List<String> res = DcopPlugin.getDcopResult("dcop amarok player isPlaying");
-        return res.size() > 0 && Boolean.parseBoolean(res.get(0));
+        final List<String> res = DcopPlugin.getDcopResult("dcop amarok player status");
+        return res.size() > 0 && !res.get(0).equals("0");
     }
     
     /** {@inheritDoc} */
