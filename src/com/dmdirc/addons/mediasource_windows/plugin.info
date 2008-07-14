@@ -6,4 +6,4 @@ name=windowsmediasource
 nicename=Windows Media Sources
 minversion=0
 require-plugin=nowplaying
-addonid=9
+addonid=30
