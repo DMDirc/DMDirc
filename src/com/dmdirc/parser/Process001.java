@@ -40,9 +40,8 @@ public class Process001 extends IRCProcessor {
 	public void process(final String sParam, final String[] token) {
 		myParser.got001 = true;
 		// << :demon1.uk.quakenet.org 001 Java-Test :Welcome to the QuakeNet IRC Network, Java-Test
-		String sNick;
 		myParser.sServerName = token[0].substring(1,token[0].length());
-		sNick = token[2];
+		final String sNick = token[2];
 		
 		/* Code below is here incase relying on token[2] breaks somewhere
 		String[] temp = token[token.length-1].split(" ");
@@ -51,12 +50,32 @@ public class Process001 extends IRCProcessor {
 		temp = sNick.split("!",2);
 		sNick = temp[0];  /* */
 		
+		// Get old nickname incase we need it later
+		final String oldnick = myParser.getMyself().getNickname();
+		// Now update stored information
+		myParser.getMyself().setUserBits(sNick, true, true);
+		
+		// myself will be fake if we havn't recieved a 001 yet
 		if (myParser.getMyself().isFake()) {
-			myParser.getMyself().setUserBits(sNick, true, true);
 			myParser.getMyself().setFake(false);
 			myParser.addClient(myParser.getMyself());
+		} else {
+			// Another 001? if nicknames change then we need to update the hashtable
+			if (!myParser.getMyself().getNickname().equalsIgnoreCase(oldnick)) {
+				// Nick changed, remove old me
+				myParser.forceRemoveClient(myParser.getMyself());
+				// Check that we don't already know someone by this name
+				if (myParser.getClientInfo(myParser.getMyself().getNickname()) != null) {
+					// And add to list
+					myParser.addClient(myParser.getMyself());
+				} else {
+					// Someone else already know? this is bad!
+					myParser.callErrorInfo(new ParserError(ParserError.ERROR_FATAL, "001 overwrites existing client?", myParser.getLastLine()));
+				}
+			}
 		}
-		
+
+
 		callServerReady();
 		myParser.startPingTimer();
 	}
