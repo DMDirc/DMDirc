@@ -571,7 +571,7 @@ public final class Styliser {
         if (attribs.containsAttribute(StyleConstants.FontConstants.Italic, Boolean.TRUE)) {
             attribs.removeAttribute(StyleConstants.FontConstants.Italic);
         }
-        if (attribs.containsAttribute(StyleConstants.FontConstants.FontFamily, "monospace")) {
+        if (attribs.containsAttribute(StyleConstants.FontConstants.FontFamily, "monospaced")) {
             final Object defaultFont = attribs.getAttribute("DefaultFontFamily");
             attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
             attribs.addAttribute(StyleConstants.FontConstants.FontFamily, defaultFont);
