@@ -166,7 +166,8 @@ public final class ChannelClientInfo {
 	}
 	
 	/**
-	 * Get the most important mode this client has (o, v etc).
+	 * Get the most important mode this client has (o, v etc), or an empty
+     * string if the client has no modes.
 	 *
 	 * @return String representing the most important mode.
 	 */
@@ -177,7 +178,8 @@ public final class ChannelClientInfo {
 	}
 	
 	/**
-	 * Get the most important prefix this client has (@, + etc).
+	 * Get the most important prefix this client has (@, + etc), or an empty
+     * string if the client has no modes.
 	 *
 	 * @return String representing the most important mode.
 	 */
