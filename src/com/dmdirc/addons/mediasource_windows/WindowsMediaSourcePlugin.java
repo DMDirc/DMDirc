@@ -56,6 +56,7 @@ public class WindowsMediaSourcePlugin extends Plugin implements MediaSourceManag
 		super();
 		sources = new ArrayList<MediaSource>();
 		sources.add(new DllSource("Winamp", true));
+		sources.add(new DllSource("iTunes", false));
 	}
 	
 	/** {@inheritDoc} */

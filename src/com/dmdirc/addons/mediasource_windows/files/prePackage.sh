@@ -17,5 +17,6 @@ compile() {
 	fi;
 }
 
+compile "itunes.dpr" "itunes.dll"
 compile "winamp.dpr" "winamp.dll"
 compile "GetMediaInfo.dpr" "GetMediaInfo.exe"
