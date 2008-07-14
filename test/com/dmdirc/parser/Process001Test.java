@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
 public class Process001Test extends junit.framework.TestCase {
        
     @Test
-    public void testCaseMappingUnknown() {
+    public void testDuplicate001() {
         final TestParser tp = new TestParser();
         
         assertTrue(tp.getMyself().isFake());
