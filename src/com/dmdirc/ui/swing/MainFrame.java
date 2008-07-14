@@ -722,9 +722,11 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getSource().equals(getActiveFrame()) &&
-                "title".equals(evt.getPropertyName())) {
-            setTitle(getTitlePrefix() + " - " + (String) evt.getNewValue());
+        if (maximised) {
+            if (evt.getSource().equals(getActiveFrame()) &&
+                    "title".equals(evt.getPropertyName())) {
+                setTitle(getTitlePrefix() + " - " + (String) evt.getNewValue());
+            }
         }
     }
 }
