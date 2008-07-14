@@ -724,7 +724,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getSource().equals(getActiveFrame()) &&
                 "title".equals(evt.getPropertyName())) {
-            setTitle((String) evt.getNewValue());
+            setTitle(getTitlePrefix() + " - " + (String) evt.getNewValue());
         }
     }
 }
