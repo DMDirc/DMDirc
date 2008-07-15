@@ -65,7 +65,7 @@ public class Process001 extends IRCProcessor {
 				// Nick changed, remove old me
 				myParser.forceRemoveClient(myParser.getMyself());
 				// Check that we don't already know someone by this name
-				if (myParser.getClientInfo(myParser.getMyself().getNickname()) != null) {
+				if (myParser.getClientInfo(myParser.getMyself().getNickname()) == null) {
 					// And add to list
 					myParser.addClient(myParser.getMyself());
 				} else {
@@ -74,8 +74,7 @@ public class Process001 extends IRCProcessor {
 				}
 			}
 		}
-
-
+		
 		callServerReady();
 		myParser.startPingTimer();
 	}
