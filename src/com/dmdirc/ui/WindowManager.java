@@ -284,7 +284,29 @@ public class WindowManager {
 
         return null;
     }
-
+    
+    /**
+     * Retrieves all known root (parent-less) windows.
+     * 
+     * @since 0.6
+     * @return An array of all known root windows.
+     */
+    public static Window[] getRootWindows() {
+        return rootWindows.toArray(new Window[rootWindows.size()]);
+    }
+    
+    /**
+     * Retrieves all children of the specified window.
+     * 
+     * @since 0.6
+     * @param window The window whose children are being requested
+     * @return An array of all known child windows.
+     */
+    public static Window[] getChildren(final Window window) {
+        final List<Window> children = childWindows.get(window);
+        return children.toArray(new Window[children.size()]);
+    }
+    
     /**
      * Fires the addWindow(Window) callback.
      * 
