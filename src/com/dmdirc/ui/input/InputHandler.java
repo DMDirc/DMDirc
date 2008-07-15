@@ -44,6 +44,7 @@ import com.dmdirc.util.RollingList;
 
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -360,6 +361,16 @@ public abstract class InputHandler implements ConfigChangeListener {
         } else {
             addToBuffer(target.getText());
         }
+    }
+    
+    /**
+     * Retrieves a list of all known entries in the input backbuffer.
+     * 
+     * @since 0.6
+     * @return A copy of the input backbuffer.
+     */
+    public List<String> getBackBuffer() {
+        return new ArrayList<String>(buffer.getList());
     }
 
     /**
