@@ -157,6 +157,8 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
      * Updates the preview text.
      */
     private void updatePreview() {
+        updateTimer.cancel();
+        
         MediaSource source = plugin.getBestSource();
 
         if (source == null) {
