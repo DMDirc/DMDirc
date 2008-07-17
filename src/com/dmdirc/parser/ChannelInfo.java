@@ -288,13 +288,27 @@ public final class ChannelInfo {
 	 * @param sWho Nickname to return channelclient for
 	 * @return ChannelClientInfo object requested, or null if not found
 	 */
-	public ChannelClientInfo getUser(String sWho) {
-		sWho = ClientInfo.parseHost(sWho);
-		sWho = myParser.getIRCStringConverter().toLowerCase(sWho);
-		if (hChannelUserList.containsKey(sWho)) {
-			return hChannelUserList.get(sWho);
+	public ChannelClientInfo getUser(final String sWho) {
+		return getUser(sWho, false);
+	}
+	
+	/**
+	 * Get the ChannelClientInfo object associated with a nickname.
+	 *
+	 * @param sWho Nickname to return channelclient for
+	 * @param createFake Create a fake client if not found
+	 * @return ChannelClientInfo object requested
+	 */
+	public ChannelClientInfo getUser(final String sWho, final boolean createFake) {
+		final String who = myParser.getIRCStringConverter().toLowerCase(ClientInfo.parseHost(sWho));
+		if (hChannelUserList.containsKey(who)) {
+			return hChannelUserList.get(who);
 		}
-		return null;
+		if (createFake) {
+			return new ChannelClientInfo(myParser, (new ClientInfo(myParser, sWho)).setFake(true), this);
+		} else {
+			return null;
+		}
 	}
 	
 	/**

@@ -119,7 +119,7 @@ public final class ChannelEventHandler extends EventHandler implements
                     newTopic);
         } else {
             owner.doNotification("channelTopicChanged", CoreActionType.CHANNEL_TOPICCHANGE,
-                    cChannel.getUser(cChannel.getTopicUser()), cChannel.getTopic());
+                    cChannel.getUser(cChannel.getTopicUser(), true), cChannel.getTopic());
         }
 
         owner.addTopic(newTopic);
