@@ -298,6 +298,7 @@ public final class ChannelInfo {
 	 * @param sWho Nickname to return channelclient for
 	 * @param createFake Create a fake client if not found
 	 * @return ChannelClientInfo object requested
+	 * @since 0.6
 	 */
 	public ChannelClientInfo getUser(final String sWho, final boolean createFake) {
 		final String who = myParser.getIRCStringConverter().toLowerCase(ClientInfo.parseHost(sWho));
