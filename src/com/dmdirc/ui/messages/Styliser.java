@@ -79,8 +79,8 @@ public final class Styliser {
     private static final String URL_CHARS = "[a-z0-9$\\-_@\\.&\\+!\\*\"'\\(\\),=;/#\\?:%~]";
     
     /** The regular expression to use for marking up URLs. */
-    private static final String URL_REGEXP = "(?i)([a-z]+://" + URL_CHARS
-            + "+|(?<![a-z0-9:])www\\." + URL_CHARS + "+)";
+    private static final String URL_REGEXP = "(?i)([a-z+]+://" + URL_CHARS
+            + "+|(?<![a-z0-9:/])www\\." + URL_CHARS + "+)";
     
     /** Regular expression for intelligent handling of closing brackets. */
     private static final String URL_INT1 = "(\\([^\\)" + CODE_HYPERLINK + "]*?" + CODE_HYPERLINK

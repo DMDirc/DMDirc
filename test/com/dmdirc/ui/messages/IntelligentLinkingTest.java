@@ -66,6 +66,8 @@ public class IntelligentLinkingTest {
             {"foo: www.google.com, bar", "foo: ~www.google.com~, bar"},
             {"www.google.com?", "~www.google.com~?"},
             {"www.google.com!", "~www.google.com~!"},
+            {"svn+ssh://foo@bar", "~svn+ssh://foo@bar~"},
+            {"/var/web/www.foo.com/bar", "/var/web/www.foo.com/bar"},
             {"\"foo\" www.google.com \"www.google.com\"",
                      "\"foo\" ~www.google.com~ \"~www.google.com~\"",
             },
