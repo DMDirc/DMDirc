@@ -66,6 +66,11 @@ public class IntelligentLinkingTest {
             {"foo: www.google.com, bar", "foo: ~www.google.com~, bar"},
             {"www.google.com?", "~www.google.com~?"},
             {"www.google.com!", "~www.google.com~!"},
+//            The following fail at the minute. See issue 1445.
+//            {"(\"http://example.org\")->", "(\"~http://example.org~\")->"},
+//            {"('http://example.org')->", "('~http://example.org~')->"},
+//            {"('www.foo.com')->ss('http://example.org');",
+//                     "('~www.foo.com~')->ss('~http://example.org~');"},
             {"svn+ssh://foo@bar", "~svn+ssh://foo@bar~"},
             {"/var/web/www.foo.com/bar", "/var/web/www.foo.com/bar"},
             {"\"foo\" www.google.com \"www.google.com\"",
