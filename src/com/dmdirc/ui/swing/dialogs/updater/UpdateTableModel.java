@@ -24,10 +24,10 @@ package com.dmdirc.ui.swing.dialogs.updater;
 
 import com.dmdirc.interfaces.UpdateListener;
 import com.dmdirc.updater.Update;
-import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.UpdateStatus;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +50,8 @@ public class UpdateTableModel extends AbstractTableModel implements UpdateListen
     private List<Update> updates;
     /** Enabled list. */
     private Map<Update, Boolean> enabled;
+    /** Number formatter. */
+    private DecimalFormat formatter;
 
     /** Creates a new instance of UpdateTableModel. */
     public UpdateTableModel() {
@@ -65,6 +67,7 @@ public class UpdateTableModel extends AbstractTableModel implements UpdateListen
         super();
 
         setUpdates(updates);
+        formatter = new DecimalFormat("0.#");
     }
 
     /**
@@ -158,7 +161,7 @@ public class UpdateTableModel extends AbstractTableModel implements UpdateListen
             case 3:
                 if (updates.get(rowIndex).getStatus().equals(UpdateStatus.DOWNLOADING)) {
                     return updates.get(rowIndex).getStatus() + " ("
-                            + updates.get(rowIndex).getProgress() + "%)";
+                            + formatter.format(updates.get(rowIndex).getProgress()) + "%)";
                 } else {
                     return updates.get(rowIndex).getStatus();
                 }

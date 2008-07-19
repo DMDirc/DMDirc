@@ -92,7 +92,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         getCancelButton().addActionListener(this);
 
         setTitle("Update available");
-        setSize(new Dimension(400, 400));
+        setSize(new Dimension(450, 400));
     }
 
     /**
