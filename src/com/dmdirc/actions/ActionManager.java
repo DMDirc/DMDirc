@@ -412,19 +412,23 @@ public final class ActionManager {
      * Creates a new group with the specified name.
      *
      * @param group The group to be created
+     * 
+     * @return The newly created group
      */
     @Precondition({
         "The specified group is non-null and not empty",
         "The specified group is not an existing group"
     })
-    public static void makeGroup(final String group) {
+    public static ActionGroup makeGroup(final String group) {
         Logger.assertTrue(group != null);
         Logger.assertTrue(!group.isEmpty());
         Logger.assertTrue(!groups.containsKey(group));
 
         final File file = new File(getDirectory() + group);
         if (file.isDirectory() || file.mkdir()) {
-            groups.put(group, new ActionGroup(group));
+            final ActionGroup actionGroup = new ActionGroup(group);
+            groups.put(group, actionGroup);
+            return actionGroup;
         } else {
             throw new IllegalArgumentException("Unable to create action group directory"
                     + "\n\nDir: " + getDirectory() + group);

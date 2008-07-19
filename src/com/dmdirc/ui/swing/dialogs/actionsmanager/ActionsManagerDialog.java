@@ -230,10 +230,20 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
      * Reloads the action groups.
      */
     private void reloadGroups() {
+        reloadGroups(null);
+    }
+    
+    /**
+     * Reloads the action groups.
+     * 
+     * @param selectedGroup Newly selected group
+     */
+    private void reloadGroups(final ActionGroup selectedGroup) {
         ((DefaultListModel) groups.getModel()).clear();
         for (ActionGroup group : ActionManager.getGroups().values()) {
             ((DefaultListModel) groups.getModel()).addElement(group);
         }
+        groups.setSelectedValue(selectedGroup, true);
     }
 
     /**
@@ -309,8 +319,8 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
                         containsKey(getText())) {
                     return false;
                 } else {
-                    ActionManager.makeGroup(getText());
-                    reloadGroups();
+                    final ActionGroup group = ActionManager.makeGroup(getText());
+                    reloadGroups(group);
                     return true;
                 }
             }
