@@ -305,7 +305,7 @@ public class SwingInputField extends JComponent implements InputField,
     /** {@inheritDoc} */
     @Override
     public void wrappedText(final int count) {
-        wrapIndicator.setVisible(true);
+        wrapIndicator.setVisible(count != 0);
         wrapIndicator.setToolTipText(count + " lines");
     }
 }
