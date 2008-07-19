@@ -86,13 +86,15 @@ public final class Styliser {
     private static final String URL_INT1 = "(\\([^\\)" + CODE_HYPERLINK + "]*?" + CODE_HYPERLINK
             + "[^" + CODE_HYPERLINK + "]+)(\\)['\";:!,\\.\\)]*)" + CODE_HYPERLINK;
     
-    /** Regular expression for intelligent handling of double quotes. */
-    private static final String URL_INT2 = "(\"[^\"" + CODE_HYPERLINK + "]*?" + CODE_HYPERLINK
-            + "[^" + CODE_HYPERLINK + "]+)(\"[\"';:!,\\.\\)]?)" + CODE_HYPERLINK;
+    /** Regular expression for intelligent handling of trailing single and double quotes. */
+    private static final String URL_INT2 = "(^(?:[^" + CODE_HYPERLINK + "]+|"
+            + CODE_HYPERLINK + "[^" + CODE_HYPERLINK + "]" + CODE_HYPERLINK + "))(['\"])([^"
+            + CODE_HYPERLINK + "]*?" + CODE_HYPERLINK + "[^" + CODE_HYPERLINK
+            + "]+)(\\1[\"';:!,\\.\\)]*)" + CODE_HYPERLINK;
     
-    /** Regular expression for intelligent handling of single quotes. */
-    private static final String URL_INT3 = "('[^'" + CODE_HYPERLINK + "]*?" + CODE_HYPERLINK
-            + "[^" + CODE_HYPERLINK + "]+)('[\"';:!,\\.\\)]?)" + CODE_HYPERLINK;
+    /** Regular expression for intelligent handling of surrounding quotes. */
+    private static final String URL_INT3 = "(['\"])(" + CODE_HYPERLINK
+            + "[^" + CODE_HYPERLINK + "]+?)(\\1[^" + CODE_HYPERLINK + "]*)" + CODE_HYPERLINK;
     
     /** Regular expression for intelligent handling of trailing punctuation. */
     private static final String URL_INT4 = "(" + CODE_HYPERLINK
@@ -201,8 +203,8 @@ public final class Styliser {
                 target2 = target;
                 target = target
                         .replaceAll(URL_INT1, "$1" + CODE_HYPERLINK + "$2")
-                        .replaceAll(URL_INT2, "$1" + CODE_HYPERLINK + "$2")
-                        .replaceAll(URL_INT3, "$1" + CODE_HYPERLINK + "$2")
+                        .replaceAll(URL_INT2, "$1$2$3" + CODE_HYPERLINK + "$4")
+                        .replaceAll(URL_INT3, "$1$2" + CODE_HYPERLINK + "$3")
                         .replaceAll(URL_INT4, "$1" + CODE_HYPERLINK + "$2");
             }
         }
