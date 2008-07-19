@@ -385,8 +385,17 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
                 "' group and all actions within it?",
                 "Confirm deletion", JOptionPane.YES_NO_OPTION);
         if (response == JOptionPane.YES_OPTION) {
+            int location = ((DefaultListModel) groups.getModel()).indexOf(ActionManager.getGroup(group));
             ActionManager.removeGroup(group);
             reloadGroups();
+            if (groups.getModel().getSize() == 0) {
+                location = -1;
+            } else if (location > groups.getModel().getSize()) {
+                location = groups.getModel().getSize();
+            } else if (location <= 0) {
+                location = 0;
+            }
+            groups.setSelectedIndex(location);
         }
     }
 
