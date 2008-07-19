@@ -463,6 +463,7 @@ public abstract class InputHandler implements ConfigChangeListener {
 
             commandParser.parseCommand(parentWindow, thisBuffer.toString());
         }
+        fireLineWrap(0);
     }
 
     /**
