@@ -26,7 +26,8 @@ import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
 import com.dmdirc.config.prefs.validator.Validator;
 
-import java.awt.Dimension;
+import com.dmdirc.ui.swing.UIUtilities;
+import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,6 +35,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -70,7 +72,6 @@ public abstract class StandardInputDialog extends StandardDialog {
             public ValidationResponse validate(final String object) {
                 return new ValidationResponse();
             }
-            
         });
     }
 
@@ -148,7 +149,7 @@ public abstract class StandardInputDialog extends StandardDialog {
             @Override
             public void windowClosed(WindowEvent e) {
                 cancelled();
-                //dispose();
+            //dispose();
             }
         });
         textField.getDocument().addDocumentListener(new DocumentListener() {
@@ -186,8 +187,6 @@ public abstract class StandardInputDialog extends StandardDialog {
     private final void layoutComponents() {
         setLayout(new MigLayout("fill, wrap 1"));
 
-        blurb.setMaximumSize(new Dimension(400, 0));
-
         add(blurb, "growx");
         add(textField, "growx");
         add(getLeftButton(), "split 2, right");
@@ -198,9 +197,26 @@ public abstract class StandardInputDialog extends StandardDialog {
      * Displays the input dialog.
      */
     public final void display() {
-        pack();
-        setLocationRelativeTo(getParent());
-        setVisible(true);
+        display(getParent());
+    }
+    
+    /**
+     * Displays the input dialog.
+     * 
+     * @param parent Parent component
+     */
+    public final void display(final Component parent) {
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                pack();
+                setLocationRelativeTo(parent);
+                setVisible(true);
+                textField.requestFocus();
+            }
+        });
     }
 
     /**
@@ -211,7 +227,7 @@ public abstract class StandardInputDialog extends StandardDialog {
     public final String getText() {
         return textField.getText();
     }
-    
+
     /**
      * Sets the dialogs text to the specified text.
      * 

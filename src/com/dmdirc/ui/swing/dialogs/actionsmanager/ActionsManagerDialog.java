@@ -320,10 +320,8 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
             public void cancelled() {
             //Ignore
             }
-            };
-        inputDialog.pack();
-        inputDialog.setLocationRelativeTo(this);
-        inputDialog.setVisible(true);
+        };
+        inputDialog.display(this);
     }
 
     /**
@@ -361,11 +359,9 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
             public void cancelled() {
             //Ignore
             }
-            };
-        inputDialog.pack();
-        inputDialog.setLocationRelativeTo(this);
+        };
+        inputDialog.display(this);
         inputDialog.setText(oldName);
-        inputDialog.setVisible(true);
     }
 
     /**
@@ -392,7 +388,8 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         }
 
         changeActiveGroup((ActionGroup) groups.getSelectedValue());
-        if (groups.getSelectedIndex() == -1 || !((ActionGroup) groups.getSelectedValue()).isDelible()) {
+        if (groups.getSelectedIndex() == -1 ||
+                !((ActionGroup) groups.getSelectedValue()).isDelible()) {
             edit.setEnabled(false);
             delete.setEnabled(false);
         } else {
