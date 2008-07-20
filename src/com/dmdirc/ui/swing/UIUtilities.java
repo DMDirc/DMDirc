@@ -41,6 +41,9 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.text.JTextComponent;
 import javax.swing.undo.UndoManager;
 
+import net.miginfocom.layout.PlatformDefaults;
+import net.miginfocom.layout.UnitValue;
+
 /**
  * UI constants.
  */
@@ -121,6 +124,7 @@ public final class UIUtilities {
                 BorderFactory.createEmptyBorder());
         UIManager.put("Tree.scrollsOnExpand", true);
         UIManager.put("Tree.scrollsHorizontallyAndVertically", true);
+        PlatformDefaults.setDefaultRowAlignment(UnitValue.CENTER);
     }
 
     /**

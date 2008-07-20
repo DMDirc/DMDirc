@@ -64,9 +64,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import net.miginfocom.layout.PlatformDefaults;
-import net.miginfocom.layout.UnitValue;
-
 /**
  * Controls the main swing UI.
  */
@@ -321,7 +318,8 @@ public final class SwingController implements UIController {
         try {
             UIManager.setLookAndFeel(UIUtilities.getLookAndFeel(IdentityManager.getGlobalConfig().
                     getOption("ui", "lookandfeel", "")));
-            SwingUtilities.updateComponentTreeUI((MainFrame) Main.getUI().getMainWindow());
+            SwingUtilities.updateComponentTreeUI((MainFrame) Main.getUI().
+                    getMainWindow());
         } catch (ClassNotFoundException ex) {
             Logger.userError(ErrorLevel.LOW,
                     "Unable to change Look and Feel: " + ex.getMessage());
@@ -373,7 +371,6 @@ public final class SwingController implements UIController {
             UIUtilities.initUISettings();
             UIManager.setLookAndFeel(UIUtilities.getLookAndFeel(IdentityManager.getGlobalConfig().
                     getOption("ui", "lookandfeel", "")));
-            PlatformDefaults.setDefaultRowAlignment(UnitValue.CENTER);
 
         } catch (UnsupportedOperationException ex) {
             Logger.userError(ErrorLevel.LOW, "Unable to set UI Settings");
@@ -397,7 +394,7 @@ public final class SwingController implements UIController {
         if (me == null) {
             return null;
         }
-        
+
         return me.getActiveFrame();
     }
 
