@@ -47,6 +47,8 @@ public class DummyInputWindow implements InputWindow {
     private boolean maximised;
     /** Our container. */
     private final WritableFrameContainer container;
+    /** Our command parser. */
+    private final CommandParser commandParser;
     
     /** 
      * Instantiates a new DummyInputWindow.
@@ -56,13 +58,14 @@ public class DummyInputWindow implements InputWindow {
      */
     public DummyInputWindow(final WritableFrameContainer owner, 
             final CommandParser commandParser) {
-        container = owner;
+        this.container = owner;
+        this.commandParser = commandParser;
     }
     
     /** {@inheritDoc} */
     @Override
     public CommandParser getCommandParser() {
-        return GlobalCommandParser.getGlobalCommandParser();
+        return commandParser;
     }
     
     /** {@inheritDoc} */
