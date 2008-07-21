@@ -66,7 +66,8 @@ public class IntelligentLinkingTest {
             {"foo: www.google.com, bar", "foo: ~www.google.com~, bar"},
             {"www.google.com?", "~www.google.com~?"},
             {"www.google.com!", "~www.google.com~!"},
-//            The following fail at the minute. See issue 1445.
+            {"http://...", "http://..."},
+            {"www...", "www..."},
             {"(\"http://example.org\")->", "(\"~http://example.org~\")->"},
             {"('http://example.org')->", "('~http://example.org~')->"},
             {"('www.foo.com')->ss('http://example.org');",

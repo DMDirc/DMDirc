@@ -75,12 +75,19 @@ public final class Styliser {
             + CODE_STOP + CODE_HEXCOLOUR + CODE_FIXED + CODE_ITALIC
             + CODE_UNDERLINE + CODE_CHANNEL + CODE_NICKNAME + CODE_NEGATE + "\"]";
     
-    /** Defines all characters allowed in URLs per W3 specs. */
-    private static final String URL_CHARS = "[a-z0-9$\\-_@\\.&\\+!\\*\"'\\(\\),=;/#\\?:%~]";
-    
+    /** Defines all characters treated as trailing punctuation. */
+    private static final String URL_PUNCT = "\"';:!,\\.\\)\\?";
+
+    /** Defines all characters allowed in URLs that aren't treated as trailing punct. */
+    private static final String URL_NOPUNCT = "a-z0-9$\\-_@&\\+\\*\\(=/#%~";
+
+    /** Defines all characters allowed in URLs per W3C specs. */
+    private static final String URL_CHARS = "[" + URL_PUNCT + URL_NOPUNCT
+            + "]*[" + URL_NOPUNCT + "]+[" + URL_PUNCT + URL_NOPUNCT + "]*";
+
     /** The regular expression to use for marking up URLs. */
     private static final String URL_REGEXP = "(?i)([a-z+]+://" + URL_CHARS
-            + "+|(?<![a-z0-9:/])www\\." + URL_CHARS + "+)";
+            + "|(?<![a-z0-9:/])www\\." + URL_CHARS + ")";
     
     /** Regular expression for intelligent handling of closing brackets. */
     private static final String URL_INT1 = "(\\([^\\)" + CODE_HYPERLINK + "]*?" + CODE_HYPERLINK
@@ -90,7 +97,7 @@ public final class Styliser {
     private static final String URL_INT2 = "(^(?:[^" + CODE_HYPERLINK + "]+|"
             + CODE_HYPERLINK + "[^" + CODE_HYPERLINK + "]" + CODE_HYPERLINK + "))(['\"])([^"
             + CODE_HYPERLINK + "]*?" + CODE_HYPERLINK + "[^" + CODE_HYPERLINK
-            + "]+)(\\1[\"';:!,\\.\\)]*)" + CODE_HYPERLINK;
+            + "]+)(\\1[" + URL_PUNCT + "]*)" + CODE_HYPERLINK;
     
     /** Regular expression for intelligent handling of surrounding quotes. */
     private static final String URL_INT3 = "(['\"])(" + CODE_HYPERLINK
@@ -98,7 +105,7 @@ public final class Styliser {
     
     /** Regular expression for intelligent handling of trailing punctuation. */
     private static final String URL_INT4 = "(" + CODE_HYPERLINK
-            + "[^" + CODE_HYPERLINK + "]+?)([\\.,?!]?)" + CODE_HYPERLINK;
+            + "[^" + CODE_HYPERLINK + "]+?)([" + URL_PUNCT + "]?)" + CODE_HYPERLINK;
     
     /** The regular expression to use for marking up channels. */
     private static final String URL_CHANNEL = "(?i)(?<![^\\s])([#&]" + RESERVED_CHARS + "+)";
