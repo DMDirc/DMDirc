@@ -547,20 +547,6 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	}
 
 	/**
-	 * Load a plugin permanently, if it was previously loaded as temp,
-	 * or just load it initially.
-	 */
-	public void loadPluginPerm() {
-		if (isTempLoaded()) {
-			tempLoaded = false;
-			loadRequired();
-			plugin.onLoad();
-		} else {
-			loadPlugin();
-		}
-	}
-
-	/**
 	 * Load any required plugins
 	 */
 	public void loadRequired() {
@@ -576,8 +562,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 				if (tempLoaded) {
 					pi.loadPluginTemp();
 				} else {
-					// Using LoadPluginPerm incase plugin is onyl temp loaded
-					pi.loadPluginPerm();
+					pi.loadPlugin();
 				}
 			}
 		}
@@ -587,16 +572,22 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 * Load the plugin files.
 	 */
 	public void loadPlugin() {
-		if (isLoaded() || isTempLoaded() || metaData == null) {
-			lastError = "Not Loading: ("+isLoaded()+"||"+isTempLoaded()+"||"+(metaData == null)+")";
-			return;
-		}
-		
-		loadRequired();
-		
-		loadClass(getMainClass());
-		if (isLoaded()) {
-			ActionManager.processEvent(CoreActionType.PLUGIN_LOADED, null, this);
+		if (isTempLoaded()) {
+			tempLoaded = false;
+			loadRequired();
+			plugin.onLoad();
+		} else {
+			if (isLoaded() || metaData == null) {
+				lastError = "Not Loading: ("+isLoaded()+"||"+(metaData == null)+")";
+				return;
+			}
+			
+			loadRequired();
+			
+			loadClass(getMainClass());
+			if (isLoaded()) {
+				ActionManager.processEvent(CoreActionType.PLUGIN_LOADED, null, this);
+			}
 		}
 	}
 

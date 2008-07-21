@@ -82,7 +82,7 @@ public class PluginInfoToggle {
             if (pi.isLoaded()) {
                 pi.unloadPlugin();
             } else {
-                pi.loadPluginPerm();
+                pi.loadPlugin();
             }
             
             PluginManager.getPluginManager().updateAutoLoad(pi);
