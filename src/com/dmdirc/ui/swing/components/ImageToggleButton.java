@@ -78,6 +78,7 @@ public class ImageToggleButton extends JToggleButton {
         setIcon(icon);
         setRolloverIcon(rolloverIcon);
         setPressedIcon(pressedIcon);
+        setSelectedIcon(pressedIcon);
         setContentAreaFilled(false);
         setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         setMargin(new Insets(0, 0, 0, 0));

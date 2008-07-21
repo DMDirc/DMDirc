@@ -109,7 +109,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
     /** Creates the dialog if one doesn't exist, and displays it. */
     public static void showActionsManagerDialog() {
         getActionsManagerDialog();
-
+        
         me.pack();
         me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         me.setVisible(true);

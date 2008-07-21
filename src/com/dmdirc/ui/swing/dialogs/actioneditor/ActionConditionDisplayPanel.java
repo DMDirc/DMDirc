@@ -85,22 +85,26 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
         label = new TextLabel();
         editButton = new ImageToggleButton("edit", IconManager.getIconManager().
                 getIcon("edit-inactive"),
-                IconManager.getIconManager().getIcon("edit-active"));
+                IconManager.getIconManager().getIcon("edit"));
         deleteButton = new ImageButton("delete", IconManager.getIconManager().
+                getIcon("close-inactive"), IconManager.getIconManager().
                 getIcon("close-inactive"),
                 IconManager.getIconManager().getIcon("close-active"));
 
         editPanel = new ActionConditionEditorPanel();
         listeners = new ListenerList();
+        editPanel.setVisible(false);
     }
 
     /** Adds the listeners. */
     private void addListeners() {
+        editButton.addActionListener(this);
+        deleteButton.addActionListener(this);
     }
 
     /** Lays out the components. */
     private void layoutComponents() {
-        setLayout(new MigLayout("fill, pack, hidemode 3"));
+        setLayout(new MigLayout("ins 0, fillx, pack, hidemode 3"));
         add(label, "growx");
         add(editButton, "right");
         add(deleteButton, "right, wrap");
@@ -173,12 +177,20 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
         this.trigger = trigger;
         this.condition = condition;
 
-        label.setText("The " +
-                trigger.getType().getArgNames()[condition.getArg()] + "'s " + condition.getComponent().
-                getName() + " " + condition.getComparison().getName() + " '" +
-                condition.getTarget() + "'");
+        if (condition.getArg() == -1 && condition.getComparison() == null &&
+                condition.getComponent() == null && condition.getTarget() ==
+                null) {
+            label.setText("");
+            editPanel.setVisible(true);
+            editButton.setSelected(true);
+        } else {
+            label.setText("The " +
+                    trigger.getType().getArgNames()[condition.getArg()] + "'s " + condition.getComponent().
+                    getName() + " " + condition.getComparison().getName() + " '" +
+                    condition.getTarget() + "'");
+        }
     }
-    
+
     /**
      * Returns the action condition represented by this panel.
      * 
