@@ -27,6 +27,7 @@ import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.URLProtocolPanel;
+import com.dmdirc.util.URLHandler;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -136,6 +137,7 @@ public class URLDialog extends StandardDialog implements ActionListener {
         if (e.getSource() == getOkButton()) {
             panel.save();
             dispose();
+            URLHandler.getURLHander().launchApp(url);
         } else if (e.getSource() == getCancelButton()) {
             dispose();
         }
