@@ -628,22 +628,22 @@ public class PluginInfo implements Comparable<PluginInfo> {
 				}
 			}
 		} catch (ClassNotFoundException cnfe) {
-			Logger.userError(ErrorLevel.LOW, "Class not found ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+cnfe, cnfe);
+			Logger.userError(ErrorLevel.LOW, "Class not found ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+cnfe.getMessage(), cnfe);
 		} catch (NoSuchMethodException nsme) {
 			// Don't moan about missing constructors for any class thats not the main Class
 			if (classname.equals(getMainClass())) {
-				Logger.userError(ErrorLevel.LOW, "Constructor missing ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+nsme, nsme);
+				Logger.userError(ErrorLevel.LOW, "Constructor missing ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+nsme.getMessage(), nsme);
 			}
 		} catch (IllegalAccessException iae) {
-			Logger.userError(ErrorLevel.LOW, "Unable to access constructor ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+iae, iae);
+			Logger.userError(ErrorLevel.LOW, "Unable to access constructor ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+iae.getMessage(), iae);
 		} catch (InvocationTargetException ite) {
-			Logger.userError(ErrorLevel.LOW, "Unable to invoke target ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+ite, ite);
+			Logger.userError(ErrorLevel.LOW, "Unable to invoke target ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+ite.getMessage(), ite);
 		} catch (InstantiationException ie) {
-			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+ie, ie);
+			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+ie.getMessage(), ie);
 		} catch (NoClassDefFoundError ncdf) {
 			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - Unable to find class: " + ncdf.getMessage(), ncdf);
 		} catch (VerifyError ve) {
-			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - Incompatible", ve);
+			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - Incompatible: "+ve.getMessage(), ve);
 		}
 	}
 
