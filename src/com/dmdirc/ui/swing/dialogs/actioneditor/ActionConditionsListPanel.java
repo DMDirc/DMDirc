@@ -23,16 +23,11 @@
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
 import com.dmdirc.actions.ActionCondition;
-import com.dmdirc.actions.CoreActionComparison;
-import com.dmdirc.actions.CoreActionComponent;
-import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
-import com.dmdirc.ui.swing.UIUtilities;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -162,40 +157,5 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
             conditions.remove(condition);
         }
         layoutComponents();
-    }
-
-    /**
-     * This is a test method.
-     * 
-     * @param args CLI Params
-     * 
-     * @throws java.lang.InterruptedException so i can pause the thread.
-     */
-    public static void main(final String[] args) throws InterruptedException {
-        UIUtilities.initUISettings();
-        final List<ActionConditionDisplayPanel> conditions =
-                new ArrayList<ActionConditionDisplayPanel>();
-        conditions.add(new ActionConditionDisplayPanel(new ActionCondition(0,
-                CoreActionComponent.USER_NAME,
-                CoreActionComparison.STRING_EQUALS, "greboid"),
-                CoreActionType.CHANNEL_JOIN));
-        conditions.add(new ActionConditionDisplayPanel(new ActionCondition(0,
-                CoreActionComponent.USER_NAME,
-                CoreActionComparison.STRING_EQUALS, "greboid1"),
-                CoreActionType.CHANNEL_JOIN));
-
-        final JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        final ActionConditionsListPanel panel = new ActionConditionsListPanel(CoreActionType.CHANNEL_JOIN,
-                conditions);
-        frame.add(panel);
-
-        frame.pack();
-        frame.setVisible(true);
-
-        Thread.sleep(1000);
-
-        panel.addCondition(new ActionCondition(-1, null, null, null));
     }
 }

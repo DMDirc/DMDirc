@@ -108,7 +108,7 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
         add(label, "growx");
         add(editButton, "right");
         add(deleteButton, "right, wrap");
-        add(editPanel, "grow");
+        add(editPanel, "alignx right");
     }
 
     /** 
