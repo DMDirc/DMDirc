@@ -588,6 +588,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 */
 	public void loadPlugin() {
 		if (isLoaded() || isTempLoaded() || metaData == null) {
+			lastError = "Not Loading: ("+isLoaded()+"||"+isTempLoaded()+"||"+(metaData == null)+")";
 			return;
 		}
 		
