@@ -23,28 +23,30 @@
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
 import com.dmdirc.actions.ActionCondition;
-import com.dmdirc.actions.CoreActionComparison;
-import com.dmdirc.actions.CoreActionComponent;
-import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.ui.swing.UIUtilities;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.interfaces.ActionComparison;
+import com.dmdirc.actions.interfaces.ActionComponent;
+import com.dmdirc.actions.interfaces.ActionType;
+
+import com.dmdirc.ui.swing.components.renderers.ActionCellRenderer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
  * Action conditioneditor panel.
  */
-public class ActionConditionEditorPanel extends JPanel implements ActionListener, DocumentListener {
+public class ActionConditionEditorPanel extends JPanel implements ActionListener,
+        DocumentListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -52,53 +54,151 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** Condition. */
+    private ActionCondition condition;
+    /** Trigger. */
+    private ActionType trigger;
     /** Argument. */
-    private JComboBox argument;
+    private JComboBox arguments;
     /** Component. */
-    private JComboBox component;
+    private JComboBox components;
     /** Comparison. */
-    private JComboBox comparison;
+    private JComboBox comparisons;
     /** Target. */
     private JTextField target;
 
-    /** Instantiates the panel. */
-    public ActionConditionEditorPanel() {
+    /** 
+     * Instantiates the panel.
+     * 
+     * @param condition Action condition
+     * @param trigger Action trigger
+     */
+    public ActionConditionEditorPanel(final ActionCondition condition,
+            final ActionType trigger) {
         super();
-        
+
+        this.condition = condition;
+        this.trigger = trigger;
+
         initComponents();
         addListeners();
         layoutComponents();
+        populateArguments();
     }
 
     /** Initialises the components. */
     private void initComponents() {
-        argument = new JComboBox(new DefaultComboBoxModel());
-        argument.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
-        component = new JComboBox(new DefaultComboBoxModel());
-        component.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
-        comparison = new JComboBox(new DefaultComboBoxModel());
-        comparison.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
+        arguments = new JComboBox(new DefaultComboBoxModel());
+        arguments.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
+        components = new JComboBox(new DefaultComboBoxModel());
+        components.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
+        comparisons = new JComboBox(new DefaultComboBoxModel());
+        comparisons.putClientProperty("JComboBox.isTableCellEditor",
+                Boolean.TRUE);
         target = new JTextField();
+
+        arguments.setRenderer(new ActionCellRenderer());
+        components.setRenderer(new ActionCellRenderer());
+        comparisons.setRenderer(new ActionCellRenderer());
+
+        components.setEnabled(false);
+        comparisons.setEnabled(false);
+        target.setEnabled(false);
+    }
+
+    /** Populates the arguments combo box. */
+    private void populateArguments() {
+        ((DefaultComboBoxModel) arguments.getModel()).removeAllElements();
+
+        for (String arg : trigger.getType().getArgNames()) {
+            ((DefaultComboBoxModel) arguments.getModel()).addElement(arg);
+        }
+
+        if (condition.getArg() == -1) {
+            arguments.setSelectedIndex(-1);
+            components.setEnabled(false);
+            condition.setComponent(null);
+            condition.setComparison(null);
+            target = null;
+        } else {
+            arguments.setSelectedIndex(condition.getArg());
+            components.setEnabled(true);
+            components.setSelectedIndex(-1);
+        }
+
+        populateComponents();
+    }
+
+    /** Populates the components combo box. */
+    private void populateComponents() {
+        ((DefaultComboBoxModel) components.getModel()).removeAllElements();
+
+        if (arguments.getSelectedItem() != null) {
+            for (ActionComponent comp : ActionManager.getCompatibleComponents(
+                    trigger.getType().getArgTypes()[arguments.getSelectedIndex()])) {
+                ((DefaultComboBoxModel) components.getModel()).addElement(comp);
+            }
+        }
+
+        if (condition.getComponent() == null) {
+            components.setSelectedIndex(-1);
+            comparisons.setEnabled(false);
+            condition.setComparison(null);
+            condition.setTarget(null);
+        } else {
+            components.setSelectedItem(condition.getComponent());
+            comparisons.setEnabled(true);
+        }
+
+        populateComparisons();
+    }
+
+    /** Populates the comparisons combo box. */
+    private void populateComparisons() {
+        ((DefaultComboBoxModel) comparisons.getModel()).removeAllElements();
+
+        if (components.getSelectedItem() != null) {
+            for (ActionComparison comp : ActionManager.getCompatibleComparisons(
+                    ((ActionComponent) components.getSelectedItem()).getType())) {
+                ((DefaultComboBoxModel) comparisons.getModel()).addElement(comp);
+            }
+        }
+
+        if (condition.getComparison() == null) {
+            comparisons.setSelectedIndex(-1);
+            target.setEnabled(false);
+            condition.setTarget(null);
+        } else {
+            comparisons.setSelectedItem(condition.getComparison());
+            target.setEnabled(true);
+        }
+
+        populateTarget();
+    }
+
+    /** Populates the target textfield. */
+    private void populateTarget() {
+        target.setText(condition.getTarget());
     }
 
     /** Adds the listeners. */
     private void addListeners() {
-        argument.addActionListener(this);
-        component.addActionListener(this);
-        comparison.addActionListener(this);
+        arguments.addActionListener(this);
+        components.addActionListener(this);
+        comparisons.addActionListener(this);
         target.getDocument().addDocumentListener(this);
     }
 
     /** Lays out the components. */
     private void layoutComponents() {
         setLayout(new MigLayout("wrap 2"));
-        
+
         add(new JLabel("Argument:"), "align right");
-        add(argument, "growx");
+        add(arguments, "growx");
         add(new JLabel("Component:"), "align right");
-        add(component, "growx");
+        add(components, "growx");
         add(new JLabel("Comparison:"), "align right");
-        add(comparison, "growx");
+        add(comparisons, "growx");
         add(new JLabel("Target:"), "align right");
         add(target, "growx");
     }
@@ -110,59 +210,45 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
      */
     @Override
     public void actionPerformed(final ActionEvent e) {
-        //Ignore
+        if (e.getSource() == arguments && isVisible()) {
+            if (arguments.getSelectedItem() == null) {
+                condition.setArg(-1);
+            } else {
+                condition.setArg(arguments.getSelectedIndex());
+            }
+            populateArguments();
+        } else if (e.getSource() == components && isVisible()) {
+            if (components.getSelectedItem() == null) {
+                condition.setComponent(null);
+            } else {
+                condition.setComponent((ActionComponent) components.getSelectedItem());
+            }
+            populateComponents();
+        } else if (e.getSource() == comparisons && isVisible()) {
+            if (comparisons.getSelectedItem() == null) {
+                condition.setComparison(null);
+            } else {
+                condition.setComparison((ActionComparison) comparisons.getSelectedItem());
+            }
+            populateComparisons();
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public void insertUpdate(final DocumentEvent e) {
-        //Ignore
+    //Ignore
     }
 
     /** {@inheritDoc} */
     @Override
     public void removeUpdate(final DocumentEvent e) {
-        //Ignore
+    //Ignore
     }
 
     /** {@inheritDoc} */
     @Override
     public void changedUpdate(final DocumentEvent e) {
-        //Ignore
-    }
-    
-    /**
-     * This is a test method.
-     * 
-     * @param args CLI Params
-     * 
-     * @throws java.lang.InterruptedException so i can pause the thread.
-     */
-    public static void main(final String[] args) throws InterruptedException {
-        UIUtilities.initUISettings();
-        final List<ActionConditionDisplayPanel> conditions =
-                new ArrayList<ActionConditionDisplayPanel>();
-        conditions.add(new ActionConditionDisplayPanel(new ActionCondition(0,
-                CoreActionComponent.USER_NAME,
-                CoreActionComparison.STRING_EQUALS, "greboid"),
-                CoreActionType.CHANNEL_JOIN));
-        conditions.add(new ActionConditionDisplayPanel(new ActionCondition(0,
-                CoreActionComponent.USER_NAME,
-                CoreActionComparison.STRING_EQUALS, "greboid1"),
-                CoreActionType.CHANNEL_JOIN));
-
-        final JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        final ActionConditionsListPanel panel = new ActionConditionsListPanel(CoreActionType.CHANNEL_JOIN,
-                conditions);
-        frame.add(panel);
-
-        frame.pack();
-        frame.setVisible(true);
-
-        Thread.sleep(1000);
-
-        panel.addCondition(new ActionCondition(-1, null, null, null));
+    //Ignore
     }
 }

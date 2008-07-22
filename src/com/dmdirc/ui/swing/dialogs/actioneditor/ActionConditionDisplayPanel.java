@@ -74,6 +74,9 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
             final ActionType trigger) {
         super();
 
+        this.trigger = trigger;
+        this.condition = condition;
+
         initComponents();
         setCondition(trigger, condition);
         addListeners();
@@ -91,7 +94,7 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
                 getIcon("close-inactive"),
                 IconManager.getIconManager().getIcon("close-active"));
 
-        editPanel = new ActionConditionEditorPanel();
+        editPanel = new ActionConditionEditorPanel(condition, trigger);
         listeners = new ListenerList();
         editPanel.setVisible(false);
     }
@@ -177,18 +180,30 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
         this.trigger = trigger;
         this.condition = condition;
 
-        if (condition.getArg() == -1 && condition.getComparison() == null &&
-                condition.getComponent() == null && condition.getTarget() ==
+        if (condition.getArg() == -1 || condition.getComparison() == null ||
+                condition.getComponent() == null || condition.getTarget() ==
                 null) {
             label.setText("");
             editPanel.setVisible(true);
             editButton.setSelected(true);
-        } else {
-            label.setText("The " +
-                    trigger.getType().getArgNames()[condition.getArg()] + "'s " + condition.getComponent().
-                    getName() + " " + condition.getComparison().getName() + " '" +
-                    condition.getTarget() + "'");
         }
+        final StringBuilder sb = new StringBuilder();
+        sb.append("The ");
+        sb.append(trigger.getType().getArgNames()[condition.getArg()]);
+        sb.append("'s ");
+        if (condition.getComponent() != null) {
+            sb.append(condition.getComponent().getName());
+        }
+        sb.append(" ");
+        if (condition.getComparison() != null) {
+            sb.append(condition.getComparison().getName());
+        }
+        sb.append(" '");
+        if (condition.getTarget() != null) {
+            sb.append(condition.getTarget());
+        }
+        sb.append("'");
+        label.setText(sb.toString());
     }
 
     /**
