@@ -86,6 +86,12 @@ public class LauncherComponent implements UpdateComponent {
 
     /** {@inheritDoc} */
     @Override
+    public String getFriendlyVersion() {
+        return String.valueOf(getVersion());
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public int getVersion() {
         return version;
     }

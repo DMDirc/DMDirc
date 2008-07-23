@@ -50,6 +50,12 @@ public class DefaultsComponent implements UpdateComponent {
     }    
 
     /** {@inheritDoc} */
+    @Override
+    public String getFriendlyVersion() {
+        return String.valueOf(getVersion());
+    }
+
+    /** {@inheritDoc} */
     @Override    
     public int getVersion() {
         final ConfigManager globalConfig = IdentityManager.getGlobalConfig();

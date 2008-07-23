@@ -55,6 +55,16 @@ public class ClientComponent implements UpdateComponent {
 
     /** {@inheritDoc} */
     @Override
+    public String getFriendlyVersion() {
+        if (Main.VERSION.equals("SVN")) {
+            return Main.VERSION+" ("+Main.SVN_REVISION+")";
+        } else {
+            return Main.VERSION;
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public boolean doInstall(final String path) {
         final File tmpFile = new File(path);
         final File targetFile = new File(tmpFile.getParent() + File.separator + ".DMDirc.jar");

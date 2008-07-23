@@ -71,6 +71,12 @@ public class ActionGroupComponent implements UpdateComponent {
 
     /** {@inheritDoc} */
     @Override
+    public String getFriendlyVersion() {
+        return String.valueOf(getVersion());
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public boolean doInstall(final String path) throws Throwable {
         ActionManager.installActionPack(path);
         return false;

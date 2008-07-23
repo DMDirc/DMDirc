@@ -76,6 +76,12 @@ public class PluginComponent implements UpdateComponent {
     }
 
     /** {@inheritDoc} */
+    @Override
+    public String getFriendlyVersion() {
+        return plugin.getFriendlyVersion();
+    }
+
+    /** {@inheritDoc} */
     @Override    
     public int getVersion() {
         return plugin.getVersion();

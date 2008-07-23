@@ -138,7 +138,7 @@ public class UpdateTableModel extends AbstractTableModel {
                 case 1:
                     return enabled.get(updates.get(rowIndex));
                 case 2:
-                    return updates.get(rowIndex).getVersion();
+                    return updates.get(rowIndex).getFriendlyVersion();
                 default:
                     throw new IllegalArgumentException("Unknown column: " +
                             columnIndex);
