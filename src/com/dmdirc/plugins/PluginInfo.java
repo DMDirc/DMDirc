@@ -115,7 +115,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			res = getResourceManager();
 		} catch (IOException ioe) {
 			lastError = "Error with resourcemanager: "+ioe.getMessage();
-			throw new PluginException("Plugin "+filename+" failed to load, error with resourcemanager: "+ioe.getMessage(), ioe);
+			throw new PluginException("Plugin "+filename+" failed to load. "+lastError, ioe);
 		}
 
 		try {
@@ -123,8 +123,8 @@ public class PluginInfo implements Comparable<PluginInfo> {
 				metaData = new Properties();
 				metaData.load(res.getResourceInputStream("META-INF/plugin.info"));
 			} else {
-				lastError = "plugin.info not found";
-				throw new PluginException("Plugin "+filename+" failed to load, plugin.info doesn't exist in jar");
+				lastError = "plugin.info doesn't exist in jar";
+				throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
 			}
 		} catch (IOException e) {
 			lastError = "plugin.info IOException: "+e.getMessage();
@@ -136,26 +136,26 @@ public class PluginInfo implements Comparable<PluginInfo> {
 
 		if (getVersion() < 0) {
 			lastError = "Incomplete plugin.info (Missing or invalid 'version')";
-			throw new PluginException("Plugin "+filename+" failed to load, incomplete plugin.info (Missing or invalid 'version')");
+			throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
 		} else if (getAuthor().isEmpty()) {
 			lastError = "Incomplete plugin.info (Missing or invalid 'author')";
-			throw new PluginException("Plugin "+filename+" failed to load, incomplete plugin.info (Missing 'author')");
+			throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
 		} else if (getName().isEmpty()) {
 			lastError = "Incomplete plugin.info (Missing or invalid 'name')";
-			throw new PluginException("Plugin "+filename+" failed to load, incomplete plugin.info (Missing 'name')");
+			throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
 		} else if (getMinVersion().isEmpty()) {
 			lastError = "Incomplete plugin.info (Missing or invalid 'minversion')";
-			throw new PluginException("Plugin "+filename+" failed to load, incomplete plugin.info (Missing 'minversion')");
+			throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
 		} else if (getMainClass().isEmpty()) {
 			lastError = "Incomplete plugin.info (Missing or invalid 'mainclass')";
-			throw new PluginException("Plugin "+filename+" failed to load, incomplete plugin.info (Missing 'mainclass')");
+			throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
 		}
 
 		if (checkRequirements()) {
 			final String mainClass = getMainClass().replace('.', '/')+".class";
 			if (!res.resourceExists(mainClass)) {
 				lastError = "main class file ("+mainClass+") not found in jar.";
-				throw new PluginException("Plugin "+filename+" failed to load, main class file ("+mainClass+") not found in jar.");
+				throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
 			}
 
 			for (final String classfilename : res.getResourcesStartingWith("")) {
@@ -169,7 +169,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			if (isPersistant() && loadAll()) { loadEntirePlugin(); }
 		} else {
 			lastError = "One or more requirements not met ("+requirementsError+")";
-			throw new PluginException("Plugin "+filename+" was not loaded, one or more requirements not met ("+requirementsError+")");
+			throw new PluginException("Plugin "+filename+" was not loaded. "+lastError);
 		}
 	}
 
@@ -624,42 +624,42 @@ public class PluginInfo implements Comparable<PluginInfo> {
 								plugin.onLoad();
 							} catch (Exception e) {
 								lastError = "Error in onLoad for "+getName()+":"+e.getMessage();
-								Logger.userError(ErrorLevel.MEDIUM, "Error in onLoad for "+getName()+":"+e.getMessage(), e);
+								Logger.userError(ErrorLevel.MEDIUM, lastError, e);
 								unloadPlugin();
 							}
 						}
 					} else {
 						if (!tempLoaded) {
 							lastError = "Prerequisites for plugin not met. ('"+filename+":"+getMainClass()+"')";
-							Logger.userError(ErrorLevel.LOW, "Prerequisites for plugin not met. ('"+filename+":"+getMainClass()+"')");
+							Logger.userError(ErrorLevel.LOW, lastError);
 						}
 					}
 				}
 			}
 		} catch (ClassNotFoundException cnfe) {
 			lastError = "Class not found ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+cnfe.getMessage();
-			Logger.userError(ErrorLevel.LOW, "Class not found ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+cnfe.getMessage(), cnfe);
+			Logger.userError(ErrorLevel.LOW, lastError, cnfe);
 		} catch (NoSuchMethodException nsme) {
 			// Don't moan about missing constructors for any class thats not the main Class
 			lastError = "Constructor missing ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+nsme.getMessage();
 			if (classname.equals(getMainClass())) {
-				Logger.userError(ErrorLevel.LOW, "Constructor missing ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+nsme.getMessage(), nsme);
+				Logger.userError(ErrorLevel.LOW, lastError, nsme);
 			}
 		} catch (IllegalAccessException iae) {
 			lastError = "Unable to access constructor ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+iae.getMessage();
-			Logger.userError(ErrorLevel.LOW, "Unable to access constructor ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+iae.getMessage(), iae);
+			Logger.userError(ErrorLevel.LOW, lastError, iae);
 		} catch (InvocationTargetException ite) {
 			lastError = "Unable to invoke target ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+ite.getMessage();
-			Logger.userError(ErrorLevel.LOW, "Unable to invoke target ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+ite.getMessage(), ite);
+			Logger.userError(ErrorLevel.LOW, lastError, ite);
 		} catch (InstantiationException ie) {
 			lastError = "Unable to instantiate plugin ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+ie.getMessage();
-			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - "+ie.getMessage(), ie);
+			Logger.userError(ErrorLevel.LOW, lastError, ie);
 		} catch (NoClassDefFoundError ncdf) {
 			lastError = "Unable to instantiate plugin ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - Unable to find class: " + ncdf.getMessage();
-			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - Unable to find class: " + ncdf.getMessage(), ncdf);
+			Logger.userError(ErrorLevel.LOW, lastError, ncdf);
 		} catch (VerifyError ve) {
 			lastError = "Unable to instantiate plugin ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - Incompatible: "+ve.getMessage();
-			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+filename+":"+classname+":"+classname.equals(getMainClass())+"') - Incompatible: "+ve.getMessage(), ve);
+			Logger.userError(ErrorLevel.LOW, lastError, ve);
 		}
 	}
 
@@ -673,7 +673,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 					plugin.onUnload();
 				} catch (Exception e) {
 					lastError = "Error in onUnload for "+getName()+":"+e.getMessage();
-					Logger.userError(ErrorLevel.MEDIUM, "Error in onUnload for "+getName()+":"+e.getMessage(), e);
+					Logger.userError(ErrorLevel.MEDIUM, lastError, e);
 				}
 				ActionManager.processEvent(CoreActionType.PLUGIN_UNLOADED, null, this);
 			}
@@ -687,6 +687,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 * Get the last Error
 	 *
 	 * @return last Error
+	 * @since 0.6
 	 */
 	public String getLastError() { return lastError; }
 
