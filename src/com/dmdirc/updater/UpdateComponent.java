@@ -47,8 +47,9 @@ public interface UpdateComponent {
     
     /**
      * A user-friendly version displayed for the component.
-     * 
+     *
      * @return This component's user-friendly version
+     * @since 0.6
      */
     String getFriendlyVersion();
 
