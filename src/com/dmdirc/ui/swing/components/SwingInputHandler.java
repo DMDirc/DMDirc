@@ -80,7 +80,7 @@ public class SwingInputHandler extends InputHandler implements KeyListener {
                 doBufferUp();
             }
         });
-        localTarget.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).
+        localTarget.getInputMap(JComponent.WHEN_FOCUSED).
                 put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "upArrow");
     }
 
@@ -108,7 +108,7 @@ public class SwingInputHandler extends InputHandler implements KeyListener {
                 doBufferDown();
             }
         });
-        localTarget.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).
+        localTarget.getInputMap(JComponent.WHEN_FOCUSED).
                 put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "downArrow");
     }
 
