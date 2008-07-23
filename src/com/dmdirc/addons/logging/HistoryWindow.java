@@ -56,32 +56,19 @@ public class HistoryWindow extends FrameContainer {
      */
     public HistoryWindow(final String title, final ReverseFileReader reader, final Window parent) {
         super("raw", parent.getConfigManager());
-        System.out.println("New history window");
         this.title = title;
         this.parent = parent;
         
         window = Main.getUI().getWindow(this);
         
         WindowManager.addWindow(parent, window);
-        System.out.println("New history window 2");
         window.setTitle(title);
         window.setVisible(true);
-        System.out.println("New history window 3");
         final int historyLineCount = IdentityManager.getGlobalConfig().getOptionInt(
                 "plugin-Logging", "history.lines", 50000);
         final int frameBufferSize = IdentityManager.getGlobalConfig().getOptionInt(
                 "ui", "frameBufferSize", 10000);
-//        window.addLine(reader.getLinesAsString(Math.min(frameBufferSize, historyLineCount)), false);
-        System.out.println("New history window 4");
-        final long starttime = System.currentTimeMillis();
-        System.out.println(reader.getLinesAsString(Math.min(frameBufferSize, historyLineCount)));
-        final long endtime = System.currentTimeMillis();
-        System.out.println("Sysout Time taken: "+(endtime-starttime)+"ms");
-        
-        final long starttime2 = System.currentTimeMillis();
         window.addLine(reader.getLinesAsString(Math.min(frameBufferSize, historyLineCount)), false);
-        final long endtime2 = System.currentTimeMillis();
-        System.out.println("UI Time taken: "+(endtime2-starttime2)+"ms");
     }
     
     /** {@inheritDoc} */
