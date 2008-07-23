@@ -75,15 +75,21 @@ public final class Styliser {
             + CODE_STOP + CODE_HEXCOLOUR + CODE_FIXED + CODE_ITALIC
             + CODE_UNDERLINE + CODE_CHANNEL + CODE_NICKNAME + CODE_NEGATE + "\"]";
     
-    /** Defines all characters treated as trailing punctuation. */
-    private static final String URL_PUNCT = "\"';:!,\\.\\)\\?";
+    /** Defines all characters treated as trailing punctuation that are illegal in URLs. */
+    private static final String URL_PUNCT_ILLEGAL = "\"";
+    
+    /** Defines all characters treated as trailing punctuation that're legal in URLs. */
+    private static final String URL_PUNCT_LEGAL = "';:!,\\.\\)\\?";
+    
+    /** Defines all trailing punctuation. */
+    private static final String URL_PUNCT = URL_PUNCT_ILLEGAL + URL_PUNCT_LEGAL;
 
     /** Defines all characters allowed in URLs that aren't treated as trailing punct. */
     private static final String URL_NOPUNCT = "a-z0-9$\\-_@&\\+\\*\\(=/#%~";
 
     /** Defines all characters allowed in URLs per W3C specs. */
-    private static final String URL_CHARS = "[" + URL_PUNCT + URL_NOPUNCT
-            + "]*[" + URL_NOPUNCT + "]+[" + URL_PUNCT + URL_NOPUNCT + "]*";
+    private static final String URL_CHARS = "[" + URL_PUNCT_LEGAL + URL_NOPUNCT
+            + "]*[" + URL_NOPUNCT + "]+[" + URL_PUNCT_LEGAL + URL_NOPUNCT + "]*";
 
     /** The regular expression to use for marking up URLs. */
     private static final String URL_REGEXP = "(?i)([a-z+]+://" + URL_CHARS
