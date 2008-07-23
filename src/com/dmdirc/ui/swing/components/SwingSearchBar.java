@@ -124,7 +124,7 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
 
     /** Lays out components. */
     private void layoutComponents() {
-        this.setLayout(new MigLayout("ins rel 0 0 0, fill"));
+        this.setLayout(new MigLayout("ins 0, fill"));
 
         add(closeButton);
         add(searchBox, "growx, pushx, sgy all");
