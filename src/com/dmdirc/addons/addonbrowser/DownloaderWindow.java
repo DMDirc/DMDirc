@@ -8,9 +8,11 @@ package com.dmdirc.addons.addonbrowser;
 import com.dmdirc.Main;
 import com.dmdirc.util.DownloadListener;
 import com.dmdirc.util.Downloader;
+
 import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
+
 import javax.swing.JDialog;
 import javax.swing.JProgressBar;
 
@@ -20,8 +22,16 @@ import javax.swing.JProgressBar;
  */
 public class DownloaderWindow extends JDialog implements Runnable, DownloadListener {
    
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
+    /** Downloader progress bar. */
     private final JProgressBar jpb = new JProgressBar(0, 100);
 
+    /** Instantiates a new downloader window. */
     public DownloaderWindow() {
         setTitle("Downloading addon information...");
         add(jpb);
@@ -34,6 +44,7 @@ public class DownloaderWindow extends JDialog implements Runnable, DownloadListe
         new Thread(this, "Addon downloader thread").start();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void run() {
         try {
@@ -47,6 +58,7 @@ public class DownloaderWindow extends JDialog implements Runnable, DownloadListe
         dispose();
     }
     
+    /** {@inheritDoc} */
     @Override
     public void downloadProgress(float percent) {
         jpb.setValue((int) percent);
