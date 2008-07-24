@@ -54,6 +54,7 @@ import com.dmdirc.ui.swing.textpane.TextPane;
 import com.dmdirc.ui.swing.textpane.TextPane.ClickType;
 import com.dmdirc.ui.swing.textpane.TextPanePageUpAction;
 import com.dmdirc.ui.swing.textpane.TextPanePageDownAction;
+import com.dmdirc.ui.swing.UIUtilities;
 
 import com.dmdirc.util.URLHandler;
 import java.awt.Color;
@@ -319,7 +320,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
 
         getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).
                 put(KeyStroke.getKeyStroke(KeyEvent.VK_F,
-                InputEvent.CTRL_DOWN_MASK), "searchAction");
+                UIUtilities.getCtrlDownMask()), "searchAction");
 
         getActionMap().put("pageUpAction",
                 new TextPanePageUpAction(getTextPane()));
@@ -824,7 +825,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void keyPressed(final KeyEvent event) {
-        if (!quickCopy && (event.getModifiers() & KeyEvent.CTRL_MASK) != 0 &&
+        if (!quickCopy && (event.getModifiers() & UIUtilities.getCtrlMask()) != 0 &&
                 event.getKeyCode() == KeyEvent.VK_C) {
             getTextPane().copy();
         }

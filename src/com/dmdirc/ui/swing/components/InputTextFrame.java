@@ -336,7 +336,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     public void keyPressed(final KeyEvent event) {
         if (event.getSource() == getTextPane() && (getConfigManager().
                 getOptionBool("ui", "quickCopy", false) ||
-                (event.getModifiers() & KeyEvent.CTRL_MASK) == 0)) {
+                (event.getModifiers() & UIUtilities.getCtrlMask()) == 0)) {
             event.setSource(getInputField());
             getInputField().requestFocus();
             if (robot != null && event.getKeyCode() != KeyEvent.VK_UNDEFINED) {

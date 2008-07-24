@@ -26,6 +26,7 @@ import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.InputField;
 import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.ui.swing.UIUtilities;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -205,7 +206,7 @@ public class SwingInputHandler extends InputHandler implements KeyListener {
     public void keyPressed(final KeyEvent e) {
         if (e.getKeyCode() != KeyEvent.VK_TAB && e.getKeyCode() !=
                 KeyEvent.VK_UP && e.getKeyCode() != KeyEvent.VK_DOWN) {
-            handleKeyPressed(e.getKeyCode(), e.isShiftDown(), e.isControlDown());
+            handleKeyPressed(e.getKeyCode(), e.isShiftDown(), UIUtilities.isCtrlDown(e));
         }
     }
 

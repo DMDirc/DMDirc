@@ -152,7 +152,7 @@ public final class TopicPane extends JPanel implements DocumentListener,
                 put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),
                 new EnterAction());
         topicText.getInputMap().
-                put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_DOWN_MASK),
+                put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, UIUtilities.getCtrlDownMask()),
                 new EnterAction());
         
         UIUtilities.addUndoManager(topicText);

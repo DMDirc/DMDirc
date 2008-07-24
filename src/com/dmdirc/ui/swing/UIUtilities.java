@@ -30,6 +30,7 @@ import com.dmdirc.ui.swing.components.DMDircUndoableEditListener;
 import com.dmdirc.util.ReturnableThread;
 
 import java.awt.Dimension;
+import java.awt.event.KeyEvent;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.BorderFactory;
@@ -229,6 +230,7 @@ public final class UIUtilities {
      * Get the value to pass to set Opaque on items being added to a JTabbedPane
      * 
      * @return True iff the current LAF is not Windows or OS X.
+     * @since 0.6
      */
     public static boolean getTabbedPaneOpaque() {
         final String uiname = UIManager.getLookAndFeel().getClass().getName();
@@ -236,5 +238,35 @@ public final class UIUtilities {
                 "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
 
         return !(windows.equals(uiname) || Apple.isAppleUI());
+    }
+    
+    /**
+     * Get the DOWN_MASK for the command/ctrl key.
+     * 
+     * @return on OSX this returns META_DOWN_MASK, else CTRL_DOWN_MASK
+     * @since 0.6
+     */
+    public static int getCtrlDownMask() {
+        return (Apple.isAppleUI()) ? KeyEvent.META_DOWN_MASK : KeyEvent.CTRL_DOWN_MASK;
+    }
+    
+    /**
+     * Get the MASK for the command/ctrl key.
+     * 
+     * @return on OSX this returns META_MASK, else CTRL_MASK
+     * @since 0.6
+     */
+    public static int getCtrlMask() {
+        return (Apple.isAppleUI()) ? KeyEvent.META_MASK : KeyEvent.CTRL_MASK;
+    }
+    
+    /**
+     * Check if the command/ctrl key is pressed down.
+     * 
+     * @return on OSX this returns e.isMetaDown(), else e.isControlDown()
+     * @since 0.6
+     */
+    public static boolean isCtrlDown(final KeyEvent e) {
+        return (Apple.isAppleUI()) ? e.isMetaDown() : e.isControlDown();
     }
 }
