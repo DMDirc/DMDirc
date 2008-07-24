@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.ui.swing.dialogs.error;
 
 import com.dmdirc.ui.swing.components.renderers.ErrorLevelIconCellRenderer;
@@ -65,7 +66,7 @@ public final class ErrorListDialog extends StandardDialog implements
      */
     private static final long serialVersionUID = 5;
     /** Previously instantiated instance of ErrorListDialog. */
-    private static ErrorListDialog me;
+    private static volatile ErrorListDialog me;
     /** Error manager. */
     private final ErrorManager errorManager;
     /** Table scrollpane. */
@@ -99,7 +100,7 @@ public final class ErrorListDialog extends StandardDialog implements
     }
 
     /** Returns the instance of ErrorListDialog. */
-    public static synchronized void showErrorListDialog() {
+    public static void showErrorListDialog() {
         me = getErrorListDialog();
 
         me.setLocationRelativeTo(me.getParent());
@@ -112,18 +113,20 @@ public final class ErrorListDialog extends StandardDialog implements
      *
      * @return The current PluginDErrorListDialogialog instance
      */
-    public static synchronized ErrorListDialog getErrorListDialog() {
-        if (me == null) {
-            me = new ErrorListDialog();
-        } else if (me.tableModel.getRowCount() !=
-                me.errorManager.getErrorCount()) {
-            me.tableModel = new ErrorTableModel(new ArrayList<ProgramError>(
-                    me.errorManager.getErrorList().values()));
-            me.table.setModel(me.tableModel);
-            if (me.tableModel.getRowCount() > 0) {
-                me.deleteAllButton.setEnabled(true);
-            } else {
-                me.deleteAllButton.setEnabled(false);
+    public static ErrorListDialog getErrorListDialog() {
+        synchronized (ErrorListDialog.class) {
+            if (me == null) {
+                me = new ErrorListDialog();
+            } else if (me.tableModel.getRowCount() !=
+                    me.errorManager.getErrorCount()) {
+                me.tableModel = new ErrorTableModel(new ArrayList<ProgramError>(
+                        me.errorManager.getErrorList().values()));
+                me.table.setModel(me.tableModel);
+                if (me.tableModel.getRowCount() > 0) {
+                    me.deleteAllButton.setEnabled(true);
+                } else {
+                    me.deleteAllButton.setEnabled(false);
+                }
             }
         }
 
@@ -222,7 +225,8 @@ public final class ErrorListDialog extends StandardDialog implements
         splitPane.setTopComponent(scrollPane);
         splitPane.setBottomComponent(panel);
 
-        splitPane.setDividerSize((int) PlatformDefaults.getPanelInsets(0).getValue());
+        splitPane.setDividerSize((int) PlatformDefaults.getPanelInsets(0).
+                getValue());
 
         getContentPane().add(splitPane);
     }
@@ -262,15 +266,15 @@ public final class ErrorListDialog extends StandardDialog implements
             setVisible(false);
         } else if (e.getSource() == deleteButton) {
             synchronized (tableModel) {
-            ErrorManager.getErrorManager().deleteError(tableModel.getError(
-                    table.getRowSorter().convertRowIndexToModel(
-                    table.getSelectedRow())));
+                ErrorManager.getErrorManager().deleteError(tableModel.getError(
+                        table.getRowSorter().convertRowIndexToModel(
+                        table.getSelectedRow())));
             }
         } else if (e.getSource() == sendButton) {
             synchronized (tableModel) {
-            ErrorManager.getErrorManager().sendError(tableModel.getError(
-                    table.getRowSorter().convertRowIndexToModel(
-                    table.getSelectedRow())));
+                ErrorManager.getErrorManager().sendError(tableModel.getError(
+                        table.getRowSorter().convertRowIndexToModel(
+                        table.getSelectedRow())));
             }
         } else if (e.getSource() == deleteAllButton) {
             final Collection<ProgramError> errors =
@@ -359,14 +363,17 @@ public final class ErrorListDialog extends StandardDialog implements
                     synchronized (tableModel) {
                         errorRow = tableModel.indexOf(error);
 
-                        if (errorRow != -1 && errorRow < tableModel.getRowCount()) {
+                        if (errorRow != -1 && errorRow <
+                                tableModel.getRowCount()) {
                             tableModel.fireTableRowsUpdated(errorRow, errorRow);
                         }
                     }
                     if (errorRow > -1) {
                         deleteButton.setEnabled(true);
-                        if (error.getReportStatus() == ErrorReportStatus.NOT_APPLICABLE ||
-                                error.getReportStatus() == ErrorReportStatus.FINISHED) {
+                        if (error.getReportStatus() ==
+                                ErrorReportStatus.NOT_APPLICABLE ||
+                                error.getReportStatus() ==
+                                ErrorReportStatus.FINISHED) {
                             sendButton.setEnabled(false);
                         } else {
                             sendButton.setEnabled(true);
@@ -380,15 +387,6 @@ public final class ErrorListDialog extends StandardDialog implements
                 }
             }
         });
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void dispose() {
-        synchronized (me) {
-            super.dispose();
-            me = null;
-        }
     }
 
     /** {@inheritDoc} */

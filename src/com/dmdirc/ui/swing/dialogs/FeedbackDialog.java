@@ -64,7 +64,7 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
      */
     private static final long serialVersionUID = 1;
     /** A previously created instance of FeedbackDialog. */
-    private static FeedbackDialog me;
+    private static volatile FeedbackDialog me;
     /** Information label. */
     private TextLabel info;
     /** Name field. */
@@ -86,14 +86,14 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
 
         setTitle("DMDirc: Feedback");
         setResizable(false);
-        
+
         pack();
     }
 
     /**
      * Creates the new feedback dialog if one doesn't exist, and displays it.
      */
-    public static synchronized void showFeedbackDialog() {
+    public static void showFeedbackDialog() {
         me = getFeedbackDialog();
 
         me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
@@ -106,11 +106,13 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
      *
      * @return The current FeedbackDialog instance
      */
-    public static synchronized FeedbackDialog getFeedbackDialog() {
-        if (me == null) {
-            me = new FeedbackDialog();
-            me.serverCheckbox.setEnabled(ServerManager.getServerManager().
-                    numServers() > 0);
+    public static FeedbackDialog getFeedbackDialog() {
+        synchronized (FeedbackDialog.class) {
+            if (me == null) {
+                me = new FeedbackDialog();
+                me.serverCheckbox.setEnabled(ServerManager.getServerManager().
+                        numServers() > 0);
+            }
         }
 
         return me;
@@ -125,7 +127,7 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
         getOkButton().setEnabled(false);
         getCancelButton().setActionCommand("Close");
 
-        info =  new TextLabel("Thank you for using DMDirc. If you have any " +
+        info = new TextLabel("Thank you for using DMDirc. If you have any " +
                 "feedback about the client, such as bug reports or feature " +
                 "requests, please send it to us using the form below.  " +
                 "The name and e-mail address fields are optional if you " +
@@ -137,7 +139,8 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
         name = new JTextField();
         email = new JTextField();
         feedback = new JTextArea();
-        serverCheckbox = new JCheckBox("Include information about connected servers.");
+        serverCheckbox =
+                new JCheckBox("Include information about connected servers.");
 
         UIUtilities.addUndoManager(name);
         UIUtilities.addUndoManager(email);
@@ -164,7 +167,7 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
         add(serverCheckbox, "skip 1, span 2, growx, wrap");
 
         add(getCancelButton(), "skip, right, sg button");
-        add(getOkButton(),  "right,  sg button");
+        add(getOkButton(), "right,  sg button");
     }
 
     /**
@@ -219,11 +222,11 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
                 sb.append(server.getParser().getSetUnsetChanModes()).
                         append("\n\n");
             }
-            worker =new SendWorker(me, name.getText().trim(),
+            worker = new SendWorker(me, name.getText().trim(),
                     email.getText().trim(), feedback.getText().trim(), true,
                     sb.substring(0, sb.length() - 2));
         } else {
-            worker =new SendWorker(me, name.getText().trim(),
+            worker = new SendWorker(me, name.getText().trim(),
                     email.getText().trim(), feedback.getText().trim());
         }
         worker.execute();
@@ -254,15 +257,6 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
 
     /** {@inheritDoc} */
     @Override
-    public void dispose() {
-        synchronized (me) {
-            super.dispose();
-            me = null;
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public void insertUpdate(DocumentEvent e) {
         validateInput();
     }
@@ -276,7 +270,7 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
     /** {@inheritDoc} */
     @Override
     public void changedUpdate(DocumentEvent e) {
-        //Ignore
+    //Ignore
     }
 }
 

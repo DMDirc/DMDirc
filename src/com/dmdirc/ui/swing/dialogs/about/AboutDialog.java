@@ -40,82 +40,78 @@ import net.miginfocom.swing.MigLayout;
  */
 public final class AboutDialog extends StandardDialog implements
         ActionListener {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 5;
-    
     /** Previously created instance of AboutDialog. */
-    private static AboutDialog me;
-    
+    private static volatile AboutDialog me = null;
+
     /** Creates a new instance of AboutDialog. */
     private AboutDialog() {
         super((MainFrame) Main.getUI().getMainWindow(), false);
         initComponents();
     }
-    
+
     /** Creates the dialog if one doesn't exist, and displays it. */
-    public static synchronized void showAboutDialog() {
+    public static void showAboutDialog() {
         me = getAboutDialog();
-        
+
         me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         me.setVisible(true);
         me.requestFocus();
     }
-    
+
     /**
      * Returns the current instance of the AboutDialog.
      *
      * @return The current AboutDialog instance
      */
-    public static synchronized AboutDialog getAboutDialog() {
-        if (me == null) {
-            me = new AboutDialog();
+    public static AboutDialog getAboutDialog() {
+        synchronized (AboutDialog.class) {
+            if (me == null) {
+                me = new AboutDialog();
+            }
         }
-        
+
         return me;
     }
-    
+
     /** Initialises the main UI components. */
     private void initComponents() {
         final JTabbedPane tabbedPane = new JTabbedPane();
-        
+
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("About DMDirc");
         setResizable(false);
-        
+
         orderButtons(new JButton(), new JButton());
-        
+
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
-        
+
         tabbedPane.add("About", new AboutPanel());
         tabbedPane.add("Credits", new CreditsPanel());
         tabbedPane.add("License", new LicensePanel());
         tabbedPane.add("Information", new InfoPanel());
-        
+
         getContentPane().setLayout(new MigLayout("ins rel, wrap 1, fill, wmax 550, hmax 300"));
         getContentPane().add(tabbedPane, "grow");
         getContentPane().add(getOkButton(), "right");
-        
+
         pack();
     }
-    
-    /** {@inheritDoc}. */
+
+    /** 
+     * {@inheritDoc}.
+     * 
+     * @param e Action event
+     */
+    @Override
     public void actionPerformed(final ActionEvent e) {
         dispose();
     }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void dispose() {
-        synchronized (me) {
-            super.dispose();
-            me = null;
-        }
-    }
-    
 }

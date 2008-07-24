@@ -63,7 +63,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
      */
     private static final long serialVersionUID = 3;
     /** Previously created instance of SwingUpdaterDialog. */
-    private static SwingUpdaterDialog me;
+    private static volatile SwingUpdaterDialog me;
     /** Update table. */
     private JTable table;
     /** Table scrollpane. */
@@ -100,7 +100,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
      * 
      * @param updates The updates that are available
      */
-    public static synchronized void showSwingUpdaterDialog(
+    public static void showSwingUpdaterDialog(
             final List<Update> updates) {
         me = getSwingUpdaterDialog(updates);
         me.display();
@@ -113,12 +113,14 @@ public final class SwingUpdaterDialog extends StandardDialog implements
      * 
      * @return SwingUpdaterDialog instance
      */
-    public static synchronized SwingUpdaterDialog getSwingUpdaterDialog(
+    public static SwingUpdaterDialog getSwingUpdaterDialog(
             final List<Update> updates) {
-        if (me == null) {
-            me = new SwingUpdaterDialog(updates);
-        } else {
-            ((UpdateTableModel) me.table.getModel()).setUpdates(updates);
+        synchronized (SwingUpdaterDialog.class) {
+            if (me == null) {
+                me = new SwingUpdaterDialog(updates);
+            } else {
+                ((UpdateTableModel) me.table.getModel()).setUpdates(updates);
+            }
         }
 
         return me;
@@ -134,8 +136,8 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         updateStatusRenderer = new UpdateStatusTableCellRenderer();
         updateComponentRenderer = new UpdateComponentTableCellRenderer();
 
-        header = new TextLabel("An update is available for one or more "
-                + "components of DMDirc:");
+        header = new TextLabel("An update is available for one or more " +
+                "components of DMDirc:");
 
         scrollPane = new JScrollPane();
         table = new PackingTable(new UpdateTableModel(updates), false,
@@ -211,23 +213,14 @@ public final class SwingUpdaterDialog extends StandardDialog implements
                     UpdateChecker.removeUpdate(update);
                 }
             }
-            
+
             UpdateChecker.applyUpdates();
-            
+
             if (UpdateChecker.getStatus() != STATE.UPDATING) {
                 dispose();
             }
         } else if (e.getSource().equals(getCancelButton())) {
             setVisible(false);
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void dispose() {
-        synchronized (me) {
-            super.dispose();
-            me = null;
         }
     }
 

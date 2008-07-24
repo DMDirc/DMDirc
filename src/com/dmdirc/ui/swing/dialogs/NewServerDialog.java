@@ -64,7 +64,7 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
      */
     private static final long serialVersionUID = 8;
     /** A previously created instance of NewServerDialog. */
-    private static NewServerDialog me;
+    private static volatile NewServerDialog me;
     /** checkbox. */
     private JCheckBox newServerWindowCheck;
     /** checkbox. */
@@ -96,7 +96,7 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
     /**
      * Creates the new server dialog if one doesn't exist, and displays it.
      */
-    public static synchronized void showNewServerDialog() {
+    public static void showNewServerDialog() {
         me = getNewServerDialog();
 
         me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
@@ -109,9 +109,11 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
      *
      * @return The current NewServerDialog instance
      */
-    public static synchronized NewServerDialog getNewServerDialog() {
-        if (me == null) {
-            me = new NewServerDialog();
+    public static NewServerDialog getNewServerDialog() {
+        synchronized (NewServerDialog.class) {
+            if (me == null) {
+                me = new NewServerDialog();
+            }
         }
 
         return me;
@@ -223,15 +225,6 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
         getContentPane().add(getRightButton(), "right, sg button");
 
         pack();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void dispose() {
-        synchronized (me) {
-            super.dispose();
-            me = null;
-        }
     }
 
     /**

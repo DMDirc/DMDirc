@@ -47,7 +47,7 @@ public class URLDialog extends StandardDialog implements ActionListener {
      */
     private static final long serialVersionUID = 1;
     /** A previously created instance of URLDialog. */
-    private static URLDialog me;
+    private static volatile URLDialog me;
     /** URL protocol config panel. */
     private URLProtocolPanel panel;
     /** URL. */
@@ -79,7 +79,7 @@ public class URLDialog extends StandardDialog implements ActionListener {
      *
      * @param url URL to open once added
      */
-    public static synchronized void showURLDialog(final URI url) {
+    public static void showURLDialog(final URI url) {
         me = getURLDialog(url);
 
         me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
@@ -94,9 +94,11 @@ public class URLDialog extends StandardDialog implements ActionListener {
      * 
      * @return The current URLDialog instance
      */
-    public static synchronized URLDialog getURLDialog(final URI url) {
-        if (me == null) {
-            me = new URLDialog(url);
+    public static URLDialog getURLDialog(final URI url) {
+        synchronized (URLDialog.class) {
+            if (me == null) {
+                me = new URLDialog(url);
+            }
         }
 
         return me;
@@ -140,15 +142,6 @@ public class URLDialog extends StandardDialog implements ActionListener {
             URLHandler.getURLHander().launchApp(url);
         } else if (e.getSource() == getCancelButton()) {
             dispose();
-        }
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void dispose() {
-        synchronized (me) {
-            super.dispose();
-            me = null;
         }
     }
 

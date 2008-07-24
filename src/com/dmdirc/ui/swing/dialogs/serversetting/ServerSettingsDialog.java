@@ -50,7 +50,7 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
      */
     private static final long serialVersionUID = 2;
     /** Server settings dialogs, semi singleton use. */
-    private static ServerSettingsDialog me;
+    private static volatile ServerSettingsDialog me;
     /** Parent server. */
     private final Server server;
     /** User modes panel. */
@@ -88,7 +88,7 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
      *
      * @param server The server object that we're editing settings for
      */
-    public static synchronized void showServerSettingsDialog(final Server server) {
+    public static void showServerSettingsDialog(final Server server) {
         me = getServerSettingsDialog(server);
 
         me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
@@ -103,12 +103,12 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
      *
      * @return The current ServerSettingsDialog instance
      */
-    public static synchronized ServerSettingsDialog getServerSettingsDialog(final Server server) {
-        if (me == null) {
-            me = new ServerSettingsDialog(server);
+    public static ServerSettingsDialog getServerSettingsDialog(final Server server) {
+        synchronized (ServerSettingsDialog.class) {
+            if (me == null) {
+                me = new ServerSettingsDialog(server);
+            }
         }
-
-        me.pack();
 
         return me;
     }
@@ -222,6 +222,7 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
         settingsPanel.addOption("general.pingtimeout", "Ping timeout",
                 OptionType.SPINNER);
     }
+
     /** Initialises listeners for this dialog. */
     private void initListeners() {
         getOkButton().addActionListener(this);
@@ -252,15 +253,6 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
             dispose();
         } else if (e.getSource() == getCancelButton()) {
             dispose();
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void dispose() {
-        synchronized (me) {
-            super.dispose();
-            me = null;
         }
     }
 }

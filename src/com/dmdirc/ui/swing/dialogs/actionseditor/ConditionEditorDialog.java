@@ -55,17 +55,15 @@ import net.miginfocom.swing.MigLayout;
  */
 public final class ConditionEditorDialog extends StandardDialog implements
         ActionListener, SubstitutionsPanelListener, FocusListener {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 2;
-    
     /** Previously created instance of ConditionEditorDialog. */
-    private static ConditionEditorDialog me;
-    
+    private static volatile ConditionEditorDialog me;
     /** Parent dialog, informed of changes on close. */
     private final ConditionsTabPanel parent;
     /** Parent action type trigger. */
@@ -80,7 +78,6 @@ public final class ConditionEditorDialog extends StandardDialog implements
     private ActionComparison comparison;
     /** Condition target. */
     private String target;
-
     /** Glass pane. */
     private JPanel glassPane;
     /** Substitutions panel. */
@@ -99,7 +96,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
     private JButton cancelSubsButton;
     /** Focused main component. */
     private Component focusedComponent;
-    
+
     /**
      * Creates a new instance of ConditionEditorDialog.
      *
@@ -110,7 +107,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
     private ConditionEditorDialog(final ConditionsTabPanel parent,
             final ActionType trigger, final ActionCondition condition) {
         super((MainFrame) Main.getUI().getMainWindow(), false);
-        
+
         this.trigger = trigger;
         this.parent = parent;
         this.condition = condition;
@@ -125,17 +122,17 @@ public final class ConditionEditorDialog extends StandardDialog implements
             this.comparison = condition.getComparison();
             this.target = condition.getTarget();
         }
-        
+
         setTitle("Condition Editor");
-        
+
         setResizable(false);
-        
+
         initComponents();
         addListeners();
         layoutComponents();
         populateArguments();
     }
-    
+
     /**
      * Creates the dialog if one doesn't exist, and displays it.
      *
@@ -143,17 +140,17 @@ public final class ConditionEditorDialog extends StandardDialog implements
      * @param trigger Conditions trigger
      * @param condition condition to be edited (or null)
      */
-    public static synchronized void showConditionEditorDialog(
+    public static void showConditionEditorDialog(
             final ConditionsTabPanel parent, final ActionType trigger,
             final ActionCondition condition) {
         me = getConditionEditorDialog(parent, trigger, condition);
-        
+
         me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         me.setVisible(true);
         me.requestFocus();
         me.arguments.requestFocus();
     }
-    
+
     /**
      * Creates the dialog if one doesn't exist, and displays it.
      *
@@ -163,23 +160,25 @@ public final class ConditionEditorDialog extends StandardDialog implements
      *
      * @return Currently instatiated ConditionEditorDialog (or null if none)
      */
-    public static synchronized ConditionEditorDialog getConditionEditorDialog(
+    public static ConditionEditorDialog getConditionEditorDialog(
             final ConditionsTabPanel parent, final ActionType trigger,
             final ActionCondition condition) {
-        if (me == null) {
-            me = new ConditionEditorDialog(parent, trigger, condition);
-        } else if (JOptionPane.showConfirmDialog(parent, 
-                "This will discard any changed you have made to existing " 
-                + "condition, are you sure you want to edit a new action?", 
-                "Discard changes", JOptionPane.YES_NO_OPTION, 
-                JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-            me.dispose();
-            me = new ConditionEditorDialog(parent, trigger, condition);
+        synchronized (ConditionEditorDialog.class) {
+            if (me == null) {
+                me = new ConditionEditorDialog(parent, trigger, condition);
+            } else if (JOptionPane.showConfirmDialog(parent,
+                    "This will discard any changed you have made to existing " +
+                    "condition, are you sure you want to edit a new action?",
+                    "Discard changes", JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                me.dispose();
+                me = new ConditionEditorDialog(parent, trigger, condition);
+            }
         }
-        
+
         return me;
     }
-    
+
     /**
      * Checks if there is an existing condition editor dialog open.
      * 
@@ -188,50 +187,51 @@ public final class ConditionEditorDialog extends StandardDialog implements
     public static boolean isConditionEditorDialogOpen() {
         return me == null;
     }
-    
+
     /** Closes the existing condition editor dialog. */
     public static void disposeDialog() {
         if (me != null) {
             me.dispose();
         }
     }
-    
+
     /** Initialises the components. */
     private void initComponents() {
         orderButtons(new JButton(), new JButton());
         getOkButton().setEnabled(false);
         glassPane = new JPanel(new BorderLayout());
-        
-        substitutionsPanel = new SubstitutionsPanel(parent.getOwner().getTrigger());
-        
+
+        substitutionsPanel =
+                new SubstitutionsPanel(parent.getOwner().getTrigger());
+
         arguments = new JComboBox(new DefaultComboBoxModel());
         components = new JComboBox(new DefaultComboBoxModel());
         comparisons = new JComboBox(new DefaultComboBoxModel());
         targetText = new JTextField();
-        
+
         arguments.setRenderer(new ActionCellRenderer());
         components.setRenderer(new ActionCellRenderer());
         comparisons.setRenderer(new ActionCellRenderer());
-        
+
         subsButton = new JButton("Show substitutions");
         cancelSubsButton = new JButton("Back");
-        
+
         components.setEnabled(false);
         comparisons.setEnabled(false);
         targetText.setEnabled(false);
         subsButton.setEnabled(false);
-        
+
         populateArguments();
     }
-    
+
     /** Populates the arguments combo box. */
-    private void populateArguments() {       
+    private void populateArguments() {
         ((DefaultComboBoxModel) arguments.getModel()).removeAllElements();
-        
+
         for (String arg : trigger.getType().getArgNames()) {
             ((DefaultComboBoxModel) arguments.getModel()).addElement(arg);
         }
-        
+
         if (argument == -1) {
             arguments.setSelectedIndex(-1);
             components.setEnabled(false);
@@ -244,22 +244,21 @@ public final class ConditionEditorDialog extends StandardDialog implements
             components.setEnabled(true);
             components.setSelectedIndex(-1);
         }
-        
+
         populateComponents();
     }
-    
+
     /** Populates the components combo box. */
     private void populateComponents() {
         ((DefaultComboBoxModel) components.getModel()).removeAllElements();
-        
+
         if (arguments.getSelectedItem() != null) {
             for (ActionComponent comp : ActionManager.getCompatibleComponents(
-                    trigger.getType().getArgTypes()[arguments.getSelectedIndex()]
-                    )) {
+                    trigger.getType().getArgTypes()[arguments.getSelectedIndex()])) {
                 ((DefaultComboBoxModel) components.getModel()).addElement(comp);
             }
         }
-        
+
         if (component == null) {
             components.setSelectedIndex(-1);
             comparisons.setEnabled(false);
@@ -270,21 +269,21 @@ public final class ConditionEditorDialog extends StandardDialog implements
             components.setSelectedItem(component);
             comparisons.setEnabled(true);
         }
-        
+
         populateComparisons();
     }
-    
+
     /** Populates the comparisons combo box. */
     private void populateComparisons() {
         ((DefaultComboBoxModel) comparisons.getModel()).removeAllElements();
-        
+
         if (components.getSelectedItem() != null) {
             for (ActionComparison comp : ActionManager.getCompatibleComparisons(
-                    ((ActionComponent)components.getSelectedItem()).getType())) {
+                    ((ActionComponent) components.getSelectedItem()).getType())) {
                 ((DefaultComboBoxModel) comparisons.getModel()).addElement(comp);
             }
         }
-        
+
         if (comparison == null) {
             comparisons.setSelectedIndex(-1);
             targetText.setEnabled(false);
@@ -297,22 +296,22 @@ public final class ConditionEditorDialog extends StandardDialog implements
             subsButton.setEnabled(true);
             getOkButton().setEnabled(true);
         }
-        
+
         populateTarget();
     }
-    
+
     /** Populates the target textfield. */
     private void populateTarget() {
         targetText.setText(target);
-        
+
         pack();
     }
-    
+
     /** Adds listeners to the components. */
     private void addListeners() {
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
-        
+
         arguments.addActionListener(this);
         components.addActionListener(this);
         comparisons.addActionListener(this);
@@ -321,11 +320,11 @@ public final class ConditionEditorDialog extends StandardDialog implements
         cancelSubsButton.addActionListener(this);
         subsButton.addFocusListener(this);
     }
-    
+
     /** Lays out the components in the dialog. */
     private void layoutComponents() {
         setLayout(new MigLayout("wrap 2, fill"));
-        
+
         add(new JLabel("Argument: "));
         add(arguments, "growx");
         add(new JLabel("Component: "));
@@ -335,28 +334,33 @@ public final class ConditionEditorDialog extends StandardDialog implements
         add(new JLabel("Target: "));
         add(targetText, "growx");
         add(subsButton, "span 2, growx");
-        
+
         add(getLeftButton(), "right");
         add(getRightButton(), "right");
-        
+
         layoutGlassPane();
-        
+
         pack();
     }
-    
+
     /** Lays out the glass pane. */
-    private void layoutGlassPane() {        
+    private void layoutGlassPane() {
         substitutionsPanel.setPreferredSize(new Dimension(250, 150));
-        
+
         glassPane.add(substitutionsPanel, BorderLayout.CENTER);
         glassPane.add(cancelSubsButton, BorderLayout.PAGE_END);
-        
+
         glassPane.setOpaque(true);
         setGlassPane(glassPane);
         glassPane.setVisible(false);
     }
-    
-    /** {@inheritDoc}. */
+
+    /** 
+     * {@inheritDoc}.
+     * 
+     * @param event Action event
+     */
+    @Override
     public void actionPerformed(final ActionEvent event) {
         if (event.getSource() == subsButton) {
             if (getFocusOwner() != subsButton) {
@@ -404,14 +408,15 @@ public final class ConditionEditorDialog extends StandardDialog implements
             dispose();
         }
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void substitutionInsert(final ActionSubstitution substitution) {
         glassPane.setVisible(false);
         targetText.replaceSelection(substitution.toString());
         focusedComponent.requestFocus();
     }
-    
+
     /**
      * Sets the Actiontype of the substitutions panel.
      *
@@ -420,7 +425,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
     public void setTrigger(final ActionType type) {
         substitutionsPanel.setType(type);
     }
-    
+
     /** 
      * {@inheritDoc}
      * 
@@ -430,7 +435,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
     public void focusGained(final FocusEvent e) {
         focusedComponent = e.getOppositeComponent();
     }
-    
+
     /** 
      * {@inheritDoc}
      * 
@@ -438,16 +443,6 @@ public final class ConditionEditorDialog extends StandardDialog implements
      */
     @Override
     public void focusLost(final FocusEvent e) {
-        //Ignore
+    //Ignore
     }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void dispose() {
-        synchronized (me) {
-            super.dispose();
-            me = null;
-        }
-    }
-    
 }

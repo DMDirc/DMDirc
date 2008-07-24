@@ -52,7 +52,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
      */
     private static final long serialVersionUID = 8;
     /** Channel settings dialogs, semi singleton use. */
-    private static ChannelSettingsDialog me;
+    private static volatile ChannelSettingsDialog me;
     /** The channel object that this dialog belongs to. */
     private final Channel channel;
     /** Tabbed pane. */
@@ -83,6 +83,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
 
         initComponents();
         initListeners();
+        pack();
     }
 
     /**
@@ -90,7 +91,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
      *
      * @param channel The channel object that we're editing settings for
      */
-    public static synchronized void showChannelSettingsDialog(final Channel channel) {
+    public static void showChannelSettingsDialog(final Channel channel) {
         me = getChannelSettingsDialog(channel);
 
         me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
@@ -105,12 +106,12 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
      *
      * @return The current ChannelSettingsDialog instance
      */
-    public static synchronized ChannelSettingsDialog getChannelSettingsDialog(final Channel channel) {
-        if (me == null) {
-            me = new ChannelSettingsDialog(channel);
+    public static ChannelSettingsDialog getChannelSettingsDialog(final Channel channel) {
+        synchronized (ChannelSettingsDialog.class) {
+            if (me == null) {
+                me = new ChannelSettingsDialog(channel);
+            }
         }
-
-        me.pack();
 
         return me;
     }
@@ -129,7 +130,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
         getContentPane().add(tabbedPane, "grow");
         getContentPane().add(getLeftButton(), "split 3, right");
         getContentPane().add(getRightButton(), "right");
-        
+
         initTopicTab();
 
         initIrcTab();
@@ -141,7 +142,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
         tabbedPane.setSelectedIndex(channel.getConfigManager().
                 getOptionInt("dialogstate", "channelsettingsdialog", 0));
     }
-    
+
     /** Initialises the Topic tab. */
     private void initTopicTab() {
         topicModesPane =
@@ -253,14 +254,5 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
                 String.valueOf(tabbedPane.getSelectedIndex()));
 
         dispose();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void dispose() {
-        synchronized (me) {
-            super.dispose();
-            me = null;
-        }
     }
 }

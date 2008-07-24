@@ -58,7 +58,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
      */
     private static final long serialVersionUID = 2;
     /** Previously created instance of ProfileEditorDialog. */
-    private static ProfileManagerDialog me;
+    private static volatile ProfileManagerDialog me;
     /** Profile list. */
     private JList profileList;
     /** Profile list mode. */
@@ -95,7 +95,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     }
 
     /** Creates the dialog if one doesn't exist, and displays it. */
-    public static synchronized void showProfileManagerDialog() {
+    public static void showProfileManagerDialog() {
         me = getProfileManagerDialog();
 
         me.pack();
@@ -109,9 +109,11 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
      *
      * @return The current ProfileManagerDialog instance
      */
-    public static synchronized ProfileManagerDialog getProfileManagerDialog() {
-        if (me == null) {
-            me = new ProfileManagerDialog();
+    public static ProfileManagerDialog getProfileManagerDialog() {
+        synchronized (ProfileManagerDialog.class) {
+            if (me == null) {
+                me = new ProfileManagerDialog();
+            }
         }
 
         return me;
@@ -264,14 +266,5 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
             }
         }
         selectedIndex = profileList.getSelectedIndex();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void dispose() {
-        synchronized (me) {
-            super.dispose();
-            me = null;
-        }
     }
 }

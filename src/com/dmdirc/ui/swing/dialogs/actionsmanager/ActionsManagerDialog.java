@@ -70,7 +70,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
      */
     private static final long serialVersionUID = 1;
     /** Previously created instance of ActionsManagerDialog. */
-    private static ActionsManagerDialog me;
+    private static volatile ActionsManagerDialog me;
     /** Info label. */
     private TextLabel infoLabel;
     /** Group list. */
@@ -109,7 +109,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
     /** Creates the dialog if one doesn't exist, and displays it. */
     public static void showActionsManagerDialog() {
         getActionsManagerDialog();
-        
+
         me.pack();
         me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         me.setVisible(true);
@@ -232,7 +232,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
     private void reloadGroups() {
         reloadGroups(null);
     }
-    
+
     /**
      * Reloads the action groups.
      * 
@@ -319,7 +319,8 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
                         containsKey(getText())) {
                     return false;
                 } else {
-                    final ActionGroup group = ActionManager.makeGroup(getText());
+                    final ActionGroup group =
+                            ActionManager.makeGroup(getText());
                     reloadGroups(group);
                     return true;
                 }
@@ -385,7 +386,8 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
                 "' group and all actions within it?",
                 "Confirm deletion", JOptionPane.YES_NO_OPTION);
         if (response == JOptionPane.YES_OPTION) {
-            int location = ((DefaultListModel) groups.getModel()).indexOf(ActionManager.getGroup(group));
+            int location =
+                    ((DefaultListModel) groups.getModel()).indexOf(ActionManager.getGroup(group));
             ActionManager.removeGroup(group);
             reloadGroups();
             if (groups.getModel().getSize() == 0) {
@@ -414,15 +416,6 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         } else {
             edit.setEnabled(true);
             delete.setEnabled(true);
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void dispose() {
-        synchronized (ActionsManagerDialog.class) {
-            super.dispose();
-            me = null;
         }
     }
 

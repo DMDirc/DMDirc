@@ -56,7 +56,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
      */
     private static final long serialVersionUID = 4;
     /** Previously created instance of ActionsEditorDialog. */
-    private static ActionsEditorDialog me;
+    private static volatile ActionsEditorDialog me;
     /** Action being edited or null. */
     private Action action;
     /** Tabbed pane. */
@@ -94,7 +94,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
      *
      * @param group group name
      */
-    public static synchronized void showActionsEditorDialog(final String group) {
+    public static void showActionsEditorDialog(final String group) {
         showActionsEditorDialog(null, group);
     }
 
@@ -104,7 +104,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
      * @param action actions to be edited
      * @param group group name
      */
-    public static synchronized void showActionsEditorDialog(final Action action,
+    public static void showActionsEditorDialog(final Action action,
             final String group) {
         me = getActionsEditorDialog(action, group);
 
@@ -121,17 +121,19 @@ public final class ActionsEditorDialog extends StandardDialog implements
      *
      * @return The current ActionsEditorDialog instance
      */
-    public static synchronized ActionsEditorDialog getActionsEditorDialog(
+    public static ActionsEditorDialog getActionsEditorDialog(
             final Action action, final String group) {
-        if (me == null) {
-            me = new ActionsEditorDialog(action, group);
-        } else if (JOptionPane.showConfirmDialog(me,
-                "This will discard any changed you have made to existing " +
-                "action, are you sure you want to edit a new action?",
-                "Discard changes", JOptionPane.YES_NO_OPTION,
-                JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-            me.dispose();
-            me = new ActionsEditorDialog(action, group);
+        synchronized (ActionsEditorDialog.class) {
+            if (me == null) {
+                me = new ActionsEditorDialog(action, group);
+            } else if (JOptionPane.showConfirmDialog(me,
+                    "This will discard any changed you have made to existing " +
+                    "action, are you sure you want to edit a new action?",
+                    "Discard changes", JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                me.dispose();
+                me = new ActionsEditorDialog(action, group);
+            }
         }
 
         return me;
@@ -341,14 +343,5 @@ public final class ActionsEditorDialog extends StandardDialog implements
     private void showError(final String title, final String message) {
         JOptionPane.showMessageDialog(this, message, title,
                 JOptionPane.WARNING_MESSAGE);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void dispose() {
-        synchronized (me) {
-            super.dispose();
-            me = null;
-        }
     }
 }
