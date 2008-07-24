@@ -35,6 +35,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -43,6 +44,8 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.UIManager;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 
 import java.util.ArrayList;
 
@@ -276,12 +279,27 @@ public final class Apple implements InvocationHandler, ActionListener {
 	}
 	
 	/**
-	 * Set the MenuBar
+	 * Set the MenuBar.
+	 * This will unset all menu mnemonics aswell if on the OSX ui.
 	 *
 	 * @param menuBar MenuBar to use to send events to,
 	 */
 	public void setMenuBar(final MenuBar menuBar) {
 		this.menuBar = menuBar;
+		if (isAppleUI()) {
+			for (int i = 0; i < menuBar.getMenuCount(); i++) {
+				final JMenu menu = menuBar.getMenu(i);
+				if (menu != null) {
+					menu.setMnemonic(0);
+					for (int j = 0; j < menu.getItemCount(); j++) {
+						final JMenuItem menuItem = menu.getItem(j);
+						if (menuItem != null) {
+							menuItem.setMnemonic(0);
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	/**

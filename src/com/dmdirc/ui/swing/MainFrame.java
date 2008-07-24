@@ -408,8 +408,8 @@ public final class MainFrame extends JFrame implements WindowListener,
         initSplitPane(mainSplitPane);
 
         menu = new MenuBar();
-        setJMenuBar(menu);
         Apple.getApple().setMenuBar(menu);
+        setJMenuBar(menu);
 
         setPreferredSize(new Dimension(800, 600));
 
