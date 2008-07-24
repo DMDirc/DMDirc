@@ -75,8 +75,8 @@ public class IntelligentLinkingTest {
             {"svn+ssh://foo@bar", "~svn+ssh://foo@bar~"},
             {"/var/web/www.foo.com/bar", "/var/web/www.foo.com/bar"},
             {"\"foo\" www.google.com \"www.google.com\"",
-                     "\"foo\" ~www.google.com~ \"~www.google.com~\"",
-            },
+                     "\"foo\" ~www.google.com~ \"~www.google.com~\""},
+            {"www.example.com/blah(foobar)", "~www.example.com/blah(foobar)~"},
         };
 
         return Arrays.asList(tests);
