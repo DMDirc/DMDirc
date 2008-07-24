@@ -29,8 +29,6 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -41,25 +39,23 @@ import javax.swing.KeyStroke;
 /**
  * Provides common methods for dialogs.
  */
-public class StandardDialog extends JDialog  {
-    
+public class StandardDialog extends JDialog {
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
     /**
      * The OK button for this frame.
      */
     private JButton okButton;
-    
     /**
      * The cancel button for this frame.
      */
     private JButton cancelButton;
-    
+
     /**
      * Creates a new instance of StandardDialog.
      * @param owner The frame that owns this dialog
@@ -68,7 +64,7 @@ public class StandardDialog extends JDialog  {
     public StandardDialog(final Frame owner, final boolean modal) {
         super(owner, modal);
     }
-    
+
     /**
      * Creates a new instance of StandardDialog.
      * @param owner The frame that owns this dialog
@@ -77,7 +73,7 @@ public class StandardDialog extends JDialog  {
     public StandardDialog(final Window owner, final ModalityType modal) {
         super(owner, modal);
     }
-    
+
     /**
      * Creates a new instance of StandardDialog.
      * @param owner The frame that owns this dialog
@@ -86,7 +82,7 @@ public class StandardDialog extends JDialog  {
     public StandardDialog(final Dialog owner, final boolean modal) {
         super(owner, modal);
     }
-    
+
     /**
      * Sets the specified button up as the OK button.
      * @param button The target button
@@ -96,7 +92,7 @@ public class StandardDialog extends JDialog  {
         button.setText("OK");
         button.setDefaultCapable(false);
     }
-    
+
     /**
      * Sets the specified button up as the Cancel button.
      * @param button The target button
@@ -106,7 +102,7 @@ public class StandardDialog extends JDialog  {
         button.setText("Cancel");
         button.setDefaultCapable(false);
     }
-    
+
     /**
      * Gets the left hand button for a dialog.
      * @return left JButton
@@ -118,7 +114,7 @@ public class StandardDialog extends JDialog  {
             return getCancelButton();
         }
     }
-    
+
     /**
      * Gets the right hand button for a dialog.
      * @return right JButton
@@ -130,7 +126,7 @@ public class StandardDialog extends JDialog  {
             return getOkButton();
         }
     }
-    
+
     /**
      * Orders the OK and Cancel buttons in an appropriate order for the current
      * operating system.
@@ -154,20 +150,27 @@ public class StandardDialog extends JDialog  {
         leftButton.setMinimumSize(new Dimension(100, 25));
         rightButton.setMinimumSize(new Dimension(100, 25));
     }
-    
+
     /**
      * Creates the root pane of this dialog. We hook in two keylisteners
      * to send enter/escape events to our buttons.
      * @return The new root pane
      */
+    @Override
     protected final JRootPane createRootPane() {
         final ActionListener escapeListener = new ActionListener() {
+
+            /** {@inheritDoc} */
+            @Override
             public void actionPerformed(final ActionEvent actionEvent) {
                 executeAction(StandardDialog.this.cancelButton);
             }
         };
-        
+
         final ActionListener enterListener = new ActionListener() {
+
+            /** {@inheritDoc} */
+            @Override
             public void actionPerformed(final ActionEvent actionEvent) {
                 if (StandardDialog.this.getFocusOwner() instanceof JButton) {
                     executeAction((JButton) StandardDialog.this.getFocusOwner());
@@ -176,27 +179,20 @@ public class StandardDialog extends JDialog  {
                 }
             }
         };
-        
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(final WindowEvent windowEvent) {
-                executeAction(StandardDialog.this.cancelButton);
-            }
-        });
 
-        
         final KeyStroke escape = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
         final KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
-        
-        final JRootPane rootPane = new JRootPane();
-        
-        rootPane.registerKeyboardAction(escapeListener, escape,
+
+        final JRootPane customRootPane = new JRootPane();
+
+        customRootPane.registerKeyboardAction(escapeListener, escape,
                 JComponent.WHEN_IN_FOCUSED_WINDOW);
-        rootPane.registerKeyboardAction(enterListener, enter,
+        customRootPane.registerKeyboardAction(enterListener, enter,
                 JComponent.WHEN_IN_FOCUSED_WINDOW);
-        
-        return rootPane;
+
+        return customRootPane;
     }
-    
+
     /**
      * Retrieves the OK button for this form.
      * @return The form's OK button
@@ -204,7 +200,7 @@ public class StandardDialog extends JDialog  {
     public final JButton getOkButton() {
         return okButton;
     }
-    
+
     /**
      * Retrieves the Cancel button for this form.
      * @return The form's cancel button
@@ -212,7 +208,7 @@ public class StandardDialog extends JDialog  {
     public final JButton getCancelButton() {
         return cancelButton;
     }
-    
+
     /**
      * Simulates the user clicking on the specified target button.
      * @param target The button to use
@@ -222,5 +218,4 @@ public class StandardDialog extends JDialog  {
             target.doClick();
         }
     }
-    
 }
