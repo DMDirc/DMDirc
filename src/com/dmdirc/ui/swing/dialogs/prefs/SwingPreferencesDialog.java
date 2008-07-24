@@ -74,6 +74,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * serialized objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 8;
+    /** Previously instantiated instance of SwingPreferencesDialog. */
+    private static volatile SwingPreferencesDialog me;
     /** A map of settings to the components used to represent them. */
     private final Map<PreferencesSetting, JComponent> components;
     /** Categories in the dialog. */
@@ -103,7 +105,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     /**
      * Creates a new instance of SwingPreferencesDialog.
      */
-    public SwingPreferencesDialog() {
+    private SwingPreferencesDialog() {
         super((MainFrame) Main.getUI().getMainWindow(), false);
 
         manager = new PreferencesManager();
@@ -120,6 +122,28 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         new TreeScroller(tabList);
 
         addCategories(manager.getCategories());
+    }
+    
+    /** Returns the instance of SwingPreferencesDialog. */
+    public static void showSwingPreferencesDialog() {
+        me = getSwingPreferencesDialog();
+
+        me.display();
+    }
+
+    /**
+     * Returns the current instance of the ErrorListDialog.
+     *
+     * @return The current PluginDErrorListDialogialog instance
+     */
+    public static SwingPreferencesDialog getSwingPreferencesDialog() {
+        synchronized (SwingPreferencesDialog.class) {
+            if (me == null) {
+                me = new SwingPreferencesDialog();
+            }
+        }
+
+        return me;
     }
 
     /**
@@ -373,7 +397,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     }
 
     /** {@inheritDoc} */
-    public void display() {
+    private void display() {
         final String[] tabName = IdentityManager.getGlobalConfig().
                 getOption("dialogstate", "preferences", "").split("->");
         TreePath path = new TreePath(tabList.getModel().getRoot());
@@ -396,7 +420,16 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             tabList.setSelectionPath(path);
         }
         pack();
-        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        setLocationRelativeTo(getParent());
         setVisible(true);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
+        }
     }
 }

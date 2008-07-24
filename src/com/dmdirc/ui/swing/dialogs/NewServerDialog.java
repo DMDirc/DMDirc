@@ -283,4 +283,13 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
             dispose();
         }
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
+        }
+    }
 }

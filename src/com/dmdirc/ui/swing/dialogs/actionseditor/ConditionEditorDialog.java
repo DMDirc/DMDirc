@@ -445,4 +445,13 @@ public final class ConditionEditorDialog extends StandardDialog implements
     public void focusLost(final FocusEvent e) {
     //Ignore
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
+        }
+    }
 }

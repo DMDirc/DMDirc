@@ -435,4 +435,13 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
             }
         }
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
+        }
+    }
 }

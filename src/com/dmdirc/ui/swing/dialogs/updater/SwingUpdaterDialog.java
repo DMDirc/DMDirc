@@ -233,4 +233,13 @@ public final class SwingUpdaterDialog extends StandardDialog implements
             getOkButton().setEnabled(true);
         }
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
+        }
+    }
 }

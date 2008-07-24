@@ -255,4 +255,13 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
             dispose();
         }
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
+        }
+    }
 }

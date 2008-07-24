@@ -272,6 +272,15 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
     public void changedUpdate(DocumentEvent e) {
     //Ignore
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
+        }
+    }
 }
 
 /**

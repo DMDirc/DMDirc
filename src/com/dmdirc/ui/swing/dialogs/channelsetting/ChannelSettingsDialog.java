@@ -255,4 +255,13 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
 
         dispose();
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
+        }
+    }
 }

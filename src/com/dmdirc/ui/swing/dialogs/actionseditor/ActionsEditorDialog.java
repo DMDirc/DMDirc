@@ -344,4 +344,13 @@ public final class ActionsEditorDialog extends StandardDialog implements
         JOptionPane.showMessageDialog(this, message, title,
                 JOptionPane.WARNING_MESSAGE);
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
+        }
+    }
 }

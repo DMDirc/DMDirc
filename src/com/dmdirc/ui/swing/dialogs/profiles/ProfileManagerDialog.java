@@ -267,4 +267,13 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
         }
         selectedIndex = profileList.getSelectedIndex();
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
+        }
+    }
 }

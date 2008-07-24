@@ -152,4 +152,13 @@ public class URLDialog extends StandardDialog implements ActionListener {
 
         setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
+        }
+    }
 }

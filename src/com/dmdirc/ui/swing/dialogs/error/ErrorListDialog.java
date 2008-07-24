@@ -394,4 +394,13 @@ public final class ErrorListDialog extends StandardDialog implements
     public boolean isReady() {
         return Main.getUI().getStatusBar().isVisible();
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
+        }
+    }
 }

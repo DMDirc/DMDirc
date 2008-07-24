@@ -432,4 +432,13 @@ public final class AliasManagerDialog extends StandardDialog implements
 
         return false;
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
+        }
+    }
 }
