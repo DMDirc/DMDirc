@@ -81,6 +81,8 @@ public final class ActionGroupSettingsPanel extends JPanel implements ActionList
      */
     public ActionGroupSettingsPanel(final ActionGroup group, final Window window) {
         super();
+        
+        this.window = window;
 
         initComponents();
         addListeners();
