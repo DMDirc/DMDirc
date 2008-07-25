@@ -74,6 +74,8 @@ public class DurationEditor extends StandardDialog implements ActionListener {
      * Instantiates a new duration editor.
      * 
      * @param window Parent window.
+     * 
+     * @since 0.6
      */
     public DurationEditor(final Window window) {
         this(window, 0);
@@ -93,6 +95,8 @@ public class DurationEditor extends StandardDialog implements ActionListener {
      * 
      * @param window Parent window.
      * @param duration Starting duration
+     * 
+     * @since 0.6
      */
     public DurationEditor(final Window window, final long duration) {
         super(SwingController.getMainFrame(), false);

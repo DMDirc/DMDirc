@@ -71,6 +71,8 @@ public class DurationDisplay extends JPanel implements ActionListener,
      * Instantiates a new duration display.
      * 
      * @param window Parent window.
+     * 
+     * @since 0.6
      */
     public DurationDisplay(final Window window) {
         this(window, 0);
@@ -90,6 +92,8 @@ public class DurationDisplay extends JPanel implements ActionListener,
      * 
      * @param window Parent window.
      * @param duration Duration to display in milliseconds
+     * 
+     * @since 0.6
      */
     public DurationDisplay(final Window window, final long duration) {
         this.window = window;
