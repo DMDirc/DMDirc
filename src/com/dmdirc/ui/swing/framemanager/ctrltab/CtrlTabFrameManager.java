@@ -159,7 +159,7 @@ public final class CtrlTabFrameManager implements FrameManager,
     @Override
     public void addWindow(final FrameContainer parent,
             final FrameContainer window) {
-        final Runnable runnable = new Runnable() {
+        UIUtilities.invokeAndWait(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
@@ -168,12 +168,7 @@ public final class CtrlTabFrameManager implements FrameManager,
                     addWindow(nodes.get(parent), window);
                 }
             }
-        };
-        if (SwingUtilities.isEventDispatchThread()) {
-            runnable.run();
-        } else {
-            UIUtilities.invokeAndWait(runnable);
-        }
+        });
     }
 
     /** {@inheritDoc} */

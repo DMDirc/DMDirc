@@ -32,6 +32,7 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.components.TextFrame;
 
 import java.awt.event.ActionEvent;
@@ -45,7 +46,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
-import javax.swing.SwingUtilities;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
@@ -166,7 +166,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
      * @param window Window to add to the list
      */
     private void addFrameContainer(final FrameContainer window) {
-        SwingUtilities.invokeLater(new Runnable() {
+        UIUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
@@ -196,7 +196,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
      * @param window Window to remove from list
      */
     private void removeFramecontainer(final FrameContainer window) {
-        SwingUtilities.invokeLater(new Runnable() {
+        UIUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
