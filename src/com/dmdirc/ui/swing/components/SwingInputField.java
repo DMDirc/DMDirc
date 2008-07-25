@@ -276,8 +276,6 @@ public class SwingInputField extends JComponent implements InputField,
      */
     @Override
     public void keyPressed(final KeyEvent e) {
-        wrapIndicator.setVisible(false);
-        errorIndicator.setVisible(false);
         for(KeyListener listener : listeners.get(KeyListener.class)) {
             listener.keyPressed(e);
         }
@@ -305,7 +303,7 @@ public class SwingInputField extends JComponent implements InputField,
     /** {@inheritDoc} */
     @Override
     public void wrappedText(final int count) {
-        wrapIndicator.setVisible(count != 0);
+        wrapIndicator.setVisible(count > 1);
         wrapIndicator.setToolTipText(count + " lines");
     }
 }
