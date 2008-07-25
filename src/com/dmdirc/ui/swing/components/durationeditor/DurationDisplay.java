@@ -27,6 +27,7 @@ import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.util.ListenerList;
 
 import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -56,6 +57,8 @@ public class DurationDisplay extends JPanel implements ActionListener,
     private JButton button;
     /** Listener list. */
     private final ListenerList listeners;
+    /** Parent window. */
+    private Window window;
 
     /**
      * Initialises a new duration display of 0 milliseconds.
@@ -63,13 +66,33 @@ public class DurationDisplay extends JPanel implements ActionListener,
     public DurationDisplay() {
         this(0);
     }
+    
+    /**
+     * Instantiates a new duration display.
+     * 
+     * @param window Parent window.
+     */
+    public DurationDisplay(final Window window) {
+        this(window, 0);
+    }
+    
+    /**
+     * Instantiates a new duration display.
+     * 
+     * @param duration Starting duration
+     */
+    public DurationDisplay(final long duration) {
+        this(null, duration);
+    }
 
     /**
      * Initialises a new duration display showing the specified millisecond duration.
      * 
+     * @param window Parent window.
      * @param duration Duration to display in milliseconds
      */
-    public DurationDisplay(final long duration) {
+    public DurationDisplay(final Window window, final long duration) {
+        this.window = window;
         this.duration = Long.valueOf(duration / 1000).intValue();
         listeners = new ListenerList();
 
@@ -121,7 +144,7 @@ public class DurationDisplay extends JPanel implements ActionListener,
      */
     @Override
     public void actionPerformed(final ActionEvent e) {
-        DurationEditor editor = new DurationEditor(duration);
+        DurationEditor editor = new DurationEditor(window, duration);
         editor.setLocationRelativeTo(this);
         editor.addDurationListener(this);
     }

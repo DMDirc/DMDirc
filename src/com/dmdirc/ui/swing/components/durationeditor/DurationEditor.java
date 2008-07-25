@@ -26,9 +26,12 @@ import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.util.ListenerList;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
@@ -57,6 +60,8 @@ public class DurationEditor extends StandardDialog implements ActionListener {
     private JSpinner secondsSpinner;
     /** Listener list. */
     private final ListenerList listeners;
+    /** Parent window. */
+    private Window window;
 
     /**
      * Instantiates a new duration editor.
@@ -64,14 +69,35 @@ public class DurationEditor extends StandardDialog implements ActionListener {
     public DurationEditor() {
         this(0);
     }
-
+    
+    /**
+     * Instantiates a new duration editor.
+     * 
+     * @param window Parent window.
+     */
+    public DurationEditor(final Window window) {
+        this(window, 0);
+    }
+    
     /**
      * Instantiates a new duration editor.
      * 
      * @param duration Starting duration
      */
     public DurationEditor(final long duration) {
+        this(null, duration);
+    }
+
+    /**
+     * Instantiates a new duration editor.
+     * 
+     * @param window Parent window.
+     * @param duration Starting duration
+     */
+    public DurationEditor(final Window window, final long duration) {
         super(SwingController.getMainFrame(), false);
+        
+        this.window = window;
 
         listeners = new ListenerList();
 
@@ -107,6 +133,17 @@ public class DurationEditor extends StandardDialog implements ActionListener {
     private void addListeners() {
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
+        
+        if (window != null) {
+            window.addWindowListener(new WindowAdapter() {
+
+                /** {@inheritDoc} */
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    dispose();
+                }
+            });
+        }
     }
 
     /**
