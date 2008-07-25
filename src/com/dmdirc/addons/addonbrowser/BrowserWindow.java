@@ -136,8 +136,10 @@ public class BrowserWindow extends JFrame implements ActionListener,
         
         panel = new JPanel(new MigLayout("fill"));
         panel.setBorder(BorderFactory.createTitledBorder("Results"));
-        panel.add(new JScrollPane(list, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), "grow");
+        final JScrollPane sp = new JScrollPane(list, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        sp.getVerticalScrollBar().setUnitIncrement(15);
+        panel.add(sp, "grow");
         add(panel, "wrap, spany 4, grow");
         
         panel = new JPanel(new MigLayout("wrap"));
@@ -222,7 +224,7 @@ public class BrowserWindow extends JFrame implements ActionListener,
      * Sorts and filters the list of addons according to the currently selected
      * options.
      */
-    private void sortAndFilter() {
+        private void sortAndFilter() {
         list.removeAll();
         final List<AddonInfo> newInfos = new ArrayList<AddonInfo>();
         
