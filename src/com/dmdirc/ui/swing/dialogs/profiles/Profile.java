@@ -124,7 +124,7 @@ public class Profile {
     public Profile(final String name, final String nickname,
             final String realname, final String ident,
             final List<String> altNicknames, final boolean modified) {
-        this.oldName = null;
+        this.oldName = name;
         this.name = name;
         this.nickname = nickname;
         this.realname = realname;
@@ -301,7 +301,7 @@ public class Profile {
             Identity profile = null;
 
             for (Identity identity : identities) {
-                if (identity.getName().equals(oldName)) {
+                if (identity.getName().equalsIgnoreCase(oldName)) {
                     profile = identity;
                     break;
                 }
@@ -311,15 +311,13 @@ public class Profile {
                 profile = Identity.buildProfile(name);
             }
 
-            if (!profile.getName().equals(name)) {
-                profile.setOption("identity", "name", name);
-            }
+            profile.setOption("identity", "name", name);
             profile.setOption(profileString, "nickname", nickname);
             profile.setOption(profileString, "realname", realname);
             profile.setOption(profileString, "ident", ident);
             profile.setOption(profileString, "altnicks", altNicknames);
             modified = false;
-            this.oldName = null;
+            this.oldName = name;
         }
     }
 
