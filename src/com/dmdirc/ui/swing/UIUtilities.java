@@ -163,7 +163,9 @@ public final class UIUtilities {
      * @param runnable Thread to be executed
      */
     public static void invokeAndWait(final Runnable runnable) {
-        if (!SwingUtilities.isEventDispatchThread()) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            runnable.run();
+        } else {
             try {
                 SwingUtilities.invokeAndWait(runnable);
             } catch (InterruptedException ex) {
@@ -171,30 +173,29 @@ public final class UIUtilities {
             } catch (InvocationTargetException ex) {
                 Logger.userError(ErrorLevel.HIGH, "Unable to execute thread.");
             }
-        } else {
-            runnable.run();
         }
     }
 
     /**
      * Invokes and waits for the specified runnable, executed on the EDT.
      * 
+     * @param <T> The return type of the returnable thread
      * @param returnable Thread to be executed
-     * 
      * @return Result from the compelted thread
      */
     public static <T> T invokeAndWait(final ReturnableThread<T> returnable) {
-        if (!SwingUtilities.isEventDispatchThread()) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            returnable.run();
+        } else {
             try {
                 SwingUtilities.invokeAndWait(returnable);
             } catch (InterruptedException ex) {
                 Logger.userError(ErrorLevel.HIGH, "Unable to execute thread.");
             } catch (InvocationTargetException ex) {
                 Logger.userError(ErrorLevel.HIGH, "Unable to execute thread.");
-            }
-        } else {
-            returnable.run();
+            }            
         }
+        
         return returnable.getObject();
     }
 
@@ -204,10 +205,10 @@ public final class UIUtilities {
      * @param runnable Runnable to be executed.
      */
     public static void invokeLater(final Runnable runnable) {
-        if (!SwingUtilities.isEventDispatchThread()) {
-            SwingUtilities.invokeLater(runnable);
-        } else {
+        if (SwingUtilities.isEventDispatchThread()) {
             runnable.run();
+        } else {
+            SwingUtilities.invokeLater(runnable);
         }
     }
 
@@ -247,7 +248,7 @@ public final class UIUtilities {
      * @since 0.6
      */
     public static int getCtrlDownMask() {
-        return (Apple.isAppleUI()) ? KeyEvent.META_DOWN_MASK : KeyEvent.CTRL_DOWN_MASK;
+        return Apple.isAppleUI() ? KeyEvent.META_DOWN_MASK : KeyEvent.CTRL_DOWN_MASK;
     }
     
     /**
@@ -257,16 +258,17 @@ public final class UIUtilities {
      * @since 0.6
      */
     public static int getCtrlMask() {
-        return (Apple.isAppleUI()) ? KeyEvent.META_MASK : KeyEvent.CTRL_MASK;
+        return Apple.isAppleUI() ? KeyEvent.META_MASK : KeyEvent.CTRL_MASK;
     }
     
     /**
      * Check if the command/ctrl key is pressed down.
      * 
+     * @param e The KeyEvent to check
      * @return on OSX this returns e.isMetaDown(), else e.isControlDown()
      * @since 0.6
      */
     public static boolean isCtrlDown(final KeyEvent e) {
-        return (Apple.isAppleUI()) ? e.isMetaDown() : e.isControlDown();
+        return Apple.isAppleUI() ? e.isMetaDown() : e.isControlDown();
     }
 }
