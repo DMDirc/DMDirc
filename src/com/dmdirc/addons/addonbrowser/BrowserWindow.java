@@ -122,8 +122,9 @@ public class BrowserWindow extends JFrame implements ActionListener,
     public BrowserWindow() {
         setTitle("DMDirc Addon Browser");
         setIconImage(Main.getUI().getMainWindow().getIcon().getImage());
-        setMinimumSize(new Dimension(700, 550));
-        setSize(new Dimension(700, 550));
+        setMaximumSize(new Dimension(550, 550));
+        setMinimumSize(new Dimension(550, 550));
+        setSize(new Dimension(550, 550));
         setLocationRelativeTo((Component) Main.getUI().getMainWindow());
         
         setLayout(new MigLayout("fill"));
@@ -248,8 +249,7 @@ public class BrowserWindow extends JFrame implements ActionListener,
             list.add(getPanel(info, i++), "width 100%!");
         }
 
-        pack(); // Doing anything other than pack here breaks somehow.
-                // Pack makes the dialog randomly change sizes.
+        invalidate();
     }
     
     /**
