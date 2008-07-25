@@ -543,17 +543,17 @@ public final class Server extends WritableFrameContainer implements Serializable
                 // Can't join channels while the server is closing
                 return;
             }
+        }
 
-            if (hasChannel(chan.getName())) {
-                getChannel(chan.getName()).setChannelInfo(chan);
-                getChannel(chan.getName()).selfJoin();
-            } else {
-                final Channel newChan = new Channel(this, chan);
+        if (hasChannel(chan.getName())) {
+            getChannel(chan.getName()).setChannelInfo(chan);
+            getChannel(chan.getName()).selfJoin();
+        } else {
+            final Channel newChan = new Channel(this, chan);
 
-                tabCompleter.addEntry(TabCompletionType.CHANNEL, chan.getName());
-                channels.put(converter.toLowerCase(chan.getName()), newChan);
-                newChan.show();
-            }
+            tabCompleter.addEntry(TabCompletionType.CHANNEL, chan.getName());
+            channels.put(converter.toLowerCase(chan.getName()), newChan);
+            newChan.show();
         }
     }
 
@@ -563,6 +563,13 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @param host host of the remote client being queried
      */
     public void addQuery(final String host) {
+        synchronized (this) {
+            if (myState == ServerState.CLOSING) {
+                // Can't open queries while the server is closing
+                return;
+            }
+        }
+        
         if (!hasQuery(host)) {
             final Query newQuery = new Query(this, host);
 
