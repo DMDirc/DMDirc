@@ -29,10 +29,13 @@ import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.PrefsComponentFactory;
+import com.dmdirc.ui.swing.components.ColourChooser;
+import com.dmdirc.ui.swing.components.OptionalColourChooser;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.components.TreeScroller;
 
+import com.dmdirc.ui.swing.components.durationeditor.DurationDisplay;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -195,7 +198,14 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             final PreferencesSetting setting) {
 
         final JLabel label = getLabel(setting);
-        final JComponent option = PrefsComponentFactory.getComponent(setting);
+        JComponent option = PrefsComponentFactory.getComponent(setting);
+        if (option instanceof DurationDisplay) {
+            ((DurationDisplay) option).setWindow(this);
+        } else if (option instanceof ColourChooser) {
+            ((ColourChooser) option).setWindow(this);
+        } else if (option instanceof OptionalColourChooser) {
+            ((OptionalColourChooser) option).setWindow(this);
+        }
         components.put(setting, option);
 
         categories.get(category).add(label, "align label");

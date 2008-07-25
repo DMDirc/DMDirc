@@ -135,6 +135,9 @@ public final class PrefsComponentFactory {
         final JCheckBox option = new JCheckBox();
         option.setSelected(Boolean.parseBoolean(setting.getValue()));
         option.addChangeListener(new ChangeListener() {
+            
+            /** {@inheritDoc} */
+            @Override
             public void stateChanged(final ChangeEvent e) {
                 setting.setValue(String.valueOf(((JCheckBox) e.getSource()).isSelected()));
             }
@@ -162,6 +165,9 @@ public final class PrefsComponentFactory {
         }
 
         option.addActionListener(new ActionListener() {
+            
+            /** {@inheritDoc} */
+            @Override
             public void actionPerformed(final ActionEvent e) {
                 setting.setValue((String) ((Map.Entry)
                         ((JComboBox) e.getSource()).getSelectedItem()).getKey());
@@ -196,6 +202,9 @@ public final class PrefsComponentFactory {
         }
 
         option.addChangeListener(new ChangeListener() {
+            
+            /** {@inheritDoc} */
+            @Override
             public void stateChanged(final ChangeEvent e) {
                 setting.setValue(((JSpinner) e.getSource()).getValue().
                         toString());
@@ -221,6 +230,9 @@ public final class PrefsComponentFactory {
         }
 
         option.addDurationListener(new DurationListener() {
+            
+            /** {@inheritDoc} */
+            @Override
             public void durationUpdated(final int newDuration) {
                 setting.setValue(String.valueOf(newDuration));
             }
@@ -239,6 +251,9 @@ public final class PrefsComponentFactory {
         final ColourChooser option = new ColourChooser(setting.getValue(), true, true);
 
         option.addActionListener(new ActionListener() {
+            
+            /** {@inheritDoc} */
+            @Override
             public void actionPerformed(final ActionEvent e) {
                 setting.setValue(((ColourChooser) e.getSource()).getColour());
             }
@@ -262,6 +277,9 @@ public final class PrefsComponentFactory {
         final OptionalColourChooser option = new OptionalColourChooser(colour, state, true, true);
 
         option.addActionListener(new ActionListener() {
+            
+            /** {@inheritDoc} */
+            @Override
             public void actionPerformed(final ActionEvent e) {
                 setting.setValue(
                         ((OptionalColourChooser) e.getSource()).isEnabled() + ":"

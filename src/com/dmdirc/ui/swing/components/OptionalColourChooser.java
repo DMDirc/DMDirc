@@ -26,10 +26,10 @@ import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.util.ListenerList;
 import com.dmdirc.ui.swing.UIUtilities;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -44,45 +44,51 @@ import net.miginfocom.swing.MigLayout;
  * Colour chooser widget.
  */
 public final class OptionalColourChooser extends JPanel implements ActionListener {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
     /** Enabled checkbox. */
     private JCheckBox enabled;
-    
     /** Edit button. */
     private JButton editButton;
-    
     /** Panel to show the colour preview. */
     private JPanel previewPanel;
-    
     /** Colours picking dialog. */
     private ColourPickerDialog cpd;
-    
     /** show irc colours. */
     private boolean showIRC;
-    
     /** show hex colours. */
     private boolean showHex;
-    
     /** The value of this component. */
     private String value;
-    
     /** Our listeners. */
     private final ListenerList listeners = new ListenerList();
-    
+    /** Parent window. */
+    private Window window;
+
     /** Creates a new instance of ColourChooser. */
     public OptionalColourChooser() {
         this("", false, true, true);
     }
     
+    /** 
+     * Creates a new instance of ColourChooser.
+     * 
+     * @param window Parent window
+     * 
+     * @since 0.6
+     */
+    public OptionalColourChooser(final Window window) {
+        this("", false, true, true, window);
+    }
+    
     /**
      * Creates a new instance of ColourChooser.
+     * 
      * @param initialColour Snitial colour
      * @param initialState Initial state
      * @param ircColours Show irc colours
@@ -91,12 +97,30 @@ public final class OptionalColourChooser extends JPanel implements ActionListene
     public OptionalColourChooser(final String initialColour,
             final boolean initialState, final boolean ircColours,
             final boolean hexColours) {
+        this(initialColour, initialState, ircColours, hexColours, null);
+    }
+
+    /**
+     * Creates a new instance of ColourChooser.
+     * 
+     * @param initialColour Snitial colour
+     * @param initialState Initial state
+     * @param ircColours Show irc colours
+     * @param hexColours Show hex colours
+     * @param window Parent window
+     * 
+     * @since 0.6
+     */
+    public OptionalColourChooser(final String initialColour,
+            final boolean initialState, final boolean ircColours,
+            final boolean hexColours, final Window window) {
         super();
-        
+
+        this.window = window;
         showIRC = ircColours;
         showHex = hexColours;
         value = initialColour;
-        
+
         editButton = new JButton("Edit");
         if (UIUtilities.isWindowsUI()) {
             editButton.setMargin(new Insets(2, 4, 2, 4));
@@ -107,39 +131,38 @@ public final class OptionalColourChooser extends JPanel implements ActionListene
         if (!initialState) {
             editButton.setEnabled(false);
         }
-        
+
         previewPanel = new JPanel();
         previewPanel.setPreferredSize(new Dimension(40, 10));
         previewPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
-        
+
         enabled = new JCheckBox();
         enabled.setPreferredSize(new Dimension(40, 40));
         enabled.setSelected(initialState);
         enabled.addActionListener(this);
-        
+
         setLayout(new MigLayout("fill, ins 0"));
-        
+
         add(enabled, "sgy all");
         add(previewPanel, "growx, pushx, sgy all");
         add(editButton, "sgy all");
-        
+
         updateColour(initialColour);
     }
-    
-        
+
     /** Sets the colour back to white. */
     public void clearColour() {
         value = "ffffff";
         previewPanel.setBackground(ColourManager.getColour("ffffff"));
         previewPanel.setToolTipText("");
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean isEnabled() {
         return enabled.isSelected();
     }
-    
+
     /**
      * Returns the selected colour from this component.
      *
@@ -148,7 +171,7 @@ public final class OptionalColourChooser extends JPanel implements ActionListene
     public String getColour() {
         return value;
     }
-    
+
     /**
      * Updates the colour panel.
      * @param newColour The new colour to use.
@@ -163,10 +186,15 @@ public final class OptionalColourChooser extends JPanel implements ActionListene
         }
     }
 
-    /** {@inheritDoc}. */
+    /** 
+     * {@inheritDoc}.
+     * 
+     * @param e Action event
+     */
+    @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == editButton) {
-            cpd = new ColourPickerDialog(showIRC, showHex);
+            cpd = new ColourPickerDialog(showIRC, showHex, window);
             cpd.setLocationRelativeTo(editButton);
             cpd.addActionListener(this);
             cpd.setVisible(true);
@@ -180,7 +208,7 @@ public final class OptionalColourChooser extends JPanel implements ActionListene
             cpd.dispose();
         }
     }
-    
+
     /**
      * Adds an action listener to this optional colour chooser. Action
      * listeners are notified whenever the state changes in some way.
@@ -190,7 +218,7 @@ public final class OptionalColourChooser extends JPanel implements ActionListene
     public void addActionListener(final ActionListener l) {
         listeners.add(ActionListener.class, l);
     }
-    
+
     /**
      * Informs all action listeners that an action has occured.
      */
@@ -198,5 +226,14 @@ public final class OptionalColourChooser extends JPanel implements ActionListene
         for (ActionListener listener : listeners.get(ActionListener.class)) {
             listener.actionPerformed(new ActionEvent(this, 1, "stuffChanged"));
         }
+    }
+    
+    /**
+     * Sets the Parent window.
+     * 
+     * @param window Parent window
+     */
+    public void setWindow(final Window window) {
+        this.window = window;
     }
 }

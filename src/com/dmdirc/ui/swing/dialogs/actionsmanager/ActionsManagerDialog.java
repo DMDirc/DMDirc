@@ -151,7 +151,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         actions = new ActionsGroupPanel(null);
         info = new ActionGroupInformationPanel(null);
         settings = new HashMap<ActionGroup, ActionGroupSettingsPanel>();
-        activeSettings = new ActionGroupSettingsPanel(null);
+        activeSettings = new ActionGroupSettingsPanel(null, this);
         settings.put(null, activeSettings);
         add = new JButton("Add");
         edit = new JButton("Edit");
@@ -256,7 +256,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         actions.setActionGroup(group);
         if (!settings.containsKey(group)) {
             final ActionGroupSettingsPanel currentSettings =
-                    new ActionGroupSettingsPanel(group);
+                    new ActionGroupSettingsPanel(group, this);
             settings.put(group, currentSettings);
             currentSettings.setBorder(BorderFactory.createTitledBorder(currentSettings.getBorder(),
                     "Settings"));

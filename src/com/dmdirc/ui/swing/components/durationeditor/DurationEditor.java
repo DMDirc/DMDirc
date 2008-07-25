@@ -69,7 +69,7 @@ public class DurationEditor extends StandardDialog implements ActionListener {
     public DurationEditor() {
         this(0);
     }
-    
+
     /**
      * Instantiates a new duration editor.
      * 
@@ -80,7 +80,7 @@ public class DurationEditor extends StandardDialog implements ActionListener {
     public DurationEditor(final Window window) {
         this(window, 0);
     }
-    
+
     /**
      * Instantiates a new duration editor.
      * 
@@ -100,7 +100,7 @@ public class DurationEditor extends StandardDialog implements ActionListener {
      */
     public DurationEditor(final Window window, final long duration) {
         super(SwingController.getMainFrame(), false);
-        
+
         this.window = window;
 
         listeners = new ListenerList();
@@ -137,17 +137,8 @@ public class DurationEditor extends StandardDialog implements ActionListener {
     private void addListeners() {
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
-        
-        if (window != null) {
-            window.addWindowListener(new WindowAdapter() {
 
-                /** {@inheritDoc} */
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    dispose();
-                }
-            });
-        }
+        setWindow(window);
     }
 
     /**
@@ -233,6 +224,26 @@ public class DurationEditor extends StandardDialog implements ActionListener {
     protected void fireDurationListener(final int newDuration) {
         for (DurationListener listener : listeners.get(DurationListener.class)) {
             listener.durationUpdated(newDuration);
+        }
+    }
+
+    /**
+     * Sets the Parent window.
+     * 
+     * @param window Parent window
+     */
+    public void setWindow(final Window window) {
+        this.window = window;
+
+        if (window != null) {
+            window.addWindowListener(new WindowAdapter() {
+
+                /** {@inheritDoc} */
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    dispose();
+                }
+            });
         }
     }
 }

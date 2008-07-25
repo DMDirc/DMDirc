@@ -25,7 +25,11 @@ package com.dmdirc.ui.swing.dialogs.actionsmanager;
 import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.ui.swing.PrefsComponentFactory;
+import com.dmdirc.ui.swing.components.ColourChooser;
+import com.dmdirc.ui.swing.components.OptionalColourChooser;
+import com.dmdirc.ui.swing.components.durationeditor.DurationDisplay;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -55,13 +59,27 @@ public final class ActionGroupSettingsPanel extends JPanel implements ActionList
     private List<PreferencesSetting> settings;
     /** Button -> Component map. */
     private Map<JButton, PreferencesSetting> settingMap;
-
+    /** Parent dialog. */
+    private Window window;
+    
     /**
      * Initialises a new action group information panel.
      * 
      * @param group Action group
      */
     public ActionGroupSettingsPanel(final ActionGroup group) {
+        this(group, null);
+    }
+
+    /**
+     * Initialises a new action group information panel.
+     * 
+     * @param group Action group
+     * @param window Parent window
+     * 
+     * @since 0.6
+     */
+    public ActionGroupSettingsPanel(final ActionGroup group, final Window window) {
         super();
 
         initComponents();
@@ -96,6 +114,13 @@ public final class ActionGroupSettingsPanel extends JPanel implements ActionList
             label.setToolTipText(setting.getTitle());
             final JComponent component =
                     PrefsComponentFactory.getComponent(setting);
+            if (component instanceof DurationDisplay) {
+            ((DurationDisplay) component).setWindow(window);
+        } else if (component instanceof ColourChooser) {
+            ((ColourChooser) component).setWindow(window);
+        } else if (component instanceof OptionalColourChooser) {
+            ((OptionalColourChooser) component).setWindow(window);
+        }
             final JButton button = new SettingsRevertButton(setting);
             settingMap.put(button, setting);
             button.addActionListener(this);

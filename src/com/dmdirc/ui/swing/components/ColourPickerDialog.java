@@ -25,8 +25,11 @@ package com.dmdirc.ui.swing.components;
 import com.dmdirc.Main;
 import com.dmdirc.ui.swing.MainFrame;
 
+import java.awt.Window;
 import java.awt.event.ActionListener;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.JDialog;
 
 /**
@@ -42,9 +45,13 @@ public final class ColourPickerDialog extends StandardDialog {
     private static final long serialVersionUID = 1;
     /** Colour chooser panel. */
     private ColourPickerPanel colourChooser;
+    /** Parent window. */
+    private Window window;
 
     /**
      * Creates a new instance of ColourPickerDialog.
+     * 
+     * @since 0.6   
      */
     public ColourPickerDialog() {
         this(true, true);
@@ -52,19 +59,47 @@ public final class ColourPickerDialog extends StandardDialog {
 
     /**
      * Creates a new instance of ColourPickerDialog.
+     * 
+     * @param window Parent window
+     * 
+     * @since 0.6
+     */
+    public ColourPickerDialog(final Window window) {
+        this(true, true, window);
+    }
+
+    /**
+     * Creates a new instance of ColourPickerDialog.
+     * 
      * @param showIRC show irc colours
      * @param showHex show hex colours
      */
     public ColourPickerDialog(final boolean showIRC, final boolean showHex) {
+        this(showIRC, showHex, null);
+    }
+
+    /**
+     * Creates a new instance of ColourPickerDialog.
+     * 
+     * @param showIRC show irc colours
+     * @param showHex show hex colours
+     * @param window Parent window
+     * 
+     * @since 0.6
+     */
+    public ColourPickerDialog(final boolean showIRC, final boolean showHex,
+            final Window window) {
         super((MainFrame) Main.getUI().getMainWindow(), false);
 
         colourChooser = new ColourPickerPanel(showIRC, showHex);
-        
+
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         add(colourChooser);
         pack();
         setResizable(false);
         setFocusableWindowState(false);
+
+        setWindow(window);
     }
 
     /** 
@@ -95,5 +130,25 @@ public final class ColourPickerDialog extends StandardDialog {
      */
     public void addActionListener(final ActionListener listener) {
         colourChooser.addActionListener(listener);
+    }
+
+    /**
+     * Sets the Parent window.
+     * 
+     * @param window Parent window
+     */
+    public void setWindow(final Window window) {
+        this.window = window;
+
+        if (window != null) {
+            window.addWindowListener(new WindowAdapter() {
+
+                /** {@inheritDoc} */
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    dispose();
+                }
+            });
+        }
     }
 }

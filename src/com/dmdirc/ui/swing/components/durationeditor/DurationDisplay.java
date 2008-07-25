@@ -209,4 +209,13 @@ public class DurationDisplay extends JPanel implements ActionListener,
             listener.durationUpdated(newDuration);
         }
     }
+    
+    /**
+     * Sets the Parent window.
+     * 
+     * @param window Parent window
+     */
+    public void setWindow(final Window window) {
+        this.window = window;
+    }
 }
