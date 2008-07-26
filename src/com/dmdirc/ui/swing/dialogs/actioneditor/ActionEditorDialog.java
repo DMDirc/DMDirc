@@ -80,7 +80,7 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         substitutions = new ActionSubstitutionsPanel();
         showSubstitutions = new JButton("Show Substitutions");
         
-        triggers.setEnabled(false);
+        //triggers.setEnabled(false);
         response.setEnabled(false);
         conditions.setEnabled(false);
         substitutions.setVisible(false);

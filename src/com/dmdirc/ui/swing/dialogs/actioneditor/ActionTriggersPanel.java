@@ -27,15 +27,20 @@ import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.components.renderers.ActionTypeRenderer;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -76,7 +81,33 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
         trigger.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
         trigger.setRenderer(new ActionTypeRenderer());
         trigger.setPrototypeDisplayValue("Testing");
+        trigger.addPopupMenuListener(new PopupMenuListener() {
 
+            @Override
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+                JComboBox box = (JComboBox) e.getSource();
+                Object comp = box.getUI().getAccessibleChild(box, 0);
+                if (!(comp instanceof JPopupMenu)) {
+                    return;
+                }
+                JComponent scrollPane =
+                        (JComponent) ((JPopupMenu) comp).getComponent(0);
+                Dimension size = scrollPane.getPreferredSize();
+                size.width = size.width * 2;
+                scrollPane.setPreferredSize(size);
+                scrollPane.setMaximumSize(size);
+            }
+
+            @Override
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+            }
+
+            @Override
+            public void popupMenuCanceled(PopupMenuEvent e) {
+            }
+        });
+
+        
         add = new JButton("Add");
         add.setEnabled(trigger.getSelectedIndex() != -1);
 
@@ -143,7 +174,7 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
             }
         });
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void setEnabled(final boolean enabled) {
