@@ -27,6 +27,8 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.components.StandardDialog;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -38,7 +40,7 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Action editor dialog.
  */
-public class ActionEditorDialog extends StandardDialog {
+public class ActionEditorDialog extends StandardDialog implements ActionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -77,15 +79,23 @@ public class ActionEditorDialog extends StandardDialog {
         conditions = new ActionConditionsPanel();
         substitutions = new ActionSubstitutionsPanel();
         showSubstitutions = new JButton("Show Substitutions");
+        
+        triggers.setEnabled(false);
+        response.setEnabled(false);
+        conditions.setEnabled(false);
+        substitutions.setVisible(false);
     }
 
     /** Adds the listeners. */
     private void addListeners() {
+        showSubstitutions.addActionListener(this);
+        getOkButton().addActionListener(this);
+        getCancelButton().addActionListener(this);
     }
 
     /** Lays out the components. */
     private void layoutComponents() {
-        setLayout(new MigLayout("fill, hidemode 3, wrap 2"));
+        setLayout(new MigLayout("fill, hidemode 3, wrap 2, pack"));
 
         add(name, "grow, wmax 225");
         add(conditions, "spany 3, grow, wmin 400, wmax 400");
@@ -93,11 +103,8 @@ public class ActionEditorDialog extends StandardDialog {
         add(response, "grow, wmax 225");
         add(substitutions, "spanx 2, grow, wmax 625");
         add(showSubstitutions, "left, sgx button, split 3, spanx 2");
-        add(getLeftButton(), "right, sgx button");
+        add(getLeftButton(), "right, sgx button, gapleft push");
         add(getRightButton(), "right, sgx button");
-
-        pack();
-        pack();
     }
 
     /**
@@ -120,5 +127,21 @@ public class ActionEditorDialog extends StandardDialog {
             }
         });
         dialog.setVisible(true);
+    }
+
+    /** 
+     * @{inheritDoc}
+     * 
+     * @param e Action event
+     */
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+        if (e.getSource().equals(showSubstitutions)) {
+        substitutions.setVisible(!substitutions.isVisible());
+        } else if (e.getSource().equals(getOkButton())) {
+            dispose();
+        } else if (e.getSource().equals(getCancelButton())) {
+            dispose();
+        }
     }
 }

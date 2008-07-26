@@ -30,9 +30,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -72,7 +75,7 @@ public class ActionSubstitutionsPanel extends JPanel {
     /** Initialises the components. */
     private void initComponents() {
         setBorder(BorderFactory.createTitledBorder(getBorder(), "Substitutions"));
-        setLayout(new MigLayout("fill, wrap 4"));
+        setLayout(new MigLayout("fill, wrap 5"));
     }
 
     /** Adds the listeners. */
@@ -85,10 +88,15 @@ public class ActionSubstitutionsPanel extends JPanel {
 
         add(new TextLabel("Substitutions may be used in the response and " +
                 "target fields. Drag and drop, or click on an item when " +
-                "editing the field, to insert it."), "spany, aligny top");
+                "editing the field, to insert it."), "spany, aligny top, wmin 225, wmax 225");
+        add(new JSeparator(JSeparator.VERTICAL), "growy");
 
         for (ActionSubstitutionLabel label : substitutions) {
             add(label, "sgx subslabel, aligny top");
+        }
+        
+        if (getComponentCount() == 2) {
+            add(new JLabel("No substitutions."), "growx, aligny top");
         }
     }
 
