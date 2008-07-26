@@ -75,6 +75,7 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
         //Only fire events on selection not on highlight
         trigger.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
         trigger.setRenderer(new ActionTypeRenderer());
+        trigger.setPrototypeDisplayValue("Testing");
 
         add = new JButton("Add");
         add.setEnabled(trigger.getSelectedIndex() != -1);

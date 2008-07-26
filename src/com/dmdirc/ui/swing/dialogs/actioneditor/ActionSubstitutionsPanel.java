@@ -51,6 +51,11 @@ public class ActionSubstitutionsPanel extends JPanel {
     /** Substitions list. */
     private List<ActionSubstitutionLabel> substitutions;
 
+    /** Instantiates the panel. */
+    public ActionSubstitutionsPanel() {
+        this(null);
+    }
+    
     /** 
      * Instantiates the panel.
      * 

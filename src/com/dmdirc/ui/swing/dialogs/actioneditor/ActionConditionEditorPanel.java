@@ -83,7 +83,12 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
         initComponents();
         addListeners();
         layoutComponents();
-        populateArguments();
+
+        if (trigger == null) {
+            setEnabled(false);
+        } else {
+            populateArguments();
+        }
     }
 
     /** Initialises the components. */
@@ -250,5 +255,15 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
     @Override
     public void changedUpdate(final DocumentEvent e) {
     //Ignore
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        arguments.setEnabled(enabled);
+        components.setEnabled(enabled);
+        comparisons.setEnabled(enabled);
+        target.setEnabled(enabled);
     }
 }

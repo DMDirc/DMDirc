@@ -23,12 +23,15 @@
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
 import com.dmdirc.ui.swing.components.TextLabel;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -97,7 +100,7 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
 
     /** Lays out the components. */
     private void layoutComponents() {
-        setLayout(new MigLayout("fill, pack, hidemode 3, wrap 1, debug"));
+        setLayout(new MigLayout("fill, pack, hidemode 3, wrap 1"));
         add(new TextLabel("Only execute this action if..."), "growx");
         add(allButton, "growx");
         add(oneButton, "growx");

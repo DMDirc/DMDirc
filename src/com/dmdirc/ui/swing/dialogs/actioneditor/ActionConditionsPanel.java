@@ -24,7 +24,11 @@ package com.dmdirc.ui.swing.dialogs.actioneditor;
 
 import com.dmdirc.actions.interfaces.ActionType;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+
+import javax.swing.JSeparator;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Action conditions panel.
@@ -39,6 +43,15 @@ public class ActionConditionsPanel extends JPanel {
     private static final long serialVersionUID = 1;
     /** Action trigger. */
     private ActionType trigger;
+    /** Tree panel. */
+    private ActionConditionsTreePanel tree;
+    /** List Panel. */
+    private ActionConditionsListPanel list;
+
+    /** Instantiates the panel. */
+    public ActionConditionsPanel() {
+        this(null);
+    }
 
     /** 
      * Instantiates the panel.
@@ -47,16 +60,22 @@ public class ActionConditionsPanel extends JPanel {
      */
     public ActionConditionsPanel(final ActionType trigger) {
         super();
-        
+
         this.trigger = trigger;
-        
+
         initComponents();
         addListeners();
         layoutComponents();
+        
+        if (trigger == null) {
+            setEnabled(false);
+        }
     }
 
     /** Initialises the components. */
     private void initComponents() {
+        tree = new ActionConditionsTreePanel();
+        list = new ActionConditionsListPanel();
     }
 
     /** Adds the listeners. */
@@ -65,8 +84,15 @@ public class ActionConditionsPanel extends JPanel {
 
     /** Lays out the components. */
     private void layoutComponents() {
+        setLayout(new MigLayout("fill, wrap 1"));
+        
+        setBorder(BorderFactory.createTitledBorder(getBorder(), "Conditions"));
+        
+        add(tree, "growx, pushx");
+        add(new JSeparator(JSeparator.HORIZONTAL), "growx, pushx");
+        add(list, "grow");
     }
-    
+
     /**
      * Sets the trigger for this conditions panel.
      * 
@@ -74,5 +100,12 @@ public class ActionConditionsPanel extends JPanel {
      */
     public void setActionTrigger(final ActionType trigger) {
         this.trigger = trigger;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void setEnabled(final boolean enabled) {
+        tree.setEnabled(enabled);
+        list.setEnabled(enabled);
     }
 }

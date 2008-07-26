@@ -25,9 +25,12 @@ package com.dmdirc.ui.swing.dialogs.actioneditor;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.interfaces.ActionType;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -36,7 +39,8 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Action conditions list panel.
  */
-public class ActionConditionsListPanel extends JPanel implements ActionConditionRemovalListener {
+public class ActionConditionsListPanel extends JPanel implements ActionConditionRemovalListener,
+        ActionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -48,6 +52,13 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
     private ActionType trigger;
     /** Conditions list. */
     private List<ActionConditionDisplayPanel> conditions;
+    /** Add button. */
+    private JButton add;
+
+    /** Instantiates the panel. */
+    public ActionConditionsListPanel() {
+        this(null, new ArrayList<ActionConditionDisplayPanel>());
+    }
 
     /** 
      * Instantiates the panel.
@@ -78,7 +89,12 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
 
     /** Initialises the components. */
     private void initComponents() {
-        setLayout(new MigLayout("fillx, wrap 2"));
+        setLayout(new MigLayout("fill, wrap 2"));
+
+        add = new JButton("Add");
+        if (trigger == null) {
+            setEnabled(false);
+        }
     }
 
     /** Adds the listeners. */
@@ -86,6 +102,7 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
         for (ActionConditionDisplayPanel condition : conditions) {
             condition.addConditionListener(this);
         }
+        add.addActionListener(this);
     }
 
     /** Lays out the components. */
@@ -100,6 +117,10 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
                 add(condition, "growx");
             }
         }
+        if (index == 0) {
+            add(new JLabel("No conditions."), "alignx center, aligny top, growx");
+        }
+        add(add, "gaptop push, newline, right, aligny bottom");
         setVisible(true);
 
     }
@@ -157,5 +178,21 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
             conditions.remove(condition);
         }
         layoutComponents();
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Action event
+     */
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+        addCondition(new ActionCondition(-1, null, null, null));
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void setEnabled(final boolean enabled) {
+        add.setEnabled(false);
     }
 }

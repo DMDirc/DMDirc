@@ -64,6 +64,7 @@ public class ActionResponsePanel extends JPanel {
     /** Initialises the components. */
     private void initComponents() {
         response = new JTextArea();
+        response.setRows(4);
         formatter = new JComboBox(new DefaultComboBoxModel());
         
         ((DefaultComboBoxModel) formatter.getModel()).addElement("No change");

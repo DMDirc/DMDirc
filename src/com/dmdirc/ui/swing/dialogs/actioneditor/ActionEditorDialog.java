@@ -22,12 +22,23 @@
 
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
-import javax.swing.JPanel;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.swing.UIUtilities;
+import com.dmdirc.ui.swing.components.StandardDialog;
+
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Action editor dialog.
  */
-public class ActionEditorDialog extends JPanel {
+public class ActionEditorDialog extends StandardDialog {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -35,11 +46,23 @@ public class ActionEditorDialog extends JPanel {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** Name panel. */
+    private ActionNamePanel name;
+    /** Triggers panel. */
+    private ActionTriggersPanel triggers;
+    /** Response panel. */
+    private ActionResponsePanel response;
+    /** Conditions panel. */
+    private ActionConditionsPanel conditions;
+    /** Substitutions panel. */
+    private ActionSubstitutionsPanel substitutions;
+    /** Show substitutions button. */
+    private JButton showSubstitutions;
 
     /** Instantiates the panel. */
     public ActionEditorDialog() {
-        super();
-        
+        super(new JFrame(), false);
+
         initComponents();
         addListeners();
         layoutComponents();
@@ -47,6 +70,13 @@ public class ActionEditorDialog extends JPanel {
 
     /** Initialises the components. */
     private void initComponents() {
+        orderButtons(new JButton(), new JButton());
+        name = new ActionNamePanel("");
+        triggers = new ActionTriggersPanel();
+        response = new ActionResponsePanel();
+        conditions = new ActionConditionsPanel();
+        substitutions = new ActionSubstitutionsPanel();
+        showSubstitutions = new JButton("Show Substitutions");
     }
 
     /** Adds the listeners. */
@@ -55,5 +85,40 @@ public class ActionEditorDialog extends JPanel {
 
     /** Lays out the components. */
     private void layoutComponents() {
+        setLayout(new MigLayout("fill, hidemode 3, wrap 2"));
+
+        add(name, "grow, wmax 225");
+        add(conditions, "spany 3, grow, wmin 400, wmax 400");
+        add(triggers, "grow, wmax 225");
+        add(response, "grow, wmax 225");
+        add(substitutions, "spanx 2, grow, wmax 625");
+        add(showSubstitutions, "left, sgx button, split 3, spanx 2");
+        add(getLeftButton(), "right, sgx button");
+        add(getRightButton(), "right, sgx button");
+
+        pack();
+        pack();
+    }
+
+    /**
+     * Test Method.
+     * 
+     * @param args CLI params
+     */
+    public static void main(final String[] args) {
+        UIUtilities.initUISettings();
+        IdentityManager.load();
+        ActionManager.init();
+        ActionEditorDialog dialog = new ActionEditorDialog();
+        dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+        dialog.addWindowListener(new WindowAdapter() {
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+        dialog.setVisible(true);
     }
 }
