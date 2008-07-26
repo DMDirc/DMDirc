@@ -60,7 +60,6 @@ import com.dmdirc.util.URLHandler;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -73,8 +72,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
+import java.text.AttributedString;
 import java.util.Date;
 
+import java.util.LinkedList;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -237,24 +239,27 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             /** {@inheritDoc} */
             @Override
             public void run() {
+                final List<AttributedString> lines = new LinkedList<AttributedString>();
                 for (String myLine : encodedLine.split("\n")) {
                     if (timestamp) {
-                        getTextPane().addText(TextPane.styledDocumentToAttributedString(
+                        lines.add(TextPane.styledDocumentToAttributedString(
                                 Styliser.getStyledString(new String[]{
                             Formatter.formatMessage(getConfigManager(),
                             "timestamp", new Date()), myLine,
                         })));
                     } else {
-                        getTextPane().addText(TextPane.styledDocumentToAttributedString(
+                        lines.add(TextPane.styledDocumentToAttributedString(
                                 Styliser.getStyledString(new String[]{myLine,})));
                     }
 
                     ActionManager.processEvent(CoreActionType.CLIENT_LINE_ADDED,
                             null, getContainer(), myLine);
+                }
+                
+                textPane.addText(lines);
 
-                    if (frameBufferSize > 0) {
-                        textPane.trim(frameBufferSize);
-                    }
+                if (frameBufferSize > 0) {
+                    textPane.trim(frameBufferSize);
                 }
             }
         });
