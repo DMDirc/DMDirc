@@ -133,7 +133,8 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             /** {@inheritDoc} */
             @Override
             public void mouseDragged(MouseEvent e) {
-                if (e.getXOnScreen() > getLocationOnScreen().getX() && e.getXOnScreen() < (getLocationOnScreen().
+                if (e.getXOnScreen() > getLocationOnScreen().getX()
+                        && e.getXOnScreen() < (getLocationOnScreen().
                         getX() + getWidth()) && e.getModifiersEx() ==
                         MouseEvent.BUTTON1_DOWN_MASK) {
                     if (getLocationOnScreen().getY() > e.getYOnScreen()) {
@@ -267,7 +268,8 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             return new AttributedString("\n");
         }
         
-        attString.addAttribute(TextAttribute.SIZE, UIManager.getFont("TextPane.font").getSize());
+        attString.addAttribute(TextAttribute.SIZE,
+                UIManager.getFont("TextPane.font").getSize());
 
         return attString;
     }
@@ -336,12 +338,15 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      */
     protected void setScrollBarMax(final int linesAllowed) {
         final int lines = document.getNumLines() - 1;
+        
         if (lines == 0) {
             canvas.repaint();
         }
+        
         scrollBar.setMaximum(lines);
-        if (!scrollBar.getValueIsAdjusting() && (scrollBar.getValue() == lines -
-                linesAllowed)) {
+        
+        if (!scrollBar.getValueIsAdjusting() 
+                && scrollBar.getValue() == lines - linesAllowed) {
             setScrollBarPosition(lines);
         }
     }
@@ -662,7 +667,8 @@ public final class TextPane extends JComponent implements AdjustmentListener,
 
     /** Scrolls one page up in the textpane. */
     public void pageDown() {
-        //setScrollBarPosition(scrollBar.getValue() + canvas.getLastVisibleLine() - canvas.getFirstVisibleLine() + 1);
+        //setScrollBarPosition(scrollBar.getValue() + canvas.getLastVisibleLine() 
+        // - canvas.getFirstVisibleLine() + 1);
         //use this method for now, its consistent with the block unit for the scrollbar
         setScrollBarPosition(scrollBar.getValue() + 10);
     }
