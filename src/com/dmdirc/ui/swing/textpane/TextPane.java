@@ -326,15 +326,22 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         return document.getLine(line);
     }
 
-    /** Sets the scrollbar to the maximum position. */
-    public void setScrollBarMax() {
+    /**
+     * Sets the scrollbar's maximum position. If the current position is
+     * within <code>linesAllowed</code> of the end of the document, the
+     * scrollbar's current position is set to the end of the document.
+     * 
+     * @param linesAllowed The number of lines allowed below the current position
+     * @since 0.6
+     */
+    protected void setScrollBarMax(final int linesAllowed) {
         final int lines = document.getNumLines() - 1;
         if (lines == 0) {
             canvas.repaint();
         }
         scrollBar.setMaximum(lines);
         if (!scrollBar.getValueIsAdjusting() && (scrollBar.getValue() == lines -
-                1)) {
+                linesAllowed)) {
             setScrollBarPosition(lines);
         }
     }
@@ -618,7 +625,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public void clear() {
         document.clear();
         setScrollBarPosition(0);
-        setScrollBarMax();
+        setScrollBarMax(1);
         canvas.repaint();
     }
 
@@ -670,14 +677,14 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     /** {@inheritDoc}. */
     @Override
     public void lineAdded(final int line, final int size) {
-        setScrollBarMax();
+        setScrollBarMax(1);
     }
 
     /** {@inheritDoc}. */
     @Override
     public void trimmed(final int numLines) {
         canvas.clearWrapCache();
-        setScrollBarMax();
+        setScrollBarMax(1);
     }
 
     /** {@inheritDoc}. */
@@ -689,7 +696,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     /** {@inheritDoc}. */
     @Override
     public void linesAdded(int line, int length, int size) {
-        setScrollBarMax();
+        setScrollBarMax(length);
     }
 
     /**
