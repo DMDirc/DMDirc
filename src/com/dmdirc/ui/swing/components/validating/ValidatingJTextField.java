@@ -92,13 +92,15 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
     /**
      * Checks the text for errors and sets the error state accordingly.
      */
-    private void checkError() {
+    public void checkError() {
         if (textField.isEnabled()) {
             final ValidationResponse vr =
                     validator.validate(textField.getText());
             errorIcon.setToolTipText(vr.getFailureReason());
+            firePropertyChange("validationResult", !errorIcon.isVisible(), !vr.isFailure());
             errorIcon.setVisible(vr.isFailure());
         } else {
+            firePropertyChange("validationResult", !errorIcon.isVisible(), true);
             errorIcon.setVisible(false);
         }
     }

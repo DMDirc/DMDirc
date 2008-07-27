@@ -25,6 +25,9 @@ package com.dmdirc.ui.swing.dialogs.actioneditor;
 import com.dmdirc.config.prefs.validator.FileNameValidator;
 import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -35,7 +38,7 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Action name panel.
  */
-public class ActionNamePanel extends JPanel {
+public class ActionNamePanel extends JPanel implements PropertyChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -65,6 +68,7 @@ public class ActionNamePanel extends JPanel {
         initComponents();
         addListeners();
         layoutComponents();
+        this.name.checkError();
     }
 
     /** Initialises the components. */
@@ -74,7 +78,7 @@ public class ActionNamePanel extends JPanel {
 
     /** Adds the listeners. */
     private void addListeners() {
-        //No listeners needed.
+        name.addPropertyChangeListener("validationResult", this);
     }
 
     /** Lays out the components. */
@@ -110,5 +114,11 @@ public class ActionNamePanel extends JPanel {
     @Override
     public void setEnabled(final boolean enabled) {
         name.setEnabled(enabled);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void propertyChange(final PropertyChangeEvent evt) {
+        firePropertyChange("validationResult", evt.getOldValue(), evt.getNewValue());
     }
 }

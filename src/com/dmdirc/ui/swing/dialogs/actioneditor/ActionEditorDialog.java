@@ -32,6 +32,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
@@ -40,7 +42,7 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Action editor dialog.
  */
-public class ActionEditorDialog extends StandardDialog implements ActionListener {
+public class ActionEditorDialog extends StandardDialog implements ActionListener, PropertyChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -60,6 +62,10 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
     private ActionSubstitutionsPanel substitutions;
     /** Show substitutions button. */
     private JButton showSubstitutions;
+    private boolean nameValid = false;
+    private boolean triggersValid = false;
+    private boolean responseValid = false;
+    private boolean conditionsValid = false;
 
     /** Instantiates the panel. */
     public ActionEditorDialog() {
@@ -80,7 +86,7 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         substitutions = new ActionSubstitutionsPanel();
         showSubstitutions = new JButton("Show Substitutions");
         
-        //triggers.setEnabled(false);
+        triggers.setEnabled(false);
         response.setEnabled(false);
         conditions.setEnabled(false);
         substitutions.setVisible(false);
@@ -91,6 +97,9 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         showSubstitutions.addActionListener(this);
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
+        
+        name.addPropertyChangeListener("validationResult", this);
+        triggers.addPropertyChangeListener("validationResult", this);
     }
 
     /** Lays out the components. */
@@ -143,5 +152,24 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         } else if (e.getSource().equals(getCancelButton())) {
             dispose();
         }
+    }
+
+    /** @{inheritDoc} */
+    @Override
+    public void propertyChange(final PropertyChangeEvent evt) {
+        if (evt.getSource().equals(name)) {
+            nameValid = (Boolean) evt.getNewValue();
+            triggers.setEnabled((Boolean) evt.getNewValue());
+        }
+        if (evt.getSource().equals(triggers)) {
+            triggersValid = (Boolean) evt.getNewValue();
+            
+            response.setEnabled((Boolean) evt.getNewValue());
+            conditions.setEnabled((Boolean) evt.getNewValue());
+            
+            conditions.setActionTrigger(triggers.getPrimaryTrigger());
+        }
+        
+        getOkButton().setEnabled(triggersValid && conditionsValid && nameValid && responseValid);
     }
 }

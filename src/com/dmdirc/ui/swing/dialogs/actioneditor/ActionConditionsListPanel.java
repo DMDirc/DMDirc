@@ -169,6 +169,7 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
      */
     public void setTrigger(final ActionType trigger) {
         this.trigger = trigger;
+        add.setEnabled(trigger != null);
     }
 
     /** {@inheritDoc} */

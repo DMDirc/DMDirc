@@ -26,8 +26,8 @@ import com.dmdirc.actions.interfaces.ActionType;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-
 import javax.swing.JSeparator;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -100,6 +100,7 @@ public class ActionConditionsPanel extends JPanel {
      */
     public void setActionTrigger(final ActionType trigger) {
         this.trigger = trigger;
+        list.setTrigger(trigger);
     }
     
     /** {@inheritDoc} */

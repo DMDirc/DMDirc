@@ -30,7 +30,10 @@ import com.dmdirc.ui.swing.components.renderers.ActionTypeRenderer;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -38,16 +41,16 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
-
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
  * Action triggers panel.
  */
 public class ActionTriggersPanel extends JPanel implements ActionListener,
-        ActionTriggerRemovalListener {
+        ActionTriggerRemovalListener, PropertyChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -107,7 +110,7 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
             }
         });
 
-        
+
         add = new JButton("Add");
         add.setEnabled(trigger.getSelectedIndex() != -1);
 
@@ -118,6 +121,9 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
     private void addListeners() {
         add.addActionListener(this);
         trigger.addActionListener(this);
+        triggerList.addTriggerListener(this);
+        
+        triggerList.addPropertyChangeListener("triggerCount", this);
     }
 
     /** Lays out the components. */
@@ -129,6 +135,18 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
         add(triggerList, "grow, wrap, spanx");
         add(trigger, "growx");
         add(add, "right");
+    }
+    
+    /**
+     * Returns the primary trigger for this panel.
+     * 
+     * @return Primary trigger or null
+     */
+    public ActionType getPrimaryTrigger() {
+        if (triggerList.getTriggerCount() == 0) {
+            return null;
+        }
+        return triggerList.getTrigger(0);
     }
 
     /** 
@@ -167,10 +185,13 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
                     ((ActionTypeModel) trigger.getModel()).setTypeGroup(ActionManager.getTypeGroups());
                     return;
                 }
-
                 for (ActionType thisType : ActionManager.getCompatibleTypes(triggerList.getTrigger(0))) {
-                    ((ActionTypeModel) trigger.getModel()).addElement(thisType);
+                    final List<ActionType> types = triggerList.getTriggers();
+                    if (!types.contains(thisType)) {
+                        ((ActionTypeModel) trigger.getModel()).addElement(thisType);
+                    }
                 }
+                 trigger.setEnabled((trigger.getModel().getSize() > 0));
             }
         });
     }
@@ -181,5 +202,12 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
         triggerList.setEnabled(enabled);
         trigger.setEnabled(enabled);
         add.setEnabled(enabled);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void propertyChange(final PropertyChangeEvent evt) {
+        firePropertyChange("validationResult", (Integer) evt.getOldValue() > 0,
+                (Integer) evt.getNewValue() > 0);
     }
 }

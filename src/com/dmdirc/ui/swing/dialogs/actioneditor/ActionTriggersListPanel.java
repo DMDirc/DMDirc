@@ -26,8 +26,8 @@ import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.swing.components.ImageButton;
 import com.dmdirc.ui.swing.components.TextLabel;
-
 import com.dmdirc.util.ListenerList;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -128,6 +128,7 @@ public class ActionTriggersListPanel extends JPanel {
             public void run() {
                 synchronized (triggers) {
                     triggers.add(trigger);
+                    firePropertyChange("triggerCount", triggers.size() - 1, triggers.size());
 
                     layoutComponents();
                 }
@@ -149,6 +150,7 @@ public class ActionTriggersListPanel extends JPanel {
                 synchronized (triggers) {
                     triggers.remove(trigger);
                     fireTriggerRemoved(trigger);
+                    firePropertyChange("triggerCount", triggers.size() + 1, triggers.size());
 
                     layoutComponents();
                 }
