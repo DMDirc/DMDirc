@@ -34,6 +34,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import net.miginfocom.swing.MigLayout;
@@ -137,14 +138,14 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
             addSettings();
         }
 
-        tabbedPane.add("User modes", modesPanel);
+        tabbedPane.add("User modes", new JScrollPane(modesPanel));
         tabbedPane.add("Ignore list", ignoreList);
         tabbedPane.add("Perform", performPanel);
         if (settingsPanel != null) {
             tabbedPane.add("Settings", settingsPanel);
         }
 
-        setLayout(new MigLayout("fill, wrap 1"));
+        setLayout(new MigLayout("fill, wrap 1, hmax 80sp"));
 
         add(tabbedPane, "grow");
         add(getLeftButton(), "split 2, right");

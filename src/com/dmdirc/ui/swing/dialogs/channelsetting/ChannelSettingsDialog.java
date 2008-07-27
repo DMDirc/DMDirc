@@ -35,6 +35,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
@@ -126,7 +127,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
 
         orderButtons(new JButton(), new JButton());
 
-        getContentPane().setLayout(new MigLayout("fill, wrap 1, ins panel"));
+        getContentPane().setLayout(new MigLayout("fill, wrap 1, ins panel, hmax 80sp"));
         getContentPane().add(tabbedPane, "grow");
         getContentPane().add(getLeftButton(), "split 3, right");
         getContentPane().add(getRightButton(), "right");
@@ -154,7 +155,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
     private void initIrcTab() {
         channelModesPane =
                 new ChannelModesPane(channel);
-        tabbedPane.addTab("Channel Modes", channelModesPane);
+        tabbedPane.addTab("Channel Modes", new JScrollPane(channelModesPane));
     }
 
     /** Initialises the IRC Settings tab. */
