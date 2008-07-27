@@ -81,7 +81,7 @@ public class ActionSubstitutionLabel extends JButton implements MouseListener,
         dragSource.createDefaultDragGestureRecognizer(this,
                 DnDConstants.ACTION_COPY, this);
 
-        setText(substition.getValue());
+        setText(substition.getName());
         setFont(getFont().deriveFont(getFont().getSize() - 2f));
         
         setBorder(

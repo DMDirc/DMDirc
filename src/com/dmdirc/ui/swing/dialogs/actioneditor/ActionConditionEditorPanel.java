@@ -237,18 +237,21 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
             }
             populateComparisons();
         }
+        firePropertyChange("edit", null, null);
     }
 
     /** {@inheritDoc} */
     @Override
     public void insertUpdate(final DocumentEvent e) {
-    //Ignore
+        condition.setTarget(target.getText());
+        firePropertyChange("edit", null, null);
     }
 
     /** {@inheritDoc} */
     @Override
     public void removeUpdate(final DocumentEvent e) {
-    //Ignore
+        condition.setTarget(target.getText());
+        firePropertyChange("edit", null, null);
     }
 
     /** {@inheritDoc} */

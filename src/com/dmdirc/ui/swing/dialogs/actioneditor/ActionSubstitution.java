@@ -44,12 +44,21 @@ public final class ActionSubstitution {
     }
     
     /**
-     * Returns the value of this substitution.
+     * Returns the name of this substitution.
      *
-     * @return Substitution value   
+     * @return Substitution name   
+     */
+    public String getName() {
+        return name;
+    }
+    
+    /**
+     * Returns the value of this substitution.
+     * 
+     * @return Substitution value
      */
     public String getValue() {
-        return name;
+        return value;
     }
     
     /** {@inheritDoc} */

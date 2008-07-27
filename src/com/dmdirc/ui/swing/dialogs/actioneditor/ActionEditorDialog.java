@@ -27,13 +27,14 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.components.StandardDialog;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
@@ -62,14 +63,22 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
     private ActionSubstitutionsPanel substitutions;
     /** Show substitutions button. */
     private JButton showSubstitutions;
+    /** Is the name valid? */
     private boolean nameValid = false;
+    /** Are the triggers valid? */
     private boolean triggersValid = false;
+    /** Is the response valid? */
     private boolean responseValid = false;
+    /** Are the conditions valid? */
     private boolean conditionsValid = false;
 
-    /** Instantiates the panel. */
-    public ActionEditorDialog() {
-        super(new JFrame(), false);
+    /** 
+     * Instantiates the panel.
+     * 
+     * @param window Parent window
+     */
+    public ActionEditorDialog(final Window window) {
+        super(window, ModalityType.MODELESS);
 
         initComponents();
         addListeners();
@@ -104,13 +113,13 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
 
     /** Lays out the components. */
     private void layoutComponents() {
-        setLayout(new MigLayout("fill, hidemode 3, wrap 2, pack"));
+        setLayout(new MigLayout("fill, hidemode 3, wrap 2, pack, hmax 80sp"));
 
-        add(name, "grow, wmax 225");
-        add(conditions, "spany 3, grow, wmin 400, wmax 400");
-        add(triggers, "grow, wmax 225");
-        add(response, "grow, wmax 225");
-        add(substitutions, "spanx 2, grow, wmax 625");
+        add(name, "grow, wmax 250");
+        add(conditions, "spany 3, grow, wmin 410, wmax 410");
+        add(triggers, "grow, wmax 250");
+        add(response, "grow, wmax 250");
+        add(substitutions, "spanx 2, grow, wmax 660");
         add(showSubstitutions, "left, sgx button, split 3, spanx 2");
         add(getLeftButton(), "right, sgx button, gapleft push");
         add(getRightButton(), "right, sgx button");
@@ -125,7 +134,9 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         UIUtilities.initUISettings();
         IdentityManager.load();
         ActionManager.init();
-        ActionEditorDialog dialog = new ActionEditorDialog();
+        ActionManager.loadActions();
+        System.out.println(ActionManager.getGroups().values().iterator().next().getActions().get(0));
+        ActionEditorDialog dialog = new ActionEditorDialog(new JFrame());
         dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         dialog.addWindowListener(new WindowAdapter() {
@@ -166,7 +177,9 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
             
             response.setEnabled((Boolean) evt.getNewValue());
             conditions.setEnabled((Boolean) evt.getNewValue());
+            substitutions.setEnabled((Boolean) evt.getNewValue());
             
+            substitutions.setActionType(triggers.getPrimaryTrigger());
             conditions.setActionTrigger(triggers.getPrimaryTrigger());
         }
         

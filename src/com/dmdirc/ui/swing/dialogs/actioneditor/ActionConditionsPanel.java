@@ -22,10 +22,16 @@
 
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
+import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.interfaces.ActionType;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 
 import net.miginfocom.swing.MigLayout;
@@ -33,7 +39,7 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Action conditions panel.
  */
-public class ActionConditionsPanel extends JPanel {
+public class ActionConditionsPanel extends JPanel implements ActionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -47,6 +53,8 @@ public class ActionConditionsPanel extends JPanel {
     private ActionConditionsTreePanel tree;
     /** List Panel. */
     private ActionConditionsListPanel list;
+    /** Add button. */
+    private JButton add;
 
     /** Instantiates the panel. */
     public ActionConditionsPanel() {
@@ -69,6 +77,7 @@ public class ActionConditionsPanel extends JPanel {
         
         if (trigger == null) {
             setEnabled(false);
+            add.setEnabled(false);
         }
     }
 
@@ -76,10 +85,12 @@ public class ActionConditionsPanel extends JPanel {
     private void initComponents() {
         tree = new ActionConditionsTreePanel();
         list = new ActionConditionsListPanel();
+        add = new JButton("Add");
     }
 
     /** Adds the listeners. */
     private void addListeners() {
+        add.addActionListener(this);
     }
 
     /** Lays out the components. */
@@ -88,9 +99,14 @@ public class ActionConditionsPanel extends JPanel {
         
         setBorder(BorderFactory.createTitledBorder(getBorder(), "Conditions"));
         
+        final JScrollPane sp = new JScrollPane(list);
+        sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        sp.getVerticalScrollBar().setUnitIncrement(10);
+        
         add(tree, "growx, pushx");
         add(new JSeparator(JSeparator.HORIZONTAL), "growx, pushx");
-        add(list, "grow");
+        add(sp, "grow");
+        add(add, "right, gaptop push");
     }
 
     /**
@@ -101,6 +117,7 @@ public class ActionConditionsPanel extends JPanel {
     public void setActionTrigger(final ActionType trigger) {
         this.trigger = trigger;
         list.setTrigger(trigger);
+        add.setEnabled(trigger != null);
     }
     
     /** {@inheritDoc} */
@@ -108,5 +125,15 @@ public class ActionConditionsPanel extends JPanel {
     public void setEnabled(final boolean enabled) {
         tree.setEnabled(enabled);
         list.setEnabled(enabled);
+    }
+    
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Action event
+     */
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+        list.addCondition(new ActionCondition(-1, null, null, null));
     }
 }

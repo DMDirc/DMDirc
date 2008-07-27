@@ -40,6 +40,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
@@ -79,7 +80,8 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
         setBorder(BorderFactory.createTitledBorder(getBorder(), "Triggers"));
 
         trigger =
-                new JComboBox(new ActionTypeModel(ActionManager.getTypeGroups()));
+                new JComboBox(new ActionTypeModel(getFontMetrics(getFont()),
+                ActionManager.getTypeGroups()));
         //Only fire events on selection not on highlight
         trigger.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
         trigger.setRenderer(new ActionTypeRenderer());
@@ -93,10 +95,15 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
                 if (!(comp instanceof JPopupMenu)) {
                     return;
                 }
-                JComponent scrollPane =
-                        (JComponent) ((JPopupMenu) comp).getComponent(0);
+                JComponent scrollPane = (JComponent) ((JPopupMenu) comp).getComponent(0);
                 Dimension size = scrollPane.getPreferredSize();
-                size.width = size.width * 2;
+                if (scrollPane instanceof JScrollPane) {
+                    size.width = ((ActionTypeModel) trigger.getModel()).
+                            getMaxWidth() + (int) ((JScrollPane) scrollPane).
+                            getVerticalScrollBar().getPreferredSize().getWidth();
+                } else {
+                    size.width = ((ActionTypeModel) trigger.getModel()).getMaxWidth();
+                }
                 scrollPane.setPreferredSize(size);
                 scrollPane.setMaximumSize(size);
             }
@@ -122,7 +129,7 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
         add.addActionListener(this);
         trigger.addActionListener(this);
         triggerList.addTriggerListener(this);
-        
+
         triggerList.addPropertyChangeListener("triggerCount", this);
     }
 
@@ -136,7 +143,7 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
         add(trigger, "growx");
         add(add, "right");
     }
-    
+
     /**
      * Returns the primary trigger for this panel.
      * 
@@ -183,6 +190,7 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
 
                 if (triggerList.getTriggerCount() == 0) {
                     ((ActionTypeModel) trigger.getModel()).setTypeGroup(ActionManager.getTypeGroups());
+                    trigger.setEnabled((trigger.getModel().getSize() > 0));
                     return;
                 }
                 for (ActionType thisType : ActionManager.getCompatibleTypes(triggerList.getTrigger(0))) {
@@ -191,7 +199,7 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
                         ((ActionTypeModel) trigger.getModel()).addElement(thisType);
                     }
                 }
-                 trigger.setEnabled((trigger.getModel().getSize() > 0));
+                trigger.setEnabled((trigger.getModel().getSize() > 0));
             }
         });
     }

@@ -23,14 +23,12 @@
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
 import com.dmdirc.actions.ActionCondition;
+import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -39,8 +37,7 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Action conditions list panel.
  */
-public class ActionConditionsListPanel extends JPanel implements ActionConditionRemovalListener,
-        ActionListener {
+public class ActionConditionsListPanel extends JPanel implements ActionConditionRemovalListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -52,8 +49,6 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
     private ActionType trigger;
     /** Conditions list. */
     private List<ActionConditionDisplayPanel> conditions;
-    /** Add button. */
-    private JButton add;
 
     /** Instantiates the panel. */
     public ActionConditionsListPanel() {
@@ -89,9 +84,8 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
 
     /** Initialises the components. */
     private void initComponents() {
-        setLayout(new MigLayout("fill, wrap 2"));
+        setLayout(new MigLayout("fillx, wrap 2"));
 
-        add = new JButton("Add");
         if (trigger == null) {
             setEnabled(false);
         }
@@ -102,7 +96,6 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
         for (ActionConditionDisplayPanel condition : conditions) {
             condition.addConditionListener(this);
         }
-        add.addActionListener(this);
     }
 
     /** Lays out the components. */
@@ -110,17 +103,22 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
         setVisible(false);
         removeAll();
         int index = 0;
-        synchronized (conditions) {
-            for (ActionConditionDisplayPanel condition : conditions) {
-                index++;
-                add(new JLabel(index + "."), "aligny top");
-                add(condition, "growx");
+        if (trigger == null) {
+            add(new JLabel("You must add at least one trigger before you can add conditions."),
+                    "alignx center, aligny top, growx");
+        } else {
+            synchronized (conditions) {
+                for (ActionConditionDisplayPanel condition : conditions) {
+                    index++;
+                    add(new JLabel(index + "."), "aligny top");
+                    add(condition, "growx, aligny top");
+                }
+            }
+            if (index == 0) {
+                add(new JLabel("No conditions."),
+                        "alignx center, aligny top, growx");
             }
         }
-        if (index == 0) {
-            add(new JLabel("No conditions."), "alignx center, aligny top, growx");
-        }
-        add(add, "gaptop push, newline, right, aligny bottom");
         setVisible(true);
 
     }
@@ -168,8 +166,11 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
      * @param trigger Action trigger
      */
     public void setTrigger(final ActionType trigger) {
+        if (this.trigger != null || ActionManager.getCompatibleTypes(trigger).contains(this.trigger)) {
+            conditions.clear();
+        }
         this.trigger = trigger;
-        add.setEnabled(trigger != null);
+        layoutComponents();
     }
 
     /** {@inheritDoc} */
@@ -181,19 +182,11 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
         layoutComponents();
     }
 
-    /** 
-     * {@inheritDoc}
-     * 
-     * @param e Action event
-     */
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-        addCondition(new ActionCondition(-1, null, null, null));
-    }
-    
     /** {@inheritDoc} */
     @Override
     public void setEnabled(final boolean enabled) {
-        add.setEnabled(false);
+        for (ActionConditionDisplayPanel condition : conditions) {
+            condition.setEnabled(false);
+        }
     }
 }

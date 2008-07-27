@@ -33,6 +33,8 @@ import com.dmdirc.util.ListenerList;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
@@ -41,7 +43,7 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Action condition display panel.
  */
-public class ActionConditionDisplayPanel extends JPanel implements ActionListener {
+public class ActionConditionDisplayPanel extends JPanel implements ActionListener, PropertyChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -103,6 +105,7 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
     private void addListeners() {
         editButton.addActionListener(this);
         deleteButton.addActionListener(this);
+        editPanel.addPropertyChangeListener("edit", this);
     }
 
     /** Lays out the components. */
@@ -213,5 +216,11 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
      */
     public ActionCondition getCondition() {
         return condition;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void propertyChange(final PropertyChangeEvent evt) {
+        setCondition(trigger, condition);
     }
 }

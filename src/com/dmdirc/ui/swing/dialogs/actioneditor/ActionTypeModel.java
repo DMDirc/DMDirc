@@ -26,11 +26,14 @@ import com.dmdirc.actions.ActionTypeComparator;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.util.MapList;
 
+import java.awt.FontMetrics;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.SwingUtilities;
+import sun.swing.SwingUtilities2;
 
 /**
  * Model for the "trigger" list of the actions editor. Adds type group headers,
@@ -44,14 +47,21 @@ public final class ActionTypeModel extends DefaultComboBoxModel {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;    
+    /** Max Width. */
+    private int maxWidth = -1;
+    /** Font metrics. */
+    private FontMetrics fm;
     
     /**
      * Creates a new instance of ActionTypeModel.
      * 
+     * @param fm Font metrics
      * @param typeGroups The action type groups to use
      */
-    public ActionTypeModel(final MapList<String, ActionType> typeGroups) {
+    public ActionTypeModel(final FontMetrics fm, final MapList<String, ActionType> typeGroups) {
         super();
+        
+        this.fm = fm;
         
         for (Map.Entry<String, List<ActionType>> entry : typeGroups.entrySet()) {
             addElement(entry.getKey());
@@ -63,6 +73,23 @@ public final class ActionTypeModel extends DefaultComboBoxModel {
                 addElement(type);
             }
         }
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param anObject Objerct to add
+     */
+    @Override
+    public void addElement(final Object anObject) {
+        super.addElement(anObject);
+        int width = maxWidth;
+        if (anObject instanceof String) {
+            width = SwingUtilities.computeStringWidth(fm, (String) anObject);
+        } else if (anObject instanceof ActionType) {
+            width = SwingUtilities.computeStringWidth(fm, ((ActionType) anObject).getName());
+        }
+        maxWidth = Math.max(width, maxWidth);
     }
 
     /** {@inheritDoc} */
@@ -91,5 +118,14 @@ public final class ActionTypeModel extends DefaultComboBoxModel {
                 addElement(type);
             }
         }
+    }
+    
+    /**
+     * Returns the maximum width of a string in this model.
+     * 
+     * @return String max width
+     */
+    public int getMaxWidth() {
+        return maxWidth;
     }
 }
