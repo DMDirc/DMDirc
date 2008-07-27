@@ -271,6 +271,9 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     /** {@inheritDoc} */
     @Override
     public void dispose() {
+        if (me == null) {
+            return;
+        }
         synchronized (me) {
             super.dispose();
             me = null;

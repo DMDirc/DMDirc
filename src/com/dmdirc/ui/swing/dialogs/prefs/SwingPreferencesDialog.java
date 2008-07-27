@@ -433,6 +433,9 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     /** {@inheritDoc} */
     @Override
     public void dispose() {
+        if (me == null) {
+            return;
+        }
         synchronized (me) {
             manager.close();
             super.dispose();

@@ -449,6 +449,9 @@ public final class ConditionEditorDialog extends StandardDialog implements
     /** {@inheritDoc} */
     @Override
     public void dispose() {
+        if (me == null) {
+            return;
+        }
         synchronized (me) {
             super.dispose();
             me = null;

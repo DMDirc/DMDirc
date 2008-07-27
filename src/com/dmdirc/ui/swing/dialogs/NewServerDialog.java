@@ -287,6 +287,9 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
     /** {@inheritDoc} */
     @Override
     public void dispose() {
+        if (me == null) {
+            return;
+        }
         synchronized (me) {
             super.dispose();
             me = null;
