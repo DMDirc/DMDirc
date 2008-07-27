@@ -224,11 +224,6 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
                 JOptionPane.YES_OPTION) {
             deletedProfiles.add((Profile) profileList.getSelectedValue());
             model.remove((Profile) profileList.getSelectedValue());
-            if (model.getSize() == 0) {
-                getOkButton().setEnabled(false);
-            } else {
-                getOkButton().setEnabled(true);
-            }
         }
     }
 
@@ -265,9 +260,14 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
                 deleteButton.setEnabled(true);
             }
         }
+        if (model.getSize() == 0) {
+            getOkButton().setEnabled(false);
+        } else {
+            getOkButton().setEnabled(true);
+        }
         selectedIndex = profileList.getSelectedIndex();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void dispose() {
