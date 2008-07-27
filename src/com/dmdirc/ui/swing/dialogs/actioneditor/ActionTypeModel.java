@@ -33,7 +33,6 @@ import java.util.Map;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.SwingUtilities;
-import sun.swing.SwingUtilities2;
 
 /**
  * Model for the "trigger" list of the actions editor. Adds type group headers,
