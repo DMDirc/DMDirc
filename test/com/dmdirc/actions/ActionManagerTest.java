@@ -25,6 +25,7 @@ import com.dmdirc.actions.interfaces.ActionType;
 import java.io.File;
 
 import java.util.ArrayList;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -34,8 +35,19 @@ public class ActionManagerTest extends junit.framework.TestCase {
     @BeforeClass
     public void setUpClass() throws Exception {
         ActionManager.init();
-        ActionManager.removeGroup("unit-test");
-        ActionManager.removeGroup("unit-test-two");
+        
+        tearDownClass();
+    }
+    
+    @AfterClass
+    public void tearDownClass() throws Exception {
+        if (ActionManager.getGroups().containsKey("unit-test")) {
+            ActionManager.removeGroup("unit-test");
+        }
+        
+        if (ActionManager.getGroups().containsKey("unit-test-two")) {
+            ActionManager.removeGroup("unit-test-two");
+        }
     }
 
     @Test

@@ -60,6 +60,10 @@ public class ActionsManagerDialogTest {
         if (window != null) {
             window.cleanUp();
         }
+        
+        if (ActionManager.getGroups().containsKey("amd-ui-test1")) {
+            ActionManager.removeGroup("amd-ui-test1");
+        }
     }
     
     @Test
@@ -84,12 +88,8 @@ public class ActionsManagerDialogTest {
         assertEquals("New action group", newwin.target.getTitle());
         newwin.button(new ButtonTextFinder("OK")).requireDisabled();
         
-        newwin.textBox(new GenericTypeMatcher<JTextComponent>() {
-            @Override
-            protected boolean isMatching(JTextComponent arg0) {
-                return arg0.getClass().equals(javax.swing.JTextField.class);
-            }
-        }).enterText("amd-ui-test1");
+        newwin.textBox(new ClassFinder<JTextComponent>(javax.swing.JTextField.class, null))
+                .enterText("amd-ui-test1");
         newwin.button(new ButtonTextFinder("OK")).requireEnabled().click();
         
         // Ensure it's added
