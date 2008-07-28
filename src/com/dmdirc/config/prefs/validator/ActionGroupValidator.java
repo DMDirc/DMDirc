@@ -30,7 +30,7 @@ import com.dmdirc.actions.ActionManager;
 public class ActionGroupValidator implements Validator<String> {
 
     /** Filename regex. */
-    private static final String FILENAME_REGEX = "[A-Za-z0-9 ]+";
+    private static final String FILENAME_REGEX = "[A-Za-z0-9 \\-_]+";
     /** Failure reason. */
     private static final String FAILURE_REASON =
             "Must be a valid filename and must not already exist.";
