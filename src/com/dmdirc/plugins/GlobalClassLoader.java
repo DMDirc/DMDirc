@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This classloader knows about plugins and is used to store persistant classes.
+ * This classloader knows about plugins and is used to store persistent classes.
  */
 public final class GlobalClassLoader extends ClassLoader {
 
@@ -83,7 +83,7 @@ public final class GlobalClassLoader extends ClassLoader {
 	 * @throws ClassNotFoundException if the class to be loaded could not be found.
 	 */
 	public Class<?> loadClass(final String name, final PluginInfo pi) throws ClassNotFoundException {
-		for (String classname : pi.getPersistantClasses()) {
+		for (String classname : pi.getPersistentClasses()) {
 			if (!resourcesList.containsKey(classname)) {
 				resourcesList.put(classname, pi.getFullFilename());
 			}

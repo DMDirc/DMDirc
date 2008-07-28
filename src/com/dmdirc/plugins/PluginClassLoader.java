@@ -86,8 +86,8 @@ public class PluginClassLoader extends ClassLoader {
 
 		final String fileName = name.replace('.', '/')+".class";
 		try {
-			if (pluginInfo.isPersistant(name) || !res.resourceExists(fileName)) {
-				if (!pluginInfo.isPersistant(name) && askGlobal) {
+			if (pluginInfo.isPersistent(name) || !res.resourceExists(fileName)) {
+				if (!pluginInfo.isPersistent(name) && askGlobal) {
 					return GlobalClassLoader.getGlobalClassLoader().loadClass(name);
 				} else {
 					// Try to load class from previous load.
@@ -118,7 +118,7 @@ public class PluginClassLoader extends ClassLoader {
 		}
 		
 		try {
-			if (pluginInfo.isPersistant(name)) {
+			if (pluginInfo.isPersistent(name)) {
 				GlobalClassLoader.getGlobalClassLoader().defineClass(name, data);
 			} else {
 				loadedClass = defineClass(name, data, 0, data.length);

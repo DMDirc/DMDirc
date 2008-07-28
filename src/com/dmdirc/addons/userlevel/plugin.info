@@ -7,5 +7,5 @@ nicename=User Levels
 minversion=0
 addonid=21
 
-persistant-com.dmdirc.addons.userlevel.AccessLevelComponent=true
-persistant-com.dmdirc.addons.userlevel.ChannelAccessLevelComponent=tre
+persistent-com.dmdirc.addons.userlevel.AccessLevelComponent=true
+persistent-com.dmdirc.addons.userlevel.ChannelAccessLevelComponent=tre

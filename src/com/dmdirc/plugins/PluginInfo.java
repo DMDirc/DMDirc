@@ -66,6 +66,9 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	
 	/** Last Error Message. */
 	private String lastError = "No Error";
+	
+	/** Are we trying to load? */
+	private boolean isLoading = false;
 
 	/**
 	 * Create a new PluginInfo.
@@ -166,7 +169,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 				}
 			}
 
-			if (isPersistant() && loadAll()) { loadEntirePlugin(); }
+			if (isPersistent() && loadAll()) { loadEntirePlugin(); }
 		} else {
 			lastError = "One or more requirements not met ("+requirementsError+")";
 			throw new PluginException("Plugin "+filename+" was not loaded. "+lastError);
@@ -572,22 +575,31 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 * Load the plugin files.
 	 */
 	public void loadPlugin() {
+		System.out.println("["+getName()+"] loadPlugin called");
 		if (isTempLoaded()) {
 			tempLoaded = false;
+			System.out.println("["+getName()+"] temp -> full");
+			System.out.println("["+getName()+"] loadingRequirements");
 			loadRequired();
+			System.out.println("["+getName()+"] calling onLoad");
 			plugin.onLoad();
+			System.out.println("["+getName()+"] onLoad Result: "+lastError);
 		} else {
-			if (isLoaded() || metaData == null) {
-				lastError = "Not Loading: ("+isLoaded()+"||"+(metaData == null)+")";
+			if (isLoaded() || metaData == null || isLoading) {
+				lastError = "Not Loading: ("+isLoaded()+"||"+(metaData == null)+"||"+isLoading+")";
+				System.out.println("["+getName()+"] loadPlugin failed: "+lastError);
 				return;
 			}
-			
+			isLoading = true;
+			System.out.println("["+getName()+"] loadingRequirements");
 			loadRequired();
-			
+			System.out.println("["+getName()+"] loading Main class");
 			loadClass(getMainClass());
+			System.out.println("["+getName()+"] load Result: "+lastError);
 			if (isLoaded()) {
 				ActionManager.processEvent(CoreActionType.PLUGIN_LOADED, null, this);
 			}
+			isLoading = false;
 		}
 	}
 
@@ -667,7 +679,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 * Unload the plugin if possible.
 	 */
 	public void unloadPlugin() {
-		if (!isPersistant() && (isLoaded() || isTempLoaded())) {
+		if (!isPersistent() && (isLoaded() || isTempLoaded())) {
 			if (!isTempLoaded()) {
 				try {
 					plugin.onUnload();
@@ -761,27 +773,27 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	}
 
 	/**
-	 * Is this a persistant plugin?
+	 * Is this a persistent plugin?
 	 *
-	 * @return true if persistant, else false
+	 * @return true if persistent, else false
 	 */
-	public boolean isPersistant() {
-		final String persistance = metaData.getProperty("persistant","no");
-		return persistance.equalsIgnoreCase("true") || persistance.equalsIgnoreCase("yes");
+	public boolean isPersistent() {
+		final String persistence = metaData.getProperty("persistent","no");
+		return persistence.equalsIgnoreCase("true") || persistence.equalsIgnoreCase("yes");
 	}
 
 	/**
-	 * Does this plugin contain any persistant classes?
+	 * Does this plugin contain any persistent classes?
 	 *
-	 * @return true if this plugin contains any persistant classes, else false
+	 * @return true if this plugin contains any persistent classes, else false
 	 */
-	public boolean hasPersistant() {
-		final String persistance = metaData.getProperty("persistant","no");
-		if (persistance.equalsIgnoreCase("true")) {
+	public boolean hasPersistent() {
+		final String persistence = metaData.getProperty("persistent","no");
+		if (persistence.equalsIgnoreCase("true")) {
 			return true;
 		} else {
 			for (Object keyObject : metaData.keySet()) {
-				if (keyObject.toString().toLowerCase().startsWith("persistant-")) {
+				if (keyObject.toString().toLowerCase().startsWith("persistent-")) {
 					return true;
 				}
 			}
@@ -790,14 +802,14 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	}
 
 	/**
-	 * Get a list of all persistant classes in this plugin
+	 * Get a list of all persistent classes in this plugin
 	 *
-	 * @return List of all persistant classes in this plugin
+	 * @return List of all persistent classes in this plugin
 	 */
-	public List<String> getPersistantClasses() {
+	public List<String> getPersistentClasses() {
 		final List<String> result = new ArrayList<String>();
-		final String persistance = metaData.getProperty("persistant","no");
-		if (persistance.equalsIgnoreCase("true")) {
+		final String persistence = metaData.getProperty("persistent","no");
+		if (persistence.equalsIgnoreCase("true")) {
 			try {
 				ResourceManager res = getResourceManager();
 
@@ -811,7 +823,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			}
 		} else {
 			for (Object keyObject : metaData.keySet()) {
-				if (keyObject.toString().toLowerCase().startsWith("persistant-")) {
+				if (keyObject.toString().toLowerCase().startsWith("persistent-")) {
 					result.add(keyObject.toString().substring(11));
 				}
 			}
@@ -820,17 +832,17 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	}
 
 	/**
-	 * Is this a persistant class?
+	 * Is this a persistent class?
 	 *
-	 * @param classname class to check persistance of
-	 * @return true if file (or whole plugin) is persistant, else false
+	 * @param classname class to check persistence of
+	 * @return true if file (or whole plugin) is persistent, else false
 	 */
-	public boolean isPersistant(final String classname) {
-		if (isPersistant()) {
+	public boolean isPersistent(final String classname) {
+		if (isPersistent()) {
 			return true;
 		} else {
-			final String persistance = metaData.getProperty("persistant-"+classname,"no");
-			return persistance.equalsIgnoreCase("true") || persistance.equalsIgnoreCase("yes");
+			final String persistence = metaData.getProperty("persistent-"+classname,"no");
+			return persistence.equalsIgnoreCase("true") || persistence.equalsIgnoreCase("yes");
 		}
 	}
 
