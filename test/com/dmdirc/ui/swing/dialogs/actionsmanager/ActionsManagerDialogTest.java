@@ -90,7 +90,13 @@ public class ActionsManagerDialogTest {
         
         newwin.textBox(new ClassFinder<JTextComponent>(javax.swing.JTextField.class, null))
                 .enterText("amd-ui-test1");
-        System.out.println(newwin.label(JLabelByTextMatcher.withText(null)).target.getToolTipText());
+
+        System.out.println(newwin.textBox(
+                new ClassFinder<JTextComponent>(javax.swing.JTextField.class, null))
+                .target.getText());
+        System.out.println(newwin.label(JLabelByTextMatcher.withText(null))
+                .target.getToolTipText());
+        
         newwin.button(new ButtonTextFinder("OK")).requireEnabled().click();
         
         // Ensure it's added
