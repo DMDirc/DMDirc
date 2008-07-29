@@ -30,7 +30,7 @@ import com.dmdirc.ui.swing.components.StandardInputDialog;
 
 import javax.swing.JPanel;
 import javax.swing.text.JTextComponent;
-import org.fest.swing.core.GenericTypeMatcher;
+import org.fest.swing.core.matcher.JLabelByTextMatcher;
 import org.fest.swing.finder.WindowFinder;
 import org.fest.swing.fixture.DialogFixture;
 import org.junit.After;
@@ -90,10 +90,11 @@ public class ActionsManagerDialogTest {
         
         newwin.textBox(new ClassFinder<JTextComponent>(javax.swing.JTextField.class, null))
                 .enterText("amd-ui-test1");
-        //newwin.button(new ButtonTextFinder("OK")).requireEnabled().click();
+        System.out.println(newwin.label(JLabelByTextMatcher.withText(null)).target.getToolTipText());
+        newwin.button(new ButtonTextFinder("OK")).requireEnabled().click();
         
         // Ensure it's added
-        //window.list().selectItem("amd-ui-test1").requireSelectedItems("amd-ui-test1");
+        window.list().selectItem("amd-ui-test1").requireSelectedItems("amd-ui-test1");
     }
 
     public static junit.framework.Test suite() {
