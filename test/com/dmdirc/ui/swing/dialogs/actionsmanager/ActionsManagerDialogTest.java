@@ -28,7 +28,9 @@ import com.dmdirc.harness.ui.ButtonTextFinder;
 import com.dmdirc.harness.ui.ClassFinder;
 import com.dmdirc.ui.swing.components.StandardInputDialog;
 
+import java.lang.reflect.InvocationTargetException;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
 import org.fest.swing.core.matcher.JLabelByTextMatcher;
 import org.fest.swing.finder.WindowFinder;
@@ -41,6 +43,14 @@ import static org.junit.Assert.*;
 public class ActionsManagerDialogTest {
     
     private DialogFixture window;
+    
+    private static final Runnable runner = new Runnable() {
+
+            @Override
+            public void run() {
+                // Dummy
+            }
+        };
     
     @Before
     public void setUp() {
@@ -77,7 +87,9 @@ public class ActionsManagerDialogTest {
         assertEquals("New action group", newwin.target.getTitle());
         
         newwin.button(new ButtonTextFinder("Cancel")).click();
-        Thread.sleep(500);
+        
+        SwingUtilities.invokeAndWait(runner);
+        
         newwin.requireNotVisible();
         
         window.panel(new ClassFinder<JPanel>(JPanel.class, null))
@@ -91,9 +103,9 @@ public class ActionsManagerDialogTest {
         
         newwin.textBox(new ClassFinder<JTextComponent>(javax.swing.JTextField.class, null))
                 .enterText("amd-ui-test1");
-
-        Thread.sleep(500);
         
+        SwingUtilities.invokeAndWait(runner);
+
         System.out.println(newwin.textBox(
                 new ClassFinder<JTextComponent>(javax.swing.JTextField.class, null))
                 .target.getText());
@@ -102,7 +114,7 @@ public class ActionsManagerDialogTest {
         
         newwin.button(new ButtonTextFinder("OK")).requireEnabled().click();
         
-        Thread.sleep(500);
+        SwingUtilities.invokeAndWait(runner);
         
         // Ensure it's added
         window.list().selectItem("amd-ui-test1").requireSelectedItems("amd-ui-test1");
