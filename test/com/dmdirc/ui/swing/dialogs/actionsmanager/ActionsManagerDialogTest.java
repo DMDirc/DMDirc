@@ -77,7 +77,7 @@ public class ActionsManagerDialogTest {
     }
     
     @Test
-    public void testAddGroup() throws InterruptedException {
+    public void testAddGroup() throws InterruptedException, InvocationTargetException {
         window.panel(new ClassFinder<JPanel>(JPanel.class, null))
                 .button(new ButtonTextFinder("Add")).click();
         
