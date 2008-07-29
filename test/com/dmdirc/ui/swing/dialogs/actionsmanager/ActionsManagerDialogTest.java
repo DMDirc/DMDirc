@@ -67,7 +67,7 @@ public class ActionsManagerDialogTest {
     }
     
     @Test
-    public void testAddGroup() {
+    public void testAddGroup() throws InterruptedException {
         window.panel(new ClassFinder<JPanel>(JPanel.class, null))
                 .button(new ButtonTextFinder("Add")).click();
         
@@ -77,6 +77,7 @@ public class ActionsManagerDialogTest {
         assertEquals("New action group", newwin.target.getTitle());
         
         newwin.button(new ButtonTextFinder("Cancel")).click();
+        Thread.sleep(500);
         newwin.requireNotVisible();
         
         window.panel(new ClassFinder<JPanel>(JPanel.class, null))
@@ -91,6 +92,8 @@ public class ActionsManagerDialogTest {
         newwin.textBox(new ClassFinder<JTextComponent>(javax.swing.JTextField.class, null))
                 .enterText("amd-ui-test1");
 
+        Thread.sleep(500);
+        
         System.out.println(newwin.textBox(
                 new ClassFinder<JTextComponent>(javax.swing.JTextField.class, null))
                 .target.getText());
@@ -98,6 +101,8 @@ public class ActionsManagerDialogTest {
                 .target.getToolTipText());
         
         newwin.button(new ButtonTextFinder("OK")).requireEnabled().click();
+        
+        Thread.sleep(500);
         
         // Ensure it's added
         window.list().selectItem("amd-ui-test1").requireSelectedItems("amd-ui-test1");
