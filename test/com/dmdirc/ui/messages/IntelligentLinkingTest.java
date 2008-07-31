@@ -68,6 +68,7 @@ public class IntelligentLinkingTest {
             {"www.google.com!", "~www.google.com~!"},
             {"http://...", "http://..."},
             {"www...", "www..."},
+            {"(www.foo.com www.bar.com)", "(~www.foo.com~ ~www.bar.com~)"},
             {"(\"http://example.org\")->", "(\"~http://example.org~\")->"},
             {"('http://example.org')->", "('~http://example.org~')->"},
             {"('www.foo.com')->ss('http://example.org');",
