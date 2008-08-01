@@ -244,9 +244,7 @@ public abstract class InputHandler implements ConfigChangeListener {
             }
         } else {
             final int lines = parentWindow.getContainer().getNumLines(text);
-            if (lines > 1) {
                 fireLineWrap(lines);
-            }
         }
     }
     
