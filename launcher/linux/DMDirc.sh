@@ -23,7 +23,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-LAUNCHERVERSION="4"
+LAUNCHERVERSION="5"
 
 params=""
 
@@ -182,7 +182,7 @@ elif [ -e "${profiledir}/.launcher.sh" ]; then
 					sudo mv -fv "${profiledir}/.launcher.sh" "${0}"
 				fi;
 			fi
-			if [ ! -e "${profiledir}/.DMDirc.jar" ]; then
+			if [ ! -e "${profiledir}/.launcher.sh" ]; then
 				echo "Update successful."
 				messagedialog "Launcher Update" "Launcher Update successful"
 			else
@@ -219,10 +219,10 @@ if [ -e "${profiledir}/.DMDirc.jar" ]; then
 		if [ "0" != "${UID}" ]; then
 			if [ "" != "${ISKDE}" -a "" != "${KSUDO}" -a "" != "${DISPLAY}" ]; then
 				echo "Password dialog on ${DISPLAY}"
-				${KSUDO} --comment "DMDirc Client Updater requires root access to modify the global installation" mv -fv "${profiledir}/.DMDirc.jar" "${jar}"
+				${KSUDO} --comment "DMDirc Client Updater requires root access to modify the global installation" -- mv -fv "${profiledir}/.DMDirc.jar" "${jar}"
 			elif [ "" != "${ISGNOME}" -a "" != "${GSUDO}" -a "" != "${DISPLAY}" ]; then
 				echo "Password dialog on ${DISPLAY}"
-				${GSUDO} -k --message "DMDirc Client Updater requires root access to modify the global installation" mv -fv "${profiledir}/.DMDirc.jar" "${jar}"
+				${GSUDO} -k --message "DMDirc Client Updater requires root access to modify the global installation" -- mv -fv "${profiledir}/.DMDirc.jar" "${jar}"
 			else
 				echo "DMDirc Client Updater requires root access to modify the global installation"
 				sudo mv -fv "${profiledir}/.DMDirc.jar" "${jar}"
