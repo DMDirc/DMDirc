@@ -30,6 +30,7 @@ import com.dmdirc.config.prefs.PreferencesManager;
  * Defines the standard methods that should be implemented by plugins.
  */
 public abstract class Plugin implements Comparable<Plugin> {
+
 	/**
 	 * Called when the plugin is constructed.
 	 */
@@ -47,14 +48,6 @@ public abstract class Plugin implements Comparable<Plugin> {
 	 * @return true if the plugin can be used, else false.
 	 */
 	public boolean checkPrerequisites() { return true; }
-	
-	/**
-	 * Get the reason for checkPrerequisites failing.
-	 *
-	 * @return Human-Readble reason for checkPrerequisites failing.
-	 * @since 0.6
-	 */
-	public String checkPrerequisitesReason() { return ""; }
 		
 	/**
 	 * Called when the plugin is about to be unloaded.
@@ -76,7 +69,7 @@ public abstract class Plugin implements Comparable<Plugin> {
 	 * @param o Object to compare to
 	 * @return a negative integer, zero, or a positive integer.
 	 */
-	@Override
+    @Override
 	public int compareTo(final Plugin o) {
 		return toString().compareTo(o.toString());
 	}

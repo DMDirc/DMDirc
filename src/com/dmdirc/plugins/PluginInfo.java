@@ -642,7 +642,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 						}
 					} else {
 						if (!tempLoaded) {
-							lastError = "Prerequisites for plugin not met. ('"+filename+":"+getMainClass()+"' -> "+((Plugin) temp).checkPrerequisitesReason()+")";
+							lastError = "Prerequisites for plugin not met. ('"+filename+":"+getMainClass()+"')";
 							Logger.userError(ErrorLevel.LOW, lastError);
 						}
 					}
