@@ -24,6 +24,7 @@ package com.dmdirc.addons.addonbrowser;
 
 import com.dmdirc.Main;
 import com.dmdirc.addons.addonbrowser.AddonInfo.AddonType;
+import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.util.ConfigFile;
 import com.dmdirc.util.InvalidConfigFileException;
@@ -46,7 +47,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -63,7 +64,7 @@ import net.miginfocom.swing.MigLayout;
  * 
  * @author chris
  */
-public class BrowserWindow extends JFrame implements ActionListener,
+public class BrowserWindow extends JDialog implements ActionListener,
         Comparator<AddonInfo> {
     
     /**
@@ -123,7 +124,7 @@ public class BrowserWindow extends JFrame implements ActionListener,
      * Creates and displays a new browser window.
      */
     public BrowserWindow() {
-        setTitle("DMDirc Addon Browser");
+        super(SwingController.getMainFrame(), "DMDirc Addon Browser", false);
         setIconImage(Main.getUI().getMainWindow().getIcon().getImage());
         setMaximumSize(new Dimension(550, 550));
         setMinimumSize(new Dimension(550, 550));

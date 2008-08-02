@@ -16,6 +16,8 @@ import java.io.IOException;
 import javax.swing.JDialog;
 import javax.swing.JProgressBar;
 
+import net.miginfocom.swing.MigLayout;
+
 /**
  *
  * @author chris
@@ -34,7 +36,8 @@ public class DownloaderWindow extends JDialog implements Runnable, DownloadListe
     /** Instantiates a new downloader window. */
     public DownloaderWindow() {
         setTitle("Downloading addon information...");
-        add(jpb);
+        setLayout(new MigLayout("fill"));
+        add(jpb, "grow");
         pack();
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLocationRelativeTo((Component) Main.getUI().getMainWindow());
@@ -61,7 +64,14 @@ public class DownloaderWindow extends JDialog implements Runnable, DownloadListe
     /** {@inheritDoc} */
     @Override
     public void downloadProgress(float percent) {
+        System.out.println("value: " + percent);
         jpb.setValue((int) percent);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setIndeterminate(final boolean indeterminate) {
+        jpb.setIndeterminate(indeterminate);
     }
 
 }

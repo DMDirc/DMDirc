@@ -211,5 +211,11 @@ public final class Update implements DownloadListener {
     public float getProgress() {
         return progress;
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setIndeterminate(boolean indeterminate) {
+        //TODO
+    }
     
 }

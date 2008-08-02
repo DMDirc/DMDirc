@@ -22,8 +22,12 @@
 
 package com.dmdirc.addons.addonbrowser;
 
+import com.dmdirc.util.Downloader;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import java.io.IOException;
 
 /**
  * Addon info install listener.
@@ -49,6 +53,11 @@ public class InstallListener implements ActionListener {
      */
     @Override
     public void actionPerformed(final ActionEvent e) {
-    //TODO
+        try {
+            Downloader.downloadPage("http://addons.dmdirc.com/addondownload/" +
+                    info.getId(), "");
+        } catch (IOException ex) {
+        //
+        }
     }
 }

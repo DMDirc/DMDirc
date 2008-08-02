@@ -160,6 +160,8 @@ public final class Downloader {
         final int length = urlConn.getContentLength();
         int current = 0;
         
+        listener.setIndeterminate(length == -1);
+        
         final byte[] buffer = new byte[512];
         int count;
         
@@ -170,7 +172,7 @@ public final class Downloader {
                 current += count;
                 output.write(buffer, 0, count);
                 
-                if (listener != null) {
+                if (listener != null && length != -1) {
                     listener.downloadProgress(100 * (float) current / length);
                 }
             }
