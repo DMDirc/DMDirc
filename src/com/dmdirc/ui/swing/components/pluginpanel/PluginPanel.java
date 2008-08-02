@@ -101,7 +101,7 @@ public final class PluginPanel extends JPanel implements
         blurbLabel = new TextLabel("Plugins allow you to extend the functionality of DMDirc.");
         
         /** {@inheritDoc}. */
-        new Thread(new SwingWorker() {
+        new SwingWorker() {
 
             /** {@inheritDoc}. */
             @Override
@@ -114,7 +114,7 @@ public final class PluginPanel extends JPanel implements
             protected void done() {
                 scrollPane.setViewportView(pluginList);
             }
-        }).start();
+        }.execute();
     }
     
     /** Lays out the dialog. */

@@ -236,7 +236,7 @@ public class BrowserWindow extends JDialog implements ActionListener,
         list.add(new JLabel("Sorting list.", JLabel.CENTER), "grow, pushy");
         list.setVisible(true);
 
-        new Thread(new SwingWorker() {
+        new SwingWorker() {
 
             final List<AddonInfo> newInfos = new ArrayList<AddonInfo>();
 
@@ -284,7 +284,7 @@ public class BrowserWindow extends JDialog implements ActionListener,
                 });
                 list.setVisible(true);
             }
-        }).start();
+        }.execute();
     }
     
     /**

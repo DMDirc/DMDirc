@@ -104,7 +104,7 @@ public final class ThemePanel extends JPanel implements
         blurbLabel = new TextLabel("Themes alter the appearance of DMDirc");
         
         /** {@inheritDoc}. */
-        new Thread(new SwingWorker() {
+        new SwingWorker() {
 
             /** {@inheritDoc}. */
             @Override
@@ -117,7 +117,7 @@ public final class ThemePanel extends JPanel implements
             protected void done() {
                 scrollPane.setViewportView(themeList);
             }
-        }).start();
+        }.execute();
     }
     
     /** Lays out the dialog. */
