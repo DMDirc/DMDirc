@@ -313,6 +313,7 @@ public class BrowserWindow extends JFrame implements ActionListener,
         panel.add(label, "wmin 165, wmax 165, growy, wrap, gapleft 5, gapbottom 5, pushy");
         
         final JButton button = new JButton("Install");
+        button.addActionListener(new InstallListener(info));
         final boolean installed = info.isInstalled();
         
         if (installed || !info.isDownloadable()) {
