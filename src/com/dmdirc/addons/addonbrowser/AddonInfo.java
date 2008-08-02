@@ -26,8 +26,12 @@ import com.dmdirc.Main;
 import com.dmdirc.updater.UpdateChannel;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateComponent;
+import com.dmdirc.util.URLBuilder;
 
+import java.awt.Image;
 import java.util.Map;
+
+import javax.swing.ImageIcon;
 
 /**
  * Describes an addon.
@@ -65,7 +69,7 @@ public class AddonInfo {
     private final AddonType type;
     private final boolean verified;
     private final int date;
-    private final String screenshot;
+    private final ImageIcon screenshot;
 
     public AddonInfo(final Map<String, String> entry) {
         this.id = Integer.parseInt(entry.get("id"));
@@ -80,8 +84,15 @@ public class AddonInfo {
         this.description = entry.get("description");
         this.verified = entry.get("verified").equals("yes");
         this.date = Integer.parseInt(entry.get("date"));
-        this.screenshot = entry.get("screenshot").equals("yes")
-                ? "http://addons.dmdirc.com/addonimg/" + id : "dmdirc://com/dmdirc/res/logo.png";
+        if (entry.get("screenshot").equals("yes")) {
+            this.screenshot = new ImageIcon(URLBuilder.buildURL(
+                    "http://addons.dmdirc.com/addonimg/" + id));
+            this.screenshot.setImage(this.screenshot.getImage().
+                   getScaledInstance(150, 150,Image.SCALE_SMOOTH));
+        } else {
+            this.screenshot = new ImageIcon(URLBuilder.buildURL(
+                    "dmdirc://com/dmdirc/res/logo.png"));
+        }
     }
 
     public String getAuthor() {
@@ -124,7 +135,7 @@ public class AddonInfo {
         return verified;
     }
 
-    public String getScreenshot() {
+    public ImageIcon getScreenshot() {
         return screenshot;
     }
     
