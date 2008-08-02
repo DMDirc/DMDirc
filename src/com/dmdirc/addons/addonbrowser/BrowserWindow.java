@@ -233,7 +233,7 @@ public class BrowserWindow extends JDialog implements ActionListener,
          private void sortAndFilter() {
         list.setVisible(false);
         list.removeAll();
-        list.add(new JLabel("Sorting list.", JLabel.CENTER), "growx");
+        list.add(new JLabel("Sorting list.", JLabel.CENTER), "grow, pushy");
         list.setVisible(true);
 
         new Thread(new SwingWorker() {
