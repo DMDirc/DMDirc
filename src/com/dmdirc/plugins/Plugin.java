@@ -52,6 +52,7 @@ public abstract class Plugin implements Comparable<Plugin> {
 	 * Get the reason for checkPrerequisites failing.
 	 *
 	 * @return Human-Readble reason for checkPrerequisites failing.
+	 * @since 0.6
 	 */
 	public String checkPrerequisitesReason() { return ""; }
 		
@@ -75,7 +76,7 @@ public abstract class Plugin implements Comparable<Plugin> {
 	 * @param o Object to compare to
 	 * @return a negative integer, zero, or a positive integer.
 	 */
-    @Override
+	@Override
 	public int compareTo(final Plugin o) {
 		return toString().compareTo(o.toString());
 	}
