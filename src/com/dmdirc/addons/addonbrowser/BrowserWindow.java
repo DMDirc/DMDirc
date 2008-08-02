@@ -27,13 +27,11 @@ import com.dmdirc.addons.addonbrowser.AddonInfo.AddonType;
 import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.util.ConfigFile;
 import com.dmdirc.util.InvalidConfigFileException;
-import com.dmdirc.util.URLBuilder;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -46,7 +44,6 @@ import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -56,8 +53,9 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
-
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -227,41 +225,61 @@ public class BrowserWindow extends JFrame implements ActionListener,
      * Sorts and filters the list of addons according to the currently selected
      * options.
      */
-        private void sortAndFilter() {
-        list.removeAll();
-        final List<AddonInfo> newInfos = new ArrayList<AddonInfo>();
-        
-        for (AddonInfo info : infos) {
-            if ((!verifiedBox.isSelected() && info.isVerified())
-                    || (!unverifiedBox.isSelected() && !info.isVerified())
-                    || (!installedBox.isSelected() && info.isInstalled())
-                    || (!notinstalledBox.isSelected() && !info.isInstalled())
-                    || (!pluginsBox.isSelected() && info.getType() == AddonType.TYPE_PLUGIN)
-                    || (!themesBox.isSelected() && info.getType() == AddonType.TYPE_THEME)
-                    || (!actionsBox.isSelected() && info.getType() == AddonType.TYPE_ACTION_PACK)
-                    || (!searchBox.getText().isEmpty() && !info.matches(searchBox.getText()))
-            ) {
-                continue;
-            }
-            
-            newInfos.add(info);
-        }
-        
-        Collections.sort(newInfos, this);
-        
-        int i = 0;
+         private void sortAndFilter() {
         list.setVisible(false);
-        for (AddonInfo info : newInfos) {
-            list.add(getPanel(info, i++), "width 100%!");
-        }
-        SwingUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                scrollPane.getVerticalScrollBar().setValue(0);
-            }
-        });
+        list.removeAll();
+        list.add(new JLabel("Sorting list."));
         list.setVisible(true);
+
+        new Thread(new SwingWorker() {
+
+            final List<AddonInfo> newInfos = new ArrayList<AddonInfo>();
+
+            /* {@inheritDoc} */
+            @Override
+            protected Object doInBackground() {
+                for (AddonInfo info : infos) {
+                    if ((!verifiedBox.isSelected() && info.isVerified()) ||
+                            (!unverifiedBox.isSelected() && !info.isVerified()) ||
+                            (!installedBox.isSelected() && info.isInstalled()) ||
+                            (!notinstalledBox.isSelected() &&
+                            !info.isInstalled()) || (!pluginsBox.isSelected() &&
+                            info.getType() == AddonType.TYPE_PLUGIN) ||
+                            (!themesBox.isSelected() && info.getType() ==
+                            AddonType.TYPE_THEME) ||
+                            (!actionsBox.isSelected() && info.getType() ==
+                            AddonType.TYPE_ACTION_PACK) || (!searchBox.getText().
+                            isEmpty() && !info.matches(searchBox.getText()))) {
+                        continue;
+                    }
+
+                    newInfos.add(info);
+                }
+
+                Collections.sort(newInfos, BrowserWindow.this);
+                return newInfos;
+            }
+
+            /* {@inheritDoc} */
+            @Override
+            protected void done() {
+
+                int i = 0;
+                list.setVisible(false);
+                list.removeAll();
+                for (AddonInfo info : newInfos) {
+                    list.add(getPanel(info, i++), "wmax 400");
+                }
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        scrollPane.getVerticalScrollBar().setValue(0);
+                    }
+                });
+                list.setVisible(true);
+            }
+        }).start();
     }
     
     /**
@@ -277,15 +295,9 @@ public class BrowserWindow extends JFrame implements ActionListener,
         
         JLabel title = new JLabel(info.getTitle());
         title.setFont(title.getFont().deriveFont(16f).deriveFont(Font.BOLD));
-        panel.add(title, "gaptop 5, gapleft 5");
+        panel.add(title, "wmax 165, gaptop 5, gapleft 5");
         
-        final ImageIcon icon = new ImageIcon(URLBuilder.buildURL(info.getScreenshot()));
-        
-        if (!info.getScreenshot().startsWith("dmdirc")) {
-            icon.setImage(icon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH));
-        }
-        
-        title = new JLabel(icon);
+        title = new JLabel(info.getScreenshot());
         title.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         panel.add(title, "width 150!, height 150::, wrap, spany 4, gaptop 5, gapright 5");
 
@@ -294,7 +306,7 @@ public class BrowserWindow extends JFrame implements ActionListener,
         panel.add(title, "gapleft 5, wrap");
         
         TextLabel label = new TextLabel(info.getDescription());
-        panel.add(label, "growy, wrap, gapleft 5, gapbottom 5, pushy");
+        panel.add(label, "wmax 165, growy, wrap, gapleft 5, gapbottom 5, pushy");
         
         final JButton button = new JButton("Install");
         final boolean installed = info.isInstalled();
