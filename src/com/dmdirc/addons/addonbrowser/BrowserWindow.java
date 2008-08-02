@@ -98,7 +98,7 @@ public class BrowserWindow extends JFrame implements ActionListener,
     private final JCheckBox notinstalledBox = new JCheckBox("Not installed", true);
     
     /** The panel used to list addons. */
-    private final JPanel list = new JPanel(new MigLayout("flowy, ins 0, gap 0"));
+    private final JPanel list = new JPanel(new MigLayout("fillx, flowy, ins 0, gap 0"));
     
     /** The scrollpane for the list panel. */
     private final JScrollPane scrollPane = new JScrollPane(list, 
@@ -189,6 +189,10 @@ public class BrowserWindow extends JFrame implements ActionListener,
         group.add(dateButton);
         group.add(statusButton);
         
+        pluginsBox.addActionListener(this);
+        themesBox.addActionListener(this);
+        actionsBox.addActionListener(this);
+        
         nameButton.addActionListener(this);
         ratingButton.addActionListener(this);
         dateButton.addActionListener(this);
@@ -228,7 +232,7 @@ public class BrowserWindow extends JFrame implements ActionListener,
          private void sortAndFilter() {
         list.setVisible(false);
         list.removeAll();
-        list.add(new JLabel("Sorting list."));
+        list.add(new JLabel("Sorting list.", JLabel.CENTER), "growx");
         list.setVisible(true);
 
         new Thread(new SwingWorker() {
@@ -268,7 +272,7 @@ public class BrowserWindow extends JFrame implements ActionListener,
                 list.setVisible(false);
                 list.removeAll();
                 for (AddonInfo info : newInfos) {
-                    list.add(getPanel(info, i++), "wmax 400");
+                    list.add(getPanel(info, i++));
                 }
                 SwingUtilities.invokeLater(new Runnable() {
 
@@ -295,18 +299,18 @@ public class BrowserWindow extends JFrame implements ActionListener,
         
         JLabel title = new JLabel(info.getTitle());
         title.setFont(title.getFont().deriveFont(16f).deriveFont(Font.BOLD));
-        panel.add(title, "wmax 165, gaptop 5, gapleft 5");
+        panel.add(title, "wmin 165, wmax 165, gaptop 5, gapleft 5");
         
         title = new JLabel(info.getScreenshot());
         title.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        panel.add(title, "width 150!, height 150::, wrap, spany 4, gaptop 5, gapright 5");
+        panel.add(title, "wmin 150, wmax 150, height 150::, wrap, spany 4, gaptop 5, gapright 5");
 
         title = new JLabel(info.getType().toString() + ", rated "
                 + info.getRating() + "/10");
         panel.add(title, "gapleft 5, wrap");
         
         TextLabel label = new TextLabel(info.getDescription());
-        panel.add(label, "wmax 165, growy, wrap, gapleft 5, gapbottom 5, pushy");
+        panel.add(label, "wmin 165, wmax 165, growy, wrap, gapleft 5, gapbottom 5, pushy");
         
         final JButton button = new JButton("Install");
         final boolean installed = info.isInstalled();
