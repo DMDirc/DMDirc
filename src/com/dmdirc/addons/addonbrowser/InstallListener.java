@@ -53,11 +53,9 @@ public class InstallListener implements ActionListener {
      */
     @Override
     public void actionPerformed(final ActionEvent e) {
-        try {
-            Downloader.downloadPage("http://addons.dmdirc.com/addondownload/" +
-                    info.getId(), "");
+        /*try {
+            Downloader.downloadPage("http://addons.dmdirc.com/addondownload/" + info.getId(), "");
         } catch (IOException ex) {
-        //
-        }
+        }*/
     }
 }
