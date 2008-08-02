@@ -24,6 +24,7 @@ package com.dmdirc.addons.mediasource_dcop;
 
 import com.dmdirc.addons.nowplaying.MediaSource;
 import com.dmdirc.addons.nowplaying.MediaSourceManager;
+import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
@@ -71,19 +72,19 @@ public class DcopMediaSourcePlugin extends Plugin
     
     /** {@inheritDoc} */
     @Override
-    public boolean checkPrerequisites() {
+    public ValidationResponse checkPrerequisites() {
         PluginManager.getPluginManager().addPlugin("dcop.jar");
         
         final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName("dcop");
         
         if (pi == null) {
-            return false;
+            return new ValidationResponse("DCOP Plugin not found");
         }
         
         if (!pi.isLoaded()) {
             pi.loadPlugin();
         }
 
-        return true;
+        return new ValidationResponse();
     }
 }

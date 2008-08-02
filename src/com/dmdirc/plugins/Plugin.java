@@ -25,6 +25,7 @@
 package com.dmdirc.plugins;
 
 import com.dmdirc.config.prefs.PreferencesManager;
+import com.dmdirc.config.prefs.validator.ValidationResponse;
 
 /**
  * Defines the standard methods that should be implemented by plugins.
@@ -45,9 +46,10 @@ public abstract class Plugin implements Comparable<Plugin> {
 	 * Check any further Prerequisites for this plugin to load that can not be
 	 * checked using metainfo.
 	 *
-	 * @return true if the plugin can be used, else false.
+	 * @return ValidationResponse detailign if the plugin passes any extra checks
+	 *         that plugin.info can't handle
 	 */
-	public boolean checkPrerequisites() { return true; }
+	public ValidationResponse checkPrerequisites() { return new ValidationResponse(); }
 		
 	/**
 	 * Called when the plugin is about to be unloaded.

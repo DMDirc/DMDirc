@@ -26,6 +26,7 @@ package com.dmdirc.plugins;
 import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.logger.ErrorLevel;
@@ -629,7 +630,8 @@ public class PluginInfo implements Comparable<PluginInfo> {
 				final Object temp = constructor.newInstance(new Object[] {});
 	
 				if (temp instanceof Plugin) {
-					if (((Plugin) temp).checkPrerequisites()) {
+					final ValidationResponse prerequisites = ((Plugin) temp).checkPrerequisites();
+					if (!prerequisites.isFailure()) {
 						plugin = (Plugin) temp;
 						if (!tempLoaded) {
 							try {
@@ -642,7 +644,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 						}
 					} else {
 						if (!tempLoaded) {
-							lastError = "Prerequisites for plugin not met. ('"+filename+":"+getMainClass()+"')";
+							lastError = "Prerequisites for plugin not met. ('"+filename+":"+getMainClass()+"' -> '"+prerequisites.getFailureReason()+"') ";
 							Logger.userError(ErrorLevel.LOW, lastError);
 						}
 					}
