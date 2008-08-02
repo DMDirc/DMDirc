@@ -57,6 +57,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
+import javax.swing.SwingUtilities;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -101,6 +102,10 @@ public class BrowserWindow extends JFrame implements ActionListener,
     /** The panel used to list addons. */
     private final JPanel list = new JPanel(new MigLayout("flowy, ins 0, gap 0"));
     
+    /** The scrollpane for the list panel. */
+    private final JScrollPane scrollPane = new JScrollPane(list, 
+            JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    
     /** The sort by name button. */
     private final JRadioButton nameButton = new JRadioButton("Name", true);
     
@@ -128,6 +133,7 @@ public class BrowserWindow extends JFrame implements ActionListener,
         setLocationRelativeTo((Component) Main.getUI().getMainWindow());
         
         setLayout(new MigLayout("fill"));
+        scrollPane.getVerticalScrollBar().setUnitIncrement(15);
         
         JPanel panel = new JPanel(new MigLayout("fill"));
         panel.setBorder(BorderFactory.createTitledBorder("Search"));
@@ -136,10 +142,7 @@ public class BrowserWindow extends JFrame implements ActionListener,
         
         panel = new JPanel(new MigLayout("fill"));
         panel.setBorder(BorderFactory.createTitledBorder("Results"));
-        final JScrollPane sp = new JScrollPane(list, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        sp.getVerticalScrollBar().setUnitIncrement(15);
-        panel.add(sp, "grow");
+        panel.add(scrollPane, "grow");
         add(panel, "wrap, spany 4, grow");
         
         panel = new JPanel(new MigLayout("wrap"));
@@ -247,11 +250,18 @@ public class BrowserWindow extends JFrame implements ActionListener,
         Collections.sort(newInfos, this);
         
         int i = 0;
+        list.setVisible(false);
         for (AddonInfo info : newInfos) {
             list.add(getPanel(info, i++), "width 100%!");
         }
+        SwingUtilities.invokeLater(new Runnable() {
 
-        invalidate();
+            @Override
+            public void run() {
+                scrollPane.getVerticalScrollBar().setValue(0);
+            }
+        });
+        list.setVisible(true);
     }
     
     /**
