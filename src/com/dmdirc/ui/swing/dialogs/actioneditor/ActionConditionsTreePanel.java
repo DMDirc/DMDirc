@@ -84,7 +84,6 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
         rule = new JTextField();
         
         allButton.setSelected(true);
-        rule.setVisible(false);
         
         group.add(allButton);
         group.add(oneButton);
@@ -100,7 +99,7 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
 
     /** Lays out the components. */
     private void layoutComponents() {
-        setLayout(new MigLayout("fill, pack, hidemode 3, wrap 1"));
+        setLayout(new MigLayout("fill, wrap 1, pack, hidemode 3"));
         add(new TextLabel("Only execute this action if..."), "growx");
         add(allButton, "growx");
         add(oneButton, "growx");
@@ -115,7 +114,7 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
      */
     @Override
     public void actionPerformed(final ActionEvent e) {
-        rule.setVisible(e.getSource().equals(customButton));
+        rule.setEnabled(e.getSource().equals(customButton));
     }
     
     /** {@inheritDoc} */
@@ -124,7 +123,6 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
         allButton.setEnabled(enabled);
         oneButton.setEnabled(enabled);
         customButton.setEnabled(enabled);
-        rule.setEnabled(enabled);
     }
     
     /**

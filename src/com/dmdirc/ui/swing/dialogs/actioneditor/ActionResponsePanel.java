@@ -51,7 +51,7 @@ public class ActionResponsePanel extends JPanel {
     private JTextArea response;
     /** Formatter combo box. */
     private JComboBox formatter;
-
+    
     /** Instantiates the panel. */
     public ActionResponsePanel() {
         super();

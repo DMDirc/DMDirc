@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
+import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.swing.UIUtilities;
@@ -38,12 +39,14 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
+import javax.swing.JOptionPane;
 import net.miginfocom.swing.MigLayout;
 
 /**
  * Action editor dialog.
  */
-public class ActionEditorDialog extends StandardDialog implements ActionListener, PropertyChangeListener {
+public class ActionEditorDialog extends StandardDialog implements ActionListener,
+        PropertyChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -71,6 +74,8 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
     private boolean responseValid = false;
     /** Are the conditions valid? */
     private boolean conditionsValid = false;
+    /** Action to be edited. */
+    private Action action;
 
     /** 
      * Instantiates the panel.
@@ -78,7 +83,19 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
      * @param window Parent window
      */
     public ActionEditorDialog(final Window window) {
+        this(window, null);
+    }
+
+    /** 
+     * Instantiates the panel.
+     * 
+     * @param window Parent window
+     * @param action Action to be edited
+     */
+    public ActionEditorDialog(final Window window, final Action action) {
         super(window, ModalityType.MODELESS);
+
+        this.action = action;
 
         initComponents();
         addListeners();
@@ -94,7 +111,7 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         conditions = new ActionConditionsPanel();
         substitutions = new ActionSubstitutionsPanel();
         showSubstitutions = new JButton("Show Substitutions");
-        
+
         triggers.setEnabled(false);
         response.setEnabled(false);
         conditions.setEnabled(false);
@@ -106,7 +123,7 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         showSubstitutions.addActionListener(this);
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
-        
+
         name.addPropertyChangeListener("validationResult", this);
         triggers.addPropertyChangeListener("validationResult", this);
     }
@@ -135,8 +152,22 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         IdentityManager.load();
         ActionManager.init();
         ActionManager.loadActions();
-        System.out.println(ActionManager.getGroups().values().iterator().next().getActions().get(0));
-        ActionEditorDialog dialog = new ActionEditorDialog(new JFrame());
+        ActionEditorDialog dialog;
+        if (JOptionPane.showOptionDialog(new JFrame(),
+                "Do you want to use test editing an action?",
+                "Edit or create?",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                new String[]{"Create", "Edit",},
+                "Create") == 0) {
+            dialog = new ActionEditorDialog(new JFrame());
+        } else {
+            dialog = new ActionEditorDialog(new JFrame(), ActionManager.getGroups().
+                    values().iterator().
+                    next().getActions().get(0));
+        }
+
         dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         dialog.addWindowListener(new WindowAdapter() {
@@ -157,7 +188,8 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource().equals(showSubstitutions)) {
-        substitutions.setVisible(!substitutions.isVisible());
+            substitutions.setVisible(!substitutions.isVisible());
+            showSubstitutions.setText(substitutions.isVisible() ? "Hide Substitutions" : "Show Substitutions");
         } else if (e.getSource().equals(getOkButton())) {
             dispose();
         } else if (e.getSource().equals(getCancelButton())) {
@@ -174,15 +206,16 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         }
         if (evt.getSource().equals(triggers)) {
             triggersValid = (Boolean) evt.getNewValue();
-            
+
             response.setEnabled((Boolean) evt.getNewValue());
             conditions.setEnabled((Boolean) evt.getNewValue());
             substitutions.setEnabled((Boolean) evt.getNewValue());
-            
+
             substitutions.setActionType(triggers.getPrimaryTrigger());
             conditions.setActionTrigger(triggers.getPrimaryTrigger());
         }
-        
-        getOkButton().setEnabled(triggersValid && conditionsValid && nameValid && responseValid);
+
+        getOkButton().setEnabled(triggersValid && conditionsValid && nameValid &&
+                responseValid);
     }
 }

@@ -84,7 +84,7 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
 
     /** Initialises the components. */
     private void initComponents() {
-        setLayout(new MigLayout("fillx, wrap 2"));
+        setLayout(new MigLayout("fillx, wrap 2, pack"));
 
         if (trigger == null) {
             setEnabled(false);

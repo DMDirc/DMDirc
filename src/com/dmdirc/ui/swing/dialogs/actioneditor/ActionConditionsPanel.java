@@ -95,7 +95,7 @@ public class ActionConditionsPanel extends JPanel implements ActionListener {
 
     /** Lays out the components. */
     private void layoutComponents() {
-        setLayout(new MigLayout("fill, wrap 1"));
+        setLayout(new MigLayout("fill, wrap 1, pack"));
         
         setBorder(BorderFactory.createTitledBorder(getBorder(), "Conditions"));
         
