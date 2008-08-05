@@ -576,27 +576,18 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 * Load the plugin files.
 	 */
 	public void loadPlugin() {
-		System.out.println("["+getName()+"] loadPlugin called");
 		if (isTempLoaded()) {
 			tempLoaded = false;
-			System.out.println("["+getName()+"] temp -> full");
-			System.out.println("["+getName()+"] loadingRequirements");
 			loadRequired();
-			System.out.println("["+getName()+"] calling onLoad");
 			plugin.onLoad();
-			System.out.println("["+getName()+"] onLoad Result: "+lastError);
 		} else {
 			if (isLoaded() || metaData == null || isLoading) {
 				lastError = "Not Loading: ("+isLoaded()+"||"+(metaData == null)+"||"+isLoading+")";
-				System.out.println("["+getName()+"] loadPlugin failed: "+lastError);
 				return;
 			}
 			isLoading = true;
-			System.out.println("["+getName()+"] loadingRequirements");
 			loadRequired();
-			System.out.println("["+getName()+"] loading Main class");
 			loadClass(getMainClass());
-			System.out.println("["+getName()+"] load Result: "+lastError);
 			if (isLoaded()) {
 				ActionManager.processEvent(CoreActionType.PLUGIN_LOADED, null, this);
 			}
