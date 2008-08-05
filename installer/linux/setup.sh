@@ -200,15 +200,18 @@ if [ -e "DMDirc.jar" ]; then
 	if [ "${scriptOnly}" = "true" ]; then
 		echo "Script-only install requested."
 	else
-		echo "Running installer.."
-		${JAVA} -cp DMDirc.jar com.dmdirc.installer.Main ${isRoot}${isRelease}
+		echo "Checking java version.."
+		${JAVA} -cp DMDirc.jar com.dmdirc.installer.Main --help >/dev/null
 		if [ $? -ne 0 ]; then
 			installjre "upgrade"
-			echo "Trying to run installer again.."
+			echo "Trying to run installer.."
 			${JAVA} -cp DMDirc.jar com.dmdirc.installer.Main ${isRoot}${isRelease}
 			if [ $? -ne 0 ]; then
 				exit 1;
 			fi;
+		else
+			echo "Running installer.."
+			${JAVA} -cp DMDirc.jar com.dmdirc.installer.Main ${isRoot}${isRelease}
 		fi
 		exit 0;
 	fi

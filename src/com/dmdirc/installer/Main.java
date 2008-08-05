@@ -139,6 +139,8 @@ public final class Main implements WizardListener {
 	 */
 	private static void setupCLIParser() {
 		cli.clear();
+		cli.add(new StringParam('h', "help", "Get Help"));
+		cli.setHelp(cli.getParam("-help"));
 		cli.add(new BooleanParam((char) 0, "isroot", "Installing as Root"));
 		cli.add(new StringParam('r', "release", "Release Name"));
 		cli.add(new StringParam('d', "directory", "Default install directory"));
@@ -177,6 +179,10 @@ public final class Main implements WizardListener {
 	 */
 	public static void main(final String[] args) {
 		setupCLIParser();
+		if (cli.wantsHelp(args)) {
+			cli.showHelp("DMDirc installer Help", "[options [--]]");
+			System.exit(0);
+		}
 		cli.parseArgs(args, false);
 		getWizardFrame().display();
 	}
