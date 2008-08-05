@@ -31,6 +31,7 @@ import com.dmdirc.ui.swing.components.StandardInputDialog;
 import javax.swing.JPanel;
 import javax.swing.text.JTextComponent;
 
+import org.fest.swing.core.EventMode;
 import org.fest.swing.finder.WindowFinder;
 import org.fest.swing.fixture.DialogFixture;
 import org.fest.swing.fixture.JTextComponentFixture;
@@ -53,6 +54,7 @@ public class ActionsManagerDialogTest {
         }
         
         window = new DialogFixture(ActionsManagerDialog.getActionsManagerDialog());
+        window.robot.settings().eventMode(EventMode.AWT);
         window.show();
     }
     
