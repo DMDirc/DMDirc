@@ -460,7 +460,7 @@ begin
 		if (ReleaseNumber <> '') then begin
 			params := params+' --release '+ReleaseNumber;
 		end;
-		// CHeck if the installer runs
+		// Check if the installer runs
 		if (ExecAndWait(javaCommand+' -cp DMDirc.jar com.dmdirc.installer.Main --help') <> 0) then begin
 			dowriteln('Failed!');
 			if not installJRE(true) then begin
@@ -471,6 +471,7 @@ begin
 				// Try again now that java is installed.
 				ExecAndWait(javaCommand+' -cp DMDirc.jar com.dmdirc.installer.Main '+params);
 			end;
+		end
 		else begin
 			// Java is the right version, run the installer
 			ExecAndWait(javaCommand+' -cp DMDirc.jar com.dmdirc.installer.Main '+params);
