@@ -76,15 +76,11 @@ public class ActionsManagerDialogTest {
         
         DialogFixture newwin = WindowFinder.findDialog(StandardInputDialog.class)
                 .withTimeout(5000).using(window.robot);
-        
-        while (!newwin.target.isVisible()) { Thread.sleep(100); }
-        
+                
         newwin.requireVisible();
         assertEquals("New action group", newwin.target.getTitle());
         
         newwin.button(new ButtonTextFinder("Cancel")).click();
-        
-        while (newwin.target.isVisible()) { Thread.sleep(100); }
         
         newwin.requireNotVisible();
         
@@ -94,16 +90,12 @@ public class ActionsManagerDialogTest {
         newwin = WindowFinder.findDialog(StandardInputDialog.class)
                 .withTimeout(5000).using(window.robot);
         
-        while (!newwin.target.isVisible()) { Thread.sleep(100); }
-        
         newwin.requireVisible();
         newwin.button(new ButtonTextFinder("OK")).requireDisabled();
         
         final JTextComponentFixture jtcf = newwin.textBox(
                 new ClassFinder<JTextComponent>(javax.swing.JTextField.class, null));
         jtcf.enterText("amd-ui-test1");
-        
-        while (!jtcf.target.getText().equals("amd-ui-test1")) { Thread.sleep(100); }
         
         newwin.button(new ButtonTextFinder("OK")).requireEnabled().click();
         
