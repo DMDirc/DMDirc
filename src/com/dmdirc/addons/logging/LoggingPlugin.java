@@ -564,7 +564,8 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 		
 		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.addtime")) {
 			final DateFormat dateFormat = new SimpleDateFormat(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.timestamp"));
-			finalLine.append(dateFormat.format(new Date()));
+			finalLine.append(dateFormat.format(new Date()).trim());
+			finalLine.append(" ");
 		}
 		
 		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.stripcodes")) {
