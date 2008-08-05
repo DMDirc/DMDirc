@@ -31,6 +31,7 @@ import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.validator.ActionGroupValidator;
 import com.dmdirc.config.prefs.validator.FileNameValidator;
+import com.dmdirc.config.prefs.validator.ValidatorChain;
 import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.SwingController;
@@ -157,6 +158,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         edit = new JButton("Edit");
         delete = new JButton("Delete");
         groupPanel = new JPanel();
+        groupPanel.setName("Groups");
 
         groupPanel.setBorder(BorderFactory.createTitledBorder(groupPanel.getBorder(),
                 "Groups"));
@@ -299,11 +301,12 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
     /**
      * Prompts then adds an action group.
      */
+    @SuppressWarnings("unchecked")
     private void addGroup() {
-        final StandardInputDialog inputDialog = new StandardInputDialog(SwingController.getMainFrame(), false,
-                "New action group",
+        final StandardInputDialog inputDialog = new StandardInputDialog(SwingController.getMainFrame(),
+                false, "New action group",
                 "Please enter the name of the new action group",
-                new ActionGroupValidator()) {
+                new ValidatorChain<String>(new FileNameValidator(), new ActionGroupValidator())) {
 
             /**
              * A version number for this class. It should be changed whenever the class
@@ -338,13 +341,14 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
     /**
      * Prompts then edits an action group.
      */
+    @SuppressWarnings("unchecked")
     private void editGroup() {
         final String oldName =
                 ((ActionGroup) groups.getSelectedValue()).getName();
         final StandardInputDialog inputDialog = new StandardInputDialog(SwingController.getMainFrame(), false,
                 "Edit action group",
                 "Please enter the new name of the action group",
-                new FileNameValidator()) {
+                new ValidatorChain<String>(new FileNameValidator(), new ActionGroupValidator())) {
 
             /**
              * A version number for this class. It should be changed whenever the class

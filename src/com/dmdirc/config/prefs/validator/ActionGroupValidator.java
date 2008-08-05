@@ -29,10 +29,6 @@ import com.dmdirc.actions.ActionManager;
  */
 public class ActionGroupValidator implements Validator<String> {
 
-    /** Filename regex. */
-    private static final String FILENAME_REGEX = "[A-Za-z0-9 \\-_]+";
-    /** Failure reason for regex failures. */
-    private static final String FAILURE_REGEX = "Must be a valid filename.";
     /** Failure reason for duplicates. */
     private static final String FAILURE_EXISTS = "Must not already exist.";
 
@@ -40,15 +36,13 @@ public class ActionGroupValidator implements Validator<String> {
      * Instantiates a new filename validator.
      */
     public ActionGroupValidator() {
-    //Do nothing
+        //Do nothing
     }
 
     /** {@inheritDoc} */
     @Override
     public ValidationResponse validate(final String object) {
-        if (!object.matches(FILENAME_REGEX)) {
-            return new ValidationResponse(FAILURE_REGEX);
-        } else if (ActionManager.getGroups().containsKey(object)) {
+        if (ActionManager.getGroups().containsKey(object)) {
             return new ValidationResponse(FAILURE_EXISTS);
         } else {
             return new ValidationResponse();
