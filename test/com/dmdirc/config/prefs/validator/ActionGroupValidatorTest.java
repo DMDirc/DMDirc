@@ -33,7 +33,6 @@ public class ActionGroupValidatorTest extends junit.framework.TestCase {
         final ActionGroupValidator rv = new ActionGroupValidator();
         ActionManager.init();
 
-        assertTrue(rv.validate("/foo").isFailure());
         assertFalse(rv.validate("filename").isFailure());
         assertTrue(rv.validate("aliases").isFailure());
     }
