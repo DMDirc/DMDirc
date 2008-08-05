@@ -32,7 +32,10 @@ import com.dmdirc.commandparser.CommandManager;
  */
 public final class AudioPlugin extends Plugin {
 	/** The AudioCommand we created */
-	private AudioCommand command = null;
+	private AudioCommand audioCommand = null;
+	
+	/** The BeepCommand we created */
+	private BeepCommand beepCommand = null;
 
 	/**
 	 * Creates a new instance of the Audio Plugin.
@@ -43,14 +46,16 @@ public final class AudioPlugin extends Plugin {
 	 * Called when the plugin is loaded.
 	 */
 	public void onLoad() {
-		command = new AudioCommand();
+		audioCommand = new AudioCommand();
+		beepCommand = new BeepCommand();
 	}
 	
 	/**
 	 * Called when this plugin is Unloaded
 	 */
 	public void onUnload() {
-		CommandManager.unregisterCommand(command);
+		CommandManager.unregisterCommand(beepCommand);
+		CommandManager.unregisterCommand(audioCommand);
 	}
 	
 	/**
