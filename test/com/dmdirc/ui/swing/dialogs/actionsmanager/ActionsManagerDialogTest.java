@@ -32,9 +32,10 @@ import javax.swing.JPanel;
 import javax.swing.text.JTextComponent;
 
 import org.fest.swing.core.EventMode;
+import org.fest.swing.finder.JOptionPaneFinder;
 import org.fest.swing.finder.WindowFinder;
 import org.fest.swing.fixture.DialogFixture;
-import org.fest.swing.fixture.JTextComponentFixture;
+import org.fest.swing.fixture.JOptionPaneFixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,15 +48,9 @@ public class ActionsManagerDialogTest {
     @Before
     public void setUp() {
         IdentityManager.load();
-        ActionManager.loadActions();
+        ActionManager.init();
         
-        if (ActionManager.getGroups().containsKey("amd-ui-test1")) {
-            ActionManager.removeGroup("amd-ui-test1");
-        }
-        
-        window = new DialogFixture(ActionsManagerDialog.getActionsManagerDialog());
-        window.robot.settings().eventMode(EventMode.AWT);
-        window.show();
+        removeGroups();
     }
     
     @After
@@ -63,15 +58,23 @@ public class ActionsManagerDialogTest {
         if (window != null) {
             window.cleanUp();
         }
-        
+    }
+    
+    protected void removeGroups() {
         if (ActionManager.getGroups().containsKey("amd-ui-test1")) {
             ActionManager.removeGroup("amd-ui-test1");
         }
+        
+        if (ActionManager.getGroups().containsKey("amd-ui-test2")) {
+            ActionManager.removeGroup("amd-ui-test2");
+        }
     }
     
-    @Test(timeout=30000)
+    @Test
     public void testAddGroup() throws InterruptedException {
-        window.panel(new ClassFinder<JPanel>(JPanel.class, null))
+        setupWindow();
+        
+        window.panel(new ClassFinder<JPanel>(JPanel.class, "Groups"))
                 .button(new ButtonTextFinder("Add")).click();
         
         DialogFixture newwin = WindowFinder.findDialog(StandardInputDialog.class)
@@ -84,7 +87,7 @@ public class ActionsManagerDialogTest {
         
         newwin.requireNotVisible();
         
-        window.panel(new ClassFinder<JPanel>(JPanel.class, null))
+        window.panel(new ClassFinder<JPanel>(JPanel.class, "Groups"))
                 .button(new ButtonTextFinder("Add")).click();
         
         newwin = WindowFinder.findDialog(StandardInputDialog.class)
@@ -93,14 +96,105 @@ public class ActionsManagerDialogTest {
         newwin.requireVisible();
         newwin.button(new ButtonTextFinder("OK")).requireDisabled();
         
-        final JTextComponentFixture jtcf = newwin.textBox(
-                new ClassFinder<JTextComponent>(javax.swing.JTextField.class, null));
-        jtcf.enterText("amd-ui-test1");
+        newwin.textBox(new ClassFinder<JTextComponent>(javax.swing.JTextField.class,
+                null)).enterText("amd-ui-test1");
         
         newwin.button(new ButtonTextFinder("OK")).requireEnabled().click();
         
-        // Ensure it's added
         window.list().selectItem("amd-ui-test1").requireSelectedItems("amd-ui-test1");
+
+        assertTrue(ActionManager.getGroups().containsKey("amd-ui-test1"));
+    }
+    
+    @Test
+    public void testDeleteGroup() {
+        ActionManager.makeGroup("amd-ui-test1");
+        setupWindow();
+               
+        window.list().selectItem("amd-ui-test1").requireSelectedItems("amd-ui-test1");
+        
+        window.panel(new ClassFinder<JPanel>(JPanel.class, "Groups"))
+                .button(new ButtonTextFinder("Delete")).requireEnabled().click();
+        
+        JOptionPaneFixture newwin = JOptionPaneFinder.findOptionPane()
+                .withTimeout(5000).using(window.robot);
+        newwin.buttonWithText("No").click();
+        
+        assertTrue(ActionManager.getGroups().containsKey("amd-ui-test1"));
+        window.list().selectItem("amd-ui-test1").requireSelectedItems("amd-ui-test1");
+        
+        window.panel(new ClassFinder<JPanel>(JPanel.class, "Groups"))
+                .button(new ButtonTextFinder("Delete")).click();
+        
+        newwin = JOptionPaneFinder.findOptionPane()
+                .withTimeout(5000).using(window.robot);
+        newwin.buttonWithText("Yes").click();
+        
+        assertTrue(window.list().selection().length != 1 ||   
+                !window.list().selection()[0].equals("amd-ui-test1"));
+                
+        assertFalse(ActionManager.getGroups().containsKey("amd-ui-test1"));
+    }
+    
+    @Test
+    public void testEnablingGroupButtons() {
+        ActionManager.makeGroup("amd-ui-test1");
+        setupWindow();
+        
+        window.list().selectItem("performs").requireSelectedItems("performs");
+        window.panel(new ClassFinder<JPanel>(JPanel.class, "Groups"))
+                .button(new ButtonTextFinder("Delete")).requireDisabled();
+        window.panel(new ClassFinder<JPanel>(JPanel.class, "Groups"))
+                .button(new ButtonTextFinder("Edit")).requireDisabled();
+        
+        window.list().selectItem("amd-ui-test1").requireSelectedItems("amd-ui-test1");
+        window.panel(new ClassFinder<JPanel>(JPanel.class, "Groups"))
+                .button(new ButtonTextFinder("Delete")).requireEnabled();
+        window.panel(new ClassFinder<JPanel>(JPanel.class, "Groups"))
+                .button(new ButtonTextFinder("Edit")).requireEnabled();
+    }
+    
+    public void editGroupCheck(final String button) {
+        ActionManager.makeGroup("amd-ui-test1");
+        setupWindow();
+        
+        window.list().selectItem("amd-ui-test1").requireSelectedItems("amd-ui-test1");
+        window.panel(new ClassFinder<JPanel>(JPanel.class, "Groups"))
+                .button(new ButtonTextFinder("Edit")).requireEnabled().click();
+        
+        DialogFixture newwin = WindowFinder.findDialog(StandardInputDialog.class)
+                .withTimeout(5000).using(window.robot);
+                
+        newwin.requireVisible();
+        assertEquals("Edit action group", newwin.target.getTitle());
+        
+        assertEquals("amd-ui-test1", 
+                newwin.textBox(new ClassFinder<JTextComponent>(javax.swing.JTextField.class,
+                null)).target.getText());
+        
+        newwin.textBox(new ClassFinder<JTextComponent>(javax.swing.JTextField.class,
+                null)).deleteText().enterText("amd-ui-test2");
+        newwin.button(new ButtonTextFinder(button)).requireEnabled().click();
+    }
+    
+    @Test
+    public void testEditGroupCancel() {
+        editGroupCheck("Cancel");
+        assertTrue(ActionManager.getGroups().containsKey("amd-ui-test1"));
+        assertFalse(ActionManager.getGroups().containsKey("amd-ui-test2"));
+    }
+    
+    @Test
+    public void testEditGroupOK() {
+        editGroupCheck("OK");
+        assertFalse(ActionManager.getGroups().containsKey("amd-ui-test1"));
+        assertTrue(ActionManager.getGroups().containsKey("amd-ui-test2"));
+    }
+    
+    protected void setupWindow() {
+        window = new DialogFixture(ActionsManagerDialog.getActionsManagerDialog());
+        window.robot.settings().eventMode(EventMode.AWT);
+        window.show();
     }
 
     public static junit.framework.Test suite() {
