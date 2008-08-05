@@ -55,7 +55,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	private final String otherNickname;
 	
 	/** Total data transfered */
-	private long transferCount = 0;
+	private volatile long transferCount = 0;
 	
 	/** Time Started */
 	private long timeStarted = 0;
@@ -163,7 +163,9 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 		} else if (e.getActionCommand().equals("Resend")) {
 			button.setText("Cancel");
 			status.setText("Status: Resending...");
-			transferCount = 0;
+			synchronized (this) {
+				transferCount = 0;
+			}
 			dcc.reset();
 			if (parser != null && parser.getSocketState() == IRCParser.STATE_OPEN) {
 				if (IdentityManager.getGlobalConfig().getOptionBool(DCCPlugin.getDomain(), "send.reverse", false)) {
@@ -190,8 +192,11 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	 */
     @Override
 	public void dataTransfered(final DCCSend dcc, final int bytes) {
-		transferCount += bytes;
-		final double percent = (100.00 / dcc.getFileSize()) * (transferCount + dcc.getFileStart());
+		final double percent;
+		synchronized (this) {
+			transferCount += bytes;
+			percent = (100.00 / dcc.getFileSize()) * (transferCount + dcc.getFileStart());
+		}
 		
 		if (dcc.getType() == DCCSend.TransferType.SEND) {
 			status.setText("Status: Sending");
@@ -211,8 +216,11 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	 */
 	public void updateSpeedAndTime() {
 		final long time = (System.currentTimeMillis() - timeStarted) / 1000;
-		final double bytesPerSecond = (time > 0) ? (transferCount / time) : transferCount;
-		
+		final double bytesPerSecond;
+		synchronized (this) {
+			bytesPerSecond = (time > 0) ? (transferCount / time) : transferCount;
+		}
+			
 		if (bytesPerSecond > 1048576) {
 			speed.setText(String.format("Speed: %.2f MB/s", (bytesPerSecond/1048576)));
 		} else if (bytesPerSecond > 1024) {
@@ -221,7 +229,10 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 			speed.setText(String.format("Speed: %f B/s", bytesPerSecond));
 		}
 		
-		final long remaningBytes = dcc.getFileSize() - dcc.getFileStart() - transferCount;
+		final long remaningBytes;
+		synchronized (this) {
+			remaningBytes = dcc.getFileSize() - dcc.getFileStart() - transferCount;
+		}
 		final double remainingSeconds = (bytesPerSecond > 0) ? (remaningBytes / bytesPerSecond) : 1;
 		
 		remaining.setText(String.format("Time Remaining: %s", duration((int)Math.floor(remainingSeconds))));
@@ -255,18 +266,20 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	public void socketClosed(final DCCSend dcc) {
 		ActionManager.processEvent(DCCActions.DCC_SEND_SOCKETCLOSED, null, this);
 		if (!isWindowClosing()) {
-			if (transferCount == dcc.getFileSize()) {
-				status.setText("Status: Transfer Compelete.");
-				progress.setValue(100);
-				setIcon(dcc.getType() == DCCSend.TransferType.SEND ? "dcc-send-done" : "dcc-receive-done");
-				button.setText("Close Window");
-			} else {
-				status.setText("Status: Transfer Failed.");
-				setIcon(dcc.getType() == DCCSend.TransferType.SEND ? "dcc-send-failed" : "dcc-receive-failed");
-				if (dcc.getType() == DCCSend.TransferType.SEND) {
-					button.setText("Resend");
-				} else {
+			synchronized (this) {
+				if (transferCount == dcc.getFileSize()) {
+					status.setText("Status: Transfer Compelete.");
+					progress.setValue(100);
+					setIcon(dcc.getType() == DCCSend.TransferType.SEND ? "dcc-send-done" : "dcc-receive-done");
 					button.setText("Close Window");
+				} else {
+					status.setText("Status: Transfer Failed.");
+					setIcon(dcc.getType() == DCCSend.TransferType.SEND ? "dcc-send-failed" : "dcc-receive-failed");
+					if (dcc.getType() == DCCSend.TransferType.SEND) {
+						button.setText("Resend");
+					} else {
+						button.setText("Close Window");
+					}
 				}
 			}
 			updateSpeedAndTime();
