@@ -147,7 +147,7 @@ public abstract class ResourceManager {
         
         File newDir;
         
-        if (usePath) {
+        if (usePath && resourceName.indexOf('/') > -1) {
             newDir = new File(directory,
                     resourceName.substring(0, resourceName.lastIndexOf('/')) + "/");
         } else {
