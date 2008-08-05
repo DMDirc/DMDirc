@@ -23,6 +23,7 @@
 package com.dmdirc.installer.ui;
 
 import com.dmdirc.installer.Main;
+import com.dmdirc.installer.Settings;
 import com.dmdirc.installer.Installer.ShortcutType;
 import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
@@ -65,7 +66,7 @@ public final class StepConfirm extends Step implements StepListener {
 		if (step != this) { return; }
 		String shortcutText = "";
 
-		final StepSettings settings = ((StepSettings) Main.getWizardFrame().getStep(1));
+		final Settings settings = ((Settings) Main.getWizardFrame().getStep(1));
 
 		if (Main.getInstaller().supportsShortcut(ShortcutType.MENU) && settings.getShortcutMenuState()) {
 			shortcutText = shortcutText + " - Create "+Main.getInstaller().getMenuName()+" shortcut\n";
@@ -84,7 +85,7 @@ public final class StepConfirm extends Step implements StepListener {
 		}
 
 
-		final String installLocation = ((StepSettings)Main.getWizardFrame().getStep(1)).getInstallLocation();
+		final String installLocation = settings.getInstallLocation();
 
 
 		if (installLocation.isEmpty()) {

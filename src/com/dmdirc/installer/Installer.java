@@ -86,11 +86,10 @@ public abstract class Installer extends Thread {
 	public final void run() {
 		step.setText("Beginning Install..\n");
 		
-		final boolean isUnattended = (CLIParser.getCLIParser().getParamNumber("-unattended") == 0);
+		final boolean isUnattended = (CLIParser.getCLIParser().getParamNumber("-unattended") != 0);
 		final Settings settings = (isUnattended) ? new DefaultSettings() : ((Settings) Main.getWizardFrame().getStep(1));
 		
 		final String location = settings.getInstallLocation();
-
 		step.addText("Installing files to: "+location);
 		if (!doSetup(location)) {
 			step.addText("");
