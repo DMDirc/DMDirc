@@ -165,8 +165,10 @@ public abstract class FrameContainer {
         // TODO: This should default ot something colour independent
         notification = Color.BLACK;
 
-        for (NotificationListener listener : listeners.get(NotificationListener.class)) {
+        synchronized(listeners) {
+            for (NotificationListener listener : listeners.get(NotificationListener.class)) {
                 listener.notificationCleared(getFrame());
+            }
         }
     }
 
@@ -182,8 +184,10 @@ public abstract class FrameContainer {
                 && !colour.equals(notification)) {
             notification = colour;
 
-            for (NotificationListener listener : listeners.get(NotificationListener.class)) {
-                listener.notificationSet(getFrame(), colour);
+            synchronized(listeners) {
+                for (NotificationListener listener : listeners.get(NotificationListener.class)) {
+                    listener.notificationSet(getFrame(), colour);
+                }
             }
         }
     }
@@ -253,8 +257,10 @@ public abstract class FrameContainer {
             }
         }
 
-        for (SelectionListener listener : listeners.get(SelectionListener.class)) {
-            listener.selectionChanged(getFrame());
+        synchronized(listeners) {
+            for (SelectionListener listener : listeners.get(SelectionListener.class)) {
+                listener.selectionChanged(getFrame());
+            }
         }
 
         clearNotification();
@@ -303,7 +309,9 @@ public abstract class FrameContainer {
      * @param listener The listener to be added
      */
     public void addNotificationListener(final NotificationListener listener) {
-        listeners.add(NotificationListener.class, listener);
+        synchronized(listeners) {
+            listeners.add(NotificationListener.class, listener);
+        }
     }
 
     /**
@@ -312,7 +320,9 @@ public abstract class FrameContainer {
      * @param listener The listener to be removed
      */
     public void removeNotificationListener(final NotificationListener listener) {
-        listeners.remove(NotificationListener.class, listener);
+        synchronized(listeners) {
+            listeners.remove(NotificationListener.class, listener);
+        }
     }
 
     /**
@@ -321,7 +331,9 @@ public abstract class FrameContainer {
      * @param listener The listener to be added
      */
     public void addSelectionListener(final SelectionListener listener) {
-        listeners.add(SelectionListener.class, listener);
+        synchronized(listeners) {
+            listeners.add(SelectionListener.class, listener);
+        }
     }
 
     /**
@@ -330,7 +342,9 @@ public abstract class FrameContainer {
      * @param listener The listener to be removed
      */
     public void removeSelectionListener(final SelectionListener listener) {
-        listeners.remove(SelectionListener.class, listener);
+        synchronized(listeners) {
+            listeners.remove(SelectionListener.class, listener);
+        }
     }
 
     /**
