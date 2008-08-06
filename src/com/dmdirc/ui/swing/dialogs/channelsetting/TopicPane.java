@@ -32,10 +32,11 @@ import com.dmdirc.ui.swing.components.SwingInputHandler;
 import com.dmdirc.ui.swing.components.TextAreaInputField;
 import com.dmdirc.ui.swing.components.TextLabel;
 
+import com.dmdirc.ui.swing.dialogs.actioneditor.ActionTypeModel;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.Collections;
 import java.util.Date;
@@ -45,13 +46,17 @@ import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import net.miginfocom.swing.MigLayout;
 
 /** Topic panel. */
@@ -131,6 +136,7 @@ public final class TopicPane extends JPanel implements DocumentListener,
         topicText = new TextAreaInputField(100, 4);
         topicHistory =
                 new JComboBox(new DefaultComboBoxModel(topics.toArray()));
+        topicHistory.setPrototypeDisplayValue("This is a substantial prototype value");
         topicWho = new TextLabel();
 
         if (topicHistory.getModel().getSize() == 0) {
@@ -163,12 +169,12 @@ public final class TopicPane extends JPanel implements DocumentListener,
 
     /** Lays out the components. */
     private void layoutComponents() {
-        setLayout(new MigLayout("wrap 1, fill"));
+        setLayout(new MigLayout("wrap 1, fill, wmax 450"));
 
-        add(topicHistory, "growx, wmin 100%, wmax 450");
+        add(topicHistory, "growx");
         add(new JScrollPane(topicText), "grow");
         add(topicLengthLabel, "pushx, growx");
-        add(topicWho, "growx, wmin 450, wmax 450");
+        add(topicWho, "growx");
     }
 
     /** Processes the topic and changes it if necessary. */

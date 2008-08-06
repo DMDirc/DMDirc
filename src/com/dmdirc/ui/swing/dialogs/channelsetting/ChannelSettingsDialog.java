@@ -128,7 +128,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
         orderButtons(new JButton(), new JButton());
 
         getContentPane().setLayout(new MigLayout("fill, wrap 1, ins panel, hmax 80sp"));
-        getContentPane().add(tabbedPane, "grow");
+        getContentPane().add(tabbedPane, "growy, wmin 460, wmax 460");
         getContentPane().add(getLeftButton(), "split 3, right");
         getContentPane().add(getRightButton(), "right");
 
