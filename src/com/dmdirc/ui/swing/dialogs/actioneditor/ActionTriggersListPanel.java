@@ -128,7 +128,8 @@ public class ActionTriggersListPanel extends JPanel {
             public void run() {
                 synchronized (triggers) {
                     triggers.add(trigger);
-                    firePropertyChange("triggerCount", triggers.size() - 1, triggers.size());
+                    firePropertyChange("triggerCount", triggers.size() - 1,
+                            triggers.size());
 
                     layoutComponents();
                 }
@@ -150,12 +151,22 @@ public class ActionTriggersListPanel extends JPanel {
                 synchronized (triggers) {
                     triggers.remove(trigger);
                     fireTriggerRemoved(trigger);
-                    firePropertyChange("triggerCount", triggers.size() + 1, triggers.size());
+                    firePropertyChange("triggerCount", triggers.size() + 1,
+                            triggers.size());
 
                     layoutComponents();
                 }
             }
         });
+    }
+
+    /**
+     * Clears the trigger list.
+     */
+    public void clearTriggers() {
+        for (ActionType trigger : triggers) {
+            delTrigger(trigger);
+        }
     }
 
     /**

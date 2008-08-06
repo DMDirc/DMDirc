@@ -23,12 +23,11 @@
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
 import com.dmdirc.actions.ActionCondition;
-import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionComparison;
 import com.dmdirc.actions.interfaces.ActionComponent;
 import com.dmdirc.actions.interfaces.ActionType;
-
 import com.dmdirc.ui.swing.components.renderers.ActionCellRenderer;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -113,77 +112,18 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
 
     /** Populates the arguments combo box. */
     private void populateArguments() {
-        ((DefaultComboBoxModel) arguments.getModel()).removeAllElements();
-
-        for (String arg : trigger.getType().getArgNames()) {
-            ((DefaultComboBoxModel) arguments.getModel()).addElement(arg);
-        }
-
-        if (condition.getArg() == -1) {
-            arguments.setSelectedIndex(-1);
-            components.setEnabled(false);
-            condition.setComponent(null);
-            condition.setComparison(null);
-            target = null;
-        } else {
-            arguments.setSelectedIndex(condition.getArg());
-            components.setEnabled(true);
-            components.setSelectedIndex(-1);
-        }
-
-        populateComponents();
     }
 
     /** Populates the components combo box. */
     private void populateComponents() {
-        ((DefaultComboBoxModel) components.getModel()).removeAllElements();
-
-        if (arguments.getSelectedItem() != null) {
-            for (ActionComponent comp : ActionManager.getCompatibleComponents(
-                    trigger.getType().getArgTypes()[arguments.getSelectedIndex()])) {
-                ((DefaultComboBoxModel) components.getModel()).addElement(comp);
-            }
-        }
-
-        if (condition.getComponent() == null) {
-            components.setSelectedIndex(-1);
-            comparisons.setEnabled(false);
-            condition.setComparison(null);
-            condition.setTarget(null);
-        } else {
-            components.setSelectedItem(condition.getComponent());
-            comparisons.setEnabled(true);
-        }
-
-        populateComparisons();
     }
 
     /** Populates the comparisons combo box. */
     private void populateComparisons() {
-        ((DefaultComboBoxModel) comparisons.getModel()).removeAllElements();
-
-        if (components.getSelectedItem() != null) {
-            for (ActionComparison comp : ActionManager.getCompatibleComparisons(
-                    ((ActionComponent) components.getSelectedItem()).getType())) {
-                ((DefaultComboBoxModel) comparisons.getModel()).addElement(comp);
-            }
-        }
-
-        if (condition.getComparison() == null) {
-            comparisons.setSelectedIndex(-1);
-            target.setEnabled(false);
-            condition.setTarget(null);
-        } else {
-            comparisons.setSelectedItem(condition.getComparison());
-            target.setEnabled(true);
-        }
-
-        populateTarget();
     }
 
     /** Populates the target textfield. */
     private void populateTarget() {
-        target.setText(condition.getTarget());
     }
 
     /** Adds the listeners. */
@@ -243,14 +183,18 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
     /** {@inheritDoc} */
     @Override
     public void insertUpdate(final DocumentEvent e) {
-        condition.setTarget(target.getText());
+        synchronized (condition) {
+            condition.setTarget(target.getText());
+        }
         firePropertyChange("edit", null, null);
     }
 
     /** {@inheritDoc} */
     @Override
     public void removeUpdate(final DocumentEvent e) {
-        condition.setTarget(target.getText());
+        synchronized (condition) {
+            condition.setTarget(target.getText());
+        }
         firePropertyChange("edit", null, null);
     }
 
@@ -268,5 +212,19 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
         components.setEnabled(enabled);
         comparisons.setEnabled(enabled);
         target.setEnabled(enabled);
+    }
+
+    /**
+     * Sets the action trigger.
+     * 
+     * @param trigger new trigger
+     */
+    void setTrigger(final ActionType trigger) {
+        this.trigger = trigger;
+
+        setEnabled(trigger != null);
+        if (trigger != null) {
+            populateArguments();
+        }
     }
 }

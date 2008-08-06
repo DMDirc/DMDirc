@@ -23,23 +23,17 @@
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
 import com.dmdirc.actions.Action;
-import com.dmdirc.actions.ActionManager;
-import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.components.StandardDialog;
 
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 
-import javax.swing.JOptionPane;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -54,6 +48,8 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** Previously created instance of ActionEditorDialog. */
+    private static volatile ActionEditorDialog me;
     /** Name panel. */
     private ActionNamePanel name;
     /** Triggers panel. */
@@ -76,14 +72,17 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
     private boolean conditionsValid = false;
     /** Action to be edited. */
     private Action action;
+    /** Action group. */
+    private String group;
 
     /** 
      * Instantiates the panel.
      * 
      * @param window Parent window
+     * @param group Action's group
      */
-    public ActionEditorDialog(final Window window) {
-        this(window, null);
+    private ActionEditorDialog(final Window window, final String group) {
+        this(window, group, null);
     }
 
     /** 
@@ -91,15 +90,74 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
      * 
      * @param window Parent window
      * @param action Action to be edited
+     * @param group Action's group
      */
-    public ActionEditorDialog(final Window window, final Action action) {
-        super(window, ModalityType.MODELESS);
-
+    private ActionEditorDialog(final Window window, final String group, final Action action) {
+        super(window, ModalityType.MODELESS);   
+        
+        this.group = group;
         this.action = action;
 
         initComponents();
         addListeners();
         layoutComponents();
+    }
+    
+    /** 
+     * Creates the dialog if one doesn't exist, and displays it. 
+     * 
+     * @param window Parent window
+     * @param group Action's group
+     */
+    public static void showActionEditorDialog(final Window window, final String group) {
+        showActionEditorDialog(window, group, null);
+    }
+    
+    /** 
+     * Creates the dialog if one doesn't exist, and displays it. 
+     * 
+     * @param window Parent window
+     * @param group Action's group
+     * @param action Action to be edited
+     */
+    public static void showActionEditorDialog(final Window window, final String group, final Action action) {
+        getActionEditorDialog(window, group, action);
+
+        me.pack();
+        me.setLocationRelativeTo(window);
+        me.setVisible(true);
+        me.requestFocus();
+    }
+
+    /**
+     * Returns the current instance of the ActionEditorDialog.
+     *
+     * @param window Parent window
+     * @param group Action's group
+     * 
+     * @return The current ActionEditorDialog instance
+     */
+    public static ActionEditorDialog getActionEditorDialog(final Window window, final String group) {
+        return getActionEditorDialog(window, group, null);
+    }
+
+    /**
+     * Returns the current instance of the ActionEditorDialog.
+     * 
+     * @param window Parent window
+     * @param group Action's group
+     * @param action Action to be edited
+     *
+     * @return The current ActionEditorDialog instance
+     */
+    public static ActionEditorDialog getActionEditorDialog(final Window window, final String group, final Action action) {
+        synchronized (ActionEditorDialog.class) {
+            if (me == null) {
+                me = new ActionEditorDialog(window, group, action);
+            }
+        }
+
+        return me;
     }
 
     /** Initialises the components. */
@@ -116,6 +174,16 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         response.setEnabled(false);
         conditions.setEnabled(false);
         substitutions.setVisible(false);
+        
+        if (action != null) {
+            name.setActionName(action.getName());
+            triggers.setTriggers(action.getTriggers());
+            response.setResponse(action.getResponse());
+            response.setFormatter(action.getNewFormat());
+            conditions.setActionTrigger(action.getTriggers()[0]);
+            conditions.setConditions(action.getConditions());
+            conditions.setConditionTree(action.getConditionTree());
+        }
     }
 
     /** Adds the listeners. */
@@ -140,44 +208,6 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         add(showSubstitutions, "left, sgx button, split 3, spanx 2");
         add(getLeftButton(), "right, sgx button, gapleft push");
         add(getRightButton(), "right, sgx button");
-    }
-
-    /**
-     * Test Method.
-     * 
-     * @param args CLI params
-     */
-    public static void main(final String[] args) {
-        UIUtilities.initUISettings();
-        IdentityManager.load();
-        ActionManager.init();
-        ActionManager.loadActions();
-        ActionEditorDialog dialog;
-        if (JOptionPane.showOptionDialog(new JFrame(),
-                "Do you want to use test editing an action?",
-                "Edit or create?",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                new String[]{"Create", "Edit",},
-                "Create") == 0) {
-            dialog = new ActionEditorDialog(new JFrame());
-        } else {
-            dialog = new ActionEditorDialog(new JFrame(), ActionManager.getGroups().
-                    values().iterator().
-                    next().getActions().get(0));
-        }
-
-        dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
-        dialog.addWindowListener(new WindowAdapter() {
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-                System.exit(0);
-            }
-        });
-        dialog.setVisible(true);
     }
 
     /** 
@@ -217,5 +247,17 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
 
         getOkButton().setEnabled(triggersValid && conditionsValid && nameValid &&
                 responseValid);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        if (me == null) {
+            return;
+        }
+        synchronized (me) {
+            super.dispose();
+            me = null;
+        }
     }
 }

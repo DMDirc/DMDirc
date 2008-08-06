@@ -73,6 +73,8 @@ public class ActionResponsePanel extends JPanel {
         final Set<String> formatters
                 = IdentityManager.getGlobalConfig().getOptions("formatter").keySet();
         
+        ((DefaultComboBoxModel) formatter.getModel()).addElement("No change");
+        ((DefaultComboBoxModel) formatter.getModel()).addElement("No response");
         for (String format : formatters) {
             ((DefaultComboBoxModel) formatter.getModel()).addElement(format);
         }
@@ -91,6 +93,36 @@ public class ActionResponsePanel extends JPanel {
         add(new JScrollPane(response), "grow");
         add(new JLabel("Alter the event's formatter"));
         add(formatter, "growx");
+    }
+    /**
+     * Sets the response.
+     * 
+     * @param response new response
+     */
+    public void setResponse(final String[] response) {
+        final StringBuilder sb = new StringBuilder();
+        for (String responseLine : response) {
+            sb.append(responseLine).append('\n');
+        }
+        
+        if (sb.length() > 0) {
+            this.response.setText(sb.substring(0, sb.length() -1));
+        }
+    }
+    
+    /**
+     * Sets the new formatter for the response panel.
+     * 
+     * @param newFormat new formatter.
+     */
+    public void setFormatter(final String newFormat) {
+        if (newFormat == null) {
+            formatter.setSelectedIndex(0);
+        } else if (newFormat.isEmpty()) {
+            formatter.setSelectedIndex(1);
+        } else {
+            formatter.setSelectedItem(newFormat);
+        }
     }
     
     /**

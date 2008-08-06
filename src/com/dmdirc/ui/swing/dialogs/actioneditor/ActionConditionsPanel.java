@@ -23,10 +23,12 @@
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
 import com.dmdirc.actions.ActionCondition;
+import com.dmdirc.actions.ConditionTree;
 import com.dmdirc.actions.interfaces.ActionType;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -135,5 +137,54 @@ public class ActionConditionsPanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(final ActionEvent e) {
         list.addCondition(new ActionCondition(-1, null, null, null));
+    }
+    
+    /**
+     * Sets the conditions.
+     * 
+     * @param conditions conditions list
+     */
+    public void setConditions(final List<ActionCondition> conditions) {
+        list.clearConditions();
+        
+        for (ActionCondition condition : conditions) {
+            list.addCondition(condition);
+        }
+    }
+    
+    /**
+     * Sets the condition tree.
+     * 
+     * @param conditionTree new condition tree
+     */
+    public void setConditionTree(final ConditionTree conditionTree) {
+        tree.setRule(conditionTree);
+    }
+    
+    /**
+     * Gets the condition type.
+     * 
+     * @return condition type
+     */
+    public ActionConditionsTreePanel.RuleType getConditionType() {
+        return tree.getRuleType();
+    }
+    
+    /**
+     * Gets the condition tree.
+     * 
+     * @return condition tree
+     */
+    public ConditionTree getConditionTree() {
+        return ConditionTree.parseString(tree.getRule());
+    }
+    
+    /**
+     * Returns the condition list.
+     * 
+     * @return condition list
+     */
+    public List<ActionCondition> getConditions() {
+        return list.getConditions();
     }
 }

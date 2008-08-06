@@ -43,7 +43,8 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Action condition display panel.
  */
-public class ActionConditionDisplayPanel extends JPanel implements ActionListener, PropertyChangeListener {
+public class ActionConditionDisplayPanel extends JPanel implements ActionListener,
+        PropertyChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -77,12 +78,24 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
         super();
 
         this.trigger = trigger;
-        this.condition = condition;
+        this.condition = new ActionCondition(condition.getArg(), condition.getComponent(), condition.getComparison(), condition.getTarget());
 
         initComponents();
         setCondition(trigger, condition);
         addListeners();
         layoutComponents();
+    }
+
+    /**
+     * Sets the action trigger.
+     * 
+     * @param trigger new trigger
+     */
+    void setTrigger(final ActionType trigger) {
+        this.trigger = trigger;
+        editPanel.setTrigger(trigger);
+        
+        setCondition(trigger, condition);
     }
 
     /** Initialises the components. */
@@ -110,8 +123,8 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
 
     /** Lays out the components. */
     private void layoutComponents() {
-        setLayout(new MigLayout("ins 0, fillx, pack, hidemode 3"));
-        add(label, "growx");
+        setLayout(new MigLayout("ins 0, fillx, hidemode 3"));
+        add(label, "growy, wmax 100%");
         add(editButton, "right");
         add(deleteButton, "right, wrap");
         add(editPanel, "alignx right");
@@ -182,31 +195,37 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
             final ActionCondition condition) {
         this.trigger = trigger;
         this.condition = condition;
+        editPanel.setTrigger(trigger);
 
-        if (condition.getArg() == -1 || condition.getComparison() == null ||
-                condition.getComponent() == null || condition.getTarget() ==
-                null) {
+        if (trigger == null) {
             label.setText("");
             editPanel.setVisible(true);
             editButton.setSelected(true);
+        } else {
+            final StringBuilder sb = new StringBuilder();
+            sb.append("The ");
+            sb.append(trigger.getType().getArgNames()[condition.getArg()]);
+            sb.append("'s ");
+            if (condition.getComponent() != null) {
+                sb.append(condition.getComponent().getName());
+            } else {
+                sb.append("something");
+            }
+            sb.append(" ");
+            if (condition.getComparison() != null) {
+                sb.append(condition.getComparison().getName());
+            } else {
+                sb.append("something");
+            }
+            sb.append(" '");
+            if (condition.getTarget() != null) {
+                sb.append(condition.getTarget());
+            } else {
+                sb.append("something");
+            }
+            sb.append("'");
+            label.setText(sb.toString());
         }
-        final StringBuilder sb = new StringBuilder();
-        sb.append("The ");
-        sb.append(trigger.getType().getArgNames()[condition.getArg()]);
-        sb.append("'s ");
-        if (condition.getComponent() != null) {
-            sb.append(condition.getComponent().getName());
-        }
-        sb.append(" ");
-        if (condition.getComparison() != null) {
-            sb.append(condition.getComparison().getName());
-        }
-        sb.append(" '");
-        if (condition.getTarget() != null) {
-            sb.append(condition.getTarget());
-        }
-        sb.append("'");
-        label.setText(sb.toString());
     }
 
     /**

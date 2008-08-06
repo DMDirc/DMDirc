@@ -23,7 +23,6 @@
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
 import com.dmdirc.actions.ActionCondition;
-import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
 
 import java.util.ArrayList;
@@ -161,15 +160,47 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
     }
 
     /**
+     * Clear conditions.
+     */
+    public void clearConditions() {
+        for (ActionConditionDisplayPanel condition : conditions) {
+            delCondition(condition.getCondition());
+        }
+    }
+
+    /**
+     * Returns the condition list.
+     * 
+     * @return condition list
+     */
+    public List<ActionCondition> getConditions() {
+        final List<ActionCondition> conditionList =
+                new ArrayList<ActionCondition>();
+
+        synchronized (conditions) {
+            for (ActionConditionDisplayPanel condition : conditions) {
+                conditionList.add(condition.getCondition());
+            }
+        }
+        
+        return conditionList;
+    }
+
+    /**
      * Sets the action trigger for the panel.
      * 
      * @param trigger Action trigger
      */
     public void setTrigger(final ActionType trigger) {
-        if (this.trigger != null || ActionManager.getCompatibleTypes(trigger).contains(this.trigger)) {
+        if (this.trigger == null) {
             conditions.clear();
         }
+        
+        for (ActionConditionDisplayPanel panel : conditions) {
+            panel.setTrigger(trigger);
+        }
         this.trigger = trigger;
+        setEnabled(trigger != null);
         layoutComponents();
     }
 
@@ -186,7 +217,7 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
     @Override
     public void setEnabled(final boolean enabled) {
         for (ActionConditionDisplayPanel condition : conditions) {
-            condition.setEnabled(false);
+            condition.setEnabled(enabled);
         }
     }
 }

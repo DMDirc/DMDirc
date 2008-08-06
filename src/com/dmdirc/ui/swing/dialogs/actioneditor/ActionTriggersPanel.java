@@ -155,6 +155,31 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
         }
         return triggerList.getTrigger(0);
     }
+    
+    /**
+     * Returns the list of triggers.
+     * 
+     * @return Trigger list
+     */
+    public ActionType[] getTriggers() {
+        final List<ActionType> triggers = triggerList.getTriggers();
+        return triggers.toArray(new ActionType[triggers.size()]);
+    }
+    
+    /**
+     * Sets the triggers.
+     * 
+     * @param triggers Sets the triggers.
+     */
+    void setTriggers(final ActionType[] triggers) {
+        triggerList.clearTriggers();
+        
+        for (ActionType localTrigger : triggers) {
+            triggerList.addTrigger(localTrigger);
+        }
+        
+        repopulateTriggers();
+    }
 
     /** 
      * {@inheritDoc}

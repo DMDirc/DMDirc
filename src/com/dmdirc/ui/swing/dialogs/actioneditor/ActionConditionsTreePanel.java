@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
+import com.dmdirc.actions.ConditionTree;
 import com.dmdirc.ui.swing.components.TextLabel;
 
 import java.awt.event.ActionEvent;
@@ -147,5 +148,16 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
      */
     public String getRule() {
         return rule.getText();
+    }
+    
+    /**
+     * Sets the tree rule.
+     * 
+     * @param tree new condition tree
+     */
+    public void setRule(final ConditionTree tree) {
+        if (tree != null) {
+            rule.setText(tree.toString());
+        }
     }
 }

@@ -50,6 +50,11 @@ public class ActionNamePanel extends JPanel implements PropertyChangeListener {
     private final String originalName;
     /** Action name field. */
     private ValidatingJTextField name;
+    
+    /** Instantiates the panel. */
+    public ActionNamePanel() {
+        this("");
+    }
 
     /** 
      * Instantiates the panel.
@@ -69,6 +74,15 @@ public class ActionNamePanel extends JPanel implements PropertyChangeListener {
         addListeners();
         layoutComponents();
         this.name.checkError();
+    }
+
+    /**
+     * Sets the action name.
+     * 
+     * @param name new name
+     */
+    void setActionName(final String name) {
+        this.name.setText(name);
     }
 
     /** Initialises the components. */
