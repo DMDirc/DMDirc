@@ -237,10 +237,7 @@ public abstract class InputHandler implements ConfigChangeListener {
             
             if (command instanceof WrappableCommand) {
                 final int count = ((WrappableCommand) command).getLineCount(parentWindow, args);
-                
-                if (count > 1) {
-                    fireLineWrap(count);
-                }
+                fireLineWrap(count);
             }
         } else {
             final int lines = parentWindow.getContainer().getNumLines(text);
