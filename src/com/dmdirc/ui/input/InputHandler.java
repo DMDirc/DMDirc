@@ -232,6 +232,8 @@ public abstract class InputHandler implements ConfigChangeListener {
                 
                 if (vr.isFailure()) {
                     fireCommandFailure(vr.getFailureReason());
+                } else {
+                    fireCommandPassed();
                 }
             }
             
@@ -253,6 +255,15 @@ public abstract class InputHandler implements ConfigChangeListener {
     private void fireCommandFailure(final String reason) {
         for (InputValidationListener listener : listeners.get(InputValidationListener.class)) {
             listener.illegalCommand(reason);
+        }
+    }
+    
+    /**
+     * Fires the "legalCommand" method of all validation listeners.
+     */
+    private void fireCommandPassed() {
+        for (InputValidationListener listener : listeners.get(InputValidationListener.class)) {
+            listener.legalCommand();
         }
     }
     

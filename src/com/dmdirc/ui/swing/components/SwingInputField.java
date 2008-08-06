@@ -299,6 +299,13 @@ public class SwingInputField extends JComponent implements InputField,
         errorIndicator.setVisible(true);
         errorIndicator.setToolTipText(reason);
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void legalCommand() {
+        errorIndicator.setVisible(false);
+        errorIndicator.setToolTipText(null);
+    }
 
     /** {@inheritDoc} */
     @Override

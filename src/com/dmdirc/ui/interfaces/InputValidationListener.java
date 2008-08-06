@@ -37,6 +37,13 @@ public interface InputValidationListener {
     void illegalCommand(final String reason);
     
     /**
+     * Called when the command that has been entered is legal.
+     * 
+     * @since 0.6
+     */
+    void legalCommand();
+    
+    /**
      * Called when the text or command that has been entered will be wrapped
      * onto multiple lines.
      * 

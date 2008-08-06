@@ -35,7 +35,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -92,7 +91,8 @@ public abstract class StandardInputDialog extends StandardDialog {
         this.message = message;
 
         setTitle(title);
-
+        setDefaultCloseOperation(StandardInputDialog.DISPOSE_ON_CLOSE);
+        
         initComponents();
         addListeners();
         layoutComponents();
