@@ -356,7 +356,9 @@ public final class Server extends WritableFrameContainer implements Serializable
             removeInvites();
             updateIcon();
 
-            if (parser != null) {
+            if (parser == null) {
+                myState = ServerState.DISCONNECTED;
+            } else {
                 parser.disconnect(reason);
             }
 
