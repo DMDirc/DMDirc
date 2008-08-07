@@ -26,6 +26,7 @@ import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.InputField;
 import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.ui.swing.Apple;
 import com.dmdirc.ui.swing.UIUtilities;
 
 import java.awt.event.ActionEvent;
@@ -81,8 +82,13 @@ public class SwingInputHandler extends InputHandler implements KeyListener {
                 doBufferUp();
             }
         });
-        localTarget.getInputMap(JComponent.WHEN_FOCUSED).
+        if (Apple.isAppleUI()) {
+            localTarget.getInputMap(JComponent.WHEN_FOCUSED).
                 put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "upArrow");
+        } else {
+            localTarget.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).
+                 put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "upArrow");
+        }
     }
 
     /** {@inheritDoc} */
@@ -109,8 +115,13 @@ public class SwingInputHandler extends InputHandler implements KeyListener {
                 doBufferDown();
             }
         });
-        localTarget.getInputMap(JComponent.WHEN_FOCUSED).
+        if (Apple.isAppleUI()) {
+            localTarget.getInputMap(JComponent.WHEN_FOCUSED).
                 put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "downArrow");
+        } else {
+             localTarget.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).
+                   put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "downArrow");
+        }
     }
 
     /** {@inheritDoc} */
