@@ -277,14 +277,15 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
      * @param e mouse event
      */
     public void processMouseEvent(final MouseEvent e) {
-        if (e.getSource() == nickList && nickList.getMousePosition() != null && getMousePosition() != null) {
+        final Point point = getMousePosition();
+        if (e.getSource() == nickList && nickList.getMousePosition() != null && point != null) {
             boolean showMenu = checkShowNicklistMenu();
             if (!showMenu) {
                 showMenu = selectNickUnderCursor();
             }
             if (showMenu) {
                 if (e.isPopupTrigger()) {
-                    showPopupMenu(ClickType.NICKNAME, getMousePosition(),
+                    showPopupMenu(ClickType.NICKNAME, point,
                             ((ChannelClientInfo) nickList.getSelectedValue()).getNickname());
                 }
             } else {
