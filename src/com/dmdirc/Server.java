@@ -387,7 +387,7 @@ public final class Server extends WritableFrameContainer implements Serializable
                         + "transiently disconnected\n\nState: " + myState);
             }
 
-            final int delay = Math.max(1,
+            final int delay = Math.max(1000,
                     getConfigManager().getOptionInt(DOMAIN_GENERAL, "reconnectdelay", 5000));
 
             handleNotification("connectRetry", getName(), delay / 1000);
