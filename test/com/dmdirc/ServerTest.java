@@ -101,11 +101,12 @@ public class ServerTest extends junit.framework.TestCase {
     public void testNumericActions() throws InterruptedException {
         final TestActionListener tal = new TestActionListener();
         
+        server.disconnect();
+        
         ActionManager.init();
         ActionManager.addListener(tal, CoreActionType.SERVER_NUMERIC);
-        final Server server = new Server("255.255.255.255", 6667, "", false,
-                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
-                new TestParserFactory());
+        
+        server.reconnect();
         
         Thread.sleep(1000); // Give the parser thread time to run + inject
         

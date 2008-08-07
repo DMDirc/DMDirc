@@ -23,7 +23,9 @@
 package com.dmdirc;
 
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.harness.parser.TestParserFactory;
 import com.dmdirc.ui.dummy.DummyController;
+import java.util.ArrayList;
 import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +42,9 @@ public class InviteTest extends junit.framework.TestCase {
         Main.setUI(new DummyController());
         IdentityManager.load();
         
-        server = new Server("255.255.255.255", 6667, "", false, IdentityManager.getProfiles().get(0));
+        server = new Server("255.255.255.255", 6667, "", false,
+                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
+                new TestParserFactory());
         test = new Invite(server, "#channel", "nick!ident@host");
         server.addInvite(test);
         ts = new Date().getTime();
