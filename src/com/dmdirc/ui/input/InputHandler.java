@@ -118,15 +118,9 @@ public abstract class InputHandler implements ConfigChangeListener {
         parentWindow.getConfigManager().addChangeListener("tabcompletion",
                 "style", this);
 
-        if ((flags & HANDLE_BACKBUFFER) != 0) {
-            addUpHandler();
-            addDownHandler();
-        }
-        
-        if ((flags & HANDLE_TABCOMPLETION) != 0) {
-            addTabHandler();
-        }
-        
+        addUpHandler();
+        addDownHandler();
+        addTabHandler();
         addKeyHandler();
         addEnterHandler();
     }
@@ -348,10 +342,12 @@ public abstract class InputHandler implements ConfigChangeListener {
      * Handles cycling through the input buffer.
      */
     protected void doBufferUp() {
-        if (buffer.hasPrevious()) {
-            target.setText(buffer.getPrevious());
-        } else {
-            Toolkit.getDefaultToolkit().beep();
+        if ((flags & HANDLE_BACKBUFFER) != 0) {
+            if (buffer.hasPrevious()) {
+                target.setText(buffer.getPrevious());
+            } else {
+                Toolkit.getDefaultToolkit().beep();
+            }
         }
     }
 
@@ -360,12 +356,14 @@ public abstract class InputHandler implements ConfigChangeListener {
      * Handles cycling through the input buffer, and storing incomplete lines.
      */
     protected void doBufferDown() {
-        if (buffer.hasNext()) {
-            target.setText(buffer.getNext());
-        } else if (target.getText().isEmpty()) {
-            Toolkit.getDefaultToolkit().beep();
-        } else {
-            addToBuffer(target.getText());
+        if ((flags & HANDLE_BACKBUFFER) != 0) {
+            if (buffer.hasNext()) {
+                target.setText(buffer.getNext());
+            } else if (target.getText().isEmpty()) {
+                Toolkit.getDefaultToolkit().beep();
+            } else {
+                addToBuffer(target.getText());
+            }
         }
     }
     
@@ -383,9 +381,10 @@ public abstract class InputHandler implements ConfigChangeListener {
      * Handles tab completion of a string. Called when the user presses tab.
      */
     protected void doTabCompletion() {
-        if (tabCompleter == null) {
+        if (tabCompleter == null || (flags & HANDLE_BACKBUFFER) == 0) {
             return;
         }
+        
         final String text = target.getText();
 
         if (text.isEmpty()) {
