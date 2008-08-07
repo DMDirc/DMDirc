@@ -145,6 +145,14 @@ public class PreferencesManager {
                 new NumericalValidator(0, 100), "ui", "pasteProtectionLimit", "1",
                 "Paste protection trigger", "Confirm pasting of text that " +
                 "contains more than this many lines."));
+        
+        final Map<String, String> taboptions = new HashMap<String, String>();
+        taboptions.put("bash", "Bash style");
+        taboptions.put("mirc", "mIRC style (cyclic)");
+        
+        category.addSetting(new PreferencesSetting("tabcompletion", "style",
+                "bash", "Tab completion style", "Determines the behaviour of " +
+                "the tab completer when there are multiple matches.", taboptions));
 
         addCategory(category);
     }
