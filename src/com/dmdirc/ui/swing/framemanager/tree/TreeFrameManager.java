@@ -553,15 +553,9 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
                 synchronized (labels) {
                     synchronized (nodes) {
                         final FrameContainer container = window.getContainer();
-                        final DefaultMutableTreeNode node = nodes.get(container);
-                        final NodeLabel label = labels.get(node);
-                        if (container == null) {
-                            Logger.appError(ErrorLevel.LOW, "Notification cleared on a null window", new IllegalStateException(window.getTitle()));
-                        } else if (node == null) {
-                            Logger.appError(ErrorLevel.LOW, "Notification cleanred on a non existant node", new IllegalStateException(window.getTitle()));
-                        } else if (label == null) {
-                            Logger.appError(ErrorLevel.LOW, "Noticication cleared on a non existant label", new IllegalStateException(window.getTitle()));
-                        } else {
+                        if (container != null) {
+                            final DefaultMutableTreeNode node = nodes.get(container);
+                            final NodeLabel label = labels.get(node);
                             label.notificationCleared(window);
                             tree.repaint();
                         }
