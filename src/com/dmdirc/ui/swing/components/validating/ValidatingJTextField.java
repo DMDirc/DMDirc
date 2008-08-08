@@ -32,6 +32,7 @@ import java.awt.event.KeyListener;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.TransferHandler;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
@@ -362,5 +363,20 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
     @Override
     public synchronized void removeKeyListener(final KeyListener l) {
         textField.removeKeyListener(l);
+    }
+    
+    /**
+     * Sets the drag enabled property on the textfield.
+     * 
+     * @param enabled Enabled?
+     */
+    public void setDragEnabled(final boolean enabled) {
+        textField.setDragEnabled(enabled);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void setTransferHandler(final TransferHandler newHandler) {
+        textField.setTransferHandler(newHandler);
     }
 }
