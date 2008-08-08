@@ -159,8 +159,10 @@ public final class Downloader {
         final InputStream input = urlConn.getInputStream();
         final int length = urlConn.getContentLength();
         int current = 0;
-        
-        listener.setIndeterminate(length == -1);
+
+        if (listener != null) {
+            listener.setIndeterminate(length == -1);
+        }
         
         final byte[] buffer = new byte[512];
         int count;
