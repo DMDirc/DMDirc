@@ -23,6 +23,8 @@
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
 import com.dmdirc.actions.ConditionTree;
+import com.dmdirc.actions.ConditionTreeFactory;
+import com.dmdirc.actions.ConditionTreeFactory.ConditionTreeFactoryType;
 import com.dmdirc.ui.swing.components.TextLabel;
 
 import java.awt.event.ActionEvent;
@@ -56,23 +58,20 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
     private JRadioButton customButton;
     /** Custom rule field. */
     private JTextField rule;
-    /** Selected rule type identifier. */
-    public enum RuleType {
-        /** All triggers. */
-        ALL,
-        /** One trigger. */
-        ONE,
-        /** Custom rule. */
-        CUSTOM;
-    };
+    /** Condition tree factory. */
+    private ConditionTreeFactory treeFactory;
+    /** Condition count. */
+    private int conditionCount;
 
     /** Instantiates the panel. */
     public ActionConditionsTreePanel() {
         super();
-        
+
         initComponents();
         addListeners();
         layoutComponents();
+
+        selectTreeButton();
     }
 
     /** Initialises the components. */
@@ -81,11 +80,9 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
         allButton = new JRadioButton("All of the conditions are true");
         oneButton = new JRadioButton("At least one of the conditions is true");
         customButton = new JRadioButton("The conditions match a custom rule");
-        
+
         rule = new JTextField();
-        
-        selectTreeButton();
-        
+
         group.add(allButton);
         group.add(oneButton);
         group.add(customButton);
@@ -107,12 +104,36 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
         add(customButton, "growx");
         add(rule, "growx");
     }
-    
+
     /**
      * Selects the appropriate radio button for the tree.
      */
     private void selectTreeButton() {
-        allButton.setSelected(true);
+        group.clearSelection();
+        final ConditionTreeFactoryType type;
+        if (treeFactory == null) {
+            type = ConditionTreeFactoryType.CONJUNCTION;
+        } else {
+            type = treeFactory.getType();
+        }
+        
+        switch (type) {
+            case DISJUNCTION:
+                oneButton.setSelected(true);
+                rule.setText("");
+                rule.setEnabled(false);
+                break;
+            case CUSTOM:
+                customButton.setSelected(true);
+                rule.setText(treeFactory.getConditionTree(conditionCount).toString());
+                rule.setEnabled(true);
+                break;
+            default:
+                allButton.setSelected(true);
+                rule.setText("");
+                rule.setEnabled(false);
+                break;
+        }
     }
 
     /** 
@@ -124,7 +145,7 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
     public void actionPerformed(final ActionEvent e) {
         rule.setEnabled(e.getSource().equals(customButton));
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void setEnabled(final boolean enabled) {
@@ -132,22 +153,25 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
         oneButton.setEnabled(enabled);
         customButton.setEnabled(enabled);
     }
-    
+
     /**
      * Returns the selected rule type.
      * 
+     * @param conditionCount Condition count
+     * 
      * @return Selected rule type
      */
-    public RuleType getRuleType() {
-        if (allButton.isSelected()) {
-            return RuleType.ALL;
-        } else if (oneButton.isSelected()) {
-            return RuleType.ONE;
+    public ConditionTreeFactoryType getRuleType(final int conditionCount) {
+        if (conditionCount >= 2) {
+            final ConditionTree tree =
+                    ConditionTree.parseString(rule.getText());
+            treeFactory = ConditionTreeFactory.getFactory(tree, conditionCount);
+            return treeFactory.getType();
         } else {
-            return RuleType.CUSTOM;
+            return ConditionTreeFactoryType.CONJUNCTION;
         }
     }
-    
+
     /**
      * Returns the current custom rule.
      * 
@@ -156,15 +180,17 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
     public String getRule() {
         return rule.getText();
     }
-    
+
     /**
      * Sets the tree rule.
      * 
+     * @param conditionCount condition count
      * @param tree new condition tree
      */
-    public void setRule(final ConditionTree tree) {
-        if (tree != null) {
-            rule.setText(tree.toString());
+    public void setRule(final int conditionCount, final ConditionTree tree) {
+        if (tree != null && conditionCount >= 2) {
+            this.conditionCount = conditionCount;
+            treeFactory = ConditionTreeFactory.getFactory(tree, conditionCount);
             selectTreeButton();
         }
     }

@@ -182,7 +182,7 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
             response.setFormatter(action.getNewFormat());
             conditions.setActionTrigger(action.getTriggers()[0]);
             conditions.setConditions(action.getConditions());
-            conditions.setConditionTree(action.getConditionTree());
+            conditions.setConditionTree(action.getRealConditionTree());
         }
     }
 

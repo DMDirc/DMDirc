@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.dialogs.actioneditor;
 
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.ConditionTree;
+import com.dmdirc.actions.ConditionTreeFactory.ConditionTreeFactoryType;
 import com.dmdirc.actions.interfaces.ActionType;
 
 import java.awt.event.ActionEvent;
@@ -158,7 +159,7 @@ public class ActionConditionsPanel extends JPanel implements ActionListener {
      * @param conditionTree new condition tree
      */
     public void setConditionTree(final ConditionTree conditionTree) {
-        tree.setRule(conditionTree);
+        tree.setRule(list.getConditions().size(), conditionTree);
     }
     
     /**
@@ -166,8 +167,8 @@ public class ActionConditionsPanel extends JPanel implements ActionListener {
      * 
      * @return condition type
      */
-    public ActionConditionsTreePanel.RuleType getConditionType() {
-        return tree.getRuleType();
+    public ConditionTreeFactoryType getConditionType() {
+        return tree.getRuleType(list.getConditions().size());
     }
     
     /**
