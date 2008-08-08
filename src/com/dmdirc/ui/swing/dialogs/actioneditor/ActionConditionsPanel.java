@@ -175,7 +175,7 @@ public class ActionConditionsPanel extends JPanel implements ActionListener, Pro
      * 
      * @return condition type
      */
-    public ConditionTreeFactoryType getConditionType() {
+    public ConditionTreeFactoryType getConditionTreeType() {
         return tree.getRuleType(list.getConditions().size());
     }
     
@@ -185,7 +185,7 @@ public class ActionConditionsPanel extends JPanel implements ActionListener, Pro
      * @return condition tree
      */
     public ConditionTree getConditionTree() {
-        return ConditionTree.parseString(tree.getRule());
+        return tree.getRule(list.getConditions().size());
     }
     
     /**

@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
 import com.dmdirc.actions.Action;
+import com.dmdirc.actions.ConditionTreeFactory.ConditionTreeFactoryType;
 import com.dmdirc.ui.swing.components.StandardDialog;
 
 import java.awt.Window;
@@ -233,9 +234,33 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
             showSubstitutions.setText(substitutions.isVisible() ? "Hide Substitutions"
                     : "Show Substitutions");
         } else if (e.getSource().equals(getOkButton())) {
+            save();
             dispose();
         } else if (e.getSource().equals(getCancelButton())) {
             dispose();
+        }
+    }
+
+    /** Saves the action being edited. */
+    private void save() {
+        name.getActionName();
+        triggers.getTriggers();
+        response.getResponse();
+        response.getFormatter();
+        conditions.getConditions();
+        conditions.getConditionTree();
+        if (action == null) {
+            new Action(group, name.getActionName(), triggers.getTriggers(),
+                    response.getResponse(), conditions.getConditions(),
+                    conditions.getConditionTree(), response.getFormatter());
+        } else {
+            action.setName(name.getActionName());
+            action.setConditionTree(conditions.getConditionTree());
+            action.setConditions(conditions.getConditions());
+            action.setNewFormat(response.getFormatter());
+            action.setResponse(response.getResponse());
+            action.setTriggers(triggers.getTriggers());
+            action.save();
         }
     }
 

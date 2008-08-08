@@ -37,13 +37,16 @@ import java.beans.PropertyChangeListener;
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import net.miginfocom.swing.MigLayout;
 
 /**
  * Action conditions tree panel.
  */
-public class ActionConditionsTreePanel extends JPanel implements ActionListener, PropertyChangeListener {
+public class ActionConditionsTreePanel extends JPanel implements ActionListener,
+        PropertyChangeListener, DocumentListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -97,6 +100,7 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener,
         oneButton.addActionListener(this);
         customButton.addActionListener(this);
         rule.addPropertyChangeListener("validationResult", this);
+        rule.getDocument().addDocumentListener(this);
     }
 
     /** Lays out the components. */
@@ -120,26 +124,41 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener,
         } else {
             type = treeFactory.getType();
         }
-        
+
         switch (type) {
             case DISJUNCTION:
                 oneButton.setSelected(true);
                 rule.setText("");
                 rule.setEnabled(false);
-                firePropertyChange("validationResult", true, true);
                 break;
             case CUSTOM:
                 customButton.setSelected(true);
-                rule.setText(treeFactory.getConditionTree(conditionCount).toString());
+                rule.setText(treeFactory.getConditionTree(conditionCount).
+                        toString());
                 rule.setEnabled(true);
-                rule.checkError();
                 break;
             default:
                 allButton.setSelected(true);
                 rule.setText("");
                 rule.setEnabled(false);
-                firePropertyChange("validationResult", true, true);
                 break;
+        }
+
+        sortTreeFactory();
+    }
+
+    /** Sorts the tree factory out. */
+    private void sortTreeFactory() {
+        if (group.getSelection().equals(allButton.getModel())) {
+            treeFactory = new ConditionTreeFactory.ConjunctionFactory();
+            firePropertyChange("validationResult", true, true);
+        } else if (group.getSelection().equals(oneButton.getModel())) {
+            treeFactory = new ConditionTreeFactory.DisjunctionFactory();
+            firePropertyChange("validationResult", true, true);
+        } else {
+            treeFactory =
+                    new ConditionTreeFactory.CustomFactory(ConditionTree.parseString(rule.getText()));
+            rule.checkError();
         }
     }
 
@@ -151,6 +170,7 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener,
     @Override
     public void actionPerformed(final ActionEvent e) {
         rule.setEnabled(e.getSource().equals(customButton));
+        sortTreeFactory();
     }
 
     /** {@inheritDoc} */
@@ -170,9 +190,6 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener,
      */
     public ConditionTreeFactoryType getRuleType(final int conditionCount) {
         if (conditionCount >= 2) {
-            final ConditionTree tree =
-                    ConditionTree.parseString(rule.getText());
-            treeFactory = ConditionTreeFactory.getFactory(tree, conditionCount);
             return treeFactory.getType();
         } else {
             return ConditionTreeFactoryType.CONJUNCTION;
@@ -182,10 +199,13 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener,
     /**
      * Returns the current custom rule.
      * 
+     * @param conditionCount number of conditions
+     * 
      * @return Custom rule
      */
-    public String getRule() {
-        return rule.getText();
+    public ConditionTree getRule(final int conditionCount) {
+        treeFactory.getConditionTree(conditionCount);
+        return treeFactory.getConditionTree(conditionCount);
     }
 
     /**
@@ -205,11 +225,32 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener,
     /** {@inheritDoc} */
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
-        firePropertyChange("validationResult", evt.getOldValue(), evt.getNewValue());
+        firePropertyChange("validationResult", evt.getOldValue(),
+                evt.getNewValue());
     }
-    
+
     /** Validates the conditions. */
     public void validateConditions() {
         selectTreeButton();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void insertUpdate(final DocumentEvent e) {
+        treeFactory =
+                new ConditionTreeFactory.CustomFactory(ConditionTree.parseString(rule.getText()));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeUpdate(final DocumentEvent e) {
+        treeFactory =
+                new ConditionTreeFactory.CustomFactory(ConditionTree.parseString(rule.getText()));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void changedUpdate(final DocumentEvent e) {
+    //Ignore
     }
 }

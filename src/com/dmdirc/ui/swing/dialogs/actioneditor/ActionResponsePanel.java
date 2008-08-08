@@ -130,8 +130,8 @@ public class ActionResponsePanel extends JPanel {
      * 
      * @return Response text
      */
-    public String getResponse() {
-        return response.getText();
+    public String[] getResponse() {
+        return response.getText().split("\n");
     }
     
     /**

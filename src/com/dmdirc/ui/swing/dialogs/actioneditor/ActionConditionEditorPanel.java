@@ -160,23 +160,31 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
     
     /** Handles the argument changing. */
     private void handleArgumentChange() {
-        System.out.println(condition.getArg() + " => " + arguments.getSelectedIndex());
         condition.setArg(arguments.getSelectedIndex());
+        populateComponents();
+        components.setEnabled(true);
         components.setSelectedItem(null);
         comparisons.setSelectedItem(null);
+        comparisons.setEnabled(false);
         target.setText(null);
+        target.setEnabled(false);
     }
     
     /** Handles the component changing. */
     private void handleComponentChange() {
         condition.setComponent((ActionComponent) components.getSelectedItem());
+        populateComparisons();
+        comparisons.setEnabled(true);
         comparisons.setSelectedItem(null);
         target.setText(null);
+        target.setEnabled(false);
     }
     
     /** Handles the comparison changing. */
     private void handleComparisonChange() {
         condition.setComparison((ActionComparison) comparisons.getSelectedItem());
+        populateTarget();
+        target.setEnabled(true);
         target.setText(null);
     }
 
