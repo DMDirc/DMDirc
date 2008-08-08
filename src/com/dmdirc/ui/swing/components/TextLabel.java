@@ -87,7 +87,7 @@ public class TextLabel extends JTextPane {
 
     /** {@inheritDoc} */
     @Override
-    public void setText(String t) {
+    public void setText(final String t) {
         super.setText(t);
         if (t != null && !t.isEmpty()) {
             ((StyledDocument) getDocument()).setParagraphAttributes(0,

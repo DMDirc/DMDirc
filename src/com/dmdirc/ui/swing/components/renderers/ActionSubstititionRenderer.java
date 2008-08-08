@@ -23,7 +23,7 @@
 package com.dmdirc.ui.swing.components.renderers;
 
 
-import com.dmdirc.ui.swing.dialogs.actionseditor.ActionSubstitution;
+import com.dmdirc.ui.swing.dialogs.actioneditor.ActionSubstitution;
 import java.awt.Component;
 
 import javax.swing.DefaultListCellRenderer;

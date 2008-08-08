@@ -104,7 +104,7 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
 
     /** Initialises the components. */
     private void initComponents() {
-        label = new TextLabel(updateSentence());
+        label = new TextLabel("");
         editButton = new ImageToggleButton("edit", IconManager.getIconManager().
                 getIcon("edit-inactive"),
                 IconManager.getIconManager().getIcon("edit"));
@@ -202,7 +202,11 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
         } else {
             final StringBuilder sb = new StringBuilder();
             sb.append("The ");
-            sb.append(trigger.getType().getArgNames()[condition.getArg()]);
+            if (condition.getArg() != -1) {
+                sb.append(trigger.getType().getArgNames()[condition.getArg()]);
+            } else {
+                sb.append("something");
+            }
             sb.append("'s ");
             if (condition.getComponent() != null) {
                 sb.append(condition.getComponent().getName());

@@ -81,8 +81,6 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
         this.trigger = trigger;
 
         initComponents();
-        addListeners();
-        layoutComponents();
 
         if (trigger == null) {
             setEnabled(false);
@@ -92,6 +90,11 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
             populateComparisons();
             populateTarget();
         }
+        
+        firePropertyChange("edit", null, null);
+        
+        addListeners();
+        layoutComponents();
     }
 
     /** Initialises the components. */
@@ -157,6 +160,7 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
     
     /** Handles the argument changing. */
     private void handleArgumentChange() {
+        System.out.println(condition.getArg() + " => " + arguments.getSelectedIndex());
         condition.setArg(arguments.getSelectedIndex());
         components.setSelectedItem(null);
         comparisons.setSelectedItem(null);
