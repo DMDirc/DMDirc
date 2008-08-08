@@ -40,8 +40,11 @@ import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.StandardInputDialog;
 import com.dmdirc.ui.swing.components.renderers.ActionGroupListCellRenderer;
 
+import com.dmdirc.ui.swing.dialogs.actioneditor.ActionEditorDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -102,7 +105,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         layoutGroupPanel();
         layoutComponents();
 
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setTitle("DMDirc: Action Manager");
         setResizable(false);
     }
@@ -193,6 +196,15 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         ActionManager.addListener(this, CoreActionType.ACTION_CREATED);
         ActionManager.addListener(this, CoreActionType.ACTION_UPDATED);
         ActionManager.addListener(this, CoreActionType.ACTION_DELETED);
+        
+        addWindowListener(new WindowAdapter() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void windowClosing(final WindowEvent e) {
+                getOkButton().doClick();
+            }
+        });
     }
 
     /**
@@ -290,7 +302,15 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         } else if (e.getSource() == delete) {
             delGroup();
         } else if (e.getSource() == getOkButton() || e.getSource() ==
-                getCancelButton()) {
+                getCancelButton()) { 
+            if (ActionEditorDialog.isOpen()) {
+                System.out.println("open");
+                if (JOptionPane.showConfirmDialog(this, "The action editor is currently open, do you want to cotinue and lose any unsaved changes?", "Confirm close?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                    ActionEditorDialog.getActionEditorDialog(this, "").dispose();
+                } else {
+                    return;
+                }
+            }
             for (ActionGroupSettingsPanel loopSettings : settings.values()) {
                 loopSettings.save();
             }

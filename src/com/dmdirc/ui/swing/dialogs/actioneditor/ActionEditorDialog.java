@@ -102,6 +102,17 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         addListeners();
         layoutComponents();
     }
+    
+    /**
+     * Is the dialog open?
+     * 
+     * @return is the dialog open
+     */
+    public static boolean isOpen() {
+        synchronized (ActionEditorDialog.class) {
+            return me != null;
+        }
+    }
 
     /** 
      * Creates the dialog if one doesn't exist, and displays it. 
