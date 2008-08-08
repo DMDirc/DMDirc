@@ -30,7 +30,7 @@ package com.dmdirc.actions;
  * @author chris
  */
 public abstract class ConditionTreeFactory {
-    
+        
     /**
      * Retrieves a condition tree for the specified number of arguments.
      * 
@@ -38,6 +38,25 @@ public abstract class ConditionTreeFactory {
      * @return A ConditionTree for the specified number of args
      */
     public abstract ConditionTree getConditionTree(final int args);
+    
+    /**
+     * Retrieves the type this of factory.
+     * 
+     * @return This factory's type
+     */
+    public abstract ConditionTreeFactoryType getType();
+    
+    /**
+     * The possible types of ConditionTreeFactories
+     */
+    public static enum ConditionTreeFactoryType {
+        /** Factories that produce disjunction (OR) trees. */
+        DISJUNCTION,
+        /** Factories that produce conjunction (AND) trees. */
+        CONJUNCTION,
+        /** Factories that produce custom trees. */
+        CUSTOM,
+    }
     
     /**
      * Creates condition trees where the arguments are conjoined together.
@@ -48,6 +67,12 @@ public abstract class ConditionTreeFactory {
         @Override
         public ConditionTree getConditionTree(final int args) {
             return ConditionTree.createConjunction(args);
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public ConditionTreeFactoryType getType() {
+            return ConditionTreeFactoryType.CONJUNCTION;
         }
         
     }
@@ -61,6 +86,12 @@ public abstract class ConditionTreeFactory {
         @Override
         public ConditionTree getConditionTree(final int args) {
             return ConditionTree.createDisjunction(args);
+        }
+        
+        /** {@inheritDoc} */
+        @Override
+        public ConditionTreeFactoryType getType() {
+            return ConditionTreeFactoryType.DISJUNCTION;
         }
         
     }
@@ -86,6 +117,12 @@ public abstract class ConditionTreeFactory {
         @Override
         public ConditionTree getConditionTree(final int args) {
             return tree;
+        }
+        
+        /** {@inheritDoc} */
+        @Override
+        public ConditionTreeFactoryType getType() {
+            return ConditionTreeFactoryType.CUSTOM;
         }
         
     }
