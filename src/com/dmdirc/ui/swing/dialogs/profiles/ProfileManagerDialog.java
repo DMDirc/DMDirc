@@ -41,6 +41,7 @@ import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -138,6 +139,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
                 "each connection.");
 
         profileList.setCellRenderer(new ProfileListCellRenderer());
+        profileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         populateList();
     }
