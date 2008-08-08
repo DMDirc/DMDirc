@@ -469,6 +469,10 @@ public class Identity extends ConfigSource implements Serializable,
                 }
             }
 
+            if (file.isKeyDomain("temp")) {
+                file.getKeyDomain("temp").clear();
+            }
+
             try {
                 file.write();
 
