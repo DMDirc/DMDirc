@@ -45,44 +45,44 @@ import java.util.Map;
  * Error manager.
  */
 public final class ErrorManager implements Serializable, Runnable {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 4;
-    
+
     /** Time to wait between error submissions. */
     private static final int SLEEP_TIME = 5000;
-    
+
     /** Previously instantiated instance of ErrorManager. */
-    private static ErrorManager me = new ErrorManager();
-    
+    private static final ErrorManager me = new ErrorManager();
+
     /** ProgramError folder. */
-    private static File errorDir;    
-    
+    private static File errorDir;
+
     /** Queue of errors to be reported. */
     private final List<ProgramError> reportQueue = new ArrayList<ProgramError>();
-    
+
     /** Thread used for sending errors. */
     private volatile Thread reportThread;
-    
+
     /** Error list. */
     private final Map<Long, ProgramError> errors;
-    
+
     /** Listener list. */
     private final ListenerList errorListeners = new ListenerList();
-    
+
     /** Next error ID. */
     private long nextErrorID;
-    
+
     /** Creates a new instance of ErrorListDialog. */
     private ErrorManager() {
         errors = new HashMap<Long, ProgramError>();
         nextErrorID = 0;
     }
-    
+
     /**
      * Returns the instance of ErrorManager.
      *
@@ -93,7 +93,7 @@ public final class ErrorManager implements Serializable, Runnable {
             return me;
         }
     }
-    
+
     /**
      * Called when an error occurs in the program.
      *
@@ -102,45 +102,45 @@ public final class ErrorManager implements Serializable, Runnable {
      */
     public void addError(final ProgramError error, final boolean sendable) {
         boolean report = IdentityManager.getGlobalConfig().getOptionBool(
-                "general", "submitErrors", false) 
-                && !IdentityManager.getGlobalConfig().getOptionBool("temp", 
+                "general", "submitErrors", false)
+                && !IdentityManager.getGlobalConfig().getOptionBool("temp",
                 "noerrorreporting", false);
-        
+
         synchronized (errors) {
             if (errors.containsValue(error)) {
                 // It's a duplicate
-                
+
                 error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
                 error.setFixedStatus(ErrorFixedStatus.UNREPORTED);
                 report = false;
             }
-            
+
             errors.put(error.getID(), error);
         }
-        
+
         if (!sendable) {
             error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
             error.setFixedStatus(ErrorFixedStatus.UNREPORTED);
         } else if (report) {
-            ErrorManager.getErrorManager().sendError(error);
+            sendError(error);
         }
-        
+
         if (IdentityManager.getGlobalConfig().getOptionBool("general", "logerrors", false)) {
             writeError(error);
-        }        
-        
+        }
+
         if (error.getLevel() == ErrorLevel.FATAL && !report) {
             error.setReportStatus(ErrorReportStatus.FINISHED);
-        }        
-        
+        }
+
         if (error.getLevel() == ErrorLevel.FATAL) {
             fireFatalError(error);
         } else {
             fireErrorAdded(error);
         }
     }
-    
-    
+
+
     /**
      * Called when an error needs to be deleted from the list.
      *
@@ -150,10 +150,10 @@ public final class ErrorManager implements Serializable, Runnable {
         synchronized (errors) {
             errors.remove(error.getID());
         }
-        
+
         fireErrorDeleted(error);
     }
-    
+
     /**
      * Returns a list of errors.
      *
@@ -164,7 +164,7 @@ public final class ErrorManager implements Serializable, Runnable {
             return new HashMap<Long, ProgramError>(errors);
         }
     }
-    
+
     /**
      * Returns the number of errors.
      *
@@ -173,7 +173,7 @@ public final class ErrorManager implements Serializable, Runnable {
     public int getErrorCount() {
         return errors.size();
     }
-    
+
     /**
      * Returns the next error ID.
      *
@@ -182,7 +182,7 @@ public final class ErrorManager implements Serializable, Runnable {
     public long getNextErrorID() {
         return nextErrorID++;
     }
-    
+
     /**
      * Returns specified program error.
      *
@@ -193,10 +193,10 @@ public final class ErrorManager implements Serializable, Runnable {
     public ProgramError getError(final long id) {
         return errors.get(id);
     }
-    
+
     /**
      * Returns the list of program errors.
-     * 
+     *
      * @return Program error list
      */
     public List<ProgramError> getErrors() {
@@ -204,7 +204,7 @@ public final class ErrorManager implements Serializable, Runnable {
             return new ArrayList<ProgramError>(errors.values());
         }
     }
-    
+
     /**
      * Sends an error to the developers.
      *
@@ -220,19 +220,19 @@ public final class ErrorManager implements Serializable, Runnable {
                 break;
             }
         }
-        
+
         if (error.getMessage().startsWith("java.lang.NoSuchMethodError")
                 || error.getMessage().startsWith("java.lang.NoClassDefFoundError")) {
             error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
             error.setFixedStatus(ErrorFixedStatus.INVALID);
             return;
         }
-        
+
         if (error.getLevel().equals(ErrorLevel.FATAL)) {
             sendErrorInternal(error);
         } else {
             reportQueue.add(error);
-        
+
             if (reportThread == null || !reportThread.isAlive()) {
                 reportThread = new Thread(this, "Error reporting thread");
                 reportThread.start();
@@ -245,15 +245,15 @@ public final class ErrorManager implements Serializable, Runnable {
     public void run() {
         while (!reportQueue.isEmpty()) {
             sendErrorInternal(reportQueue.remove(0));
-            
+
             try {
                 Thread.sleep(SLEEP_TIME);
             } catch (InterruptedException ex) {
                 // Do nothing
             }
         }
-    }    
-    
+    }
+
     /**
      * Sends an error to the developers.
      *
@@ -263,13 +263,13 @@ public final class ErrorManager implements Serializable, Runnable {
         final Map<String, String> postData = new HashMap<String, String>();
         List<String> response = new ArrayList<String>();
         int tries = 0;
-        
+
         postData.put("message", error.getMessage());
         postData.put("trace", Arrays.toString(error.getTrace()));
         postData.put("version", Main.VERSION + "(" + Main.SVN_REVISION + ")");
-        
+
         error.setReportStatus(ErrorReportStatus.SENDING);
-        
+
         do {
             if (tries != 0) {
                 try {
@@ -285,18 +285,18 @@ public final class ErrorManager implements Serializable, Runnable {
             } catch (IOException ex) {
                 //Ignore being handled
             }
-            
+
             tries++;
         } while((response.isEmpty() || !response.get(response.size() - 1).
                 equalsIgnoreCase("Error report submitted. Thank you."))
                 || tries >= 5);
-        
+
         checkResponses(error, response);
     }
-    
-    /** 
+
+    /**
      * Checks the responses and sets status accordingly.
-     * 
+     *
      * @param error Error to check response
      * @param response Response to check
      */
@@ -308,12 +308,12 @@ public final class ErrorManager implements Serializable, Runnable {
         } else {
             error.setReportStatus(ErrorReportStatus.ERROR);
         }
-        
+
         if (response.size() == 1) {
             error.setFixedStatus(ErrorFixedStatus.NEW);
             return;
         }
-        
+
         final String responseToCheck = response.get(0);
         if (responseToCheck.matches(".*fixed.*")) {
             error.setFixedStatus(ErrorFixedStatus.FIXED);
@@ -327,7 +327,7 @@ public final class ErrorManager implements Serializable, Runnable {
             error.setFixedStatus(ErrorFixedStatus.NEW);
         }
     }
-    
+
     /**
      * Adds an ErrorListener to the listener list.
      *
@@ -340,7 +340,7 @@ public final class ErrorManager implements Serializable, Runnable {
 
         errorListeners.add(ErrorListener.class, listener);
     }
-    
+
     /**
      * Removes an ErrorListener from the listener list.
      *
@@ -349,7 +349,7 @@ public final class ErrorManager implements Serializable, Runnable {
     public void removeErrorListener(final ErrorListener listener) {
        errorListeners.remove(ErrorListener.class, listener);
     }
-    
+
     /**
      * Fired when the program encounters an error.
      *
@@ -357,24 +357,24 @@ public final class ErrorManager implements Serializable, Runnable {
      */
     protected void fireErrorAdded(final ProgramError error) {
         int firedListeners = 0;
-        
+
         for (ErrorListener listener : errorListeners.get(ErrorListener.class)) {
             if (listener.isReady()) {
                 listener.errorAdded(error);
                 firedListeners++;
             }
         }
-        
+
         if (firedListeners == 0) {
             System.err.println("An error has occurred: " + error.getLevel()
                     + ": " + error.getMessage());
-            
+
             for (String line : error.getTrace()) {
                 System.err.println("\t" + line);
             }
         }
     }
-    
+
     /**
      * Fired when the program encounters a fatal error.
      *
@@ -382,25 +382,25 @@ public final class ErrorManager implements Serializable, Runnable {
      */
     protected void fireFatalError(final ProgramError error) {
         int firedListeners = 0;
-        
+
         for (ErrorListener listener : errorListeners.get(ErrorListener.class)) {
             if (listener.isReady()) {
                 listener.fatalError(error);
                 firedListeners++;
             }
         }
-         
+
         if (firedListeners == 0) {
             System.err.println("A fatal error has occurred: " + error.getMessage());
-            
+
             for (String line : error.getTrace()) {
                 System.err.println("\t" + line);
             }
-            
+
             System.exit(-1);
         }
     }
-    
+
     /**
      * Fired when an error is deleted.
      *
@@ -411,7 +411,7 @@ public final class ErrorManager implements Serializable, Runnable {
             listener.errorDeleted(error);
         }
     }
-    
+
     /**
      * Fired when an error's status is changed.
      *
@@ -422,7 +422,7 @@ public final class ErrorManager implements Serializable, Runnable {
             listener.errorStatusChanged(error);
         }
     }
-    
+
     /**
      * Writes the specified error to a file.
      *
@@ -440,7 +440,7 @@ public final class ErrorManager implements Serializable, Runnable {
         }
         out.close();
     }
-    
+
     /**
      * Creates a new file for an error and returns the output stream.
      *
@@ -457,10 +457,10 @@ public final class ErrorManager implements Serializable, Runnable {
             }
         }
         final String logName = error.getDate().getTime() + "-" + error.getLevel();
-        
-        
+
+
         final File errorFile = new File(errorDir, logName + ".log");
-        
+
         if (errorFile.exists()) {
             boolean rename = false;
             int i = 0;
@@ -476,7 +476,7 @@ public final class ErrorManager implements Serializable, Runnable {
             ex.printStackTrace();
             return new NullOutputStream();
         }
-        
+
         try {
             return new FileOutputStream(errorFile);
         } catch (FileNotFoundException ex) {
@@ -484,6 +484,6 @@ public final class ErrorManager implements Serializable, Runnable {
             ex.printStackTrace();
             return new NullOutputStream();
         }
-    }    
-    
+    }
+
 }
