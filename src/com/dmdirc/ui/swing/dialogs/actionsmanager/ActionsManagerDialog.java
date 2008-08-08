@@ -271,6 +271,8 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         getContentPane().setVisible(false);
         getContentPane().removeAll();
         layoutComponents();
+        validate();
+        layoutComponents();
         getContentPane().setVisible(true);
     }
 
