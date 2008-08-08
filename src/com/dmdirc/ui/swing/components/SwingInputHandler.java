@@ -36,6 +36,7 @@ import java.awt.event.KeyListener;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.text.JTextComponent;
 
@@ -217,7 +218,14 @@ public class SwingInputHandler extends InputHandler implements KeyListener {
     public void keyPressed(final KeyEvent e) {
         if (e.getKeyCode() != KeyEvent.VK_TAB && e.getKeyCode() !=
                 KeyEvent.VK_UP && e.getKeyCode() != KeyEvent.VK_DOWN) {
-            handleKeyPressed(e.getKeyCode(), e.isShiftDown(), UIUtilities.isCtrlDown(e));
+            SwingUtilities.invokeLater(new Runnable() {
+
+                /** {@inheritDoc} */
+                @Override
+                public void run() {
+                    handleKeyPressed(e.getKeyCode(), e.isShiftDown(), UIUtilities.isCtrlDown(e));
+                }
+            });
         }
     }
 
