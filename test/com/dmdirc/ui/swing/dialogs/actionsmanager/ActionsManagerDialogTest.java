@@ -58,6 +58,8 @@ public class ActionsManagerDialogTest {
         if (window != null) {
             window.cleanUp();
         }
+
+        removeGroups();
     }
     
     protected void removeGroups() {
@@ -101,7 +103,7 @@ public class ActionsManagerDialogTest {
         
         newwin.button(new ButtonTextFinder("OK")).requireEnabled().click();
         
-        window.list().selectItem("amd-ui-test1").requireSelectedItems("amd-ui-test1");
+        window.list().requireSelectedItems("amd-ui-test1");
 
         assertTrue(ActionManager.getGroups().containsKey("amd-ui-test1"));
     }
