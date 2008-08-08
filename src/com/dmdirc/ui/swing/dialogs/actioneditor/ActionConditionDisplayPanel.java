@@ -85,6 +85,13 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
         initComponents();
         addListeners();
         layoutComponents();
+
+        if (condition.getArg() == -1 && condition.getComponent() == null &&
+                condition.getComparison() == null && condition.getTarget() ==
+                null) {
+            editPanel.setVisible(true);
+            editButton.setSelected(true);
+        }
     }
 
     /**
