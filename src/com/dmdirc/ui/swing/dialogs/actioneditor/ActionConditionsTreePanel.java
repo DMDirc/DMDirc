@@ -22,25 +22,28 @@
 
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
+import com.dmdirc.config.prefs.validator.ConditionRuleValidator;
 import com.dmdirc.actions.ConditionTree;
 import com.dmdirc.actions.ConditionTreeFactory;
 import com.dmdirc.actions.ConditionTreeFactory.ConditionTreeFactoryType;
 import com.dmdirc.ui.swing.components.TextLabel;
+import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
 
 /**
  * Action conditions tree panel.
  */
-public class ActionConditionsTreePanel extends JPanel implements ActionListener {
+public class ActionConditionsTreePanel extends JPanel implements ActionListener, PropertyChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -57,7 +60,7 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
     /** Custom rule button. */
     private JRadioButton customButton;
     /** Custom rule field. */
-    private JTextField rule;
+    private ValidatingJTextField rule;
     /** Condition tree factory. */
     private ConditionTreeFactory treeFactory;
     /** Condition count. */
@@ -81,7 +84,7 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
         oneButton = new JRadioButton("At least one of the conditions is true");
         customButton = new JRadioButton("The conditions match a custom rule");
 
-        rule = new JTextField();
+        rule = new ValidatingJTextField(new ConditionRuleValidator());
 
         group.add(allButton);
         group.add(oneButton);
@@ -93,6 +96,7 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
         allButton.addActionListener(this);
         oneButton.addActionListener(this);
         customButton.addActionListener(this);
+        rule.addPropertyChangeListener("validationResult", this);
     }
 
     /** Lays out the components. */
@@ -122,16 +126,19 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
                 oneButton.setSelected(true);
                 rule.setText("");
                 rule.setEnabled(false);
+                firePropertyChange("validationResult", true, true);
                 break;
             case CUSTOM:
                 customButton.setSelected(true);
                 rule.setText(treeFactory.getConditionTree(conditionCount).toString());
                 rule.setEnabled(true);
+                rule.checkError();
                 break;
             default:
                 allButton.setSelected(true);
                 rule.setText("");
                 rule.setEnabled(false);
+                firePropertyChange("validationResult", true, true);
                 break;
         }
     }
@@ -193,5 +200,16 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
             treeFactory = ConditionTreeFactory.getFactory(tree, conditionCount);
             selectTreeButton();
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void propertyChange(final PropertyChangeEvent evt) {
+        firePropertyChange("validationResult", evt.getOldValue(), evt.getNewValue());
+    }
+    
+    /** Validates the conditions. */
+    public void validateConditions() {
+        selectTreeButton();
     }
 }

@@ -243,4 +243,9 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
         firePropertyChange("validationResult", (Integer) evt.getOldValue() > 0,
                 (Integer) evt.getNewValue() > 0);
     }
+    
+    /** Validates the triggers. */
+    public void validateTriggers() {
+        triggerList.validateTriggers();
+    }
 }

@@ -66,8 +66,6 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
     private boolean nameValid = false;
     /** Are the triggers valid? */
     private boolean triggersValid = false;
-    /** Is the response valid? */
-    private boolean responseValid = false;
     /** Are the conditions valid? */
     private boolean conditionsValid = false;
     /** Action to be edited. */
@@ -92,9 +90,10 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
      * @param action Action to be edited
      * @param group Action's group
      */
-    private ActionEditorDialog(final Window window, final String group, final Action action) {
-        super(window, ModalityType.MODELESS);   
-        
+    private ActionEditorDialog(final Window window, final String group,
+            final Action action) {
+        super(window, ModalityType.MODELESS);
+
         this.group = group;
         this.action = action;
 
@@ -102,17 +101,18 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         addListeners();
         layoutComponents();
     }
-    
+
     /** 
      * Creates the dialog if one doesn't exist, and displays it. 
      * 
      * @param window Parent window
      * @param group Action's group
      */
-    public static void showActionEditorDialog(final Window window, final String group) {
+    public static void showActionEditorDialog(final Window window,
+            final String group) {
         showActionEditorDialog(window, group, null);
     }
-    
+
     /** 
      * Creates the dialog if one doesn't exist, and displays it. 
      * 
@@ -120,7 +120,8 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
      * @param group Action's group
      * @param action Action to be edited
      */
-    public static void showActionEditorDialog(final Window window, final String group, final Action action) {
+    public static void showActionEditorDialog(final Window window,
+            final String group, final Action action) {
         getActionEditorDialog(window, group, action);
 
         me.pack();
@@ -137,7 +138,8 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
      * 
      * @return The current ActionEditorDialog instance
      */
-    public static ActionEditorDialog getActionEditorDialog(final Window window, final String group) {
+    public static ActionEditorDialog getActionEditorDialog(final Window window,
+            final String group) {
         return getActionEditorDialog(window, group, null);
     }
 
@@ -150,7 +152,8 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
      *
      * @return The current ActionEditorDialog instance
      */
-    public static ActionEditorDialog getActionEditorDialog(final Window window, final String group, final Action action) {
+    public static ActionEditorDialog getActionEditorDialog(final Window window,
+            final String group, final Action action) {
         synchronized (ActionEditorDialog.class) {
             if (me == null) {
                 me = new ActionEditorDialog(window, group, action);
@@ -174,7 +177,7 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         response.setEnabled(false);
         conditions.setEnabled(false);
         substitutions.setVisible(false);
-        
+
         if (action != null) {
             name.setActionName(action.getName());
             triggers.setTriggers(action.getTriggers());
@@ -183,9 +186,14 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
             conditions.setActionTrigger(action.getTriggers()[0]);
             conditions.setConditions(action.getConditions());
             conditions.setConditionTree(action.getRealConditionTree());
+
+            triggersValid = true;
+            conditionsValid = true;
+            nameValid = true;
+            getOkButton().setEnabled(true);
+        } else {
+            getOkButton().setEnabled(false);
         }
-        
-        getOkButton().setEnabled(false);
     }
 
     /** Adds the listeners. */
@@ -196,6 +204,7 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
 
         name.addPropertyChangeListener("validationResult", this);
         triggers.addPropertyChangeListener("validationResult", this);
+        conditions.addPropertyChangeListener("validationResult", this);
     }
 
     /** Lays out the components. */
@@ -221,7 +230,8 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource().equals(showSubstitutions)) {
             substitutions.setVisible(!substitutions.isVisible());
-            showSubstitutions.setText(substitutions.isVisible() ? "Hide Substitutions" : "Show Substitutions");
+            showSubstitutions.setText(substitutions.isVisible() ? "Hide Substitutions"
+                    : "Show Substitutions");
         } else if (e.getSource().equals(getOkButton())) {
             dispose();
         } else if (e.getSource().equals(getCancelButton())) {
@@ -246,11 +256,13 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
             substitutions.setActionType(triggers.getPrimaryTrigger());
             conditions.setActionTrigger(triggers.getPrimaryTrigger());
         }
+        if (evt.getSource().equals(conditions)) {
+            conditionsValid = (Boolean) evt.getNewValue();
+        }
 
-        getOkButton().setEnabled(triggersValid && conditionsValid && nameValid &&
-                responseValid);
+        getOkButton().setEnabled(triggersValid && conditionsValid && nameValid);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void dispose() {

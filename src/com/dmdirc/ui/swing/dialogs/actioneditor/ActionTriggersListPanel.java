@@ -254,4 +254,9 @@ public class ActionTriggersListPanel extends JPanel {
             }
         });
     }
+    
+    /** Validates the triggers. */
+    public void validateTriggers() {
+        firePropertyChange("triggerCount", triggers.size(), triggers.size());
+    }
 }

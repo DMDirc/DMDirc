@@ -85,6 +85,11 @@ public class ActionNamePanel extends JPanel implements PropertyChangeListener {
         this.name.setText(name);
     }
 
+    /** Validates the name. */
+    public void validateName() {
+        name.checkError();
+    }
+
     /** Initialises the components. */
     private void initComponents() {
         name = new ValidatingJTextField(new JTextField(originalName), new FileNameValidator());

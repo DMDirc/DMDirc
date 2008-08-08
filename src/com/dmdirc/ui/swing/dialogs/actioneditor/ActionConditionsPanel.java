@@ -29,6 +29,8 @@ import com.dmdirc.actions.interfaces.ActionType;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -42,7 +44,7 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Action conditions panel.
  */
-public class ActionConditionsPanel extends JPanel implements ActionListener {
+public class ActionConditionsPanel extends JPanel implements ActionListener, PropertyChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -84,11 +86,17 @@ public class ActionConditionsPanel extends JPanel implements ActionListener {
         }
     }
 
+    /** Validates the conditions. */
+    public void validateConditions() {
+        tree.validateConditions();
+    }
+
     /** Initialises the components. */
     private void initComponents() {
         tree = new ActionConditionsTreePanel();
         list = new ActionConditionsListPanel();
         add = new JButton("Add");
+        tree.addPropertyChangeListener("validationResult", this);
     }
 
     /** Adds the listeners. */
@@ -187,5 +195,11 @@ public class ActionConditionsPanel extends JPanel implements ActionListener {
      */
     public List<ActionCondition> getConditions() {
         return list.getConditions();
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void propertyChange(final PropertyChangeEvent evt) {
+        firePropertyChange("validationResult", evt.getOldValue(), evt.getNewValue());
     }
 }
