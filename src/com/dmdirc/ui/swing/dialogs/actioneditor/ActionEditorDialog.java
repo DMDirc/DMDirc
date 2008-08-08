@@ -184,6 +184,8 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
             conditions.setConditions(action.getConditions());
             conditions.setConditionTree(action.getRealConditionTree());
         }
+        
+        getOkButton().setEnabled(false);
     }
 
     /** Adds the listeners. */
