@@ -43,7 +43,7 @@ public class CustomWindow extends FrameContainer {
     private Window window;
 
     /** This window's parent window. */
-    private Window parent = null;
+    private Window parent;
 
     /**
      * Creates a new custom window as a child of the specified window.

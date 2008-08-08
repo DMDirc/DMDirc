@@ -165,7 +165,7 @@ public abstract class FrameContainer {
         // TODO: This should default ot something colour independent
         notification = Color.BLACK;
 
-        synchronized(listeners) {
+        synchronized (listeners) {
             for (NotificationListener listener : listeners.get(NotificationListener.class)) {
                 listener.notificationCleared(getFrame());
             }
@@ -184,7 +184,7 @@ public abstract class FrameContainer {
                 && !colour.equals(notification)) {
             notification = colour;
 
-            synchronized(listeners) {
+            synchronized (listeners) {
                 for (NotificationListener listener : listeners.get(NotificationListener.class)) {
                     listener.notificationSet(getFrame(), colour);
                 }
@@ -257,7 +257,7 @@ public abstract class FrameContainer {
             }
         }
 
-        synchronized(listeners) {
+        synchronized (listeners) {
             for (SelectionListener listener : listeners.get(SelectionListener.class)) {
                 listener.selectionChanged(getFrame());
             }
@@ -309,7 +309,7 @@ public abstract class FrameContainer {
      * @param listener The listener to be added
      */
     public void addNotificationListener(final NotificationListener listener) {
-        synchronized(listeners) {
+        synchronized (listeners) {
             listeners.add(NotificationListener.class, listener);
         }
     }
@@ -320,7 +320,7 @@ public abstract class FrameContainer {
      * @param listener The listener to be removed
      */
     public void removeNotificationListener(final NotificationListener listener) {
-        synchronized(listeners) {
+        synchronized (listeners) {
             listeners.remove(NotificationListener.class, listener);
         }
     }
@@ -331,7 +331,7 @@ public abstract class FrameContainer {
      * @param listener The listener to be added
      */
     public void addSelectionListener(final SelectionListener listener) {
-        synchronized(listeners) {
+        synchronized (listeners) {
             listeners.add(SelectionListener.class, listener);
         }
     }
@@ -342,7 +342,7 @@ public abstract class FrameContainer {
      * @param listener The listener to be removed
      */
     public void removeSelectionListener(final SelectionListener listener) {
-        synchronized(listeners) {
+        synchronized (listeners) {
             listeners.remove(SelectionListener.class, listener);
         }
     }
