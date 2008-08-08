@@ -142,6 +142,19 @@ public class ConditionTree {
         }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(final Object obj) {
+        return obj instanceof ConditionTree
+                && toString().equals(((ConditionTree) obj).toString());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
     /**
      * Retrieves a String representation of this ConditionTree. The string
      * representation is a normalised formula describing this tree and all of
