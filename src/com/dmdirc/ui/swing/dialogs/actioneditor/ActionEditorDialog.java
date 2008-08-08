@@ -174,10 +174,15 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         substitutions = new ActionSubstitutionsPanel();
         showSubstitutions = new JButton("Show Substitutions");
 
-        triggers.setEnabled(false);
-        response.setEnabled(false);
-        conditions.setEnabled(false);
+        triggers.setEnabled(action != null);
+        response.setEnabled(action != null);
+        conditions.setEnabled(action != null);
         substitutions.setVisible(false);
+
+        triggersValid = action != null;
+        conditionsValid = action != null;
+        nameValid = action != null;
+        getOkButton().setEnabled(action != null);
 
         if (action != null) {
             name.setActionName(action.getName());
@@ -187,13 +192,6 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
             conditions.setActionTrigger(action.getTriggers()[0]);
             conditions.setConditions(action.getConditions());
             conditions.setConditionTree(action.getRealConditionTree());
-
-            triggersValid = true;
-            conditionsValid = true;
-            nameValid = true;
-            getOkButton().setEnabled(true);
-        } else {
-            getOkButton().setEnabled(false);
         }
     }
 
@@ -270,6 +268,8 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         if (evt.getSource().equals(name)) {
             nameValid = (Boolean) evt.getNewValue();
             triggers.setEnabled((Boolean) evt.getNewValue());
+            conditions.setEnabled((Boolean) evt.getNewValue());
+            response.setEnabled((Boolean) evt.getNewValue());
         }
         if (evt.getSource().equals(triggers)) {
             triggersValid = (Boolean) evt.getNewValue();

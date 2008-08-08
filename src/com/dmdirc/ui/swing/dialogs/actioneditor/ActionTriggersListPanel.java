@@ -103,12 +103,14 @@ public class ActionTriggersListPanel extends JPanel {
                         delTrigger(trigger);
                     }
                 });
-
+                
+                button.setEnabled(isEnabled());
+                
                 add(new JLabel(trigger.getName()), "growx");
                 add(button, "right");
             }
 
-            if (getComponentCount() == 0) {
+            if (triggers.size() == 0) {
                 add(new TextLabel("No triggers."));
             }
             setVisible(true);
@@ -238,19 +240,13 @@ public class ActionTriggersListPanel extends JPanel {
     /** {@inheritDoc} */
     @Override
     public void setEnabled(final boolean enabled) {
+        super.setEnabled(enabled);
         SwingUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
             public void run() {
-                if (enabled) {
-                    layoutComponents();
-                } else {
-                    setVisible(false);
-                    removeAll();
-                    add(new TextLabel("No triggers."));
-                    setVisible(true);
-                }
+                layoutComponents();
             }
         });
     }
