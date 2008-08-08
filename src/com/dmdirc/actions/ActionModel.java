@@ -167,17 +167,7 @@ public class ActionModel {
             results[i++] = condition.test(sub, arguments);
         }
         
-         if (conditionTree == null) {
-            for (boolean res : results) {
-                if (!res) {
-                    return false;
-                }
-            }
-        } else if (!conditionTree.evaluate(results)) {
-            return false;
-        }
-        
-        return true;
+        return getRealConditionTree().evaluate(results);
     }
 
     /**
@@ -295,12 +285,26 @@ public class ActionModel {
     }
 
     /**
-     * Retrieves the condition tree used for this action.
+     * Retrieves the condition tree used for this action. Condition trees may
+     * be null, in which case the arguments are conjoined together.
      * 
      * @return This action's condition tree
      */
     public ConditionTree getConditionTree() {
         return conditionTree;
+    }
+    
+    /**
+     * Retrieves a concrete condition tree used for this action. If there is
+     * no condition tree defined for this action, returns a conjunction tree
+     * for the arguments.
+     * 
+     * @since 0.6
+     * @return A {@link ConditionTree} object for this action
+     */
+    public ConditionTree getRealConditionTree() {
+        return conditionTree == null
+                ? ConditionTree.createConjunction(conditions.size()) : conditionTree;
     }
 
     /**
