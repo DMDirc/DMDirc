@@ -147,9 +147,6 @@ public final class PluginPanel extends JPanel implements
         for (PluginInfo plugin : list) {
             ((DefaultListModel) pluginList.getModel()).addElement(new PluginInfoToggle(plugin));
         }
-        if (((DefaultListModel) pluginList.getModel()).size() > 0) {
-            toggleButton.setEnabled(true);
-        }
         pluginList.repaint();
         return pluginList;
     }
