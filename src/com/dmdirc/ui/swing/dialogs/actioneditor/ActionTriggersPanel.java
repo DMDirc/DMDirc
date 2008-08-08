@@ -224,7 +224,7 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
                         ((ActionTypeModel) trigger.getModel()).addElement(thisType);
                     }
                 }
-                trigger.setEnabled((trigger.getModel().getSize() > 0));
+                trigger.setEnabled(trigger.getModel().getSize() > 0);
             }
         });
     }
@@ -233,8 +233,10 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
     @Override
     public void setEnabled(final boolean enabled) {
         triggerList.setEnabled(enabled);
-        trigger.setEnabled(enabled);
-        add.setEnabled(enabled);
+        if (trigger.getModel().getSize() > 0 && enabled) {
+            trigger.setEnabled(enabled);
+            add.setEnabled(enabled);
+        }
     }
 
     /** {@inheritDoc} */
