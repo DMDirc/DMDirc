@@ -23,7 +23,6 @@
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
 import com.dmdirc.actions.Action;
-import com.dmdirc.actions.ConditionTreeFactory.ConditionTreeFactoryType;
 import com.dmdirc.ui.swing.components.StandardDialog;
 
 import java.awt.Window;
@@ -94,6 +93,7 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
     private ActionEditorDialog(final Window window, final String group,
             final Action action) {
         super(window, ModalityType.MODELESS);
+        setTitle("DMDirc: Action Editor");
 
         this.group = group;
         this.action = action;
