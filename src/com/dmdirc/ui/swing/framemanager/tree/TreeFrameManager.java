@@ -553,9 +553,9 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
                 synchronized (labels) {
                     synchronized (nodes) {
                         final FrameContainer container = window.getContainer();
-                        if (container != null) {
-                            final DefaultMutableTreeNode node = nodes.get(container);
-                            final NodeLabel label = labels.get(node);
+                        final DefaultMutableTreeNode node = nodes.get(container);
+                        final NodeLabel label = labels.get(node);
+                        if (container != null && node != null && label != null) {
                             label.notificationCleared(window);
                             tree.repaint();
                         }
