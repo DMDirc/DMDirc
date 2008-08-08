@@ -25,10 +25,11 @@ package com.dmdirc.ui.swing.dialogs.actionsmanager;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.ActionManager;
+import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.ui.swing.components.PackingTable;
 import com.dmdirc.ui.swing.components.renderers.ActionTypeTableCellRenderer;
 import com.dmdirc.ui.swing.components.renderers.ArrayCellRenderer;
-import com.dmdirc.ui.swing.dialogs.actionseditor.ActionsEditorDialog;
+import com.dmdirc.ui.swing.dialogs.actioneditor.ActionEditorDialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -227,11 +228,13 @@ public final class ActionsGroupPanel extends JPanel implements ActionListener,
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == add) {
-            ActionsEditorDialog.showActionsEditorDialog(group.getName());
-        } else if (e.getSource() == edit) {
-            ActionsEditorDialog.showActionsEditorDialog(model.getAction(
-                    table.getRowSorter().convertRowIndexToModel(table.getSelectedRow())),
+            ActionEditorDialog.showActionEditorDialog(SwingController.getMainFrame(),
                     group.getName());
+        } else if (e.getSource() == edit) {
+            ActionEditorDialog.showActionEditorDialog(SwingController.getMainFrame(),
+                    group.getName(),
+                    model.getAction(
+                    table.getRowSorter().convertRowIndexToModel(table.getSelectedRow())));
         } else if (e.getSource() == delete) {
             final Action action =
                     model.getAction(

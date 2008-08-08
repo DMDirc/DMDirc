@@ -78,10 +78,11 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
         super();
 
         this.trigger = trigger;
-        this.condition = new ActionCondition(condition.getArg(), condition.getComponent(), condition.getComparison(), condition.getTarget());
+        this.condition = new ActionCondition(condition.getArg(),
+                condition.getComponent(), condition.getComparison(),
+                condition.getTarget());
 
         initComponents();
-        setCondition(trigger, condition);
         addListeners();
         layoutComponents();
     }
@@ -94,13 +95,16 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
     void setTrigger(final ActionType trigger) {
         this.trigger = trigger;
         editPanel.setTrigger(trigger);
-        
-        setCondition(trigger, condition);
+
+        editPanel.setVisible(trigger == null);
+        editButton.setSelected(trigger == null);
+
+        label.setText(updateSentence());
     }
 
     /** Initialises the components. */
     private void initComponents() {
-        label = new TextLabel();
+        label = new TextLabel(updateSentence());
         editButton = new ImageToggleButton("edit", IconManager.getIconManager().
                 getIcon("edit-inactive"),
                 IconManager.getIconManager().getIcon("edit"));
@@ -111,7 +115,9 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
 
         editPanel = new ActionConditionEditorPanel(condition, trigger);
         listeners = new ListenerList();
-        editPanel.setVisible(false);
+
+        editPanel.setVisible(trigger == null);
+        editButton.setSelected(trigger == null);
     }
 
     /** Adds the listeners. */
@@ -124,7 +130,7 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
     /** Lays out the components. */
     private void layoutComponents() {
         setLayout(new MigLayout("ins 0, fillx, hidemode 3"));
-        add(label, "growy, wmax 100%");
+        add(label, "grow, wmax 100%");
         add(editButton, "right");
         add(deleteButton, "right, wrap");
         add(editPanel, "alignx right");
@@ -186,21 +192,13 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
     }
 
     /**
-     * Sets the new action condition.
+     * Updates the condition sentence.
      * 
-     * @param trigger Action trigger
-     * @param condition Action condition
+     * @return Updated sentence
      */
-    public void setCondition(final ActionType trigger,
-            final ActionCondition condition) {
-        this.trigger = trigger;
-        this.condition = condition;
-        editPanel.setTrigger(trigger);
-
+    private String updateSentence() {
         if (trigger == null) {
-            label.setText("");
-            editPanel.setVisible(true);
-            editButton.setSelected(true);
+            return "";
         } else {
             final StringBuilder sb = new StringBuilder();
             sb.append("The ");
@@ -224,7 +222,7 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
                 sb.append("something");
             }
             sb.append("'");
-            label.setText(sb.toString());
+            return sb.toString();
         }
     }
 
@@ -240,6 +238,6 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
     /** {@inheritDoc} */
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
-        setCondition(trigger, condition);
+        label.setText(updateSentence());
     }
 }

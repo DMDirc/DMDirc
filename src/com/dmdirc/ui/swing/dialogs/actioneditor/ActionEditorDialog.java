@@ -201,10 +201,10 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         setLayout(new MigLayout("fill, hidemode 3, wrap 2, pack, hmax 80sp"));
 
         add(name, "grow, wmax 250");
-        add(conditions, "spany 3, grow, wmin 410, wmax 410");
+        add(conditions, "spany 3, grow");
         add(triggers, "grow, wmax 250");
         add(response, "grow, wmax 250");
-        add(substitutions, "spanx 2, grow, wmax 660");
+        add(substitutions, "spanx 2, grow");
         add(showSubstitutions, "left, sgx button, split 3, spanx 2");
         add(getLeftButton(), "right, sgx button, gapleft push");
         add(getRightButton(), "right, sgx button");

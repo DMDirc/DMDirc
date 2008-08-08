@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.dialogs.actioneditor;
 
 import com.dmdirc.actions.ActionCondition;
+import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionComparison;
 import com.dmdirc.actions.interfaces.ActionComponent;
 import com.dmdirc.actions.interfaces.ActionType;
@@ -87,6 +88,9 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
             setEnabled(false);
         } else {
             populateArguments();
+            populateComponents();
+            populateComparisons();
+            populateTarget();
         }
     }
 
@@ -112,18 +116,64 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
 
     /** Populates the arguments combo box. */
     private void populateArguments() {
+        ((DefaultComboBoxModel) arguments.getModel()).removeAllElements();
+
+        for (String arg : trigger.getType().getArgNames()) {
+            ((DefaultComboBoxModel) arguments.getModel()).addElement(arg);
+        }
+        arguments.setSelectedIndex(condition.getArg());
     }
 
     /** Populates the components combo box. */
     private void populateComponents() {
+        ((DefaultComboBoxModel) components.getModel()).removeAllElements();
+
+        if (condition.getArg() != -1) {
+            for (ActionComponent comp : ActionManager.getCompatibleComponents(
+                    trigger.getType().getArgTypes()[condition.getArg()])) {
+                ((DefaultComboBoxModel) components.getModel()).addElement(comp);
+            }
+        }
+        components.setSelectedItem(condition.getComponent());
     }
 
     /** Populates the comparisons combo box. */
     private void populateComparisons() {
+        ((DefaultComboBoxModel) comparisons.getModel()).removeAllElements();
+
+        if (condition.getComponent() != null) {
+            for (ActionComparison comp : ActionManager.getCompatibleComparisons(
+                    condition.getComponent().getType())) {
+                ((DefaultComboBoxModel) comparisons.getModel()).addElement(comp);
+            }
+        }
+        comparisons.setSelectedItem(condition.getComparison());
     }
 
     /** Populates the target textfield. */
     private void populateTarget() {
+        target.setText(condition.getTarget());
+    }
+    
+    /** Handles the argument changing. */
+    private void handleArgumentChange() {
+        condition.setArg(arguments.getSelectedIndex());
+        components.setSelectedItem(null);
+        comparisons.setSelectedItem(null);
+        target.setText(null);
+    }
+    
+    /** Handles the component changing. */
+    private void handleComponentChange() {
+        condition.setComponent((ActionComponent) components.getSelectedItem());
+        comparisons.setSelectedItem(null);
+        target.setText(null);
+    }
+    
+    /** Handles the comparison changing. */
+    private void handleComparisonChange() {
+        condition.setComparison((ActionComparison) comparisons.getSelectedItem());
+        target.setText(null);
     }
 
     /** Adds the listeners. */
@@ -155,28 +205,13 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
      */
     @Override
     public void actionPerformed(final ActionEvent e) {
-        if (e.getSource() == arguments && isVisible()) {
-            if (arguments.getSelectedItem() == null) {
-                condition.setArg(-1);
-            } else {
-                condition.setArg(arguments.getSelectedIndex());
-            }
-            populateArguments();
-        } else if (e.getSource() == components && isVisible()) {
-            if (components.getSelectedItem() == null) {
-                condition.setComponent(null);
-            } else {
-                condition.setComponent((ActionComponent) components.getSelectedItem());
-            }
-            populateComponents();
-        } else if (e.getSource() == comparisons && isVisible()) {
-            if (comparisons.getSelectedItem() == null) {
-                condition.setComparison(null);
-            } else {
-                condition.setComparison((ActionComparison) comparisons.getSelectedItem());
-            }
-            populateComparisons();
-        }
+        if (e.getSource() == arguments) {
+            handleArgumentChange();
+        } else if (e.getSource() == components) {
+            handleComponentChange();
+        } else if (e.getSource() == comparisons) {
+            handleComparisonChange();
+        } 
         firePropertyChange("edit", null, null);
     }
 
@@ -223,7 +258,7 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
         this.trigger = trigger;
 
         setEnabled(trigger != null);
-        if (trigger != null) {
+        if (trigger != null && !trigger.equals(this.trigger)) {
             populateArguments();
         }
     }

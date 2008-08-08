@@ -76,7 +76,7 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
     }
 
     /** Initialises the components. */
-    private void initComponents() {        
+    private void initComponents() {
         group = new ButtonGroup();
         allButton = new JRadioButton("All of the conditions are true");
         oneButton = new JRadioButton("At least one of the conditions is true");
@@ -84,7 +84,7 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
         
         rule = new JTextField();
         
-        allButton.setSelected(true);
+        selectTreeButton();
         
         group.add(allButton);
         group.add(oneButton);
@@ -106,6 +106,13 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
         add(oneButton, "growx");
         add(customButton, "growx");
         add(rule, "growx");
+    }
+    
+    /**
+     * Selects the appropriate radio button for the tree.
+     */
+    private void selectTreeButton() {
+        allButton.setSelected(true);
     }
 
     /** 
@@ -158,6 +165,7 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener 
     public void setRule(final ConditionTree tree) {
         if (tree != null) {
             rule.setText(tree.toString());
+            selectTreeButton();
         }
     }
 }

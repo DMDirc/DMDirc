@@ -75,7 +75,7 @@ public class ActionSubstitutionsPanel extends JPanel {
     /** Initialises the components. */
     private void initComponents() {
         setBorder(BorderFactory.createTitledBorder(getBorder(), "Substitutions"));
-        setLayout(new MigLayout("fillx, wrap 5"));
+        setLayout(new MigLayout("fillx, wrap 4"));
     }
 
     /** Adds the listeners. */
