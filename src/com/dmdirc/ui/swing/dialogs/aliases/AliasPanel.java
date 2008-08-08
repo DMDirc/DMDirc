@@ -27,9 +27,9 @@ import com.dmdirc.actions.wrappers.Alias;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
+import com.dmdirc.config.prefs.validator.FileNameValidator;
 import com.dmdirc.ui.swing.UIUtilities;
-import com.dmdirc.ui.swing.actions.SanitisedFilenamePasteAction;
-import com.dmdirc.ui.swing.components.SanitisedFilenameFilter;
+import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,16 +37,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.text.AbstractDocument;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -54,77 +50,69 @@ import net.miginfocom.swing.MigLayout;
  * Panel to display an alias.
  */
 public final class AliasPanel extends JPanel implements ActionListener {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 2;
-    
     /** Name field. */
-    private final JTextField command;
-    
+    private final ValidatingJTextField command;
     /** argument component combo box. */
     private final JComboBox argumentComponent;
-    
     /** Argument number spinner. */
     private final JSpinner argumentNumber;
-    
     /** Response field. */
     private final JTextArea response;
-    
     /** Alias. */
     private Alias alias;
-    
+
     /** Creates a new instance of AliasPanel. */
     public AliasPanel() {
         super();
-        
-        command = new JTextField();
-        command.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.
-                getKeyStroke(Character.valueOf(' '), 0), "none");
+
+        command = new ValidatingJTextField(new FileNameValidator());
         command.setEnabled(false);
-        
+
         argumentComponent = new JComboBox(new CoreActionComparison[]{null,
-        CoreActionComparison.INT_GREATER, CoreActionComparison.INT_EQUALS,
-        CoreActionComparison.INT_LESS, });
-        argumentNumber = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
+            CoreActionComparison.INT_GREATER, CoreActionComparison.INT_EQUALS,
+            CoreActionComparison.INT_LESS,
+        });
+        argumentNumber = new JSpinner(new SpinnerNumberModel(0, 0,
+                Integer.MAX_VALUE, 1));
         response = new JTextArea();
-        
+
         argumentNumber.setEnabled(false);
         response.setRows(5);
-        
+
         argumentComponent.setRenderer(new ActionComparisonCellRenderer());
-        argumentComponent.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
+        argumentComponent.putClientProperty("JComboBox.isTableCellEditor",
+                Boolean.TRUE);
         argumentComponent.addActionListener(this);
-        
-        ((AbstractDocument) command.getDocument()).setDocumentFilter(new SanitisedFilenameFilter());
-        command.getActionMap().put("paste-from-clipboard", new SanitisedFilenamePasteAction());
-        
-        UIUtilities.addUndoManager(command);
+
         UIUtilities.addUndoManager(response);
-        
+
         layoutComponents();
-        
+
         clear();
     }
-    
+
     /** Lays out and initialises the components. */
     private void layoutComponents() {
         setLayout(new MigLayout("fill", "[right]rel[]rel[]", ""));
-        
+
         add(new JLabel("Command: "));
         add(command, "span 2, growx, wrap");
-        
+
         add(new JLabel("#Arguments: "));
         add(argumentComponent, "sgy args");
         add(argumentNumber, "sgy args, growx, wrap");
-        
+
         add(new JLabel("Response: "));
         add(new JScrollPane(response), "span 2, grow, wrap");
     }
-    
+
     /** Clears the details. */
     public void clear() {
         alias = null;
@@ -138,7 +126,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
         argumentNumber.setEnabled(false);
         response.setEnabled(false);
     }
-    
+
     /**
      * Sets the alias details.
      *
@@ -154,17 +142,17 @@ public final class AliasPanel extends JPanel implements ActionListener {
         argumentComponent.setEnabled(true);
         response.setEnabled(true);
         command.setText(alias.getCommand());
-        
+
         final List<ActionCondition> arguments = alias.getArguments();
         ActionCondition argument;
-        
+
         if (arguments.size() == 1) {
             argumentComponent.setSelectedItem(null);
             argumentNumber.setValue(0);
             argumentNumber.setEnabled(false);
         } else {
             argument = arguments.get(0);
-            
+
             if (argument.getComparison() == CoreActionComparison.STRING_EQUALS) {
                 argument = arguments.get(1);
             }
@@ -172,26 +160,31 @@ public final class AliasPanel extends JPanel implements ActionListener {
             argumentNumber.setValue(Integer.parseInt(argument.getTarget()));
             argumentNumber.setEnabled(true);
         }
-        
+
         final StringBuffer sb = new StringBuffer();
         for (String line : alias.getResponse()) {
             sb.append(line).append('\n');
         }
-        
+
         if (sb.length() > 1) {
             response.setText(sb.substring(0, sb.length() - 1));
         } else {
             response.setText("");
         }
     }
-    
-    /** {@inheritDoc}. */
+
+    /** 
+     * {@inheritDoc}.
+     * 
+     * @param e Action event
+     */
     @Override
     public void actionPerformed(final ActionEvent e) {
         ((SpinnerNumberModel) argumentNumber.getModel()).setMinimum(0);
         if (argumentComponent.getSelectedIndex() > 0) {
             argumentNumber.setEnabled(true);
-            if (argumentComponent.getSelectedItem() == CoreActionComparison.INT_LESS) {
+            if (argumentComponent.getSelectedItem() ==
+                    CoreActionComparison.INT_LESS) {
                 if (argumentNumber.getModel().getValue().equals(0)) {
                     argumentNumber.getModel().setValue(1);
                 }
@@ -201,7 +194,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
             argumentNumber.setEnabled(false);
         }
     }
-    
+
     /**
      * Returns the current command.
      *
@@ -210,7 +203,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
     public String getCommand() {
         return command.getText();
     }
-    
+
     /**
      * Returns the arguments condition.
      *
@@ -240,7 +233,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
                 return null;
         }
     }
-    
+
     /**
      * Returns the user response to the alias.
      *
@@ -249,7 +242,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
     protected String[] getResponse() {
         return response.getText().split("\n");
     }
-    
+
     /**
      * Returns the alias being shown in this panel.
      *
@@ -258,7 +251,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
     protected Alias getAlias() {
         return alias;
     }
-    
+
     /**
      * Returns an alias reflecting the changes in this panel.
      *
@@ -275,7 +268,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
         }
         return new Alias(getCommand(), conditions, getResponse());
     }
-    
+
     /** Focuses the command field. */
     public void focusCommand() {
         command.requestFocus();

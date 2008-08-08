@@ -28,7 +28,7 @@ package com.dmdirc.config.prefs.validator;
 public class FileNameValidator implements Validator<String> {
 
     /** Filename regex. */
-    private static final String FILENAME_REGEX = "[A-Za-z0-9 \\-_]+";
+    private static final String FILENAME_REGEX = "[A-Za-z0-9 \\-_!]+";
     /** Failure reason. */
     private static final String FAILURE_REASON = "Must be a valid filename";
 
