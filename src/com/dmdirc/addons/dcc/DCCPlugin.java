@@ -293,7 +293,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 					// Try to remove path names if sent.
 					// Change file separatorChar from other OSs first
 					if (File.separatorChar == '/') {
-						tmpFilename = tmpFilename.replace('\\', File.separatorChar)
+						tmpFilename = tmpFilename.replace('\\', File.separatorChar);
 					} else {
 						tmpFilename = tmpFilename.replace('/', File.separatorChar);
 					}
