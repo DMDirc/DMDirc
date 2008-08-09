@@ -39,6 +39,7 @@ import com.dmdirc.addons.dcc.actions.DCCActions;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import java.io.File;
 
@@ -133,6 +134,13 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 					result = JFileChooser.APPROVE_OPTION;
 				}
 				if (result == JFileChooser.APPROVE_OPTION) {
+					if (jc.getSelectedFile().length() == 0) {
+						JOptionPane.showMessageDialog(null, "You can't send empty files over DCC.", "DCC Error", JOptionPane.ERROR_MESSAGE);
+						return;
+					} else if (!jc.getSelectedFile().exists()) {
+						JOptionPane.showMessageDialog(null, "Invalid file specified", "DCC Error", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
 					final IRCParser parser = server.getParser();
 					final String myNickname = parser.getMyNickname();
 					DCCSend send = new DCCSend(IdentityManager.getGlobalConfig().getOptionInt(DCCPlugin.getDomain(), "send.blocksize", 1024));
