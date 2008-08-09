@@ -23,19 +23,35 @@
 package com.dmdirc.config.prefs.validator;
 
 import com.dmdirc.actions.ConditionTree;
-import com.dmdirc.config.prefs.validator.ValidationResponse;
-import com.dmdirc.config.prefs.validator.Validator;
 
 /**
- *
+ * Validates a condition tree.
  */
 public class ConditionRuleValidator implements Validator<String> {
+
+    /** The number of arguments to the tree. */
+    private int args = 0;
+
+    /**
+     * Creates a new ConditionRuleValidator.
+     *
+     * @param args The number of arguments allowed in the ConditionTree (i.e.,
+     * the number of ActionConditions)
+     */
+    public ConditionRuleValidator(final int args) {
+        this.args = args;
+    }
 
     /** {@inheritDoc} */
     @Override
     public ValidationResponse validate(final String object) {
-        if (ConditionTree.parseString(object) == null) {
+        final ConditionTree tree = ConditionTree.parseString(object);
+
+        if (tree == null) {
             return new ValidationResponse("Invalid rule.");
+        } else if (tree.getMaximumArgument() >= args) {
+            return new ValidationResponse("Condition "
+                    + tree.getMaximumArgument() + " does not exist");
         } else {
             return new ValidationResponse();
         }

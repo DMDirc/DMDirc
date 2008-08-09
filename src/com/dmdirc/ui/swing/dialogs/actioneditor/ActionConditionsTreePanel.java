@@ -87,7 +87,8 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener,
         oneButton = new JRadioButton("At least one of the conditions is true");
         customButton = new JRadioButton("The conditions match a custom rule");
 
-        rule = new ValidatingJTextField(new ConditionRuleValidator());
+        // TODO: Get the number of conditions properly, and update when needed.
+        rule = new ValidatingJTextField(new ConditionRuleValidator(1337));
 
         group.add(allButton);
         group.add(oneButton);
