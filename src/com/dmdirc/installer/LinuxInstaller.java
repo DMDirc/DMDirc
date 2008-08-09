@@ -133,7 +133,7 @@ public class LinuxInstaller extends Installer {
 					writer.println("#!/bin/sh");
 					writer.println("# DMDirc Uninstaller");
 					writer.println("PIDOF=`which pidof`");
-					writer.println("if [ \"${PIDOF}\" = \"\" ]; then");
+					writer.println("if [ -z \"${PIDOF}\" ]; then");
 					writer.println("	# For some reason some distros hide pidof...");
 					writer.println("	if [ -e /sbin/pidof ]; then");
 					writer.println("		PIDOF=/sbin/pidof");
@@ -143,12 +143,12 @@ public class LinuxInstaller extends Installer {
 					writer.println("fi;");
 					writer.println("");
 					writer.println("## Helper Functions");
-					writer.println("if [ \"${PIDOF}\" = \"\" ]; then");
+					writer.println("if [ -n \"${PIDOF}\" ]; then");
 					writer.println("	ISKDE=`${PIDOF} -x -s kdeinit`");
 					writer.println("	ISGNOME=`${PIDOF} -x -s gnome-panel`");
 					writer.println("else");
-					writer.println("	ISKDE=`ps ux | grep kdeinit | grep -v grep`");
-					writer.println("	ISGNOME=`ps ux | grep gnome-panel | grep -v grep`");
+					writer.println("	ISKDE=`pgrep kdeinit`");
+					writer.println("	ISGNOME=`pgrep gnome-panel`");
 					writer.println("fi;");
 					writer.println("KDIALOG=`which kdialog`");
 					writer.println("ZENITY=`which zenity`");
@@ -293,7 +293,7 @@ public class LinuxInstaller extends Installer {
 
 					writer.println("echo \"Done.\"");
 
-					(new File(location+"/uninstall.sh")).setExecutable(true);
+					new File(location+"/uninstall.sh").setExecutable(true);
 					return;
 
 				case PROTOCOL:
