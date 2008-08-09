@@ -169,10 +169,10 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 			dcc.reset();
 			if (parser != null && parser.getSocketState() == IRCParser.STATE_OPEN) {
 				if (IdentityManager.getGlobalConfig().getOptionBool(DCCPlugin.getDomain(), "send.reverse", false)) {
-					parser.sendCTCP(otherNickname, "DCC", "SEND \""+dcc.getFileName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" 0 "+dcc.getFileSize()+" "+dcc.makeToken()+((dcc.isTurbo()) ? " T" : ""));
+					parser.sendCTCP(otherNickname, "DCC", "SEND \""+(new File(dcc.getFileName())).getName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" 0 "+dcc.getFileSize()+" "+dcc.makeToken()+((dcc.isTurbo()) ? " T" : ""));
 					return;
 				} else if (plugin.listen(dcc)) {
-					parser.sendCTCP(otherNickname, "DCC", "SEND \""+dcc.getFileName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" "+dcc.getPort()+" "+dcc.getFileSize()+((dcc.isTurbo()) ? " T" : ""));
+					parser.sendCTCP(otherNickname, "DCC", "SEND \""+(new File(dcc.getFileName())).getName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" "+dcc.getPort()+" "+dcc.getFileSize()+((dcc.isTurbo()) ? " T" : ""));
 					return;
 				}
 			} else {

@@ -268,6 +268,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 				} else if (ctcpData[0].equalsIgnoreCase("send") && ctcpData.length > 3) {
 					final String nickname = ((ClientInfo)arguments[1]).getNickname();
 					final String filename;
+					String tmpFilename;
 					// Clients tend to put files with spaces in the name in "" so lets look for that.
 					final StringBuilder filenameBits = new StringBuilder();
 					int i;
@@ -283,12 +284,22 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 								filenameBits.append(" "+bit);
 							}
 						}
-						filename = filenameBits.toString().trim();
+						tmpFilename = filenameBits.toString().trim();
 					} else {
-						filename = ctcpData[1];
+						tmpFilename = ctcpData[1];
 						i = 1;
 					}
-
+					
+					// Try to remove path names if sent.
+					// Change file separatorChar from other OSs first
+					if (File.separatorChar == '/') {
+						tmpFilename = tmpFilename.replace('\\', File.separatorChar)
+					} else {
+						tmpFilename = tmpFilename.replace('/', File.separatorChar);
+					}
+					// Then get just the name of the file.
+					filename = (new File(tmpFilename)).getName();
+					
 					final String ip = ctcpData[++i];
 					final String port = ctcpData[++i];
 					long size;
@@ -298,9 +309,9 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 						} catch (NumberFormatException nfe) { size = -1; }
 					} else { size = -1; }
 					final String token = (ctcpData.length-1 > i) ? ctcpData[++i] : "";
-
+					
 					DCCSend send = DCCSend.findByToken(token);
-
+					
 					if (send == null && !dontAsk) {
 						ActionManager.processEvent(DCCActions.DCC_SEND_REQUEST, null, ((Server)arguments[0]), nickname, filename);
 						askQuestion("User "+nickname+" on "+((Server)arguments[0]).toString()+" would like to send you a file over DCC.\n\nFile: "+filename+"\n\nDo you want to continue?", "DCC Send Request", JOptionPane.YES_OPTION, type, format, arguments);
