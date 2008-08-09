@@ -26,6 +26,7 @@ import java.net.Socket;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.io.IOException;
+import java.util.concurrent.Semaphore;
 
 /**
  * This class handles the main "grunt work" of DCC, subclasses process the data
@@ -36,28 +37,54 @@ import java.io.IOException;
  */
 public abstract class DCC implements Runnable {
 
-    /** Address */
+    /** Address. */
 	protected long address = 0;
-	/** Port */
+	/** Port. */
 	protected int port = 0;
-	/** Socket used to communicate with */
+	/** Socket used to communicate with. */
 	protected Socket socket;
-	/** The Thread in use for this */
+	/** The Thread in use for this. */
 	private volatile Thread myThread;
-	/** The current socket in use is this is a listen socket */
-	private ServerSocket serverSocket;
-	/** Are we already running? */
+    /** Are we already running? */
 	protected boolean running = false;
 	/** Are we a listen socket? */
 	protected boolean listen = false;
-	
+
+    /**
+     * The current socket in use is this is a listen socket. This reference
+     * may be changed if and only if exactly one permit from the
+     * <code>serverSocketSem</code> and <code>serverListenignSem</code>
+     * semaphores is held by the thread doing the modification.
+     */
+	private ServerSocket serverSocket;
+
+    /**
+     * Semaphore to control write access to ServerSocket. If an object acquires
+     * a permit from the <code>serverSocketSem</code>, then
+     * <code>serverSocket</code> is <em>guaranteed</em> not to be externally
+     * modified until that permit is released, <em>unless</em> the object also
+     * acquires a permit from the <code>serverListeningSem</code>.
+     */
+    private final Semaphore serverSocketSem = new Semaphore(1);
+
+    /**
+     * Semaphore used when we're blocking waiting for connections. If an object
+     * acquires a permit from the <code>serverListeningSem</code>, then it is
+     * <em>guaranteed</em> that the {@link #run()} method is blocking waiting
+     * for incoming connections. In addition, it is <em>guaranteed</em> that
+     * the {@link #run()} method is holding the <code>serverSocketSem</code>
+     * permit, and it will continue holding that permit until it can reaquire
+     * the <code>serverListeningSem</code> permit.
+     */
+    private final Semaphore serverListeningSem = new Semaphore(0);
+
 	/**
 	 * Creates a new instance of DCC.
 	 */
 	public DCC() {
 		super();
 	}
-	
+
 	/**
 	 * Connect this dcc.
 	 */
@@ -80,21 +107,22 @@ public abstract class DCC implements Runnable {
 		myThread = new Thread(this);
 		myThread.start();
 	}
-	
+
 	/**
 	 * Start a listen socket rather than a connect socket.
      *
-     * @throws IOException If the socket couldn't be opened
+     * @throws IOException If the listen socket can't be created
      */
 	public void listen() throws IOException {
 		listen = true;
 
-        synchronized (this) {
-            serverSocket = new ServerSocket(0, 1);
-            connect();
-        }
+        serverSocketSem.acquireUninterruptibly();
+		serverSocket = new ServerSocket(0, 1);
+        serverSocketSem.release();
+
+        connect();
 	}
-	
+
 	/**
 	 * Start a listen socket rather than a connect socket, use a port from the
 	 * given range.
@@ -106,27 +134,27 @@ public abstract class DCC implements Runnable {
 	public void listen(final int startPort, final int endPort) throws IOException {
 		listen = true;
 
-        synchronized (this) {
-            for (int i = startPort; i <= endPort; ++i) {
-                try {
-                    serverSocket = new ServerSocket(i, 1);
-                    // Found a socket we can use!
-                    break;
-                } catch (IOException ioe) {
-                    // Try next socket.
-                } catch (SecurityException se) {
-                    // Try next socket.
-                }
-            }
+		for (int i = startPort; i <= endPort; ++i) {
+			try {
+                serverSocketSem.acquireUninterruptibly();
+				serverSocket = new ServerSocket(i, 1);
+                serverSocketSem.release();
+				// Found a socket we can use!
+				break;
+			} catch (IOException ioe) {
+				// Try next socket.
+			} catch (SecurityException se) {
+				// Try next socket.
+			}
+		}
 
-            if (serverSocket == null) {
-                throw new IOException("No available sockets in range "+startPort+":"+endPort);
-            } else {
-                connect();
-            }
-        }
+		if (serverSocket == null) {
+			throw new IOException("No available sockets in range "+startPort+":"+endPort);
+		} else {
+			connect();
+		}
 	}
-	
+
 	/**
 	 * This handles the socket to keep it out of the main thread
 	 */
@@ -137,44 +165,68 @@ public abstract class DCC implements Runnable {
 		// handleSocket is implemented by sub classes, and should return false
 		// when the socket is closed.
 		Thread thisThread = Thread.currentThread();
+
 		while (myThread == thisThread) {
-            synchronized (this) {
-                if (serverSocket == null) {
-                    if (!handleSocket()) {
-                        close();
-                        break;
-                    }
-                } else {
-                    try {
-                        socket = serverSocket.accept();
-                        serverSocket.close();
-                        socketOpened();
-                    } catch (IOException ioe) {
-                        break;
-                    }
+            serverSocketSem.acquireUninterruptibly();
+
+			if (serverSocket == null) {
+                serverSocketSem.release();
+
+				if (!handleSocket()) {
+					close();
+					break;
+				}
+			} else {
+				try {
+                    serverListeningSem.release();
+					socket = serverSocket.accept();
+					serverSocket.close();
+					socketOpened();
+				} catch (IOException ioe) {
+					break;
+				} finally {
+                    serverListeningSem.acquireUninterruptibly();
+
                     serverSocket = null;
-                }
-            }
+
+                    serverSocketSem.release();
+                }				
+			}
 		}
 		// Socket closed
-		
+
 		thisThread = null;
 		running = false;
 	}
-	
+
 	/**
 	 * Called to close the socket
 	 */
 	protected void close() {
-        synchronized (this) {
-            if (serverSocket != null) {
-                try {
-                    if (!serverSocket.isClosed()) {
-                        serverSocket.close();
-                    }
-                } catch (IOException ioe) { }
-                serverSocket = null;
+        boolean haveSLS = false;
+
+        while (!serverSocketSem.tryAcquire() &&
+                !(haveSLS = serverListeningSem.tryAcquire())) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                // Do we care? I doubt we do! Should be unchecked damnit.
             }
+        }
+
+		if (serverSocket != null) {
+			try {
+				if (!serverSocket.isClosed()) {
+					serverSocket.close();
+				}
+			} catch (IOException ioe) { }
+			serverSocket = null;
+		}
+
+        if (haveSLS) {
+            serverListeningSem.release();
+        } else {
+            serverSocketSem.release();
         }
 
 		if (socket != null) {
@@ -187,17 +239,17 @@ public abstract class DCC implements Runnable {
 			socket = null;
 		}
 	}
-	
+
 	/**
 	 * Called when the socket is first opened, before any data is handled.
 	 */
 	protected void socketOpened() { }
-	
+
 	/**
 	 * Called when the socket is closed, before the thread terminates.
 	 */
 	protected void socketClosed() { }
-	
+
 	/**
 	 * Check if this socket can be written to.
 	 *
@@ -206,7 +258,7 @@ public abstract class DCC implements Runnable {
 	public boolean isWriteable() {
 		return false;
 	}
-	
+
 	/**
 	 * Handle the socket.
 	 *
@@ -214,7 +266,7 @@ public abstract class DCC implements Runnable {
 	 *         called again.
 	 */
 	protected abstract boolean handleSocket();
-	
+
 	/**
 	 * Set the address to connect to for this DCC
 	 *
@@ -225,7 +277,7 @@ public abstract class DCC implements Runnable {
 		this.address = address;
 		this.port = port;
 	}
-	
+
 	/**
 	 * Is this a listening socket
 	 *
@@ -234,7 +286,7 @@ public abstract class DCC implements Runnable {
 	public boolean isListenSocket() {
 		return listen;
 	}
-	
+
 	/**
 	 * Get the host this socket is listening on/connecting to
 	 *
@@ -243,7 +295,7 @@ public abstract class DCC implements Runnable {
 	public String getHost() {
 		return longToIP(address);
 	}
-	
+
 	/**
 	 * Get the port this socket is listening on/connecting to
 	 *
@@ -252,7 +304,7 @@ public abstract class DCC implements Runnable {
 	public int getPort() {
 		return port;
 	}
-	
+
 	/**
 	 * Convert the given IP Address to a long
 	 *
@@ -266,7 +318,7 @@ public abstract class DCC implements Runnable {
 		}
 		return 0;
 	}
-	
+
 	/**
 	 * Convert the given long to an IP Address
 	 *
