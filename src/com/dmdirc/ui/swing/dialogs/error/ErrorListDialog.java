@@ -363,13 +363,13 @@ public final class ErrorListDialog extends StandardDialog implements
                     synchronized (tableModel) {
                         errorRow = tableModel.indexOf(error);
 
-                        if (errorRow != -1 && errorRow <
-                                tableModel.getRowCount()) {
+                        if (errorRow != -1
+                                && errorRow < tableModel.getRowCount()) {
                             tableModel.fireTableRowsUpdated(errorRow, errorRow);
                         }
                     }
-                    if (errorRow > -1) {
-                        deleteButton.setEnabled(true);
+
+                    if (errorRow == table.getSelectedRow()) {
                         if (error.getReportStatus() ==
                                 ErrorReportStatus.NOT_APPLICABLE ||
                                 error.getReportStatus() ==
@@ -378,10 +378,6 @@ public final class ErrorListDialog extends StandardDialog implements
                         } else {
                             sendButton.setEnabled(true);
                         }
-                    } else {
-                        errorDetails.setError(null);
-                        deleteButton.setEnabled(false);
-                        sendButton.setEnabled(false);
                     }
 
                 }
