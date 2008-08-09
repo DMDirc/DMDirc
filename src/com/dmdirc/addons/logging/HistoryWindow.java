@@ -29,8 +29,6 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.Window;
 
-import java.util.Stack;
-
 /**
  * Displays an extended history of a window.
  *
@@ -105,7 +103,7 @@ public class HistoryWindow extends FrameContainer {
     /** {@inheritDoc} */
     @Override
     public Server getServer() {
-        return parent.getContainer().getServer();
+        return parent == null ? null : parent.getContainer().getServer();
     }
 
 }
