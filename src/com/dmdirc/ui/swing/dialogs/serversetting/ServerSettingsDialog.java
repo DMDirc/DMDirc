@@ -26,6 +26,7 @@ import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.config.Identity;
 import com.dmdirc.ui.swing.MainFrame;
+import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel.OptionType;
@@ -137,7 +138,11 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
             addSettings();
         }
 
-        tabbedPane.add("User modes", new JScrollPane(modesPanel));
+        final JScrollPane userModesSP = new JScrollPane(modesPanel);
+        userModesSP.setOpaque(UIUtilities.getTabbedPaneOpaque());
+        userModesSP.getViewport().setOpaque(UIUtilities.getTabbedPaneOpaque());
+
+        tabbedPane.add("User modes", userModesSP);
         tabbedPane.add("Ignore list", ignoreList);
         tabbedPane.add("Perform", performPanel);
         if (settingsPanel != null) {

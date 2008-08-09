@@ -27,6 +27,7 @@ import com.dmdirc.Main;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.swing.MainFrame;
+import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel.OptionType;
@@ -52,20 +53,28 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 8;
+
     /** Channel settings dialogs, semi singleton use. */
     private static volatile ChannelSettingsDialog me;
+
     /** The channel object that this dialog belongs to. */
     private final Channel channel;
+
     /** Tabbed pane. */
     private JTabbedPane tabbedPane;
+
     /** Client settings panel. */
     private SettingsPanel channelSettingsPane;
+
     /** List modes panel. */
     private ChannelModesPane channelModesPane;
+
     /** List modes panel. */
     private TopicPane topicModesPane;
+
     /** List modes panel. */
     private ChannelListModesPane channelListModesPane;
+
     /** Channel identity file. */
     private final Identity identity;
 
@@ -78,8 +87,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
         super((MainFrame) Main.getUI().getMainWindow(), false);
 
         channel = newChannel;
-        identity =
-                IdentityManager.getChannelConfig(channel.getServer().
+        identity = IdentityManager.getChannelConfig(channel.getServer().
                 getNetwork(), channel.getChannelInfo().getName());
 
         initComponents();
@@ -146,28 +154,29 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
 
     /** Initialises the Topic tab. */
     private void initTopicTab() {
-        topicModesPane =
-                new TopicPane(channel, this);
+        topicModesPane = new TopicPane(channel, this);
         tabbedPane.addTab("Topic", topicModesPane);
     }
 
     /** Initialises the IRC Settings tab. */
     private void initIrcTab() {
-        channelModesPane =
-                new ChannelModesPane(channel);
-        tabbedPane.addTab("Channel Modes", new JScrollPane(channelModesPane));
+        channelModesPane = new ChannelModesPane(channel);
+
+        final JScrollPane channelModesSP = new JScrollPane(channelModesPane);
+        channelModesSP.setOpaque(UIUtilities.getTabbedPaneOpaque());
+        channelModesSP.getViewport().setOpaque(UIUtilities.getTabbedPaneOpaque());
+
+        tabbedPane.addTab("Channel Modes", channelModesSP);
     }
 
     /** Initialises the IRC Settings tab. */
     private void initListModesTab() {
-        channelListModesPane =
-                new ChannelListModesPane(channel);
+        channelListModesPane = new ChannelListModesPane(channel);
         tabbedPane.addTab("List Modes", channelListModesPane);
     }
 
     /** Initialises the channel Settings (identities) tab. */
     private void initSettingsTab() {
-
         initSettingsPanel();
 
         tabbedPane.addTab("Client Settings", channelSettingsPane);
@@ -175,51 +184,42 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
 
     /** Initialises the channel settings. */
     private void initSettingsPanel() {
-        channelSettingsPane =
-                new SettingsPanel(identity,
-                "These settings are specific to this channel on this network, " +
-                "any settings specified here will overwrite global settings");
+        channelSettingsPane = new SettingsPanel(identity,
+                "These settings are specific to this channel on this network," +
+                " any settings specified here will overwrite global settings");
 
         channelSettingsPane.addOption("channel.splitusermodes",
-                "Split user modes",
-                OptionType.CHECKBOX);
-        channelSettingsPane.addOption("channel.sendwho", "Send channel WHOs",
-                OptionType.CHECKBOX);
+                "Split user modes", OptionType.CHECKBOX);
+        channelSettingsPane.addOption("channel.sendwho",
+                "Send channel WHOs", OptionType.CHECKBOX);
         channelSettingsPane.addOption("channel.showmodeprefix",
-                "Show mode prefixes",
-                OptionType.CHECKBOX);
+                "Show mode prefixes", OptionType.CHECKBOX);
         channelSettingsPane.addOption("ui.shownickcoloursinnicklist",
-                "Show colours in nicklist",
-                OptionType.CHECKBOX);
+                "Show colours in nicklist", OptionType.CHECKBOX);
         channelSettingsPane.addOption("ui.shownickcoloursintext",
-                "Show colours in textpane",
-                OptionType.CHECKBOX);
-        channelSettingsPane.addOption("general.cyclemessage", "Cycle message",
-                OptionType.TEXTFIELD);
-        channelSettingsPane.addOption("general.kickmessage", "Kick message",
-                OptionType.TEXTFIELD);
-        channelSettingsPane.addOption("general.partmessage", "Part message",
-                OptionType.TEXTFIELD);
-        channelSettingsPane.addOption("ui.backgroundcolour", "Background colour",
-                OptionType.COLOUR);
-        channelSettingsPane.addOption("ui.foregroundcolour", "Foreground colour",
-                OptionType.COLOUR);
-        channelSettingsPane.addOption("ui.frameBufferSize", "Frame buffer size",
-                OptionType.SPINNER);
-        channelSettingsPane.addOption("ui.inputbuffersize", "Input buffer size",
-                OptionType.SPINNER);
+                "Show colours in textpane", OptionType.CHECKBOX);
+        channelSettingsPane.addOption("general.cyclemessage",
+                "Cycle message", OptionType.TEXTFIELD);
+        channelSettingsPane.addOption("general.kickmessage",
+                "Kick message", OptionType.TEXTFIELD);
+        channelSettingsPane.addOption("general.partmessage",
+                "Part message", OptionType.TEXTFIELD);
+        channelSettingsPane.addOption("ui.backgroundcolour",
+                "Background colour", OptionType.COLOUR);
+        channelSettingsPane.addOption("ui.foregroundcolour",
+                "Foreground colour", OptionType.COLOUR);
+        channelSettingsPane.addOption("ui.frameBufferSize",
+                "Frame buffer size", OptionType.SPINNER);
+        channelSettingsPane.addOption("ui.inputbuffersize",
+                "Input buffer size", OptionType.SPINNER);
         channelSettingsPane.addOption("ui.inputbackgroundcolour",
-                "Inputfield background colour",
-                OptionType.COLOUR);
+                "Inputfield background colour", OptionType.COLOUR);
         channelSettingsPane.addOption("ui.inputforegroundcolour",
-                "Inputfield foreground colour",
-                OptionType.COLOUR);
+                "Inputfield foreground colour", OptionType.COLOUR);
         channelSettingsPane.addOption("ui.nicklistbackgroundcolour",
-                "Nicklist background colour",
-                OptionType.COLOUR);
+                "Nicklist background colour", OptionType.COLOUR);
         channelSettingsPane.addOption("ui.nicklistforegroundcolour",
-                "Nicklist foreground colour",
-                OptionType.COLOUR);
+                "Nicklist foreground colour", OptionType.COLOUR);
         channelSettingsPane.addOption("channel.encoding", "Encoding",
                 OptionType.TEXTFIELD);
     }
