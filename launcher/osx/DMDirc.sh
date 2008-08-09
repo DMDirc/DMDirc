@@ -23,7 +23,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-LAUNCHERVERSION="1"
+LAUNCHERVERSION="2"
 
 params=""
 
@@ -149,7 +149,7 @@ elif [ -e "${profiledir}/.launcher.sh" ]; then
 					osascript -e do shell script "mv -fv \"${profiledir}/.launcher.sh\" \"${0}\"" with administrator privileges
 				fi;
 			fi
-			if [ ! -e "${profiledir}/.DMDirc.jar" ]; then
+			if [ ! -e "${profiledir}/.launcher.sh" ]; then
 				echo "Update successful."
 				messagedialog "Launcher Update" "Launcher Update successful"
 			else
