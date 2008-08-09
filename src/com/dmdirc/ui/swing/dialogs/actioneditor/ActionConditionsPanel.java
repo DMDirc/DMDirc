@@ -94,7 +94,7 @@ public class ActionConditionsPanel extends JPanel implements ActionListener, Pro
     /** Initialises the components. */
     private void initComponents() {
         tree = new ActionConditionsTreePanel();
-        list = new ActionConditionsListPanel();
+        list = new ActionConditionsListPanel(tree);
         add = new JButton("Add");
         tree.addPropertyChangeListener("validationResult", this);
     }

@@ -48,19 +48,27 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
     private ActionType trigger;
     /** Conditions list. */
     private List<ActionConditionDisplayPanel> conditions;
+    /** Condition tree panel. */
+    private ActionConditionsTreePanel treePanel;
 
-    /** Instantiates the panel. */
-    public ActionConditionsListPanel() {
-        this(null, new ArrayList<ActionConditionDisplayPanel>());
+    /** 
+     * Instantiates the panel.
+     * 
+     * @param treePanel Condition tree panel. 
+     */
+    public ActionConditionsListPanel(final ActionConditionsTreePanel treePanel) {
+        this(null, new ArrayList<ActionConditionDisplayPanel>(), treePanel);
     }
 
     /** 
      * Instantiates the panel.
      * 
      * @param trigger Action trigger
+     * @param treePanel Condition tree panel.
      */
-    public ActionConditionsListPanel(final ActionType trigger) {
-        this(trigger, new ArrayList<ActionConditionDisplayPanel>());
+    public ActionConditionsListPanel(final ActionType trigger, 
+            final ActionConditionsTreePanel treePanel) {
+        this(trigger, new ArrayList<ActionConditionDisplayPanel>(), treePanel);
     }
 
     /** 
@@ -68,13 +76,16 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
      * 
      * @param trigger Action trigger
      * @param conditions List of existing conditions;
+     * @param treePanel Condition tree panel.
      */
     public ActionConditionsListPanel(final ActionType trigger,
-            final List<ActionConditionDisplayPanel> conditions) {
+            final List<ActionConditionDisplayPanel> conditions,
+            final ActionConditionsTreePanel treePanel) {
         super();
 
         this.trigger = trigger;
         this.conditions = new ArrayList<ActionConditionDisplayPanel>(conditions);
+        this.treePanel = treePanel;
 
         initComponents();
         addListeners();
@@ -134,6 +145,7 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
         synchronized (conditions) {
             conditions.add(panel);
         }
+        treePanel.setConditionCount(conditions.size());
         layoutComponents();
     }
 
@@ -153,6 +165,8 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
                 }
             }
         }
+        
+        treePanel.setConditionCount(conditions.size());
 
         if (removeCondition != null) {
             conditionRemoved(removeCondition);
