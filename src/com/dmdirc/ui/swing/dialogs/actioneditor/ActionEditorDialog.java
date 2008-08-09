@@ -191,7 +191,7 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         substitutions.setVisible(false);
 
         triggersValid = action != null;
-        conditionsValid = action != null;
+        conditionsValid = true;
         nameValid = action != null;
         getOkButton().setEnabled(action != null);
 
