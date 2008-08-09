@@ -24,9 +24,9 @@ package com.dmdirc.addons.dcc;
 
 import java.net.Socket;
 import java.net.ServerSocket;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.io.IOException;
+
 /**
  * This class handles the main "grunt work" of DCC, subclasses process the data
  * received by this class.
@@ -35,16 +35,17 @@ import java.io.IOException;
  * @version $Id: DCC.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public abstract class DCC implements Runnable {
-	/** Address */
+
+    /** Address */
 	protected long address = 0;
 	/** Port */
 	protected int port = 0;
 	/** Socket used to communicate with */
 	protected Socket socket;
 	/** The Thread in use for this */
-	private volatile Thread myThread = null;
+	private volatile Thread myThread;
 	/** The current socket in use is this is a listen socket */
-	private ServerSocket serverSocket = null;
+	private ServerSocket serverSocket;
 	/** Are we already running? */
 	protected boolean running = false;
 	/** Are we a listen socket? */
@@ -75,17 +76,23 @@ public abstract class DCC implements Runnable {
 		} catch (IOException uhe) {
 			return;
 		}
+
 		myThread = new Thread(this);
 		myThread.start();
 	}
 	
 	/**
 	 * Start a listen socket rather than a connect socket.
-	 */
+     *
+     * @throws IOException If the socket couldn't be opened
+     */
 	public void listen() throws IOException {
 		listen = true;
-		serverSocket = new ServerSocket(0, 1);
-		connect();
+
+        synchronized (this) {
+            serverSocket = new ServerSocket(0, 1);
+            connect();
+        }
 	}
 	
 	/**
@@ -98,24 +105,26 @@ public abstract class DCC implements Runnable {
 	 */
 	public void listen(final int startPort, final int endPort) throws IOException {
 		listen = true;
-		
-		for (int i = startPort; i <= endPort; ++i) {
-			try {
-				serverSocket = new ServerSocket(i, 1);
-				// Found a socket we can use!
-				break;
-			} catch (IOException ioe) {
-				// Try next socket.
-			} catch (SecurityException se) {
-				// Try next socket.
-			}
-		}
-		
-		if (serverSocket == null) {
-			throw new IOException("No available sockets in range "+startPort+":"+endPort);
-		} else {
-			connect();
-		}
+
+        synchronized (this) {
+            for (int i = startPort; i <= endPort; ++i) {
+                try {
+                    serverSocket = new ServerSocket(i, 1);
+                    // Found a socket we can use!
+                    break;
+                } catch (IOException ioe) {
+                    // Try next socket.
+                } catch (SecurityException se) {
+                    // Try next socket.
+                }
+            }
+
+            if (serverSocket == null) {
+                throw new IOException("No available sockets in range "+startPort+":"+endPort);
+            } else {
+                connect();
+            }
+        }
 	}
 	
 	/**
@@ -129,21 +138,23 @@ public abstract class DCC implements Runnable {
 		// when the socket is closed.
 		Thread thisThread = Thread.currentThread();
 		while (myThread == thisThread) {
-			if (serverSocket == null) {
-				if (!handleSocket()) {
-					close();
-					break;
-				}
-			} else {
-				try {
-					socket = serverSocket.accept();
-					serverSocket.close();
-					socketOpened();
-				} catch (IOException ioe) {
-					break;
-				}
-				serverSocket = null;
-			}
+            synchronized (this) {
+                if (serverSocket == null) {
+                    if (!handleSocket()) {
+                        close();
+                        break;
+                    }
+                } else {
+                    try {
+                        socket = serverSocket.accept();
+                        serverSocket.close();
+                        socketOpened();
+                    } catch (IOException ioe) {
+                        break;
+                    }
+                    serverSocket = null;
+                }
+            }
 		}
 		// Socket closed
 		
@@ -155,14 +166,17 @@ public abstract class DCC implements Runnable {
 	 * Called to close the socket
 	 */
 	protected void close() {
-		if (serverSocket != null) {
-			try {
-				if (!serverSocket.isClosed()) {
-					serverSocket.close();
-				}
-			} catch (IOException ioe) { }
-			serverSocket = null;
-		}
+        synchronized (this) {
+            if (serverSocket != null) {
+                try {
+                    if (!serverSocket.isClosed()) {
+                        serverSocket.close();
+                    }
+                } catch (IOException ioe) { }
+                serverSocket = null;
+            }
+        }
+
 		if (socket != null) {
 			try {
 				if (!socket.isClosed()) {
