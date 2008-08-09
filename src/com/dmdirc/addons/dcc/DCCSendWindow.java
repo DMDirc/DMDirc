@@ -38,6 +38,8 @@ import net.miginfocom.swing.MigLayout;
 import com.dmdirc.parser.IRCParser;
 import com.dmdirc.parser.callbacks.interfaces.ISocketClosed;
 
+import java.io.File;
+
 /**
  * This class links DCC Send objects to a window.
  *
