@@ -80,8 +80,19 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 		if (args.length > 1) {
 			final String type = args[0];
 			final String target = args[1];
+			final IRCParser parser = server.getParser();
+			if (parser.isValidChannelName(target)) {
+				final Thread errorThread = new Thread(new Runnable() {
+					/** {@inheritDoc} */
+					@Override
+					public void run() {
+						JOptionPane.showMessageDialog(null, "You can't DCC a channel.", "DCC Error", JOptionPane.ERROR_MESSAGE);
+					}
+				});
+				errorThread.start();
+				return;
+			}
 			if (type.equalsIgnoreCase("chat")) {
-				final IRCParser parser = server.getParser();
 				final String myNickname = parser.getMyNickname();
 				final DCCChat chat = new DCCChat();
 				if (myPlugin.listen(chat)) {
