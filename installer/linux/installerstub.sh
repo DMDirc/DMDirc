@@ -390,7 +390,7 @@ if [ -e "${TEMPDIR}/setup.sh" ]; then
 	if [ $? -eq 0 ]; then
 		echo "Setup completed."
 	else
-		echo "Setup failed."
+		echo "Setup did not complete."
 	fi
 else
 	echo "No setup.sh found. This was pointless?"

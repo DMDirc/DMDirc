@@ -406,6 +406,7 @@ var
 	params: String = '';
 	dir: String = '';
 	Reg: TRegistry;
+	result: Integer;
 begin
 	{$IFDEF LAZARUS}
 		Application.Initialize;
@@ -469,14 +470,16 @@ begin
 			end
 			else begin
 				// Try again now that java is installed.
-				ExecAndWait(javaCommand+' -cp DMDirc.jar com.dmdirc.installer.Main '+params);
+				result := ExecAndWait(javaCommand+' -cp DMDirc.jar com.dmdirc.installer.Main '+params);
 			end;
 		end
 		else begin
 			// Java is the right version, run the installer
-			ExecAndWait(javaCommand+' -cp DMDirc.jar com.dmdirc.installer.Main '+params);
+			result := ExecAndWait(javaCommand+' -cp DMDirc.jar com.dmdirc.installer.Main '+params);
 		end;
-end
+		if result = 0 then dowriteln('Installation completed.')
+		else dowriteln('Installation did not complete.')
+	end
 	else begin
 		dowriteln('Failed!');
 		errorMessage := errorMessage+'DMDirc.jar was not found.';

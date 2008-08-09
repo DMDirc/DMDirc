@@ -167,20 +167,14 @@ showHelp() {
 	echo "---------------------"
 	echo "-h, --help                Help information"
 	echo "-r, --release [version]   This is a release"
-#	echo "-s, --script              Don't use installer.jar (not implemented yet)"
 	echo "---------------------"
 	exit 0;
 }
 
 # Check for some CLI params
-scriptOnly="false"
 isRelease=""
 while test -n "$1"; do
 	case "$1" in
-		--script|-s)
-			scriptOnly="true"
-			shift
-			;;
 		--release|-r)
 			shift
 			isRelease=${1}
@@ -197,23 +191,19 @@ if [ "${isRelease}" != "" ]; then
 fi
 
 if [ -e "DMDirc.jar" ]; then
-	if [ "${scriptOnly}" = "true" ]; then
-		echo "Script-only install requested."
-	else
-		echo "Checking java version.."
-		${JAVA} -cp DMDirc.jar com.dmdirc.installer.Main --help >/dev/null
+	echo "Checking java version.."
+	${JAVA} -cp DMDirc.jar com.dmdirc.installer.Main --help >/dev/null
+	if [ $? -ne 0 ]; then
+		installjre "upgrade"
+		echo "Trying to run installer.."
+		${JAVA} -cp DMDirc.jar com.dmdirc.installer.Main ${isRoot}${isRelease}
 		if [ $? -ne 0 ]; then
-			installjre "upgrade"
-			echo "Trying to run installer.."
-			${JAVA} -cp DMDirc.jar com.dmdirc.installer.Main ${isRoot}${isRelease}
-			if [ $? -ne 0 ]; then
-				exit 1;
-			fi;
-		else
-			echo "Running installer.."
-			${JAVA} -cp DMDirc.jar com.dmdirc.installer.Main ${isRoot}${isRelease}
-		fi
-		exit 0;
+			exit 1;
+		fi;
+	else
+		echo "Running installer.."
+		${JAVA} -cp DMDirc.jar com.dmdirc.installer.Main ${isRoot}${isRelease}
+		exit $?
 	fi
 else
 	echo "No installer found!"
