@@ -67,9 +67,13 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener,
     /** Condition tree factory. */
     private ConditionTreeFactory treeFactory;
     /** Condition count. */
-    private int conditionCount;
+    private int conditionCount = 0;
+    /** Condition rule validator. */
+    private ConditionRuleValidator treeValidator;
 
-    /** Instantiates the panel. */
+    /** 
+     * Instantiates the panel.
+     */
     public ActionConditionsTreePanel() {
         super();
 
@@ -86,9 +90,9 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener,
         allButton = new JRadioButton("All of the conditions are true");
         oneButton = new JRadioButton("At least one of the conditions is true");
         customButton = new JRadioButton("The conditions match a custom rule");
+        treeValidator = new ConditionRuleValidator(conditionCount);
 
-        // TODO: Get the number of conditions properly, and update when needed.
-        rule = new ValidatingJTextField(new ConditionRuleValidator(1337));
+        rule = new ValidatingJTextField(treeValidator);
 
         group.add(allButton);
         group.add(oneButton);
@@ -221,6 +225,17 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener,
             treeFactory = ConditionTreeFactory.getFactory(tree, conditionCount);
             selectTreeButton();
         }
+    }
+    
+    /**
+     * Sets the new condition count.
+     * 
+     * @param conditionCount new condition count.
+     */
+    public void setConditionCount(final int conditionCount) {
+        this.conditionCount = conditionCount;
+        treeValidator.setArgs(conditionCount);
+        rule.checkError();
     }
 
     /** {@inheritDoc} */

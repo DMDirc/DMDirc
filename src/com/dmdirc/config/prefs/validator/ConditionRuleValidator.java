@@ -41,6 +41,15 @@ public class ConditionRuleValidator implements Validator<String> {
     public ConditionRuleValidator(final int args) {
         this.args = args;
     }
+    
+    /**
+     * Updates the number of arguments used to validate the condition tree.
+     * 
+     * @param args New number of arguments
+     */
+    public void setArgs(final int args) {
+        this.args = args;
+    }
 
     /** {@inheritDoc} */
     @Override
