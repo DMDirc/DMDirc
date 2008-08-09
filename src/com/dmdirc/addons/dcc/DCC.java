@@ -36,8 +36,7 @@ import java.util.concurrent.Semaphore;
  * @version $Id: DCC.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public abstract class DCC implements Runnable {
-
-    /** Address. */
+	/** Address. */
 	protected long address = 0;
 	/** Port. */
 	protected int port = 0;
@@ -45,38 +44,38 @@ public abstract class DCC implements Runnable {
 	protected Socket socket;
 	/** The Thread in use for this. */
 	private volatile Thread myThread;
-    /** Are we already running? */
+	/** Are we already running? */
 	protected boolean running = false;
 	/** Are we a listen socket? */
 	protected boolean listen = false;
 
-    /**
-     * The current socket in use is this is a listen socket. This reference
-     * may be changed if and only if exactly one permit from the
-     * <code>serverSocketSem</code> and <code>serverListenignSem</code>
-     * semaphores is held by the thread doing the modification.
-     */
+	/**
+	 * The current socket in use if this is a listen socket.
+	 * This reference may be changed if and only if exactly one permit from the
+	 * <code>serverSocketSem</code> and <code>serverListenignSem</code>
+	 * semaphores is held by the thread doing the modification.
+	 */
 	private ServerSocket serverSocket;
 
-    /**
-     * Semaphore to control write access to ServerSocket. If an object acquires
-     * a permit from the <code>serverSocketSem</code>, then
-     * <code>serverSocket</code> is <em>guaranteed</em> not to be externally
-     * modified until that permit is released, <em>unless</em> the object also
-     * acquires a permit from the <code>serverListeningSem</code>.
-     */
-    private final Semaphore serverSocketSem = new Semaphore(1);
+	/**
+	 * Semaphore to control write access to ServerSocket.
+	 * If an object acquires a permit from the <code>serverSocketSem</code>, then
+	 * <code>serverSocket</code> is <em>guaranteed</em> not to be externally
+	 * modified until that permit is released, <em>unless</em> the object also
+	 * acquires a permit from the <code>serverListeningSem</code>.
+	 */
+	private final Semaphore serverSocketSem = new Semaphore(1);
 
-    /**
-     * Semaphore used when we're blocking waiting for connections. If an object
-     * acquires a permit from the <code>serverListeningSem</code>, then it is
-     * <em>guaranteed</em> that the {@link #run()} method is blocking waiting
-     * for incoming connections. In addition, it is <em>guaranteed</em> that
-     * the {@link #run()} method is holding the <code>serverSocketSem</code>
-     * permit, and it will continue holding that permit until it can reaquire
-     * the <code>serverListeningSem</code> permit.
-     */
-    private final Semaphore serverListeningSem = new Semaphore(0);
+	/**
+	 * Semaphore used when we're blocking waiting for connections.
+	 * If an object acquires a permit from the <code>serverListeningSem</code>,
+	 * then it is <em>guaranteed</em> that the {@link #run()} method is blocking
+	 * waiting for incoming connections. In addition, it is <em>guaranteed</em>
+	 * that the {@link #run()} method is holding the <code>serverSocketSem</code>
+	 * permit, and it will continue holding that permit until it can reaquire
+	 * the <code>serverListeningSem</code> permit.
+	 */
+	private final Semaphore serverListeningSem = new Semaphore(0);
 
 	/**
 	 * Creates a new instance of DCC.
@@ -110,17 +109,17 @@ public abstract class DCC implements Runnable {
 
 	/**
 	 * Start a listen socket rather than a connect socket.
-     *
-     * @throws IOException If the listen socket can't be created
-     */
+	 *
+	 * @throws IOException If the listen socket can't be created
+	 */
 	public void listen() throws IOException {
 		listen = true;
 
-        serverSocketSem.acquireUninterruptibly();
+		serverSocketSem.acquireUninterruptibly();
 		serverSocket = new ServerSocket(0, 1);
-        serverSocketSem.release();
+		serverSocketSem.release();
 
-        connect();
+		connect();
 	}
 
 	/**
@@ -136,9 +135,9 @@ public abstract class DCC implements Runnable {
 
 		for (int i = startPort; i <= endPort; ++i) {
 			try {
-                serverSocketSem.acquireUninterruptibly();
+				serverSocketSem.acquireUninterruptibly();
 				serverSocket = new ServerSocket(i, 1);
-                serverSocketSem.release();
+				serverSocketSem.release();
 				// Found a socket we can use!
 				break;
 			} catch (IOException ioe) {
@@ -167,30 +166,28 @@ public abstract class DCC implements Runnable {
 		Thread thisThread = Thread.currentThread();
 
 		while (myThread == thisThread) {
-            serverSocketSem.acquireUninterruptibly();
+			serverSocketSem.acquireUninterruptibly();
 
 			if (serverSocket == null) {
-                serverSocketSem.release();
-
+				serverSocketSem.release();
+				
 				if (!handleSocket()) {
 					close();
 					break;
 				}
 			} else {
 				try {
-                    serverListeningSem.release();
+					serverListeningSem.release();
 					socket = serverSocket.accept();
 					serverSocket.close();
 					socketOpened();
 				} catch (IOException ioe) {
 					break;
 				} finally {
-                    serverListeningSem.acquireUninterruptibly();
-
-                    serverSocket = null;
-
-                    serverSocketSem.release();
-                }				
+					serverListeningSem.acquireUninterruptibly();
+					serverSocket = null;
+					serverSocketSem.release();
+				}
 			}
 		}
 		// Socket closed
@@ -203,16 +200,15 @@ public abstract class DCC implements Runnable {
 	 * Called to close the socket
 	 */
 	protected void close() {
-        boolean haveSLS = false;
+		boolean haveSLS = false;
 
-        while (!serverSocketSem.tryAcquire() &&
-                !(haveSLS = serverListeningSem.tryAcquire())) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                // Do we care? I doubt we do! Should be unchecked damnit.
-            }
-        }
+		while (!serverSocketSem.tryAcquire() && !(haveSLS = serverListeningSem.tryAcquire())) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException ex) {
+				// Do we care? I doubt we do! Should be unchecked damnit.
+			}
+		}
 
 		if (serverSocket != null) {
 			try {
@@ -223,11 +219,11 @@ public abstract class DCC implements Runnable {
 			serverSocket = null;
 		}
 
-        if (haveSLS) {
-            serverListeningSem.release();
-        } else {
-            serverSocketSem.release();
-        }
+		if (haveSLS) {
+			serverListeningSem.release();
+		} else {
+			serverSocketSem.release();
+		}
 
 		if (socket != null) {
 			try {
