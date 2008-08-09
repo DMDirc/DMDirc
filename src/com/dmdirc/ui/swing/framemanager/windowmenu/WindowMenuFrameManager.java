@@ -111,6 +111,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
         checkToggleState();
 
         separator = new JPopupMenu.Separator();
+        separator.setVisible(false);
         add(separator);
 
         itemCount = getMenuComponentCount();

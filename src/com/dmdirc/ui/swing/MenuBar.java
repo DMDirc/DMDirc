@@ -221,17 +221,10 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
     /** {@inheritDoc} */
     @Override
     public void menuSelected(final MenuEvent e) {
-        ssd.setEnabled(false);
-        csd.setEnabled(false);
         final Window activeWindow = Main.getUI().getActiveWindow();
-        if (activeWindow != null) {
-            if (activeWindow instanceof ChannelFrame) {
-                csd.setEnabled(true);
-            }
-            if (activeWindow.getContainer().getServer() != null) {
-                ssd.setEnabled(true);
-            }
-        }
+
+        ssd.setEnabled(activeWindow != null && activeWindow.getContainer().getServer() != null);
+        csd.setEnabled(activeWindow instanceof ChannelFrame);
     }
 
     /** {@inheritDoc} */
