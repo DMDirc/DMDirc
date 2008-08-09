@@ -53,7 +53,7 @@ public final class ShowTopic extends ChannelCommand implements ExternalCommand {
             if (cChannel.getTopic().isEmpty()) {
                 sendLine(origin, isSilent, "channelNoTopic", cChannel);
             } else {
-                sendLine(origin, isSilent, "channelJoinTopic", cChannel.getTopic(),
+                sendLine(origin, isSilent, "channelTopicDiscovered", cChannel.getTopic(),
                         cChannel.getTopicUser(), 1000 * cChannel.getTopicTime(), cChannel);
             }
         } else {
