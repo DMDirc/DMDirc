@@ -80,8 +80,6 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
 
         initComponents();
         initListeners();
-        pack();
-        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
     }
 
     /**
@@ -91,7 +89,8 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
      */
     public static void showServerSettingsDialog(final Server server) {
         me = getServerSettingsDialog(server);
-
+        
+        me.pack();
         me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         me.setVisible(true);
         me.requestFocus();

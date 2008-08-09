@@ -84,7 +84,6 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
 
         initComponents();
         initListeners();
-        pack();
     }
 
     /**
@@ -95,6 +94,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
     public static void showChannelSettingsDialog(final Channel channel) {
         me = getChannelSettingsDialog(channel);
 
+        me.pack();
         me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         me.setVisible(true);
         me.requestFocus();
