@@ -163,13 +163,10 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         table.setAutoCreateColumnsFromModel(true);
         table.setColumnSelectionAllowed(false);
         table.setCellSelectionEnabled(false);
-        table.setDragEnabled(false);
         table.setFillsViewportHeight(false);
         table.setRowSelectionAllowed(true);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.getRowSorter().toggleSortOrder(0);
-
-        table.getTableHeader().setReorderingAllowed(false);
 
         scrollPane.setViewportView(table);
 

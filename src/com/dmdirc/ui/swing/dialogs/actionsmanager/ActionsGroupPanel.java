@@ -174,13 +174,11 @@ public final class ActionsGroupPanel extends JPanel implements ActionListener,
         table.setAutoCreateColumnsFromModel(true);
         table.setColumnSelectionAllowed(false);
         table.setCellSelectionEnabled(false);
-        table.setDragEnabled(false);
         table.setFillsViewportHeight(false);
         table.setRowSelectionAllowed(true);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.getRowSorter().toggleSortOrder(0);
 
-        table.getTableHeader().setReorderingAllowed(false);
         edit.setEnabled(false);
         delete.setEnabled(false);
         add.setEnabled(group != null);

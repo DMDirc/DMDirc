@@ -124,12 +124,10 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
         table.setAutoCreateColumnsFromModel(true);
         table.setColumnSelectionAllowed(false);
         table.setCellSelectionEnabled(false);
-        table.setDragEnabled(false);
         table.setFillsViewportHeight(false);
         table.setRowSelectionAllowed(true);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.getRowSorter().toggleSortOrder(0);
-        table.getTableHeader().setReorderingAllowed(false);
         details = new HashMap<URI, URLProtocolPanel>();
         empty = new URLProtocolPanel(null, true);
         activeComponent = empty;
