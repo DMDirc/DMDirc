@@ -233,6 +233,11 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
             final Window window = Main.getUI().getActiveWindow();
             if (window != null) {
                 try {
+                    if (window.isMaximum()) {
+                        ((TextFrame) Main.getUI().getActiveWindow()).restore();
+                    } else {
+                        ((TextFrame) Main.getUI().getActiveWindow()).maximise();
+                    }
                     window.setMaximum(!window.isMaximum());
                 } catch (PropertyVetoException ex) {
                     Logger.userError(ErrorLevel.LOW, "Unable to maximise window");

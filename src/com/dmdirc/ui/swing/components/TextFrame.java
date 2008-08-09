@@ -886,7 +886,43 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             @Override
             public void run() {
                 try {
+                    setMaximum(false);
                     setIcon(true);
+                } catch (PropertyVetoException ex) {
+                    Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
+                }
+
+            }
+        });
+    }
+    
+    /** Maximises the frame. */
+    public void maximise() {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    setIcon(false);
+                    setMaximum(true);
+                    setVisible(true);
+                } catch (PropertyVetoException ex) {
+                    Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
+                }
+
+            }
+        });
+    }
+    
+    /** restores the frame. */
+    public void restore() {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    setIcon(false);
+                    setMaximum(false);
                 } catch (PropertyVetoException ex) {
                     Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
                 }
