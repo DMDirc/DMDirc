@@ -36,14 +36,14 @@ import net.miginfocom.swing.MigLayout;
  * @author chris
  */
 public class CustomFrame extends TextFrame {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 2;
-    
+
     /**
      * Creates a new instance of CustomFrame.
      *
@@ -51,23 +51,25 @@ public class CustomFrame extends TextFrame {
      */
     public CustomFrame(final FrameContainer owner) {
         super(owner);
-        
+
         initComponents();
+        
+        addKeyListener(this);
     }
-    
+
     /**
      * Initialises components in this frame.
      */
     private void initComponents() {
         setTitle("Custom Frame");
-        
+
         getContentPane().setLayout(new MigLayout("ins 0, fill, hidemode 3, wrap 1"));
         getContentPane().add(getTextPane(), "grow");
         getContentPane().add(getSearchBar(), "growx, pushx");
-        
+
         pack();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public PopupType getNicknamePopupType() {
@@ -85,7 +87,7 @@ public class CustomFrame extends TextFrame {
     public PopupType getHyperlinkPopupType() {
         return null;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public PopupType getNormalPopupType() {
@@ -95,7 +97,6 @@ public class CustomFrame extends TextFrame {
     /** {@inheritDoc} */
     @Override
     public void addCustomPopupItems(final JPopupMenu popupMenu) {
-        //Add no custom popup items
+    //Add no custom popup items
     }
-    
 }
