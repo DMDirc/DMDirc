@@ -146,7 +146,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
 
     /** Lays out the dialog. */
     private void layoutComponents() {
-        getContentPane().setLayout(new MigLayout("fill, wmin 600, wmax 600"));
+        getContentPane().setLayout(new MigLayout("fill, wmin 700, wmax 700"));
 
         getContentPane().add(infoLabel, "wrap, spanx 2");
         getContentPane().add(new JScrollPane(profileList),
