@@ -196,7 +196,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         ActionManager.addListener(this, CoreActionType.ACTION_CREATED);
         ActionManager.addListener(this, CoreActionType.ACTION_UPDATED);
         ActionManager.addListener(this, CoreActionType.ACTION_DELETED);
-        
+
         addWindowListener(new WindowAdapter() {
 
             /** {@inheritDoc} */
@@ -302,9 +302,12 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         } else if (e.getSource() == delete) {
             delGroup();
         } else if (e.getSource() == getOkButton() || e.getSource() ==
-                getCancelButton()) { 
+                getCancelButton()) {
             if (ActionEditorDialog.isOpen()) {
-                if (JOptionPane.showConfirmDialog(this, "The action editor is currently open, do you want to cotinue and lose any unsaved changes?", "Confirm close?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                if (JOptionPane.showConfirmDialog(this,
+                        "The action editor is currently open, do you want to cotinue and lose any unsaved changes?",
+                        "Confirm close?", JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                     ActionEditorDialog.getActionEditorDialog(this, "").dispose();
                 } else {
                     return;
@@ -324,10 +327,11 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
      */
     @SuppressWarnings("unchecked")
     private void addGroup() {
-        final StandardInputDialog inputDialog = new StandardInputDialog(SwingController.getMainFrame(),
-                false, "New action group",
+        final StandardInputDialog inputDialog = new StandardInputDialog(this,
+                ModalityType.DOCUMENT_MODAL, "New action group",
                 "Please enter the name of the new action group",
-                new ValidatorChain<String>(new FileNameValidator(), new ActionGroupValidator())) {
+                new ValidatorChain<String>(new FileNameValidator(),
+                new ActionGroupValidator())) {
 
             /**
              * A version number for this class. It should be changed whenever the class
@@ -366,10 +370,12 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
     private void editGroup() {
         final String oldName =
                 ((ActionGroup) groups.getSelectedValue()).getName();
-        final StandardInputDialog inputDialog = new StandardInputDialog(SwingController.getMainFrame(), false,
+        final StandardInputDialog inputDialog = new StandardInputDialog(this,
+                ModalityType.DOCUMENT_MODAL,
                 "Edit action group",
                 "Please enter the new name of the action group",
-                new ValidatorChain<String>(new FileNameValidator(), new ActionGroupValidator())) {
+                new ValidatorChain<String>(new FileNameValidator(),
+                new ActionGroupValidator())) {
 
             /**
              * A version number for this class. It should be changed whenever the class
@@ -460,7 +466,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
             }
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void dispose() {

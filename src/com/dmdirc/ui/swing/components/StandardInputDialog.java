@@ -29,6 +29,7 @@ import com.dmdirc.config.prefs.validator.Validator;
 import com.dmdirc.ui.swing.UIUtilities;
 import java.awt.Component;
 import java.awt.Frame;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -85,6 +86,43 @@ public abstract class StandardInputDialog extends StandardDialog {
      */
     public StandardInputDialog(Frame owner, boolean modal, final String title,
             final String message, final Validator<String> validator) {
+        this(owner,
+                (modal) ? ModalityType.APPLICATION_MODAL : ModalityType.MODELESS,
+                title, message, validator);
+    }
+    
+    /**
+     * Instantiates a new standard input dialog.
+     * 
+     * @param owner Dialog owner
+     * @param modal modality type
+     * @param title Dialog title
+     * @param message Dialog message
+     */
+    public StandardInputDialog(Window owner, ModalityType modal, final String title,
+            final String message) {
+        this(owner, modal, title, message, new Validator<String>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public ValidationResponse validate(final String object) {
+                return new ValidationResponse();
+            }
+        });
+    }
+
+    /**
+     * Instantiates a new standard input dialog.
+     * 
+     * @param owner Dialog owner
+     * @param modal modality type
+     * @param validator Textfield validator
+     * @param title Dialog title
+     * @param message Dialog message
+     */
+    public StandardInputDialog(Window owner, ModalityType modal,
+            final String title, final String message,
+            final Validator<String> validator) {
         super(owner, modal);
 
         this.validator = validator;
@@ -92,7 +130,7 @@ public abstract class StandardInputDialog extends StandardDialog {
 
         setTitle(title);
         setDefaultCloseOperation(StandardInputDialog.DISPOSE_ON_CLOSE);
-        
+
         initComponents();
         addListeners();
         layoutComponents();
@@ -199,7 +237,7 @@ public abstract class StandardInputDialog extends StandardDialog {
     public final void display() {
         display(getParent());
     }
-    
+
     /**
      * Displays the input dialog.
      * 

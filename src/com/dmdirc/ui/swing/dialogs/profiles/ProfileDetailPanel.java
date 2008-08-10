@@ -31,6 +31,7 @@ import com.dmdirc.config.prefs.validator.NotEmptyValidator;
 import com.dmdirc.config.prefs.validator.RegexStringValidator;
 import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
 
+import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -250,8 +251,8 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == addButton) {
-            new StandardInputDialog((MainFrame) Main.getUI().getMainWindow(),
-                    false, "New Alternate Nickname",
+            new StandardInputDialog(ProfileManagerDialog.getProfileManagerDialog(),
+                    ModalityType.DOCUMENT_MODAL, "New Alternate Nickname",
                     "Please enter the name for alternate nickname",
                     new RegexStringValidator(NICKNAME_REGEX,
                     "Nicknames must only contain letters, numbers and []{}|-^\\.`_")) {
@@ -278,8 +279,8 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
             }.display();
         } else if (e.getSource() == editButton) {
             final StandardInputDialog dialog = new StandardInputDialog(
-                    (MainFrame) Main.getUI().getMainWindow(),
-                    false, "New Alternate Nickname",
+                    ProfileManagerDialog.getProfileManagerDialog(),
+                    ModalityType.DOCUMENT_MODAL, "Edit Alternate Nickname",
                     "Please enter the name for alternate nickname",
                     new RegexStringValidator(NICKNAME_REGEX,
                     "Ident must only contain letters, numbers and []{}|-^\\.")) {
