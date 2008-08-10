@@ -28,6 +28,8 @@ import com.dmdirc.ui.swing.components.StandardDialog;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -93,6 +95,7 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
     private ActionEditorDialog(final Window window, final String group,
             final Action action) {
         super(window, ModalityType.MODELESS);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setTitle("DMDirc: Action Editor");
 
         this.group = group;
@@ -219,16 +222,25 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         name.addPropertyChangeListener("validationResult", this);
         triggers.addPropertyChangeListener("validationResult", this);
         conditions.addPropertyChangeListener("validationResult", this);
+        
+        addWindowListener(new WindowAdapter() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void windowClosing(final WindowEvent e) {
+                getCancelButton().doClick();
+            }
+        });
     }
 
     /** Lays out the components. */
     private void layoutComponents() {
-        setLayout(new MigLayout("fill, hidemode 3, wrap 2, pack, hmax 80sp"));
+        setLayout(new MigLayout("fill, hidemode 3, wrap 2, pack, hmax 80sp, wmin 600, wmax 60sp"));
 
-        add(name, "grow, wmax 250");
-        add(conditions, "spany 3, grow");
-        add(triggers, "grow, wmax 250");
-        add(response, "grow, wmax 250");
+        add(name, "grow, wmin 40%");
+        add(conditions, "spany 3, grow, wmin 60%");
+        add(triggers, "grow, wmin 40%");
+        add(response, "grow, wmin 40%");
         add(substitutions, "spanx 2, grow");
         add(showSubstitutions, "left, sgx button, split 3, spanx 2");
         add(getLeftButton(), "right, sgx button, gapleft push");

@@ -212,7 +212,7 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
 
     /** Lays out the components. */
     private void layoutComponents() {
-        setLayout(new MigLayout("wrap 2"));
+        setLayout(new MigLayout("wrap 2, wmax 400, pack"));
 
         add(new JLabel("Argument:"), "align right");
         add(arguments, "growx");
