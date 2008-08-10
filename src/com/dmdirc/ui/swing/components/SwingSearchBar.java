@@ -46,6 +46,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -53,7 +55,7 @@ import net.miginfocom.swing.MigLayout;
  * Status bar, shows message and info on the gui.
  */
 public final class SwingSearchBar extends JPanel implements ActionListener,
-        KeyListener, SearchBar {
+        KeyListener, SearchBar, DocumentListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -167,6 +169,9 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
     @Override
     public void open() {
         SwingUtilities.invokeLater(new Runnable() {
+            
+            /** {@inheritDoc} */
+            @Override
             public void run() {
                 setVisible(true);
                 searchBox.setBackground(ColourManager.getColour("FFFFFF"));
@@ -180,6 +185,9 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
     @Override
     public void close() {
         SwingUtilities.invokeLater(new Runnable() {
+            
+            /** {@inheritDoc} */
+            @Override
             public void run() {
                 setVisible(false);
                 if (parent instanceof InputTextFrame) {
@@ -255,7 +263,6 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
     @Override
     public void keyPressed(final KeyEvent event) {
         if (event.getSource() == searchBox) {
-            searchBox.setBackground(ColourManager.getColour("FFFFFF"));
             if (event.getKeyCode() == KeyEvent.VK_ESCAPE) {
                 close();
             } else if (event.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -291,6 +298,9 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
     /** Focuses the search box in the search bar. */
     public void getFocus() {
         SwingUtilities.invokeLater(new Runnable() {
+            
+            /** {@inheritDoc} */
+            @Override
             public void run() {
                 searchBox.requestFocus();
                 searchBox.setSelectionStart(0);
@@ -310,5 +320,23 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
     @Override
     public boolean isCaseSensitive() {
         return caseCheck.isSelected();
+    }
+
+    /** {@inheritDoc}. */
+    @Override
+    public void insertUpdate(final DocumentEvent e) {
+        searchBox.setBackground(ColourManager.getColour("FFFFFF"));
+    }
+
+    /** {@inheritDoc}. */
+    @Override
+    public void removeUpdate(final DocumentEvent e) {
+        searchBox.setBackground(ColourManager.getColour("FFFFFF"));
+    }
+
+    /** {@inheritDoc}. */
+    @Override
+    public void changedUpdate(final DocumentEvent e) {
+        //Ignore
     }
 }
