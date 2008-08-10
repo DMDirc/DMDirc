@@ -52,39 +52,44 @@ import java.util.ArrayList;
  */
 public final class Apple implements InvocationHandler, ActionListener {
 
-    /** ApplicationEvent. No idea what it's for. */
+	/**
+	 * Dummy interface for ApplicationEvent from the Apple UI on non-Apple platforms.
+	 * http://developer.apple.com/documentation/Java/Reference/1.5.0/appledoc/api/com/apple/eawt/ApplicationEvent.html
+	 */
 	private interface ApplicationEvent {
-        
-        /**
-         * Retrieves a file name of some sort. Who knows why.
-         * 
-         * @return Some filename related to this event
-         */
+		/**
+		 * Provides the filename associated with a particular AppleEvent.
+		 *
+		 * @return The filename associated with a particular AppleEvent.
+		 */
 		String getFilename();
+	
+		/**
+		 * Whether or not this event is handled.
+		 *
+		 * @return True if the event is handled, false otherwise
+		 */
+		boolean isHandled();
+
+		/**
+		 * Sets the handled state of this event.
+		 * 
+		 * @param handled The new 'handled' state for this event.
+		 */
+		void setHandled(boolean handled);
+
+		/**
+		 * Retrieves the source of this event.
+		 *
+		 * @return This event's source
+		 */
+		Object getSource();
 		
-        /**
-         * Whether or not this event is handled.
-         * 
-         * @return True if the event is handled, false otherwise
-         */
-        boolean isHandled();
-		
-        /**
-         * Sets the handled state of this event.
-         * 
-         * @param handled The new 'handled' state for this event.
-         */
-        void setHandled(boolean handled);
-		
-        /**
-         * Retrieves the source of this event.
-         * 
-         * @return This event's source
-         */
-        Object getSource();
-        
-        /** {@inheritDoc}. This is overriden here because: ________. */
-        @Override
+		/**
+		 * Get a string representation of this object.
+		 *
+		 * @return A string representation of this object.
+		 */
 		String toString();
 	}
 	
@@ -123,14 +128,13 @@ public final class Apple implements InvocationHandler, ActionListener {
 	
 	/**
 	 * Create the Apple class.
-     * 
 	 * <p>This attempts to:</p>
-     * 
+	 *
 	 * <ul>
-     *  <li>load the JNI library</li>
+	 *  <li>load the JNI library</li>
 	 *  <li>register the callback</li>
 	 *  <li>register a CLIENT_OPENED listener</li>
-     * </ul>
+	 * </ul>
 	 */
 	private Apple() {
 		if (isApple()) {
@@ -177,14 +181,10 @@ public final class Apple implements InvocationHandler, ActionListener {
 				final Class<?> app = Class.forName("com.apple.cocoa.application.NSApplication");
 				final Method method = app.getMethod("sharedApplication", new Class[0]);
 				nsApplication = method.invoke(null, new Object[0]);
-			} catch (ClassNotFoundException ex) {
-                // Probably not on OS X, do nothing.
-			} catch (NoSuchMethodException ex) {
-                // Probably not on OS X, do nothing.
-			} catch (IllegalAccessException ex) {
-                // Probably not on OS X, do nothing.
-			} catch (InvocationTargetException ex) {
-                // Probably not on OS X, do nothing.
+			} catch (ClassNotFoundException ex) { // Probably not on OS X, do nothing.
+			} catch (NoSuchMethodException ex) { // Probably not on OS X, do nothing.
+			} catch (IllegalAccessException ex) { // Probably not on OS X, do nothing.
+			} catch (InvocationTargetException ex) { // Probably not on OS X, do nothing.
 			}
 		}
 		return nsApplication;
@@ -205,8 +205,7 @@ public final class Apple implements InvocationHandler, ActionListener {
 	 * @return true if we are using the OS X look and feel
 	 */
 	public static boolean isAppleUI() {
-		return isApple() && UIManager.getLookAndFeel().getClass().getName()
-                .equals("apple.laf.AquaLookAndFeel");
+		return isApple() && UIManager.getLookAndFeel().getClass().getName().equals("apple.laf.AquaLookAndFeel");
 	}
 
 	/**
@@ -216,16 +215,14 @@ public final class Apple implements InvocationHandler, ActionListener {
 		if (!isApple()) { return; }
 		
 		// Set some Apple OS X related stuff from http://tinyurl.com/6xwuld
-
-        final String aaText = System.getProperty("swing.aatext").equalsIgnoreCase("true")
-                ? "on" : "off";
-        
+		final String aaText = System.getProperty("swing.aatext").equalsIgnoreCase("true") ? "on" : "off";
+		
 		if (IdentityManager.getGlobalConfig().getOptionBool("ui", "antialias")) {
 			System.setProperty("apple.awt.antialiasing", "on");
 		} else {
 			System.setProperty("apple.awt.antialiasing", "off");
 		}
-        
+		
 		System.setProperty("apple.awt.textantialiasing", aaText);
 		System.setProperty("apple.awt.showGrowBox", "true");
 		System.setProperty("apple.laf.useScreenMenuBar", "true");
@@ -244,20 +241,13 @@ public final class Apple implements InvocationHandler, ActionListener {
 		if (!isApple()) { return; }
 		
 		try {
-			final Field type = isCritical ? getNSApplication().getClass()
-                    .getField("UserAttentionRequestCritical") : 
-                    getNSApplication().getClass().getField("Informational");
-			final Method method = getNSApplication().getClass()
-                    .getMethod("requestUserAttention", new Class[]{Integer.TYPE});
+			final Field type = isCritical ? getNSApplication().getClass().getField("UserAttentionRequestCritical") : getNSApplication().getClass().getField("Informational");
+			final Method method = getNSApplication().getClass().getMethod("requestUserAttention", new Class[]{Integer.TYPE});
 			method.invoke(getNSApplication(), new Object[]{type.get(null)});
-		} catch (NoSuchFieldException ex) {
-            // Probably not on OS X, do nothing.
-		} catch (NoSuchMethodException ex) {
-            // Probably not on OS X, do nothing.
-		} catch (IllegalAccessException ex) {
-            // Probably not on OS X, do nothing.
-		} catch (InvocationTargetException ex) {
-            // Probably not on OS X, do nothing.
+		} catch (NoSuchFieldException ex) { // Probably not on OS X, do nothing.
+		} catch (NoSuchMethodException ex) { // Probably not on OS X, do nothing.
+		} catch (IllegalAccessException ex) { // Probably not on OS X, do nothing.
+		} catch (InvocationTargetException ex) { // Probably not on OS X, do nothing.
 		}
 	}
 	
@@ -271,63 +261,48 @@ public final class Apple implements InvocationHandler, ActionListener {
 		
 		try {
 			final Class listenerClass = Class.forName("com.apple.eawt.ApplicationListener");
-			final Object listener = Proxy.newProxyInstance(getClass().getClassLoader(),
-                    new Class[]{listenerClass}, this);
+			final Object listener = Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{listenerClass}, this);
 			
-			Method method = getApplication().getClass().getMethod("addApplicationListener",
-                    new Class[]{listenerClass});
+			Method method = getApplication().getClass().getMethod("addApplicationListener", new Class[]{listenerClass});
 			method.invoke(getApplication(), listener);
 			
 			isListener = true;
 			
-			method = getApplication().getClass().getMethod("setEnabledPreferencesMenu",
-                    new Class[]{Boolean.TYPE});
+			method = getApplication().getClass().getMethod("setEnabledPreferencesMenu", new Class[]{Boolean.TYPE});
 			method.invoke(getApplication(), new Object[]{Boolean.TRUE});
 			
-			method = getApplication().getClass().getMethod("setEnabledAboutMenu",
-                    new Class[]{Boolean.TYPE});
+			method = getApplication().getClass().getMethod("setEnabledAboutMenu", new Class[]{Boolean.TYPE});
 			method.invoke(getApplication(), new Object[]{Boolean.TRUE});
-			
 			return true;
-		} catch (ClassNotFoundException ex) {
-            // Probably not on OS X, do nothing.
-		} catch (NoSuchMethodException ex) {
-            // Probably not on OS X, do nothing.
-		} catch (IllegalAccessException ex) {
-            // Probably not on OS X, do nothing.
-		} catch (InvocationTargetException ex) {
-            // Probably not on OS X, do nothing.
+		} catch (ClassNotFoundException ex) { // Probably not on OS X, do nothing.
+		} catch (NoSuchMethodException ex) { // Probably not on OS X, do nothing.
+		} catch (IllegalAccessException ex) { // Probably not on OS X, do nothing.
+		} catch (InvocationTargetException ex) { // Probably not on OS X, do nothing.
 		}
-        
 		return false;
 	}
 	
 	/** {@inheritDoc} */
 	@Override
-	public Object invoke(final Object proxy, final Method method,
-            final Object[] args) throws Throwable {
+	public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
 		if (!isApple()) { return null; }
 		
 		try {
-			final ApplicationEvent event
-                    = (ApplicationEvent) Proxy.newProxyInstance(getClass().getClassLoader(),
-                    new Class[]{ApplicationEvent.class}, new InvocationHandler() {
-                /** {@inheritDoc} */
-                @Override
+			final ApplicationEvent event = (ApplicationEvent) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{ApplicationEvent.class}, new InvocationHandler() {
+				/** {@inheritDoc} */
+				@Override
 				public Object invoke(final Object p, final Method m, final Object[] a) throws Throwable {
-					return args[0].getClass().getMethod(m.getName(),
-                            m.getParameterTypes()).invoke(args[0], a);
+					return args[0].getClass().getMethod(m.getName(), m.getParameterTypes()).invoke(args[0], a);
 				}
 			});
-			Method thisMethod = this.getClass().getMethod(method.getName(),
-                    new Class[]{ApplicationEvent.class});
+			Method thisMethod = this.getClass().getMethod(method.getName(), new Class[]{ApplicationEvent.class});
 			return thisMethod.invoke(this, event);
 		} catch (NoSuchMethodException e) {
 			if (method.getName().equals("equals") && args.length == 1) {
 				return Boolean.valueOf(proxy == args[0]);
 			}
 		}
-        
+		
 		return null;
 	}
 	
@@ -426,8 +401,7 @@ public final class Apple implements InvocationHandler, ActionListener {
 	
 	/** {@inheritDoc} */
 	@Override
-	public void processEvent(final ActionType type, final StringBuffer format,
-            final Object... arguments) {
+	public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
 		if (type == CoreActionType.CLIENT_OPENED) {
 			synchronized (addresses) {
 				clientOpened = true;
@@ -456,11 +430,10 @@ public final class Apple implements InvocationHandler, ActionListener {
 						addresses.add(addr);
 					} else {
 						// When the JNI callback is called there is no 
-                        // ContextClassLoader set, which causes an NPE in 
-                        // IconManager if no servers have been connected to yet.
+						// ContextClassLoader set, which causes an NPE in 
+						// IconManager if no servers have been connected to yet.
 						if (Thread.currentThread().getContextClassLoader() == null) {
-							Thread.currentThread().setContextClassLoader(
-                                    ClassLoader.getSystemClassLoader());
+							Thread.currentThread().setContextClassLoader(ClassLoader.getSystemClassLoader());
 						}
 						addr.connect();
 					}

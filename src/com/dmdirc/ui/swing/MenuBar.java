@@ -87,12 +87,14 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         menuItem.addActionListener(this);
         menu.add(menuItem);
 
-        menuItem = new JMenuItem();
-        menuItem.setText("Exit");
-        menuItem.setMnemonic('x');
-        menuItem.setActionCommand("Exit");
-        menuItem.addActionListener(this);
-        menu.add(menuItem);
+        if (!Apple.isAppleUI()) {
+            menuItem = new JMenuItem();
+            menuItem.setText("Exit");
+            menuItem.setMnemonic('x');
+            menuItem.setActionCommand("Exit");
+            menuItem.addActionListener(this);
+            menu.add(menuItem);
+        }
     }
 
     /**
