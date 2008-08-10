@@ -34,7 +34,6 @@ import com.dmdirc.config.prefs.validator.FileNameValidator;
 import com.dmdirc.config.prefs.validator.ValidatorChain;
 import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.MainFrame;
-import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.ui.swing.components.ListScroller;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.StandardInputDialog;
@@ -402,8 +401,8 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
             //Ignore
             }
         };
-        inputDialog.display(this);
         inputDialog.setText(oldName);
+        inputDialog.display(this);
     }
 
     /**

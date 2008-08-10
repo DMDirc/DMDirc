@@ -139,6 +139,7 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
         }
 
         final JScrollPane userModesSP = new JScrollPane(modesPanel);
+        userModesSP.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         userModesSP.setOpaque(UIUtilities.getTabbedPaneOpaque());
         userModesSP.getViewport().setOpaque(UIUtilities.getTabbedPaneOpaque());
 
