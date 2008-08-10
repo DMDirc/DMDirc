@@ -304,7 +304,6 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         } else if (e.getSource() == getOkButton() || e.getSource() ==
                 getCancelButton()) { 
             if (ActionEditorDialog.isOpen()) {
-                System.out.println("open");
                 if (JOptionPane.showConfirmDialog(this, "The action editor is currently open, do you want to cotinue and lose any unsaved changes?", "Confirm close?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                     ActionEditorDialog.getActionEditorDialog(this, "").dispose();
                 } else {
