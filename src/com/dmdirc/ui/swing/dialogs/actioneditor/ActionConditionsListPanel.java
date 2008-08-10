@@ -25,9 +25,13 @@ package com.dmdirc.ui.swing.dialogs.actioneditor;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.interfaces.ActionType;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import java.util.Map;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -36,7 +40,8 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Action conditions list panel.
  */
-public class ActionConditionsListPanel extends JPanel implements ActionConditionRemovalListener {
+public class ActionConditionsListPanel extends JPanel implements ActionConditionRemovalListener,
+        PropertyChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -50,6 +55,10 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
     private List<ActionConditionDisplayPanel> conditions;
     /** Condition tree panel. */
     private ActionConditionsTreePanel treePanel;
+    /** Condition validation results. */
+    private Map<ActionConditionDisplayPanel, Boolean> validations;
+    /** validates. */
+    private boolean validates = true;
 
     /** 
      * Instantiates the panel.
@@ -66,7 +75,7 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
      * @param trigger Action trigger
      * @param treePanel Condition tree panel.
      */
-    public ActionConditionsListPanel(final ActionType trigger, 
+    public ActionConditionsListPanel(final ActionType trigger,
             final ActionConditionsTreePanel treePanel) {
         this(trigger, new ArrayList<ActionConditionDisplayPanel>(), treePanel);
     }
@@ -82,6 +91,8 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
             final List<ActionConditionDisplayPanel> conditions,
             final ActionConditionsTreePanel treePanel) {
         super();
+
+        validations = new HashMap<ActionConditionDisplayPanel, Boolean>();
 
         this.trigger = trigger;
         this.conditions = new ArrayList<ActionConditionDisplayPanel>(conditions);
@@ -142,6 +153,9 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
         final ActionConditionDisplayPanel panel =
                 new ActionConditionDisplayPanel(condition, trigger);
         panel.addConditionListener(this);
+        panel.addPropertyChangeListener("validationResult", this);
+        validations.put(panel, panel.checkError());
+        propertyChange(null);
         synchronized (conditions) {
             conditions.add(panel);
         }
@@ -165,7 +179,7 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
                 }
             }
         }
-        
+
         treePanel.setConditionCount(conditions.size());
 
         if (removeCondition != null) {
@@ -196,7 +210,7 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
                 conditionList.add(condition.getCondition());
             }
         }
-        
+
         return conditionList;
     }
 
@@ -209,7 +223,7 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
         if (this.trigger == null) {
             conditions.clear();
         }
-        
+
         for (ActionConditionDisplayPanel panel : conditions) {
             panel.setTrigger(trigger);
         }
@@ -223,7 +237,9 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
     public void conditionRemoved(final ActionConditionDisplayPanel condition) {
         synchronized (conditions) {
             conditions.remove(condition);
+            validations.remove(condition);
         }
+        propertyChange(null);
         layoutComponents();
     }
 
@@ -233,5 +249,25 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
         for (ActionConditionDisplayPanel condition : conditions) {
             condition.setEnabled(enabled);
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void propertyChange(final PropertyChangeEvent evt) {
+        if (evt != null) {
+            validations.put((ActionConditionDisplayPanel) evt.getSource(),
+                    (Boolean) evt.getNewValue());
+        }
+
+        boolean pass = true;
+        for (boolean validation : validations.values()) {
+            if (!validation) {
+                pass = false;
+                break;
+            }
+        }
+        
+        firePropertyChange("validationResult", validates, pass);
+        validates = pass;
     }
 }

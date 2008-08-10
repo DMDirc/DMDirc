@@ -100,6 +100,7 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
 
         initComponents();
         addListeners();
+        doComponents();
         layoutComponents();
     }
     
@@ -175,16 +176,8 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         return me;
     }
 
-    /** Initialises the components. */
-    private void initComponents() {
-        orderButtons(new JButton(), new JButton());
-        name = new ActionNamePanel("");
-        triggers = new ActionTriggersPanel();
-        response = new ActionResponsePanel();
-        conditions = new ActionConditionsPanel();
-        substitutions = new ActionSubstitutionsPanel();
-        showSubstitutions = new JButton("Show Substitutions");
-
+    /** Sets components initial states and stuff. */
+    private void doComponents() {
         triggers.setEnabled(action != null);
         response.setEnabled(action != null);
         conditions.setEnabled(action != null);
@@ -204,6 +197,17 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
             conditions.setConditions(action.getConditions());
             conditions.setConditionTree(action.getRealConditionTree());
         }
+    }
+
+    /** Initialises the components. */
+    private void initComponents() {
+        orderButtons(new JButton(), new JButton());
+        name = new ActionNamePanel("");
+        triggers = new ActionTriggersPanel();
+        response = new ActionResponsePanel();
+        conditions = new ActionConditionsPanel();
+        substitutions = new ActionSubstitutionsPanel();
+        showSubstitutions = new JButton("Show Substitutions");
     }
 
     /** Adds the listeners. */
@@ -281,8 +285,7 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
             triggers.setEnabled((Boolean) evt.getNewValue());
             conditions.setEnabled((Boolean) evt.getNewValue());
             response.setEnabled((Boolean) evt.getNewValue());
-        }
-        if (evt.getSource().equals(triggers)) {
+        } else if (evt.getSource().equals(triggers)) {
             triggersValid = (Boolean) evt.getNewValue();
 
             response.setEnabled((Boolean) evt.getNewValue());
@@ -291,8 +294,7 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
 
             substitutions.setActionType(triggers.getPrimaryTrigger());
             conditions.setActionTrigger(triggers.getPrimaryTrigger());
-        }
-        if (evt.getSource().equals(conditions)) {
+        } else if (evt.getSource().equals(conditions)) {
             conditionsValid = (Boolean) evt.getNewValue();
         }
 

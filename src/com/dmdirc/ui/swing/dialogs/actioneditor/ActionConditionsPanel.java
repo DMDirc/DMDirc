@@ -60,6 +60,10 @@ public class ActionConditionsPanel extends JPanel implements ActionListener, Pro
     private ActionConditionsListPanel list;
     /** Add button. */
     private JButton add;
+    /** tree validates? */
+    private boolean treeValidates = true;
+    /** list validates? */
+    private boolean listValidates = true;
 
     /** Instantiates the panel. */
     public ActionConditionsPanel() {
@@ -96,12 +100,13 @@ public class ActionConditionsPanel extends JPanel implements ActionListener, Pro
         tree = new ActionConditionsTreePanel();
         list = new ActionConditionsListPanel(tree);
         add = new JButton("Add");
-        tree.addPropertyChangeListener("validationResult", this);
     }
 
     /** Adds the listeners. */
     private void addListeners() {
         add.addActionListener(this);
+        tree.addPropertyChangeListener("validationResult", this);
+        list.addPropertyChangeListener("validationResult", this);
     }
 
     /** Lays out the components. */
@@ -200,6 +205,13 @@ public class ActionConditionsPanel extends JPanel implements ActionListener, Pro
     /** {@inheritDoc} */
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
-        firePropertyChange("validationResult", evt.getOldValue(), evt.getNewValue());
+        final boolean currentlyValidates = listValidates && treeValidates;
+        if (evt.getSource() == list) {
+            listValidates = (Boolean) evt.getNewValue();
+        } else {
+            treeValidates = (Boolean) evt.getNewValue();
+        }
+        
+        firePropertyChange("validationResult", currentlyValidates, listValidates && treeValidates);
     }
 }

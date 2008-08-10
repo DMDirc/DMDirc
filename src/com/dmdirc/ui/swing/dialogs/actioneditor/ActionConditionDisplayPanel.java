@@ -132,6 +132,7 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
         editButton.addActionListener(this);
         deleteButton.addActionListener(this);
         editPanel.addPropertyChangeListener("edit", this);
+        editPanel.addPropertyChangeListener("validationResult", this);
     }
 
     /** Lays out the components. */
@@ -249,6 +250,20 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
     /** {@inheritDoc} */
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
-        label.setText(updateSentence());
+        if ("edit".equals(evt.getPropertyName())) {
+            label.setText(updateSentence());
+        } else {
+            firePropertyChange("validationResult", evt.getOldValue(),
+                    evt.getNewValue());
+        }
+    }
+    
+    /**
+     * Checks if this editor panel has errored.
+     * 
+     * @return true iif the content it valid
+     */
+    public boolean checkError() {
+        return editPanel.isEnabled();
     }
 }

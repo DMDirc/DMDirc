@@ -70,6 +70,8 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener,
     private int conditionCount = 0;
     /** Condition rule validator. */
     private ConditionRuleValidator treeValidator;
+    /** validates. */
+    private boolean validates = true;
 
     /** 
      * Instantiates the panel.
@@ -156,15 +158,17 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener,
     private void sortTreeFactory() {
         if (group.getSelection().equals(allButton.getModel())) {
             treeFactory = new ConditionTreeFactory.ConjunctionFactory();
-            firePropertyChange("validationResult", true, true);
+            firePropertyChange("validationResult", validates, true);
         } else if (group.getSelection().equals(oneButton.getModel())) {
             treeFactory = new ConditionTreeFactory.DisjunctionFactory();
-            firePropertyChange("validationResult", true, true);
+            firePropertyChange("validationResult", validates, true);
+            validates = true;
         } else {
             treeFactory =
                     new ConditionTreeFactory.CustomFactory(ConditionTree.parseString(rule.getText()));
             rule.checkError();
         }
+        
     }
 
     /** 
@@ -241,8 +245,8 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener,
     /** {@inheritDoc} */
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
-        firePropertyChange("validationResult", evt.getOldValue(),
-                evt.getNewValue());
+        firePropertyChange("validationResult", validates, evt.getNewValue());
+        validates = (Boolean) evt.getNewValue();
     }
 
     /** Validates the conditions. */

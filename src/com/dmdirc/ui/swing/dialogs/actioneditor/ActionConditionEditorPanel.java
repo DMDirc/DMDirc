@@ -31,6 +31,8 @@ import com.dmdirc.ui.swing.components.renderers.ActionCellRenderer;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -46,7 +48,7 @@ import net.miginfocom.swing.MigLayout;
  * Action conditioneditor panel.
  */
 public class ActionConditionEditorPanel extends JPanel implements ActionListener,
-        DocumentListener {
+        DocumentListener, PropertyChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -90,9 +92,9 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
             populateComparisons();
             populateTarget();
         }
-        
+
         firePropertyChange("edit", null, null);
-        
+
         addListeners();
         layoutComponents();
     }
@@ -106,7 +108,18 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
         comparisons = new JComboBox(new DefaultComboBoxModel());
         comparisons.putClientProperty("JComboBox.isTableCellEditor",
                 Boolean.TRUE);
-        target = new JTextField();
+        target = new JTextField() {
+
+            /** Serial version UID. */
+            private static final long serialVersionUID = 1;
+
+            /** {@inheritDoc} */
+            @Override
+            public void setEnabled(final boolean enabled) {
+                firePropertyChange("validationResult", target.isEnabled(), enabled);
+                super.setEnabled(enabled);
+            }
+        };
 
         arguments.setRenderer(new ActionCellRenderer());
         components.setRenderer(new ActionCellRenderer());
@@ -157,7 +170,7 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
     private void populateTarget() {
         target.setText(condition.getTarget());
     }
-    
+
     /** Handles the argument changing. */
     private void handleArgumentChange() {
         condition.setArg(arguments.getSelectedIndex());
@@ -169,7 +182,7 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
         target.setText(null);
         target.setEnabled(false);
     }
-    
+
     /** Handles the component changing. */
     private void handleComponentChange() {
         condition.setComponent((ActionComponent) components.getSelectedItem());
@@ -179,7 +192,7 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
         target.setText(null);
         target.setEnabled(false);
     }
-    
+
     /** Handles the comparison changing. */
     private void handleComparisonChange() {
         condition.setComparison((ActionComparison) comparisons.getSelectedItem());
@@ -194,6 +207,7 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
         components.addActionListener(this);
         comparisons.addActionListener(this);
         target.getDocument().addDocumentListener(this);
+        target.addPropertyChangeListener("validationResult", this);
     }
 
     /** Lays out the components. */
@@ -223,7 +237,7 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
             handleComponentChange();
         } else if (e.getSource() == comparisons) {
             handleComparisonChange();
-        } 
+        }
         firePropertyChange("edit", null, null);
     }
 
@@ -273,5 +287,21 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
         if (trigger != null && !trigger.equals(this.trigger)) {
             populateArguments();
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        firePropertyChange("validationResult", evt.getOldValue(),
+                evt.getNewValue());
+    }
+    
+    /**
+     * Checks if this editor panel has errored.
+     * 
+     * @return true iif the content it valid
+     */
+    public boolean checkError() {
+        return target.isEnabled();
     }
 }
