@@ -22,6 +22,7 @@
 
 package com.dmdirc.actions.wrappers;
 
+import com.dmdirc.GlobalWindow;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.actions.Action;
@@ -87,7 +88,11 @@ public final class AliasWrapper extends ActionGroup {
             final String commandName = getCommandName(action);
             
             aliases.add(commandName);
-            
+
+            if (GlobalWindow.getGlobalWindow() != null) {
+                GlobalWindow.getGlobalWindow().getTabCompleter()
+                        .addEntry(TabCompletionType.COMMAND, commandName);
+            }
             for (Server server : ServerManager.getServerManager().getServers()) {
                 server.getTabCompleter().addEntry(TabCompletionType.COMMAND, commandName);
             }

@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
@@ -41,13 +42,21 @@ public class GlobalWindow extends WritableFrameContainer {
     /** The window we're using. */
     private final InputWindow window;
 
+    /** The global window that's in use, if any. */
+    private static GlobalWindow globalWindow;
+
+    /** The tab completer we use. */
+    private final TabCompleter tabCompleter;
+
     /** Creates a new instance of GlobalWindow. */
     public GlobalWindow() {
         super("icon", IdentityManager.getGlobalConfig());
 
-        final TabCompleter tabCompleter = new TabCompleter();
+        tabCompleter = new TabCompleter();
         tabCompleter.addEntries(TabCompletionType.COMMAND,
                 CommandManager.getCommandNames(CommandType.TYPE_GLOBAL));
+        tabCompleter.addEntries(TabCompletionType.COMMAND,
+                AliasWrapper.getAliasWrapper().getAliases());
 
         window = Main.getUI().getInputWindow(this, GlobalCommandParser.getGlobalCommandParser());
 
@@ -106,6 +115,15 @@ public class GlobalWindow extends WritableFrameContainer {
     public int getMaxLineLength() {
         return -1;
     }
+
+    /**
+     * Retrieves the tab completer used by this global window.
+     *
+     * @return This global window's tab completer.
+     */
+    public TabCompleter getTabCompleter() {
+        return tabCompleter;
+    }
     
     /**
      * Initialises the global window if it's enabled in the config.
@@ -113,8 +131,18 @@ public class GlobalWindow extends WritableFrameContainer {
     public static void init() {
         if (IdentityManager.getGlobalConfig().getOptionBool("general", "showglobalwindow",
                 false)) {
-            new GlobalWindow();
+            globalWindow = new GlobalWindow();
         }        
+    }
+
+    /**
+     * Retrieves the global window if it has been previously opened by
+     * {@link #init()}.
+     *
+     * @return A Global Window instance or null
+     */
+    public static GlobalWindow getGlobalWindow() {
+        return globalWindow;
     }
 
 }
