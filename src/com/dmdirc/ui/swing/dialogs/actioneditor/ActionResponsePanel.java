@@ -72,9 +72,7 @@ public class ActionResponsePanel extends JPanel {
         
         final Set<String> formatters
                 = IdentityManager.getGlobalConfig().getOptions("formatter").keySet();
-        
-        ((DefaultComboBoxModel) formatter.getModel()).addElement("No change");
-        ((DefaultComboBoxModel) formatter.getModel()).addElement("No response");
+
         for (String format : formatters) {
             ((DefaultComboBoxModel) formatter.getModel()).addElement(format);
         }
