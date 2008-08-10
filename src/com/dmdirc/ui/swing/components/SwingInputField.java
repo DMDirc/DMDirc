@@ -313,5 +313,6 @@ public class SwingInputField extends JComponent implements InputField,
     public void wrappedText(final int count) {
         wrapIndicator.setVisible(count > 1);
         wrapIndicator.setToolTipText(count + " lines");
+        errorIndicator.setVisible(false);
     }
 }
