@@ -118,6 +118,24 @@ public final class ErrorManager implements Serializable, Runnable {
             errors.put(error.getID(), error);
         }
 
+        for (String line : error.getTrace()) {
+            if (line.startsWith("com.dmdirc.ui.swing.DMDircEventQueue")) {
+                error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
+                error.setFixedStatus(ErrorFixedStatus.INVALID);
+                report = false;
+                break;
+            } else if (line.startsWith("com.dmdirc")) {
+                break;
+            }
+        }
+
+        if (error.getMessage().startsWith("java.lang.NoSuchMethodError")
+                || error.getMessage().startsWith("java.lang.NoClassDefFoundError")) {
+            error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
+            error.setFixedStatus(ErrorFixedStatus.INVALID);
+            report = false;
+        }
+
         if (!sendable) {
             error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
             error.setFixedStatus(ErrorFixedStatus.UNREPORTED);
@@ -211,23 +229,6 @@ public final class ErrorManager implements Serializable, Runnable {
      * @param error error to be sent
      */
     public void sendError(final ProgramError error) {
-        for (String line : error.getTrace()) {
-            if (line.startsWith("com.dmdirc.ui.swing.DMDircEventQueue")) {
-                error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
-                error.setFixedStatus(ErrorFixedStatus.INVALID);
-                return;
-            } else if (line.startsWith("com.dmdirc")) {
-                break;
-            }
-        }
-
-        if (error.getMessage().startsWith("java.lang.NoSuchMethodError")
-                || error.getMessage().startsWith("java.lang.NoClassDefFoundError")) {
-            error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
-            error.setFixedStatus(ErrorFixedStatus.INVALID);
-            return;
-        }
-
         if (error.getLevel().equals(ErrorLevel.FATAL)) {
             sendErrorInternal(error);
         } else {
