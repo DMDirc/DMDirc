@@ -215,7 +215,7 @@ public abstract class InputHandler implements ConfigChangeListener {
     protected void validateText() {
         final String text = target.getText();
         
-        if (text != null && !text.isEmpty() && text.charAt(0) == CommandManager.getCommandChar()) {
+        if (!text.isEmpty() && text.charAt(0) == CommandManager.getCommandChar()) {
             final List<String> args = Arrays.asList(text.split(" "));
             final String signature = args.get(0).substring(1);
             final Command command = CommandManager.getCommand(signature);
