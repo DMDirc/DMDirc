@@ -205,6 +205,14 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             Logger.userError(ErrorLevel.MEDIUM,
                     "Unable to insert styled string: " + ex.getMessage());
         }
+        
+        if (attString.getIterator().getEndIndex() != 0) {
+            attString.addAttribute(TextAttribute.SIZE,
+                 UIManager.getFont("TextPane.font").getSize());
+            attString.addAttribute(TextAttribute.FAMILY,
+                    UIManager.getFont("TextPane.font").getFamily());
+        }
+        
         for (int i = 0; i < line.getElementCount(); i++) {
             final Element element = line.getElement(i);
 
@@ -267,11 +275,6 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         if (attString.getIterator().getEndIndex() == 0) {
             return new AttributedString("\n");
         }
-        
-        attString.addAttribute(TextAttribute.SIZE,
-                UIManager.getFont("TextPane.font").getSize());
-        attString.addAttribute(TextAttribute.FAMILY,
-                UIManager.getFont("TextPane.font").getFamily());
 
         return attString;
     }
