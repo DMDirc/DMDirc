@@ -26,8 +26,10 @@ import com.dmdirc.ui.IconManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputField;
 import com.dmdirc.ui.interfaces.InputValidationListener;
+import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.util.ListenerList;
 
+import com.dmdirc.util.ReturnableThread;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -67,9 +69,9 @@ public class SwingInputField extends JComponent implements InputField,
      */
     public SwingInputField() {
         super();
-        
+
         listeners = new ListenerList();
-        
+
         textField = new JTextField();
         textField.setFocusTraversalKeysEnabled(false);
         textField.addKeyListener(this);
@@ -98,44 +100,66 @@ public class SwingInputField extends JComponent implements InputField,
     /** {@inheritDoc} */
     @Override
     public void requestFocus() {
-        textField.requestFocus();
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                textField.requestFocus();
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public void showColourPicker(final boolean irc, final boolean hex) {
-        if (IdentityManager.getGlobalConfig().getOptionBool("general",
-                "showcolourdialog", false)) {
-            colourPicker = new ColourPickerDialog(irc, hex);
-            colourPicker.addActionListener(new ActionListener() {
+        UIUtilities.invokeLater(new Runnable() {
 
-                @Override
-                public void actionPerformed(final ActionEvent actionEvent) {
-                    try {
-                        textField.getDocument().
-                                insertString(textField.getCaretPosition(),
-                                actionEvent.getActionCommand(), null);
-                    } catch (BadLocationException ex) {
-                    //Ignore, wont happen
-                    }
-                    colourPicker.dispose();
-                    colourPicker = null;
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                if (IdentityManager.getGlobalConfig().getOptionBool("general",
+                        "showcolourdialog", false)) {
+                    colourPicker = new ColourPickerDialog(irc, hex);
+                    colourPicker.addActionListener(new ActionListener() {
+
+                        @Override
+                        public void actionPerformed(final ActionEvent actionEvent) {
+                            try {
+                                textField.getDocument().
+                                        insertString(textField.getCaretPosition(),
+                                        actionEvent.getActionCommand(), null);
+                            } catch (BadLocationException ex) {
+                            //Ignore, wont happen
+                            }
+                            colourPicker.dispose();
+                            colourPicker = null;
+                        }
+                    });
+                    colourPicker.setLocation((int) textField.getLocationOnScreen().
+                            getX(),
+                            (int) textField.getLocationOnScreen().getY() -
+                            colourPicker.getHeight());
+                    colourPicker.setVisible(true);
                 }
-            });
-            colourPicker.setLocation((int) textField.getLocationOnScreen().getX(),
-                    (int) textField.getLocationOnScreen().getY() -
-                    colourPicker.getHeight());
-            colourPicker.setVisible(true);
-        }
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public void hideColourPicker() {
-        if (colourPicker != null) {
-            colourPicker.dispose();
-            colourPicker = null;
-        }
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                if (colourPicker != null) {
+                    colourPicker.dispose();
+                    colourPicker = null;
+                }
+            }
+        });
     }
 
     /**
@@ -144,73 +168,157 @@ public class SwingInputField extends JComponent implements InputField,
      * @return JTextField
      */
     public JTextField getTextField() {
-        return textField;
+        return UIUtilities.invokeAndWait(new ReturnableThread<JTextField>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                setObject(textField);
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public void addActionListener(final ActionListener listener) {
-        textField.addActionListener(listener);
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                textField.addActionListener(listener);
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public void addKeyListener(final KeyListener listener) {
-        listeners.add(KeyListener.class, listener);
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                listeners.add(KeyListener.class, listener);
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public void removeActionListener(final ActionListener listener) {
-        textField.removeActionListener(listener);
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                textField.removeActionListener(listener);
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public void removeKeyListener(final KeyListener listener) {
-        listeners.remove(KeyListener.class, listener);
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                listeners.remove(KeyListener.class, listener);
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public String getSelectedText() {
-        return textField.getSelectedText();
+        return UIUtilities.invokeAndWait(new ReturnableThread<String>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                setObject(textField.getSelectedText());
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public int getSelectionEnd() {
-        return textField.getSelectionEnd();
+        return UIUtilities.invokeAndWait(new ReturnableThread<Integer>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                setObject(textField.getSelectionEnd());
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public int getSelectionStart() {
-        return textField.getSelectionStart();
+        return UIUtilities.invokeAndWait(new ReturnableThread<Integer>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                setObject(textField.getSelectionStart());
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public String getText() {
-        return textField.getText();
+        return UIUtilities.invokeAndWait(new ReturnableThread<String>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                setObject(textField.getText());
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public void setText(final String text) {
-        textField.setText(text);
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                textField.setText(text);
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public int getCaretPosition() {
-        return textField.getCaretPosition();
+        return UIUtilities.invokeAndWait(new ReturnableThread<Integer>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                setObject(textField.getCaretPosition());
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public void setCaretPosition(final int position) {
-        textField.setCaretPosition(position);
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                textField.setCaretPosition(position);
+            }
+        });
     }
 
     /**
@@ -219,7 +327,14 @@ public class SwingInputField extends JComponent implements InputField,
      * @param clipboard Text to replace selection with
      */
     public void replaceSelection(final String clipboard) {
-        textField.replaceSelection(clipboard);
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                textField.replaceSelection(clipboard);
+            }
+        });
     }
 
     /**
@@ -228,7 +343,14 @@ public class SwingInputField extends JComponent implements InputField,
      * @param optionColour Colour for the caret
      */
     public void setCaretColor(final Color optionColour) {
-        textField.setCaretColor(optionColour);
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                textField.setCaretColor(optionColour);
+            }
+        });
     }
 
     /**
@@ -238,7 +360,14 @@ public class SwingInputField extends JComponent implements InputField,
      */
     @Override
     public void setForeground(final Color optionColour) {
-        textField.setForeground(optionColour);
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                textField.setForeground(optionColour);
+            }
+        });
     }
 
     /**
@@ -248,13 +377,27 @@ public class SwingInputField extends JComponent implements InputField,
      */
     @Override
     public void setBackground(final Color optionColour) {
-        textField.setBackground(optionColour);
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                textField.setBackground(optionColour);
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean hasFocus() {
-        return textField.isFocusOwner();
+        return UIUtilities.invokeAndWait(new ReturnableThread<Boolean>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                setObject(textField.isFocusOwner());
+            }
+        });
     }
 
     /** 
@@ -264,7 +407,7 @@ public class SwingInputField extends JComponent implements InputField,
      */
     @Override
     public void keyTyped(final KeyEvent e) {
-        for(KeyListener listener : listeners.get(KeyListener.class)) {
+        for (KeyListener listener : listeners.get(KeyListener.class)) {
             listener.keyTyped(e);
         }
     }
@@ -276,7 +419,7 @@ public class SwingInputField extends JComponent implements InputField,
      */
     @Override
     public void keyPressed(final KeyEvent e) {
-        for(KeyListener listener : listeners.get(KeyListener.class)) {
+        for (KeyListener listener : listeners.get(KeyListener.class)) {
             listener.keyPressed(e);
         }
     }
@@ -288,7 +431,7 @@ public class SwingInputField extends JComponent implements InputField,
      */
     @Override
     public void keyReleased(final KeyEvent e) {
-        for(KeyListener listener : listeners.get(KeyListener.class)) {
+        for (KeyListener listener : listeners.get(KeyListener.class)) {
             listener.keyReleased(e);
         }
     }
@@ -296,23 +439,44 @@ public class SwingInputField extends JComponent implements InputField,
     /** {@inheritDoc} */
     @Override
     public void illegalCommand(final String reason) {
-        errorIndicator.setVisible(true);
-        errorIndicator.setToolTipText(reason);
-        wrappedText(0);
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                errorIndicator.setVisible(true);
+                errorIndicator.setToolTipText(reason);
+                wrappedText(0);
+            }
+        });
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void legalCommand() {
-        errorIndicator.setVisible(false);
-        errorIndicator.setToolTipText(null);
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                errorIndicator.setVisible(false);
+                errorIndicator.setToolTipText(null);
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public void wrappedText(final int count) {
-        wrapIndicator.setVisible(count > 1);
-        wrapIndicator.setToolTipText(count + " lines");
-        errorIndicator.setVisible(false);
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                wrapIndicator.setVisible(count > 1);
+                wrapIndicator.setToolTipText(count + " lines");
+                errorIndicator.setVisible(false);
+            }
+        });
     }
 }

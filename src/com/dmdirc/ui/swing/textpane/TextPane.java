@@ -270,8 +270,8 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         
         attString.addAttribute(TextAttribute.SIZE,
                 UIManager.getFont("TextPane.font").getSize());
-        attString.addAttribute(TextAttribute.FONT,
-                UIManager.getFont("TextPane.font"));
+        attString.addAttribute(TextAttribute.FAMILY,
+                UIManager.getFont("TextPane.font").getFamily());
 
         return attString;
     }
