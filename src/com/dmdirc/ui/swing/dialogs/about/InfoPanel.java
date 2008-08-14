@@ -31,6 +31,7 @@ import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -53,7 +54,7 @@ public final class InfoPanel extends JPanel {
     }
 
     /**
-     * Returns the DMDirc version info
+     * Returns the DMDirc version info.
      * 
      * @return DMDirc version string
      */
@@ -63,7 +64,7 @@ public final class InfoPanel extends JPanel {
     }
 
     /**
-     * Returns the systems java version
+     * Returns the systems java version.
      * 
      * @return Java version string
      */
@@ -72,9 +73,18 @@ public final class InfoPanel extends JPanel {
                 System.getProperty("java.version", "unknown") + 
                 " [" + System.getProperty("java.vm.vendor", "uknown") + "]";
     }
+    
+    /**
+     * Returns the current look and feel.
+     * 
+     * @return Current look and feel
+     */
+    private String getLookAndFeel() {
+        return UIManager.getLookAndFeel().getName();
+    }
 
     /**
-     * Returns the systems OS version
+     * Returns the systems OS version.
      * 
      * @return OS version string
      */
@@ -94,6 +104,7 @@ public final class InfoPanel extends JPanel {
                 "<b>Profile directory: </b>" + Main.getConfigDir() + "<br>" +
                 "<b>Java version: </b>" + getJavaVersion() + "<br>" +
                 "<b>OS Version: </b>" + getOSVersion() + "<br>" +
+                "<b>Look and Feel: </b>" + getLookAndFeel() + "<br>" +
                 "</html>");
         infoPane.setEditable(false);
         scrollPane.setViewportView(infoPane);
