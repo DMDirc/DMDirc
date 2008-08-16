@@ -36,6 +36,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -90,7 +91,7 @@ public abstract class StandardInputDialog extends StandardDialog {
                 (modal) ? ModalityType.APPLICATION_MODAL : ModalityType.MODELESS,
                 title, message, validator);
     }
-    
+
     /**
      * Instantiates a new standard input dialog.
      * 
@@ -99,7 +100,8 @@ public abstract class StandardInputDialog extends StandardDialog {
      * @param title Dialog title
      * @param message Dialog message
      */
-    public StandardInputDialog(Window owner, ModalityType modal, final String title,
+    public StandardInputDialog(Window owner, ModalityType modal,
+            final String title,
             final String message) {
         this(owner, modal, title, message, new Validator<String>() {
 
@@ -185,6 +187,12 @@ public abstract class StandardInputDialog extends StandardDialog {
 
             /** {@inheritDoc} */
             @Override
+            public void windowOpened(WindowEvent e) {
+                textField.requestFocus();
+            }
+
+            /** {@inheritDoc} */
+            @Override
             public void windowClosed(WindowEvent e) {
                 cancelled();
             //dispose();
@@ -252,7 +260,6 @@ public abstract class StandardInputDialog extends StandardDialog {
                 pack();
                 setLocationRelativeTo(parent);
                 setVisible(true);
-                textField.requestFocus();
             }
         });
     }

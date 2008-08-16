@@ -422,7 +422,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
             reloadGroups();
             if (groups.getModel().getSize() == 0) {
                 location = -1;
-            } else if (location > groups.getModel().getSize()) {
+            } else if (location >= groups.getModel().getSize()) {
                 location = groups.getModel().getSize();
             } else if (location <= 0) {
                 location = 0;

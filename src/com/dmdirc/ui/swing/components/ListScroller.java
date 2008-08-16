@@ -25,8 +25,8 @@ package com.dmdirc.ui.swing.components;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 
 /**
@@ -35,7 +35,7 @@ import javax.swing.ListSelectionModel;
 public class ListScroller implements MouseWheelListener {
 
     /** List to scroll. */
-    private final DefaultListModel model;
+    private final ListModel model;
     /** List to scroll. */
     private final ListSelectionModel selectionModel;
 
@@ -45,8 +45,7 @@ public class ListScroller implements MouseWheelListener {
      * @param list List to scroll over
      */
     public ListScroller(final JList list) {
-        this.model = (DefaultListModel) list.getModel();
-        this.selectionModel = list.getSelectionModel();
+        this(list.getModel(), list.getSelectionModel());
 
         list.addMouseWheelListener(this);
     }
@@ -57,7 +56,7 @@ public class ListScroller implements MouseWheelListener {
      * @param model List model to scroll over
      * @param selectionModel List selection model to scroll over
      */
-    public ListScroller(final DefaultListModel model,
+    public ListScroller(final ListModel model,
             final ListSelectionModel selectionModel) {
         this.model = model;
         this.selectionModel = selectionModel;
@@ -123,8 +122,8 @@ public class ListScroller implements MouseWheelListener {
      * @return next index
      */
     private int changeFocusDown(final int index) {
-        int nextIndex;    
-        
+        int nextIndex;
+
         if (index == model.getSize() - 1) {
             nextIndex = 0;
         } else {

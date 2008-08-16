@@ -28,6 +28,7 @@ import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.MainFrame;
+import com.dmdirc.ui.swing.components.ListScroller;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.dialogs.NewServerDialog;
 
@@ -140,6 +141,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
 
         profileList.setCellRenderer(new ProfileListCellRenderer());
         profileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        new ListScroller(profileList);
 
         populateList();
     }
@@ -224,8 +226,19 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
                 "Are you sure you want to delete this profile?",
                 "Delete Confirmaton", JOptionPane.YES_NO_OPTION) ==
                 JOptionPane.YES_OPTION) {
-            deletedProfiles.add((Profile) profileList.getSelectedValue());
-            model.remove((Profile) profileList.getSelectedValue());
+            final Profile selectedProfile = (Profile) profileList.getSelectedValue();
+            int selected = profileList.getSelectedIndex();
+            deletedProfiles.add(selectedProfile);
+            model.remove(selectedProfile);
+            final int profilesSize = profileList.getModel().getSize();
+            if (profilesSize == 0) {
+                selected = -1;
+            } else if (selected >= profilesSize) {
+                selected = profilesSize - 1;
+            } else if (selected <= 0) {
+                selected = 0;
+            }
+            profileList.setSelectedIndex(selected);
         }
     }
 
