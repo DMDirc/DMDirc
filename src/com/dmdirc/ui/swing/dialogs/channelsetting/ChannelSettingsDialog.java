@@ -166,6 +166,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
         channelModesSP.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         channelModesSP.setOpaque(UIUtilities.getTabbedPaneOpaque());
         channelModesSP.getViewport().setOpaque(UIUtilities.getTabbedPaneOpaque());
+        channelModesSP.setBorder(null);
 
         tabbedPane.addTab("Channel Modes", channelModesSP);
     }

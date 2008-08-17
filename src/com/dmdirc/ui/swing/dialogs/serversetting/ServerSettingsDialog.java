@@ -142,6 +142,7 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
         userModesSP.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         userModesSP.setOpaque(UIUtilities.getTabbedPaneOpaque());
         userModesSP.getViewport().setOpaque(UIUtilities.getTabbedPaneOpaque());
+        userModesSP.setBorder(null);
 
         tabbedPane.add("User modes", userModesSP);
         tabbedPane.add("Ignore list", ignoreList);
