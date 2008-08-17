@@ -167,7 +167,7 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
         removeAll();
         setLayout(new MigLayout("ins 0, wrap 1"));
 
-        add(tableScrollPane, "growx, pushy");
+        add(tableScrollPane, "growx, hmax 200");
         add(add, "split 2, growx");
         add(remove, "growx");
         add(activeComponent, "growx, pushx");
