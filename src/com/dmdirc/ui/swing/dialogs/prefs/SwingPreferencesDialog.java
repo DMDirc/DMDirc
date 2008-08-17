@@ -51,6 +51,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.WindowConstants;
 import javax.swing.event.TreeSelectionEvent;
@@ -104,6 +105,10 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     /** Panel gap. */
     private final int padding = (int) PlatformDefaults.getUnitValueX("related").
             getValue();
+    /** Panel left padding. */
+    private final int leftPadding = (int) PlatformDefaults.getPanelInsets(1).getValue();
+    /** Panel right padding. */
+    private final int rightPadding = (int) PlatformDefaults.getPanelInsets(3).getValue();
 
     /**
      * Creates a new instance of SwingPreferencesDialog.
@@ -180,10 +185,10 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
-
+        
         setLayout(new MigLayout("fillx, wmin 650, wmax 650, hmax 600"));
         add(tabList, "width 150, growy, spany");
-        add(mainPanel, "wrap, width 480, grow, hmax 550");
+        add(mainPanel, "wrap, wmin 480, wmax 480, grow, hmax 550");
         add(getLeftButton(), "split, right");
         add(getRightButton(), "right");
     }
@@ -241,7 +246,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     private void addInlineCategory(final PreferencesCategory category,
             final JPanel parent) {
         final JPanel panel =
-                new JPanel(new MigLayout("fillx, gap unrel, wrap 2, hidemode 3"));
+                new JPanel(new MigLayout("fillx, gap unrel, wrap 2, hidemode 3, pack, " +
+                "wmax 480-" + leftPadding + "-" + rightPadding + "-2*" + padding));
         panel.setBorder(BorderFactory.createTitledBorder(category.getTitle()));
 
         categories.put(category, panel);
@@ -261,7 +267,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     private void addCategory(final PreferencesCategory category,
             final DefaultMutableTreeNode parentNode, final String namePrefix) {
         final JPanel panel =
-                new JPanel(new MigLayout("fillx, gap unrel, wrap 2, hidemode 3, pack"));
+                new JPanel(new MigLayout("fillx, gap unrel, wrap 2, hidemode 3, " +
+                "wmax 480-" + leftPadding + "-" + rightPadding + "-2*" + padding));
         final String path = namePrefix + "/" + category.getTitle();
         DefaultMutableTreeNode newNode;
 
@@ -271,7 +278,9 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         nodes.put(newNode, path);
         paths.put(path, category);
 
-        mainPanel.add(panel, path);
+        final JScrollPane scrollPane = new JScrollPane(panel);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        mainPanel.add(scrollPane, path);
         ((DefaultTreeModel) tabList.getModel()).insertNodeInto(newNode,
                 parentNode, parentNode.getChildCount());
         tabList.scrollPathToVisible(new TreePath(newNode.getPath()));
