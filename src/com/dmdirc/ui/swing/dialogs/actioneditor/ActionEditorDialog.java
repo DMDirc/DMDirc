@@ -105,6 +105,8 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         addListeners();
         doComponents();
         layoutComponents();
+        
+        setResizable(false);
     }
     
     /**
@@ -237,10 +239,10 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
     private void layoutComponents() {
         setLayout(new MigLayout("fill, hidemode 3, wrap 2, pack, hmax 80sp, wmin 600, wmax 60sp"));
 
-        add(name, "grow, wmin 40%");
-        add(conditions, "spany 3, grow, wmin 60%");
-        add(triggers, "grow, wmin 40%");
-        add(response, "grow, wmin 40%");
+        add(name, "growx, wmin 40%, wmax 15sp");
+        add(conditions, "spany 3, grow, wmin 60%, wmax 36sp");
+        add(triggers, "grow, wmin 40%, wmax 15sp");
+        add(response, "grow, push, wmin 40%, wmax 15sp");
         add(substitutions, "spanx 2, grow");
         add(showSubstitutions, "left, sgx button, split 3, spanx 2");
         add(getLeftButton(), "right, sgx button, gapleft push");
