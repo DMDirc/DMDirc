@@ -187,7 +187,7 @@ if [ -e "${profiledir}/.DMDirc.jar" ]; then
 			messagedialog "DMDirc" "The DMDirc Client Updater was unable to modify the client installation, trying again with administrator access"
 			if [ $? -eq 0 ]; then
 				echo "Password dialog on display"
-				osascript -e "do shell script \"mv -fv \\\"${profiledir}/.DMDirc.jar\\\" \\\"${0}\\\"\" with administrator privileges"
+				osascript -e "do shell script \"mv -fv \\\"${profiledir}/.DMDirc.jar\\\" \\\"${jar}\\\"\" with administrator privileges"
 			fi;
 		fi
 		if [ ! -e "${profiledir}/.DMDirc.jar" ]; then
