@@ -25,6 +25,7 @@ package com.dmdirc.ui.swing.dialogs.actioneditor;
 import com.dmdirc.actions.Action;
 import com.dmdirc.ui.swing.components.StandardDialog;
 
+import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,6 +37,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JButton;
 
 
+import javax.swing.plaf.DimensionUIResource;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -237,12 +239,13 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
 
     /** Lays out the components. */
     private void layoutComponents() {
-        setLayout(new MigLayout("fill, hidemode 3, wrap 2, pack, hmax 80sp, wmin 600, wmax 60sp"));
+        setMinimumSize(new Dimension(800, 600));
+        setLayout(new MigLayout("fill, hidemode 3, wrap 2, pack, hmax 80sp, wmin 800, wmax 800"));
 
-        add(name, "growx, wmin 40%, wmax 15sp");
-        add(conditions, "spany 3, grow, wmin 60%, wmax 36sp");
-        add(triggers, "grow, wmin 40%, wmax 15sp");
-        add(response, "grow, push, wmin 40%, wmax 15sp");
+        add(name, "growx, wmax 40%");
+        add(conditions, "spany 3, grow, pushx");
+        add(triggers, "grow, wmax 40%");
+        add(response, "grow, push, wmax 40%");
         add(substitutions, "spanx 2, grow");
         add(showSubstitutions, "left, sgx button, split 3, spanx 2");
         add(getLeftButton(), "right, sgx button, gapleft push");
