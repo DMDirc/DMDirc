@@ -446,7 +446,7 @@ public class SwingInputField extends JComponent implements InputField,
             public void run() {
                 errorIndicator.setVisible(true);
                 errorIndicator.setToolTipText(reason);
-                wrappedText(0);
+                wrapIndicator.setVisible(false);
             }
         });
     }
