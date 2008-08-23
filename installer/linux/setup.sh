@@ -86,6 +86,33 @@ errordialog() {
 	fi
 }
 
+questiondialog() {
+	# Send question to console.
+	echo ""
+	echo "-----------------------------------------------------------------------"
+	echo "Question: ${1}"
+	echo "-----------------------------------------------------------------------"
+	echo "${2}"
+	echo "-----------------------------------------------------------------------"
+
+	# Now try to use the GUI Dialogs.
+	if [ "" != "${ISKDE}" -a "" != "${KDIALOG}" -a "" != "${DISPLAY}" ]; then
+		echo "Dialog on Display: ${DISPLAY}"
+		${KDIALOG} --title "${1}" --yesno "${2}"
+	elif [ "" != "${ISGNOME}" -a "" != "${ZENITY}" -a "" != "${DISPLAY}" ]; then
+		echo "Dialog on Display: ${DISPLAY}"
+		${ZENITY} --question --title "${1}" --text "${2}"
+	else
+		if [ "${3}" != "" ]; then
+			echo "Unable to ask question, assuming '${3}'."
+			return ${3};
+		else
+			echo "Unable to ask question, assuming no."
+			return 1;
+		fi;
+	fi
+}
+
 UNAME=`uname -a`
 
 echo ""
@@ -191,6 +218,19 @@ if [ "${isRelease}" != "" ]; then
 fi
 
 if [ -e "DMDirc.jar" ]; then
+	echo "Checking for openJDK.."
+	ISOPENJDK=`${JAVA} -version 2>&1 | grep -i openjdk`
+	if [ "" != "${ISOPENJDK}" ]; then
+		The DMDirc installer has detected that you are using OpenJDK.
+		message="The DMDirc installer has detected that you are using OpenJDK. There are currently known issues with some versions of OpenJDK and DMDirc. To ensure DMDirc runs optimally we recommend you use the Sun JRE."
+		message="${message}\n\nWould you like to continue anyway?"
+		questiondialog "OpenJDK" "${message}" 0
+		if [ $? -ne 0 ]; then
+			echo "Aborting."
+			exit 1;
+		fi;
+	fi;
+	
 	echo "Checking java version.."
 	${JAVA} -cp DMDirc.jar com.dmdirc.installer.Main --help >/dev/null
 	if [ $? -ne 0 ]; then
