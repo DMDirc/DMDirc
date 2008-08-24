@@ -221,7 +221,6 @@ if [ -e "DMDirc.jar" ]; then
 	echo "Checking for openJDK.."
 	ISOPENJDK=`${JAVA} -version 2>&1 | grep -i openjdk`
 	if [ "" != "${ISOPENJDK}" ]; then
-		The DMDirc installer has detected that you are using OpenJDK.
 		message="The DMDirc installer has detected that you are using OpenJDK. There are currently known issues with some versions of OpenJDK and DMDirc. To ensure DMDirc runs optimally we recommend you use the Sun JRE."
 		message="${message}\n\nWould you like to continue anyway?"
 		questiondialog "OpenJDK" "${message}" 0
