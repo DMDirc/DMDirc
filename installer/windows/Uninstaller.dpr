@@ -49,7 +49,7 @@ procedure showError(context: String; ErrorMessage: String; addFooter: boolean = 
 begin
 	if addFooter then begin
 		ErrorMessage := ErrorMessage+#13#10;
-		ErrorMessage := ErrorMessage+#13#10+'If you feel this is incorrect, or you require some further assistance,';
+		ErrorMessage := ErrorMessage+#13#10+' If you feel this is incorrect, or you require some further assistance, ';
 		ErrorMessage := ErrorMessage+#13#10+'please feel free to contact us.';
 	end;
 	
@@ -200,14 +200,14 @@ begin
 		Reg.Free;
 		
 		if (FileExists(profileDir+'\dmdirc.config')) then begin
-			if MessageBox(0, PChar('A dmdirc profile has been detected ('+profileDir+')'+#13#10+' Do you want to delete it aswell?'), 'DMDirc Uninstaller', MB_YESNO) = IDYES then begin
+			if MessageBox(0, PChar('A dmdirc profile has been detected ('+profileDir+') '+#13#10+'Do you want to delete it aswell?'), 'DMDirc Uninstaller', MB_YESNO) = IDYES then begin
 				KillDir(profileDir);
 			end;
 		end;
 		
 		showmessage('DMDirc has been uninstalled from "'+InstallDir+'".', 'Uninstall Successful');
 	end
-	else if askQuestion('This will uninstall DMDirc.'+#13#10+#13#10+'Do you want to continue?') then begin
+	else if askQuestion('This will uninstall DMDirc. '+#13#10+#13#10+'Do you want to continue?') then begin
 		if (ExecAndWait('java -jar ' + ExtractFileDir(paramstr(0)) + '\DMDirc.jar -k', true) <> 0) then begin
 			TempDir := GetTempDirectory;
 			CopyFile(pchar(paramstr(0)), pchar(TempDir+'/uninstall.exe'), false);
