@@ -138,7 +138,14 @@ public class ActionResponsePanel extends JPanel {
      * @return Formatter text
      */
     public String getFormatter() {
-        return (String) formatter.getSelectedItem();
+        final String newFormat = (String) formatter.getSelectedItem();
+        if ("No change".equals(newFormat)) {
+            return null;
+        } else if ("No response".equals(newFormat)) {
+            return "";
+        } else {
+            return newFormat;
+        }
     }
     
     /** {@inheritDoc} */
