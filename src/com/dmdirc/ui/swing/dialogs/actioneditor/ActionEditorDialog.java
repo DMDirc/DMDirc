@@ -36,8 +36,6 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JButton;
 
-
-import javax.swing.plaf.DimensionUIResource;
 import net.miginfocom.swing.MigLayout;
 
 /**
