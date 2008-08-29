@@ -22,12 +22,11 @@
 
 package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
-import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.ChannelWindow;
@@ -46,7 +45,7 @@ import java.util.List;
  * are only displayed when in a channel window, for example.
  * @author chris
  */
-public final class Help extends ServerCommand implements IntelligentCommand {
+public final class Help extends GlobalCommand implements IntelligentCommand {
     
     /**
      * Creates a new instance of Help.
@@ -57,15 +56,10 @@ public final class Help extends ServerCommand implements IntelligentCommand {
         CommandManager.registerCommand(this);
     }
     
-    /**
-     * Executes this command.
-     * @param origin The frame in which this command was issued
-     * @param server The server object that this command is associated with
-     * @param isSilent Whether this command is silenced or not
-     * @param args The user supplied arguments
-     */
-    public void execute(final InputWindow origin, final Server server,
-            final boolean isSilent, final String... args) {
+    /** {@inheritDoc} */
+    @Override
+    public void execute(final InputWindow origin, final boolean isSilent,
+            final String... args) {
         if (args.length == 0) {
             showAllCommands(origin, isSilent);
         } else {
@@ -156,16 +150,19 @@ public final class Help extends ServerCommand implements IntelligentCommand {
     }
     
     /** {@inheritDoc}. */
+    @Override
     public String getName() {
         return "help";
     }
     
     /** {@inheritDoc}. */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
     /** {@inheritDoc}. */
+    @Override
     public String getHelp() {
         return "help [command] - shows client command help";
     }

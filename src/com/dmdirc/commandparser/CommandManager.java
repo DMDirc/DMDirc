@@ -254,7 +254,6 @@ public final class CommandManager {
         new ChangeServer();
         new Ctcp();
         new Disconnect();
-        new Help();
         new Ignore();
         new Message();
         new Nick();
@@ -283,6 +282,7 @@ public final class CommandManager {
         new Debug();
         new Echo();
         new Exit();
+        new Help();
         new Ifplugin();
         new NewServer();
         new Notify();
