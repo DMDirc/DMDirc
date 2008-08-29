@@ -40,48 +40,59 @@ import java.util.List;
  * 
  * @author chris
  */
-public final class AliasCommand extends GlobalCommand implements IntelligentCommand {
-    
+public final class AliasCommand extends GlobalCommand implements
+        IntelligentCommand {
+
     /**
      * Creates a new instance of Active.
      */
     public AliasCommand() {
         super();
-        
+
         CommandManager.registerCommand(this);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final boolean isSilent,
-            final String... args) {
+                        final String... args) {
         if (args.length < 2) {
             showUsage(origin, isSilent, "alias", "[--remove] <name> [command]");
             return;
-        } else if (args[0].equalsIgnoreCase("--remove")) {
-            if (doRemove(args[1])) {
-                sendLine(origin, isSilent, FORMAT_OUTPUT, "Alias '" + args[1] + "' removed.");
+        }
+
+        final String name = args[1].charAt(0) == CommandManager.getCommandChar()
+                ? args[1].substring(1) : args[1];
+
+        if (args[0].equalsIgnoreCase("--remove")) {
+            if (doRemove(name)) {
+                sendLine(origin, isSilent, FORMAT_OUTPUT, "Alias '" + name +
+                         "' removed.");
             } else {
-                sendLine(origin, isSilent, FORMAT_ERROR, "Alias '" + args[1] + "' not found.");
+                sendLine(origin, isSilent, FORMAT_ERROR, "Alias '" + name +
+                         "' not found.");
             }
-            
+
             return;
         }
-        
+
         for (Action alias : AliasWrapper.getAliasWrapper()) {
-            if (AliasWrapper.getCommandName(alias).substring(1).equalsIgnoreCase(args[0])) {
-                sendLine(origin, isSilent, FORMAT_ERROR, "Alias '" + args[0] + "' already exists.");
+            if (AliasWrapper.getCommandName(alias).substring(1).equalsIgnoreCase(
+                    name)) {
+                sendLine(origin, isSilent, FORMAT_ERROR, "Alias '" + name +
+                         "' already exists.");
                 return;
             }
         }
-        
-        final Alias myAlias = new Alias(args[0]);
+
+        final Alias myAlias = new Alias(name);
         myAlias.setResponse(new String[]{implodeArgs(1, args)});
         myAlias.createAction().save();
-        
-        sendLine(origin, isSilent, FORMAT_OUTPUT, "Alias '" + args[0] + "' created.");
+
+        sendLine(origin, isSilent, FORMAT_OUTPUT, "Alias '" + name +
+                 "' created.");
     }
-    
+
     /**
      * Removes the alias with the specified name.
      * 
@@ -90,29 +101,30 @@ public final class AliasCommand extends GlobalCommand implements IntelligentComm
      */
     private boolean doRemove(final String name) {
         for (Action alias : AliasWrapper.getAliasWrapper()) {
-            if (AliasWrapper.getCommandName(alias).substring(1).equalsIgnoreCase(name)) {
+            if (AliasWrapper.getCommandName(alias).substring(1).equalsIgnoreCase(
+                    name)) {
                 alias.delete();
                 ActionManager.unregisterAction(alias);
-                
+
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getName() {
         return "alias";
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean showInHelp() {
         return true;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getHelp() {
@@ -121,21 +133,21 @@ public final class AliasCommand extends GlobalCommand implements IntelligentComm
 
     /** {@inheritDoc} */
     @Override
-    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
-        final AdditionalTabTargets res = new AdditionalTabTargets();
-        
+    public AdditionalTabTargets getSuggestions(final int arg,
+                                               final List<String> previousArgs) {
+        final AdditionalTabTargets res = new AdditionalTabTargets().excludeAll();
+
         if (arg == 0) {
             res.add("--remove");
-            res.excludeAll();
         } else if (arg == 1 && previousArgs.get(0).equals("--remove")) {
             for (Action alias : AliasWrapper.getAliasWrapper()) {
-                res.add(alias.getName());
-            }   
+                res.add(AliasWrapper.getCommandName(alias));
+            }
         } else if (arg >= 1 && !previousArgs.get(0).equals("--remove")) {
             return TabCompleter.getIntelligentResults(arg, previousArgs, 1);
         }
-        
+
         return res;
-    } 
-    
+    }
+
 }
