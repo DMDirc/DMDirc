@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="DMDirc-plugins" default="default" basedir=".">
+
+    <!-- ant-contrib default location (can be overridden in the property files below)-->
+    <property name="libs.antcontrib" value="/usr/share/java/ant-contrib.jar"/>
+    
+    <!-- Netbeans property files -->
+    <property file="nbproject/project.properties"/>
+    <property file="nbproject/private/private.properties"/>
+    <property file="${user.properties.file}"/>
+    <available file="${libs.antcontrib}.disabled" property="has.ant-contrib"/>
+    
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+        <classpath>
+            <pathelement location="${libs.antcontrib}"/>
+        </classpath>
+    </taskdef>
+    
+    
+    <target name="makepluginjar">
+        <propertyregex property="pluginjar.name" input="${target.file}" regexp=".*[\\/](.*)$" select="\1.jar" casesensitive="false" />
+        <propertyregex property="folder.name" input="${target.file}" regexp=".*${build.classes.dir}/(.*)$" select="\1" casesensitive="false" />
+
+        <if>
+            <available file="${src.dir}/${folder.name}/.ignore"/>
+            <then>
+                    <echo message="Not building: ${folder.name}" />
+            </then>
+            <else>
+                <echo message="Building: ${folder.name} to ${pluginjar.name}"/>
+                <delete file="plugins/${pluginjar.name}"/>
+                <jar jarfile="plugins/${pluginjar.name}" basedir="build/classes" includes="${folder.name}/**/*.class ${folder.name}/**/*.png">
+                    <metainf file="${target.file}/plugin.info"/>
+                </jar>
+            </else>
+        </if>
+    </target>
+        
+    <target name="build-plugins" depends="build-plugins_bash, build-plugins_ant-contrib"/>
+    
+    <available file="/bin/bash" property="has.bash"/>    
+
+    <target name="build-plugins_bash" unless="has.ant-contrib" if="has.bash">
+        <exec executable="/bin/bash">
+            <arg value="createAllPluginJar.sh"/>
+            <arg value="${src.dir}/com/dmdirc/addons/"/>
+        </exec>
+    </target>
+    
+    <target name="build-plugins_ant-contrib" if="has.ant-contrib">
+        <mkdir dir="plugins/"/>
+        <foreach target="makepluginjar" param="target.file">
+            <path>
+                <dirset dir="${build.classes.dir}/com/dmdirc/addons/">
+                    <include name="**/*"/>
+                    <exclude name="**/*/*/**"/>
+                </dirset>
+            </path>
+        </foreach>
+    </target>
+
+</project>
