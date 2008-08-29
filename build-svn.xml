@@ -6,32 +6,32 @@
         This will revert the svn revision in Main.java to prevent commiting the
         change everyt time someone builds and causing conflicts.
       -->
-    <target name="unsvn" depends="unsvn_nobash, unsvn_bash"/>
+    <target name="-unsvn" depends="-unsvn_nobash, -unsvn_bash"/>
 
-    <target name="unsvn_bash" if="has.bash">
+    <target name="-unsvn_bash" if="has.bash">
         <exec executable="/bin/bash">
             <arg value="AddSVN.sh"/>
             <arg value="--post"/>
         </exec>
     </target>
 
-    <target name="unsvn_nobash" unless="has.bash">
+    <target name="-unsvn_nobash" unless="has.bash">
         <echo message="This task only works on linux"/>
     </target>
 
     <!--
         This will add the svn revision to Main.java
       -->
-    <target name="addsvn" depends="addsvn_nobash, addsvn_bash"/>
+    <target name="-addsvn" depends="-addsvn_nobash, -addsvn_bash"/>
 
-    <target name="addsvn_bash" if="has.bash">
+    <target name="-addsvn_bash" if="has.bash">
         <exec executable="/bin/bash">
             <arg value="AddSVN.sh"/>
             <arg value="--pre"/>
         </exec>
     </target>
 
-    <target name="addsvn_nobash" unless="has.bash">
+    <target name="-addsvn_nobash" unless="has.bash">
         <echo message="This task only works on linux"/>
     </target>
 

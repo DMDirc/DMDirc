@@ -22,4 +22,7 @@
         <echo message="This task only works on linux"/>
     </target>
 
+    <target name="installer" depends="-installer-nobuild, -installer-build"
+            description="Build the installer." />
+
 </project>

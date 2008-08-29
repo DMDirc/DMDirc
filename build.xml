@@ -7,17 +7,12 @@
     <import file="nbproject/build-impl.xml"/>
     <import file="build-installer.xml"/>
     <import file="build-plugins.xml"/>
+    <import file="build-reports.xml"/>
     <import file="build-svn.xml"/>
     <import file="build-tests.xml"/>
 
-    <target name="installer" depends="-installer-nobuild, -installer-build"/>
-    
-    <target name="-post-compile" depends="unsvn, build-plugins"/>
-    <target name="-pre-compile" depends="addsvn"/>
-
-    <target name="test-html" depends="with.clover,compile-test,test,clover.html"/>
-    <target name="test-xml" depends="with.clover,compile-test,test,clover.xml"/>
-    <target name="test-both" depends="test-html,test-xml"/>
+    <target name="-post-compile" depends="-unsvn, build-plugins"/>
+    <target name="-pre-compile" depends="-addsvn"/>
     <target name="-post-test-run" depends="-do-test-reports"/>
 
 </project>

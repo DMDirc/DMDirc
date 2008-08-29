@@ -17,7 +17,7 @@
     </taskdef>
     
     
-    <target name="makepluginjar">
+    <target name="-makepluginjar">
         <propertyregex property="pluginjar.name" input="${target.file}" regexp=".*[\\/](.*)$" select="\1.jar" casesensitive="false" />
         <propertyregex property="folder.name" input="${target.file}" regexp=".*${build.classes.dir}/(.*)$" select="\1" casesensitive="false" />
 
@@ -36,18 +36,20 @@
         </if>
     </target>
         
-    <target name="build-plugins" depends="build-plugins_bash, build-plugins_ant-contrib"/>
+    <target name="build-plugins"
+            depends="-build-plugins_bash, -build-plugins_ant-contrib"
+            description="Build all plugins. "/>
     
-    <target name="build-plugins_bash" unless="has.ant-contrib" if="has.bash">
+    <target name="-build-plugins_bash" unless="has.ant-contrib" if="has.bash">
         <exec executable="/bin/bash">
             <arg value="createAllPluginJar.sh"/>
             <arg value="${src.dir}/com/dmdirc/addons/"/>
         </exec>
     </target>
     
-    <target name="build-plugins_ant-contrib" if="has.ant-contrib">
+    <target name="-build-plugins_ant-contrib" if="has.ant-contrib">
         <mkdir dir="plugins/"/>
-        <foreach target="makepluginjar" param="target.file">
+        <foreach target="-makepluginjar" param="target.file">
             <path>
                 <dirset dir="${build.classes.dir}/com/dmdirc/addons/">
                     <include name="**/*"/>
