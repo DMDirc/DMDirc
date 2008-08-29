@@ -2,33 +2,22 @@
 <project name="DMDirc" default="default" basedir=".">
     <description>Builds, tests, and runs the project DMDirc.</description>
 
+    <available file="/bin/bash" property="has.bash"/>
+
     <import file="nbproject/build-impl.xml"/>
+    <import file="build-installer.xml"/>
     <import file="build-plugins.xml"/>
     <import file="build-svn.xml"/>
+    <import file="build-tests.xml"/>
 
     <target name="installer" depends="-installer-nobuild, -installer-build"/>
     
-    <target name="-installer-build" if="has.bash">
-        <exec executable="/bin/bash" dir="installer" resultproperty="installer.result">
-            <arg value="release.sh"/>
-            <arg value="this"/>
-        </exec>
-
-        <condition property="installer.success">
-            <equals arg1="${installer.result}" arg2="0" />
-        </condition>
-
-        <echo message="Installer build finished."/>
-        <echo message="Completed build files can be found in:"/>
-        <echo message="    ${installer.output.dir}"/>
-        <echo message=""/>
-    </target>
-    
-    <target name="-installer-nobuild" unless="has.bash">
-        <echo message="This task only works on linux"/>
-    </target>
-
     <target name="-post-compile" depends="unsvn, build-plugins"/>
     <target name="-pre-compile" depends="addsvn"/>
+
+    <target name="test-html" depends="with.clover,compile-test,test,clover.html"/>
+    <target name="test-xml" depends="with.clover,compile-test,test,clover.xml"/>
+    <target name="test-both" depends="test-html,test-xml"/>
+    <target name="-post-test-run" depends="-do-test-reports"/>
 
 </project>

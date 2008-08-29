@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="DMDirc" default="default" basedir=".">
-    <!--
-
-    THIS FILE IS DEPRECATED. THE TASKS HAVE BEEN INTEGRATED INTO THE MAIN
-    DMDIRC BUILD FILE. IT WILL BE REMOVED IN THE FUTURE. STOP USING IT.
-
-    -->
-
-    <description>Builds, tests, and runs the project DMDirc.</description>
+<project name="DMDirc-tests" default="default" basedir=".">
+    <description>Test-related tasks for DMDirc.</description>
 
     <property name="clover.jar" location="/home/dmdirc/clover/clover/lib/clover.jar"/>
     <taskdef resource="cloverlib.xml" classpath="${clover.jar}"/>
@@ -43,19 +36,16 @@
         </clover-report>
     </target>
 
-    <import file="build.xml"/>
     <property name="test.reports" value="./junitreports" />
 
-   <target name="test-html" depends="with.clover,compile-test,test,clover.html"/>
-   <target name="test-xml" depends="with.clover,compile-test,test,clover.xml"/>
-   <target name="test-both" depends="test-html,test-xml"/>
-   <target name="-post-test-run">
-      <mkdir dir="${test.reports}" />
-      <junitreport todir="${test.reports}">
-        <fileset dir="${build.test.results.dir}">
-          <include name="TEST-*.xml" />
-        </fileset>
-        <report todir="${test.reports}" />
-      </junitreport>
+    <target name="-do-test-reports">
+        <mkdir dir="${test.reports}" />
+        <junitreport todir="${test.reports}">
+            <fileset dir="${build.test.results.dir}">
+                <include name="TEST-*.xml" />
+            </fileset>
+            <report todir="${test.reports}" />
+        </junitreport>
     </target>
+
 </project>

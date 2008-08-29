@@ -38,8 +38,6 @@
         
     <target name="build-plugins" depends="build-plugins_bash, build-plugins_ant-contrib"/>
     
-    <available file="/bin/bash" property="has.bash"/>    
-
     <target name="build-plugins_bash" unless="has.ant-contrib" if="has.bash">
         <exec executable="/bin/bash">
             <arg value="createAllPluginJar.sh"/>

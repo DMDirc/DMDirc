@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="DMDirc-installer" default="default" basedir=".">
+    <description>Tasks to build the DMDirc installer.</description>
+
+    <target name="-installer-build" if="has.bash">
+        <exec executable="/bin/bash" dir="installer" resultproperty="installer.result">
+            <arg value="release.sh"/>
+            <arg value="this"/>
+        </exec>
+
+        <condition property="installer.success">
+            <equals arg1="${installer.result}" arg2="0" />
+        </condition>
+
+        <echo message="Installer build finished."/>
+        <echo message="Completed build files can be found in:"/>
+        <echo message="    ${installer.output.dir}"/>
+        <echo message=""/>
+    </target>
+    
+    <target name="-installer-nobuild" unless="has.bash">
+        <echo message="This task only works on linux"/>
+    </target>
+
+</project>
