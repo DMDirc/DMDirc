@@ -121,21 +121,21 @@ public final class AliasCommand extends GlobalCommand implements IntelligentComm
 
     /** {@inheritDoc} */
     @Override
-    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
-        final AdditionalTabTargets res = new AdditionalTabTargets();
-        
+    public AdditionalTabTargets getSuggestions(final int arg,
+                                               final List<String> previousArgs) {
+        final AdditionalTabTargets res = new AdditionalTabTargets().excludeAll();
+
         if (arg == 0) {
             res.add("--remove");
-            res.excludeAll();
         } else if (arg == 1 && previousArgs.get(0).equals("--remove")) {
             for (Action alias : AliasWrapper.getAliasWrapper()) {
-                res.add(alias.getName());
-            }   
+                res.add(AliasWrapper.getCommandName(alias));
+            }
         } else if (arg >= 1 && !previousArgs.get(0).equals("--remove")) {
             return TabCompleter.getIntelligentResults(arg, previousArgs, 1);
         }
-        
+
         return res;
-    } 
+    }
     
 }
