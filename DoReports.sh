@@ -9,17 +9,17 @@ env
 
 # Path to trunk
 MYDIR="/home/dmdirc/google"
+
 # Path to scripts
 SCRIPTDIR="/home/dmdirc/scripts"
+
 # Path to ant binary
 ANT="/usr/bin/ant"
-# Path to svn binary
-SVN="/usr/bin/svn"
 
 # Increase the memory allowed to be used when running stuff
 export ANT_OPTS=-Xmx512m
 
-if [ "${BAMBOO_INSTALL}" != "" ]; then
+if [ -n "${BAMBOO_INSTALL}" ]; then
 	# Running as bamboo, symlink/create needed things to let it find the results
 	# of the build
 	if [ ! -e ${PWD}/reports ]; then
@@ -30,33 +30,23 @@ if [ "${BAMBOO_INSTALL}" != "" ]; then
 	fi;
 fi;
 
-#/bin/sh $MYDIR/oblong.sh "Reports" "Style Report Generation Started";
 cd $MYDIR
-$SVN update
-$ANT clean
+
 # Anti-Clover stupidness!
 rm -Rf ${MYDIR}/.clover
 mkdir ${MYDIR}/.clover
+
 if [ "$1" = "--all" ]; then
-	$ANT -k -buildfile $MYDIR/style_build.xml clean findbugs
-	$ANT -k -buildfile $MYDIR/doreports.xml domostreports
+	$ANT -k clean findbugs
+	$ANT -k domostreports
 elif [ "$1" = "--findbugs" ]; then
-	$ANT -k -buildfile $MYDIR/style_build.xml clean findbugs
+	$ANT -k clean findbugs
 else
-	$ANT -k -buildfile $MYDIR/doreports.xml domostreports
+	$ANT -k clean domostreports
 fi
 
 # Run junit issue notifier
 PHP=`which php`
-if [ -e "${SCRIPTDIR}/junit-failures.php" -a "${PHP}" != "" ]; then
+if [ -e "${SCRIPTDIR}/junit-failures.php" -a -n "${PHP}" ]; then
 	${PHP} -q "${SCRIPTDIR}/junit-failures.php"
 fi
-
-# Oblong junit announcement
-#LINE=`cat junitreports/overview-summary.html | grep "%</td"`
-#PASSRATE=`expr "$LINE" : '.*<td>\(.*\)%</td>'`
-#if [ "${PASSRATE}" = "" ]; then
-#	/bin/sh $MYDIR/oblong.sh "Reports" "Report Generation Complete (Junit tests failed to run)"
-#else
-#	/bin/sh $MYDIR/oblong.sh "Reports" "Report Generation Complete (Junit Pass Rate: ${PASSRATE}%)"
-#fi
