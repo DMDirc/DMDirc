@@ -13,6 +13,9 @@ MYDIR="/home/dmdirc/google"
 # Path to scripts
 SCRIPTDIR="/home/dmdirc/scripts"
 
+# Path to svn binary
+SVN="/usr/bin/svn"
+
 # Path to ant binary
 ANT="/usr/bin/ant"
 
@@ -31,6 +34,8 @@ if [ -n "${BAMBOO_INSTALL}" ]; then
 fi;
 
 cd $MYDIR
+
+$SVN update
 
 # Anti-Clover stupidness!
 rm -Rf ${MYDIR}/.clover

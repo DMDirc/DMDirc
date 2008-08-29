@@ -8,14 +8,19 @@ env
 
 # Path to WWW Directory
 WWWDIR="/home/dmdirc/www"
+
 # Path to trunk
 MYDIR="/home/dmdirc/google"
+
 # Path to scripts
 SCRIPTDIR="/home/dmdirc/scripts"
+
 # Path to ant binary
 ANT="/usr/bin/ant"
+
 # Path to svn binary
 SVN="/usr/bin/svn"
+
 # Path to jar binary
 JAR="/usr/bin/jar"
 
@@ -24,26 +29,18 @@ BAMBOO=/home/dmdirc/Bamboo/xml-data/builds/DMDIRC-NIGHTLY/download-data/build_lo
 
 cd ${MYDIR}
 
-# /bin/sh $MYDIR/oblong.sh "Nightly Build" "Build Started"
-
-cd $MYDIR/
 $SVN update
 SVNREV=`$SVN info | grep Revision`
 SVNREV=${SVNREV##*: }
 export DMDIRC_SVN=${SVNREV}
 
 # Substitute the version string
-awk '{gsub(/String VERSION = "SVN"/,"String VERSION = \"Nightly - SVN Rev: '${SVNREV}'\"");print}' ${MYDIR}/src/com/dmdirc/Main.java > ${MYDIR}/src/com/dmdirc/Main.java.tmp
-mv ${MYDIR}/src/com/dmdirc/Main.java.tmp ${MYDIR}/src/com/dmdirc/Main.java
+awk '{gsub(/String VERSION = "SVN"/,"String VERSION = \"Nightly - SVN Rev: '${SVNREV}'\"");print}' src/com/dmdirc/Main.java > src/com/dmdirc/Main.java.tmp
+mv src/com/dmdirc/Main.java.tmp src/com/dmdirc/Main.java
 
 # Substitute the update channel
-awk '{gsub(/UpdateChannel UPDATE_CHANNEL = UpdateChannel.NONE/,"UpdateChannel UPDATE_CHANNEL = UpdateChannel.NIGHTLY");print}' ${MYDIR}/src/com/dmdirc/Main.java > ${MYDIR}/src/com/dmdirc/Main.java.tmp
-mv ${MYDIR}/src/com/dmdirc/Main.java.tmp ${MYDIR}/src/com/dmdirc/Main.java
-
-# This no longer exists
-## Substitue the release date
-#awk '{gsub(/int RELEASE_DATE = 0/,"int RELEASE_DATE = '`date +%Y%m%d`'");print}' ${MYDIR}/src/com/dmdirc/Main.java > ${MYDIR}/src/com/dmdirc/Main.java.tmp
-#mv ${MYDIR}/src/com/dmdirc/Main.java.tmp ${MYDIR}/src/com/dmdirc/Main.java
+awk '{gsub(/UpdateChannel UPDATE_CHANNEL = UpdateChannel.NONE/,"UpdateChannel UPDATE_CHANNEL = UpdateChannel.NIGHTLY");print}' src/com/dmdirc/Main.java > src/com/dmdirc/Main.java.tmp
+mv src/com/dmdirc/Main.java.tmp src/com/dmdirc/Main.java
 
 # Archive old nightlies
 if [ `date +%d` = "01" ]; then
@@ -71,7 +68,7 @@ if [ -e "${HOME}/www/updates/" ]; then
 fi;
 
 # Build plugins/jar
-$ANT -buildfile $MYDIR/build.xml -k clean jar
+$ANT -k clean jar
 
 # Now revert the trunk so as not to break updates.
 for updatedir in ${REVERTLIST}; do
@@ -83,7 +80,7 @@ PHP=`which php`
 if [ "${BAMBOO_INSTALL}" != "" -a -e "${BAMBOO}" ]; then
 	export BAMBOO_DIR=${BAMBOO};
 	export BAMBOO_BUILD=`ls -cr1 ${BAMBOO} | tail -n 1 | awk -F. '{print $1}'`
-	echo "This is Bamboo Build: "${BAMBOO_BUILD};
+	echo "This is Bamboo build "${BAMBOO_BUILD};
 fi
 
 # Check if build failed
@@ -121,11 +118,11 @@ else
 	
 	# Move installers/jar to nightlies site
 	FILENAME=DMDirc_${FILEDATA}.jar
-	mv "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.exe" "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.exe"
-	mv "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.run" "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.run"
-	mv "${MYDIR}/installer/output/DMDirc-${FILEDATA}.dmg" "${WWWDIR}/nightly/DMDirc-${FILEDATA}.dmg"
-	rm -Rf "${MYDIR}/installer/output/DMDirc-${FILEDATA}.jar"
-	cp $MYDIR/dist/DMDirc.jar /home/dmdirc/www/nightly/$FILENAME
+	mv "installer/output/DMDirc-Setup-${FILEDATA}.exe" "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.exe"
+	mv "installer/output/DMDirc-Setup-${FILEDATA}.run" "${WWWDIR}/nightly/DMDirc-Setup-${FILEDATA}.run"
+	mv "installer/output/DMDirc-${FILEDATA}.dmg" "${WWWDIR}/nightly/DMDirc-${FILEDATA}.dmg"
+	rm -Rf "installer/output/DMDirc-${FILEDATA}.jar"
+	cp dist/DMDirc.jar /home/dmdirc/www/nightly/$FILENAME
 
 	if [ -e "${WWWDIR}/nightly/${FILENAME}" ]; then
 		ln -sf ${WWWDIR}/nightly/${FILENAME} $WWWDIR/nightly/DMDirc_latest.jar
@@ -139,8 +136,6 @@ else
 	if [ -e "${WWWDIR}/nightly/DMDirc-${FILEDATA}.dmg" ]; then
 		ln -sf "${WWWDIR}/nightly/DMDirc-${FILEDATA}.dmg" $WWWDIR/nightly/DMDirc_latest.dmg
 	fi;
-	cd ${MYDIR}
-	# /bin/sh $MYDIR/oblong.sh "Nightly Build" "Build Successful";
 	
 	# Do normal reports
 	if [ "${IS_BAMBOO}" == "" ]; then
@@ -148,6 +143,4 @@ else
 	fi;
 fi
 
-$SVN revert ${MYDIR}/src/com/dmdirc/Main.java
-
-
+$SVN revert src/com/dmdirc/Main.java
