@@ -25,7 +25,9 @@ package com.dmdirc.ui.swing.dialogs;
 import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
+import com.dmdirc.ui.core.util.Info;
 import com.dmdirc.ui.swing.MainFrame;
+import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.TextLabel;
@@ -75,6 +77,8 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
     private JTextArea feedback;
     /** Server info checkbox. */
     private JCheckBox serverCheckbox;
+    /** DMDirc info checkbox. */
+    private JCheckBox DMDircCheckbox;
 
     /** Instantiates the feedback dialog. */
     private FeedbackDialog() {
@@ -141,6 +145,7 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
         feedback = new JTextArea();
         serverCheckbox =
                 new JCheckBox("Include information about connected servers.");
+        DMDircCheckbox = new JCheckBox("Include information about DMDirc.");
 
         UIUtilities.addUndoManager(name);
         UIUtilities.addUndoManager(email);
@@ -151,6 +156,8 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
     private void layoutComponents() {
         serverCheckbox.setMargin(new Insets(0, 0, 0, 0));
         serverCheckbox.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        DMDircCheckbox.setMargin(new Insets(0, 0, 0, 0));
+        DMDircCheckbox.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
         setLayout(new MigLayout("fill, wmin 600, wmax 600, hmin 400, hmax 400"));
 
@@ -165,6 +172,7 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
         add(new JLabel("Feedback: "), "aligny top");
         add(new JScrollPane(feedback), "span 2, grow, pushx, wrap");
         add(serverCheckbox, "skip 1, span 2, growx, wrap");
+        add(DMDircCheckbox, "skip 1, span 2, growx, wrap");
 
         add(getCancelButton(), "skip, right, sg button");
         add(getOkButton(), "right,  sg button");
@@ -203,33 +211,40 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
     private void send() {
         getOkButton().setEnabled(false);
         getCancelButton().setEnabled(false);
-        final SendWorker worker;
+        final StringBuilder serverInfo = new StringBuilder();
+        final StringBuilder dmdircInfo = new StringBuilder();
         if (serverCheckbox.isSelected()) {
-            final StringBuilder sb = new StringBuilder();
             for (Server server : ServerManager.getServerManager().getServers()) {
-                sb.append("Server name: ").append(server.getName()).append("\n");
-                sb.append("Actual name: ").
+                serverInfo.append("Server name: ").append(server.getName()).
+                        append("\n");
+                serverInfo.append("Actual name: ").
                         append(server.getParser().getServerName()).append("\n");
-                sb.append("Network: ").append(server.getNetwork()).append("\n");
-                sb.append("IRCd: ").append(server.getParser().getIRCD(false)).
+                serverInfo.append("Network: ").append(server.getNetwork()).
+                        append("\n");
+                serverInfo.append("IRCd: ").append(server.getParser().getIRCD(false)).
                         append(" - ");
-                sb.append(server.getParser().getIRCD(true)).append("\n");
-                sb.append("Modes: ").
+                serverInfo.append(server.getParser().getIRCD(true)).append("\n");
+                serverInfo.append("Modes: ").
                         append(server.getParser().getBoolChanModes()).
                         append(" ");
-                sb.append(server.getParser().getListChanModes()).append(" ");
-                sb.append(server.getParser().getSetOnlyChanModes()).append(" ");
-                sb.append(server.getParser().getSetUnsetChanModes()).
-                        append("\n\n");
+                serverInfo.append(server.getParser().getListChanModes()).append(" ");
+                serverInfo.append(server.getParser().getSetOnlyChanModes()).
+                        append(" ");
+                serverInfo.append(server.getParser().getSetUnsetChanModes());
             }
-            worker = new SendWorker(me, name.getText().trim(),
-                    email.getText().trim(), feedback.getText().trim(), true,
-                    sb.substring(0, sb.length() - 2));
-        } else {
-            worker = new SendWorker(me, name.getText().trim(),
-                    email.getText().trim(), feedback.getText().trim());
         }
-        worker.execute();
+        if (DMDircCheckbox.isSelected()) {
+            dmdircInfo.append("DMDirc version: " + Info.getDMDircVersion()).
+                    append("\n");
+            dmdircInfo.append("Profile directory: " + Main.getConfigDir()).
+                    append("\n");
+            dmdircInfo.append("Java version: " + Info.getJavaVersion()).append("\n");
+            dmdircInfo.append("OS Version: " + Info.getOSVersion()).append("\n");
+            dmdircInfo.append("Look & Feel: " + SwingController.getLookAndFeel());
+        }
+        new SendWorker(me, name.getText().trim(),
+                email.getText().trim(), feedback.getText().trim(), serverInfo.toString().
+                trim(), dmdircInfo.toString().trim()).execute();
     }
 
     /** Validates the input. */
@@ -299,10 +314,10 @@ class SendWorker extends SwingWorker {
     private String email;
     /** Feedback. */
     private String feedback;
-    /** Send server info. */
-    private boolean sendServerInfo;
     /** Server name. */
     private String serverInfo;
+    /** DMDirc Info. */
+    private String dmdircInfo;
     /** Error/Success message. */
     private StringBuilder error;
 
@@ -316,7 +331,7 @@ class SendWorker extends SwingWorker {
      */
     public SendWorker(FeedbackDialog dialog, String name, String email,
             String feedback) {
-        this(dialog, name, email, feedback, false, "");
+        this(dialog, name, email, feedback, "", "");
     }
 
     /**
@@ -326,17 +341,18 @@ class SendWorker extends SwingWorker {
      * @param name Name
      * @param email Email
      * @param feedback Feedback
-     * @param sendServerInfo Send server info
      * @param serverInfo serverInfo
+     * @param dmdircInfo DMDirc info
      */
-    public SendWorker(FeedbackDialog dialog, String name, String email,
-            String feedback, boolean sendServerInfo, String serverInfo) {
+    public SendWorker(final FeedbackDialog dialog, final String name,
+            final String email, final String feedback,
+            final String serverInfo, final String dmdircInfo) {
         this.dialog = dialog;
         this.name = name;
         this.email = email;
         this.feedback = feedback;
-        this.sendServerInfo = sendServerInfo;
         this.serverInfo = serverInfo;
+        this.dmdircInfo = dmdircInfo;
 
         error = new StringBuilder();
     }
@@ -361,8 +377,11 @@ class SendWorker extends SwingWorker {
             postData.put("feedback", feedback);
         }
         postData.put("version", Main.VERSION + "(" + Main.SVN_REVISION + ")");
-        if (sendServerInfo) {
+        if (!serverInfo.isEmpty()) {
             postData.put("serverInfo", serverInfo);
+        }
+        if (!dmdircInfo.isEmpty()) {
+            postData.put("dmdircInfo", dmdircInfo);
         }
 
         try {

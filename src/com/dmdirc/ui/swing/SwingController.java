@@ -459,4 +459,13 @@ public final class SwingController implements UIController {
     public String getUserInput(final String prompt) {
         return JOptionPane.showInputDialog(prompt);
     }
+    
+    /**
+     * Returns the current look and feel.
+     * 
+     * @return Current look and feel
+     */
+    public static String getLookAndFeel() {
+        return UIManager.getLookAndFeel().getName();
+    }
 }

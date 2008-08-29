@@ -23,15 +23,15 @@
 package com.dmdirc.ui.swing.dialogs.about;
 
 import com.dmdirc.Main;
+import com.dmdirc.ui.core.util.Info;
+import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.ui.swing.UIUtilities;
 
-import java.util.Locale;
 
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -53,58 +53,15 @@ public final class InfoPanel extends JPanel {
         initComponents();
     }
 
-    /**
-     * Returns the DMDirc version info.
-     * 
-     * @return DMDirc version string
-     */
-    private String getDMDircVersion() {
-        return Main.VERSION + " (" + Main.SVN_REVISION + "; " +
-                Main.UPDATE_CHANNEL + ")";
-    }
-
-    /**
-     * Returns the systems java version.
-     * 
-     * @return Java version string
-     */
-    private String getJavaVersion() {
-        return System.getProperty("java.vm.name", "unknown") + " " +
-                System.getProperty("java.version", "unknown") + 
-                " [" + System.getProperty("java.vm.vendor", "uknown") + "]";
-    }
-    
-    /**
-     * Returns the current look and feel.
-     * 
-     * @return Current look and feel
-     */
-    private String getLookAndFeel() {
-        return UIManager.getLookAndFeel().getName();
-    }
-
-    /**
-     * Returns the systems OS version.
-     * 
-     * @return OS version string
-     */
-    private String getOSVersion() {
-        return System.getProperty("os.name", "unknown") + " " +
-                System.getProperty("os.version", "unknown") + " " +
-                System.getProperty("os.arch", "unknown") + "; " +
-                System.getProperty("file.encoding", "unknown") + "; " + Locale.getDefault().
-                toString();
-    }
-
     /** Initialises the components. */
     private void initComponents() {
         final JScrollPane scrollPane = new JScrollPane();
         final JEditorPane infoPane = new JEditorPane("text/html", "<html>" +
-                "<b>DMDirc version: </b>" + getDMDircVersion() + "<br>" +
+                "<b>DMDirc version: </b>" + Info.getDMDircVersion() + "<br>" +
                 "<b>Profile directory: </b>" + Main.getConfigDir() + "<br>" +
-                "<b>Java version: </b>" + getJavaVersion() + "<br>" +
-                "<b>OS Version: </b>" + getOSVersion() + "<br>" +
-                "<b>Look and Feel: </b>" + getLookAndFeel() + "<br>" +
+                "<b>Java version: </b>" + Info.getJavaVersion() + "<br>" +
+                "<b>OS Version: </b>" + Info.getOSVersion() + "<br>" +
+                "<b>Look and Feel: </b>" + SwingController.getLookAndFeel() + "<br>" +
                 "</html>");
         infoPane.setEditable(false);
         scrollPane.setViewportView(infoPane);
