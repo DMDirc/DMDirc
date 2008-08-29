@@ -38,6 +38,7 @@ import com.dmdirc.ui.interfaces.FramemanagerPosition;
 import com.dmdirc.ui.interfaces.MainWindow;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.components.InputTextFrame;
+import com.dmdirc.ui.swing.components.SnappingJSplitPane;
 import com.dmdirc.ui.swing.components.SwingStatusBar;
 import com.dmdirc.ui.swing.framemanager.buttonbar.ButtonBar;
 import com.dmdirc.ui.swing.framemanager.ctrltab.CtrlTabFrameManager;
@@ -397,7 +398,8 @@ public final class MainFrame extends JFrame implements WindowListener,
      * Initialises the components for this frame.
      */
     private void initComponents() {
-        final JSplitPane mainSplitPane = new JSplitPane();
+        JSplitPane mainSplitPane =
+                new SnappingJSplitPane(SnappingJSplitPane.Orientation.HORIZONTAL);
 
         frameManagerPanel = new JPanel();
         desktopPane = new DMDircDesktopPane();
@@ -436,7 +438,7 @@ public final class MainFrame extends JFrame implements WindowListener,
 
         mainSplitPane.setDividerSize((int) PlatformDefaults.getPanelInsets(0).
                 getValue());
-        mainSplitPane.setOneTouchExpandable(false);
+        mainSplitPane.setOneTouchExpandable(true);
 
         position =
                 FramemanagerPosition.getPosition(IdentityManager.getGlobalConfig().
@@ -466,11 +468,6 @@ public final class MainFrame extends JFrame implements WindowListener,
                 frameManagerPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE,
                         IdentityManager.getGlobalConfig().
                         getOptionInt("ui", "frameManagerSize", 50)));
-                frameManagerPanel.setMinimumSize(new Dimension(Integer.MAX_VALUE,
-                        50));
-                desktopPane.setMaximumSize(new Dimension(Integer.MAX_VALUE,
-                        Integer.MAX_VALUE));
-                desktopPane.setMinimumSize(new Dimension(Integer.MAX_VALUE, 300));
                 break;
             case LEFT:
                 mainSplitPane.setLeftComponent(frameManagerPanel);
@@ -480,10 +477,6 @@ public final class MainFrame extends JFrame implements WindowListener,
                 frameManagerPanel.setPreferredSize(new Dimension(IdentityManager.getGlobalConfig().
                         getOptionInt("ui", "frameManagerSize", 150),
                         Integer.MAX_VALUE));
-                frameManagerPanel.setMinimumSize(new Dimension(150, 0));
-                desktopPane.setMaximumSize(new Dimension(Integer.MAX_VALUE,
-                        Integer.MAX_VALUE));
-                desktopPane.setMinimumSize(new Dimension(300, 0));
                 break;
             case BOTTOM:
                 mainSplitPane.setTopComponent(desktopPane);
@@ -493,11 +486,6 @@ public final class MainFrame extends JFrame implements WindowListener,
                 frameManagerPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE,
                         IdentityManager.getGlobalConfig().
                         getOptionInt("ui", "frameManagerSize", 50)));
-                frameManagerPanel.setMinimumSize(new Dimension(Integer.MAX_VALUE,
-                        50));
-                desktopPane.setMaximumSize(new Dimension(Integer.MAX_VALUE,
-                        Integer.MAX_VALUE));
-                desktopPane.setMinimumSize(new Dimension(Integer.MAX_VALUE, 300));
                 break;
             case RIGHT:
                 mainSplitPane.setLeftComponent(desktopPane);
@@ -507,10 +495,6 @@ public final class MainFrame extends JFrame implements WindowListener,
                 frameManagerPanel.setPreferredSize(new Dimension(IdentityManager.getGlobalConfig().
                         getOptionInt("ui", "frameManagerSize", 150),
                         Integer.MAX_VALUE));
-                frameManagerPanel.setMinimumSize(new Dimension(150, 0));
-                desktopPane.setMaximumSize(new Dimension(Integer.MAX_VALUE,
-                        Integer.MAX_VALUE));
-                desktopPane.setMinimumSize(new Dimension(300, 0));
                 break;
             default:
                 break;

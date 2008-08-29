@@ -23,7 +23,6 @@
 package com.dmdirc.ui.swing;
 
 import com.dmdirc.Channel;
-import com.dmdirc.Main;
 import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
@@ -31,6 +30,7 @@ import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.swing.components.InputTextFrame;
+import com.dmdirc.ui.swing.components.SnappingJSplitPane;
 import com.dmdirc.ui.swing.components.SwingInputHandler;
 import com.dmdirc.ui.swing.components.renderers.NicklistRenderer;
 import com.dmdirc.ui.swing.dialogs.channelsetting.ChannelSettingsDialog;
@@ -60,7 +60,8 @@ import net.miginfocom.swing.MigLayout;
 /**
  * The channel frame is the GUI component that represents a channel to the user.
  */
-public final class ChannelFrame extends InputTextFrame implements ActionListener, ChannelWindow {
+public final class ChannelFrame extends InputTextFrame implements ActionListener,
+        ChannelWindow {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -115,21 +116,26 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
                 new ChannelCommandParser(((Channel) getContainer()).getServer(),
                 (Channel) getContainer());
 
-        setInputHandler(new SwingInputHandler(getInputField(), commandParser, this));
+        setInputHandler(new SwingInputHandler(getInputField(), commandParser,
+                this));
     }
 
     /**
      * Retrieves the command Parser for this command window.
      * @return This window's command Parser
      */
+    @Override
     public CommandParser getCommandParser() {
         return commandParser;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void updateNames(final List<ChannelClientInfo> clients) {
         SwingUtilities.invokeLater(new Runnable() {
 
+            /** {@inheritDoc} */
+            @Override
             public void run() {
                 nicklistModel.replace(clients);
             }
@@ -137,9 +143,12 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     }
 
     /** {@inheritDoc} */
+    @Override
     public void updateNames() {
         SwingUtilities.invokeLater(new Runnable() {
 
+            /** {@inheritDoc} */
+            @Override
             public void run() {
                 nicklistModel.sort();
             }
@@ -147,9 +156,12 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     }
 
     /** {@inheritDoc} */
+    @Override
     public void addName(final ChannelClientInfo client) {
         SwingUtilities.invokeLater(new Runnable() {
 
+            /** {@inheritDoc} */
+            @Override
             public void run() {
                 nicklistModel.add(client);
             }
@@ -157,9 +169,12 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     }
 
     /** {@inheritDoc} */
+    @Override
     public void removeName(final ChannelClientInfo client) {
         SwingUtilities.invokeLater(new Runnable() {
 
+            /** {@inheritDoc} */
+            @Override
             public void run() {
                 nicklistModel.remove(client);
             }
@@ -187,7 +202,9 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
         settingsMI = new JMenuItem("Settings");
         settingsMI.addActionListener(this);
 
-        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        splitPane =
+                new SnappingJSplitPane(SnappingJSplitPane.Orientation.HORIZONTAL,
+                false);
 
         final JScrollPane nickScrollPane = new JScrollPane();
         nickList = new JList();
@@ -209,9 +226,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
         nickList.setModel(nicklistModel);
         nickScrollPane.setViewportView(nickList);
 
-        nickScrollPane.setMinimumSize(new Dimension(150, 10));
-        getTextPane().setPreferredSize(new Dimension(((MainFrame) Main.getUI().
-                getMainWindow()).getWidth(), 10));
+        nickScrollPane.setPreferredSize(new Dimension(150, 10));
 
         getContentPane().setLayout(new MigLayout("fill, ins 0, hidemode 3, wrap 1"));
 
@@ -222,9 +237,11 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
         splitPane.setLeftComponent(getTextPane());
         splitPane.setRightComponent(nickScrollPane);
 
+        splitPane.setOneTouchExpandable(true);
         splitPane.setDividerLocation((double) 1);
         splitPane.setResizeWeight(1);
-        splitPane.setDividerSize((int) PlatformDefaults.getPanelInsets(0).getValue());
+        splitPane.setDividerSize((int) PlatformDefaults.getPanelInsets(0).
+                getValue());
         splitPane.setContinuousLayout(true);
 
         pack();
@@ -232,7 +249,10 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
 
     /**
      * {@inheritDoc}.
+     * 
+     * @param actionEvent Action event
      */
+    @Override
     public void actionPerformed(final ActionEvent actionEvent) {
         if (actionEvent.getSource() == settingsMI) {
             ChannelSettingsDialog.showChannelSettingsDialog((Channel) getContainer());
@@ -250,6 +270,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     /**
      * Checks for url's, channels and nicknames. {@inheritDoc}
      */
+    @Override
     public void mouseClicked(final MouseEvent mouseEvent) {
         processMouseEvent(mouseEvent);
         super.mouseClicked(mouseEvent);
@@ -258,6 +279,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     /**
      * Not needed for this class. {@inheritDoc}
      */
+    @Override
     public void mousePressed(final MouseEvent mouseEvent) {
         processMouseEvent(mouseEvent);
         super.mousePressed(mouseEvent);
@@ -266,6 +288,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     /**
      * Not needed for this class. {@inheritDoc}
      */
+    @Override
     public void mouseReleased(final MouseEvent mouseEvent) {
         processMouseEvent(mouseEvent);
         super.mouseReleased(mouseEvent);
@@ -276,16 +299,17 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
      *
      * @param e mouse event
      */
+    @Override
     public void processMouseEvent(final MouseEvent e) {
-        final Point point = getMousePosition();
-        if (e.getSource() == nickList && nickList.getMousePosition() != null && point != null) {
+        if (e.getSource() == nickList && nickList.getMousePosition() != null &&
+                getMousePosition() != null) {
             boolean showMenu = checkShowNicklistMenu();
             if (!showMenu) {
                 showMenu = selectNickUnderCursor();
             }
             if (showMenu) {
                 if (e.isPopupTrigger()) {
-                    showPopupMenu(ClickType.NICKNAME, point,
+                    showPopupMenu(ClickType.NICKNAME, getMousePosition(),
                             ((ChannelClientInfo) nickList.getSelectedValue()).getNickname());
                 }
             } else {
@@ -404,5 +428,4 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     public void redrawNicklist() {
         getNickList().repaint();
     }
-    
 }

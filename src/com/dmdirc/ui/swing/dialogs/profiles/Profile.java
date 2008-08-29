@@ -25,7 +25,7 @@ package com.dmdirc.ui.swing.dialogs.profiles;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /** Profile wrapper class. */
@@ -35,14 +35,12 @@ public class Profile {
     private String oldName;
     /** Name. */
     private String name;
-    /** Nickname. */
-    private String nickname;
     /** Real name. */
     private String realname;
     /** Ident. */
     private String ident;
-    /** Alternate nicknames. */
-    private List<String> altNicknames;
+    /** Nicknames. */
+    private List<String> nicknames;
     /** Does this profile need saving? */
     private boolean modified;
 
@@ -92,44 +90,39 @@ public class Profile {
      */
     public Profile(final String name, final String nickname,
             final String realname, final String ident) {
-        this(name, nickname, realname, ident,
-                new ArrayList<String>());
+        this(name, Arrays.asList(new String[]{nickname, }), realname, ident);
     }
 
     /**
      * Creates a new profile.
      *
      * @param name Profile's name
-     * @param nickname Profile's nickname
+     * @param nicknames Profile's nicknames
      * @param realname Profile's realname
      * @param ident Profile's ident
-     * @param altNicknames Profile's alternate nicknames list
      */
-    public Profile(final String name, final String nickname,
-            final String realname, final String ident,
-            final List<String> altNicknames) {
-        this(name, nickname, realname, ident, altNicknames, true);
+    public Profile(final String name, final List<String> nicknames,
+            final String realname, final String ident) {
+        this(name, nicknames, realname, ident, true);
     }
 
     /**
      * Creates a new profile.
      *
      * @param name Profile's name
-     * @param nickname Profile's nickname
+     * @param nicknames Profile's nickname
      * @param realname Profile's realname
      * @param ident Profile's ident
-     * @param altNicknames Profile's alternate nicknames list
      * @param modified Has this profile been modified
      */
-    public Profile(final String name, final String nickname,
+    public Profile(final String name, final List<String> nicknames,
             final String realname, final String ident,
-            final List<String> altNicknames, final boolean modified) {
+            final boolean modified) {
         this.oldName = name;
         this.name = name;
-        this.nickname = nickname;
+        this.nicknames = nicknames;
         this.realname = realname;
         this.ident = ident;
-        this.altNicknames = altNicknames;
         this.modified = modified;
     }
 
@@ -154,26 +147,73 @@ public class Profile {
             setModified(true);
         }
     }
-
+    
     /**
-     * Gets the main nickname for this profile.
+     * Gets the nicknames list for this profile.
      *
-     * @return Profile's nickname
+     * @return Profile's nicknames list
      */
-    public String getNickname() {
-        return nickname;
+    public List<String> getNicknames() {
+        return nicknames;
     }
 
     /**
-     * Sets the main nickname for this profile.
+     * Sets the nicknames list for this profile.
      *
-     * @param nickname Profile's new nickname
+     * @param nicknames Profile's new nicknames list
      */
-    public void setNickname(final String nickname) {
-        if (!this.nickname.equals(nickname)) {
-            this.nickname = nickname;
+    public void setNicknames(final List<String> nicknames) {
+        if (!this.nicknames.equals(nicknames)) {
+            this.nicknames = nicknames;
             setModified(true);
         }
+    }
+
+    /**
+     * Adds a nickname to this profile.
+     *
+     * @param nickname A new nickname for the profile
+     */
+    public void addNickname(final String nickname) {
+        if (!nicknames.contains(nickname)) {
+            nicknames.add(nickname);
+            setModified(true);
+        }
+    }
+
+    /**
+     * Adds a nickname to this profile.
+     *
+     * @param nickname A new nickname for the profile
+     * @param position Position for the new alternate nickname
+     */
+    public void addNickname(final String nickname, final int position) {
+        if (!nicknames.contains(nickname)) {
+            nicknames.add(position, nickname);
+            setModified(true);
+        }
+    }
+
+    /**
+     * Deletes a nickname from this profile.
+     *
+     * @param nickname An existing nickname from the profile
+     */
+    public void delNickname(final String nickname) {
+        if (nicknames.remove(nickname)) {
+            setModified(true);
+        }
+    }
+
+    /**
+     * Gets the specified nickname for this profile
+     *
+     * @param index Index of the nickname to retrieve
+     * 
+     * @return Profile's nickname
+     */
+    public String getNickname(final int index) {
+        return nicknames.get(index);
     }
 
     /**
@@ -219,63 +259,6 @@ public class Profile {
     }
 
     /**
-     * Gets the alternate nicknames list for this profile.
-     *
-     * @return Profile's alternate nicknames list
-     */
-    public List<String> getAltNicknames() {
-        return altNicknames;
-    }
-
-    /**
-     * Sets the alternate nicknames list for this profile.
-     *
-     * @param altNicknames Profile's new alternate nicknames list
-     */
-    public void setAltNicknames(final List<String> altNicknames) {
-        if (!this.altNicknames.equals(altNicknames)) {
-            this.altNicknames = altNicknames;
-            setModified(true);
-        }
-    }
-
-    /**
-     * Adds an alternate nickname to this profile.
-     *
-     * @param altNickname A new alternate nickname for the profile
-     */
-    public void addAltNickname(final String altNickname) {
-        if (!altNicknames.contains(altNickname)) {
-            altNicknames.add(altNickname);
-            setModified(true);
-        }
-    }
-
-    /**
-     * Adds an alternate nickname to this profile.
-     *
-     * @param altNickname A new alternate nickname for the profile
-     * @param position Position for the new alternate nickname
-     */
-    public void addAltNickname(final String altNickname, final int position) {
-        if (!altNicknames.contains(altNickname)) {
-            altNicknames.add(position, altNickname);
-            setModified(true);
-        }
-    }
-
-    /**
-     * Deletes an alternate nickname from this profile.
-     *
-     * @param altNickname An existing alternate nickname for the profile
-     */
-    public void delAltNickname(final String altNickname) {
-        if (altNicknames.remove(altNickname)) {
-            setModified(true);
-        }
-    }
-
-    /**
      * Has this profile been modified?
      *
      * @return true iif the profile has been modified
@@ -312,10 +295,9 @@ public class Profile {
             }
 
             profile.setOption("identity", "name", name);
-            profile.setOption(profileString, "nickname", nickname);
+            profile.setOption(profileString, "nicknames", nicknames);
             profile.setOption(profileString, "realname", realname);
             profile.setOption(profileString, "ident", ident);
-            profile.setOption(profileString, "altnicks", altNicknames);
             modified = false;
             this.oldName = name;
         }
@@ -354,7 +336,7 @@ public class Profile {
         if (!this.name.equals(other.name)) {
             return false;
         }
-        if (!this.nickname.equals(other.nickname)) {
+        if (!this.nicknames.equals(other.nicknames)) {
             return false;
         }
         if (!this.realname.equals(other.realname)) {
@@ -364,13 +346,6 @@ public class Profile {
             return false;
         }
         if (this.ident != null && !this.ident.equals(other.ident)) {
-            return false;
-        }
-        if (this.altNicknames != other.altNicknames) {
-            return false;
-        }
-        if (this.altNicknames == null ||
-                !this.altNicknames.equals(other.altNicknames)) {
             return false;
         }
 
@@ -383,12 +358,10 @@ public class Profile {
         int hash = 5;
         hash = 79 * hash + (this.name != null ? this.name.hashCode() : 0);
         hash = 79 * hash +
-                (this.nickname != null ? this.nickname.hashCode() : 0);
+                (this.nicknames != null ? this.nicknames.hashCode() : 0);
         hash = 79 * hash +
                 (this.realname != null ? this.realname.hashCode() : 0);
         hash = 79 * hash + (this.ident != null ? this.ident.hashCode() : 0);
-        hash = 79 * hash +
-                (this.altNicknames != null ? this.altNicknames.hashCode() : 0);
 
         return hash;
     }
@@ -402,9 +375,8 @@ public class Profile {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return "[Profile: name='" + name + "', nickname='" + nickname +
-                "', realname='" + realname + "', ident='" + ident +
-                "', altNicknames='" + altNicknames + "', modified='" +
-                modified + "']";
+        return "[Profile: name='" + name + "', nickname='" + nicknames +
+                "', realname='" + realname + "', ident='" + ident + 
+                "', modified='" + modified + "']";
     }
 }

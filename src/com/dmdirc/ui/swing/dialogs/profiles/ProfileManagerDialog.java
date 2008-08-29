@@ -180,10 +180,9 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
         final List<Identity> profiles = IdentityManager.getProfiles();
         for (Identity profile : profiles) {
             model.add(new Profile(profile.getName(),
-                    profile.getOption(profileString, "nickname"),
+                    profile.getOptionList(profileString, "nicknames"),
                     profile.getOption(profileString, "realname"),
                     profile.getOption(profileString, "ident"),
-                    profile.getOptionList(profileString, "altnicks"),
                     false));
         }
     }

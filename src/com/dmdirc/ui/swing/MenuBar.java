@@ -25,6 +25,7 @@ package com.dmdirc.ui.swing;
 import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
 import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.ui.swing.components.StandardInputDialog;
 import com.dmdirc.ui.swing.dialogs.FeedbackDialog;
 import com.dmdirc.ui.swing.dialogs.NewServerDialog;
 import com.dmdirc.ui.swing.dialogs.about.AboutDialog;
@@ -36,6 +37,7 @@ import com.dmdirc.ui.swing.framemanager.windowmenu.WindowMenuFrameManager;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Dialog.ModalityType;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -58,7 +60,11 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
     private JMenuItem csd;
     /** SSD. */
     private JMenuItem ssd;
-
+    /** disconnect. */
+    private JMenuItem disconnect;   
+    /** join. */
+    private JMenuItem join;   
+    
     /**
      * Instantiates a new menu bar.
      */
@@ -66,6 +72,7 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         super();
         
         initServerMenu();
+        initChannelMenu();
         initSettingsMenu();
         add(new WindowMenuFrameManager());
         initHelpMenu();
@@ -86,6 +93,20 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         menuItem.setActionCommand("NewServer");
         menuItem.addActionListener(this);
         menu.add(menuItem);
+        
+        disconnect = new JMenuItem();
+        disconnect.setText("Disconnect");
+        disconnect.setMnemonic('d');
+        disconnect.setActionCommand("Disconnect");
+        disconnect.addActionListener(this);
+        menu.add(disconnect);
+        
+        ssd = new JMenuItem();
+        ssd.setMnemonic('s');
+        ssd.setText("Server settings");
+        ssd.setActionCommand("ServerSettings");
+        ssd.addActionListener(this);
+        menu.add(ssd);
 
         if (!Apple.isAppleUI()) {
             menuItem = new JMenuItem();
@@ -95,6 +116,30 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
             menuItem.addActionListener(this);
             menu.add(menuItem);
         }
+    }
+    
+    /**
+     * Initialises the channel menu.
+     */
+    private void initChannelMenu() {
+        JMenuItem menuItem;
+        final JMenu menu = new JMenu("Channel");
+        menu.setMnemonic('c');
+        add(menu);
+        
+        join = new JMenuItem();
+        join.setText("Join Channel...");
+        join.setMnemonic('j');
+        join.setActionCommand("JoinChannel");
+        join.addActionListener(this);
+        menu.add(join);
+        
+        csd = new JMenuItem();
+        csd.setMnemonic('c');
+        csd.setText("Channel Settings");
+        csd.setActionCommand("ChannelSettings");
+        csd.addActionListener(this);
+        menu.add(csd);
     }
 
     /**
@@ -136,20 +181,6 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         menuItem.setActionCommand("Aliases");
         menuItem.addActionListener(this);
         menu.add(menuItem);
-
-        ssd = new JMenuItem();
-        ssd.setMnemonic('l');
-        ssd.setText("Server settings");
-        ssd.setActionCommand("ServerSettings");
-        ssd.addActionListener(this);
-        menu.add(ssd);
-
-        csd = new JMenuItem();
-        csd.setMnemonic('l');
-        csd.setText("Channel Settings");
-        csd.setActionCommand("ChannelSettings");
-        csd.addActionListener(this);
-        menu.add(csd);
     }
 
     /**
@@ -217,6 +248,28 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
             }
         } else if (e.getActionCommand().equals("ServerSettings")) {
             Main.getUI().showServerSettingsDialog(Main.getUI().getActiveServer());
+        } else if (e.getActionCommand().equals("Disconnect")) {
+            Main.getUI().getActiveServer().disconnect();
+        } else if (e.getActionCommand().equals("JoinChannel")) {
+            new StandardInputDialog(SwingController.getMainFrame(), ModalityType.MODELESS, "Join channel",
+            "Enter the name of the channel to join.") {
+
+                /** Serial version UID. */
+                private static final long serialVersionUID = 1;
+                
+                /** {@inheritDoc} */
+                @Override
+                public boolean save() {
+                    Main.getUI().getActiveServer().join(getText());
+                    return true;
+                }
+
+                /** {@inheritDoc} */
+                @Override
+                public void cancelled() {
+                    //Ignore
+                }
+            }.display();
         }
     }
 
@@ -227,6 +280,8 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
 
         ssd.setEnabled(activeWindow != null && activeWindow.getContainer().getServer() != null);
         csd.setEnabled(activeWindow instanceof ChannelFrame);
+        disconnect.setEnabled(activeWindow != null && activeWindow.getContainer().getServer() != null);
+        join.setEnabled(activeWindow != null && activeWindow.getContainer().getServer() != null);
     }
 
     /** {@inheritDoc} */
