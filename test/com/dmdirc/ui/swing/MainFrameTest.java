@@ -115,8 +115,12 @@ public class MainFrameTest {
     
     @Test
     public void testChannelServerSettings() {
-        window.menuItemWithPath("Settings", "Server settings").requireDisabled();
-        window.menuItemWithPath("Settings", "Channel Settings").requireDisabled();
+        window.menuItemWithPath("Channel", "Channel Settings").requireDisabled();
+    }
+    
+    @Test
+    public void testServerServerSettings() {
+        window.menuItemWithPath("Server", "Server settings").requireDisabled();
     }
 
     public static junit.framework.Test suite() {
