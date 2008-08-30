@@ -23,11 +23,13 @@
 package com.dmdirc.ui.swing.components;
 
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.swing.dialogs.url.URLSubsitutionsPanel;
 import com.dmdirc.util.URLHandler;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Enumeration;
 
 import javax.swing.AbstractButton;
@@ -77,6 +79,8 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
     private final URI uri;
     /** Show insets? */
     private final boolean useInsets;
+    /** Substitutions panel. */
+    private URLSubsitutionsPanel subsPanel;
 
     /**
      * Instantiates the URLDialog.
@@ -117,6 +121,12 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
         optionType.add(mail);
         optionType.add(custom);
 
+        subsPanel = new URLSubsitutionsPanel(Arrays.asList(new String[]{"url",
+            "fragment", "host", "path", "port", "query", "protocol", "username",
+            "password"
+        }));
+        subsPanel.setVisible(custom.isSelected());
+        
         updateSelection();
     }
 
@@ -136,6 +146,7 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
         add(showFileChooser, "sgy line");
         add(subsLabel, "growx");
         add(exampleLabel, "width ::100%" + (useInsets ? "-2*u" : ""));
+        add(subsPanel, "growx");
     }
 
     /** Adds listeners to the components. */
@@ -244,6 +255,7 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
                 commandPath.setText(fileChooser.getSelectedFile().toString());
             }
         } else {
+            subsPanel.setVisible(custom.isSelected());
             if (optionType.getSelection() == custom.getModel()) {
                 commandPath.setEnabled(true);
                 showFileChooser.setEnabled(true);

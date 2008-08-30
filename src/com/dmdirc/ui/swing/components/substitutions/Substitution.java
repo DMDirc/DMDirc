@@ -20,12 +20,12 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs.actioneditor;
+package com.dmdirc.ui.swing.components.substitutions;
 
 /**
  * Wrapper for action substitutions.
  */
-public final class ActionSubstitution {
+public final class Substitution {
     
     /** Substitution name. */
     private final String name;
@@ -33,12 +33,12 @@ public final class ActionSubstitution {
     private final String value;
     
     /** 
-     * Creates a new instance of ActionSubstitution. 
+     * Creates a new instance of Substitution. 
      *
      * @param name Name of the substitution
      * @param value Value of the substitution
      */
-    public ActionSubstitution(final String name, final String value) {
+    public Substitution(final String name, final String value) {
         this.name = name;
         this.value = "$" + value;
     }

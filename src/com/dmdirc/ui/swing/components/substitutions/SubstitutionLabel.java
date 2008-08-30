@@ -20,8 +20,10 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs.actioneditor;
+package com.dmdirc.ui.swing.components.substitutions;
 
+import com.dmdirc.ui.swing.dialogs.actioneditor.*;
+import com.dmdirc.ui.swing.components.substitutions.Substitution;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -44,7 +46,7 @@ import javax.swing.text.JTextComponent;
 /**
  * Action substitution label.
  */
-public class ActionSubstitutionLabel extends JButton implements MouseListener,
+public class SubstitutionLabel extends JButton implements MouseListener,
         DragGestureListener, ActionListener, FocusListener {
 
     /**
@@ -56,7 +58,7 @@ public class ActionSubstitutionLabel extends JButton implements MouseListener,
     /** Drag source. */
     private DragSource dragSource;
     /** Substitution. */
-    private ActionSubstitution substition;
+    private Substitution substition;
     /** Previously selected component. */
     private Component previousComponent;
 
@@ -65,7 +67,7 @@ public class ActionSubstitutionLabel extends JButton implements MouseListener,
      * 
      * @param substition Action substitition
      */
-    public ActionSubstitutionLabel(final ActionSubstitution substition) {
+    public SubstitutionLabel(final Substitution substition) {
         super();
 
         this.substition = substition;

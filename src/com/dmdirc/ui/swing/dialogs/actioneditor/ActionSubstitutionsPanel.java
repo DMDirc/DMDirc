@@ -24,24 +24,19 @@ package com.dmdirc.ui.swing.dialogs.actioneditor;
 
 import com.dmdirc.actions.ActionSubstitutor;
 import com.dmdirc.actions.interfaces.ActionType;
-import com.dmdirc.ui.swing.components.TextLabel;
+import com.dmdirc.ui.swing.components.substitutions.Substitution;
+import com.dmdirc.ui.swing.components.substitutions.SubstitutionLabel;
+import com.dmdirc.ui.swing.components.substitutions.SubstitutionsPanel;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map.Entry;
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 
-import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * Action substitutions panel
  */
-public class ActionSubstitutionsPanel extends JPanel {
+public class ActionSubstitutionsPanel extends SubstitutionsPanel<ActionType> {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -49,55 +44,19 @@ public class ActionSubstitutionsPanel extends JPanel {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    /** Action type. */
-    private ActionType type;
-    /** Substitions list. */
-    private List<ActionSubstitutionLabel> substitutions;
 
     /** Instantiates the panel. */
     public ActionSubstitutionsPanel() {
-        this(null);
+        super("Substitutions may be used in the response and target fields", null);
     }
     
-    /** 
+    /**
      * Instantiates the panel.
      * 
      * @param type Action type
      */
     public ActionSubstitutionsPanel(final ActionType type) {
-        super();
-
-        initComponents();
-        addListeners();
-        setActionType(type);
-    }
-
-    /** Initialises the components. */
-    private void initComponents() {
-        setBorder(BorderFactory.createTitledBorder(getBorder(), "Substitutions"));
-        setLayout(new MigLayout("fillx, wrap 4"));
-    }
-
-    /** Adds the listeners. */
-    private void addListeners() {
-    }
-
-    /** Lays out the components. */
-    private void layoutComponents() {
-        removeAll();
-
-        add(new TextLabel("Substitutions may be used in the response and " +
-                "target fields. Drag and drop, or click on an item when " +
-                "editing the field, to insert it."), "spany, aligny top, wmin 225, wmax 225");
-        add(new JSeparator(JSeparator.VERTICAL), "growy, spany");
-
-        for (ActionSubstitutionLabel label : substitutions) {
-            add(label, "sgx subslabel, aligny top, growx");
-        }
-        
-        if (getComponentCount() == 2) {
-            add(new JLabel("No substitutions."), "growx, aligny top, align center");
-        }
+        super("Substitutions may be used in the response and target fields", type);
     }
 
     /**
@@ -105,33 +64,32 @@ public class ActionSubstitutionsPanel extends JPanel {
      * 
      * @param type New action type
      */
-    public void setActionType(final ActionType type) {
+    @Override
+    public void setType(final ActionType type) {
         SwingUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
             public void run() {
-                ActionSubstitutionsPanel.this.type = type;
-
-                substitutions = new ArrayList<ActionSubstitutionLabel>();
+                substitutions = new ArrayList<SubstitutionLabel>();
 
                 if (type != null) {
                     final ActionSubstitutor sub = new ActionSubstitutor(type);
 
                     for (final Entry<String, String> entry : sub.getComponentSubstitutions().
                             entrySet()) {
-                        substitutions.add(new ActionSubstitutionLabel(new ActionSubstitution(entry.getValue(),
+                        substitutions.add(new SubstitutionLabel(new Substitution(entry.getValue(),
                                 entry.getKey())));
                     }
 
                     for (final String entry : sub.getConfigSubstitutions()) {
-                        substitutions.add(new ActionSubstitutionLabel(new ActionSubstitution(entry,
+                        substitutions.add(new SubstitutionLabel(new Substitution(entry,
                                 entry)));
                     }
 
                     for (final Entry<String, String> entry : sub.getServerSubstitutions().
                             entrySet()) {
-                        substitutions.add(new ActionSubstitutionLabel(new ActionSubstitution(entry.getValue(),
+                        substitutions.add(new SubstitutionLabel(new Substitution(entry.getValue(),
                                 entry.getKey())));
                     }
                 }

@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs;
+package com.dmdirc.ui.swing.dialogs.url;
 
 import com.dmdirc.Main;
 import com.dmdirc.ui.swing.components.TextLabel;
@@ -115,7 +115,7 @@ public class URLDialog extends StandardDialog implements ActionListener {
 
     /** Lays out the components. */
     private void layoutComponents() {
-        setLayout(new MigLayout("fill, wrap 1"));
+        setLayout(new MigLayout("fill, wrap 1, pack"));
 
         add(blurb, "");
         add(panel, "grow");
@@ -152,7 +152,7 @@ public class URLDialog extends StandardDialog implements ActionListener {
 
         setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void dispose() {

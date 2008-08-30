@@ -307,7 +307,7 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
             conditions.setEnabled((Boolean) evt.getNewValue());
             substitutions.setEnabled((Boolean) evt.getNewValue());
 
-            substitutions.setActionType(triggers.getPrimaryTrigger());
+            substitutions.setType(triggers.getPrimaryTrigger());
             conditions.setActionTrigger(triggers.getPrimaryTrigger());
         } else if (evt.getSource().equals(conditions)) {
             conditionsValid = (Boolean) evt.getNewValue();
