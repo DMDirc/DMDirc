@@ -85,6 +85,7 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         JMenuItem menuItem;
         final JMenu menu = new JMenu("Server");
         menu.setMnemonic('s');
+        menu.addMenuListener(this);
         add(menu);
 
         menuItem = new JMenuItem();
@@ -125,6 +126,7 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         JMenuItem menuItem;
         final JMenu menu = new JMenu("Channel");
         menu.setMnemonic('c');
+        menu.addMenuListener(this);
         add(menu);
         
         join = new JMenuItem();
