@@ -108,12 +108,20 @@ function getTitle(data: PChar):integer; stdcall;
 var
 	V: Variant;
 	B: array[0..255] of char;
+	kind: Integer;
 begin
   result := 1;
 	try
 		V := getITunes();
 		V := callOLEFunction(V, 'CurrentTrack');
-		B := String(callOLEFunction(V, 'Name'));
+		kind := callOLEFunction(V, 'Kind');
+		if kind = 3 then begin
+			V := getITunes();
+			B := String(callOLEFunction(V, 'CurrentStreamTitle'));
+		end
+		else begin
+			B := String(callOLEFunction(V, 'Name'));
+		end;
 		result := 0;
 	except
 		on E : Exception do B:= 'Unable to find iTunes Application ('+E.ClassName+'/'+E.Message+')';
