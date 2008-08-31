@@ -235,8 +235,8 @@ public class LinuxInstaller extends Installer {
 					writer.println("	exit 1;");
 					writer.println("fi");
 					
-					writer.println("RUNNING=`${JAVA} -jar " + location + "/DMDirc.jar -e -v 2>&1 1>/dev/null | grep 'Unable to connect'`");
-					writer.println("if [ -z \"${RUNNING}\" ]; then");
+					writer.println("${JAVA} -jar " + location + "/DMDirc.jar -k");
+					writer.println("if [ $? -eq 0 ]; then");
 					writer.println("	errordialog \"Uninstaller\" \"Uninstall Aborted - DMDirc is still running.\nPlease close DMDirc before continuing\"");
 					writer.println("	echo \"Uninstall Aborted - DMDirc already running.\"");
 					writer.println("	exit 1;");
