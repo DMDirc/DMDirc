@@ -23,7 +23,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-LAUNCHERVERSION="6"
+LAUNCHERVERSION="7"
 
 params=""
 
@@ -261,7 +261,7 @@ if [ "" != "${JAVA}" ]; then
 	echo "Success! (${JAVA})"
 else
 	echo "Failed!"
-	ERROR="Sorry, java does ont appear to be installed on this machine.";
+	ERROR="Sorry, java does not appear to be installed on this machine.";
 	ERROR=${ERROR}"\n"
 	ERROR=${ERROR}"\nDMDirc requires a 1.6.0 compatible JVM, you can get one from: http://www.java.com";
 	ERROR=${ERROR}"\nor reinstall DMDirc and let the installer install one for you.";
