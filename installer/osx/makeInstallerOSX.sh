@@ -326,8 +326,8 @@ elif [ -e "${DOCSDIR}/CHANGELOG.TXT" ]; then
 	cp "${DOCSDIR}/CHANGELOG.TXT" ${RESDIR}/CHANGELOG.TXT
 fi
 
-if [ -e "${jarPath}/launcher/osx" ]; then
-	cp ${jarPath}/launcher/osx/DMDirc.sh ${MACOSDIR}/DMDirc.sh
+if [ -e "${jarPath}/launcher/unix" ]; then
+	cp ${jarPath}/launcher/unix/DMDirc.sh ${MACOSDIR}/DMDirc.sh
 	chmod a+x ${MACOSDIR}/DMDirc.sh
 fi
 

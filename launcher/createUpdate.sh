@@ -3,11 +3,11 @@
 LAUNCHERDIR="/home/dmdirc/google/launcher"
 LAUNCHERUPDATEDIR="/home/dmdirc/www/updates/launchers/"
 
-LINUXVERSION=`cat ${LAUNCHERDIR}/linux/DMDirc.sh | grep LAUNCHERVERSION= | awk -F\" '{print $2}'`
+UNIXVERSION=`cat ${LAUNCHERDIR}/unix/DMDirc.sh | grep LAUNCHERVERSION= | awk -F\" '{print $2}'`
 WINDOWSVERSION=`cat ${LAUNCHERDIR}/windows/DMDirc.dpr | grep "launcherVersion: String =" | awk -F\' '{print $2}'`
 
-if [ ! -e "${LAUNCHERUPDATEDIR}/linux-${LINUXVERSION}.sh" ]; then
-	cp ${LAUNCHERDIR}/linux/DMDirc.sh ${LAUNCHERUPDATEDIR}/linux-${LINUXVERSION}.sh
+if [ ! -e "${LAUNCHERUPDATEDIR}/unix-${UNIXVERSION}.sh" ]; then
+	cp ${LAUNCHERDIR}/unix/DMDirc.sh ${LAUNCHERUPDATEDIR}/unix-${UNIXVERSION}.sh
 fi;
 
 if [ ! -e "${LAUNCHERUPDATEDIR}/windows-${WINDOWSVERSION}.zip" ]; then

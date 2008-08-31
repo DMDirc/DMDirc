@@ -282,8 +282,8 @@ elif [ -e "${DOCSDIR}/CHANGELOG.TXT" ]; then
 	FILES="${FILES} CHANGELOG.TXT"
 fi
 
-if [ -e "${jarPath}/launcher/linux" ]; then
-	ln -sf ${jarPath}/launcher/linux/DMDirc.sh .
+if [ -e "${jarPath}/launcher/unix" ]; then
+	ln -sf ${jarPath}/launcher/unix/DMDirc.sh .
 	FILES="${FILES} DMDirc.sh"
 fi
 
