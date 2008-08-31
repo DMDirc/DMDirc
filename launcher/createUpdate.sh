@@ -7,10 +7,12 @@ UNIXVERSION=`cat ${LAUNCHERDIR}/unix/DMDirc.sh | grep LAUNCHERVERSION= | awk -F\
 WINDOWSVERSION=`cat ${LAUNCHERDIR}/windows/DMDirc.dpr | grep "launcherVersion: String =" | awk -F\' '{print $2}'`
 
 if [ ! -e "${LAUNCHERUPDATEDIR}/unix-${UNIXVERSION}.sh" ]; then
-	cp ${LAUNCHERDIR}/unix/DMDirc.sh ${LAUNCHERUPDATEDIR}/unix-${UNIXVERSION}.sh
+	echo "Creating Launcher Update: unix-${UNIXVERSION}";
+	cp -${LAUNCHERDIR}/unix/DMDirc.sh ${LAUNCHERUPDATEDIR}/unix-${UNIXVERSION}.sh
 fi;
 
 if [ ! -e "${LAUNCHERUPDATEDIR}/windows-${WINDOWSVERSION}.zip" ]; then
+	echo "Creating Launcher Update: windows-${WINDOWSVERSION}";
 	OLDDIR=${PWD}
 	cd ${LAUNCHERDIR}/windows
 	sh compile.sh
