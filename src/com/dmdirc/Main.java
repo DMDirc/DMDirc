@@ -50,7 +50,7 @@ import java.util.TimerTask;
 public final class Main {
 
     /** Stores the current textual program version. */
-    public static final String VERSION = "SVN";
+    public static final String VERSION = "0.6b1";
 
     /** The SVN revision that this build was made from. */
     public static final int SVN_REVISION = 4085;
