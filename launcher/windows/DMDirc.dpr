@@ -110,13 +110,13 @@ begin
 			// us permission to delete the file (UAC), otherwise we can just go ahead
 			// and run the updater.
 			if not DeleteFile(pchar(jarName)) then begin
-				errorMessage := 'An update to DMDirc has been previously downloaded.';
+				errorMessage := 'An update to DMDirc has been previously downloaded. ';
 				errorMessage := errorMessage+#13#10;
-				errorMessage := errorMessage+#13#10+'As you are running Windows Vista, DMDirc requires administer access to';
-				errorMessage := errorMessage+#13#10+'complete the update.';
+				errorMessage := errorMessage+#13#10+'As you are running Windows Vista, DMDirc requires administrator access to ';
+				errorMessage := errorMessage+#13#10+'complete the update. ';
 				errorMessage := errorMessage+#13#10;
-				errorMessage := errorMessage+#13#10+'Please click ''Allow'' on the UAC prompt to complete the update, or click no';
-				errorMessage := errorMessage+#13#10+'here to continue without updating.';
+				errorMessage := errorMessage+#13#10+'Please click ''Allow'' on the UAC prompt to complete the update, or click no ';
+				errorMessage := errorMessage+#13#10+'here to continue without updating. ';
 				if askQuestion(errorMessage) then begin
 					RunProgram('"'+ExtractFileDir(paramstr(0))+'\DMDircUpdater.exe" --UpdateSourceDir "'+directory+'"', not launcherUpdate);
 				end;
@@ -131,10 +131,10 @@ begin
 		if (ExecAndWait(javaCommand+' -version') <> 0) then begin
 			errorMessage := 'No JVM is currently installed.';
 			errorMessage := errorMessage+#13#10;
-			errorMessage := errorMessage+#13#10+'DMDirc requires a 1.6.0 compatible JVM, you can get one from:';
-			errorMessage := errorMessage+#13#10+'http://java.com/';
+			errorMessage := errorMessage+#13#10+'DMDirc requires a 1.6.0 compatible JVM, you can get one from: ';
+			errorMessage := errorMessage+#13#10+'http://java.com/ ';
 			errorMessage := errorMessage+#13#10;
-			errorMessage := errorMessage+#13#10+'If you feel this is incorrect, or you require some further assistance,';
+			errorMessage := errorMessage+#13#10+'If you feel this is incorrect, or you require some further assistance, ';
 			errorMessage := errorMessage+#13#10+'please feel free to contact us.';
 			
 			showError(errorMessage);
@@ -146,11 +146,11 @@ begin
 			if (ExecAndWait(javaCommand+' -jar "'+jarName+'" --help') <> 0) then begin
 				errorMessage := 'The currently installed version of java is not compatible with DMDirc.';
 				errorMessage := errorMessage+#13#10;
-				errorMessage := errorMessage+#13#10+'DMDirc requires a 1.6.0 compatible JVM, you can get one from:';
-				errorMessage := errorMessage+#13#10+'http://java.com/';
+				errorMessage := errorMessage+#13#10+'DMDirc requires a 1.6.0 compatible JVM, you can get one from: ';
+				errorMessage := errorMessage+#13#10+'http://java.com/ ';
 				errorMessage := errorMessage+#13#10;
-				errorMessage := errorMessage+#13#10+'If you feel this is incorrect, or you require some further assistance,';
-				errorMessage := errorMessage+#13#10+'please feel free to contact us.';
+				errorMessage := errorMessage+#13#10+'If you feel this is incorrect, or you require some further assistance, ';
+				errorMessage := errorMessage+#13#10+'please feel free to contact us. ';
 				
 				showError(errorMessage);
 			end
