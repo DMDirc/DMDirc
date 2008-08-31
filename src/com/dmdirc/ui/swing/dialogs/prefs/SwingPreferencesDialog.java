@@ -34,11 +34,17 @@ import com.dmdirc.ui.swing.components.OptionalColourChooser;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.components.TreeScroller;
-
 import com.dmdirc.ui.swing.components.durationeditor.DurationDisplay;
+
 import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -56,6 +62,7 @@ import javax.swing.JTree;
 import javax.swing.WindowConstants;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.plaf.metal.MetalTreeUI;
 import javax.swing.text.Position;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -70,7 +77,7 @@ import net.miginfocom.swing.MigLayout;
  * Allows the user to modify global client preferences.
  */
 public final class SwingPreferencesDialog extends StandardDialog implements
-        ActionListener, TreeSelectionListener {
+        ActionListener, TreeSelectionListener, MouseListener {
 
     /**
      * A version number for this class. It should be changed whenever the
@@ -96,6 +103,12 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     private CardLayout cardLayout;
     /** Main panel. */
     private JPanel mainPanel;
+    /** Title label. */
+    private JLabel title;
+    /** Tooltip display area. */
+    private TextLabel tooltip;
+    /** Cached tooltips. */
+    private final Map<Component, String> tooltips = new HashMap<Component, String>();
     /** root node. */
     private DefaultMutableTreeNode rootNode;
     /** Previously selected category. */
@@ -130,6 +143,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         new TreeScroller(tabList);
 
         addCategories(manager.getCategories());
+        addMouseListeners(mainPanel.getComponents());
     }
     
     /** Returns the instance of SwingPreferencesDialog. */
@@ -161,13 +175,32 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
+        final JPanel titlePanel = new JPanel(new MigLayout());
+
+        title = new JLabel("Preferences");
+        title.setFont(title.getFont().deriveFont((float) 18));
+
+        titlePanel.add(title, "growx, growy");
+        titlePanel.setOpaque(true);
+        titlePanel.setBackground(Color.WHITE);
+        titlePanel.setBorder(BorderFactory.createEtchedBorder());
+
+        tooltip = new TextLabel("");
+        resetTooltip();
+
+        final JPanel tooltipPanel = new JPanel(new MigLayout());
+        tooltipPanel.add(tooltip, "growx, growy");
+        tooltipPanel.setOpaque(true);
+        tooltipPanel.setBackground(Color.WHITE);
+        tooltipPanel.setBorder(BorderFactory.createEtchedBorder());
+
         rootNode = new DefaultMutableTreeNode("root");
 
         tabList = new JTree(new DefaultTreeModel(rootNode));
         tabList.getSelectionModel().setSelectionMode(
                 TreeSelectionModel.SINGLE_TREE_SELECTION);
         tabList.putClientProperty("JTree.lineStyle", "Angled");
-        tabList.setUI(new javax.swing.plaf.metal.MetalTreeUI());
+        tabList.setUI(new MetalTreeUI());
         tabList.setRootVisible(false);
         tabList.setShowsRootHandles(false);
         tabList.setCellRenderer(new PreferencesTreeCellRenderer());
@@ -187,10 +220,51 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         getCancelButton().addActionListener(this);
         
         setLayout(new MigLayout("fillx, wmin 650, wmax 650, hmax 600"));
-        add(tabList, "width 150, growy, spany");
-        add(mainPanel, "wrap, wmin 480, wmax 480, grow, hmax 550");
-        add(getLeftButton(), "split, right");
+        add(tabList, "width 150, growy, spany 3");
+        add(titlePanel, "wrap, wmin 480, wmax 480");
+        add(mainPanel, "wrap, wmin 480, wmax 480, grow, hmax 450");
+        add(tooltipPanel, "wrap, wmin 480, wmax 480, hmin 65, hmax 65");
+        add(getLeftButton(), "span, split, right");
         add(getRightButton(), "right");
+    }
+
+    /**
+     * Resets the content of the tooltip.
+     */
+    protected void resetTooltip() {
+        tooltip.setFont(tooltip.getFont().deriveFont(Font.ITALIC));
+        tooltip.setText("Hover over a setting to see a description, if available.");
+    }
+
+    /**
+     * Sets the content of the tooltip area to the specified text.
+     *
+     * @param text The text to be displayed
+     */
+    protected void setTooltip(final String text) {
+        tooltip.setFont(tooltip.getFont().deriveFont(Font.PLAIN));
+        tooltip.setText(text);
+    }
+
+    /**
+     * Iterates and recurses over the specified components, adding mouse
+     * listeners to any {@link JComponent} with a tooltip set.
+     *
+     * @param components The components to iterate over
+     */
+    protected void addMouseListeners(final Component[] components) {
+        for (Component component : components) {
+            if (component instanceof JComponent && ((JComponent) component).getToolTipText() != null) {
+                tooltips.put(component, ((JComponent) component).getToolTipText());
+                ((JComponent) component).setToolTipText(null);
+
+                component.addMouseListener(this);
+            }
+
+            if (component instanceof Container) {
+                addMouseListeners(((Container) component).getComponents());
+            }
+        }
     }
 
     /**
@@ -203,7 +277,10 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             final PreferencesSetting setting) {
 
         final JLabel label = getLabel(setting);
+        
         JComponent option = PrefsComponentFactory.getComponent(setting);
+        option.setToolTipText(setting.getHelptext());
+
         if (option instanceof DurationDisplay) {
             ((DurationDisplay) option).setWindow(this);
         } else if (option instanceof ColourChooser) {
@@ -213,7 +290,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         }
         components.put(setting, option);
 
-        categories.get(category).add(label, "align label");
+        categories.get(category).add(label, "align label, growx");
 
         label.setLabelFor(option);
         categories.get(category).add(option, "growx, w 70%");
@@ -280,6 +357,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
         final JScrollPane scrollPane = new JScrollPane(panel);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
         mainPanel.add(scrollPane, path);
         ((DefaultTreeModel) tabList.getModel()).insertNodeInto(newNode,
                 parentNode, parentNode.getChildCount());
@@ -389,6 +467,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
         selected = paths.get(path);
         selected.fireCategorySelected();
+        title.setText(selected.getTitle());
     }
 
     /** {@inheritDoc} */
@@ -450,5 +529,35 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             super.dispose();
             me = null;
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void mouseClicked(final MouseEvent e) {
+        // Not used
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void mousePressed(final MouseEvent e) {
+        // Not used
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void mouseReleased(final MouseEvent e) {
+        // Not used
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void mouseEntered(final MouseEvent e) {
+        setTooltip(tooltips.get(e.getComponent()));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void mouseExited(final MouseEvent e) {
+        resetTooltip();
     }
 }
