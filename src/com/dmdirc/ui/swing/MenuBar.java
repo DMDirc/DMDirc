@@ -61,16 +61,16 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
     /** SSD. */
     private JMenuItem ssd;
     /** disconnect. */
-    private JMenuItem disconnect;   
+    private JMenuItem disconnect;
     /** join. */
-    private JMenuItem join;   
-    
+    private JMenuItem join;
+
     /**
      * Instantiates a new menu bar.
      */
     public MenuBar() {
         super();
-        
+
         initServerMenu();
         initChannelMenu();
         initSettingsMenu();
@@ -94,14 +94,14 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         menuItem.setActionCommand("NewServer");
         menuItem.addActionListener(this);
         menu.add(menuItem);
-        
+
         disconnect = new JMenuItem();
         disconnect.setText("Disconnect");
         disconnect.setMnemonic('d');
         disconnect.setActionCommand("Disconnect");
         disconnect.addActionListener(this);
         menu.add(disconnect);
-        
+
         ssd = new JMenuItem();
         ssd.setMnemonic('s');
         ssd.setText("Server settings");
@@ -118,7 +118,7 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
             menu.add(menuItem);
         }
     }
-    
+
     /**
      * Initialises the channel menu.
      */
@@ -128,14 +128,14 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         menu.setMnemonic('c');
         menu.addMenuListener(this);
         add(menu);
-        
+
         join = new JMenuItem();
         join.setText("Join Channel...");
         join.setMnemonic('j');
         join.setActionCommand("JoinChannel");
         join.addActionListener(this);
         menu.add(join);
-        
+
         csd = new JMenuItem();
         csd.setMnemonic('c');
         csd.setText("Channel Settings");
@@ -176,7 +176,7 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         menuItem.setActionCommand("Actions");
         menuItem.addActionListener(this);
         menu.add(menuItem);
-        
+
         menuItem = new JMenuItem();
         menuItem.setMnemonic('l');
         menuItem.setText("Alias Manager");
@@ -207,7 +207,7 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         menuItem.setActionCommand("feedback");
         menuItem.addActionListener(this);
         menu.add(menuItem);
-        
+
         if (!Apple.isAppleUI()) {
             menuItem = new JMenuItem();
             menuItem.setMnemonic('a');
@@ -226,13 +226,13 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
     @Override
     public void actionPerformed(final ActionEvent e) {
         if ("NewServer".equals(e.getActionCommand())) {
-            NewServerDialog.showNewServerDialog();
+            NewServerDialog.showNewServerDialog(SwingController.getMainFrame());
         } else if ("Preferences".equals(e.getActionCommand())) {
             SwingPreferencesDialog.showSwingPreferencesDialog();
         } else if (e.getActionCommand().equals("About")) {
             AboutDialog.showAboutDialog();
         } else if (e.getActionCommand().equals("Profile")) {
-            ProfileManagerDialog.showProfileManagerDialog();
+            ProfileManagerDialog.showProfileManagerDialog(SwingController.getMainFrame());
         } else if (e.getActionCommand().equals("Exit")) {
             ((MainFrame) Main.getUI().getMainWindow()).quit();
         } else if (e.getActionCommand().equals("Actions")) {
@@ -242,7 +242,7 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         } else if (e.getActionCommand().equals("JoinDevChat")) {
             ServerManager.getServerManager().joinDevChat();
         } else if (e.getActionCommand().equals("feedback")) {
-            FeedbackDialog.showFeedbackDialog();
+            FeedbackDialog.showFeedbackDialog(SwingController.getMainFrame());
         } else if (e.getActionCommand().equals("ChannelSettings")) {
             final Window activeWindow = Main.getUI().getActiveWindow();
             if (activeWindow instanceof ChannelFrame) {
@@ -253,12 +253,13 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         } else if (e.getActionCommand().equals("Disconnect")) {
             Main.getUI().getActiveServer().disconnect();
         } else if (e.getActionCommand().equals("JoinChannel")) {
-            new StandardInputDialog(SwingController.getMainFrame(), ModalityType.MODELESS, "Join channel",
-            "Enter the name of the channel to join.") {
+            new StandardInputDialog(SwingController.getMainFrame(),
+                    ModalityType.MODELESS, "Join channel",
+                    "Enter the name of the channel to join.") {
 
                 /** Serial version UID. */
                 private static final long serialVersionUID = 1;
-                
+
                 /** {@inheritDoc} */
                 @Override
                 public boolean save() {
@@ -269,7 +270,7 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
                 /** {@inheritDoc} */
                 @Override
                 public void cancelled() {
-                    //Ignore
+                //Ignore
                 }
             }.display();
         }
@@ -280,10 +281,13 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
     public void menuSelected(final MenuEvent e) {
         final Window activeWindow = Main.getUI().getActiveWindow();
 
-        ssd.setEnabled(activeWindow != null && activeWindow.getContainer().getServer() != null);
+        ssd.setEnabled(activeWindow != null && activeWindow.getContainer().
+                getServer() != null);
         csd.setEnabled(activeWindow instanceof ChannelFrame);
-        disconnect.setEnabled(activeWindow != null && activeWindow.getContainer().getServer() != null);
-        join.setEnabled(activeWindow != null && activeWindow.getContainer().getServer() != null);
+        disconnect.setEnabled(activeWindow != null && activeWindow.getContainer().
+                getServer() != null);
+        join.setEnabled(activeWindow != null && activeWindow.getContainer().
+                getServer() != null);
     }
 
     /** {@inheritDoc} */

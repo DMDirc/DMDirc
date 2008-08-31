@@ -28,14 +28,15 @@ import com.dmdirc.ServerManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.validator.PortValidator;
-import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.config.prefs.validator.RegexStringValidator;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
-import com.dmdirc.config.prefs.validator.RegexStringValidator;
 import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
 import com.dmdirc.ui.swing.dialogs.profiles.ProfileManagerDialog;
 
+import java.awt.Dialog.ModalityType;
 import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -79,12 +80,18 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
     private JComboBox identityField;
     /** button. */
     private JButton editProfileButton;
+    /** Parent window. */
+    private Window parentWindow;
 
     /**
      * Creates a new instance of the dialog.
+     * 
+     * @param parentWindow Parent window
      */
-    private NewServerDialog() {
-        super((MainFrame) Main.getUI().getMainWindow(), false);
+    private NewServerDialog(final Window parentWindow) {
+        super(parentWindow, ModalityType.MODELESS);
+        
+        this.parentWindow = parentWindow;
 
         initComponents();
         layoutComponents();
@@ -95,9 +102,11 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
 
     /**
      * Creates the new server dialog if one doesn't exist, and displays it.
+     * 
+     * @param parentWindow Parent window
      */
-    public static void showNewServerDialog() {
-        me = getNewServerDialog();
+    public static void showNewServerDialog(final Window parentWindow) {
+        me = getNewServerDialog(parentWindow);
 
         me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         me.setVisible(true);
@@ -106,13 +115,15 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
 
     /**
      * Returns the current instance of the NewServerDialog.
+     * 
+     * @param parentWindow Parent window
      *
      * @return The current NewServerDialog instance
      */
-    public static NewServerDialog getNewServerDialog() {
+    public static NewServerDialog getNewServerDialog(final Window parentWindow) {
         synchronized (NewServerDialog.class) {
             if (me == null) {
-                me = new NewServerDialog();
+                me = new NewServerDialog(parentWindow);
             }
         }
 
@@ -254,7 +265,7 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
                 numServers() == 0 || Main.getUI().getActiveWindow() == null) {
             new Server(host, port, pass, sslCheck.isSelected(), profile);
         } else {
-            final Window active =
+            final com.dmdirc.ui.interfaces.Window active =
                     Main.getUI().getActiveWindow();
             final Server server = ServerManager.getServerManager().
                     getServerFromFrame(active);
@@ -278,7 +289,7 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
         if (e.getSource() == getOkButton()) {
             save();
         } else if (e.getSource() == editProfileButton) {
-            ProfileManagerDialog.showProfileManagerDialog();
+            ProfileManagerDialog.showProfileManagerDialog(parentWindow);
         } else if (e.getSource() == getCancelButton()) {
             dispose();
         }

@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.components;
 
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.Main;
+import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.ui.swing.dialogs.FeedbackDialog;
 
 import java.awt.event.ActionEvent;
@@ -90,7 +91,7 @@ public class FeedbackNag extends JLabel implements MouseListener,
     @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getButton() == 1) {
-            FeedbackDialog.showFeedbackDialog();
+            FeedbackDialog.showFeedbackDialog(SwingController.getMainFrame());
             Main.getUI().getStatusBar().removeComponent(this);
         }
         checkMouseEvent(e);
@@ -155,7 +156,7 @@ public class FeedbackNag extends JLabel implements MouseListener,
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == show) {
-            FeedbackDialog.showFeedbackDialog();
+            FeedbackDialog.showFeedbackDialog(SwingController.getMainFrame());
         }
         Main.getUI().getStatusBar().removeComponent(this);
     }

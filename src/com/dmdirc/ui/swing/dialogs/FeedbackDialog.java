@@ -26,7 +26,6 @@ import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.ui.core.util.Info;
-import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.components.StandardDialog;
@@ -34,6 +33,7 @@ import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.util.Downloader;
 
 import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -80,9 +80,13 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
     /** DMDirc info checkbox. */
     private JCheckBox DMDircCheckbox;
 
-    /** Instantiates the feedback dialog. */
-    private FeedbackDialog() {
-        super((MainFrame) Main.getUI().getMainWindow(), false);
+    /** 
+     * Instantiates the feedback dialog. 
+     * 
+     * @param parentWindow Parent window
+     */
+    private FeedbackDialog(final Window parentWindow) {
+        super(parentWindow, ModalityType.MODELESS);
 
         initComponents();
         layoutComponents();
@@ -96,24 +100,28 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
 
     /**
      * Creates the new feedback dialog if one doesn't exist, and displays it.
+     * 
+     * @param parentWindow Parent window
      */
-    public static void showFeedbackDialog() {
-        me = getFeedbackDialog();
+    public static void showFeedbackDialog(final Window parentWindow) {
+        me = getFeedbackDialog(parentWindow);
 
-        me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        me.setLocationRelativeTo(parentWindow);
         me.setVisible(true);
         me.requestFocus();
     }
 
     /**
      * Returns the current instance of the FeedbackDialog.
+     * 
+     * @param parentWindow Parent window
      *
      * @return The current FeedbackDialog instance
      */
-    public static FeedbackDialog getFeedbackDialog() {
+    public static FeedbackDialog getFeedbackDialog(final Window parentWindow) {
         synchronized (FeedbackDialog.class) {
             if (me == null) {
-                me = new FeedbackDialog();
+                me = new FeedbackDialog(parentWindow);
                 me.serverCheckbox.setEnabled(ServerManager.getServerManager().
                         numServers() > 0);
             }

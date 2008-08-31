@@ -25,12 +25,13 @@ package com.dmdirc.ui.swing.dialogs.profiles;
 import com.dmdirc.config.prefs.validator.FileNameValidator;
 import com.dmdirc.config.prefs.validator.IdentValidator;
 import com.dmdirc.config.prefs.validator.NicknameValidator;
+import com.dmdirc.config.prefs.validator.NotEmptyValidator;
 import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.ui.swing.components.StandardInputDialog;
-import com.dmdirc.config.prefs.validator.NotEmptyValidator;
 import com.dmdirc.ui.swing.components.validating.ValidatingJTextField;
 
 import java.awt.Dialog.ModalityType;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -78,14 +79,19 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
     private JButton delButton;
     /** Edit button. */
     private JButton editButton;
+    /** Parent window. */
+    private Window parentWindow;
 
     /**
      * Creates a new profile detail panel.
      * 
      * @param model The list model to use to validate names
+     * @param parentWindow Parent window
      */
-    public ProfileDetailPanel(final ProfileListModel model) {
+    public ProfileDetailPanel(final ProfileListModel model,
+            final Window parentWindow) {
         super();
+        this.parentWindow = parentWindow;
 
         this.model = model;
 
@@ -224,7 +230,7 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == addButton) {
-            new StandardInputDialog(ProfileManagerDialog.getProfileManagerDialog(),
+            new StandardInputDialog(ProfileManagerDialog.getProfileManagerDialog(parentWindow),
                     ModalityType.DOCUMENT_MODAL, "New Nickname",
                     "Please enter the new nickname", new NicknameValidator()) {
 
@@ -250,7 +256,7 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
             }.display();
         } else if (e.getSource() == editButton) {
             final StandardInputDialog dialog = new StandardInputDialog(
-                    ProfileManagerDialog.getProfileManagerDialog(),
+                    ProfileManagerDialog.getProfileManagerDialog(parentWindow),
                     ModalityType.DOCUMENT_MODAL, "Edit Nickname",
                     "Please enter the new nickname", new NicknameValidator()) {
 

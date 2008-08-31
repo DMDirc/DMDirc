@@ -22,16 +22,19 @@
 
 package com.dmdirc.ui.swing.dialogs.profiles;
 
-import com.dmdirc.ui.swing.components.renderers.ProfileListCellRenderer;
 import com.dmdirc.Main;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.MainFrame;
+import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.ui.swing.components.ListScroller;
 import com.dmdirc.ui.swing.components.StandardDialog;
+import com.dmdirc.ui.swing.components.TextLabel;
+import com.dmdirc.ui.swing.components.renderers.ProfileListCellRenderer;
 import com.dmdirc.ui.swing.dialogs.NewServerDialog;
 
+import java.awt.Dialog.ModalityType;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -77,10 +80,17 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     private int selectedIndex;
     /** Deleted profiles. */
     private final List<Profile> deletedProfiles;
+    /** Parent window. */
+    private Window parentWindow;
 
-    /** Creates a new instance of ProfileEditorDialog. */
-    private ProfileManagerDialog() {
-        super((MainFrame) Main.getUI().getMainWindow(), false);
+    /** 
+     * Creates a new instance of ProfileEditorDialog. 
+     * 
+     * @param parentWindow Parent window
+     */
+    private ProfileManagerDialog(final Window parentWindow) {
+        super(parentWindow, ModalityType.MODELESS);
+        this.parentWindow = parentWindow;
         deletedProfiles = new ArrayList<Profile>();
 
         initComponents();
@@ -95,10 +105,26 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
             selectedIndex = -1;
         }
     }
-
-    /** Creates the dialog if one doesn't exist, and displays it. */
+    
+    /** 
+     * Creates the dialog if one doesn't exist, and displays it. 
+     */
     public static void showProfileManagerDialog() {
-        me = getProfileManagerDialog();
+        me = getProfileManagerDialog(SwingController.getMainFrame());
+
+        me.pack();
+        me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        me.setVisible(true);
+        me.requestFocus();
+    }
+
+    /** 
+     * Creates the dialog if one doesn't exist, and displays it. 
+     * 
+     * @param parentWindow Parent window
+     */
+    public static void showProfileManagerDialog(final Window parentWindow) {
+        me = getProfileManagerDialog(parentWindow);
 
         me.pack();
         me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
@@ -108,13 +134,15 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
 
     /**
      * Returns the current instance of the ProfileManagerDialog.
+     * 
+     * @param parentWindow Parent window
      *
      * @return The current ProfileManagerDialog instance
      */
-    public static ProfileManagerDialog getProfileManagerDialog() {
+    public static ProfileManagerDialog getProfileManagerDialog(final Window parentWindow) {
         synchronized (ProfileManagerDialog.class) {
             if (me == null) {
-                me = new ProfileManagerDialog();
+                me = new ProfileManagerDialog(parentWindow);
             }
         }
 
@@ -131,7 +159,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
 
         model = new ProfileListModel();
         profileList = new JList(model);
-        details = new ProfileDetailPanel(model);
+        details = new ProfileDetailPanel(model, parentWindow);
         addButton = new JButton("Add");
         deleteButton = new JButton("Delete");
         infoLabel =
@@ -204,7 +232,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
             dispose();
         }
         if (NewServerDialog.isNewServerDialogShowing()) {
-            NewServerDialog.getNewServerDialog().populateProfiles();
+            NewServerDialog.getNewServerDialog(parentWindow).populateProfiles();
         }
     }
 

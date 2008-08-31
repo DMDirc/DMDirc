@@ -33,8 +33,8 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.FirstRunWizard;
 import com.dmdirc.ui.swing.dialogs.profiles.ProfileManagerDialog;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
-import com.dmdirc.ui.swing.dialogs.wizard.WizardListener;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardDialog;
+import com.dmdirc.ui.swing.dialogs.wizard.WizardListener;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
 import java.io.File;
