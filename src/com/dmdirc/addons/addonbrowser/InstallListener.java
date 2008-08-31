@@ -22,11 +22,15 @@
 
 package com.dmdirc.addons.addonbrowser;
 
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import com.dmdirc.util.Downloader;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -35,7 +39,7 @@ import java.io.IOException;
 public class InstallListener implements ActionListener {
 
     /** Addon info. */
-    private AddonInfo info;
+    private final AddonInfo info;
 
     /**
      * Instantiates a new install listener.
@@ -53,9 +57,27 @@ public class InstallListener implements ActionListener {
      */
     @Override
     public void actionPerformed(final ActionEvent e) {
-        /*try {
-            Downloader.downloadPage("http://addons.dmdirc.com/addondownload/" + info.getId(), "");
+        try {
+            final File file = File.createTempFile("dmdirc-addon", ".tmp");
+            file.deleteOnExit();
+
+            Downloader.downloadPage("http://addons.dmdirc.com/addondownload/"
+                    + info.getStableDownload(), file.getAbsolutePath());
+
+            switch (info.getType()) {
+                case TYPE_ACTION_PACK:
+                    ActionManager.installActionPack(file.getAbsolutePath());
+                    break;
+                case TYPE_PLUGIN:
+                    throw new UnsupportedOperationException("Not supported yet");
+                    //break;
+                case TYPE_THEME:
+                    throw new UnsupportedOperationException("Not supported yet");
+                    //break;
+            }
         } catch (IOException ex) {
-        }*/
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to download addon: "
+                    + ex.getMessage(), ex);
+        }
     }
 }
