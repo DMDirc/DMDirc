@@ -111,7 +111,7 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
 
     /** Initialises the components. */
     private void initComponents() {
-        label = new TextLabel("");
+        label = new TextLabel("", false);
         editButton = new ImageToggleButton("edit", IconManager.getIconManager().
                 getIcon("edit-inactive"),
                 IconManager.getIconManager().getIcon("edit"));
