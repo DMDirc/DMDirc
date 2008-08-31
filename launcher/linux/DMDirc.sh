@@ -23,7 +23,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-LAUNCHERVERSION="5"
+LAUNCHERVERSION="6"
 
 params=""
 
@@ -241,10 +241,20 @@ else
 fi;
 
 echo -n "Looking for java - ";
-# Check for BSD Ports version of java first as its not always in the path
+# Location where ports on FreeBSD/PCBSD installs java6
+# check it first, because it isn't added to the path automatically
 JAVA="/usr/local/jdk1.6.0/jre/bin/java"
 if [ ! -e "${JAVA}" ]; then
-	JAVA=`which java`
+	# Try alternative BSD Location
+	JAVA="/usr/local/diablo-jdk1.6.0/jre/bin/java"
+	if [ ! -e "${JAVA}" ]; then
+		# Look in path
+		if [ -e "${HOME}/.profile" ]; then
+			# Source the profile incase java can't be found otherwise
+			. ${HOME}/.profile
+		fi;
+		JAVA=`which java`
+	fi
 fi
 
 if [ "" != "${JAVA}" ]; then

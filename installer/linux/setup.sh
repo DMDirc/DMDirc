@@ -124,16 +124,25 @@ echo -n "Looking for java.. ";
 # check it first, because it isn't added to the path automatically
 JAVA="/usr/local/jdk1.6.0/jre/bin/java"
 if [ ! -e "${JAVA}" ]; then
-	JAVA=`which java`
+	# Try alternative BSD Location
+	JAVA="/usr/local/diablo-jdk1.6.0/jre/bin/java"
+	if [ ! -e "${JAVA}" ]; then
+		# Look in path
+		if [ -e "${HOME}/.profile" ]; then
+				# Source the profile incase java can't be found otherwise
+			. ${HOME}/.profile
+		fi;
+		JAVA=`which java`
+	fi
 fi
 
 installjre() {
 	result=1
 	if [ ! -e "jre.bin" ]; then
 		message="Would you like to download and install java?"
-		if [ "install" != "${1}" ]; then
+		if [ "install" = "${1}" ]; then
 			message="Java was not detected on your machine. Would you like to download and install it now?" 
-		elif [ "upgrade" != "${1}" ]; then
+		elif [ "upgrade" = "${1}" ]; then
 			message="The version of java detected on your machine is not compatible with DMDirc. Would you like to download and install a compatible version now?"
 		fi;
 		/bin/sh getjre.sh "${message}"
@@ -143,9 +152,9 @@ installjre() {
 		fi;
 	else
 		message="Would you like to install java?"
-		if [ "install" != "${1}" ]; then
+		if [ "install" = "${1}" ]; then
 			message="Java was not detected on your machine. Would you like to install it now?" 
-		elif [ "upgrade" != "${1}" ]; then
+		elif [ "upgrade" = "${1}" ]; then
 			message="The version of java detected on your machine is not compatible with DMDirc. Would you like to install a compatible version now?"
 		fi;
 		/bin/sh installjre.sh  "${message}"

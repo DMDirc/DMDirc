@@ -109,11 +109,16 @@ questiondialog() {
 # Get the JRE.
 ARCH=`uname -m`
 ISAINFO=`which isainfo`
+ISFREEBSD=`uname -s | grep -i FreeBSD`
 if [ "${ISAINFO}" != "" ]; then
 	# Solaris-ish
 	ARCH=`uname -p`
 fi;
 URL="http://www.dmdirc.com/getjava/`uname -s`/${ARCH}"
+if [ "${ISFREEBSD}" != "" ]; then
+	RELEASE=`uname -r`
+	URL="${URL}/${RELEASE}"
+fi;
 
 WGET=`which wget`
 FETCH=`which fetch`
@@ -166,12 +171,12 @@ else
 	result=$?
 fi;
 if [ $result -eq 0 ]; then
-	PIPE=`mktemp -p ${PWD} progresspipe.XXXXXXXXXXXXXX`
+	PIPE=`mktemp progresspipe.XXXXXXXXXXXXXX`
 	if [ "${WGET}" != "" ]; then
 		${WGET} -q -O jre.bin ${URL} &
 		wgetpid=${!}
 	elif [ "${FETCH}" != "" ]; then
-		${FETCH} -q -o jre.bin &
+		${FETCH} -q -o jre.bin ${URL} &
 		wgetpid=${!}
 	elif [ "${CURL}" != "" ]; then
 		${CURL} -s -o jre.bin ${URL} &
@@ -190,8 +195,10 @@ if [ $result -eq 0 ]; then
 		fi;
 	done;
 	wgetpid=""
-#	echo "Killing progressbar"
-#	kill ${progressbarpid}
+	if [ "${ISFREEBSD}" != "" ]; then
+		echo "Killing progressbar"
+		kill ${progressbarpid}
+	fi;
 	messagedialog "Download Completed" "Download Completed"
 	if [ -e ${PIPE} ]; then
 		echo "Deleting Pipe ${PIPE}"
