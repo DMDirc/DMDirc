@@ -41,9 +41,9 @@ import java.util.List;
 public class RemoteServer implements RemoteInterface {
     
     /** The minimum port to use for RMI binding. */
-    private static final int MINPORT = 1099;
+    private static final int MINPORT = 3634;
     /** The maximum port to use for RMI binding. */
-    private static final int MAXPORT = 1109;
+    private static final int MAXPORT = MINPORT + 5;
     /** The interface we're exposing. */
     private static final RemoteServer SERVER = new RemoteServer();
     

@@ -208,10 +208,10 @@ begin
 		showmessage('DMDirc has been uninstalled from "'+InstallDir+'".', 'Uninstall Successful');
 	end
 	else if askQuestion('This will uninstall DMDirc. '+#13#10+#13#10+'Do you want to continue?') then begin
-		if (ExecAndWait('java -jar ' + ExtractFileDir(paramstr(0)) + '\DMDirc.jar -k', true) <> 0) then begin
+		if (ExecAndWait('java -jar "' + ExtractFileDir(paramstr(0)) + '\DMDirc.jar" -k', true) <> 0) then begin
 			TempDir := GetTempDirectory;
 			CopyFile(pchar(paramstr(0)), pchar(TempDir+'/uninstall.exe'), false);
-			Launch(TempDir+'/uninstall.exe '+ExtractFileDir(paramstr(0))+'\');
+			Launch('"'+TempDir+'/uninstall.exe" '+ExtractFileDir(paramstr(0))+'\');
 		end else begin
 			showError('Uninstall Aborted - DMDirc is still running.', 'Please close DMDirc before continuing')
 		end;
