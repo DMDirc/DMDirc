@@ -51,6 +51,8 @@ public class LinuxInstaller extends Installer {
 	public boolean validFile(final String filename) {
 		return (!filename.equalsIgnoreCase("setup.sh") &&
 		        !filename.equalsIgnoreCase("getjre.sh") &&
+		        !filename.equalsIgnoreCase("jre.bin") &&
+		        !filename.equalsIgnoreCase("java-bin") &&
 		        !filename.equalsIgnoreCase("progressbar.sh") &&
 		        !filename.equalsIgnoreCase("installjre.sh"));
 	}
