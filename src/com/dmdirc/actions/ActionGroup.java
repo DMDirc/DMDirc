@@ -25,8 +25,11 @@ package com.dmdirc.actions;
 import com.dmdirc.config.prefs.PreferencesSetting;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a group of actions, along with their meta-data.
@@ -61,7 +64,8 @@ public class ActionGroup implements Iterable<Action> {
     private int version = -1;
     
     /** A list of settings used by this action group. */
-    private final List<PreferencesSetting> settings = new ArrayList<PreferencesSetting>();
+    private final Map<String, PreferencesSetting> settings
+            = new HashMap<String, PreferencesSetting>();
 
     /**
      * Creates a new instance of ActionGroup.
@@ -120,11 +124,11 @@ public class ActionGroup implements Iterable<Action> {
     }
 
     /**
-     * Retrieves a list of settings used by this action group.
+     * Retrieves a map settings used by this action group.
      * 
-     * @return A list of settings used by this action group.
+     * @return A map of setting names to values
      */
-    public List<PreferencesSetting> getSettings() {
+    public Map<String, PreferencesSetting> getSettings() {
         return settings;
     }
 

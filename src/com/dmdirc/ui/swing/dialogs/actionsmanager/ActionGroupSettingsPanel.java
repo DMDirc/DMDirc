@@ -33,8 +33,8 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
@@ -56,7 +56,7 @@ public final class ActionGroupSettingsPanel extends JPanel implements ActionList
      */
     private static final long serialVersionUID = 1;
     /** Settings list. */
-    private List<PreferencesSetting> settings;
+    private Collection<PreferencesSetting> settings;
     /** Button -> Component map. */
     private Map<JButton, PreferencesSetting> settingMap;
     /** Parent dialog. */
@@ -141,7 +141,7 @@ public final class ActionGroupSettingsPanel extends JPanel implements ActionList
         if (group == null || group.getSettings().isEmpty()) {
             this.settings = new ArrayList<PreferencesSetting>();
         } else {
-            this.settings = group.getSettings();
+            this.settings = group.getSettings().values();
         }
 
         layoutComponents();
