@@ -40,7 +40,6 @@ import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.components.InputTextFrame;
 import com.dmdirc.ui.swing.components.SnappingJSplitPane;
 import com.dmdirc.ui.swing.components.SwingStatusBar;
-import com.dmdirc.ui.swing.framemanager.buttonbar.ButtonBar;
 import com.dmdirc.ui.swing.framemanager.ctrltab.CtrlTabFrameManager;
 import com.dmdirc.ui.swing.framemanager.tree.TreeFrameManager;
 
@@ -375,20 +374,21 @@ public final class MainFrame extends JFrame implements WindowListener,
 
     /** Initialiases the frame managers. */
     private void initFrameManagers() {
-        final String manager =
-                IdentityManager.getGlobalConfig().
-                getOption("ui", "framemanager", "treeview");
+        final String manager = IdentityManager.getGlobalConfig().getOption("ui",
+                "framemanager", "com.dmdirc.ui.swing.framemanager.tree.TreeFrameManager");
 
-        final FrameManager frameManager;
-        if (manager.equalsIgnoreCase("buttonbar")) {
-            frameManager = new ButtonBar();
-            WindowManager.addFrameManager(frameManager);
-        } else {
-            frameManager = new TreeFrameManager();
-            WindowManager.addFrameManager(frameManager);
+        try {
+            mainFrameManager = (FrameManager) Class.forName(manager)
+                    .getConstructor().newInstance();
+        } catch (Exception ex) {
+            // Throws craploads of exceptions and we want to handle them all
+            // the same way, so we might as well catch Exception
+            mainFrameManager = new TreeFrameManager();
         }
-        mainFrameManager = frameManager;
-        frameManager.setParent(frameManagerPanel);
+
+        
+        WindowManager.addFrameManager(mainFrameManager);
+        mainFrameManager.setParent(frameManagerPanel);
 
         WindowManager.addFrameManager(new CtrlTabFrameManager(desktopPane));
         WindowManager.addFrameManager(this);

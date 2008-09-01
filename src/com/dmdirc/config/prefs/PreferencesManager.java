@@ -343,8 +343,8 @@ public class PreferencesManager {
         final PreferencesCategory category = new PreferencesCategory("GUI", "",
                 "category-gui");
 
-        framemanagers.put("treeview", "Treeview");
-        framemanagers.put("buttonbar", "Button bar");
+        framemanagers.put("com.dmdirc.ui.swing.framemanager.tree.TreeFrameManager", "Treeview");
+        framemanagers.put("com.dmdirc.ui.swing.framemanager.buttonbar.ButtonBar", "Button bar");
 
         fmpositions.put("top", "Top");
         fmpositions.put("bottom", "Bottom");
