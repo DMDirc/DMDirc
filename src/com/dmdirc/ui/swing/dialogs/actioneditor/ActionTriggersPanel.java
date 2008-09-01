@@ -233,9 +233,9 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
     @Override
     public void setEnabled(final boolean enabled) {
         triggerList.setEnabled(enabled);
+        add.setEnabled(trigger.getSelectedIndex() != -1);
         if (trigger.getModel().getSize() > 0 && enabled) {
             trigger.setEnabled(enabled);
-            add.setEnabled(trigger.getSelectedIndex() != -1);
         }
     }
 
