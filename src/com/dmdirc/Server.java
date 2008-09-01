@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.net.ssl.TrustManager;
 
 /**
  * The Server class represents the client's view of a server. It maintains
@@ -279,6 +280,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             final MyInfo myInfo = getMyInfo();
 
             parser = parserFactory.getParser(myInfo, serverInfo);
+            parser.setTrustManager(new TrustManager[]{new CertificateManager(server, getConfigManager())});
             parser.setRemoveAfterCallback(true);
             parser.setCreateFake(true);
             parser.setIgnoreList(ignoreList);
@@ -1090,22 +1092,22 @@ public final class Server extends WritableFrameContainer implements Serializable
 
         final String withIrcd = "numeric_" + parser.getIRCD(true) + "_" + snumeric;
         final String sansIrcd = "numeric_" + snumeric;
-        String target = null;
+        StringBuffer target = null;
 
         if (getConfigManager().hasOption("formatter", withIrcd)) {
-            target = withIrcd;
+            target = new StringBuffer(withIrcd);
         } else if (getConfigManager().hasOption("formatter", sansIrcd)) {
-            target = sansIrcd;
+            target = new StringBuffer(sansIrcd);
         } else if (getConfigManager().hasOption("formatter", "numeric_unknown")) {
-            target = "numeric_unknown";
+            target = new StringBuffer("numeric_unknown");
         }
+
+        ActionManager.processEvent(CoreActionType.SERVER_NUMERIC, target, this,
+                Integer.valueOf(numeric), tokens);
 
         if (target != null) {
-            handleNotification(target, (Object[]) tokens);
+            handleNotification(target.toString(), (Object[]) tokens);
         }
-
-        ActionManager.processEvent(CoreActionType.SERVER_NUMERIC, null, this,
-                Integer.valueOf(numeric), tokens);
     }
 
     /**

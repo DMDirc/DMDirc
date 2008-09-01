@@ -29,7 +29,6 @@ import com.dmdirc.ServerState;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.plugins.Plugin;
@@ -58,7 +57,7 @@ import net.miginfocom.swing.MigLayout;
  * @author chris
  */
 public final class LagDisplayPlugin extends Plugin implements ActionListener,
-        ConfigChangeListener, MouseListener {
+        MouseListener {
     
     /** The panel we use in the status bar. */
     private final JPanel panel = new JPanel();
@@ -72,16 +71,10 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
     /** The dialog we're using to show extra info. */
     private ServerInfoDialog dialog;
     
-    /** Whether or not we're using our alternate ping method. */
-    private volatile boolean useAlternate = false;
-    
     /** Creates a new instance of LagDisplayPlugin. */
     public LagDisplayPlugin() {
         super();
         
-        IdentityManager.getGlobalConfig().addChangeListener("plugin-Lagdisplay", this);
-        configChanged(null, null);
-
         panel.setBorder(BorderFactory.createEtchedBorder());
         panel.setLayout(new MigLayout("ins 0 rel 0 rel, aligny center"));
         panel.add(label);
@@ -91,6 +84,8 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
     @Override
     public void onLoad() {
         Main.getUI().getStatusBar().addComponent(panel);
+        IdentityManager.getAddonIdentity().setOption("plugin-Lagdisplay",
+                "usealternate", false);
         
         ActionManager.addListener(this, CoreActionType.SERVER_GOTPING,
                 CoreActionType.SERVER_NOPING, CoreActionType.CLIENT_FRAME_CHANGED,
@@ -112,6 +107,16 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
     @Override
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {
+        boolean useAlternate = false;
+
+        for (Object obj : arguments) {
+            if (obj instanceof FrameContainer && ((FrameContainer) obj).getServer() != null) {
+                useAlternate = ((FrameContainer) obj).getServer().getConfigManager()
+                        .getOptionBool("plugin-Lagdisplay", "usealternate");
+                break;
+            }
+        }
+
         if (!useAlternate && type.equals(CoreActionType.SERVER_GOTPING)) {
             final Window active = Main.getUI().getActiveWindow();
             final String value = formatTime(arguments[1]);
@@ -174,6 +179,10 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
                 pings.remove((Server) arguments[0]);
             }
 
+            if (format != null) {
+                format.delete(0, format.length());
+            }
+
             refreshDialog();
         }
     }
@@ -201,13 +210,6 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
         } else {
             return time + "ms";
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void configChanged(final String domain, final String key) {
-        useAlternate = IdentityManager.getGlobalConfig().getOptionBool("plugin-Lagdisplay",
-                "usealternate", false);
     }
 
     /** {@inheritDoc} */
