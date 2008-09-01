@@ -63,17 +63,36 @@ public class PreferencesListCellRenderer extends JLabel implements ListCellRende
         setText(cat.getTitle());
         setIcon(IconManager.getIconManager().getIcon(cat.getIcon()));
 
+        int level = 0;
+        PreferencesCategory temp = cat;
+        while (temp.getParent() != null) {
+            temp = temp.getParent();
+            level++;
+        }
+
         setPreferredSize(new Dimension(100000, Math.max(16,
                 getFont().getSize()) + padding));
-        setBorder(BorderFactory.createEmptyBorder(padding / 2, padding, padding / 2, padding));
+        setBorder(BorderFactory.createEmptyBorder(padding / 2, padding + level * 18, padding / 2,
+                padding));
         setBackground(list.getBackground());
         setForeground(list.getForeground());
         setOpaque(true);
         setToolTipText(null);
 
-        if (cat.getPath().equals(cat.getTitle()) && index > 0) {
+        if (cat.getPath().equals(cat.getTitle())) {
+            boolean hasChildren = false;
+            for (PreferencesCategory child : cat.getSubcats()) {
+                if (!child.isInline()) {
+                    hasChildren = true;
+                    break;
+                }
+            }
+
+            hasChildren = hasChildren || index + 1 == list.getModel().getSize();
+
+            setBackground(Color.LIGHT_GRAY);
             setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createMatteBorder(1, 0, 0, 0, Color.LIGHT_GRAY),
+                    BorderFactory.createMatteBorder(1, 0, hasChildren ? 1 : 0, 0, Color.GRAY),
                     getBorder()));
         }
 

@@ -273,6 +273,16 @@ public class PreferencesCategory {
     public void setParent(final PreferencesCategory parent) {
         this.parent = parent;
     }
+
+    /**
+     * Retrieves the parent of this category.
+     *
+     * @return This category's parent, or null if it's an orphan
+     * @since 0.6.3
+     */
+    public PreferencesCategory getParent() {
+        return parent;
+    }
     
     /**
      * Registers a change listener for this category.
