@@ -25,10 +25,10 @@ package com.dmdirc.ui.swing.components.substitutions;
 import com.dmdirc.ui.swing.components.TextLabel;
 
 import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
 import javax.swing.JSeparator;
 
 import net.miginfocom.swing.MigLayout;
