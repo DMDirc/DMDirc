@@ -465,6 +465,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		defaults.setOption(MY_DOMAIN, "firewall.ports.endPort", "11019");
 		
 		final String url = "plugin://dcc:com/dmdirc/addons/dcc/res/";
+        defaults.setOption("icon", "category-dcc", url + "transfers.png");
 		defaults.setOption("icon", "dcc", url + "transfers.png");
 		defaults.setOption("icon", "dcc-chat-active", url + "chat.png");
 		defaults.setOption("icon", "dcc-chat-inactive", url + "chat-inactive.png");
@@ -554,7 +555,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	/** {@inheritDoc} */
 	@Override
 	public void showConfig(final PreferencesManager manager) {
-		final PreferencesCategory general = new PreferencesCategory("DCC", "");
+		final PreferencesCategory general = new PreferencesCategory("DCC", "", "category-dcc");
 		final PreferencesCategory firewall = new PreferencesCategory("Firewall", "");
 		final PreferencesCategory sending = new PreferencesCategory("Sending", "");
 		final PreferencesCategory receiving = new PreferencesCategory("Receiving", "");

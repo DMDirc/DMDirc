@@ -230,6 +230,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
     /**
      * Resets the content of the tooltip.
+     *
+     * @since 0.6.3
      */
     protected void resetTooltip() {
         tooltip.setFont(tooltip.getFont().deriveFont(Font.ITALIC));
@@ -240,6 +242,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * Sets the content of the tooltip area to the specified text.
      *
      * @param text The text to be displayed
+     * @since 0.6.3
      */
     protected void setTooltip(final String text) {
         tooltip.setFont(tooltip.getFont().deriveFont(Font.PLAIN));
@@ -251,6 +254,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * listeners to any {@link JComponent} with a tooltip set.
      *
      * @param components The components to iterate over
+     * @since 0.6.3
      */
     protected void addMouseListeners(final Component[] components) {
         for (Component component : components) {
@@ -349,7 +353,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         final String path = namePrefix + "/" + category.getTitle();
         DefaultMutableTreeNode newNode;
 
-        newNode = new DefaultMutableTreeNode(category.getTitle());
+        newNode = new DefaultMutableTreeNode(category);
 
         categories.put(category, panel);
         nodes.put(newNode, path);
@@ -360,7 +364,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
         mainPanel.add(scrollPane, path);
         ((DefaultTreeModel) tabList.getModel()).insertNodeInto(newNode,
-                parentNode, parentNode.getChildCount());
+                rootNode, parentNode.getChildCount());
         tabList.scrollPathToVisible(new TreePath(newNode.getPath()));
 
         initCategory(category, panel, newNode, path);
@@ -531,31 +535,51 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @since 0.6.3
+     */
     @Override
     public void mouseClicked(final MouseEvent e) {
         // Not used
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @since 0.6.3
+     */
     @Override
     public void mousePressed(final MouseEvent e) {
         // Not used
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @since 0.6.3
+     */
     @Override
     public void mouseReleased(final MouseEvent e) {
         // Not used
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @since 0.6.3
+     */
     @Override
     public void mouseEntered(final MouseEvent e) {
         setTooltip(tooltips.get(e.getComponent()));
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @since 0.6.3
+     */
     @Override
     public void mouseExited(final MouseEvent e) {
         resetTooltip();

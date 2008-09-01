@@ -161,7 +161,8 @@ public class PreferencesManager {
      * Creates and adds the "Connection" category.
      */
     private void addConnectionCategory() {
-        final PreferencesCategory category = new PreferencesCategory("Connection", "");
+        final PreferencesCategory category = new PreferencesCategory("Connection",
+                "", "category-connection");
 
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "closechannelsonquit", "false", "Close channels on quit",
@@ -201,7 +202,8 @@ public class PreferencesManager {
      * Creates and adds the "Messages" category.
      */
     private void addMessagesCategory() {
-        final PreferencesCategory category = new PreferencesCategory("Messages", "");
+        final PreferencesCategory category = new PreferencesCategory("Messages",
+                "", "category-messages");
 
         category.addSetting(new PreferencesSetting(PreferencesType.TEXT,
                 "general", "closemessage", "DMDirc exiting",
@@ -298,7 +300,8 @@ public class PreferencesManager {
      * Creates and adds the "Advanced" category.
      */
     private void addAdvancedCategory() {
-        final PreferencesCategory category = new PreferencesCategory("Advanced", "");
+        final PreferencesCategory category = new PreferencesCategory("Advanced", 
+                "", "category-advanced");
 
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "browser", "userlaunchdelay", "false", "Use browser launch delay",
@@ -337,7 +340,8 @@ public class PreferencesManager {
         final Map<String, String> lafs = new HashMap<String, String>();
         final Map<String, String> framemanagers = new HashMap<String, String>();
         final Map<String, String> fmpositions = new HashMap<String, String>();
-        final PreferencesCategory category = new PreferencesCategory("GUI", "");
+        final PreferencesCategory category = new PreferencesCategory("GUI", "",
+                "category-gui");
 
         framemanagers.put("treeview", "Treeview");
         framemanagers.put("buttonbar", "Button bar");
@@ -414,7 +418,8 @@ public class PreferencesManager {
     private void addThemesCategory(final PreferencesCategory parent) {
         // TODO: Abstract the panel
 
-        parent.addSubCategory(new PreferencesCategory("Themes", "", new ThemePanel()));        
+        parent.addSubCategory(new PreferencesCategory("Themes", "",
+                "category-addons", new ThemePanel()));
     }
 
     /**
@@ -486,7 +491,8 @@ public class PreferencesManager {
     private void addPluginsCategory() {
         // TODO: Abstract the panel
 
-        addCategory(new PreferencesCategory("Plugins", "", new PluginPanel()));
+        addCategory(new PreferencesCategory("Plugins", "", "category-addons",
+                new PluginPanel()));
     }
 
     /**
@@ -495,7 +501,8 @@ public class PreferencesManager {
     private void addUpdatesCategory() {
         // TODO: Abstract the panel
 
-        addCategory(new PreferencesCategory("Updates", "", new UpdateConfigPanel()));
+        addCategory(new PreferencesCategory("Updates", "", "category-updates",
+                new UpdateConfigPanel()));
     }
 
     /**
@@ -506,7 +513,7 @@ public class PreferencesManager {
 
         addCategory(new PreferencesCategory("URL Handlers",
                 "Configure how DMDirc handles different types of URLs",
-                new URLConfigPanel()));
+                "category-urlhandlers", new URLConfigPanel()));
     }
 
     /**

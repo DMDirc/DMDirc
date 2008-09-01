@@ -135,26 +135,11 @@ public final class IconManager implements ConfigChangeListener {
         //Get the url for the speficied path
         URL imageURL = URLBuilder.buildURL(path);
         
-        try {
-            //if the path didnt exist see if its a file
-            if (imageURL == null) {
-                final File file = new File(path);
-                if (file.exists()) {
-                    imageURL = file.toURI().toURL();
-                } else {
-                    imageURL = defaultURL;
-                }
-            }
-            
-            //check if the url has content
-            if (imageURL == null || imageURL.getContent() == null)  {
-                imageURL = defaultURL;
-            }
-        } catch (IOException ex) {
-            imageURL = defaultURL;
+        if (imageURL == null && defaultURL != null) {
+           imageURL = defaultURL;
         }
-        
-        if (imageURL == null) {
+
+        if (imageURL == null && defaultURL == null) {
             imageURL = cldr.getResource("com/dmdirc/res/icon.png");
             
             if (imageURL == null) {

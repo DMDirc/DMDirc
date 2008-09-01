@@ -188,7 +188,8 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
     /** {@inheritDoc} */
     @Override    
     public void onLoad() {
-        // Do nothing
+        IdentityManager.getAddonIdentity().setOption("icon", "category-vlc",
+                "plugin://vlcmediasource:com/dmdirc/addons/mediasource_vlc/vlc.png");
     }
 
     /** {@inheritDoc} */
@@ -200,7 +201,8 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
     /** {@inheritDoc} */
     @Override
     public void showConfig(final PreferencesManager manager) {
-        final PreferencesCategory general = new PreferencesCategory("VLC Media Source", "");
+        final PreferencesCategory general = new PreferencesCategory("VLC Media Source",
+                "", "category-vlc");
         final PreferencesCategory instr = new PreferencesCategory("Instructions",
                 "", new InstructionsPanel());
         

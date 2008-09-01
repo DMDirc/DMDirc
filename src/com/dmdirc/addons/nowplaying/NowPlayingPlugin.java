@@ -73,6 +73,9 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
         
         ActionManager.addListener(this, CoreActionType.PLUGIN_LOADED,
                 CoreActionType.PLUGIN_UNLOADED);
+
+        IdentityManager.getConfigIdentity().setOption("icon", "category-nowplaying",
+                "plugin://nowplaying:com/dmdirc/addons/nowplaying/nowplaying.png");
         
         for (PluginInfo target : PluginManager.getPluginManager().getPluginInfos()) {
             if (target.isLoaded()) {
@@ -98,7 +101,7 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
         final ConfigPanel configPanel = new ConfigPanel(this, order);
         
         final PreferencesCategory category = new PreferencesCategory("Now Playing",
-                "", configPanel);
+                "", "category-nowplaying", configPanel);
         manager.getCategory("Plugins").addSubCategory(category);
     }
     

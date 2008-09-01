@@ -16,6 +16,7 @@ keysections:
   popups
   protocol
   plugin-addonid
+  icon
 
 identity:
   name=DMDirc default settings
@@ -212,3 +213,12 @@ plugin-addonid:
   urlcatcher=25
   userlevel=21
   windowstatus=13
+
+icon:
+  category-addons=dmdirc://com/dmdirc/res/addon.png
+  category-advanced=dmdirc://com/dmdirc/res/cog.png
+  category-connection=dmdirc://com/dmdirc/res/server.png
+  category-gui=dmdirc://com/dmdirc/res/monitor.png
+  category-messages=dmdirc://com/dmdirc/res/feedback.png
+  category-updates=dmdirc://com/dmdirc/res/update.png
+  category-urlhandlers=dmdirc://com/dmdirc/res/urls.png

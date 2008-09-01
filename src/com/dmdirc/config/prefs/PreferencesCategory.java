@@ -40,6 +40,9 @@ public class PreferencesCategory {
     
     /** A description of this category. */
     private final String description;
+
+    /** The icon to use for this category. */
+    private final String icon;
     
     /** Whether or not this category is inline. */
     private boolean isInline = false;
@@ -66,20 +69,48 @@ public class PreferencesCategory {
      * @param description The description of this category
      */
     public PreferencesCategory(final String title, final String description) {
-        this(title, description, null);
+        this(title, description, null, null);
     }
-    
+
+    /**
+     * Creates a new preferences category that contains settings.
+     *
+     * @since 0.6.3
+     * @param title The title of this preferences category
+     * @param description The description of this category
+     * @param icon The icon to use for this category
+     */
+    public PreferencesCategory(final String title, final String description,
+            final String icon) {
+        this(title, description, icon, null);
+    }
+
     /**
      * Creates a new preferences category that contains an object.
-     * 
+     *
      * @param title The title of this preferences category
      * @param description The description of this category
      * @param object The replacement object for this category
      */
     public PreferencesCategory(final String title, final String description,
             final PreferencesInterface object) {
+        this(title, description, null, object);
+    }
+    
+    /**
+     * Creates a new preferences category that contains an object.
+     *
+     * @since 0.6.3
+     * @param title The title of this preferences category
+     * @param description The description of this category
+     * @param icon The icon to use for this category
+     * @param object The replacement object for this category
+     */
+    public PreferencesCategory(final String title, final String description,
+            final String icon, final PreferencesInterface object) {
         this.title = title;
         this.description = description;
+        this.icon = icon;
         this.object = object;
     }
     
@@ -185,6 +216,16 @@ public class PreferencesCategory {
      */
     public String getTitle() {
         return title;
+    }
+
+    /**
+     * Retrieves the icon to use for this category.
+     *
+     * @return This category's icon
+     * @since 0.6.3
+     */
+    public String getIcon() {
+        return icon;
     }
     
     /**

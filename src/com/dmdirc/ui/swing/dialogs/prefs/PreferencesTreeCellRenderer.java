@@ -22,6 +22,8 @@
 
 package com.dmdirc.ui.swing.dialogs.prefs;
 
+import com.dmdirc.config.prefs.PreferencesCategory;
+import com.dmdirc.ui.IconManager;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -29,6 +31,7 @@ import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeCellRenderer;
 
 import net.miginfocom.layout.PlatformDefaults;
@@ -63,11 +66,17 @@ public class PreferencesTreeCellRenderer extends JLabel implements TreeCellRende
     public final Component getTreeCellRendererComponent(final JTree tree,
             final Object value, final boolean sel, final boolean expanded,
             final boolean leaf, final int row, final boolean focused) {
-        setPreferredSize(new Dimension(100000,
-                getFont().getSize() + padding));
-        setBorder(BorderFactory.createEmptyBorder(0, 0, padding,
-                padding));
-        setText(value.toString());
+        if (((DefaultMutableTreeNode) value).getUserObject() instanceof PreferencesCategory) {
+            final PreferencesCategory cat = (PreferencesCategory)
+                    ((DefaultMutableTreeNode) value).getUserObject();
+
+            setText(cat.getTitle());
+            setIcon(IconManager.getIconManager().getIcon(cat.getIcon()));
+        }
+
+        setPreferredSize(new Dimension(100000, Math.max(16,
+                getFont().getSize()) + padding));
+        setBorder(BorderFactory.createEmptyBorder(0, 0, padding, padding));
         setBackground(tree.getBackground());
         setForeground(tree.getForeground());
         setOpaque(true);

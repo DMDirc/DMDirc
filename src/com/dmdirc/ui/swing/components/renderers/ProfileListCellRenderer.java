@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.swing.components.renderers;
 
-import com.dmdirc.ui.swing.dialogs.profiles.Profile;
+import com.dmdirc.config.Profile;
 
 import java.awt.Component;
 
