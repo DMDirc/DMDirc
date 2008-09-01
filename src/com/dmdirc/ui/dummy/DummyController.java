@@ -28,6 +28,7 @@ import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.ui.core.dialogs.sslcertificate.SSLCertificateDialogModel;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.MainWindow;
@@ -169,6 +170,12 @@ public final class DummyController implements UIController {
     /** {@inheritDoc} */
     @Override
     public String getUserInput(final String prompt) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void showSSLCertificateDialog(final SSLCertificateDialogModel model) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     

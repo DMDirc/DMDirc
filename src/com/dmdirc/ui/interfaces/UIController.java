@@ -22,12 +22,14 @@
 
 package com.dmdirc.ui.interfaces;
 
+import com.dmdirc.CertificateManager;
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.ui.core.dialogs.sslcertificate.SSLCertificateDialogModel;
 import com.dmdirc.updater.Update;
 
 import java.net.URI;
@@ -114,6 +116,13 @@ public interface UIController {
      * Shows the (addons) migration wizard for the ui.
      */
     void showMigrationWizard();
+
+    /**
+     * Shows the SSL certificate information dialog.
+     *
+     * @param model The dialog model to use
+     */
+    void showSSLCertificateDialog(SSLCertificateDialogModel model);
     
     /**
      * Shows a channel settigns dialog for specified channel.
