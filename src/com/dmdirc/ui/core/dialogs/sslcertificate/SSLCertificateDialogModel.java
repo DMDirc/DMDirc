@@ -23,10 +23,15 @@
 package com.dmdirc.ui.core.dialogs.sslcertificate;
 
 import com.dmdirc.CertificateManager;
+import com.dmdirc.CertificateManager.CertificateDoesntMatchHostException;
+import com.dmdirc.CertificateManager.CertificateNotTrustedException;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Model for SSL certificate dialogs.
@@ -44,6 +49,9 @@ public class SSLCertificateDialogModel {
 
     /** The list of problems found with the certs, if any. */
     private final List<CertificateException> problems;
+
+    /** The text to use if a field isn't present on the certificate. */
+    private static final String NOTPRESENT = "(not present on certificate)";
 
     /**
      * Creates a new SSLCertificateDialogModel for the specified chain.
@@ -80,11 +88,44 @@ public class SSLCertificateDialogModel {
                 cert.getNotAfter().toString(), false, false));
         res.add(group);
 
+        final Map<String, String> fields = CertificateManager.getDNFieldsFromCert(cert);
         group = new ArrayList<CertificateInformationEntry>();
-        group.add(new CertificateInformationEntry("Organisation",
-                "foo", false, false));
+        addCertField(fields, group, "Common name", "CN");
+        addCertField(fields, group, "Organisation", "O");
+        addCertField(fields, group, "Unit", "OU");
+        addCertField(fields, group, "Locality", "L");
+        addCertField(fields, group, "State", "ST");
+        addCertField(fields, group, "Country", "C");
+        res.add(group);
+
+        group = new ArrayList<CertificateInformationEntry>();
+        group.add(new CertificateInformationEntry("Serial number",
+                cert.getSerialNumber().toString(), false, false));
+        group.add(new CertificateInformationEntry("Signature",
+                "todo", false, false)); // cert.getSignature()
+        group.add(new CertificateInformationEntry("Algorithm",
+                cert.getSigAlgName(), false, false));
+        group.add(new CertificateInformationEntry("SSL version",
+                String.valueOf(cert.getVersion()), false, false));
+        res.add(group);
 
         return res;
+    }
+
+    /**
+     * Adds a field to the specified group.
+     *
+     * @param fields The fields extracted from the certiciate
+     * @param group The group to add an entry to
+     * @param title The user-friendly title of the field
+     * @param field The name of the field to look for
+     */
+    protected void addCertField(final Map<String, String> fields,
+            final List<CertificateInformationEntry> group, final String title,
+            final String field) {
+        group.add(new CertificateInformationEntry(title,
+                fields.containsKey(title) ? fields.get(title) : NOTPRESENT, false,
+                !fields.containsKey(title)));
     }
 
     /**
@@ -96,8 +137,42 @@ public class SSLCertificateDialogModel {
     public List<CertificateSummaryEntry> getSummary() {
         final List<CertificateSummaryEntry> res = new ArrayList<CertificateSummaryEntry>();
 
-        res.add(new CertificateSummaryEntry("Stuffity mcStuff stuff", true));
-        res.add(new CertificateSummaryEntry("Other stuffity mcStuff stuff", false));
+        boolean outofdate = false, wronghost = false, nottrusted = false;
+
+        for (CertificateException ex : problems) {
+            if (ex instanceof CertificateExpiredException
+                    || ex instanceof CertificateNotYetValidException) {
+                outofdate = true;
+            } else if (ex instanceof CertificateDoesntMatchHostException) {
+                wronghost = true;
+            } else if (ex instanceof CertificateNotTrustedException) {
+                nottrusted = true;
+            }
+        }
+
+        if (outofdate) {
+            res.add(new CertificateSummaryEntry("One or more certificates are " +
+                    "not within their validity period", false));
+        } else {
+            res.add(new CertificateSummaryEntry("All certificates are " +
+                    "within their validity period", true));
+        }
+
+        if (nottrusted) {
+            res.add(new CertificateSummaryEntry("The certificate is not issued "
+                    + "by a trusted authority", false));
+        } else {
+            res.add(new CertificateSummaryEntry("The certificate chain is "
+                    + "trusted", true));
+        }
+
+        if (wronghost) {
+            res.add(new CertificateSummaryEntry("The certificate is not issued "
+                    + "to the host you are connecting to", false));
+        } else {
+            res.add(new CertificateSummaryEntry("The certificate is issued "
+                    + "to the host you are connecting to", false));
+        }
 
         return res;
     }
