@@ -195,7 +195,7 @@ if [ $result -eq 0 ]; then
 		fi;
 	done;
 	wgetpid=""
-	if [ "${ISFREEBSD}" != "" ]; then
+	if [ "${ISFREEBSD}" != "" -o "${ISAINFO}" != "" ]; then
 		echo "Killing progressbar"
 		kill ${progressbarpid}
 	fi;
