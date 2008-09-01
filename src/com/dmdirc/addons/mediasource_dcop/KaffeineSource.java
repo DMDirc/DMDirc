@@ -38,12 +38,20 @@ public class KaffeineSource implements MediaSource {
     }
     
     /** {@inheritDoc} */
-    public boolean isRunning() {        
+    public boolean isRunning() {
         return DcopPlugin.getDcopResult("dcop kaffeine KaffeineIface isPlaying").size() > 0;
     }
     
     /** {@inheritDoc} */
     public boolean isPlaying() {
+        // This also returns true for paused, which makes it rather useless!
+        final String result = DcopPlugin.getDcopResult("dcop kaffeine KaffeineIface isPlaying").get(0);
+        
+        return Boolean.parseBoolean(result);
+    }
+    
+    /** {@inheritDoc} */
+    public boolean isStopped() {
         final String result = DcopPlugin.getDcopResult("dcop kaffeine KaffeineIface isPlaying").get(0);
         
         return Boolean.parseBoolean(result);

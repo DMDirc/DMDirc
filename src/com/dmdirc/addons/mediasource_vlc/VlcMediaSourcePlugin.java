@@ -60,6 +60,13 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
     public boolean isPlaying() {
         return information.get("state").equalsIgnoreCase("playing");
     }
+    
+
+    /** {@inheritDoc} */
+    @Override    
+    public boolean isStopped() {
+        return information.get("state").equalsIgnoreCase("stop");
+    }
 
     /** {@inheritDoc} */
     @Override    

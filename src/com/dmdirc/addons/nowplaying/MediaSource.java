@@ -45,6 +45,14 @@ public interface MediaSource {
     boolean isPlaying();
     
     /**
+     * Determine if this source is stopped or not.
+     * 
+     * @return True if this source is stopped, false otherwise
+     * @since 0.6.3
+     */
+    boolean isStopped();
+    
+    /**
      * Retrieves the name of the application that this source is for.
      * 
      * @return This source's application name

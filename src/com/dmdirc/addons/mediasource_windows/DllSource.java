@@ -84,6 +84,11 @@ public class DllSource implements MediaSource {
 	}
 	
 	/** {@inheritDoc} */
+	public boolean isStopped() {
+		return getOutput("getPlayState").equalsIgnoreCase("stopped");
+	}
+	
+	/** {@inheritDoc} */
 	public String getArtist() {
 		if (useArtistTitle) {
 			return getOutput("getArtistTitle").split("\\s-\\s", 2)[0];

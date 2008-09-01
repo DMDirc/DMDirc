@@ -51,6 +51,14 @@ public class NoatunSource implements MediaSource {
     }
     
     /** {@inheritDoc} */
+    public boolean isStopped() {
+        final String result = DcopPlugin.getDcopResult(
+                "dcop noatun Noatun state").get(0);
+        
+        return "0".equals(result.trim());
+    }
+    
+    /** {@inheritDoc} */
     public String getAppName() {
         return "Noatun";
     }

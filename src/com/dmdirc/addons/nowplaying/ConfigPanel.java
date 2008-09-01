@@ -258,6 +258,12 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
 
         /** {@inheritDoc} */
         @Override
+        public boolean isStopped() {
+            return false;
+        }
+
+        /** {@inheritDoc} */
+        @Override
         public String getAppName() {
             return "MyProgram";
         }

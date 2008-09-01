@@ -57,6 +57,19 @@ public class AmarokSource implements MediaSource {
     
     /** {@inheritDoc} */
     @Override
+    public boolean isStopped() {
+        final String result = DcopPlugin.getDcopResult(
+                "dcop amarok player status").get(0);
+        
+        try {
+            return (Integer.parseInt(result) == 0);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+    }
+    
+    /** {@inheritDoc} */
+    @Override
     public String getAppName() {
         return "Amarok";
     }
