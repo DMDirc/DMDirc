@@ -22,6 +22,8 @@
 
 package com.dmdirc;
 
+import com.dmdirc.config.ConfigManager;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -40,25 +42,46 @@ import java.util.Set;
 import javax.net.ssl.X509TrustManager;
 
 /**
+ * Manages storage and validation of certificates used when connecting to
+ * SSL servers.
  *
  * @author chris
  */
 public class CertificateManager implements X509TrustManager {
 
-    private String cacertpass = "changeit";
+    /** The password for the global java cacert file. */
+    private final String cacertpass;
 
+    /** The server name the user is trying to connect to. */
     private final String serverName;
 
-    private Set<X509Certificate> trustedCAs = new HashSet<X509Certificate>();
+    /** The configuration manager to use for settings. */
+    private final ConfigManager config;
 
+    /** The set of CAs from the global cacert file. */
+    private Set<X509Certificate> globalTrustedCAs = new HashSet<X509Certificate>();
+
+    /** Whether or not to check specified parts of the certificate. */
     private boolean checkDate = true, checkIssuer = true, checkHost = true;
 
-    public CertificateManager(final String serverName) {
+    /**
+     * Creates a new certificate manager for a client connecting to the
+     * specified server.
+     *
+     * @param serverName The name the user used to connect to the server
+     * @param config The configuration manager to use
+     */
+    public CertificateManager(final String serverName, final ConfigManager config) {
         this.serverName = serverName;
+        this.config = config;
+        this.cacertpass = config.getOption("ssl", "cacertpass", "changeit");
 
         loadTrustedCAs();
     }
 
+    /**
+     * Loads the trusted CA certificates from the Java cacerts store.
+     */
     protected void loadTrustedCAs() {
         try {
             String filename = System.getProperty("java.home")
@@ -70,7 +93,7 @@ public class CertificateManager implements X509TrustManager {
             // This class retrieves the most-trusted CAs from the keystore
             PKIXParameters params = new PKIXParameters(keystore);
             for (TrustAnchor anchor : params.getTrustAnchors()) {
-                trustedCAs.add(anchor.getTrustedCert());
+                globalTrustedCAs.add(anchor.getTrustedCert());
             }
         } catch (CertificateException ex) {
 
@@ -99,12 +122,12 @@ public class CertificateManager implements X509TrustManager {
         boolean verified = false;
 
         if (checkHost) {
-            System.out.println(chain[0].getSubjectDN().getName());
+            // Check that the cert is issued to the correct host
             if (chain[0].getSubjectAlternativeNames() != null) {
+                // TODO: check the common name
                 for (List<?> entry : chain[0].getSubjectAlternativeNames()) {
                     final int type = ((Integer) entry.get(0)).intValue();
 
-                    System.out.println(type + " -- " + entry.get(1) + " -- " + serverName);
                     // DNS or IP
                     if ((type == 2 || type == 7) && entry.get(1).equals(serverName)) {
                         verified = true;
@@ -114,7 +137,6 @@ public class CertificateManager implements X509TrustManager {
             }
 
             if (!verified) {
-                System.out.println("Certificate not valid for address");
                 throw new CertificateException("Certificate not valid for that address");
             }
 
@@ -128,9 +150,9 @@ public class CertificateManager implements X509TrustManager {
             }
 
             if (checkIssuer) {
+                // Check that we trust an issuer
                 try {
-                    for (X509Certificate trustedCert : trustedCAs) {
-                        System.out.println(cert.getIssuerDN().getName() + " <> " + trustedCert.getIssuerDN().getName());
+                    for (X509Certificate trustedCert : globalTrustedCAs) {
                         if (cert.getSerialNumber().equals(trustedCert.getSerialNumber())
                                 && cert.getIssuerDN().getName().equals(trustedCert.getIssuerDN().getName())) {
                             cert.verify(trustedCert.getPublicKey());
@@ -144,8 +166,7 @@ public class CertificateManager implements X509TrustManager {
             }
         }
 
-        if (!verified) {
-            System.out.println("Issuer is not trusted");
+        if (!verified && checkIssuer) {
             throw new CertificateException("Issuer is not trusted");
         }
     }
@@ -153,8 +174,7 @@ public class CertificateManager implements X509TrustManager {
     /** {@inheritDoc} */
     @Override
     public X509Certificate[] getAcceptedIssuers() {
-        System.out.println("getAcceptedIssuers: " + trustedCAs.size());
-        return trustedCAs.toArray(new X509Certificate[trustedCAs.size()]);
+        return globalTrustedCAs.toArray(new X509Certificate[globalTrustedCAs.size()]);
     }
 
 }
