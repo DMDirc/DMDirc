@@ -49,6 +49,9 @@ public class PreferencesCategory {
     
     /** Whether or not to show inline categories before settings. */
     private boolean inlineBefore = true;
+
+    /** Our parent category, if known. */
+    private PreferencesCategory parent;
     
     /** A list of settings in this category. */
     private final List<PreferencesSetting> settings = new ArrayList<PreferencesSetting>();
@@ -178,7 +181,8 @@ public class PreferencesCategory {
             throw new IllegalArgumentException("Can't add non-inline " +
                     "subcategories to inline ones");
         }
-        
+
+        subcategory.setParent(this);
         subcats.add(subcategory);
     }
 
@@ -246,6 +250,28 @@ public class PreferencesCategory {
      */
     public PreferencesInterface getObject() {
         return object;
+    }
+
+    /**
+     * Retrieves the full path of this category. A category's path is the name
+     * of each of its parent categories, starting with the furthest up the
+     * hierarchy, separated by '→' characters.
+     *
+     * @return This category's path
+     * @since 0.6.3
+     */
+    public String getPath() {
+        return (parent == null ? "" : parent.getPath() + " → ") + getTitle();
+    }
+
+    /**
+     * Sets this category's parent.
+     *
+     * @param parent The parent of this category
+     * @since 0.6.3
+     */
+    public void setParent(final PreferencesCategory parent) {
+        this.parent = parent;
     }
     
     /**

@@ -24,22 +24,24 @@ package com.dmdirc.ui.swing.dialogs.prefs;
 
 import com.dmdirc.config.prefs.PreferencesCategory;
 import com.dmdirc.ui.IconManager;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeCellRenderer;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 
 import net.miginfocom.layout.PlatformDefaults;
 
 /**
- * Prefs dialog Tree cell renderer.
+ * Prefs dialog list cell renderer.
+ *
+ * @since 0.6.3
  */
-public class PreferencesTreeCellRenderer extends JLabel implements TreeCellRenderer {
+public class PreferencesListCellRenderer extends JLabel implements ListCellRenderer {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -48,41 +50,34 @@ public class PreferencesTreeCellRenderer extends JLabel implements TreeCellRende
      */
     private static final long serialVersionUID = 1;
     /** Panel gap. */
-    private final int padding = (int) PlatformDefaults.getUnitValueX("related").
-            getValue();
+    private final int padding
+            = (int) (1.5 * PlatformDefaults.getUnitValueX("related").getValue());
 
-    /** 
-     * {@inheritDoc}
-     * 
-     * @param tree Tree
-     * @param value Value
-     * @param sel Selected?
-     * @param expanded Expanded?
-     * @param leaf Leaf node?
-     * @param row Row number
-     * @param focused Focused?
-     */
+    /** {@inheritDoc} */
     @Override
-    public final Component getTreeCellRendererComponent(final JTree tree,
-            final Object value, final boolean sel, final boolean expanded,
-            final boolean leaf, final int row, final boolean focused) {
-        if (((DefaultMutableTreeNode) value).getUserObject() instanceof PreferencesCategory) {
-            final PreferencesCategory cat = (PreferencesCategory)
-                    ((DefaultMutableTreeNode) value).getUserObject();
+    public final Component getListCellRendererComponent(final JList list,
+            final Object value, final int index, final boolean isSelected,
+            final boolean cellHasFocus) {
+        final PreferencesCategory cat = (PreferencesCategory) value;
 
-            setText(cat.getTitle());
-            setIcon(IconManager.getIconManager().getIcon(cat.getIcon()));
-        }
+        setText(cat.getTitle());
+        setIcon(IconManager.getIconManager().getIcon(cat.getIcon()));
 
         setPreferredSize(new Dimension(100000, Math.max(16,
                 getFont().getSize()) + padding));
-        setBorder(BorderFactory.createEmptyBorder(0, 0, padding, padding));
-        setBackground(tree.getBackground());
-        setForeground(tree.getForeground());
+        setBorder(BorderFactory.createEmptyBorder(padding / 2, padding, padding / 2, padding));
+        setBackground(list.getBackground());
+        setForeground(list.getForeground());
         setOpaque(true);
         setToolTipText(null);
 
-        if (sel) {
+        if (cat.getPath().equals(cat.getTitle()) && index > 0) {
+            setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createMatteBorder(1, 0, 0, 0, Color.LIGHT_GRAY),
+                    getBorder()));
+        }
+
+        if (isSelected) {
             setFont(getFont().deriveFont(Font.BOLD));
         } else {
             setFont(getFont().deriveFont(Font.PLAIN));
@@ -90,4 +85,5 @@ public class PreferencesTreeCellRenderer extends JLabel implements TreeCellRende
 
         return this;
     }
+
 }

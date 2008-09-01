@@ -23,17 +23,16 @@
 package com.dmdirc.ui.swing.dialogs.prefs;
 
 import com.dmdirc.Main;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesCategory;
 import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.PrefsComponentFactory;
 import com.dmdirc.ui.swing.components.ColourChooser;
+import com.dmdirc.ui.swing.components.ListScroller;
 import com.dmdirc.ui.swing.components.OptionalColourChooser;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.TextLabel;
-import com.dmdirc.ui.swing.components.TreeScroller;
 import com.dmdirc.ui.swing.components.durationeditor.DurationDisplay;
 
 import java.awt.CardLayout;
@@ -52,23 +51,18 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTree;
+import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.plaf.metal.MetalTreeUI;
-import javax.swing.text.Position;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.layout.PlatformDefaults;
 import net.miginfocom.swing.MigLayout;
@@ -77,28 +71,34 @@ import net.miginfocom.swing.MigLayout;
  * Allows the user to modify global client preferences.
  */
 public final class SwingPreferencesDialog extends StandardDialog implements
-        ActionListener, TreeSelectionListener, MouseListener {
+        ActionListener, ListSelectionListener, MouseListener {
 
     /**
      * A version number for this class. It should be changed whenever the
      * class structure is changed (or anything else that would prevent
      * serialized objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 8;
+    private static final long serialVersionUID = 9;
+
+    /**
+     * The maximum height clients may use if they don't want to scroll.
+     *
+     * @since 0.6.3
+     */
+    public static int CLIENT_HEIGHT = 430;
+
     /** Previously instantiated instance of SwingPreferencesDialog. */
     private static volatile SwingPreferencesDialog me;
     /** A map of settings to the components used to represent them. */
     private final Map<PreferencesSetting, JComponent> components;
     /** Categories in the dialog. */
     private final Map<PreferencesCategory, JPanel> categories;
-    /** Nodes in the treeview. */
-    private final Map<TreeNode, String> nodes;
     /** Paths to categories. */
     private final Map<String, PreferencesCategory> paths;
     /** Custom panels, not to be laid out automatically. */
     private final List<JPanel> panels;
     /** Preferences tab list, used to switch option types. */
-    private JTree tabList;
+    private JList tabList;
     /** Main card layout. */
     private CardLayout cardLayout;
     /** Main panel. */
@@ -109,8 +109,6 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     private TextLabel tooltip;
     /** Cached tooltips. */
     private final Map<Component, String> tooltips = new HashMap<Component, String>();
-    /** root node. */
-    private DefaultMutableTreeNode rootNode;
     /** Previously selected category. */
     private PreferencesCategory selected;
     /** Preferences Manager. */
@@ -133,14 +131,13 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
         categories = new HashMap<PreferencesCategory, JPanel>();
         components = new HashMap<PreferencesSetting, JComponent>();
-        nodes = new HashMap<TreeNode, String>();
         paths = new HashMap<String, PreferencesCategory>();
 
         panels = new ArrayList<JPanel>();
 
         initComponents();
 
-        new TreeScroller(tabList);
+        new ListScroller(tabList);
 
         addCategories(manager.getCategories());
         addMouseListeners(mainPanel.getComponents());
@@ -194,36 +191,27 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         tooltipPanel.setBackground(Color.WHITE);
         tooltipPanel.setBorder(BorderFactory.createEtchedBorder());
 
-        rootNode = new DefaultMutableTreeNode("root");
-
-        tabList = new JTree(new DefaultTreeModel(rootNode));
-        tabList.getSelectionModel().setSelectionMode(
-                TreeSelectionModel.SINGLE_TREE_SELECTION);
-        tabList.putClientProperty("JTree.lineStyle", "Angled");
-        tabList.setUI(new MetalTreeUI());
-        tabList.setRootVisible(false);
-        tabList.setShowsRootHandles(false);
-        tabList.setCellRenderer(new PreferencesTreeCellRenderer());
-        tabList.addTreeSelectionListener(this);
+        tabList = new JList(new DefaultListModel());
+        tabList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tabList.setCellRenderer(new PreferencesListCellRenderer());
+        tabList.addListSelectionListener(this);
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Preferences");
         setResizable(false);
 
-        tabList.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(),
-                BorderFactory.createEmptyBorder(padding, padding, padding,
-                padding)));
+        tabList.setBorder(BorderFactory.createEtchedBorder());
 
         orderButtons(new JButton(), new JButton());
 
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
         
-        setLayout(new MigLayout("fillx, wmin 650, wmax 650, hmax 600"));
-        add(tabList, "width 150, growy, spany 3");
-        add(titlePanel, "wrap, wmin 480, wmax 480");
-        add(mainPanel, "wrap, wmin 480, wmax 480, grow, hmax 450");
-        add(tooltipPanel, "wrap, wmin 480, wmax 480, hmin 65, hmax 65");
+        setLayout(new MigLayout("fillx, wmax 650, hmax 600"));
+        add(tabList, "w 150!, growy, spany 3");
+        add(titlePanel, "wrap, w 480!");
+        add(mainPanel, "wrap, w 480!, pushy, h " + (CLIENT_HEIGHT + 20) + "!");
+        add(tooltipPanel, "wrap, w 480!, h 65!");
         add(getLeftButton(), "span, split, right");
         add(getRightButton(), "right");
     }
@@ -335,52 +323,45 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
         parent.add(panel, "span, growx, wrap");
 
-        initCategory(category, panel, null, "");
+        initCategory(category, panel, "");
     }
 
     /**
      * Adds the specified category to the preferences dialog.
      *
+     * @since 0.6.3
      * @param category The category to be added
-     * @param parentNode the parent node of the category
      * @param namePrefix Category name prefix
      */
-    private void addCategory(final PreferencesCategory category,
-            final DefaultMutableTreeNode parentNode, final String namePrefix) {
+    private void addCategory(final PreferencesCategory category, final String namePrefix) {
         final JPanel panel =
                 new JPanel(new MigLayout("fillx, gap unrel, wrap 2, hidemode 3, " +
                 "wmax 480-" + leftPadding + "-" + rightPadding + "-2*" + padding));
-        final String path = namePrefix + "/" + category.getTitle();
-        DefaultMutableTreeNode newNode;
-
-        newNode = new DefaultMutableTreeNode(category);
+        final String path = category.getPath();
 
         categories.put(category, panel);
-        nodes.put(newNode, path);
         paths.put(path, category);
 
         final JScrollPane scrollPane = new JScrollPane(panel);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         mainPanel.add(scrollPane, path);
-        ((DefaultTreeModel) tabList.getModel()).insertNodeInto(newNode,
-                rootNode, parentNode.getChildCount());
-        tabList.scrollPathToVisible(new TreePath(newNode.getPath()));
+        ((DefaultListModel) tabList.getModel()).addElement(category);
+        tabList.setSelectedValue(category, true);
 
-        initCategory(category, panel, newNode, path);
+        initCategory(category, panel, path);
     }
 
     /**
      * Initialises the specified category.
-     * 
+     *
+     * @since 0.6.3
      * @param category The category that is being initialised
      * @param panel The panel to which we're adding its contents
-     * @param newNode The treenode that represents this category
      * @param path The textual path of this category
      */
     private void initCategory(final PreferencesCategory category,
-            final JPanel panel, final DefaultMutableTreeNode newNode,
-            final String path) {
+            final JPanel panel, final String path) {
 
         if (!category.getDescription().isEmpty()) {
             panel.add(new TextLabel(category.getDescription()), "span, growx");
@@ -390,7 +371,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             if (child.isInline() && category.isInlineBefore()) {
                 addInlineCategory(child, panel);
             } else if (!child.isInline()) {
-                addCategory(child, newNode, path);
+                addCategory(child, path);
             }
         }
 
@@ -426,7 +407,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      */
     public void addCategories(final Collection<? extends PreferencesCategory> categories) {
         for (PreferencesCategory category : categories) {
-            addCategory(category, rootNode, "");
+            addCategory(category, "");
         }
     }
 
@@ -442,11 +423,11 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         }
 
         if (getOkButton().equals(actionEvent.getSource())) {
-            if (tabList.getSelectionPath() != null) {
-                final String node = tabList.getSelectionPath().toString();
-                IdentityManager.getConfigIdentity().setOption("dialogstate",
-                        "preferences", node.substring(7, node.length() - 1).
-                        replaceAll(", ", "->"));
+            if (tabList.getSelectedIndex() > -1) {
+                final PreferencesCategory node = (PreferencesCategory) tabList.getSelectedValue();
+                //IdentityManager.getConfigIdentity().setOption("dialogstate",
+                  //      "preferences", node.substring(7, node.length() - 1).
+                    //    replaceAll(", ", "->"));
             }
             saveOptions();
         }
@@ -454,24 +435,22 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     }
 
     /**
-     * Called when the selection in the tree changes.
+     * {@inheritDoc}
      *
-     * @param selectionEvent list selection event
+     * @since 0.6.3
      */
     @Override
-    public void valueChanged(final TreeSelectionEvent selectionEvent) {
-        final String path = nodes.get(((JTree) selectionEvent.getSource()).getSelectionPath().
-                getLastPathComponent());
-
-        cardLayout.show(mainPanel, path);
+    public void valueChanged(final ListSelectionEvent e) {
+        final PreferencesCategory node = (PreferencesCategory) tabList.getSelectedValue();
+        cardLayout.show(mainPanel, node.getPath());
 
         if (selected != null) {
             selected.fireCategoryDeselected();
         }
 
-        selected = paths.get(path);
+        selected = node;
         selected.fireCategorySelected();
-        title.setText(selected.getTitle());
+        title.setText(selected.getPath());
     }
 
     /** {@inheritDoc} */
@@ -496,7 +475,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
     /** {@inheritDoc} */
     private void display() {
-        final String[] tabName = IdentityManager.getGlobalConfig().
+        /*final String[] tabName = IdentityManager.getGlobalConfig().
                 getOption("dialogstate", "preferences", "").split("->");
         TreePath path = new TreePath(tabList.getModel().getRoot());
 
@@ -516,7 +495,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             tabList.setSelectionPath(tabList.getPathForRow(0));
         } else {
             tabList.setSelectionPath(path);
-        }
+        }*/
         pack();
         setLocationRelativeTo(getParent());
         setVisible(true);
@@ -584,4 +563,5 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     public void mouseExited(final MouseEvent e) {
         resetTooltip();
     }
+
 }

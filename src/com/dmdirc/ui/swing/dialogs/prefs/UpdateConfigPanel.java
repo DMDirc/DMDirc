@@ -118,7 +118,8 @@ public class UpdateConfigPanel extends JPanel implements ActionListener,
      * Lays out the components.
      */
     private void layoutComponents() {
-        setLayout(new MigLayout("fillx, ins 0"));
+        setLayout(new MigLayout("fillx, ins 0, h "
+                + SwingPreferencesDialog.CLIENT_HEIGHT + "!"));
 
         add(new JLabel("Update checking:"), "split");
         add(enable, "growx, pushx, wrap");
