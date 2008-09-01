@@ -240,11 +240,11 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         setMinimumSize(new Dimension(800, 600));
         setLayout(new MigLayout("fill, hidemode 3, wrap 2, hmax 80sp, wmin 800, wmax 800"));
 
-        add(name, "grow");
-        add(conditions, "spany 3, grow, pushx");
-        add(triggers, "grow");
-        add(response, "grow, pushy");
-        add(substitutions, "spanx 2, grow");
+        add(name, "grow, wmax 50%");
+        add(conditions, "spany 3, grow, pushx, wmax 50%");
+        add(triggers, "grow, wmax 50%");
+        add(response, "grow, pushy, wmax 50%");
+        add(substitutions, "spanx 2, grow, wmax 50%");
         add(showSubstitutions, "left, sgx button, split 3, spanx 2");
         add(getLeftButton(), "right, sgx button, gapleft push");
         add(getRightButton(), "right, sgx button");
