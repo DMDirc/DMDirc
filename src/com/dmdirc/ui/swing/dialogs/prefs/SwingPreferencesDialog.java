@@ -39,7 +39,6 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -63,6 +62,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 import net.miginfocom.layout.PlatformDefaults;
 import net.miginfocom.swing.MigLayout;
@@ -79,6 +81,9 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * serialized objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 9;
+    /** Normal help string text. */
+    private static final String text = "Hover over a setting to see a " +
+            "description, if available.";
 
     /**
      * The maximum height clients may use if they don't want to scroll.
@@ -222,8 +227,11 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * @since 0.6.3
      */
     protected void resetTooltip() {
-        tooltip.setFont(tooltip.getFont().deriveFont(Font.ITALIC));
-        tooltip.setText("Hover over a setting to see a description, if available.");
+        tooltip.setText(text);
+        SimpleAttributeSet sas = new SimpleAttributeSet();
+        StyleConstants.setItalic(sas, true);
+        ((StyledDocument) tooltip.getDocument()).setParagraphAttributes(0,
+                    text.length(), sas, true);
     }
 
     /**
@@ -233,8 +241,11 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * @since 0.6.3
      */
     protected void setTooltip(final String text) {
-        tooltip.setFont(tooltip.getFont().deriveFont(Font.PLAIN));
         tooltip.setText(text);
+        SimpleAttributeSet sas = new SimpleAttributeSet();
+        StyleConstants.setItalic(sas, false);
+        ((StyledDocument) tooltip.getDocument()).setParagraphAttributes(0, 
+                text.length(), sas, true);
     }
 
     /**
@@ -516,6 +527,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
     /**
      * {@inheritDoc}
+     * 
+     * @param e Mouse event
      *
      * @since 0.6.3
      */
@@ -526,6 +539,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
     /**
      * {@inheritDoc}
+     * 
+     * @param e Mouse event
      *
      * @since 0.6.3
      */
@@ -536,6 +551,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
     /**
      * {@inheritDoc}
+     * 
+     * @param e Mouse event
      *
      * @since 0.6.3
      */
@@ -547,6 +564,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     /**
      * {@inheritDoc}
      *
+     * @param e Mouse event
+     * 
      * @since 0.6.3
      */
     @Override
@@ -556,6 +575,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
     /**
      * {@inheritDoc}
+     * 
+     * @param e Mouse event
      *
      * @since 0.6.3
      */
