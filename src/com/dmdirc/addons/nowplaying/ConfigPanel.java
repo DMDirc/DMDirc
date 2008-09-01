@@ -27,8 +27,11 @@ import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.ui.swing.components.reorderablelist.ReorderableJList;
 
+import com.dmdirc.ui.swing.components.substitutions.SubstitutionsPanel;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
@@ -134,24 +137,9 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
 
         previewPanel = panel;
 
-        panel = new JPanel();
-
-        panel.setBorder(BorderFactory.createTitledBorder("Substitutions"));
-        panel.setLayout(new MigLayout("fillx, ins 5"));
-
-        panel.add(new JLabel("$app"));
-        panel.add(new JLabel("$title"));
-        panel.add(new JLabel("$artist"));
-        panel.add(new JLabel("$album"), "wrap");
-
-        panel.add(new JLabel("$bitrate"));
-        panel.add(new JLabel("$format"));
-        panel.add(new JLabel("$length"));
-        panel.add(new JLabel("$time"), "wrap");
-        
-        panel.add(new JLabel("$state"));
-
-        add(panel, "growx");
+        add(new NowPlayingSubsitutionPanel(Arrays.asList(new String[]{"app", 
+        "title", "artist", "album", "bitrate", "format", "length", "time", 
+        "state"})), "growx");
         schedulePreviewUpdate();
     }
 
