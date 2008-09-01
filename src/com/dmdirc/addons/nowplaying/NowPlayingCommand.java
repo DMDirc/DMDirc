@@ -111,7 +111,9 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
                 data[i][0] = source.getAppName();
                 
                 if (source.isRunning()) {
-                    if (source.isPlaying()) {
+                    if (source.isStopped()) {
+                        data[i][1] = "stopped";
+                    } else if (source.isPlaying()) {
                         data[i][1] = "playing";
                     } else {
                         data[i][1] = "paused";
