@@ -349,6 +349,7 @@ public abstract class InputHandler implements ConfigChangeListener {
                 Toolkit.getDefaultToolkit().beep();
             }
         }
+        validateText();
     }
 
     /**
@@ -365,6 +366,7 @@ public abstract class InputHandler implements ConfigChangeListener {
                 addToBuffer(target.getText());
             }
         }
+        validateText();
     }
     
     /**
