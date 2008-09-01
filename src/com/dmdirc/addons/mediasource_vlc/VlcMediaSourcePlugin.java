@@ -23,6 +23,7 @@
 package com.dmdirc.addons.mediasource_vlc;
 
 import com.dmdirc.addons.nowplaying.MediaSource;
+import com.dmdirc.addons.nowplaying.MediaSourceState;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesCategory;
 import com.dmdirc.config.prefs.PreferencesManager;
@@ -51,21 +52,21 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
 
     /** {@inheritDoc} */
     @Override
-    public boolean isRunning() {
-        return fetchInformation();
-    }
-
-    /** {@inheritDoc} */
-    @Override    
-    public boolean isPlaying() {
-        return information.get("state").equalsIgnoreCase("playing");
-    }
-    
-
-    /** {@inheritDoc} */
-    @Override    
-    public boolean isStopped() {
-        return information.get("state").equalsIgnoreCase("stop");
+    public MediaSourceState getState() {
+        if (fetchInformation()) {
+            final String output = information.get("state");
+            if (output.equalsIgnoreCase("stop")) {
+                return MediaSourceState.STOPPED;
+            } else if (output.equalsIgnoreCase("playing")) {
+                return MediaSourceState.PLAYING;
+            } else if (output.equalsIgnoreCase("paused")) {
+                return MediaSourceState.PAUSED;
+            } else {
+                return MediaSourceState.NOTKNOWN;
+            }
+        } else {
+            return MediaSourceState.CLOSED;
+        }
     }
 
     /** {@inheritDoc} */

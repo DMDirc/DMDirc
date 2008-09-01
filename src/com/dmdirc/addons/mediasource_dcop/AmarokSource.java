@@ -24,6 +24,7 @@ package com.dmdirc.addons.mediasource_dcop;
 
 import com.dmdirc.addons.dcop.DcopPlugin;
 import com.dmdirc.addons.nowplaying.MediaSource;
+import com.dmdirc.addons.nowplaying.MediaSourceState;
 
 import java.util.List;
 
@@ -41,30 +42,27 @@ public class AmarokSource implements MediaSource {
     
     /** {@inheritDoc} */
     @Override
-    public boolean isRunning() {
+    public MediaSourceState getState() {
         final List<String> res = DcopPlugin.getDcopResult("dcop amarok player status");
-        return res.size() > 0 && !res.get(0).equals("0");
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public boolean isPlaying() {
-        final String result = DcopPlugin.getDcopResult(
-                "dcop amarok player isPlaying").get(0);
-        
-        return Boolean.parseBoolean(result);
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public boolean isStopped() {
-        final String result = DcopPlugin.getDcopResult(
-                "dcop amarok player status").get(0);
-        
-        try {
-            return (Integer.parseInt(result) == 0);
-        } catch (NumberFormatException nfe) {
-            return false;
+        if (res.size() > 0) {
+            final String result = res.get(0).trim();
+            try {
+                final int status = (Integer.parseInt(result));
+                switch (status) {
+                    case 0:
+                        return MediaSourceState.STOPPED;
+                    case 1:
+                        return MediaSourceState.PAUSED;
+                    case 2:
+                        return MediaSourceState.PLAYING;
+                    default:
+                        return MediaSourceState.NOTKNOWN;
+                }
+            } catch (NumberFormatException nfe) {
+                return MediaSourceState.CLOSED;
+            }
+        } else {
+            return MediaSourceState.CLOSED;
         }
     }
     

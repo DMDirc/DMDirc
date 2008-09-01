@@ -24,6 +24,9 @@ package com.dmdirc.addons.mediasource_dcop;
 
 import com.dmdirc.addons.dcop.DcopPlugin;
 import com.dmdirc.addons.nowplaying.MediaSource;
+import com.dmdirc.addons.nowplaying.MediaSourceState;
+
+import java.util.List;
 
 /**
  * Uses DCOP to retrieve now playing info from Noatun.
@@ -38,24 +41,29 @@ public class NoatunSource implements MediaSource {
     }
     
     /** {@inheritDoc} */
-    public boolean isRunning() {       
-        return DcopPlugin.getDcopResult("dcop noatun Noatun state").size() > 0;
-    }
-    
-    /** {@inheritDoc} */
-    public boolean isPlaying() {
-        final String result = DcopPlugin.getDcopResult(
-                "dcop noatun Noatun state").get(0);
-        
-        return "2".equals(result.trim());
-    }
-    
-    /** {@inheritDoc} */
-    public boolean isStopped() {
-        final String result = DcopPlugin.getDcopResult(
-                "dcop noatun Noatun state").get(0);
-        
-        return "0".equals(result.trim());
+    @Override
+    public MediaSourceState getState() {
+        final List<String> res = DcopPlugin.getDcopResult("dcop noatun Noatun state");
+        if (res.size() > 0) {
+            final String result = res.get(0).trim();
+            try {
+                final int status = (Integer.parseInt(result));
+                switch (status) {
+                    case 0:
+                        return MediaSourceState.STOPPED;
+                    case 1:
+                        return MediaSourceState.PAUSED;
+                    case 2:
+                        return MediaSourceState.PLAYING;
+                    default:
+                        return MediaSourceState.NOTKNOWN;
+                }
+            } catch (NumberFormatException nfe) {
+                return MediaSourceState.CLOSED;
+            }
+        } else {
+            return MediaSourceState.CLOSED;
+        }
     }
     
     /** {@inheritDoc} */

@@ -147,7 +147,9 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
         panel.add(new JLabel("$bitrate"));
         panel.add(new JLabel("$format"));
         panel.add(new JLabel("$length"));
-        panel.add(new JLabel("$time"));
+        panel.add(new JLabel("$time"), "wrap");
+        
+        panel.add(new JLabel("$state"));
 
         add(panel, "growx");
         schedulePreviewUpdate();
@@ -246,20 +248,8 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
 
         /** {@inheritDoc} */
         @Override
-        public boolean isRunning() {
-            return true;
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public boolean isPlaying() {
-            return true;
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public boolean isStopped() {
-            return false;
+        public MediaSourceState getState() {
+            return MediaSourceState.PLAYING;
         }
 
         /** {@inheritDoc} */

@@ -192,7 +192,7 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
      */
     public boolean hasRunningSource() {
         for (final MediaSource source : sources) {
-            if (source.isRunning()) {
+            if (source.getState() != MediaSourceState.CLOSED) {
                 return true;
             }
         }
@@ -215,8 +215,8 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
         Collections.sort(sources, new MediaSourceComparator(order));
         
         for (final MediaSource source : sources) {
-            if (source.isRunning()) {
-                if (source.isPlaying()) {
+            if (source.getState() != MediaSourceState.CLOSED) {
+                if (source.getState() == MediaSourceState.PLAYING) {
                     return source;
                 } else if (paused == null) {
                     paused = source;
@@ -244,6 +244,7 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
         final String filetype = source.getFormat();
         final String length = source.getLength();
         final String time = source.getTime();
+        final String state = source.getState().getNiceName();
         
         return format.replaceAll("\\$artist", artist)
                      .replaceAll("\\$title", title)
@@ -252,6 +253,7 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
                      .replaceAll("\\$bitrate", bitrate)
                      .replaceAll("\\$format", filetype)
                      .replaceAll("\\$length", length)
+                     .replaceAll("\\$state", state)
                      .replaceAll("\\$time", time);
     }
     

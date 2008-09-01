@@ -24,6 +24,9 @@ package com.dmdirc.addons.mediasource_dcop;
 
 import com.dmdirc.addons.dcop.DcopPlugin;
 import com.dmdirc.addons.nowplaying.MediaSource;
+import com.dmdirc.addons.nowplaying.MediaSourceState;
+
+import java.util.List;
 
 /**
  * Uses DCOP to retrieve now playing info from Kaffeine.
@@ -38,23 +41,19 @@ public class KaffeineSource implements MediaSource {
     }
     
     /** {@inheritDoc} */
-    public boolean isRunning() {
-        return DcopPlugin.getDcopResult("dcop kaffeine KaffeineIface isPlaying").size() > 0;
-    }
-    
-    /** {@inheritDoc} */
-    public boolean isPlaying() {
-        // This also returns true for paused, which makes it rather useless!
-        final String result = DcopPlugin.getDcopResult("dcop kaffeine KaffeineIface isPlaying").get(0);
-        
-        return Boolean.parseBoolean(result);
-    }
-    
-    /** {@inheritDoc} */
-    public boolean isStopped() {
-        final String result = DcopPlugin.getDcopResult("dcop kaffeine KaffeineIface isPlaying").get(0);
-        
-        return Boolean.parseBoolean(result);
+    @Override
+    public MediaSourceState getState() {
+        final List<String> res = DcopPlugin.getDcopResult("dcop kaffeine KaffeineIface isPlaying");
+        if (res.size() > 0) {
+            final String result = res.get(0);
+            if (Boolean.parseBoolean(result)) {
+                return MediaSourceState.PLAYING;
+            } else {
+                return MediaSourceState.CLOSED;
+            }
+        } else {
+            return MediaSourceState.CLOSED;
+        }
     }
     
     /** {@inheritDoc} */

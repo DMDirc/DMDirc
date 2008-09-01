@@ -70,7 +70,7 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
                 if (source == null) {
                     sendLine(origin, isSilent, FORMAT_ERROR, "Source not found.");
                 } else {
-                    if (source.isRunning()) {
+                    if (source.getState() != MediaSourceState.CLOSED) {
                         target.getFrame().getCommandParser().parseCommand(origin,
                                 getInformation(source));
                     } else {
@@ -110,15 +110,8 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
             for (MediaSource source : sources) {
                 data[i][0] = source.getAppName();
                 
-                if (source.isRunning()) {
-                    if (source.isStopped()) {
-                        data[i][1] = "stopped";
-                    } else if (source.isPlaying()) {
-                        data[i][1] = "playing";
-                    } else {
-                        data[i][1] = "paused";
-                    }
-                    
+                if (source.getState() != MediaSourceState.CLOSED) {
+                    data[i][1] = source.getState().getNiceName().toLowerCase();
                     data[i][2] = getInformation(source);
                 } else {
                     data[i][1] = "not running";
@@ -177,7 +170,7 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
             res.add("--source");
         } else if (arg == 1 && previousArgs.get(0).equalsIgnoreCase("--source")) {
             for (MediaSource source : parent.getSources()) {
-                if (source.isRunning()) {
+                if (source.getState() != MediaSourceState.CLOSED) {
                     res.add(source.getAppName());
                 }
             }

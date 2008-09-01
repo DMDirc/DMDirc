@@ -23,6 +23,7 @@
 package com.dmdirc.addons.mediasource_windows;
 
 import com.dmdirc.addons.nowplaying.MediaSource;
+import com.dmdirc.addons.nowplaying.MediaSourceState;
 
 /**
  * Uses WindowsMediaSourcePlugin to retrieve now playing info.
@@ -74,18 +75,24 @@ public class DllSource implements MediaSource {
 	}
 	
 	/** {@inheritDoc} */
-	public boolean isRunning() {
-		return WindowsMediaSourcePlugin.getOutput(playerName, "getPlayState").getExitCode() == 0;
-	}
-	
-	/** {@inheritDoc} */
-	public boolean isPlaying() {
-		return getOutput("getPlayState").equalsIgnoreCase("playing");
-	}
-	
-	/** {@inheritDoc} */
-	public boolean isStopped() {
-		return getOutput("getPlayState").equalsIgnoreCase("stopped");
+	@Override
+	public MediaSourceState getState() {
+		final MediaInfoOutput result = WindowsMediaSourcePlugin.getOutput(playerName, "getPlayState");
+		
+		if (result.getExitCode() == 0) {
+			final String output = result.getGoodOutput();
+			if (output.equalsIgnoreCase("stopped")) {
+				return MediaSourceState.STOPPED;
+			} else if (output.equalsIgnoreCase("playing")) {
+				return MediaSourceState.PLAYING;
+			} else if (output.equalsIgnoreCase("paused")) {
+				return MediaSourceState.PAUSED;
+			} else {
+				return MediaSourceState.NOTKNOWN;
+			}
+		} else {
+			return MediaSourceState.CLOSED;
+		}
 	}
 	
 	/** {@inheritDoc} */

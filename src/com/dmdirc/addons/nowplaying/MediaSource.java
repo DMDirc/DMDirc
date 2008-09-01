@@ -29,28 +29,13 @@ package com.dmdirc.addons.nowplaying;
  * @author chris
  */
 public interface MediaSource {
-    
     /**
-     * Determine if the application for this source is running or not.
-     * 
-     * @return True if this source is running, false otherwise
-     */
-    boolean isRunning();
-    
-    /**
-     * Determine if this source is currently playing or not.
-     * 
-     * @return True if this source is playing, false otherwise
-     */
-    boolean isPlaying();
-    
-    /**
-     * Determine if this source is stopped or not.
-     * 
-     * @return True if this source is stopped, false otherwise
+     * Get the state of this media source
+     *
+     * @return State for this media source.
      * @since 0.6.3
      */
-    boolean isStopped();
+    MediaSourceState getState();
     
     /**
      * Retrieves the name of the application that this source is for.
