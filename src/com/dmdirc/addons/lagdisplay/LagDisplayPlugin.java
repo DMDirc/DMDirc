@@ -30,6 +30,10 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.prefs.PreferencesCategory;
+import com.dmdirc.config.prefs.PreferencesManager;
+import com.dmdirc.config.prefs.PreferencesSetting;
+import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.interfaces.Window;
@@ -248,6 +252,18 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
         panel.setBorder(new EtchedBorder());
 
         closeDialog();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void showConfig(final PreferencesManager manager) {
+        final PreferencesCategory cat = new PreferencesCategory("Lag display plugin",
+                                                                "");
+        cat.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                "plugin-Lagdisplay", "usealternate", "false",
+                "Alternate method", "Use an alternate method of determining "
+                + "lag which bypasses bouncers or proxies that may reply."));
+        manager.getCategory("Plugins").addSubCategory(cat);
     }
 
     /**
