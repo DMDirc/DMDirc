@@ -29,10 +29,15 @@ package com.dmdirc.addons.nowplaying;
  * @since 0.6.3
  */
 public enum MediaSourceState {
+	/** Media Source is closed. */
 	CLOSED ("Closed"),
+	/** Media Source is stopped. */
 	STOPPED ("Stopped"),
+	/** Media Source is paused. */
 	PAUSED ("Paused"),
+	/** Media Source is playing. */
 	PLAYING ("Playing"),
+	/** Media Source is giving an unknown state. */
 	NOTKNOWN ("Unknown");
 	
 	/** Nice name for this state. */
