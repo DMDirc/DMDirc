@@ -23,6 +23,8 @@
 package com.dmdirc;
 
 import com.dmdirc.config.ConfigManager;
+import com.dmdirc.ui.core.dialogs.sslcertificate.CertificateAction;
+import com.dmdirc.ui.core.dialogs.sslcertificate.SSLCertificateDialogModel;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,6 +43,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Semaphore;
 
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
@@ -70,6 +73,9 @@ public class CertificateManager implements X509TrustManager {
 
     /** Whether or not to check specified parts of the certificate. */
     private boolean checkDate, checkIssuer, checkHost;
+
+    /** Used to synchronise the manager with the certificate dialog. */
+    private final Semaphore actionSem = new Semaphore(0);
 
     /**
      * Creates a new certificate manager for a client connecting to the
@@ -191,10 +197,22 @@ public class CertificateManager implements X509TrustManager {
         }
 
         if (!problems.isEmpty()) {
-            // TODO: show dialog
+            Main.getUI().showSSLCertificateDialog(new SSLCertificateDialogModel(
+                    chain, problems, this));
 
-            throw problems.get(0);
+            actionSem.acquireUninterruptibly();
+            
+            // RAR?!?!?!?!/
         }
+    }
+
+    /**
+     * Sets the action to perform for the request that's in progress.
+     *
+     * @param action The action that's been selected
+     */
+    public void setAction(final CertificateAction action) {
+        actionSem.release();
     }
 
     /**
