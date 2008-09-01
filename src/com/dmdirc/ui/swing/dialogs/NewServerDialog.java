@@ -96,6 +96,7 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
         initComponents();
         layoutComponents();
         addListeners();
+        setResizable(false);
         
         update();
     }
