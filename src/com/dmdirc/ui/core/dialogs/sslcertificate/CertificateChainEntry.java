@@ -23,33 +23,60 @@
 package com.dmdirc.ui.core.dialogs.sslcertificate;
 
 /**
+ * Represents one certificate within a chain.
+ *
  * @since 0.6.3
  * @author chris
  */
 public class CertificateChainEntry {
 
+    /** The common name of the certificate's subject. */
     private final String name;
 
+    /** Whether or not this certificate is trusted. */
     private final boolean trusted;
 
+    /** Whether or not there are problems with this certificate. */
     private final boolean invalid;
 
+    /**
+     * Creates a new entry with the specified details.
+     *
+     * @param name The common name of the certificate's subject
+     * @param trusted Whether or not this certificate is trusted
+     * @param invalid Whether or not this certificate is invalid
+     */
     public CertificateChainEntry(final String name, final boolean trusted,
-                                 final boolean invalid) {
+            final boolean invalid) {
         super();
         this.name = name;
         this.trusted = trusted;
         this.invalid = invalid;
     }
 
+    /**
+     * Determines whether or not this certificate is invalid.
+     *
+     * @return True if the certificate is invalid, false otherwise
+     */
     public boolean isInvalid() {
         return invalid;
     }
 
+    /**
+     * Determines whether or not this certificate is trusted.
+     *
+     * @return True if the certificate is from a trusted issuer, false otherwise
+     */
     public boolean isTrusted() {
         return trusted;
     }
 
+    /**
+     * Retrieves the (common) name of this certificate.
+     *
+     * @return The name of this certificate
+     */
     public String getName() {
         return name;
     }

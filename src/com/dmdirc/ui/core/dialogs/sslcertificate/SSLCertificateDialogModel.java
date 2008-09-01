@@ -36,12 +36,22 @@ import java.util.List;
  */
 public class SSLCertificateDialogModel {
 
+    /** The certificate chain that we're displaying information about. */
     private final X509Certificate[] chain;
 
+    /** The certificate manager for the connection attempt. */
     private final CertificateManager manager;
 
+    /** The list of problems found with the certs, if any. */
     private final List<CertificateException> problems;
 
+    /**
+     * Creates a new SSLCertificateDialogModel for the specified chain.
+     *
+     * @param chain The chain of certificates to display info on
+     * @param problems A list of problems with the certificates, if any
+     * @param manager The certificate manager responsible for the certs
+     */
     public SSLCertificateDialogModel(final X509Certificate[] chain,
             final List<CertificateException> problems,
             final CertificateManager manager) {
@@ -50,6 +60,13 @@ public class SSLCertificateDialogModel {
         this.manager = manager;
     }
 
+    /**
+     * Retrieves displayable information about the certificate with the
+     * specified index in the chain.
+     *
+     * @param index The index of the certificate to request information on
+     * @return A list of lists of {@link CertificateInformationEntry}s.
+     */
     public List<List<CertificateInformationEntry>> getCertificateInfo(final int index) {
         final List<List<CertificateInformationEntry>> res
                 = new ArrayList<List<CertificateInformationEntry>>();
@@ -70,6 +87,12 @@ public class SSLCertificateDialogModel {
         return res;
     }
 
+    /**
+     * Retrieves a list of summary elements to describe the overall status
+     * of the certificate chain.
+     *
+     * @return A list of summary entries
+     */
     public List<CertificateSummaryEntry> getSummary() {
         final List<CertificateSummaryEntry> res = new ArrayList<CertificateSummaryEntry>();
 
@@ -79,11 +102,24 @@ public class SSLCertificateDialogModel {
         return res;
     }
     
+    /**
+     * Determines whether or not a response is required from the user about
+     * this certificate chain.
+     *
+     * @return True if a response is required, false otherwise
+     */
     public boolean needsResponse() {
         return !problems.isEmpty();
     }
 
-    public void dismiss(final CertificateAction action) {
+    /**
+     * Performs the specified action on the certificate chain/connection.
+     * Should only be called once per instance, and only if
+     * {@link #needsResponse()} returns true.
+     * 
+     * @param action The action to be performed
+     */
+    public void performAction(final CertificateAction action) {
 
     }
 

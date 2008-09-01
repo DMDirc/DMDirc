@@ -23,24 +23,44 @@
 package com.dmdirc.ui.core.dialogs.sslcertificate;
 
 /**
+ * Describes an entry in the summary of a certificate.
  *
  * @since 0.6.3
  * @author chris
  */
 public class CertificateSummaryEntry {
 
+    /** The text of the summary. */
     private final String text;
+
+    /** Whether the summary is good or not. */
     private final boolean good;
 
-    public CertificateSummaryEntry(String text, boolean good) {
+    /**
+     * Creates a new summary.
+     *
+     * @param text The text of the summary
+     * @param good Whether the summary is good or not
+     */
+    public CertificateSummaryEntry(final String text, final boolean good) {
         this.text = text;
         this.good = good;
     }
 
+    /**
+     * Determines whether this summary is good or bad.
+     *
+     * @return True if the summary is good, false otherwise
+     */
     public boolean isGood() {
         return good;
     }
 
+    /**
+     * Retrieves the text of this summary.
+     *
+     * @return This summary's text
+     */
     public String getText() {
         return text;
     }

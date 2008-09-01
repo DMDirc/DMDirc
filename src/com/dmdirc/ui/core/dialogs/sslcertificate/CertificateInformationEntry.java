@@ -23,25 +23,75 @@
 package com.dmdirc.ui.core.dialogs.sslcertificate;
 
 /**
+ * Describes one piece of information about a certificate.
+ *
  * @since 0.6.3
  * @author chris
  */
 public class CertificateInformationEntry {
 
+    /** The title of the piece of information. */
     private final String title;
 
+    /** The actual value. */
     private final String value;
 
+    /** Whether this value is invalid. */
     private final boolean invalid;
 
+    /** Whether this value is missing. */
     private final boolean missing;
 
+    /**
+     * Creates a new CertificateInformationEntry for the specified information.
+     *
+     * @param title The title of the piece of information
+     * @param value The actual value
+     * @param invalid Whether the value is invalid
+     * @param missing Whether the value is missing
+     */
     public CertificateInformationEntry(final String title, final String value,
-                                       boolean invalid, boolean missing) {
+            final boolean invalid, final boolean missing) {
         super();
         this.title = title;
         this.value = value;
         this.invalid = invalid;
         this.missing = missing;
+    }
+
+    /**
+     * Checks whether the value is considered invalid.
+     * 
+     * @return True if the value is invalid, false otherwise
+     */
+    public boolean isInvalid() {
+        return invalid;
+    }
+
+    /**
+     * Checks whether the value is considered missing.
+     *
+     * @return True if the value is missing, false otherwise
+     */
+    public boolean isMissing() {
+        return missing;
+    }
+
+    /**
+     * Retrieves the title of this piece of information.
+     *
+     * @return This entry's title
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * Retrieves the value of this entry.
+     *
+     * @return This entry's value
+     */
+    public String getValue() {
+        return value;
     }
 }
