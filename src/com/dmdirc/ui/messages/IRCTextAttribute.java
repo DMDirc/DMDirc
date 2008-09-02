@@ -85,4 +85,7 @@ public final class IRCTextAttribute extends Attribute {
     
     /** Channel attribute. */
     public static final IRCTextAttribute CHANNEL = new IRCTextAttribute("channel");
+    
+    /** Smiley attribute. */
+    public static final IRCTextAttribute SMILEY = new IRCTextAttribute("smiley");
 }

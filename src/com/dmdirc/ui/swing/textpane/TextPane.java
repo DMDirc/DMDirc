@@ -25,10 +25,12 @@ package com.dmdirc.ui.swing.textpane;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.messages.IRCTextAttribute;
 import com.dmdirc.ui.messages.Styliser;
 
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
@@ -39,12 +41,13 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.font.ImageGraphicAttribute;
 import java.awt.font.TextAttribute;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.Enumeration;
-
 import java.util.List;
+
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 import javax.swing.SwingUtilities;
@@ -56,6 +59,7 @@ import javax.swing.text.StyleConstants.CharacterConstants;
 import javax.swing.text.StyleConstants.ColorConstants;
 import javax.swing.text.StyleConstants.FontConstants;
 import javax.swing.text.StyledDocument;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -133,8 +137,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             /** {@inheritDoc} */
             @Override
             public void mouseDragged(MouseEvent e) {
-                if (e.getXOnScreen() > getLocationOnScreen().getX()
-                        && e.getXOnScreen() < (getLocationOnScreen().
+                if (e.getXOnScreen() > getLocationOnScreen().getX() && e.getXOnScreen() < (getLocationOnScreen().
                         getX() + getWidth()) && e.getModifiersEx() ==
                         MouseEvent.BUTTON1_DOWN_MASK) {
                     if (getLocationOnScreen().getY() > e.getYOnScreen()) {
@@ -157,7 +160,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public void addText(final AttributedString text) {
         document.addText(text);
     }
-    
+
     /**
      * Adds styled text to the textpane.
      * @param text styled text to add
@@ -205,14 +208,14 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             Logger.userError(ErrorLevel.MEDIUM,
                     "Unable to insert styled string: " + ex.getMessage());
         }
-        
+
         if (attString.getIterator().getEndIndex() != 0) {
             attString.addAttribute(TextAttribute.SIZE,
-                 UIManager.getFont("TextPane.font").getSize());
+                    UIManager.getFont("TextPane.font").getSize());
             attString.addAttribute(TextAttribute.FAMILY,
                     UIManager.getFont("TextPane.font").getFamily());
         }
-        
+
         for (int i = 0; i < line.getElementCount(); i++) {
             final Element element = line.getElement(i);
 
@@ -268,6 +271,13 @@ public final class TextPane extends JComponent implements AdjustmentListener,
                     attString.addAttribute(TextAttribute.UNDERLINE,
                             TextAttribute.UNDERLINE_ON, element.getStartOffset(),
                             element.getEndOffset());
+                } else if (attrib == IRCTextAttribute.SMILEY) {
+                    final Image image = IconManager.getIconManager().getImage("dmdirc").
+                            getScaledInstance(14, 14, Image.SCALE_DEFAULT);
+                    ImageGraphicAttribute iga = new ImageGraphicAttribute(image, 
+                            (int) BOTTOM_ALIGNMENT, 5, 5);
+                    attString.addAttribute(TextAttribute.CHAR_REPLACEMENT, iga,
+                            element.getStartOffset(), element.getEndOffset());
                 }
             }
         }
@@ -343,15 +353,15 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      */
     protected void setScrollBarMax(final int linesAllowed) {
         final int lines = document.getNumLines() - 1;
-        
+
         if (lines == 0) {
             canvas.repaint();
         }
-        
+
         scrollBar.setMaximum(lines);
-        
-        if (!scrollBar.getValueIsAdjusting() 
-                && scrollBar.getValue() == lines - linesAllowed) {
+
+        if (!scrollBar.getValueIsAdjusting() && scrollBar.getValue() == lines -
+                linesAllowed) {
             setScrollBarPosition(lines);
         }
     }
@@ -703,7 +713,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public void cleared() {
         canvas.clearWrapCache();
     }
-    
+
     /** {@inheritDoc}. */
     @Override
     public void linesAdded(int line, int length, int size) {
@@ -718,5 +728,4 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public IRCDocument getDocument() {
         return document;
     }
-
 }
