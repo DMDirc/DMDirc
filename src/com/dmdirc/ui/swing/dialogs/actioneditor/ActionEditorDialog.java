@@ -244,7 +244,7 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         add(conditions, "spany 3, grow, pushx, wmax 50%");
         add(triggers, "grow, wmax 50%");
         add(response, "grow, pushy, wmax 50%");
-        add(substitutions, "spanx 2, grow, wmax 50%");
+        add(substitutions, "spanx 2, grow");
         add(showSubstitutions, "left, sgx button, split 3, spanx 2");
         add(getLeftButton(), "right, sgx button, gapleft push");
         add(getRightButton(), "right, sgx button");
