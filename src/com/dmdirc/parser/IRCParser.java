@@ -637,7 +637,7 @@ public class IRCParser implements Runnable {
 			if (server.getPort() > 65535 || server.getPort() <= 0) {
 				throw new IOException("Server port ("+server.getPort()+") is invalid.");
 			}
-
+			
 			if (server.getUseSocks()) {
 				callDebugInfo(DEBUG_SOCKET, "Using Proxy");
 				if (bindIP != null && !bindIP.isEmpty()) {
@@ -651,6 +651,20 @@ public class IRCParser implements Runnable {
 				socket = new Socket(new Proxy(proxyType, new InetSocketAddress(server.getProxyHost(), server.getProxyPort())));
 
 				socket.connect(new InetSocketAddress(server.getHost(), server.getPort()));
+				
+				if (server.getProxyUser() != null && !server.getProxyUser().empty()) {
+					final DataOutputStream socksOut = new DataOutputStream(socket.getOutputStream());
+					socksOut.write(1);
+					socksOut.write(server.getProxyUser().length());
+					socksOut.write(server.getProxyUser().getBytes());
+					if (server.getProxyPass() != null && !server.getProxyPass().empty()) {
+						out.write(server.getProxyPass().length());
+						out.write(server.getProxyPass().getBytes());
+					} else {
+						out.write(0);
+					}
+					out.flush();
+				}
 			} else {
 				callDebugInfo(DEBUG_SOCKET, "Not using Proxy");
 				if (!server.getSSL()) {

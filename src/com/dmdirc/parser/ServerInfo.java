@@ -53,7 +53,7 @@ public class ServerInfo {
 	/** Proxy server to connect to (Default: "127.0.0.1"). */
 	private String proxyHost = "127.0.0.1";
 	/** Port server listens on for client connections (Default: 8080). */
-	private int proxyPort = 8080;
+	private int proxyPort = 1080;
 	/** Proxy username if required. */
 	private String proxyUser = "";
 	/** Proxy password if required. */
