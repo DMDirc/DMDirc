@@ -41,7 +41,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.DataOutputStream;
+import java.net.Authenticator;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -632,89 +632,77 @@ public class IRCParser implements Runnable {
 	 * @throws KeyManagementException if the trustManager is invalid
 	 */
 	private void connect() throws UnknownHostException, IOException, NoSuchAlgorithmException, KeyManagementException {
-			resetState();
-			callDebugInfo(DEBUG_SOCKET, "Connecting to " + server.getHost() + ":" + server.getPort());
-			
-			if (server.getPort() > 65535 || server.getPort() <= 0) {
-				throw new IOException("Server port ("+server.getPort()+") is invalid.");
+		resetState();
+		callDebugInfo(DEBUG_SOCKET, "Connecting to " + server.getHost() + ":" + server.getPort());
+		
+		if (server.getPort() > 65535 || server.getPort() <= 0) {
+			throw new IOException("Server port ("+server.getPort()+") is invalid.");
+		}
+		
+		if (server.getUseSocks()) {
+			callDebugInfo(DEBUG_SOCKET, "Using Proxy");
+			if (bindIP != null && !bindIP.isEmpty()) {
+				callDebugInfo(DEBUG_SOCKET, "IP Binding is not possible when using a proxy.");
+			}
+			if (server.getProxyPort() > 65535 || server.getProxyPort() <= 0) {
+				throw new IOException("Proxy port ("+server.getProxyPort()+") is invalid.");
 			}
 			
-			if (server.getUseSocks()) {
-				callDebugInfo(DEBUG_SOCKET, "Using Proxy");
-				if (bindIP != null && !bindIP.isEmpty()) {
-					callDebugInfo(DEBUG_SOCKET, "IP Binding is not possible when using a proxy.");
-				}
-				if (server.getProxyPort() > 65535 || server.getProxyPort() <= 0) {
-					throw new IOException("Proxy port ("+server.getProxyPort()+") is invalid.");
-				}
-				
-				final Proxy.Type proxyType = Proxy.Type.SOCKS;
-				socket = new Socket(new Proxy(proxyType, new InetSocketAddress(server.getProxyHost(), server.getProxyPort())));
-
-				socket.connect(new InetSocketAddress(server.getHost(), server.getPort()));
-				
-				if (server.getProxyUser() != null && !server.getProxyUser().isEmpty()) {
-					final DataOutputStream socksOut = new DataOutputStream(socket.getOutputStream());
-					socksOut.write(1);
-					socksOut.write(server.getProxyUser().length());
-					socksOut.write(server.getProxyUser().getBytes());
-					if (server.getProxyPass() != null && !server.getProxyPass().isEmpty()) {
-						socksOut.write(server.getProxyPass().length());
-						socksOut.write(server.getProxyPass().getBytes());
-					} else {
-						socksOut.write(0);
-					}
-					socksOut.flush();
-				}
-			} else {
-				callDebugInfo(DEBUG_SOCKET, "Not using Proxy");
-				if (!server.getSSL()) {
-					if (bindIP == null || bindIP.isEmpty()) {
-						socket = new Socket(server.getHost(), server.getPort());
-					} else {
-						callDebugInfo(DEBUG_SOCKET, "Binding to IP: "+bindIP);
-						try {
-							socket = new Socket(server.getHost(), server.getPort(), InetAddress.getByName(bindIP), 0);
-						} catch (IOException e) {
-							callDebugInfo(DEBUG_SOCKET, "Binding failed: "+e.getMessage());
-							socket = new Socket(server.getHost(), server.getPort());
-						}
-					}
-				}
+			final Proxy.Type proxyType = Proxy.Type.SOCKS;
+			socket = new Socket(new Proxy(proxyType, new InetSocketAddress(server.getProxyHost(), server.getProxyPort())));
+			if (server.getProxyUser() != null && !server.getProxyUser().isEmpty()) {
+				Authenticator.setDefault(new IRCAuthenticator(this, server));
 			}
-
-			if (server.getSSL()) {
-				callDebugInfo(DEBUG_SOCKET, "Server is SSL.");
-
-				if (myTrustManager == null) { myTrustManager = trustAllCerts; }
-
-				final SSLContext sc = SSLContext.getInstance("SSL");
-				sc.init(null, myTrustManager, new java.security.SecureRandom());
-
-				final SSLSocketFactory socketFactory = sc.getSocketFactory();
-				if (server.getUseSocks()) {
-					socket = socketFactory.createSocket(socket, server.getHost(), server.getPort(), false);
+			socket.connect(new InetSocketAddress(server.getHost(), server.getPort()));
+		} else {
+			callDebugInfo(DEBUG_SOCKET, "Not using Proxy");
+			if (!server.getSSL()) {
+				if (bindIP == null || bindIP.isEmpty()) {
+					socket = new Socket(server.getHost(), server.getPort());
 				} else {
-					if (bindIP == null || bindIP.isEmpty()) {
-						socket = socketFactory.createSocket(server.getHost(), server.getPort());
-					} else {
-						callDebugInfo(DEBUG_SOCKET, "Binding to IP: "+bindIP);
-						try {
-							socket = socketFactory.createSocket(server.getHost(), server.getPort(), InetAddress.getByName(bindIP), 0);
-						} catch (UnknownHostException e) {
-							callDebugInfo(DEBUG_SOCKET, "Bind failed: "+e.getMessage());
-							socket = socketFactory.createSocket(server.getHost(), server.getPort());
-						}
+					callDebugInfo(DEBUG_SOCKET, "Binding to IP: "+bindIP);
+					try {
+						socket = new Socket(server.getHost(), server.getPort(), InetAddress.getByName(bindIP), 0);
+					} catch (IOException e) {
+						callDebugInfo(DEBUG_SOCKET, "Binding failed: "+e.getMessage());
+						socket = new Socket(server.getHost(), server.getPort());
 					}
 				}
 			}
+		}
 
-			callDebugInfo(DEBUG_SOCKET, "\t-> Opening socket output stream PrintWriter");
-			out = new PrintWriter(socket.getOutputStream(), true);
-			currentSocketState = STATE_OPEN;
-			callDebugInfo(DEBUG_SOCKET, "\t-> Opening socket input stream BufferedReader");
-			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			callDebugInfo(DEBUG_SOCKET, "\t-> Socket Opened");
+		if (server.getSSL()) {
+			callDebugInfo(DEBUG_SOCKET, "Server is SSL.");
+
+			if (myTrustManager == null) { myTrustManager = trustAllCerts; }
+
+			final SSLContext sc = SSLContext.getInstance("SSL");
+			sc.init(null, myTrustManager, new java.security.SecureRandom());
+
+			final SSLSocketFactory socketFactory = sc.getSocketFactory();
+			if (server.getUseSocks()) {
+				socket = socketFactory.createSocket(socket, server.getHost(), server.getPort(), false);
+			} else {
+				if (bindIP == null || bindIP.isEmpty()) {
+					socket = socketFactory.createSocket(server.getHost(), server.getPort());
+				} else {
+					callDebugInfo(DEBUG_SOCKET, "Binding to IP: "+bindIP);
+					try {
+						socket = socketFactory.createSocket(server.getHost(), server.getPort(), InetAddress.getByName(bindIP), 0);
+					} catch (UnknownHostException e) {
+						callDebugInfo(DEBUG_SOCKET, "Bind failed: "+e.getMessage());
+						socket = socketFactory.createSocket(server.getHost(), server.getPort());
+					}
+				}
+			}
+		}
+
+		callDebugInfo(DEBUG_SOCKET, "\t-> Opening socket output stream PrintWriter");
+		out = new PrintWriter(socket.getOutputStream(), true);
+		currentSocketState = STATE_OPEN;
+		callDebugInfo(DEBUG_SOCKET, "\t-> Opening socket input stream BufferedReader");
+		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		callDebugInfo(DEBUG_SOCKET, "\t-> Socket Opened");
 	}
 
 	/**
