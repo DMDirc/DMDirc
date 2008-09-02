@@ -41,6 +41,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.DataOutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -652,18 +653,18 @@ public class IRCParser implements Runnable {
 
 				socket.connect(new InetSocketAddress(server.getHost(), server.getPort()));
 				
-				if (server.getProxyUser() != null && !server.getProxyUser().empty()) {
+				if (server.getProxyUser() != null && !server.getProxyUser().isEmpty()) {
 					final DataOutputStream socksOut = new DataOutputStream(socket.getOutputStream());
 					socksOut.write(1);
 					socksOut.write(server.getProxyUser().length());
 					socksOut.write(server.getProxyUser().getBytes());
-					if (server.getProxyPass() != null && !server.getProxyPass().empty()) {
-						out.write(server.getProxyPass().length());
-						out.write(server.getProxyPass().getBytes());
+					if (server.getProxyPass() != null && !server.getProxyPass().isEmpty()) {
+						socksOut.write(server.getProxyPass().length());
+						socksOut.write(server.getProxyPass().getBytes());
 					} else {
-						out.write(0);
+						socksOut.write(0);
 					}
-					out.flush();
+					socksOut.flush();
 				}
 			} else {
 				callDebugInfo(DEBUG_SOCKET, "Not using Proxy");
