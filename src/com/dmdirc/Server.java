@@ -266,12 +266,25 @@ public final class Server extends WritableFrameContainer implements Serializable
         
             ActionManager.processEvent(CoreActionType.SERVER_CONNECTING, null, this);
 
+            getConfigManager().migrate("", "", server);
+
             serverInfo = new ServerInfo(server, port, password);
             serverInfo.setSSL(ssl);
 
-            this.profile = profile;
+            if (getConfigManager().hasOption(DOMAIN_SERVER, "proxy.address")) {
+                serverInfo.setUseSocks(true);
 
-            getConfigManager().migrate("", "", server);
+                serverInfo.setProxyHost(getConfigManager()
+                        .getOption(DOMAIN_SERVER, "proxy.address"));
+                serverInfo.setProxyUser(getConfigManager()
+                        .getOption(DOMAIN_SERVER, "proxy.user", ""));
+                serverInfo.setProxyPass(getConfigManager()
+                        .getOption(DOMAIN_SERVER, "proxy.password", ""));
+                serverInfo.setProxyPort(getConfigManager()
+                        .getOptionInt(DOMAIN_SERVER, "proxy.port", 1080));
+            }
+
+            this.profile = profile;
 
             updateIcon();
 
