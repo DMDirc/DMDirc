@@ -48,14 +48,16 @@ public class ServerInfo {
 	private String password = "";
 	/** Is this an ssl-enabled server (Default: false). */
 	private boolean isSSL = false;	
-//	/** Do we need to wait for input before sending Nick/User/Pass (Default: false). */
-//	private boolean waitForFirst = false;
 	/** Are we using a socks proxy (Default: false). */
 	private boolean useSocksProxy = false;
 	/** Proxy server to connect to (Default: "127.0.0.1"). */
 	private String proxyHost = "127.0.0.1";
 	/** Port server listens on for client connections (Default: 8080). */
 	private int proxyPort = 8080;
+	/** Proxy username if required. */
+	private String proxyUser = "";
+	/** Proxy password if required. */
+	private String proxyPass = "";
 	
 	/** Constructor using Default values. */
 	public ServerInfo () { }
@@ -171,5 +173,32 @@ public class ServerInfo {
 	 */
 	public int getProxyPort() { return proxyPort; }
 
+	/**
+	 * Set the Proxy username.
+	 *
+	 * @param newValue Value to set to.
+	 */
+	public void setProxyUser(final String newValue) { proxyUser = newValue; }
+	
+	/**
+	 * Get the Proxy username.
+	 *
+	 * @return Current Proxy username
+	 */
+	public String getProxyUser() { return proxyUser; }
+	
+	/**
+	 * Set the Proxy password.
+	 *
+	 * @param newValue Value to set to.
+	 */
+	public void setProxyPass(final String newValue) { proxyPass = newValue; }
+	
+	/**
+	 * Get the Proxy password.
+	 *
+	 * @return Current Proxy password
+	 */
+	public String getProxyPass() { return proxyPass; }
 }
 
