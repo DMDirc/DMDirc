@@ -60,7 +60,6 @@ public class IRCAuthenticator extends Authenticator {
 
 	/** {@inheritDoc} */
 	protected PasswordAuthentication getPasswordAuthentication() {
-		System.out.println("Asked for authentication, giving: "+serverInfo.getProxyUser()+" / "+serverInfo.getProxyPass());
 		return new PasswordAuthentication(serverInfo.getProxyUser(), serverInfo.getProxyPass().toCharArray());
 	}
 }
