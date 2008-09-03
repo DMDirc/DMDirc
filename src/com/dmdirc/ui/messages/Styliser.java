@@ -182,7 +182,7 @@ public final class Styliser {
                 }
 
                 ActionManager.processEvent(CoreActionType.CLIENT_STRING_STYLED,
-                        null, styledDoc, ooffset, position);
+                        null, styledDoc, ooffset, styledDoc.getLength() - ooffset);
                 
             } catch (BadLocationException ex) {
                 Logger.userError(ErrorLevel.MEDIUM,
