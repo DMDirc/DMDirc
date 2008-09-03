@@ -41,7 +41,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.Authenticator;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -62,8 +61,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-
-import java.lang.reflect.Field;
 
 /**
  * IRC Parser.
@@ -652,25 +649,10 @@ public class IRCParser implements Runnable {
 			
 			final Proxy.Type proxyType = Proxy.Type.SOCKS;
 			socket = new Socket(new Proxy(proxyType, new InetSocketAddress(server.getProxyHost(), server.getProxyPort())));
-			
-			// Add an authenticator for socks login.
-			Authenticator oldAuthenticator = null;
 			if (server.getProxyUser() != null && !server.getProxyUser().isEmpty()) {
-				try {
-					final Field field = Authenticator.class.getDeclaredField("theAuthenticator");
-					field.setAccessible(true);
-					final Object authenticator = field.get(null);
-					if (authenticator instanceof Authenticator) {
-						oldAuthenticator = (Authenticator)authenticator;
-					}
-				} catch (NoSuchFieldException nsfe) {
-				} catch (IllegalAccessException iae) {
-				}
-				Authenticator.setDefault(new IRCAuthenticator(this, server));
+				IRCAuthenticator.getIRCAuthenticator().add(server);
 			}
 			socket.connect(new InetSocketAddress(server.getHost(), server.getPort()));
-			// Remove our authenticator
-			Authenticator.setDefault(oldAuthenticator);
 		} else {
 			callDebugInfo(DEBUG_SOCKET, "Not using Proxy");
 			if (!server.getSSL()) {
