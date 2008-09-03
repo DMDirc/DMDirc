@@ -292,8 +292,12 @@ public final class Server extends WritableFrameContainer implements Serializable
 
             final MyInfo myInfo = getMyInfo();
 
+            CertificateManager certManager
+                    = new CertificateManager(server, getConfigManager());
+
             parser = parserFactory.getParser(myInfo, serverInfo);
-            parser.setTrustManager(new TrustManager[]{new CertificateManager(server, getConfigManager())});
+            parser.setTrustManager(new TrustManager[]{certManager});
+            parser.setKeyManagers(certManager.getKeyManager());
             parser.setRemoveAfterCallback(true);
             parser.setCreateFake(true);
             parser.setIgnoreList(ignoreList);

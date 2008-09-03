@@ -33,6 +33,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.PKIXParameters;
 import java.security.cert.TrustAnchor;
@@ -48,6 +49,8 @@ import java.util.concurrent.Semaphore;
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 /**
@@ -122,6 +125,56 @@ public class CertificateManager implements X509TrustManager {
         } catch (NoSuchAlgorithmException ex) {
 
         }
+    }
+
+    /**
+     * Retrieves a KeyManager[] for the client certicate specified in the
+     * configuration, if there is one.
+     *
+     * @return A KeyManager to use for the SSL connection
+     */
+    public KeyManager[] getKeyManager() {
+        if (config.hasOption("ssl", "clientcert.file")) {
+            FileInputStream fis = null;
+            try {
+                final char[] pass;
+
+                if (config.hasOption("ssl", "clientcert.pass")) {
+                    pass = config.getOption("ssl", "clientcert.pass").toCharArray();
+                } else {
+                    pass = null;
+                }
+
+                fis = new FileInputStream(config.getOption("ssl", "clientcert.file"));
+                final KeyStore ks = KeyStore.getInstance("pkcs12");
+                ks.load(fis, pass);
+
+                final KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+                kmf.init(ks, pass);
+
+                return kmf.getKeyManagers();
+            } catch (KeyStoreException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (CertificateException ex) {
+                ex.printStackTrace();
+            } catch (NoSuchAlgorithmException ex) {
+                ex.printStackTrace();
+            } catch (UnrecoverableKeyException ex) {
+                ex.printStackTrace();
+            } finally {
+                if (fis != null) {
+                    try {
+                        fis.close();
+                    } catch (IOException ex) {
+                        // ...
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     /** {@inheritDoc} */
@@ -200,7 +253,7 @@ public class CertificateManager implements X509TrustManager {
             Main.getUI().showSSLCertificateDialog(new SSLCertificateDialogModel(
                     chain, problems, this));
 
-            actionSem.acquireUninterruptibly();
+            //actionSem.acquireUninterruptibly();
             
             // RAR?!?!?!?!/
         }
@@ -244,6 +297,10 @@ public class CertificateManager implements X509TrustManager {
         return globalTrustedCAs.toArray(new X509Certificate[globalTrustedCAs.size()]);
     }
 
+    /**
+     * An exception to indicate that the host on a certificate doesn't match
+     * the host we're trying to connect to.
+     */
     public static class CertificateDoesntMatchHostException extends CertificateException {
 
         /**
@@ -253,12 +310,21 @@ public class CertificateManager implements X509TrustManager {
          */
         private static final long serialVersionUID = 1;
 
+        /**
+         * Creates a new CertificateDoesntMatchHostException
+         *
+         * @param msg A description of the problem
+         */
         public CertificateDoesntMatchHostException(String msg) {
             super(msg);
         }
 
     }
 
+    /**
+     * An exception to indicate that we do not trust the issuer of the
+     * certificate (or the CA).
+     */
     public static class CertificateNotTrustedException extends CertificateException {
 
         /**
@@ -268,6 +334,11 @@ public class CertificateManager implements X509TrustManager {
          */
         private static final long serialVersionUID = 1;
 
+        /**
+         * Creates a new CertificateNotTrustedException
+         *
+         * @param msg A description of the problem
+         */
         public CertificateNotTrustedException(String msg) {
             super(msg);
         }
