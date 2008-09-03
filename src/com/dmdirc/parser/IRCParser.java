@@ -57,6 +57,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.Queue;
 
+import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
@@ -259,6 +260,9 @@ public class IRCParser implements Runnable {
 	/** This is the TrustManager used for SSL Sockets. */
 	private TrustManager[] myTrustManager = trustAllCerts;
 
+	/** The KeyManagers used for client certificates for SSL sockets. */
+	private KeyManager[] myKeyManagers;
+
 	/** This is the IP we want to bind to. */
 	private String bindIP = "";
 
@@ -407,6 +411,13 @@ public class IRCParser implements Runnable {
 	public void setTrustManager(final TrustManager[] newTrustManager) { myTrustManager = newTrustManager; }
 
 	/**
+	 * Replace the current KeyManagers for SSL Sockets with a new set.
+	 *
+	 * @param newKeyManagers Replacement KeyManagers for SSL Sockets.
+	 */
+	public void setKeyManagers(final KeyManager[] newKeyManagers) { myKeyManagers = newKeyManagers; }
+
+	/**
 	 * Get a reference to the ignorelist.
 	 *
 	 * @return a reference to the ignorelist
@@ -553,7 +564,7 @@ public class IRCParser implements Runnable {
 	protected synchronized boolean callPost005() {
 		if (post005) { return false; }
 		post005 = true;
-		
+
 		return ((CallbackOnPost005) getCallbackManager().getCallbackType("OnPost005")).call();
 	}
 
@@ -633,11 +644,11 @@ public class IRCParser implements Runnable {
 	private void connect() throws UnknownHostException, IOException, NoSuchAlgorithmException, KeyManagementException {
 		resetState();
 		callDebugInfo(DEBUG_SOCKET, "Connecting to " + server.getHost() + ":" + server.getPort());
-		
+
 		if (server.getPort() > 65535 || server.getPort() <= 0) {
 			throw new IOException("Server port ("+server.getPort()+") is invalid.");
 		}
-		
+
 		if (server.getUseSocks()) {
 			callDebugInfo(DEBUG_SOCKET, "Using Proxy");
 			if (bindIP != null && !bindIP.isEmpty()) {
@@ -646,7 +657,7 @@ public class IRCParser implements Runnable {
 			if (server.getProxyPort() > 65535 || server.getProxyPort() <= 0) {
 				throw new IOException("Proxy port ("+server.getProxyPort()+") is invalid.");
 			}
-			
+
 			final Proxy.Type proxyType = Proxy.Type.SOCKS;
 			socket = new Socket(new Proxy(proxyType, new InetSocketAddress(server.getProxyHost(), server.getProxyPort())));
 			if (server.getProxyUser() != null && !server.getProxyUser().isEmpty()) {
@@ -676,7 +687,7 @@ public class IRCParser implements Runnable {
 			if (myTrustManager == null) { myTrustManager = trustAllCerts; }
 
 			final SSLContext sc = SSLContext.getInstance("SSL");
-			sc.init(null, myTrustManager, new java.security.SecureRandom());
+			sc.init(myKeyManagers, myTrustManager, new java.security.SecureRandom());
 
 			final SSLSocketFactory socketFactory = sc.getSocketFactory();
 			if (server.getUseSocks()) {
@@ -1039,10 +1050,10 @@ public class IRCParser implements Runnable {
 			callErrorInfo(ei);
 		}
 	}
-	
+
 	/** The IRCStringConverter for this parser */
 	private IRCStringConverter stringConverter = null;
-	
+
 	/**
 	 * Get the IRCStringConverter used by this parser.
 	 *
@@ -1055,7 +1066,7 @@ public class IRCParser implements Runnable {
 		}
 		return stringConverter;
 	}
-	
+
 	/**
 	 * Update the character arrays.
 	 *
@@ -2049,4 +2060,5 @@ public class IRCParser implements Runnable {
 			hChannelList.clear();
 		}
 	}
+
 }
