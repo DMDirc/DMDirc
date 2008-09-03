@@ -5,5 +5,5 @@ description=Provides DCOP media sources for the now playing plugin
 name=dcopmediasource
 nicename=DCOP Media Sources
 minversion=0
-require-plugin=nowplaying,dcop
+require-plugin=nowplaying:4654,dcop
 addonid=9

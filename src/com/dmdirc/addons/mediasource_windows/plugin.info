@@ -5,5 +5,5 @@ description=Provides windows media sources for the now playing plugin
 name=windowsmediasource
 nicename=Windows Media Sources
 minversion=0
-require-plugin=nowplaying
+require-plugin=nowplaying:4654
 addonid=30
