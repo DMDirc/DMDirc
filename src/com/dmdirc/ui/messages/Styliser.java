@@ -22,6 +22,8 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
@@ -154,7 +156,8 @@ public final class Styliser {
             }
 
             try {
-                int offset = styledDoc.getLength();
+                final int ooffset = styledDoc.getLength();
+                int offset = ooffset;
                 int position = 0;
                 
                 String target = doLinks(new String(chars).replaceAll(INTERNAL_CHARS, ""));
@@ -177,6 +180,9 @@ public final class Styliser {
                                 attribs, position == 0);
                     }
                 }
+
+                ActionManager.processEvent(CoreActionType.CLIENT_STRING_STYLED,
+                        null, styledDoc, ooffset, position - ooffset);
                 
             } catch (BadLocationException ex) {
                 Logger.userError(ErrorLevel.MEDIUM,

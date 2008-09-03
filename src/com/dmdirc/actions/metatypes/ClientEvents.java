@@ -30,6 +30,7 @@ import com.dmdirc.config.ConfigManager;
 
 import com.dmdirc.config.prefs.PreferencesManager;
 import javax.swing.KeyStroke;
+import javax.swing.text.StyledDocument;
 
 /**
  * Defines client-wide events.
@@ -52,6 +53,8 @@ public enum ClientEvents implements ActionMetaType {
     CLIENT_EVENT_WITH_BUFFER(new String[]{"origin", "buffer"}, FrameContainer.class, StringBuffer.class),
     /** Client event with preferences manager. */
     CLIENT_EVENT_WITH_PREFS(new String[]{"preferences manager"}, PreferencesManager.class),
+    /** Client event with a styled doc. */
+    CLIENT_EVENT_WITH_STYLE(new String[]{"styled document", "start offset", "length"}, StyledDocument.class, Integer.class, Integer.class),
     /** Unknown command event type. */
     UNKNOWN_COMMAND(new String[]{"source", "command", "arguments"}, FrameContainer.class, String.class, String[].class);
     
