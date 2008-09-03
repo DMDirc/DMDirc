@@ -650,7 +650,7 @@ public class IRCParser implements Runnable {
 			final Proxy.Type proxyType = Proxy.Type.SOCKS;
 			socket = new Socket(new Proxy(proxyType, new InetSocketAddress(server.getProxyHost(), server.getProxyPort())));
 			if (server.getProxyUser() != null && !server.getProxyUser().isEmpty()) {
-				IRCAuthenticator.getIRCAuthenticator().add(server);
+				IRCAuthenticator.getIRCAuthenticator().addAuthentication(server);
 			}
 			socket.connect(new InetSocketAddress(server.getHost(), server.getPort()));
 		} else {
