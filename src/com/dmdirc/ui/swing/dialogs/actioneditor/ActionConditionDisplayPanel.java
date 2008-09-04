@@ -264,6 +264,6 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
      * @return true iif the content it valid
      */
     public boolean checkError() {
-        return editPanel.isEnabled();
+        return editPanel.checkError();
     }
 }
