@@ -24,7 +24,7 @@ package com.dmdirc.ui.swing;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.harness.ui.UIClassTestRunner;
-import com.dmdirc.harness.ui.UITest;
+import com.dmdirc.harness.ui.UITestIface;
 import com.dmdirc.ui.swing.dialogs.FeedbackDialog;
 import com.dmdirc.ui.swing.dialogs.NewServerDialog;
 import com.dmdirc.ui.swing.dialogs.about.AboutDialog;
@@ -44,7 +44,7 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
 @RunWith(UIClassTestRunner.class)
-public class MainFrameTest implements UITest {
+public class MainFrameTest implements UITestIface {
     
     private FrameFixture window;
 

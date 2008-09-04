@@ -55,8 +55,8 @@ public class UIMethodTestRunner extends TestMethodRunner {
             } catch (ActionFailedException e) {
                 if (--retries > 0) {
                     retry = true;
-                    ((UITest) test).tearDown();
-                    ((UITest) test).setUp();
+                    ((UITestIface) test).tearDown();
+                    ((UITestIface) test).setUp();
                 } else {
                     addFailure(e);
                 }

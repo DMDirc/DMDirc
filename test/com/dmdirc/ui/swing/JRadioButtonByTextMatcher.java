@@ -20,11 +20,22 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.harness.ui;
+package com.dmdirc.ui.swing;
 
-public interface UITest {
+import javax.swing.JRadioButton;
+import org.fest.swing.core.GenericTypeMatcher;
 
-    void setUp();
-    void tearDown();
+public class JRadioButtonByTextMatcher extends GenericTypeMatcher<JRadioButton> {
+
+    private final String name;
+
+    public JRadioButtonByTextMatcher(final String name) {
+        this.name = name;
+    }
+
+    @Override
+    protected boolean isMatching(JRadioButton arg0) {
+        return arg0.getText().equals(name);
+    }
 
 }

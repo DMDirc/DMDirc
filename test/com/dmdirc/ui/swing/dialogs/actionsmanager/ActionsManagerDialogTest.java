@@ -26,7 +26,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.harness.ui.UIClassTestRunner;
 import com.dmdirc.harness.ui.ClassFinder;
-import com.dmdirc.harness.ui.UITest;
+import com.dmdirc.harness.ui.UITestIface;
 import com.dmdirc.ui.swing.components.StandardInputDialog;
 import com.dmdirc.ui.swing.dialogs.actioneditor.ActionEditorDialog;
 
@@ -46,7 +46,7 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
 @RunWith(UIClassTestRunner.class)
-public class ActionsManagerDialogTest implements UITest {
+public class ActionsManagerDialogTest implements UITestIface {
     
     private DialogFixture window;
     

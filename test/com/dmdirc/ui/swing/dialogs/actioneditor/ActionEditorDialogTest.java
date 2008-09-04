@@ -28,13 +28,16 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.harness.ui.UIClassTestRunner;
 import com.dmdirc.harness.ui.ClassFinder;
 
-import com.dmdirc.harness.ui.UITest;
+import com.dmdirc.harness.ui.UITestIface;
+import com.dmdirc.ui.swing.JRadioButtonByTextMatcher;
 import com.dmdirc.ui.swing.components.ImageButton;
 
 import java.awt.Component;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import javax.swing.JTextField;
+import javax.swing.text.JTextComponent;
 import org.fest.swing.core.EventMode;
 import org.fest.swing.core.matcher.JButtonByTextMatcher;
 import org.fest.swing.core.matcher.JLabelByTextMatcher;
@@ -48,7 +51,7 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
 @RunWith(UIClassTestRunner.class)
-public class ActionEditorDialogTest implements UITest {
+public class ActionEditorDialogTest implements UITestIface {
 
     private DialogFixture window;
 
@@ -100,6 +103,7 @@ public class ActionEditorDialogTest implements UITest {
         label.requireVisible();
 
         assertTrue(items > triggers.comboBox().target.getItemCount());
+        window.button(JButtonByTextMatcher.withText("OK")).requireEnabled();
 
         triggers.button(new ClassFinder<JButton>(ImageButton.class, null)).click();
         
@@ -109,6 +113,40 @@ public class ActionEditorDialogTest implements UITest {
         }
 
         assertEquals(items, triggers.comboBox().target.getItemCount());
+        window.button(JButtonByTextMatcher.withText("OK")).requireDisabled();
+    }
+
+    @Test
+    public void testBasicConditionTrees() {
+        setupWindow(null);
+
+        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).textBox()
+                .enterText("test1");
+        final JPanelFixture triggers = window.panel(
+                new ClassFinder<JPanel>(ActionTriggersPanel.class, null));
+
+        triggers.comboBox().selectItem("Channel message received");
+        triggers.button(JButtonByTextMatcher.withText("Add")).requireEnabled().click();
+
+        window.radioButton(new JRadioButtonByTextMatcher("All of the conditions are true"))
+                .requireEnabled().requireSelected();
+        window.radioButton(new JRadioButtonByTextMatcher("At least one of the conditions is true"))
+                .requireEnabled();
+        window.radioButton(new JRadioButtonByTextMatcher("The conditions match a custom rule"))
+                .requireEnabled();
+        window.panel(new ClassFinder<JPanel>(ActionConditionsTreePanel.class, null))
+                .textBox(new ClassFinder<JTextComponent>(JTextField.class, null))
+                .requireDisabled();
+
+        window.button(JButtonByTextMatcher.withText("OK")).requireEnabled();
+
+        window.radioButton(new JRadioButtonByTextMatcher("The conditions match a custom rule"))
+                .click().requireSelected();
+        window.panel(new ClassFinder<JPanel>(ActionConditionsTreePanel.class, null))
+                .textBox(new ClassFinder<JTextComponent>(JTextField.class, null))
+                .requireEnabled().enterText("invalid");
+
+        window.button(JButtonByTextMatcher.withText("OK")).requireDisabled();
     }
 
     protected void setupWindow(final Action action) {
