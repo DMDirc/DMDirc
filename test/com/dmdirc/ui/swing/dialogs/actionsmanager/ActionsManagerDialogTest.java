@@ -24,7 +24,9 @@ package com.dmdirc.ui.swing.dialogs.actionsmanager;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.harness.ui.UIClassTestRunner;
 import com.dmdirc.harness.ui.ClassFinder;
+import com.dmdirc.harness.ui.UITest;
 import com.dmdirc.ui.swing.components.StandardInputDialog;
 import com.dmdirc.ui.swing.dialogs.actioneditor.ActionEditorDialog;
 
@@ -40,9 +42,11 @@ import org.fest.swing.fixture.JOptionPaneFixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
-public class ActionsManagerDialogTest {
+@RunWith(UIClassTestRunner.class)
+public class ActionsManagerDialogTest implements UITest {
     
     private DialogFixture window;
     
@@ -210,7 +214,6 @@ public class ActionsManagerDialogTest {
     protected void setupWindow() {
         window = new DialogFixture(ActionsManagerDialog.getActionsManagerDialog());
         window.robot.settings().eventMode(EventMode.AWT);
-        window.robot.settings().delayBetweenEvents(150);
         window.show();
     }
 

@@ -25,8 +25,10 @@ package com.dmdirc.ui.swing.dialogs.actioneditor;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.harness.ui.UIClassTestRunner;
 import com.dmdirc.harness.ui.ClassFinder;
 
+import com.dmdirc.harness.ui.UITest;
 import com.dmdirc.ui.swing.components.ImageButton;
 
 import java.awt.Component;
@@ -42,9 +44,11 @@ import org.fest.swing.fixture.JPanelFixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
-public class ActionEditorDialogTest {
+@RunWith(UIClassTestRunner.class)
+public class ActionEditorDialogTest implements UITest {
 
     private DialogFixture window;
 
@@ -111,7 +115,6 @@ public class ActionEditorDialogTest {
         window = new DialogFixture(ActionEditorDialog.getActionEditorDialog(null,
                 "amd-ui-test1", action));
         window.robot.settings().eventMode(EventMode.AWT);
-        window.robot.settings().delayBetweenEvents(150);
         window.show();
     }
 

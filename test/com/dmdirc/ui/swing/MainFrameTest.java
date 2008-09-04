@@ -23,6 +23,8 @@
 package com.dmdirc.ui.swing;
 
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.harness.ui.UIClassTestRunner;
+import com.dmdirc.harness.ui.UITest;
 import com.dmdirc.ui.swing.dialogs.FeedbackDialog;
 import com.dmdirc.ui.swing.dialogs.NewServerDialog;
 import com.dmdirc.ui.swing.dialogs.about.AboutDialog;
@@ -31,18 +33,21 @@ import com.dmdirc.ui.swing.dialogs.aliases.AliasManagerDialog;
 import com.dmdirc.ui.swing.dialogs.prefs.SwingPreferencesDialog;
 import com.dmdirc.ui.swing.dialogs.profiles.ProfileManagerDialog;
 
+import org.fest.swing.exception.ActionFailedException;
 import org.fest.swing.finder.WindowFinder;
 import org.fest.swing.fixture.DialogFixture;
 import org.fest.swing.fixture.FrameFixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
-public class MainFrameTest {
+@RunWith(UIClassTestRunner.class)
+public class MainFrameTest implements UITest {
     
     private FrameFixture window;
-    
+
     @Before
     public void setUp() {
         IdentityManager.load();
