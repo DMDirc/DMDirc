@@ -150,7 +150,7 @@ public class ActionConditionsPanel extends JPanel implements ActionListener, Pro
      */
     @Override
     public void actionPerformed(final ActionEvent e) {
-        list.addCondition(new ActionCondition(-1, null, null, null));
+        list.addCondition(new ActionCondition(-1, null, null, ""));
     }
     
     /**
