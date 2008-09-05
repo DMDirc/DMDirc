@@ -331,7 +331,11 @@ public class PluginManager implements ActionListener {
 					pi.loadPluginTemp();
 				}
 				if (pi.isLoaded() || pi.isTempLoaded()) {
-					pi.getPlugin().showConfig((PreferencesManager) arguments[0]);
+					try {
+						pi.getPlugin().showConfig((PreferencesManager) arguments[0]);
+					} catch (Throwable t) {
+						Logger.userError(ErrorLevel.MEDIUM, "Error with plugin ("+pi.getNiceName()+"), unable to show config ("+t+")", t);
+					}
 				}
 			}
 		} else if (type.equals(CoreActionType.CLIENT_PREFS_CLOSED)) {
