@@ -61,10 +61,10 @@ public final class AliasCommand extends GlobalCommand implements
             return;
         }
 
-        final String name = args[1].charAt(0) == CommandManager.getCommandChar()
+        if (args[0].equalsIgnoreCase("--remove")) {
+            final String name = args[1].charAt(0) == CommandManager.getCommandChar()
                 ? args[1].substring(1) : args[1];
 
-        if (args[0].equalsIgnoreCase("--remove")) {
             if (doRemove(name)) {
                 sendLine(origin, isSilent, FORMAT_OUTPUT, "Alias '" + name +
                          "' removed.");
@@ -75,6 +75,9 @@ public final class AliasCommand extends GlobalCommand implements
 
             return;
         }
+
+        final String name = args[0].charAt(0) == CommandManager.getCommandChar()
+                ? args[0].substring(0) : args[1];
 
         for (Action alias : AliasWrapper.getAliasWrapper()) {
             if (AliasWrapper.getCommandName(alias).substring(1).equalsIgnoreCase(
