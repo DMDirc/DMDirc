@@ -149,6 +149,58 @@ public class ActionEditorDialogTest implements UITestIface {
         window.button(JButtonByTextMatcher.withText("OK")).requireDisabled();
     }
 
+    @Test
+    public void testIllegalCondition() {
+        setupWindow(null);
+
+        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).textBox()
+                .enterText("test1");
+        final JPanelFixture triggers = window.panel(
+                new ClassFinder<JPanel>(ActionTriggersPanel.class, null));
+
+        triggers.comboBox().selectItem("Channel message received");
+        triggers.button(JButtonByTextMatcher.withText("Add")).requireEnabled().click();
+
+        window.button(JButtonByTextMatcher.withText("OK")).requireEnabled();
+
+        window.panel(new ClassFinder<JPanel>(ActionConditionsPanel.class, null))
+                .button(JButtonByTextMatcher.withText("Add")).requireEnabled().click();
+
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
+                .comboBox("argument").requireEnabled();
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
+                .comboBox("component").requireDisabled();
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
+                .comboBox("comparison").requireDisabled();
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
+                .textBox().requireDisabled();
+        window.button(JButtonByTextMatcher.withText("OK")).requireDisabled();
+
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
+                .comboBox("argument").selectItem("message");
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
+                .comboBox("component").requireEnabled();
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
+                .comboBox("comparison").requireDisabled();
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
+                .textBox().requireDisabled();
+        window.button(JButtonByTextMatcher.withText("OK")).requireDisabled();
+
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
+                .comboBox("component").selectItem("content");
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
+                .comboBox("comparison").requireEnabled();
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
+                .textBox().requireDisabled();
+        window.button(JButtonByTextMatcher.withText("OK")).requireDisabled();
+
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
+                .comboBox("comparison").selectItem("contains");
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
+                .textBox().requireEnabled();
+        window.button(JButtonByTextMatcher.withText("OK")).requireEnabled();
+    }
+
     protected void setupWindow(final Action action) {
         window = new DialogFixture(ActionEditorDialog.getActionEditorDialog(null,
                 "amd-ui-test1", action));
