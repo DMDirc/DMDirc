@@ -103,11 +103,14 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
     private void initComponents() {
         arguments = new JComboBox(new DefaultComboBoxModel());
         arguments.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
+        arguments.setName("argument");
         components = new JComboBox(new DefaultComboBoxModel());
         components.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
+        components.setName("component");
         comparisons = new JComboBox(new DefaultComboBoxModel());
-        comparisons.putClientProperty("JComboBox.isTableCellEditor",
-                Boolean.TRUE);
+        comparisons.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
+        comparisons.setName("comparison");
+
         target = new JTextField() {
 
             /** Serial version UID. */
