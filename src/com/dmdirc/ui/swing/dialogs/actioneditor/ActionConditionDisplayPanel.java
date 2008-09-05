@@ -87,8 +87,7 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
         layoutComponents();
 
         if (condition.getArg() == -1 && condition.getComponent() == null &&
-                condition.getComparison() == null && condition.getTarget() ==
-                null) {
+                condition.getComparison() == null && condition.getTarget().isEmpty()) {
             editPanel.setVisible(true);
             editButton.setSelected(true);
         }
@@ -206,32 +205,36 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
      */
     private String updateSentence() {
         if (trigger == null) {
-            return "";
+            return "...";
         } else {
             final StringBuilder sb = new StringBuilder();
             sb.append("The ");
             if (condition.getArg() != -1) {
                 sb.append(trigger.getType().getArgNames()[condition.getArg()]);
             } else {
-                sb.append("something");
+                sb.append(" ...");
+                return sb.toString();
             }
             sb.append("'s ");
             if (condition.getComponent() != null) {
                 sb.append(condition.getComponent().getName());
             } else {
-                sb.append("something");
+                sb.append(" ...");
+                return sb.toString();
             }
             sb.append(" ");
             if (condition.getComparison() != null) {
                 sb.append(condition.getComparison().getName());
             } else {
-                sb.append("something");
+                sb.append(" ...");
+                return sb.toString();
             }
             sb.append(" '");
             if (condition.getTarget() != null) {
                 sb.append(condition.getTarget());
             } else {
-                sb.append("something");
+                sb.append(" ...");
+                return sb.toString();
             }
             sb.append("'");
             return sb.toString();

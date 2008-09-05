@@ -198,7 +198,6 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
         condition.setComparison((ActionComparison) comparisons.getSelectedItem());
         populateTarget();
         target.setEnabled(true);
-        target.setText(null);
     }
 
     /** Adds the listeners. */
