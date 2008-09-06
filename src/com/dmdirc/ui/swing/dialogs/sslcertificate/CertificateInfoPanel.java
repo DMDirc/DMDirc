@@ -20,11 +20,11 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs.certificates;
+package com.dmdirc.ui.swing.dialogs.sslcertificate;
 
 /**
  *
  */
-public class CertificateChainPanel {
+public class CertificateInfoPanel {
 
 }

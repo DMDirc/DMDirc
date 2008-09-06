@@ -20,11 +20,19 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs.certificates;
+package com.dmdirc.ui.swing.dialogs.sslcertificate;
+
+import com.dmdirc.ui.swing.components.StandardDialog;
+import java.awt.Dialog.ModalityType;
+import java.awt.Window;
 
 /**
  *
  */
-public class CertificateSummaryPanel {
+public class CertificateDialog extends StandardDialog {
+
+    public CertificateDialog(Window owner, ModalityType modal) {
+        super(owner, modal);
+    }
 
 }
