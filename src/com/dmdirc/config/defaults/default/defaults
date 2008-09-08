@@ -54,6 +54,8 @@ general:
 
   whotime=60000
 
+  showcolourdialog=true
+
 notifications:
   authNotice=server
   away=server
