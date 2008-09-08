@@ -32,9 +32,7 @@ import com.dmdirc.ui.swing.components.SwingInputHandler;
 import com.dmdirc.ui.swing.components.TextAreaInputField;
 import com.dmdirc.ui.swing.components.TextLabel;
 
-import com.dmdirc.ui.swing.dialogs.actioneditor.ActionTypeModel;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -46,17 +44,13 @@ import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
 import net.miginfocom.swing.MigLayout;
 
 /** Topic panel. */
@@ -221,7 +215,11 @@ public final class TopicPane extends JPanel implements DocumentListener,
         //Ignore
     }
 
-    /** {@inheritDoc}. */
+    /** 
+     * {@inheritDoc}. 
+     * 
+     * @param e Action event
+     */
     @Override
     public void actionPerformed(final ActionEvent e) {
         final Topic topic = (Topic) topicHistory.getSelectedItem();
@@ -244,7 +242,11 @@ public final class TopicPane extends JPanel implements DocumentListener,
          */
         private static final long serialVersionUID = 1;
 
-        /** {@inheritDoc} */
+        /** 
+         * {@inheritDoc}
+         * 
+         * @param e Action event
+         */
         @Override
         public void actionPerformed(final ActionEvent e) {
             parent.save();
