@@ -24,6 +24,7 @@
 
 package com.dmdirc.parser;
 
+import com.dmdirc.parser.callbacks.CallbackOnAwayState;
 import com.dmdirc.parser.callbacks.CallbackOnAwayStateOther;
 import com.dmdirc.parser.callbacks.CallbackOnChannelAwayStateOther;
 
@@ -66,17 +67,34 @@ public class ProcessWho extends IRCProcessor {
 			if (client.getAwayState() != isAway) {
 //				System.out.println("Away state for '"+client+"' changed to: "+isAway);
 				client.setAwayState(isAway);
-				callAwayStateOther(client, isAway);
-				
-				ChannelClientInfo iChannelClient;
-				for (ChannelInfo iChannel : myParser.getChannels()) {
-					iChannelClient = iChannel.getUser(client);
-					if (iChannelClient != null) {
-						callChannelAwayStateOther(iChannel,iChannelClient,isAway);
+				if (!isAway) { client.setAwayReason(""); }
+				if (client == myParser.getMyself()) {
+					callAwayState(client.getAwayState(), client.getAwayReason());
+				} else {
+					callAwayStateOther(client, isAway);
+					
+					ChannelClientInfo iChannelClient;
+					for (ChannelInfo iChannel : myParser.getChannels()) {
+						iChannelClient = iChannel.getUser(client);
+						if (iChannelClient != null) {
+							callChannelAwayStateOther(iChannel,iChannelClient,isAway);
+						}
 					}
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Callback to all objects implementing the onAwayState Callback.
+	 *
+	 * @see IAwayState
+	 * @param currentState Set to true if we are now away, else false.
+	 * @param reason Best guess at away reason
+	 * @return true if a method was called, false otherwise
+	 */
+	protected boolean callAwayState(boolean currentState, String reason) {
+		return ((CallbackOnAwayState) myParser.getCallbackManager().getCallbackType("OnAwayState")).call(currentState, reason);
 	}
 	
 	/**
