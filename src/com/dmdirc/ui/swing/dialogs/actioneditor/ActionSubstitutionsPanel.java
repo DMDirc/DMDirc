@@ -137,6 +137,8 @@ public class ActionSubstitutionsPanel extends JPanel {
                 }
 
                 layoutComponents();
+                validate();
+                layoutComponents();
             }
         });
     }
