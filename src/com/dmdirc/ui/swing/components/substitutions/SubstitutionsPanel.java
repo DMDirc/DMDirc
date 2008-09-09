@@ -79,7 +79,7 @@ public abstract class SubstitutionsPanel<T> extends JPanel {
     /** Initialises the components. */
     private void initComponents() {
         setBorder(BorderFactory.createTitledBorder(getBorder(), "Substitutions"));
-        setLayout(new MigLayout("fillx, wrap 4"));
+        setLayout(new MigLayout("fillx, wrap 4, pack"));
     }
 
     /** Adds the listeners. */
@@ -88,6 +88,8 @@ public abstract class SubstitutionsPanel<T> extends JPanel {
 
     /** Lays out the components. */
     protected void layoutComponents() {
+        final boolean visible = isVisible();
+        setVisible(false);
         removeAll();
 
         add(new TextLabel(description + ". Drag and drop, or click on an item when " +
@@ -101,6 +103,8 @@ public abstract class SubstitutionsPanel<T> extends JPanel {
         if (getComponentCount() == 2) {
             add(new JLabel("No substitutions."), "growx, aligny top, align center");
         }
+        
+        setVisible(visible);
     }
 
     /**

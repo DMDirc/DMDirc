@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.dialogs.actioneditor;
 
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.ui.swing.components.TextLabel;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -125,8 +126,11 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
         removeAll();
         int index = 0;
         if (trigger == null) {
-            add(new JLabel("You must add at least one trigger before you can add conditions."),
-                    "alignx center, aligny top, growx");
+            add(new TextLabel("You must add at least one trigger before you can add conditions."),
+                    "alignx center, aligny top, grow, w 90%!");
+        } else if (trigger.getType().getArgNames().length == 0) {
+            add(new TextLabel("Trigger does not have any arguments."),
+                    "alignx center, aligny top, grow, w 90%!");
         } else {
             synchronized (conditions) {
                 for (ActionConditionDisplayPanel condition : conditions) {

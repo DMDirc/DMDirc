@@ -108,7 +108,8 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
         components.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
         components.setName("component");
         comparisons = new JComboBox(new DefaultComboBoxModel());
-        comparisons.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
+        comparisons.putClientProperty("JComboBox.isTableCellEditor",
+                Boolean.TRUE);
         comparisons.setName("comparison");
 
         target = new JTextField() {
@@ -119,7 +120,8 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
             /** {@inheritDoc} */
             @Override
             public void setEnabled(final boolean enabled) {
-                firePropertyChange("validationResult", target.isEnabled(), enabled);
+                firePropertyChange("validationResult", target.isEnabled(),
+                        enabled);
                 super.setEnabled(enabled);
             }
         };
@@ -223,7 +225,7 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
         add(new JLabel("Comparison:"), "align right");
         add(comparisons, "growx");
         add(new JLabel("Target:"), "align right");
-        add(target, "growx"); 
+        add(target, "growx");
     }
 
     /** 
@@ -272,9 +274,15 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
         arguments.setEnabled(enabled);
-        components.setEnabled(enabled);
-        comparisons.setEnabled(enabled);
-        target.setEnabled(enabled);
+        if (enabled) {
+            components.setEnabled(arguments.getSelectedIndex() != -1);
+            comparisons.setEnabled(components.getSelectedIndex() != -1);
+            target.setEnabled(comparisons.getSelectedIndex() != -1);
+        } else {
+            components.setEnabled(false);
+            comparisons.setEnabled(false);
+            target.setEnabled(false);
+        }
     }
 
     /**
@@ -297,7 +305,7 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
         firePropertyChange("validationResult", evt.getOldValue(),
                 evt.getNewValue());
     }
-    
+
     /**
      * Checks if this editor panel has errored.
      * 

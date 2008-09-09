@@ -49,6 +49,7 @@ import com.dmdirc.ui.swing.dialogs.channelsetting.ChannelSettingsDialog;
 import com.dmdirc.ui.swing.dialogs.error.ErrorListDialog;
 import com.dmdirc.ui.swing.dialogs.wizard.firstrun.SwingFirstRunWizard;
 import com.dmdirc.ui.swing.dialogs.serversetting.ServerSettingsDialog;
+import com.dmdirc.ui.swing.dialogs.sslcertificate.SSLCertificateDialog;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardListener;
 import com.dmdirc.updater.Update;
 import com.dmdirc.util.ReturnableThread;
@@ -431,7 +432,7 @@ public final class SwingController implements UIController {
     /** {@inheritDoc} */
     @Override
     public void showSSLCertificateDialog(final SSLCertificateDialogModel model) {
-        //throw new UnsupportedOperationException("Not supported yet.");
+        new SSLCertificateDialog(model).display();
     }
 
     /** {@inheritDoc} */

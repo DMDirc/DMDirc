@@ -44,7 +44,8 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Action conditions panel.
  */
-public class ActionConditionsPanel extends JPanel implements ActionListener, PropertyChangeListener {
+public class ActionConditionsPanel extends JPanel implements ActionListener,
+        PropertyChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -83,7 +84,7 @@ public class ActionConditionsPanel extends JPanel implements ActionListener, Pro
         initComponents();
         addListeners();
         layoutComponents();
-        
+
         if (trigger == null) {
             setEnabled(false);
             add.setEnabled(false);
@@ -112,13 +113,13 @@ public class ActionConditionsPanel extends JPanel implements ActionListener, Pro
     /** Lays out the components. */
     private void layoutComponents() {
         setLayout(new MigLayout("fill, wrap 1, pack"));
-        
+
         setBorder(BorderFactory.createTitledBorder(getBorder(), "Conditions"));
-        
+
         final JScrollPane sp = new JScrollPane(list);
         sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         sp.getVerticalScrollBar().setUnitIncrement(10);
-        
+
         add(tree, "growx, pushx");
         add(new JSeparator(JSeparator.HORIZONTAL), "growx, pushx");
         add(sp, "grow");
@@ -134,15 +135,16 @@ public class ActionConditionsPanel extends JPanel implements ActionListener, Pro
         this.trigger = trigger;
         list.setTrigger(trigger);
         add.setEnabled(trigger != null);
+        add.setEnabled(trigger != null && trigger.getType().getArgNames().length != 0);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void setEnabled(final boolean enabled) {
         tree.setEnabled(enabled);
         list.setEnabled(enabled);
     }
-    
+
     /** 
      * {@inheritDoc}
      * 
@@ -152,7 +154,7 @@ public class ActionConditionsPanel extends JPanel implements ActionListener, Pro
     public void actionPerformed(final ActionEvent e) {
         list.addCondition(new ActionCondition(-1, null, null, ""));
     }
-    
+
     /**
      * Sets the conditions.
      * 
@@ -160,12 +162,12 @@ public class ActionConditionsPanel extends JPanel implements ActionListener, Pro
      */
     public void setConditions(final List<ActionCondition> conditions) {
         list.clearConditions();
-        
+
         for (ActionCondition condition : conditions) {
             list.addCondition(condition);
         }
     }
-    
+
     /**
      * Sets the condition tree.
      * 
@@ -174,7 +176,7 @@ public class ActionConditionsPanel extends JPanel implements ActionListener, Pro
     public void setConditionTree(final ConditionTree conditionTree) {
         tree.setRule(list.getConditions().size(), conditionTree);
     }
-    
+
     /**
      * Gets the condition type.
      * 
@@ -183,7 +185,7 @@ public class ActionConditionsPanel extends JPanel implements ActionListener, Pro
     public ConditionTreeFactoryType getConditionTreeType() {
         return tree.getRuleType(list.getConditions().size());
     }
-    
+
     /**
      * Gets the condition tree.
      * 
@@ -192,7 +194,7 @@ public class ActionConditionsPanel extends JPanel implements ActionListener, Pro
     public ConditionTree getConditionTree() {
         return tree.getRule(list.getConditions().size());
     }
-    
+
     /**
      * Returns the condition list.
      * 
@@ -201,7 +203,7 @@ public class ActionConditionsPanel extends JPanel implements ActionListener, Pro
     public List<ActionCondition> getConditions() {
         return list.getConditions();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
@@ -211,7 +213,8 @@ public class ActionConditionsPanel extends JPanel implements ActionListener, Pro
         } else {
             treeValidates = (Boolean) evt.getNewValue();
         }
-        
-        firePropertyChange("validationResult", currentlyValidates, listValidates && treeValidates);
+
+        firePropertyChange("validationResult", currentlyValidates,
+                listValidates && treeValidates);
     }
 }

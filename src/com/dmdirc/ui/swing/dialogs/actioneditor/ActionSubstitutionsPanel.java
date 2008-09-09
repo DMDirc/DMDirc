@@ -95,6 +95,8 @@ public class ActionSubstitutionsPanel extends SubstitutionsPanel<ActionType> {
                 }
 
                 layoutComponents();
+                validate();
+                layoutComponents();
             }
         });
     }

@@ -51,11 +51,11 @@ public class ActionResponsePanel extends JPanel {
     private JTextArea response;
     /** Formatter combo box. */
     private JComboBox formatter;
-    
+
     /** Instantiates the panel. */
     public ActionResponsePanel() {
         super();
-        
+
         initComponents();
         addListeners();
         layoutComponents();
@@ -66,10 +66,10 @@ public class ActionResponsePanel extends JPanel {
         response = new JTextArea();
         response.setRows(4);
         formatter = new JComboBox(new DefaultComboBoxModel());
-        
+
         ((DefaultComboBoxModel) formatter.getModel()).addElement("No change");
         ((DefaultComboBoxModel) formatter.getModel()).addElement("No response");
-        
+
         final Set<String> formatters
                 = IdentityManager.getGlobalConfig().getOptions("formatter").keySet();
 
@@ -86,12 +86,13 @@ public class ActionResponsePanel extends JPanel {
     private void layoutComponents() {
         setBorder(BorderFactory.createTitledBorder(getBorder(), "Response"));
         setLayout(new MigLayout("fill, wrap 1"));
-        
+
         add(new JLabel("Execute these commands: "));
         add(new JScrollPane(response), "grow");
         add(new JLabel("Alter the event's formatter"));
         add(formatter, "growx");
     }
+    
     /**
      * Sets the response.
      * 
@@ -100,14 +101,15 @@ public class ActionResponsePanel extends JPanel {
     public void setResponse(final String[] response) {
         final StringBuilder sb = new StringBuilder();
         for (String responseLine : response) {
+            responseLine = responseLine.replaceAll("\n", "\\\\n");
             sb.append(responseLine).append('\n');
         }
-        
+
         if (sb.length() > 0) {
-            this.response.setText(sb.substring(0, sb.length() -1));
+            this.response.setText(sb.substring(0, sb.length() - 1));
         }
     }
-    
+
     /**
      * Sets the new formatter for the response panel.
      * 
@@ -122,16 +124,20 @@ public class ActionResponsePanel extends JPanel {
             formatter.setSelectedItem(newFormat);
         }
     }
-    
+
     /**
      * Returns the current response.
      * 
      * @return Response text
      */
     public String[] getResponse() {
-        return response.getText().split("\n");
+        final String[] text = response.getText().split("\n");
+        for (int i = 0; i < text.length; i++) {
+            text[i] = text[i].replaceAll("\\\\n", "\n");
+        }
+        return text;
     }
-    
+
     /**
      * Returns the current formatter.
      * 
@@ -147,7 +153,7 @@ public class ActionResponsePanel extends JPanel {
             return newFormat;
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void setEnabled(final boolean enabled) {

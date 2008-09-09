@@ -85,6 +85,8 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
         initComponents();
         addListeners();
         layoutComponents();
+        validate();
+        layoutComponents();
 
         if (condition.getArg() == -1 && condition.getComponent() == null &&
                 condition.getComparison() == null && condition.getTarget().isEmpty()) {
