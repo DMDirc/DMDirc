@@ -87,6 +87,22 @@ public class ActionEditorDialogTest implements UITestIface {
     }
 
     @Test
+    public void testTriggerWithNoArgs() {
+        setupWindow(null);
+
+        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).textBox()
+                .enterText("test1");
+        final JPanelFixture triggers = window.panel(
+                new ClassFinder<JPanel>(ActionTriggersPanel.class, null));
+
+        triggers.comboBox().selectItem("Client closed");
+        triggers.button(JButtonByTextMatcher.withText("Add")).requireEnabled().click();
+
+        window.panel(new ClassFinder<JPanel>(ActionConditionsPanel.class, null))
+                .button(JButtonByTextMatcher.withText("Add")).requireDisabled();
+    }
+
+    @Test
     public void testBasicTriggers() {
         setupWindow(null);
 
