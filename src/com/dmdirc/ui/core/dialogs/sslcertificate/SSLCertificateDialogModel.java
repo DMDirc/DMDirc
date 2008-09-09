@@ -126,8 +126,6 @@ public class SSLCertificateDialogModel {
         group = new ArrayList<CertificateInformationEntry>();
         group.add(new CertificateInformationEntry("Serial number",
                 cert.getSerialNumber().toString(), false, false));
-        group.add(new CertificateInformationEntry("Signature",
-                "todo", false, false)); // TODO: cert.getSignature()
         group.add(new CertificateInformationEntry("Algorithm",
                 cert.getSigAlgName(), false, false));
         group.add(new CertificateInformationEntry("SSL version",
