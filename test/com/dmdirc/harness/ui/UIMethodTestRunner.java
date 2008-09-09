@@ -60,6 +60,8 @@ public class UIMethodTestRunner extends TestMethodRunner {
                 } else {
                     addFailure(e);
                 }
+            } catch (InvocationTargetException e) {
+                addFailure(e.getCause());
             } catch (Throwable e) {
                 addFailure(e);
             }

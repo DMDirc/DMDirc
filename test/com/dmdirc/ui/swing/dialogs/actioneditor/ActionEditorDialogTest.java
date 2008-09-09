@@ -32,6 +32,7 @@ import com.dmdirc.harness.ui.UITestIface;
 import com.dmdirc.ui.swing.JRadioButtonByTextMatcher;
 import com.dmdirc.ui.swing.components.ImageButton;
 
+import com.dmdirc.ui.swing.components.TextLabel;
 import java.awt.Component;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -147,6 +148,59 @@ public class ActionEditorDialogTest implements UITestIface {
                 .requireEnabled().enterText("invalid");
 
         window.button(JButtonByTextMatcher.withText("OK")).requireDisabled();
+    }
+
+    @Test
+    public void testConditionText() {
+        setupWindow(null);
+
+        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).textBox()
+                .enterText("test1");
+        final JPanelFixture triggers = window.panel(
+                new ClassFinder<JPanel>(ActionTriggersPanel.class, null));
+
+        triggers.comboBox().selectItem("Channel message received");
+        triggers.button(JButtonByTextMatcher.withText("Add")).requireEnabled().click();
+
+        window.panel(new ClassFinder<JPanel>(ActionConditionsPanel.class, null))
+                .button(JButtonByTextMatcher.withText("Add")).requireEnabled().click();
+
+        assertEquals("",
+                window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class, null))
+                .textBox(new ClassFinder<JTextComponent>(TextLabel.class, null))
+                .target.getText());
+
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
+                .comboBox("argument").selectItem("message");
+
+        assertEquals("The message's  ...",
+                window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class, null))
+                .textBox(new ClassFinder<JTextComponent>(TextLabel.class, null))
+                .target.getText());
+
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
+                .comboBox("component").selectItem("content");
+
+        assertEquals("The message's content  ...",
+                window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class, null))
+                .textBox(new ClassFinder<JTextComponent>(TextLabel.class, null))
+                .target.getText());
+
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
+                .comboBox("comparison").selectItem("contains");
+
+        assertEquals("The message's content contains ''",
+                window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class, null))
+                .textBox(new ClassFinder<JTextComponent>(TextLabel.class, null))
+                .target.getText());
+
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
+                .textBox().enterText("foo");
+
+        assertEquals("The message's content contains 'foo'",
+                window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class, null))
+                .textBox(new ClassFinder<JTextComponent>(TextLabel.class, null))
+                .target.getText());
     }
 
     @Test
