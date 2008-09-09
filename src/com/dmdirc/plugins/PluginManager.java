@@ -113,10 +113,13 @@ public class PluginManager implements ActionListener {
 			return false;
 		}
 		
-		PluginInfo pluginInfo;
-		
 		try {
-			pluginInfo = new PluginInfo(new URL("file://"+getDirectory()+filename));
+			final PluginInfo pluginInfo = new PluginInfo(new URL("file://"+getDirectory()+filename));
+			final PluginInfo existing = getPluginInfoByName(pluginInfo.getName());
+			if (existing != null) {
+				Logger.userError(ErrorLevel.MEDIUM, "Duplicate Plugin detected, Ignoring. (" + filename + "is the same as " + existing.getFilename() + ")");
+				return false;
+			}
 			new PluginComponent(pluginInfo);
 			
 			final String requirements = pluginInfo.getRequirementsError();
