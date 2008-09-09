@@ -786,6 +786,7 @@ public class IRCParser implements Runnable {
 					processLine(lastLine);
 				}
 			} catch (IOException e) {
+				handleConnectException(e);
 				if (currentSocketState != STATE_CLOSED) {
 					currentSocketState = STATE_CLOSED;
 					callSocketClosed();
