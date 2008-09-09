@@ -23,6 +23,9 @@ package com.dmdirc.actions;
 
 import com.dmdirc.actions.interfaces.ActionType;
 
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.prefs.PreferencesSetting;
+import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.util.ConfigFile;
 import com.dmdirc.util.InvalidConfigFileException;
 
@@ -31,10 +34,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class ActionTest extends junit.framework.TestCase {
+
+    @Before
+    public void setUp() throws Exception {
+        IdentityManager.load();
+        ActionManager.init();
+    }
 
     private static Action action;
 
@@ -82,8 +92,6 @@ public class ActionTest extends junit.framework.TestCase {
 
     @Test
     public void testRead() throws IOException, InvalidConfigFileException {
-        ActionManager.init();
-
         final Action action = new Action("unit-test", "doesn't_exist");
         action.config = new ConfigFile(getClass().getResourceAsStream("action1"));
         action.config.read();
@@ -97,6 +105,24 @@ public class ActionTest extends junit.framework.TestCase {
                 CoreActionComparison.INT_EQUALS, "0"), action.getConditions().get(0));
         assertEquals(new ActionCondition("foo", CoreActionComparison.STRING_CONTAINS,
                 "bar"), action.getConditions().get(1));
+    }
+
+    @Test
+    public void testMultipleGroups() throws IOException, InvalidConfigFileException {
+        final Action action = new Action("unit-test", "doesn't_exist");
+        action.config = new ConfigFile(getClass().getResourceAsStream("action_multisettings"));
+        action.config.read();
+        action.loadActionFromConfig();
+
+        assertEquals(1, ActionManager.getGroup("unit-test").getSettings().size());
+
+        final PreferencesSetting setting = ActionManager.getGroup("unit-test")
+                .getSettings().values().iterator().next();
+        assertEquals(PreferencesType.TEXT, setting.getType());
+        assertEquals("Highlight Regex", setting.getTitle());
+        assertEquals("Regex to use to detect a highlight", setting.getHelptext());
+        assertEquals("(?i).*(shane|dataforce|Q${SERVER_MYNICKNAME}E|(?<![#A-Z])DF).*",
+                setting.getValue());
     }
 
 }
