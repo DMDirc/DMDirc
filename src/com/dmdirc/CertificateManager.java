@@ -250,8 +250,8 @@ public class CertificateManager implements X509TrustManager {
         }
 
         if (!problems.isEmpty()) {
-            Main.getUI().showSSLCertificateDialog(new SSLCertificateDialogModel(
-                    chain, problems, this));
+            //Main.getUI().showSSLCertificateDialog(new SSLCertificateDialogModel(
+            //        chain, problems, this));
 
             //actionSem.acquireUninterruptibly();
             
