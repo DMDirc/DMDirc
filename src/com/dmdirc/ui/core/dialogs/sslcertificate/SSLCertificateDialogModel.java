@@ -69,6 +69,31 @@ public class SSLCertificateDialogModel {
     }
 
     /**
+     * Retrieves the certificate chain that's under question.
+     *
+     * @return A list of {@link CertificateChainEntry}s corresponding to the
+     * certificate chain being questioned.
+     */
+    public List<CertificateChainEntry> getCertificateChain() {
+        final List<CertificateChainEntry> res = new ArrayList<CertificateChainEntry>();
+
+        for (X509Certificate cert : chain) {
+            boolean invalid = false;
+
+            try {
+                cert.checkValidity();
+            } catch (CertificateException ex) {
+                invalid = true;
+            }
+
+            res.add(new CertificateChainEntry(cert.getSubjectDN().getName(),
+                    false, invalid)); // TODO: false hardcoded, name?
+        }
+
+        return res;
+    }
+
+    /**
      * Retrieves displayable information about the certificate with the
      * specified index in the chain.
      *
@@ -83,9 +108,9 @@ public class SSLCertificateDialogModel {
 
         group = new ArrayList<CertificateInformationEntry>();
         group.add(new CertificateInformationEntry("Valid from",
-                cert.getNotBefore().toString(), false, false));
+                cert.getNotBefore().toString(), false, false)); // TODO: false!
         group.add(new CertificateInformationEntry("Valid to",
-                cert.getNotAfter().toString(), false, false));
+                cert.getNotAfter().toString(), false, false)); // TODO: false!
         res.add(group);
 
         final Map<String, String> fields = CertificateManager.getDNFieldsFromCert(cert);
@@ -102,7 +127,7 @@ public class SSLCertificateDialogModel {
         group.add(new CertificateInformationEntry("Serial number",
                 cert.getSerialNumber().toString(), false, false));
         group.add(new CertificateInformationEntry("Signature",
-                "todo", false, false)); // cert.getSignature()
+                "todo", false, false)); // TODO: cert.getSignature()
         group.add(new CertificateInformationEntry("Algorithm",
                 cert.getSigAlgName(), false, false));
         group.add(new CertificateInformationEntry("SSL version",
@@ -195,7 +220,7 @@ public class SSLCertificateDialogModel {
      * @param action The action to be performed
      */
     public void performAction(final CertificateAction action) {
-
+        // TODO: ...
     }
 
 }
