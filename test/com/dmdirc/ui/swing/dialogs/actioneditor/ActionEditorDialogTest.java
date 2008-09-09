@@ -106,13 +106,15 @@ public class ActionEditorDialogTest implements UITestIface {
     public void testBasicTriggers() {
         setupWindow(null);
 
-        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).textBox()
-                .enterText("test1");
         final JPanelFixture triggers = window.panel(
                 new ClassFinder<JPanel>(ActionTriggersPanel.class, null));
+        triggers.comboBox().requireDisabled();
+
+        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).textBox()
+                .enterText("test1");
 
         final int items = triggers.comboBox().target.getItemCount();
-        triggers.comboBox().selectItem("Channel message received");
+        triggers.comboBox().requireEnabled().selectItem("Channel message received");
         triggers.button(JButtonByTextMatcher.withText("Add")).requireEnabled().click();
 
         final JLabelFixture label = triggers
@@ -122,7 +124,15 @@ public class ActionEditorDialogTest implements UITestIface {
         assertTrue(items > triggers.comboBox().target.getItemCount());
         window.button(JButtonByTextMatcher.withText("OK")).requireEnabled();
 
-        triggers.button(new ClassFinder<JButton>(ImageButton.class, null)).click();
+        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).textBox()
+                .deleteText();
+        triggers.button(new ClassFinder<JButton>(ImageButton.class, null)).requireDisabled();
+        triggers.comboBox().requireDisabled();
+        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).textBox()
+                .enterText("test1");
+
+        triggers.button(new ClassFinder<JButton>(ImageButton.class, null))
+                .requireEnabled().click();
         
         for (Component comp : triggers.panel(new ClassFinder<JPanel>(ActionTriggersListPanel.class,
                 null)).target.getComponents()) {
