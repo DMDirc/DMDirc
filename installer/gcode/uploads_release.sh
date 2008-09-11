@@ -49,7 +49,7 @@ uploadFile() {
 	if [ -e "../output/${FILE}" ]; then
 		echo ""
 		echo "Uploading ${TYPE}"
-		${PYTHON} ${PWD}/googlecode_upload.py --summary "DMDirc ${VERSION} ${TYPE}" --user ${USERNAME} --pass ${USERNAME} --labels="Featured,${LABELS}" ${FILE}
+		${PYTHON} ${PWD}/googlecode_upload.py --summary "DMDirc ${VERSION} ${TYPE}" --user ${USERNAME} --pass ${PASSWORD} --labels="Featured,${LABELS}" ${FILE}
 	else
 		echo "Not Uploading ${TYPE} (File '${FILE}' Doesn't exist)"
 	fi;
