@@ -37,7 +37,7 @@ public class ProcessListModes extends IRCProcessor {
 	/**
 	 * Process a ListModes.
 	 *
-	 * @param sParam Type of line to process ("348", "349", "346", "347", "367", "368", "482")
+	 * @param sParam Type of line to process ("348", "349", "346", "347", "367", "368", "482", "941", "940")
 	 * @param token IRCTokenised line to process
 	 */
 	@SuppressWarnings("unchecked")
@@ -67,6 +67,10 @@ public class ProcessListModes extends IRCProcessor {
 			// Invite List
 			mode = 'I';
 			isItem = sParam.equals("346");
+		} else if (sParam.equals("940") || sParam.equals("941")) {
+			// Censored words List
+			mode = 'g';
+			isItem = sParam.equals("941");
 		} else if (sParam.equals("344") || sParam.equals("345")) {
 			// Reop List
 			mode = 'R';
@@ -186,7 +190,7 @@ public class ProcessListModes extends IRCProcessor {
 		
 		// This is here to allow finding the processor for adding LISTMODE support
 		iHandle[i++] = "__LISTMODE__"; */
-		return new String[]{"367", "368", "344", "345", "346", "347", "348", "349", "482", "__LISTMODE__"};
+		return new String[]{"367", "368", "344", "345", "346", "347", "348", "349", "940", "941", "482", "__LISTMODE__"};
 	}
 	
 	/**
