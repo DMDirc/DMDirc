@@ -33,13 +33,15 @@ import javax.swing.JButton;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import net.miginfocom.swing.MigLayout;
 
 /**
  * About dialog.
  */
 public final class AboutDialog extends StandardDialog implements
-        ActionListener {
+        ActionListener, ChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -49,6 +51,12 @@ public final class AboutDialog extends StandardDialog implements
     private static final long serialVersionUID = 5;
     /** Previously created instance of AboutDialog. */
     private static volatile AboutDialog me = null;
+    /** Tabbed pane to use. */
+    private JTabbedPane tabbedPane;
+    /** Credits panel. */
+    private CreditsPanel cp;
+    /** Tab history. */
+    private int history = 0;
 
     /** Creates a new instance of AboutDialog. */
     private AboutDialog() {
@@ -82,7 +90,7 @@ public final class AboutDialog extends StandardDialog implements
 
     /** Initialises the main UI components. */
     private void initComponents() {
-        final JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane = new JTabbedPane();
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("About DMDirc");
@@ -93,10 +101,13 @@ public final class AboutDialog extends StandardDialog implements
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
 
+        cp = new CreditsPanel();
+
         tabbedPane.add("About", new AboutPanel());
-        tabbedPane.add("Credits", new CreditsPanel());
+        tabbedPane.add("Credits", cp);
         tabbedPane.add("License", new LicensePanel());
         tabbedPane.add("Information", new InfoPanel());
+        tabbedPane.addChangeListener(this);
 
         getContentPane().setLayout(new MigLayout("ins rel, wrap 1, fill, wmax 550, hmax 300"));
         getContentPane().add(tabbedPane, "grow");
@@ -124,6 +135,16 @@ public final class AboutDialog extends StandardDialog implements
         synchronized (me) {
             super.dispose();
             me = null;
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        history = 10 * (history % 10000) + tabbedPane.getSelectedIndex();
+
+        if (history == 30321) {
+            cp.showEE();
         }
     }
 }

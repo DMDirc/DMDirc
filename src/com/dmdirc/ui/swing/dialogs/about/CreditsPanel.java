@@ -46,6 +46,9 @@ public final class CreditsPanel extends JPanel implements HyperlinkListener {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 2;
+
+    /** HTML label we're using. */
+    private HTMLLabel about;
     
     /** Creates a new instance of CreditsPanel. */
     public CreditsPanel() {
@@ -54,10 +57,16 @@ public final class CreditsPanel extends JPanel implements HyperlinkListener {
         this.setOpaque(UIUtilities.getTabbedPaneOpaque());
         initComponents();
     }
+
+    /** Shows osome alternate content. */
+    public void showEE() {
+        about.setText("<html><center><br><br><br>"
+                + "<img src=\"http://www.dmdirc.com/res/about.png\"></html>");
+    }
     
     /** Initialises the components. */
     private void initComponents() {
-        final HTMLLabel about = new HTMLLabel("<html>"
+        about = new HTMLLabel("<html>"
                 + "<div style='font-family: "
                 + UIManager.getFont("TextField.font").getFamily() + "; font-size:"
                 + UIManager.getFont("TextField.font").getSize() + "pt; background-color: transparent'>"
