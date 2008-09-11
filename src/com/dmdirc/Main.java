@@ -50,13 +50,13 @@ import java.util.TimerTask;
 public final class Main {
 
     /** Stores the current textual program version. */
-    public static final String VERSION = "0.6b1";
+    public static final String VERSION = "0.6";
 
     /** The SVN revision that this build was made from. */
     public static final int SVN_REVISION = 4085;
 
     /** Stores the update channel that this version came from, if any. */
-    public static final UpdateChannel UPDATE_CHANNEL = UpdateChannel.NONE;
+    public static final UpdateChannel UPDATE_CHANNEL = UpdateChannel.STABLE;
 
     /** Feedback nag delay. */
     private static final int FEEDBACK_DELAY = 30 * 60 * 1000;
