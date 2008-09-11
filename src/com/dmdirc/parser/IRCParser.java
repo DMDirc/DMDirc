@@ -1771,7 +1771,7 @@ public class IRCParser implements Runnable {
 					if (sNetworkName.equalsIgnoreCase("ircnet")) { return "ircnet"; }
 					else if (sNetworkName.equalsIgnoreCase("starchat")) { return "starchat"; }
 					else if (sNetworkName.equalsIgnoreCase("bitlbee")) { return "bitlbee"; }
-					 else if (h005Info.containsKey("003IRCD") && h005Info.get("003IRCD").matches("(?i).*bitlbee.*")) { return "bitlbee"; } // Older bitlbee
+					else if (h005Info.containsKey("003IRCD") && h005Info.get("003IRCD").matches("(?i).*bitlbee.*")) { return "bitlbee"; } // Older bitlbee
 					else { return "generic"; }
 				}
 			} else {
