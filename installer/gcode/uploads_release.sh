@@ -58,5 +58,5 @@ uploadFile() {
 uploadFile "Jar" "Type-Executable,OpSys-All" "../output/DMDirc-${VERSION}.jar"
 uploadFile "OS X Image" "Type-Archive,OpSys-OSX" "../output/DMDirc-${VERSION}.dmg"
 uploadFile "Windows Installer" "Type-Installer,OpSys-Windows" "../output/DMDirc-${VERSION}-Setup.exe"
-uploadFile "Linux Installer" "Type-Installer,OpSys-Linux" "../output/DMDirc-${VERSION}-Setup.run"
+uploadFile "Unix Installer" "Type-Installer,OpSys-Linux,OpSys-BSD,OpSys-Solaris" "../output/DMDirc-${VERSION}-Setup.run"
 exit 0;
