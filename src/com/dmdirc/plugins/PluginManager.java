@@ -114,7 +114,7 @@ public class PluginManager implements ActionListener {
 		}
 		
 		try {
-			final PluginInfo pluginInfo = new PluginInfo(new URL("file://"+getDirectory()+filename));
+			final PluginInfo pluginInfo = new PluginInfo(new URL("file:"+getDirectory()+filename));
 			final PluginInfo existing = getPluginInfoByName(pluginInfo.getName());
 			if (existing != null) {
 				Logger.userError(ErrorLevel.MEDIUM, "Duplicate Plugin detected, Ignoring. (" + filename + "is the same as " + existing.getFilename() + ")");
@@ -278,7 +278,7 @@ public class PluginManager implements ActionListener {
 					addPlugin(target);
 				} else {
 					try {
-						final PluginInfo pi = new PluginInfo(new URL("file://"+getDirectory()+target), false);
+						final PluginInfo pi = new PluginInfo(new URL("file:"+getDirectory()+target), false);
 						res.put(target, pi);
 					} catch (MalformedURLException mue) {
 						Logger.userError(ErrorLevel.MEDIUM, "Error creating URL for plugin " + target + ": " + mue.getMessage(), mue);
