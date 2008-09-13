@@ -89,7 +89,7 @@ public class TextLabel extends JTextPane {
     /** {@inheritDoc} */
     @Override
     public StyledDocument getDocument() {
-        return super.getStyledDocument();
+        return (StyledDocument) super.getDocument();
     }
 
     /** {@inheritDoc} */
