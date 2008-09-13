@@ -230,8 +230,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         tooltip.setText(text);
         SimpleAttributeSet sas = new SimpleAttributeSet();
         StyleConstants.setItalic(sas, true);
-        ((StyledDocument) tooltip.getDocument()).setParagraphAttributes(0,
-                    text.length(), sas, true);
+        tooltip.getDocument().setParagraphAttributes(0, text.length(), sas, true);
     }
 
     /**
@@ -244,8 +243,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         tooltip.setText(text);
         SimpleAttributeSet sas = new SimpleAttributeSet();
         StyleConstants.setItalic(sas, false);
-        ((StyledDocument) tooltip.getDocument()).setParagraphAttributes(0, 
-                text.length(), sas, true);
+        tooltip.getDocument().setParagraphAttributes(0, text.length(), sas, true);
     }
 
     /**

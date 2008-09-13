@@ -22,7 +22,17 @@
 
 package com.dmdirc.ui.swing.dialogs.sslcertificate;
 
+import com.dmdirc.ui.core.dialogs.sslcertificate.CertificateInformationEntry;
+import com.dmdirc.ui.swing.components.TextLabel;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import net.miginfocom.swing.MigLayout;
 
 /**
  *
@@ -35,4 +45,48 @@ public class CertificateInfoPanel extends JPanel {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** Certificate info list. */
+    private List<List<CertificateInformationEntry>> certificateInfo;
+
+    public CertificateInfoPanel() {
+        initComponents();
+        layoutComponents();
+    }
+
+    private void initComponents() {
+        certificateInfo = new ArrayList<List<CertificateInformationEntry>>();
+    }
+
+    private void layoutComponents() {
+        setVisible(false);
+        removeAll();
+        setBorder(BorderFactory.createTitledBorder("Information for " + ""));
+        setLayout(new MigLayout("fill, wrap 2"));
+
+        for (List<CertificateInformationEntry> entry : certificateInfo) {
+            for (CertificateInformationEntry info : entry) {
+                add(new JLabel(info.getTitle()), "align right");
+                final TextLabel text = new TextLabel(info.getValue());
+                if (info.isInvalid()) {
+                    SimpleAttributeSet sas = new SimpleAttributeSet();
+                    StyleConstants.setForeground(sas, Color.RED);
+                    text.getDocument().setParagraphAttributes(0, info.getValue().
+                            length(), sas, true);
+                }
+                add(text, "grow");
+            }
+            add(new JLabel(), "spanx");
+        }
+        setVisible(true);
+    }
+
+    public void setInfo(final List<List<CertificateInformationEntry>> certificateInfo) {
+        this.certificateInfo = certificateInfo;
+
+        if (certificateInfo == null) {
+            this.certificateInfo =
+                    new ArrayList<List<CertificateInformationEntry>>();
+        }
+        layoutComponents();
+    }
 }

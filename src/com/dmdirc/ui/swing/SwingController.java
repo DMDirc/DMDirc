@@ -432,7 +432,14 @@ public final class SwingController implements UIController {
     /** {@inheritDoc} */
     @Override
     public void showSSLCertificateDialog(final SSLCertificateDialogModel model) {
-        new SSLCertificateDialog(model).display();
+        SwingUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                new SSLCertificateDialog(getMainFrame(), model).display();
+            }
+        });
     }
 
     /** {@inheritDoc} */
@@ -467,7 +474,7 @@ public final class SwingController implements UIController {
     public String getUserInput(final String prompt) {
         return JOptionPane.showInputDialog(prompt);
     }
-    
+
     /**
      * Returns the current look and feel.
      * 

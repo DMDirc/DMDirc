@@ -22,7 +22,18 @@
 
 package com.dmdirc.ui.swing.dialogs.sslcertificate;
 
+import com.dmdirc.ui.core.dialogs.sslcertificate.CertificateChainEntry;
+import com.dmdirc.ui.swing.components.renderers.CertificateChainEntryCellRenderer;
+import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionListener;
+import net.miginfocom.swing.MigLayout;
 
 /**
  *
@@ -35,4 +46,48 @@ public class CertificateChainPanel extends JPanel {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** Certificate chain list. */
+    private List<CertificateChainEntry> certificateChain;
+    /** Chain list. */
+    private JList list;
+    /** List model. */
+    private DefaultListModel model;
+
+    public CertificateChainPanel() {
+        initComponents();
+        layoutComponents();
+    }
+
+    private void initComponents() {
+        model = new DefaultListModel();
+        list = new JList(model);
+        list.setCellRenderer(new CertificateChainEntryCellRenderer());
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    }
+
+    private void layoutComponents() {
+        setBorder(BorderFactory.createTitledBorder("Certificate Chain"));
+        setLayout(new MigLayout("fill, wrap 1"));
+
+        add(new JScrollPane(list), "grow");
+        add(new JLabel("Certificate is trusted"), "grow");
+        add(new JLabel("Problem with certificate"), "grow");
+    }
+
+    public void setChain(final List<CertificateChainEntry> certificateChain) {
+        this.certificateChain = certificateChain;
+
+        if (certificateChain == null) {
+            model.clear();
+        } else {
+            for (CertificateChainEntry entry : certificateChain) {
+                model.addElement(entry);
+            }
+        }
+        list.setSelectedIndex(0);
+    }
+    
+    public void addListSelectionListener(final ListSelectionListener listener) {
+        list.addListSelectionListener(listener);
+    }
 }

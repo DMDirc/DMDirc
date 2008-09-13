@@ -50,6 +50,7 @@ public class TextLabel extends JTextPane {
     public TextLabel() {
         this(null, true);
     }
+
     /**
      * Creates a new instance of TextLabel.
      *
@@ -87,11 +88,16 @@ public class TextLabel extends JTextPane {
 
     /** {@inheritDoc} */
     @Override
+    public StyledDocument getDocument() {
+        return super.getStyledDocument();
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public void setText(final String t) {
         super.setText(t);
         if (t != null && !t.isEmpty()) {
-            ((StyledDocument) getDocument()).setParagraphAttributes(0,
-                    t.length(), sas, true);
+            getDocument().setParagraphAttributes(0, t.length(), sas, true);
         }
     }
 }

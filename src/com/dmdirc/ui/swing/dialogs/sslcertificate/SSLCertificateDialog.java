@@ -23,24 +23,26 @@
 package com.dmdirc.ui.swing.dialogs.sslcertificate;
 
 import com.dmdirc.ui.core.dialogs.sslcertificate.SSLCertificateDialogModel;
-import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.TextLabel;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import net.miginfocom.swing.MigLayout;
 
 /**
  * SSL Certificate information dialog. Also provides the ability to accept and
  * reject certificates whilst connecting to an SSL server.
  */
-public class SSLCertificateDialog extends StandardDialog implements ActionListener {
-    
+public class SSLCertificateDialog extends StandardDialog implements ActionListener, ListSelectionListener {
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
@@ -59,15 +61,19 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
     private SummaryPanel summary;
     /** Informational blurb. */
     private TextLabel blurb;
+    /** Parent window. */
+    private Window parent;
 
     /** 
      * Creates a new instance of ActionsManagerDialog.
      * 
+     * @param parent Parent window for the dialog
      * @param model dialog model
      */
-    public  SSLCertificateDialog(final SSLCertificateDialogModel model) {
-        super(SwingController.getMainFrame(), false);
-        
+    public SSLCertificateDialog(final Window parent, final SSLCertificateDialogModel model) {
+        super(parent, ModalityType.MODELESS);
+
+        this.parent = parent;
         this.model = model;
 
         initComponents();
@@ -84,7 +90,7 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
      */
     public void display() {
         pack();
-        setLocationRelativeTo(SwingController.getMainFrame());
+        setLocationRelativeTo(parent);
         setVisible(true);
     }
 
@@ -98,6 +104,7 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
                 getCancelButton().doClick();
             }
         });
+        chain.addListSelectionListener(this);
     }
 
     private void initComponents() {
@@ -107,14 +114,16 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
         info = new CertificateInfoPanel();
         summary = new SummaryPanel();
         blurb = new TextLabel();
+        
+        chain.setChain(model.getCertificateChain());
     }
 
     private void layoutComponents() {
-        setLayout(new MigLayout("wrap 2"));
-        
+        setLayout(new MigLayout("fill, wrap 2, wmin 600, hmin 400"));
+
         add(blurb, "span 2");
-        add(chain, "w! 20");
-        add(info, "w! 80");
+        add(chain, "w 250");
+        add(info, "grow");
         add(summary, "span 2");
         add(actions, "span 2");
         add(getOkButton(), "skip, right");
@@ -130,4 +139,14 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
         dispose();
     }
 
+    @Override
+    public void valueChanged(final ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting()) {
+            if (e.getFirstIndex() == -1) {
+                info.setInfo(null);
+            } else {
+                info.setInfo(model.getCertificateInfo(e.getFirstIndex()));
+            }
+        }
+    }
 }
