@@ -86,7 +86,7 @@ public class SSLCertificateDialogModel {
                 invalid = true;
             }
 
-            res.add(new CertificateChainEntry(cert.getSubjectDN().getName(),
+            res.add(new CertificateChainEntry(CertificateManager.getDNFieldsFromCert(cert).get("CN"),
                     false, invalid)); // TODO: false hardcoded, name?
         }
 
@@ -147,8 +147,8 @@ public class SSLCertificateDialogModel {
             final List<CertificateInformationEntry> group, final String title,
             final String field) {
         group.add(new CertificateInformationEntry(title,
-                fields.containsKey(title) ? fields.get(title) : NOTPRESENT, false,
-                !fields.containsKey(title)));
+                fields.containsKey(field) ? fields.get(field) : NOTPRESENT, false,
+                !fields.containsKey(field)));
     }
 
     /**
