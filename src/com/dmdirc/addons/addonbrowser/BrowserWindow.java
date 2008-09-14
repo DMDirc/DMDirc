@@ -30,8 +30,6 @@ import com.dmdirc.util.ConfigFile;
 import com.dmdirc.util.InvalidConfigFileException;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,10 +43,12 @@ import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -99,7 +99,7 @@ public class BrowserWindow extends JDialog implements ActionListener,
     private final JCheckBox notinstalledBox = new JCheckBox("Not installed", true);
     
     /** The panel used to list addons. */
-    private final JPanel list = new JPanel(new MigLayout("fillx, flowy, ins 0, gap 0"));
+    private final JList list = new JList(new DefaultListModel());
     
     /** The scrollpane for the list panel. */
     private final JScrollPane scrollPane = new JScrollPane(list, 
@@ -125,14 +125,11 @@ public class BrowserWindow extends JDialog implements ActionListener,
      */
     public BrowserWindow() {
         super(SwingController.getMainFrame(), "DMDirc Addon Browser", false);
-        setIconImage(Main.getUI().getMainWindow().getIcon().getImage());
-        setMaximumSize(new Dimension(550, 550));
-        setMinimumSize(new Dimension(550, 550));
-        setSize(new Dimension(550, 550));
-        setLocationRelativeTo((Component) Main.getUI().getMainWindow());
-        
-        setLayout(new MigLayout("fill"));
+        setIconImage(SwingController.getMainFrame().getIcon().getImage());
+        setResizable(false);
+        setLayout(new MigLayout("fill, wmin 650, hmin 600"));
         scrollPane.getVerticalScrollBar().setUnitIncrement(15);
+        list.setCellRenderer(new AddonInfoListCellRenderer());
         
         JPanel panel = new JPanel(new MigLayout("fill"));
         panel.setBorder(BorderFactory.createTitledBorder("Search"));
@@ -177,7 +174,10 @@ public class BrowserWindow extends JDialog implements ActionListener,
             
         }
         
+        pack();
+        setLocationRelativeTo(SwingController.getMainFrame());
         setVisible(true);
+        setLocationRelativeTo(SwingController.getMainFrame());
     }
     
     /**
@@ -231,10 +231,8 @@ public class BrowserWindow extends JDialog implements ActionListener,
      * options.
      */
          private void sortAndFilter() {
-        list.setVisible(false);
-        list.removeAll();
+        ((DefaultListModel) list.getModel()).clear();
         list.add(new JLabel("Sorting list.", JLabel.CENTER), "grow, pushy");
-        list.setVisible(true);
 
         new SwingWorker() {
 
@@ -269,11 +267,9 @@ public class BrowserWindow extends JDialog implements ActionListener,
             @Override
             protected void done() {
 
-                int i = 0;
-                list.setVisible(false);
-                list.removeAll();
+                ((DefaultListModel) list.getModel()).clear();
                 for (AddonInfo info : newInfos) {
-                    list.add(getPanel(info, i++));
+                    ((DefaultListModel) list.getModel()).addElement(info);
                 }
                 SwingUtilities.invokeLater(new Runnable() {
 
@@ -282,56 +278,8 @@ public class BrowserWindow extends JDialog implements ActionListener,
                         scrollPane.getVerticalScrollBar().setValue(0);
                     }
                 });
-                list.setVisible(true);
             }
         }.execute();
-    }
-    
-    /**
-     * Retrieves the panel to use for the specified addon.
-     * 
-     * @param info The addon to generate a panel for
-     * @param index The index of the panel (for alternating background)
-     * @return A JPanel representing the addon
-     */
-    private JPanel getPanel(final AddonInfo info, final int index) {
-        final JPanel panel = new JPanel(new MigLayout("fillx, ins 0"));
-        panel.setBackground(index % 2 == 1 ? new Color(0xEE, 0xEE, 0xFF) : Color.WHITE);
-        
-        JLabel title = new JLabel(info.getTitle());
-        title.setFont(title.getFont().deriveFont(16f).deriveFont(Font.BOLD));
-        panel.add(title, "wmin 165, wmax 165, gaptop 5, gapleft 5");
-        
-        title = new JLabel(info.getScreenshot());
-        title.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        panel.add(title, "wmin 150, wmax 150, height 150::, wrap, spany 4, gaptop 5, gapright 5");
-
-        title = new JLabel(info.getType().toString() + ", rated "
-                + info.getRating() + "/10");
-        panel.add(title, "gapleft 5, wrap");
-        
-        TextLabel label = new TextLabel(info.getDescription());
-        panel.add(label, "wmin 165, wmax 165, growy, wrap, gapleft 5, gapbottom 5, pushy");
-        
-        final JButton button = new JButton("Install");
-        button.addActionListener(new InstallListener(info));
-        final boolean installed = info.isInstalled();
-        
-        if (installed || !info.isDownloadable()) {
-            button.setEnabled(false);
-        }
-        
-        panel.add(button, "gapleft 5, split");
-        
-        if (installed || !info.isDownloadable()) {
-            title = new JLabel(installed ? "Already installed" : "No download available");
-            title.setForeground(Color.GRAY);
-            panel.add(title);
-        }
-        
-        panel.add(new JSeparator(), "newline, span, growx, pushx, gaptop 5");
-        
-        return panel;
     }
 
     /** {@inheritDoc} */
