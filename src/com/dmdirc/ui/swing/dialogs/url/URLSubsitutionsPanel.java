@@ -47,7 +47,7 @@ public class URLSubsitutionsPanel extends SubstitutionsPanel<List<String>> {
      * Instantiates a new URL subsitutiuons panel.
      */
     public URLSubsitutionsPanel() {
-        super("Substitutions may be used as part of the launch command", null);
+        super("Substitutions may be used as part of the launch command", SubstitutionsPanel.Alignment.VERTICAL, null);
     }
 
     /**

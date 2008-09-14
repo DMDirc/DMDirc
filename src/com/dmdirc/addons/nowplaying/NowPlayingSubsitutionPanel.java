@@ -47,7 +47,7 @@ public class NowPlayingSubsitutionPanel extends SubstitutionsPanel<List<String>>
      * Instantiates a new now playing subsitutiuons panel.
      */
     public NowPlayingSubsitutionPanel() {
-        super("Substitutions may be used as part of the output format", null);
+        super("Substitutions may be used as part of the output format", SubstitutionsPanel.Alignment.HORIZONTAL, null);
     }
 
     /**
@@ -56,7 +56,7 @@ public class NowPlayingSubsitutionPanel extends SubstitutionsPanel<List<String>>
      * @param subs list of substitutions.
      */
     public NowPlayingSubsitutionPanel(final List<String> subs) {
-        super("Substitutions may be used as part of the output format", subs);
+        super("Substitutions may be used as part of the output format", SubstitutionsPanel.Alignment.HORIZONTAL, subs);
     }
 
     /** {@inheritDoc} */

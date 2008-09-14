@@ -47,7 +47,7 @@ public class ActionSubstitutionsPanel extends SubstitutionsPanel<ActionType> {
 
     /** Instantiates the panel. */
     public ActionSubstitutionsPanel() {
-        super("Substitutions may be used in the response and target fields", null);
+        super("Substitutions may be used in the response and target fields", SubstitutionsPanel.Alignment.VERTICAL, null);
     }
     
     /**

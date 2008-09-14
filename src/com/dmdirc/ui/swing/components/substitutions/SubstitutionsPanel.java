@@ -50,6 +50,17 @@ public abstract class SubstitutionsPanel<T> extends JPanel {
     protected List<SubstitutionLabel> substitutions;
     /** Description. */
     private String description;
+    /** Seperator alignment. */
+    private Alignment alignment;
+
+    /** Separator alignment enum. */
+    public enum Alignment {
+
+        /** Horizontal separator. */
+        HORIZONTAL,
+        /** Vertical separator. */
+        VERTICAL;
+    }
 
     /** 
      * Instantiates the panel.
@@ -57,9 +68,9 @@ public abstract class SubstitutionsPanel<T> extends JPanel {
      * @param description Description
      */
     public SubstitutionsPanel(final String description) {
-        this(description, null);
+        this(description, Alignment.VERTICAL, null);
     }
-    
+
     /** 
      * Instantiates the panel.
      * 
@@ -67,9 +78,33 @@ public abstract class SubstitutionsPanel<T> extends JPanel {
      * @param type Action type
      */
     public SubstitutionsPanel(final String description, final T type) {
+        this(description, Alignment.VERTICAL, type);
+    }
+
+    /** 
+     * Instantiates the panel.
+     * 
+     * @param description Description
+     * @param alignment Alignment of the separator
+     */
+    public SubstitutionsPanel(final String description,
+            final Alignment alignment) {
+        this(description, alignment, null);
+    }
+
+    /** 
+     * Instantiates the panel.
+     * 
+     * @param description Description
+     * @param alignment Alignment of the separator
+     * @param type Action type
+     */
+    public SubstitutionsPanel(final String description,
+            final Alignment alignment, final T type) {
         super();
-        
+
         this.description = description;
+        this.alignment = alignment;
 
         initComponents();
         addListeners();
@@ -79,7 +114,11 @@ public abstract class SubstitutionsPanel<T> extends JPanel {
     /** Initialises the components. */
     private void initComponents() {
         setBorder(BorderFactory.createTitledBorder(getBorder(), "Substitutions"));
-        setLayout(new MigLayout("fillx, wrap 4, pack"));
+        if (alignment.equals(Alignment.VERTICAL)) {
+            setLayout(new MigLayout("fillx, wrap 4, pack"));
+        } else {
+            setLayout(new MigLayout("fillx, wrap 3, pack"));
+        }
     }
 
     /** Adds the listeners. */
@@ -92,18 +131,26 @@ public abstract class SubstitutionsPanel<T> extends JPanel {
         setVisible(false);
         removeAll();
 
-        add(new TextLabel(description + ". Drag and drop, or click on an item when " +
-                "editing the field, to insert it."), "spany, aligny top, wmin 225, wmax 225");
-        add(new JSeparator(JSeparator.VERTICAL), "growy, spany");
+        final TextLabel textLabel = new TextLabel(description +
+                ". Drag and drop, or click on an item when " +
+                "editing the field, to insert it.");
+        if (alignment.equals(Alignment.VERTICAL)) {
+            add(textLabel, "spany, aligny top, wmin 225, wmax 225");
+            add(new JSeparator(JSeparator.VERTICAL), "growy, spany");
+        } else {
+            add(textLabel, "spanx, aligny top");
+            add(new JSeparator(JSeparator.HORIZONTAL), "growy, spanx");
+        }
 
         for (SubstitutionLabel label : substitutions) {
             add(label, "sgx subslabel, aligny top, growx");
         }
-        
+
         if (getComponentCount() == 2) {
-            add(new JLabel("No substitutions."), "growx, aligny top, align center");
+            add(new JLabel("No substitutions."),
+                    "growx, aligny top, align center");
         }
-        
+
         setVisible(visible);
     }
 
