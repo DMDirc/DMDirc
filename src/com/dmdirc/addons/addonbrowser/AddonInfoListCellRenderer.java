@@ -69,7 +69,7 @@ public class AddonInfoListCellRenderer extends JPanel implements ListCellRendere
         add(title, "gapleft 5, wrap");
         
         TextLabel label = new TextLabel(info.getDescription());
-        add(label, "wmax 100%-170, growy, wrap, gapleft 5, gapbottom 5, pushy");
+        add(label, "wmax 100%-170, hmax 150, growy, wrap, gapleft 5, gapbottom 5, pushy");
         
         final JButton button = new JButton("Install");
         button.addActionListener(new InstallListener(info));
