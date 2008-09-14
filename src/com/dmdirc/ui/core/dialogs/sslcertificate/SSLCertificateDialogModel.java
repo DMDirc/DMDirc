@@ -218,7 +218,12 @@ public class SSLCertificateDialogModel {
      * @param action The action to be performed
      */
     public void performAction(final CertificateAction action) {
-        // TODO: ...
+        if (!needsResponse()) {
+            throw new IllegalStateException("Can't perform action when "
+                    + "no action is needed");
+        }
+        
+        manager.setAction(action);
     }
 
 }

@@ -79,6 +79,9 @@ public class CertificateManager implements X509TrustManager {
 
     /** Used to synchronise the manager with the certificate dialog. */
     private final Semaphore actionSem = new Semaphore(0);
+    
+    /** The action to perform. */
+    private CertificateAction action;
 
     /**
      * Creates a new certificate manager for a client connecting to the
@@ -253,9 +256,19 @@ public class CertificateManager implements X509TrustManager {
             Main.getUI().showSSLCertificateDialog(
                     new SSLCertificateDialogModel(chain, problems, this));
 
-            //actionSem.acquireUninterruptibly();
+            actionSem.acquireUninterruptibly();
             
-            // RAR?!?!?!?!/
+            switch (action) {
+                case DISCONNECT:
+                    // TODO: implement
+                    break;
+                case IGNORE_PERMANENTY:
+                    // TODO: implement
+                    break;
+                case IGNORE_TEMPORARILY:
+                    // TODO: implement
+                    break;
+            }
         }
     }
 
@@ -265,6 +278,8 @@ public class CertificateManager implements X509TrustManager {
      * @param action The action that's been selected
      */
     public void setAction(final CertificateAction action) {
+        this.action = action;
+        
         actionSem.release();
     }
 
