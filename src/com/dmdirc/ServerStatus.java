@@ -79,7 +79,7 @@ public class ServerStatus {
         builder.append('→');
         builder.append(toState.name());
         builder.append(' ');
-        builder.append(Thread.currentThread().getStackTrace()[2].toString());
+        builder.append(Thread.currentThread().getStackTrace()[3].toString());
         builder.append(" [");
         builder.append(Thread.currentThread().getName());
         builder.append(']');
