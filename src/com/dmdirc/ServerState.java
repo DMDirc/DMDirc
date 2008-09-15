@@ -22,20 +22,81 @@
 
 package com.dmdirc;
 
-/** An enumeration of possible states for servers. */
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * An enumeration of possible states for servers.
+ */
 public enum ServerState {
+
     /** Indicates the client is in the process of connecting. */
-    CONNECTING,
+    CONNECTING(
+            "CONNECTED",                 // Connection attempt succeeded
+            "TRANSIENTLY_DISCONNECTED",  // Connection attempt failed
+            "DISCONNECTING",             // User ordered a disconnection
+            "CLOSING"                    // DMDirc is closing
+    ),
+
     /** Indicates the client has connected to the server. */
-    CONNECTED,
+    CONNECTED(
+            "DISCONNECTING",             // User ordered a disconnection
+            "TRANSIENTLY_DISCONNECTED",  // Server caused a disconnection
+            "CLOSING"                    // DMDirc is closing
+    ),
+
     /** Indicates that we've been temporarily disconnected. */
-    TRANSIENTLY_DISCONNECTED,
+    TRANSIENTLY_DISCONNECTED(
+            "CONNECTING",                // User forced a connect attempt
+            "RECONNECT_WAIT",            // Waiting for auto-reconnect
+            "CLOSING"                    // DMDirc is closing
+    ),
+
     /** Indicates that the user has told us to disconnect. */
-    DISCONNECTED,
+    DISCONNECTED(
+            "CONNECTING",                // User forced a connect attempt
+            "CLOSING"                    // DMDirc is closing
+    ),
+
     /** In the process of disconnecting. */
-    DISCONNECTING,
+    DISCONNECTING(
+            "DISCONNECTED",              // Socket closed
+            "CLOSING"                    // DMDirc is closing
+    ),
+
     /** Indicates we're waiting for the auto-reconnect timer to fire. */
-    RECONNECT_WAIT,
+    RECONNECT_WAIT(
+            "CONNECTING",                // User forced a connect attempt
+            "TRANSIENTLY_DISCONNECTED",  // Reconnect timer expired
+            "CLOSING"                    // DMDirc is closing
+    ),
+
     /** Indicates that the server frame and its children are closing. */
-    CLOSING,
+    CLOSING;
+
+    /** The allowed transitions from this state. */
+    private final List<String> transitions;
+
+    /**
+     * Creates a new instance of ServerState.
+     *
+     * @since 0.6.3
+     * @param transitions The names of the states to which a transition is
+     * allowed from this state
+     */
+    ServerState(final String ... transitions) {
+        this.transitions = Arrays.asList(transitions);
+    }
+
+    /**
+     * Determines whether a transition from this state to the specified state
+     * would be legal.
+     *
+     * @since 0.6.3
+     * @param state The state that is being transitioned to
+     * @return True if the transition is allowed, false otherwise.
+     */
+    public boolean canTransitionTo(final ServerState state) {
+        return transitions.contains(state.name());
+    }
 }

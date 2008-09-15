@@ -99,7 +99,8 @@ public final class Server extends WritableFrameContainer implements Serializable
     private transient Identity profile;
 
     /** The current state of this server. */
-    private ServerState myState = ServerState.DISCONNECTED;
+    private final ServerStatus myState = new ServerStatus();
+
     /** The timer we're using to delay reconnects. */
     private Timer reconnectTimer;
 
@@ -238,7 +239,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         assert profile != null;
 
         synchronized (this) {
-            switch (myState) {
+            switch (myState.getState()) {
                 case RECONNECT_WAIT:
                     reconnectTimer.cancel();
                     break;
@@ -262,7 +263,7 @@ public final class Server extends WritableFrameContainer implements Serializable
                         + "is still connected.\n\nMy state:" + myState);
             }
             
-            myState = ServerState.CONNECTING;
+            myState.transition(ServerState.CONNECTING);
         
             ActionManager.processEvent(CoreActionType.SERVER_CONNECTING, null, this);
 
@@ -327,7 +328,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public void reconnect(final String reason) {
         synchronized (this) {
-            if (myState == ServerState.CLOSING) {
+            if (myState.getState() == ServerState.CLOSING) {
                 return;
             }
         
@@ -358,7 +359,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public void disconnect(final String reason) {
         synchronized (this) {
-            switch (myState) {
+            switch (myState.getState()) {
             case CLOSING:
             case DISCONNECTED:
             case TRANSIENTLY_DISCONNECTED:
@@ -370,13 +371,13 @@ public final class Server extends WritableFrameContainer implements Serializable
                 break;
             }
 
-            myState = ServerState.DISCONNECTING;
+            myState.transition(ServerState.DISCONNECTING);
         
             removeInvites();
             updateIcon();
 
             if (parser == null) {
-                myState = ServerState.DISCONNECTED;
+                myState.transition(ServerState.DISCONNECTED);
             } else {
                 parser.disconnect(reason);
             }
@@ -401,7 +402,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     @Precondition("The server state is transiently disconnected")
     private void doDelayedReconnect() {
         synchronized (this) {
-            if (myState != ServerState.TRANSIENTLY_DISCONNECTED) {
+            if (myState.getState() != ServerState.TRANSIENTLY_DISCONNECTED) {
                 throw new IllegalStateException("doDelayedReconnect when not "
                         + "transiently disconnected\n\nState: " + myState);
             }
@@ -416,15 +417,15 @@ public final class Server extends WritableFrameContainer implements Serializable
                 @Override
                 public void run() {
                     synchronized (Server.this) {
-                        if (myState == ServerState.RECONNECT_WAIT) {
-                            myState = ServerState.TRANSIENTLY_DISCONNECTED;
+                        if (myState.getState() == ServerState.RECONNECT_WAIT) {
+                            myState.transition(ServerState.TRANSIENTLY_DISCONNECTED);
                             reconnect();
                         }
                     }
                 }
             }, delay);
 
-            myState = ServerState.RECONNECT_WAIT;
+            myState.transition(ServerState.RECONNECT_WAIT);
             updateIcon();
         }
     }
@@ -560,7 +561,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public void addChannel(final ChannelInfo chan) {
         synchronized (this) {
-            if (myState == ServerState.CLOSING) {
+            if (myState.getState() == ServerState.CLOSING) {
                 // Can't join channels while the server is closing
                 return;
             }
@@ -585,7 +586,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public void addQuery(final String host) {
         synchronized (this) {
-            if (myState == ServerState.CLOSING) {
+            if (myState.getState() == ServerState.CLOSING) {
                 // Can't open queries while the server is closing
                 return;
             }
@@ -660,7 +661,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      * Updates this server's icon.
      */
     private void updateIcon() {
-        final String icon = myState == ServerState.CONNECTED
+        final String icon = myState.getState() == ServerState.CONNECTED
                     ? serverInfo.getSSL() ? "secure-server" : "server"
                     : "server-disconnected";
         setIcon(icon);
@@ -709,7 +710,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public void join(final String channel) {
         synchronized (this) {
-            if (myState == ServerState.CONNECTED) {
+            if (myState.getState() == ServerState.CONNECTED) {
                 removeInvites(channel);
 
                 if (hasChannel(channel)) {
@@ -728,7 +729,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     @Override
     public void sendLine(final String line) {
         synchronized (this) {
-            if (parser != null && myState == ServerState.CONNECTED) {
+            if (parser != null && myState.getState() == ServerState.CONNECTED) {
                 parser.sendLine(window.getTranscoder().encode(line));
             }
         }
@@ -877,7 +878,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @return This server's state
      */
     public ServerState getState() {
-        return myState;
+        return myState.getState();
     }
 
     /** {@inheritDoc} */
@@ -895,7 +896,7 @@ public final class Server extends WritableFrameContainer implements Serializable
                 disconnect();
             }
 
-            myState = ServerState.CLOSING;
+            myState.transition(ServerState.CLOSING);
             closeChannels();
             closeQueries();
             removeInvites();
@@ -1138,15 +1139,16 @@ public final class Server extends WritableFrameContainer implements Serializable
         eventHandler.unregisterCallbacks();
 
         synchronized (this) {
-            if (myState == ServerState.CLOSING || myState == ServerState.DISCONNECTED) {
+            if (myState.getState() == ServerState.CLOSING
+                    || myState.getState() == ServerState.DISCONNECTED) {
                 // This has been triggered via .disconect()
                 return;
             }
             
-            if (myState == ServerState.DISCONNECTING) {
-                myState = ServerState.DISCONNECTED;
+            if (myState.getState() == ServerState.DISCONNECTING) {
+                myState.transition(ServerState.DISCONNECTED);
             } else {
-                myState = ServerState.TRANSIENTLY_DISCONNECTED;
+                myState.transition(ServerState.TRANSIENTLY_DISCONNECTED);
             }
 
             updateIcon();
@@ -1168,7 +1170,7 @@ public final class Server extends WritableFrameContainer implements Serializable
 
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
                     "reconnectondisconnect", false)
-                    && myState == ServerState.TRANSIENTLY_DISCONNECTED) {
+                    && myState.getState() == ServerState.TRANSIENTLY_DISCONNECTED) {
                 doDelayedReconnect();
             }        
         }
@@ -1182,16 +1184,17 @@ public final class Server extends WritableFrameContainer implements Serializable
     @Precondition("The current server state is CONNECTING")
     public void onConnectError(final ParserError errorInfo) {
         synchronized (this) {
-            if (myState == ServerState.CLOSING || myState == ServerState.DISCONNECTING) {
+            if (myState.getState() == ServerState.CLOSING
+                    || myState.getState() == ServerState.DISCONNECTING) {
                 // Do nothing
                 return;
-            } else if (myState != ServerState.CONNECTING) {
+            } else if (myState.getState() != ServerState.CONNECTING) {
                 // Shouldn't happen
                 throw new IllegalStateException("Connect error when not "
                         + "connecting\n\nState: " + myState);
             }
 
-            myState = ServerState.TRANSIENTLY_DISCONNECTED;
+            myState.transition(ServerState.TRANSIENTLY_DISCONNECTED);
         
             updateIcon();
 
@@ -1251,13 +1254,13 @@ public final class Server extends WritableFrameContainer implements Serializable
     @Precondition("State is CONNECTING")
     public void onPost005() {
         synchronized (this) {
-            if (myState != ServerState.CONNECTING) {
+            if (myState.getState() != ServerState.CONNECTING) {
                 // Shouldn't happen
                 throw new IllegalStateException("Received onPost005 while not "
                         + "connecting\n\nState: " + myState);
             }
             
-            myState = ServerState.CONNECTED;
+            myState.transition(ServerState.CONNECTED);
         
             updateIcon();
 
