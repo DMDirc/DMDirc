@@ -101,8 +101,6 @@ public final class ServerEventHandler extends EventHandler
     /** {@inheritDoc} */
     @Override
     public void onErrorInfo(final IRCParser tParser, final ParserError errorInfo) {
-        checkParser(tParser);
-
         final ErrorLevel errorLevel = ErrorLevel.UNKNOWN;
 
         final Exception ex = (errorInfo.isException()) ? errorInfo.getException()
