@@ -21,6 +21,6 @@
  */
 
 /**
- * DMDirc actions, a user friendly scripting alternative.
+ * Actions are a user friendly scripting alternative.
  */
 package com.dmdirc.actions;
