@@ -68,6 +68,7 @@ public enum ServerState {
     RECONNECT_WAIT(
             "CONNECTING",                // User forced a connect attempt
             "TRANSIENTLY_DISCONNECTED",  // Reconnect timer expired
+            "DISCONNECTED",              // User forced a disconnect
             "CLOSING"                    // DMDirc is closing
     ),
 

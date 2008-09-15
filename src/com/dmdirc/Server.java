@@ -371,14 +371,14 @@ public final class Server extends WritableFrameContainer implements Serializable
                 break;
             }
 
-            myState.transition(ServerState.DISCONNECTING);
-        
-            removeInvites();
-            updateIcon();
-
             if (parser == null) {
                 myState.transition(ServerState.DISCONNECTED);
             } else {
+                myState.transition(ServerState.DISCONNECTING);
+
+                removeInvites();
+                updateIcon();
+
                 parser.disconnect(reason);
             }
 
@@ -1196,6 +1196,8 @@ public final class Server extends WritableFrameContainer implements Serializable
     @Precondition("The current server state is CONNECTING")
     public void onConnectError(final ParserError errorInfo) {
         synchronized (this) {
+            parser = null;
+
             if (myState.getState() == ServerState.CLOSING
                     || myState.getState() == ServerState.DISCONNECTING) {
                 // Do nothing
