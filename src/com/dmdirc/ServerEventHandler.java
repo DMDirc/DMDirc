@@ -71,8 +71,8 @@ public final class ServerEventHandler extends EventHandler
 
     /** {@inheritDoc} */
     @Override
-    protected IRCParser getParser() {
-        return owner.getParser();
+    protected Server getServer() {
+        return owner;
     }
 
     /** {@inheritDoc} */

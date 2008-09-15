@@ -881,6 +881,18 @@ public final class Server extends WritableFrameContainer implements Serializable
         return myState.getState();
     }
 
+    /**
+     * Retrieves the status object for this server. Effecting state transitions
+     * on the object returned by this method will almost certainly cause
+     * problems.
+     *
+     * @since 0.6.3
+     * @return This server's status object.
+     */
+    public ServerStatus getStatus() {
+        return myState;
+    }
+
     /** {@inheritDoc} */
     @Override
     public void windowClosing() {

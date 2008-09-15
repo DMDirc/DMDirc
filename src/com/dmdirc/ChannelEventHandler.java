@@ -70,8 +70,8 @@ public final class ChannelEventHandler extends EventHandler implements
 
     /** {@inheritDoc} */
     @Override
-    protected IRCParser getParser() {
-        return owner.getServer().getParser();
+    protected Server getServer() {
+        return owner.getServer();
     }
 
     /**

@@ -44,7 +44,7 @@ public abstract class EventHandler implements ICallbackInterface {
      * owner's parser.
      */
     public void registerCallbacks() {
-        final CallbackManager cbm = getParser().getCallbackManager();
+        final CallbackManager cbm = getServer().getParser().getCallbackManager();
         
         try {
             for (Class iface : this.getClass().getInterfaces()) {
@@ -63,8 +63,8 @@ public abstract class EventHandler implements ICallbackInterface {
      * Unregisters all callbacks that have been registered by this event handler.
      */
     public void unregisterCallbacks() {
-        if (getParser() != null) {
-            getParser().getCallbackManager().delAllCallback(this);
+        if (getServer().getParser() != null) {
+            getServer().getParser().getCallbackManager().delAllCallback(this);
         }
     }
     
@@ -80,11 +80,12 @@ public abstract class EventHandler implements ICallbackInterface {
             throws CallbackNotFoundException;
     
     /**
-     * Retrieves the parser belonging to this EventHandler's owner.
-     * 
-     * @return This EventHandler's expected parser
+     * Retrieves the server belonging to this EventHandler's owner.
+     *
+     * @since 0.6.3
+     * @return This EventHandler's expected server
      */
-    protected abstract IRCParser getParser();
+    protected abstract Server getServer();
     
     /**
      * Checks that the specified parser is the same as the one the server is
@@ -94,10 +95,9 @@ public abstract class EventHandler implements ICallbackInterface {
      * @param parser The parser to check
      */
     protected void checkParser(final IRCParser parser) {
-        if (parser != getParser()) {
+        if (parser != getServer().getParser()) {
             throw new IllegalArgumentException("Event called from a parser that's not in use."
-                    + "\nActual parser: " + getParser().hashCode()
-                    + "\nPassed parser: " + parser.hashCode());
+                    + "\n\n " + getServer().getStatus().getTransitionHistory());
         }
     }    
 
