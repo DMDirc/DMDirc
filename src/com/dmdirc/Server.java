@@ -1200,9 +1200,12 @@ public final class Server extends WritableFrameContainer implements Serializable
         synchronized (this) {
             parser = null;
 
-            if (myState.getState() == ServerState.CLOSING
-                    || myState.getState() == ServerState.DISCONNECTING) {
+            if (myState.getState() == ServerState.CLOSING) {
                 // Do nothing
+                return;
+            } else if (myState.getState() == ServerState.DISCONNECTING) {
+                // Pretend it closed nicely
+                onSocketClosed();
                 return;
             } else if (myState.getState() != ServerState.CONNECTING) {
                 // Shouldn't happen
