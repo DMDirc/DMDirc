@@ -256,7 +256,7 @@ public class CertificateManager implements X509TrustManager {
             Main.getUI().showSSLCertificateDialog(
                     new SSLCertificateDialogModel(chain, problems, this));
 
-            actionSem.acquireUninterruptibly();
+            /*actionSem.acquireUninterruptibly();
             
             switch (action) {
                 case DISCONNECT:
@@ -268,7 +268,7 @@ public class CertificateManager implements X509TrustManager {
                 case IGNORE_TEMPORARILY:
                     // TODO: implement
                     break;
-            }
+            }*/
         }
     }
 
