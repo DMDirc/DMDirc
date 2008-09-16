@@ -251,7 +251,7 @@ public final class Server extends WritableFrameContainer implements Serializable
                     disconnect(getConfigManager().getOption(DOMAIN_GENERAL, "quitmessage"));
                     break;
                 case DISCONNECTING:
-                    onSocketClosed();
+                    addLine("serverDisconnecting");
                     break;
                 default:
                     // Do nothing
@@ -1151,6 +1151,8 @@ public final class Server extends WritableFrameContainer implements Serializable
         eventHandler.unregisterCallbacks();
 
         synchronized (this) {
+            parser = null;
+
             if (myState.getState() == ServerState.CLOSING
                     || myState.getState() == ServerState.DISCONNECTED) {
                 // This has been triggered via .disconect()
