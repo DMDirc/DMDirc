@@ -22,9 +22,12 @@
 
 package com.dmdirc.ui.swing.dialogs.sslcertificate;
 
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.core.dialogs.sslcertificate.CertificateChainEntry;
 import com.dmdirc.ui.swing.components.renderers.CertificateChainEntryCellRenderer;
+
 import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
@@ -33,10 +36,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionListener;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
- *
+ * Displays the certificate chain.
  */
 public class CertificateChainPanel extends JPanel {
 
@@ -69,9 +73,9 @@ public class CertificateChainPanel extends JPanel {
         setBorder(BorderFactory.createTitledBorder("Certificate Chain"));
         setLayout(new MigLayout("fill, wrap 1"));
 
-        add(new JScrollPane(list), "grow");
-        add(new JLabel("Certificate is trusted"), "grow");
-        add(new JLabel("Problem with certificate"), "grow");
+        add(new JScrollPane(list), "grow, pushy");
+        add(new JLabel("Certificate is trusted", IconManager.getIconManager().getIcon("tick"), JLabel.LEFT), "grow");
+        add(new JLabel("Problem with certificate", IconManager.getIconManager().getIcon("cross"), JLabel.LEFT), "grow");
     }
 
     public void setChain(final List<CertificateChainEntry> certificateChain) {
@@ -84,7 +88,18 @@ public class CertificateChainPanel extends JPanel {
                 model.addElement(entry);
             }
         }
-        list.setSelectedIndex(0);
+    }
+    
+    public String getName(final int index) {
+        return ((CertificateChainEntry) model.get(index)).getName();
+    }
+    
+    public int getSelectedIndex() {
+        return list.getSelectedIndex();
+    }
+    
+    public void setSelectedIndex(final int index) {
+        list.setSelectedIndex(index);
     }
     
     public void addListSelectionListener(final ListSelectionListener listener) {

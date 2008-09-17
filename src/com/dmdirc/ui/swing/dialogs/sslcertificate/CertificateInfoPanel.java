@@ -24,18 +24,22 @@ package com.dmdirc.ui.swing.dialogs.sslcertificate;
 
 import com.dmdirc.ui.core.dialogs.sslcertificate.CertificateInformationEntry;
 import com.dmdirc.ui.swing.components.TextLabel;
+
 import java.awt.Color;
 import java.util.ArrayList;
+
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
- *
+ * Displays the certificate info panel. Listing various informational 
+ * snippets about a certificate.
  */
 public class CertificateInfoPanel extends JPanel {
 
@@ -47,6 +51,8 @@ public class CertificateInfoPanel extends JPanel {
     private static final long serialVersionUID = 1;
     /** Certificate info list. */
     private List<List<CertificateInformationEntry>> certificateInfo;
+    /** Certificate name. */
+    private String certificateName;
 
     public CertificateInfoPanel() {
         initComponents();
@@ -60,12 +66,12 @@ public class CertificateInfoPanel extends JPanel {
     private void layoutComponents() {
         setVisible(false);
         removeAll();
-        setBorder(BorderFactory.createTitledBorder("Information for " + ""));
+        setBorder(BorderFactory.createTitledBorder("Information for " + certificateName));
         setLayout(new MigLayout("fill, wrap 2"));
 
         for (List<CertificateInformationEntry> entry : certificateInfo) {
             for (CertificateInformationEntry info : entry) {
-                add(new JLabel(info.getTitle()), "align right");
+                add(new JLabel(info.getTitle()), "alignx right");
                 final TextLabel text = new TextLabel(info.getValue());
                 if (info.isInvalid()) {
                     SimpleAttributeSet sas = new SimpleAttributeSet();
@@ -73,15 +79,17 @@ public class CertificateInfoPanel extends JPanel {
                     text.getDocument().setParagraphAttributes(0, info.getValue().
                             length(), sas, true);
                 }
-                add(text, "grow");
+                add(text, "growx, pushx");
             }
             add(new JLabel(), "spanx");
         }
         setVisible(true);
     }
 
-    public void setInfo(final List<List<CertificateInformationEntry>> certificateInfo) {
+    public void setInfo(final String certificateName, 
+            final List<List<CertificateInformationEntry>> certificateInfo) {
         this.certificateInfo = certificateInfo;
+        this.certificateName = certificateName;
 
         if (certificateInfo == null) {
             this.certificateInfo =

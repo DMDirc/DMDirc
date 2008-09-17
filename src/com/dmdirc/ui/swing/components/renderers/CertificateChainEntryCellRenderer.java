@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing.components.renderers;
 
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.core.dialogs.sslcertificate.CertificateChainEntry;
 
 import java.awt.Component;
@@ -55,6 +56,11 @@ public class CertificateChainEntryCellRenderer extends DefaultListCellRenderer {
             final CertificateChainEntry entry = (CertificateChainEntry) value;
 
             setText(entry.getName());
+            if (!entry.isInvalid() || entry.isTrusted()) {
+                setIcon(IconManager.getIconManager().getIcon("tick"));
+            } else {
+                setIcon(IconManager.getIconManager().getIcon("cross"));
+            }
         }
         return this;
     }

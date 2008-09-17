@@ -22,10 +22,20 @@
 
 package com.dmdirc.ui.swing.dialogs.sslcertificate;
 
+import com.dmdirc.ui.IconManager;
+import com.dmdirc.ui.core.dialogs.sslcertificate.CertificateSummaryEntry;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import net.miginfocom.swing.MigLayout;
+
 /**
- *
+ * Displays a summary about the certificate chain.
  */
 public class SummaryPanel extends JPanel {
 
@@ -35,4 +45,28 @@ public class SummaryPanel extends JPanel {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** List of certificate summary entries. */
+    private List<CertificateSummaryEntry> summary;
+
+    public SummaryPanel() {
+        summary = new ArrayList<CertificateSummaryEntry>();
+        layoutComponents();
+    }
+
+    private void layoutComponents() {
+        setBorder(BorderFactory.createTitledBorder("Certificate Chain"));
+        setLayout(new MigLayout("fill, wrap 1"));
+
+        for (CertificateSummaryEntry entry : summary) {
+            add(new JLabel(entry.getText(),
+                    entry.isGood() ? IconManager.getIconManager().getIcon("tick")
+                    : IconManager.getIconManager().getIcon("cross"), JLabel.LEFT),
+                    "growx");
+        }
+    }
+
+    void setSummary(final List<CertificateSummaryEntry> summary) {
+        this.summary = summary;
+        layoutComponents();
+    }
 }

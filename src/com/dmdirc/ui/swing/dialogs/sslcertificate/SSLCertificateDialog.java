@@ -22,7 +22,9 @@
 
 package com.dmdirc.ui.swing.dialogs.sslcertificate;
 
+import com.dmdirc.ui.core.dialogs.sslcertificate.CertificateAction;
 import com.dmdirc.ui.core.dialogs.sslcertificate.SSLCertificateDialogModel;
+import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.TextLabel;
 
@@ -31,17 +33,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.JButton;
 
+import javax.swing.JButton;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
  * SSL Certificate information dialog. Also provides the ability to accept and
  * reject certificates whilst connecting to an SSL server.
  */
-public class SSLCertificateDialog extends StandardDialog implements ActionListener, ListSelectionListener {
+public class SSLCertificateDialog extends StandardDialog implements ActionListener,
+        ListSelectionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -63,6 +67,8 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
     private TextLabel blurb;
     /** Parent window. */
     private Window parent;
+    /** Selected index. */
+    private int selectedIndex;
 
     /** 
      * Creates a new instance of ActionsManagerDialog.
@@ -70,11 +76,13 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
      * @param parent Parent window for the dialog
      * @param model dialog model
      */
-    public SSLCertificateDialog(final Window parent, final SSLCertificateDialogModel model) {
+    public SSLCertificateDialog(final Window parent,
+            final SSLCertificateDialogModel model) {
         super(parent, ModalityType.MODELESS);
 
         this.parent = parent;
         this.model = model;
+        this.selectedIndex = 0;
 
         initComponents();
         addListeners();
@@ -91,11 +99,13 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
     public void display() {
         pack();
         setLocationRelativeTo(parent);
+        chain.setSelectedIndex(0);
         setVisible(true);
     }
 
     private void addListeners() {
         getOkButton().addActionListener(this);
+        getCancelButton().addActionListener(this);
         addWindowListener(new WindowAdapter() {
 
             /** {@inheritDoc} */
@@ -114,17 +124,26 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
         info = new CertificateInfoPanel();
         summary = new SummaryPanel();
         blurb = new TextLabel();
-        
+
         chain.setChain(model.getCertificateChain());
+        summary.setSummary(model.getSummary());
+
+        if (model.needsResponse()) {
+            blurb.setText("Your connection to " + chain.getName(0) +
+                    " is encrypted using SSL.");
+        } else {
+            blurb.setText("Theres is a problem with the certificate used by" +
+                    chain.getName(0));
+        }
     }
 
     private void layoutComponents() {
         setLayout(new MigLayout("fill, wrap 2, wmin 600, hmin 400"));
 
         add(blurb, "span 2");
-        add(chain, "w 250");
-        add(info, "grow");
-        add(summary, "span 2");
+        add(chain, "w 250, growy");
+        add(info, "grow, pushx");
+        add(summary, "span 2, growx");
         add(actions, "span 2");
         add(getOkButton(), "skip, right");
     }
@@ -137,16 +156,27 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
     @Override
     public void actionPerformed(final ActionEvent e) {
         dispose();
+        model.performAction(CertificateAction.IGNORE_TEMPORARILY);
     }
 
     @Override
     public void valueChanged(final ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
-            if (e.getFirstIndex() == -1) {
-                info.setInfo(null);
+            final int index = chain.getSelectedIndex();
+            if (index == -1) {
+                chain.setSelectedIndex(selectedIndex);
             } else {
-                info.setInfo(model.getCertificateInfo(e.getFirstIndex()));
+                info.setInfo(chain.getName(index),
+                        model.getCertificateInfo(e.getFirstIndex()));
+                selectedIndex = index;
             }
         }
+    }
+
+    public static void main(final String[] args) {
+        UIUtilities.initUISettings();
+        SSLCertificateDialog dialog = new SSLCertificateDialog(null,
+                new TestSSLCertificateDialogModel());
+        dialog.display();
     }
 }
