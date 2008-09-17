@@ -23,6 +23,8 @@
 package com.dmdirc.ui.swing.components;
 
 import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.InputField;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -32,6 +34,7 @@ import com.dmdirc.ui.swing.UIUtilities;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
@@ -183,6 +186,19 @@ public class SwingInputHandler extends InputHandler implements KeyListener {
                             enterPressed(target.getText());
                             return null;
                         }
+
+                        @Override
+                        protected void done() {
+                            try {
+                                get();
+                            } catch (InterruptedException ex) {
+                                //Ignore
+                            } catch (ExecutionException ex) {
+                                Logger.appError(ErrorLevel.MEDIUM, ex.getMessage(), ex);
+                            }
+                        }
+                        
+                        
                     }.execute();
                 } catch (Exception ex) {
                 //Crap
