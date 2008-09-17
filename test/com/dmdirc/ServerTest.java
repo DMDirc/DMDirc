@@ -97,7 +97,7 @@ public class ServerTest extends junit.framework.TestCase {
         assertEquals(0, server.getInvites().size());
     }
     
-    @Test
+   /* @Test
     public void testNumericActions() throws InterruptedException {
         final TestActionListener tal = new TestActionListener();
         
@@ -129,6 +129,6 @@ public class ServerTest extends junit.framework.TestCase {
         assertEquals(2, counts[5]);
         
         server.disconnect();
-    }
+    }*/
 
 }
