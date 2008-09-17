@@ -38,6 +38,8 @@ import javax.swing.JButton;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -128,11 +130,11 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
         chain.setChain(model.getCertificateChain());
         summary.setSummary(model.getSummary());
 
-        if (model.needsResponse()) {
+        if (!model.needsResponse()) {
             blurb.setText("Your connection to " + chain.getName(0) +
                     " is encrypted using SSL.");
         } else {
-            blurb.setText("Theres is a problem with the certificate used by" +
+            blurb.setText("Theres is a problem with the certificate used by " +
                     chain.getName(0));
         }
     }
