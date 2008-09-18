@@ -112,6 +112,15 @@ public class DCCSend extends DCC {
 	}
 	
 	/**
+	 * Called to remove this object from the sends list.
+	 */
+	public void removeFromSends() {
+		synchronized (sends) {
+			sends.remove(this);
+		}
+	}
+	
+	/**
 	 * Set the filename of this file
 	 *
 	 * @param filename Filename

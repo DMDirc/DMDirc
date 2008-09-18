@@ -29,6 +29,7 @@ import com.dmdirc.config.IdentityManager;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -170,12 +171,27 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 			}
 			dcc.reset();
 			if (parser != null && parser.getSocketState() == IRCParser.STATE_OPEN) {
-				if (IdentityManager.getGlobalConfig().getOptionBool(DCCPlugin.getDomain(), "send.reverse", false)) {
-					parser.sendCTCP(otherNickname, "DCC", "SEND \""+(new File(dcc.getFileName())).getName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" 0 "+dcc.getFileSize()+" "+dcc.makeToken()+((dcc.isTurbo()) ? " T" : ""));
+				final String myNickname = parser.getMyNickname();
+				// Check again incase we have changed nickname to the same nickname that
+				// this send is for.
+				if (parser.getIRCStringConverter().equalsIgnoreCase(otherNickname, myNickname)) {
+					final Thread errorThread = new Thread(new Runnable() {
+						/** {@inheritDoc} */
+						@Override
+						public void run() {
+							JOptionPane.showMessageDialog(null, "You can't DCC yourself.", "DCC Error", JOptionPane.ERROR_MESSAGE);
+						}
+					});
+					errorThread.start();
 					return;
-				} else if (plugin.listen(dcc)) {
-					parser.sendCTCP(otherNickname, "DCC", "SEND \""+(new File(dcc.getFileName())).getName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" "+dcc.getPort()+" "+dcc.getFileSize()+((dcc.isTurbo()) ? " T" : ""));
-					return;
+				} else {
+					if (IdentityManager.getGlobalConfig().getOptionBool(DCCPlugin.getDomain(), "send.reverse", false)) {
+						parser.sendCTCP(otherNickname, "DCC", "SEND \""+(new File(dcc.getFileName())).getName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" 0 "+dcc.getFileSize()+" "+dcc.makeToken()+((dcc.isTurbo()) ? " T" : ""));
+						return;
+					} else if (plugin.listen(dcc)) {
+						parser.sendCTCP(otherNickname, "DCC", "SEND \""+(new File(dcc.getFileName())).getName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" "+dcc.getPort()+" "+dcc.getFileSize()+((dcc.isTurbo()) ? " T" : ""));
+						return;
+					}
 				}
 			} else {
 				status.setText("Status: Resend failed.");
@@ -307,6 +323,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	@Override
 	public void windowClosing() {
 		super.windowClosing();
+		dcc.removeFromSends();
 		dcc.close();
 	}
 }

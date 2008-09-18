@@ -310,6 +310,13 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 					} else { size = -1; }
 					final String token = (ctcpData.length-1 > i) ? ctcpData[++i] : "";
 					
+					// Ignore incorrect ports, or non-numeric IP/Port
+					try {
+						int portInt = Integer.parseInt(port);
+						if (portInt > 65535 || portInt < 0) { return; }
+						Long.parseLong(ip);
+					} catch (NumberFormatException nfe) { return; }
+					
 					DCCSend send = DCCSend.findByToken(token);
 					
 					if (send == null && !dontAsk) {
