@@ -137,6 +137,7 @@ public final class ChannelInfo {
 		final boolean isUnreal = thisIRCD.equals("unreal");
 		final boolean isStarChat = thisIRCD.equals("starchat");
 		final boolean isHybrid = thisIRCD.equals("hybrid");
+		final boolean isCharybdis = thisIRCD.equals("charybdis");
 		
 		// We are considered opped if we have a mode higher than voice (or if we have any modes if voice doesn't exist)
 		long voiceValue = 0;
@@ -161,7 +162,7 @@ public final class ChannelInfo {
 		for (Character cTemp : myParser.hChanModesOther.keySet()) {
 			final int nTemp = myParser.hChanModesOther.get(cTemp);
 			if (nTemp == IRCParser.MODE_LIST) {
-				if ((isFreenode || isHybrid) && (cTemp == 'e' || cTemp == 'I') && !isOpped) {
+				if ((isFreenode || isHybrid || isCharybdis) && (cTemp == 'e' || cTemp == 'I') && !isOpped) {
 					// IRCD doesn't allow non-ops to ask for these modes.
 					continue;
 				} else if (isStarChat && cTemp == 'H') {
