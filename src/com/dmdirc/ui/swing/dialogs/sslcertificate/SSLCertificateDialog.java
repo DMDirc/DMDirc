@@ -30,11 +30,8 @@ import com.dmdirc.ui.swing.components.TextLabel;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
-import javax.swing.JRootPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -131,7 +128,7 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
     }
 
     private void layoutComponents() {
-        setLayout(new MigLayout("fill, wrap 2, wmin 600, hmin 400, hidemode 3, debug"));
+        setLayout(new MigLayout("fill, wrap 2, wmin 600, hmin 400, hidemode 3"));
 
         add(blurb, "span 2");
         add(chain, "w 250!");
