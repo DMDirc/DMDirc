@@ -244,7 +244,7 @@ public class LinuxInstaller extends Installer {
 					writer.println("	exit 1;");
 					writer.println("fi");
 					
-					writer.println("echo \"Uninstalling dmdirc\"");
+					writer.println("echo \"Uninstalling DMDirc\"");
 					writer.println("echo \"Removing Shortcuts..\"");
 					if (isRoot()) {
 						command = "${TOOL} --config-source=`${TOOL} --get-default-source`";
@@ -284,7 +284,7 @@ public class LinuxInstaller extends Installer {
 					
 					writer.println("PROFILEDIR=\"${HOME}/.DMDirc\"");
 					writer.println("if [ -e ${PROFILEDIR}/dmdirc.config ]; then");
-					writer.println("	questiondialog \"Uninstaller\" \"A dmdirc profile has been detected (${PROFILEDIR})\n Do you want to delete it aswell?\"");
+					writer.println("	questiondialog \"Uninstaller\" \"A DMDirc profile has been detected (${PROFILEDIR})\n Do you want to delete it aswell?\"");
 
 					writer.println("	if [ $? -eq 0 ]; then");
 					writer.println("		rm -Rfv \"${PROFILEDIR}\"");
