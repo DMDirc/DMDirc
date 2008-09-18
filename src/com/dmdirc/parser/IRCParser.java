@@ -729,7 +729,7 @@ public class IRCParser implements Runnable {
 		} catch (UnknownHostException uhe) {
 			localhost = "*";
 		}
-		sendString("USER " + getIRCStringConverter().toLowerCase(me.getUsername()) + " "+localhost+" "+server.getHost()+" :" + me.getRealname());
+		sendString("USER " + me.getUsername() + " "+localhost+" "+server.getHost()+" :" + me.getRealname());
 	}
 
 	/**
