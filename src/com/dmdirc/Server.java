@@ -1228,7 +1228,8 @@ public final class Server extends WritableFrameContainer implements Serializable
                     description = "Unknown host (unable to resolve)";
                 } else if (exception instanceof java.net.NoRouteToHostException) {
                     description = "No route to host";
-                } else if (exception instanceof java.net.SocketException) {
+                } else if (exception instanceof java.net.SocketException
+                        || exception instanceof javax.net.ssl.SSLException) {
                     description = exception.getMessage();
                 } else {
                     Logger.appError(ErrorLevel.LOW, "Unknown socket error", exception);
