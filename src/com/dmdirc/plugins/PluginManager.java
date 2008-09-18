@@ -117,7 +117,7 @@ public class PluginManager implements ActionListener {
 			final PluginInfo pluginInfo = new PluginInfo(new URL("file:"+getDirectory()+filename));
 			final PluginInfo existing = getPluginInfoByName(pluginInfo.getName());
 			if (existing != null) {
-				Logger.userError(ErrorLevel.MEDIUM, "Duplicate Plugin detected, Ignoring. (" + filename + "is the same as " + existing.getFilename() + ")");
+				Logger.userError(ErrorLevel.MEDIUM, "Duplicate Plugin detected, Ignoring. (" + filename + " is the same as " + existing.getFilename() + ")");
 				return false;
 			}
 			new PluginComponent(pluginInfo);
