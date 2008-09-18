@@ -71,11 +71,13 @@ public class CertificateChainPanel extends JPanel {
 
     private void layoutComponents() {
         setBorder(BorderFactory.createTitledBorder("Certificate Chain"));
-        setLayout(new MigLayout("fill, wrap 1"));
+        setLayout(new MigLayout("filly, wrap 1"));
 
         add(new JScrollPane(list), "grow, pushy");
-        add(new JLabel("Certificate is trusted", IconManager.getIconManager().getIcon("tick"), JLabel.LEFT), "grow");
-        add(new JLabel("Problem with certificate", IconManager.getIconManager().getIcon("cross"), JLabel.LEFT), "grow");
+        add(new JLabel("Certificate is trusted", IconManager.getIconManager().
+                getIcon("tick"), JLabel.LEFT), "growx");
+        add(new JLabel("Problem with certificate", IconManager.getIconManager().
+                getIcon("cross"), JLabel.LEFT), "growx");
     }
 
     public void setChain(final List<CertificateChainEntry> certificateChain) {
@@ -89,19 +91,19 @@ public class CertificateChainPanel extends JPanel {
             }
         }
     }
-    
+
     public String getName(final int index) {
         return ((CertificateChainEntry) model.get(index)).getName();
     }
-    
+
     public int getSelectedIndex() {
         return list.getSelectedIndex();
     }
-    
+
     public void setSelectedIndex(final int index) {
         list.setSelectedIndex(index);
     }
-    
+
     public void addListSelectionListener(final ListSelectionListener listener) {
         list.addListSelectionListener(listener);
     }

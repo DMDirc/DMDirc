@@ -66,7 +66,8 @@ public class CertificateInfoPanel extends JPanel {
     private void layoutComponents() {
         setVisible(false);
         removeAll();
-        setBorder(BorderFactory.createTitledBorder("Information for " + certificateName));
+        setBorder(BorderFactory.createTitledBorder("Information for " +
+                certificateName));
         setLayout(new MigLayout("fill, wrap 2"));
 
         for (List<CertificateInformationEntry> entry : certificateInfo) {
@@ -81,12 +82,12 @@ public class CertificateInfoPanel extends JPanel {
                 }
                 add(text, "growx, pushx");
             }
-            add(new JLabel(), "spanx");
+            add(new JLabel(), "spanx, pushx");
         }
         setVisible(true);
     }
 
-    public void setInfo(final String certificateName, 
+    public void setInfo(final String certificateName,
             final List<List<CertificateInformationEntry>> certificateInfo) {
         this.certificateInfo = certificateInfo;
         this.certificateName = certificateName;

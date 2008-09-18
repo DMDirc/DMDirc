@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.swing.dialogs.sslcertificate;
 
-import com.dmdirc.ui.core.dialogs.sslcertificate.CertificateAction;
 import com.dmdirc.ui.core.dialogs.sslcertificate.SSLCertificateDialogModel;
 import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.components.StandardDialog;
@@ -35,6 +34,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
+import javax.swing.JRootPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -106,14 +106,6 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
     private void addListeners() {
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
-        addWindowListener(new WindowAdapter() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void windowClosing(final WindowEvent e) {
-                getCancelButton().doClick();
-            }
-        });
         chain.addListSelectionListener(this);
     }
 
@@ -128,24 +120,25 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
         chain.setChain(model.getCertificateChain());
         summary.setSummary(model.getSummary());
 
-        if (!model.needsResponse()) {
-            blurb.setText("Your connection to " + chain.getName(0) +
-                    " is encrypted using SSL.");
-        } else {
+        actions.setVisible(model.needsResponse());
+        if (model.needsResponse()) {
             blurb.setText("Theres is a problem with the certificate used by " +
                     chain.getName(0));
+        } else {
+            blurb.setText("Your connection to " + chain.getName(0) +
+                    " is encrypted using SSL.");
         }
     }
 
     private void layoutComponents() {
-        setLayout(new MigLayout("fill, wrap 2, wmin 600, hmin 400"));
+        setLayout(new MigLayout("fill, wrap 2, wmin 600, hmin 400, hidemode 3, debug"));
 
         add(blurb, "span 2");
-        add(chain, "w 250, growy");
+        add(chain, "w 250!");
         add(info, "grow, pushx");
         add(summary, "span 2, growx");
-        add(actions, "span 2");
-        add(getOkButton(), "skip, right");
+        add(actions, "span 2, growx, pushx");
+        add(getOkButton(), "span, right");
     }
 
     /** 
@@ -156,7 +149,11 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
     @Override
     public void actionPerformed(final ActionEvent e) {
         dispose();
-        model.performAction(CertificateAction.IGNORE_TEMPORARILY);
+        if (e.getSource().equals(getCancelButton())) {
+            
+        } else {
+            model.performAction(actions.getAction());   
+        }
     }
 
     @Override
