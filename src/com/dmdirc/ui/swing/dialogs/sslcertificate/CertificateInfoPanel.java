@@ -72,7 +72,7 @@ public class CertificateInfoPanel extends JPanel {
         for (List<CertificateInformationEntry> entry : certificateInfo) {
             for (CertificateInformationEntry info : entry) {
                 add(new JLabel(info.getTitle()), "alignx right");
-                final TextLabel text = new TextLabel(info.getValue());
+                final TextLabel text = new TextLabel(info.getValue(), false);
                 if (info.isInvalid()) {
                     SimpleAttributeSet sas = new SimpleAttributeSet();
                     StyleConstants.setForeground(sas, Color.RED);

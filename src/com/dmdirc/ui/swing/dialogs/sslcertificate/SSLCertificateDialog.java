@@ -38,8 +38,6 @@ import javax.swing.JButton;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -173,5 +171,12 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
                 selectedIndex = index;
             }
         }
+    }
+
+    public static void main(final String[] args) {
+        UIUtilities.initUISettings();
+        SSLCertificateDialog dialog = new SSLCertificateDialog(null,
+                new TestSSLCertificateDialogModel());
+        dialog.display();
     }
 }

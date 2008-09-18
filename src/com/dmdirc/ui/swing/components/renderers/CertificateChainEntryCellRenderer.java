@@ -56,10 +56,12 @@ public class CertificateChainEntryCellRenderer extends DefaultListCellRenderer {
             final CertificateChainEntry entry = (CertificateChainEntry) value;
 
             setText(entry.getName());
-            if (!entry.isInvalid() || entry.isTrusted()) {
+            if (entry.isInvalid()) {
+                setIcon(IconManager.getIconManager().getIcon("cross"));
+            } else if (entry.isTrusted()) {
                 setIcon(IconManager.getIconManager().getIcon("tick"));
             } else {
-                setIcon(IconManager.getIconManager().getIcon("cross"));
+                setIcon(IconManager.getIconManager().getIcon("nothing"));
             }
         }
         return this;
