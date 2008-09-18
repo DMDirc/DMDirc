@@ -172,11 +172,4 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
             }
         }
     }
-
-    public static void main(final String[] args) {
-        UIUtilities.initUISettings();
-        SSLCertificateDialog dialog = new SSLCertificateDialog(null,
-                new TestSSLCertificateDialogModel());
-        dialog.display();
-    }
 }
