@@ -1346,7 +1346,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
 
             Logger.appError(ErrorLevel.LOW, missing.toString() + " ["
-                    + getNetwork() + "]",
+                    + parser.getIRCD(true) + "]",
                     new Exception(missing.toString() + "\n" // NOPMD
                     + "Network: " + getNetwork() + "\n"
                     + "IRCd: " + parser.getIRCD(false)
