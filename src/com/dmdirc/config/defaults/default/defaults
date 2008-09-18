@@ -145,6 +145,7 @@ ui:
   quickCopy=false
   pasteProtectionLimit=1
   stylelinks=true
+  antialias=true
 
   treeviewActiveBold=true
 
