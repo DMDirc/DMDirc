@@ -80,7 +80,7 @@ public final class ServerCommandParser extends CommandParser {
      * @param line The line input by the user
      */
     protected void handleNonCommand(final InputWindow origin, final String line) {
-        server.getParser().sendLine(line);
+        server.sendLine(line);
     }
     
 }
