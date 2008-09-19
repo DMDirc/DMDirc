@@ -157,10 +157,13 @@ public final class Channel extends MessageTarget
     /** {@inheritDoc} */
     @Override
     public void sendLine(final String line) {
-        if (server.getParser().getChannelInfo(channelInfo.getName()) == null) {
-            // We're not in the channel
+        if (server.getState() != ServerState.CONNECTED
+                || server.getParser().getChannelInfo(channelInfo.getName()) == null) {
+            // We're not in the channel/connected to the server
             return;
-        } else if (line.indexOf('\n') > -1) {
+        }
+
+        if (line.indexOf('\n') > -1) {
             for (String part : line.split("\n")) {
                 sendLine(part);
             }
@@ -197,8 +200,9 @@ public final class Channel extends MessageTarget
     /** {@inheritDoc} */
     @Override
     public void sendAction(final String action) {
-        if (server.getParser().getChannelInfo(channelInfo.getName()) == null) {
-            // We're not in the channel
+        if (server.getState() != ServerState.CONNECTED
+                || server.getParser().getChannelInfo(channelInfo.getName()) == null) {
+            // We're not on the server/channel
             return;
         }
 
@@ -508,7 +512,7 @@ public final class Channel extends MessageTarget
         if (client == null) {
             // WTF?
             throw new UnsupportedOperationException("getDetails called with"
-                     + "null ChannelClientInfo");
+                     + " null ChannelClientInfo");
         }
 
         final String[] res = new String[3];
