@@ -200,7 +200,11 @@ public class ConditionTree {
                     i++;
                 }
 
-                stack.add(new ConditionTree(Integer.parseInt(temp.toString())));
+                try {
+                    stack.add(new ConditionTree(Integer.parseInt(temp.toString())));
+                } catch (NumberFormatException ex) {
+                    return null;
+                }
             } else if (m != ' ' && m != '\t' && m != '\n' && m != '\r') {
                 stack.add(m);
             }
