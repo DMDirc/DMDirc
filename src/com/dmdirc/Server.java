@@ -259,9 +259,9 @@ public final class Server extends WritableFrameContainer implements Serializable
                     break;
             }
 
-            if (parser != null && parser.getSocketState() == IRCParser.STATE_OPEN) {
+            if (parser != null) {
                 throw new IllegalArgumentException("Connection attempt while parser "
-                        + "is still connected.\n\nMy state:" + myState);
+                        + "is still connected.\n\nMy state:" + getState());
             }
             
             myState.transition(ServerState.CONNECTING);
