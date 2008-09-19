@@ -107,6 +107,7 @@ public final class IgnoreListPanel extends JPanel implements ActionListener,
                 
         listModel = new IgnoreListModel(cachedIgnoreList);
         list = new JList(listModel);
+
         final JScrollPane scrollPane = new JScrollPane(list);
         
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -117,6 +118,8 @@ public final class IgnoreListPanel extends JPanel implements ActionListener,
         sizeLabel = new JLabel("0 entries");
         viewToggle = new JCheckBox("Use advanced expressions");
         viewToggle.setOpaque(UIUtilities.getTabbedPaneOpaque());
+        viewToggle.setSelected(!cachedIgnoreList.canConvert());
+        viewToggle.setEnabled(cachedIgnoreList.canConvert());
 
         setLayout(new MigLayout("fill, wrap 1"));
         add(scrollPane, "growx, growy");

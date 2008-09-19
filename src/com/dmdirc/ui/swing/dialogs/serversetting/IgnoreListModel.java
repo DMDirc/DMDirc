@@ -39,10 +39,11 @@ public class IgnoreListModel extends AbstractListModel {
 
     private final IgnoreList ignoreList;
 
-    private boolean isSimple = true;
+    private boolean isSimple;
 
     public IgnoreListModel(IgnoreList ignoreList) {
         this.ignoreList = ignoreList;
+        isSimple = ignoreList.canConvert();
     }
 
     /** {@inheritDoc} */
