@@ -248,11 +248,12 @@ public final class Server extends WritableFrameContainer implements Serializable
                     return;
                 case CONNECTED:
                 case CONNECTING:
+                    addLine("serverConnecting");
                     disconnect(getConfigManager().getOption(DOMAIN_GENERAL, "quitmessage"));
-                    break;
+                    return;
                 case DISCONNECTING:
                     addLine("serverDisconnecting");
-                    break;
+                    return;
                 default:
                     // Do nothing
                     break;
@@ -1151,8 +1152,6 @@ public final class Server extends WritableFrameContainer implements Serializable
         eventHandler.unregisterCallbacks();
 
         synchronized (this) {
-            parser = null;
-
             if (myState.getState() == ServerState.CLOSING
                     || myState.getState() == ServerState.DISCONNECTED) {
                 // This has been triggered via .disconect()
@@ -1164,6 +1163,8 @@ public final class Server extends WritableFrameContainer implements Serializable
             } else {
                 myState.transition(ServerState.TRANSIENTLY_DISCONNECTED);
             }
+
+            parser = null;
 
             updateIcon();
 
@@ -1198,8 +1199,6 @@ public final class Server extends WritableFrameContainer implements Serializable
     @Precondition("The current server state is CONNECTING")
     public void onConnectError(final ParserError errorInfo) {
         synchronized (this) {
-            parser = null;
-
             if (myState.getState() == ServerState.CLOSING) {
                 // Do nothing
                 return;
@@ -1214,6 +1213,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
 
             myState.transition(ServerState.TRANSIENTLY_DISCONNECTED);
+            parser = null;
         
             updateIcon();
 
