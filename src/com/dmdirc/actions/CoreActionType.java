@@ -146,6 +146,8 @@ public enum CoreActionType implements ActionType {
     CHANNEL_MESSAGE(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Channel message received"),
     /** Channel actions received. */
     CHANNEL_ACTION(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Channel action received"),
+    /** Channel notice received. */
+    CHANNEL_NOTICE(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Channel notice received"),
     
     /** Channel CTCP received. */
     CHANNEL_CTCP(ChannelEvents.CHANNEL_CTCP, "Channel CTCP received"),

@@ -41,7 +41,7 @@ public final class ChannelEventHandler extends EventHandler implements
         IChannelMessage, IChannelGotNames, IChannelTopic, IChannelJoin,
         IChannelPart, IChannelKick, IChannelQuit, IChannelAction,
         IChannelNickChanged, IChannelModeChanged, IChannelUserModeChanged,
-        IChannelCTCP, IAwayStateOther {
+        IChannelCTCP, IAwayStateOther, IChannelNotice {
 
     /** The channel that owns this event handler. */
     private final Channel owner;
@@ -259,6 +259,17 @@ public final class ChannelEventHandler extends EventHandler implements
                     state ? CoreActionType.CHANNEL_USERAWAY : CoreActionType.CHANNEL_USERBACK,
                     channelClient);
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onChannelNotice(final IRCParser tParser,
+            final ChannelInfo cChannel, final ChannelClientInfo cChannelClient,
+            final String sMessage, final String sHost) {
+        checkParser(tParser);
+
+        owner.doNotification("channelNotice", CoreActionType.CHANNEL_NOTICE,
+                cChannelClient, sMessage);
     }
 
 }

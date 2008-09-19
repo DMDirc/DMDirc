@@ -19,6 +19,7 @@ formatter:
 #    4: User host
 #    5: Message content
 #    6: Channel name
+  channelNotice=5-%1$s%2$s:%6$s- %5$s
   channelMessage=<%1$s%2$s> %5$s
   channelHighlight=4<%1$s%2$s> %5$s
   channelAction=6* %1$s%2$s %5$s
