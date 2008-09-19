@@ -73,7 +73,7 @@ public class ServerInfoDialog extends StandardDialog {
 
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-        setTitle("Reverse buffer search");
+        setTitle("Server info");
 
         final JPanel panel = new JPanel();
 
@@ -86,7 +86,7 @@ public class ServerInfoDialog extends StandardDialog {
         } else {
             for (Server server : servers) {
                 panel.add(new JLabel(server.getName()));
-                panel.add(new JLabel(server.getNetwork(), JLabel.CENTER), "grow");
+                panel.add(new JLabel(server.getState() == ServerState.CONNECTED ? server.getNetwork() : "---", JLabel.CENTER), "grow");
                 panel.add(new JLabel(server.getState() == ServerState.CONNECTED ? ldp.getTime(server) : "---", JLabel.RIGHT), "grow, wrap");
             }
         }
