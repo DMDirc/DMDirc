@@ -437,7 +437,7 @@ public final class SwingController implements UIController {
             /** {@inheritDoc} */
             @Override
             public void run() {
-                new SSLCertificateDialog(getMainFrame(), model).display();
+                new SSLCertificateDialog(getMainFrame(), model).setVisible(true);
             }
         });
     }
