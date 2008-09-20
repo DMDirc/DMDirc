@@ -94,7 +94,7 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
      */
     private ActionEditorDialog(final Window window, final String group,
             final Action action) {
-        super(window, ModalityType.MODELESS);
+        super(window, ModalityType.DOCUMENT_MODAL);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setTitle("DMDirc: Action Editor");
 
@@ -145,7 +145,6 @@ public class ActionEditorDialog extends StandardDialog implements ActionListener
         me.pack();
         me.setLocationRelativeTo(window);
         me.setVisible(true);
-        me.requestFocus();
     }
 
     /**
