@@ -87,13 +87,13 @@ public class SSLCertificateDialogTest implements UITestIface {
         },window.list().cellReader(new CertificateListCellReader()).contents()));
     }
 
-    @Test @Ignore
+    @Test
     public void testSelection() throws InterruptedException {
         setupWindow();
 
         window.list().requireSelection("first cert");
 
-        Thread.sleep(10000);
+        //Thread.sleep(10000);
         
         for (String cert : window.list().contents()) {
             window.list().selectItem(cert).requireSelection(cert);
