@@ -32,6 +32,7 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
@@ -41,7 +42,7 @@ import net.miginfocom.swing.MigLayout;
  * Displays the certificate info panel. Listing various informational 
  * snippets about a certificate.
  */
-public class CertificateInfoPanel extends JPanel {
+public class CertificateInfoPanel extends JScrollPane {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -53,26 +54,30 @@ public class CertificateInfoPanel extends JPanel {
     private List<List<CertificateInformationEntry>> certificateInfo;
     /** Certificate name. */
     private String certificateName;
+    /** Content panel. */
+    private JPanel content;
 
     public CertificateInfoPanel() {
         initComponents();
         layoutComponents();
+        setViewportView(content);
     }
 
     private void initComponents() {
+        content = new JPanel();
         certificateInfo = new ArrayList<List<CertificateInformationEntry>>();
+        setBorder(BorderFactory.createTitledBorder("Information for " +
+                certificateName));
     }
 
     private void layoutComponents() {
-        setVisible(false);
-        removeAll();
-        setBorder(BorderFactory.createTitledBorder("Information for " +
-                certificateName));
-        setLayout(new MigLayout("fill, wrap 2"));
+        content.setVisible(false);
+        content.removeAll();
+        content.setLayout(new MigLayout("fill, wrap 2"));
 
         for (List<CertificateInformationEntry> entry : certificateInfo) {
             for (CertificateInformationEntry info : entry) {
-                add(new JLabel(info.getTitle()), "alignx right");
+                content.add(new JLabel(info.getTitle() + ": "), "alignx right");
                 final TextLabel text = new TextLabel(info.getValue(), false);
                 if (info.isInvalid()) {
                     SimpleAttributeSet sas = new SimpleAttributeSet();
@@ -80,11 +85,11 @@ public class CertificateInfoPanel extends JPanel {
                     text.getDocument().setParagraphAttributes(0, info.getValue().
                             length(), sas, true);
                 }
-                add(text, "growx, pushx");
+                content.add(text, "growx, pushx");
             }
-            add(new JLabel(), "spanx, pushx");
+            content.add(new JLabel(), "spanx, pushx");
         }
-        setVisible(true);
+        content.setVisible(true);
     }
 
     public void setInfo(final String certificateName,

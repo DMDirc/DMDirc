@@ -23,7 +23,6 @@
 package com.dmdirc.ui.swing.dialogs.sslcertificate;
 
 import com.dmdirc.ui.core.dialogs.sslcertificate.SSLCertificateDialogModel;
-import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.TextLabel;
 
@@ -131,10 +130,10 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
         setLayout(new MigLayout("fill, wrap 2, wmin 600, hmin 400, hidemode 3"));
 
         add(blurb, "span 2");
-        add(chain, "w 250!");
-        add(info, "grow, pushx");
+        add(chain, "wmax 250");
+        add(info, "growx, pushx");
         add(summary, "span 2, growx");
-        add(actions, "span 2, growx, pushx");
+        add(actions, "span 2, growx");
         add(getOkButton(), "span, right");
     }
 
@@ -161,7 +160,7 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
                 chain.setSelectedIndex(selectedIndex);
             } else {
                 info.setInfo(chain.getName(index),
-                        model.getCertificateInfo(e.getFirstIndex()));
+                        model.getCertificateInfo(index));
                 selectedIndex = index;
             }
         }
