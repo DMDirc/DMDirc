@@ -159,7 +159,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
         awayLabel.setVisible(false);
 
         inputPanel = new JPanel(new BorderLayout(
-                (int) PlatformDefaults.getUnitValueX("related").getValue(), 
+                (int) PlatformDefaults.getUnitValueX("related").getValue(),
                 (int) PlatformDefaults.getUnitValueX("related").getValue()));
         inputPanel.add(awayLabel, BorderLayout.LINE_START);
         inputPanel.add(inputField, BorderLayout.CENTER);
@@ -451,7 +451,10 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
 
         //check theres something to paste
         if (clipboard != null && clipboardLines.length > 1) {
-            clipboard = getInputField().getText() + clipboard;
+            final int caretPosition = getInputField().getCaretPosition();
+            final String inputFieldText = getInputField().getText();
+            clipboard = inputFieldText.substring(0, caretPosition) + clipboard +
+                    inputFieldText.substring(caretPosition);
             //check the limit
             final int pasteTrigger = getConfigManager().getOptionInt("ui",
                     "pasteProtectionLimit", 1);
