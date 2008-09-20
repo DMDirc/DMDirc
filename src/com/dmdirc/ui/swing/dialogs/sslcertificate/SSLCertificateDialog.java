@@ -87,16 +87,9 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setTitle("DMDirc: Certificate Information");
         setResizable(false);
-    }
-
-    /**
-     * Packs, locates and shows the dialog.
-     */
-    public void display() {
         pack();
         setLocationRelativeTo(parent);
         chain.setSelectedIndex(0);
-        setVisible(true);
     }
 
     private void addListeners() {
