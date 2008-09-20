@@ -84,6 +84,10 @@ public final class AliasManagerDialog extends StandardDialog implements
     private JButton deleteButton;
     /** Selected row. */
     private int selectedRow;
+    /** Substitutions panel. */
+    private AliasSubstitutionsPanel subsPanel;
+    /** Show/Hide subsitution button. */
+    private JButton showSubs;
 
     /** Creates a new instance of ErrorListDialog. */
     private AliasManagerDialog() {
@@ -174,6 +178,9 @@ public final class AliasManagerDialog extends StandardDialog implements
         scrollPane.setViewportView(table);
 
         aliasDetails = new AliasPanel();
+        subsPanel = new AliasSubstitutionsPanel();
+        subsPanel.setVisible(false);
+        showSubs = new JButton("Show Substitutions");
     }
 
     /**
@@ -216,18 +223,22 @@ public final class AliasManagerDialog extends StandardDialog implements
         getCancelButton().addActionListener(this);
         addButton.addActionListener(this);
         deleteButton.addActionListener(this);
+        showSubs.addActionListener(this);
     }
 
     /** Lays out the components. */
     private void layoutComponents() {
+        setLayout(new MigLayout("pack"));
         final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
                 true);
         final JPanel panel = new JPanel();
 
-        panel.setLayout(new MigLayout("fill"));
+        panel.setLayout(new MigLayout("fill, hidemode 3, pack"));
 
-        panel.add(aliasDetails, "span 6, wrap, grow");
-        panel.add(addButton, "split 6, skip 2, sgx button");
+        panel.add(aliasDetails, "span 6, wrap, grow, pushy");
+        panel.add(subsPanel, "spanx, wrap, grow");
+        panel.add(showSubs, "split 7, sgx button, left");
+        panel.add(addButton, "skip 2, sgx button, gap unrel");
         panel.add(deleteButton, "sgx button");
         panel.add(getLeftButton(), "sgx button, gap unrel");
         panel.add(getRightButton(), "sgx button");
@@ -301,6 +312,14 @@ public final class AliasManagerDialog extends StandardDialog implements
             }
             save();
             dispose();
+        } else if (e.getSource() == showSubs) {
+            if (subsPanel.isVisible()) {
+                subsPanel.setVisible(false);
+                showSubs.setText("Show Substitutions");
+            } else {
+                subsPanel.setVisible(true);
+                showSubs.setText("Hide Substitutions");
+            }
         }
     }
 
