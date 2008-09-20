@@ -66,11 +66,11 @@ public class CertificateInfoPanel extends JScrollPane {
     private void initComponents() {
         content = new JPanel();
         certificateInfo = new ArrayList<List<CertificateInformationEntry>>();
-        setBorder(BorderFactory.createTitledBorder("Information for " +
-                certificateName));
     }
 
     private void layoutComponents() {
+        setBorder(BorderFactory.createTitledBorder("Information for " +
+                certificateName));
         content.setVisible(false);
         content.removeAll();
         content.setLayout(new MigLayout("fill, wrap 2"));
