@@ -272,7 +272,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
                             TextAttribute.UNDERLINE_ON, element.getStartOffset(),
                             element.getEndOffset());
                 } else if (attrib == IRCTextAttribute.SMILEY) {
-                    final Image image = IconManager.getIconManager().getImage("dmdirc").
+                    final Image image = IconManager.getIconManager().getImage((String) as.getAttribute(attrib)).
                             getScaledInstance(14, 14, Image.SCALE_DEFAULT);
                     ImageGraphicAttribute iga = new ImageGraphicAttribute(image, 
                             (int) BOTTOM_ALIGNMENT, 5, 5);
