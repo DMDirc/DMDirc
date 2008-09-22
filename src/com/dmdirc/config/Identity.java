@@ -39,6 +39,8 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -234,7 +236,7 @@ public class Identity extends ConfigSource implements Serializable,
      * @throws java.io.IOException On I/O exception when reading the identity
      * @throws InvalidConfigFileException if the config file is no longer valid
      */
-    public void reload() throws IOException, InvalidConfigFileException {
+    public synchronized void reload() throws IOException, InvalidConfigFileException {
         if (needSave) {
             return;
         }
@@ -423,7 +425,7 @@ public class Identity extends ConfigSource implements Serializable,
      * @return The set of domains used by this identity
      */
     public Set<String> getDomains() {
-        return file.getKeyDomains().keySet();
+        return new HashSet<String>(file.getKeyDomains().keySet());
     }
     
     /**
@@ -435,13 +437,13 @@ public class Identity extends ConfigSource implements Serializable,
      * @return A map of option names to values
      */
     public Map<String, String> getOptions(final String domain) {
-        return file.getKeyDomain(domain);
+        return new HashMap<String, String>(file.getKeyDomain(domain));
     }
 
     /**
      * Saves this identity to disk if it has been updated.
      */
-    public void save() {
+    public synchronized void save() {
         if (needSave && file != null && file.isWritable()) {
             if (myTarget != null && myTarget.getType() == ConfigTarget.TYPE.GLOBAL) {
                 // If we're the global config, unset useless settings that are
@@ -487,7 +489,7 @@ public class Identity extends ConfigSource implements Serializable,
     /**
      * Deletes this identity from disk.
      */
-    public void delete() {
+    public synchronized void delete() {
         if (file != null) {
             file.delete();
         }
