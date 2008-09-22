@@ -246,8 +246,8 @@ public final class Styliser {
     public static String doSmilies(final String string) {
         // TODO: read types from config. Check if they're enabled.
 
-        return string.replaceAll("(\\s|^):[\\\\/](\\s|$)", "\\1" + CODE_SMILIE + ":/"
-                + CODE_SMILIE + "\\2");
+        return string.replaceAll("(\\s|^):[\\\\/](?=\\s|$)", "$1" + CODE_SMILIE + ":/"
+                + CODE_SMILIE);
     }
     
     /**
