@@ -70,6 +70,22 @@ return;
 	fi
 }
 
+WGET=`which wget`
+FETCH=`which fetch`
+CURL=`which curl`
+getFile() {
+	URL=${1}
+	OUTPUT=${2}
+
+	if [ "${WGET}" != "" ]; then
+		${WGET} -O ${OUTPUT} ${URL}
+	elif [ "${FETCH}" != "" ]; then
+		${FETCH} -o ${OUTPUT} ${URL}
+	elif [ "${CURL}" != "" ]; then
+		${CURL} -o ${OUTPUT} ${URL}
+	fi;
+}
+
 # Check for some CLI params
 compileJar="false"
 updateSVN="true"
@@ -79,7 +95,7 @@ isRelease=""
 useUPX="false"
 finalTag=""
 signEXE="true"
-compilerFlags=""
+compilerFlags="-Xs -XX -O2 -Or -Op1"
 BRANCH="0"
 plugins=""
 location="../../../"
@@ -378,13 +394,17 @@ FILES="${FILES} DMDirc.jar Setup.exe";
 if [ "" != "${jre}" ]; then
 	if [ ! -e "../common/${jrename}.exe" ]; then
 		echo "Downloading JRE to include in installer"
-		wget ${jre} -O ../common/${jrename}.exe
+		getFile "${jre}" "../common/${jrename}.exe"
 	fi
 	ln -sf ../common/${jrename}.exe jre.exe
 	FILES="${FILES} jre.exe"
 fi;
 DELETEFILES=${FILES}
-FPC=`which fpc`
+if [ "" != "${DMDIRC_FPC}" ]; then
+	FPC=${DMDIRC_FPC}
+else
+	FPC=`which fpc`
+fi;
 lazarusDir="/usr/share/lazarus"
 if [ ! -e "${lazarusDir}/lcl" ]; then
 	lazarusDir="/usr/lib/lazarus/"
@@ -431,7 +451,7 @@ echo "Compressing files.."
 
 # Shortcut.exe is from http://www.optimumx.com/download/#Shortcut
 if [ ! -e Shortcut.exe ]; then
-	wget http://binary.dmdirc.com/Shortcut.zip
+	getFile "http://binary.dmdirc.com/Shortcut.zip" "Shortcut.zip"
 	unzip -q Shortcut.zip Shortcut.exe
 	rm Shortcut.zip
 fi
@@ -481,7 +501,7 @@ fi
 
 # Add wget to allow downloading jre
 if [ ! -e "wget.exe" ]; then
-	wget http://binary.dmdirc.com/wget.exe
+	getFile "http://binary.dmdirc.com/wget.exe" "wget.exe"
 fi;
 
 if [ ! -e "wget.exe" ]; then
@@ -507,7 +527,7 @@ echo ";!@InstallEnd@!" >> 7zip.conf
 
 if [ ! -e "7zS.sfx" ]; then
 	echo "Obtaining sfx stub.."
-	wget http://binary.dmdirc.com/7zS.sfx
+	getFile "http://binary.dmdirc.com/7zS.sfx" "7zS.sfx"
 fi
 
 if [ ! -e "7zS.sfx" ]; then
