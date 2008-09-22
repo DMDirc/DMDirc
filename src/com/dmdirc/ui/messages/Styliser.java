@@ -56,6 +56,8 @@ public final class Styliser {
     public static final char CODE_HYPERLINK = 5;
     /** Character used to indicate channel links. */
     public static final char CODE_CHANNEL = 6;
+    /** Character used to indicate smilies. */
+    public static final char CODE_SMILIE = 7;
     /** The character used for stopping all formatting. */
     public static final char CODE_STOP = 15;
     /** Character used to indicate nickname links. */
@@ -70,7 +72,8 @@ public final class Styliser {
     public static final char CODE_UNDERLINE = 31;
     
     /** Internal chars. */
-    private static final String INTERNAL_CHARS = String.valueOf(CODE_HYPERLINK) + CODE_CHANNEL;
+    private static final String INTERNAL_CHARS = String.valueOf(CODE_HYPERLINK)
+            + CODE_NICKNAME + CODE_CHANNEL + CODE_SMILIE;
     
     /** Regexp to match characters which shouldn't be used in channel links. */
     private static final String RESERVED_CHARS = "[^\\s" + CODE_BOLD + CODE_COLOUR
@@ -160,7 +163,7 @@ public final class Styliser {
                 int offset = ooffset;
                 int position = 0;
                 
-                String target = doLinks(new String(chars).replaceAll(INTERNAL_CHARS, ""));
+                String target = doSmilies(doLinks(new String(chars).replaceAll(INTERNAL_CHARS, "")));
                 
                 target = target.replaceAll(URL_CHANNEL, CODE_CHANNEL + "$0" + CODE_CHANNEL);
                 
@@ -232,6 +235,20 @@ public final class Styliser {
         
         return target;
     }
+
+    /**
+     * Applies the smilie styles to the target.
+     *
+     * @param string The string to be smilified
+     * @return A copy of the string with smilies marked up
+     * @since 0.6.3
+     */
+    public static String doSmilies(final String string) {
+        // TODO: read types from config. Check if they're enabled.
+
+        return string.replaceAll("(\\s|^):[\\\\/](\\s|$)", "\\1" + CODE_SMILIE + ":/"
+                + CODE_SMILIE + "\\2");
+    }
     
     /**
      * Strips all recognised control codes from the input string.
@@ -278,6 +295,7 @@ public final class Styliser {
         pos = checkChar(pos, input.indexOf(CODE_HYPERLINK));
         pos = checkChar(pos, input.indexOf(CODE_NICKNAME));
         pos = checkChar(pos, input.indexOf(CODE_CHANNEL));
+        pos = checkChar(pos, input.indexOf(CODE_SMILIE));
         pos = checkChar(pos, input.indexOf(CODE_NEGATE));
         
         return input.substring(0, pos);
@@ -477,6 +495,19 @@ public final class Styliser {
         // Control code negation
         if (string.charAt(0) == CODE_NEGATE) {
             toggleAttribute(attribs, "NegateControl");
+            return 1;
+        }
+
+        // Smilies!!
+        if (string.charAt(0) == CODE_SMILIE) {
+            if (attribs.getAttribute(IRCTextAttribute.SMILEY) == null) {
+                final String smilie = readUntilControl(string.substring(1));
+
+                attribs.addAttribute(IRCTextAttribute.SMILEY, "smilie-" + smilie);
+            } else {
+                attribs.removeAttribute(IRCTextAttribute.SMILEY);
+            }
+
             return 1;
         }
         
