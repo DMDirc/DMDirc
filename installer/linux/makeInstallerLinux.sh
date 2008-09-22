@@ -74,6 +74,22 @@ compress() {
 	};
 }
 
+WGET=`which wget`
+FETCH=`which fetch`
+CURL=`which curl`
+getFile() {
+	URL=${1}
+	OUTPUT=${2}
+
+	if [ "${WGET}" != "" ]; then
+		${WGET} -O ${OUTPUT} ${URL}
+	elif [ "${FETCH}" != "" ]; then
+		${FETCH} -o ${OUTPUT} ${URL}
+	elif [ "${CURL}" != "" ]; then
+		${CURL} -o ${OUTPUT} ${URL}
+	fi;
+}
+
 # Go!
 echo "-----------"
 if [ -e "${RUNNAME}" ]; then
@@ -239,7 +255,7 @@ done;
 if [ "" != "${jre}" ]; then
 	if [ ! -e "../common/${jrename}.bin" ]; then
 		echo "Downloading JRE to include in installer"
-		wget ${jre} -O ../common/${jrename}.bin
+		getFile "${jre}" "../common/${jrename}.bin"
 	fi
 	ln -sf ../common/${jrename}.bin jre.bin
 	FILES="${FILES} jre.bin"

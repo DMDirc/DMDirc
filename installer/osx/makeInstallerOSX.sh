@@ -75,6 +75,22 @@ if [ -e "${RUNNAME}" ]; then
 	rm -Rf ./*.dmg
 fi
 
+WGET=`which wget`
+FETCH=`which fetch`
+CURL=`which curl`
+getFile() {
+	URL=${1}
+	OUTPUT=${2}
+
+	if [ "${WGET}" != "" ]; then
+		${WGET} -O ${OUTPUT} ${URL}
+	elif [ "${FETCH}" != "" ]; then
+		${FETCH} -o ${OUTPUT} ${URL}
+	elif [ "${CURL}" != "" ]; then
+		${CURL} -o ${OUTPUT} ${URL}
+	fi;
+}
+
 showHelp() {
 	echo "This will generate a DMDirc installer for a unix based system."
 	echo "The following command line arguments are known:"
@@ -373,7 +389,7 @@ if [ "" = "${HDIUTIL}" ]; then
 
 	# Compres it \o
 	if [ ! -e "${PWD}/compress-dmg" ]; then
-		wget http://binary.dmdirc.com/dmg -O compress-dmg
+		getFile "http://binary.dmdirc.com/dmg" "compress-dmg"
 		chmod a+x compress-dmg
 	fi;
 	if [ ! -e "${PWD}/compress-dmg" ]; then
