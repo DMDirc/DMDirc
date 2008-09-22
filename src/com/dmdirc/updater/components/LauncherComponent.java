@@ -100,7 +100,7 @@ public class LauncherComponent implements UpdateComponent {
     @Override
     public boolean doInstall(final String path) throws Throwable {
         final File tmpFile = new File(path);
-        if (platform.equalsIgnoreCase("Linux")) {
+        if (platform.equalsIgnoreCase("Linux") || platform.equalsIgnoreCase("unix")) {
             final File targetFile = new File(tmpFile.getParent() + File.separator + ".launcher.sh");
 
             if (targetFile.exists()) {
