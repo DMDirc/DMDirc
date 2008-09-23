@@ -9,6 +9,7 @@ fi;
 
 SVNREV=`$SVN info | grep Revision`
 SVNREV=${SVNREV##*: }
+SVNREV=4800
 
 GNUSED=`sed --version 2>&1 | grep GNU`
 if [ "" != "${GNUSED}" ]; then
