@@ -40,6 +40,16 @@ public class InvalidIdentityFileException extends Exception {
     public InvalidIdentityFileException() {
         super();
     }
+
+    /**
+     * Creates a new instance of InvalidIdentityFileException.
+     *
+     * @param cause The cause of the exception
+     * @since 0.6.3
+     */
+    public InvalidIdentityFileException(final Throwable cause) {
+        super(cause);
+    }
     
     /**
      * Creates a new instance of InvalidIdentityFileException.

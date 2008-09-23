@@ -32,10 +32,8 @@ import com.dmdirc.util.WeakList;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -43,7 +41,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 /**
@@ -96,7 +93,7 @@ public class Identity extends ConfigSource implements Serializable,
     public Identity(final File file, final boolean forceDefault) throws IOException,
             InvalidIdentityFileException {
         super();
-        
+
         this.file = new ConfigFile(file);
         this.file.setAutomake(true);
         initFile(forceDefault, new FileInputStream(file));
@@ -115,48 +112,25 @@ public class Identity extends ConfigSource implements Serializable,
     public Identity(final InputStream stream, final boolean forceDefault) throws IOException,
             InvalidIdentityFileException {
         super();
-        
+
         this.file = new ConfigFile(stream);
         this.file.setAutomake(true);
         initFile(forceDefault, stream);
         myTarget = getTarget(forceDefault);
     }
-    
+
     /**
      * Creates a new identity from the specified config file.
-     * 
+     *
      * @param configFile The config file to use
      * @param target The target of this identity
      */
     public Identity(final ConfigFile configFile, final ConfigTarget target) {
         super();
-        
+
         this.file = configFile;
         this.file.setAutomake(true);
         this.myTarget = target;
-    }
-
-    /**
-     * Migrates the contents of the specified property file into a ConfigFile.
-     *
-     * @param properties The properties to migrate
-     */
-    private void migrateProperties(final Properties properties) {
-        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-            final String key = (String) entry.getKey();
-            final String value = (String) entry.getValue();
-            final int offset = key.indexOf('.');
-
-            if (offset > -1) {
-                final String domain = key.substring(0, offset);
-                final String option = key.substring(1 + offset);
-
-                file.getKeyDomain(domain).put(option, value);
-            }
-        }
-        
-        needSave = true;
-        save();
     }
 
     /**
@@ -206,19 +180,10 @@ public class Identity extends ConfigSource implements Serializable,
      */
     private void initFile(final boolean forceDefault, final InputStream stream)
             throws InvalidIdentityFileException, IOException {
-        
-        if (stream.markSupported()) {
-            stream.mark(Integer.MAX_VALUE);
-        }
-        
         try {
             this.file.read();
-        } catch (InvalidConfigFileException ex) {            
-            final Properties properties = new Properties();
-            final Reader reader = new LineReader(this.file.getLines());
-            properties.load(reader);
-            reader.close();
-            migrateProperties(properties);
+        } catch (InvalidConfigFileException ex) {
+            throw new InvalidIdentityFileException(ex);
         }
 
         if (!hasOption(DOMAIN, "name") && !forceDefault) {
@@ -417,21 +382,21 @@ public class Identity extends ConfigSource implements Serializable,
             listener.configChanged(domain, option);
         }
     }
-    
+
     /**
      * Returns the set of domains available in this identity.
-     * 
+     *
      * @since 0.6
      * @return The set of domains used by this identity
      */
     public Set<String> getDomains() {
         return new HashSet<String>(file.getKeyDomains().keySet());
     }
-    
+
     /**
      * Retrieves a map of all options within the specified domain in this
      * identity.
-     * 
+     *
      * @param domain The domain to retrieve
      * @since 0.6
      * @return A map of option names to values
@@ -578,6 +543,7 @@ public class Identity extends ConfigSource implements Serializable,
      *
      * @param settings The settings to populate the identity with
      * @return A new identity containing the specified properties
+     * @since 0.6.3
      */
     protected static Identity createIdentity(final Map<String, Map<String, String>> settings) {
         if (!settings.containsKey(DOMAIN) || !settings.get(DOMAIN).containsKey("name")
@@ -662,7 +628,7 @@ public class Identity extends ConfigSource implements Serializable,
         settings.put("profile", new HashMap<String, String>(2));
 
         final String nick = System.getProperty("user.name").replace(' ', '_');
-        
+
         settings.get(DOMAIN).put("name", name);
         settings.get("profile").put("nickname", nick);
         settings.get("profile").put("realname", nick);
