@@ -739,9 +739,15 @@ public class IRCParser implements Runnable {
 	 */
 	private void handleConnectException(final Exception e) {
 		callDebugInfo(DEBUG_SOCKET, "Error Connecting (" + e.getMessage() + "), Aborted");
-		final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Error connecting to server");
+		final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception with server socket");
 		ei.setException(e);
 		callConnectError(ei);
+		
+		if (currentSocketState != STATE_CLOSED) {
+			currentSocketState = STATE_CLOSED;
+			callSocketClosed();
+		}
+		resetState();
 	}
 
 	/**
@@ -787,11 +793,6 @@ public class IRCParser implements Runnable {
 				}
 			} catch (IOException e) {
 				handleConnectException(e);
-				if (currentSocketState != STATE_CLOSED) {
-					currentSocketState = STATE_CLOSED;
-					callSocketClosed();
-				}
-				resetState();
 				break;
 			}
 		}
