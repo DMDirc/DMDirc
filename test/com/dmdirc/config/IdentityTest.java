@@ -136,13 +136,12 @@ public class IdentityTest {
     }
 
     @Test
-    public void testSave() {
+    public void testSave() throws IOException, InvalidIdentityFileException {
         myIdent.setOption("foo", "bar", "baz!");
         
         myIdent.save();
-        myIdent = null;
         
-        myIdent = Identity.buildIdentity(target);
+        myIdent = new Identity(myIdent.getFile().getFile(), false);
         
         assertEquals("baz!", myIdent.getOption("foo", "bar"));
         

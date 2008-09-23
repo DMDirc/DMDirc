@@ -1,5 +1,14 @@
-identity.name=unit test
-identity.ircd=DMDircircd!
+keysections:
+  identity
+  meep
+  unit
 
-meep.moop=2
-unit.test=true
+identity:
+  name=unit test
+  ircd=DMDircircd!
+
+meep:
+  moop=2
+
+unit:
+  test=true

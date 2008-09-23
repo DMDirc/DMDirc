@@ -1,2 +1,9 @@
-identity.foo=bar
-meep.moop=2
+keysections:
+  identity
+  meep
+
+identity:
+  foo = bar
+
+meep:
+  moop=2

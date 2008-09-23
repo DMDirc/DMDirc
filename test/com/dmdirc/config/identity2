@@ -1,2 +1,9 @@
-identity.name=unit test
-meep.moop=2
+keysections:
+  identity
+  meep
+
+identity:
+  name=unit test
+
+meep:
+  moop=2
