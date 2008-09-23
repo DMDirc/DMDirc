@@ -576,35 +576,40 @@ public class Identity extends ConfigSource implements Serializable,
     /**
      * Creates a new identity containing the specified properties.
      *
-     * @param properties The properties to be included in the identity
+     * @param settings The settings to populate the identity with
      * @return A new identity containing the specified properties
      */
-    protected static Identity createIdentity(final Properties properties) {
-        if (!properties.containsKey(DOMAIN + ".name")
-                || properties.getProperty(DOMAIN + ".name").isEmpty()) {
-            Logger.appError(ErrorLevel.LOW, "createIdentity caleld with invalid identity",
+    protected static Identity createIdentity(final Map<String, Map<String, String>> settings) {
+        if (!settings.containsKey(DOMAIN) || !settings.get(DOMAIN).containsKey("name")
+                || settings.get(DOMAIN).get("name").isEmpty()) {
+            Logger.appError(ErrorLevel.LOW, "createIdentity called with invalid identity",
                     new InvalidIdentityFileException("identity.name is not set"));
             return null;
         }
 
         final String fs = System.getProperty("file.separator");
         final String location = Main.getConfigDir() + "identities" + fs;
-        final String name = properties.getProperty(DOMAIN + ".name");
+        final String name = settings.get(DOMAIN).get("name");
 
-        final File file = new File(location + name);
+        File file = new File(location + name);
+        int attempt = 0;
 
-        if (!file.exists()) {
-            final FileWriter writer;
+        while (file.exists()) {
+            file = new File(location + name + "-" + ++attempt);
+        }
 
-            try {
-                writer = new FileWriter(location + name);
-                properties.store(writer, "");
-                writer.close();
-            } catch (IOException ex) {
-                Logger.userError(ErrorLevel.MEDIUM,
-                        "Unable to write new identity file: " + ex.getMessage());
-                return null;
-            }
+        final ConfigFile configFile = new ConfigFile(file);
+
+        for (Map.Entry<String, Map<String, String>> entry : settings.entrySet()) {
+            configFile.addDomain(entry.getKey(), entry.getValue());
+        }
+
+        try {
+            configFile.write();
+        } catch (IOException ex) {
+            Logger.userError(ErrorLevel.MEDIUM,
+                    "Unable to write new identity file: " + ex.getMessage());
+            return null;
         }
 
         try {
@@ -634,11 +639,13 @@ public class Identity extends ConfigSource implements Serializable,
      * @return An empty identity for the specified target
      */
     public static Identity buildIdentity(final ConfigTarget target) {
-        final Properties properties = new Properties();
-        properties.setProperty(DOMAIN + ".name", target.getData());
-        properties.setProperty(DOMAIN + "." + target.getTypeName(), target.getData());
+        final Map<String, Map<String, String>> settings
+                = new HashMap<String, Map<String, String>>();
+        settings.put(DOMAIN, new HashMap<String, String>(2));
+        settings.get(DOMAIN).put("name", target.getData());
+        settings.get(DOMAIN).put(target.getTypeName(), target.getData());
 
-        return createIdentity(properties);
+        return createIdentity(settings);
     }
 
     /**
@@ -649,14 +656,18 @@ public class Identity extends ConfigSource implements Serializable,
      * @return A new profile with the specified name
      */
     public static Identity buildProfile(final String name) {
-        final Properties properties = new Properties();
+        final Map<String, Map<String, String>> settings
+                = new HashMap<String, Map<String, String>>();
+        settings.put(DOMAIN, new HashMap<String, String>(1));
+        settings.put("profile", new HashMap<String, String>(2));
+
         final String nick = System.getProperty("user.name").replace(' ', '_');
         
-        properties.setProperty(DOMAIN + ".name", name);
-        properties.setProperty("profile.nickname", nick);
-        properties.setProperty("profile.realname", nick);
+        settings.get(DOMAIN).put("name", name);
+        settings.get("profile").put("nickname", nick);
+        settings.get("profile").put("realname", nick);
 
-        return createIdentity(properties);
+        return createIdentity(settings);
     }
 
 }
