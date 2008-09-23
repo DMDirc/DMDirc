@@ -85,6 +85,12 @@ public class CertificateInfoPanel extends JScrollPane {
                     text.getDocument().setParagraphAttributes(0, info.getValue().
                             length(), sas, true);
                 }
+                if (info.isMissing()) {
+                    SimpleAttributeSet sas = new SimpleAttributeSet();
+                    StyleConstants.setItalic(sas, true);
+                    text.getDocument().setParagraphAttributes(0, info.getValue().
+                            length(), sas, true);
+                }
                 content.add(text, "growx, pushx");
             }
             content.add(new JLabel(), "spanx, pushx");
