@@ -27,30 +27,34 @@ package com.dmdirc.commandparser;
  * 
  * @author chris
  */
-public abstract class CommandInfo {
+public interface CommandInfo {
           
     /**
      * Returns this command's name.
+     *
      * @return The name of this command
      */
-    public abstract String getName();
+    String getName();
     
     /**
      * Returns whether or not this command should be shown in help messages.
+     *
      * @return True iff the command should be shown, false otherwise
      */
-    public abstract boolean showInHelp();
+    boolean showInHelp();
     
     /**
      * Returns a string representing the help message for this command.
+     *
      * @return the help message for this command
      */
-    public abstract String getHelp();
+    String getHelp();
     
     /**
      * Retrieves the type of this command.
+     *
      * @return This command's type
      */
-    public abstract CommandType getType();
+    CommandType getType();
 
 }

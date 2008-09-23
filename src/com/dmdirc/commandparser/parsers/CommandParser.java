@@ -25,6 +25,7 @@ package com.dmdirc.commandparser.parsers;
 import com.dmdirc.Server;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
@@ -79,19 +80,22 @@ public abstract class CommandParser implements Serializable {
     /**
      * Registers the specified command with this parser.
      *
+     * @since 0.6.3
      * @param command Command to be registered
+     * @param info The information the command should be registered with
      */
-    public final void registerCommand(final Command command) {
-        commands.put(command.getName().toLowerCase(), command);
+    public final void registerCommand(final Command command, final CommandInfo info) {
+        commands.put(info.getName().toLowerCase(), command);
     }
 
     /**
      * Unregisters the specified command with this parser.
      *
-     * @param command Command to be unregistered
+     * @param info Command information to be unregistered
+     * @since 0.6.3
      */
-    public final void unregisterCommand(final Command command) {
-        commands.remove(command.getName().toLowerCase());
+    public final void unregisterCommand(final CommandInfo info) {
+        commands.remove(info.getName().toLowerCase());
     }
 
     /**
