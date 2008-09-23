@@ -67,7 +67,8 @@ public final class ChannelCommandParser extends CommandParser {
         this.channel = newChannel;
     }
     
-    /** Loads the relevant commands into the parser. */
+    /** {@inheritDoc} */
+    @Override
     protected void loadCommands() {
         CommandManager.loadGlobalCommands(this);
         CommandManager.loadServerCommands(this);
@@ -75,6 +76,7 @@ public final class ChannelCommandParser extends CommandParser {
     }
     
     /** {@inheritDoc} */
+    @Override
     protected void executeCommand(final InputWindow origin,
             final boolean isSilent, final Command command, final String... args) {
         if (command instanceof ChannelCommand) {
@@ -91,9 +93,11 @@ public final class ChannelCommandParser extends CommandParser {
     /**
      * Called when the input was a line of text that was not a command. This normally
      * means it is sent to the server/channel/user as-is, with no further processing.
+     *
      * @param origin The window in which the command was typed
      * @param line The line input by the user
      */
+    @Override
     protected void handleNonCommand(final InputWindow origin, final String line) {
         channel.sendLine(line);
     }

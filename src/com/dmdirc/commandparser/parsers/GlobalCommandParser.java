@@ -67,11 +67,13 @@ public final class GlobalCommandParser extends CommandParser {
     }
     
     /** Loads the relevant commands into the parser. */
+    @Override
     protected void loadCommands() {
         CommandManager.loadGlobalCommands(this);
     }
     
     /** {@inheritDoc} */
+    @Override
     protected void executeCommand(final InputWindow origin,
             final boolean isSilent, final Command command, final String... args) {
         ((GlobalCommand) command).execute(origin, isSilent, args);
@@ -83,6 +85,7 @@ public final class GlobalCommandParser extends CommandParser {
      * @param origin The window in which the command was typed
      * @param line The line input by the user
      */
+    @Override
     protected void handleNonCommand(final InputWindow origin, final String line) {
         if (origin == null) {
             Logger.userError(ErrorLevel.MEDIUM, "Invalid global command: " + line);

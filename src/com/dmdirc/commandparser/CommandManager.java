@@ -103,9 +103,25 @@ public final class CommandManager {
      * Registers a command with the command manager.
      * 
      * @param command The command to be registered
+     * @param info The information about the command
+     * @since 0.6.3
      */
-    public static void registerCommand(final Command command) {
+    public static void registerCommand(final Command command, final CommandInfo info) {
         registerCommand(command, true);
+    }
+
+    /**
+     * Registers a command with the command manager.
+     *
+     * @deprecated Introduced for compatibility reasons. Use
+     * {@link #registerCommand(Command, CommandInfo)} instead.
+     * @param <T> The type that's being registered
+     * @param command An object that extends {@link Command} and implements
+     * {@link CommandInfo} to be registered.
+     * @since 0.6.3
+     */
+    public static <T extends Command & CommandInfo> void registerCommand(final T command) {
+        registerCommand(command, command);
     }
     
     /**
@@ -170,7 +186,7 @@ public final class CommandManager {
         
         for (CommandParser parser : parsers) {
             if (register) {
-                parser.registerCommand(command);
+                parser.registerCommand(command, command);
             } else {
                 parser.unregisterCommand(command);
             }
@@ -317,11 +333,11 @@ public final class CommandManager {
      */
     public static void loadChannelCommands(final CommandParser parser) {
         for (Command com : getCommands(CommandType.TYPE_CHANNEL, null)) {
-            parser.registerCommand(com);
+            parser.registerCommand(com, com);
         }
         
         for (Command com : getCommands(CommandType.TYPE_CHAT, null)) {
-            parser.registerCommand(com);
+            parser.registerCommand(com, com);
         }
         
         parsers.add(CommandType.TYPE_CHANNEL, parser);
@@ -334,7 +350,7 @@ public final class CommandManager {
      */
     public static void loadServerCommands(final CommandParser parser) {
         for (Command command : getCommands(CommandType.TYPE_SERVER, null)) {
-            parser.registerCommand(command);
+            parser.registerCommand(command, command);
         }
         
         parsers.add(CommandType.TYPE_SERVER, parser);
@@ -347,7 +363,7 @@ public final class CommandManager {
      */
     public static void loadGlobalCommands(final CommandParser parser) {
         for (Command com : getCommands(CommandType.TYPE_GLOBAL, null)) {
-            parser.registerCommand(com);
+            parser.registerCommand(com, com);
         }
         
         parsers.add(CommandType.TYPE_GLOBAL, parser);
@@ -360,11 +376,11 @@ public final class CommandManager {
      */
     public static void loadQueryCommands(final CommandParser parser) {
         for (Command com : getCommands(CommandType.TYPE_QUERY, null)) {
-            parser.registerCommand(com);
+            parser.registerCommand(com, com);
         }
         
         for (Command com : getCommands(CommandType.TYPE_CHAT, null)) {
-            parser.registerCommand(com);
+            parser.registerCommand(com, com);
         }
         
         parsers.add(CommandType.TYPE_QUERY, parser);

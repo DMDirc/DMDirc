@@ -30,9 +30,10 @@ import com.dmdirc.ui.messages.Styliser;
 
 /**
  * Represents a generic command.
+ *
  * @author chris
  */
-public abstract class Command extends CommandInfo implements Comparable<Command> {
+public abstract class Command implements CommandInfo, Comparable<Command> {
     
     /** The format name used for command output. */
     protected static final String FORMAT_OUTPUT = "commandOutput";
