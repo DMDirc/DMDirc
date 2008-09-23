@@ -9,7 +9,10 @@ fi;
 
 SVNREV=`$SVN info | grep Revision`
 SVNREV=${SVNREV##*: }
-SVNREV=4800
+if [ "" = "${SVNREV}" ]; then
+	echo "No SVN Revision found"
+	SVNREV=0
+fi;
 
 GNUSED=`sed --version 2>&1 | grep GNU`
 if [ "" != "${GNUSED}" ]; then
