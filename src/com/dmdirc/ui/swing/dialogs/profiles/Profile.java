@@ -25,6 +25,7 @@ package com.dmdirc.ui.swing.dialogs.profiles;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -291,7 +292,11 @@ public class Profile {
             }
 
             if (profile == null) {
-                profile = Identity.buildProfile(name);
+                try {
+                    profile = Identity.buildProfile(name);
+                } catch (IOException ex) {
+                    // TODO: ??
+                }
             }
 
             profile.setOption("identity", "name", name);

@@ -543,14 +543,15 @@ public class Identity extends ConfigSource implements Serializable,
      *
      * @param settings The settings to populate the identity with
      * @return A new identity containing the specified properties
+     * @throws IOException If the file cannot be created
+     * @throws InvalidIdentityFileException If the settings are invalid
      * @since 0.6.3
      */
-    protected static Identity createIdentity(final Map<String, Map<String, String>> settings) {
+    protected static Identity createIdentity(final Map<String, Map<String, String>> settings)
+            throws IOException, InvalidIdentityFileException {
         if (!settings.containsKey(DOMAIN) || !settings.get(DOMAIN).containsKey("name")
                 || settings.get(DOMAIN).get("name").isEmpty()) {
-            Logger.appError(ErrorLevel.LOW, "createIdentity called with invalid identity",
-                    new InvalidIdentityFileException("identity.name is not set"));
-            return null;
+            throw new InvalidIdentityFileException("identity.name is not set");
         }
 
         final String fs = System.getProperty("file.separator");
@@ -570,32 +571,12 @@ public class Identity extends ConfigSource implements Serializable,
             configFile.addDomain(entry.getKey(), entry.getValue());
         }
 
-        try {
-            configFile.write();
-        } catch (IOException ex) {
-            Logger.userError(ErrorLevel.MEDIUM,
-                    "Unable to write new identity file: " + ex.getMessage());
-            return null;
-        }
+        configFile.write();
 
-        try {
-            final Identity identity = new Identity(file, false);
-            IdentityManager.addIdentity(identity);
+        final Identity identity = new Identity(file, false);
+        IdentityManager.addIdentity(identity);
 
-            return identity;
-        } catch (MalformedURLException ex) {
-            Logger.userError(ErrorLevel.MEDIUM,
-                    "Unable to open new identity file: " + ex.getMessage());
-            return null;
-        } catch (InvalidIdentityFileException ex) {
-            Logger.userError(ErrorLevel.MEDIUM,
-                    "Unable to open new identity file: " + ex.getMessage());
-            return null;
-        } catch (IOException ex) {
-            Logger.userError(ErrorLevel.MEDIUM,
-                    "Unable to open new identity file: " + ex.getMessage());
-            return null;
-        }
+        return identity;
     }
 
     /**
@@ -603,15 +584,23 @@ public class Identity extends ConfigSource implements Serializable,
      *
      * @param target The target for the new identity
      * @return An empty identity for the specified target
+     * @throws IOException if the file can't be written
+     * @see #createIdentity(java.util.Map)
      */
-    public static Identity buildIdentity(final ConfigTarget target) {
+    public static Identity buildIdentity(final ConfigTarget target)
+            throws IOException {
         final Map<String, Map<String, String>> settings
                 = new HashMap<String, Map<String, String>>();
         settings.put(DOMAIN, new HashMap<String, String>(2));
         settings.get(DOMAIN).put("name", target.getData());
         settings.get(DOMAIN).put(target.getTypeName(), target.getData());
 
-        return createIdentity(settings);
+        try {
+            return createIdentity(settings);
+        } catch (InvalidIdentityFileException ex) {
+            Logger.appError(ErrorLevel.MEDIUM, "Unable to create identity", ex);
+            return null;
+        }
     }
 
     /**
@@ -620,8 +609,10 @@ public class Identity extends ConfigSource implements Serializable,
      *
      * @param name The name of the profile to create
      * @return A new profile with the specified name
+     * @throws IOException If the file can't be written
+     * @see #createIdentity(java.util.Map)
      */
-    public static Identity buildProfile(final String name) {
+    public static Identity buildProfile(final String name) throws IOException {
         final Map<String, Map<String, String>> settings
                 = new HashMap<String, Map<String, String>>();
         settings.put(DOMAIN, new HashMap<String, String>(1));
@@ -633,7 +624,12 @@ public class Identity extends ConfigSource implements Serializable,
         settings.get("profile").put("nickname", nick);
         settings.get("profile").put("realname", nick);
 
-        return createIdentity(settings);
+        try {
+            return createIdentity(settings);
+        } catch (InvalidIdentityFileException ex) {
+            Logger.appError(ErrorLevel.MEDIUM, "Unable to create identity", ex);
+            return null;
+        }
     }
 
 }

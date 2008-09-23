@@ -76,7 +76,11 @@ public final class IdentityManager {
         loadConfig();
         
         if (getProfiles().size() == 0) {
-            Identity.buildProfile("Default Profile");
+            try {
+                Identity.buildProfile("Default Profile");
+            } catch (IOException ex) {
+                Logger.userError(ErrorLevel.FATAL, "Unable to write default profile", ex);
+            }
         }
         
         // Set up the identity used for the addons defaults
@@ -387,6 +391,7 @@ public final class IdentityManager {
     /**
      * Retrieves the config for the specified channel@network. The config is
      * created if it doesn't exist.
+     *
      * @param network The name of the network
      * @param channel The name of the channel
      * @return A config source for the channel
@@ -395,8 +400,7 @@ public final class IdentityManager {
         "The specified network is non-null and not empty",
         "The specified channel is non-null and not empty"
     })
-    public static Identity getChannelConfig(final String network,
-            final String channel) {
+    public static Identity getChannelConfig(final String network, final String channel) {
         if (network == null || network.isEmpty()) {
             throw new IllegalArgumentException("getChannelConfig called "
                     + "with null or empty network\n\nNetwork: " + network);
@@ -421,13 +425,19 @@ public final class IdentityManager {
         // We need to create one
         final ConfigTarget target = new ConfigTarget();
         target.setChannel(myTarget);
-        
-        return Identity.buildIdentity(target);
+
+        try {
+            return Identity.buildIdentity(target);
+        } catch (IOException ex) {
+            Logger.userError(ErrorLevel.HIGH, "Unable to create channel identity", ex);
+            return null;
+        }
     }
     
     /**
      * Retrieves the config for the specified network. The config is
      * created if it doesn't exist.
+     *
      * @param network The name of the network
      * @return A config source for the network
      */
@@ -453,7 +463,12 @@ public final class IdentityManager {
         final ConfigTarget target = new ConfigTarget();
         target.setNetwork(myTarget);
         
-        return Identity.buildIdentity(target);
+        try {
+            return Identity.buildIdentity(target);
+        } catch (IOException ex) {
+            Logger.userError(ErrorLevel.HIGH, "Unable to create network identity", ex);
+            return null;
+        }
     }
     
     /**
@@ -485,7 +500,12 @@ public final class IdentityManager {
         final ConfigTarget target = new ConfigTarget();
         target.setServer(myTarget);
         
-        return Identity.buildIdentity(target);
+        try {
+            return Identity.buildIdentity(target);
+        } catch (IOException ex) {
+            Logger.userError(ErrorLevel.HIGH, "Unable to create network identity", ex);
+            return null;
+        }
     }    
     
 }
