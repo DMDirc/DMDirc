@@ -83,21 +83,28 @@ public final class AliasWrapper extends ActionGroup {
     @Override
     public void add(final Action action) {
         if (action.getTriggers()[0].equals(CoreActionType.UNKNOWN_COMMAND)) {
-            super.add(action);
             
             final String commandName = getCommandName(action);
-            
-            aliases.add(commandName);
 
-            if (GlobalWindow.getGlobalWindow() != null) {
-                GlobalWindow.getGlobalWindow().getTabCompleter()
-                        .addEntry(TabCompletionType.COMMAND, commandName);
-            }
-            for (Server server : ServerManager.getServerManager().getServers()) {
-                server.getTabCompleter().addEntry(TabCompletionType.COMMAND, commandName);
+            if (commandName != null) {
+                super.add(action);
+                aliases.add(commandName);
+
+                if (GlobalWindow.getGlobalWindow() != null) {
+                    GlobalWindow.getGlobalWindow().getTabCompleter()
+                            .addEntry(TabCompletionType.COMMAND, commandName);
+                }
+
+                for (Server server : ServerManager.getServerManager().getServers()) {
+                    server.getTabCompleter().addEntry(TabCompletionType.COMMAND, commandName);
+                }
+            } else {
+                Logger.userError(ErrorLevel.MEDIUM, "Invalid alias action (no name): "
+                        + action.getName());
             }
         } else {
-            Logger.userError(ErrorLevel.MEDIUM, "Invalid alias action: " + action.getName());
+            Logger.userError(ErrorLevel.MEDIUM, "Invalid alias action (wrong trigger): "
+                    + action.getName());
         }
     }
     
@@ -121,7 +128,8 @@ public final class AliasWrapper extends ActionGroup {
      * Retrieves the command name of the specified alias action.
      *
      * @param action The action whose name is to be determined
-     * @return The command name for the specified alias
+     * @return The command name for the specified alias, or null if it has
+     *         no appropriate conditions.
      */
     public static String getCommandName(final Action action) {
         for (ActionCondition condition : action.getConditions()) {
@@ -131,7 +139,7 @@ public final class AliasWrapper extends ActionGroup {
         }
         
         // How can we have an alias without a command name?
-        return "";
+        return null;
     }
 
     /** {@inheritDoc} */
