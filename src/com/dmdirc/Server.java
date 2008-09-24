@@ -248,11 +248,11 @@ public final class Server extends WritableFrameContainer implements Serializable
                     return;
                 case CONNECTED:
                 case CONNECTING:
-                    addLine("serverConnecting");
+                    addLine("serverConnectInProgress");
                     disconnect(getConfigManager().getOption(DOMAIN_GENERAL, "quitmessage"));
                     return;
                 case DISCONNECTING:
-                    addLine("serverDisconnecting");
+                    addLine("serverDisconnectInProgress");
                     return;
                 default:
                     // Do nothing
