@@ -32,6 +32,8 @@ import com.dmdirc.logger.Logger;
 import java.awt.Color;
 import java.util.Locale;
 
+import java.util.Map;
+import java.util.regex.Pattern;
 import javax.swing.UIManager;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
@@ -244,10 +246,24 @@ public final class Styliser {
      * @since 0.6.3
      */
     public static String doSmilies(final String string) {
-        // TODO: read types from config. Check if they're enabled.
+        // TODO: Check if they're enabled.
+        // TODO: Store the list instead of building it every line
 
-        return string.replaceAll("(\\s|^):[\\\\/](?=\\s|$)", "$1" + CODE_SMILIE + ":/"
-                + CODE_SMILIE);
+        final StringBuilder smilies = new StringBuilder();
+
+        for (Map.Entry<String, String> icon
+                : IdentityManager.getGlobalConfig().getOptions("icon").entrySet()) {
+            if (icon.getKey().startsWith("smilie-")) {
+                if (smilies.length() > 0) {
+                    smilies.append('|');
+                }
+
+                smilies.append(Pattern.quote(icon.getKey().substring(7)));
+            }
+        }
+
+        return string.replaceAll("(\\s|^)(" + smilies + ")(?=\\s|$)",
+                "$1" + CODE_SMILIE + "$2" + CODE_SMILIE);
     }
     
     /**

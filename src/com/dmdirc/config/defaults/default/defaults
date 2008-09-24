@@ -225,3 +225,9 @@ icon:
   category-messages=dmdirc://com/dmdirc/res/feedback.png
   category-updates=dmdirc://com/dmdirc/res/update.png
   category-urlhandlers=dmdirc://com/dmdirc/res/urls.png
+
+  smilie-:|=dmdirc://com/dmdirc/res/smilies/yellow/neutral.png
+  smilie-:(=dmdirc://com/dmdirc/res/smilies/yellow/sad.png
+  smilie-:)=dmdirc://com/dmdirc/res/smilies/yellow/smile.png
+  smilie-:P=dmdirc://com/dmdirc/res/smilies/yellow/tongue.png
+  smilie-;P=dmdirc://com/dmdirc/res/smilies/yellow/winktongue.png
