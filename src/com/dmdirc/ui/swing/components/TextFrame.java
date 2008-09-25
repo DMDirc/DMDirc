@@ -574,7 +574,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void mouseEntered(final MouseEvent mouseEvent) {
-    //Ignore.
+        //Ignore.
     }
 
     /**
@@ -584,7 +584,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void mouseExited(final MouseEvent mouseEvent) {
-    //Ignore.
+        //Ignore.
     }
 
     /**

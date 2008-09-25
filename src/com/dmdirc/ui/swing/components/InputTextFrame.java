@@ -60,7 +60,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
-import javax.swing.event.InternalFrameEvent;
 
 import net.miginfocom.layout.PlatformDefaults;
 
@@ -268,69 +267,6 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
         }
     }
 
-    /**
-     * Not needed for this class. {@inheritDoc}
-     */
-    @Override
-    public void internalFrameOpened(final InternalFrameEvent event) {
-        super.internalFrameOpened(event);
-    }
-
-    /**
-     * Not needed for this class. {@inheritDoc}
-     */
-    @Override
-    public void internalFrameClosing(final InternalFrameEvent event) {
-        super.internalFrameClosing(event);
-    }
-
-    /**
-     * Not needed for this class. {@inheritDoc}
-     */
-    @Override
-    public void internalFrameClosed(final InternalFrameEvent event) {
-        super.internalFrameClosed(event);
-    }
-
-    /**
-     * Makes the internal frame invisible. {@inheritDoc}
-     */
-    @Override
-    public void internalFrameIconified(final InternalFrameEvent event) {
-        super.internalFrameIconified(event);
-    }
-
-    /**
-     * Not needed for this class. {@inheritDoc}
-     */
-    @Override
-    public void internalFrameDeiconified(final InternalFrameEvent event) {
-        super.internalFrameDeiconified(event);
-    }
-
-    /**
-     * Activates the input field on frame focus. {@inheritDoc}
-     */
-    @Override
-    public void internalFrameActivated(final InternalFrameEvent event) {
-        super.internalFrameActivated(event);
-    }
-
-    /**
-     * Not needed for this class. {@inheritDoc}
-     */
-    @Override
-    public void internalFrameDeactivated(final InternalFrameEvent event) {
-        super.internalFrameDeactivated(event);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void keyTyped(final KeyEvent event) {
-        //Ignore.
-        super.keyTyped(event);
-    }
-
     /** {@inheritDoc} */
     @Override
     public void keyPressed(final KeyEvent event) {
@@ -347,13 +283,6 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
             }
         }
         super.keyPressed(event);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void keyReleased(final KeyEvent event) {
-        //Ignore.
-        super.keyReleased(event);
     }
 
     /**
@@ -383,22 +312,6 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     public void mouseReleased(final MouseEvent mouseEvent) {
         processMouseEvent(mouseEvent);
         super.mouseReleased(mouseEvent);
-    }
-
-    /**
-     * Not needed for this class. {@inheritDoc}
-     */
-    @Override
-    public void mouseEntered(final MouseEvent mouseEvent) {
-    //Ignore.
-    }
-
-    /**
-     * Not needed for this class. {@inheritDoc}
-     */
-    @Override
-    public void mouseExited(final MouseEvent mouseEvent) {
-    //Ignore.
     }
 
     /**
