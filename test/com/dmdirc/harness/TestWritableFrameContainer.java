@@ -22,7 +22,8 @@
 
 package com.dmdirc.harness;
 
-import com.dmdirc.*;
+import com.dmdirc.Server;
+import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -42,7 +43,8 @@ public class TestWritableFrameContainer extends WritableFrameContainer {
         this(lineLength, IdentityManager.getGlobalConfig());
     }
 
-    public void sendLine(String line) {
+    public void sendLine(final String line) {
+        // Do nothing
     }
 
     public InputWindow getFrame() {
@@ -54,10 +56,11 @@ public class TestWritableFrameContainer extends WritableFrameContainer {
     }
 
     public String toString() {
-        return null;
+        return "window";
     }
 
     public void windowClosing() {
+        // Do nothing
     }
 
     public Server getServer() {
