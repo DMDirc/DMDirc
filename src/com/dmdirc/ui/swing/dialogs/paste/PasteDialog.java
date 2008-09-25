@@ -33,7 +33,6 @@ import com.dmdirc.ui.swing.components.TextLabel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -48,7 +47,9 @@ import javax.swing.WindowConstants;
 import net.miginfocom.swing.MigLayout;
 
 /**
- * Allows the user to modify global client preferences.
+ * Allows the user to confirm and modify a multi-line paste.
+ *
+ * @author Greboid
  */
 public final class PasteDialog extends StandardDialog implements ActionListener,
         KeyListener {
@@ -115,12 +116,15 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         setTitle("Multi-line paste");
         setResizable(false);
 
-        infoLabel.setText("This will be sent as " + parent.getContainer().getNumLines(textField.getText()) + " lines. Are you sure you want to continue?");
+        infoLabel.setText("This will be sent as "
+                + parent.getContainer().getNumLines(textField.getText())
+                + " lines. Are you sure you want to continue?");
 
         textField.setColumns(50);
         textField.setRows(10);
 
-        new SwingInputHandler(textField, parent.getCommandParser(), parent).setTypes(false, false, true, false);
+        new SwingInputHandler(textField, parent.getCommandParser(), parent)
+                .setTypes(false, false, true, false);
 
         scrollPane.setViewportView(textField);
         scrollPane.setVisible(false);
@@ -189,7 +193,8 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
                     }
                 });
         textField.getInputMap(JComponent.WHEN_FOCUSED).put(
-                KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, UIUtilities.getCtrlDownMask()), "ctrlEnterAction");
+                KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, UIUtilities.getCtrlDownMask()),
+                "ctrlEnterAction");
     }
 
     /**
@@ -201,7 +206,8 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
     public void actionPerformed(final ActionEvent actionEvent) {
         if (getOkButton().equals(actionEvent.getSource())) {
             if (!textField.getText().isEmpty()) {
-                final String[] lines = textField.getText().split("(\n|\r\n|\r)", Integer.MAX_VALUE);
+                final String[] lines = textField.getText().split("(\n|\r\n|\r)",
+                        Integer.MAX_VALUE);
                 for (String line : lines) {
                     if (line.isEmpty()) {
                         parent.getContainer().sendLine("");
@@ -217,7 +223,9 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
             editButton.setEnabled(false);
             setResizable(true);
             scrollPane.setVisible(true);
-            infoLabel.setText("This will be sent as " + parent.getContainer().getNumLines(textField.getText()) + " lines.");
+            infoLabel.setText("This will be sent as "
+                    + parent.getContainer().getNumLines(textField.getText())
+                    + " lines.");
             pack();
             SwingUtilities.invokeLater(new Runnable(){
 
@@ -238,7 +246,9 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
      */
     @Override
     public void keyTyped(final KeyEvent e) {
-        infoLabel.setText("This will be sent as " + parent.getContainer().getNumLines(textField.getText()) + " lines.");
+        infoLabel.setText("This will be sent as "
+                + parent.getContainer().getNumLines(textField.getText())
+                + " lines.");
     }
 
     /** 
