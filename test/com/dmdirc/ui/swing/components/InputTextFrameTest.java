@@ -51,6 +51,7 @@ import org.fest.swing.fixture.JInternalFrameFixture;
 import org.fest.swing.util.Platform;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -101,7 +102,7 @@ public class InputTextFrameTest implements UITestIface {
         }
     }
 
-    @Test
+    @Test @Ignore
     public void testPasteDialogWithTextBefore() throws InterruptedException {
         window.textBox().enterText("testing:");
         ((InputTextFrame) window.target).doPaste("line1\nline2");
@@ -120,7 +121,7 @@ public class InputTextFrameTest implements UITestIface {
         }
     }
 
-    @Test
+    @Test @Ignore
     public void testPasteDialogWithTextAfter() throws InterruptedException {
         window.textBox().enterText("<- testing").pressAndReleaseKey(
                 KeyPressInfo.keyCode(KeyEvent.VK_HOME));
@@ -140,7 +141,7 @@ public class InputTextFrameTest implements UITestIface {
         }
     }
 
-    @Test
+    @Test @Ignore
     public void testPasteDialogWithTextAround() throws InterruptedException {
         window.textBox().enterText("testing:<- testing").selectText(8, 8);
         ((InputTextFrame) window.target).doPaste("line1\nline2");
