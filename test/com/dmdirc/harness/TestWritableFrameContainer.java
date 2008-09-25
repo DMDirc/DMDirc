@@ -23,24 +23,30 @@
 package com.dmdirc.harness;
 
 import com.dmdirc.*;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 public class TestWritableFrameContainer extends WritableFrameContainer {
 
+    public InputWindow window = null;
     private final int lineLength;
 
-    public TestWritableFrameContainer(final int lineLength) {
-        super("raw", IdentityManager.getGlobalConfig());
+    public TestWritableFrameContainer(final int lineLength, final ConfigManager cm) {
+        super("raw", cm);
 
         this.lineLength = lineLength;
+    }
+
+    public TestWritableFrameContainer(final int lineLength) {
+        this(lineLength, IdentityManager.getGlobalConfig());
     }
 
     public void sendLine(String line) {
     }
 
     public InputWindow getFrame() {
-        return null;
+        return window;
     }
 
     public int getMaxLineLength() {
