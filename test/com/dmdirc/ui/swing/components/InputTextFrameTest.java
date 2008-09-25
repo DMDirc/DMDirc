@@ -94,6 +94,11 @@ public class InputTextFrameTest implements UITestIface {
         dlg.textBox(new ClassFinder<TextAreaInputField>(TextAreaInputField.class, null))
                 .requireText("line1\nline2");
         dlg.close();
+
+        int i = 0;
+        while (dlg.target.isVisible() && ++i < 100) {
+            Thread.sleep(100);
+        }
     }
 
     @Test
@@ -108,6 +113,11 @@ public class InputTextFrameTest implements UITestIface {
         dlg.textBox(new ClassFinder<TextAreaInputField>(TextAreaInputField.class, null))
                 .requireText("testing:line1\nline2");
         dlg.close();
+
+        int i = 0;
+        while (dlg.target.isVisible() && ++i < 100) {
+            Thread.sleep(100);
+        }
     }
 
     @Test
@@ -123,6 +133,11 @@ public class InputTextFrameTest implements UITestIface {
         dlg.textBox(new ClassFinder<TextAreaInputField>(TextAreaInputField.class, null))
                 .requireText("line1\nline2<- testing");
         dlg.close();
+
+        int i = 0;
+        while (dlg.target.isVisible() && ++i < 100) {
+            Thread.sleep(100);
+        }
     }
 
     @Test
@@ -137,6 +152,11 @@ public class InputTextFrameTest implements UITestIface {
         dlg.textBox(new ClassFinder<TextAreaInputField>(TextAreaInputField.class, null))
                 .requireText("testing:line1\nline2<- testing");
         dlg.close();
+
+        int i = 0;
+        while (dlg.target.isVisible() && ++i < 100) {
+            Thread.sleep(100);
+        }
     }
 
     public static junit.framework.Test suite() {
