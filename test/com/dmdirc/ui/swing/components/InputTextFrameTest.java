@@ -84,23 +84,8 @@ public class InputTextFrameTest implements UITestIface {
     }
 
     @Test
-    public void testPasteDialogAppearing() throws InterruptedException {
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
-                new StringSelection("line1\nline2"), null);
-
-        window.textBox().pressAndReleaseKey(KeyPressInfo.keyCode(KeyEvent.VK_V)
-                .modifiers(Platform.controlOrCommandMask()));
-        mainframe.dialog(DialogByTitleMatcher.withTitleAndShowing("Multi-line paste"))
-                .requireVisible().close();
-    }
-
-    @Test
     public void testPasteDialogContents() throws InterruptedException {
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
-                new StringSelection("line1\nline2"), null);
-
-        window.textBox().pressAndReleaseKey(KeyPressInfo.keyCode(KeyEvent.VK_V)
-                .modifiers(Platform.controlOrCommandMask()));
+        ((InputTextFrame) window.target).doPaste("line1\nline2");
 
         final DialogFixture dlg = mainframe.dialog(DialogByTitleMatcher
                 .withTitleAndShowing("Multi-line paste"));
@@ -113,12 +98,8 @@ public class InputTextFrameTest implements UITestIface {
 
     @Test
     public void testPasteDialogWithTextBefore() throws InterruptedException {
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
-                new StringSelection("line1\nline2"), null);
-
         window.textBox().enterText("testing:");
-        window.textBox().pressAndReleaseKey(KeyPressInfo.keyCode(KeyEvent.VK_V)
-                .modifiers(Platform.controlOrCommandMask()));
+        ((InputTextFrame) window.target).doPaste("line1\nline2");
 
         final DialogFixture dlg = mainframe.dialog(DialogByTitleMatcher
                 .withTitleAndShowing("Multi-line paste"));
@@ -131,13 +112,9 @@ public class InputTextFrameTest implements UITestIface {
 
     @Test
     public void testPasteDialogWithTextAfter() throws InterruptedException {
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
-                new StringSelection("line1\nline2"), null);
-
         window.textBox().enterText("<- testing").pressAndReleaseKey(
                 KeyPressInfo.keyCode(KeyEvent.VK_HOME));
-        window.textBox().pressAndReleaseKey(KeyPressInfo.keyCode(KeyEvent.VK_V)
-                .modifiers(Platform.controlOrCommandMask()));
+        ((InputTextFrame) window.target).doPaste("line1\nline2");
 
         final DialogFixture dlg = mainframe.dialog(DialogByTitleMatcher
                 .withTitleAndShowing("Multi-line paste"));
@@ -150,12 +127,8 @@ public class InputTextFrameTest implements UITestIface {
 
     @Test
     public void testPasteDialogWithTextAround() throws InterruptedException {
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
-                new StringSelection("line1\nline2"), null);
-
         window.textBox().enterText("testing:<- testing").selectText(8, 8);
-        window.textBox().pressAndReleaseKey(KeyPressInfo.keyCode(KeyEvent.VK_V)
-                .modifiers(Platform.controlOrCommandMask()));
+        ((InputTextFrame) window.target).doPaste("line1\nline2");
 
         final DialogFixture dlg = mainframe.dialog(DialogByTitleMatcher
                 .withTitleAndShowing("Multi-line paste"));

@@ -337,7 +337,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     /** Checks and pastes text. */
     public void doPaste() {
         String clipboard = null;
-        String[] clipboardLines = new String[1];
+        
         try {
             if (!Toolkit.getDefaultToolkit().getSystemClipboard().
                     isDataFlavorAvailable(DataFlavor.stringFlavor)) {
@@ -352,8 +352,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
             //get the contents of the input field and combine it with the clipboard
             clipboard = (String) Toolkit.getDefaultToolkit().
                     getSystemClipboard().getData(DataFlavor.stringFlavor);
-            //split the text
-            clipboardLines = getSplitLine(clipboard);
+            doPaste(clipboard);
         } catch (IOException ex) {
             Logger.userError(ErrorLevel.LOW, "Unable to get clipboard contents: " +
                     ex.getMessage());
@@ -361,20 +360,29 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
             Logger.appError(ErrorLevel.LOW, "Unable to get clipboard contents",
                     ex);
         }
+    }
 
+    /**
+     * Pastes the specified content into the input area.
+     *
+     * @param clipboard The contents of the clipboard to be pasted
+     * @since 0.6.3
+     */
+    protected void doPaste(final String clipboard) {
+        String[] clipboardLines;
         //check theres something to paste
-        if (clipboard != null && clipboardLines.length > 1) {
+        if (clipboard != null && (clipboardLines = getSplitLine(clipboard)).length > 1) {
             final int caretPosition = getInputField().getCaretPosition();
             final String inputFieldText = getInputField().getText();
-            clipboard = inputFieldText.substring(0, caretPosition) + clipboard +
-                    inputFieldText.substring(caretPosition);
+            final String text = inputFieldText.substring(0, caretPosition)
+                    + clipboard + inputFieldText.substring(caretPosition);
             //check the limit
             final int pasteTrigger = getConfigManager().getOptionInt("ui",
                     "pasteProtectionLimit", 1);
             //check whether the number of lines is over the limit
-            if (parent.getNumLines(clipboard) > pasteTrigger) {
+            if (parent.getNumLines(text) > pasteTrigger) {
                 //show the multi line paste dialog
-                new PasteDialog(this, clipboard).setVisible(true);
+                new PasteDialog(this, text).setVisible(true);
                 inputField.setText("");
             } else {
                 //send the lines
