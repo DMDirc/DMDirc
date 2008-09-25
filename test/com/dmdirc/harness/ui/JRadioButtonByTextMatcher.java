@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing;
+package com.dmdirc.harness.ui;
 
 import javax.swing.JRadioButton;
 import org.fest.swing.core.GenericTypeMatcher;

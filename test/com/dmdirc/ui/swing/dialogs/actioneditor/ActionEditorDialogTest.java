@@ -29,7 +29,7 @@ import com.dmdirc.harness.ui.UIClassTestRunner;
 import com.dmdirc.harness.ui.ClassFinder;
 
 import com.dmdirc.harness.ui.UITestIface;
-import com.dmdirc.ui.swing.JRadioButtonByTextMatcher;
+import com.dmdirc.harness.ui.JRadioButtonByTextMatcher;
 import com.dmdirc.ui.swing.components.ImageButton;
 
 import com.dmdirc.ui.swing.components.TextLabel;
