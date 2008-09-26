@@ -41,12 +41,13 @@ public class NicklistListModel extends AbstractListModel implements ConfigChange
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    /** stores the nicknames to be shown in this list. */
-    private final List<ChannelClientInfo> nicknames;
+
+    /** Stores the nicknames to be shown in this list. */
+    protected final List<ChannelClientInfo> nicknames;
     /** Sort by mode? */
-    private boolean sortByMode;
+    protected boolean sortByMode;
     /** Sort by case? */
-    private boolean sortByCase;
+    protected boolean sortByCase;
 
     /**
      * Creates a new model and initiliases it with the data provided.
