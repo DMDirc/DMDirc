@@ -33,7 +33,7 @@ import java.util.List;
 import javax.swing.AbstractListModel;
 
 /** Stores and provides means to modify nicklist data for a channel. */
-public final class NicklistListModel extends AbstractListModel implements ConfigChangeListener {
+public class NicklistListModel extends AbstractListModel implements ConfigChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
