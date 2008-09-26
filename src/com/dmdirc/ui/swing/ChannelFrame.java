@@ -27,6 +27,9 @@ import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
 import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.config.ConfigManager;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.swing.components.InputTextFrame;
@@ -49,6 +52,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
@@ -206,10 +210,23 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
                 new SnappingJSplitPane(SnappingJSplitPane.Orientation.HORIZONTAL,
                 false);
 
+        ListCellRenderer renderer;
+        try {
+            renderer = Class.forName(parent.getConfigManager()
+                    .getOption("ui", "nicklist.renderer",
+                    "com.dmdirc.ui.swing.components.renderers.NicklistRenderer"))
+                    .asSubclass(ListCellRenderer.class)
+                    .getConstructor(ConfigManager.class, JList.class)
+                    .newInstance(parent.getConfigManager(), nickList);
+        } catch (Exception ex) {
+            // Too many exceptions; all have the same behaviour
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to create custom nicklist", ex);
+            renderer = new NicklistRenderer(parent.getConfigManager(), nickList);
+        }
+
         final JScrollPane nickScrollPane = new JScrollPane();
         nickList = new JList();
-        nickList.setCellRenderer(new NicklistRenderer(parent.getConfigManager(),
-                nickList));
+        nickList.setCellRenderer(renderer);
         nickList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         nickList.addMouseListener(this);
