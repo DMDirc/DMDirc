@@ -214,7 +214,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
         try {
             renderer = Class.forName(parent.getConfigManager()
                     .getOption("ui", "nicklist.renderer",
-                    "com.dmdirc.ui.swing.components.renderers.NicklistRenderer"))
+                    NicklistRenderer.class.getCanonicalName()))
                     .asSubclass(ListCellRenderer.class)
                     .getConstructor(ConfigManager.class, JList.class)
                     .newInstance(parent.getConfigManager(), nickList);
@@ -266,7 +266,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
 
     /**
      * {@inheritDoc}.
-     * 
+     *
      * @param actionEvent Action event
      */
     @Override
