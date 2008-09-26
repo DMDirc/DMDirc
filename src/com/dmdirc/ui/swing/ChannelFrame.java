@@ -220,7 +220,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
                     .newInstance(parent.getConfigManager(), nickList);
         } catch (Exception ex) {
             // Too many exceptions; all have the same behaviour
-            Logger.userError(ErrorLevel.MEDIUM, "Unable to create custom nicklist", ex);
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to create nicklist renderer", ex);
             renderer = new NicklistRenderer(parent.getConfigManager(), nickList);
         }
 
@@ -238,7 +238,17 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
             divider.setBorder(null);
         }
 
-        nicklistModel = new NicklistListModel();
+        try {
+            nicklistModel = Class.forName(parent.getConfigManager()
+                    .getOption("ui", "nicklist.model",
+                    NicklistListModel.class.getCanonicalName()))
+                    .asSubclass(NicklistListModel.class)
+                    .getConstructor().newInstance();
+        } catch (Exception ex) {
+            // Too many exceptions; all have the same behaviour
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to create nicklist model", ex);
+            nicklistModel = new NicklistListModel();
+        }
 
         nickList.setModel(nicklistModel);
         nickScrollPane.setViewportView(nickList);
