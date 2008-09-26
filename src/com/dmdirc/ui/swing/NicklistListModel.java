@@ -82,7 +82,7 @@ public class NicklistListModel extends AbstractListModel implements ConfigChange
      * @return nicklist entry requested
      */
     @Override
-    public ChannelClientInfo getElementAt(final int index) {
+    public Object getElementAt(final int index) {
         return nicknames.get(index);
     }
 
