@@ -36,7 +36,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 
 /** Renders the nicklist. */
-public final class NicklistRenderer extends DefaultListCellRenderer implements
+public class NicklistRenderer extends DefaultListCellRenderer implements
         ConfigChangeListener {
 
     /**
