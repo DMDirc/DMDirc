@@ -48,25 +48,18 @@ public class NicklistListModel extends AbstractListModel implements ConfigChange
     /** Sort by case? */
     private boolean sortByCase;
 
-    /** Creates a new empty model. */
-    public NicklistListModel() {
-        this(Collections.synchronizedList(new ArrayList<ChannelClientInfo>()));
-    }
-
     /**
      * Creates a new model and initiliases it with the data provided.
-     * @param newNicknames list of nicknames used for initialisation
      */
-    public NicklistListModel(final List<ChannelClientInfo> newNicknames) {
+    public NicklistListModel() {
         super();
         
-        sortByMode =
-                IdentityManager.getGlobalConfig().
-                getOptionBool("ui", "sortByMode", false);
-        sortByCase =
-                IdentityManager.getGlobalConfig().
-                getOptionBool("ui", "sortByCase", false);
-        nicknames = Collections.synchronizedList(newNicknames);
+        sortByMode = IdentityManager.getGlobalConfig().getOptionBool("ui",
+                "sortByMode", false);
+        sortByCase = IdentityManager.getGlobalConfig().getOptionBool("ui",
+                "sortByCase", false);
+
+        nicknames = Collections.synchronizedList(new ArrayList<ChannelClientInfo>());
         
         sort();
     }
@@ -124,13 +117,10 @@ public class NicklistListModel extends AbstractListModel implements ConfigChange
      * Adds the specified client to the nicklist.
      * 
      * @param client client to add to the nicklist
-     * 
      * @return boolean success
      */
     public boolean add(final ChannelClientInfo client) {
-        boolean returnValue = false;
-
-        returnValue = nicknames.add(client);
+        boolean returnValue = nicknames.add(client);
         sort();
 
         return returnValue;
@@ -140,13 +130,10 @@ public class NicklistListModel extends AbstractListModel implements ConfigChange
      * Removes the specified client from the nicklist.
      * 
      * @param client client to remove
-     * 
      * @return boolean success
      */
     public boolean remove(final ChannelClientInfo client) {
-        boolean returnValue;
-        
-        returnValue = nicknames.remove(client);
+        boolean returnValue = nicknames.remove(client);
         rerender();
         
         return returnValue;
@@ -156,13 +143,10 @@ public class NicklistListModel extends AbstractListModel implements ConfigChange
      * Removes the specified index from the nicklist.
      * 
      * @param index index to remove
-     * 
      * @return ChannelClientInfo client removed
      */
     public ChannelClientInfo remove(final int index) {
-        ChannelClientInfo returnValue;
-        
-        returnValue = nicknames.remove(index);
+        ChannelClientInfo returnValue = nicknames.remove(index);
         rerender();
         
         return returnValue;
@@ -177,15 +161,13 @@ public class NicklistListModel extends AbstractListModel implements ConfigChange
 
     /** {@inheritDoc} */
     @Override
-    public void configChanged(String domain, String key) {
+    public void configChanged(final String domain, final String key) {
         if ("sortByMode".equals(key)) {
-            sortByMode =
-                    IdentityManager.getGlobalConfig().
-                    getOptionBool("ui", "sortByMode", false);
+            sortByMode = IdentityManager.getGlobalConfig().getOptionBool("ui",
+                    "sortByMode", false);
         } else if ("sortByCase".equals(key)) {
-            sortByCase =
-                    IdentityManager.getGlobalConfig().
-                    getOptionBool("ui", "sortByCase", false);
+            sortByCase = IdentityManager.getGlobalConfig().getOptionBool("ui",
+                    "sortByCase", false);
         }
         
         sort();
