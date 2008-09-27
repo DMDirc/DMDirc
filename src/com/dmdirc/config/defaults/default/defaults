@@ -230,11 +230,21 @@ icon:
   smilie-:I=dmdirc://com/dmdirc/res/smilies/yellow/neutral.png
   smilie-:-|=dmdirc://com/dmdirc/res/smilies/yellow/neutral.png
   smilie-:-I=dmdirc://com/dmdirc/res/smilies/yellow/neutral.png
+
   smilie-:(=dmdirc://com/dmdirc/res/smilies/yellow/sad.png
   smilie-:-(=dmdirc://com/dmdirc/res/smilies/yellow/sad.png
+
   smilie-:)=dmdirc://com/dmdirc/res/smilies/yellow/smile.png
   smilie-:-)=dmdirc://com/dmdirc/res/smilies/yellow/smile.png
+  smilie-;)=dmdirc://com/dmdirc/res/smilies/yellow/winksmile.png
+  smilie-;-)=dmdirc://com/dmdirc/res/smilies/yellow/winksmile.png
+
   smilie-:P=dmdirc://com/dmdirc/res/smilies/yellow/tongue.png
   smilie-:-P=dmdirc://com/dmdirc/res/smilies/yellow/tongue.png
   smilie-;P=dmdirc://com/dmdirc/res/smilies/yellow/winktongue.png
   smilie-;-P=dmdirc://com/dmdirc/res/smilies/yellow/winktongue.png
+
+  smilie-:/=dmdirc://com/dmdirc/res/smilies/yellow/skeptical.png
+  smilie-:-/=dmdirc://com/dmdirc/res/smilies/yellow/skeptical.png
+  smilie-:\=dmdirc://com/dmdirc/res/smilies/yellow/skeptical.png
+  smilie-:-\=dmdirc://com/dmdirc/res/smilies/yellow/skeptical.png
