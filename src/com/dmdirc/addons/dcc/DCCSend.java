@@ -74,16 +74,17 @@ public class DCCSend extends DCC {
 	
 	/** Creates a new instance of DCCSend with a default block size. */
 	public DCCSend() {
-		this(1024);
+		this(1024, false);
 	}
 	
 	/**
 	 * Creates a new instance of DCCSend.
 	 *
 	 * @param blockSize Block size to use
+	 * @param isSSL is this an SSL Send?
 	 */
-	public DCCSend(final int blockSize) {
-		super();
+	public DCCSend(final int blockSize, final boolean isSSL) {
+		super(isSSL);
 		this.blockSize = blockSize;
 		synchronized (sends) {
 			sends.add(this);

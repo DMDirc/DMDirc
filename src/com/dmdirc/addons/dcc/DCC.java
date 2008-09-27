@@ -28,6 +28,32 @@ import java.net.UnknownHostException;
 import java.io.IOException;
 import java.util.concurrent.Semaphore;
 
+import java.net.InetAddress;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.security.cert.X509Certificate;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+import java.security.KeyStore;
+import java.security.SecureRandom;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.KeyManagementException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 /**
  * This class handles the main "grunt work" of DCC, subclasses process the data
  * received by this class.
@@ -47,6 +73,11 @@ public abstract class DCC implements Runnable {
 	protected boolean running = false;
 	/** Are we a listen socket? */
 	protected boolean listen = false;
+
+	/** Are we an SSL DCC? */
+	protected boolean ssl = false;
+	/** SSLContext for ssl sockets */
+	protected SSLContext sc = null;
 
 	/**
 	 * The current socket in use if this is a listen socket.
@@ -78,10 +109,79 @@ public abstract class DCC implements Runnable {
 
 	/**
 	 * Creates a new instance of DCC.
+	 *
+	 * @param isSSL should this dcc be done over an ssl connection?
 	 */
-	public DCC() {
+	public DCC(final boolean isSSL) {
 		super();
+		ssl = isSSL;
 	}
+	
+	/**
+	 * Get the SSLContext for DCC SSL Sockets
+ 	 */
+	private synchronized SSLContext getSSLContext() {
+		if (sc == null) {
+			try {
+				if (!listen) {
+					sc = SSLContext.getInstance("SSL");
+					
+					final TrustManager[] trustAllCerts = {
+						new X509TrustManager() {
+							@Override
+							public X509Certificate[] getAcceptedIssuers() { return null;	}
+							@Override
+							public void checkClientTrusted(final X509Certificate[] certs, final String authType) { }
+							@Override
+							public void checkServerTrusted(final X509Certificate[] certs, final String authType) { }
+						},
+					};
+					sc.init(null, trustAllCerts, new java.security.SecureRandom());
+				} else {
+					// The core probably has a better keystore, change to that.
+					String storePassword =  "storePassword";
+					String keyPassword =  "keyPassword";
+					String keyStore =  "/home/shane/.DMDirc/keystore.ks";
+					
+					File keyFile = new File(keyStore);
+					if (!keyFile.exists()) { return null; }
+					
+					// Load the keystore
+					KeyStore ks = KeyStore.getInstance("JKS");
+					ks.load(new FileInputStream(keyFile), storePassword.toCharArray());
+					
+					// Load the keymanager
+					KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+					kmf.init(ks, keyPassword.toCharArray());
+					
+					// Load the TrustManager
+					TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+					tmf.init(ks);
+					
+					// Create an SSLContext
+					sc = SSLContext.getInstance("TLS");
+					sc.init(kmf.getKeyManagers(), tmf.getTrustManagers(), new SecureRandom());
+				}
+			} catch (KeyManagementException kme) {
+			} catch (NoSuchAlgorithmException nsae) {
+			} catch (KeyStoreException kse) {
+			} catch (FileNotFoundException fnfe) {
+			} catch (IOException ioe) {
+			} catch (UnrecoverableKeyException ukee) {
+			} catch (CertificateException ukee) {
+			}
+		}
+		return sc;
+	}
+
+ 	/**
+	 * Is this an SSL socket?
+	 *
+	 * @return True if this is an SSL socket
+ 	 */
+	public boolean isSSL() {
+		return ssl;
+ 	}
 
 	/**
 	 * Connect this dcc.
@@ -93,7 +193,11 @@ public abstract class DCC implements Runnable {
 				port = serverSocket.getLocalPort();
 			} else {
 				// socket = new Socket(longToIP(address), port, bindIP, 0);
-				socket = new Socket(longToIP(address), port);
+				if (ssl) {
+					socket = getSSLContext().getSocketFactory().createSocket(longToIP(address), port);
+				} else {
+					socket = new Socket(longToIP(address), port);
+				}
 				socketOpened();
 			}
 		} catch (UnknownHostException uhe) {
@@ -115,7 +219,11 @@ public abstract class DCC implements Runnable {
 		listen = true;
 
 		serverSocketSem.acquireUninterruptibly();
-		serverSocket = new ServerSocket(0, 1);
+		if (ssl) {
+			serverSocket = getSSLContext().getServerSocketFactory().createServerSocket(0, 1);
+		} else {
+			serverSocket = new ServerSocket(0, 1);
+		}
 		serverSocketSem.release();
 
 		connect();
@@ -135,7 +243,11 @@ public abstract class DCC implements Runnable {
 		for (int i = startPort; i <= endPort; ++i) {
 			try {
 				serverSocketSem.acquireUninterruptibly();
-				serverSocket = new ServerSocket(i, 1);
+				if (ssl) {
+					serverSocket = getSSLContext().getServerSocketFactory().createServerSocket(i, 1);
+				} else {
+					serverSocket = new ServerSocket(i, 1);
+				}
 				serverSocketSem.release();
 				// Found a socket we can use!
 				break;

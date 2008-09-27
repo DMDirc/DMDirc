@@ -45,7 +45,16 @@ public class DCCChat extends DCC {
 	 * Creates a new instance of DCCChat.
 	 */
 	public DCCChat() {
-		super();
+		this(false);
+	}
+	
+	/**
+	 * Creates a new instance of DCCChat.
+	 *
+	 * @param isSSL Is this going to be an SSL DCCChat?
+	 */
+	public DCCChat(final boolean isSSL) {
+		super(isSSL);
 	}
 	
 	/**
@@ -64,6 +73,7 @@ public class DCCChat extends DCC {
 	protected void socketOpened() {
 		try {
 			out = new PrintWriter(socket.getOutputStream(), true);
+			out.flush();
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			if (handler != null) {
 				handler.socketOpened(this);

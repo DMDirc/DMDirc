@@ -97,10 +97,10 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 				errorThread.start();
 				return;
 			}
-			if (type.equalsIgnoreCase("chat")) {
-				final DCCChat chat = new DCCChat();
+			if (type.equalsIgnoreCase("chat") || type.equalsIgnoreCase("schat")) {
+				final DCCChat chat = new DCCChat(type.equalsIgnoreCase("schat"));
 				if (myPlugin.listen(chat)) {
-					final DCCChatWindow window = new DCCChatWindow(myPlugin, chat, "*Chat: "+target, myNickname, target);
+					final DCCChatWindow window = new DCCChatWindow(myPlugin, chat, "*Chat: "+(chat.isSSL() ? "+" : "")+target, myNickname, target);
 					
 					parser.sendCTCP(target, "DCC", "CHAT chat "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" "+chat.getPort());
 					
@@ -111,8 +111,8 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 				} else {
 					sendLine(origin, isSilent, "DCCChatError", "Unable to start chat with "+target+" - unable to create listen socket");
 				}
-			} else if (type.equalsIgnoreCase("send")) {
-				sendFile(target, origin, server, isSilent, args);
+			} else if (type.equalsIgnoreCase("send") || type.equalsIgnoreCase("ssend")) {
+				sendFile(target, origin, server, isSilent, type, args);
 			} else {
 				sendLine(origin, isSilent, FORMAT_ERROR, "Unknown DCC Type: '"+type+"'");
 			}
@@ -128,9 +128,10 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 	 * @param origin The InputWindow this command was issued on
 	 * @param server The server instance that this command is being executed on
 	 * @param isSilent Whether this command is silenced or not
+	 * @param type Type of send
 	 * @param args Arguments passed.
 	 */
-	public void sendFile(final String target, final InputWindow origin, final Server server, final boolean isSilent, final String... args) {
+	public void sendFile(final String target, final InputWindow origin, final Server server, final boolean isSilent, final String type, final String... args) {
 		// New thread to ask the user what file to send
 		final File givenFile = new File(implodeArgs(2, args));
 		final Thread dccThread = new Thread(new Runnable() {
@@ -158,7 +159,7 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 					}
 					final IRCParser parser = server.getParser();
 					final String myNickname = parser.getMyNickname();
-					DCCSend send = new DCCSend(IdentityManager.getGlobalConfig().getOptionInt(DCCPlugin.getDomain(), "send.blocksize", 1024));
+					DCCSend send = new DCCSend(IdentityManager.getGlobalConfig().getOptionInt(DCCPlugin.getDomain(), "send.blocksize", 1024), type.equalsIgnoreCase("ssend"));
 					send.setTurbo(IdentityManager.getGlobalConfig().getOptionBool(DCCPlugin.getDomain(), "send.forceturbo", false));
 					send.setType(DCCSend.TransferType.SEND);
 					
@@ -170,12 +171,12 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 					send.setFileSize(jc.getSelectedFile().length());
 					
 					if (IdentityManager.getGlobalConfig().getOptionBool(DCCPlugin.getDomain(), "send.reverse", false)) {
-						new DCCSendWindow(myPlugin, send, "Send: "+target, myNickname, target, parser);
-						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" 0 "+send.getFileSize()+" "+send.makeToken()+((send.isTurbo()) ? " T" : ""));
+						new DCCSendWindow(myPlugin, send, "Send: "+(send.isSSL() ? "+" : "")+target, myNickname, target, parser);
+						parser.sendCTCP(target, "DCC", type.toUpperCase()+" \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" 0 "+send.getFileSize()+" "+send.makeToken()+((send.isTurbo()) ? " T" : ""));
 					} else {
 						if (myPlugin.listen(send)) {
-							new DCCSendWindow(myPlugin, send, "*Send: "+target, myNickname, target, parser);
-							parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" "+send.getPort()+" "+send.getFileSize()+((send.isTurbo()) ? " T" : ""));
+							new DCCSendWindow(myPlugin, send, "*Send: "+(send.isSSL() ? "+" : "")+target, myNickname, target, parser);
+							parser.sendCTCP(target, "DCC", type.toUpperCase()+" \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" "+send.getPort()+" "+send.getFileSize()+((send.isTurbo()) ? " T" : ""));
 						} else {
 							sendLine(origin, isSilent, "DCCSendError", "Unable to start dcc send with "+target+" - unable to create listen socket");
 						}
