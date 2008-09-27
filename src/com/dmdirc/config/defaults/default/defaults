@@ -227,7 +227,9 @@ icon:
   category-urlhandlers=dmdirc://com/dmdirc/res/urls.png
 
   smilie-:|=dmdirc://com/dmdirc/res/smilies/yellow/neutral.png
+  smilie-:I=dmdirc://com/dmdirc/res/smilies/yellow/neutral.png
   smilie-:-|=dmdirc://com/dmdirc/res/smilies/yellow/neutral.png
+  smilie-:-I=dmdirc://com/dmdirc/res/smilies/yellow/neutral.png
   smilie-:(=dmdirc://com/dmdirc/res/smilies/yellow/sad.png
   smilie-:-(=dmdirc://com/dmdirc/res/smilies/yellow/sad.png
   smilie-:)=dmdirc://com/dmdirc/res/smilies/yellow/smile.png
