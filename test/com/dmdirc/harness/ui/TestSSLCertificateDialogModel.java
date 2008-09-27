@@ -58,7 +58,7 @@ public class TestSSLCertificateDialogModel extends SSLCertificateDialogModel {
                 = new ArrayList<List<CertificateInformationEntry>>();
         
         res.add(Arrays.asList(new CertificateInformationEntry[]{
-            new CertificateInformationEntry("G1 T1", "value", false, false),
+            new CertificateInformationEntry("G1 T1", "value value value value value value value value value value value value value value value value value value value value value", false, false),
             new CertificateInformationEntry("G1 T2 missing", "value", false, true),
             new CertificateInformationEntry("G1 T3 invalid", "value", true, false),
         }));

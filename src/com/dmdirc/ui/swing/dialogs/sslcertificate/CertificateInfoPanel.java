@@ -26,6 +26,8 @@ import com.dmdirc.ui.core.dialogs.sslcertificate.CertificateInformationEntry;
 import com.dmdirc.ui.swing.components.TextLabel;
 
 import java.awt.Color;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -73,7 +75,7 @@ public class CertificateInfoPanel extends JScrollPane {
                 certificateName));
         content.setVisible(false);
         content.removeAll();
-        content.setLayout(new MigLayout("fill, wrap 2"));
+        content.setLayout(new MigLayout("wmax 100%, wrap 2"));
 
         for (List<CertificateInformationEntry> entry : certificateInfo) {
             for (CertificateInformationEntry info : entry) {
