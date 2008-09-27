@@ -4,4 +4,4 @@
 /dist
 /nbproject/private
 /plugins
-*/.svn
+.svn
