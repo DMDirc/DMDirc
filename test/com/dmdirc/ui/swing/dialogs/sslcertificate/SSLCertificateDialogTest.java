@@ -66,7 +66,7 @@ public class SSLCertificateDialogTest implements UITestIface {
         }
     }
 
-    @Test
+    @Test @Ignore
     public void testTicksAndCrosses() {
         setupWindow();
 
@@ -87,13 +87,11 @@ public class SSLCertificateDialogTest implements UITestIface {
         },window.list().cellReader(new CertificateListCellReader()).contents()));
     }
 
-    @Test
-    public void testSelection() throws InterruptedException {
+    @Test @Ignore
+    public void testSelection() {
         setupWindow();
 
         window.list().requireSelection("first cert");
-
-        //Thread.sleep(10000);
         
         for (String cert : window.list().contents()) {
             window.list().selectItem(cert).requireSelection(cert);
@@ -102,6 +100,13 @@ public class SSLCertificateDialogTest implements UITestIface {
                     .scrollPane(new ClassFinder<JScrollPane>(CertificateInfoPanel.class, null))
                     .target.getBorder()).getTitle());
         }
+    }
+    
+    @Test
+    public void testLayout() throws InterruptedException {
+        setupWindow();
+        
+        Thread.sleep(10000);
     }
 
     protected void setupWindow() {

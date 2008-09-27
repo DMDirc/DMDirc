@@ -120,11 +120,11 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
     }
 
     private void layoutComponents() {
-        setLayout(new MigLayout("fill, wrap 2, wmin 600, hmin 600, hmax 600, hidemode 3"));
+        setLayout(new MigLayout("fill, wrap 2, wmin 600, wmax 600, hmin 600, hmax 600, hidemode 3"));
 
         add(blurb, "span 2");
         add(chain, "wmax 250, growy");
-        add(info, "grow, pushx");
+        add(info, "wmax 350, grow, pushx");
         add(summary, "span 2, growx");
         add(actions, "span 2, growx");
         add(getOkButton(), "span, right");
@@ -133,7 +133,7 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
     /** 
      * {@inheritDoc}.
      * 
-     * @param e Action event
+     * @param e Action event    
      */
     @Override
     public void actionPerformed(final ActionEvent e) {
