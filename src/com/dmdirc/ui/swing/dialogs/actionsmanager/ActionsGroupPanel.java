@@ -25,12 +25,12 @@ package com.dmdirc.ui.swing.dialogs.actionsmanager;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.ActionManager;
-import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.ui.swing.components.PackingTable;
 import com.dmdirc.ui.swing.components.renderers.ActionTypeTableCellRenderer;
 import com.dmdirc.ui.swing.components.renderers.ArrayCellRenderer;
 import com.dmdirc.ui.swing.dialogs.actioneditor.ActionEditorDialog;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -62,6 +62,8 @@ public final class ActionsGroupPanel extends JPanel implements ActionListener,
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** Parent dialog. */
+    private Window parent;
     /** Table scrollpane. */
     private JScrollPane scrollPane;
     /** Actions table. */
@@ -82,9 +84,10 @@ public final class ActionsGroupPanel extends JPanel implements ActionListener,
      * 
      * @param group Action group to display
      */
-    public ActionsGroupPanel(final ActionGroup group) {
+    public ActionsGroupPanel(final Window parent, final ActionGroup group) {
         super();
 
+        this.parent = parent;
         this.group = group;
 
         initComponents();
@@ -226,11 +229,9 @@ public final class ActionsGroupPanel extends JPanel implements ActionListener,
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == add) {
-            ActionEditorDialog.showActionEditorDialog(SwingController.getMainFrame(),
-                    group.getName());
+            ActionEditorDialog.showActionEditorDialog(parent, group.getName());
         } else if (e.getSource() == edit) {
-            ActionEditorDialog.showActionEditorDialog(SwingController.getMainFrame(),
-                    group.getName(),
+            ActionEditorDialog.showActionEditorDialog(parent, group.getName(),
                     model.getAction(
                     table.getRowSorter().convertRowIndexToModel(table.getSelectedRow())));
         } else if (e.getSource() == delete) {

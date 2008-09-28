@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.swing.dialogs.actionsmanager;
 
-import com.dmdirc.Main;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.ActionManager;
@@ -33,7 +32,7 @@ import com.dmdirc.config.prefs.validator.ActionGroupValidator;
 import com.dmdirc.config.prefs.validator.FileNameValidator;
 import com.dmdirc.config.prefs.validator.ValidatorChain;
 import com.dmdirc.ui.swing.components.TextLabel;
-import com.dmdirc.ui.swing.MainFrame;
+import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.ui.swing.components.ListScroller;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.StandardInputDialog;
@@ -97,7 +96,8 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
 
     /** Creates a new instance of ActionsManagerDialog. */
     private ActionsManagerDialog() {
-        super((MainFrame) Main.getUI().getMainWindow(), false);
+        super(null, ModalityType.MODELESS);
+        setIconImage(SwingController.getMainFrame().getIcon().getImage());
 
         initComponents();
         addListeners();
@@ -114,7 +114,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         getActionsManagerDialog();
 
         me.pack();
-        me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        me.setLocationRelativeTo(SwingController.getMainFrame());
         me.setVisible(true);
         me.requestFocus();
 
@@ -151,7 +151,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         infoLabel = new TextLabel("Actions allow you to make DMDirc" +
                 " intelligently respond to various events.");
         groups = new JList(new DefaultListModel());
-        actions = new ActionsGroupPanel(null);
+        actions = new ActionsGroupPanel(this, null);
         info = new ActionGroupInformationPanel(null);
         settings = new HashMap<ActionGroup, ActionGroupSettingsPanel>();
         activeSettings = new ActionGroupSettingsPanel(null, this);
