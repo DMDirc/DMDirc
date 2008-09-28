@@ -77,7 +77,7 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
         super(parent, ModalityType.MODELESS);
 
         this.parent = parent;
-        this.model = model; 
+        this.model = model;
         this.selectedIndex = 0;
 
         initComponents();
@@ -113,7 +113,7 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
         if (model.needsResponse()) {
             blurb.setText("Theres is a problem with the certificate used by " +
                     chain.getName(0));
-        } else {    
+        } else {
             blurb.setText("Your connection to " + chain.getName(0) +
                     " is encrypted using SSL.");
         }
@@ -123,7 +123,7 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
         setLayout(new MigLayout("fill, wrap 2, wmin 600, wmax 600, hmax 600, hidemode 3, pack"));
 
         add(blurb, "span 2");
-        add(chain, "wmax 250, growy");
+        add(chain, "wmax 250, grow");
         add(info, "growx, pushx");
         add(summary, "span 2, growx");
         add(actions, "span 2, growx");
