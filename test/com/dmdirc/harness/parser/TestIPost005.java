@@ -22,8 +22,8 @@
 
 package com.dmdirc.harness.parser;
 
-import com.dmdirc.parser.*;
-import com.dmdirc.parser.callbacks.interfaces.IPost005;
+import com.dmdirc.parser.irc.*;
+import com.dmdirc.parser.irc.callbacks.interfaces.IPost005;
 
 public class TestIPost005 implements IPost005 {
 

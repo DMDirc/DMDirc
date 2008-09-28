@@ -23,9 +23,9 @@
 package com.dmdirc.harness.parser;
 
 import com.dmdirc.ParserFactory;
-import com.dmdirc.parser.IRCParser;
-import com.dmdirc.parser.MyInfo;
-import com.dmdirc.parser.ServerInfo;
+import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.irc.MyInfo;
+import com.dmdirc.parser.irc.ServerInfo;
 
 public class TestParserFactory extends ParserFactory {
 

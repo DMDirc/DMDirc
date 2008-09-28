@@ -24,7 +24,7 @@ package com.dmdirc.ui.swing.dialogs.serversetting;
 
 import com.dmdirc.Server;
 import com.dmdirc.ui.swing.UIUtilities;
-import com.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.irc.IRCParser;
 
 import java.awt.Insets;
 import java.util.Hashtable;

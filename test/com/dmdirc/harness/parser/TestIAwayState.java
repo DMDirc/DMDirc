@@ -22,8 +22,8 @@
 
 package com.dmdirc.harness.parser;
 
-import com.dmdirc.parser.IRCParser;
-import com.dmdirc.parser.callbacks.interfaces.IAwayState;
+import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.irc.callbacks.interfaces.IAwayState;
 
 public class TestIAwayState implements IAwayState {
 

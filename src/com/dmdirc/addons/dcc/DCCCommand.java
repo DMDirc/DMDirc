@@ -24,7 +24,7 @@ package com.dmdirc.addons.dcc;
 
 import com.dmdirc.Main;
 import com.dmdirc.Server;
-import com.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.IntelligentCommand;

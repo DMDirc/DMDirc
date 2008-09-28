@@ -22,7 +22,7 @@
 
 package com.dmdirc;
 
-import com.dmdirc.parser.RegexStringList;
+import com.dmdirc.parser.irc.RegexStringList;
 
 import java.util.ArrayList;
 import java.util.List;

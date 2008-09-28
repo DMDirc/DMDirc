@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.swing.components.renderers;
 
-import com.dmdirc.parser.ChannelListModeItem;
+import com.dmdirc.parser.irc.ChannelListModeItem;
 
 import java.awt.Component;
 import java.util.Date;

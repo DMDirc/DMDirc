@@ -33,9 +33,9 @@ import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
-import com.dmdirc.parser.ChannelClientInfo;
-import com.dmdirc.parser.ChannelInfo;
-import com.dmdirc.parser.ClientInfo;
+import com.dmdirc.parser.irc.ChannelClientInfo;
+import com.dmdirc.parser.irc.ChannelInfo;
+import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.messages.ColourManager;
 

@@ -30,7 +30,7 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.harness.TestLoggingPlugin;
 import com.dmdirc.harness.parser.TestParserFactory;
-import com.dmdirc.parser.ChannelInfo;
+import com.dmdirc.parser.irc.ChannelInfo;
 import com.dmdirc.ui.dummy.DummyController;
 import java.util.ArrayList;
 import org.junit.Before;

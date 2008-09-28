@@ -22,7 +22,7 @@
 
 package com.dmdirc.harness.parser;
 
-import com.dmdirc.parser.*;
+import com.dmdirc.parser.irc.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;

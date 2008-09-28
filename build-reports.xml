@@ -60,7 +60,7 @@
                          classpath="checkstyle.jar"/>
         <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
                                 failOnViolation="false">
-            <fileset dir="src/com/dmdirc/parser/" includes="**/*.java"/>
+            <fileset dir="src/com.dmdirc.parser.irc/" includes="**/*.java"/>
             <formatter type="xml" tofile="reports/report-parser.xml"/>
         </checkstyle>
         <xslt in="reports/report-parser.xml" out="reports/report-parser.html" style="checkstyle/checkstyle.xsl"/>

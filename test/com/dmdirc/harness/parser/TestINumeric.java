@@ -22,8 +22,8 @@
 
 package com.dmdirc.harness.parser;
 
-import com.dmdirc.parser.*;
-import com.dmdirc.parser.callbacks.interfaces.INumeric;
+import com.dmdirc.parser.irc.*;
+import com.dmdirc.parser.irc.callbacks.interfaces.INumeric;
 
 public class TestINumeric implements INumeric {
 

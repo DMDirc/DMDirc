@@ -24,10 +24,10 @@ package com.dmdirc;
 
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.parser.IRCParser;
-import com.dmdirc.parser.callbacks.CallbackManager;
-import com.dmdirc.parser.callbacks.CallbackNotFoundException;
-import com.dmdirc.parser.callbacks.interfaces.ICallbackInterface;
+import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.irc.callbacks.CallbackManager;
+import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
+import com.dmdirc.parser.irc.callbacks.interfaces.ICallbackInterface;
 
 /**
  * Abstracts some behaviour used by Event Handlers.
@@ -37,7 +37,7 @@ import com.dmdirc.parser.callbacks.interfaces.ICallbackInterface;
 public abstract class EventHandler implements ICallbackInterface {
     
     /** The prefix indicating that the interface is a parser callback. */
-    private static final String CALLBACK_PREFIX = "com.dmdirc.parser.callbacks.interfaces.I";
+    private static final String CALLBACK_PREFIX = "com.dmdirc.parser.irc.callbacks.interfaces.I";
     
     /**
      * Registers all callbacks that this event handler implements with the
@@ -73,7 +73,7 @@ public abstract class EventHandler implements ICallbackInterface {
      * 
      * @param cbm The callback manager to use
      * @param name The name of the callback to be added
-     * @throws com.dmdirc.parser.callbacks.CallbackNotFoundException
+     * @throws com.dmdirc.parser.irc.callbacks.CallbackNotFoundException
      * if the specified callback isn't found
      */
     protected abstract void addCallback(CallbackManager cbm, String name) 

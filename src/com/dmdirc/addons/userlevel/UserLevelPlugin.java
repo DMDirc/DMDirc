@@ -29,8 +29,8 @@ import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.ConfigChangeListener;
-import com.dmdirc.parser.ChannelClientInfo;
-import com.dmdirc.parser.ClientInfo;
+import com.dmdirc.parser.irc.ChannelClientInfo;
+import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.plugins.Plugin;
 
 import java.util.HashMap;

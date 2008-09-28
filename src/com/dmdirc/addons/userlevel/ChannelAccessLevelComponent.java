@@ -23,7 +23,7 @@
 package com.dmdirc.addons.userlevel;
 
 import com.dmdirc.actions.interfaces.ActionComponent;
-import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.irc.ChannelClientInfo;
 
 /**
  * Action component to retrieve a channel client's access level.

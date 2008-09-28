@@ -22,8 +22,8 @@
 
 package com.dmdirc.harness.parser;
 
-import com.dmdirc.parser.*;
-import com.dmdirc.parser.callbacks.interfaces.IChannelJoin;
+import com.dmdirc.parser.irc.*;
+import com.dmdirc.parser.irc.callbacks.interfaces.IChannelJoin;
 
 public class TestIChannelJoin implements IChannelJoin {
 

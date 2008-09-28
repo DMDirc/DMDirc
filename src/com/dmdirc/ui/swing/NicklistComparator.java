@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.swing;
 
-import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.irc.ChannelClientInfo;
 
 import java.io.Serializable;
 import java.util.Comparator;

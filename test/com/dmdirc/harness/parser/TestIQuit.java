@@ -22,9 +22,9 @@
 
 package com.dmdirc.harness.parser;
 
-import com.dmdirc.parser.*;
-import com.dmdirc.parser.callbacks.interfaces.IChannelQuit;
-import com.dmdirc.parser.callbacks.interfaces.IQuit;
+import com.dmdirc.parser.irc.*;
+import com.dmdirc.parser.irc.callbacks.interfaces.IChannelQuit;
+import com.dmdirc.parser.irc.callbacks.interfaces.IQuit;
 
 public class TestIQuit implements IChannelQuit, IQuit {
 

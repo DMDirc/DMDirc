@@ -26,13 +26,13 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.parser.ChannelInfo;
-import com.dmdirc.parser.ClientInfo;
-import com.dmdirc.parser.IRCParser;
-import com.dmdirc.parser.ParserError;
-import com.dmdirc.parser.callbacks.CallbackManager;
-import com.dmdirc.parser.callbacks.CallbackNotFoundException;
-import com.dmdirc.parser.callbacks.interfaces.*;
+import com.dmdirc.parser.irc.ChannelInfo;
+import com.dmdirc.parser.irc.ClientInfo;
+import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.irc.ParserError;
+import com.dmdirc.parser.irc.callbacks.CallbackManager;
+import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
+import com.dmdirc.parser.irc.callbacks.interfaces.*;
 
 /**
  * Handles parser events for a Server object.

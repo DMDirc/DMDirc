@@ -27,8 +27,8 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ExternalCommand;
-import com.dmdirc.parser.ChannelInfo;
-import com.dmdirc.parser.ClientInfo;
+import com.dmdirc.parser.irc.ChannelInfo;
+import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**

@@ -27,7 +27,7 @@ import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
 import com.dmdirc.commandparser.parsers.CommandParser;
-import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.irc.ChannelClientInfo;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.swing.components.InputTextFrame;
 import com.dmdirc.ui.swing.components.SnappingJSplitPane;

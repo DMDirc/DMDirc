@@ -24,13 +24,13 @@ package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.parser.ChannelClientInfo;
-import com.dmdirc.parser.ChannelInfo;
-import com.dmdirc.parser.ClientInfo;
-import com.dmdirc.parser.IRCParser;
-import com.dmdirc.parser.callbacks.CallbackManager;
-import com.dmdirc.parser.callbacks.CallbackNotFoundException;
-import com.dmdirc.parser.callbacks.interfaces.*;
+import com.dmdirc.parser.irc.ChannelClientInfo;
+import com.dmdirc.parser.irc.ChannelInfo;
+import com.dmdirc.parser.irc.ClientInfo;
+import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.irc.callbacks.CallbackManager;
+import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
+import com.dmdirc.parser.irc.callbacks.interfaces.*;
 
 /**
  * Handles events for channel objects.

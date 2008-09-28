@@ -24,7 +24,7 @@ package com.dmdirc.ui.dummy;
 
 import com.dmdirc.Channel;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
-import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.irc.ChannelClientInfo;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 
 import java.util.List;

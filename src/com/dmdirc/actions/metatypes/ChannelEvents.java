@@ -25,7 +25,7 @@ package com.dmdirc.actions.metatypes;
 import com.dmdirc.Channel;
 import com.dmdirc.Topic;
 import com.dmdirc.actions.interfaces.ActionMetaType;
-import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.irc.ChannelClientInfo;
 
 /**
  * Defines channel-related events.

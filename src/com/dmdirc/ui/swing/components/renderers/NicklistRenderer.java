@@ -25,7 +25,7 @@ package com.dmdirc.ui.swing.components.renderers;
 import com.dmdirc.ChannelClientProperty;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.irc.ChannelClientInfo;
 
 import java.awt.Color;
 import java.awt.Component;

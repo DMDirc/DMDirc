@@ -23,7 +23,7 @@
 package com.dmdirc.ui.swing.dialogs.channelsetting;
 
 import com.dmdirc.Channel;
-import com.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.ui.swing.components.ParamModePanel;
 import com.dmdirc.ui.swing.UIUtilities;
 

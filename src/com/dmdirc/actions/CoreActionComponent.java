@@ -29,9 +29,9 @@ import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.irc.ChannelClientInfo;
 
-import com.dmdirc.parser.ClientInfo;
+import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.ui.messages.Styliser;
 import java.awt.Color;
 import java.awt.event.KeyEvent;

@@ -24,7 +24,7 @@ package com.dmdirc.addons.dcc.actions;
 
 import com.dmdirc.Server;
 import com.dmdirc.actions.interfaces.ActionMetaType;
-import com.dmdirc.parser.ClientInfo;
+import com.dmdirc.parser.irc.ClientInfo;
 
 import com.dmdirc.addons.dcc.DCCChatWindow;
 import com.dmdirc.addons.dcc.DCCSendWindow;

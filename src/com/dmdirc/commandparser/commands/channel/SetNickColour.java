@@ -28,7 +28,7 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
-import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.irc.ChannelClientInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.ChannelWindow;

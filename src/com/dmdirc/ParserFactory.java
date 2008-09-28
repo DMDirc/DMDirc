@@ -22,9 +22,9 @@
 
 package com.dmdirc;
 
-import com.dmdirc.parser.IRCParser;
-import com.dmdirc.parser.MyInfo;
-import com.dmdirc.parser.ServerInfo;
+import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.irc.MyInfo;
+import com.dmdirc.parser.irc.ServerInfo;
 
 /**
  * Provides a method to retrieve a parser.

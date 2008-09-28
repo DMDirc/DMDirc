@@ -36,8 +36,8 @@ import java.awt.event.ActionListener;
 
 import net.miginfocom.swing.MigLayout;
 
-import com.dmdirc.parser.IRCParser;
-import com.dmdirc.parser.callbacks.interfaces.ISocketClosed;
+import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.irc.callbacks.interfaces.ISocketClosed;
 
 import java.io.File;
 

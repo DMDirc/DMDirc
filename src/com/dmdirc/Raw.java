@@ -24,10 +24,10 @@ package com.dmdirc;
 
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.parser.IRCParser;
-import com.dmdirc.parser.callbacks.CallbackNotFoundException;
-import com.dmdirc.parser.callbacks.interfaces.IDataIn;
-import com.dmdirc.parser.callbacks.interfaces.IDataOut;
+import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
+import com.dmdirc.parser.irc.callbacks.interfaces.IDataIn;
+import com.dmdirc.parser.irc.callbacks.interfaces.IDataOut;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
