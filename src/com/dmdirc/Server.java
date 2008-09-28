@@ -362,6 +362,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         synchronized (this) {
             switch (myState.getState()) {
             case CLOSING:
+            case DISCONNECTING:
             case DISCONNECTED:
             case TRANSIENTLY_DISCONNECTED:
                 return;
