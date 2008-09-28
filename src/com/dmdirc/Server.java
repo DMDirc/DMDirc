@@ -673,12 +673,16 @@ public final class Server extends WritableFrameContainer implements Serializable
      *
      * @return The MyInfo object for our profile
      */
-    @Precondition("The current profile is not null")
+    @Precondition({
+        "The current profile is not null",
+        "The current profile specifies at least one nickname"
+    })
     private MyInfo getMyInfo() {
-        assert profile != null;
+        Logger.assertTrue(profile != null);
+        Logger.assertTrue(!profile.getOptionList(DOMAIN_PROFILE, "nicknames").isEmpty());
 
         final MyInfo myInfo = new MyInfo();
-        myInfo.setNickname(profile.getOption(DOMAIN_PROFILE, "nickname"));
+        myInfo.setNickname(profile.getOptionList(DOMAIN_PROFILE, "nicknames").get(0));
         myInfo.setRealname(profile.getOption(DOMAIN_PROFILE, "realname"));
 
         if (profile.hasOption(DOMAIN_PROFILE, "ident")) {
@@ -1084,23 +1088,19 @@ public final class Server extends WritableFrameContainer implements Serializable
 
         String newNick = lastNick + (int) (Math.random() * 10);
 
-        if (profile.hasOption(DOMAIN_PROFILE, "altnicks")) {
-            final String[] alts = profile.getOption(DOMAIN_PROFILE, "altnicks").split("\n");
-            int offset = 0;
+        final List<String> alts = profile.getOptionList(DOMAIN_PROFILE, "nicknames");
+        int offset = 0;
 
-            if (!converter.equalsIgnoreCase(lastNick,
-                    profile.getOption(DOMAIN_PROFILE, "nickname"))) {
-                for (String alt : alts) {
-                    offset++;
-                    if (converter.equalsIgnoreCase(alt, lastNick)) {
-                        break;
-                    }
-                }
+        // Loop so we can check case sensitivity
+        for (String alt : alts) {
+            offset++;
+            if (converter.equalsIgnoreCase(alt, lastNick)) {
+                break;
             }
+        }
 
-            if (offset < alts.length && !alts[offset].isEmpty()) {
-                newNick = alts[offset];
-            }
+        if (offset < alts.size() && !alts.get(offset).isEmpty()) {
+            newNick = alts.get(offset);
         }
 
         parser.setNickname(newNick);
