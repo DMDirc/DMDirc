@@ -32,7 +32,12 @@ if ! grep "^version=" META-INF/plugin.info >/dev/null; then
 	SVNREV=`$SVN info $srcdir/src/$foldername 2>&1 | grep "Last Changed Rev"`
         SVNREV=${SVNREV##*: }
         echo "" >> META-INF/plugin.info
-	echo "version=$SVNREV" >> META-INF/plugin.info
+
+	if [ -n "$SVNREV" ]; then
+		echo "version=$SVNREV" >> META-INF/plugin.info;
+	else
+		echo "version=0" >> META-INF/plugin.info;
+	fi
 
 	if ! grep "^friendlyversion=" META-INF/plugin.info >/dev/null; then
 		echo "friendlyversion=$SVNREV" >> META-INF/plugin.info
