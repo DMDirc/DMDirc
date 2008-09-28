@@ -64,7 +64,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
 
 import net.miginfocom.layout.PlatformDefaults;
 import net.miginfocom.swing.MigLayout;
@@ -81,9 +80,10 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * serialized objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 9;
+
     /** Normal help string text. */
-    private static final String text = "Hover over a setting to see a " +
-            "description, if available.";
+    private static final String HELP_TEXT = "Hover over a setting to see a "
+            + "description, if available.";
 
     /**
      * The maximum height clients may use if they don't want to scroll.
@@ -227,10 +227,10 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * @since 0.6.3
      */
     protected void resetTooltip() {
-        tooltip.setText(text);
+        tooltip.setText(HELP_TEXT);
         SimpleAttributeSet sas = new SimpleAttributeSet();
         StyleConstants.setItalic(sas, true);
-        tooltip.getDocument().setParagraphAttributes(0, text.length(), sas, true);
+        tooltip.getDocument().setParagraphAttributes(0, HELP_TEXT.length(), sas, true);
     }
 
     /**
