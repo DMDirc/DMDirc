@@ -36,7 +36,6 @@ import java.net.MalformedURLException;
  * The AudioPlayer handles the playing of the audio
  *
  * @author Shane "Dataforce" Mc Cormack
- * @version $Id: AudioPlayer.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public final class AudioPlayer implements Runnable {
 	/** The AudioType enum */

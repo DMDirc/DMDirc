@@ -18,8 +18,6 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- *
- * SVN: $Id: IRCParser.java 3450 2008-02-12 04:00:06Z ShaneMcC $
  */
 
 package com.dmdirc.parser;
@@ -28,7 +26,6 @@ package com.dmdirc.parser;
  * IRC String Converter.
  *
  * @author Shane Mc Cormack
- * @version $Id$
  */
 public class IRCStringConverter {
 	/** Characters to use when converting tolowercase. */

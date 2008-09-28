@@ -32,7 +32,6 @@ import java.awt.Toolkit;
  * The Beep Command emits a beep
  *
  * @author Shane "Dataforce" Mc Cormack
- * @version $Id: AudioCommand.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public final class BeepCommand extends GlobalCommand {
 

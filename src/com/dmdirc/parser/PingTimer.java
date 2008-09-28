@@ -18,8 +18,6 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- *
- * SVN: $Id: IRCParser.java 741 2007-04-01 15:02:16Z ShaneMcC $
  */
 
 package com.dmdirc.parser;
@@ -32,7 +30,6 @@ import java.util.Timer;
  * server is still alive.
  *
  * @author Shane Mc Cormack
- * @version $Id: ParserError.java 3151 2008-01-08 18:47:54Z ShaneMcC $
  */
 public class PingTimer extends TimerTask {
 	/** Owning Parser. */

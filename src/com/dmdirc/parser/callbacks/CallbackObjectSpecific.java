@@ -18,8 +18,6 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- *
- * SVN: $Id$
  */
 
 package com.dmdirc.parser.callbacks;
@@ -36,7 +34,6 @@ import com.dmdirc.parser.callbacks.interfaces.ICallbackInterface;
  * Superclass for all callback types that have a "specific" target.
  *
  * @author            Shane Mc Cormack
- * @version           $Id$
  */
 public abstract class CallbackObjectSpecific extends CallbackObject {
 	

@@ -32,7 +32,6 @@ import java.io.File;
  * The Audio Command allows playing of audio files.
  *
  * @author Shane "Dataforce" Mc Cormack
- * @version $Id: AudioCommand.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public final class AudioCommand extends GlobalCommand {
 
@@ -87,11 +86,5 @@ public final class AudioCommand extends GlobalCommand {
 	 */
 	public String getHelp() { return this.getName() + " <file>"; }
 	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo() { return "$Id: AudioCommand.java 969 2007-04-30 18:38:20Z ShaneMcC $"; }	
 }
 

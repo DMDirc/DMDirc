@@ -36,7 +36,6 @@ import java.util.List;
  * This class handles a DCC Send.
  *
  * @author Shane 'Dataforce' McCormack
- * @version $Id: DCCSend.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public class DCCSend extends DCC {
 	/** List of active sends. */

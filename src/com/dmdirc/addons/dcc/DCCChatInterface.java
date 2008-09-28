@@ -26,7 +26,6 @@ package com.dmdirc.addons.dcc;
  * This interfaces allows DCC Chat Windows to receive data from a DCCChat
  *
  * @author Shane 'Dataforce' McCormack
- * @version $Id: DCCChatInterface.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public interface DCCChatInterface {
 	/**

@@ -28,7 +28,6 @@ import com.dmdirc.commandparser.CommandManager;
  * Adds Audio playing facility to client.
  *
  * @author Shane 'Dataforce' McCormack
- * @version $Id: AudioPlugin.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public final class AudioPlugin extends Plugin {
 	/** The AudioCommand we created */
@@ -58,11 +57,5 @@ public final class AudioPlugin extends Plugin {
 		CommandManager.unregisterCommand(audioCommand);
 	}
 	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo() { return "$Id: IRCParser.java 969 2007-04-30 18:38:20Z ShaneMcC $"; }	
 }
 

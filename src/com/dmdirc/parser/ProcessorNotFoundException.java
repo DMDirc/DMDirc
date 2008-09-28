@@ -18,8 +18,6 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- *
- * SVN: $Id$
  */
 
 package com.dmdirc.parser;
@@ -28,7 +26,6 @@ package com.dmdirc.parser;
  * IRC Parser Processor Not Found Exception.
  *
  * @author Shane Mc Cormack
- * @version $Id$
  */
 public class ProcessorNotFoundException extends Exception {
 	/**

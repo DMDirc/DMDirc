@@ -65,7 +65,6 @@ import javax.swing.SwingConstants;
  * This plugin adds DCC to dmdirc.
  *
  * @author Shane 'Dataforce' McCormack
- * @version $Id: DCCPlugin.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public final class DCCPlugin extends Plugin implements ActionListener {
 

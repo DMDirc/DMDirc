@@ -30,7 +30,6 @@ import com.dmdirc.Main;
  * This class links DCC Chat objects to a window.
  *
  * @author Shane 'Dataforce' McCormack
- * @version $Id: DCC.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 	/** The DCCChat object we are a window for */

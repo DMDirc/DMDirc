@@ -31,7 +31,6 @@ import java.io.PrintWriter;
  * This class handles a DCC Chat
  *
  * @author Shane 'Dataforce' McCormack
- * @version $Id: DCCChat.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public class DCCChat extends DCC {
 	/** The handler for this DCCChat. */

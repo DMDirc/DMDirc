@@ -18,8 +18,6 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- *
- * SVN: $Id$
  */
 
 package com.dmdirc.parser;
@@ -33,7 +31,6 @@ import java.util.Hashtable;
  * Manages adding/removing/calling processing stuff.
  *
  * @author Shane Mc Cormack
- * @version $Id$
  */
 public class ProcessingManager {
 	/** Reference to the parser object that owns this ProcessingManager */

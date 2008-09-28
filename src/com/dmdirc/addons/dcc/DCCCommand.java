@@ -49,7 +49,6 @@ import java.util.List;
  * This command allows starting dcc chats/file transfers
  *
  * @author Shane "Dataforce" Mc Cormack
- * @version $Id: DCCCommand.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public final class DCCCommand extends ServerCommand implements IntelligentCommand {
 

@@ -26,7 +26,6 @@ package com.dmdirc.addons.dcc;
  * This interfaces allows DCC Send Windows to receive data from a DCCSend
  *
  * @author Shane 'Dataforce' McCormack
- * @version $Id: DCCSendInterface.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public interface DCCSendInterface {
 	/**

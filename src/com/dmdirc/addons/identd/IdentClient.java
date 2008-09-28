@@ -39,7 +39,6 @@ import java.net.Socket;
  * The IdentClient responds to an ident request.
  *
  * @author Shane "Dataforce" Mc Cormack
- * @version $Id: IdentClient.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public final class IdentClient implements Runnable {
 	/** The IdentdServer that owns this Client. */

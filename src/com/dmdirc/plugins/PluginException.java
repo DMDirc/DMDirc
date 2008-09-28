@@ -18,8 +18,6 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- *
- * SVN: $Id: PluginException.java 2022 2007-09-12 00:35:14Z ShaneMcC $
  */
 
 package com.dmdirc.plugins;
@@ -28,7 +26,6 @@ package com.dmdirc.plugins;
  * Plugin Exception.
  *
  * @author            Shane Mc Cormack
- * @version           $Id: PluginException.java 2022 2007-09-12 00:35:14Z ShaneMcC $
  */
 public class PluginException extends Exception {
 	/**

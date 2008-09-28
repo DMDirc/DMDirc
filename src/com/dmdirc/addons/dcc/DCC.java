@@ -33,7 +33,6 @@ import java.util.concurrent.Semaphore;
  * received by this class.
  *
  * @author Shane 'Dataforce' McCormack
- * @version $Id: DCC.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public abstract class DCC implements Runnable {
 	/** Address. */

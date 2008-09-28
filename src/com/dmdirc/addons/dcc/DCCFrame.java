@@ -44,7 +44,6 @@ import javax.swing.JPopupMenu;
  * This class links DCC objects to a window.
  *
  * @author Shane 'Dataforce' McCormack
- * @version $Id: DCC.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public abstract class DCCFrame extends WritableFrameContainer {
 	/**

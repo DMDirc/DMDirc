@@ -35,7 +35,6 @@ import java.util.ArrayList;
  * Reads a file in reverse.
  *
  * @author Shane 'Dataforce' McCormack
- * @version $Id: ReverseFileReader.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public class ReverseFileReader {
 	/** File to manipulate. */

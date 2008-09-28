@@ -71,7 +71,6 @@ import java.util.TimerTask;
  * Adds logging facility to client.
  *
  * @author Shane 'Dataforce' McCormack
- * @version $Id: LoggingPlugin.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public class LoggingPlugin extends Plugin implements ActionListener {
 

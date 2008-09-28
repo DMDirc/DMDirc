@@ -37,7 +37,6 @@ import java.util.List;
  * The dcop command retrieves information from a dcop application.
  *
  * @author Shane "Dataforce" Mc Cormack
- * @version $Id: LoggingCommand.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public final class LoggingCommand extends ServerCommand implements IntelligentCommand {
 
@@ -135,11 +134,5 @@ public final class LoggingCommand extends ServerCommand implements IntelligentCo
 	 */
 	public String getHelp() { return this.getName() + " <set|help> [parameters]"; }
 	
-	/**
-	 * Get SVN Version information.
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo() { return "$Id: IRCParser.java 969 2007-04-30 18:38:20Z ShaneMcC $"; }	
 }
 

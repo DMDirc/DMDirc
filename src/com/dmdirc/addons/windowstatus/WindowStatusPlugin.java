@@ -58,7 +58,6 @@ import net.miginfocom.swing.MigLayout;
  * Displays information related to the current window in the status bar.
  *
  * @author Shane 'Dataforce' McCormack
- * @version $Id: WindowStatusPlugin.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public final class WindowStatusPlugin extends Plugin implements ActionListener {
 

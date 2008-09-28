@@ -45,7 +45,6 @@ import java.io.File;
  * This class links DCC Send objects to a window.
  *
  * @author Shane 'Dataforce' McCormack
- * @version $Id: DCC.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionListener, ISocketClosed {
 	/** The DCCSend object we are a window for */

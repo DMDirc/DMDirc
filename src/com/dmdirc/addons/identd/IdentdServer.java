@@ -36,7 +36,6 @@ import java.util.List;
  * The IdentdServer watches over the ident port when required
  *
  * @author Shane "Dataforce" Mc Cormack
- * @version $Id: IdentdServer.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public final class IdentdServer implements Runnable {
 
