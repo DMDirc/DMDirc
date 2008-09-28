@@ -95,7 +95,7 @@ public class CertificateInfoPanel extends JScrollPane {
                 content.add(text, "growx, pushx");
             }
             if (i < certificateInfo.size()) {
-            content.add(new JLabel(), "spanx, gaptop 2*unrel");
+                content.add(new JLabel(), "spanx, gaptop 2*unrel");
             }
             i++;
         }

@@ -73,9 +73,9 @@ public class CertificateChainPanel extends JPanel {
 
     private void layoutComponents() {
         setBorder(BorderFactory.createTitledBorder("Certificate Chain"));
-        setLayout(new MigLayout("fill, wrap 1"));
+        setLayout(new MigLayout("fillx, wrap 1"));
 
-        add(new JScrollPane(list), "grow");
+        add(new JScrollPane(list), "grow, pushy");
         add(new JLabel("Certificate is trusted", IconManager.getIconManager().
                 getIcon("tick"), JLabel.LEFT), "growx");
         add(new JLabel("Problem with certificate", IconManager.getIconManager().
