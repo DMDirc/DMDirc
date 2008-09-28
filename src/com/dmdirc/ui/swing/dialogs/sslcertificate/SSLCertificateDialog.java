@@ -124,7 +124,7 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
 
         add(blurb, "span 2");
         add(chain, "growy");
-        add(info, "wmax 350, grow, pushx");
+        add(info, "grow, pushx");
         add(summary, "span 2, growx");
         add(actions, "span 2, growx");
         add(getOkButton(), "span, right");
