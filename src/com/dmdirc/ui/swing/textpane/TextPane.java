@@ -25,12 +25,11 @@ package com.dmdirc.ui.swing.textpane;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.messages.IRCTextAttribute;
 import com.dmdirc.ui.messages.Styliser;
 
+import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
@@ -41,13 +40,13 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.font.ImageGraphicAttribute;
 import java.awt.font.TextAttribute;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.Enumeration;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 import javax.swing.SwingUtilities;
@@ -114,7 +113,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
 
         canvas = new TextPaneCanvas(this, document);
 
-        setBorder(UIManager.getBorder("TextField.border"));
+        setBorder(BorderFactory.createEtchedBorder());
 
         add(canvas, "dock center");
 
