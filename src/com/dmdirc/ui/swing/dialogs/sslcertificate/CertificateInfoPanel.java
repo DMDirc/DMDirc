@@ -73,7 +73,7 @@ public class CertificateInfoPanel extends JScrollPane {
                 certificateName));
         content.setVisible(false);
         content.removeAll();
-        content.setLayout(new MigLayout("wmax 100%, wrap 2, debug"));
+        content.setLayout(new MigLayout("wmax 100%, wrap 2"));
 
         int i = 1;
         for (List<CertificateInformationEntry> entry : certificateInfo) {
