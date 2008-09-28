@@ -97,6 +97,10 @@ public class Identity extends ConfigSource implements Serializable,
         this.file.setAutomake(true);
         initFile(forceDefault, new FileInputStream(file));
         myTarget = getTarget(forceDefault);
+
+        if (myTarget.getType() == ConfigTarget.TYPE.PROFILE) {
+            migrateProfile();
+        }
     }
 
     /**
@@ -116,6 +120,10 @@ public class Identity extends ConfigSource implements Serializable,
         this.file.setAutomake(true);
         initFile(forceDefault, stream);
         myTarget = getTarget(forceDefault);
+
+        if (myTarget.getType() == ConfigTarget.TYPE.PROFILE) {
+            migrateProfile();
+        }
     }
 
     /**
@@ -130,6 +138,10 @@ public class Identity extends ConfigSource implements Serializable,
         this.file = configFile;
         this.file.setAutomake(true);
         this.myTarget = target;
+
+        if (myTarget.getType() == ConfigTarget.TYPE.PROFILE) {
+            migrateProfile();
+        }
     }
 
     /**
@@ -260,13 +272,13 @@ public class Identity extends ConfigSource implements Serializable,
     }
 
     /**
-     * Determines whether this identity can be used as a profile when
-     * connecting to a server. Profiles are identities that can supply
-     * nick, ident, real name, etc.
+     * Checks if this profile needs migrating from the old method of
+     * storing nicknames (profile.nickname + profile.altnicks) to the new
+     * method (profile.nicknames), and performs the migration if needed.
      *
-     * @return True iff this identity can be used as a profile
+     * @since 0.6.3
      */
-    public boolean isProfile() {
+    protected void migrateProfile() {
         if (hasOption("profile", "nickname")) {
             // Migrate
 
@@ -276,8 +288,18 @@ public class Identity extends ConfigSource implements Serializable,
             unsetOption("profile", "nickname");
             unsetOption("profile", "altnicks");
         }
+    }
 
-        return hasOption("profile", "nicknames") && hasOption("profile", "realname");
+    /**
+     * Determines whether this identity can be used as a profile when
+     * connecting to a server. Profiles are identities that can supply
+     * nick, ident, real name, etc.
+     *
+     * @return True iff this identity can be used as a profile
+     */
+    public boolean isProfile() {
+        return (hasOption("profile", "nicknames") || hasOption("profile", "nickname"))
+                && hasOption("profile", "realname");
     }
 
     /** {@inheritDoc} */
