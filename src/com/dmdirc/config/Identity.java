@@ -64,6 +64,9 @@ public class Identity extends ConfigSource implements Serializable,
     /** The domain used for identity settings. */
     private static final String DOMAIN = "identity".intern();
 
+    /** The domain used for profile settings. */
+    private static final String PROFILE_DOMAIN = "profile".intern();
+
     /** The target for this identity. */
     protected final ConfigTarget myTarget;
 
@@ -279,14 +282,14 @@ public class Identity extends ConfigSource implements Serializable,
      * @since 0.6.3
      */
     protected void migrateProfile() {
-        if (hasOption("profile", "nickname")) {
+        if (hasOption(PROFILE_DOMAIN, "nickname")) {
             // Migrate
 
-            setOption("profile", "nicknames", getOption("profile", "nickname")
-                    + (hasOption("profile", "altnicks") ? "\n"
-                    + getOption("profile", "altnicks") : ""));
-            unsetOption("profile", "nickname");
-            unsetOption("profile", "altnicks");
+            setOption(PROFILE_DOMAIN, "nicknames", getOption(PROFILE_DOMAIN, "nickname")
+                    + (hasOption(PROFILE_DOMAIN, "altnicks") ? "\n"
+                    + getOption(PROFILE_DOMAIN, "altnicks") : ""));
+            unsetOption(PROFILE_DOMAIN, "nickname");
+            unsetOption(PROFILE_DOMAIN, "altnicks");
         }
     }
 
@@ -298,8 +301,9 @@ public class Identity extends ConfigSource implements Serializable,
      * @return True iff this identity can be used as a profile
      */
     public boolean isProfile() {
-        return (hasOption("profile", "nicknames") || hasOption("profile", "nickname"))
-                && hasOption("profile", "realname");
+        return (hasOption(PROFILE_DOMAIN, "nicknames")
+                || hasOption(PROFILE_DOMAIN, "nickname"))
+                && hasOption(PROFILE_DOMAIN, "realname");
     }
 
     /** {@inheritDoc} */
@@ -647,13 +651,13 @@ public class Identity extends ConfigSource implements Serializable,
         final Map<String, Map<String, String>> settings
                 = new HashMap<String, Map<String, String>>();
         settings.put(DOMAIN, new HashMap<String, String>(1));
-        settings.put("profile", new HashMap<String, String>(2));
+        settings.put(PROFILE_DOMAIN, new HashMap<String, String>(2));
 
         final String nick = System.getProperty("user.name").replace(' ', '_');
 
         settings.get(DOMAIN).put("name", name);
-        settings.get("profile").put("nicknames", nick);
-        settings.get("profile").put("realname", nick);
+        settings.get(PROFILE_DOMAIN).put("nicknames", nick);
+        settings.get(PROFILE_DOMAIN).put("realname", nick);
 
         try {
             return createIdentity(settings);
