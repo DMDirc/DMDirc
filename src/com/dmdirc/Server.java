@@ -126,7 +126,7 @@ public final class Server extends WritableFrameContainer implements Serializable
 
     /** Our string convertor. */
     private IRCStringConverter converter = new IRCStringConverter();
-    
+
     /** The parser factory to use. */
     private final ParserFactory parserFactory;
 
@@ -159,7 +159,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             final boolean ssl, final Identity profile, final List<String> autochannels) {
         this(server, port, password, ssl, profile, autochannels, new ParserFactory());
     }
-    
+
     /**
      * Creates a new instance of Server.
      *
@@ -263,9 +263,9 @@ public final class Server extends WritableFrameContainer implements Serializable
                 throw new IllegalArgumentException("Connection attempt while parser "
                         + "is still connected.\n\nMy state:" + getState());
             }
-            
+
             myState.transition(ServerState.CONNECTING);
-        
+
             ActionManager.processEvent(CoreActionType.SERVER_CONNECTING, null, this);
 
             getConfigManager().migrate("", "", server);
@@ -332,7 +332,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             if (myState.getState() == ServerState.CLOSING) {
                 return;
             }
-        
+
             disconnect(reason);
             connect(serverInfo.getHost(), serverInfo.getPort(),
                     serverInfo.getPassword(), serverInfo.getSSL(), profile);
@@ -593,7 +593,7 @@ public final class Server extends WritableFrameContainer implements Serializable
                 return;
             }
         }
-        
+
         if (!hasQuery(host)) {
             final Query newQuery = new Query(this, host);
 
@@ -791,7 +791,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     public String getNetwork() {
         if (parser == null) {
             throw new IllegalStateException("getNetwork called when "
-                    + "parser is null");
+                    + "parser is null (state: " + getState() + ")");
         } else if (parser.getNetworkName().isEmpty()) {
             return getNetworkFromServerName(parser.getServerName());
         } else {
@@ -862,7 +862,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     public String getAwayMessage() {
         return awayMessage;
     }
-    
+
     /**
      * Returns the tab completer for this connection.
      *
@@ -1149,7 +1149,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         handleNotification("socketClosed", getName());
 
         ActionManager.processEvent(CoreActionType.SERVER_DISCONNECTED, null, this);
-        
+
         eventHandler.unregisterCallbacks();
 
         synchronized (this) {
@@ -1158,7 +1158,7 @@ public final class Server extends WritableFrameContainer implements Serializable
                 // This has been triggered via .disconect()
                 return;
             }
-            
+
             if (myState.getState() == ServerState.DISCONNECTING) {
                 myState.transition(ServerState.DISCONNECTED);
             } else {
@@ -1188,7 +1188,7 @@ public final class Server extends WritableFrameContainer implements Serializable
                     "reconnectondisconnect", false)
                     && myState.getState() == ServerState.TRANSIENTLY_DISCONNECTED) {
                 doDelayedReconnect();
-            }        
+            }
         }
     }
 
@@ -1215,7 +1215,7 @@ public final class Server extends WritableFrameContainer implements Serializable
 
             myState.transition(ServerState.TRANSIENTLY_DISCONNECTED);
             parser = null;
-        
+
             updateIcon();
 
             String description;
@@ -1280,9 +1280,9 @@ public final class Server extends WritableFrameContainer implements Serializable
                 throw new IllegalStateException("Received onPost005 while not "
                         + "connecting\n\nState: " + myState);
             }
-            
+
             myState.transition(ServerState.CONNECTED);
-        
+
             updateIcon();
 
             getConfigManager().migrate(parser.getIRCD(true), getNetwork(), getName());
@@ -1514,7 +1514,7 @@ public final class Server extends WritableFrameContainer implements Serializable
                 || (awayMessage == null && message == null)) {
             return;
         }
-        
+
         awayMessage = message;
 
         if (message == null) {
