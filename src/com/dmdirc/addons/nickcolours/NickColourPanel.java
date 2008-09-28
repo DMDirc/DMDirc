@@ -47,50 +47,50 @@ import net.miginfocom.swing.MigLayout;
  *
  * @author Chris
  */
-public class NickColourPanel extends JPanel implements ActionListener, 
+public class NickColourPanel extends JPanel implements ActionListener,
         PreferencesInterface {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
+
     /** The table used for displaying the options. */
     private final JTable table;
-    
+
     /** The plugin we're associated with. */
     private final transient NickColourPlugin plugin;
-    
+
     /** The table headings. */
     private static final String[] headers
             = {"Network", "Nickname", "Text colour", "Nicklist colour"};
-    
+
     /**
      * Creates a new instance of NickColourPanel.
-     * 
+     *
      * @param plugin The plugin that owns this panel
      */
     public NickColourPanel(final NickColourPlugin plugin) {
         super();
-        
+
         this.plugin = plugin;
-        
+
         final Object[][] data = plugin.getData();
-        
+
         table = new JTable(new DefaultTableModel(data, headers)) {
-            
+
             /**
              * A version number for this class. It should be changed whenever the class
              * structure is changed (or anything else that would prevent serialized
              * objects being unserialized with the new class).
              */
             private static final long serialVersionUID = 1;
-            
+
             /** The colour renderer we're using for colour cells. */
             private final ColourRenderer colourRenderer = new ColourRenderer();
-            
+
             /** {@inheritDoc} */
             @Override
             public TableCellRenderer getCellRenderer(final int row, final int column) {
@@ -100,24 +100,24 @@ public class NickColourPanel extends JPanel implements ActionListener,
                     return super.getCellRenderer(row, column);
                 }
             }
-            
+
             /** {@inheritDoc} */
             @Override
             public boolean isCellEditable(final int row, final int column) {
                 return false;
             }
-            
+
         };
-        
+
         final JScrollPane scrollPane = new JScrollPane(table);
-        
+
         table.setFillsViewportHeight(true);
         table.setDefaultRenderer(Color.class, new ColourRenderer());
-        
+
         setLayout(new MigLayout("ins 0, fill, hmax "
                 + SwingPreferencesDialog.CLIENT_HEIGHT));
-        add(scrollPane, "grow, wrap, spanx");
-        
+        add(scrollPane, "grow, wrap, spanx, hmax 100%");
+
         JButton button;
         button = new JButton("Add");
         button.addActionListener(this);
@@ -129,57 +129,57 @@ public class NickColourPanel extends JPanel implements ActionListener,
         button.addActionListener(this);
         add(button, "sg button, growx");
     }
-    
-    /** 
+
+    /**
      * {@inheritDoc}
-     * 
+     *
      * @param e Action event
      */
     @Override
     public void actionPerformed(final ActionEvent e) {
         final DefaultTableModel model = ((DefaultTableModel) table.getModel());
-        
+
         if (e.getActionCommand().equals("Add")) {
             new NickColourInputDialog(this);
         } else if (e.getActionCommand().equals("Edit")) {
             final int row = table.getSelectedRow();
-            
+
             final String network = (String) model.getValueAt(row, 0);
             final String nickname = (String) model.getValueAt(row, 1);
-            
+
             String textcolour = (String) model.getValueAt(row, 2);
             String nickcolour = (String) model.getValueAt(row, 3);
-            
+
             if (textcolour == null) {
                 textcolour = "";
             }
-            
+
             if (nickcolour == null) {
                 nickcolour = "";
             }
-            
+
             new NickColourInputDialog(this, row, nickname, network, textcolour, nickcolour);
         } else if (e.getActionCommand().equals("Delete")) {
             final int row = table.getSelectedRow();
-            
+
             if (row > -1) {
                 model.removeRow(row);
             }
         }
     }
-    
+
     /**
      * Removes a row from the table.
-     * 
+     *
      * @param row The row to be removed
      */
     void removeRow(final int row) {
         ((DefaultTableModel) table.getModel()).removeRow(row);
     }
-    
+
     /**
      * Adds a row to the table.
-     * 
+     *
      * @param network The network setting
      * @param nickname The nickname setting
      * @param textcolour The textpane colour setting
@@ -190,22 +190,22 @@ public class NickColourPanel extends JPanel implements ActionListener,
         final DefaultTableModel model = ((DefaultTableModel) table.getModel());
         model.addRow(new Object[]{network, nickname, textcolour, nickcolour});
     }
-    
+
     /**
      * Retrieves the current data in use by this panel.
-     * 
+     *
      * @return This panel's current data.
      */
     List<Object[]> getData() {
         final List<Object[]> res = new ArrayList<Object[]>();
         final DefaultTableModel model = ((DefaultTableModel) table.getModel());
-        
+
         for (Object row : model.getDataVector()) {
             final Vector vrow = (Vector) row;
-            
+
             res.add(new Object[]{vrow.elementAt(0), vrow.elementAt(1), vrow.elementAt(2), vrow.elementAt(3)});
         }
-        
+
         return res;
     }
 
@@ -217,12 +217,12 @@ public class NickColourPanel extends JPanel implements ActionListener,
             IdentityManager.getConfigIdentity().unsetOption(NickColourPlugin.DOMAIN,
                     "color:" + parts[0] + ":" + parts[1]);
         }
- 	
+
         // And write the new ones
         for (Object[] row : getData()) {
             IdentityManager.getConfigIdentity().setOption(NickColourPlugin.DOMAIN,
                     "color:" + row[0] + ":" + row[1], row[2] + ":" + row[3]);
         }
     }
-    
+
 }
