@@ -26,8 +26,6 @@ import com.dmdirc.ui.core.dialogs.sslcertificate.CertificateInformationEntry;
 import com.dmdirc.ui.swing.components.TextLabel;
 
 import java.awt.Color;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -95,7 +93,7 @@ public class CertificateInfoPanel extends JScrollPane {
                 }
                 content.add(text, "growx, pushx");
             }
-            content.add(new JLabel(), "spanx, pushx");
+            content.add(new JLabel(), "spanx, pushx, gaptop 2*unrel");
         }
         content.setVisible(true);
     }
