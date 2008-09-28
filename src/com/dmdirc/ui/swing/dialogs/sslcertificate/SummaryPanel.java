@@ -54,7 +54,7 @@ public class SummaryPanel extends JPanel {
     }
 
     private void layoutComponents() {
-        setBorder(BorderFactory.createTitledBorder("Certificate Chain"));
+        setBorder(BorderFactory.createTitledBorder("Summary"));
         setLayout(new MigLayout("fill, wrap 1"));
 
         for (CertificateSummaryEntry entry : summary) {
