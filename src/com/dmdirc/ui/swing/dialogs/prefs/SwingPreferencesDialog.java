@@ -148,7 +148,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         addMouseListeners(mainPanel.getComponents());
     }
     
-    /** Returns the instance of SwingPreferencesDialog. */
+    /** Shows the SwingPreferencesDialog. */
     public static void showSwingPreferencesDialog() {
         me = getSwingPreferencesDialog();
 
@@ -212,7 +212,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
         
-        setLayout(new MigLayout("fillx, wmax 650, hmax 600"));
+        setLayout(new MigLayout("fillx, wmax 650"));
         add(tabList, "w 150!, growy, spany 3");
         add(titlePanel, "wrap, w 480!");
         add(mainPanel, "wrap, w 480!, pushy, h " + (CLIENT_HEIGHT + 20) + "!");
