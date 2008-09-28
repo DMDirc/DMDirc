@@ -77,7 +77,7 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
         super(parent, ModalityType.MODELESS);
 
         this.parent = parent;
-        this.model = model;
+        this.model = model; 
         this.selectedIndex = 0;
 
         initComponents();
@@ -120,10 +120,10 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
     }
 
     private void layoutComponents() {
-        setLayout(new MigLayout("fill, wrap 2, wmin 600, wmax 600, hmin 600, hmax 600, hidemode 3"));
+        setLayout(new MigLayout("fill, wrap 2, wmin 600, wmax 600, hmax 600, hidemode 3, pack"));
 
         add(blurb, "span 2");
-        add(chain, "wmax 250, growy");
+        add(chain, "growy");
         add(info, "wmax 350, grow, pushx");
         add(summary, "span 2, growx");
         add(actions, "span 2, growx");

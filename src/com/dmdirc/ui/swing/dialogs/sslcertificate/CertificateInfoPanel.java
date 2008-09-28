@@ -75,6 +75,7 @@ public class CertificateInfoPanel extends JScrollPane {
         content.removeAll();
         content.setLayout(new MigLayout("wmax 100%, wrap 2"));
 
+        int i = 1;
         for (List<CertificateInformationEntry> entry : certificateInfo) {
             for (CertificateInformationEntry info : entry) {
                 content.add(new JLabel(info.getTitle() + ": "), "alignx right");
@@ -93,7 +94,10 @@ public class CertificateInfoPanel extends JScrollPane {
                 }
                 content.add(text, "growx, pushx");
             }
-            content.add(new JLabel(), "spanx, pushx, gaptop 2*unrel");
+            if (i < certificateInfo.size()) {
+                content.add(new JLabel(), "spanx, pushx, gaptop 2*unrel");
+            }
+            i++;
         }
         content.setVisible(true);
     }
