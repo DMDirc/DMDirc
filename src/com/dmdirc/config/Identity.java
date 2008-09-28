@@ -267,7 +267,17 @@ public class Identity extends ConfigSource implements Serializable,
      * @return True iff this identity can be used as a profile
      */
     public boolean isProfile() {
-        return hasOption("profile", "nickname") && hasOption("profile", "realname");
+        if (hasOption("profile", "nickname")) {
+            // Migrate
+
+            setOption("profile", "nicknames", getOption("profile", "nickname")
+                    + (hasOption("profile", "altnicks") ? "\n"
+                    + getOption("profile", "altnicks") : ""));
+            unsetOption("profile", "nickname");
+            unsetOption("profile", "altnicks");
+        }
+
+        return hasOption("profile", "nicknames") && hasOption("profile", "realname");
     }
 
     /** {@inheritDoc} */
@@ -620,7 +630,7 @@ public class Identity extends ConfigSource implements Serializable,
         final String nick = System.getProperty("user.name").replace(' ', '_');
 
         settings.get(DOMAIN).put("name", name);
-        settings.get("profile").put("nickname", nick);
+        settings.get("profile").put("nicknames", nick);
         settings.get("profile").put("realname", nick);
 
         try {
