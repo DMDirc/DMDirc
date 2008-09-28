@@ -96,6 +96,7 @@ public abstract class EventHandler implements ICallbackInterface {
      */
     protected void checkParser(final IRCParser parser) {
         if (parser != getServer().getParser()) {
+            parser.disconnect("Shouldn't be in use");
             throw new IllegalArgumentException("Event called from a parser that's not in use."
                     + "\n\n " + getServer().getStatus().getTransitionHistory());
         }
