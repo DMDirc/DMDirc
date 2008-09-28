@@ -137,11 +137,9 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
      */
     @Override
     public void actionPerformed(final ActionEvent e) {
-        dispose();
-        if (e.getSource().equals(getCancelButton())) {
-
-        } else {
+        if (!e.getSource().equals(getCancelButton())) {
             model.performAction(actions.getAction());
+            dispose();
         }
     }
 
