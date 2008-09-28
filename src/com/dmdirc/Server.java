@@ -1210,7 +1210,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             } else if (myState.getState() != ServerState.CONNECTING) {
                 // Shouldn't happen
                 throw new IllegalStateException("Connect error when not "
-                        + "connecting\n\nState: " + myState);
+                        + "connecting\n\n" + getStatus().getTransitionHistory());
             }
 
             myState.transition(ServerState.TRANSIENTLY_DISCONNECTED);
