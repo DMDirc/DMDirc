@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.dialogs.sslcertificate;
 
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.core.dialogs.sslcertificate.CertificateChainEntry;
+import com.dmdirc.ui.swing.components.ListScroller;
 import com.dmdirc.ui.swing.components.renderers.CertificateChainEntryCellRenderer;
 
 import java.util.List;
@@ -67,6 +68,7 @@ public class CertificateChainPanel extends JPanel {
         list = new JList(model);
         list.setCellRenderer(new CertificateChainEntryCellRenderer());
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        new ListScroller(list);
     }
 
     private void layoutComponents() {
