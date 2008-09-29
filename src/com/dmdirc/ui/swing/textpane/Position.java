@@ -25,7 +25,7 @@ package com.dmdirc.ui.swing.textpane;
 /**
  * Holds information about a range of text.
  */
-public class LinePosition {
+public class Position {
 
     /** Starting line. */
     private int startLine;
@@ -44,7 +44,7 @@ public class LinePosition {
      * @param startPos Starting position
      * @param endPos Ending position
      */
-    public LinePosition(final int startLine, final int startPos,
+    public Position(final int startLine, final int startPos,
             final int endLine, final int endPos) {
         this.startLine = startLine;
         this.endLine = endLine;
