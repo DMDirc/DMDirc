@@ -24,6 +24,7 @@ package com.dmdirc.parser.irc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * IRC Parser Ignore list.
@@ -100,8 +101,9 @@ public class RegexStringList {
 	 *
 	 * @param check String to check (Patterns are matched case-insensitively as ^pattern$)
 	 * @return integer showing the position of the first match in the ignore list (-1 if none)
+	 * @throws PatternSyntaxException if one of the items in the list is an invalid regex
 	 */
-	public int matches(final String check) {
+	public int matches(final String check) throws PatternSyntaxException {
 		for (int i = 0; i < this.count(); ++i) {
 			if (check.matches("(?i)"+this.get(i))) {
 				return i;
@@ -116,8 +118,9 @@ public class RegexStringList {
 	 * @param position Position to check
 	 * @param check String to check (Patterns are matched case-insensitively as ^pattern$)
 	 * @return boolean true/false
+	 * @throws PatternSyntaxException if the item is an invalid regex
 	 */
-	public boolean matches(final int position, final String check) {
+	public boolean matches(final int position, final String check) throws PatternSyntaxException {
 		if (position < this.count()) {
 			return check.matches("(?i)"+this.get(position));
 		} else {

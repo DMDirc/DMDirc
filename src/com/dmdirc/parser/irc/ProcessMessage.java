@@ -38,6 +38,7 @@ import com.dmdirc.parser.irc.callbacks.CallbackOnUnknownCTCPReply;
 import com.dmdirc.parser.irc.callbacks.CallbackOnUnknownMessage;
 import com.dmdirc.parser.irc.callbacks.CallbackOnUnknownNotice;
 
+import java.util.regex.PatternSyntaxException;
 
 /**
  * Process PRIVMSGs and NOTICEs.
@@ -65,7 +66,13 @@ public class ProcessMessage extends IRCProcessor {
 		String sMessage = "";
 		if (token[0].charAt(0) == ':') { sMessage = token[0].substring(1); } else { sMessage = token[0]; }
 		// We use sMessage to be the users host (first token in the line)
-		if (myParser.getIgnoreList().matches(sMessage) > -1) { return; }
+		try {
+			if (myParser.getIgnoreList().matches(sMessage) > -1) { return; }
+		} catch (PatternSyntaxException pse) {
+			final ParserError pe = new ParserError(ParserError.ERROR_WARNING, "Error with ignore list regex: "+pse);
+			pe.setException(pse);
+			callErrorInfo(pe);
+		}
 		
 		// Lines such as:
 		// "nick!user@host PRIVMSG"
