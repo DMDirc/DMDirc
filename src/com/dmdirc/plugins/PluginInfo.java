@@ -440,6 +440,9 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			if (pi == null) {
 				requirementsError = "Required plugin '"+data[0]+"' was not found";
 				return false;
+			} else if  (pi.getVersion() == 0) {
+				// Probably compiled from a non-svn version, assume version is ok
+				return true;
 			} else {
 				if (data.length > 1) {
 					// Check plugin minimum version matches.
