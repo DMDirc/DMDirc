@@ -26,6 +26,7 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.prefs.validator.NumericalValidator;
 import com.dmdirc.ui.swing.components.pluginpanel.PluginPanel;
 import com.dmdirc.ui.swing.components.themepanel.ThemePanel;
+import com.dmdirc.ui.swing.dialogs.aliases.AliasManagerDialog;
 import com.dmdirc.ui.swing.dialogs.prefs.URLConfigPanel;
 import com.dmdirc.ui.swing.dialogs.prefs.UpdateConfigPanel;
 import com.dmdirc.util.ListenerList;
@@ -103,6 +104,7 @@ public class PreferencesManager {
         addConnectionCategory();
         addMessagesCategory();
         addGuiCategory();
+        addCategory(new PreferencesCategory("Alias Manager", "", new AliasManagerDialog()));
         addPluginsCategory();
         addUrlHandlerCategory();
         addUpdatesCategory();

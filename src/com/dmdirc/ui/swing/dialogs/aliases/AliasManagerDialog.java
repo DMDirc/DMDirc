@@ -25,15 +25,13 @@ package com.dmdirc.ui.swing.dialogs.aliases;
 import com.dmdirc.ui.swing.components.renderers.ArrayCellRenderer;
 import com.dmdirc.ui.swing.components.renderers.ActionConditionCellRenderer;
 import com.dmdirc.actions.wrappers.Alias;
-import com.dmdirc.Main;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.wrappers.AliasWrapper;
-import com.dmdirc.ui.swing.MainFrame;
+import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.ui.swing.components.PackingTable;
-import com.dmdirc.ui.swing.components.StandardDialog;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -43,7 +41,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -59,8 +56,8 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Alias manager dialog.
  */
-public final class AliasManagerDialog extends StandardDialog implements
-        ActionListener, ListSelectionListener {
+public final class AliasManagerDialog extends JPanel implements
+        ActionListener, ListSelectionListener, PreferencesInterface {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -68,8 +65,6 @@ public final class AliasManagerDialog extends StandardDialog implements
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 3;
-    /** Previously instantiated instance of AliasManagerDialog. */
-    private static volatile AliasManagerDialog me;
     /** Table scrollpane. */
     private JScrollPane scrollPane;
     /** Error table. */
@@ -90,42 +85,14 @@ public final class AliasManagerDialog extends StandardDialog implements
     private JButton showSubs;
 
     /** Creates a new instance of ErrorListDialog. */
-    private AliasManagerDialog() {
-        super((MainFrame) Main.getUI().getMainWindow(), false);
-
-        setTitle("DMDirc: Alias manager");
+    public AliasManagerDialog() {
+        super();
 
         selectedRow = -1;
 
         initComponents();
         layoutComponents();
         initListeners();
-
-        pack();
-    }
-
-    /** Creates the dialog if one doesn't exist, and displays it. */
-    public static void showAliasManagerDialog() {
-        me = getAliasManagerDialog();
-
-        me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
-        me.setVisible(true);
-        me.requestFocus();
-    }
-
-    /**
-     * Returns the instance of AliasManagerDialog.
-     *
-     * @return Instance of AliasManagerDialog
-     */
-    public static AliasManagerDialog getAliasManagerDialog() {
-        synchronized (AliasManagerDialog.class) {
-            if (me == null) {
-                me = new AliasManagerDialog();
-            }
-        }
-
-        return me;
     }
 
     /** Initialises the components. */
@@ -134,7 +101,6 @@ public final class AliasManagerDialog extends StandardDialog implements
         final TableCellRenderer conditionRenderer =
                 new ActionConditionCellRenderer();
 
-        orderButtons(new JButton(), new JButton());
         addButton = new JButton("Add");
         deleteButton = new JButton("Delete");
 
@@ -219,8 +185,6 @@ public final class AliasManagerDialog extends StandardDialog implements
     /** Initialises the listeners. */
     private void initListeners() {
         table.getSelectionModel().addListSelectionListener(this);
-        getOkButton().addActionListener(this);
-        getCancelButton().addActionListener(this);
         addButton.addActionListener(this);
         deleteButton.addActionListener(this);
         showSubs.addActionListener(this);
@@ -228,28 +192,24 @@ public final class AliasManagerDialog extends StandardDialog implements
 
     /** Lays out the components. */
     private void layoutComponents() {
-        setLayout(new MigLayout("pack"));
-        final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-                true);
+        setLayout(new MigLayout("fill, ins 0, pack"));
+        final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true);
         final JPanel panel = new JPanel();
 
-        panel.setLayout(new MigLayout("fill, hidemode 3, pack"));
+        panel.setLayout(new MigLayout("ins 0, fill, hidemode 3, pack"));
 
         panel.add(aliasDetails, "span 6, wrap, grow, pushy");
         panel.add(subsPanel, "spanx, wrap, grow");
         panel.add(showSubs, "split 7, sgx button, left");
         panel.add(addButton, "skip 2, sgx button, gap unrel");
         panel.add(deleteButton, "sgx button");
-        panel.add(getLeftButton(), "sgx button, gap unrel");
-        panel.add(getRightButton(), "sgx button");
 
         splitPane.setTopComponent(scrollPane);
         splitPane.setBottomComponent(panel);
 
-        splitPane.setDividerSize((int) PlatformDefaults.getPanelInsets(0).
-                getValue());
-
-        getContentPane().add(splitPane);
+        splitPane.setDividerSize((int) PlatformDefaults.getPanelInsets(0).getValue());
+        
+        add(splitPane, "grow");
     }
 
     /** {@inheritDoc}. */
@@ -297,7 +257,8 @@ public final class AliasManagerDialog extends StandardDialog implements
             delete();
         } else if (e.getSource() == addButton) {
             add();
-        } else if (e.getSource() == getCancelButton()) {
+        } else
+        /* if (e.getSource() == getCancelButton()) {
             dispose();
         } else if (e.getSource() == getOkButton()) {
             if (table.getSelectedRow() != -1) {
@@ -312,7 +273,8 @@ public final class AliasManagerDialog extends StandardDialog implements
             }
             save();
             dispose();
-        } else if (e.getSource() == showSubs) {
+        } else */
+            if (e.getSource() == showSubs) {
             if (subsPanel.isVisible()) {
                 subsPanel.setVisible(false);
                 showSubs.setText("Show Substitutions");
@@ -342,7 +304,8 @@ public final class AliasManagerDialog extends StandardDialog implements
     }
 
     /** Saves the aliases. */
-    private void save() {
+    @Override
+    public void save() {
         final List<Action> actions =
                 AliasWrapper.getAliasWrapper().getActions();
         final List<Alias> aliases = tableModel.getAliases();
@@ -450,17 +413,5 @@ public final class AliasManagerDialog extends StandardDialog implements
         }
 
         return false;
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void dispose() {
-        if (me == null) {
-            return;
-        }
-        synchronized (me) {
-            super.dispose();
-            me = null;
-        }
     }
 }

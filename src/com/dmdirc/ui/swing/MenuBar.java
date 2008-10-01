@@ -30,7 +30,6 @@ import com.dmdirc.ui.swing.dialogs.FeedbackDialog;
 import com.dmdirc.ui.swing.dialogs.NewServerDialog;
 import com.dmdirc.ui.swing.dialogs.about.AboutDialog;
 import com.dmdirc.ui.swing.dialogs.actionsmanager.ActionsManagerDialog;
-import com.dmdirc.ui.swing.dialogs.aliases.AliasManagerDialog;
 import com.dmdirc.ui.swing.dialogs.prefs.SwingPreferencesDialog;
 import com.dmdirc.ui.swing.dialogs.profiles.ProfileManagerDialog;
 import com.dmdirc.ui.swing.framemanager.windowmenu.WindowMenuFrameManager;
@@ -176,13 +175,6 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         menuItem.setActionCommand("Actions");
         menuItem.addActionListener(this);
         menu.add(menuItem);
-
-        menuItem = new JMenuItem();
-        menuItem.setMnemonic('l');
-        menuItem.setText("Alias Manager");
-        menuItem.setActionCommand("Aliases");
-        menuItem.addActionListener(this);
-        menu.add(menuItem);
     }
 
     /**
@@ -237,8 +229,6 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
             ((MainFrame) Main.getUI().getMainWindow()).quit();
         } else if (e.getActionCommand().equals("Actions")) {
             ActionsManagerDialog.showActionsManagerDialog();
-        } else if (e.getActionCommand().equals("Aliases")) {
-            AliasManagerDialog.showAliasManagerDialog();
         } else if (e.getActionCommand().equals("JoinDevChat")) {
             ServerManager.getServerManager().joinDevChat();
         } else if (e.getActionCommand().equals("feedback")) {
