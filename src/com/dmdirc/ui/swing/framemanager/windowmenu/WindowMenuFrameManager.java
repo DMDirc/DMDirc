@@ -138,27 +138,27 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
     /** {@inheritDoc} */
     @Override
     public void addWindow(final FrameContainer window) {
-        addFrameContainer(window);
+        addFrameContainer(null, window);
     }
 
     /** {@inheritDoc} */
     @Override
     public void delWindow(final FrameContainer window) {
-        removeFramecontainer(window);
+        removeFramecontainer(null, window);
     }
 
     /** {@inheritDoc} */
     @Override
     public void addWindow(final FrameContainer parent,
             final FrameContainer window) {
-        addFrameContainer(window);
+        addFrameContainer(parent, window);
     }
 
     /** {@inheritDoc} */
     @Override
     public void delWindow(final FrameContainer parent,
             final FrameContainer window) {
-        removeFramecontainer(window);
+        removeFramecontainer(parent, window);
     }
 
     /**
@@ -166,7 +166,8 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
      *
      * @param window Window to add to the list
      */
-    private void addFrameContainer(final FrameContainer window) {
+    private void addFrameContainer(final FrameContainer parent, 
+            final FrameContainer window) {
         UIUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
@@ -196,7 +197,8 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
      *
      * @param window Window to remove from list
      */
-    private void removeFramecontainer(final FrameContainer window) {
+    private void removeFramecontainer(final FrameContainer parent,
+            final FrameContainer window) {
         UIUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
