@@ -41,6 +41,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -209,7 +210,7 @@ public final class AliasManagerDialog extends JPanel implements
 
         splitPane.setDividerSize((int) PlatformDefaults.getPanelInsets(0).getValue());
         
-        add(splitPane, "grow");
+        add(splitPane, "grow, push");
     }
 
     /** {@inheritDoc}. */
@@ -257,24 +258,7 @@ public final class AliasManagerDialog extends JPanel implements
             delete();
         } else if (e.getSource() == addButton) {
             add();
-        } else
-        /* if (e.getSource() == getCancelButton()) {
-            dispose();
-        } else if (e.getSource() == getOkButton()) {
-            if (table.getSelectedRow() != -1) {
-                updateAlias();
-            }
-            if (checkForDuplicates()) {
-                JOptionPane.showMessageDialog(this,
-                        "There are duplicate aliases in the table, these need " +
-                        "to be removed before saving", "Duplicates",
-                        JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-            save();
-            dispose();
-        } else */
-            if (e.getSource() == showSubs) {
+        } else if (e.getSource() == showSubs) {
             if (subsPanel.isVisible()) {
                 subsPanel.setVisible(false);
                 showSubs.setText("Show Substitutions");
@@ -306,6 +290,16 @@ public final class AliasManagerDialog extends JPanel implements
     /** Saves the aliases. */
     @Override
     public void save() {
+        if (table.getSelectedRow() != -1) {
+                updateAlias();
+            }
+        if (checkForDuplicates()) {
+                JOptionPane.showMessageDialog(this,
+                        "There are duplicate aliases in the table, these need " +
+                        "to be removed before saving", "Duplicates",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
         final List<Action> actions =
                 AliasWrapper.getAliasWrapper().getActions();
         final List<Alias> aliases = tableModel.getAliases();
