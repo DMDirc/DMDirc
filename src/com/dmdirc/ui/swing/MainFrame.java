@@ -127,7 +127,7 @@ public final class MainFrame extends JFrame implements WindowListener,
             @Override
             public void windowGainedFocus(WindowEvent e) {
             //Ignore
-            }
+            }   
 
             /** {@inheritDoc} */
             @Override
@@ -454,33 +454,8 @@ public final class MainFrame extends JFrame implements WindowListener,
                 getOption("general", "closemessage"));
         IdentityManager.getConfigIdentity().
                 setOption("ui", "frameManagerSize",
-                String.valueOf(this.getFrameManagerSize()));
+                String.valueOf(getFrameManagerSize()));
         Main.quit();
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public void setVisible(final boolean visible) {
-        //NOPMD
-        super.setVisible(visible);
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public boolean isVisible() {
-        //NOPMD
-        return super.isVisible();
-    }
-
-    /** 
-     * {@inheritDoc}.
-     * 
-     * @param newTitle New Title
-     */
-    @Override
-    public void setTitle(final String newTitle) {
-        //NOPMD
-        super.setTitle(newTitle);
     }
 
     /** {@inheritDoc} */
