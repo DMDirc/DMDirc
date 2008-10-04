@@ -22,6 +22,8 @@
 
 package com.dmdirc.ui.swing;
 
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.ui.swing.actions.CopyAction;
 import com.dmdirc.ui.swing.actions.CutAction;
 import com.dmdirc.ui.swing.actions.PasteAction;
@@ -30,9 +32,11 @@ import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Point;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
 import javax.swing.MenuSelectionManager;
 import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
@@ -41,49 +45,125 @@ import javax.swing.text.JTextComponent;
  * Custom event queue to add commong functionality to certain components.
  */
 public final class DMDircEventQueue extends EventQueue {
-    
+
     /** Instantiates the DMDircEventQueue. */
     public DMDircEventQueue() {
         super();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected void dispatchEvent(final AWTEvent event) {
         super.dispatchEvent(event);
-        
-        if (!(event instanceof MouseEvent)) {
-            return;
+
+        if (event instanceof MouseEvent) {
+            handleMouseEvent((MouseEvent) event);
+        } else if (event instanceof KeyEvent) {
+            handleKeyEvent((KeyEvent) event);
         }
-        
-        final MouseEvent me = (MouseEvent) event;
-        
+    }
+
+    /**
+     * Handles key events.
+     * 
+     * @param ke Key event
+     */
+    private void handleKeyEvent(final KeyEvent ke) {
+        switch (ke.getKeyChar()) {
+            case KeyEvent.VK_F1:
+            //Fallthrough
+            case KeyEvent.VK_F2:
+            //Fallthrough
+            case KeyEvent.VK_F3:
+            //Fallthrough
+            case KeyEvent.VK_F4:
+            //Fallthrough
+            case KeyEvent.VK_F5:
+            //Fallthrough
+            case KeyEvent.VK_F6:
+            //Fallthrough
+            case KeyEvent.VK_F7:
+            //Fallthrough
+            case KeyEvent.VK_F8:
+            //Fallthrough
+            case KeyEvent.VK_F9:
+            //Fallthrough
+            case KeyEvent.VK_F10:
+            //Fallthrough
+            case KeyEvent.VK_F11:
+            //Fallthrough
+            case KeyEvent.VK_F12:
+            //Fallthrough
+            case KeyEvent.VK_F13:
+            //Fallthrough
+            case KeyEvent.VK_F14:
+            //Fallthrough
+            case KeyEvent.VK_F15:
+            //Fallthrough
+            case KeyEvent.VK_F16:
+            //Fallthrough
+            case KeyEvent.VK_F17:
+            //Fallthrough
+            case KeyEvent.VK_F18:
+            //Fallthrough
+            case KeyEvent.VK_F19:
+            //Fallthrough
+            case KeyEvent.VK_F20:
+            //Fallthrough
+            case KeyEvent.VK_F21:
+            //Fallthrough
+            case KeyEvent.VK_F22:
+            //Fallthrough
+            case KeyEvent.VK_F23:
+            //Fallthrough
+            case KeyEvent.VK_F24:
+                ActionManager.processEvent(CoreActionType.CLIENT_KEY_PRESSED,
+                        null, KeyStroke.getKeyStroke(ke.getKeyChar(),
+                        ke.getModifiers()));
+                break;
+            default:
+                if (ke.getModifiers() != 0) {
+                    ActionManager.processEvent(CoreActionType.CLIENT_KEY_PRESSED,
+                            null, KeyStroke.getKeyStroke(ke.getKeyChar(),
+                            ke.getModifiers()));
+                }
+                break;
+            }
+    }
+
+    /**
+     * Handles mouse events.
+     * 
+     * @param me Mouse event
+     */
+    private void handleMouseEvent(final MouseEvent me) {
         if (!me.isPopupTrigger()) {
             return;
         }
-        
+
         if (me.getComponent() == null) {
             return;
         }
-        
+
         final Component comp = SwingUtilities.getDeepestComponentAt(
                 me.getComponent(), me.getX(), me.getY());
-        
+
         if (!(comp instanceof JTextComponent)) {
             return;
         }
-        
+
         if (MenuSelectionManager.defaultManager().getSelectedPath().length > 0) {
             return;
         }
-        
+
         final JTextComponent tc = (JTextComponent) comp;
         final JPopupMenu menu = new JPopupMenu();
         menu.add(new CutAction(tc));
         menu.add(new CopyAction(tc));
         menu.add(new PasteAction(tc));
-        
-        final Point pt = SwingUtilities.convertPoint(me.getComponent(), me.getPoint(), tc);
+
+        final Point pt = SwingUtilities.convertPoint(me.getComponent(),
+                me.getPoint(), tc);
         menu.show(tc, pt.x, pt.y);
     }
 }

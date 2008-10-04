@@ -22,6 +22,8 @@
 
 package com.dmdirc.ui.swing;
 
+import java.awt.Color;
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
@@ -45,6 +47,14 @@ public class DMDircDesktopPane extends JDesktopPane {
     private int yOffset;
     /** The number of pixels each new internal frame is offset by. */
     private static final int FRAME_OPENING_OFFSET = 30;
+
+    /**
+     * Initialises the DMDirc desktop pane.
+     */
+    public DMDircDesktopPane() {
+        setBackground(new Color(238, 238, 238));
+        setBorder(BorderFactory.createEtchedBorder());
+    }
 
     /**
      * Add a specified component at the specified index.

@@ -43,15 +43,12 @@ import com.dmdirc.ui.swing.components.SwingStatusBar;
 import com.dmdirc.ui.swing.framemanager.ctrltab.CtrlTabFrameManager;
 import com.dmdirc.ui.swing.framemanager.tree.TreeFrameManager;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.MouseInfo;
 import java.awt.PointerInfo;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowListener;
@@ -59,8 +56,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
@@ -69,7 +64,6 @@ import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.KeyStroke;
 import javax.swing.MenuSelectionManager;
 import javax.swing.WindowConstants;
 
@@ -117,7 +111,6 @@ public final class MainFrame extends JFrame implements WindowListener,
         this.statusBar = statusBar;
 
         initComponents();
-        initKeyHooks();
 
         imageIcon =
                 new ImageIcon(IconManager.getIconManager().getImage("icon"));
@@ -391,7 +384,6 @@ public final class MainFrame extends JFrame implements WindowListener,
     private void initComponents() {
         frameManagerPanel = new JPanel();
         desktopPane = new DMDircDesktopPane();
-        desktopPane.setBackground(new Color(238, 238, 238));
 
         initFrameManagers();
 
@@ -409,7 +401,6 @@ public final class MainFrame extends JFrame implements WindowListener,
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         setTitle("DMDirc");
-        desktopPane.setBorder(BorderFactory.createEtchedBorder());
 
         pack();
     }
@@ -483,59 +474,6 @@ public final class MainFrame extends JFrame implements WindowListener,
         }
         
         return mainSplitPane;
-    }
-
-    /** Initialises the key hooks. */
-    private void initKeyHooks() {
-        final KeyStroke[] keyStrokes = new KeyStroke[12];
-
-        keyStrokes[0] =
-                KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0);
-        keyStrokes[1] =
-                KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0);
-        keyStrokes[2] =
-                KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0);
-        keyStrokes[3] =
-                KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0);
-        keyStrokes[4] =
-                KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
-        keyStrokes[5] =
-                KeyStroke.getKeyStroke(KeyEvent.VK_F6, 0);
-        keyStrokes[6] =
-                KeyStroke.getKeyStroke(KeyEvent.VK_F7, 0);
-        keyStrokes[7] =
-                KeyStroke.getKeyStroke(KeyEvent.VK_F8, 0);
-        keyStrokes[8] =
-                KeyStroke.getKeyStroke(KeyEvent.VK_F9, 0);
-        keyStrokes[9] =
-                KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0);
-        keyStrokes[10] =
-                KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0);
-        keyStrokes[11] =
-                KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0);
-
-        for (final KeyStroke keyStroke : keyStrokes) {
-            getRootPane().getActionMap().
-                    put(KeyEvent.getKeyText(keyStroke.getKeyCode()) + "Action",
-                    new AbstractAction(KeyEvent.getKeyText(keyStroke.getKeyCode()) +
-                    "Action") {
-
-                        private static final long serialVersionUID = 5;
-
-                        /** {@inheritDoc} */
-                        @Override
-                        public void actionPerformed(final ActionEvent evt) {
-                            ActionManager.processEvent(CoreActionType.CLIENT_FKEY_PRESSED,
-                                    null,
-                                    KeyStroke.getKeyStroke(keyStroke.getKeyCode(),
-                                    evt.getModifiers()));
-                        }
-                    });
-            getRootPane().
-                    getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).
-                    put(KeyStroke.getKeyStroke(keyStroke.getKeyCode(), 0),
-                    KeyEvent.getKeyText(keyStroke.getKeyCode()) + "Action");
-        }
     }
 
     /** {@inheritDoc}. */

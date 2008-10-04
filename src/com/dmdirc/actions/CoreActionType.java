@@ -47,7 +47,7 @@ public enum CoreActionType implements ActionType {
     CLIENT_UNMINIMISED(ClientEvents.CLIENT_EVENT, "Client unminimised"),
     
     /** Function key pressed. */
-    CLIENT_FKEY_PRESSED(ClientEvents.CLIENT_EVENT_WITH_KEY, "Function key pressed"),
+    CLIENT_KEY_PRESSED(ClientEvents.CLIENT_EVENT_WITH_KEY, "Function key pressed"),
     
     /** Frame changed. */
     CLIENT_FRAME_CHANGED(ClientEvents.WINDOW_EVENT, "Frame changed"),
