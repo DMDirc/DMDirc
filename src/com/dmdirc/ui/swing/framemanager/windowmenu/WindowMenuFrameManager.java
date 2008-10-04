@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.framemanager.windowmenu;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.FrameContainerComparator;
+import com.dmdirc.GlobalWindow;
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.SelectionListener;
@@ -154,7 +155,16 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                     }
                     menuItemMap.put(window, mi);
                     window.addSelectionListener(WindowMenuFrameManager.this);
-                    add(mi, getIndex(WindowMenuFrameManager.this, window));
+                    if (IdentityManager.getGlobalConfig().
+                    getOptionBool("treeview", "sortservers", true) ) {
+                        add(mi, getIndex(WindowMenuFrameManager.this, window));
+                    } else {
+                        if (window instanceof GlobalWindow) {
+                            add(mi, itemCount);
+                        } else {
+                            add(mi);
+                        }
+                    }
                 }
             }
         });
