@@ -25,6 +25,7 @@ package com.dmdirc.addons.addonbrowser;
 import com.dmdirc.Main;
 import com.dmdirc.addons.addonbrowser.AddonInfo.AddonType;
 import com.dmdirc.ui.swing.SwingController;
+import com.dmdirc.ui.swing.components.LoggingSwingWorker;
 import com.dmdirc.util.ConfigFile;
 import com.dmdirc.util.InvalidConfigFileException;
 
@@ -50,7 +51,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -229,7 +229,7 @@ public class BrowserWindow extends JDialog implements ActionListener,
         ((DefaultListModel) list.getModel()).clear();
         list.add(new JLabel("Sorting list.", JLabel.CENTER), "grow, pushy");
 
-        new SwingWorker() {
+        new LoggingSwingWorker() {
 
             final List<AddonInfo> newInfos = new ArrayList<AddonInfo>();
 
@@ -261,6 +261,7 @@ public class BrowserWindow extends JDialog implements ActionListener,
             /* {@inheritDoc} */
             @Override
             protected void done() {
+                super.done();
 
                 ((DefaultListModel) list.getModel()).clear();
                 for (AddonInfo info : newInfos) {

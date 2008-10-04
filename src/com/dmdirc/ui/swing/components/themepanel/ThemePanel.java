@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.components.themepanel;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesInterface;
+import com.dmdirc.ui.swing.components.LoggingSwingWorker;
 import com.dmdirc.ui.themes.Theme;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.ui.swing.components.TextLabel;
@@ -42,7 +43,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -104,7 +104,7 @@ public final class ThemePanel extends JPanel implements
         blurbLabel = new TextLabel("Themes alter the appearance of DMDirc");
         
         /** {@inheritDoc}. */
-        new SwingWorker() {
+        new LoggingSwingWorker() {
 
             /** {@inheritDoc}. */
             @Override
@@ -115,6 +115,7 @@ public final class ThemePanel extends JPanel implements
             /** {@inheritDoc}. */
             @Override
             protected void done() {
+                super.done();
                 scrollPane.setViewportView(themeList);
             }
         }.execute();

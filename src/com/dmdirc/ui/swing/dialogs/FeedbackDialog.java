@@ -28,6 +28,7 @@ import com.dmdirc.ServerManager;
 import com.dmdirc.ui.core.util.Info;
 import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.ui.swing.UIUtilities;
+import com.dmdirc.ui.swing.components.LoggingSwingWorker;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.TextLabel;
 import com.dmdirc.util.Downloader;
@@ -49,7 +50,6 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SwingWorker;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -312,7 +312,7 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
 /**
  * Sends feedback worker thread.
  */
-class SendWorker extends SwingWorker {
+class SendWorker extends LoggingSwingWorker {
 
     /** Parent feedback dialog. */
     private FeedbackDialog dialog;
@@ -415,6 +415,7 @@ class SendWorker extends SwingWorker {
     /** {@inheritDoc} */
     @Override
     protected void done() {
+        super.done();
         dialog.layoutComponents2(error);
     }
 }
