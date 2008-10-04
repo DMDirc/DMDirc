@@ -62,7 +62,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
      */
     private static final long serialVersionUID = 1;
     /** Menu item list. */
-    private final Map<FrameContainer, FrameContainerMenuItem> menuItemMap;
+    private final Map<FrameContainer, Object> menuItemMap;
     /** Comparator. */
     private final FrameContainerComparator comparator =
             new FrameContainerComparator();
@@ -79,8 +79,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
     public WindowMenuFrameManager() {
         super();
 
-        menuItemMap =
-                new TreeMap<FrameContainer, FrameContainerMenuItem>(comparator);
+        menuItemMap = new TreeMap<FrameContainer, Object>(comparator);
 
         setText("Window");
         setMnemonic('w');
@@ -138,35 +137,61 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
     /** {@inheritDoc} */
     @Override
     public void addWindow(final FrameContainer window) {
-        addFrameContainer(null, window);
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                if (getMenuComponentCount() == itemCount) {
+                    separator.setVisible(true);
+                }
+
+                final JMenu mi = new JMenu(window.toString());
+                synchronized (menuItemMap) {
+                    if (isShowing()) {
+                        setSelected(false);
+                        setPopupMenuVisible(false);
+                    }
+                    menuItemMap.put(window, mi);
+                    window.addSelectionListener(WindowMenuFrameManager.this);
+                    add(mi);
+                }
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public void delWindow(final FrameContainer window) {
-        removeFramecontainer(null, window);
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                synchronized (menuItemMap) {
+                    if (isShowing()) {
+                        setSelected(false);
+                        setPopupMenuVisible(false);
+                    }
+                    final FrameContainerMenuItem mi =
+                            (FrameContainerMenuItem) menuItemMap.get(window);
+                    if (mi != null) {
+                        remove(mi);
+                        menuItemMap.remove(window);
+                        window.removeSelectionListener(WindowMenuFrameManager.this);
+                    }
+                }
+
+                if (getMenuComponentCount() == itemCount) {
+                    separator.setVisible(false);
+                }
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public void addWindow(final FrameContainer parent,
-            final FrameContainer window) {
-        addFrameContainer(parent, window);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void delWindow(final FrameContainer parent,
-            final FrameContainer window) {
-        removeFramecontainer(parent, window);
-    }
-
-    /**
-     * Adds a frame container to the list.
-     *
-     * @param window Window to add to the list
-     */
-    private void addFrameContainer(final FrameContainer parent, 
             final FrameContainer window) {
         UIUtilities.invokeLater(new Runnable() {
 
@@ -177,6 +202,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                     separator.setVisible(true);
                 }
 
+                final JMenu pmi = (JMenu) menuItemMap.get(parent);
                 final FrameContainerMenuItem mi =
                         new FrameContainerMenuItem(window);
                 synchronized (menuItemMap) {
@@ -186,18 +212,15 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                     }
                     menuItemMap.put(window, mi);
                     window.addSelectionListener(WindowMenuFrameManager.this);
-                    add(mi, getIndex(window));
+                    pmi.add(mi);
                 }
             }
         });
     }
 
-    /**
-     * Removes a frame container from the list.
-     *
-     * @param window Window to remove from list
-     */
-    private void removeFramecontainer(final FrameContainer parent,
+    /** {@inheritDoc} */
+    @Override
+    public void delWindow(final FrameContainer parent,
             final FrameContainer window) {
         UIUtilities.invokeLater(new Runnable() {
 
@@ -209,9 +232,11 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                         setSelected(false);
                         setPopupMenuVisible(false);
                     }
-                    final FrameContainerMenuItem mi = menuItemMap.get(window);
+                    final JMenu pmi = (JMenu) menuItemMap.get(parent);
+                    final FrameContainerMenuItem mi =
+                            (FrameContainerMenuItem) menuItemMap.get(window);
                     if (mi != null) {
-                        remove(mi);
+                        pmi.remove(mi);
                         menuItemMap.remove(window);
                         window.removeSelectionListener(WindowMenuFrameManager.this);
                     }
@@ -255,14 +280,16 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
     /** {@inheritDoc} */
     @Override
     public void selectionChanged(final Window window) {
-        final Map<FrameContainer, FrameContainerMenuItem> newMap =
-                new TreeMap<FrameContainer, FrameContainerMenuItem>(comparator);
+        final Map<FrameContainer, Object> newMap =
+                new TreeMap<FrameContainer, Object>(comparator);
         synchronized (menuItemMap) {
             newMap.putAll(menuItemMap);
         }
 
-        for (FrameContainerMenuItem menuItem : newMap.values()) {
-            menuItem.selectionChanged(window);
+        for (Object menuItem : newMap.values()) {
+            if (menuItem instanceof FrameContainerMenuItem) {
+                ((FrameContainerMenuItem) menuItem).selectionChanged(window);
+            }
         }
     }
 
