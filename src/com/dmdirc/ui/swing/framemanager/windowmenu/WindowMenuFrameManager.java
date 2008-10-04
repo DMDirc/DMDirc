@@ -154,7 +154,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                     }
                     menuItemMap.put(window, mi);
                     window.addSelectionListener(WindowMenuFrameManager.this);
-                    add(mi);
+                    add(mi, getIndex(WindowMenuFrameManager.this, window));
                 }
             }
         });
@@ -212,7 +212,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                     }
                     menuItemMap.put(window, mi);
                     window.addSelectionListener(WindowMenuFrameManager.this);
-                    pmi.add(mi);
+                    pmi.add(mi, getIndex(pmi, window));
                 }
             }
         });
@@ -320,17 +320,25 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
      * Compares the new child with the existing children or parent to decide
      * where it needs to be inserted.
      *
+     * @param menu Menu to check sort order
      * @param newChild new node to be inserted.
      *
      * @return index where new node is to be inserted.
      */
-    private int getIndex(final FrameContainer newChild) {
-        for (int i = itemCount; i < getMenuComponentCount(); i++) {
-            if (!(getMenuComponent(i) instanceof FrameContainerMenuItem)) {
+    private int getIndex(final JMenu menu, final FrameContainer newChild) {
+        final int localCount = menu.getComponentCount();
+        final int startCount;
+        if (menu == this) {
+            startCount = itemCount;
+        } else {
+            startCount = 0;
+        }
+        for (int i = startCount; i < localCount; i++) {
+            if (!(menu.getMenuComponent(i) instanceof FrameContainerMenuItem)) {
                 continue;
             }
             final FrameContainer child =
-                    ((FrameContainerMenuItem) getMenuComponent(i)).getFrame();
+                    ((FrameContainerMenuItem) menu.getMenuComponent(i)).getFrame();
             if (sortBefore(newChild, child)) {
                 return i;
             } else if (!sortAfter(newChild, child) && IdentityManager.getGlobalConfig().
@@ -341,7 +349,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
             }
         }
 
-        return getMenuComponentCount();
+        return menu.getMenuComponentCount();
     }
 
     /**
