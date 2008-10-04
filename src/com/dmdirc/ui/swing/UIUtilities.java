@@ -30,6 +30,12 @@ import com.dmdirc.ui.swing.components.DMDircUndoableEditListener;
 import com.dmdirc.util.ReturnableThread;
 
 import java.awt.Dimension;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.MouseInfo;
+import java.awt.PointerInfo;
+import java.awt.Rectangle;
+import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.InvocationTargetException;
 
@@ -270,5 +276,30 @@ public final class UIUtilities {
      */
     public static boolean isCtrlDown(final KeyEvent e) {
         return Apple.isAppleUI() ? e.isMetaDown() : e.isControlDown();
+    }
+    
+    /**
+     * Center the specified window on the active monitor.
+     * 
+     * @param window Window to center
+     */
+    public static void centerWindow(final Window window) {
+        // Get the Location of the mouse pointer
+        final PointerInfo myPointerInfo = MouseInfo.getPointerInfo();
+        // Get the Device (screen) the mouse pointer is on
+        final GraphicsDevice myDevice = myPointerInfo.getDevice();
+        // Get the configuration for the device
+        final GraphicsConfiguration myGraphicsConfig =
+                myDevice.getDefaultConfiguration();
+        // Get the bounds of the device
+        final Rectangle gcBounds = myGraphicsConfig.getBounds();
+        // Calculate the center of the screen
+        // gcBounds.x and gcBounds.y give the co ordinates where the screen
+        // starts. gcBounds.width and gcBounds.height return the size in pixels
+        // of the screen.
+        final int xPos = gcBounds.x + ((gcBounds.width - window.getWidth()) / 2);
+        final int yPos = gcBounds.y + ((gcBounds.height - window.getHeight()) / 2);
+        // Set the location of the window
+        window.setLocation(xPos, yPos);
     }
 }

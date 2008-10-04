@@ -116,23 +116,7 @@ public final class MainFrame extends JFrame implements WindowListener,
                 new ImageIcon(IconManager.getIconManager().getImage("icon"));
         setIconImage(imageIcon.getImage());
 
-        // Get the Location of the mouse pointer
-        final PointerInfo myPointerInfo = MouseInfo.getPointerInfo();
-        // Get the Device (screen) the mouse pointer is on
-        final GraphicsDevice myDevice = myPointerInfo.getDevice();
-        // Get the configuration for the device
-        final GraphicsConfiguration myGraphicsConfig =
-                myDevice.getDefaultConfiguration();
-        // Get the bounds of the device
-        final Rectangle gcBounds = myGraphicsConfig.getBounds();
-        // Calculate the center of the screen
-        // gcBounds.x and gcBounds.y give the co ordinates where the screen
-        // starts. gcBounds.width and gcBounds.height return the size in pixels
-        // of the screen.
-        final int xPos = gcBounds.x + ((gcBounds.width - getWidth()) / 2);
-        final int yPos = gcBounds.y + ((gcBounds.height - getHeight()) / 2);
-        // Set the location of the window
-        setLocation(xPos, yPos);
+        UIUtilities.centerWindow(this);
 
         setVisible(true);
 

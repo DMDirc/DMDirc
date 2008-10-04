@@ -22,11 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.wizard;
 
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.MouseInfo;
-import java.awt.PointerInfo;
-import java.awt.Rectangle;
+import com.dmdirc.ui.swing.UIUtilities;
 
 import java.util.List;
 
@@ -74,19 +70,7 @@ public final class WizardFrame extends JFrame {
     /** Displays the wizard. */
     public void display() {
         wizard.display();
-        // Position wizard center-screen on the correct monitor of a
-        // multi-monitor system. (See MainFrame constructor for more info)
-        final PointerInfo myPointerInfo =
-                MouseInfo.getPointerInfo();
-        final GraphicsDevice myDevice = myPointerInfo.getDevice();
-        final GraphicsConfiguration myGraphicsConfig =
-                myDevice.getDefaultConfiguration();
-        final Rectangle gcBounds = myGraphicsConfig.getBounds();
-        final int xPos =
-                gcBounds.x + ((gcBounds.width - getWidth()) / 2);
-        final int yPos =
-                gcBounds.y + ((gcBounds.height - getHeight()) / 2);
-        setLocation(xPos, yPos);
+        UIUtilities.centerWindow(this);
         setResizable(false);
         setVisible(true);
     }
@@ -95,20 +79,7 @@ public final class WizardFrame extends JFrame {
     @Override
     public void validate() {
         super.validate();
-        
-        // Position wizard center-screen on the correct monitor of a
-        // multi-monitor system. (See MainFrame constructor for more info)
-        final PointerInfo myPointerInfo =
-                MouseInfo.getPointerInfo();
-        final GraphicsDevice myDevice = myPointerInfo.getDevice();
-        final GraphicsConfiguration myGraphicsConfig =
-                myDevice.getDefaultConfiguration();
-        final Rectangle gcBounds = myGraphicsConfig.getBounds();
-        final int xPos =
-                gcBounds.x + ((gcBounds.width - getWidth()) / 2);
-        final int yPos =
-                gcBounds.y + ((gcBounds.height - getHeight()) / 2);
-        setLocation(xPos, yPos);
+        UIUtilities.centerWindow(this);
     }
 
     /**
