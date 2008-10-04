@@ -146,7 +146,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                     separator.setVisible(true);
                 }
 
-                final JMenu mi = new JMenu(window.toString());
+                final FrameContainerMenu mi = new FrameContainerMenu(window);
                 synchronized (menuItemMap) {
                     if (isShowing()) {
                         setSelected(false);
@@ -326,19 +326,25 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
      * @return index where new node is to be inserted.
      */
     private int getIndex(final JMenu menu, final FrameContainer newChild) {
-        final int localCount = menu.getComponentCount();
         final int startCount;
         if (menu == this) {
             startCount = itemCount;
         } else {
             startCount = 0;
         }
-        for (int i = startCount; i < localCount; i++) {
-            if (!(menu.getMenuComponent(i) instanceof FrameContainerMenuItem)) {
+        for (int i = startCount; i < menu.getMenuComponentCount(); i++) {
+            if (!(menu.getMenuComponent(i) instanceof FrameContainerMenuItem) &&
+                    !(menu.getMenuComponent(i) instanceof FrameContainerMenu)) {
                 continue;
             }
-            final FrameContainer child =
-                    ((FrameContainerMenuItem) menu.getMenuComponent(i)).getFrame();
+            final FrameContainer child;
+            if (menu.getMenuComponent(i) instanceof FrameContainerMenu) {
+                child =
+                        ((FrameContainerMenu) menu.getMenuComponent(i)).getFrame();
+            } else {
+                child =
+                        ((FrameContainerMenuItem) menu.getMenuComponent(i)).getFrame();
+            }
             if (sortBefore(newChild, child)) {
                 return i;
             } else if (!sortAfter(newChild, child) && IdentityManager.getGlobalConfig().
