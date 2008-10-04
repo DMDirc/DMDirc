@@ -39,7 +39,6 @@ import com.dmdirc.ui.interfaces.MainWindow;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.components.InputTextFrame;
 import com.dmdirc.ui.swing.components.SnappingJSplitPane;
-import com.dmdirc.ui.swing.components.SwingStatusBar;
 import com.dmdirc.ui.swing.framemanager.ctrltab.CtrlTabFrameManager;
 import com.dmdirc.ui.swing.framemanager.tree.TreeFrameManager;
 
@@ -90,20 +89,14 @@ public final class MainFrame extends JFrame implements WindowListener,
     private FramemanagerPosition position;
     /** Show version? */
     private boolean showVersion;
-    /** Status bar. */
-    private final SwingStatusBar statusBar;
     /** Menu bar. */
     private MenuBar menu;
 
     /**
      * Creates new form MainFrame.
-     * 
-     * @param statusBar The status bar to use
      */
-    protected MainFrame(final SwingStatusBar statusBar) {
+    protected MainFrame() {
         super();
-
-        this.statusBar = statusBar;
 
         initComponents();
 
@@ -254,17 +247,6 @@ public final class MainFrame extends JFrame implements WindowListener,
         return desktopPane;
     }
 
-    /**
-     * Returns the status bar for the frame.
-     * 
-     * @return Status bar.
-     * @deprecated Should be retrieved via the controller instead
-     */
-    @Deprecated
-    public SwingStatusBar getStatusBar() {
-        return statusBar;
-    }
-
     /** 
      * {@inheritDoc}.
      * 
@@ -374,7 +356,7 @@ public final class MainFrame extends JFrame implements WindowListener,
 
         getContentPane().setLayout(new MigLayout("fill, ins rel, wrap 1, hidemode 2"));
         getContentPane().add(initSplitPane(), "grow, push");
-        getContentPane().add(statusBar,
+        getContentPane().add(SwingController.getSwingStatusBar(),
                 "hmax 20, wmax 100%-2*rel, wmin 100%-2*rel");
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

@@ -102,7 +102,7 @@ public final class SwingController implements UIController {
                     /** {@inheritDoc} */
                     @Override
                     public void run() {
-                        me = new MainFrame(getSwingStatusBar());
+                        me = new MainFrame();
                     }
                 });
                 SwingUtilities.invokeLater(new Runnable() {
@@ -135,7 +135,7 @@ public final class SwingController implements UIController {
      * 
      * @return This UI's status bar
      */
-    private static SwingStatusBar getSwingStatusBar() {
+    public static SwingStatusBar getSwingStatusBar() {
         STATUSBAR_SEMAPHORE.acquireUninterruptibly();
 
         if (statusBar == null) {
