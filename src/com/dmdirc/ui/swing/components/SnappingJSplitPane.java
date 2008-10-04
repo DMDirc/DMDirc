@@ -26,6 +26,8 @@ import java.awt.Component;
 
 import javax.swing.JSplitPane;
 
+import net.miginfocom.layout.PlatformDefaults;
+
 /**
  * JSplit pane that snaps around its components preferred size.
  */
@@ -36,7 +38,7 @@ public class SnappingJSplitPane extends JSplitPane {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     /** Snap distance. */
     private final int snapDistance;
     /** Component to snap to? */
@@ -215,6 +217,11 @@ public class SnappingJSplitPane extends JSplitPane {
 
         this.leftComponentSnap = leftComponentSnap;
         this.snapDistance = snapDistance;
+
+        setBorder(null);
+        setDividerSize((int) PlatformDefaults.getPanelInsets(0).getValue());
+        setOneTouchExpandable(true);
+        setContinuousLayout(true);
     }
 
     /** {@inheritDoc} */

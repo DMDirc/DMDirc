@@ -60,6 +60,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
@@ -70,10 +71,8 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.MenuSelectionManager;
-import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
-import net.miginfocom.layout.PlatformDefaults;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -88,16 +87,8 @@ public final class MainFrame extends JFrame implements WindowListener,
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 9;
-    /** The number of pixels each new internal frame is offset by. */
-    private static final int FRAME_OPENING_OFFSET = 30;
     /** Whether the internal frames are maximised or not. */
     private boolean maximised;
-    /** The current number of pixels to displace new frames in the X
-     * direction. */
-    private int xOffset;
-    /** The current number of pixels to displace new frames in the Y
-     * direction. */
-    private int yOffset;
     /** The main application icon. */
     private ImageIcon imageIcon;
     /** The frame manager that's being used. */
@@ -398,16 +389,11 @@ public final class MainFrame extends JFrame implements WindowListener,
      * Initialises the components for this frame.
      */
     private void initComponents() {
-        JSplitPane mainSplitPane =
-                new SnappingJSplitPane(SnappingJSplitPane.Orientation.HORIZONTAL);
-
         frameManagerPanel = new JPanel();
         desktopPane = new DMDircDesktopPane();
         desktopPane.setBackground(new Color(238, 238, 238));
 
         initFrameManagers();
-
-        initSplitPane(mainSplitPane);
 
         menu = new MenuBar();
         Apple.getApple().setMenuBar(menu);
@@ -416,30 +402,26 @@ public final class MainFrame extends JFrame implements WindowListener,
         setPreferredSize(new Dimension(800, 600));
 
         getContentPane().setLayout(new MigLayout("fill, ins rel, wrap 1, hidemode 2"));
-        getContentPane().add(mainSplitPane, "grow, push");
+        getContentPane().add(initSplitPane(), "grow, push");
         getContentPane().add(statusBar,
                 "hmax 20, wmax 100%-2*rel, wmin 100%-2*rel");
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         setTitle("DMDirc");
-        desktopPane.setBorder(UIManager.getBorder("TextField.border"));
+        desktopPane.setBorder(BorderFactory.createEtchedBorder());
 
         pack();
     }
 
     /**
      * Initialises the split pane.
-     *
-     * @param mainSplitPane JSplitPane to initialise
+     * 
+     * @return Returns the initialised split pane
      */
-    private void initSplitPane(final JSplitPane mainSplitPane) {
-        mainSplitPane.setBorder(null);
-
-        mainSplitPane.setDividerSize((int) PlatformDefaults.getPanelInsets(0).
-                getValue());
-        mainSplitPane.setOneTouchExpandable(true);
-
+    private JSplitPane initSplitPane() {
+        final JSplitPane mainSplitPane =
+                new SnappingJSplitPane(SnappingJSplitPane.Orientation.HORIZONTAL);
         position =
                 FramemanagerPosition.getPosition(IdentityManager.getGlobalConfig().
                 getOption("ui", "framemanagerPosition"));
@@ -499,8 +481,8 @@ public final class MainFrame extends JFrame implements WindowListener,
             default:
                 break;
         }
-
-        mainSplitPane.setContinuousLayout(true);
+        
+        return mainSplitPane;
     }
 
     /** Initialises the key hooks. */
@@ -656,21 +638,6 @@ public final class MainFrame extends JFrame implements WindowListener,
 
         // Add the frame
         desktopPane.add(frame, index);
-
-        // Make sure it'll fit with our offsets
-        if (frame.getWidth() + xOffset > desktopPane.getWidth()) {
-            xOffset = 0;
-        }
-        if (frame.getHeight() + yOffset > desktopPane.getHeight()) {
-            yOffset = 0;
-        }
-
-        // Position the frame
-        frame.setLocation(xOffset, yOffset);
-
-        // Increase the offsets
-        xOffset += FRAME_OPENING_OFFSET;
-        yOffset += FRAME_OPENING_OFFSET;
 
         frame.addPropertyChangeListener("title", this);
     }

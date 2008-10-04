@@ -37,6 +37,14 @@ public class DMDircDesktopPane extends JDesktopPane {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** The current number of pixels to displace new frames in the X
+     * direction. */
+    private int xOffset;
+    /** The current number of pixels to displace new frames in the Y
+     * direction. */
+    private int yOffset;
+    /** The number of pixels each new internal frame is offset by. */
+    private static final int FRAME_OPENING_OFFSET = 30;
 
     /**
      * Add a specified component at the specified index.
@@ -46,6 +54,21 @@ public class DMDircDesktopPane extends JDesktopPane {
      */
     public void add(final JComponent comp, final int index) {
         addImpl(comp, null, index);
+        
+        // Make sure it'll fit with our offsets
+        if (comp.getWidth() + xOffset > getWidth()) {
+            xOffset = 0;
+        }
+        if (comp.getHeight() + yOffset > getHeight()) {
+            yOffset = 0;
+        }
+
+        // Position the frame
+        comp.setLocation(xOffset, yOffset);
+
+        // Increase the offsets
+        xOffset += FRAME_OPENING_OFFSET;
+        yOffset += FRAME_OPENING_OFFSET;
     }
 
     /** {@inheritDoc} */
