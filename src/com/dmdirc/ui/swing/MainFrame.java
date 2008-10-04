@@ -44,11 +44,6 @@ import com.dmdirc.ui.swing.framemanager.ctrltab.CtrlTabFrameManager;
 import com.dmdirc.ui.swing.framemanager.tree.TreeFrameManager;
 
 import java.awt.Dimension;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.MouseInfo;
-import java.awt.PointerInfo;
-import java.awt.Rectangle;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowListener;
