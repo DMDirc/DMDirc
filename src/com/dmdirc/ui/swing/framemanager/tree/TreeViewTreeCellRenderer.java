@@ -135,15 +135,15 @@ public class TreeViewTreeCellRenderer implements TreeCellRenderer,
                 "ui", "treeviewActiveBackground",
                 config.getOptionColour("treeview", "backgroundcolour",
                 config.getOptionColour("ui", "backgroundcolour",
-                manager.getTree().getBackground())));
+                manager.getBackground())));
         activeForeground = config.getOptionColour(
                 "ui", "treeviewActiveForeground",
                 config.getOptionColour("treeview", "foregroundcolour",
                 config.getOptionColour("ui", "foregroundcolour",
-                manager.getTree().getForeground())));
+                manager.getForeground())));
         activeBold = config.getOptionBool("ui", "treeviewActiveBold", false);
 
-        manager.getTree().repaint();
+        manager.repaint();
     }
 
     /** {@inheritDoc} */

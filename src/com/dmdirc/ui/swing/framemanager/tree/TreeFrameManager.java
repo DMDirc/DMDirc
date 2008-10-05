@@ -72,7 +72,8 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Manages open windows in the application in a tree style view.
  */
-public final class TreeFrameManager implements FrameManager, MouseListener,
+public final class TreeFrameManager extends JTree implements FrameManager,
+        MouseListener,
         MouseMotionListener, AdjustmentListener, Serializable,
         ConfigChangeListener, TreeSelectionListener, SelectionListener,
         NotificationListener, IconChangeListener {
@@ -83,8 +84,6 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 5;
-    /** display tree. */
-    private final JTree tree;
     /** root node. */
     private final DefaultMutableTreeNode root;
     /** data model. */
@@ -102,38 +101,38 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
         labels = new HashMap<DefaultMutableTreeNode, NodeLabel>();
         root = new DefaultMutableTreeNode("DMDirc");
         model = new TreeViewModel(root);
-        tree = new JTree(model);
+        setModel(model);
         labels.put(root, new NodeLabel(null));
 
         final TreeViewTreeCellRenderer renderer =
                 new TreeViewTreeCellRenderer(this);
 
-        tree.putClientProperty("JTree.lineStyle", "Angled");
-        tree.setUI(new javax.swing.plaf.metal.MetalTreeUI());
-        tree.getInputMap().setParent(null);
-        tree.getInputMap(JComponent.WHEN_FOCUSED).clear();
-        tree.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).clear();
-        tree.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).clear();
+        putClientProperty("JTree.lineStyle", "Angled");
+        setUI(new javax.swing.plaf.metal.MetalTreeUI());
+        getInputMap().setParent(null);
+        getInputMap(JComponent.WHEN_FOCUSED).clear();
+        getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).clear();
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).clear();
 
-        tree.getSelectionModel().
+        getSelectionModel().
                 setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        tree.setCellRenderer(renderer);
-        tree.setRootVisible(false);
-        tree.setRowHeight(0);
-        tree.setShowsRootHandles(false);
-        tree.setOpaque(true);
-        tree.setBorder(BorderFactory.createEmptyBorder(
+        setCellRenderer(renderer);
+        setRootVisible(false);
+        setRowHeight(0);
+        setShowsRootHandles(false);
+        setOpaque(true);
+        setBorder(BorderFactory.createEmptyBorder(
                 (int) PlatformDefaults.getUnitValueX("related").getValue(),
                 (int) PlatformDefaults.getUnitValueX("related").getValue(),
                 (int) PlatformDefaults.getUnitValueX("related").getValue(),
                 (int) PlatformDefaults.getUnitValueX("related").getValue()));
-        tree.setVisible(true);
+        setVisible(true);
 
-        tree.addMouseListener(this);
-        tree.addMouseMotionListener(this);
-        tree.addTreeSelectionListener(this);
-        new TreeScroller(tree);
-        tree.setFocusable(false);
+        addMouseListener(this);
+        addMouseMotionListener(this);
+        addTreeSelectionListener(this);
+        new TreeScroller(this);
+        setFocusable(false);
 
         dragSelect = IdentityManager.getGlobalConfig().getOptionBool("treeview",
                 "dragSelection", true);
@@ -167,7 +166,8 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
             /** {@inheritDoc} */
             @Override
             public void run() {
-                final JScrollPane scrollPane = new JScrollPane(tree);
+                final JScrollPane scrollPane =
+                        new JScrollPane(TreeFrameManager.this);
                 scrollPane.setAutoscrolls(true);
                 scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
                 scrollPane.getHorizontalScrollBar().addAdjustmentListener(TreeFrameManager.this);
@@ -266,10 +266,10 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
                     } else {
                         model.insertNodeInto(node, parent);
                     }
-                    tree.expandPath(new TreePath(node.getPath()).getParentPath());
+                    expandPath(new TreePath(node.getPath()).getParentPath());
                     final Rectangle view =
-                            tree.getRowBounds(tree.getRowForPath(new TreePath(node.getPath())));
-                    tree.scrollRectToVisible(new Rectangle(0,
+                            getRowBounds(getRowForPath(new TreePath(node.getPath())));
+                    scrollRectToVisible(new Rectangle(0,
                             (int) view.getY(),
                             0, 0));
                     window.addSelectionListener(TreeFrameManager.this);
@@ -278,15 +278,6 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
                 }
             }
         });
-    }
-
-    /**
-     * Returns the tree for this frame manager.
-     *
-     * @return Tree for the manager
-     */
-    public JTree getTree() {
-        return tree;
     }
 
     /** 
@@ -317,10 +308,10 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     @Override
     public void mousePressed(final MouseEvent event) {
         if (event.getButton() == MouseEvent.BUTTON1) {
-            final TreePath selectedPath = tree.getPathForLocation(event.getX(),
+            final TreePath selectedPath = getPathForLocation(event.getX(),
                     event.getY());
             if (selectedPath != null) {
-                tree.setSelectionPath(selectedPath);
+                setSelectionPath(selectedPath);
             }
         }
         processMouseEvent(event);
@@ -357,9 +348,11 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
      * Processes every mouse button event to check for a popup trigger.
      * @param event mouse event
      */
+    @Override
     public void processMouseEvent(final MouseEvent event) {
+        super.processMouseEvent(event);
         final JTree source = (JTree) event.getSource();
-        final TreePath path = tree.getPathForLocation(event.getX(),
+        final TreePath path = getPathForLocation(event.getX(),
                 event.getY());
         if (path != null) {
             if (event.isPopupTrigger()) {
@@ -407,7 +400,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
                 label.setRollover(node == null ? false : label == node);
             }
         }
-        tree.repaint();
+        repaint();
     }
 
     /**
@@ -450,7 +443,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     private DefaultMutableTreeNode getNodeForLocation(final int x,
             final int y) {
         DefaultMutableTreeNode node = null;
-        final TreePath selectedPath = tree.getPathForLocation(x, y);
+        final TreePath selectedPath = getPathForLocation(x, y);
         if (selectedPath != null) {
             node = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
         }
@@ -472,16 +465,16 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
 
     /** Sets treeview colours. */
     private void setColours() {
-        tree.setBackground(IdentityManager.getGlobalConfig().getOptionColour("treeview",
+        setBackground(IdentityManager.getGlobalConfig().getOptionColour("treeview",
                 "backgroundcolour",
                 IdentityManager.getGlobalConfig().getOptionColour("ui",
                 "backgroundcolour", Color.WHITE)));
-        tree.setForeground(IdentityManager.getGlobalConfig().getOptionColour("treeview",
+        setForeground(IdentityManager.getGlobalConfig().getOptionColour("treeview",
                 "foregroundcolour",
                 IdentityManager.getGlobalConfig().getOptionColour("ui",
                 "foregroundcolour", Color.BLACK)));
 
-        tree.repaint();
+        repaint();
     }
 
     /** {@inheritDoc} */
@@ -495,7 +488,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
         }
         setColours();
 
-        tree.repaint();
+        repaint();
     }
 
     /** {@inheritDoc} */
@@ -515,9 +508,9 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
         }
         if (window != null) {
             final TreeNode[] treePath =
-                    ((DefaultTreeModel) tree.getModel()).getPathToRoot(nodes.get(window.getContainer()));
+                    ((DefaultTreeModel) getModel()).getPathToRoot(nodes.get(window.getContainer()));
             if (treePath != null && treePath.length > 0) {
-                tree.setSelectionPath(new TreePath(treePath));
+                setSelectionPath(new TreePath(treePath));
             }
         }
     }
@@ -533,11 +526,12 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
                 synchronized (labels) {
                     synchronized (nodes) {
                         final FrameContainer container = window.getContainer();
-                        final DefaultMutableTreeNode node = nodes.get(container);
+                        final DefaultMutableTreeNode node =
+                                nodes.get(container);
                         final NodeLabel label = labels.get(node);
                         if (container != null && node != null && label != null) {
                             label.notificationSet(window, colour);
-                            tree.repaint();
+                            repaint();
                         }
                     }
                 }
@@ -556,11 +550,12 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
                 synchronized (labels) {
                     synchronized (nodes) {
                         final FrameContainer container = window.getContainer();
-                        final DefaultMutableTreeNode node = nodes.get(container);
+                        final DefaultMutableTreeNode node =
+                                nodes.get(container);
                         final NodeLabel label = labels.get(node);
                         if (container != null && node != null && label != null) {
                             label.notificationCleared(window);
-                            tree.repaint();
+                            repaint();
                         }
                     }
                 }
@@ -582,7 +577,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
                                 labels.get(nodes.get(window.getContainer()));
                         if (label != null) {
                             label.iconChanged(window, icon);
-                            tree.repaint();
+                            repaint();
                         }
                     }
                 }

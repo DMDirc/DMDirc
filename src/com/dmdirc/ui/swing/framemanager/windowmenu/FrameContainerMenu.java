@@ -27,9 +27,10 @@ import com.dmdirc.interfaces.IconChangeListener;
 import com.dmdirc.ui.interfaces.Window;
 
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import javax.swing.Icon;
 import javax.swing.JMenu;
 import javax.swing.SwingUtilities;
@@ -37,8 +38,7 @@ import javax.swing.SwingUtilities;
 /**
  *
  */
-public class FrameContainerMenu extends JMenu implements IconChangeListener,
-        ActionListener {
+public class FrameContainerMenu extends JMenu implements IconChangeListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -60,7 +60,6 @@ public class FrameContainerMenu extends JMenu implements IconChangeListener,
         this.frame = frame;
 
         setIcon(frame.getIcon());
-        addActionListener(this);
         frame.addIconChangeListener(this);
     }
 
@@ -79,15 +78,6 @@ public class FrameContainerMenu extends JMenu implements IconChangeListener,
             }
         });
     }
-
-    /** {@inheritDoc}
-     * 
-     * @param e Action event
-     */
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-        frame.activateFrame();
-    }
     
     /**
      * Called when a new window is selected.
@@ -96,7 +86,7 @@ public class FrameContainerMenu extends JMenu implements IconChangeListener,
      */
     public void selectionChanged(final Window window) {
         if (frame.equals(window.getContainer())) {
-            setFont(getFont().deriveFont(Font.BOLD));
+            setFont(getFont().deriveFont(Font.ITALIC));
         } else {
             setFont(getFont().deriveFont(Font.PLAIN));
         }
@@ -119,5 +109,4 @@ public class FrameContainerMenu extends JMenu implements IconChangeListener,
         }
         super.setPopupMenuVisible(b);
     }
-    
 }

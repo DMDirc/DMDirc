@@ -39,8 +39,8 @@ import com.dmdirc.ui.swing.components.TextFrame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.swing.JComponent;
 import javax.swing.JMenu;
@@ -62,8 +62,10 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** Parent menu list. */
+    private final Map<FrameContainer, FrameContainerMenu> parentItemMap;
     /** Menu item list. */
-    private final Map<FrameContainer, Object> menuItemMap;
+    private final Map<FrameContainer, FrameContainerMenuItem> menuItemMap;
     /** Comparator. */
     private final FrameContainerComparator comparator =
             new FrameContainerComparator();
@@ -80,7 +82,10 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
     public WindowMenuFrameManager() {
         super();
 
-        menuItemMap = new TreeMap<FrameContainer, Object>(comparator);
+        parentItemMap =
+                new HashMap<FrameContainer, FrameContainerMenu>();
+        menuItemMap =
+                new HashMap<FrameContainer, FrameContainerMenuItem>();
 
         setText("Window");
         setMnemonic('w');
@@ -147,22 +152,27 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                     separator.setVisible(true);
                 }
 
-                final FrameContainerMenu mi = new FrameContainerMenu(window);
+                final FrameContainerMenu pmi = new FrameContainerMenu(window);
+                final FrameContainerMenuItem mi =
+                        new FrameContainerMenuItem(window);
                 synchronized (menuItemMap) {
                     if (isShowing()) {
                         setSelected(false);
                         setPopupMenuVisible(false);
                     }
+                    parentItemMap.put(window, pmi);
                     menuItemMap.put(window, mi);
                     window.addSelectionListener(WindowMenuFrameManager.this);
                     if (IdentityManager.getGlobalConfig().
-                    getOptionBool("treeview", "sortservers", true) ) {
-                        add(mi, getIndex(WindowMenuFrameManager.this, window));
+                            getOptionBool("treeview", "sortservers", true)) {
+                        add(pmi, getIndex(WindowMenuFrameManager.this, window));
                     } else {
                         if (window instanceof GlobalWindow) {
-                            add(mi, itemCount);
+                            add(pmi, itemCount);
+                            pmi.add(mi);
                         } else {
-                            add(mi);
+                            add(pmi);
+                            pmi.add(mi);
                         }
                     }
                 }
@@ -183,8 +193,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                         setSelected(false);
                         setPopupMenuVisible(false);
                     }
-                    final FrameContainerMenuItem mi =
-                            (FrameContainerMenuItem) menuItemMap.get(window);
+                    final FrameContainerMenuItem mi = menuItemMap.get(window);
                     if (mi != null) {
                         remove(mi);
                         menuItemMap.remove(window);
@@ -212,7 +221,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                     separator.setVisible(true);
                 }
 
-                final JMenu pmi = (JMenu) menuItemMap.get(parent);
+                final JMenu pmi = parentItemMap.get(parent);
                 final FrameContainerMenuItem mi =
                         new FrameContainerMenuItem(window);
                 synchronized (menuItemMap) {
@@ -242,9 +251,8 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                         setSelected(false);
                         setPopupMenuVisible(false);
                     }
-                    final JMenu pmi = (JMenu) menuItemMap.get(parent);
-                    final FrameContainerMenuItem mi =
-                            (FrameContainerMenuItem) menuItemMap.get(window);
+                    final JMenu pmi = parentItemMap.get(parent);
+                    final FrameContainerMenuItem mi = menuItemMap.get(window);
                     if (mi != null) {
                         pmi.remove(mi);
                         menuItemMap.remove(window);
@@ -290,16 +298,14 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
     /** {@inheritDoc} */
     @Override
     public void selectionChanged(final Window window) {
-        final Map<FrameContainer, Object> newMap =
-                new TreeMap<FrameContainer, Object>(comparator);
+        final Map<FrameContainer, FrameContainerMenuItem> newMap =
+                new HashMap<FrameContainer, FrameContainerMenuItem>();
         synchronized (menuItemMap) {
             newMap.putAll(menuItemMap);
         }
 
-        for (Object menuItem : newMap.values()) {
-            if (menuItem instanceof FrameContainerMenuItem) {
-                ((FrameContainerMenuItem) menuItem).selectionChanged(window);
-            }
+        for (FrameContainerMenuItem menuItem : newMap.values()) {
+            menuItem.selectionChanged(window);
         }
     }
 
@@ -340,7 +346,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
         if (menu == this) {
             startCount = itemCount;
         } else {
-            startCount = 0;
+            startCount = 1;
         }
         for (int i = startCount; i < menu.getMenuComponentCount(); i++) {
             if (!(menu.getMenuComponent(i) instanceof FrameContainerMenuItem) &&
