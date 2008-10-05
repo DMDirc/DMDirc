@@ -39,7 +39,7 @@ import javax.swing.SwingUtilities;
  *
  */
 public class FrameContainerMenu extends JMenu implements IconChangeListener {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
@@ -48,7 +48,7 @@ public class FrameContainerMenu extends JMenu implements IconChangeListener {
     private static final long serialVersionUID = 1;
     /** Wrapped frame. */
     private FrameContainer frame;
-    
+
     /**
      * Instantiates a new FrameContainer menu item wrapping the specified frame.
      * 
@@ -78,17 +78,19 @@ public class FrameContainerMenu extends JMenu implements IconChangeListener {
             }
         });
     }
-    
+
     /**
      * Called when a new window is selected.
      *
      * @param window The window that's now selected
      */
     public void selectionChanged(final Window window) {
-        if (frame.equals(window.getContainer())) {
-            setFont(getFont().deriveFont(Font.ITALIC));
-        } else {
-            setFont(getFont().deriveFont(Font.PLAIN));
+        if (window.getContainer().getServer() != null) {
+            if (frame.equals(window.getContainer())) {
+                setFont(getFont().deriveFont(Font.ITALIC));
+            } else {
+                setFont(getFont().deriveFont(Font.PLAIN));
+            }
         }
     }
 

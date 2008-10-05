@@ -306,6 +306,10 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
 
         for (FrameContainerMenuItem menuItem : newMap.values()) {
             menuItem.selectionChanged(window);
+            final FrameContainerMenu pmi = parentItemMap.get(menuItem.getFrame());
+            if (pmi != null) {
+                pmi.selectionChanged(window.getContainer().getServer().getFrame());
+            }
         }
     }
 
