@@ -85,12 +85,10 @@ public class FrameContainerMenu extends JMenu implements IconChangeListener {
      * @param window The window that's now selected
      */
     public void selectionChanged(final Window window) {
-        if (window.getContainer().getServer() != null) {
-            if (frame.equals(window.getContainer())) {
-                setFont(getFont().deriveFont(Font.ITALIC));
-            } else {
-                setFont(getFont().deriveFont(Font.PLAIN));
-            }
+        if (frame.equals(window.getContainer())) {
+            setFont(getFont().deriveFont(Font.ITALIC));
+        } else {
+            setFont(getFont().deriveFont(Font.PLAIN));
         }
     }
 

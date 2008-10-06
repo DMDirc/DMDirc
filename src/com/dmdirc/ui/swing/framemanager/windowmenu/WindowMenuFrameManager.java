@@ -154,7 +154,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
 
                 final FrameContainerMenu pmi = new FrameContainerMenu(window);
                 final FrameContainerMenuItem mi =
-                        new FrameContainerMenuItem(window);
+                        new FrameContainerMenuItem(window, pmi);
                 synchronized (menuItemMap) {
                     if (isShowing()) {
                         setSelected(false);
@@ -221,9 +221,9 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                     separator.setVisible(true);
                 }
 
-                final JMenu pmi = parentItemMap.get(parent);
+                final FrameContainerMenu pmi = parentItemMap.get(parent);
                 final FrameContainerMenuItem mi =
-                        new FrameContainerMenuItem(window);
+                        new FrameContainerMenuItem(window, pmi);
                 synchronized (menuItemMap) {
                     if (isShowing()) {
                         setSelected(false);
@@ -251,7 +251,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                         setSelected(false);
                         setPopupMenuVisible(false);
                     }
-                    final JMenu pmi = parentItemMap.get(parent);
+                    final FrameContainerMenu pmi = parentItemMap.get(parent);
                     final FrameContainerMenuItem mi = menuItemMap.get(window);
                     if (mi != null) {
                         pmi.remove(mi);
@@ -306,9 +306,9 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
 
         for (FrameContainerMenuItem menuItem : newMap.values()) {
             menuItem.selectionChanged(window);
-            final FrameContainerMenu pmi = parentItemMap.get(menuItem.getFrame());
+            final FrameContainerMenu pmi = parentItemMap.get(menuItem);
             if (pmi != null) {
-                pmi.selectionChanged(window.getContainer().getServer().getFrame());
+                pmi.selectionChanged(window);
             }
         }
     }

@@ -298,7 +298,7 @@ public final class TreeFrameManager extends JTree implements FrameManager,
      */
     @Override
     public void mouseClicked(final MouseEvent event) {
-        processMouseEvent(event);
+        processEvent(event);
     }
 
     /**
@@ -314,7 +314,7 @@ public final class TreeFrameManager extends JTree implements FrameManager,
                 setSelectionPath(selectedPath);
             }
         }
-        processMouseEvent(event);
+        processEvent(event);
     }
 
     /**
@@ -323,7 +323,7 @@ public final class TreeFrameManager extends JTree implements FrameManager,
      */
     @Override
     public void mouseReleased(final MouseEvent event) {
-        processMouseEvent(event);
+        processEvent(event);
     }
 
     /**
@@ -348,9 +348,7 @@ public final class TreeFrameManager extends JTree implements FrameManager,
      * Processes every mouse button event to check for a popup trigger.
      * @param event mouse event
      */
-    @Override
-    public void processMouseEvent(final MouseEvent event) {
-        super.processMouseEvent(event);
+    public void processEvent(final MouseEvent event) {
         final JTree source = (JTree) event.getSource();
         final TreePath path = getPathForLocation(event.getX(),
                 event.getY());

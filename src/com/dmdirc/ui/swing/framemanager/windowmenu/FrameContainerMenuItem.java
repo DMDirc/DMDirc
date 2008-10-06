@@ -47,16 +47,20 @@ public class FrameContainerMenuItem extends JMenuItem implements IconChangeListe
     private static final long serialVersionUID = 1;
     /** Wrapped frame. */
     private FrameContainer frame;
+    /** Parent menu. */
+    private FrameContainerMenu parentMenu;
 
     /**
      * Instantiates a new FrameContainer menu item wrapping the specified frame.
      * 
      * @param frame Wrapped frame
+     * @param parentMenu Parent menu
      */
-    public FrameContainerMenuItem(final FrameContainer frame) {
+    public FrameContainerMenuItem(final FrameContainer frame, final FrameContainerMenu parentMenu) {
         super(frame.toString(), frame.getIcon());
 
         this.frame = frame;
+        this.parentMenu = parentMenu;
 
         addActionListener(this);
         frame.addIconChangeListener(this);
@@ -108,5 +112,14 @@ public class FrameContainerMenuItem extends JMenuItem implements IconChangeListe
      */
     public FrameContainer getFrame() {
         return frame;
+    }
+    
+    /**
+     * Returns the parent menu.
+     * 
+     * @return Parent menu
+     */
+    public FrameContainerMenu getParentMenu() {
+        return parentMenu;
     }
 }
