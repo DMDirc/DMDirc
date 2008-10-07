@@ -49,13 +49,26 @@ import java.util.TimerTask;
  */
 public final class Main {
 
-    /** Stores the current textual program version. */
+    /**
+     * Stores the current textual program version.
+     *
+     * @deprecated Should be read from bundled file instead
+     */
+    @Deprecated
     public static final String VERSION = "SVN";
 
-    /** The SVN revision that this build was made from. */
+    /** The SVN revision that this build was made from.
+     *
+     * @deprecated Should be read from bundled file instead
+     */
+    @Deprecated
     public static final int SVN_REVISION = 4085;
 
-    /** Stores the update channel that this version came from, if any. */
+    /** Stores the update channel that this version came from, if any.
+     *
+     * @deprecated Should be read from bundled file and config instead
+     */
+    @Deprecated
     public static final UpdateChannel UPDATE_CHANNEL = UpdateChannel.NONE;
 
     /** Feedback nag delay. */
