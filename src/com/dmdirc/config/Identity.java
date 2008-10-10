@@ -325,7 +325,7 @@ public class Identity extends ConfigSource implements Serializable,
      * @param option The name of the option
      * @param value The new value for the option
      */
-    public void setOption(final String domain, final String option,
+    public synchronized void setOption(final String domain, final String option,
             final String value) {
         final String oldValue = getOption(domain, option);
 
@@ -409,7 +409,7 @@ public class Identity extends ConfigSource implements Serializable,
      * @param domain domain of the option
      * @param option name of the option
      */
-    public void unsetOption(final String domain, final String option) {
+    public synchronized void unsetOption(final String domain, final String option) {
         file.getKeyDomain(domain).remove(option);
         needSave = true;
 
@@ -510,7 +510,10 @@ public class Identity extends ConfigSource implements Serializable,
      * Retrieve this identity's ConfigFile.
      *
      * @return The ConfigFile object used by this identity
+     * @deprecated Direct access should be avoided to prevent synchronisation
+     * issues
      */
+    @Deprecated
     public ConfigFile getFile() {
         return file;
     }
