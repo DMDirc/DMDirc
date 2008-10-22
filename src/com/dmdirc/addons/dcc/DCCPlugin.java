@@ -419,7 +419,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 *
 	 * @param window Window to remove
 	 */
-	protected void addWindow(final DCCFrame window) {
+	protected synchronized void addWindow(final DCCFrame window) {
 		if (window == container) { return; }
 		if (container == null) { createContainer(); }
 
@@ -432,7 +432,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 *
 	 * @param window Window to remove
 	 */
-	protected void delWindow(final DCCFrame window) {
+	protected synchronized void delWindow(final DCCFrame window) {
 		if (container == null) { return; }
 		if (window == container) {
 			container = null;
@@ -514,7 +514,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 * Called when this plugin is Unloaded.
 	 */
 	@Override
-	public void onUnload() {
+	public synchronized void onUnload() {
 		CommandManager.unregisterCommand(command);
 		ActionManager.removeListener(this);
 		if (container != null) {
@@ -525,7 +525,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	/**
 	 * Get the IP Address we should send as our listening IP.
 	 *
-	 * @param return The IP Address we should send as our listening IP.
+	 * @return The IP Address we should send as our listening IP.
 	 */
 	public static String getListenIP() {
 		return getListenIP(null);
@@ -535,7 +535,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 * Get the IP Address we should send as our listening IP.
 	 *
 	 * @param parser IRCParser the IRC Parser where this dcc is initiated
-	 * @param return The IP Address we should send as our listening IP.
+	 * @return The IP Address we should send as our listening IP.
 	 */
 	public static String getListenIP(final IRCParser parser) {
 		final String configIP = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "firewall.ip", "");
