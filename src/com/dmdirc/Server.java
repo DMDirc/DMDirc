@@ -1289,7 +1289,7 @@ public final class Server extends WritableFrameContainer implements Serializable
 
             ActionManager.processEvent(CoreActionType.SERVER_CONNECTED, null, this);
 
-            if (getConfigManager().hasOption(DOMAIN_GENERAL, "rejoinchannels")) {
+            if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "rejoinchannels", false)) {
                 for (Channel chan : channels.values()) {
                     chan.join();
                 }
