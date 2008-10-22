@@ -194,7 +194,9 @@ public final class Channel extends MessageTarget
     /** {@inheritDoc} */
     @Override
     public int getMaxLineLength() {
-        return server.getParser().getMaxLength("PRIVMSG", getChannelInfo().getName());
+        return server.getState() == ServerState.CONNECTED
+                ? server.getParser().getMaxLength("PRIVMSG", getChannelInfo().getName())
+                : -1;
     }
 
     /** {@inheritDoc} */
