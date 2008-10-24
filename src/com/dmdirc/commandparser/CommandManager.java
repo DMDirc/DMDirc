@@ -78,7 +78,7 @@ public final class CommandManager {
      * Prevents creation of a new command manager.
      */
     private CommandManager() {
-        //do nothing
+        // Do nothing
     }
     
     /**
@@ -107,7 +107,7 @@ public final class CommandManager {
      * @since 0.6.3
      */
     public static void registerCommand(final Command command, final CommandInfo info) {
-        registerCommand(command, true);
+        registerCommand(info, command, true);
     }
 
     /**
@@ -120,6 +120,7 @@ public final class CommandManager {
      * {@link CommandInfo} to be registered.
      * @since 0.6.3
      */
+    @Deprecated
     public static <T extends Command & CommandInfo> void registerCommand(final T command) {
         registerCommand(command, command);
     }
@@ -127,33 +128,37 @@ public final class CommandManager {
     /**
      * Unregisters a command with the command manager.
      * 
-     * @param command The command to be unregistered
+     * @param info The information object for the command that should be unregistered
+     * @since 0.6.3
      */
-    public static void unregisterCommand(final Command command) {
-        registerCommand(command, false);
+    public static void unregisterCommand(final CommandInfo info) {
+        registerCommand(info, commands.get(info), false);
     }
     
     /**
      * Registers or unregisters a command.
      *
+     * @param info The information about the command
      * @param command The command to be (un)registered
      * @param register True if the command should be registered, false if it
      * should be unregistered.
+     * @since 0.6.3
      */
-    private static void registerCommand(final Command command, final boolean register) {
+    private static void registerCommand(final CommandInfo info, final Command command,
+            final boolean register) {
         boolean canContinue = true;
         
         if (command instanceof ChannelCommand) {
-            registerCommand(command, parsers.get(CommandType.TYPE_CHANNEL), register);
+            registerCommand(info, command, parsers.get(CommandType.TYPE_CHANNEL), register);
         } else if (command instanceof ServerCommand) {
-            registerCommand(command, parsers.get(CommandType.TYPE_SERVER), register);
+            registerCommand(info, command, parsers.get(CommandType.TYPE_SERVER), register);
         } else if (command instanceof QueryCommand) {
-            registerCommand(command, parsers.get(CommandType.TYPE_QUERY), register);
+            registerCommand(info, command, parsers.get(CommandType.TYPE_QUERY), register);
         } else if (command instanceof GlobalCommand) {
-            registerCommand(command, parsers.get(CommandType.TYPE_GLOBAL), register);
+            registerCommand(info, command, parsers.get(CommandType.TYPE_GLOBAL), register);
         } else if (command instanceof ChatCommand) {
-            registerCommand(command, parsers.get(CommandType.TYPE_QUERY), register);
-            registerCommand(command, parsers.get(CommandType.TYPE_CHANNEL), register);
+            registerCommand(info, command, parsers.get(CommandType.TYPE_QUERY), register);
+            registerCommand(info, command, parsers.get(CommandType.TYPE_CHANNEL), register);
         } else {
             canContinue = false;
             
@@ -163,9 +168,9 @@ public final class CommandManager {
         
         if (canContinue) {
             if (register) {
-                commands.put(command, command);
+                commands.put(info, command);
             } else {
-                commands.remove(command);
+                commands.remove(info);
             }
             
             registerCommandName(command, register);
@@ -175,10 +180,12 @@ public final class CommandManager {
     /**
      * Registers the specified command with all of the specified parsers.
      *
+     * @param info The command information object
      * @param command The command to be reigstered
      * @param parsers The parsers to register the command with
+     * @since 0.6.3
      */
-    private static void registerCommand(final Command command,
+    private static void registerCommand(final CommandInfo info, final Command command,
             final List<? extends CommandParser> parsers, final boolean register) {
         if (parsers == null) {
             return;
