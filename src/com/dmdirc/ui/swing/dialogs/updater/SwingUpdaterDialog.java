@@ -229,6 +229,11 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         } else {
             getOkButton().setEnabled(true);
         }
+        if (newStatus == STATE.RESTART_REQUIRED) {
+            getCancelButton().setVisible(false);
+        } else {
+            getCancelButton().setVisible(true);
+        }
     }
     
     /** {@inheritDoc} */
