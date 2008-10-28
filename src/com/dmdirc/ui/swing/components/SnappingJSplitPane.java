@@ -24,8 +24,10 @@ package com.dmdirc.ui.swing.components;
 
 import java.awt.Component;
 
+import java.util.Arrays;
 import javax.swing.JSplitPane;
 
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 import net.miginfocom.layout.PlatformDefaults;
 
 /**
@@ -222,6 +224,9 @@ public class SnappingJSplitPane extends JSplitPane {
         setDividerSize((int) PlatformDefaults.getPanelInsets(0).getValue());
         setOneTouchExpandable(true);
         setContinuousLayout(true);
+        
+        getActionMap().setParent(null);
+        getActionMap().clear();
     }
 
     /** {@inheritDoc} */

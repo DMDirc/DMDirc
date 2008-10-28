@@ -39,11 +39,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Dialog.ModalityType;
 
+import java.util.Arrays;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+import javax.swing.plaf.basic.BasicMenuBarUI;
 
 /**
  * DMDirc menu bar.
@@ -76,6 +78,9 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         initSettingsMenu();
         add(new WindowMenuFrameManager());
         initHelpMenu();
+        
+        getActionMap().setParent(null);
+        getActionMap().clear();
     }
 
     /**
