@@ -22,13 +22,18 @@
 
 package com.dmdirc.ui.swing.components;
 
+import java.awt.Font;
 import java.awt.Insets;
 
+import javax.swing.JEditorPane;
 import javax.swing.JTextPane;
+import javax.swing.UIManager;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
 
 /**
  * Dyamnic text label.
@@ -68,6 +73,13 @@ public class TextLabel extends JTextPane {
      */
     public TextLabel(final String text, final boolean justified) {
         super(new DefaultStyledDocument());
+        setEditorKit(new HTMLEditorKit());
+
+        final Font font = UIManager.getFont("Label.font");
+        ((HTMLDocument) getDocument()).getStyleSheet().addRule("body " +
+                "{ font-family: " + font.getFamily() + "; " + "font-size: " +
+                font.getSize() + "pt; }");
+
 
         setOpaque(false);
         setEditable(false);
@@ -78,10 +90,6 @@ public class TextLabel extends JTextPane {
         if (justified) {
             StyleConstants.setAlignment(sas, StyleConstants.ALIGN_JUSTIFIED);
         }
-        StyleConstants.setFontFamily(sas, getFont().getFamily());
-        StyleConstants.setFontSize(sas, getFont().getSize());
-        StyleConstants.setBold(sas, getFont().isBold());
-        StyleConstants.setItalic(sas, getFont().isItalic());
 
         setText(text);
     }
@@ -97,7 +105,7 @@ public class TextLabel extends JTextPane {
     public void setText(final String t) {
         super.setText(t);
         if (t != null && !t.isEmpty()) {
-            getDocument().setParagraphAttributes(0, t.length(), sas, true);
+            getDocument().setParagraphAttributes(0, t.length(), sas, false);
         }
     }
 }
