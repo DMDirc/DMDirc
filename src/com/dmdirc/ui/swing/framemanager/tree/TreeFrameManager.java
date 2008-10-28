@@ -191,16 +191,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     @Override
     public void addWindow(final FrameContainer parent,
             final FrameContainer window) {
-        UIUtilities.invokeAndWait(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                synchronized (nodes) {
-                    addWindow(nodes.get(parent), window);
-                }
-            }
-        });
+        addWindow(nodes.get(parent), window);
     }
 
     /** {@inheritDoc} */
@@ -533,7 +524,8 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
                 synchronized (labels) {
                     synchronized (nodes) {
                         final FrameContainer container = window.getContainer();
-                        final DefaultMutableTreeNode node = nodes.get(container);
+                        final DefaultMutableTreeNode node =
+                                nodes.get(container);
                         final NodeLabel label = labels.get(node);
                         if (container != null && node != null && label != null) {
                             label.notificationSet(window, colour);
@@ -556,7 +548,8 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
                 synchronized (labels) {
                     synchronized (nodes) {
                         final FrameContainer container = window.getContainer();
-                        final DefaultMutableTreeNode node = nodes.get(container);
+                        final DefaultMutableTreeNode node =
+                                nodes.get(container);
                         final NodeLabel label = labels.get(node);
                         if (container != null && node != null && label != null) {
                             label.notificationCleared(window);

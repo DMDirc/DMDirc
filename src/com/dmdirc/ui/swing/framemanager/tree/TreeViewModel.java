@@ -27,6 +27,7 @@ import com.dmdirc.FrameContainerComparator;
 import com.dmdirc.GlobalWindow;
 import com.dmdirc.config.IdentityManager;
 
+
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
@@ -35,26 +36,25 @@ import javax.swing.tree.TreeNode;
  * A simple sorted tree data model based on DefaultTreeModel.
  */
 public class TreeViewModel extends DefaultTreeModel {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
     /** Frame container comparator. */
     private final FrameContainerComparator comparator;
-    
+
     /**
      * Creates a tree in which any node can have children.
      *
      * @param root a TreeNode object that is the root of the tree.
      */
     public TreeViewModel(final TreeNode root) {
-	this(root, false);
+        this(root, false);
     }
-    
+
     /**
      * Creates a tree specifying whether any node can have children,
      * or whether only certain nodes can have children.
@@ -63,12 +63,13 @@ public class TreeViewModel extends DefaultTreeModel {
      * false all nodes can have chilren.
      * @param root a root TreeNode.
      */
-    public TreeViewModel(final TreeNode root, final boolean asksAllowsChildren) {
-	super(root, asksAllowsChildren);
-        
+    public TreeViewModel(final TreeNode root,
+            final boolean asksAllowsChildren) {
+        super(root, asksAllowsChildren);
+
         comparator = new FrameContainerComparator();
     }
-    
+
     /**
      * Inserts a new node into the tree and fires the appropriate events.
      *
@@ -76,12 +77,12 @@ public class TreeViewModel extends DefaultTreeModel {
      * @param parent parent child is to be added too.
      */
     public final void insertNodeInto(final DefaultMutableTreeNode newChild,
-	    final DefaultMutableTreeNode parent) {
-	int index = 0;
-	index = getIndex(newChild, parent);
-	super.insertNodeInto(newChild, parent, index);
+            final DefaultMutableTreeNode parent) {
+        int index = 0;
+        index = getIndex(newChild, parent);
+        super.insertNodeInto(newChild, parent, index);
     }
-    
+
     /**
      * Compares the new child with the existing children or parent to decide
      * where it needs to be inserted.
@@ -92,32 +93,32 @@ public class TreeViewModel extends DefaultTreeModel {
      * @return index where new node is to be inserted.
      */
     private int getIndex(final DefaultMutableTreeNode newChild,
-	    final DefaultMutableTreeNode parent) {
-	if (newChild.getUserObject() instanceof GlobalWindow) {
+            final DefaultMutableTreeNode parent) {
+        if (newChild.getUserObject() instanceof GlobalWindow) {
             return 0;
         }
-        
-	if (parent.equals(root) && !IdentityManager.getGlobalConfig().
+
+        if (parent.equals(root) && !IdentityManager.getGlobalConfig().
                 getOptionBool("treeview", "sortservers", false)) {
-	    return parent.getChildCount();
-	}
-	
-	for (int i = 0; i < parent.getChildCount(); i++) {
-	    final DefaultMutableTreeNode child =
-		    (DefaultMutableTreeNode) parent.getChildAt(i);
-	    if (sortBefore(newChild, child)) {
-		return i;
-	    } else if (!sortAfter(newChild, child)
-	    && IdentityManager.getGlobalConfig().getOptionBool("treeview", "sortwindows", false)
-	    && newChild.getUserObject().toString().compareToIgnoreCase(
-		    child.getUserObject().toString()) < 0) {
-		return i;
-	    }
-	}
-	
-	return parent.getChildCount();
+            return parent.getChildCount();
+        }
+
+        for (int i = 0; i < parent.getChildCount(); i++) {
+            final DefaultMutableTreeNode child =
+                    (DefaultMutableTreeNode) parent.getChildAt(i);
+            if (sortBefore(newChild, child)) {
+                return i;
+            } else if (!sortAfter(newChild, child) && IdentityManager.getGlobalConfig().
+                    getOptionBool("treeview", "sortwindows", false) && newChild.getUserObject().
+                    toString().compareToIgnoreCase(
+                    child.getUserObject().toString()) < 0) {
+                return i;
+            }
+        }
+
+        return parent.getChildCount();
     }
-    
+
     /**
      * Compares the types of the specified nodes' objects to see if the new
      * node should be sorted before the other.
@@ -128,13 +129,13 @@ public class TreeViewModel extends DefaultTreeModel {
      * @return True iff newChild should be sorted before child
      */
     private boolean sortBefore(final DefaultMutableTreeNode newChild,
-	    final DefaultMutableTreeNode child) {
-	
-	return comparator.compare(
-                (FrameContainer) newChild.getUserObject(), 
+            final DefaultMutableTreeNode child) {
+
+        return comparator.compare(
+                (FrameContainer) newChild.getUserObject(),
                 (FrameContainer) child.getUserObject()) <= -1;
     }
-    
+
     /**
      * Compares the types of the specified nodes' objects to see if the new
      * node should be sorted after the other.
@@ -145,10 +146,10 @@ public class TreeViewModel extends DefaultTreeModel {
      * @return True iff newChild should be sorted before child
      */
     private boolean sortAfter(final DefaultMutableTreeNode newChild,
-	    final DefaultMutableTreeNode child) {
-	
-	return comparator.compare(
-                (FrameContainer) newChild.getUserObject(), 
+            final DefaultMutableTreeNode child) {
+
+        return comparator.compare(
+                (FrameContainer) newChild.getUserObject(),
                 (FrameContainer) child.getUserObject()) >= 1;
     }
 }
