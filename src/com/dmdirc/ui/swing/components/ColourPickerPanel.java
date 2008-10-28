@@ -34,6 +34,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +47,7 @@ import javax.swing.JPanel;
  * @author chris
  */
 public final class ColourPickerPanel extends JPanel implements MouseListener,
-        MouseMotionListener {
+        MouseMotionListener, MouseWheelListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -110,6 +112,7 @@ public final class ColourPickerPanel extends JPanel implements MouseListener,
 
         addMouseListener(this);
         addMouseMotionListener(this);
+        addMouseWheelListener(this);
     }
 
     /**
@@ -401,5 +404,27 @@ public final class ColourPickerPanel extends JPanel implements MouseListener,
         }
 
         repaint(previewRect);
+    }
+
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event 
+     */
+    @Override
+    public void mouseWheelMoved(final MouseWheelEvent e) {
+        if (showHex) {
+            saturation = saturation + (e.getWheelRotation() >= 0 ? 0.02f : -0.02f);
+
+            if (saturation < 0) {
+                saturation = 0f;
+            }
+            if (saturation > 1) {
+                saturation = 1f;
+            }
+
+            mouseMoved(e);
+            repaint();
+        }
     }
 }
