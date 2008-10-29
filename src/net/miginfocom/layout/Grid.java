@@ -1415,6 +1415,7 @@ public final class Grid
 	 * @param isRows If rows, and not columns, are to be divided.
 	 * @return One <code>ArrayList<LinkedDimGroup></code> for every row/column.
 	 */
+	@SuppressWarnings("unchecked")
 	private ArrayList<LinkedDimGroup>[] divideIntoLinkedGroups(boolean isRows)
 	{
 		boolean fromEnd = !(isRows ? lc.isTopToBottom() : LayoutUtil.isLeftToRight(lc, container));
@@ -1422,7 +1423,7 @@ public final class Grid
 		TreeSet<Integer> secIndexes = isRows ? colIndexes : rowIndexes;
 		DimConstraint[] primDCs = (isRows ? rowConstr : colConstr).getConstaints();
 
-		ArrayList<LinkedDimGroup>[] groupLists = new ArrayList[primIndexes.size()];
+		ArrayList[] groupLists = new ArrayList[primIndexes.size()];
 
 		int gIx = 0;
 		for (Iterator<Integer> primIt = primIndexes.iterator(); primIt.hasNext();) {
@@ -2285,6 +2286,8 @@ public final class Grid
 	}
 
 	private static WeakHashMap[] PARENT_ROWCOL_SIZES_MAP = null;
+
+	@SuppressWarnings("unchecked")
 	private static synchronized void putSizesAndIndexes(Object parComp, int[] sizes, int[] ixArr, boolean isRows)
 	{
 		if (PARENT_ROWCOL_SIZES_MAP == null)    // Lazy since only if designing in IDEs
