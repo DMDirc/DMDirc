@@ -79,7 +79,7 @@ public final class MigLayout implements LayoutManager2, Externalizable
 
 	private transient boolean dirty = true;
 
-	/** Constructor with no constraints.÷
+	/** Constructor with no constraints.
 	 */
 	public MigLayout()
 	{

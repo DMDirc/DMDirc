@@ -101,7 +101,7 @@ public final class PlatformDefaults
 
 	/** I value indicating that the screen DPI will be used as a base for calculating the
 	 * logical pixel size.
-	 * <p>§
+	 * <p>
 	 * This is the default value.
 	 * @see net.miginfocom.layout.UnitValue#LPX
 	 * @see net.miginfocom.layout.UnitValue#LPY
