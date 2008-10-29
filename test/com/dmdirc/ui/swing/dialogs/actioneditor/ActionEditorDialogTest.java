@@ -34,11 +34,14 @@ import com.dmdirc.ui.swing.components.ImageButton;
 
 import com.dmdirc.ui.swing.components.TextLabel;
 import java.awt.Component;
+import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 import javax.swing.text.JTextComponent;
+import javax.swing.text.html.HTMLDocument;
 import org.fest.swing.core.EventMode;
 import org.fest.swing.core.matcher.JButtonByTextMatcher;
 import org.fest.swing.core.matcher.JLabelByTextMatcher;
@@ -81,8 +84,8 @@ public class ActionEditorDialogTest implements UITestIface {
     public void testName() {
         setupWindow(null);
 
-        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).textBox()
-                .requireEnabled().requireEditable().requireEmpty();
+        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).
+                textBox().requireEnabled().requireEditable().requireEmpty();
         window.button(JButtonByTextMatcher.withText("OK")).requireDisabled();
     }
 
@@ -90,16 +93,17 @@ public class ActionEditorDialogTest implements UITestIface {
     public void testTriggerWithNoArgs() {
         setupWindow(null);
 
-        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).textBox()
-                .enterText("test1");
+        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).
+                textBox().enterText("test1");
         final JPanelFixture triggers = window.panel(
                 new ClassFinder<JPanel>(ActionTriggersPanel.class, null));
 
         triggers.comboBox().selectItem("Client closed");
-        triggers.button(JButtonByTextMatcher.withText("Add")).requireEnabled().click();
+        triggers.button(JButtonByTextMatcher.withText("Add")).requireEnabled().
+                click();
 
-        window.panel(new ClassFinder<JPanel>(ActionConditionsPanel.class, null))
-                .button(JButtonByTextMatcher.withText("Add")).requireDisabled();
+        window.panel(new ClassFinder<JPanel>(ActionConditionsPanel.class, null)).
+                button(JButtonByTextMatcher.withText("Add")).requireDisabled();
     }
 
     @Test
@@ -110,30 +114,32 @@ public class ActionEditorDialogTest implements UITestIface {
                 new ClassFinder<JPanel>(ActionTriggersPanel.class, null));
         triggers.comboBox().requireDisabled();
 
-        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).textBox()
-                .enterText("test1");
+        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).
+                textBox().enterText("test1");
 
         final int items = triggers.comboBox().target.getItemCount();
         triggers.comboBox().requireEnabled().selectItem("Channel message received");
-        triggers.button(JButtonByTextMatcher.withText("Add")).requireEnabled().click();
+        triggers.button(JButtonByTextMatcher.withText("Add")).requireEnabled().
+                click();
 
-        final JLabelFixture label = triggers
-                .label(JLabelByTextMatcher.withText("Channel message received"));
+        final JLabelFixture label =
+                triggers.label(JLabelByTextMatcher.withText("Channel message received"));
         label.requireVisible();
 
         assertTrue(items > triggers.comboBox().target.getItemCount());
         window.button(JButtonByTextMatcher.withText("OK")).requireEnabled();
 
-        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).textBox()
-                .deleteText();
-        triggers.button(new ClassFinder<JButton>(ImageButton.class, null)).requireDisabled();
+        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).
+                textBox().deleteText();
+        triggers.button(new ClassFinder<JButton>(ImageButton.class, null)).
+                requireDisabled();
         triggers.comboBox().requireDisabled();
-        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).textBox()
-                .enterText("test1");
+        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).
+                textBox().enterText("test1");
 
-        triggers.button(new ClassFinder<JButton>(ImageButton.class, null))
-                .requireEnabled().click();
-        
+        triggers.button(new ClassFinder<JButton>(ImageButton.class, null)).
+                requireEnabled().click();
+
         for (Component comp : triggers.panel(new ClassFinder<JPanel>(ActionTriggersListPanel.class,
                 null)).target.getComponents()) {
             assertNotSame(label.target, comp);
@@ -147,137 +153,159 @@ public class ActionEditorDialogTest implements UITestIface {
     public void testBasicConditionTrees() {
         setupWindow(null);
 
-        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).textBox()
-                .enterText("test1");
+        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).
+                textBox().enterText("test1");
         final JPanelFixture triggers = window.panel(
                 new ClassFinder<JPanel>(ActionTriggersPanel.class, null));
 
         triggers.comboBox().selectItem("Channel message received");
-        triggers.button(JButtonByTextMatcher.withText("Add")).requireEnabled().click();
+        triggers.button(JButtonByTextMatcher.withText("Add")).requireEnabled().
+                click();
 
-        window.radioButton(new JRadioButtonByTextMatcher("All of the conditions are true"))
-                .requireEnabled().requireSelected();
-        window.radioButton(new JRadioButtonByTextMatcher("At least one of the conditions is true"))
-                .requireEnabled();
-        window.radioButton(new JRadioButtonByTextMatcher("The conditions match a custom rule"))
-                .requireEnabled();
-        window.panel(new ClassFinder<JPanel>(ActionConditionsTreePanel.class, null))
-                .textBox(new ClassFinder<JTextComponent>(JTextField.class, null))
-                .requireDisabled();
+        window.radioButton(new JRadioButtonByTextMatcher("All of the conditions are true")).
+                requireEnabled().requireSelected();
+        window.radioButton(new JRadioButtonByTextMatcher("At least one of the conditions is true")).
+                requireEnabled();
+        window.radioButton(new JRadioButtonByTextMatcher("The conditions match a custom rule")).
+                requireEnabled();
+        window.panel(new ClassFinder<JPanel>(ActionConditionsTreePanel.class,
+                null)).textBox(new ClassFinder<JTextComponent>(JTextField.class,
+                null)).requireDisabled();
 
         window.button(JButtonByTextMatcher.withText("OK")).requireEnabled();
 
-        window.radioButton(new JRadioButtonByTextMatcher("The conditions match a custom rule"))
-                .click().requireSelected();
-        window.panel(new ClassFinder<JPanel>(ActionConditionsTreePanel.class, null))
-                .textBox(new ClassFinder<JTextComponent>(JTextField.class, null))
-                .requireEnabled().enterText("invalid");
+        window.radioButton(new JRadioButtonByTextMatcher("The conditions match a custom rule")).
+                click().requireSelected();
+        window.panel(new ClassFinder<JPanel>(ActionConditionsTreePanel.class,
+                null)).textBox(new ClassFinder<JTextComponent>(JTextField.class,
+                null)).requireEnabled().enterText("invalid");
 
         window.button(JButtonByTextMatcher.withText("OK")).requireDisabled();
     }
 
     @Test
     public void testConditionText() {
+        final Font font = UIManager.getFont("Label.font");
+        final String style = "body { font-size: " + font.getSize() +
+                "pt; font-family: " + font.getFamily() + " }";
+
+        final String HEADER =
+                "<html>\n" + "  <head>\n" + "    <style type=\"text/css\">\n" +
+                "      <!--\n" + "        " + style + "\n" + "      -->\n" +
+                "    </style>\n" + "    \n" + "  </head>\n" + "  <body>\n" +
+                "    ";
+        final String FOOTER = "\n" + "  </body>\n" + "</html>\n";
         setupWindow(null);
 
-        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).textBox()
-                .enterText("test1");
+        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).
+                textBox().enterText("test1");
         final JPanelFixture triggers = window.panel(
                 new ClassFinder<JPanel>(ActionTriggersPanel.class, null));
 
         triggers.comboBox().selectItem("Channel message received");
-        triggers.button(JButtonByTextMatcher.withText("Add")).requireEnabled().click();
+        triggers.button(JButtonByTextMatcher.withText("Add")).requireEnabled().
+                click();
 
-        window.panel(new ClassFinder<JPanel>(ActionConditionsPanel.class, null))
-                .button(JButtonByTextMatcher.withText("Add")).requireEnabled().click();
+        window.panel(new ClassFinder<JPanel>(ActionConditionsPanel.class, null)).
+                button(JButtonByTextMatcher.withText("Add")).requireEnabled().
+                click();
 
-        assertEquals("",
-                window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class, null))
-                .textBox(new ClassFinder<JTextComponent>(TextLabel.class, null))
-                .target.getText());
+        System.out.println(window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class,
+                null)).textBox(new ClassFinder<JTextComponent>(TextLabel.class,
+                null)).target.getText());
+        System.out.println("\n\n");
+        System.out.println(HEADER +
+                "<p style=\"margin-top: 0\">\n      \n    </p>" + FOOTER);
+        assertEquals(HEADER + "<p style=\"margin-top: 0\">\n      \n    </p>" +
+                FOOTER,
+                window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class,
+                null)).textBox(new ClassFinder<JTextComponent>(TextLabel.class,
+                null)).target.getText());
 
-        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
-                .comboBox("argument").selectItem("message");
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class,
+                null)).comboBox("argument").selectItem("message");
 
-        assertEquals("The message's  ...",
-                window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class, null))
-                .textBox(new ClassFinder<JTextComponent>(TextLabel.class, null))
-                .target.getText());
+        assertEquals(HEADER + "The message's ..." + FOOTER,
+                window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class,
+                null)).textBox(new ClassFinder<JTextComponent>(TextLabel.class,
+                null)).target.getText());
 
-        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
-                .comboBox("component").selectItem("content");
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class,
+                null)).comboBox("component").selectItem("content");
 
-        assertEquals("The message's content  ...",
-                window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class, null))
-                .textBox(new ClassFinder<JTextComponent>(TextLabel.class, null))
-                .target.getText());
+        assertEquals(HEADER + "The message's content ..." + FOOTER,
+                window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class,
+                null)).textBox(new ClassFinder<JTextComponent>(TextLabel.class,
+                null)).target.getText());
 
-        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
-                .comboBox("comparison").selectItem("contains");
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class,
+                null)).comboBox("comparison").selectItem("contains");
 
-        assertEquals("The message's content contains ''",
-                window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class, null))
-                .textBox(new ClassFinder<JTextComponent>(TextLabel.class, null))
-                .target.getText());
+        assertEquals(HEADER + "The message's content contains ''" + FOOTER,
+                window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class,
+                null)).textBox(new ClassFinder<JTextComponent>(TextLabel.class,
+                null)).target.getText());
 
-        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
-                .textBox().enterText("foo");
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class,
+                null)).textBox().enterText("foo");
 
-        assertEquals("The message's content contains 'foo'",
-                window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class, null))
-                .textBox(new ClassFinder<JTextComponent>(TextLabel.class, null))
-                .target.getText());
+        assertEquals(HEADER + "The message's content contains 'foo'" + FOOTER,
+                window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class,
+                null)).textBox(new ClassFinder<JTextComponent>(TextLabel.class,
+                null)).target.getText());
     }
 
     @Test
     public void testIllegalCondition() {
         setupWindow(null);
 
-        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).textBox()
-                .enterText("test1");
+        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).
+                textBox().enterText("test1");
         final JPanelFixture triggers = window.panel(
                 new ClassFinder<JPanel>(ActionTriggersPanel.class, null));
 
         triggers.comboBox().selectItem("Channel message received");
-        triggers.button(JButtonByTextMatcher.withText("Add")).requireEnabled().click();
+        triggers.button(JButtonByTextMatcher.withText("Add")).requireEnabled().
+                click();
 
         window.button(JButtonByTextMatcher.withText("OK")).requireEnabled();
 
-        window.panel(new ClassFinder<JPanel>(ActionConditionsPanel.class, null))
-                .button(JButtonByTextMatcher.withText("Add")).requireEnabled().click();
+        window.panel(new ClassFinder<JPanel>(ActionConditionsPanel.class, null)).
+                button(JButtonByTextMatcher.withText("Add")).requireEnabled().
+                click();
 
-        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
-                .comboBox("argument").requireEnabled();
-        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
-                .comboBox("component").requireDisabled();
-        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
-                .comboBox("comparison").requireDisabled();
-        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
-                .textBox().requireDisabled();
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class,
+                null)).comboBox("argument").requireEnabled();
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class,
+                null)).comboBox("component").requireDisabled();
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class,
+                null)).comboBox("comparison").requireDisabled();
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class,
+                null)).textBox().requireDisabled();
         window.button(JButtonByTextMatcher.withText("OK")).requireDisabled();
 
-        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
-                .comboBox("argument").selectItem("message");
-        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
-                .comboBox("component").requireEnabled();
-        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
-                .comboBox("comparison").requireDisabled();
-        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
-                .textBox().requireDisabled();
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class,
+                null)).comboBox("argument").selectItem("message");
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class,
+                null)).comboBox("component").requireEnabled();
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class,
+                null)).comboBox("comparison").requireDisabled();
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class,
+                null)).textBox().requireDisabled();
         window.button(JButtonByTextMatcher.withText("OK")).requireDisabled();
 
-        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
-                .comboBox("component").selectItem("content");
-        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
-                .comboBox("comparison").requireEnabled();
-        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
-                .textBox().requireDisabled();
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class,
+                null)).comboBox("component").selectItem("content");
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class,
+                null)).comboBox("comparison").requireEnabled();
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class,
+                null)).textBox().requireDisabled();
         window.button(JButtonByTextMatcher.withText("OK")).requireDisabled();
 
-        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
-                .comboBox("comparison").selectItem("contains");
-        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class, null))
-                .textBox().requireEnabled();
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class,
+                null)).comboBox("comparison").selectItem("contains");
+        window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class,
+                null)).textBox().requireEnabled();
         window.button(JButtonByTextMatcher.withText("OK")).requireEnabled();
     }
 
@@ -291,5 +319,4 @@ public class ActionEditorDialogTest implements UITestIface {
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(ActionEditorDialogTest.class);
     }
-
 }
