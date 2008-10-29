@@ -290,6 +290,7 @@ public final class UnitValue implements Serializable
 	 * connected to any component.
 	 * @return The size in pixels.
 	 */
+	@SuppressWarnings("fallthrough")
 	public final float getPixelsExact(float refValue, ContainerWrapper parent, ComponentWrapper comp)
 	{
 		if (parent == null)
