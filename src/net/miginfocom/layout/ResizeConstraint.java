@@ -40,6 +40,14 @@ import java.io.*;
  */
 final class ResizeConstraint implements Externalizable
 {
+
+	/**
+	 * A version number for this class. It should be changed whenever the
+	 * class structure is changed (or anything else that would prevent
+	 * serialized objects being unserialized with the new class).
+	 */
+	private static final long serialVersionUID = 1;
+
 	static final Float WEIGHT_100 = new Float(100);
 
 	/** How flexilble the entity should be, relative to other entities, when it comes to growing. <code>null</code> or

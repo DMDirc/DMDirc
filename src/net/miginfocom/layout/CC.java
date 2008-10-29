@@ -40,6 +40,14 @@ import java.util.ArrayList;
  */
 public final class CC implements Externalizable
 {
+
+	/**
+	 * A version number for this class. It should be changed whenever the
+	 * class structure is changed (or anything else that would prevent
+	 * serialized objects being unserialized with the new class).
+	 */
+	private static final long serialVersionUID = 1;
+
 	private static final BoundSize DEF_GAP = BoundSize.NULL_SIZE;    // Only used to denote default wrap/newline gap.
 
 	static final String[] DOCK_SIDES = {"north", "west", "south", "east"};
