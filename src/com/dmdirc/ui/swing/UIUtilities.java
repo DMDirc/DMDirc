@@ -135,7 +135,7 @@ public final class UIUtilities {
         UIManager.put("SplitPane.border", new NullBorder());
         UIManager.put("SplitPane.dividerSize", (int) PlatformDefaults.getPanelInsets(0).getValue());
         UIManager.put("TreeUI", "javax.swing.plaf.metal.MetalTreeUI");
-        PlatformDefaults.setDefaultRowAlignment(UnitValue.CENTER);
+        PlatformDefaults.setDefaultRowAlignmentBaseline(false);
     }
 
     /**
