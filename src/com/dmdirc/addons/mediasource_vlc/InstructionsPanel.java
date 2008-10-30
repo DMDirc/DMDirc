@@ -23,10 +23,10 @@
 package com.dmdirc.addons.mediasource_vlc;
 
 import com.dmdirc.config.prefs.PreferencesInterface;
-import com.dmdirc.ui.swing.components.HTMLLabel;
+import com.dmdirc.ui.swing.components.TextLabel;
 
 import javax.swing.JPanel;
-import javax.swing.UIManager;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -40,10 +40,7 @@ class InstructionsPanel extends JPanel implements PreferencesInterface {
 
     public InstructionsPanel() {
         setLayout(new MigLayout());
-        final HTMLLabel instructions = new HTMLLabel("<html>"
-                + "<div style='font-family: "
-                + UIManager.getFont("TextField.font").getFamily() + "; font-size:"
-                + UIManager.getFont("TextField.font").getSize() + "pt;'><p>"                
+        final TextLabel instructions = new TextLabel("<html><p>"                
                 + "The VLC media source requires that VLC's web interface is" +
                 " enabled. To do this, follow the steps below:</p>"
                 + "<ol style='margin-left: 20px; padding-left: 0px;'>" +

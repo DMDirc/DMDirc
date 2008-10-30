@@ -28,7 +28,6 @@ import com.dmdirc.util.URLHandler;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.UIManager;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkEvent.EventType;
 import javax.swing.event.HyperlinkListener;
@@ -58,7 +57,7 @@ public final class CreditsPanel extends JPanel implements HyperlinkListener {
         initComponents();
     }
 
-    /** Shows osome alternate content. */
+    /** Shows some alternate content. */
     public void showEE() {
         about.setText("<html><center><br><br><br>"
                 + "<img src=\"http://www.dmdirc.com/res/about.png\"></html>");
@@ -67,9 +66,6 @@ public final class CreditsPanel extends JPanel implements HyperlinkListener {
     /** Initialises the components. */
     private void initComponents() {
         about = new HTMLLabel("<html>"
-                + "<div style='font-family: "
-                + UIManager.getFont("TextField.font").getFamily() + "; font-size:"
-                + UIManager.getFont("TextField.font").getSize() + "pt; background-color: transparent'>"
                 + "<h3 style='margin: 3px; padding: 0px 0px 5px 0px;'>Main developers:</h1>"
                 + "<ul style='list-style-type: circle; margin-top: 0px;'>"
                 + "<li><a href=\"http://www.md87.co.uk\">Chris 'MD87' Smith</a></li>"
@@ -81,7 +77,7 @@ public final class CreditsPanel extends JPanel implements HyperlinkListener {
                 + "<li><a href=\"http://www.pling.org.uk\">Chris 'laser' Northwood</a></li>"
                 + "<li><a href=\"http://www.zipplet.co.uk\">Michael 'Zipplet' Nixon</a></li>"
                 + "</ul>"
-                + "</div></html>");
+                + "</html>");
         about.addHyperlinkListener(this);
         
         setLayout(new MigLayout("ins rel, fill"));

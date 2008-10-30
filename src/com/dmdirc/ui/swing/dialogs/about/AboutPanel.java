@@ -27,7 +27,6 @@ import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.util.URLHandler;
 
 import javax.swing.JPanel;
-import javax.swing.UIManager;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkEvent.EventType;
 import javax.swing.event.HyperlinkListener;
@@ -56,10 +55,7 @@ public final class AboutPanel extends JPanel implements HyperlinkListener {
     
     /** Initialises the components. */
     private void initComponents() {
-        final HTMLLabel about = new HTMLLabel("<html>"
-                + "<center style='font-family: "
-                + UIManager.getFont("TextField.font").getFamily() + "; font-size:"
-                + UIManager.getFont("TextField.font").getSize() + "pt;'>"
+        final HTMLLabel about = new HTMLLabel("<html><center>"
                 + "<h1 style=\"margin-bottom: 0px;\">DMDirc</h1>"
                 + "<span style=\"font-style: italic;\">The intelligent IRC client.</span>"
                 + "<p>Easy to use, cross-platform IRC client.</p>"

@@ -25,7 +25,6 @@ package com.dmdirc.ui.swing.components;
 import java.awt.Font;
 import java.awt.Insets;
 
-import javax.swing.JEditorPane;
 import javax.swing.JTextPane;
 import javax.swing.UIManager;
 import javax.swing.text.DefaultStyledDocument;

@@ -22,8 +22,11 @@
 
 package com.dmdirc.ui.swing.components;
 
+import java.awt.Font;
+
 import javax.swing.JEditorPane;
 import javax.swing.UIManager;
+import javax.swing.text.html.HTMLDocument;
 
 /**
  * Dyamnic text label with hyperlink support.
@@ -51,6 +54,11 @@ public class HTMLLabel extends JEditorPane {
      */
     public HTMLLabel(final String text) {
         super("text/html", text);
+
+        final Font font = UIManager.getFont("Label.font");
+        ((HTMLDocument) getDocument()).getStyleSheet().addRule("body " +
+                "{ font-family: " + font.getFamily() + "; " + "font-size: " +
+                font.getSize() + "pt; }");
 
         init();
     }
