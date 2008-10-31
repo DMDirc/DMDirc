@@ -270,6 +270,7 @@ public final class OsdWindow extends JDialog implements MouseListener,
         
         if (b) {
             windows.add(this);
+            transferFocusBackward();
         }
     }
 
