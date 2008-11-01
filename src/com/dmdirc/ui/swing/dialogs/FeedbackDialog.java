@@ -108,7 +108,7 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
 
         me.setLocationRelativeTo(parentWindow);
         me.setVisible(true);
-        me.requestFocus();
+        me.requestFocusInWindow();
     }
 
     /**

@@ -89,7 +89,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
                 getCancelButton(), editButton, getOkButton()));
 
         setFocusable(true);
-        getOkButton().requestFocus();
+        getOkButton().requestFocusInWindow();
         getOkButton().setSelected(true);
 
         pack();
@@ -156,7 +156,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
                     public void actionPerformed(final ActionEvent evt) {
                         final JButton button = (JButton) getFocusTraversalPolicy().
                                 getComponentAfter(PasteDialog.this, getFocusOwner());
-                        button.requestFocus();
+                        button.requestFocusInWindow();
                         button.setSelected(true);
                     }
                 });
@@ -171,7 +171,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
                     public void actionPerformed(final ActionEvent evt) {
                         final JButton button = (JButton) getFocusTraversalPolicy().
                                 getComponentBefore(PasteDialog.this, getFocusOwner());
-                        button.requestFocus();
+                        button.requestFocusInWindow();
                         button.setSelected(true);
                     }
                 });

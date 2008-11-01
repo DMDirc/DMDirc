@@ -111,7 +111,7 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
 
         me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         me.setVisible(true);
-        me.requestFocus();
+        me.requestFocusInWindow();
     }
 
     /**
@@ -151,7 +151,7 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
         sslCheck.setSelected(false);
         newServerWindowCheck.setEnabled(false);
 
-        serverField.requestFocus();
+        serverField.requestFocusInWindow();
 
         if (ServerManager.getServerManager().numServers() == 0 || Main.getUI().
                 getActiveWindow() == null) {
@@ -244,11 +244,11 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
      */
     private void save() {
         if (!serverField.validateText()) {
-            serverField.requestFocus();
+            serverField.requestFocusInWindow();
             return;
         }
         if (!portField.validateText()) {
-            portField.requestFocus();
+            portField.requestFocusInWindow();
             return;
         }
 

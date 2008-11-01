@@ -116,7 +116,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         me.pack();
         me.setLocationRelativeTo(SwingController.getMainFrame());
         me.setVisible(true);
-        me.requestFocus();
+        me.requestFocusInWindow();
 
         final int selected = IdentityManager.getGlobalConfig().
                 getOptionInt("dialogstate", "actionsmanagerdialog", 0);

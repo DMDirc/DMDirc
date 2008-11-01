@@ -115,7 +115,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
         me.pack();
         me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         me.setVisible(true);
-        me.requestFocus();
+        me.requestFocusInWindow();
     }
 
     /** 
@@ -129,7 +129,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
         me.pack();
         me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         me.setVisible(true);
-        me.requestFocus();
+        me.requestFocusInWindow();
     }
 
     /**

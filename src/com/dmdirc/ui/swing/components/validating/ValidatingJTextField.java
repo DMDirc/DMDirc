@@ -151,11 +151,17 @@ public class ValidatingJTextField extends JComponent implements DocumentListener
         textField.setEnabled(enabled);
         checkError();
     }
-
+    
     /** {@inheritDoc} */
     @Override
     public void requestFocus() {
         textField.requestFocus();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean requestFocusInWindow() {
+        return textField.requestFocusInWindow();
     }
 
     /**

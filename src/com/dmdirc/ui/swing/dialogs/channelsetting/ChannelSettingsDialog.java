@@ -105,7 +105,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
         me.pack();
         me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         me.setVisible(true);
-        me.requestFocus();
+        me.requestFocusInWindow();
     }
 
     /**

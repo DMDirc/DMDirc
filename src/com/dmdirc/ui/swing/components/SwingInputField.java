@@ -109,6 +109,19 @@ public class SwingInputField extends JComponent implements InputField,
             }
         });
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public boolean requestFocusInWindow() {
+        return UIUtilities.invokeAndWait(new ReturnableThread<Boolean>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                setObject(textField.requestFocusInWindow());
+            }
+        });
+    }
 
     /** {@inheritDoc} */
     @Override

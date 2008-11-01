@@ -271,6 +271,6 @@ public final class AliasPanel extends JPanel implements ActionListener {
 
     /** Focuses the command field. */
     public void focusCommand() {
-        command.requestFocus();
+        command.requestFocusInWindow();
     }
 }

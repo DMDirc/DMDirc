@@ -200,7 +200,7 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
         
         layoutComponents();
         
-        addOptionComboBox.requestFocus();
+        addOptionComboBox.requestFocusInWindow();
     }
     
     /** {@inheritDoc} */

@@ -112,7 +112,7 @@ public final class ParamModePanel extends JPanel implements ActionListener {
     public void actionPerformed(final ActionEvent actionEvent) {
         textField.setEnabled(checkBox.isSelected());
         if (checkBox.isSelected()) {
-            textField.requestFocus();
+            textField.requestFocusInWindow();
         } else {
             textField.setText(originalValue);
         }

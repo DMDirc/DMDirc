@@ -188,7 +188,7 @@ public abstract class StandardInputDialog extends StandardDialog {
             /** {@inheritDoc} */
             @Override
             public void windowOpened(WindowEvent e) {
-                textField.requestFocus();
+                textField.requestFocusInWindow();
             }
 
             /** {@inheritDoc} */

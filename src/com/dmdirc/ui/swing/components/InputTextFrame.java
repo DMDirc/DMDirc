@@ -138,7 +138,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
         }
         super.open();
 
-        inputField.requestFocus();
+        inputField.requestFocusInWindow();
     }
 
     /**
@@ -274,7 +274,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
                 getOptionBool("ui", "quickCopy", false) ||
                 (event.getModifiers() & UIUtilities.getCtrlMask()) == 0)) {
             event.setSource(getInputField());
-            getInputField().requestFocus();
+            getInputField().requestFocusInWindow();
             if (robot != null && event.getKeyCode() != KeyEvent.VK_UNDEFINED) {
                 robot.keyPress(event.getKeyCode());
                 if (event.getKeyCode() == KeyEvent.VK_SHIFT) {
@@ -475,7 +475,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     /** Request input field focus. */
     public void requestInputFieldFocus() {
         if (inputField != null) {
-            inputField.requestFocus();
+            inputField.requestFocusInWindow();
         }
     }
 

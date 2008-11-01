@@ -191,9 +191,9 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
             public void run() {
                 setVisible(false);
                 if (parent instanceof InputTextFrame) {
-                    ((InputTextFrame) parent).getInputField().requestFocus();
+                    ((InputTextFrame) parent).getInputField().requestFocusInWindow();
                 } else {
-                    parent.requestFocus();
+                    parent.requestFocusInWindow();
                 }
             }
         }
@@ -302,7 +302,7 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
             /** {@inheritDoc} */
             @Override
             public void run() {
-                searchBox.requestFocus();
+                searchBox.requestFocusInWindow();
                 searchBox.setSelectionStart(0);
                 searchBox.setSelectionEnd(searchBox.getText().length());
             }

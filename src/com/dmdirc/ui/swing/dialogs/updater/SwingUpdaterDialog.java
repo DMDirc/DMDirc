@@ -190,7 +190,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
     public void display() {
         setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         setVisible(true);
-        requestFocus();
+        requestFocusInWindow();
     }
 
     /** 

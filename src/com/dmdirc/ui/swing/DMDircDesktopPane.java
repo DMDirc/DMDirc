@@ -61,7 +61,7 @@ public class DMDircDesktopPane extends JDesktopPane {
      * 
      * @param comp Component to add
      * @param index Index for insertion
-     */
+     */ 
     public void add(final JComponent comp, final int index) {
         addImpl(comp, null, index);
         

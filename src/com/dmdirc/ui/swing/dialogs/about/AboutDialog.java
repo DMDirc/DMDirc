@@ -70,7 +70,7 @@ public final class AboutDialog extends StandardDialog implements
 
         me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         me.setVisible(true);
-        me.requestFocus();
+        me.requestFocusInWindow();
     }
 
     /**

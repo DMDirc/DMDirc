@@ -120,18 +120,19 @@ public final class MainFrame extends JFrame implements WindowListener,
         IdentityManager.getGlobalConfig().
                 addChangeListener("icon", "icon", this);
 
-        //TODO: Remove me when we switch to java7
+
         addWindowFocusListener(new WindowFocusListener() {
 
             /** {@inheritDoc} */
             @Override
             public void windowGainedFocus(WindowEvent e) {
-            //Ignore
-            }   
+                //Ignore
+            }
 
             /** {@inheritDoc} */
             @Override
             public void windowLostFocus(WindowEvent e) {
+                //TODO: Remove me when we switch to java7
                 MenuSelectionManager.defaultManager().clearSelectedPath();
             }
         });
@@ -143,21 +144,21 @@ public final class MainFrame extends JFrame implements WindowListener,
     @Override
     public void setActiveFrame(final Window frame) {
         if (frame != null) {
-            try {
-                ((JInternalFrame) frame).setVisible(true);
-                ((JInternalFrame) frame).setIcon(false);
-                ((JInternalFrame) frame).moveToFront();
-                ((JInternalFrame) frame).setSelected(true);
-            } catch (PropertyVetoException ex) {
-                Logger.userError(ErrorLevel.LOW, "Unable to set active window");
-            }
-
             if (maximised) {
                 setTitle(getTitlePrefix() + " - " + frame.getTitle());
             }
 
             ActionManager.processEvent(CoreActionType.CLIENT_FRAME_CHANGED, null,
                     frame.getContainer());
+
+                try {
+                    ((JInternalFrame) frame).setVisible(true);
+                    ((JInternalFrame) frame).setIcon(false);
+                    ((JInternalFrame) frame).moveToFront();
+                    ((JInternalFrame) frame).setSelected(true);
+                } catch (PropertyVetoException ex) {
+                    Logger.userError(ErrorLevel.LOW, "Unable to set active window");
+                }
         }
         if (frame instanceof InputTextFrame) {
             ((InputTextFrame) frame).requestInputFieldFocus();
@@ -320,18 +321,19 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** Initialiases the frame managers. */
     private void initFrameManagers() {
         final String manager = IdentityManager.getGlobalConfig().getOption("ui",
-                "framemanager", "com.dmdirc.ui.swing.framemanager.tree.TreeFrameManager");
+                "framemanager",
+                "com.dmdirc.ui.swing.framemanager.tree.TreeFrameManager");
 
         try {
-            mainFrameManager = (FrameManager) Class.forName(manager)
-                    .getConstructor().newInstance();
+            mainFrameManager = (FrameManager) Class.forName(manager).
+                    getConstructor().newInstance();
         } catch (Exception ex) {
             // Throws craploads of exceptions and we want to handle them all
             // the same way, so we might as well catch Exception
             mainFrameManager = new TreeFrameManager();
         }
 
-        
+
         WindowManager.addFrameManager(mainFrameManager);
         mainFrameManager.setParent(frameManagerPanel);
 
@@ -433,7 +435,7 @@ public final class MainFrame extends JFrame implements WindowListener,
             default:
                 break;
         }
-        
+
         return mainSplitPane;
     }
 

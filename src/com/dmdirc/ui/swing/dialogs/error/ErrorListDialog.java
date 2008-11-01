@@ -105,7 +105,7 @@ public final class ErrorListDialog extends StandardDialog implements
 
         me.setLocationRelativeTo(me.getParent());
         me.setVisible(true);
-        me.requestFocus();
+        me.requestFocusInWindow();
     }
 
     /**
