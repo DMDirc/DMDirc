@@ -790,9 +790,6 @@ public class IRCParser implements Runnable {
 				}
 			} catch (IOException e) {
 				callDebugInfo(DEBUG_SOCKET, "Exception in main loop (" + e.getMessage() + "), Aborted");
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception with server socket");
-				ei.setException(e);
-				callErrorInfo(ei);
 				
 				if (currentSocketState != STATE_CLOSED) {
 					currentSocketState = STATE_CLOSED;
