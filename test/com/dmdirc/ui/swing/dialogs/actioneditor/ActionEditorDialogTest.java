@@ -27,21 +27,20 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.harness.ui.UIClassTestRunner;
 import com.dmdirc.harness.ui.ClassFinder;
-
 import com.dmdirc.harness.ui.UITestIface;
 import com.dmdirc.harness.ui.JRadioButtonByTextMatcher;
 import com.dmdirc.ui.swing.components.ImageButton;
 
 import com.dmdirc.ui.swing.components.TextLabel;
 import java.awt.Component;
-import java.awt.Font;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-
 import javax.swing.JTextField;
-import javax.swing.UIManager;
 import javax.swing.text.JTextComponent;
-import javax.swing.text.html.HTMLDocument;
+
 import org.fest.swing.core.EventMode;
 import org.fest.swing.core.matcher.JButtonByTextMatcher;
 import org.fest.swing.core.matcher.JLabelByTextMatcher;
@@ -50,6 +49,7 @@ import org.fest.swing.fixture.JLabelFixture;
 import org.fest.swing.fixture.JPanelFixture;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
@@ -184,17 +184,7 @@ public class ActionEditorDialogTest implements UITestIface {
     }
 
     @Test
-    public void testConditionText() {
-        final Font font = UIManager.getFont("Label.font");
-        final String style = "body { font-size: " + font.getSize() +
-                "pt; font-family: " + font.getFamily() + " }";
-
-        final String HEADER =
-                "<html>\n" + "  <head>\n" + "    <style type=\"text/css\">\n" +
-                "      <!--\n" + "        " + style + "\n" + "      -->\n" +
-                "    </style>\n" + "    \n" + "  </head>\n" + "  <body>\n" +
-                "    ";
-        final String FOOTER = "\n" + "  </body>\n" + "</html>\n";
+    public void testConditionText() {        
         setupWindow(null);
 
         window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).
@@ -209,50 +199,50 @@ public class ActionEditorDialogTest implements UITestIface {
         window.panel(new ClassFinder<JPanel>(ActionConditionsPanel.class, null)).
                 button(JButtonByTextMatcher.withText("Add")).requireEnabled().
                 click();
-
-        System.out.println(window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class,
+        
+        Pattern pattern = Pattern.compile(".+<body>(.+)</body>.+", Pattern.DOTALL);
+        
+        Matcher matcher = pattern.matcher(window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class,
                 null)).textBox(new ClassFinder<JTextComponent>(TextLabel.class,
                 null)).target.getText());
-        System.out.println("\n\n");
-        System.out.println(HEADER +
-                "<p style=\"margin-top: 0\">\n      \n    </p>" + FOOTER);
-        assertEquals(HEADER + "<p style=\"margin-top: 0\">\n      \n    </p>" +
-                FOOTER,
-                window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class,
-                null)).textBox(new ClassFinder<JTextComponent>(TextLabel.class,
-                null)).target.getText());
+        matcher.find();
+        assertEquals("<p style=\"margin-top: 0\">\n      \n    </p>", matcher.group(1).trim());
 
         window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class,
                 null)).comboBox("argument").selectItem("message");
-
-        assertEquals(HEADER + "The message's ..." + FOOTER,
-                window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class,
+        
+        matcher = pattern.matcher(window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class,
                 null)).textBox(new ClassFinder<JTextComponent>(TextLabel.class,
                 null)).target.getText());
+        matcher.find();
+        assertEquals("The message's ...", matcher.group(1).trim());
 
         window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class,
                 null)).comboBox("component").selectItem("content");
-
-        assertEquals(HEADER + "The message's content ..." + FOOTER,
-                window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class,
+        
+        matcher = pattern.matcher(window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class,
                 null)).textBox(new ClassFinder<JTextComponent>(TextLabel.class,
                 null)).target.getText());
+        matcher.find();
+        assertEquals("The message's content ...", matcher.group(1).trim());
 
         window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class,
                 null)).comboBox("comparison").selectItem("contains");
-
-        assertEquals(HEADER + "The message's content contains ''" + FOOTER,
-                window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class,
+        
+        matcher = pattern.matcher(window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class,
                 null)).textBox(new ClassFinder<JTextComponent>(TextLabel.class,
                 null)).target.getText());
+        matcher.find();
+        assertEquals("The message's content contains ''", matcher.group(1).trim());
 
         window.panel(new ClassFinder<JPanel>(ActionConditionEditorPanel.class,
                 null)).textBox().enterText("foo");
-
-        assertEquals(HEADER + "The message's content contains 'foo'" + FOOTER,
-                window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class,
+        
+        matcher = pattern.matcher(window.panel(new ClassFinder<JPanel>(ActionConditionDisplayPanel.class,
                 null)).textBox(new ClassFinder<JTextComponent>(TextLabel.class,
                 null)).target.getText());
+        matcher.find();
+        assertEquals("The message's content contains 'foo'", matcher.group(1).trim());
     }
 
     @Test
