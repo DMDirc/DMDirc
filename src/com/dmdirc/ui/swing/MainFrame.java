@@ -465,8 +465,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     public void configChanged(final String domain, final String key) {
         if ("ui".equals(domain)) {
             if ("lookandfeel".equals(key)) {
-            //Almost there
-            //SwingController.updateLookAndFeel();
+                SwingController.updateLookAndFeel();
             } else {
                 showVersion =
                         IdentityManager.getGlobalConfig().

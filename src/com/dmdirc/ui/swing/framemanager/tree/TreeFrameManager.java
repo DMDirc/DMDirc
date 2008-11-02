@@ -60,6 +60,7 @@ import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.plaf.TreeUI;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
@@ -103,13 +104,13 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
         root = new DefaultMutableTreeNode("DMDirc");
         model = new TreeViewModel(root);
         tree = new JTree(model);
+        TreeUI ui;
         labels.put(root, new NodeLabel(null));
 
         final TreeViewTreeCellRenderer renderer =
                 new TreeViewTreeCellRenderer(this);
 
         tree.putClientProperty("JTree.lineStyle", "Angled");
-        tree.setUI(new javax.swing.plaf.metal.MetalTreeUI());
         tree.getInputMap().setParent(null);
         tree.getInputMap(JComponent.WHEN_FOCUSED).clear();
         tree.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).clear();
