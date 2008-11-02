@@ -24,11 +24,8 @@ package com.dmdirc.ui.swing.components;
 
 import java.awt.Component;
 
-import java.util.Arrays;
 import javax.swing.JSplitPane;
 
-import javax.swing.plaf.basic.BasicSplitPaneUI;
-import net.miginfocom.layout.PlatformDefaults;
 
 /**
  * JSplit pane that snaps around its components preferred size.
@@ -220,8 +217,6 @@ public class SnappingJSplitPane extends JSplitPane {
         this.leftComponentSnap = leftComponentSnap;
         this.snapDistance = snapDistance;
 
-        setBorder(null);
-        setDividerSize((int) PlatformDefaults.getPanelInsets(0).getValue());
         setOneTouchExpandable(true);
         setContinuousLayout(true);
         

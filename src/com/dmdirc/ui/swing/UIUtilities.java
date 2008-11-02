@@ -27,6 +27,7 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.swing.actions.RedoAction;
 import com.dmdirc.ui.swing.actions.UndoAction;
 import com.dmdirc.ui.swing.components.DMDircUndoableEditListener;
+import com.dmdirc.ui.swing.components.NullBorder;
 import com.dmdirc.util.ReturnableThread;
 
 import java.awt.Dimension;
@@ -131,6 +132,8 @@ public final class UIUtilities {
                 BorderFactory.createEmptyBorder());
         UIManager.put("Tree.scrollsOnExpand", true);
         UIManager.put("Tree.scrollsHorizontallyAndVertically", true);
+        UIManager.put("SplitPane.border", new NullBorder());
+        UIManager.put("SplitPane.dividerSize", (int) PlatformDefaults.getPanelInsets(0).getValue());
         PlatformDefaults.setDefaultRowAlignment(UnitValue.CENTER);
     }
 
