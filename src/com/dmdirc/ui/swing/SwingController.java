@@ -317,7 +317,7 @@ public final class SwingController implements UIController {
      * Updates the look and feel to the current config setting.
      */
     static void updateLookAndFeel() {
-        try {
+        /*try {
             UIManager.setLookAndFeel(UIUtilities.getLookAndFeel(IdentityManager.getGlobalConfig().
                     getOption("ui", "lookandfeel", "")));
             SwingUtilities.updateComponentTreeUI((MainFrame) Main.getUI().getMainWindow());
@@ -333,7 +333,7 @@ public final class SwingController implements UIController {
         } catch (UnsupportedLookAndFeelException ex) {
             Logger.userError(ErrorLevel.LOW,
                     "Unable to change Look and Feel: " + ex.getMessage());
-        }
+        }*/
     }
 
     /** {@inheritDoc} */
