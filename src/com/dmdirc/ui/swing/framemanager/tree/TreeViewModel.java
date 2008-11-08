@@ -22,15 +22,11 @@
 
 package com.dmdirc.ui.swing.framemanager.tree;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.FrameContainerComparator;
 import com.dmdirc.GlobalWindow;
 import com.dmdirc.config.IdentityManager;
 
-
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
 
 /**
  * A simple sorted tree data model based on DefaultTreeModel.
@@ -51,7 +47,7 @@ public class TreeViewModel extends DefaultTreeModel {
      *
      * @param root a TreeNode object that is the root of the tree.
      */
-    public TreeViewModel(final TreeNode root) {
+    public TreeViewModel(final TreeViewNode root) {
         this(root, false);
     }
 
@@ -63,7 +59,7 @@ public class TreeViewModel extends DefaultTreeModel {
      * false all nodes can have chilren.
      * @param root a root TreeNode.
      */
-    public TreeViewModel(final TreeNode root,
+    public TreeViewModel(final TreeViewNode root,
             final boolean asksAllowsChildren) {
         super(root, asksAllowsChildren);
 
@@ -76,8 +72,8 @@ public class TreeViewModel extends DefaultTreeModel {
      * @param newChild child to be added.
      * @param parent parent child is to be added too.
      */
-    public final void insertNodeInto(final DefaultMutableTreeNode newChild,
-            final DefaultMutableTreeNode parent) {
+    public final void insertNodeInto(final TreeViewNode newChild,
+            final TreeViewNode parent) {
         int index = 0;
         index = getIndex(newChild, parent);
         super.insertNodeInto(newChild, parent, index);
@@ -92,9 +88,8 @@ public class TreeViewModel extends DefaultTreeModel {
      *
      * @return index where new node is to be inserted.
      */
-    private int getIndex(final DefaultMutableTreeNode newChild,
-            final DefaultMutableTreeNode parent) {
-        if (newChild.getUserObject() instanceof GlobalWindow) {
+    private int getIndex(final TreeViewNode newChild, final TreeViewNode parent) {
+        if (newChild.getFrameContainer() instanceof GlobalWindow) {
             return 0;
         }
 
@@ -104,8 +99,7 @@ public class TreeViewModel extends DefaultTreeModel {
         }
 
         for (int i = 0; i < parent.getChildCount(); i++) {
-            final DefaultMutableTreeNode child =
-                    (DefaultMutableTreeNode) parent.getChildAt(i);
+            final TreeViewNode child = (TreeViewNode) parent.getChildAt(i);
             if (sortBefore(newChild, child)) {
                 return i;
             } else if (!sortAfter(newChild, child) && IdentityManager.getGlobalConfig().
@@ -128,12 +122,8 @@ public class TreeViewModel extends DefaultTreeModel {
      *
      * @return True iff newChild should be sorted before child
      */
-    private boolean sortBefore(final DefaultMutableTreeNode newChild,
-            final DefaultMutableTreeNode child) {
-
-        return comparator.compare(
-                (FrameContainer) newChild.getUserObject(),
-                (FrameContainer) child.getUserObject()) <= -1;
+    private boolean sortBefore(final TreeViewNode newChild, final TreeViewNode child) {
+        return comparator.compare(newChild.getFrameContainer(), child.getFrameContainer()) <= -1;
     }
 
     /**
@@ -145,11 +135,16 @@ public class TreeViewModel extends DefaultTreeModel {
      *
      * @return True iff newChild should be sorted before child
      */
-    private boolean sortAfter(final DefaultMutableTreeNode newChild,
-            final DefaultMutableTreeNode child) {
-
-        return comparator.compare(
-                (FrameContainer) newChild.getUserObject(),
-                (FrameContainer) child.getUserObject()) >= 1;
+    private boolean sortAfter(final TreeViewNode newChild,final TreeViewNode child) {
+        return comparator.compare(newChild.getFrameContainer(), child.getFrameContainer()) >= 1;
+    }
+    
+    /**
+     * Returns the root node for this model.
+     * 
+     * @return Root node
+     */
+    public TreeViewNode getRootNode() {
+        return (TreeViewNode) getRoot();
     }
 }

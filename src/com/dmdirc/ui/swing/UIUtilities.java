@@ -181,7 +181,7 @@ public final class UIUtilities {
             } catch (InterruptedException ex) {
                 Logger.userError(ErrorLevel.HIGH, "Unable to execute thread.");
             } catch (InvocationTargetException ex) {
-                Logger.userError(ErrorLevel.HIGH, "Unable to execute thread.");
+                Logger.appError(ErrorLevel.HIGH, "Unable to execute thread.", ex);
             }
         }
     }
@@ -202,7 +202,7 @@ public final class UIUtilities {
             } catch (InterruptedException ex) {
                 Logger.userError(ErrorLevel.HIGH, "Unable to execute thread.");
             } catch (InvocationTargetException ex) {
-                Logger.userError(ErrorLevel.HIGH, "Unable to execute thread.");
+                Logger.appError(ErrorLevel.HIGH, "Unable to execute thread.", ex);
             }            
         }
         

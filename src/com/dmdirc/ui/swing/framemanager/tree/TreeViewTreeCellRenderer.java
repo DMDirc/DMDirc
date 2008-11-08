@@ -31,8 +31,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 
+import javax.swing.JLabel;
 import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeCellRenderer;
 
 /**
@@ -94,8 +94,13 @@ public class TreeViewTreeCellRenderer implements TreeCellRenderer,
             final Object value, final boolean sel, final boolean expanded,
             final boolean leaf, final int row, final boolean hasFocus) {
 
-        final DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-        final NodeLabel label = manager.getLabelforNode(node);
+        if (value == null) {
+            return new JLabel("Node == null");
+        }
+        final NodeLabel label = ((TreeViewNode) value).getLabel();
+        if (label == null) {
+            return new JLabel("Label == null");
+        }
 
         label.setBackground(tree.getBackground());
         label.setForeground(tree.getForeground());

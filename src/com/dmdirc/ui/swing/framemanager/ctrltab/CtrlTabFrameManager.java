@@ -32,6 +32,7 @@ import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.components.TreeScroller;
 import com.dmdirc.ui.swing.framemanager.tree.TreeViewModel;
 
+import com.dmdirc.ui.swing.framemanager.tree.TreeViewNode;
 import java.awt.event.ActionEvent;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -67,11 +68,7 @@ public final class CtrlTabFrameManager implements FrameManager,
      */
     private static final long serialVersionUID = 3;
     /** Node storage, used for adding and deleting nodes correctly. */
-    private final Map<FrameContainer, DefaultMutableTreeNode> nodes;
-    /** Label storage. */
-    private final Map<DefaultMutableTreeNode, JLabel> labels;
-    /** Root node. */
-    private final DefaultMutableTreeNode root;
+    private final Map<FrameContainer, TreeViewNode> nodes;
     /** Data model. */
     private final TreeViewModel model;
     /** Selected model. */
@@ -85,10 +82,8 @@ public final class CtrlTabFrameManager implements FrameManager,
      * @param desktopPane DesktopPane to register with
      */
     public CtrlTabFrameManager(final JDesktopPane desktopPane) {
-        nodes = new HashMap<FrameContainer, DefaultMutableTreeNode>();
-        labels = new HashMap<DefaultMutableTreeNode, JLabel>();
-        root = new DefaultMutableTreeNode("DMDirc");
-        model = new TreeViewModel(root);
+        nodes = new HashMap<FrameContainer, TreeViewNode>();
+        model = new TreeViewModel(new TreeViewNode(null, null));
         selectionModel = new DefaultTreeSelectionModel();
         treeScroller =
                 new TreeScroller(model, selectionModel);
@@ -153,7 +148,7 @@ public final class CtrlTabFrameManager implements FrameManager,
     /** {@inheritDoc} */
     @Override
     public void addWindow(final FrameContainer window) {
-        addWindow(root, window);
+        addWindow(model.getRootNode(), window);
     }
 
     @Override
@@ -186,23 +181,20 @@ public final class CtrlTabFrameManager implements FrameManager,
             /** {@inheritDoc} */
             @Override
             public void run() {
-                synchronized (labels) {
-                    if (nodes == null || nodes.get(window) == null) {
-                        return;
-                    }
-                    final DefaultMutableTreeNode node = nodes.get(window);
-                    if (node.getLevel() == 0) {
-                        Logger.appError(ErrorLevel.MEDIUM,
-                                "delServer triggered for root node" +
-                                node.toString(),
-                                new IllegalArgumentException());
-                    } else {
-                        model.removeNodeFromParent(nodes.get(window));
-                    }
-                    nodes.remove(window);
-                    labels.remove(node);
-                    window.removeSelectionListener(CtrlTabFrameManager.this);
+                if (nodes == null || nodes.get(window) == null) {
+                    return;
                 }
+                final TreeViewNode node = nodes.get(window);
+                if (node.getLevel() == 0) {
+                    Logger.appError(ErrorLevel.MEDIUM,
+                            "delServer triggered for root node" +
+                            node.toString(),
+                            new IllegalArgumentException());
+                } else {
+                    model.removeNodeFromParent(nodes.get(window));
+                }
+                nodes.remove(window);
+                window.removeSelectionListener(CtrlTabFrameManager.this);
             }
         });
     }
@@ -213,19 +205,17 @@ public final class CtrlTabFrameManager implements FrameManager,
      * @param parent Parent node
      * @param window Window to add
      */
-    public void addWindow(final DefaultMutableTreeNode parent,
+    public void addWindow(final TreeViewNode parent,
             final FrameContainer window) {
         UIUtilities.invokeAndWait(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
             public void run() {
-                final DefaultMutableTreeNode node =
-                        new DefaultMutableTreeNode();
+                final TreeViewNode node = new TreeViewNode(null, window);
                 synchronized (nodes) {
                     nodes.put(window, node);
                 }
-                labels.put(node, new JLabel());
                 node.setUserObject(window);
                 model.insertNodeInto(node, parent);
                 window.addSelectionListener(CtrlTabFrameManager.this);
@@ -246,8 +236,8 @@ public final class CtrlTabFrameManager implements FrameManager,
     /** {@inheritDoc} */
     @Override
     public void valueChanged(final TreeSelectionEvent e) {
-        ((FrameContainer) ((DefaultMutableTreeNode) e.getPath().
-                getLastPathComponent()).getUserObject()).activateFrame();
+        ((TreeViewNode) e.getPath().getLastPathComponent()).getFrameContainer().
+                activateFrame();
     }
 
     /** {@inheritDoc} */
