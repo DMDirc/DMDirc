@@ -62,9 +62,12 @@ if [ "" = "${HDIUTIL}" ]; then
 	if [ "" != "${MKISOFS}" ]; then
 		MKISOFS_TEST=`${MKISOFS} --help 2>&1 | grep apple`
 		if [ "" = "${MKISOFS_TEST}" ]; then
-			echo "This machine is unable to produce dmg images. Aborting."
+			echo "This machine is unable to produce dmg images (no support from mkisofs). Aborting."
 			exit 1;
 		fi;
+	else
+		echo "This machine is unable to produce dmg images (missing mkisofs or hdiutil). Aborting."
+		exit 1;
 	fi;
 fi;
 
