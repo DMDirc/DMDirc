@@ -1929,7 +1929,7 @@ public class IRCParser implements Runnable {
 	 *
 	 * @return cMyself reference
 	 */
-	public synchronized ClientInfo getMyself() { return cMyself; }
+	public ClientInfo getMyself() { return cMyself; }
 
 	/**
 	 * Get the current nickname.
