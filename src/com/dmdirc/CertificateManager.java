@@ -256,19 +256,18 @@ public class CertificateManager implements X509TrustManager {
             Main.getUI().showSSLCertificateDialog(
                     new SSLCertificateDialogModel(chain, problems, this));
 
-            /*actionSem.acquireUninterruptibly();
+            actionSem.acquireUninterruptibly();
             
             switch (action) {
                 case DISCONNECT:
-                    // TODO: implement
-                    break;
+                    throw new CertificateException("Not trusted");
                 case IGNORE_PERMANENTY:
                     // TODO: implement
                     break;
                 case IGNORE_TEMPORARILY:
                     // TODO: implement
                     break;
-            }*/
+            }
         }
     }
 
