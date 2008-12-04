@@ -96,7 +96,7 @@ public class IRCAuthenticator extends Authenticator {
 	 * @param password Password to return for authentication
 	 */
 	public void addAuthentication(final String host, final int port, final String username, final String password) {
-		if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
+		if (username == null || password == null || username.length() == 0 || password.length() == 0) {
 			return;
 		}
 		final PasswordAuthentication pass = new PasswordAuthentication(username, password.toCharArray());

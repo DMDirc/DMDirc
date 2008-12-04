@@ -136,7 +136,7 @@ public final class ClientInfo {
 	public static String[] parseHostFull(String sWho) {
 		String[] sTemp = null;
 		final String[] result = new String[3];
-		if (!sWho.isEmpty() && sWho.charAt(0) == ':') { sWho = sWho.substring(1); }
+		if (sWho.length() != 0 && sWho.charAt(0) == ':') { sWho = sWho.substring(1); }
 		sTemp = sWho.split("@", 2);
 		if (sTemp.length == 1) { result[2] = ""; } else { result[2] = sTemp[1]; }
 		sTemp = sTemp[0].split("!", 2);
@@ -166,8 +166,8 @@ public final class ClientInfo {
 	 */	
 	public void setUserBits(final String sHostmask, final boolean bUpdateNick, final boolean allowBlank) {
 		final String[] sTemp = parseHostFull(sHostmask);
-		if (!sTemp[2].isEmpty() || allowBlank) { sHost = sTemp[2]; }
-		if (!sTemp[1].isEmpty() || allowBlank) { sIdent = sTemp[1]; }
+		if (sTemp[2].length() != 0 || allowBlank) { sHost = sTemp[2]; }
+		if (sTemp[1].length() != 0 || allowBlank) { sIdent = sTemp[1]; }
 		if (bUpdateNick) { sNickname = sTemp[0]; }
 	}
 	
@@ -321,7 +321,7 @@ public final class ClientInfo {
 	 * @return Boolean to see if client is still visable.
 	 */
 	public boolean checkVisibility() {
-		return !myChannelClientInfos.isEmpty();
+		return myChannelClientInfos.isEmpty();
 	}
 	
 	/**
@@ -376,7 +376,7 @@ public final class ClientInfo {
 		} else if (lModeQueue.contains(modestr)) {
 			return;
 		}
-		myParser.callDebugInfo(myParser.DEBUG_INFO, "Queueing user mode: %s", modestr);
+		myParser.callDebugInfo(IRCParser.DEBUG_INFO, "Queueing user mode: %s", modestr);
 		lModeQueue.add(modestr);
 		if (lModeQueue.size() == modecount) { sendModes(); }
 	}

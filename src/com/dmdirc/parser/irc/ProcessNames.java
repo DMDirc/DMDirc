@@ -71,7 +71,7 @@ public class ProcessNames extends IRCProcessor {
 			for (int j = 0; j < sNames.length; ++j) {
 				sNameBit = sNames[j];
 				// If name is empty (ie there was an extra space) ignore it.
-				if (sNameBit.isEmpty()) { continue; }
+				if (sNameBit.length() == 0) { continue; }
 				// This next bit of code allows for any ircd which decides to use @+Foo in names
 				for (int i = 0; i < sNameBit.length(); ++i) {
 					Character cMode = sNameBit.charAt(i);

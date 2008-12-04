@@ -38,7 +38,6 @@ public class ProcessListModes extends IRCProcessor {
 	 * @param sParam Type of line to process ("348", "349", "346", "347", "367", "368", "482", "941", "940")
 	 * @param token IRCTokenised line to process
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void process(String sParam, String[] token) {
 		ChannelInfo channel = getChannelInfo(token[3]);
@@ -138,7 +137,7 @@ public class ProcessListModes extends IRCProcessor {
 			}
 			if (token.length > (tokenStart+1)) { owner = token[tokenStart+1]; }
 			if (token.length > tokenStart) { item = token[tokenStart]; }
-			if (!item.isEmpty()) {
+			if (item.length() != 0) {
 				ChannelListModeItem clmi = new ChannelListModeItem(item, owner, time);
 				callDebugInfo(IRCParser.DEBUG_INFO, "List Mode: %c [%s/%s/%d]",mode, item, owner, time);
 				channel.setListModeParam(mode, clmi, true);

@@ -236,11 +236,11 @@ public class IRCParser implements Runnable {
 	/** This is the default TrustManager for SSL Sockets, it trusts all ssl certs. */
 	private final TrustManager[] trustAllCerts = {
 		new X509TrustManager() {
-			@Override
+			//@Override
 			public X509Certificate[] getAcceptedIssuers() { return null; }
-			@Override
+			//@Override
 			public void checkClientTrusted(final X509Certificate[] certs, final String authType) { }
-			@Override
+			//@Override
 			public void checkServerTrusted(final X509Certificate[] certs, final String authType) { }
 		},
 	};
@@ -648,7 +648,7 @@ public class IRCParser implements Runnable {
 
 		if (server.getUseSocks()) {
 			callDebugInfo(DEBUG_SOCKET, "Using Proxy");
-			if (bindIP != null && !bindIP.isEmpty()) {
+			if (bindIP != null && bindIP.length() != 0) {
 				callDebugInfo(DEBUG_SOCKET, "IP Binding is not possible when using a proxy.");
 			}
 			if (server.getProxyPort() > 65535 || server.getProxyPort() <= 0) {
@@ -657,14 +657,14 @@ public class IRCParser implements Runnable {
 
 			final Proxy.Type proxyType = Proxy.Type.SOCKS;
 			socket = new Socket(new Proxy(proxyType, new InetSocketAddress(server.getProxyHost(), server.getProxyPort())));
-			if (server.getProxyUser() != null && !server.getProxyUser().isEmpty()) {
+			if (server.getProxyUser() != null && server.getProxyUser().length() != 0) {
 				IRCAuthenticator.getIRCAuthenticator().addAuthentication(server);
 			}
 			socket.connect(new InetSocketAddress(server.getHost(), server.getPort()));
 		} else {
 			callDebugInfo(DEBUG_SOCKET, "Not using Proxy");
 			if (!server.getSSL()) {
-				if (bindIP == null || bindIP.isEmpty()) {
+				if (bindIP == null || bindIP.length() == 0) {
 					socket = new Socket(server.getHost(), server.getPort());
 				} else {
 					callDebugInfo(DEBUG_SOCKET, "Binding to IP: "+bindIP);
@@ -690,7 +690,7 @@ public class IRCParser implements Runnable {
 			if (server.getUseSocks()) {
 				socket = socketFactory.createSocket(socket, server.getHost(), server.getPort(), false);
 			} else {
-				if (bindIP == null || bindIP.isEmpty()) {
+				if (bindIP == null || bindIP.length() == 0) {
 					socket = socketFactory.createSocket(server.getHost(), server.getPort());
 				} else {
 					callDebugInfo(DEBUG_SOCKET, "Binding to IP: "+bindIP);
@@ -716,7 +716,7 @@ public class IRCParser implements Runnable {
 	 * Send server connection strings (NICK/USER/PASS).
 	 */
 	protected void sendConnectionStrings() {
-		if (!server.getPassword().isEmpty()) {
+		if (server.getPassword().length() != 0) {
 			sendString("PASS " + server.getPassword());
 		}
 		setNickname(me.getNickname());
@@ -751,7 +751,7 @@ public class IRCParser implements Runnable {
 	 * Begin execution.
 	 * Connect to server, and start parsing incomming lines
 	 */
-  @Override
+  //@Override
 	public void run() {
 		callDebugInfo(DEBUG_INFO, "Begin Thread Execution");
 		if (hasBegan) { return; } else { hasBegan = true; }
@@ -1002,7 +1002,7 @@ public class IRCParser implements Runnable {
 			if (token[0].equalsIgnoreCase("PING") || token[1].equalsIgnoreCase("PING")) {
 				sendString("PONG :" + sParam);
 			} else if (token[0].equalsIgnoreCase("PONG") || token[1].equalsIgnoreCase("PONG")) {
-				if (!lastPingValue.isEmpty() && lastPingValue.equals(token[token.length-1])) {
+				if (lastPingValue.length() != 0 && lastPingValue.equals(token[token.length-1])) {
 					lastPingValue = "";
 					serverLag = System.currentTimeMillis() - pingTime;
 					callPingSuccess();
@@ -1039,7 +1039,7 @@ public class IRCParser implements Runnable {
 							break;
 						default: // Unknown - Send to Notice Auth
 							// Some networks send a CTCP during the auth process, handle it
-							if (token.length > 3 && !token[3].isEmpty() && token[3].charAt(0) == (char)1 && token[3].charAt(token[3].length()-1) == (char)1) {
+							if (token.length > 3 && token[3].length() != 0 && token[3].charAt(0) == (char)1 && token[3].charAt(token[3].length()-1) == (char)1) {
 								try { myProcessingManager.process(sParam, token); } catch (ProcessorNotFoundException e) { }
 								break;
 							}
@@ -1446,7 +1446,7 @@ public class IRCParser implements Runnable {
 			if (autoPrefix) {
 				if (h005Info.containsKey("CHANTYPES")) {
 					final String chantypes = h005Info.get("CHANTYPES");
-					if (chantypes.isEmpty()) {
+					if (chantypes.length() == 0) {
 						channelName = "#" + sChannelName;
 					} else {
 						channelName = chantypes.charAt(0) + sChannelName;
@@ -1458,7 +1458,7 @@ public class IRCParser implements Runnable {
 				return;
 			}
 		}
-		if (sKey.isEmpty()) {
+		if (sKey.length() == 0) {
 			sendString("JOIN " + channelName);
 		} else {
 			sendString("JOIN " + channelName + " " + sKey);
@@ -1473,7 +1473,7 @@ public class IRCParser implements Runnable {
 	 */
 	public void partChannel(final String sChannelName, final String sReason) {
 		if (getChannelInfo(sChannelName) == null) { return; }
-		if (sReason.isEmpty()) {
+		if (sReason.length() == 0) {
 			sendString("PART " + sChannelName);
 		} else {
 			sendString("PART " + sChannelName + " :" + sReason);
@@ -1592,7 +1592,7 @@ public class IRCParser implements Runnable {
 	 */
 	public void sendMessage(final String sTarget, final String sMessage) {
 		if (sTarget == null || sMessage == null) { return; }
-		if (sTarget.isEmpty()/* || sMessage.isEmpty()*/) { return; }
+		if (sTarget.length() == 0/* || sMessage.length() == 0*/) { return; }
 
 		sendString("PRIVMSG " + sTarget + " :" + sMessage);
 	}
@@ -1605,7 +1605,7 @@ public class IRCParser implements Runnable {
 	 */
 	public void sendNotice(final String sTarget, final String sMessage) {
 		if (sTarget == null || sMessage == null) { return; }
-		if (sTarget.isEmpty()/* || sMessage.isEmpty()*/) { return; }
+		if (sTarget.length() == 0/* || sMessage.length() == 0*/) { return; }
 
 		sendString("NOTICE " + sTarget + " :" + sMessage);
 	}
@@ -1629,7 +1629,7 @@ public class IRCParser implements Runnable {
 	 */
 	public void sendCTCP(final String sTarget, final String sType, final String sMessage) {
 		if (sTarget == null || sMessage == null) { return; }
-		if (sTarget.isEmpty() || sType.isEmpty()) { return; }
+		if (sTarget.length() == 0 || sType.length() == 0) { return; }
 		final char char1 = (char) 1;
 		sendString("PRIVMSG " + sTarget + " :" + char1 + sType.toUpperCase() + " " + sMessage + char1);
 	}
@@ -1643,7 +1643,7 @@ public class IRCParser implements Runnable {
 	 */
 	public void sendCTCPReply(final String sTarget, final String sType, final String sMessage) {
 		if (sTarget == null || sMessage == null) { return; }
-		if (sTarget.isEmpty() || sType.isEmpty()) { return; }
+		if (sTarget.length() == 0 || sType.length() == 0) { return; }
 		final char char1 = (char) 1;
 		sendString("NOTICE " + sTarget + " :" + char1 + sType.toUpperCase() + " " + sMessage + char1);
 	}
@@ -1655,7 +1655,7 @@ public class IRCParser implements Runnable {
 	 * @param sReason Reason for quitting.
 	 */
 	public void quit(final String sReason) {
-		if (sReason.isEmpty()) {
+		if (sReason.length() == 0) {
 			sendString("QUIT");
 		} else {
 			sendString("QUIT :" + sReason);
@@ -1695,7 +1695,7 @@ public class IRCParser implements Runnable {
 	 */
 	public boolean isValidChannelName(final String sChannelName) {
 		// Check sChannelName is not empty or null
-		if (sChannelName == null || sChannelName.isEmpty()) { return false; }
+		if (sChannelName == null || sChannelName.length() == 0) { return false; }
 		// Check its not ourself (PM recieved before 005)
 		if (getIRCStringConverter().equalsIgnoreCase(getMyNickname(), sChannelName)) { return false; }
 		// Check if we are already on this channel

@@ -62,7 +62,7 @@ public class ProcessJoin extends IRCProcessor {
 				myParser.addClient(iClient);
 			}
 			// Check to see if we know the host/ident for this client to facilitate dmdirc Formatter
-			if (iClient.getHost().isEmpty()) { iClient.setUserBits(token[0],false); }
+			if (iClient.getHost().length() == 0) { iClient.setUserBits(token[0],false); }
 			if (iChannel != null) {
 				if (iClient == myParser.getMyself()) {
 					try {

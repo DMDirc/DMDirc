@@ -460,7 +460,7 @@ public final class ChannelInfo {
 		}
 		for (char cTemp : hParamModes.keySet()) {
 			sTemp = hParamModes.get(cTemp);
-			if (!sTemp.isEmpty()) {
+			if (sTemp.length() != 0) {
 				sModes.append(cTemp);
 				sModeParams.append(" ").append(this.getModeParam(cTemp));
  			}
@@ -473,10 +473,10 @@ public final class ChannelInfo {
 	 * Set a channel mode that requires a parameter.
 	 *
 	 * @param cMode Character representing mode
-	 * @param sValue String repreenting value (if "" mode is unset)
+	 * @param sValue String representing value (if "" mode is unset)
 	 */	
 	protected void setModeParam(final Character cMode, final String sValue) { 
-		if (sValue.isEmpty()) {
+		if (sValue.length() == 0) {
 			if (hParamModes.containsKey(cMode)) {
 				hParamModes.remove(cMode);
 			}
@@ -547,7 +547,7 @@ public final class ChannelInfo {
 	 * @return ArrayList containing ChannelListModeItem in the list, or null if mode is invalid
 	 */
 	public List<ChannelListModeItem> getListModeParam(final Character cMode) { 
-		if (!myParser.hChanModesOther.containsKey(cMode) || myParser.hChanModesOther.get(cMode) != myParser.MODE_LIST) { return null; }
+		if (!myParser.hChanModesOther.containsKey(cMode) || myParser.hChanModesOther.get(cMode) != IRCParser.MODE_LIST) { return null; }
 		
 		if (!hListModes.containsKey(cMode)) { 
 			hListModes.put(cMode, new ArrayList<ChannelListModeItem>());
@@ -640,7 +640,7 @@ public final class ChannelInfo {
 					// We might need to queue an unset first
 					if (((modeint & IRCParser.MODE_UNSET) == IRCParser.MODE_UNSET)) {
 						final String existingParam = getModeParam(mode);
-						if (!existingParam.isEmpty()) {
+						if (existingParam.length() != 0) {
 							final String reverseModeStr = "-" + mode + " " + existingParam;
 							
 							myParser.callDebugInfo(IRCParser.DEBUG_INFO, "Queueing mode: %s", reverseModeStr);
@@ -707,7 +707,7 @@ public final class ChannelInfo {
 	 * @param sMessage Message to send
 	 */
 	public void sendMessage(final String sMessage) { 
-		if (sMessage.isEmpty()) { return; }
+		if (sMessage.length() == 0) { return; }
 		
 		myParser.sendString("PRIVMSG " + sName + " :" + sMessage);	
 	}
@@ -718,7 +718,7 @@ public final class ChannelInfo {
 	 * @param sMessage Message to send
 	 */
 	public void sendNotice(final String sMessage) { 
-		if (sMessage.isEmpty()) { return; }
+		if (sMessage.length() == 0) { return; }
 		
 		myParser.sendString("NOTICE " + sName + " :" + sMessage);	
 	}
@@ -729,7 +729,7 @@ public final class ChannelInfo {
 	 * @param sMessage Message to send
 	 */
 	public void sendAction(final String sMessage) { 
-		if (sMessage.isEmpty()) { return; }
+		if (sMessage.length() == 0) { return; }
 		sendCTCP("ACTION", sMessage);
 	}
 	
@@ -740,9 +740,9 @@ public final class ChannelInfo {
 	 * @param sMessage Optional Additional Parameters
 	 */
 	public void sendCTCP(final String sType, String sMessage) { 
-		if (sType.isEmpty()) { return; }
+		if (sType.length() == 0) { return; }
 		final char char1 = (char) 1;
-		if (!sMessage.isEmpty()) { sMessage = " " + sMessage; }
+		if (sMessage.length() != 0) { sMessage = " " + sMessage; }
 		sendMessage(char1 + sType.toUpperCase() + sMessage + char1);
 	}
 	
@@ -753,9 +753,9 @@ public final class ChannelInfo {
 	 * @param sMessage Optional Additional Parameters
 	 */
 	public void sendCTCPReply(final String sType, String sMessage) { 
-		if (sType.isEmpty()) { return; }
+		if (sType.length() == 0) { return; }
 		final char char1 = (char) 1;
-		if (!sMessage.isEmpty()) { sMessage = " " + sMessage; }
+		if (sMessage.length() != 0) { sMessage = " " + sMessage; }
 		sendNotice(char1 + sType.toUpperCase() + sMessage + char1);	
 	}
 	

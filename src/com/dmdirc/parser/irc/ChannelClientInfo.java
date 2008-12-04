@@ -162,7 +162,7 @@ public final class ChannelClientInfo {
 	 */
 	public String getImportantMode() {
 		String sModes = this.getChanModeStr(false);
-		if (!sModes.isEmpty()) { sModes = "" + sModes.charAt(0); }
+		if (sModes.length() != 0) { sModes = "" + sModes.charAt(0); }
 		return sModes;
 	}
 	
@@ -174,7 +174,7 @@ public final class ChannelClientInfo {
 	 */
 	public String getImportantModePrefix() {
 		String sModes = this.getChanModeStr(true);
-		if (!sModes.isEmpty()) { sModes = "" + sModes.charAt(0); }
+		if (sModes.length() != 0) { sModes = "" + sModes.charAt(0); }
 		return sModes;
 	}
 	
@@ -195,7 +195,7 @@ public final class ChannelClientInfo {
 	 * @param sReason Why are they being kicked? "" for no reason
 	 */
 	public void kick(final String sReason) {
-		myParser.sendString("KICK " + myChannel + " " + this.getNickname() + (sReason.isEmpty() ? sReason : " :" + sReason));
+		myParser.sendString("KICK " + myChannel + " " + this.getNickname() + (sReason.length() == 0 ? sReason : " :" + sReason));
 	}
 	
 	/**

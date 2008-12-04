@@ -114,7 +114,7 @@ public class ProcessMode extends IRCProcessor {
 		setterCCI = iChannel.getUser(token[0]);
 		if (IRCParser.ALWAYS_UPDATECLIENT && setterCCI != null) {
 			// Facilitate dmdirc formatter
-			if (setterCCI.getClient().getHost().isEmpty()) {setterCCI.getClient().setUserBits(token[0],false); }
+			if (setterCCI.getClient().getHost().length() == 0) {setterCCI.getClient().setUserBits(token[0],false); }
 		}
 		
 		// Loop through the mode string, and add/remove modes/params where they are needed
