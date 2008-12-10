@@ -86,7 +86,7 @@ public final class ReloadPlugin extends GlobalCommand implements IntelligentComm
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
         final AdditionalTabTargets res = new AdditionalTabTargets().excludeAll();
         

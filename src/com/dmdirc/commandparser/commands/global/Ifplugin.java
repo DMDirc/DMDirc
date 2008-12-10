@@ -102,7 +102,7 @@ public final class Ifplugin extends GlobalCommand implements IntelligentCommand 
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
         AdditionalTabTargets res;
         

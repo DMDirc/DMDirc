@@ -115,7 +115,7 @@ public final class JoinChannelCommand extends ServerCommand implements
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {
         final Channel chan = (Channel) arguments[0];
@@ -123,7 +123,7 @@ public final class JoinChannelCommand extends ServerCommand implements
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final List<String> previousArgs) {
         throw new UnsupportedOperationException("Not supported yet.");

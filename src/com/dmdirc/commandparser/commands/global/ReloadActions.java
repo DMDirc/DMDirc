@@ -70,7 +70,7 @@ public final class ReloadActions extends GlobalCommand implements IntelligentCom
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
         return new AdditionalTabTargets().excludeAll();
     }

@@ -104,7 +104,7 @@ public final class Echo extends GlobalCommand implements IntelligentCommand {
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
         final AdditionalTabTargets targets = new AdditionalTabTargets();
         

@@ -151,7 +151,7 @@ public abstract class Command extends CommandInfo implements Comparable<Command>
     }    
     
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public final int compareTo(final Command o) {
         return getName().compareTo(o.getName());
     }

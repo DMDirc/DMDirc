@@ -75,7 +75,7 @@ public final class Me extends ChatCommand implements ValidatingCommand {
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public ValidationResponse validateArguments(final InputWindow origin, 
             final List<String> arguments) {
         if (origin.getContainer().getServer() == null

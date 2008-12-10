@@ -73,7 +73,7 @@ public final class Clear extends GlobalCommand implements IntelligentCommand {
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
         return new AdditionalTabTargets().excludeAll();
     } 

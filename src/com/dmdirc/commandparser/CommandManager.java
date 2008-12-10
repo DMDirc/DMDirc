@@ -297,7 +297,7 @@ public final class CommandManager {
         
         // Set up a listener for config changes
         final ConfigChangeListener listener = new ConfigChangeListener() {
-            @Override
+            //@Override
             public void configChanged(String domain, String key) {
                 commandChar = IdentityManager.getGlobalConfig()
                         .getOptionChar("general", "commandchar", '/');

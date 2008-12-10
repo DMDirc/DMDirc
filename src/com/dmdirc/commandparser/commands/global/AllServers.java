@@ -80,7 +80,7 @@ public final class AllServers extends GlobalCommand implements IntelligentComman
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
         return TabCompleter.getIntelligentResults(arg, previousArgs, 0);
     }

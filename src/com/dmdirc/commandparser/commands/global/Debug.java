@@ -301,7 +301,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
     }
     
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
@@ -353,7 +353,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
         }
         
         /** {@inheritDoc} */
-        @Override
+        //@Override
         public int compare(final Entry<String, Integer> o1,
                 final Entry<String, Integer> o2) {
             int returnValue = o1.getValue().compareTo(o2.getValue()) * -1;

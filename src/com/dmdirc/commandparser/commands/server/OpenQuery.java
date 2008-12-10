@@ -100,7 +100,7 @@ public final class OpenQuery extends ServerCommand implements
     }
     
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
         final AdditionalTabTargets targets = new AdditionalTabTargets();
         
@@ -113,7 +113,7 @@ public final class OpenQuery extends ServerCommand implements
     }
     
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public int getLineCount(final InputWindow origin, final List<String> arguments) {
         if (arguments.size() >= 2) {
             final String target = arguments.get(0);
