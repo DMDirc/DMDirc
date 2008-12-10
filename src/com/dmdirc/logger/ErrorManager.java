@@ -243,7 +243,7 @@ public final class ErrorManager implements Serializable, Runnable {
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public void run() {
         while (!reportQueue.isEmpty()) {
             sendErrorInternal(reportQueue.remove(0));

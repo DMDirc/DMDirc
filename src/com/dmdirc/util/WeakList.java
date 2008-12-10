@@ -97,7 +97,7 @@ public class WeakList<T> implements List<T> {
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public int size() {
         cleanUp();
 
@@ -105,7 +105,7 @@ public class WeakList<T> implements List<T> {
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public boolean isEmpty() {
         cleanUp();
 
@@ -113,79 +113,81 @@ public class WeakList<T> implements List<T> {
     }
 
     /** {@inheritDoc} */
-    @Override @SuppressWarnings("unchecked")
+    //@Override
+    @SuppressWarnings("unchecked")
     public boolean contains(final Object o) {
         return list.contains(new EquatableWeakReference(o));
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public Iterator<T> iterator() {
         return dereferenceList(list).iterator();
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public Object[] toArray() {
         return dereferenceList(list).toArray();
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public <T> T[] toArray(final T[] a) {
         return dereferenceList(list).toArray(a);
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public boolean add(final T e) {
         return list.add(new EquatableWeakReference<T>(e));
     }
 
     /** {@inheritDoc} */
-    @Override @SuppressWarnings(value = "unchecked")
+    //@Override
+    @SuppressWarnings(value = "unchecked")
     public boolean remove(final Object o) {
         return list.remove(new EquatableWeakReference(o));
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public boolean containsAll(final Collection<?> c) {
         return dereferenceList(list).containsAll(c);
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public boolean addAll(final Collection<? extends T> c) {
         return list.addAll(referenceCollection(c));
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public boolean addAll(final int index, final Collection<? extends T> c) {
         return list.addAll(index, referenceCollection(c));
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public boolean removeAll(final Collection<?> c) {
         return list.removeAll(referenceCollection(c));
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public boolean retainAll(final Collection<?> c) {
         return list.retainAll(referenceCollection(c));
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public void clear() {
         list.clear();
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public T get(final int index) {
         cleanUp();
 
@@ -193,7 +195,7 @@ public class WeakList<T> implements List<T> {
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public T set(final int index, final T element) {
         list.set(index, new EquatableWeakReference<T>(element));
 
@@ -201,19 +203,20 @@ public class WeakList<T> implements List<T> {
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public void add(final int index, final T element) {
         list.add(index, new EquatableWeakReference<T>(element));
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public T remove(final int index) {
         return list.remove(index).get();
     }
 
     /** {@inheritDoc} */
-    @Override @SuppressWarnings(value = "unchecked")
+    //@Override
+    @SuppressWarnings(value = "unchecked")
     public int indexOf(final Object o) {
         cleanUp();
 
@@ -221,7 +224,8 @@ public class WeakList<T> implements List<T> {
     }
 
     /** {@inheritDoc} */
-    @Override @SuppressWarnings(value = "unchecked")
+    //@Override
+    @SuppressWarnings(value = "unchecked")
     public int lastIndexOf(final Object o) {
         cleanUp();
 
@@ -229,7 +233,7 @@ public class WeakList<T> implements List<T> {
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public ListIterator<T> listIterator() {
         cleanUp();
 
@@ -237,7 +241,7 @@ public class WeakList<T> implements List<T> {
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public ListIterator<T> listIterator(final int index) {
         cleanUp();
 
@@ -245,7 +249,7 @@ public class WeakList<T> implements List<T> {
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public List<T> subList(final int fromIndex, final int toIndex) {
         return dereferenceList(list.subList(fromIndex, toIndex));
     }

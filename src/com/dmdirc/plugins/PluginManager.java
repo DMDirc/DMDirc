@@ -326,7 +326,7 @@ public class PluginManager implements ActionListener {
 	}
 
 	/** {@inheritDoc} */
-	@Override
+	//@Override
 	public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
 		if (type.equals(CoreActionType.CLIENT_PREFS_OPENED)) {
 			for (PluginInfo pi : getPluginInfos()) {

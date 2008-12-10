@@ -69,7 +69,7 @@ public abstract class Plugin implements Comparable<Plugin> {
 	 * @param o Object to compare to
 	 * @return a negative integer, zero, or a positive integer.
 	 */
-    @Override
+    //@Override
 	public int compareTo(final Plugin o) {
 		return toString().compareTo(o.toString());
 	}

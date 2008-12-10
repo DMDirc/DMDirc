@@ -965,7 +965,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 * @param o Object to compare to
 	 * @return a negative integer, zero, or a positive integer.
 	 */
-    @Override
+    //@Override
 	public int compareTo(final PluginInfo o) {
 		return toString().compareTo(o.toString());
 	}
