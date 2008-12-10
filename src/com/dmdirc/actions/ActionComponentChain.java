@@ -70,7 +70,7 @@ public class ActionComponentChain implements ActionComponent {
     }
     
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public Object get(final Object argument) {
         Object res = argument;
         
@@ -83,7 +83,7 @@ public class ActionComponentChain implements ActionComponent {
     
     /** {@inheritDoc} */
     @Precondition("This component chain has one or more components")
-    @Override
+    //@Override
     public Class appliesTo() {
         Logger.assertTrue(!components.isEmpty());
         
@@ -92,7 +92,7 @@ public class ActionComponentChain implements ActionComponent {
     
     /** {@inheritDoc} */
     @Precondition("This component chain has one or more components")
-    @Override
+    //@Override
     public Class getType() {
         Logger.assertTrue(!components.isEmpty());
         
@@ -101,7 +101,7 @@ public class ActionComponentChain implements ActionComponent {
     
     /** {@inheritDoc} */
     @Precondition("This component chain has one or more components")
-    @Override
+    //@Override
     public String getName() {
         Logger.assertTrue(!components.isEmpty());
         

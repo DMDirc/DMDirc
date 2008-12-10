@@ -187,7 +187,7 @@ public class ActionGroup implements Iterable<Action> {
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public Iterator<Action> iterator() {
         return actions.iterator();
     }

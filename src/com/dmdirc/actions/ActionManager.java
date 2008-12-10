@@ -103,7 +103,7 @@ public final class ActionManager {
         // Register a listener for the closing event, so we can save actions
         addListener(new ActionListener() {
             /** {@inheritDoc} */
-            @Override
+            //@Override
             public void processEvent(final ActionType type, final StringBuffer format,
                     final Object... arguments) {
                 saveActions();
@@ -114,7 +114,7 @@ public final class ActionManager {
         IdentityManager.getGlobalConfig().addChangeListener("actions", "killswitch",
                 new ConfigChangeListener() {
             /** {@inheritDoc} */
-            @Override
+            //@Override
             public void configChanged(final String domain, final String key) {
                 killSwitch
                         = IdentityManager.getGlobalConfig().getOptionBool(

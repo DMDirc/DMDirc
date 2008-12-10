@@ -225,13 +225,13 @@ public enum CoreActionType implements ActionType {
     }
     
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public ActionMetaType getType() {
         return type;
     }
     
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public String getName() {
         return name;
     }
