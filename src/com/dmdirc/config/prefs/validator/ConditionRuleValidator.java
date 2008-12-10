@@ -52,7 +52,7 @@ public class ConditionRuleValidator implements Validator<String> {
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public ValidationResponse validate(final String object) {
         final ConditionTree tree = ConditionTree.parseString(object);
 

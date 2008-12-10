@@ -49,7 +49,7 @@ public class ValidatorChain<A> implements Validator<A> {
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public ValidationResponse validate(final A object) {
         for (Validator<A> validator : validatorList) {
             final ValidationResponse res = validator.validate(object);

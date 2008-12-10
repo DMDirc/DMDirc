@@ -414,7 +414,7 @@ public class ConfigManager extends ConfigSource implements Serializable,
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public void configChanged(final String domain, final String key) {
         final List<ConfigChangeListener> targets
                 = new ArrayList<ConfigChangeListener>();

@@ -571,7 +571,7 @@ public class Identity extends ConfigSource implements Serializable,
      * @return -1 if this config source is less specific, 0 if they're equal,
      * +1 if this config is more specific.
      */
-    @Override
+    //@Override
     public int compareTo(final Identity target) {
         return target.getTarget().compareTo(myTarget);
     }

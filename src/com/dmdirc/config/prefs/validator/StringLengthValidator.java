@@ -47,7 +47,7 @@ public class StringLengthValidator implements Validator<String> {
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public ValidationResponse validate(final String object) {
         if (object.length() < min && min != -1) {
             return new ValidationResponse("Must be at least " + min + " characters long");

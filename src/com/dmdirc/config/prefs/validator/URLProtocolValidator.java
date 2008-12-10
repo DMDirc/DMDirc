@@ -30,7 +30,7 @@ import com.dmdirc.config.IdentityManager;
 public class URLProtocolValidator implements Validator<String> {
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public ValidationResponse validate(final String object) {
         if (object == null || object.isEmpty()) {
             return new ValidationResponse("Cannot be empty");

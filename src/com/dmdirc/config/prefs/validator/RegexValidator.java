@@ -30,7 +30,7 @@ package com.dmdirc.config.prefs.validator;
 public class RegexValidator implements Validator<String> {
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public ValidationResponse validate(final String object) {
         try {
             // Is there a proper way of doing this, as opposed to just seeing

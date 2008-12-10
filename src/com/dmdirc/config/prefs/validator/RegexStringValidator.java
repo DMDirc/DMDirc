@@ -44,7 +44,7 @@ public class RegexStringValidator implements Validator<String> {
     }
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public ValidationResponse validate(final String object) {
         if (object.matches(regex)) {
             return new ValidationResponse();

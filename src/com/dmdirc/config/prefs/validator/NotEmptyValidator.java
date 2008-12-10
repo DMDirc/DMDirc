@@ -35,7 +35,7 @@ public class NotEmptyValidator implements Validator<String> {
     private static final long serialVersionUID = 1;
 
     /** {@inheritDoc} */
-    @Override
+    //@Override
     public ValidationResponse validate(final String object) {
         if (object.isEmpty()) {
             return new ValidationResponse("Cannot be an empty string.");
