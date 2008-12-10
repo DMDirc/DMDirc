@@ -306,9 +306,9 @@ public final class Query extends MessageTarget implements
     }
 
     /**
-     * Returns the Server assocaited with this query.
+     * Returns the Server associated with this query.
      *
-     * @return asscoaited Server
+     * @return associated Server
      */
     @Override
     public Server getServer() {
