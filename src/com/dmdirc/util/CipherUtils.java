@@ -234,7 +234,7 @@ public class CipherUtils {
                         "passwordHash");
             }
 
-            while ((password == null || password.isEmpty()) && tries < AUTH_TRIES) {
+            while ((password == null || password.length() == 0) && tries < AUTH_TRIES) {
                 password = getPassword(prompt);
                 if (passwordHash == null) {
                     passwordHash = hash(password);

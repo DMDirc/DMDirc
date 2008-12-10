@@ -112,12 +112,12 @@ public class ConfigFile extends TextFile {
         for (String line : getLines()) {
             String tline = line;
             
-            while (!tline.isEmpty() && (tline.charAt(0) == '\t' || 
+            while (tline.length() > 0 && (tline.charAt(0) == '\t' || 
                     tline.charAt(0) == ' ')) {
                 tline = tline.substring(1);
             }
 
-            if (tline.indexOf('#') == 0 || tline.isEmpty()) {
+            if (tline.indexOf('#') == 0 || tline.length() == 0) {
                 continue;
             } else if (
                     (tline.endsWith(":") && !tline.endsWith("\\:"))

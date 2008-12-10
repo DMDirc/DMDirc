@@ -792,7 +792,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         if (parser == null) {
             throw new IllegalStateException("getNetwork called when "
                     + "parser is null (state: " + getState() + ")");
-        } else if (parser.getNetworkName().isEmpty()) {
+        } else if (parser.getNetworkName().length() == 0) {
             return getNetworkFromServerName(parser.getServerName());
         } else {
             return parser.getNetworkName();
@@ -1100,7 +1100,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
         }
 
-        if (offset < alts.size() && !alts.get(offset).isEmpty()) {
+        if (offset < alts.size() && alts.get(offset).length() > 0) {
             newNick = alts.get(offset);
         }
 

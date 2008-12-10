@@ -299,7 +299,7 @@ public final class Channel extends MessageTarget
     private void updateTitle() {
         String temp = Styliser.stipControlCodes(channelInfo.getName());
 
-        if (!channelInfo.getTopic().isEmpty()) {
+        if (channelInfo.getTopic().length() > 0) {
             temp = temp + " - " + Styliser.stipControlCodes(channelInfo.getTopic());
         }
 

@@ -128,7 +128,7 @@ public class IrcAddress implements Serializable {
         for (String channel : channels.substring(1).split(",")) {
             if (!channel.equalsIgnoreCase("needpass") && 
                     !channel.equalsIgnoreCase("needkey") &&
-                    !channel.equalsIgnoreCase("isnick") && !channel.isEmpty()) {
+                    !channel.equalsIgnoreCase("isnick") && channel.length() > 0) {
                 this.channels.add(channel);
             }
         }

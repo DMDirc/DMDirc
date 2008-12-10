@@ -131,7 +131,7 @@ public class URLHandler {
 
         final String command = config.getOption("protocol", uri.getScheme(), "");
 
-        if (command.isEmpty()) {
+        if (command.length() == 0) {
             Main.getUI().showURLDialog(uri);
             return;
         }
@@ -200,7 +200,7 @@ public class URLHandler {
             port = String.valueOf(url.getPort());
         }
 
-        if (userInfo != null && !userInfo.isEmpty()) {
+        if (userInfo != null && userInfo.length() > 0) {
             if (userInfo.indexOf(':') == -1) {
                 username = userInfo;
             } else {

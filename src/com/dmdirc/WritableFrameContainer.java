@@ -93,7 +93,7 @@ public abstract class WritableFrameContainer extends FrameContainer {
         int lines = 0;
         
         for (String splitLine : splitLines) {
-            if (splitLine.isEmpty() || getMaxLineLength() <= 0) {
+            if (splitLine.length() == 0 || getMaxLineLength() <= 0) {
                 lines++;
             } else {
                 lines += (int) Math.ceil(splitLine.length() / (double) getMaxLineLength());

@@ -296,7 +296,7 @@ public final class Query extends MessageTarget implements
     public void onQuit(final IRCParser tParser, final ClientInfo cClient,
             final String sReason) {
         if (cClient.getNickname().equals(ClientInfo.parseHost(host))) {
-            final StringBuffer format = new StringBuffer(sReason.isEmpty()
+            final StringBuffer format = new StringBuffer(sReason.length() == 0
                 ? "queryQuit" : "queryQuitReason");
 
             ActionManager.processEvent(CoreActionType.QUERY_QUIT, format, this, sReason);

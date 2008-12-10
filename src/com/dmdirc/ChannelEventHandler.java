@@ -143,7 +143,7 @@ public final class ChannelEventHandler extends EventHandler implements
 
         owner.doNotification("channel"
                 + (isMyself(cChannelClient) ? "Self" : "") + "Part"
-                + (sReason.isEmpty() ? "" : "Reason"), CoreActionType.CHANNEL_PART,
+                + (sReason.length() == 0 ? "" : "Reason"), CoreActionType.CHANNEL_PART,
                 cChannelClient, sReason);
         owner.removeClient(cChannelClient);
     }
@@ -155,7 +155,7 @@ public final class ChannelEventHandler extends EventHandler implements
             final String sReason, final String sKickedByHost) {
         checkParser(tParser);
 
-        owner.doNotification("channelKick" + (sReason.isEmpty() ? "" : "Reason"),
+        owner.doNotification("channelKick" + (sReason.length() == 0 ? "" : "Reason"),
                 CoreActionType.CHANNEL_KICK, cKickedByClient, cKickedClient, sReason);
         owner.removeClient(cKickedClient);
     }
@@ -166,7 +166,7 @@ public final class ChannelEventHandler extends EventHandler implements
             final ChannelClientInfo cChannelClient, final String sReason) {
         checkParser(tParser);
 
-        owner.doNotification("channelQuit" + (sReason.isEmpty() ? "" : "Reason"),
+        owner.doNotification("channelQuit" + (sReason.length() == 0 ? "" : "Reason"),
                 CoreActionType.CHANNEL_QUIT, cChannelClient, sReason);
         owner.removeClient(cChannelClient);
     }
@@ -202,7 +202,7 @@ public final class ChannelEventHandler extends EventHandler implements
             final String sModes) {
         checkParser(tParser);
 
-        if (sHost.isEmpty()) {
+        if (sHost.length() == 0) {
             owner.doNotification(sModes.length() <= 1 ? "channelNoModes"
                     : "channelModeDiscovered", CoreActionType.CHANNEL_MODESDISCOVERED,
                     sModes.length() <= 1 ? "" : sModes);
