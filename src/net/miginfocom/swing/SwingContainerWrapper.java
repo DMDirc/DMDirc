@@ -1,3 +1,4 @@
+package net.miginfocom.swing;
 /*
  * License (BSD):
  * ==============
@@ -32,8 +33,6 @@
  *         Date: 2006-sep-08
  */
 
-package net.miginfocom.swing;
-
 import net.miginfocom.layout.ComponentWrapper;
 import net.miginfocom.layout.ContainerWrapper;
 
@@ -41,62 +40,62 @@ import java.awt.*;
 
 /**
  */
-public final class SwingContainerWrapper extends SwingComponentWrapper implements ContainerWrapper {
+public final class SwingContainerWrapper extends SwingComponentWrapper implements ContainerWrapper
+{
+	/** Debug color for cell outline.
+	 */
+	private static final Color DB_CELL_OUTLINE = new Color(255, 0, 0);
 
-    /** Debug color for cell outline.
-     */
-    private static final Color DB_CELL_OUTLINE = new Color(255, 0, 0);
+	public SwingContainerWrapper(Container c)
+	{
+		super(c);
+	}
 
-    public SwingContainerWrapper(Container c) {
-        super(c);
-    }
+	public ComponentWrapper[] getComponents()
+	{
+		Container c = (Container) getComponent();
+		ComponentWrapper[] cws = new ComponentWrapper[c.getComponentCount()];
+		for (int i = 0; i < cws.length; i++)
+			cws[i] = new SwingComponentWrapper(c.getComponent(i));
+		return cws;
+	}
 
-    @Override
-    public ComponentWrapper[] getComponents() {
-        Container c = (Container) getComponent();
-        ComponentWrapper[] cws = new ComponentWrapper[c.getComponentCount()];
-        for (int i = 0; i < cws.length; i++) {
-            cws[i] = new SwingComponentWrapper(c.getComponent(i));
-        }
-        return cws;
-    }
+	public int getComponentCount()
+	{
+		return ((Container) getComponent()).getComponentCount();
+	}
 
-    @Override
-    public int getComponentCount() {
-        return ((Container) getComponent()).getComponentCount();
-    }
+	public Object getLayout()
+	{
+		return ((Container) getComponent()).getLayout();
+	}
 
-    @Override
-    public Object getLayout() {
-        return ((Container) getComponent()).getLayout();
-    }
+	public final boolean isLeftToRight()
+	{
+		return ((Container) getComponent()).getComponentOrientation().isLeftToRight();
+	}
 
-    @Override
-    public final boolean isLeftToRight() {
-        return ((Container) getComponent()).getComponentOrientation().isLeftToRight();
-    }
+	public final void paintDebugCell(int x, int y, int width, int height)
+	{
+		Component c = (Component) getComponent();
+		if (c.isShowing() == false)
+			return;
 
-    @Override
-    public final void paintDebugCell(int x, int y, int width, int height) {
-        Component c = (Component) getComponent();
-        if (c.isShowing() == false) {
-            return;
-        }
-        Graphics2D g = (Graphics2D) c.getGraphics();
-        if (g == null) {
-            return;
-        }
-        g.setStroke(new BasicStroke(1f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10f, new float[]{2f, 3f}, 0));
-        g.setPaint(DB_CELL_OUTLINE);
-        g.drawRect(x, y, width - 1, height - 1);
-    }
+		Graphics2D g = (Graphics2D) c.getGraphics();
+		if (g == null)
+			return;
 
-    @Override
-    public int getComponetType(boolean disregardScrollPane) {
-        return TYPE_CONTAINER;
-    }
+		g.setStroke(new BasicStroke(1f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10f, new float[] {2f, 3f}, 0));
+		g.setPaint(DB_CELL_OUTLINE);
+		g.drawRect(x, y, width - 1, height - 1);
+	}
 
-    // Removed for 2.3 because the parent.isValid() in MigLayout will catch this instead.
+	public int getComponetType(boolean disregardScrollPane)
+	{
+		return TYPE_CONTAINER;
+	}
+
+	// Removed for 2.3 because the parent.isValid() in MigLayout will catch this instead.
 //	public int getLayoutHashCode()
 //	{
 //		int h = super.getLayoutHashCode();

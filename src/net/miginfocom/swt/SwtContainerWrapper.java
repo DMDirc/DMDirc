@@ -1,6 +1,4 @@
-package net.miginfocom.layout;
-
-import java.io.*;
+package net.miginfocom.swt;
 /*
  * License (BSD):
  * ==============
@@ -35,58 +33,80 @@ import java.io.*;
  *         Date: 2006-sep-08
  */
 
-/** A parsed constraint that specifies how an entity (normally column/row or component) can shrink or
- * grow compared to other entities.
+import net.miginfocom.layout.ComponentWrapper;
+import net.miginfocom.layout.ContainerWrapper;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+
+/**
  */
-final class ResizeConstraint implements Externalizable
+public final class SwtContainerWrapper extends SwtComponentWrapper implements ContainerWrapper
 {
-	static final Float WEIGHT_100 = new Float(100);
-
-	/** How flexilble the entity should be, relative to other entities, when it comes to growing. <code>null</code> or
-	 * zero mean it will never grow. An entity that has twise the growWeight compared to another entity will get twice
-	 * as much of available space.
-	 * <p>
-	 * "grow" are only compared within the same "growPrio".
-	 */
-	Float grow = null;
-
-	/** The relative priority used for determining which entities gets the extra space first.
-	 */
-	int growPrio = 100;
-
-	Float shrink = WEIGHT_100;
-
-	int shrinkPrio = 100;
-
-	public ResizeConstraint()   // For Externalizable
+	public SwtContainerWrapper(Composite c)
 	{
+		super(c);
 	}
 
-	ResizeConstraint(int shrinkPrio, Float shrinkWeight, int growPrio, Float growWeight)
+	public ComponentWrapper[] getComponents()
 	{
-		this.shrinkPrio = shrinkPrio;
-		this.shrink = shrinkWeight;
-		this.growPrio = growPrio;
-		this.grow = growWeight;
+		Composite c = (Composite) getComponent();
+		Control[] cons = c.getChildren();
+		ComponentWrapper[] cws = new ComponentWrapper[cons.length];
+		for (int i = 0; i < cws.length; i++)
+			cws[i] = new SwtComponentWrapper(cons[i]);
+		return cws;
 	}
 
-	// ************************************************
-	// Persistence Delegate and Serializable combined.
-	// ************************************************
-
-	private Object readResolve() throws ObjectStreamException
+	public int getComponentCount()
 	{
-		return LayoutUtil.getSerializedObject(this);
+		return ((Composite) getComponent()).getChildren().length;
 	}
 
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+	public Object getLayout()
 	{
-		LayoutUtil.setSerializedObject(this, LayoutUtil.readAsXML(in));
+		return ((Composite) getComponent()).getLayout();
 	}
 
-	public void writeExternal(ObjectOutput out) throws IOException
+	public final boolean isLeftToRight()
 	{
-		if (getClass() == ResizeConstraint.class)
-			LayoutUtil.writeAsXML(out, this);
+		return (((Composite) getComponent()).getStyle() & SWT.LEFT_TO_RIGHT) > 0;
+	}
+
+	public final void paintDebugCell(int x, int y, int width, int height)
+	{
+		// A Composite can not draw above its children, so the cells can not be painted.
+
+//		if (c.isDisposed())
+//			return;
+//		GC gc = new GC(c);
+//
+//		gc.setLineStyle(SWT.LINE_DASHDOTDOT);
+//		gc.setLineJoin(SWT.JOIN_MITER);
+//		gc.setLineCap(SWT.CAP_SQUARE);
+//
+//		gc.setBackground(DB_CELL_BG);
+//		gc.fillRectangle(x, y, width, height);
+//
+//		gc.setForeground(DB_CELL_OUTLINE);
+//		gc.drawRectangle(x, y, width - 1, height - 1);
+//
+//		gc.dispose();
+	}
+
+	public int getComponetType(boolean disregardScrollPane)
+	{
+		return TYPE_CONTAINER;
+	}
+
+
+	public int getLayoutHashCode()
+	{
+		int h = super.getLayoutHashCode();
+
+		if (isLeftToRight())
+			h |= (1 << 26);
+
+		return h;
 	}
 }

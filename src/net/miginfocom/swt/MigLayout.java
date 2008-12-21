@@ -1,4 +1,4 @@
-package net.miginfocom.swing;
+package net.miginfocom.swt;
 /*
  * License (BSD):
  * ==============
@@ -34,12 +34,13 @@ package net.miginfocom.swing;
  */
 
 import net.miginfocom.layout.*;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Layout;
 
-import javax.swing.*;
-import javax.swing.Timer;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.*;
 import java.lang.ref.WeakReference;
 import java.util.*;
@@ -48,38 +49,36 @@ import java.util.*;
  * <p>
  * Read the documentation that came with this layout manager for information on usage.
  */
-public final class MigLayout implements LayoutManager2, Externalizable
+public final class MigLayout extends Layout implements Externalizable
 {
 	// ******** Instance part ********
 
 	/** The component to string constraints mappings.
 	 */
-	private final Map<Component, Object> scrConstrMap = new IdentityHashMap<Component, Object>(8);
+	private final Map<Control, Object> scrConstrMap = new IdentityHashMap<Control, Object>(8);
 
 	/** Hold the serializable text representation of the constraints.
 	 */
 	private Object layoutConstraints = "", colConstraints = "", rowConstraints = "";    // Should never be null!
-
 
 	// ******** Transient part ********
 
 	private transient ContainerWrapper cacheParentW = null;
 
 	private transient final Map<ComponentWrapper, CC> ccMap = new HashMap<ComponentWrapper, CC>(8);
-	private transient javax.swing.Timer debugTimer = null;
 
 	private transient LC lc = null;
 	private transient AC colSpecs = null, rowSpecs = null;
 	private transient Grid grid = null;
+
+	private transient java.util.Timer debugTimer = null;
+	private transient long curDelay = -1;
 	private transient int lastModCount = PlatformDefaults.getModCount();
 	private transient int lastHash = -1;
-	private transient Dimension lastInvalidSize = null;
 
 	private transient ArrayList<LayoutCallback> callbackList = null;
 
-	private transient boolean dirty = true;
-
-	/** Constructor with no constraints.÷
+	/** Constructor with no constraints.
 	 */
 	public MigLayout()
 	{
@@ -157,21 +156,21 @@ public final class MigLayout implements LayoutManager2, Externalizable
 	/** Sets the layout constraints for the layout manager instance as a String.
 	 * <p>
 	 * See the class JavaDocs for information on how this string is formatted.
-	 * @param constr The layout constraints as a String representation. <code>null</code> is converted to <code>""</code> for storage.
+	 * @param s The layout constraints as a String representation. <code>null</code> is converted to <code>""</code> for storage.
 	 * @throws RuntimeException if the constaint was not valid.
 	 */
-	public void setLayoutConstraints(Object constr)
+	public void setLayoutConstraints(Object s)
 	{
-		if (constr == null || constr instanceof String) {
-			constr = ConstraintParser.prepare((String) constr);
-			lc = ConstraintParser.parseLayoutConstraint((String) constr);
-		} else if (constr instanceof LC) {
-			lc = (LC) constr;
+		if (s == null || s instanceof String) {
+			s = ConstraintParser.prepare((String) s);
+			lc = ConstraintParser.parseLayoutConstraint((String) s);
+		} else if (s instanceof LC) {
+			lc = (LC) s;
 		} else {
-			throw new IllegalArgumentException("Illegal constraint type: " + constr.getClass().toString());
+			throw new IllegalArgumentException("Illegal constraint type: " + s.getClass().toString());
 		}
-		layoutConstraints = constr;
-		dirty = true;
+		layoutConstraints = s;
+		grid = null;
 	}
 
 	/** Returns the column layout constraints either as a <code>String</code> or {@link net.miginfocom.layout.AC}.
@@ -200,7 +199,7 @@ public final class MigLayout implements LayoutManager2, Externalizable
 			throw new IllegalArgumentException("Illegal constraint type: " + constr.getClass().toString());
 		}
 		colConstraints = constr;
-		dirty = true;
+		grid = null;
 	}
 
 	/** Returns the row layout constraints as a String representation. This string is the exact string as set with {@link #setRowConstraints(Object)}
@@ -231,80 +230,73 @@ public final class MigLayout implements LayoutManager2, Externalizable
 			throw new IllegalArgumentException("Illegal constraint type: " + constr.getClass().toString());
 		}
 		rowConstraints = constr;
-		dirty = true;
+		grid = null;
 	}
 
-	/** Returns the component constraints as a String representation. This string is the exact string as set with {@link #setComponentConstraints(java.awt.Component, Object)}
-	 * or set when adding the component to the parent component.
-	 * <p>
-	 * See the class JavaDocs for information on how this string is formatted.
-	 * @param comp The component to return the constraints for.
-	 * @return The component constraints as a String representation ir <code>null</code> if the component is not registered
-	 * with this layout manager. The returned values is either a String or a {@link net.miginfocom.layout.CC}
-	 * depending on what constraint was sent in when the component was added. May be <code>null</code>.
-	 */
-	public Object getComponentConstraints(Component comp)
-	{
-		synchronized(comp.getParent().getTreeLock()) {
-			return scrConstrMap.get(comp);
-		}
-	}
-
-	/** Sets the component constraint for the component that already must be handleded by this layout manager.
-	 * <p>
-	 * See the class JavaDocs for information on how this string is formatted.
-	 * @param constr The component constraints as a String or {@link net.miginfocom.layout.CC}. <code>null</code> is ok.
-	 * @param comp The component to set the constraints for.
-	 * @throws RuntimeException if the constaint was not valid.
-	 * @throws IllegalArgumentException If the component is not handlering the component.
-	 */
-	public void setComponentConstraints(Component comp, Object constr)
-	{
-		setComponentConstraintsImpl(comp, constr, false);
-	}
+//	/** Returns the component constraints as a String representation. This string is the exact string as set with {@link #setComponentConstraints(org.eclipse.swt.widgets.Control, Object)}
+//	 * or set when adding the component to the parent component.
+//	 * <p>
+//	 * See the class JavaDocs for information on how this string is formatted.
+//	 * @param comp The component to return the constraints for.
+//	 * @return The component constraints or <code>null</code> if the component is not registered
+//	 * with this layout manager. The returned values is either a String or a {@link net.miginfocom.layout.CC}
+//	 * depending on what constraint was sent in when the component was added.
+//	 */
+//	public Object getComponentConstraints(Control comp)
+//	{
+//		return scrConstrMap.get(comp);
+//	}
+//
+//	/** Sets the component constraint for the component that already must be handleded by this layout manager.
+//	 * <p>
+//	 * See the class JavaDocs for information on how this string is formatted.
+//	 * @param constr The component constraints as a String or {@link net.miginfocom.layout.CC}. <code>null</code> is ok.
+//	 * @param comp The component to set the constraints for.
+//	 * @throws RuntimeException if the constaint was not valid.
+//	 * @throws IllegalArgumentException If the component is not handlering the component.
+//	 */
+//	public void setComponentConstraints(Control comp, Object constr)
+//	{
+//		setComponentConstraintsImpl(comp, constr, false);
+//	}
 
 	/** Sets the component constraint for the component that already must be handleded by this layout manager.
 	 * <p>
 	 * See the class JavaDocs for information on how this string is formatted.
 	 * @param constr The component constraints as a String or {@link net.miginfocom.layout.CC}. <code>null</code> is ok.
 	 * @param comp The component to set the constraints for.
-	 * @param noCheck Doe not check if the component is handled if true
 	 * @throws RuntimeException if the constaint was not valid.
 	 * @throws IllegalArgumentException If the component is not handling the component.
 	 */
-	private void setComponentConstraintsImpl(Component comp, Object constr, boolean noCheck)
+	private void setComponentConstraintsImpl(Control comp, Object constr, boolean noCheck)
 	{
-		Container parent = comp.getParent();
-		synchronized(parent.getTreeLock()) {
-			if (noCheck == false && scrConstrMap.containsKey(comp) == false)
-				throw new IllegalArgumentException("Component must already be added to parent!");
+		if (noCheck == false && scrConstrMap.containsKey(comp) == false)
+			throw new IllegalArgumentException("Component must already be added to parent!");
 
-			ComponentWrapper cw = new SwingComponentWrapper(comp);
+		ComponentWrapper cw = new SwtComponentWrapper(comp);
 
-			if (constr == null || constr instanceof String) {
-				String cStr = ConstraintParser.prepare((String) constr);
+		if (constr == null || constr instanceof String) {
+			String cStr = ConstraintParser.prepare((String) constr);
 
-				scrConstrMap.put(comp, constr);
-				ccMap.put(cw, ConstraintParser.parseComponentConstraint(cStr));
+			scrConstrMap.put(comp, constr);
+			ccMap.put(cw, ConstraintParser.parseComponentConstraint(cStr));
 
-			} else if (constr instanceof CC) {
+		} else if (constr instanceof CC) {
 
-				scrConstrMap.put(comp, constr);
-				ccMap.put(cw, (CC) constr);
+			scrConstrMap.put(comp, constr);
+			ccMap.put(cw, (CC) constr);
 
-			} else {
-				throw new IllegalArgumentException("Constraint must be String or ComponentConstraint: " + constr.getClass().toString());
-			}
-
-			dirty = true;
+		} else {
+			throw new IllegalArgumentException("Constraint must be String or ComponentConstraint: " + constr.getClass().toString());
 		}
+		grid = null;
 	}
 
 	/** Returns if this layout manager is currently managing this component.
 	 * @param c The component to check. If <code>null</code> then <code>false</code> will be returned.
 	 * @return If this layout manager is currently managing this component.
 	 */
-	public boolean isManagingComponent(Component c)
+	public boolean isManagingComponent(Control c)
 	{
 		return scrConstrMap.containsKey(c);
 	}
@@ -338,43 +330,27 @@ public final class MigLayout implements LayoutManager2, Externalizable
 	 * Red fill and dashed darked red outline is used to indicate occupied cells in the grid. Blue dashed outline indicate indicate
 	 * component bounds set.
 	 * <p>
-	 * Note that debug can also be set on the layout constraints. There it will be persisted. The value set here will not. See the class
+	 * Note that debug can also be set on the layout constraints. There it will be persisted. The calue set here will not. See the class
 	 * JavaDocs for information.
-	 * @param parentW The parent to set debug for.
 	 * @param b <code>true</code> means debug is turned on.
 	 */
 	private synchronized void setDebug(final ComponentWrapper parentW, boolean b)
 	{
-		if (b && (debugTimer == null || debugTimer.getDelay() != lc.getDebugMillis())) {
+		if (b && (debugTimer == null || curDelay != lc.getDebugMillis())) {
 			if (debugTimer != null)
-				debugTimer.stop();
+				debugTimer.cancel();
+
+			debugTimer = new Timer(true);
+			curDelay = lc.getDebugMillis();
+			debugTimer.schedule(new MyDebugRepaintTask(this), curDelay, curDelay);
 
 			ContainerWrapper pCW = parentW.getParent();
-			final Component parent = pCW != null ? (Component) pCW.getComponent() : null;
-
-			debugTimer = new Timer(lc.getDebugMillis(), new MyDebugRepaintListener(MigLayout.this));
-
-			if (parent != null) {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						Container p = parent.getParent();
-						if (p != null) {
-							if (p instanceof JComponent) {
-								((JComponent) p).revalidate();
-							} else {
-								parent.invalidate();
-								p.validate();
-							}
-						}
-					}
-				});
-			}
-
-			debugTimer.setInitialDelay(100);
-			debugTimer.start();
+			Composite parent = pCW != null ? (Composite) pCW.getComponent() : null;
+			if (parent != null)
+				parent.layout();
 
 		} else if (!b && debugTimer != null) {
-			debugTimer.stop();
+			debugTimer.cancel();
 			debugTimer = null;
 		}
 	}
@@ -390,13 +366,14 @@ public final class MigLayout implements LayoutManager2, Externalizable
 	/** Check if something has changed and if so recrete it to the cached objects.
 	 * @param parent The parent that is the target for this layout manager.
 	 */
-	private void checkCache(Container parent)
+	private final void checkCache(Composite parent)
 	{
 		if (parent == null)
 			return;
 
-		if (dirty)
-			grid = null;
+		checkConstrMap(parent);
+
+		ContainerWrapper par = checkParent(parent);
 
 		// Check if the grid is valid
 		int mc = PlatformDefaults.getModCount();
@@ -405,189 +382,99 @@ public final class MigLayout implements LayoutManager2, Externalizable
 			lastModCount = mc;
 		}
 
-		if (parent.isValid() == false) {
+		int hash = parent.getSize().hashCode();
+		for (Iterator<ComponentWrapper> it = ccMap.keySet().iterator(); it.hasNext();)
+			hash += it.next().getLayoutHashCode();
 
-			int hash = 0;
-			for (Iterator<ComponentWrapper> it = ccMap.keySet().iterator(); it.hasNext();)
-				hash += it.next().getLayoutHashCode();
-
-			if (hash != lastHash) {
-				grid = null;
-				lastHash = hash;
-			}
-
-			Dimension ps = parent.getSize();
-			if (lastInvalidSize == null || !lastInvalidSize.equals(ps)) {
-				if (grid != null)
-					grid.invalidateContainerSize();
-				lastInvalidSize = ps;
-			}
+		if (hash != lastHash) {
+			grid = null;
+			lastHash = hash;
 		}
-
-		ContainerWrapper par = checkParent(parent);
 
 		setDebug(par, lc.getDebugMillis() > 0);
 
 		if (grid == null)
 			grid = new Grid(par, lc, rowSpecs, colSpecs, ccMap, callbackList);
-
-		dirty = false;
 	}
 
-	private ContainerWrapper checkParent(Container parent)
+	private boolean checkConstrMap(Composite parent)
+	{
+		Control[] comps = parent.getChildren();
+		boolean changed = comps.length != scrConstrMap.size();
+
+		if (changed == false) {
+			for (int i = 0; i < comps.length; i++) {
+				Control c = comps[i];
+				if (scrConstrMap.get(c) != c.getLayoutData()) {
+					changed = true;
+					break;
+				}
+			}
+		}
+
+		if (changed) {
+			scrConstrMap.clear();
+			for (int i = 0; i < comps.length; i++) {
+				Control c = comps[i];
+				setComponentConstraintsImpl(c, c.getLayoutData(), true);
+			}
+		}
+		return changed;
+	}
+
+	private final ContainerWrapper checkParent(Composite parent)
 	{
 		if (parent == null)
 			return null;
 
 		if (cacheParentW == null || cacheParentW.getComponent() != parent)
-			cacheParentW = new SwingContainerWrapper(parent);
+			cacheParentW = new SwtContainerWrapper(parent);
 
 		return cacheParentW;
 	}
 
-	private long lastSize = 0;
-
-	public void layoutContainer(final Container parent)
-	{
-		synchronized(parent.getTreeLock()) {
-			checkCache(parent);
-
-			Insets i = parent.getInsets();
-			int[] b = new int[] {
-					i.left,
-					i.top,
-					parent.getWidth() - i.left - i.right,
-					parent.getHeight() - i.top - i.bottom
-			};
-
-			if (grid.layout(b, lc.getAlignX(), lc.getAlignY(), getDebug(), true)) {
-				grid = null;
-				checkCache(parent);
-				grid.layout(b, lc.getAlignX(), lc.getAlignY(), getDebug(), false);
-			}
-
-			long newSize = grid.getHeight()[1] + (((long) grid.getWidth()[1]) << 32);
-			if (lastSize != newSize) {
-				lastSize = newSize;
-				SwingUtilities.invokeLater(new Runnable() { // Added 2008-12-04
-					public void run() {
-						adjustWindowSize(checkParent(parent));
-					}
-				});
-			}
-
-			lastInvalidSize = null;
-		}
-	}
-
-	/** Checks the parent window if its size is within parameters as set by the LC.
-	 * @param parent The parent who's window to possibly adjust the size for.
-	 */
-	private void adjustWindowSize(ContainerWrapper parent)
-	{
-		BoundSize wBounds = lc.getPackWidth();
-		BoundSize hBounds = lc.getPackHeight();
-
-		if (wBounds == null && hBounds == null)
-			return;
-
-		Window win = ((Window) SwingUtilities.getAncestorOfClass(Window.class, (Component) parent.getComponent()));
-		if (win == null)
-			return;
-
-		Dimension prefSize = win.getPreferredSize();
-		int targW = constrain(checkParent(win), win.getWidth(), prefSize.width, wBounds);
-		int targH = constrain(checkParent(win), win.getHeight(), prefSize.height, hBounds);
-
-		int x = Math.round(win.getX() - ((targW - win.getWidth()) * (1 - lc.getPackWidthAlign())));
-		int y = Math.round(win.getY() - ((targH - win.getHeight()) * (1 - lc.getPackHeightAlign())));
-
-		win.setBounds(x, y, targW, targH);
-	}
-
-	private int constrain(ContainerWrapper parent, int winSize, int prefSize, BoundSize constrain)
-	{
-		if (constrain == null)
-			return winSize;
-
-		int retSize = winSize;
-		UnitValue wUV = constrain.getPreferred();
-		if (wUV != null)
-			retSize = wUV.getPixels(prefSize, parent, parent);
-
-		retSize = constrain.constrain(retSize, prefSize, parent);
-
-		return constrain.getGapPush() ? Math.max(winSize, retSize) : retSize;
-	}
-
-	public Dimension minimumLayoutSize(Container parent)
-	{
-		synchronized(parent.getTreeLock()) {
-			return getSizeImpl(parent, LayoutUtil.MIN);
-		}
-	}
-
-	public Dimension preferredLayoutSize(Container parent)
-	{
-		synchronized(parent.getTreeLock()) {
-			return getSizeImpl(parent, LayoutUtil.PREF);
-		}
-	}
-
-	public Dimension maximumLayoutSize(Container parent)
-	{
-		return new Dimension(Short.MAX_VALUE, Short.MAX_VALUE);
-	}
-
-	// Implementation method that does the job.
-	private Dimension getSizeImpl(Container parent, int sizeType)
-	{
-		checkCache(parent);
-
-		Insets i = parent.getInsets();
-
-		int w = LayoutUtil.getSizeSafe(grid != null ? grid.getWidth() : null, sizeType) + i.left + i.right;
-		int h = LayoutUtil.getSizeSafe(grid != null ? grid.getHeight() : null, sizeType) + i.top + i.bottom;
-
-		return new Dimension(w, h);
-	}
-
-	public float getLayoutAlignmentX(Container parent)
+	public float getLayoutAlignmentX(Composite parent)
 	{
 		return lc != null && lc.getAlignX() != null ? lc.getAlignX().getPixels(1, checkParent(parent), null) : 0;
 	}
 
-	public float getLayoutAlignmentY(Container parent)
+	public float getLayoutAlignmentY(Composite parent)
 	{
 		return lc != null && lc.getAlignY() != null ? lc.getAlignY().getPixels(1, checkParent(parent), null) : 0;
 	}
 
-	public void addLayoutComponent(String s, Component comp)
+	protected Point computeSize(Composite parent, int wHint, int hHint, boolean flushCache)
 	{
-		addLayoutComponent(comp, s);
+		checkCache(parent);
+
+		int w = LayoutUtil.getSizeSafe(grid != null ? grid.getWidth() : null, LayoutUtil.PREF);
+		int h = LayoutUtil.getSizeSafe(grid != null ? grid.getHeight() : null, LayoutUtil.PREF);
+
+		return new Point(w, h);
 	}
 
-	public void addLayoutComponent(Component comp, Object constraints)
+	protected void layout(Composite parent, boolean flushCache)
 	{
-		synchronized(comp.getParent().getTreeLock()) {
-			setComponentConstraintsImpl(comp, constraints, true);
+		checkCache(parent);
+
+		Rectangle r = parent.getClientArea();
+		int[] b = new int[] {r.x, r.y, r.width, r.height};
+
+		final boolean layoutAgain = grid.layout(b, lc.getAlignX(), lc.getAlignY(), getDebug(), true);
+
+		if (layoutAgain) {
+			grid = null;
+			checkCache(parent);
+			grid.layout(b, lc.getAlignX(), lc.getAlignY(), getDebug(), false);
 		}
 	}
 
-	public void removeLayoutComponent(Component comp)
+	protected boolean flushCache(Control control)
 	{
-		synchronized(comp.getParent().getTreeLock()) {
-			scrConstrMap.remove(comp);
-			ccMap.remove(new SwingComponentWrapper(comp));
-		}
-	}
+//		if (lc.isNoCache()) // Commented for 3.5 since there was too often that the "nocache" was needed and the user did not know.
+			grid = null;
 
-	public void invalidateLayout(Container target)
-	{
-//		if (lc.isNoCache())  // Commented for 3.5 since there was too often that the "nocache" was needed and the user did not know.
-		dirty = true;
-
-		// the validity of components is maintained automatically.
+		return true;
 	}
 
 	// ************************************************
@@ -610,20 +497,26 @@ public final class MigLayout implements LayoutManager2, Externalizable
 			LayoutUtil.writeAsXML(out, this);
 	}
 
-	private static class MyDebugRepaintListener implements ActionListener
+	private static class MyDebugRepaintTask extends TimerTask
 	{
 		private final WeakReference<MigLayout> layoutRef;
 
-		private MyDebugRepaintListener(MigLayout layout)
+		private MyDebugRepaintTask(MigLayout layout)
 		{
 			this.layoutRef = new WeakReference<MigLayout>(layout);
 		}
 
-		public void actionPerformed(ActionEvent e)
+		public void run()
 		{
-			MigLayout layout = layoutRef.get();
-			if (layout != null && layout.grid != null)
-				layout.grid.paintDebug();
+			final MigLayout layout = layoutRef.get();
+			if (layout != null && layout.grid != null) {
+				Display.getDefault ().asyncExec(new Runnable () {
+					public void run () {
+						if (layout.grid != null)
+							layout.grid.paintDebug();
+					}
+				});
+			}
 		}
 	}
 }

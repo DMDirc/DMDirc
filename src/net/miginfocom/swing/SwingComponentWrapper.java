@@ -1,3 +1,4 @@
+package net.miginfocom.swing;
 /*
  * License (BSD):
  * ==============
@@ -31,9 +32,6 @@
  * @author Mikael Grev, MiG InfoCom AB
  *         Date: 2006-sep-08
  */
-
-package net.miginfocom.swing;
-
 import net.miginfocom.layout.ComponentWrapper;
 import net.miginfocom.layout.ContainerWrapper;
 import net.miginfocom.layout.PlatformDefaults;
@@ -47,384 +45,408 @@ import java.util.IdentityHashMap;
 
 /**
  */
-public class SwingComponentWrapper implements ComponentWrapper {
+public class SwingComponentWrapper implements ComponentWrapper
+{
+	private static boolean maxSet = false;
 
-    private static boolean maxSet = false;
-    private static boolean vp = true;
-    /** Debug color for component bounds outline.
-     */
-    private static final Color DB_COMP_OUTLINE = new Color(0, 0, 200);
-    private final Component c;
-    private int compType = TYPE_UNSET;
-    private final boolean bl;
+	private static boolean vp = true;
 
-    public SwingComponentWrapper(Component c) {
-        this.c = c;
-        bl = getBaseline(c.getWidth(), c.getHeight()) != -1;
-    }
+	/** Debug color for component bounds outline.
+	 */
+	private static final Color DB_COMP_OUTLINE = new Color(0, 0, 200);
 
-    @Override
-    public final int getBaseline(int width, int height) {
-        if (BL_METHOD == null) {
-            return -1;
-        }
-        try {
-            Object[] args = new Object[]{
-                new Integer(width == -1 ? c.getWidth() : width),
-                new Integer(height == -1 ? c.getHeight() : height)
-            };
-            return ((Integer) BL_METHOD.invoke(c, args)).intValue();
-        } catch (Exception e) {
-            return -1;
-        }
-    }
+	private final Component c;
+	private int compType = TYPE_UNSET;
+	private Boolean bl = null;
+	private boolean prefCalled = false;
 
-    @Override
-    public final Object getComponent() {
-        return c;
-    }
-    /** Cache.
-     */
-    private final static IdentityHashMap<FontMetrics, Point.Float> FM_MAP = new IdentityHashMap<FontMetrics, Point.Float>(4);
-    private final static Font SUBST_FONT = new Font("sansserif", Font.PLAIN, 11);
+	public SwingComponentWrapper(Component c)
+	{
+		this.c = c;
+	}
 
-    @Override
-    public final float getPixelUnitFactor(boolean isHor) {
-        switch (PlatformDefaults.getLogicalPixelBase()) {
-            case PlatformDefaults.BASE_FONT_SIZE:
-                Font font = c.getFont();
-                FontMetrics fm = c.getFontMetrics(font != null ? font : SUBST_FONT);
-                Point.Float p = FM_MAP.get(fm);
-                if (p == null) {
-                    Rectangle2D r = fm.getStringBounds("X", c.getGraphics());
-                    p = new Point.Float(((float) r.getWidth()) / 6f, ((float) r.getHeight()) / 13.27734375f);
-                    FM_MAP.put(fm, p);
-                }
-                return isHor ? p.x : p.y;
+	public final int getBaseline(int width, int height)
+	{
+		if (BL_METHOD == null)
+			return -1;
 
-            case PlatformDefaults.BASE_SCALE_FACTOR:
+		try {
+			Object[] args = new Object[] {
+				new Integer(width < 0 ? c.getWidth() : width),
+				new Integer(height < 0 ? c.getHeight() : height)
+			};
+			return ((Integer) BL_METHOD.invoke(c, args)).intValue();
+		} catch (Exception e) {
+			return -1;
+		}
+	}
 
-                Float s = isHor ? PlatformDefaults.getHorizontalScaleFactor() : PlatformDefaults.getVerticalScaleFactor();
-                if (s != null) {
-                    return s.floatValue();
-                }
-                return (isHor ? getHorizontalScreenDPI() : getVerticalScreenDPI()) / (float) PlatformDefaults.getDefaultDPI();
+	public final Object getComponent()
+	{
+		return c;
+	}
 
-            default:
-                return 1f;
-        }
-    }
+	/** Cache.
+	 */
+	private final static IdentityHashMap<FontMetrics, Point.Float> FM_MAP = new IdentityHashMap<FontMetrics, Point.Float>(4);
+	private final static Font SUBST_FONT = new Font("sansserif", Font.PLAIN, 11);
 
-    @Override
-    public final int getX() {
-        return c.getX();
-    }
+	public final float getPixelUnitFactor(boolean isHor)
+	{
+		switch (PlatformDefaults.getLogicalPixelBase()) {
+			case PlatformDefaults.BASE_FONT_SIZE:
+				Font font = c.getFont();
+				FontMetrics fm = c.getFontMetrics(font != null ? font : SUBST_FONT);
+				Point.Float p = FM_MAP.get(fm);
+				if (p == null) {
+					Rectangle2D r = fm.getStringBounds("X", c.getGraphics());
+					p = new Point.Float(((float) r.getWidth()) / 6f, ((float) r.getHeight()) / 13.27734375f);
+					FM_MAP.put(fm, p);
+				}
+				return isHor ? p.x : p.y;
 
-    @Override
-    public final int getY() {
-        return c.getY();
-    }
+			case PlatformDefaults.BASE_SCALE_FACTOR:
 
-    @Override
-    public final int getHeight() {
-        return c.getHeight();
-    }
+				Float s = isHor ? PlatformDefaults.getHorizontalScaleFactor() : PlatformDefaults.getVerticalScaleFactor();
+				if (s != null)
+					return s.floatValue();
+				return (isHor ? getHorizontalScreenDPI() : getVerticalScreenDPI()) / (float) PlatformDefaults.getDefaultDPI();
 
-    @Override
-    public final int getWidth() {
-        return c.getWidth();
-    }
+			default:
+				return 1f;
+		}
+	}
 
-    @Override
-    public final int getScreenLocationX() {
-        Point p = new Point();
-        SwingUtilities.convertPointToScreen(p, c);
-        return p.x;
-    }
-
-    @Override
-    public final int getScreenLocationY() {
-        Point p = new Point();
-        SwingUtilities.convertPointToScreen(p, c);
-        return p.y;
-    }
-
-    @Override
-    public final int getMinimumHeight(int sz) {
-        c.getPreferredSize(); // To defeat a bug where the minimum size is different before and after the first call to getPreferredSize();
-
-        return c.getMinimumSize().height;
-    }
-
-    @Override
-    public final int getMinimumWidth(int sz) {
-        c.getPreferredSize(); // To defeat a bug where the minimum size is different before and after the first call to getPreferredSize();
-
-        return c.getMinimumSize().width;
-    }
-
-    @Override
-    public final int getPreferredHeight(int sz) {
-        // If the component has not got size yet and there is a size hint, trick Swing to return a better height.
-        if (c.getWidth() == 0 && c.getHeight() == 0 && sz != -1) {
-            setBounds(c.getX(), c.getY(), sz, 1);
-        }
-        return c.getPreferredSize().height;
-    }
-
-    @Override
-    public final int getPreferredWidth(int sz) {
-        // If the component has not got size yet and there is a size hint, trick Swing to return a better height.
-        if (c.getWidth() == 0 && c.getHeight() == 0 && sz != -1) {
-            setBounds(c.getX(), c.getY(), 1, sz);
-        }
-        return c.getPreferredSize().width;
-    }
-
-    @Override
-    public final int getMaximumHeight(int sz) {
-        if (!isMaxSet(c)) {
-            return Short.MAX_VALUE;
-        }
-        return c.getMaximumSize().height;
-    }
-
-    @Override
-    public final int getMaximumWidth(int sz) {
-        if (!isMaxSet(c)) {
-            return Short.MAX_VALUE;
-        }
-        return c.getMaximumSize().width;
-    }
-
-    private boolean isMaxSet(Component c) {
-        if (IMS_METHOD != null) {
-            try {
-                return ((Boolean) IMS_METHOD.invoke(c, (Object[]) null)).booleanValue();
-            } catch (Exception e) {
-                IMS_METHOD = null;  // So we do not try every time.
-
-            }
-        }
-        return isMaxSizeSetOn1_4();
-    }
-
-    @Override
-    public final ContainerWrapper getParent() {
-        Container p = c.getParent();
-        return p != null ? new SwingContainerWrapper(p) : null;
-    }
-
-    @Override
-    public final int getHorizontalScreenDPI() {
-//		try {
-//			return c.getToolkit().getScreenResolution();
-//		} catch (HeadlessException ex) {
-        return PlatformDefaults.getDefaultDPI();
+//	/** Cache.
+//	 */
+//	private final static IdentityHashMap<FontMetrics, Point.Float> FM_MAP2 = new IdentityHashMap<FontMetrics, Point.Float>(4);
+//	private final static Font SUBST_FONT2 = new Font("sansserif", Font.PLAIN, 11);
+//
+//	public float getDialogUnit(boolean isHor)
+//	{
+//		Font font = c.getFont();
+//		FontMetrics fm = c.getFontMetrics(font != null ? font : SUBST_FONT2);
+//		Point.Float dluP = FM_MAP2.get(fm);
+//		if (dluP == null) {
+//			float w = fm.charWidth('X') / 4f;
+//			int ascent = fm.getAscent();
+//			float h = (ascent > 14 ? ascent : ascent + (15 - ascent) / 3) / 8f;
+//
+//			dluP = new Point.Float(w, h);
+//			FM_MAP2.put(fm, dluP);
 //		}
-    }
+//		return isHor ? dluP.x : dluP.y;
+//	}
 
-    @Override
-    public final int getVerticalScreenDPI() {
-//		try {
-//			return c.getToolkit().getScreenResolution();
-//		} catch (HeadlessException ex) {
-        return PlatformDefaults.getDefaultDPI();
-//		}
-    }
+	public final int getX()
+	{
+		return c.getX();
+	}
 
-    @Override
-    public final int getScreenWidth() {
-        try {
-            return c.getToolkit().getScreenSize().width;
-        } catch (HeadlessException ex) {
-            return 1024;
-        }
-    }
+	public final int getY()
+	{
+		return c.getY();
+	}
 
-    @Override
-    public final int getScreenHeight() {
-        try {
-            return c.getToolkit().getScreenSize().height;
-        } catch (HeadlessException ex) {
-            return 768;
-        }
-    }
+	public final int getHeight()
+	{
+		return c.getHeight();
+	}
 
-    @Override
-    public final boolean hasBaseline() {
-        return bl;
-    }
+	public final int getWidth()
+	{
+		return c.getWidth();
+	}
 
-    @Override
-    public final String getLinkId() {
-        return c.getName();
-    }
+	public final int getScreenLocationX()
+	{
+		Point p = new Point();
+		SwingUtilities.convertPointToScreen(p, c);
+		return p.x;
+	}
 
-    @Override
-    public final void setBounds(int x, int y, int width, int height) {
-        c.setBounds(x, y, width, height);
-    }
+	public final int getScreenLocationY()
+	{
+		Point p = new Point();
+		SwingUtilities.convertPointToScreen(p, c);
+		return p.y;
+	}
 
-    @Override
-    public boolean isVisible() {
-        return c.isVisible();
-    }
+	public final int getMinimumHeight(int sz)
+	{
+		if (prefCalled == false) {
+			c.getPreferredSize(); // To defeat a bug where the minimum size is different before and after the first call to getPreferredSize();
+			prefCalled = true;
+		}
+		return c.getMinimumSize().height;
+	}
 
-    @Override
-    public final int[] getVisualPadding() {
-        if (vp && c instanceof JTabbedPane) {
-            if (UIManager.getLookAndFeel().getClass().getName().endsWith("WindowsLookAndFeel")) {
-                return new int[]{-1, 0, 2, 2};
-            }
-        }
-        return null;
-    }
+	public final int getMinimumWidth(int sz)
+	{
+		if (prefCalled == false) {
+			c.getPreferredSize(); // To defeat a bug where the minimum size is different before and after the first call to getPreferredSize();
+			prefCalled = true;
+		}
+		return c.getMinimumSize().width;
+	}
 
-    public static boolean isMaxSizeSetOn1_4() {
-        return maxSet;
-    }
+	public final int getPreferredHeight(int sz)
+	{
+		// If the component has not got size yet and there is a size hint, trick Swing to return a better height.
+		if (c.getWidth() == 0 && c.getHeight() == 0 && sz != -1)
+			setBounds(c.getX(), c.getY(), sz, 1);
 
-    public static void setMaxSizeSetOn1_4(boolean b) {
-        maxSet = b;
-    }
+		return c.getPreferredSize().height;
+	}
 
-    public final static boolean isVisualPaddingEnabled() {
-        return vp;
-    }
+	public final int getPreferredWidth(int sz)
+	{
+		// If the component has not got size yet and there is a size hint, trick Swing to return a better height.
+		if (c.getWidth() == 0 && c.getHeight() == 0 && sz != -1)
+			setBounds(c.getX(), c.getY(), 1, sz);
 
-    public final static void setVisualPaddingEnabled(boolean b) {
-        vp = b;
-    }
+		return c.getPreferredSize().width;
+	}
 
-    @Override
-    public final void paintDebugOutline() {
-        if (c.isShowing() == false) {
-            return;
-        }
-        Graphics2D g = (Graphics2D) c.getGraphics();
-        if (g == null) {
-            return;
-        }
-        g.setPaint(DB_COMP_OUTLINE);
-        g.setStroke(new BasicStroke(1f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10f, new float[]{2f, 4f}, 0));
-        g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
-    }
+	public final int getMaximumHeight(int sz)
+	{
+		if (!isMaxSet(c))
+			return Short.MAX_VALUE;
 
-    @Override
-    public int getComponetType(boolean disregardScrollPane) {
-        if (compType == TYPE_UNSET) {
-            compType = checkType(disregardScrollPane);
-        }
-        return compType;
-    }
+		return c.getMaximumSize().height;
+	}
 
-    @Override
-    public int getLayoutHashCode() {
-        Dimension d = c.getMaximumSize();
-        int h = d.width + (d.height << 5);
+	public final int getMaximumWidth(int sz)
+	{
+		if (!isMaxSet(c))
+			return Short.MAX_VALUE;
 
-        d = c.getPreferredSize();
-        h += (d.width << 10) + (d.height << 15);
+		return c.getMaximumSize().width;
+	}
 
-        d = c.getMinimumSize();
-        h += (d.width << 20) + (d.height << 25);
 
-        if (c.isVisible()) {
-            h += 1324511;
-        }
-        String id = getLinkId();
-        if (id != null) {
-            h += id.hashCode();
-        }
-        return h;
+	private boolean isMaxSet(Component c)
+	{
+		if (IMS_METHOD != null) {
+			try {
+				return ((Boolean) IMS_METHOD.invoke(c, (Object[]) null)).booleanValue();
+			} catch (Exception e) {
+				IMS_METHOD = null;  // So we do not try every time.
+			}
+		}
+		return isMaxSizeSetOn1_4();
+	}
 
-    // Since 2.3 will check the isValid instead everything that affects that can be removed from the layout hashcode.
+	public final ContainerWrapper getParent()
+	{
+		Container p = c.getParent();
+		return p != null ? new SwingContainerWrapper(p) : null;
+	}
+
+	public final int getHorizontalScreenDPI()
+	{
+		return PlatformDefaults.getDefaultDPI();
+	}
+
+	public final int getVerticalScreenDPI()
+	{
+		return PlatformDefaults.getDefaultDPI();
+	}
+
+	public final int getScreenWidth()
+	{
+		try {
+			return c.getToolkit().getScreenSize().width;
+		} catch (HeadlessException ex) {
+			return 1024;
+		}
+	}
+
+	public final int getScreenHeight()
+	{
+		try {
+			return c.getToolkit().getScreenSize().height;
+		} catch (HeadlessException ex) {
+			return 768;
+		}
+	}
+
+	public final boolean hasBaseline()
+	{
+		if (bl == null) {
+			Dimension d = c.getMinimumSize();
+			bl = new Boolean(getBaseline(d.width, d.height) > -1);
+		}
+		return bl.booleanValue();
+	}
+
+	public final String getLinkId()
+	{
+		return c.getName();
+	}
+
+	public final void setBounds(int x, int y, int width, int height)
+	{
+		c.setBounds(x, y, width, height);
+	}
+
+	public boolean isVisible()
+	{
+		return c.isVisible();
+	}
+
+	public final int[] getVisualPadding()
+	{
+		if (vp && c instanceof JTabbedPane) {
+			if (UIManager.getLookAndFeel().getClass().getName().endsWith("WindowsLookAndFeel"))
+				return new int[] {-1, 0, 2, 2};
+		}
+		return null;
+	}
+
+	public static boolean isMaxSizeSetOn1_4()
+	{
+		return maxSet;
+	}
+
+	public static void setMaxSizeSetOn1_4(boolean b)
+	{
+		maxSet = b;
+	}
+
+	public final static boolean isVisualPaddingEnabled()
+	{
+		return vp;
+	}
+
+	public final static void setVisualPaddingEnabled(boolean b)
+	{
+		vp = b;
+	}
+
+	public final void paintDebugOutline()
+	{
+		if (c.isShowing() == false)
+			return;
+
+		Graphics2D g = (Graphics2D) c.getGraphics();
+		if (g == null)
+			return;
+
+		g.setPaint(DB_COMP_OUTLINE);
+		g.setStroke(new BasicStroke(1f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10f, new float[] {2f, 4f}, 0));
+		g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
+	}
+
+	public int getComponetType(boolean disregardScrollPane)
+	{
+		if (compType == TYPE_UNSET)
+			compType = checkType(disregardScrollPane);
+
+		return compType;
+	}
+
+	public int getLayoutHashCode()
+	{
+		Dimension d = c.getMaximumSize();
+		int h = d.width + (d.height << 5);
+
+		d = c.getPreferredSize();
+		h += (d.width << 10) + (d.height << 15);
+
+		d = c.getMinimumSize();
+		h += (d.width << 20) + (d.height << 25);
+
+		if (c.isVisible())
+			h += 1324511;
+
+		String id = getLinkId();
+		if (id != null)
+			h += id.hashCode();
+		return h;
+
+		// Since 2.3 will check the isValid instead everything that affects that can be removed from the layout hashcode.
 
 //		String id = getLinkId();
 //		return id != null ? id.hashCode() : 1;
-    }
+	}
 
-    private final int checkType(boolean disregardScrollPane) {
-        Component thisC = this.c;
+	private final int checkType(boolean disregardScrollPane)
+	{
+		Component c = this.c;
 
-        if (disregardScrollPane) {
-            if (thisC instanceof JScrollPane) {
-                thisC = ((JScrollPane) thisC).getViewport().getView();
-            } else if (thisC instanceof ScrollPane) {
-                thisC = ((ScrollPane) thisC).getComponent(0);
-            }
-        }
+		if (disregardScrollPane) {
+			if (c instanceof JScrollPane) {
+				c = ((JScrollPane) c).getViewport().getView();
+			} else if (c instanceof ScrollPane) {
+				c = ((ScrollPane) c).getComponent(0);
+			}
+		}
 
-        if (thisC instanceof JTextField || thisC instanceof TextField) {
-            return TYPE_TEXT_FIELD;
-        } else if (thisC instanceof JLabel || thisC instanceof Label) {
-            return TYPE_LABEL;
-        } else if (thisC instanceof JToggleButton || thisC instanceof Checkbox) {
-            return TYPE_CHECK_BOX;
-        } else if (thisC instanceof AbstractButton || thisC instanceof Button) {
-            return TYPE_BUTTON;
-        } else if (thisC instanceof JComboBox || thisC instanceof Choice) {
-            return TYPE_LABEL;
-        } else if (thisC instanceof JTextComponent || thisC instanceof TextComponent) {
-            return TYPE_TEXT_AREA;
-        } else if (thisC instanceof JPanel || thisC instanceof Canvas) {
-            return TYPE_PANEL;
-        } else if (thisC instanceof JList || thisC instanceof List) {
-            return TYPE_LIST;
-        } else if (thisC instanceof JTable) {
-            return TYPE_TABLE;
-        } else if (thisC instanceof JSeparator) {
-            return TYPE_SEPARATOR;
-        } else if (thisC instanceof JSpinner) {
-            return TYPE_SPINNER;
-        } else if (thisC instanceof JProgressBar) {
-            return TYPE_PROGRESS_BAR;
-        } else if (thisC instanceof JSlider) {
-            return TYPE_SLIDER;
-        } else if (thisC instanceof JScrollPane) {
-            return TYPE_SCROLL_PANE;
-        } else if (thisC instanceof JScrollBar || thisC instanceof Scrollbar) {
-            return TYPE_SCROLL_BAR;
-        } else if (thisC instanceof Container) {    // only AWT components is not containers.
+		if (c instanceof JTextField || c instanceof TextField) {
+			return TYPE_TEXT_FIELD;
+		} else if (c instanceof JLabel || c instanceof Label) {
+			return TYPE_LABEL;
+		} else if (c instanceof JToggleButton || c instanceof Checkbox) {
+			return TYPE_CHECK_BOX;
+		} else if (c instanceof AbstractButton || c instanceof Button) {
+			return TYPE_BUTTON;
+		} else if (c instanceof JComboBox || c instanceof Choice) {
+			return TYPE_LABEL;
+		} else if (c instanceof JTextComponent || c instanceof TextComponent) {
+			return TYPE_TEXT_AREA;
+		} else if (c instanceof JPanel || c instanceof Canvas) {
+			return TYPE_PANEL;
+		} else if (c instanceof JList || c instanceof List) {
+			return TYPE_LIST;
+		} else if (c instanceof JTable) {
+			return TYPE_TABLE;
+		} else if (c instanceof JSeparator) {
+			return TYPE_SEPARATOR;
+		} else if (c instanceof JSpinner) {
+			return TYPE_SPINNER;
+		} else if (c instanceof JProgressBar) {
+			return TYPE_PROGRESS_BAR;
+		} else if (c instanceof JSlider) {
+			return TYPE_SLIDER;
+		} else if (c instanceof JScrollPane) {
+			return TYPE_SCROLL_PANE;
+		} else if (c instanceof JScrollBar || c instanceof Scrollbar) {
+			return TYPE_SCROLL_BAR;
+		} else if (c instanceof Container) {    // only AWT components is not containers.
+			return TYPE_CONTAINER;
+		}
+		return TYPE_UNKNOWN;
+	}
 
-            return TYPE_CONTAINER;
-        }
-        return TYPE_UNKNOWN;
-    }
+	public final int hashCode()
+	{
+		return getComponent().hashCode();
+	}
 
-    @Override
-    public final int hashCode() {
-        return getComponent().hashCode();
-    }
+	public final boolean equals(Object o)
+	{
+		if (o instanceof ComponentWrapper == false)
+			return false;
 
-    @Override
-    public final boolean equals(Object o) {
-        if (o instanceof ComponentWrapper == false) {
-            return false;
-        }
-        return getComponent().equals(((ComponentWrapper) o).getComponent());
-    }
-    /** Cached method used for getting base line with reflection.
-     */
-    private static Method BL_METHOD = null;
-    
+		return getComponent().equals(((ComponentWrapper) o).getComponent());
+	}
 
-    static {
-        try {
-            BL_METHOD = Component.class.getDeclaredMethod("getBaseline", new Class[]{int.class, int.class});
-        } catch (Throwable e) { // No such method or security exception
+	/** Cached method used for getting base line with reflection.
+	 */
+	private static Method BL_METHOD = null;
+	static {
+		try {
+			BL_METHOD = Component.class.getDeclaredMethod("getBaseline", new Class[] {int.class, int.class});
+		} catch (Throwable e) { // No such method or security exception
+		}
+	}
 
-        }
-    }
-    private static Method IMS_METHOD = null;
-    
-
-    static {
-        try {
-            IMS_METHOD = Component.class.getDeclaredMethod("isMaximumSizeSet", (Class[]) null);
-        } catch (Throwable e) { // No such method or security exception
-
-        }
-    }
+	private static Method IMS_METHOD = null;
+	static {
+		try {
+			IMS_METHOD = Component.class.getDeclaredMethod("isMaximumSizeSet", (Class[]) null);
+		} catch (Throwable e) { // No such method or security exception
+		}
+	}
 }
