@@ -381,7 +381,7 @@ public class PreferencesManager {
                 "Show colour picker dialog when using colour control codes?"));
         category.addSetting(new PreferencesSetting("ui", "lookandfeel",
                 sysLafName, "Look and feel", "The Java look and feel to use",
-                lafs).setRestartNeeded());
+                lafs));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "antialias", "false", "System anti-alias",
                 "Anti-alias all fonts?"));

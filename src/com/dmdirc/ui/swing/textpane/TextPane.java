@@ -25,12 +25,10 @@ package com.dmdirc.ui.swing.textpane;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.messages.IRCTextAttribute;
 import com.dmdirc.ui.messages.Styliser;
 
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
@@ -41,7 +39,6 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.font.ImageGraphicAttribute;
 import java.awt.font.TextAttribute;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
@@ -52,6 +49,7 @@ import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.plaf.ComponentUI;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
@@ -103,6 +101,8 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      */
     public TextPane(final FrameContainer frame) {
         super();
+        
+        setUI(new TextPaneUI());
 
         this.frame = frame;
 
@@ -113,8 +113,6 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         setLayout(new MigLayout("fill"));
 
         canvas = new TextPaneCanvas(this, document);
-
-        setBorder(UIManager.getBorder("TextField.border"));
 
         add(canvas, "dock center");
 
@@ -151,6 +149,18 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             }
         };
         addMouseMotionListener(doScrollRectToVisible);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void updateUI() {
+        setUI(new TextPaneUI());
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void setUI(final ComponentUI ui) {
+        super.setUI(new TextPaneUI());
     }
 
     /**
