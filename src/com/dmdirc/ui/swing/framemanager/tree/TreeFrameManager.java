@@ -19,7 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.dmdirc.ui.swing.framemanager.tree;
 
 import com.dmdirc.FrameContainer;
@@ -348,11 +347,13 @@ public final class TreeFrameManager implements FrameManager,
             @Override
             public void run() {
                 synchronized (nodes) {
-                    final NodeLabel label = nodes.get(window.getContainer()).
-                            getLabel();
-                    if (label != null) {
-                        label.iconChanged(window, icon);
-                        tree.repaint();
+                    final TreeViewNode node = nodes.get(window.getContainer());
+                    if (node != null) {
+                        final NodeLabel label = node.getLabel();
+                        if (label != null) {
+                            label.iconChanged(window, icon);
+                            tree.repaint();
+                        }
                     }
                 }
             }
