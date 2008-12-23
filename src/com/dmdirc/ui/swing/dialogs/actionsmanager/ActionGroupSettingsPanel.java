@@ -109,7 +109,7 @@ public final class ActionGroupSettingsPanel extends JPanel implements ActionList
      */
     private void layoutComponents() {
         removeAll();
-        setLayout(new MigLayout("fill, wrap 2, hidemode 3"));
+        setLayout(new MigLayout("fill, hidemode 3"));
 
         for (PreferencesSetting setting : settings) {
             final JLabel label = new JLabel(setting.getTitle());
@@ -126,9 +126,9 @@ public final class ActionGroupSettingsPanel extends JPanel implements ActionList
             final JButton button = new SettingsRevertButton(setting);
             settingMap.put(button, setting);
             button.addActionListener(this);
-            add(label, "");
-            add(component, "split 2, span, growx");
-            add(button, "wrap");
+            add(label, "newline");
+            add(component, "growx");
+            add(button, "");
         }
     }
 
