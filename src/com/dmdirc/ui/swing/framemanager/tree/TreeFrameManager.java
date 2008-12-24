@@ -200,9 +200,9 @@ public final class TreeFrameManager implements FrameManager,
                 tree.expandPath(new TreePath(node.getPath()).getParentPath());
                 final Rectangle view =
                         tree.getRowBounds(tree.getRowForPath(new TreePath(node.getPath())));
-                tree.scrollRectToVisible(new Rectangle(0,
-                        (int) view.getY(),
-                        0, 0));
+                if (view != null) {
+                    tree.scrollRectToVisible(new Rectangle(0, (int) view.getY(), 0, 0));
+                }
                 window.addSelectionListener(TreeFrameManager.this);
                 window.addIconChangeListener(TreeFrameManager.this);
                 window.addNotificationListener(TreeFrameManager.this);

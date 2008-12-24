@@ -24,7 +24,6 @@ package com.dmdirc.ui.swing;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Main;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
@@ -320,8 +319,23 @@ public final class SwingController implements UIController {
         try {
             UIManager.setLookAndFeel(UIUtilities.getLookAndFeel(IdentityManager.getGlobalConfig().
                     getOption("ui", "lookandfeel", "")));
-            for (java.awt.Window window : getMainFrame().getTopLevelWindows()) {
-                SwingUtilities.updateComponentTreeUI(window);
+            for (final java.awt.Window window : getMainFrame().getTopLevelWindows()) {
+                UIUtilities.invokeLater(new Runnable() {
+
+                    /** {@inheritDoc} */
+                    @Override
+                    public void run() {
+                        SwingUtilities.updateComponentTreeUI(window);
+                    }
+                });
+                UIUtilities.invokeLater(new Runnable() {
+
+                    /** {@inheritDoc} */
+                    @Override
+                    public void run() {
+                        window.pack();
+                    }
+                });
             }
         } catch (ClassNotFoundException ex) {
             Logger.userError(ErrorLevel.LOW,
