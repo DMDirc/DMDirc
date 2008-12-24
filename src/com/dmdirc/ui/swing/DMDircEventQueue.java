@@ -19,7 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.dmdirc.ui.swing;
 
 import com.dmdirc.actions.ActionManager;
@@ -32,9 +31,11 @@ import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Point;
+import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+import java.awt.event.WindowEvent;
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import javax.swing.MenuSelectionManager;
@@ -60,6 +61,8 @@ public final class DMDircEventQueue extends EventQueue {
             handleMouseEvent((MouseEvent) event);
         } else if (event instanceof KeyEvent) {
             handleKeyEvent((KeyEvent) event);
+        } else if (event instanceof WindowEvent) {
+            handleWindowEvent((WindowEvent) event);
         }
     }
 
@@ -128,7 +131,7 @@ public final class DMDircEventQueue extends EventQueue {
                             ke.getModifiers()));
                 }
                 break;
-            }
+        }
     }
 
     /**
@@ -165,5 +168,20 @@ public final class DMDircEventQueue extends EventQueue {
         final Point pt = SwingUtilities.convertPoint(me.getComponent(),
                 me.getPoint(), tc);
         menu.show(tc, pt.x, pt.y);
+    }
+
+    /**
+     * Handles window events
+     * 
+     * @param windowEvent Window event
+     */
+    private void handleWindowEvent(final WindowEvent we) {
+        if (we.getSource() instanceof Window) {
+            if (we.getID() == WindowEvent.WINDOW_OPENED) {
+                SwingController.getMainFrame().addTopLevelWindow((Window) we.getSource());
+            } else if (we.getID() == WindowEvent.WINDOW_CLOSED) {
+                SwingController.getMainFrame().delTopLevelWindow((Window) we.getSource());
+            }
+        }
     }
 }

@@ -19,7 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.dmdirc.ui.swing;
 
 import com.dmdirc.FrameContainer;
@@ -50,6 +49,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
@@ -91,6 +92,8 @@ public final class MainFrame extends JFrame implements WindowListener,
     private boolean showVersion;
     /** Menu bar. */
     private MenuBar menu;
+    /** Top level window list. */
+    private List<java.awt.Window> windows;
 
     /**
      * Creates new form MainFrame.
@@ -98,6 +101,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     protected MainFrame() {
         super();
 
+        windows = new ArrayList<java.awt.Window>();
         initComponents();
 
         imageIcon =
@@ -151,14 +155,14 @@ public final class MainFrame extends JFrame implements WindowListener,
             ActionManager.processEvent(CoreActionType.CLIENT_FRAME_CHANGED, null,
                     frame.getContainer());
 
-                try {
-                    ((JInternalFrame) frame).setVisible(true);
-                    ((JInternalFrame) frame).setIcon(false);
-                    ((JInternalFrame) frame).moveToFront();
-                    ((JInternalFrame) frame).setSelected(true);
-                } catch (PropertyVetoException ex) {
-                    Logger.userError(ErrorLevel.LOW, "Unable to set active window");
-                }
+            try {
+                ((JInternalFrame) frame).setVisible(true);
+                ((JInternalFrame) frame).setIcon(false);
+                ((JInternalFrame) frame).moveToFront();
+                ((JInternalFrame) frame).setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.userError(ErrorLevel.LOW, "Unable to set active window");
+            }
         }
         if (frame instanceof InputTextFrame) {
             ((InputTextFrame) frame).requestInputFieldFocus();
@@ -255,7 +259,7 @@ public final class MainFrame extends JFrame implements WindowListener,
      */
     @Override
     public void windowOpened(final WindowEvent windowEvent) {
-    //ignore
+        //ignore
     }
 
     /** 
@@ -275,7 +279,7 @@ public final class MainFrame extends JFrame implements WindowListener,
      */
     @Override
     public void windowClosed(final WindowEvent windowEvent) {
-    //ignore
+        //ignore
     }
 
     /** 
@@ -305,7 +309,7 @@ public final class MainFrame extends JFrame implements WindowListener,
      */
     @Override
     public void windowActivated(final WindowEvent windowEvent) {
-    //ignore
+        //ignore
     }
 
     /** 
@@ -315,7 +319,35 @@ public final class MainFrame extends JFrame implements WindowListener,
      */
     @Override
     public void windowDeactivated(final WindowEvent windowEvent) {
-    //ignore
+        //ignore
+    }
+
+    /**
+     * Adds a top level window to the window list.
+     * 
+     * @param source New window
+     */
+    protected void addTopLevelWindow(final java.awt.Window source) {
+        synchronized (windows) {
+            windows.add(source);
+        }
+    }
+
+    /**
+     * Deletes a top level window to the window list.
+     * 
+     * @param source Old window
+     */
+    protected void delTopLevelWindow(final java.awt.Window source) {
+        synchronized (windows) {
+            windows.remove(source);
+        }
+    }
+
+    public List<java.awt.Window> getTopLevelWindows() {
+        synchronized (windows) {
+            return windows;
+        }
     }
 
     /** Initialiases the frame managers. */
@@ -481,7 +513,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void setParent(final JComponent parent) {
-    //Ignore
+        //Ignore
     }
 
     /** {@inheritDoc}. */

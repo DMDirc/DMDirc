@@ -320,7 +320,9 @@ public final class SwingController implements UIController {
         try {
             UIManager.setLookAndFeel(UIUtilities.getLookAndFeel(IdentityManager.getGlobalConfig().
                     getOption("ui", "lookandfeel", "")));
-            SwingUtilities.updateComponentTreeUI((MainFrame) Main.getUI().getMainWindow());
+            for (java.awt.Window window : getMainFrame().getTopLevelWindows()) {
+                SwingUtilities.updateComponentTreeUI(window);
+            }
         } catch (ClassNotFoundException ex) {
             Logger.userError(ErrorLevel.LOW,
                     "Unable to change Look and Feel: " + ex.getMessage());
