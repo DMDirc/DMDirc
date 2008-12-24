@@ -23,10 +23,9 @@
 package com.dmdirc.ui.swing.textpane;
 
 import java.io.Serializable;
-import java.text.AttributedCharacterIterator;
-import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.event.EventListenerList;
 
 /**
@@ -42,14 +41,14 @@ public final class IRCDocument implements Serializable {
     private static final long serialVersionUID = 4;
     
     /** List of stylised lines of text. */
-    private final List<AttributedString> iterators;
+    private final List<String> iterators;
     
     /** Listener list. */
     private final EventListenerList listeners;
     
     /** Creates a new instance of IRCDocument. */
     public IRCDocument() {
-        iterators = new ArrayList<AttributedString>();
+        iterators = new ArrayList<String>();
         listeners = new EventListenerList();
     }
     
@@ -69,50 +68,8 @@ public final class IRCDocument implements Serializable {
      *
      * @return Line at the specified number or null
      */
-    public AttributedString getLine(final int lineNumber) {
+    public String getLine(final int lineNumber) {
         return iterators.get(lineNumber);
-    }
-    
-    /**
-     * Returns the range of text from the specified iterator.
-     *
-     * @param lineNumber line to get text from
-     *
-     * @return Text in the range from the line
-     */
-    public String getLineText(final int lineNumber) {
-        final AttributedCharacterIterator iterator = getLine(lineNumber).getIterator();
-        return getLineText(iterator, iterator.getBeginIndex(), iterator.getEndIndex());
-    }
-    
-    /**
-     * Returns the range of text from the specified iterator.
-     *
-     * @param lineNumber line to get text from
-     * @param start Start index in the iterator
-     * @param end End index in the iterator
-     *
-     * @return Text in the range from the line
-     */
-    public String getLineText(final int lineNumber, final int start, final int end) {
-        return getLineText(getLine(lineNumber).getIterator(), start, end);
-    }
-    
-    /**
-     * Returns the range of text from the specified iterator.
-     *
-     * @param iterator iterator to get text from
-     * @param start Start index in the iterator
-     * @param end End index in the iterator
-     *
-     * @return Text in the range from the line
-     */
-    public String getLineText(final AttributedCharacterIterator iterator, final int start, final int end) {
-        final StringBuffer text = new StringBuffer();
-        for (iterator.setIndex(start); iterator.getIndex() < end; iterator.next()) {
-            text.append(iterator.current());
-        }
-        return text.toString();
     }
     
     /**
@@ -123,7 +80,7 @@ public final class IRCDocument implements Serializable {
      * @return Length of the line
      */
     public int getLineLength(final int lineNumber) {
-        return iterators.get(lineNumber).getIterator().getEndIndex();
+        return iterators.get(lineNumber).length();
     }    
     
     /**
@@ -131,7 +88,7 @@ public final class IRCDocument implements Serializable {
      * 
      * @param text stylised string to add to the text
      */
-    public void addText(final AttributedString text) {
+    public void addText(final String text) {
         synchronized (iterators) {
             iterators.add(text);
             fireLineAdded(iterators.indexOf(text));
@@ -143,11 +100,26 @@ public final class IRCDocument implements Serializable {
      * 
      * @param text stylised string to add to the text
      */
-    public void addText(final List<AttributedString> text) {
+    public void addText(final List<String> text) {
         synchronized (iterators) {
             final int start = iterators.size();
-            for (AttributedString string : text) {
+            for (String string : text) {
                 iterators.add(string);
+            }
+            fireLinesAdded(start, text.size());
+        }
+    }
+    
+    /**
+     * Adds the stylised string to the canvas.
+     * 
+     * @param text stylised string to add to the text
+     */
+    public void addText(final List<String[]> text) {
+        synchronized (iterators) {
+            final int start = iterators.size();
+            for (String[] string : text) {
+                //iterators.add(string);
             }
             fireLinesAdded(start, text.size());
         }

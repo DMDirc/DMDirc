@@ -239,17 +239,15 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             /** {@inheritDoc} */
             @Override
             public void run() {
-                final List<AttributedString> lines = new LinkedList<AttributedString>();
+                final List<String[]> lines = new LinkedList<String[]>();
                 for (String myLine : encodedLine.split("\n")) {
                     if (timestamp) {
-                        lines.add(TextPane.styledDocumentToAttributedString(
-                                Styliser.getStyledString(new String[]{
+                        lines.add(new String[]{
                             Formatter.formatMessage(getConfigManager(),
                             "timestamp", new Date()), myLine,
-                        })));
+                        });
                     } else {
-                        lines.add(TextPane.styledDocumentToAttributedString(
-                                Styliser.getStyledString(new String[]{myLine,})));
+                        lines.add(new String[]{myLine,});
                     }
 
                     ActionManager.processEvent(CoreActionType.CLIENT_LINE_ADDED,

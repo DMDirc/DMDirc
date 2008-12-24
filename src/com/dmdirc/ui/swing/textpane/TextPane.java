@@ -23,10 +23,6 @@
 package com.dmdirc.ui.swing.textpane;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.messages.IRCTextAttribute;
-import com.dmdirc.ui.messages.Styliser;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -39,24 +35,11 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.font.TextAttribute;
 import java.text.AttributedCharacterIterator;
-import java.text.AttributedString;
-import java.util.Enumeration;
 import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.plaf.ComponentUI;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Element;
-import javax.swing.text.StyleConstants.CharacterConstants;
-import javax.swing.text.StyleConstants.ColorConstants;
-import javax.swing.text.StyleConstants.FontConstants;
-import javax.swing.text.StyledDocument;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -156,149 +139,13 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public void updateUI() {
         setUI(new TextPaneUI());
     }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void setUI(final ComponentUI ui) {
-        super.setUI(new TextPaneUI());
-    }
 
     /**
      * Adds styled text to the textpane.
      * @param text styled text to add
      */
-    public void addText(final AttributedString text) {
+    public void addText(final List<String[]> text) {
         document.addText(text);
-    }
-
-    /**
-     * Adds styled text to the textpane.
-     * @param text styled text to add
-     */
-    public void addText(final List<AttributedString> text) {
-        document.addText(text);
-    }
-
-    /**
-     * Stylises the specified string and adds it to the passed TextPane.
-     *
-     * @param string The line to be stylised and added
-     */
-    public void addStyledString(final String string) {
-        addStyledString(new String[]{string,});
-    }
-
-    /**
-     * Stylises the specified string and adds it to the passed TextPane.
-     *
-     * @param strings The strings to be stylised and added to a line
-     */
-    public void addStyledString(final String[] strings) {
-        addText(styledDocumentToAttributedString(
-                Styliser.getStyledString(strings)));
-    }
-
-    /**
-     * Converts a StyledDocument into an AttributedString.
-     *
-     * @param doc StyledDocument to convert
-     *
-     * @return AttributedString representing the specified StyledDocument
-     */
-    public static AttributedString styledDocumentToAttributedString(
-            final StyledDocument doc) {
-        //Now lets get hacky, loop through the styled document and add all 
-        //styles to an attributedString
-        AttributedString attString = null;
-        final Element line = doc.getParagraphElement(0);
-        try {
-            attString = new AttributedString(line.getDocument().getText(0,
-                    line.getDocument().getLength()));
-        } catch (BadLocationException ex) {
-            Logger.userError(ErrorLevel.MEDIUM,
-                    "Unable to insert styled string: " + ex.getMessage());
-        }
-
-        if (attString.getIterator().getEndIndex() != 0) {
-            attString.addAttribute(TextAttribute.SIZE,
-                    UIManager.getFont("TextPane.font").getSize());
-            attString.addAttribute(TextAttribute.FAMILY,
-                    UIManager.getFont("TextPane.font").getFamily());
-        }
-
-        for (int i = 0; i < line.getElementCount(); i++) {
-            final Element element = line.getElement(i);
-
-            final AttributeSet as = element.getAttributes();
-            final Enumeration<?> ae = as.getAttributeNames();
-
-            while (ae.hasMoreElements()) {
-                final Object attrib = ae.nextElement();
-
-                if (attrib == IRCTextAttribute.HYPERLINK) {
-                    //Hyperlink
-                    attString.addAttribute(IRCTextAttribute.HYPERLINK,
-                            as.getAttribute(attrib), element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == IRCTextAttribute.NICKNAME) {
-                    //Nicknames
-                    attString.addAttribute(IRCTextAttribute.NICKNAME,
-                            as.getAttribute(attrib), element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == IRCTextAttribute.CHANNEL) {
-                    //Channels
-                    attString.addAttribute(IRCTextAttribute.CHANNEL,
-                            as.getAttribute(attrib), element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == ColorConstants.Foreground) {
-                    //Foreground
-                    attString.addAttribute(TextAttribute.FOREGROUND,
-                            as.getAttribute(attrib), element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == ColorConstants.Background) {
-                    //Background
-                    attString.addAttribute(TextAttribute.BACKGROUND,
-                            as.getAttribute(attrib), element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == FontConstants.Bold) {
-                    //Bold
-                    attString.addAttribute(TextAttribute.WEIGHT,
-                            TextAttribute.WEIGHT_BOLD, element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == FontConstants.Family) {
-                    //Family
-                    attString.addAttribute(TextAttribute.FAMILY,
-                            as.getAttribute(attrib), element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == FontConstants.Italic) {
-                    //italics
-                    attString.addAttribute(TextAttribute.POSTURE,
-                            TextAttribute.POSTURE_OBLIQUE,
-                            element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == CharacterConstants.Underline) {
-                    //Underline
-                    attString.addAttribute(TextAttribute.UNDERLINE,
-                            TextAttribute.UNDERLINE_ON, element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == IRCTextAttribute.SMILEY) {
-                    /* Lets avoid showing broken smileys shall we!
-                    final Image image = IconManager.getIconManager().getImage((String) as.getAttribute(attrib)).
-                            getScaledInstance(14, 14, Image.SCALE_DEFAULT);
-                    ImageGraphicAttribute iga = new ImageGraphicAttribute(image, 
-                            (int) BOTTOM_ALIGNMENT, 5, 5);
-                    attString.addAttribute(TextAttribute.CHAR_REPLACEMENT, iga,
-                            element.getStartOffset(), element.getEndOffset());
-                    */
-                }
-            }
-        }
-
-        if (attString.getIterator().getEndIndex() == 0) {
-            return new AttributedString("\n");
-        }
-
-        return attString;
     }
 
     /**
@@ -312,47 +159,12 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     }
 
     /**
-     * Enables or disabled the scrollbar for the textpane.
-     *
-     * @param enabled State for the scrollbar
-     */
-    public void setScrollEnabled(final boolean enabled) {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                scrollBar.setEnabled(enabled);
-            }
-        });
-    }
-
-    /**
      * Returns the last visible line in the textpane.
      *
      * @return Last visible line index
      */
     public int getLastVisibleLine() {
         return scrollBar.getValue();
-    }
-
-    /**
-     * Returns the line count in the textpane.
-     *
-     * @return Line count
-     */
-    public int getNumLines() {
-        return document.getNumLines();
-    }
-
-    /**
-     * Returns the specified line in the textpane.
-     *
-     * @param line Line to return
-     *
-     * @return AttributedString at the specified line
-     */
-    public AttributedString getLine(final int line) {
-        return document.getLine(line);
     }
 
     /**
@@ -438,24 +250,21 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             if (document.getNumLines() <= i) {
                 return selectedText.toString();
             }
-            final AttributedCharacterIterator iterator = document.getLine(i).
-                    getIterator();
+            final String line = document.getLine(i);
             if (selectedRange.getEndLine() == selectedRange.getStartLine()) {
                 //loop through range
-                selectedText.append(getTextFromLine(iterator,
-                        selectedRange.getStartPos(), selectedRange.getEndPos()));
+                selectedText.append(line.substring(selectedRange.getStartPos(), 
+                        selectedRange.getEndPos()));
             } else if (i == selectedRange.getStartLine()) {
                 //loop from start of range to the end
-                selectedText.append(getTextFromLine(iterator,
-                        selectedRange.getStartPos(), iterator.getEndIndex()));
+                selectedText.append(line.substring(selectedRange.getStartPos(), 
+                        line.length()));
             } else if (i == selectedRange.getEndLine()) {
                 //loop from start to end of range
-                selectedText.append(getTextFromLine(iterator, 0,
-                        selectedRange.getEndPos()));
+                selectedText.append(line.substring(0, selectedRange.getEndPos()));
             } else {
                 //loop the whole line
-                selectedText.append(getTextFromLine(iterator, 0,
-                        iterator.getEndIndex()));
+                selectedText.append(line);
             }
         }
 
@@ -492,120 +301,6 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     }
 
     /**
-     * Returns the entire text from the specified line.
-     *
-     * @param line line to retrieve text from
-     *
-     * @return Text from the line
-     */
-    public String getTextFromLine(final int line) {
-        final AttributedCharacterIterator iterator = document.getLine(line).
-                getIterator();
-        return getTextFromLine(iterator, 0, iterator.getEndIndex(), document);
-    }
-
-    /**
-     * Returns the entire text from the specified line.
-     *
-     * @param line line to retrieve text from
-     * @param document Document to retrieve text from
-     * 
-     * @return Text from the line
-     */
-    public static String getTextFromLine(final int line,
-            final IRCDocument document) {
-        final AttributedCharacterIterator iterator = document.getLine(line).
-                getIterator();
-        return getTextFromLine(iterator, 0, iterator.getEndIndex(), document);
-    }
-
-    /**
-     * Returns the range of text from the specified iterator.
-     *
-     * @param line line to retrieve text from
-     * @param start Start index in the iterator
-     * @param end End index in the iterator
-     *
-     * @return Text in the range from the line
-     */
-    public String getTextFromLine(final int line, final int start,
-            final int end) {
-        return getTextFromLine(document.getLine(line).getIterator(), start, end,
-                document);
-    }
-
-    /**
-     * Returns the range of text from the specified iterator.
-     *
-     * @param line line to retrieve text from
-     * @param start Start index in the iterator
-     * @param end End index in the iterator
-     * @param document Document to retrieve text from
-     *
-     * @return Text in the range from the line
-     */
-    public static String getTextFromLine(final int line, final int start,
-            final int end, final IRCDocument document) {
-        return getTextFromLine(document.getLine(line).getIterator(), start, end,
-                document);
-    }
-
-    /**
-     * Returns the range of text from the specified iterator.
-     *
-     * @param iterator iterator to get text from
-     *
-     * @return Text in the range from the line
-     */
-    public String getTextFromLine(final AttributedCharacterIterator iterator) {
-        return getTextFromLine(iterator, iterator.getBeginIndex(),
-                iterator.getEndIndex(), document);
-    }
-
-    /**
-     * Returns the range of text from the specified iterator.
-     *
-     * @param iterator iterator to get text from
-     * @param document Document to retrieve text from
-     *
-     * @return Text in the range from the line
-     */
-    public static String getTextFromLine(final AttributedCharacterIterator iterator,
-            final IRCDocument document) {
-        return getTextFromLine(iterator, iterator.getBeginIndex(),
-                iterator.getEndIndex(), document);
-    }
-
-    /**
-     * Returns the range of text from the specified iterator.
-     *
-     * @param iterator iterator to get text from
-     * @param start Start index in the iterator
-     * @param end End index in the iterator
-     *
-     * @return Text in the range from the line
-     */
-    public String getTextFromLine(final AttributedCharacterIterator iterator,
-            final int start, final int end) {
-        return getTextFromLine(iterator, start, end, document);
-    }
-
-    /**
-     * Returns the range of text from the specified iterator.
-     *
-     * @param iterator iterator to get text from
-     * @param start Start index in the iterator
-     * @param end End index in the iterator
-     * @param document Document to retrieve text from
-     *
-     * @return Text in the range from the line
-     */
-    public static String getTextFromLine(final AttributedCharacterIterator iterator,
-            final int start, final int end, final IRCDocument document) {
-        return document.getLineText(iterator, start, end);
-    }
-
-    /**
      * Returns the type of text this click represents.
      * 
      * @param lineInfo Line info of click.
@@ -629,9 +324,9 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             return "";
         }
         final int[] indexes =
-                canvas.getSurroundingWordIndexes(getTextFromLine(lineNumber),
+                canvas.getSurroundingWordIndexes(document.getLine(lineNumber),
                 index);
-        return getTextFromLine(lineNumber, indexes[0], indexes[1]);
+        return document.getLine(lineNumber).substring(indexes[0], indexes[1]);
     }
 
     /**
