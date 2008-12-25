@@ -41,7 +41,6 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
-import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.actions.ChannelCopyAction;
 import com.dmdirc.ui.swing.actions.CommandAction;
@@ -56,6 +55,7 @@ import com.dmdirc.ui.swing.textpane.TextPanePageUpAction;
 import com.dmdirc.ui.swing.textpane.TextPanePageDownAction;
 import com.dmdirc.ui.swing.UIUtilities;
 
+import com.dmdirc.ui.swing.textpane.Line;
 import com.dmdirc.util.URLHandler;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -72,7 +72,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
-import java.text.AttributedString;
 import java.util.Date;
 
 import java.util.LinkedList;
@@ -239,15 +238,15 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             /** {@inheritDoc} */
             @Override
             public void run() {
-                final List<String[]> lines = new LinkedList<String[]>();
+                final List<Line> lines = new LinkedList<Line>();
                 for (String myLine : encodedLine.split("\n")) {
                     if (timestamp) {
-                        lines.add(new String[]{
+                        lines.add(new Line(new String[]{
                             Formatter.formatMessage(getConfigManager(),
                             "timestamp", new Date()), myLine,
-                        });
+                        }));
                     } else {
-                        lines.add(new String[]{myLine,});
+                        lines.add(new Line(new String[]{myLine,}));
                     }
 
                     ActionManager.processEvent(CoreActionType.CLIENT_LINE_ADDED,

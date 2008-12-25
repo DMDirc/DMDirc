@@ -19,12 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.dmdirc.ui.swing.textpane;
 
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.messages.IRCTextAttribute;
 import com.dmdirc.ui.swing.textpane.TextPane.ClickType;
 
 import java.awt.Cursor;
@@ -43,21 +39,12 @@ import java.awt.font.TextHitInfo;
 import java.awt.font.TextLayout;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.event.MouseInputListener;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Element;
-import javax.swing.text.StyleConstants.CharacterConstants;
-import javax.swing.text.StyleConstants.ColorConstants;
-import javax.swing.text.StyleConstants.FontConstants;
-import javax.swing.text.StyledDocument;
 
 /** Canvas object to draw text. */
 class TextPaneCanvas extends JPanel implements MouseInputListener,
@@ -92,7 +79,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         /** Mouse released. */
         RELEASE,
     }
-
     /** position of the scrollbar. */
     private int scrollBarPosition;
     /** Start line of the selection. */
@@ -214,9 +200,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         // Iterate through the lines
         for (int i = startLine; i >= 0; i--) {
             float drawPosX;
-            paragraphStart = 0;
-            paragraphEnd = document.getLineLength(i);
-            final AttributedCharacterIterator iterator = new AttributedString(document.getLine(i)).getIterator();
+            final AttributedCharacterIterator iterator = document.getLine(i).getStyled().getIterator();
+            paragraphStart = iterator.getBeginIndex();
+            paragraphEnd = iterator.getEndIndex();
             lineMeasurer = new LineBreakMeasurer(iterator,
                     g.getFontRenderContext());
             lineMeasurer.setPosition(paragraphStart);
@@ -352,7 +338,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             if (lastChar > chars && firstChar < chars +
                     layout.getCharacterCount()) {
                 final String text =
-                        document.getLine(line).substring(firstChar,
+                        document.getLine(line).getText().substring(firstChar,
                         lastChar);
 
                 if (text.isEmpty()) {
@@ -360,9 +346,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 }
 
                 final int trans = (int) (lineHeight / 2f + drawPosY);
-                final AttributedCharacterIterator iterator = 
-                        new AttributedString(document.getLine(line)).getIterator();
-                final AttributedString as = new AttributedString( iterator, 
+                final AttributedCharacterIterator iterator = document.getLine(
+                        line).getStyled().getIterator();
+                final AttributedString as = new AttributedString(iterator,
                         firstChar, lastChar);
                 as.addAttribute(TextAttribute.FOREGROUND,
                         textPane.getBackground());
@@ -385,109 +371,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             }
         }
     }
-    
-    /**
-     * Converts a StyledDocument into an AttributedString.
-     *
-     * @param doc StyledDocument to convert
-     *
-     * @return AttributedString representing the specified StyledDocument
-     */
-    public static AttributedString styledDocumentToAttributedString(
-            final StyledDocument doc) {
-        //Now lets get hacky, loop through the styled document and add all 
-        //styles to an attributedString
-        AttributedString attString = null;
-        final Element line = doc.getParagraphElement(0);
-        try {
-            attString = new AttributedString(line.getDocument().getText(0,
-                    line.getDocument().getLength()));
-        } catch (BadLocationException ex) {
-            Logger.userError(ErrorLevel.MEDIUM,
-                    "Unable to insert styled string: " + ex.getMessage());
-        }
-
-        if (attString.getIterator().getEndIndex() != 0) {
-            attString.addAttribute(TextAttribute.SIZE,
-                    UIManager.getFont("TextPane.font").getSize());
-            attString.addAttribute(TextAttribute.FAMILY,
-                    UIManager.getFont("TextPane.font").getFamily());
-        }
-
-        for (int i = 0; i < line.getElementCount(); i++) {
-            final Element element = line.getElement(i);
-
-            final AttributeSet as = element.getAttributes();
-            final Enumeration<?> ae = as.getAttributeNames();
-
-            while (ae.hasMoreElements()) {
-                final Object attrib = ae.nextElement();
-
-                if (attrib == IRCTextAttribute.HYPERLINK) {
-                    //Hyperlink
-                    attString.addAttribute(IRCTextAttribute.HYPERLINK,
-                            as.getAttribute(attrib), element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == IRCTextAttribute.NICKNAME) {
-                    //Nicknames
-                    attString.addAttribute(IRCTextAttribute.NICKNAME,
-                            as.getAttribute(attrib), element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == IRCTextAttribute.CHANNEL) {
-                    //Channels
-                    attString.addAttribute(IRCTextAttribute.CHANNEL,
-                            as.getAttribute(attrib), element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == ColorConstants.Foreground) {
-                    //Foreground
-                    attString.addAttribute(TextAttribute.FOREGROUND,
-                            as.getAttribute(attrib), element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == ColorConstants.Background) {
-                    //Background
-                    attString.addAttribute(TextAttribute.BACKGROUND,
-                            as.getAttribute(attrib), element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == FontConstants.Bold) {
-                    //Bold
-                    attString.addAttribute(TextAttribute.WEIGHT,
-                            TextAttribute.WEIGHT_BOLD, element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == FontConstants.Family) {
-                    //Family
-                    attString.addAttribute(TextAttribute.FAMILY,
-                            as.getAttribute(attrib), element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == FontConstants.Italic) {
-                    //italics
-                    attString.addAttribute(TextAttribute.POSTURE,
-                            TextAttribute.POSTURE_OBLIQUE,
-                            element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == CharacterConstants.Underline) {
-                    //Underline
-                    attString.addAttribute(TextAttribute.UNDERLINE,
-                            TextAttribute.UNDERLINE_ON, element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == IRCTextAttribute.SMILEY) {
-                    /* Lets avoid showing broken smileys shall we!
-                    final Image image = IconManager.getIconManager().getImage((String) as.getAttribute(attrib)).
-                            getScaledInstance(14, 14, Image.SCALE_DEFAULT);
-                    ImageGraphicAttribute iga = new ImageGraphicAttribute(image, 
-                            (int) BOTTOM_ALIGNMENT, 5, 5);
-                    attString.addAttribute(TextAttribute.CHAR_REPLACEMENT, iga,
-                            element.getStartOffset(), element.getEndOffset());
-                    */
-                }
-            }
-        }
-
-        if (attString.getIterator().getEndIndex() == 0) {
-            return new AttributedString("\n");
-        }
-
-        return attString;
-    }
 
     /**
      * sets the position of the scroll bar, and repaints if required.
@@ -501,7 +384,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             }
         }
     }
-    
+
     /**
      * Returns the current scroll bar position.
      * 
@@ -525,7 +408,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         final LineInfo lineInfo = getClickPosition(getMousePosition());
 
         if (lineInfo.getLine() != -1) {
-            clickedText = document.getLine(lineInfo.getLine());
+            clickedText = document.getLine(lineInfo.getLine()).getText();
 
             if (lineInfo.getIndex() == -1) {
                 start = -1;
@@ -563,22 +446,22 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      */
     public ClickType getClickType(final LineInfo lineInfo) {
         /*if (lineInfo.getLine() != -1) {
-            final AttributedCharacterIterator iterator = document.getLine(lineInfo.getLine()).
-                    getIterator();
-            iterator.setIndex(lineInfo.getIndex());
-            Object linkattr =
-                    iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
-            if (linkattr instanceof String) {
-                return ClickType.HYPERLINK;
-            }
-            linkattr = iterator.getAttributes().get(IRCTextAttribute.CHANNEL);
-            if (linkattr instanceof String) {
-                return ClickType.CHANNEL;
-            }
-            linkattr = iterator.getAttributes().get(IRCTextAttribute.NICKNAME);
-            if (linkattr instanceof String) {
-                return ClickType.NICKNAME;
-            }
+        final AttributedCharacterIterator iterator = document.getLine(lineInfo.getLine()).
+        getIterator();
+        iterator.setIndex(lineInfo.getIndex());
+        Object linkattr =
+        iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
+        if (linkattr instanceof String) {
+        return ClickType.HYPERLINK;
+        }
+        linkattr = iterator.getAttributes().get(IRCTextAttribute.CHANNEL);
+        if (linkattr instanceof String) {
+        return ClickType.CHANNEL;
+        }
+        linkattr = iterator.getAttributes().get(IRCTextAttribute.NICKNAME);
+        if (linkattr instanceof String) {
+        return ClickType.NICKNAME;
+        }
         }*/
         return ClickType.NORMAL;
     }
@@ -592,22 +475,22 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      */
     public Object getAttributeValueAtPoint(LineInfo lineInfo) {
         /*if (lineInfo.getLine() != -1) {
-            final AttributedCharacterIterator iterator = document.getLine(lineInfo.getLine()).
-                    getIterator();
-            iterator.setIndex(lineInfo.getIndex());
-            Object linkattr =
-                    iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
-            if (linkattr instanceof String) {
-                return linkattr;
-            }
-            linkattr = iterator.getAttributes().get(IRCTextAttribute.CHANNEL);
-            if (linkattr instanceof String) {
-                return linkattr;
-            }
-            linkattr = iterator.getAttributes().get(IRCTextAttribute.NICKNAME);
-            if (linkattr instanceof String) {
-                return linkattr;
-            }
+        final AttributedCharacterIterator iterator = document.getLine(lineInfo.getLine()).
+        getIterator();
+        iterator.setIndex(lineInfo.getIndex());
+        Object linkattr =
+        iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
+        if (linkattr instanceof String) {
+        return linkattr;
+        }
+        linkattr = iterator.getAttributes().get(IRCTextAttribute.CHANNEL);
+        if (linkattr instanceof String) {
+        return linkattr;
+        }
+        linkattr = iterator.getAttributes().get(IRCTextAttribute.NICKNAME);
+        if (linkattr instanceof String) {
+        return linkattr;
+        }
         }*/
         return null;
     }
@@ -727,7 +610,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      */
     @Override
     public void mouseEntered(final MouseEvent e) {
-    //Ignore
+        //Ignore
     }
 
     /** 
@@ -737,7 +620,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      */
     @Override
     public void mouseExited(final MouseEvent e) {
-    //Ignore
+        //Ignore
     }
 
     /** 
@@ -755,29 +638,29 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         final LineInfo info = getClickPosition(getMousePosition());
 
         /*if (info.getLine() != -1 && document.getLine(info.getLine()) != null) {
-            final AttributedCharacterIterator iterator = document.getLine(info.getLine()).
-                    getIterator();
-            if (info.getIndex() < iterator.getBeginIndex() || info.getIndex() >
-                    iterator.getEndIndex()) {
-                return;
-            }
-            iterator.setIndex(info.getIndex());
-            Object linkattr =
-                    iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
-            if (linkattr instanceof String) {
-                setCursor(HAND_CURSOR);
-                return;
-            }
-            linkattr = iterator.getAttributes().get(IRCTextAttribute.CHANNEL);
-            if (linkattr instanceof String) {
-                setCursor(HAND_CURSOR);
-                return;
-            }
-            linkattr = iterator.getAttributes().get(IRCTextAttribute.NICKNAME);
-            if (linkattr instanceof String) {
-                setCursor(HAND_CURSOR);
-                return;
-            }
+        final AttributedCharacterIterator iterator = document.getLine(info.getLine()).
+        getIterator();
+        if (info.getIndex() < iterator.getBeginIndex() || info.getIndex() >
+        iterator.getEndIndex()) {
+        return;
+        }
+        iterator.setIndex(info.getIndex());
+        Object linkattr =
+        iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
+        if (linkattr instanceof String) {
+        setCursor(HAND_CURSOR);
+        return;
+        }
+        linkattr = iterator.getAttributes().get(IRCTextAttribute.CHANNEL);
+        if (linkattr instanceof String) {
+        setCursor(HAND_CURSOR);
+        return;
+        }
+        linkattr = iterator.getAttributes().get(IRCTextAttribute.NICKNAME);
+        if (linkattr instanceof String) {
+        setCursor(HAND_CURSOR);
+        return;
+        }
         }*/
         if (getCursor() == HAND_CURSOR) {
             setCursor(Cursor.getDefaultCursor());
@@ -979,7 +862,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      */
     @Override
     public void componentMoved(final ComponentEvent e) {
-    //Ignore
+        //Ignore
     }
 
     /** 
@@ -989,7 +872,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      */
     @Override
     public void componentShown(final ComponentEvent e) {
-    //Ignore
+        //Ignore
     }
 
     /** 
@@ -999,7 +882,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      */
     @Override
     public void componentHidden(final ComponentEvent e) {
-    //Ignore
+        //Ignore
     }
 
     /** Clears the line wrapping cache. */

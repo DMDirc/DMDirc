@@ -26,6 +26,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.swing.event.EventListenerList;
 
 /**
@@ -40,16 +42,29 @@ public final class IRCDocument implements Serializable {
      */
     private static final long serialVersionUID = 4;
     
-    /** List of stylised lines of text. */
-    private final List<String> iterators;
+    /** List of lines of text. */
+    private final List<Line> lines;
     
     /** Listener list. */
     private final EventListenerList listeners;
     
     /** Creates a new instance of IRCDocument. */
     public IRCDocument() {
-        iterators = new ArrayList<String>();
+        lines = new ArrayList<Line>();
         listeners = new EventListenerList();
+        
+        new Timer().scheduleAtFixedRate(new TimerTask(){
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                synchronized(lines) {
+                    for (Line line : lines) {
+                        line.verifyCache();
+                    }
+                }
+            }
+        }, 10000, 10000);
     }
     
     /**
@@ -58,7 +73,7 @@ public final class IRCDocument implements Serializable {
      * @return Number of lines
      */
     public int getNumLines() {
-        return iterators.size();
+        return lines.size();
     }
     
     /**
@@ -68,30 +83,19 @@ public final class IRCDocument implements Serializable {
      *
      * @return Line at the specified number or null
      */
-    public String getLine(final int lineNumber) {
-        return iterators.get(lineNumber);
-    }
-    
-    /**
-     * Returns the length of the specified line
-     * 
-     * @param lineNumber Line to query
-     * 
-     * @return Length of the line
-     */
-    public int getLineLength(final int lineNumber) {
-        return iterators.get(lineNumber).length();
-    }    
+    public Line getLine(final int lineNumber) {
+        return lines.get(lineNumber);
+    }  
     
     /**
      * Adds the stylised string to the canvas.
      * 
      * @param text stylised string to add to the text
      */
-    public void addText(final String text) {
-        synchronized (iterators) {
-            iterators.add(text);
-            fireLineAdded(iterators.indexOf(text));
+    public void addText(final Line text) {
+        synchronized (lines) {
+            lines.add(text);
+            fireLineAdded(lines.indexOf(text));
         }
     }
     
@@ -100,26 +104,11 @@ public final class IRCDocument implements Serializable {
      * 
      * @param text stylised string to add to the text
      */
-    public void addText(final List<String> text) {
-        synchronized (iterators) {
-            final int start = iterators.size();
-            for (String string : text) {
-                iterators.add(string);
-            }
-            fireLinesAdded(start, text.size());
-        }
-    }
-    
-    /**
-     * Adds the stylised string to the canvas.
-     * 
-     * @param text stylised string to add to the text
-     */
-    public void addText(final List<String[]> text) {
-        synchronized (iterators) {
-            final int start = iterators.size();
-            for (String[] string : text) {
-                //iterators.add(string);
+    public void addText(final List<Line> text) {
+        synchronized (lines) {
+            final int start = lines.size();
+            for (Line string : text) {
+                lines.add(string);
             }
             fireLinesAdded(start, text.size());
         }
@@ -131,9 +120,9 @@ public final class IRCDocument implements Serializable {
      * @param numLines Number of lines to trim the document to
      */
     public void trim(final int numLines) {
-        synchronized (iterators) {
-            while (iterators.size() > numLines) {
-                iterators.remove(0);
+        synchronized (lines) {
+            while (lines.size() > numLines) {
+                lines.remove(0);
             }
             fireTrimmed();
         }
@@ -141,8 +130,8 @@ public final class IRCDocument implements Serializable {
     
     /** Clears all lines from the document. */
     protected void clear() {
-        synchronized (iterators) {
-            iterators.clear();
+        synchronized (lines) {
+            lines.clear();
             fireCleared();
         }
     }
@@ -179,7 +168,7 @@ public final class IRCDocument implements Serializable {
         final Object[] listenerList = listeners.getListenerList();
         for (int i = 0; i < listenerList.length; i += 2) {
             if (listenerList[i] == IRCDocumentListener.class) {
-                ((IRCDocumentListener) listenerList[i + 1]).lineAdded(index, iterators.size());
+                ((IRCDocumentListener) listenerList[i + 1]).lineAdded(index, lines.size());
             }
         }
     }
@@ -194,7 +183,7 @@ public final class IRCDocument implements Serializable {
         final Object[] listenerList = listeners.getListenerList();
         for (int i = 0; i < listenerList.length; i += 2) {
             if (listenerList[i] == IRCDocumentListener.class) {
-                ((IRCDocumentListener) listenerList[i + 1]).linesAdded(index, size, iterators.size());
+                ((IRCDocumentListener) listenerList[i + 1]).linesAdded(index, size, lines.size());
             }
         }
     }
@@ -206,7 +195,7 @@ public final class IRCDocument implements Serializable {
         final Object[] listenerList = listeners.getListenerList();
         for (int i = 0; i < listenerList.length; i += 2) {
             if (listenerList[i] == IRCDocumentListener.class) {
-                ((IRCDocumentListener) listenerList[i + 1]).trimmed(iterators.size());
+                ((IRCDocumentListener) listenerList[i + 1]).trimmed(lines.size());
             }
         }
     }

@@ -35,7 +35,6 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.text.AttributedCharacterIterator;
 import java.util.List;
 
 import javax.swing.JComponent;
@@ -144,7 +143,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * Adds styled text to the textpane.
      * @param text styled text to add
      */
-    public void addText(final List<String[]> text) {
+    public void addText(final List<Line> text) {
         document.addText(text);
     }
 
@@ -250,7 +249,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             if (document.getNumLines() <= i) {
                 return selectedText.toString();
             }
-            final String line = document.getLine(i);
+            final String line = document.getLine(i).getText();
             if (selectedRange.getEndLine() == selectedRange.getStartLine()) {
                 //loop through range
                 selectedText.append(line.substring(selectedRange.getStartPos(), 
@@ -324,9 +323,9 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             return "";
         }
         final int[] indexes =
-                canvas.getSurroundingWordIndexes(document.getLine(lineNumber),
+                canvas.getSurroundingWordIndexes(document.getLine(lineNumber).getText(),
                 index);
-        return document.getLine(lineNumber).substring(indexes[0], indexes[1]);
+        return document.getLine(lineNumber).getText().substring(indexes[0], indexes[1]);
     }
 
     /**
