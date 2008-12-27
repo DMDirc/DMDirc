@@ -25,9 +25,9 @@ package com.dmdirc.ui.swing.textpane;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 import java.util.Timer;
 import java.util.TimerTask;
+
 import javax.swing.event.EventListenerList;
 
 /**
@@ -52,19 +52,6 @@ public final class IRCDocument implements Serializable {
     public IRCDocument() {
         lines = new ArrayList<Line>();
         listeners = new EventListenerList();
-        
-        new Timer().scheduleAtFixedRate(new TimerTask(){
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                synchronized(lines) {
-                    for (Line line : lines) {
-                        line.verifyCache();
-                    }
-                }
-            }
-        }, 10000, 10000);
     }
     
     /**

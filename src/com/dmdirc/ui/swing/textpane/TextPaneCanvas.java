@@ -21,8 +21,10 @@
  */
 package com.dmdirc.ui.swing.textpane;
 
+import com.dmdirc.ui.messages.IRCTextAttribute;
 import com.dmdirc.ui.swing.textpane.TextPane.ClickType;
 
+import com.dmdirc.util.RollingList;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -95,6 +97,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     private int lastVisibleLine;
     /** Line wrapping cache. */
     private final Map<Integer, Integer> lineWrap;
+    private RollingList<Line> cachedLines;
+    private RollingList<AttributedString> cachedStrings;
 
     /**
      * Creates a new text pane canvas.
@@ -116,6 +120,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         addMouseListener(this);
         addMouseMotionListener(this);
         addComponentListener(this);
+
+        cachedLines = new RollingList<Line>(50);
+        cachedStrings = new RollingList<AttributedString>(50);
     }
 
     /**
@@ -200,7 +207,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         // Iterate through the lines
         for (int i = startLine; i >= 0; i--) {
             float drawPosX;
-            final AttributedCharacterIterator iterator = document.getLine(i).getStyled().getIterator();
+            final AttributedCharacterIterator iterator = getStyledLine(document.getLine(i)).getIterator();
             paragraphStart = iterator.getBeginIndex();
             paragraphEnd = iterator.getEndIndex();
             lineMeasurer = new LineBreakMeasurer(iterator,
@@ -269,6 +276,22 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             }
         }
         checkForLink();
+    }
+
+    private AttributedString getStyledLine(final Line line) {
+        AttributedString styledLine = null;
+        if (cachedLines.contains(line)) {
+            final int index = cachedLines.getList().indexOf(line);
+            styledLine = cachedStrings.get(index);
+        }
+        
+        if (styledLine == null) {
+            styledLine = line.getStyled();
+            cachedLines.add(line);
+            cachedStrings.add(styledLine);
+        }
+        
+        return styledLine;
     }
 
     /**
@@ -346,8 +369,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 }
 
                 final int trans = (int) (lineHeight / 2f + drawPosY);
-                final AttributedCharacterIterator iterator = document.getLine(
-                        line).getStyled().getIterator();
+                final AttributedCharacterIterator iterator = getStyledLine(document.getLine(line)).getIterator();
                 final AttributedString as = new AttributedString(iterator,
                         firstChar, lastChar);
                 as.addAttribute(TextAttribute.FOREGROUND,
@@ -445,24 +467,24 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * @return Click type for specified position
      */
     public ClickType getClickType(final LineInfo lineInfo) {
-        /*if (lineInfo.getLine() != -1) {
-        final AttributedCharacterIterator iterator = document.getLine(lineInfo.getLine()).
-        getIterator();
-        iterator.setIndex(lineInfo.getIndex());
-        Object linkattr =
-        iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
-        if (linkattr instanceof String) {
-        return ClickType.HYPERLINK;
+        if (lineInfo.getLine() != -1) {
+            final AttributedCharacterIterator iterator = getStyledLine(
+                    document.getLine(lineInfo.getLine())).getIterator();
+            iterator.setIndex(lineInfo.getIndex());
+            Object linkattr =
+                    iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
+            if (linkattr instanceof String) {
+                return ClickType.HYPERLINK;
+            }
+            linkattr = iterator.getAttributes().get(IRCTextAttribute.CHANNEL);
+            if (linkattr instanceof String) {
+                return ClickType.CHANNEL;
+            }
+            linkattr = iterator.getAttributes().get(IRCTextAttribute.NICKNAME);
+            if (linkattr instanceof String) {
+                return ClickType.NICKNAME;
+            }
         }
-        linkattr = iterator.getAttributes().get(IRCTextAttribute.CHANNEL);
-        if (linkattr instanceof String) {
-        return ClickType.CHANNEL;
-        }
-        linkattr = iterator.getAttributes().get(IRCTextAttribute.NICKNAME);
-        if (linkattr instanceof String) {
-        return ClickType.NICKNAME;
-        }
-        }*/
         return ClickType.NORMAL;
     }
 
@@ -474,24 +496,24 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * @return Specified value
      */
     public Object getAttributeValueAtPoint(LineInfo lineInfo) {
-        /*if (lineInfo.getLine() != -1) {
-        final AttributedCharacterIterator iterator = document.getLine(lineInfo.getLine()).
-        getIterator();
-        iterator.setIndex(lineInfo.getIndex());
-        Object linkattr =
-        iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
-        if (linkattr instanceof String) {
-        return linkattr;
+        if (lineInfo.getLine() != -1) {
+            final AttributedCharacterIterator iterator = getStyledLine(
+                    document.getLine(lineInfo.getLine())).getIterator();
+            iterator.setIndex(lineInfo.getIndex());
+            Object linkattr =
+                    iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
+            if (linkattr instanceof String) {
+                return linkattr;
+            }
+            linkattr = iterator.getAttributes().get(IRCTextAttribute.CHANNEL);
+            if (linkattr instanceof String) {
+                return linkattr;
+            }
+            linkattr = iterator.getAttributes().get(IRCTextAttribute.NICKNAME);
+            if (linkattr instanceof String) {
+                return linkattr;
+            }
         }
-        linkattr = iterator.getAttributes().get(IRCTextAttribute.CHANNEL);
-        if (linkattr instanceof String) {
-        return linkattr;
-        }
-        linkattr = iterator.getAttributes().get(IRCTextAttribute.NICKNAME);
-        if (linkattr instanceof String) {
-        return linkattr;
-        }
-        }*/
         return null;
     }
 
@@ -637,31 +659,31 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     private void checkForLink() {
         final LineInfo info = getClickPosition(getMousePosition());
 
-        /*if (info.getLine() != -1 && document.getLine(info.getLine()) != null) {
-        final AttributedCharacterIterator iterator = document.getLine(info.getLine()).
-        getIterator();
-        if (info.getIndex() < iterator.getBeginIndex() || info.getIndex() >
-        iterator.getEndIndex()) {
-        return;
+        if (info.getLine() != -1 && document.getLine(info.getLine()) != null) {
+            final AttributedCharacterIterator iterator = getStyledLine(
+                    document.getLine(info.getLine())).getIterator();
+            if (info.getIndex() < iterator.getBeginIndex() || info.getIndex() >
+                    iterator.getEndIndex()) {
+                return;
+            }
+            iterator.setIndex(info.getIndex());
+            Object linkattr =
+                    iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
+            if (linkattr instanceof String) {
+                setCursor(HAND_CURSOR);
+                return;
+            }
+            linkattr = iterator.getAttributes().get(IRCTextAttribute.CHANNEL);
+            if (linkattr instanceof String) {
+                setCursor(HAND_CURSOR);
+                return;
+            }
+            linkattr = iterator.getAttributes().get(IRCTextAttribute.NICKNAME);
+            if (linkattr instanceof String) {
+                setCursor(HAND_CURSOR);
+                return;
+            }
         }
-        iterator.setIndex(info.getIndex());
-        Object linkattr =
-        iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
-        if (linkattr instanceof String) {
-        setCursor(HAND_CURSOR);
-        return;
-        }
-        linkattr = iterator.getAttributes().get(IRCTextAttribute.CHANNEL);
-        if (linkattr instanceof String) {
-        setCursor(HAND_CURSOR);
-        return;
-        }
-        linkattr = iterator.getAttributes().get(IRCTextAttribute.NICKNAME);
-        if (linkattr instanceof String) {
-        setCursor(HAND_CURSOR);
-        return;
-        }
-        }*/
         if (getCursor() == HAND_CURSOR) {
             setCursor(Cursor.getDefaultCursor());
         }

@@ -29,6 +29,7 @@ import com.dmdirc.ui.messages.Styliser;
 
 import java.awt.font.TextAttribute;
 import java.text.AttributedString;
+import java.util.Arrays;
 import java.util.Enumeration;
 
 import javax.swing.UIManager;
@@ -42,11 +43,13 @@ import javax.swing.text.StyledDocument;
 
 public class Line {
     private final String[] lineParts;
-    private AttributedString styledLine;
-    private long lastStyleAccess = -1;
     
     public Line(final String[] lineParts) {
         this.lineParts = lineParts;
+    }
+    
+    public String[] getLineParts() {
+        return lineParts;
     }
     
     /**
@@ -75,35 +78,12 @@ public class Line {
         return lineText.toString();
     }
     
-    public AttributedString getStyled() {
-        if (styledLine == null) {
-            styledLine = style();
-        }
-        
-        lastStyleAccess = System.currentTimeMillis();
-        return styledLine;
-    }
-    
-    public long getLastStyleAccess() {
-        return lastStyleAccess;
-    }
-    
-    public void verifyCache() {
-        if (System.currentTimeMillis() >= (lastStyleAccess+10000)) {
-            clearCache();
-        }
-    }
-    
-    public void clearCache() {
-        styledLine = null;
-    }
-    
     /**
      * Converts a StyledDocument into an AttributedString.
      *
      * @return AttributedString representing the specified StyledDocument
      */
-    private AttributedString style() {
+    public AttributedString getStyled() {
         final StyledDocument doc = Styliser.getStyledString(lineParts);
         
         AttributedString attString = null;
@@ -196,5 +176,20 @@ public class Line {
         }
 
         return attString;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof CachedLine || object instanceof Line) {
+            return Arrays.equals(((Line) object).getLineParts(), getLineParts());
+        }
+        return false;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode() {
+        return getLineParts().hashCode();
     }
 }
