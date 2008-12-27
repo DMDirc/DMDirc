@@ -26,6 +26,9 @@ import javax.swing.JComponent;
 import javax.swing.UIManager;
 import javax.swing.plaf.ComponentUI;
 
+/**
+ * TextPane UI
+ */
 public class TextPaneUI extends ComponentUI {
 
     /** {@inheritDoc} */

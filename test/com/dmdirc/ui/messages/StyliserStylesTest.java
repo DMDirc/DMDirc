@@ -23,7 +23,7 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.swing.textpane.TextPane;
+import com.dmdirc.ui.swing.textpane.Line;
 import java.awt.Color;
 import java.awt.font.TextAttribute;
 import java.text.AttributedCharacterIterator;
@@ -57,8 +57,8 @@ public class StyliserStylesTest {
         final DefaultStyledDocument doc = new DefaultStyledDocument();
         final StringBuilder builder = new StringBuilder();
         Styliser.addStyledString(doc, new String[]{input});
-        final AttributedCharacterIterator aci = 
-                TextPane.styledDocumentToAttributedString(doc).getIterator();        
+        final AttributedCharacterIterator aci = new Line(
+                new String[]{input, }).getStyled().getIterator();
          
         Map<AttributedCharacterIterator.Attribute, Object> map = null;
         char chr = aci.current();

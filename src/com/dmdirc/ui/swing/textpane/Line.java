@@ -181,7 +181,7 @@ public class Line {
     /** {@inheritDoc} */
     @Override
     public boolean equals(Object object) {
-        if (object instanceof CachedLine || object instanceof Line) {
+        if (object instanceof Line) {
             return Arrays.equals(((Line) object).getLineParts(), getLineParts());
         }
         return false;
