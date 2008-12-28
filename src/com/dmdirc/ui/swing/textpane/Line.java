@@ -41,17 +41,30 @@ import javax.swing.text.StyleConstants.ColorConstants;
 import javax.swing.text.StyleConstants.FontConstants;
 import javax.swing.text.StyledDocument;
 
+/**
+ * Represents a line of text in IRC.
+ */
 public class Line {
+
     private final String[] lineParts;
-    
+
+    /**
+     * Creates a new line.
+     * @param lineParts Parts of the line
+     */
     public Line(final String[] lineParts) {
         this.lineParts = lineParts;
     }
-    
+
+    /**
+     * Returns the line parts of this line.
+     *
+     * @return Lines parts
+     */
     public String[] getLineParts() {
         return lineParts;
     }
-    
+
     /**
      * Returns the length of the specified line
      * 
@@ -63,8 +76,8 @@ public class Line {
             length += linePart.length();
         }
         return length;
-    }  
-    
+    }
+
     /**
      * Returns the Line text at the specified number.
      *
@@ -77,7 +90,7 @@ public class Line {
         }
         return lineText.toString();
     }
-    
+
     /**
      * Converts a StyledDocument into an AttributedString.
      *
@@ -85,22 +98,25 @@ public class Line {
      */
     public AttributedString getStyled() {
         final StyledDocument doc = Styliser.getStyledString(lineParts);
-        
+
         AttributedString attString = null;
         final Element line = doc.getParagraphElement(0);
         try {
             attString = new AttributedString(line.getDocument().getText(0,
-                    line.getDocument().getLength()));
-        } catch (BadLocationException ex) {
+                                                                        line.
+                    getDocument().getLength()));
+        }
+        catch (BadLocationException ex) {
             Logger.userError(ErrorLevel.MEDIUM,
-                    "Unable to insert styled string: " + ex.getMessage());
+                             "Unable to insert styled string: " +
+                             ex.getMessage());
         }
 
         if (attString.getIterator().getEndIndex() != 0) {
             attString.addAttribute(TextAttribute.SIZE,
-                    UIManager.getFont("TextPane.font").getSize());
+                                   UIManager.getFont("TextPane.font").getSize());
             attString.addAttribute(TextAttribute.FAMILY,
-                    UIManager.getFont("TextPane.font").getFamily());
+                                   UIManager.getFont("TextPane.font").getFamily());
         }
 
         for (int i = 0; i < line.getElementCount(); i++) {
@@ -115,50 +131,67 @@ public class Line {
                 if (attrib == IRCTextAttribute.HYPERLINK) {
                     //Hyperlink
                     attString.addAttribute(IRCTextAttribute.HYPERLINK,
-                            as.getAttribute(attrib), element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == IRCTextAttribute.NICKNAME) {
+                                           as.getAttribute(attrib), element.
+                            getStartOffset(),
+                                           element.getEndOffset());
+                }
+                else if (attrib == IRCTextAttribute.NICKNAME) {
                     //Nicknames
                     attString.addAttribute(IRCTextAttribute.NICKNAME,
-                            as.getAttribute(attrib), element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == IRCTextAttribute.CHANNEL) {
+                                           as.getAttribute(attrib), element.
+                            getStartOffset(),
+                                           element.getEndOffset());
+                }
+                else if (attrib == IRCTextAttribute.CHANNEL) {
                     //Channels
                     attString.addAttribute(IRCTextAttribute.CHANNEL,
-                            as.getAttribute(attrib), element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == ColorConstants.Foreground) {
+                                           as.getAttribute(attrib), element.
+                            getStartOffset(),
+                                           element.getEndOffset());
+                }
+                else if (attrib == ColorConstants.Foreground) {
                     //Foreground
                     attString.addAttribute(TextAttribute.FOREGROUND,
-                            as.getAttribute(attrib), element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == ColorConstants.Background) {
+                                           as.getAttribute(attrib), element.
+                            getStartOffset(),
+                                           element.getEndOffset());
+                }
+                else if (attrib == ColorConstants.Background) {
                     //Background
                     attString.addAttribute(TextAttribute.BACKGROUND,
-                            as.getAttribute(attrib), element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == FontConstants.Bold) {
+                                           as.getAttribute(attrib), element.
+                            getStartOffset(),
+                                           element.getEndOffset());
+                }
+                else if (attrib == FontConstants.Bold) {
                     //Bold
                     attString.addAttribute(TextAttribute.WEIGHT,
-                            TextAttribute.WEIGHT_BOLD, element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == FontConstants.Family) {
+                                           TextAttribute.WEIGHT_BOLD, element.
+                            getStartOffset(),
+                                           element.getEndOffset());
+                }
+                else if (attrib == FontConstants.Family) {
                     //Family
                     attString.addAttribute(TextAttribute.FAMILY,
-                            as.getAttribute(attrib), element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == FontConstants.Italic) {
+                                           as.getAttribute(attrib), element.
+                            getStartOffset(),
+                                           element.getEndOffset());
+                }
+                else if (attrib == FontConstants.Italic) {
                     //italics
                     attString.addAttribute(TextAttribute.POSTURE,
-                            TextAttribute.POSTURE_OBLIQUE,
-                            element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == CharacterConstants.Underline) {
+                                           TextAttribute.POSTURE_OBLIQUE,
+                                           element.getStartOffset(),
+                                           element.getEndOffset());
+                }
+                else if (attrib == CharacterConstants.Underline) {
                     //Underline
                     attString.addAttribute(TextAttribute.UNDERLINE,
-                            TextAttribute.UNDERLINE_ON, element.getStartOffset(),
-                            element.getEndOffset());
-                } else if (attrib == IRCTextAttribute.SMILEY) {
+                                           TextAttribute.UNDERLINE_ON, element.
+                            getStartOffset(),
+                                           element.getEndOffset());
+                }
+                else if (attrib == IRCTextAttribute.SMILEY) {
                     /* Lets avoid showing broken smileys shall we!
                     final Image image = IconManager.getIconManager().getImage((String) as.getAttribute(attrib)).
                     getScaledInstance(14, 14, Image.SCALE_DEFAULT);
@@ -177,16 +210,16 @@ public class Line {
 
         return attString;
     }
-    
+
     /** {@inheritDoc} */
     @Override
-    public boolean equals(Object object) {
-        if (object instanceof Line) {
-            return Arrays.equals(((Line) object).getLineParts(), getLineParts());
+    public boolean equals(Object obj) {
+        if (obj instanceof Line) {
+            return Arrays.equals(((Line) obj).getLineParts(), getLineParts());
         }
         return false;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public int hashCode() {

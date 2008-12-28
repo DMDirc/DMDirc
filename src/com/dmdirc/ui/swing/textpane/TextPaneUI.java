@@ -36,5 +36,4 @@ public class TextPaneUI extends ComponentUI {
     public void installUI(final JComponent c) {
         c.setBorder(UIManager.getBorder("TextField.border"));
     }
-    
 }

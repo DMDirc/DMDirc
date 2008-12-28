@@ -23,7 +23,7 @@
 package com.dmdirc.ui.swing.textpane;
 
 /**
- *
+ * Information about a position in a line.
  */
 public final class LineInfo {
 
