@@ -77,8 +77,6 @@ public final class TextPane extends JComponent implements AdjustmentListener,
 
         document = new IRCDocument();
 
-        setMinimumSize(new Dimension(0, 0));
-
         setLayout(new MigLayout("fill"));
 
         canvas = new TextPaneCanvas(this, document);
@@ -88,8 +86,6 @@ public final class TextPane extends JComponent implements AdjustmentListener,
 
         scrollBar = new JScrollBar(JScrollBar.VERTICAL);
         add(scrollBar, "dock east");
-
-        setAutoscrolls(true);
 
         scrollBar.setMaximum(document.getNumLines());
         scrollBar.setBlockIncrement(10);
@@ -126,14 +122,6 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     @Override
     public void updateUI() {
         setUI(new TextPaneUI());
-    }
-
-    /**
-     * Adds styled text to the textpane.
-     * @param text styled text to add
-     */
-    public void addText(final List<Line> text) {
-        document.addText(text);
     }
 
     /**

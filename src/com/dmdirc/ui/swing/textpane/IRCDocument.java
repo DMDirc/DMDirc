@@ -22,7 +22,11 @@
 
 package com.dmdirc.ui.swing.textpane;
 
+import com.dmdirc.util.RollingList;
+
 import java.io.Serializable;
+import java.text.AttributedCharacterIterator;
+import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,26 +36,31 @@ import javax.swing.event.EventListenerList;
  * Data contained in a TextPane.
  */
 public final class IRCDocument implements Serializable {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 4;
-    
     /** List of lines of text. */
     private final List<Line> lines;
-    
     /** Listener list. */
     private final EventListenerList listeners;
-    
+    /** Cached lines. */
+    private RollingList<Line> cachedLines;
+    /** Cached attributed strings. */
+    private RollingList<AttributedString> cachedStrings;
+
     /** Creates a new instance of IRCDocument. */
     public IRCDocument() {
         lines = new ArrayList<Line>();
         listeners = new EventListenerList();
+
+        cachedLines = new RollingList<Line>(50);
+        cachedStrings = new RollingList<AttributedString>(50);
     }
-    
+
     /**
      * Returns the number of lines in this document.
      *
@@ -60,7 +69,7 @@ public final class IRCDocument implements Serializable {
     public int getNumLines() {
         return lines.size();
     }
-    
+
     /**
      * Returns the Line at the specified number.
      *
@@ -70,8 +79,8 @@ public final class IRCDocument implements Serializable {
      */
     public Line getLine(final int lineNumber) {
         return lines.get(lineNumber);
-    }  
-    
+    }
+
     /**
      * Adds the stylised string to the canvas.
      * 
@@ -83,7 +92,7 @@ public final class IRCDocument implements Serializable {
             fireLineAdded(lines.indexOf(text));
         }
     }
-    
+
     /**
      * Adds the stylised string to the canvas.
      * 
@@ -98,7 +107,7 @@ public final class IRCDocument implements Serializable {
             fireLinesAdded(start, text.size());
         }
     }
-    
+
     /**
      * Trims the document to the specified number of lines.
      *
@@ -112,7 +121,7 @@ public final class IRCDocument implements Serializable {
             fireTrimmed();
         }
     }
-    
+
     /** Clears all lines from the document. */
     protected void clear() {
         synchronized (lines) {
@@ -120,7 +129,7 @@ public final class IRCDocument implements Serializable {
             fireCleared();
         }
     }
-    
+
     /**
      * Adds a IRCDocumentListener to the listener list.
      *
@@ -134,7 +143,7 @@ public final class IRCDocument implements Serializable {
             listeners.add(IRCDocumentListener.class, listener);
         }
     }
-    
+
     /**
      * Removes a IRCDocumentListener from the listener list.
      *
@@ -143,7 +152,7 @@ public final class IRCDocument implements Serializable {
     public void removeIRCDocumentListener(final IRCDocumentListener listener) {
         listeners.remove(IRCDocumentListener.class, listener);
     }
-    
+
     /**
      * Fires the line added method on all listeners.
      *
@@ -153,11 +162,12 @@ public final class IRCDocument implements Serializable {
         final Object[] listenerList = listeners.getListenerList();
         for (int i = 0; i < listenerList.length; i += 2) {
             if (listenerList[i] == IRCDocumentListener.class) {
-                ((IRCDocumentListener) listenerList[i + 1]).lineAdded(index, lines.size());
+                ((IRCDocumentListener) listenerList[i + 1]).lineAdded(index,
+                                                                      lines.size());
             }
         }
     }
-    
+
     /**
      * Fires the lines added method on all listeners.
      *
@@ -168,11 +178,14 @@ public final class IRCDocument implements Serializable {
         final Object[] listenerList = listeners.getListenerList();
         for (int i = 0; i < listenerList.length; i += 2) {
             if (listenerList[i] == IRCDocumentListener.class) {
-                ((IRCDocumentListener) listenerList[i + 1]).linesAdded(index, size, lines.size());
+                ((IRCDocumentListener) listenerList[i + 1]).linesAdded(index,
+                                                                       size,
+                                                                       lines.
+                        size());
             }
         }
     }
-    
+
     /**
      * Fires the trimmed method on all listeners.
      */
@@ -184,7 +197,7 @@ public final class IRCDocument implements Serializable {
             }
         }
     }
-    
+
     /**
      * fires the cleared method on all listeners.
      */
@@ -195,6 +208,66 @@ public final class IRCDocument implements Serializable {
                 ((IRCDocumentListener) listenerList[i + 1]).cleared();
             }
         }
+    }
+
+    /**
+     * Returns an attributed string for a particular line, utilising the
+     * document cache where possible.
+     *
+     * @param line Line to be styled
+     *
+     * @return Styled line
+     */
+    public AttributedString getStyledString(final Line line) {
+        AttributedString styledLine = null;
+        if (cachedLines.contains(line)) {
+            final int index = cachedLines.getList().indexOf(line);
+            styledLine = cachedStrings.get(index);
+        }
+
+        if (styledLine == null) {
+            styledLine = line.getStyled();
+            cachedLines.add(line);
+            cachedStrings.add(styledLine);
+        }
+
+        return styledLine;
+    }
+
+    /**
+     * Returns an attributed string for a particular line, utilising the
+     * document cache where possible.
+     *
+     * @param line Line number to be styled
+     *
+     * @return Styled line
+     */
+    public AttributedString getStyledString(final int line) {
+        return getStyledString(getLine(line));
+    }
+
+    /**
+     * Returns an attributed character iterator for a particular line,
+     * utilising the document cache where possible.
+     *
+     * @param line Line to be styled
+     *
+     * @return Styled line iterator
+     */
+    public AttributedCharacterIterator getStyledIterator(final Line line) {
+        return getStyledString(line).getIterator();
+    }
+
+    /**
+     * Returns an attributed character iterator for a particular line,
+     * utilising the document cache where possible.
+     *
+     * @param line Line number to be styled
+     *
+     * @return Styled line iterator
+     */
+    public AttributedCharacterIterator getStyledIterator(final int line) {
+        return getStyledString(line).getIterator();
     }
 }
 

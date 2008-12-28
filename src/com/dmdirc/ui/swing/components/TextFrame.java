@@ -253,7 +253,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                             null, getContainer(), myLine);
                 }
                 
-                textPane.addText(lines);
+                textPane.getDocument().addText(lines);
 
                 if (frameBufferSize > 0) {
                     textPane.trim(frameBufferSize);

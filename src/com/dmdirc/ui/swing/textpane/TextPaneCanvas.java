@@ -23,9 +23,7 @@
 package com.dmdirc.ui.swing.textpane;
 
 import com.dmdirc.ui.messages.IRCTextAttribute;
-import com.dmdirc.ui.swing.textpane.ClickType;
-
-import com.dmdirc.util.RollingList;
+    
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -87,10 +85,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     private int lastVisibleLine;
     /** Line wrapping cache. */
     private final Map<Integer, Integer> lineWrap;
-    /** Cached lines. */
-    private RollingList<Line> cachedLines;
-    /** Cached attributed strings. */
-    private RollingList<AttributedString> cachedStrings;
 
     /**
      * Creates a new text pane canvas.
@@ -112,9 +106,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         addMouseListener(this);
         addMouseMotionListener(this);
         addComponentListener(this);
-
-        cachedLines = new RollingList<Line>(50);
-        cachedStrings = new RollingList<AttributedString>(50);
     }
 
     /**
@@ -201,8 +192,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         // Iterate through the lines
         for (int i = startLine; i >= 0; i--) {
             float drawPosX;
-            final AttributedCharacterIterator iterator = getStyledLine(document.
-                    getLine(i)).getIterator();
+            final AttributedCharacterIterator iterator = document.
+                    getStyledIterator(i);
             paragraphStart = iterator.getBeginIndex();
             paragraphEnd = iterator.getEndIndex();
             lineMeasurer = new LineBreakMeasurer(iterator,
@@ -276,22 +267,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             }
         }
         checkForLink();
-    }
-
-    private AttributedString getStyledLine(final Line line) {
-        AttributedString styledLine = null;
-        if (cachedLines.contains(line)) {
-            final int index = cachedLines.getList().indexOf(line);
-            styledLine = cachedStrings.get(index);
-        }
-
-        if (styledLine == null) {
-            styledLine = line.getStyled();
-            cachedLines.add(line);
-            cachedStrings.add(styledLine);
-        }
-
-        return styledLine;
     }
 
     /**
@@ -375,8 +350,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 }
 
                 final int trans = (int) (lineHeight / 2f + drawPosY);
-                final AttributedCharacterIterator iterator = getStyledLine(
-                        document.getLine(line)).getIterator();
+                final AttributedCharacterIterator iterator = document.
+                        getStyledIterator(line);
                 final AttributedString as = new AttributedString(iterator,
                                                                  firstChar,
                                                                  lastChar);
@@ -482,8 +457,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      */
     public ClickType getClickType(final LineInfo lineInfo) {
         if (lineInfo.getLine() != -1) {
-            final AttributedCharacterIterator iterator = getStyledLine(
-                    document.getLine(lineInfo.getLine())).getIterator();
+            final AttributedCharacterIterator iterator = document.
+                    getStyledIterator(lineInfo.getLine());
             iterator.setIndex(lineInfo.getIndex());
             Object linkattr =
                    iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
@@ -511,8 +486,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      */
     public Object getAttributeValueAtPoint(LineInfo lineInfo) {
         if (lineInfo.getLine() != -1) {
-            final AttributedCharacterIterator iterator = getStyledLine(
-                    document.getLine(lineInfo.getLine())).getIterator();
+            final AttributedCharacterIterator iterator = document.
+                    getStyledIterator(lineInfo.getLine());
             iterator.setIndex(lineInfo.getIndex());
             Object linkattr =
                    iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
@@ -671,17 +646,17 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
 
     /** Checks for a link under the cursor and sets appropriately. */
     private void checkForLink() {
-        final LineInfo info = getClickPosition(getMousePosition());
+        final LineInfo lineInfo = getClickPosition(getMousePosition());
 
-        if (info.getLine() != -1 && document.getLine(info.getLine()) != null) {
-            final AttributedCharacterIterator iterator = getStyledLine(
-                    document.getLine(info.getLine())).getIterator();
-            if (info.getIndex() < iterator.getBeginIndex() || info.getIndex() >
-                                                              iterator.
-                    getEndIndex()) {
+        if (lineInfo.getLine() != -1 && document.getLine(lineInfo.getLine()) !=
+                                        null) {
+            final AttributedCharacterIterator iterator = document.
+                    getStyledIterator(lineInfo.getLine());
+            if (lineInfo.getIndex() < iterator.getBeginIndex() ||
+                    lineInfo.getIndex() > iterator.getEndIndex()) {
                 return;
             }
-            iterator.setIndex(info.getIndex());
+            iterator.setIndex(lineInfo.getIndex());
             Object linkattr =
                    iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
             if (linkattr instanceof String) {
