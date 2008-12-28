@@ -50,7 +50,7 @@ import com.dmdirc.ui.swing.actions.SearchAction;
 import com.dmdirc.ui.swing.actions.TextPaneCopyAction;
 import com.dmdirc.ui.swing.textpane.LineInfo;
 import com.dmdirc.ui.swing.textpane.TextPane;
-import com.dmdirc.ui.swing.textpane.TextPane.ClickType;
+import com.dmdirc.ui.swing.textpane.ClickType;
 import com.dmdirc.ui.swing.textpane.TextPanePageUpAction;
 import com.dmdirc.ui.swing.textpane.TextPanePageDownAction;
 import com.dmdirc.ui.swing.UIUtilities;

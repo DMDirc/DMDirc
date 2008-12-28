@@ -63,19 +63,6 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     /** Parent Frame. */
     private final FrameContainer frame;
 
-    /** Click types. */
-    public enum ClickType {
-
-        /** Hyperlink. */
-        HYPERLINK,
-        /** Channel. */
-        CHANNEL,
-        /** Nickname. */
-        NICKNAME,
-        /** Normal. */
-        NORMAL,
-    }
-
     /** 
      * Creates a new instance of TextPane. 
      *
@@ -128,7 +115,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
                              e.getYOnScreen()) {
                         setScrollBarPosition(scrollBar.getValue() + 1);
                     }
-                    canvas.highlightEvent(TextPaneCanvas.MouseEventType.DRAG, e);
+                    canvas.highlightEvent(MouseEventType.DRAG, e);
                 }
             }
         };

@@ -23,7 +23,7 @@
 package com.dmdirc.ui.swing.textpane;
 
 import com.dmdirc.ui.messages.IRCTextAttribute;
-import com.dmdirc.ui.swing.textpane.TextPane.ClickType;
+import com.dmdirc.ui.swing.textpane.ClickType;
 
 import com.dmdirc.util.RollingList;
 import java.awt.Cursor;
@@ -71,18 +71,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     private final Map<TextLayout, LineInfo> textLayouts;
     /** Line height. */
     private final int lineHeight;
-
-    /** Selection event types. */
-    protected enum MouseEventType {
-
-        /** Mouse clicked. */
-        CLICK,
-        /** Mouse dragged. */
-        DRAG,
-        /** Mouse released. */
-        RELEASE,
-    }
-
     /** position of the scrollbar. */
     private int scrollBarPosition;
     /** Start line of the selection. */
@@ -99,7 +87,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     private int lastVisibleLine;
     /** Line wrapping cache. */
     private final Map<Integer, Integer> lineWrap;
+    /** Cached lines. */
     private RollingList<Line> cachedLines;
+    /** Cached attributed strings. */
     private RollingList<AttributedString> cachedStrings;
 
     /**
@@ -378,7 +368,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 final String text =
                              document.getLine(line).getText().substring(
                         firstChar,
-                                                                        lastChar);
+                        lastChar);
 
                 if (text.isEmpty()) {
                     return;

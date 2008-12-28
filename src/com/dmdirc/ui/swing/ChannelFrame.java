@@ -34,7 +34,7 @@ import com.dmdirc.ui.swing.components.SnappingJSplitPane;
 import com.dmdirc.ui.swing.components.SwingInputHandler;
 import com.dmdirc.ui.swing.components.renderers.NicklistRenderer;
 import com.dmdirc.ui.swing.dialogs.channelsetting.ChannelSettingsDialog;
-import com.dmdirc.ui.swing.textpane.TextPane.ClickType;
+import com.dmdirc.ui.swing.textpane.ClickType;
 
 import java.awt.Color;
 import java.awt.Dimension;
