@@ -27,6 +27,7 @@ import com.dmdirc.ServerManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.dummy.DummyController;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -105,6 +106,7 @@ public class IrcAddressTest {
     }
 
     @Test
+    @Ignore
     public void testConnect() throws InvalidAddressException {
         final IrcAddress address = new IrcAddress("irc://255.255.255.205/a,b,c");
 
