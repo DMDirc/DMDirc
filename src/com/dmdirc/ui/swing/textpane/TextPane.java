@@ -24,7 +24,6 @@ package com.dmdirc.ui.swing.textpane;
 
 import com.dmdirc.FrameContainer;
 
-import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
@@ -35,7 +34,6 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
@@ -70,23 +68,16 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      */
     public TextPane(final FrameContainer frame) {
         super();
-
         setUI(new TextPaneUI());
 
         this.frame = frame;
-
         document = new IRCDocument();
 
         setLayout(new MigLayout("fill"));
-
         canvas = new TextPaneCanvas(this, document);
-
         add(canvas, "dock center");
-
-
         scrollBar = new JScrollBar(JScrollBar.VERTICAL);
         add(scrollBar, "dock east");
-
         scrollBar.setMaximum(document.getNumLines());
         scrollBar.setBlockIncrement(10);
         scrollBar.setUnitIncrement(1);
@@ -94,6 +85,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
 
         addMouseWheelListener(this);
         document.addIRCDocumentListener(this);
+        setAutoscrolls(true);
 
         MouseMotionListener doScrollRectToVisible = new MouseMotionAdapter() {
 

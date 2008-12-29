@@ -22,6 +22,9 @@
 
 package com.dmdirc.ui.swing.textpane;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+
 import javax.swing.JComponent;
 import javax.swing.UIManager;
 import javax.swing.plaf.ComponentUI;
@@ -35,5 +38,28 @@ public class TextPaneUI extends ComponentUI {
     @Override
     public void installUI(final JComponent c) {
         c.setBorder(UIManager.getBorder("TextField.border"));
+    }
+
+    /** {@inheritDoc} */
+    /*@Override
+    public void paint(final Graphics g, final JComponent c) {
+        if (c.isOpaque()) {
+            g.setColor(c.getBackground());
+            g.fillRect(0, 0, c.getWidth(), c.getHeight());
+        }
+        paint(g, c);
+    }*/
+
+    /** {@inheritDoc} */
+    /*@Override
+    public void update(final Graphics g, final JComponent c) {
+        if (c.isOpaque()) {
+            g.setColor(c.getBackground());
+            g.fillRect(0, 0, c.getWidth(), c.getHeight());
+        }
+        paint(g, c);
+    }*/
+
+    protected void paintTextPane(final Graphics2D g, final TextPane c) {
     }
 }

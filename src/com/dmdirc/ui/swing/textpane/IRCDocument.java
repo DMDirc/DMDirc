@@ -211,14 +211,14 @@ public final class IRCDocument implements Serializable {
     }
 
     /**
-     * Returns an attributed string for a particular line, utilising the
-     * document cache where possible.
+     * Returns an attributed character iterator for a particular line,
+     * utilising the document cache where possible.
      *
      * @param line Line to be styled
      *
      * @return Styled line
      */
-    public AttributedString getStyledString(final Line line) {
+    public AttributedCharacterIterator getStyledLine(final Line line) {
         AttributedString styledLine = null;
         if (cachedLines.contains(line)) {
             final int index = cachedLines.getList().indexOf(line);
@@ -231,7 +231,7 @@ public final class IRCDocument implements Serializable {
             cachedStrings.add(styledLine);
         }
 
-        return styledLine;
+        return styledLine.getIterator();
     }
 
     /**
@@ -242,32 +242,8 @@ public final class IRCDocument implements Serializable {
      *
      * @return Styled line
      */
-    public AttributedString getStyledString(final int line) {
-        return getStyledString(getLine(line));
-    }
-
-    /**
-     * Returns an attributed character iterator for a particular line,
-     * utilising the document cache where possible.
-     *
-     * @param line Line to be styled
-     *
-     * @return Styled line iterator
-     */
-    public AttributedCharacterIterator getStyledIterator(final Line line) {
-        return getStyledString(line).getIterator();
-    }
-
-    /**
-     * Returns an attributed character iterator for a particular line,
-     * utilising the document cache where possible.
-     *
-     * @param line Line number to be styled
-     *
-     * @return Styled line iterator
-     */
-    public AttributedCharacterIterator getStyledIterator(final int line) {
-        return getStyledString(line).getIterator();
+    public AttributedCharacterIterator getStyledLine(final int line) {
+        return getStyledLine(getLine(line));
     }
 }
 
