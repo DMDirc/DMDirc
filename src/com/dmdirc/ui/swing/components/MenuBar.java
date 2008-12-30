@@ -20,12 +20,16 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing;
+package com.dmdirc.ui.swing.components;
+
 
 import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
 import com.dmdirc.ui.interfaces.Window;
-import com.dmdirc.ui.swing.components.StandardInputDialog;
+import com.dmdirc.ui.swing.Apple;
+import com.dmdirc.ui.swing.ChannelFrame;
+import com.dmdirc.ui.swing.MainFrame;
+import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.ui.swing.dialogs.FeedbackDialog;
 import com.dmdirc.ui.swing.dialogs.NewServerDialog;
 import com.dmdirc.ui.swing.dialogs.about.AboutDialog;
@@ -35,17 +39,23 @@ import com.dmdirc.ui.swing.dialogs.prefs.SwingPreferencesDialog;
 import com.dmdirc.ui.swing.dialogs.profiles.ProfileManagerDialog;
 import com.dmdirc.ui.swing.framemanager.windowmenu.WindowMenuFrameManager;
 
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Dialog.ModalityType;
 
-import java.util.Arrays;
+import java.awt.FocusTraversalPolicy;
+import java.awt.Insets;
+import javax.swing.Box;
+import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
-import javax.swing.plaf.basic.BasicMenuBarUI;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * DMDirc menu bar.
@@ -72,13 +82,16 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
      */
     public MenuBar() {
         super();
+        setLayout(new MigLayout("ins 0, fillx"));
 
         initServerMenu();
         initChannelMenu();
         initSettingsMenu();
         add(new WindowMenuFrameManager());
         initHelpMenu();
-        
+        add(Box.createHorizontalGlue(), "growx, pushx");
+        add(new MDIBar());
+
         getActionMap().setParent(null);
         getActionMap().clear();
     }
@@ -237,9 +250,10 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         } else if (e.getActionCommand().equals("About")) {
             AboutDialog.showAboutDialog();
         } else if (e.getActionCommand().equals("Profile")) {
-            ProfileManagerDialog.showProfileManagerDialog(SwingController.getMainFrame());
+            ProfileManagerDialog.showProfileManagerDialog(SwingController.
+                    getMainFrame());
         } else if (e.getActionCommand().equals("Exit")) {
-            ((MainFrame) Main.getUI().getMainWindow()).quit();
+            SwingController.getMainFrame().quit();
         } else if (e.getActionCommand().equals("Actions")) {
             ActionsManagerDialog.showActionsManagerDialog();
         } else if (e.getActionCommand().equals("Aliases")) {
@@ -251,7 +265,8 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         } else if (e.getActionCommand().equals("ChannelSettings")) {
             final Window activeWindow = Main.getUI().getActiveWindow();
             if (activeWindow instanceof ChannelFrame) {
-                Main.getUI().showChannelSettingsDialog(((ChannelFrame) activeWindow).getChannel());
+                Main.getUI().showChannelSettingsDialog(((ChannelFrame) activeWindow).
+                        getChannel());
             }
         } else if (e.getActionCommand().equals("ServerSettings")) {
             Main.getUI().showServerSettingsDialog(Main.getUI().getActiveServer());
@@ -259,8 +274,8 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
             Main.getUI().getActiveServer().disconnect();
         } else if (e.getActionCommand().equals("JoinChannel")) {
             new StandardInputDialog(SwingController.getMainFrame(),
-                    ModalityType.MODELESS, "Join channel",
-                    "Enter the name of the channel to join.") {
+                                    ModalityType.MODELESS, "Join channel",
+                                    "Enter the name of the channel to join.") {
 
                 /** Serial version UID. */
                 private static final long serialVersionUID = 1;
@@ -275,7 +290,7 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
                 /** {@inheritDoc} */
                 @Override
                 public void cancelled() {
-                //Ignore
+                    //Ignore
                 }
             }.display();
         }
@@ -298,12 +313,12 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
     /** {@inheritDoc} */
     @Override
     public void menuDeselected(final MenuEvent e) {
-    //Ignore
+        //Ignore
     }
 
     /** {@inheritDoc} */
     @Override
     public void menuCanceled(final MenuEvent e) {
-    //Ignore
+        //Ignore
     }
 }

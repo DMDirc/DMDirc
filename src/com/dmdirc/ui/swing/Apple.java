@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing;
 
+import com.dmdirc.ui.swing.components.MenuBar;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
