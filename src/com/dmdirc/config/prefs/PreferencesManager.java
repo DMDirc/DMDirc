@@ -384,7 +384,7 @@ public class PreferencesManager {
                 lafs));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "antialias", "false", "System anti-alias",
-                "Anti-alias all fonts?"));
+                "Anti-alias all fonts?").setRestartNeeded());
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "maximisewindows", "true", "Auto-maximise windows",
                 "Automatically maximise newly opened windows?"));
