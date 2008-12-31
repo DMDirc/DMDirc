@@ -54,17 +54,6 @@ public final class ParserError {
 	 *
 	 * @param level Set the error level.
 	 * @param data String containing information about the error.
-	 */
-	public ParserError(final int level, final String data) {
-		errorData = data;
-		errorLevel = level;
-	}
-	
-	/**
-	 * Create a new Error.
-	 *
-	 * @param level Set the error level.
-	 * @param data String containing information about the error.
 	 * @param line The last line of data recieved from the server before this exception.
 	 */
 	public ParserError(final int level, final String data, final String line) {

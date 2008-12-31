@@ -736,7 +736,7 @@ public class IRCParser implements Runnable {
 	 */
 	private void handleConnectException(final Exception e) {
 		callDebugInfo(DEBUG_SOCKET, "Error Connecting (" + e.getMessage() + "), Aborted");
-		final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception with server socket");
+		final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception with server socket", getLastLine());
 		ei.setException(e);
 		callConnectError(ei);
 		
@@ -1050,7 +1050,7 @@ public class IRCParser implements Runnable {
 				}
 			}
 		} catch (Exception e) {
-			final ParserError ei = new ParserError(ParserError.ERROR_FATAL, "Fatal Exception in Parser.", lastLine);
+			final ParserError ei = new ParserError(ParserError.ERROR_FATAL, "Fatal Exception in Parser.", getLastLine());
 			ei.setException(e);
 			callErrorInfo(ei);
 		}
@@ -1154,7 +1154,7 @@ public class IRCParser implements Runnable {
 		bits = modeStr.split(",", 5);
 		if (bits.length < 4) {
 			modeStr = sDefaultModes.toString();
-			callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "CHANMODES String not valid. Using default string of \"" + modeStr + "\""));
+			callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "CHANMODES String not valid. Using default string of \"" + modeStr + "\"", getLastLine()));
 			h005Info.put("CHANMODES", modeStr);
 			bits = modeStr.split(",", 5);
 		}
@@ -1365,7 +1365,7 @@ public class IRCParser implements Runnable {
 		bits = modeStr.split("\\)", 2);
 		if (bits.length != 2 || bits[0].length() != bits[1].length()) {
 			modeStr = sDefaultModes;
-			callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "PREFIX String not valid. Using default string of \"" + modeStr + "\""));
+			callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "PREFIX String not valid. Using default string of \"" + modeStr + "\"", getLastLine()));
 			h005Info.put("PREFIX", modeStr);
 			modeStr = modeStr.substring(1);
 			bits = modeStr.split("\\)", 2);
@@ -1524,7 +1524,7 @@ public class IRCParser implements Runnable {
 	public int getMaxLength(final int nLength) {
 		final int lineLint = 5;
 		if (cMyself.isFake()) {
-			callErrorInfo(new ParserError(ParserError.ERROR_ERROR + ParserError.ERROR_USER, "getMaxLength() called, but I don't know who I am?", lastLine));
+			callErrorInfo(new ParserError(ParserError.ERROR_ERROR + ParserError.ERROR_USER, "getMaxLength() called, but I don't know who I am?", getLastLine()));
 			return MAX_LINELENGTH - nLength - lineLint;
 		} else {
 			return MAX_LINELENGTH - cMyself.toString().length() - nLength - lineLint;
@@ -1578,7 +1578,7 @@ public class IRCParser implements Runnable {
 		} else if (result == -2) {
 			result = -1;
 			callDebugInfo(DEBUG_INFO, "Failed");
-			callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "Unable to discover max list modes."));
+			callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "Unable to discover max list modes.", getLastLine()));
 		}
 		callDebugInfo(DEBUG_INFO, "Result: "+result);
 		return result;
