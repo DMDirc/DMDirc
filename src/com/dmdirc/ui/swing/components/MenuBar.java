@@ -28,6 +28,7 @@ import com.dmdirc.ServerManager;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.Apple;
 import com.dmdirc.ui.swing.ChannelFrame;
+import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.ui.swing.dialogs.FeedbackDialog;
 import com.dmdirc.ui.swing.dialogs.NewServerDialog;
@@ -75,7 +76,7 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
     /**
      * Instantiates a new menu bar.
      */
-    public MenuBar() {
+    public MenuBar(final MainFrame mainFrame) {
         super();
         setLayout(new MigLayout("ins 0, fillx"));
 
@@ -85,7 +86,7 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         add(new WindowMenuFrameManager());
         initHelpMenu();
         add(Box.createHorizontalGlue(), "growx, pushx");
-        add(new MDIBar());
+        add(new MDIBar(mainFrame));
         add(Box.createHorizontalStrut(PlatformDefaults.getPanelInsets(1).getUnit()));
 
         getActionMap().setParent(null);

@@ -31,8 +31,7 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
 
-import com.dmdirc.ui.swing.SwingController;
-import com.dmdirc.ui.swing.UIUtilities;
+import com.dmdirc.ui.swing.MainFrame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -43,7 +42,6 @@ import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
-import javax.swing.SwingUtilities;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -58,11 +56,14 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
     private NoFocusButton closeButton;
     private NoFocusButton minimiseButton;
     private NoFocusButton restoreButton;
+    private MainFrame mainFrame;
 
     /**
      *
+     * @param mainFrame 
      */
-    public MDIBar() {
+    public MDIBar(final MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
         closeButton = new NoFocusButton(IconManager.getIconManager().
                 getScaledIcon(
                 "close", ICON_SIZE, ICON_SIZE));
@@ -86,16 +87,8 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
         minimiseButton.addActionListener(this);
         restoreButton.addActionListener(this);
 
-        SwingUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                setVisible(SwingController.getMainFrame().getActiveFrame() !=
-                           null);
-                setEnabled(SwingController.getMainFrame().getActiveFrame() !=
-                           null);
-            }
-        });
+        setVisible(mainFrame.getActiveFrame() != null);
+        setEnabled(mainFrame.getActiveFrame() != null);
     }
 
     @Override
@@ -126,16 +119,8 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
             ((JInternalFrame) window.getFrame()).addPropertyChangeListener(
                     "maximum", this);
         }
-        UIUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                setVisible(SwingController.getMainFrame().getActiveFrame() !=
-                           null);
-                setEnabled(SwingController.getMainFrame().getActiveFrame() !=
-                           null);
-            }
-        });
+        setVisible(mainFrame.getActiveFrame() != null);
+        setEnabled(mainFrame.getActiveFrame() != null);
     }
 
     @Override
@@ -144,16 +129,8 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
             ((JInternalFrame) window.getFrame()).removePropertyChangeListener(
                     this);
         }
-        UIUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                setVisible(SwingController.getMainFrame().getActiveFrame() !=
-                           null);
-                setEnabled(SwingController.getMainFrame().getActiveFrame() !=
-                           null);
-            }
-        });
+        setVisible(mainFrame.getActiveFrame() != null);
+        setEnabled(mainFrame.getActiveFrame() != null);
     }
 
     @Override

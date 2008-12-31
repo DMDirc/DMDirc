@@ -94,7 +94,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** Menu bar. */
     private MenuBar menu;
     /** Top level window list. */
-    private List<java.awt.Window> windows;
+    private final List<java.awt.Window> windows;
 
     /**
      * Creates new form MainFrame.
@@ -345,6 +345,11 @@ public final class MainFrame extends JFrame implements WindowListener,
         }
     }
 
+    /**
+     * Returns a list of top level windows.
+     *
+     * @return Top level window list
+     */
     public List<java.awt.Window> getTopLevelWindows() {
         synchronized (windows) {
             return windows;
@@ -383,7 +388,7 @@ public final class MainFrame extends JFrame implements WindowListener,
 
         initFrameManagers();
 
-        menu = new MenuBar();
+        menu = new MenuBar(this);
         Apple.getApple().setMenuBar(menu);
         setJMenuBar(menu);
 
