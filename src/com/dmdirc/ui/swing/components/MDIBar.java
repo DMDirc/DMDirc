@@ -120,7 +120,7 @@ public class MDIBar extends JPanel implements FrameManager,
     public void addWindow(FrameContainer window) {
         if (window.getFrame() instanceof JInternalFrame) {
             ((JInternalFrame) window.getFrame()).addPropertyChangeListener(
-                    "maximum-12", this);
+                    "maximum", this);
         }
         check();
     }
