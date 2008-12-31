@@ -199,6 +199,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         config.addChangeListener("ui", "foregroundcolour", this);
         config.addChangeListener("ui", "backgroundcolour", this);
         config.addChangeListener("ui", "quickCopy", this);
+        config.addChangeListener("ui", "frameBufferSize", this);
 
         if (pref || Main.getUI().getMainWindow().getMaximised()) {
             hideTitlebar();
