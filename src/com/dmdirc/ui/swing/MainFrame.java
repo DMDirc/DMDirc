@@ -21,6 +21,7 @@
  */
 package com.dmdirc.ui.swing;
 
+import com.dmdirc.ui.swing.components.desktopPane.DMDircDesktopPane;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
