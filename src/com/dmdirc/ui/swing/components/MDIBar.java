@@ -50,6 +50,7 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
         PropertyChangeListener, ActionListener {
 
     private static final long serialVersionUID = -8028057596226636245L;
+    private static final int ICON_SIZE = 12;
     private Window activeWindow;
     private NoFocusButton closeButton;
     private NoFocusButton minimiseButton;
@@ -59,12 +60,12 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
      *
      */
     public MDIBar() {
-        closeButton = new NoFocusButton(IconManager.getIconManager().getIcon(
-                "close"));
-        minimiseButton = new NoFocusButton(IconManager.getIconManager().getIcon(
-                "minimise"));
-        restoreButton = new NoFocusButton(IconManager.getIconManager().getIcon(
-                "maximise"));
+        closeButton = new NoFocusButton(IconManager.getIconManager().getScaledIcon(
+                "close", ICON_SIZE, ICON_SIZE));
+        minimiseButton = new NoFocusButton(IconManager.getIconManager().getScaledIcon(
+                "minimise", ICON_SIZE, ICON_SIZE));
+        restoreButton = new NoFocusButton(IconManager.getIconManager().getScaledIcon(
+                "maximise", ICON_SIZE, ICON_SIZE));
 
         setOpaque(false);
         setLayout(new MigLayout("hmax 16, ins 0, fill"));
@@ -131,11 +132,11 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if ((Boolean) evt.getNewValue()) {
-            restoreButton.setIcon(IconManager.getIconManager().getIcon(
-                "restore"));
+            restoreButton.setIcon(IconManager.getIconManager().getScaledIcon(
+                "restore", ICON_SIZE, ICON_SIZE));
         } else {
-            restoreButton.setIcon(IconManager.getIconManager().getIcon(
-                "maximise"));
+            restoreButton.setIcon(IconManager.getIconManager().getScaledIcon(
+                "maximise", ICON_SIZE, ICON_SIZE));
         }
         //setVisible(((Boolean) evt.getNewValue()));
     }
