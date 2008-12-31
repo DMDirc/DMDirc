@@ -69,10 +69,10 @@ public class MDIBar extends JPanel implements FrameManager,
                 getScaledIcon("maximise-12", ICON_SIZE, ICON_SIZE));
 
         setOpaque(false);
-        setLayout(new MigLayout("hmax 16, ins 0, fill"));
-        add(minimiseButton, "w 16!, h 16!, right");
-        add(restoreButton, "w 16!, h 16!, right");
-        add(closeButton, "w 16!, h 16!, right");
+        setLayout(new MigLayout("hmax 17, ins 0, fill"));
+        add(minimiseButton, "w 17!, h 17!, right");
+        add(restoreButton, "w 17!, h 17!, right");
+        add(closeButton, "w 17!, h 17!, right");
 
 
         WindowManager.addFrameManager(this);
