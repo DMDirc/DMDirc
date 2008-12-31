@@ -60,11 +60,14 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
      *
      */
     public MDIBar() {
-        closeButton = new NoFocusButton(IconManager.getIconManager().getScaledIcon(
+        closeButton = new NoFocusButton(IconManager.getIconManager().
+                getScaledIcon(
                 "close", ICON_SIZE, ICON_SIZE));
-        minimiseButton = new NoFocusButton(IconManager.getIconManager().getScaledIcon(
+        minimiseButton = new NoFocusButton(IconManager.getIconManager().
+                getScaledIcon(
                 "minimise", ICON_SIZE, ICON_SIZE));
-        restoreButton = new NoFocusButton(IconManager.getIconManager().getScaledIcon(
+        restoreButton = new NoFocusButton(IconManager.getIconManager().
+                getScaledIcon(
                 "maximise", ICON_SIZE, ICON_SIZE));
 
         setOpaque(false);
@@ -79,6 +82,13 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
         closeButton.addActionListener(this);
         minimiseButton.addActionListener(this);
         restoreButton.addActionListener(this);
+    }
+
+    @Override
+    public void setEnabled(final boolean enabled) {
+        closeButton.setEnabled(enabled);
+        minimiseButton.setEnabled(enabled);
+        restoreButton.setEnabled(enabled);
     }
 
     @Override
@@ -126,6 +136,7 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
     public void selectionChanged(Window window) {
         if (window instanceof JInternalFrame) {
             activeWindow = window;
+            setEnabled(activeWindow != null);
         }
     }
 
@@ -133,25 +144,32 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
     public void propertyChange(PropertyChangeEvent evt) {
         if ((Boolean) evt.getNewValue()) {
             restoreButton.setIcon(IconManager.getIconManager().getScaledIcon(
-                "restore", ICON_SIZE, ICON_SIZE));
+                    "restore", ICON_SIZE, ICON_SIZE));
         } else {
             restoreButton.setIcon(IconManager.getIconManager().getScaledIcon(
-                "maximise", ICON_SIZE, ICON_SIZE));
+                    "maximise", ICON_SIZE, ICON_SIZE));
         }
-        //setVisible(((Boolean) evt.getNewValue()));
+        setVisible(((Boolean) evt.getNewValue()));
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (closeButton.equals(e.getSource())) {
-            activeWindow.close();
+            if (activeWindow != null) {
+                activeWindow.close();
+            }
         } else if (minimiseButton.equals(e.getSource())) {
+            if (activeWindow != null) {
                 ((TextFrame) Main.getUI().getActiveWindow()).minimise();
+            }
         } else if (restoreButton.equals(e.getSource())) {
-            try {
-                ((JInternalFrame) activeWindow).setMaximum(!((JInternalFrame) activeWindow).isMaximum());
-            } catch (PropertyVetoException ex) {
-                //Ignore
+            if (activeWindow != null) {
+                try {
+                    ((JInternalFrame) activeWindow).setMaximum(!((JInternalFrame) activeWindow).
+                            isMaximum());
+                } catch (PropertyVetoException ex) {
+                    //Ignore
+                }
             }
         }
     }
