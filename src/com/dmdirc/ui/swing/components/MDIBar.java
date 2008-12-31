@@ -24,13 +24,11 @@
 package com.dmdirc.ui.swing.components;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Main;
-import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.FrameManager;
-import com.dmdirc.ui.interfaces.Window;
 
+import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.UIUtilities;
 import java.awt.event.ActionEvent;
@@ -48,12 +46,11 @@ import net.miginfocom.swing.MigLayout;
 /**
  *
  */
-public class MDIBar extends JPanel implements FrameManager, SelectionListener,
+public class MDIBar extends JPanel implements FrameManager,
         PropertyChangeListener, ActionListener {
 
     private static final long serialVersionUID = -8028057596226636245L;
     private static final int ICON_SIZE = 12;
-    private Window activeWindow;
     private NoFocusButton closeButton;
     private NoFocusButton minimiseButton;
     private NoFocusButton restoreButton;
@@ -66,14 +63,11 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
     public MDIBar(final MainFrame mainFrame) {
         this.mainFrame = mainFrame;
         closeButton = new NoFocusButton(IconManager.getIconManager().
-                getScaledIcon(
-                "close", ICON_SIZE, ICON_SIZE));
+                getScaledIcon("close", ICON_SIZE, ICON_SIZE));
         minimiseButton = new NoFocusButton(IconManager.getIconManager().
-                getScaledIcon(
-                "minimise", ICON_SIZE, ICON_SIZE));
+                getScaledIcon("minimise", ICON_SIZE, ICON_SIZE));
         restoreButton = new NoFocusButton(IconManager.getIconManager().
-                getScaledIcon(
-                "maximise", ICON_SIZE, ICON_SIZE));
+                getScaledIcon("maximise", ICON_SIZE, ICON_SIZE));
 
         setOpaque(false);
         setLayout(new MigLayout("hmax 16, ins 0, fill"));
@@ -83,7 +77,6 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
 
 
         WindowManager.addFrameManager(this);
-        WindowManager.addSelectionListener(this);
         closeButton.addActionListener(this);
         minimiseButton.addActionListener(this);
         restoreButton.addActionListener(this);
@@ -103,8 +96,8 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
 
             @Override
             public void run() {
-                setVisible(mainFrame.getActiveFrame() != null);
-                setEnabled(mainFrame.getActiveFrame() != null);
+                setVisible(mainFrame.getDesktopPane().getAllFrames().length > 0);
+                setEnabled(mainFrame.getDesktopPane().getAllFrames().length > 0);
             }
         });
     }
@@ -153,13 +146,6 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
     }
 
     @Override
-    public void selectionChanged(Window window) {
-        if (window instanceof JInternalFrame) {
-            activeWindow = window;
-        }
-    }
-
-    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if ((Boolean) evt.getNewValue()) {
             restoreButton.setIcon(IconManager.getIconManager().getScaledIcon(
@@ -172,22 +158,19 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        final Window activeFrame = mainFrame.getActiveFrame();
+        if (activeFrame == null) {
+            return;
+        }
         if (closeButton.equals(e.getSource())) {
-            if (activeWindow != null) {
-                activeWindow.close();
-            }
+            activeFrame.close();
         } else if (minimiseButton.equals(e.getSource())) {
-            if (activeWindow != null) {
-                ((TextFrame) Main.getUI().getActiveWindow()).minimise();
-            }
+            ((TextFrame) activeFrame).minimise();
         } else if (restoreButton.equals(e.getSource())) {
-            if (activeWindow != null) {
-                try {
-                    ((JInternalFrame) activeWindow).setMaximum(!((JInternalFrame) activeWindow).
-                            isMaximum());
-                } catch (PropertyVetoException ex) {
-                    //Ignore
-                }
+            try {
+                activeFrame.setMaximum(activeFrame.isMaximum());
+            } catch (PropertyVetoException ex) {
+                //Ignore
             }
         }
     }
