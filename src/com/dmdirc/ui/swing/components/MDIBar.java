@@ -31,6 +31,7 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
 
+import com.dmdirc.ui.swing.SwingController;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -120,6 +121,8 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
             ((JInternalFrame) window.getFrame()).removePropertyChangeListener(
                     this);
         }
+        setVisible(SwingController.getMainFrame().getActiveFrame() != null);
+        setEnabled(SwingController.getMainFrame().getActiveFrame() != null);
     }
 
     @Override
@@ -136,7 +139,6 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
     public void selectionChanged(Window window) {
         if (window instanceof JInternalFrame) {
             activeWindow = window;
-            setEnabled(activeWindow != null);
         }
     }
 
@@ -149,7 +151,6 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
             restoreButton.setIcon(IconManager.getIconManager().getScaledIcon(
                     "maximise", ICON_SIZE, ICON_SIZE));
         }
-        setVisible(((Boolean) evt.getNewValue()));
     }
 
     @Override
