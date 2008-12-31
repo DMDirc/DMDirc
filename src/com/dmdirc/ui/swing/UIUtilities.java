@@ -50,7 +50,6 @@ import javax.swing.text.JTextComponent;
 import javax.swing.undo.UndoManager;
 
 import net.miginfocom.layout.PlatformDefaults;
-import net.miginfocom.layout.UnitValue;
 
 /**
  * UI constants.

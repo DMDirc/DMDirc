@@ -27,7 +27,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import java.util.List;
 
 /**
- * Wrapping commands are commands whose aruments may be wrapped into multiple
+ * Wrapping commands are commands whose arguments may be wrapped into multiple
  * lines when sending.
  * 
  * @author chris

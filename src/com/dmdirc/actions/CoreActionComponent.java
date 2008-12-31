@@ -30,9 +30,9 @@ import com.dmdirc.Server;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.irc.ChannelClientInfo;
-
 import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.ui.messages.Styliser;
+
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.Calendar;

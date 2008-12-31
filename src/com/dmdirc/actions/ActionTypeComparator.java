@@ -25,7 +25,6 @@ package com.dmdirc.actions;
 import com.dmdirc.actions.interfaces.ActionType;
 
 import java.io.Serializable;
-
 import java.util.Comparator;
 
 /**
