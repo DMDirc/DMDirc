@@ -32,6 +32,7 @@ import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
 
 import com.dmdirc.ui.swing.MainFrame;
+import com.dmdirc.ui.swing.UIUtilities;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -87,8 +88,7 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
         minimiseButton.addActionListener(this);
         restoreButton.addActionListener(this);
 
-        setVisible(mainFrame.getActiveFrame() != null);
-        setEnabled(mainFrame.getActiveFrame() != null);
+        check();
     }
 
     @Override
@@ -96,6 +96,17 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
         closeButton.setEnabled(enabled);
         minimiseButton.setEnabled(enabled);
         restoreButton.setEnabled(enabled);
+    }
+
+    private void check() {
+        UIUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                setVisible(mainFrame.getActiveFrame() != null);
+                setEnabled(mainFrame.getActiveFrame() != null);
+            }
+        });
     }
 
     @Override
@@ -119,8 +130,7 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
             ((JInternalFrame) window.getFrame()).addPropertyChangeListener(
                     "maximum", this);
         }
-        setVisible(mainFrame.getActiveFrame() != null);
-        setEnabled(mainFrame.getActiveFrame() != null);
+        check();
     }
 
     @Override
@@ -129,8 +139,7 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
             ((JInternalFrame) window.getFrame()).removePropertyChangeListener(
                     this);
         }
-        setVisible(mainFrame.getActiveFrame() != null);
-        setEnabled(mainFrame.getActiveFrame() != null);
+        check();
     }
 
     @Override
