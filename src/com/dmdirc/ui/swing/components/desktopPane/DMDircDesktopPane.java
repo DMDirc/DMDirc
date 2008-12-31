@@ -1,16 +1,16 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
- *
+ * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,53 +20,56 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.framemanager.ctrltab;
+package com.dmdirc.ui.swing.components.desktopPane;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.components.TreeScroller;
 import com.dmdirc.ui.swing.framemanager.tree.TreeViewModel;
-
 import com.dmdirc.ui.swing.framemanager.tree.TreeViewNode;
-import java.awt.event.ActionEvent;
-import java.io.Serializable;
+
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
-import javax.swing.JLabel;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
+import javax.swing.JInternalFrame;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.plaf.DesktopPaneUI;
 import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 /**
- * Manages the ctrl tab window list.
+ * DMDirc Extentions to JDesktopPane.
  */
-public final class CtrlTabFrameManager implements FrameManager,
-        Serializable, TreeSelectionListener,
-        SelectionListener {
+public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
+        TreeSelectionListener, SelectionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 3;
+    private static final long serialVersionUID = 1;
+    /** The current number of pixels to displace new frames in the X
+     * direction. */
+    private int xOffset;
+    /** The current number of pixels to displace new frames in the Y
+     * direction. */
+    private int yOffset;
+    /** The number of pixels each new internal frame is offset by. */
+    private static final int FRAME_OPENING_OFFSET = 30;
     /** Node storage, used for adding and deleting nodes correctly. */
     private final Map<FrameContainer, TreeViewNode> nodes;
     /** Data model. */
@@ -77,60 +80,72 @@ public final class CtrlTabFrameManager implements FrameManager,
     private final TreeScroller treeScroller;
 
     /**
-     * Creates a new instance of WindowMenuFrameManager.
-     *
-     * @param desktopPane DesktopPane to register with
+     * Initialises the DMDirc desktop pane.
      */
-    public CtrlTabFrameManager(final JDesktopPane desktopPane) {
+    public DMDircDesktopPane() {
+        setBackground(new Color(238, 238, 238));
+        setBorder(BorderFactory.createEtchedBorder());
+        setUI(new ProxyDesktopPaneUI(getUI(), this));
+
         nodes = new HashMap<FrameContainer, TreeViewNode>();
         model = new TreeViewModel(new TreeViewNode(null, null));
         selectionModel = new DefaultTreeSelectionModel();
         treeScroller =
-                new TreeScroller(model, selectionModel);
+        new TreeScroller(model, selectionModel);
         selectionModel.addTreeSelectionListener(this);
 
-        InputMap inputMap = SwingUtilities.getUIInputMap(desktopPane,
-                JDesktopPane.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-        if (inputMap == null) {
-            inputMap =
-                    desktopPane.getInputMap(JDesktopPane.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        WindowManager.addFrameManager(this);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setUI(final DesktopPaneUI ui) {
+        if (ui instanceof ProxyDesktopPaneUI) {
+            super.setUI(ui);
+        } else {
+            super.setUI(new ProxyDesktopPaneUI(ui, this));
         }
-        inputMap.put(KeyStroke.getKeyStroke("ctrl shift pressed TAB"),
-                "selectPreviousFrame");
+    }
 
-        ActionMap actionMap = SwingUtilities.getUIActionMap(desktopPane);
-        if (actionMap == null) {
-            actionMap = desktopPane.getActionMap();
+    /**
+     * Add a specified component at the specified index.
+     * 
+     * @param comp Component to add
+     * @param index Index for insertion
+     */
+    public void add(final JComponent comp, final int index) {
+        addImpl(comp, null, index);
+
+        // Make sure it'll fit with our offsets
+        if (comp.getWidth() + xOffset > getWidth()) {
+            xOffset = 0;
         }
-        actionMap.put("selectNextFrame", new AbstractAction("selectNextFrame") {
+        if (comp.getHeight() + yOffset > getHeight()) {
+            yOffset = 0;
+        }
 
-            private static final long serialVersionUID = 1;
+        // Position the frame
+        comp.setLocation(xOffset, yOffset);
 
-            /** {@inheritDoc} */
-            @Override
-            public void actionPerformed(final ActionEvent evt) {
-                scrollDown();
-            }
-        });
+        // Increase the offsets
+        xOffset += FRAME_OPENING_OFFSET;
+        yOffset += FRAME_OPENING_OFFSET;
+    }
 
-        SwingUtilities.getUIActionMap(desktopPane).
-                put("selectPreviousFrame",
-                new AbstractAction("selectPreviousFrame") {
-
-                    private static final long serialVersionUID = 1;
-
-                    /** {@inheritDoc} */
-                    @Override
-                    public void actionPerformed(final ActionEvent evt) {
-                        scrollUp();
-                    }
-                });
+    /** {@inheritDoc} */
+    @Override
+    public JInternalFrame getSelectedFrame() {
+        if (getComponentCount() > 0) {
+            return super.getSelectedFrame();
+        } else {
+            return null;
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public void setParent(final JComponent parent) {
-    //Ignore
+        //Ignore
     }
 
     /** {@inheritDoc} */
@@ -153,7 +168,7 @@ public final class CtrlTabFrameManager implements FrameManager,
 
     @Override
     public void addWindow(final FrameContainer parent,
-            final FrameContainer window) {
+                          final FrameContainer window) {
         UIUtilities.invokeAndWait(new Runnable() {
 
             /** {@inheritDoc} */
@@ -169,7 +184,7 @@ public final class CtrlTabFrameManager implements FrameManager,
     /** {@inheritDoc} */
     @Override
     public void delWindow(final FrameContainer parent,
-            final FrameContainer window) {
+                          final FrameContainer window) {
         delWindow(window);
     }
 
@@ -187,14 +202,14 @@ public final class CtrlTabFrameManager implements FrameManager,
                 final TreeViewNode node = nodes.get(window);
                 if (node.getLevel() == 0) {
                     Logger.appError(ErrorLevel.MEDIUM,
-                            "delServer triggered for root node" +
-                            node.toString(),
-                            new IllegalArgumentException());
+                                    "delServer triggered for root node" +
+                                    node.toString(),
+                                    new IllegalArgumentException());
                 } else {
                     model.removeNodeFromParent(nodes.get(window));
                 }
                 nodes.remove(window);
-                window.removeSelectionListener(CtrlTabFrameManager.this);
+                window.removeSelectionListener(DMDircDesktopPane.this);
             }
         });
     }
@@ -206,7 +221,7 @@ public final class CtrlTabFrameManager implements FrameManager,
      * @param window Window to add
      */
     public void addWindow(final TreeViewNode parent,
-            final FrameContainer window) {
+                          final FrameContainer window) {
         UIUtilities.invokeAndWait(new Runnable() {
 
             /** {@inheritDoc} */
@@ -218,7 +233,7 @@ public final class CtrlTabFrameManager implements FrameManager,
                 }
                 node.setUserObject(window);
                 model.insertNodeInto(node, parent);
-                window.addSelectionListener(CtrlTabFrameManager.this);
+                window.addSelectionListener(DMDircDesktopPane.this);
             }
         });
     }
@@ -244,7 +259,7 @@ public final class CtrlTabFrameManager implements FrameManager,
     @Override
     public void selectionChanged(final Window window) {
         final TreeNode[] path =
-                model.getPathToRoot(nodes.get(window.getContainer()));
+                         model.getPathToRoot(nodes.get(window.getContainer()));
         if (path != null && path.length > 0) {
             selectionModel.setSelectionPath(new TreePath(path));
         }

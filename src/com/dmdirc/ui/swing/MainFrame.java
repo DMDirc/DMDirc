@@ -40,7 +40,6 @@ import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.components.InputTextFrame;
 import com.dmdirc.ui.swing.components.MenuBar;
 import com.dmdirc.ui.swing.components.SnappingJSplitPane;
-import com.dmdirc.ui.swing.framemanager.ctrltab.CtrlTabFrameManager;
 import com.dmdirc.ui.swing.framemanager.tree.TreeFrameManager;
 
 import java.awt.Dimension;
@@ -375,8 +374,7 @@ public final class MainFrame extends JFrame implements WindowListener,
 
         WindowManager.addFrameManager(mainFrameManager);
         mainFrameManager.setParent(frameManagerPanel);
-
-        WindowManager.addFrameManager(new CtrlTabFrameManager(desktopPane));
+        
         WindowManager.addFrameManager(this);
     }
 
