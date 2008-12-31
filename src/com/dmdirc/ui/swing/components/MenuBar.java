@@ -28,7 +28,6 @@ import com.dmdirc.ServerManager;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.Apple;
 import com.dmdirc.ui.swing.ChannelFrame;
-import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.ui.swing.dialogs.FeedbackDialog;
 import com.dmdirc.ui.swing.dialogs.NewServerDialog;
@@ -39,22 +38,18 @@ import com.dmdirc.ui.swing.dialogs.prefs.SwingPreferencesDialog;
 import com.dmdirc.ui.swing.dialogs.profiles.ProfileManagerDialog;
 import com.dmdirc.ui.swing.framemanager.windowmenu.WindowMenuFrameManager;
 
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Dialog.ModalityType;
 
-import java.awt.FocusTraversalPolicy;
-import java.awt.Insets;
 import javax.swing.Box;
-import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
+import net.miginfocom.layout.PlatformDefaults;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -91,6 +86,7 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         initHelpMenu();
         add(Box.createHorizontalGlue(), "growx, pushx");
         add(new MDIBar());
+        add(Box.createHorizontalStrut(PlatformDefaults.getPanelInsets(1).getUnit()));
 
         getActionMap().setParent(null);
         getActionMap().clear();

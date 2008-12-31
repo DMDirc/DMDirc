@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.components;
 
 import java.awt.Insets;
 
+import javax.swing.Icon;
 import javax.swing.JButton;
 
 /**
@@ -35,10 +36,10 @@ class NoFocusButton extends JButton {
 
     /**
      *
-     * @param text
+     * @param icon
      */
-    public NoFocusButton(final String text) {
-        super(text);
+    public NoFocusButton(final Icon icon) {
+        super(icon);
         setContentAreaFilled(false);
         setFocusPainted(false);
         setMargin(new Insets(0, 0, 0, 0));

@@ -26,6 +26,7 @@ package com.dmdirc.ui.swing.components;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.interfaces.SelectionListener;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
@@ -58,9 +59,12 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
      *
      */
     public MDIBar() {
-        closeButton = new NoFocusButton("X");
-        minimiseButton = new NoFocusButton("_");
-        restoreButton = new NoFocusButton("[]");
+        closeButton = new NoFocusButton(IconManager.getIconManager().getIcon(
+                "close"));
+        minimiseButton = new NoFocusButton(IconManager.getIconManager().getIcon(
+                "minimise"));
+        restoreButton = new NoFocusButton(IconManager.getIconManager().getIcon(
+                "maximise"));
 
         setOpaque(false);
         setLayout(new MigLayout("hmax 16, ins 0, fill"));
@@ -126,7 +130,14 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        setVisible(((Boolean) evt.getNewValue()));
+        if ((Boolean) evt.getNewValue()) {
+            restoreButton.setIcon(IconManager.getIconManager().getIcon(
+                "restore"));
+        } else {
+            restoreButton.setIcon(IconManager.getIconManager().getIcon(
+                "maximise"));
+        }
+        //setVisible(((Boolean) evt.getNewValue()));
     }
 
     @Override
