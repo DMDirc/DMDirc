@@ -125,8 +125,16 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
             ((JInternalFrame) window.getFrame()).addPropertyChangeListener(
                     "maximum", this);
         }
-        setVisible(SwingController.getMainFrame().getActiveFrame() != null);
-        setEnabled(SwingController.getMainFrame().getActiveFrame() != null);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                setVisible(SwingController.getMainFrame().getActiveFrame() !=
+                           null);
+                setEnabled(SwingController.getMainFrame().getActiveFrame() !=
+                           null);
+            }
+        });
     }
 
     @Override
@@ -135,8 +143,16 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
             ((JInternalFrame) window.getFrame()).removePropertyChangeListener(
                     this);
         }
-        setVisible(SwingController.getMainFrame().getActiveFrame() != null);
-        setEnabled(SwingController.getMainFrame().getActiveFrame() != null);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                setVisible(SwingController.getMainFrame().getActiveFrame() !=
+                           null);
+                setEnabled(SwingController.getMainFrame().getActiveFrame() !=
+                           null);
+            }
+        });
     }
 
     @Override

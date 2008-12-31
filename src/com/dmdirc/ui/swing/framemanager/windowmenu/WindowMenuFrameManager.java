@@ -88,14 +88,6 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
         WindowManager.addFrameManager(this);
         addMenuListener(this);
 
-        toggleStateMenuItem = new JMenuItem(IconManager.getIconManager().getIcon(
-                "maximise"));
-        toggleStateMenuItem.setMnemonic('m');
-        toggleStateMenuItem.setText("Maximise");
-        toggleStateMenuItem.setActionCommand("ToggleState");
-        toggleStateMenuItem.addActionListener(this);
-        add(toggleStateMenuItem);
-
         minimiseMenuItem = new JMenuItem(IconManager.getIconManager().getIcon(
                 "minimise"));
         minimiseMenuItem.setMnemonic('n');
@@ -103,6 +95,14 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
         minimiseMenuItem.setActionCommand("Minimise");
         minimiseMenuItem.addActionListener(this);
         add(minimiseMenuItem);
+
+        toggleStateMenuItem = new JMenuItem(IconManager.getIconManager().getIcon(
+                "maximise"));
+        toggleStateMenuItem.setMnemonic('m');
+        toggleStateMenuItem.setText("Maximise");
+        toggleStateMenuItem.setActionCommand("ToggleState");
+        toggleStateMenuItem.addActionListener(this);
+        add(toggleStateMenuItem);
 
         closeMenuItem = new JMenuItem(IconManager.getIconManager().getIcon(
                 "close"));
