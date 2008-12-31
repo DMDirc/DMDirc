@@ -50,18 +50,20 @@ public class Process001 extends IRCProcessor {
 		
 		// Get old nickname incase we need it later
 		final String oldnick = myParser.getMyself().getNickname();
-		// Now update stored information
-		myParser.getMyself().setUserBits(sNick, true, true);
 		
 		// myself will be fake if we havn't recieved a 001 yet
 		if (myParser.getMyself().isFake()) {
+			// Update stored information
+			myParser.getMyself().setUserBits(sNick, true, true);
 			myParser.getMyself().setFake(false);
 			myParser.addClient(myParser.getMyself());
 		} else {
 			// Another 001? if nicknames change then we need to update the hashtable
-			if (!myParser.getMyself().getNickname().equalsIgnoreCase(oldnick)) {
+			if (!myParser.getMyself().getNickname().equalsIgnoreCase(sNick)) {
 				// Nick changed, remove old me
 				myParser.forceRemoveClient(myParser.getMyself());
+				/// Update stored information
+				myParser.getMyself().setUserBits(sNick, true, true);
 				// Check that we don't already know someone by this name
 				if (myParser.getClientInfo(myParser.getMyself().getNickname()) == null) {
 					// And add to list
