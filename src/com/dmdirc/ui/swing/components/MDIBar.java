@@ -32,6 +32,7 @@ import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
 
 import com.dmdirc.ui.swing.SwingController;
+import com.dmdirc.ui.swing.UIUtilities;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -125,7 +126,7 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
             ((JInternalFrame) window.getFrame()).addPropertyChangeListener(
                     "maximum", this);
         }
-        SwingUtilities.invokeLater(new Runnable() {
+        UIUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
@@ -143,7 +144,7 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
             ((JInternalFrame) window.getFrame()).removePropertyChangeListener(
                     this);
         }
-        SwingUtilities.invokeLater(new Runnable() {
+        UIUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
