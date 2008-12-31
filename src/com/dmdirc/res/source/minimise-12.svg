@@ -8,13 +8,17 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="16px"
-   height="16px"
+   width="12"
+   height="12"
    id="svg3954"
    sodipodi:version="0.32"
    inkscape:version="0.46"
-   sodipodi:docname="minimise.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+   sodipodi:docname="minimise-12.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="/home/chris/projects/java/dmdirc/src/com/dmdirc/res/minimise.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90"
+   version="1.0">
   <defs
      id="defs3956">
     <inkscape:perspective
@@ -45,7 +49,9 @@
      inkscape:window-y="-4">
     <inkscape:grid
        type="xygrid"
-       id="grid3964" />
+       id="grid3964"
+       visible="true"
+       enabled="true" />
   </sodipodi:namedview>
   <metadata
      id="metadata3959">
@@ -63,8 +69,8 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
     <path
-       style="opacity:1;fill:#4d4d4d;fill-opacity:1;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none"
-       d="M 3.0240302,11.9569 L 12.924388,12"
+       style="opacity:1;fill:#4d4d4d;fill-opacity:1;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:1.99999988;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 1.9999999,9 L 10.084633,9.0431"
        id="path3966"
        sodipodi:nodetypes="cc" />
   </g>

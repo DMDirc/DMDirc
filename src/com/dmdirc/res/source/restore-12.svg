@@ -8,13 +8,14 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="16px"
-   height="16px"
+   width="12"
+   height="12"
    id="svg3954"
    sodipodi:version="0.32"
    inkscape:version="0.46"
-   sodipodi:docname="minimise.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+   sodipodi:docname="restore-12.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   version="1.0">
   <defs
      id="defs3956">
     <inkscape:perspective
@@ -32,9 +33,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="31.392433"
-     inkscape:cx="4.4431537"
-     inkscape:cy="7.3942066"
+     inkscape:zoom="22.197802"
+     inkscape:cx="21.213886"
+     inkscape:cy="-1.7881996"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:grid-bbox="true"
@@ -45,7 +46,9 @@
      inkscape:window-y="-4">
     <inkscape:grid
        type="xygrid"
-       id="grid3964" />
+       id="grid3964"
+       visible="true"
+       enabled="true" />
   </sodipodi:namedview>
   <metadata
      id="metadata3959">
@@ -63,9 +66,20 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
     <path
-       style="opacity:1;fill:#4d4d4d;fill-opacity:1;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none"
-       d="M 3.0240302,11.9569 L 12.924388,12"
-       id="path3966"
-       sodipodi:nodetypes="cc" />
+       style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:1.05520129;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4"
+       d="M 4.4905523,1.4721552 L 10.526854,1.5172047 L 10.549379,7.5507151 L 7.5172317,7.4977352 L 7.4489565,4.6630979 L 4.4819196,4.8858676 L 4.4905523,1.4721552 z"
+       id="rect4521"
+       sodipodi:nodetypes="ccccccc" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:1.05520153;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect4523"
+       width="5.9408159"
+       height="5.9462843"
+       x="1.5325519"
+       y="4.5800767" />
+    <path
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:1.10000002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 1.7969526,5.52599 L 7,5.52599"
+       id="path4525" />
   </g>
 </svg>
