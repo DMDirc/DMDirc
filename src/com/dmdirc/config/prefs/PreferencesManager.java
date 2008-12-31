@@ -303,6 +303,12 @@ public class PreferencesManager {
         final PreferencesCategory category = new PreferencesCategory("Advanced", 
                 "", "category-advanced");
 
+        final Map<String, String> options = new HashMap<String, String>();
+
+        options.put("alwaysShow", "Always show");
+        options.put("neverShow", "Never show");
+        options.put("showWhenMaximised", "Show only when windows maximised");
+
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "browser", "userlaunchdelay", "false", "Use browser launch delay",
                 "Enable delay between browser launches (to prevent mistakenly" +
@@ -329,6 +335,9 @@ public class PreferencesManager {
                 new NumericalValidator(10, -1), "ui", "frameBufferSize", "100000",
                 "Window buffer size", "The maximum number of lines in a window" +
                 " buffer"));
+        category.addSetting(new PreferencesSetting("ui", "mdiBarVisibility", 
+                "showWhenMaximised", "MDI Bar Visibility",
+                "Controls the visibility of the MDI bar", options));
 
         addCategory(category);
     }

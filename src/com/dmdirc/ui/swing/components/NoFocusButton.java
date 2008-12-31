@@ -29,15 +29,16 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 
 /**
- *
+ * Provides a button that refuses to accept focus, and has no border or insets.
  */
 class NoFocusButton extends JButton {
 
     private static final long serialVersionUID = -8282006158788878000L;
 
     /**
+     * Instantiates a new button.
      *
-     * @param icon
+     * @param icon Icon for button
      */
     public NoFocusButton(final Icon icon) {
         super(icon);
@@ -46,10 +47,5 @@ class NoFocusButton extends JButton {
         setFocusPainted(false);
         setMargin(new Insets(0, 0, 0, 0));
         setFocusable(false);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void requestFocus() {
     }
 }
