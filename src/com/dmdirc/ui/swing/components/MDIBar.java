@@ -42,6 +42,7 @@ import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
+import javax.swing.SwingUtilities;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -84,8 +85,16 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
         minimiseButton.addActionListener(this);
         restoreButton.addActionListener(this);
 
-        setVisible(SwingController.getMainFrame().getActiveFrame() != null);
-        setEnabled(SwingController.getMainFrame().getActiveFrame() != null);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                setVisible(SwingController.getMainFrame().getActiveFrame() !=
+                           null);
+                setEnabled(SwingController.getMainFrame().getActiveFrame() !=
+                           null);
+            }
+        });
     }
 
     @Override
