@@ -63,11 +63,11 @@ public class MDIBar extends JPanel implements FrameManager,
     public MDIBar(final MainFrame mainFrame) {
         this.mainFrame = mainFrame;
         closeButton = new NoFocusButton(IconManager.getIconManager().
-                getScaledIcon("close", ICON_SIZE, ICON_SIZE));
+                getScaledIcon("close-12", ICON_SIZE, ICON_SIZE));
         minimiseButton = new NoFocusButton(IconManager.getIconManager().
-                getScaledIcon("minimise", ICON_SIZE, ICON_SIZE));
+                getScaledIcon("minimise-12", ICON_SIZE, ICON_SIZE));
         restoreButton = new NoFocusButton(IconManager.getIconManager().
-                getScaledIcon("maximise", ICON_SIZE, ICON_SIZE));
+                getScaledIcon("maximise-12", ICON_SIZE, ICON_SIZE));
 
         setOpaque(false);
         setLayout(new MigLayout("hmax 16, ins 0, fill"));
@@ -121,7 +121,7 @@ public class MDIBar extends JPanel implements FrameManager,
     public void addWindow(FrameContainer window) {
         if (window.getFrame() instanceof JInternalFrame) {
             ((JInternalFrame) window.getFrame()).addPropertyChangeListener(
-                    "maximum", this);
+                    "maximum-12", this);
         }
         check();
     }
@@ -149,10 +149,10 @@ public class MDIBar extends JPanel implements FrameManager,
     public void propertyChange(PropertyChangeEvent evt) {
         if ((Boolean) evt.getNewValue()) {
             restoreButton.setIcon(IconManager.getIconManager().getScaledIcon(
-                    "restore", ICON_SIZE, ICON_SIZE));
+                    "restore-12", ICON_SIZE, ICON_SIZE));
         } else {
             restoreButton.setIcon(IconManager.getIconManager().getScaledIcon(
-                    "maximise", ICON_SIZE, ICON_SIZE));
+                    "maximise-12", ICON_SIZE, ICON_SIZE));
         }
     }
 
