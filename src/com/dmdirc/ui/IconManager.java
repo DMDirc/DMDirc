@@ -99,11 +99,8 @@ public final class IconManager implements ConfigChangeListener {
      * @since 0.6.3
      */
     public Icon getScaledIcon(final String type, final int width, final int height) {
-        if (!icons.containsKey(type)) {
-            icons.put(type, new ImageIcon(getScaledImage(
-                    new ImageIcon(getIconURL(type)).getImage(), width, height)));
-        }
-        return icons.get(type);
+        return new ImageIcon(getScaledImage(new ImageIcon(getIconURL(type)).
+                getImage(), width, height));
     }
     
     /**
