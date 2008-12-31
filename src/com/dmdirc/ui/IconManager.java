@@ -28,8 +28,6 @@ import com.dmdirc.util.URLBuilder;
 
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -84,6 +82,26 @@ public final class IconManager implements ConfigChangeListener {
         if (!icons.containsKey(type)) {
             icons.put(type, new ImageIcon(getScaledImage(
                     new ImageIcon(getIconURL(type)).getImage(), 16, 16)));
+        }
+        return icons.get(type);
+    }
+
+    /**
+     * Retrieves the icon with the specified type. Returns null if the icon
+     * wasn't found.
+     *
+     * @param type The name of the icon type to retrieve
+     * @param width width of the image
+     * @param height height of the image
+     * 
+     * @return The icon that should be used for the specified type
+     *
+     * @since 0.6.3
+     */
+    public Icon getScaledIcon(final String type, final int width, final int height) {
+        if (!icons.containsKey(type)) {
+            icons.put(type, new ImageIcon(getScaledImage(
+                    new ImageIcon(getIconURL(type)).getImage(), width, height)));
         }
         return icons.get(type);
     }
@@ -152,6 +170,7 @@ public final class IconManager implements ConfigChangeListener {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void configChanged(final String domain, final String key) {
         if ("icon".equals(domain)) {
             if (images.containsKey(key)) {
