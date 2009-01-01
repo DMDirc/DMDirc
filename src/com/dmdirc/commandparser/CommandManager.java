@@ -193,7 +193,7 @@ public final class CommandManager {
         
         for (CommandParser parser : parsers) {
             if (register) {
-                parser.registerCommand(command, command);
+                parser.registerCommand(command, info);
             } else {
                 parser.unregisterCommand(command);
             }
@@ -207,8 +207,9 @@ public final class CommandManager {
      * @param command The command to be registered
      * @param register True if the command should be registered, false if it
      * should be unregistered.
+     * @since 0.6.3
      */
-    private static void registerCommandName(final Command command,
+    private static void registerCommandName(final CommandInfo command,
             final boolean register) {
         // Do tab completion
         final String commandName = getCommandChar() + command.getName();
