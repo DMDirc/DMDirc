@@ -144,7 +144,6 @@ public final class CommandManager {
      */
     private static void registerCommand(final CommandInfo info, final Command command,
             final boolean register) {
-        // TODO: CHAT parsers now need to be added to both sets
         registerCommand(info, command, parsers.get(info.getType()), register);
         
         if (register) {
@@ -326,7 +325,8 @@ public final class CommandManager {
                         : getCommands(CommandType.TYPE_CHAT, null).entrySet()) {
             parser.registerCommand(pair.getValue(), pair.getKey());
         }
-        
+
+        parsers.add(CommandType.TYPE_CHAT, parser);
         parsers.add(CommandType.TYPE_CHANNEL, parser);
     }
     
@@ -373,7 +373,8 @@ public final class CommandManager {
                         : getCommands(CommandType.TYPE_CHAT, null).entrySet()) {
             parser.registerCommand(pair.getValue(), pair.getKey());
         }
-        
+
+        parsers.add(CommandType.TYPE_CHAT, parser);
         parsers.add(CommandType.TYPE_QUERY, parser);
     }
     
