@@ -144,7 +144,9 @@ public final class CommandManager {
      */
     private static void registerCommand(final CommandInfo info, final Command command,
             final boolean register) {
-        registerCommand(info, command, parsers.get(info.getType()), register);
+        if (parsers.containsKey(info.getType())) {
+            registerCommand(info, command, parsers.get(info.getType()), register);
+        }
         
         if (register) {
             commands.put(info, command);
@@ -164,8 +166,8 @@ public final class CommandManager {
      * @since 0.6.3
      */
     private static void registerCommand(final CommandInfo info, final Command command,
-            final List<? extends CommandParser> parsers, final boolean register) {
-        for (CommandParser parser : parsers) {
+            final List<? extends CommandParser> myParsers, final boolean register) {
+        for (CommandParser parser : myParsers) {
             if (register) {
                 parser.registerCommand(command, info);
             } else {
