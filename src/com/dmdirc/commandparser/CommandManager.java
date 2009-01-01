@@ -173,7 +173,7 @@ public final class CommandManager {
                 commands.remove(info);
             }
             
-            registerCommandName(command, register);
+            registerCommandName(info, register);
         }
     }
     
@@ -195,7 +195,7 @@ public final class CommandManager {
             if (register) {
                 parser.registerCommand(command, info);
             } else {
-                parser.unregisterCommand(command);
+                parser.unregisterCommand(info);
             }
         }
     }

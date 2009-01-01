@@ -22,9 +22,7 @@
 
 package com.dmdirc.commandparser.commands;
 
-import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.Styliser;
 
@@ -33,7 +31,7 @@ import com.dmdirc.ui.messages.Styliser;
  *
  * @author chris
  */
-public abstract class Command implements CommandInfo, Comparable<Command> {
+public abstract class Command {
     
     /** The format name used for command output. */
     protected static final String FORMAT_OUTPUT = "commandOutput";
@@ -149,18 +147,6 @@ public abstract class Command implements CommandInfo, Comparable<Command> {
         for (int i = 0; i < size - data.length(); i++) {
             builder.append(' ');
         }
-    }    
-    
-    /** {@inheritDoc} */
-    @Override
-    public final int compareTo(final Command o) {
-        return getName().compareTo(o.getName());
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.fromCommand(this);
     }
 
 }
