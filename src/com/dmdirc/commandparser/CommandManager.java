@@ -25,12 +25,7 @@ package com.dmdirc.commandparser;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
-import com.dmdirc.commandparser.commands.ChannelCommand;
-import com.dmdirc.commandparser.commands.ChatCommand;
 import com.dmdirc.commandparser.commands.Command;
-import com.dmdirc.commandparser.commands.GlobalCommand;
-import com.dmdirc.commandparser.commands.QueryCommand;
-import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.commandparser.commands.channel.*;
 import com.dmdirc.commandparser.commands.chat.*;
 import com.dmdirc.commandparser.commands.global.*;
@@ -190,20 +185,23 @@ public final class CommandManager {
         // Do tab completion
         final String commandName = getCommandChar() + command.getName();
 
-        // TODO: This won't even work properly
+        // TODO: This logic is probably in two places. Abstract it.
         for (Server server : ServerManager.getServerManager().getServers()) {
-            if (command instanceof ServerCommand || command instanceof GlobalCommand) {
+            if (command.getType() == CommandType.TYPE_SERVER ||
+                    command.getType() == CommandType.TYPE_GLOBAL) {
                 registerCommandName(server.getTabCompleter(), commandName, register);
             }
             
-            if (command instanceof ChannelCommand || command instanceof ChatCommand) {
+            if (command.getType() == CommandType.TYPE_CHANNEL
+                    || command.getType() == CommandType.TYPE_CHAT) {
                 for (String channelName : server.getChannels()) {
                     registerCommandName(server.getChannel(channelName).getTabCompleter(),
                             commandName, register);
                 }
             }
             
-            if (command instanceof QueryCommand || command instanceof ChatCommand) {
+            if (command.getType() == CommandType.TYPE_QUERY
+                    || command.getType() == CommandType.TYPE_CHAT) {
                 for (Query query : server.getQueries()) {
                     registerCommandName(query.getTabCompleter(),
                             commandName, register);
@@ -311,73 +309,66 @@ public final class CommandManager {
         IdentityManager.getGlobalConfig().addChangeListener("general", "silencechar", listener);
     }
 
-    // TODO: Do one combined loadCommands method
+    /**
+     * Loads all commands of the specified type into the specified parser.
+     *
+     * @see CommandType#getComponentTypes()
+     * @since 0.6.3
+     * @param parser The {@link CommandParser} to load commands in to
+     * @param supertype The type of commands that should be loaded
+     */
+    public static void loadCommands(final CommandParser parser, final CommandType supertype) {
+        for (CommandType type : supertype.getComponentTypes()) {
+            for (Map.Entry<CommandInfo, Command> pair : getCommands(type, null).entrySet()) {
+                parser.registerCommand(pair.getValue(), pair.getKey());
+            }
+
+            parsers.add(type, parser);
+        }
+    }
+
     /**
      * Loads all channel commands into the specified parser.
      * 
      * @param parser The parser to load commands into
+     * @deprecated Use {@link #loadCommands(CommandParser, CommandType)}.
      */
+    @Deprecated
     public static void loadChannelCommands(final CommandParser parser) {
-        for (Map.Entry<CommandInfo, Command> pair
-                : getCommands(CommandType.TYPE_CHANNEL, null).entrySet()) {
-            parser.registerCommand(pair.getValue(), pair.getKey());
-        }
-
-        for (Map.Entry<CommandInfo, Command> pair
-                        : getCommands(CommandType.TYPE_CHAT, null).entrySet()) {
-            parser.registerCommand(pair.getValue(), pair.getKey());
-        }
-
-        parsers.add(CommandType.TYPE_CHAT, parser);
-        parsers.add(CommandType.TYPE_CHANNEL, parser);
+        loadCommands(parser, CommandType.TYPE_CHANNEL);
     }
     
     /**
      * Loads all server commands into the specified parser.
      * 
      * @param parser The parser to load commands into
+     * @deprecated Use {@link #loadCommands(CommandParser, CommandType)}.
      */
+    @Deprecated
     public static void loadServerCommands(final CommandParser parser) {
-        for (Map.Entry<CommandInfo, Command> pair
-                : getCommands(CommandType.TYPE_SERVER, null).entrySet()) {
-            parser.registerCommand(pair.getValue(), pair.getKey());
-        }
-        
-        parsers.add(CommandType.TYPE_SERVER, parser);
+        loadCommands(parser, CommandType.TYPE_SERVER);
     }
     
     /**
      * Loads all global commands into the specified parser.
      * 
      * @param parser The parser to load commands into
+     * @deprecated Use {@link #loadCommands(CommandParser, CommandType)}.
      */
+    @Deprecated
     public static void loadGlobalCommands(final CommandParser parser) {
-        for (Map.Entry<CommandInfo, Command> pair
-                : getCommands(CommandType.TYPE_GLOBAL, null).entrySet()) {
-            parser.registerCommand(pair.getValue(), pair.getKey());
-        }
-        
-        parsers.add(CommandType.TYPE_GLOBAL, parser);
+        loadCommands(parser, CommandType.TYPE_GLOBAL);
     }
     
     /**
      * Loads all query commands into the specified parser.
      * 
      * @param parser The parser to load commands into
+     * @deprecated Use {@link #loadCommands(CommandParser, CommandType)}.
      */
+    @Deprecated
     public static void loadQueryCommands(final CommandParser parser) {
-        for (Map.Entry<CommandInfo, Command> pair
-                : getCommands(CommandType.TYPE_QUERY, null).entrySet()) {
-            parser.registerCommand(pair.getValue(), pair.getKey());
-        }
-        
-        for (Map.Entry<CommandInfo, Command> pair
-                        : getCommands(CommandType.TYPE_CHAT, null).entrySet()) {
-            parser.registerCommand(pair.getValue(), pair.getKey());
-        }
-
-        parsers.add(CommandType.TYPE_CHAT, parser);
-        parsers.add(CommandType.TYPE_QUERY, parser);
+        loadCommands(parser, CommandType.TYPE_QUERY);
     }
     
     /**
