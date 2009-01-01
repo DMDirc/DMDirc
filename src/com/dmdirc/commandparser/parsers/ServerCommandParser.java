@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
@@ -60,8 +61,7 @@ public final class ServerCommandParser extends CommandParser {
     /** Loads the relevant commands into the parser. */
     @Override
     protected void loadCommands() {
-        CommandManager.loadGlobalCommands(this);
-        CommandManager.loadServerCommands(this);
+        CommandManager.loadCommands(this, CommandType.TYPE_GLOBAL, CommandType.TYPE_SERVER);
     }
     
     /** {@inheritDoc} */

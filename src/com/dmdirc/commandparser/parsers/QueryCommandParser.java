@@ -25,6 +25,7 @@ package com.dmdirc.commandparser.parsers;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.ChatCommand;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.GlobalCommand;
@@ -70,9 +71,8 @@ public final class QueryCommandParser extends CommandParser {
     /** Loads the relevant commands into the parser. */
     @Override
     protected void loadCommands() {
-        CommandManager.loadGlobalCommands(this);
-        CommandManager.loadServerCommands(this);
-        CommandManager.loadQueryCommands(this);
+        CommandManager.loadCommands(this, CommandType.TYPE_GLOBAL,
+                CommandType.TYPE_SERVER, CommandType.TYPE_QUERY);
     }
     
     /** {@inheritDoc} */

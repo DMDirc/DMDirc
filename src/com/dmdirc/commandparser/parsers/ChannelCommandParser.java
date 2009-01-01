@@ -25,6 +25,7 @@ package com.dmdirc.commandparser.parsers;
 import com.dmdirc.Channel;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.commands.ChatCommand;
 import com.dmdirc.commandparser.commands.Command;
@@ -70,9 +71,8 @@ public final class ChannelCommandParser extends CommandParser {
     /** {@inheritDoc} */
     @Override
     protected void loadCommands() {
-        CommandManager.loadGlobalCommands(this);
-        CommandManager.loadServerCommands(this);
-        CommandManager.loadChannelCommands(this);
+        CommandManager.loadCommands(this, CommandType.TYPE_GLOBAL,
+                CommandType.TYPE_SERVER, CommandType.TYPE_CHANNEL);
     }
     
     /** {@inheritDoc} */

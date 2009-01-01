@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.logger.ErrorLevel;
@@ -69,7 +70,7 @@ public final class GlobalCommandParser extends CommandParser {
     /** Loads the relevant commands into the parser. */
     @Override
     protected void loadCommands() {
-        CommandManager.loadGlobalCommands(this);
+        CommandManager.loadCommands(this, CommandType.TYPE_GLOBAL);
     }
     
     /** {@inheritDoc} */

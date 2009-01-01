@@ -310,45 +310,26 @@ public final class CommandManager {
     }
 
     /**
-     * Loads all commands of the specified type into the specified parser.
+     * Loads all commands of the specified types into the specified parser.
      *
      * @see CommandType#getComponentTypes()
      * @since 0.6.3
      * @param parser The {@link CommandParser} to load commands in to
-     * @param supertype The type of commands that should be loaded
+     * @param supertypes The types of commands that should be loaded
      */
-    public static void loadCommands(final CommandParser parser, final CommandType supertype) {
-        for (CommandType type : supertype.getComponentTypes()) {
-            for (Map.Entry<CommandInfo, Command> pair : getCommands(type, null).entrySet()) {
-                parser.registerCommand(pair.getValue(), pair.getKey());
-            }
+    public static void loadCommands(final CommandParser parser,
+            final CommandType ... supertypes) {
+        for (CommandType supertype : supertypes) {
+            for (CommandType type : supertype.getComponentTypes()) {
+                for (Map.Entry<CommandInfo, Command> pair : getCommands(type, null).entrySet()) {
+                    parser.registerCommand(pair.getValue(), pair.getKey());
+                }
 
-            parsers.add(type, parser);
+                parsers.add(type, parser);
+            }
         }
     }
 
-    /**
-     * Loads all channel commands into the specified parser.
-     * 
-     * @param parser The parser to load commands into
-     * @deprecated Use {@link #loadCommands(CommandParser, CommandType)}.
-     */
-    @Deprecated
-    public static void loadChannelCommands(final CommandParser parser) {
-        loadCommands(parser, CommandType.TYPE_CHANNEL);
-    }
-    
-    /**
-     * Loads all server commands into the specified parser.
-     * 
-     * @param parser The parser to load commands into
-     * @deprecated Use {@link #loadCommands(CommandParser, CommandType)}.
-     */
-    @Deprecated
-    public static void loadServerCommands(final CommandParser parser) {
-        loadCommands(parser, CommandType.TYPE_SERVER);
-    }
-    
     /**
      * Loads all global commands into the specified parser.
      * 
@@ -358,17 +339,6 @@ public final class CommandManager {
     @Deprecated
     public static void loadGlobalCommands(final CommandParser parser) {
         loadCommands(parser, CommandType.TYPE_GLOBAL);
-    }
-    
-    /**
-     * Loads all query commands into the specified parser.
-     * 
-     * @param parser The parser to load commands into
-     * @deprecated Use {@link #loadCommands(CommandParser, CommandType)}.
-     */
-    @Deprecated
-    public static void loadQueryCommands(final CommandParser parser) {
-        loadCommands(parser, CommandType.TYPE_QUERY);
     }
     
     /**
