@@ -560,7 +560,6 @@ public final class Channel extends MessageTarget
             // Format ChannelClientInfos
 
             final ChannelClientInfo clientInfo = (ChannelClientInfo) arg;
-            args.add(getModes(clientInfo));
             args.addAll(Arrays.asList(getDetails(clientInfo, showColours)));
 
             return true;
