@@ -147,7 +147,8 @@ public final class CommandManager {
     private static void registerCommand(final CommandInfo info, final Command command,
             final boolean register) {
         boolean canContinue = true;
-        
+
+        //TODO: Use command type?!
         if (command instanceof ChannelCommand) {
             registerCommand(info, command, parsers.get(CommandType.TYPE_CHANNEL), register);
         } else if (command instanceof ServerCommand) {
@@ -340,12 +341,14 @@ public final class CommandManager {
      * @param parser The parser to load commands into
      */
     public static void loadChannelCommands(final CommandParser parser) {
-        for (Command com : getCommands(CommandType.TYPE_CHANNEL, null)) {
-            parser.registerCommand(com, com);
+        for (Map.Entry<CommandInfo, Command> pair
+                : getCommands(CommandType.TYPE_CHANNEL, null).entrySet()) {
+            parser.registerCommand(pair.getValue(), pair.getKey());
         }
-        
-        for (Command com : getCommands(CommandType.TYPE_CHAT, null)) {
-            parser.registerCommand(com, com);
+
+        for (Map.Entry<CommandInfo, Command> pair
+                        : getCommands(CommandType.TYPE_CHAT, null).entrySet()) {
+            parser.registerCommand(pair.getValue(), pair.getKey());
         }
         
         parsers.add(CommandType.TYPE_CHANNEL, parser);
@@ -357,8 +360,9 @@ public final class CommandManager {
      * @param parser The parser to load commands into
      */
     public static void loadServerCommands(final CommandParser parser) {
-        for (Command command : getCommands(CommandType.TYPE_SERVER, null)) {
-            parser.registerCommand(command, command);
+        for (Map.Entry<CommandInfo, Command> pair
+                : getCommands(CommandType.TYPE_SERVER, null).entrySet()) {
+            parser.registerCommand(pair.getValue(), pair.getKey());
         }
         
         parsers.add(CommandType.TYPE_SERVER, parser);
@@ -370,8 +374,9 @@ public final class CommandManager {
      * @param parser The parser to load commands into
      */
     public static void loadGlobalCommands(final CommandParser parser) {
-        for (Command com : getCommands(CommandType.TYPE_GLOBAL, null)) {
-            parser.registerCommand(com, com);
+        for (Map.Entry<CommandInfo, Command> pair
+                : getCommands(CommandType.TYPE_GLOBAL, null).entrySet()) {
+            parser.registerCommand(pair.getValue(), pair.getKey());
         }
         
         parsers.add(CommandType.TYPE_GLOBAL, parser);
@@ -383,12 +388,14 @@ public final class CommandManager {
      * @param parser The parser to load commands into
      */
     public static void loadQueryCommands(final CommandParser parser) {
-        for (Command com : getCommands(CommandType.TYPE_QUERY, null)) {
-            parser.registerCommand(com, com);
+        for (Map.Entry<CommandInfo, Command> pair
+                : getCommands(CommandType.TYPE_QUERY, null).entrySet()) {
+            parser.registerCommand(pair.getValue(), pair.getKey());
         }
         
-        for (Command com : getCommands(CommandType.TYPE_CHAT, null)) {
-            parser.registerCommand(com, com);
+        for (Map.Entry<CommandInfo, Command> pair
+                        : getCommands(CommandType.TYPE_CHAT, null).entrySet()) {
+            parser.registerCommand(pair.getValue(), pair.getKey());
         }
         
         parsers.add(CommandType.TYPE_QUERY, parser);
@@ -413,9 +420,9 @@ public final class CommandManager {
      * @return A command with a matching signature, or null if none were found
      */
     public static Command getCommand(final CommandType type, final String name) {
-        final List<Command> res = getCommands(type, name);
+        final Map<CommandInfo, Command> res = getCommands(type, name);
         
-        return res.isEmpty() ? null : res.get(0);
+        return res.isEmpty() ? null : res.values().iterator().next();
     }    
      
     /**
@@ -438,7 +445,7 @@ public final class CommandManager {
     public static List<String> getCommandNames(final CommandType type) {
         final List<String> res = new ArrayList<String>();
         
-        for (Command command : getCommands(type)) {
+        for (CommandInfo command : getCommands(type).keySet()) {
             res.add(getCommandChar() + command.getName());
         }
         
@@ -446,31 +453,34 @@ public final class CommandManager {
     }
     
     /**
-     * Retrieves a list of all commands of the specified type.
+     * Retrieves a map of all {@link CommandInfo}s and their associated
+     * {@link Command}s of the specified type.
      * 
      * @param type The type of command to list
-     * @return A list of commands
+     * @return A map of commands
+     * @since 0.6.3
      */    
-    public static List<Command> getCommands(final CommandType type) {    
+    public static Map<CommandInfo, Command> getCommands(final CommandType type) {
         return getCommands(type, null);
     }
     
     /**
-     * Retrieves a list of all commands of the specified type, with the
+     * Retrieves a map of all commands of the specified type, with the
      * specified name.
      * 
      * @param type The type of command to list, or null for all types
      * @param name The name of the command to look for, or null for any name
-     * @return A list of matching commands
+     * @return A map of {@link CommandInfo}s and their associated {@link Command}.
+     * @since 0.6.3
      */    
-    private static List<Command> getCommands(final CommandType type,
+    private static Map<CommandInfo, Command> getCommands(final CommandType type,
             final String name) {
-        final List<Command> res = new ArrayList<Command>();
+        final Map<CommandInfo, Command> res = new HashMap<CommandInfo, Command>();
         
         for (Map.Entry<CommandInfo, Command> entry : commands.entrySet()) {
             if ((type == null || type.equals(entry.getKey().getType()))
                     && (name == null || name.equals(entry.getKey().getName()))) {
-                res.add(entry.getValue());
+                res.put(entry.getKey(), entry.getValue());
             }
         }
         
