@@ -45,7 +45,7 @@ public abstract class Command {
      * @param args The arguments to implode
      * @return A string containing each argument seperated by a space
      */
-    protected final String implodeArgs(final int offset, final String... args) {
+    protected static final String implodeArgs(final int offset, final String... args) {
         String res = "";
         for (int i = offset; i < args.length; i++) {
             if (res.isEmpty()) {
@@ -62,7 +62,7 @@ public abstract class Command {
      * @param args The arguments to implode
      * @return A string containing each argument seperated by a space
      */
-    protected final String implodeArgs(final String... args) {
+    protected static final String implodeArgs(final String... args) {
         return implodeArgs(0, args);
     } 
     
