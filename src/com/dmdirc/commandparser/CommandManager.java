@@ -39,8 +39,6 @@ import com.dmdirc.commandparser.commands.server.*;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.util.MapList;
@@ -146,36 +144,16 @@ public final class CommandManager {
      */
     private static void registerCommand(final CommandInfo info, final Command command,
             final boolean register) {
-        boolean canContinue = true;
-
-        //TODO: Use command type?!
-        if (command instanceof ChannelCommand) {
-            registerCommand(info, command, parsers.get(CommandType.TYPE_CHANNEL), register);
-        } else if (command instanceof ServerCommand) {
-            registerCommand(info, command, parsers.get(CommandType.TYPE_SERVER), register);
-        } else if (command instanceof QueryCommand) {
-            registerCommand(info, command, parsers.get(CommandType.TYPE_QUERY), register);
-        } else if (command instanceof GlobalCommand) {
-            registerCommand(info, command, parsers.get(CommandType.TYPE_GLOBAL), register);
-        } else if (command instanceof ChatCommand) {
-            registerCommand(info, command, parsers.get(CommandType.TYPE_QUERY), register);
-            registerCommand(info, command, parsers.get(CommandType.TYPE_CHANNEL), register);
-        } else {
-            canContinue = false;
-            
-            Logger.userError(ErrorLevel.HIGH, "Attempted to (un)register an invalid command: "
-                    + command.getClass().getName());
-        }
+        // TODO: CHAT parsers now need to be added to both sets
+        registerCommand(info, command, parsers.get(info.getType()), register);
         
-        if (canContinue) {
-            if (register) {
-                commands.put(info, command);
-            } else {
-                commands.remove(info);
-            }
-            
-            registerCommandName(info, register);
+        if (register) {
+            commands.put(info, command);
+        } else {
+            commands.remove(info);
         }
+
+        registerCommandName(info, register);
     }
     
     /**
@@ -188,10 +166,6 @@ public final class CommandManager {
      */
     private static void registerCommand(final CommandInfo info, final Command command,
             final List<? extends CommandParser> parsers, final boolean register) {
-        if (parsers == null) {
-            return;
-        }
-        
         for (CommandParser parser : parsers) {
             if (register) {
                 parser.registerCommand(command, info);
@@ -214,7 +188,8 @@ public final class CommandManager {
             final boolean register) {
         // Do tab completion
         final String commandName = getCommandChar() + command.getName();
-        
+
+        // TODO: This won't even work properly
         for (Server server : ServerManager.getServerManager().getServers()) {
             if (command instanceof ServerCommand || command instanceof GlobalCommand) {
                 registerCommandName(server.getTabCompleter(), commandName, register);
@@ -334,7 +309,8 @@ public final class CommandManager {
         IdentityManager.getGlobalConfig().addChangeListener("general", "commandchar", listener);
         IdentityManager.getGlobalConfig().addChangeListener("general", "silencechar", listener);
     }
-    
+
+    // TODO: Do one combined loadCommands method
     /**
      * Loads all channel commands into the specified parser.
      * 
