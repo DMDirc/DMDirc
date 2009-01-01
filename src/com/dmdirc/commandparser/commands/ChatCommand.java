@@ -24,6 +24,8 @@ package com.dmdirc.commandparser.commands;
 
 import com.dmdirc.MessageTarget;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandInfo;
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
@@ -32,7 +34,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
  *
  * @author Chris
  */
-public abstract class ChatCommand extends Command {
+public abstract class ChatCommand extends Command implements CommandInfo {
     
     /**
      * Executes this command.
@@ -45,4 +47,10 @@ public abstract class ChatCommand extends Command {
      */
     public abstract void execute(InputWindow origin, Server server, MessageTarget target,
             boolean isSilent, String... args);
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_CHAT;
+    }
 }

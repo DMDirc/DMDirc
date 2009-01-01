@@ -24,13 +24,15 @@ package com.dmdirc.commandparser.commands;
 
 import com.dmdirc.Query;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandInfo;
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * Represents a command which can be performed only in the context of a query.
  * @author chris
  */
-public abstract class QueryCommand extends Command {
+public abstract class QueryCommand extends Command implements CommandInfo {
         
     /**
      * Executes this command.
@@ -42,4 +44,10 @@ public abstract class QueryCommand extends Command {
      */
     public abstract void execute(InputWindow origin, Server server, Query query,
             boolean isSilent, String... args);
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_QUERY;
+    }
 }

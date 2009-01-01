@@ -95,6 +95,6 @@ public final class Ban extends ChannelCommand implements IntelligentCommand {
         }
         
         return res;
-    } 
+    }
     
 }

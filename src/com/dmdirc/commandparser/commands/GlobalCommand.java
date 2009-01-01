@@ -22,6 +22,8 @@
 
 package com.dmdirc.commandparser.commands;
 
+import com.dmdirc.commandparser.CommandInfo;
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
@@ -29,7 +31,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
  * no servers.
  * @author chris
  */
-public abstract class GlobalCommand extends Command {
+public abstract class GlobalCommand extends Command implements CommandInfo {
         
     /**
      * Executes this command. Note that for global commands, origin may be
@@ -39,4 +41,10 @@ public abstract class GlobalCommand extends Command {
      * @param args Arguments passed to this command
      */
     public abstract void execute(InputWindow origin, boolean isSilent, String ... args);
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_GLOBAL;
+    }
 }

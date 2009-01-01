@@ -24,13 +24,15 @@ package com.dmdirc.commandparser.commands;
 
 import com.dmdirc.Channel;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandInfo;
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * Represents a command which can be performed only in the context of a channel.
  * @author chris
  */
-public abstract class ChannelCommand extends Command {
+public abstract class ChannelCommand extends Command implements CommandInfo {
     
     /**
      * Executes this command.
@@ -42,4 +44,11 @@ public abstract class ChannelCommand extends Command {
      */
     public abstract void execute(InputWindow origin, Server server, Channel channel,
             boolean isSilent, String... args);
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_CHANNEL;
+    }
+    
 }
