@@ -214,19 +214,13 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
 
         nickList.addMouseListener(this);
 
-        splitPane.setBorder(null);
-        final BasicSplitPaneDivider divider =
-                ((BasicSplitPaneUI) splitPane.getUI()).getDivider();
-        if (divider != null) {
-            divider.setBorder(null);
-        }
-
         nicklistModel = new NicklistListModel();
 
         nickList.setModel(nicklistModel);
         nickScrollPane.setViewportView(nickList);
 
-        nickScrollPane.setPreferredSize(new Dimension(150, 10));
+        nickScrollPane.setPreferredSize(new Dimension(150, 0));
+        nickScrollPane.setMinimumSize(new Dimension(150, 0));
 
         getContentPane().setLayout(new MigLayout("fill, ins 0, hidemode 3, wrap 1"));
 
@@ -236,13 +230,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
 
         splitPane.setLeftComponent(getTextPane());
         splitPane.setRightComponent(nickScrollPane);
-
-        splitPane.setOneTouchExpandable(true);
-        splitPane.setDividerLocation((double) 1);
         splitPane.setResizeWeight(1);
-        splitPane.setDividerSize((int) PlatformDefaults.getPanelInsets(0).
-                getValue());
-        splitPane.setContinuousLayout(true);
 
         pack();
     }

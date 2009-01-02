@@ -22,6 +22,10 @@
 
 package com.dmdirc.ui.swing.components;
 
+import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.ui.swing.UIUtilities;
 import java.awt.Component;
 
 import javax.swing.JSplitPane;
@@ -30,7 +34,7 @@ import javax.swing.JSplitPane;
 /**
  * JSplit pane that snaps around its components preferred size.
  */
-public class SnappingJSplitPane extends JSplitPane {
+public class SnappingJSplitPane extends JSplitPane implements ConfigChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -42,6 +46,10 @@ public class SnappingJSplitPane extends JSplitPane {
     private final int snapDistance;
     /** Component to snap to? */
     private boolean leftComponentSnap = true;
+    /** use one touch expandable? */
+    private boolean useOneTouchExpandable;
+    /** Global config manager. */
+    private ConfigManager config;
 
     /** Orientation type . */
     public enum Orientation {
@@ -217,11 +225,16 @@ public class SnappingJSplitPane extends JSplitPane {
         this.leftComponentSnap = leftComponentSnap;
         this.snapDistance = snapDistance;
 
-        setOneTouchExpandable(true);
+        config = IdentityManager.getGlobalConfig();
+        useOneTouchExpandable = config.getOptionBool("ui", "useOneTouchExpandable", false);
+
+        setOneTouchExpandable(useOneTouchExpandable);
         setContinuousLayout(true);
         
         getActionMap().setParent(null);
         getActionMap().clear();
+
+        config.addChangeListener("ui", "useOneTouchExpandable", this);
     }
 
     /** {@inheritDoc} */
@@ -274,6 +287,21 @@ public class SnappingJSplitPane extends JSplitPane {
                 super.setDividerLocation(location);
             }
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void configChanged(final String domain, final String key) {
+        useOneTouchExpandable = config.getOptionBool("ui", "useOneTouchExpandable", false);
+
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                setOneTouchExpandable(useOneTouchExpandable);
+            }
+        });
     }
 }
     

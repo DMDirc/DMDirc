@@ -408,6 +408,19 @@ public class SwingInputField extends JComponent implements InputField,
             /** {@inheritDoc} */
             @Override
             public void run() {
+                setObject(textField.hasFocus());
+            }
+        });
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isFocusOwner() {
+        return UIUtilities.invokeAndWait(new ReturnableThread<Boolean>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
                 setObject(textField.isFocusOwner());
             }
         });

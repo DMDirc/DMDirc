@@ -338,6 +338,10 @@ public class PreferencesManager {
         category.addSetting(new PreferencesSetting("ui", "mdiBarVisibility", 
                 "showWhenMaximised", "MDI Bar Visibility",
                 "Controls the visibility of the MDI bar", options));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, "ui",
+                "useOneTouchExpandable", "false",
+                "Use one touch expandable split panes?",
+                "Use one touch expandable arrows for collapsing/expanding the split panes"));
 
         addCategory(category);
     }
