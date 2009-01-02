@@ -177,10 +177,12 @@ public final class DMDircEventQueue extends EventQueue {
      */
     private void handleWindowEvent(final WindowEvent we) {
         if (we.getSource() instanceof Window) {
-            if (we.getID() == WindowEvent.WINDOW_OPENED) {
-                SwingController.getMainFrame().addTopLevelWindow((Window) we.getSource());
-            } else if (we.getID() == WindowEvent.WINDOW_CLOSED) {
-                SwingController.getMainFrame().delTopLevelWindow((Window) we.getSource());
+            if (SwingController.hasMainFrame()) {
+                if (we.getID() == WindowEvent.WINDOW_OPENED) {
+                    SwingController.getMainFrame().addTopLevelWindow((Window) we.getSource());
+                } else if (we.getID() == WindowEvent.WINDOW_CLOSED) {
+                    SwingController.getMainFrame().delTopLevelWindow((Window) we.getSource());
+                }
             }
         }
     }
