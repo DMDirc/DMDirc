@@ -314,6 +314,14 @@ public final class SwingController implements UIController {
             UIManager.setLookAndFeel(UIUtilities.getLookAndFeel(IdentityManager.
                     getGlobalConfig().
                     getOption("ui", "lookandfeel", "")));
+            final int state = UIUtilities.invokeAndWait(new ReturnableThread<Integer>() {
+
+                /** {@inheritDoc} */
+                @Override
+                public void run() {
+                    setObject(getMainFrame().getExtendedState());
+                }
+            });
             for (final java.awt.Window window : getMainFrame().
                     getTopLevelWindows()) {
                 UIUtilities.invokeLater(new Runnable() {
@@ -322,17 +330,20 @@ public final class SwingController implements UIController {
                     @Override
                     public void run() {
                         SwingUtilities.updateComponentTreeUI(window);
-                    }
-                });
-                UIUtilities.invokeLater(new Runnable() {
-
-                    /** {@inheritDoc} */
-                    @Override
-                    public void run() {
-                        window.pack();
+                        if (window != getMainFrame()) {
+                            window.pack();
+                        }
                     }
                 });
             }
+            UIUtilities.invokeLater(new Runnable() {
+
+                /** {@inheritDoc} */
+                @Override
+                public void run() {
+                    getMainFrame().setExtendedState(state);
+                }
+            });
         } catch (ClassNotFoundException ex) {
             Logger.userError(ErrorLevel.LOW,
                              "Unable to change Look and Feel: " +
