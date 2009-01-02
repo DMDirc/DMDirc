@@ -118,7 +118,7 @@ public class CertificateManager implements X509TrustManager {
                 globalTrustedCAs.add(anchor.getTrustedCert());
             }
         } catch (CertificateException ex) {
-
+            // TODO: Handle these exceptions
         } catch (IOException ex) {
 
         } catch (InvalidAlgorithmParameterException ex) {
@@ -152,12 +152,13 @@ public class CertificateManager implements X509TrustManager {
                 final KeyStore ks = KeyStore.getInstance("pkcs12");
                 ks.load(fis, pass);
 
-                final KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+                final KeyManagerFactory kmf = KeyManagerFactory.getInstance(
+                        KeyManagerFactory.getDefaultAlgorithm());
                 kmf.init(ks, pass);
 
                 return kmf.getKeyManagers();
             } catch (KeyStoreException ex) {
-                ex.printStackTrace();
+                ex.printStackTrace(); // TODO: Handle these exceptions
             } catch (IOException ex) {
                 ex.printStackTrace();
             } catch (CertificateException ex) {
@@ -236,7 +237,8 @@ public class CertificateManager implements X509TrustManager {
                 try {
                     for (X509Certificate trustedCert : globalTrustedCAs) {
                         if (cert.getSerialNumber().equals(trustedCert.getSerialNumber())
-                                && cert.getIssuerDN().getName().equals(trustedCert.getIssuerDN().getName())) {
+                                && cert.getIssuerDN().getName()
+                                .equals(trustedCert.getIssuerDN().getName())) {
                             cert.verify(trustedCert.getPublicKey());
                             verified = true;
                             break;
@@ -265,7 +267,7 @@ public class CertificateManager implements X509TrustManager {
                     // TODO: implement
                     break;
                 case IGNORE_TEMPORARILY:
-                    // TODO: implement
+                    // Do nothing, continue connecting
                     break;
             }
         }
