@@ -277,9 +277,7 @@ public final class SwingController implements UIController {
                 wizard.display();
             }
         });
-        System.out.println("i got this far!");
         semaphore.acquireUninterruptibly();
-        System.out.println("did i get this far?");
     }
 
     /** {@inheritDoc} */
