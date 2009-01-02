@@ -106,14 +106,13 @@ public class CertificateManager implements X509TrustManager {
      */
     protected void loadTrustedCAs() {
         try {
-            String filename = System.getProperty("java.home")
+            final String filename = System.getProperty("java.home")
                 + "/lib/security/cacerts".replace('/', File.separatorChar);
-            FileInputStream is = new FileInputStream(filename);
-            KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+            final FileInputStream is = new FileInputStream(filename);
+            final KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
             keystore.load(is, cacertpass.toCharArray());
-
             // This class retrieves the most-trusted CAs from the keystore
-            PKIXParameters params = new PKIXParameters(keystore);
+            final PKIXParameters params = new PKIXParameters(keystore);
             for (TrustAnchor anchor : params.getTrustAnchors()) {
                 globalTrustedCAs.add(anchor.getTrustedCert());
             }
