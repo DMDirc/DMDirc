@@ -24,10 +24,7 @@ package com.dmdirc.addons.dcc;
 
 import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
-import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.PopupType;
-import com.dmdirc.commandparser.commands.Command;
-import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.IdentityManager;
@@ -69,10 +66,11 @@ public abstract class DCCFrame extends WritableFrameContainer {
 			 *
 			 * @return This window's command parser
 			 */
-        @Override
+            @Override
 			public final CommandParser getCommandParser() {
 				return GlobalCommandParser.getGlobalCommandParser();
 			}
+            
 			/** {@inheritDoc} */
 			@Override
 			public PopupType getNicknamePopupType() {
@@ -103,47 +101,6 @@ public abstract class DCCFrame extends WritableFrameContainer {
 				//Add no custom popup items
 			}
 	}
-	
-	/**
-	 * DCC CommandParser
-	 */
-	private static class DCCCommandParser extends CommandParser {
-		/** A version number for this class. */
-		private static final long serialVersionUID = 200711271;
-		
-		/** Loads the relevant commands into the parser. */
-		@Override
-		protected void loadCommands() { CommandManager.loadGlobalCommands(this); }
-		
-		/**
-		 * Executes the specified command with the given arguments.
-		 *
-		 * @param origin The window in which the command was typed
-		 * @param isSilent Whether the command is being silenced or not
-		 * @param command The command to be executed
-		 * @param args The arguments to the command
-		 */
-		@Override
-		protected void executeCommand(final InputWindow origin, final boolean isSilent, final Command command, final String... args) {
-			((GlobalCommand) command).execute(origin, isSilent, args);
-		}
-		
-		/**
-		 * Called when the input was a line of text that was not a command.
-		 * This normally means it is sent to the server/channel/user as-is, with
-		 * no further processing.
-		 *
-		 * @param origin The window in which the command was typed
-		 * @param line The line input by the user
-		 */
-		@Override
-		protected void handleNonCommand(final InputWindow origin, final String line) {
-			origin.getContainer().sendLine(line);
-		}
-	}
-	
-	/** The singleton instance of the DCC command parser. */
-	private static DCCCommandParser myDCCCommandParser;
 
 	/** The window title. */
 	protected final String title;
@@ -183,18 +140,6 @@ public abstract class DCCFrame extends WritableFrameContainer {
 			myWindow.setTitle(title);
 //			myWindow.setVisible(true);
 		}
-	}
-	
-	/**
-	 * Retrieves a singleton instance of the DCC command parser.
-	 *
-	 * @return A DCCCommandParser
-	 */
-	static synchronized DCCCommandParser getDCCCommandParser() {
-		if (myDCCCommandParser == null) {
-			myDCCCommandParser = new DCCCommandParser();
-		}
-		return myDCCCommandParser;
 	}
 	
 	/**

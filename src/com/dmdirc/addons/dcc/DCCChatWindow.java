@@ -25,6 +25,7 @@ package com.dmdirc.addons.dcc;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.addons.dcc.actions.DCCActions;
 import com.dmdirc.Main;
+import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 
 /**
  * This class links DCC Chat objects to a window.
@@ -57,7 +58,7 @@ public class DCCChatWindow extends DCCFrame implements DCCChatInterface {
 		nickname = nick;
 		otherNickname = targetNick;
 		
-		myWindow = Main.getUI().getInputWindow(this, getDCCCommandParser());
+		myWindow = Main.getUI().getInputWindow(this, GlobalCommandParser.getGlobalCommandParser());
 		plugin.addWindow(this);
 		
 		myWindow.setTitle(title);
