@@ -104,16 +104,14 @@ public final class CommandManager {
     }
 
     /**
-     * Registers a command with the command manager.
+     * Registers a {@link Command} which also implements the {@link CommandInfo}
+     * interface with the command manager.
      *
-     * @deprecated Introduced for compatibility reasons. Use
-     * {@link #registerCommand(Command, CommandInfo)} instead.
-     * @param <T> The type that's being registered
+     * @param <T> The type of object that's being registered
      * @param command An object that extends {@link Command} and implements
      * {@link CommandInfo} to be registered.
      * @since 0.6.3
      */
-    @Deprecated
     public static <T extends Command & CommandInfo> void registerCommand(final T command) {
         registerCommand(command, command);
     }
