@@ -327,17 +327,6 @@ public final class CommandManager {
             }
         }
     }
-
-    /**
-     * Loads all global commands into the specified parser.
-     * 
-     * @param parser The parser to load commands into
-     * @deprecated Use {@link #loadCommands(CommandParser, CommandType)}.
-     */
-    @Deprecated
-    public static void loadGlobalCommands(final CommandParser parser) {
-        loadCommands(parser, CommandType.TYPE_GLOBAL);
-    }
     
     /**
      * Retrieves the command identified by the specified name, regardless of
