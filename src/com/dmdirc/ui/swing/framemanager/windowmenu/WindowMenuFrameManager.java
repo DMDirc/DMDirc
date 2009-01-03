@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
@@ -65,7 +66,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
     private final Map<FrameContainer, FrameContainerMenuItem> menuItemMap;
     /** Comparator. */
     private final FrameContainerComparator comparator =
-            new FrameContainerComparator();
+                                           new FrameContainerComparator();
     /** Non frame container menu count. */
     private final int itemCount;
     /** Menu items for toggling, closing and minimising. */
@@ -80,28 +81,31 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
         super();
 
         menuItemMap =
-                new TreeMap<FrameContainer, FrameContainerMenuItem>(comparator);
+        new TreeMap<FrameContainer, FrameContainerMenuItem>(comparator);
 
         setText("Window");
         setMnemonic('w');
         WindowManager.addFrameManager(this);
         addMenuListener(this);
 
-        toggleStateMenuItem = new JMenuItem();
-        toggleStateMenuItem.setMnemonic('m');
-        toggleStateMenuItem.setText("Maximise");
-        toggleStateMenuItem.setActionCommand("ToggleState");
-        toggleStateMenuItem.addActionListener(this);
-        add(toggleStateMenuItem);
-
-        minimiseMenuItem = new JMenuItem();
+        minimiseMenuItem = new JMenuItem(IconManager.getIconManager().getIcon(
+                "minimise"));
         minimiseMenuItem.setMnemonic('n');
         minimiseMenuItem.setText("Minimise");
         minimiseMenuItem.setActionCommand("Minimise");
         minimiseMenuItem.addActionListener(this);
         add(minimiseMenuItem);
 
-        closeMenuItem = new JMenuItem();
+        toggleStateMenuItem = new JMenuItem(IconManager.getIconManager().getIcon(
+                "maximise"));
+        toggleStateMenuItem.setMnemonic('m');
+        toggleStateMenuItem.setText("Maximise");
+        toggleStateMenuItem.setActionCommand("ToggleState");
+        toggleStateMenuItem.addActionListener(this);
+        add(toggleStateMenuItem);
+
+        closeMenuItem = new JMenuItem(IconManager.getIconManager().getIcon(
+                "close"));
         closeMenuItem.setMnemonic('c');
         closeMenuItem.setText("Close");
         closeMenuItem.setActionCommand("Close");
@@ -120,7 +124,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
     /** {@inheritDoc} */
     @Override
     public void setParent(final JComponent parent) {
-    //Ignore
+        //Ignore
     }
 
     /** {@inheritDoc} */
@@ -150,14 +154,14 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
     /** {@inheritDoc} */
     @Override
     public void addWindow(final FrameContainer parent,
-            final FrameContainer window) {
+                          final FrameContainer window) {
         addFrameContainer(window);
     }
 
     /** {@inheritDoc} */
     @Override
     public void delWindow(final FrameContainer parent,
-            final FrameContainer window) {
+                          final FrameContainer window) {
         removeFramecontainer(window);
     }
 
@@ -177,7 +181,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                 }
 
                 final FrameContainerMenuItem mi =
-                        new FrameContainerMenuItem(window);
+                                             new FrameContainerMenuItem(window);
                 synchronized (menuItemMap) {
                     if (isShowing()) {
                         setSelected(false);
@@ -211,7 +215,8 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                     if (mi != null) {
                         remove(mi);
                         menuItemMap.remove(window);
-                        window.removeSelectionListener(WindowMenuFrameManager.this);
+                        window.removeSelectionListener(
+                                WindowMenuFrameManager.this);
                     }
                 }
 
@@ -254,7 +259,8 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
     @Override
     public void selectionChanged(final Window window) {
         final Map<FrameContainer, FrameContainerMenuItem> newMap =
-                new TreeMap<FrameContainer, FrameContainerMenuItem>(comparator);
+                                                          new TreeMap<FrameContainer, FrameContainerMenuItem>(
+                comparator);
         synchronized (menuItemMap) {
             newMap.putAll(menuItemMap);
         }
@@ -279,9 +285,13 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
 
             if (Main.getUI().getActiveWindow().isMaximum()) {
                 toggleStateMenuItem.setText("Restore");
+                toggleStateMenuItem.setIcon(IconManager.getIconManager().getIcon(
+                        "restore"));
                 toggleStateMenuItem.setMnemonic('r');
             } else {
                 toggleStateMenuItem.setText("Maximise");
+                toggleStateMenuItem.setIcon(IconManager.getIconManager().getIcon(
+                        "maximise"));
                 toggleStateMenuItem.setMnemonic('m');
             }
         }
@@ -301,11 +311,14 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                 continue;
             }
             final FrameContainer child =
-                    ((FrameContainerMenuItem) getMenuComponent(i)).getFrame();
+                                 ((FrameContainerMenuItem) getMenuComponent(i)).
+                    getFrame();
             if (sortBefore(newChild, child)) {
                 return i;
-            } else if (!sortAfter(newChild, child) && IdentityManager.getGlobalConfig().
-                    getOptionBool("treeview", "sortwindows", false) && newChild.toString().
+            } else if (!sortAfter(newChild, child) && IdentityManager.
+                    getGlobalConfig().
+                    getOptionBool("treeview", "sortwindows", false) && newChild.
+                    toString().
                     compareToIgnoreCase(
                     child.toString()) < 0) {
                 return i;
@@ -325,7 +338,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
      * @return True iff newChild should be sorted before child
      */
     private boolean sortBefore(final FrameContainer newChild,
-            final FrameContainer child) {
+                               final FrameContainer child) {
 
         return comparator.compare(newChild, child) <= -1;
     }
@@ -340,7 +353,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
      * @return True iff newChild should be sorted before child
      */
     private boolean sortAfter(final FrameContainer newChild,
-            final FrameContainer child) {
+                              final FrameContainer child) {
 
         return comparator.compare(newChild, child) >= 1;
     }
@@ -354,12 +367,12 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
     /** {@inheritDoc} */
     @Override
     public void menuDeselected(final MenuEvent e) {
-    //Ignore
+        //Ignore
     }
 
     /** {@inheritDoc} */
     @Override
     public void menuCanceled(final MenuEvent e) {
-    //Ignore
+        //Ignore
     }
 }

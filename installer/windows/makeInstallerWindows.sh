@@ -3,7 +3,7 @@
 # This script generates a .exe file that will install DMDirc
 #
 # DMDirc - Open Source IRC Client
-# Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+# Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -346,7 +346,7 @@ echo "			VALUE \"FileDescription\", \"Uninstaller for DMDirc\"" >> uninstallvers
 
 echo "			VALUE \"FileVersion\", \"2.0\"" > version.rc.2
 echo "			VALUE \"InternalName\", \"DMDirc.jar\"" >> version.rc.2
-echo "			VALUE \"LegalCopyright\", \"Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes\"" >> version.rc.2
+echo "			VALUE \"LegalCopyright\", \"Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes\"" >> version.rc.2
 echo "			VALUE \"OriginalFilename\", \"$2\"" >> version.rc.2
 echo "			VALUE \"ProductName\", \"DMDirc\"" >> version.rc.2
 echo "			VALUE \"ProductVersion\", \"${TEXTVER}\"" >> version.rc.2

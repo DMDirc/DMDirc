@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -451,19 +451,21 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         if (lineInfo.getLine() != -1) {
             final AttributedCharacterIterator iterator = document.getLine(lineInfo.getLine()).
                     getIterator();
-            iterator.setIndex(lineInfo.getIndex());
-            Object linkattr =
-                    iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
-            if (linkattr instanceof String) {
-                return ClickType.HYPERLINK;
-            }
-            linkattr = iterator.getAttributes().get(IRCTextAttribute.CHANNEL);
-            if (linkattr instanceof String) {
-                return ClickType.CHANNEL;
-            }
-            linkattr = iterator.getAttributes().get(IRCTextAttribute.NICKNAME);
-            if (linkattr instanceof String) {
-                return ClickType.NICKNAME;
+            if (lineInfo.getIndex() <= iterator.getEndIndex()) {
+                iterator.setIndex(lineInfo.getIndex());
+                Object linkattr =
+                        iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
+                if (linkattr instanceof String) {
+                    return ClickType.HYPERLINK;
+                }
+                linkattr = iterator.getAttributes().get(IRCTextAttribute.CHANNEL);
+                if (linkattr instanceof String) {
+                    return ClickType.CHANNEL;
+                }
+                linkattr = iterator.getAttributes().get(IRCTextAttribute.NICKNAME);
+                if (linkattr instanceof String) {
+                    return ClickType.NICKNAME;
+                }
             }
         }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,7 @@
  */
 package com.dmdirc.ui.swing;
 
+import com.dmdirc.ui.swing.components.desktopPane.DMDircDesktopPane;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
@@ -37,8 +38,8 @@ import com.dmdirc.ui.interfaces.FramemanagerPosition;
 import com.dmdirc.ui.interfaces.MainWindow;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.components.InputTextFrame;
+import com.dmdirc.ui.swing.components.MenuBar;
 import com.dmdirc.ui.swing.components.SnappingJSplitPane;
-import com.dmdirc.ui.swing.framemanager.ctrltab.CtrlTabFrameManager;
 import com.dmdirc.ui.swing.framemanager.tree.TreeFrameManager;
 
 import java.awt.Dimension;
@@ -93,7 +94,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** Menu bar. */
     private MenuBar menu;
     /** Top level window list. */
-    private List<java.awt.Window> windows;
+    private final List<java.awt.Window> windows;
 
     /**
      * Creates new form MainFrame.
@@ -344,6 +345,11 @@ public final class MainFrame extends JFrame implements WindowListener,
         }
     }
 
+    /**
+     * Returns a list of top level windows.
+     *
+     * @return Top level window list
+     */
     public List<java.awt.Window> getTopLevelWindows() {
         synchronized (windows) {
             return windows;
@@ -368,8 +374,7 @@ public final class MainFrame extends JFrame implements WindowListener,
 
         WindowManager.addFrameManager(mainFrameManager);
         mainFrameManager.setParent(frameManagerPanel);
-
-        WindowManager.addFrameManager(new CtrlTabFrameManager(desktopPane));
+        
         WindowManager.addFrameManager(this);
     }
 
@@ -382,7 +387,7 @@ public final class MainFrame extends JFrame implements WindowListener,
 
         initFrameManagers();
 
-        menu = new MenuBar();
+        menu = new MenuBar(this);
         Apple.getApple().setMenuBar(menu);
         setJMenuBar(menu);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -177,10 +177,12 @@ public final class DMDircEventQueue extends EventQueue {
      */
     private void handleWindowEvent(final WindowEvent we) {
         if (we.getSource() instanceof Window) {
-            if (we.getID() == WindowEvent.WINDOW_OPENED) {
-                SwingController.getMainFrame().addTopLevelWindow((Window) we.getSource());
-            } else if (we.getID() == WindowEvent.WINDOW_CLOSED) {
-                SwingController.getMainFrame().delTopLevelWindow((Window) we.getSource());
+            if (SwingController.hasMainFrame()) {
+                if (we.getID() == WindowEvent.WINDOW_OPENED) {
+                    SwingController.getMainFrame().addTopLevelWindow((Window) we.getSource());
+                } else if (we.getID() == WindowEvent.WINDOW_CLOSED) {
+                    SwingController.getMainFrame().delTopLevelWindow((Window) we.getSource());
+                }
             }
         }
     }

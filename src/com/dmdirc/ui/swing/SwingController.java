@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -55,7 +55,6 @@ import com.dmdirc.util.ReturnableThread;
 
 import java.awt.Font;
 import java.awt.Toolkit;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Semaphore;
@@ -79,7 +78,16 @@ public final class SwingController implements UIController {
 
     /** Instantiates a new SwingController. */
     public SwingController() {
-    //Do nothing
+        //Do nothing
+    }
+
+    /**
+     * Does the main frame exist?
+     *
+     * @return true iif mainframe exists
+     */
+    protected static boolean hasMainFrame() {
+        return me != null;
     }
 
     /** {@inheritDoc} */
@@ -95,29 +103,22 @@ public final class SwingController implements UIController {
      */
     public synchronized static MainFrame getMainFrame() {
         if (me == null) {
-            try {
-                SwingUtilities.invokeAndWait(new Runnable() {
+            UIUtilities.invokeAndWait(new Runnable() {
 
-                    /** {@inheritDoc} */
-                    @Override
-                    public void run() {
-                        me = new MainFrame();
-                    }
-                });
-                SwingUtilities.invokeLater(new Runnable() {
+                /** {@inheritDoc} */
+                @Override
+                public void run() {
+                    me = new MainFrame();
+                }
+            });
+            UIUtilities.invokeLater(new Runnable() {
 
-                    /** {@inheritDoc} */
-                    @Override
-                    public void run() {
-                        ErrorListDialog.getErrorListDialog();
-                    }
-                });
-            } catch (InterruptedException ex) {
-            //Ignore
-            } catch (InvocationTargetException ex) {
-                Logger.appError(ErrorLevel.FATAL, "Unable to create MainFrame",
-                        ex.getCause());
-            }
+                /** {@inheritDoc} */
+                @Override
+                public void run() {
+                    ErrorListDialog.getErrorListDialog();
+                }
+            });
         }
 
         return me;
@@ -208,7 +209,7 @@ public final class SwingController implements UIController {
     /** {@inheritDoc} */
     @Override
     public InputWindow getInputWindow(final WritableFrameContainer owner,
-            final CommandParser commandParser) {
+                                      final CommandParser commandParser) {
         return UIUtilities.invokeAndWait(new ReturnableThread<CustomInputFrame>() {
 
             /** {@inheritDoc} */
@@ -250,7 +251,8 @@ public final class SwingController implements UIController {
      * @param firstRun First run?
      */
     private synchronized void showFirstRunWizard(final boolean firstRun) {
-        SwingUtilities.invokeLater(new Runnable() {
+        final Semaphore semaphore = new Semaphore(0);
+        UIUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
@@ -260,36 +262,28 @@ public final class SwingController implements UIController {
                     /** {@inheritDoc} */
                     @Override
                     public void wizardFinished() {
-                        synchronized (SwingController.this) {
-                            SwingController.this.notifyAll();
-                        }
+                        semaphore.release();
                     }
 
                     /** {@inheritDoc} */
                     @Override
                     public void wizardCancelled() {
-                        synchronized (SwingController.this) {
-                            SwingController.this.notifyAll();
-                        }
+                        semaphore.release();
                     }
                 };
                 final SwingFirstRunWizard wizard =
-                        new SwingFirstRunWizard(firstRun);
+                                          new SwingFirstRunWizard(firstRun);
                 wizard.getWizardDialog().addWizardListener(listener);
                 wizard.display();
             }
-            });
-        try {
-            wait();
-        } catch (InterruptedException ex) {
-        //Ignore
-        }
+        });
+        semaphore.acquireUninterruptibly();
     }
 
     /** {@inheritDoc} */
     @Override
     public void showChannelSettingsDialog(final Channel channel) {
-        SwingUtilities.invokeLater(new Runnable() {
+        UIUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
@@ -302,7 +296,7 @@ public final class SwingController implements UIController {
     /** {@inheritDoc} */
     @Override
     public void showServerSettingsDialog(final Server server) {
-        SwingUtilities.invokeLater(new Runnable() {
+        UIUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
@@ -317,38 +311,55 @@ public final class SwingController implements UIController {
      */
     static void updateLookAndFeel() {
         try {
-            UIManager.setLookAndFeel(UIUtilities.getLookAndFeel(IdentityManager.getGlobalConfig().
+            UIManager.setLookAndFeel(UIUtilities.getLookAndFeel(IdentityManager.
+                    getGlobalConfig().
                     getOption("ui", "lookandfeel", "")));
-            for (final java.awt.Window window : getMainFrame().getTopLevelWindows()) {
+            final int state = UIUtilities.invokeAndWait(new ReturnableThread<Integer>() {
+
+                /** {@inheritDoc} */
+                @Override
+                public void run() {
+                    setObject(getMainFrame().getExtendedState());
+                }
+            });
+            for (final java.awt.Window window : getMainFrame().
+                    getTopLevelWindows()) {
                 UIUtilities.invokeLater(new Runnable() {
 
                     /** {@inheritDoc} */
                     @Override
                     public void run() {
                         SwingUtilities.updateComponentTreeUI(window);
-                    }
-                });
-                UIUtilities.invokeLater(new Runnable() {
-
-                    /** {@inheritDoc} */
-                    @Override
-                    public void run() {
-                        window.pack();
+                        if (window != getMainFrame()) {
+                            window.pack();
+                        }
                     }
                 });
             }
+            UIUtilities.invokeLater(new Runnable() {
+
+                /** {@inheritDoc} */
+                @Override
+                public void run() {
+                    getMainFrame().setExtendedState(state);
+                }
+            });
         } catch (ClassNotFoundException ex) {
             Logger.userError(ErrorLevel.LOW,
-                    "Unable to change Look and Feel: " + ex.getMessage());
+                             "Unable to change Look and Feel: " +
+                             ex.getMessage());
         } catch (InstantiationException ex) {
             Logger.userError(ErrorLevel.LOW,
-                    "Unable to change Look and Feel: " + ex.getMessage());
+                             "Unable to change Look and Feel: " +
+                             ex.getMessage());
         } catch (IllegalAccessException ex) {
             Logger.userError(ErrorLevel.LOW,
-                    "Unable to change Look and Feel: " + ex.getMessage());
+                             "Unable to change Look and Feel: " +
+                             ex.getMessage());
         } catch (UnsupportedLookAndFeelException ex) {
             Logger.userError(ErrorLevel.LOW,
-                    "Unable to change Look and Feel: " + ex.getMessage());
+                             "Unable to change Look and Feel: " +
+                             ex.getMessage());
         }
     }
 
@@ -359,7 +370,7 @@ public final class SwingController implements UIController {
         final boolean aaSetting = IdentityManager.getGlobalConfig().
                 getOptionBool("ui", "antialias", true);
         System.setProperty("awt.useSystemAAFontSettings",
-                Boolean.toString(aaSetting));
+                           Boolean.toString(aaSetting));
         System.setProperty("swing.aatext", Boolean.toString(aaSetting));
 
         // This will do nothing on non OS X Systems
@@ -371,7 +382,7 @@ public final class SwingController implements UIController {
         }
 
         final Font defaultFont = new Font(Font.DIALOG, Font.TRUETYPE_FONT,
-                12);
+                                          12);
         if (UIManager.getFont("TextField.font") == null) {
             UIManager.put("TextField.font", defaultFont);
         }
@@ -380,13 +391,14 @@ public final class SwingController implements UIController {
         }
 
         UIManager.put("Tree.collapsedIcon",
-                IconManager.getIconManager().getIcon("nothing"));
+                      IconManager.getIconManager().getIcon("nothing"));
         UIManager.put("Tree.expandedIcon",
-                IconManager.getIconManager().getIcon("nothing"));
+                      IconManager.getIconManager().getIcon("nothing"));
 
         try {
             UIUtilities.initUISettings();
-            UIManager.setLookAndFeel(UIUtilities.getLookAndFeel(IdentityManager.getGlobalConfig().
+            UIManager.setLookAndFeel(UIUtilities.getLookAndFeel(IdentityManager.
+                    getGlobalConfig().
                     getOption("ui", "lookandfeel", "")));
 
         } catch (UnsupportedOperationException ex) {
@@ -433,7 +445,7 @@ public final class SwingController implements UIController {
     /** {@inheritDoc} */
     @Override
     public void showURLDialog(final URI url) {
-        SwingUtilities.invokeLater(new Runnable() {
+        UIUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
@@ -447,7 +459,7 @@ public final class SwingController implements UIController {
     /** {@inheritDoc} */
     @Override
     public void showSSLCertificateDialog(final SSLCertificateDialogModel model) {
-        SwingUtilities.invokeLater(new Runnable() {
+        UIUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
@@ -460,7 +472,7 @@ public final class SwingController implements UIController {
     /** {@inheritDoc} */
     @Override
     public void showFeedbackNag() {
-        SwingUtilities.invokeLater(new Runnable() {
+        UIUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
@@ -473,13 +485,13 @@ public final class SwingController implements UIController {
     /** {@inheritDoc} */
     @Override
     public void showMessageDialog(final String title, final String message) {
-        SwingUtilities.invokeLater(new Runnable() {
+        UIUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
             public void run() {
                 JOptionPane.showMessageDialog(null, message, title,
-                        JOptionPane.PLAIN_MESSAGE);
+                                              JOptionPane.PLAIN_MESSAGE);
             }
         });
     }

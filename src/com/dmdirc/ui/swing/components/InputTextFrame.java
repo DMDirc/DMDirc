@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,15 +40,12 @@ import com.dmdirc.ui.swing.actions.InputTextFramePasteAction;
 import com.dmdirc.ui.swing.dialogs.paste.PasteDialog;
 import com.dmdirc.ui.swing.actions.CommandAction;
 
-import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Point;
-import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 
@@ -87,8 +84,6 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     private SwingInputField inputField;
     /** Popupmenu for this frame. */
     private JPopupMenu inputFieldPopup;
-    /** Robot for the frame. */
-    private Robot robot;
     /** Nick popup menu. */
     protected JPopupMenu nickPopup;
 
@@ -101,12 +96,6 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
         super(owner);
 
         parent = owner;
-
-        try {
-            robot = new Robot();
-        } catch (AWTException ex) {
-            Logger.userError(ErrorLevel.LOW, "Error creating robot");
-        }
 
         initComponents();
 
@@ -265,24 +254,6 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
                 awayLabel.setVisible(false);
             }
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void keyPressed(final KeyEvent event) {
-        if (event.getSource() == getTextPane() && (getConfigManager().
-                getOptionBool("ui", "quickCopy", false) ||
-                (event.getModifiers() & UIUtilities.getCtrlMask()) == 0)) {
-            event.setSource(getInputField());
-            getInputField().requestFocusInWindow();
-            if (robot != null && event.getKeyCode() != KeyEvent.VK_UNDEFINED) {
-                robot.keyPress(event.getKeyCode());
-                if (event.getKeyCode() == KeyEvent.VK_SHIFT) {
-                    robot.keyRelease(event.getKeyCode());
-                }
-            }
-        }
-        super.keyPressed(event);
     }
 
     /**
