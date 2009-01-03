@@ -26,7 +26,7 @@ import static org.junit.Assert.*;
 
 public class ParserErrorTest extends junit.framework.TestCase {
 
-    private final ParserError fatal = new ParserError(ParserError.ERROR_FATAL, "moo");
+    private final ParserError fatal = new ParserError(ParserError.ERROR_FATAL, "moo", "");
     private final ParserError error = new ParserError(ParserError.ERROR_ERROR, "moo", "last line");
     private final ParserError except = new ParserError(ParserError.ERROR_EXCEPTION, "moo", null);
     private final ParserError warning = new ParserError(ParserError.ERROR_WARNING, "moo", "");
