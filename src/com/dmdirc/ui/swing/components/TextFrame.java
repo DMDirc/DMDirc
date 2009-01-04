@@ -312,6 +312,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         searchBar =
                 new SwingSearchBar(this);
         searchBar.setVisible(false);
+        searchBar.addKeyListener(this);
 
         getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).
                 put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0),

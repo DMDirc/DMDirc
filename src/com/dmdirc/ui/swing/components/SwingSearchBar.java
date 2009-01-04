@@ -27,12 +27,14 @@ import com.dmdirc.Main;
 import com.dmdirc.ui.interfaces.SearchBar;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.swing.MainFrame;
+import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.actions.SearchAction;
 import com.dmdirc.ui.swing.textpane.IRCDocument;
 import com.dmdirc.ui.swing.textpane.IRCDocumentSearcher;
 import com.dmdirc.ui.swing.textpane.LinePosition;
 import com.dmdirc.ui.swing.textpane.TextPane;
 
+import com.dmdirc.util.ListenerList;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -86,6 +88,8 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
     private int line;
     /** Character to search from. */
     private int index;
+    /** Listener list. */
+    private final ListenerList listeners;
 
     /**
      * Creates a new instance of StatusBar.
@@ -93,6 +97,8 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
      */
     public SwingSearchBar(final TextFrame newParent) {
         super();
+
+        listeners = new ListenerList();
 
         this.parent = newParent;
 
@@ -138,7 +144,6 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
     /** Adds listeners to components. */
     private void addListeners() {
         closeButton.addActionListener(this);
-        addKeyListener(this);
         searchBox.addKeyListener(this);
         nextButton.addActionListener(this);
         prevButton.addActionListener(this);
@@ -273,6 +278,10 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
                 index = 0;
             }
         }
+
+        for (KeyListener listener : listeners.get(KeyListener.class)) {
+            listener.keyPressed(event);
+        }
     }
 
     /**
@@ -338,5 +347,32 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
     @Override
     public void changedUpdate(final DocumentEvent e) {
         //Ignore
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addKeyListener(final KeyListener listener) {
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                listeners.add(KeyListener.class, listener);
+            }
+        });
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeKeyListener(final KeyListener listener) {
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                listeners.remove(KeyListener.class, listener);
+            }
+        });
     }
 }
