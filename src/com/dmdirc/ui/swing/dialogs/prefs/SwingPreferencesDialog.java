@@ -30,6 +30,7 @@ import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.PrefsComponentFactory;
 import com.dmdirc.ui.swing.components.ColourChooser;
 import com.dmdirc.ui.swing.components.ListScroller;
+import com.dmdirc.ui.swing.components.LoggingSwingWorker;
 import com.dmdirc.ui.swing.components.OptionalColourChooser;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.TextLabel;
@@ -82,15 +83,13 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     private static final long serialVersionUID = 9;
     /** Normal help string text. */
     private static final String text = "Hover over a setting to see a " +
-            "description, if available.";
-
+                                       "description, if available.";
     /**
      * The maximum height clients may use if they don't want to scroll.
      *
      * @since 0.6.3
      */
     public static int CLIENT_HEIGHT = 430;
-
     /** Previously instantiated instance of SwingPreferencesDialog. */
     private static volatile SwingPreferencesDialog me;
     /** A map of settings to the components used to represent them. */
@@ -112,26 +111,27 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     /** Tooltip display area. */
     private TextLabel tooltip;
     /** Cached tooltips. */
-    private final Map<Component, String> tooltips = new HashMap<Component, String>();
+    private final Map<Component, String> tooltips =
+                                         new HashMap<Component, String>();
     /** Previously selected category. */
     private PreferencesCategory selected;
     /** Preferences Manager. */
-    private final PreferencesManager manager;
+    private PreferencesManager manager;
     /** Panel gap. */
     private final int padding = (int) PlatformDefaults.getUnitValueX("related").
             getValue();
     /** Panel left padding. */
-    private final int leftPadding = (int) PlatformDefaults.getPanelInsets(1).getValue();
+    private final int leftPadding = (int) PlatformDefaults.getPanelInsets(1).
+            getValue();
     /** Panel right padding. */
-    private final int rightPadding = (int) PlatformDefaults.getPanelInsets(3).getValue();
+    private final int rightPadding = (int) PlatformDefaults.getPanelInsets(3).
+            getValue();
 
     /**
      * Creates a new instance of SwingPreferencesDialog.
      */
     private SwingPreferencesDialog() {
         super((MainFrame) Main.getUI().getMainWindow(), false);
-
-        manager = new PreferencesManager();
 
         categories = new HashMap<PreferencesCategory, JPanel>();
         components = new HashMap<PreferencesSetting, JComponent>();
@@ -141,12 +141,35 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
         initComponents();
 
-        new ListScroller(tabList);
+        new LoggingSwingWorker() {
 
-        addCategories(manager.getCategories());
-        addMouseListeners(mainPanel.getComponents());
+            /** {@inheritDoc} */
+            @Override
+            protected Object doInBackground() throws Exception {
+                System.out.println("setting");
+                setPrefsManager(new PreferencesManager());
+                System.out.println("set");
+                return null;
+            }
+
+            /** {@inheritDoc} */
+            @Override
+            protected void done() {
+                super.done();
+
+                System.out.println("done");
+                new ListScroller(tabList);
+
+                addCategories(manager.getCategories());
+                addMouseListeners(mainPanel.getComponents());
+            }
+        }.execute();
     }
-    
+
+    private void setPrefsManager(final PreferencesManager manager) {
+        this.manager = manager;
+    }
+
     /** Returns the instance of SwingPreferencesDialog. */
     public static void showSwingPreferencesDialog() {
         me = getSwingPreferencesDialog();
@@ -210,7 +233,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
-        
+
         setLayout(new MigLayout("fillx, wmax 650, hmax 600"));
         add(tabList, "w 150!, growy, spany 3");
         add(titlePanel, "wrap, w 480!");
@@ -254,8 +277,10 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      */
     protected void addMouseListeners(final Component[] components) {
         for (Component component : components) {
-            if (component instanceof JComponent && ((JComponent) component).getToolTipText() != null) {
-                tooltips.put(component, ((JComponent) component).getToolTipText());
+            if (component instanceof JComponent && ((JComponent) component).
+                    getToolTipText() != null) {
+                tooltips.put(component,
+                             ((JComponent) component).getToolTipText());
                 ((JComponent) component).setToolTipText(null);
 
                 component.addMouseListener(this);
@@ -274,10 +299,10 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * @param setting The setting to be used
      */
     private void addComponent(final PreferencesCategory category,
-            final PreferencesSetting setting) {
+                              final PreferencesSetting setting) {
 
         final JLabel label = getLabel(setting);
-        
+
         JComponent option = PrefsComponentFactory.getComponent(setting);
         option.setToolTipText(setting.getHelptext());
 
@@ -321,10 +346,11 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * @param parent The panel to add the category to
      */
     private void addInlineCategory(final PreferencesCategory category,
-            final JPanel parent) {
+                                   final JPanel parent) {
         final JPanel panel =
-                new JPanel(new MigLayout("fillx, gap unrel, wrap 2, hidemode 3, pack, " +
-                "wmax 480-" + leftPadding + "-" + rightPadding + "-2*" + padding));
+                     new JPanel(new MigLayout("fillx, gap unrel, wrap 2, hidemode 3, pack, " +
+                                              "wmax 480-" + leftPadding + "-" +
+                                              rightPadding + "-2*" + padding));
         panel.setBorder(BorderFactory.createTitledBorder(category.getTitle()));
 
         categories.put(category, panel);
@@ -341,17 +367,20 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * @param category The category to be added
      * @param namePrefix Category name prefix
      */
-    private void addCategory(final PreferencesCategory category, final String namePrefix) {
+    private void addCategory(final PreferencesCategory category,
+                             final String namePrefix) {
         final JPanel panel =
-                new JPanel(new MigLayout("fillx, gap unrel, wrap 2, hidemode 3, " +
-                "wmax 480-" + leftPadding + "-" + rightPadding + "-2*" + padding));
+                     new JPanel(new MigLayout("fillx, gap unrel, wrap 2, hidemode 3, " +
+                                              "wmax 480-" + leftPadding + "-" +
+                                              rightPadding + "-2*" + padding));
         final String path = category.getPath();
 
         categories.put(category, panel);
         paths.put(path, category);
 
         final JScrollPane scrollPane = new JScrollPane(panel);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setHorizontalScrollBarPolicy(
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         mainPanel.add(scrollPane, path);
         ((DefaultListModel) tabList.getModel()).addElement(category);
@@ -369,7 +398,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * @param path The textual path of this category
      */
     private void initCategory(final PreferencesCategory category,
-            final JPanel panel, final String path) {
+                              final JPanel panel, final String path) {
 
         if (!category.getDescription().isEmpty()) {
             panel.add(new TextLabel(category.getDescription()), "span, growx");
@@ -385,7 +414,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
         if (category.hasObject()) {
             if (!(category.getObject() instanceof JPanel)) {
-                throw new IllegalArgumentException("Custom preferences objects" +
+                throw new IllegalArgumentException(
+                        "Custom preferences objects" +
                         " for this UI must extend JPanel.");
             }
 
@@ -413,7 +443,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * 
      * @param categories The categories to be added
      */
-    public void addCategories(final Collection<? extends PreferencesCategory> categories) {
+    public void addCategories(
+            final Collection<? extends PreferencesCategory> categories) {
         for (PreferencesCategory category : categories) {
             addCategory(category, "");
         }
@@ -432,10 +463,11 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
         if (getOkButton().equals(actionEvent.getSource())) {
             if (tabList.getSelectedIndex() > -1) {
-                final PreferencesCategory node = (PreferencesCategory) tabList.getSelectedValue();
-                //IdentityManager.getConfigIdentity().setOption("dialogstate",
-                  //      "preferences", node.substring(7, node.length() - 1).
-                    //    replaceAll(", ", "->"));
+                final PreferencesCategory node = (PreferencesCategory) tabList.
+                        getSelectedValue();
+            //IdentityManager.getConfigIdentity().setOption("dialogstate",
+            //      "preferences", node.substring(7, node.length() - 1).
+            //    replaceAll(", ", "->"));
             }
             saveOptions();
         }
@@ -449,7 +481,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      */
     @Override
     public void valueChanged(final ListSelectionEvent e) {
-        final PreferencesCategory node = (PreferencesCategory) tabList.getSelectedValue();
+        final PreferencesCategory node = (PreferencesCategory) tabList.
+                getSelectedValue();
         cardLayout.show(mainPanel, node.getPath());
 
         if (selected != null) {
@@ -475,40 +508,42 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
         if (restart) {
             JOptionPane.showMessageDialog((MainFrame) Main.getUI().
-                    getMainWindow(), "One or more of the changes you made " +
-                    "won't take effect until you restart the client.",
-                    "Restart needed", JOptionPane.INFORMATION_MESSAGE);
+                    getMainWindow(),
+                                          "One or more of the changes you made " +
+                                          "won't take effect until you restart the client.",
+                                          "Restart needed",
+                                          JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
     /** {@inheritDoc} */
     private void display() {
         /*final String[] tabName = IdentityManager.getGlobalConfig().
-                getOption("dialogstate", "preferences", "").split("->");
+        getOption("dialogstate", "preferences", "").split("->");
         TreePath path = new TreePath(tabList.getModel().getRoot());
 
         for (String string : tabName) {
-            final TreePath treePath = tabList.getNextMatch(string, 0,
-                    Position.Bias.Forward);
-            if (treePath != null) {
-                final TreeNode node =
-                        (TreeNode) treePath.getLastPathComponent();
-                if (node != null) {
-                    path = path.pathByAddingChild(node);
-                }
-            }
+        final TreePath treePath = tabList.getNextMatch(string, 0,
+        Position.Bias.Forward);
+        if (treePath != null) {
+        final TreeNode node =
+        (TreeNode) treePath.getLastPathComponent();
+        if (node != null) {
+        path = path.pathByAddingChild(node);
+        }
+        }
         }
 
         if (path == null || path.getPathCount() <= 1) {
-            tabList.setSelectionPath(tabList.getPathForRow(0));
+        tabList.setSelectionPath(tabList.getPathForRow(0));
         } else {
-            tabList.setSelectionPath(path);
+        tabList.setSelectionPath(path);
         }*/
         pack();
         setLocationRelativeTo(getParent());
         setVisible(true);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void dispose() {
@@ -581,5 +616,4 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     public void mouseExited(final MouseEvent e) {
         resetTooltip();
     }
-
 }
