@@ -23,8 +23,6 @@
 package com.dmdirc.ui.swing.components;
 
 import com.dmdirc.commandparser.parsers.CommandParser;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.InputField;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -34,13 +32,11 @@ import com.dmdirc.ui.swing.UIUtilities;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 import javax.swing.text.JTextComponent;
 
 /**
@@ -177,12 +173,14 @@ public class SwingInputHandler extends InputHandler implements KeyListener {
             /** {@inheritDoc} */
             @Override
             public void actionPerformed(final ActionEvent e) {
+                final String line = target.getText();
+                target.setText("");
                 new LoggingSwingWorker() {
 
                     /** {@inheritDoc} */
                     @Override
                     protected Object doInBackground() throws Exception {
-                        enterPressed(target.getText());
+                        enterPressed(line);
                         return null;
                     }
                     }.execute();

@@ -527,8 +527,6 @@ public abstract class InputHandler implements ConfigChangeListener {
     public void addToBuffer(final String line) {
         buffer.add(line);
         buffer.seekToEnd();
-
-        target.setText("");
     }
 
     /** {@inheritDoc} */
