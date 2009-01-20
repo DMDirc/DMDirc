@@ -364,6 +364,7 @@ public abstract class InputHandler implements ConfigChangeListener {
                 Toolkit.getDefaultToolkit().beep();
             } else {
                 addToBuffer(target.getText());
+                target.setText("");
             }
         }
         validateText();
