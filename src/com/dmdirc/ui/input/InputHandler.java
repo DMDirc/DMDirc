@@ -194,16 +194,17 @@ public abstract class InputHandler implements ConfigChangeListener {
     /**
      * Handles the pressing of a key. Inserts control chars as appropriate.
      *
+     * @param line Text in the target
      * @param keyCode Keycode for the pressed key
      * @param shiftPressed Was shift pressed
      * @param ctrlPressed Was ctrl key pressed
      */
-    protected void handleKeyPressed(final int keyCode,
+    protected void handleKeyPressed(final String line, final int keyCode,
             final boolean shiftPressed, final boolean ctrlPressed) {
         target.hideColourPicker();
         
         if (ctrlPressed && (flags & HANDLE_FORMATTING) != 0) {
-            handleControlKey(keyCode, shiftPressed);
+            handleControlKey(line, keyCode, shiftPressed);
         }
         
         validateText();
@@ -285,10 +286,11 @@ public abstract class InputHandler implements ConfigChangeListener {
      * Handles the pressing of a key while the control key is pressed.
      * Inserts control chars as appropriate.
      *
+     * @param line Text in the target
      * @param keyCode Keycode for the pressed key
      * @param shiftPressed Was shift pressed
      */
-    protected void handleControlKey(final int keyCode,
+    protected void handleControlKey(final String line, final int keyCode,
             final boolean shiftPressed) {
         switch (keyCode) {
             case KeyEvent.VK_B:
@@ -324,10 +326,9 @@ public abstract class InputHandler implements ConfigChangeListener {
                 break;
 
             case KeyEvent.VK_ENTER:
-                if ((flags & HANDLE_RETURN) != 0) {
-                    commandParser.parseCommandCtrl(parentWindow,
-                            target.getText());
-                    addToBuffer(target.getText());
+                if ((flags & HANDLE_RETURN) != 0 && !line.isEmpty()) {
+                    commandParser.parseCommandCtrl(parentWindow, line);
+                    addToBuffer(line);
                 }
                 break;
 
