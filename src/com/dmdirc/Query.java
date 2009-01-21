@@ -164,7 +164,8 @@ public final class Query extends MessageTarget implements
     /** {@inheritDoc} */
     @Override
     public int getMaxLineLength() {
-        return server.getParser().getMaxLength("PRIVMSG", host);
+        return server.getState() == ServerState.CONNECTED ? server.getParser()
+                .getMaxLength("PRIVMSG", host) : -1;
     }
 
     /**
