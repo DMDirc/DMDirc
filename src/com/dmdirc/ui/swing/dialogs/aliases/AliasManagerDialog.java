@@ -233,7 +233,7 @@ public final class AliasManagerDialog extends StandardDialog implements
                 true);
         final JPanel panel = new JPanel();
 
-        panel.setLayout(new MigLayout("fill, hidemode 3, pack, debug"));
+        panel.setLayout(new MigLayout("fill, hidemode 3, pack"));
 
         panel.add(aliasDetails, "span 7, wrap, grow, pushy");
         panel.add(subsPanel, "spanx, wrap, grow");
