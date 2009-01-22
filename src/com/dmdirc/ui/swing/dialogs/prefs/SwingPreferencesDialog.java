@@ -146,9 +146,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             /** {@inheritDoc} */
             @Override
             protected Object doInBackground() throws Exception {
-                System.out.println("setting");
                 setPrefsManager(new PreferencesManager());
-                System.out.println("set");
                 return null;
             }
 
@@ -156,8 +154,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             @Override
             protected void done() {
                 super.done();
-
-                System.out.println("done");
+                
                 new ListScroller(tabList);
 
                 addCategories(manager.getCategories());
