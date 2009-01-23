@@ -96,7 +96,8 @@ public abstract class WritableFrameContainer extends FrameContainer {
             if (splitLine.isEmpty() || getMaxLineLength() <= 0) {
                 lines++;
             } else {
-                lines += (int) Math.ceil(splitLine.length() / (double) getMaxLineLength());
+                lines += (int) Math.ceil(splitLine.getBytes().length
+                        / (double) getMaxLineLength());
             }
         }
         
@@ -211,7 +212,8 @@ public abstract class WritableFrameContainer extends FrameContainer {
         } else if (target.startsWith("window:")) {
             final String windowName = target.substring(7);
 
-            Window targetWindow = WindowManager.findCustomWindow(getServer().getFrame(), windowName);
+            Window targetWindow = WindowManager.findCustomWindow(getServer().getFrame(),
+                    windowName);
 
             if (targetWindow == null) {
                 targetWindow = new CustomWindow(windowName, windowName,
