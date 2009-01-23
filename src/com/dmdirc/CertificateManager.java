@@ -23,6 +23,8 @@
 package com.dmdirc;
 
 import com.dmdirc.config.ConfigManager;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.core.dialogs.sslcertificate.CertificateAction;
 import com.dmdirc.ui.core.dialogs.sslcertificate.SSLCertificateDialogModel;
 
@@ -111,21 +113,21 @@ public class CertificateManager implements X509TrustManager {
             final FileInputStream is = new FileInputStream(filename);
             final KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
             keystore.load(is, cacertpass.toCharArray());
-            // This class retrieves the most-trusted CAs from the keystore
+
             final PKIXParameters params = new PKIXParameters(keystore);
             for (TrustAnchor anchor : params.getTrustAnchors()) {
                 globalTrustedCAs.add(anchor.getTrustedCert());
             }
         } catch (CertificateException ex) {
-            // TODO: Handle these exceptions
+            Logger.appError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
         } catch (IOException ex) {
-
+            Logger.appError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
         } catch (InvalidAlgorithmParameterException ex) {
-
+            Logger.appError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
         } catch (KeyStoreException ex) {
-
+            Logger.appError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
         } catch (NoSuchAlgorithmException ex) {
-
+            Logger.appError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
         }
     }
 
@@ -157,15 +159,15 @@ public class CertificateManager implements X509TrustManager {
 
                 return kmf.getKeyManagers();
             } catch (KeyStoreException ex) {
-                ex.printStackTrace(); // TODO: Handle these exceptions
+                Logger.appError(ErrorLevel.MEDIUM, "Unable to get key manager", ex);
             } catch (IOException ex) {
-                ex.printStackTrace();
+                Logger.appError(ErrorLevel.MEDIUM, "Unable to get key manager", ex);
             } catch (CertificateException ex) {
-                ex.printStackTrace();
+                Logger.appError(ErrorLevel.MEDIUM, "Unable to get key manager", ex);
             } catch (NoSuchAlgorithmException ex) {
-                ex.printStackTrace();
+                Logger.appError(ErrorLevel.MEDIUM, "Unable to get key manager", ex);
             } catch (UnrecoverableKeyException ex) {
-                ex.printStackTrace();
+                Logger.appError(ErrorLevel.MEDIUM, "Unable to get key manager", ex);
             } finally {
                 if (fis != null) {
                     try {
