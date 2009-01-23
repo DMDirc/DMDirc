@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.installer.ui;
+package com.dmdirc.ui.swing.installer;
 
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.components.TextLabel;

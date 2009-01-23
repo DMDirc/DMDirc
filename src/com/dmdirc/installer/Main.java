@@ -31,11 +31,11 @@ import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardFrame;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardListener;
 
-import com.dmdirc.installer.ui.StepWelcome;
-import com.dmdirc.installer.ui.StepError;
-import com.dmdirc.installer.ui.StepSettings;
-import com.dmdirc.installer.ui.StepConfirm;
-import com.dmdirc.installer.ui.StepInstall;
+import com.dmdirc.ui.swing.installer.StepWelcome;
+import com.dmdirc.ui.swing.installer.StepError;
+import com.dmdirc.ui.swing.installer.StepSettings;
+import com.dmdirc.ui.swing.installer.StepConfirm;
+import com.dmdirc.ui.swing.installer.StepInstall;
 
 import java.awt.Dimension;
 import java.util.ArrayList;

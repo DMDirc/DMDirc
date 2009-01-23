@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.installer.ui;
+package com.dmdirc.ui.swing.installer;
 
 import com.dmdirc.installer.Main;
 import com.dmdirc.installer.Settings;
