@@ -1275,7 +1275,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             if (myState.getState() != ServerState.CONNECTING) {
                 // Shouldn't happen
                 throw new IllegalStateException("Received onPost005 while not "
-                        + "connecting\n\nState: " + myState);
+                        + "connecting\n\n" + myState.getTransitionHistory());
             }
 
             myState.transition(ServerState.CONNECTED);
