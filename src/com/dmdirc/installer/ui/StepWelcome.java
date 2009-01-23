@@ -22,7 +22,6 @@
 
 package com.dmdirc.installer.ui;
 
-import com.dmdirc.installer.Main;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.components.TextLabel;
 
@@ -48,10 +47,10 @@ public final class StepWelcome extends Step {
 		setLayout(new MigLayout());
 		
 		TextLabel infoLabel;
-		infoLabel = new TextLabel("Welcome to the "+releaseName+" installer. This program will install DMDirc on this computer.\n\n"
+		infoLabel = new TextLabel("Welcome to the "+releaseName+" installer. This program will install DMDirc on this computer.<br><br>"
 		                        + "DMDirc is a cross-platform IRC client developed by Chris Smith, Shane Mc Cormack and "
 		                        + "Gregory Holmes. DMDirc is released for free under the MIT license; for more information, "
-		                        + "please visit www.DMDirc.com.\n\n"
+		                        + "please visit www.DMDirc.com.<br><br>"
 		                        + "Click \"Next\" to continue, or close this program to cancel the installation.");
 		infoLabel.setOpaque(false);
 			

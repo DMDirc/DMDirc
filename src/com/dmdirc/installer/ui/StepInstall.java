@@ -65,10 +65,8 @@ public final class StepInstall extends Step implements StepListener, TextStep {
 		infoLabel.setEditable(false);
 		infoLabel.setWrapStyleWord(true);
 		infoLabel.setLineWrap(true);
-		//infoLabel.setHighlighter(null);
 		infoLabel.setOpaque(false);
 		infoLabel.setFont(UIManager.getFont("TextField.font"));
-//		infoLabel.setBackground(getBackground());
 
 		scrollPane = new JScrollPane(infoLabel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(scrollPane, "grow");

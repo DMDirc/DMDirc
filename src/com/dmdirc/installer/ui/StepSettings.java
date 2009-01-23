@@ -25,7 +25,6 @@ package com.dmdirc.installer.ui;
 import com.dmdirc.installer.Main;
 import com.dmdirc.installer.Settings;
 import com.dmdirc.installer.DefaultSettings;
-import com.dmdirc.installer.cliparser.CLIParser;
 import com.dmdirc.installer.Installer.ShortcutType;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.components.TextLabel;
@@ -67,12 +66,7 @@ public final class StepSettings extends Step implements Settings {
 
 		TextLabel infoLabel;
 		infoLabel = new TextLabel("Here you can choose options for the install.\n");
-//		infoLabel.setEditable(false);
-//		infoLabel.setWrapStyleWord(true);
-//		infoLabel.setLineWrap(true);
-//		infoLabel.setHighlighter(null);
 		infoLabel.setOpaque(false);
-//		infoLabel.setBackground(getBackground());
 
 		DefaultSettings defaultSettings = new DefaultSettings();
 		shortcutMenu.setSelected(defaultSettings.getShortcutMenuState());

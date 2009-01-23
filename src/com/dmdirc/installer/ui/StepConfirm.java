@@ -69,19 +69,19 @@ public final class StepConfirm extends Step implements StepListener {
 		final Settings settings = ((Settings) Main.getWizardFrame().getStep(1));
 
 		if (Main.getInstaller().supportsShortcut(ShortcutType.MENU) && settings.getShortcutMenuState()) {
-			shortcutText = shortcutText + " - Create "+Main.getInstaller().getMenuName()+" shortcut\n";
+			shortcutText = shortcutText + " - Create "+Main.getInstaller().getMenuName()+" shortcut<br>";
 		}
 
 		if (Main.getInstaller().supportsShortcut(ShortcutType.DESKTOP) && settings.getShortcutDesktopState()) {
-			shortcutText = shortcutText + " - Create desktop shortcut\n";
+			shortcutText = shortcutText + " - Create desktop shortcut<br>";
 		}
 
 		if (Main.getInstaller().supportsShortcut(ShortcutType.QUICKLAUNCH) && settings.getShortcutQuickState()) {
-			shortcutText = shortcutText + " - Create Quick Launch shortcut\n";
+			shortcutText = shortcutText + " - Create Quick Launch shortcut<br>";
 		}
 
 		if (Main.getInstaller().supportsShortcut(ShortcutType.PROTOCOL) && settings.getShortcutProtocolState()) {
-			shortcutText = shortcutText + " - Make DMDirc handle irc:// links\n";
+			shortcutText = shortcutText + " - Make DMDirc handle irc:// links<br>";
 		}
 
 
@@ -89,14 +89,14 @@ public final class StepConfirm extends Step implements StepListener {
 
 
 		if (installLocation.isEmpty()) {
-			infoLabel.setText("You have chosen an invalid install location\n\n"
+			infoLabel.setText("You have chosen an invalid install location<br><br>"
 			                + "Please press the \"Previous\" button to go back and correct it.");
 			Main.getWizardFrame().enableNextStep(false);
 		} else {
-			infoLabel.setText("Please review your chosen settings:\n\n"
-			                + " - Install Location:\n"
-			                + "    " +installLocation+"\n"
-			                + shortcutText + "\n"
+			infoLabel.setText("Please review your chosen settings:<br><br>"
+			                + " - Install Location:<br>"
+			                + "    " +installLocation+"<br>"
+			                + shortcutText + "<br>"
 			                + "If you wish to change any of these settings, press the \"Previous\" button,"
 			                + "otherwise click \"Next\" to begin the installation");
 			Main.getWizardFrame().enableNextStep(true);
