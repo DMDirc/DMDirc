@@ -136,28 +136,18 @@ public final class Query extends MessageTarget implements
             return;
         }
 
-        if (line.indexOf('\n') > -1) {
-            for (String part : line.split("\n")) {
-                sendLine(part);
-            }
-
-            return;
-        }
-
         final ClientInfo client = server.getParser().getMyself();
 
-        if (line.length() <= getMaxLineLength()) {
-            server.getParser().sendMessage(ClientInfo.parseHost(host), window.getTranscoder().encode(line));
+        for (String part : splitLine(window.getTranscoder().encode(line))) {
+            server.getParser().sendMessage(ClientInfo.parseHost(host),
+                    part);
 
             final StringBuffer buff = new StringBuffer("querySelfMessage");
 
-            ActionManager.processEvent(CoreActionType.QUERY_SELF_MESSAGE, buff, this, line);
+            ActionManager.processEvent(CoreActionType.QUERY_SELF_MESSAGE, buff, this, part);
 
             addLine(buff, client.getNickname(), client.getIdent(),
-                    client.getHost(), window.getTranscoder().encode(line));
-        } else {
-            sendLine(line.substring(0, getMaxLineLength()));
-            sendLine(line.substring(getMaxLineLength()));
+                    client.getHost(), part);
         }
     }
 

@@ -81,6 +81,40 @@ public abstract class WritableFrameContainer extends FrameContainer {
      * @return The maximum line length for this container
      */
     public abstract int getMaxLineLength();
+
+    /**
+     * Splits the specified line into chunks that contain a number of bytes
+     * less than or equal to the value returned by {@link #getMaxLineLength()}.
+     *
+     * @param line The line to be split
+     * @return An ordered list of chunks of the desired length
+     */
+    protected List<String> splitLine(final String line) {
+        final List<String> result = new ArrayList<String>();
+
+        if (line.indexOf('\n') > -1) {
+            for (String part : line.split("\n")) {
+                result.addAll(splitLine(part));
+            }
+        } else {
+            final StringBuilder remaining = new StringBuilder(line);
+
+            while (remaining.toString().getBytes().length > getMaxLineLength()) {
+                int number = Math.min(remaining.length(), getMaxLineLength());
+
+                while (remaining.substring(0, number).getBytes().length > getMaxLineLength()) {
+                    number--;
+                }
+
+                result.add(remaining.substring(0, number));
+                remaining.delete(0, number);
+            }
+
+            result.add(remaining.toString());
+        }
+
+        return result;
+    }
     
     /**
      * Returns the number of lines that the specified string would be sent as.

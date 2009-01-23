@@ -23,10 +23,8 @@
 package com.dmdirc;
 
 import com.dmdirc.harness.TestWritableFrameContainer;
-import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.interfaces.InputWindow;
 
+import java.util.Arrays;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -50,6 +48,29 @@ public class WritableFrameContainerTest extends junit.framework.TestCase {
         assertEquals(2, res2a);
         assertEquals(2, res2b);
         assertEquals(2, res2c);        
+    }
+
+    @Test
+    public void testSplitLine() {
+        final WritableFrameContainer container10 = new TestWritableFrameContainer(10);
+        final String[][][] tests = new String[][][]{
+            {{""}, {""}},
+            {{"0123456789"}, {"0123456789"}},
+            {{"01234567890"}, {"0123456789", "0"}},
+            {{"012345678→"}, {"012345678","→"}},
+            {{"0123456→"}, {"0123456→"}},
+            {{"01→2345678"}, {"01→23456","78"}},
+            {{"01→23456\n78"}, {"01→23456","78"}},
+            {{"01\n→2345678"}, {"01","→2345678"}},
+            {{"→→→00"}, {"→→→0", "0"}},
+        };
+
+        for (String[][] test : tests) {
+            final String[] res = container10.splitLine(test[0][0]).toArray(new String[0]);
+            assertTrue("'" + test[0][0] + "' → "
+                    + Arrays.toString(res) + " (expected: " + Arrays.toString(test[1]) + ")",
+                    Arrays.equals(res, test[1]));
+        }
     }
 
 }

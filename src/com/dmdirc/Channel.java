@@ -163,30 +163,19 @@ public final class Channel extends MessageTarget
             return;
         }
 
-        if (line.indexOf('\n') > -1) {
-            for (String part : line.split("\n")) {
-                sendLine(part);
-            }
-
-            return;
-        }
-
         final ClientInfo me = server.getParser().getMyself();
         final String[] details = getDetails(channelInfo.getUser(me), showColours);
 
-        if (line.length() <= getMaxLineLength()) {
+        for (String part : splitLine(window.getTranscoder().encode(line))) {
             final StringBuffer buff = new StringBuffer("channelSelfMessage");
 
             ActionManager.processEvent(CoreActionType.CHANNEL_SELF_MESSAGE, buff,
-                    this, channelInfo.getUser(me), line);
+                    this, channelInfo.getUser(me), part);
 
             addLine(buff, details[0], details[1], details[2], details[3],
-                    window.getTranscoder().encode(line), channelInfo);
+                    part, channelInfo);
 
-            channelInfo.sendMessage(window.getTranscoder().encode(line));
-        } else {
-            sendLine(line.substring(0, getMaxLineLength()));
-            sendLine(line.substring(getMaxLineLength()));
+            channelInfo.sendMessage(part);
         }
     }
 
