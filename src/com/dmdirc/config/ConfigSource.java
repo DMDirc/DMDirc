@@ -62,7 +62,9 @@ public abstract class ConfigSource {
      * @param option The name of the option
      * @param fallback Value to use if the option isn't set
      * @return The value of the option
+     * @deprecated Fallback should be specified in configs
      */
+    @Deprecated
     public String getOption(final String domain, final String option,
             final String fallback) {
         return hasOption(domain, option) ? getOption(domain, option) : fallback;
@@ -75,7 +77,9 @@ public abstract class ConfigSource {
      * @param option The name of the option
      * @param fallback Value to use if the option isn't set
      * @return The value of the option
+     * @deprecated Fallback should be specified in configs
      */
+    @Deprecated
     public char getOptionChar(final String domain, final String option,
             final char fallback) {
         
@@ -97,7 +101,9 @@ public abstract class ConfigSource {
      * @param option The name of the option
      * @param fallback The colour that should be used in case of error
      * @return The colour representation of the option
+     * @deprecated Fallback should be specified in configs
      */
+    @Deprecated
     public Color getOptionColour(final String domain, final String option,
             final Color fallback) {
         if (!hasOption(domain, option)) {
@@ -133,7 +139,9 @@ public abstract class ConfigSource {
      * @param option The name of the option
      * @param fallback The value to use if the config isn't value
      * @return The boolean representation of the option
+     * @deprecated Fallback should be specified in configs
      */
+    @Deprecated
     public boolean getOptionBool(final String domain, final String option,
             final boolean fallback) {
         return hasOption(domain, option) ?
@@ -182,7 +190,9 @@ public abstract class ConfigSource {
      * @param option The name of the option
      * @param fallback The value to use if the config isn't valud
      * @return The integer representation of the option
+     * @deprecated Fallback should be specified in configs
      */
+    @Deprecated
     public int getOptionInt(final String domain, final String option,
             final int fallback) {
         if (!hasOption(domain, option)) {
@@ -200,6 +210,18 @@ public abstract class ConfigSource {
         }
 
         return res;
+    }
+
+    /**
+     * Retrieves an integral representation of the specified option.
+     *
+     * @param domain The domain of the option
+     * @param option The name of the option
+     * @throws NumberFormatException If the setting can't be parsed
+     * @return The integer representation of the option
+     */
+    public int getOptionInt(final String domain, final String option) {
+        return Integer.parseInt(getOption(domain, option).trim());
     }
 
 }
