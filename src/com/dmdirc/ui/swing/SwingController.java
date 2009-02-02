@@ -63,6 +63,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import net.miginfocom.layout.PlatformDefaults;
 
 /**
  * Controls the main swing UI.
@@ -411,6 +412,10 @@ public final class SwingController implements UIController {
             Logger.userError(ErrorLevel.LOW, "Unable to set UI Settings");
         } catch (ClassNotFoundException ex) {
             Logger.userError(ErrorLevel.LOW, "Unable to set UI Settings");
+        }
+
+        if ("Metal".equals(UIManager.getLookAndFeel().getName())) {
+            PlatformDefaults.setPlatform(PlatformDefaults.WINDOWS_XP);
         }
 
         Toolkit.getDefaultToolkit().getSystemEventQueue().
