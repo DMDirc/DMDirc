@@ -6,6 +6,7 @@
 
     <import file="nbproject/build-impl.xml"/>
     <import file="build-installer.xml"/>
+    <import file="build-jar.xml"/>
     <import file="build-plugins.xml"/>
     <import file="build-reports.xml"/>
     <import file="build-svn.xml"/>
@@ -14,5 +15,6 @@
     <target name="-post-compile" depends="-unsvn, build-plugins"/>
     <target name="-pre-compile" depends="-addsvn"/>
     <target name="-post-test-run" depends="-do-test-reports"/>
+    <target name="-post-jar" depends="-addjarlibs"/>
 
 </project>
