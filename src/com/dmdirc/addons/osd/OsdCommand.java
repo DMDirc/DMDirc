@@ -20,55 +20,74 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.redirectplugin;
+package com.dmdirc.addons.osd;
 
-import com.dmdirc.MessageTarget;
-import com.dmdirc.Server;
-import com.dmdirc.commandparser.commands.ChatCommand;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
-import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.ui.messages.Styliser;
+
 import java.util.List;
 
 /**
- * The redirect command allows the user to redirect the output from another
- * command that would normally echo results locally to a query or channel
- * window instead.
- *
- * @author Chris
+ * The osd command shows an on screen message.
+ * @author chris
  */
-public class RedirectCommand extends ChatCommand implements IntelligentCommand {
+public final class OsdCommand extends GlobalCommand implements IntelligentCommand {
     
-    public RedirectCommand() {
+    /**
+     * Creates a new instance of OsdCommand.
+     */
+    public OsdCommand() {
+        super();
+        
+        CommandManager.registerCommand(this);
     }
     
     /** {@inheritDoc} */
-    public void execute(final InputWindow origin, final Server server,
-            final MessageTarget target, final boolean isSilent, final String... args) {
-        target.getFrame().getCommandParser().parseCommand(new FakeInputWindow(target),
-                implodeArgs(args));
+    @Override
+    public void execute(final InputWindow origin, final boolean isSilent,
+            final String... args) {
+        if (args.length > 0 && "--close".equalsIgnoreCase(args[0])) {
+            OsdWindow.closeAll();
+        } else {
+            new OsdWindow(Styliser.stipControlCodes(implodeArgs(args)), false);
+        }
     }
     
-    /** {@inheritDoc} */
+    /** {@inheritDoc}. */
+    @Override
     public String getName() {
-        return "redirect";
+        return "osd";
     }
     
-    /** {@inheritDoc} */
+    /** {@inheritDoc}. */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
-    /** {@inheritDoc} */
+    /** {@inheritDoc}. */
+    @Override
     public String getHelp() {
-        return "redirect <command> - sends the output of the command to a channel or query window";
+        return "osd --close - closes all OSD windows\n" +
+                "osd <message> - show the specified message in an OSD window";
     }
 
     /** {@inheritDoc} */
     @Override
     public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
-        return TabCompleter.getIntelligentResults(arg, previousArgs, 0);
-    }
+        final AdditionalTabTargets res = new AdditionalTabTargets();
+        
+        if (arg == 0) {
+            res.add("--close");
+        } else if (arg > 0 && previousArgs.get(0).equals("--close")) {
+            res.excludeAll();
+        }
+        
+        return res;
+    } 
     
 }

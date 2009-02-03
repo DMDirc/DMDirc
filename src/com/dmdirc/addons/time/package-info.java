@@ -20,40 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.timeplugin;
-
-import com.dmdirc.actions.interfaces.ActionMetaType;
-
-import java.util.Calendar;
-
 /**
- * Encapsulates the meta types used by the various time actions.
- * @author chris
+ * Provides time related actions and commands.
  */
-public enum TimeActionMetaType implements ActionMetaType {
-    
-    /** Time type. */
-    TIME_TIME {
-        /** {@inheritDoc} */
-        public int getArity() { return 1; }
-        /** {@inheritDoc} */
-        public Class[] getArgTypes() { return new Class[]{Calendar.class}; }
-        /** {@inheritDoc} */
-        public String[] getArgNames() { return new String[]{"Date"}; }
-    };
-    
-    /** {@inheritDoc} */
-    public abstract int getArity();
-    
-    /** {@inheritDoc} */
-    public abstract Class[] getArgTypes();
-    
-    /** {@inheritDoc} */
-    public abstract String[] getArgNames();
-    
-    /** {@inheritDoc} */
-    public String getGroup() {
-        return "Time Events";
-    }    
-    
-}
+package com.dmdirc.addons.time;

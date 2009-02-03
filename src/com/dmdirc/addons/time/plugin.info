@@ -1,0 +1,11 @@
+mainclass=com.dmdirc.addons.time.TimePlugin
+friendlyversion=0.2
+author=Chris <chris@dmdirc.com>
+description=Provides time-based actions and commands
+name=time
+nicename=Time Plugin
+minversion=0
+persistent-com.dmdirc.addons.time.TimeActionMetaType=true
+persistent-com.dmdirc.addons.time.TimeActionMetaType$1=true
+persistent-com.dmdirc.addons.time.TimeActionType=true
+addonid=6

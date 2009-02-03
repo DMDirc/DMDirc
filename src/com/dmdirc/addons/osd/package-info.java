@@ -20,37 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.redirectplugin;
-
-import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.plugins.Plugin;
-    
-
 /**
- * The redirect plugin allows the suer to redirect the output of commands that
- * would normally echo their results locally to a channel or chat window instead.
- * 
- * @author chris
+ * A simple OSD window and command.
  */
-public final class RedirectPlugin extends Plugin {
-    
-    private final RedirectCommand command;
-    
-    /** Creates a new system tray plugin. */
-    public RedirectPlugin() {
-        super();
-        
-        command = new RedirectCommand();
-    }
-    
-    /** {@inheritDoc} */
-    public void onLoad() {
-        CommandManager.registerCommand(command);
-    }
-    
-    /** {@inheritDoc}. */
-    public void onUnload() {
-        CommandManager.unregisterCommand(command);
-    }
-    
-}
+package com.dmdirc.addons.osd;

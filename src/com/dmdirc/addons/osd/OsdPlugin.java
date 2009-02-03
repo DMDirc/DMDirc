@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.osdplugin;
+package com.dmdirc.addons.osd;
 
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.IdentityManager;

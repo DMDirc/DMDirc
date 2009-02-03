@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.redirectplugin;
+package com.dmdirc.addons.redirect;
 
 import com.dmdirc.MessageTarget;
 import com.dmdirc.WritableFrameContainer;
