@@ -683,6 +683,14 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			if (service != null) {
 				// Service is known, check that at least 1 plugin that provides it is loaded
 				for (PluginInfo plugin : service.getProviders()) {
+					if (plugin.isLoaded()) {
+						return true;
+					}
+				}
+				
+				// If none of the plugins that provide the service are loaded, load the
+				// first one that registered itself as the provider
+				for (PluginInfo plugin : service.getProviders()) {
 					if (!plugin.isLoaded()) {
 						plugin.loadPlugin();
 						if (plugin.isLoaded()) {
