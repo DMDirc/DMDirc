@@ -47,7 +47,7 @@ import java.util.TimerTask;
 import java.net.URL;
 import java.net.URISyntaxException;
 
-public class PluginInfo implements Comparable<PluginInfo> {
+public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	/** Plugin Meta Data */
 	private ConfigFile metaData = null;
 	/** URL that this plugin was loaded from */
@@ -682,18 +682,18 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			final Service service = Service.getService(type, name, false);
 			if (service != null) {
 				// Service is known, check that at least 1 plugin that provides it is loaded
-				for (PluginInfo plugin : service.getProviders()) {
-					if (plugin.isLoaded()) {
+				for (ServiceProvider provider : service.getProviders()) {
+					if (!provider.isActive()) {
 						return true;
 					}
 				}
 				
 				// If none of the plugins that provide the service are loaded, load the
 				// first one that registered itself as the provider
-				for (PluginInfo plugin : service.getProviders()) {
-					if (!plugin.isLoaded()) {
-						plugin.loadPlugin();
-						if (plugin.isLoaded()) {
+				for (ServiceProvider provider : service.getProviders()) {
+					if (!provider.isActive()) {
+						provider.activateServices();
+						if (provider.isActive()) {
 							return true;
 						}
 					}
@@ -702,6 +702,25 @@ public class PluginInfo implements Comparable<PluginInfo> {
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Is this provider active at this time.
+	 *
+	 * @return true if the provider is able to provide its services
+	 */
+	public final boolean isActive() { return isLoaded(); }
+	
+	/** Activate the services. */
+	public void activateServices() { loadPlugin(); }
+
+	/**
+	 * Get a list of services provided by this provider.
+	 *
+	 * @return A list of services provided by this provider.
+	 */
+	public List<Service> getServices() {
+		return new ArrayList<Service>(provides);
 	}
 
 	/**

@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Defines a service provided by a plugin.
+ * Defines a service provided by a ServiceProvider.
  */
 public class Service {
 	/** Service Type. */
@@ -39,8 +39,8 @@ public class Service {
 	/** Map of services. */
 	private final static Map<String, Map<String, Service>> services = new HashMap<String, Map<String, Service>>();
 	
-	/** List of plugins that implement this service. */
-	private List<PluginInfo> plugins = new ArrayList<PluginInfo>();
+	/** List of ServiceProviders that implement this service. */
+	private List<ServiceProvider> serviceproviders = new ArrayList<ServiceProvider>();
 	
 	/**
 	 * Create a new Service
@@ -85,30 +85,30 @@ public class Service {
 	}
 	
 	/**
-	 * Add the given plugin as a provider for this service.
+	 * Add the given ServiceProvider as a provider for this service.
 	 *
-	 * @param plugin PluginInfo that provides this service
+	 * @param provider ServiceProvider that provides this service
 	 */
-	public void addProvider(final PluginInfo plugin) {
-		plugins.add(plugin);
+	public void addProvider(final ServiceProvider provider) {
+		serviceproviders.add(provider);
 	}
 	
 	/**
-	 * Remove the given plugin as a provider for this service.
+	 * Remove the given ServiceProvider as a provider for this service.
 	 *
-	 * @param plugin PluginInfo that no longer provides this service
+	 * @param provider ServiceProvider that no longer provides this service
 	 */
-	public void delProvider(final PluginInfo plugin) {
-		plugins.remove(plugin);
+	public void delProvider(final ServiceProvider provider) {
+		serviceproviders.remove(provider);
 	}
 	
 	/**
-	 * Remove the given plugin as a provider for this service.
+	 * Get a list of ServiceProviders for this service
 	 *
-	 * @return List of PluginInfos that provide this service
+	 * @return List of ServiceProvider that provide this service
 	 */
-	public List<PluginInfo> getProviders() {
-		return new ArrayList<PluginInfo>(plugins);
+	public List<ServiceProvider> getProviders() {
+		return new ArrayList<ServiceProvider>(serviceproviders);
 	}
 	
 	/**
