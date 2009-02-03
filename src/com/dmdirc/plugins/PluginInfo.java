@@ -75,6 +75,9 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	
 	/** Is this plugin using a migrated config? */
 	private boolean migrated = false;
+	
+	/** List of services we provide. */
+	private final List<Service> provides = new ArrayList<Service>();
 
 	/**
 	 * Create a new PluginInfo.
@@ -212,6 +215,31 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	}
 	
 	/**
+	 * Update provides list.
+	 */
+	private void updateProvides() {
+		// Remove us from any existing provides lists.
+		for (Service service : provides) {
+			service.delProvider(this);
+		}
+		provides.clear();
+		
+		// Get services provided by this plugin
+		final List<String> providesList = metaData.getFlatDomain("provides");
+		if (providesList != null) {
+			for (String item : providesList) {
+				final String[] bits = item.split(" ");
+				final String name = bits[0];
+				final String type = (bits.length > 1) ? bits[1] : "misc";
+				
+				final Service service = Service.getService(type, name, true);
+				service.addProvider(this);
+				provides.add(service);
+			}
+		}
+	}
+	
+	/**
 	 * Create a new PluginInfo.
 	 *
 	 * @param url URL to file that this plugin is stored in.
@@ -298,6 +326,8 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			lastError = "One or more requirements not met ("+requirementsError+")";
 			throw new PluginException("Plugin "+filename+" was not loaded. "+lastError);
 		}
+		
+		updateProvides();
 	}
 
 	/**
@@ -318,6 +348,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 				}
 			}
 			updateMetaData();
+			updateProvides();
 		} catch (IOException ioe) {
 		}
 	}
@@ -328,7 +359,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 *
 	 * @return true if metaData was reloaded ok, else false.
 	 */
-	public boolean updateMetaData() {
+	private boolean updateMetaData() {
 		// Force a new resourcemanager just incase.
 		try {
 			final ResourceManager res = getResourceManager(true);
@@ -371,7 +402,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 		if (myResourceManager == null || forceNew) {
 			myResourceManager = ResourceManager.getResourceManager("jar://"+getFullFilename());
 			
-			// Clear the resourcemanager in 10 seconds to stop us holding the file open 
+			// Clear the resourcemanager in 10 seconds to stop us holding the file open
 			new Timer(filename+"-resourcemanagerTimer").schedule(new TimerTask(){
 				public void run() {
 					myResourceManager = null;
@@ -451,7 +482,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 * to test the name, version and architecture of the OS, respectively.
 	 * On failure, the requirementsError field will contain a user-friendly
 	 * error message.
-	 * 
+	 *
 	 * @param desired The desired OS requirements
 	 * @param actualName The actual name of the OS
 	 * @param actualVersion The actual version of the OS
@@ -486,7 +517,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 	 * UIController to test what UI is currently in use.
 	 * On failure, the requirementsError field will contain a user-friendly
 	 * error message.
-	 * 
+	 *
 	 * @param desired The desired UI requirements
 	 * @param actual The package of the current UI in use.
 	 * @return True if the test passes, false otherwise
@@ -608,7 +639,7 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			return true;
 		}
 		
-		final String uiPackage;
+/*		final String uiPackage;
 		if (Main.getUI().getClass().getPackage() != null) {
 			uiPackage = Main.getUI().getClass().getPackage().getName();
 		} else {
@@ -618,20 +649,51 @@ public class PluginInfo implements Comparable<PluginInfo> {
 			} else {
 				uiPackage = uiController;
 			}
-		}
+		} */
 		
 		if (!checkMinimumVersion(getMinVersion(), Main.SVN_REVISION) ||
 		    !checkMaximumVersion(getMaxVersion(), Main.SVN_REVISION) ||
 		    !checkOS(getKeyValue("requires", "os", ""), System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch")) ||
 		    !checkFiles(getKeyValue("requires", "files", "")) ||
-		    !checkUI(getKeyValue("requires", "ui", ""), uiPackage) ||
-		    !checkPlugins(getKeyValue("requires", "plugins", ""))
+		    !checkPlugins(getKeyValue("requires", "plugins", "")) ||
+		    !checkServices(getKeyValue("requires", "services", ""))
 		    ) {
 			return false;
 		}
 		
 		// All requirements passed, woo \o
 		return true;
+	}
+	
+	/**
+	 * Check if the services required by this plugin are available.
+	 *
+	 * @param services Required services
+	 * @return true if all services are available
+	 */
+	private boolean checkServices(final String services) {
+		if (services == null || services.isEmpty()) { return true; }
+		
+		for (String requirement : services.split(",")) {
+			final String[] bits = requirement.split(" ");
+			final String name = bits[0];
+			final String type = (bits.length > 1) ? bits[1] : "misc";
+			
+			final Service service = Service.getService(type, name, false);
+			if (service != null) {
+				// Service is known, check that at least 1 plugin that provides it is loaded
+				for (PluginInfo plugin : service.getProviders()) {
+					if (!plugin.isLoaded()) {
+						plugin.loadPlugin();
+						if (plugin.isLoaded()) {
+							return true;
+						}
+					}
+				}
+			}
+		}
+		
+		return false;
 	}
 
 	/**
