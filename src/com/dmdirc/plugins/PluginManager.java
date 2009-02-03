@@ -41,6 +41,7 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 public class PluginManager implements ActionListener {
 	/** List of known plugins. */
@@ -55,6 +56,9 @@ public class PluginManager implements ActionListener {
 	/** Possible plugins available during autoload. */
 	private List<PluginInfo> possible = null;
 	
+	/** Map of services. */
+	private final Map<String, Map<String, Service>> services = new HashMap<String, Map<String, Service>>();
+	
 	/**
 	 * Creates a new instance of PluginManager.
 	 */
@@ -63,7 +67,38 @@ public class PluginManager implements ActionListener {
 		myDir = Main.getConfigDir() + "plugins" + fs;
 		ActionManager.addListener(this, CoreActionType.CLIENT_PREFS_OPENED, CoreActionType.CLIENT_PREFS_CLOSED);
 	}
-
+	
+	/**
+	 * Get a service object for the given name/type.
+	 *
+	 * @param type Type of this service
+	 * @param name Name of this service
+	 * @param create If the requested service doesn't exist, should it be created?
+	 * @return The service requested, or null if service wasn't found and create wasn't specifed
+	 */
+	public Service getService(final String type, final String name, final boolean create) {
+		// Find the type first
+		if (services.containsKey(type)) {
+			final Map<String, Service> map = services.get(type);
+			// Now the name
+			if (map.containsKey(name)) {
+				return map.get(name);
+			} else if (create) {
+				final Service service = new Service(type, name);
+				map.put(name, service);
+				return service;
+			}
+		} else if (create) {
+			final Map<String, Service> map = new HashMap<String, Service>();
+			final Service service = new Service(type, name);
+			map.put(name, service);
+			services.put(type, map);
+			return service;
+		}
+		
+		return null;
+	}
+	
 	/**
 	 * Autoloads plugins.
 	 */

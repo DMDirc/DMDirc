@@ -232,7 +232,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 				final String name = bits[0];
 				final String type = (bits.length > 1) ? bits[1] : "misc";
 				
-				final Service service = Service.getService(type, name, true);
+				final Service service = PluginManager.getPluginManager().getService(type, name, true);
 				service.addProvider(this);
 				provides.add(service);
 			}
@@ -679,7 +679,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 			final String name = bits[0];
 			final String type = (bits.length > 1) ? bits[1] : "misc";
 			
-			final Service service = Service.getService(type, name, false);
+			final Service service = PluginManager.getPluginManager().getService(type, name, false);
 			if (service != null) {
 				// Service is known, check that at least 1 plugin that provides it is loaded
 				for (ServiceProvider provider : service.getProviders()) {
@@ -1092,7 +1092,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 *
 	 * @return Description of plugin
 	 */
-	public String getDescription() { return getKeyValue("description", "author", ""); }
+	public String getDescription() { return getKeyValue("metadata", "description", ""); }
 
 	/**
 	 * Get the minimum dmdirc version required to run the plugin.
