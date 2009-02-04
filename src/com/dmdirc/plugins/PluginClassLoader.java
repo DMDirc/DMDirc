@@ -33,11 +33,31 @@ public class PluginClassLoader extends ClassLoader {
 	/**
 	 * Create a new PluginClassLoader.
 	 *
-	 * @param directory Directory where plugins are stored.
+	 * @param info PluginInfo this classloader will be for
 	 */
 	public PluginClassLoader(final PluginInfo info) {
 		super();
 		pluginInfo = info;
+	}
+	
+	/**
+	 * Create a new PluginClassLoader.
+	 *
+	 * @param info PluginInfo this classloader will be for
+	 * @param parent Parent ClassLoader
+	 */
+	private PluginClassLoader(final PluginInfo info, final PluginClassLoader parent) {
+		super(parent);
+		pluginInfo = info;
+	}
+	
+	/**
+	 * Get a PluginClassLoader that is a subclassloader of this one.
+	 *
+	 * @param info PluginInfo the new classloader will be for
+	 */
+	public PluginClassLoader getSubClassLoader(final PluginInfo info) {
+		return (new PluginClassLoader(info, this));
 	}
 	
 	/**

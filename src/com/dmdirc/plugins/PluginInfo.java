@@ -78,6 +78,9 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	
 	/** List of services we provide. */
 	private final List<Service> provides = new ArrayList<Service>();
+	
+	/** List of children of this plugin. */
+	private final List<PluginInfo> children = new ArrayList<PluginInfo>();
 
 	/**
 	 * Create a new PluginInfo.
@@ -797,6 +800,24 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	}
 
 	/**
+	 * Add the given Plugin as a child of this plugin.
+	 *
+	 * @param child Child to add
+	 */
+	public void addChild(final PluginInfo child) {
+		children.add(child);
+	}
+	
+	/**
+	 * Remove the given Plugin as a child of this plugin.
+	 *
+	 * @param child Child to remove
+	 */
+	public void delChild(final PluginInfo child) {
+		children.remove(child);
+	}
+
+	/**
 	 * Load the given classname.
 	 *
 	 * @param classname Class to load
@@ -804,7 +825,19 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	private void loadClass(final String classname) {
 		try {
 			if (classloader == null) {
-				classloader = new PluginClassLoader(this);
+				if (getKeyValue("requires", "parent", "").isEmpty()) {
+					classloader = new PluginClassLoader(this);
+				} else {
+					final String parentName = getKeyValue("requires", "parent", "");
+					final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(parentName, true);
+					if (pi == null) {
+						lastError = "Required parent '"+parentName+"' was not found";
+						return;
+					} else {
+						pi.addChild(this);
+						classloader = pi.getPluginClassLoader().getSubClassLoader(this);
+					}
+				}
 			}
 
 			// Don't reload a class if its already loaded.
@@ -873,8 +906,31 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 * Unload the plugin if possible.
 	 */
 	public void unloadPlugin() {
+		unloadPlugin(false);
+	}
+	
+	/**
+	 * Unload the plugin if possible.
+	 *
+	 * @param parentUnloading is our parent already unloading? (if so, don't call delChild)
+	 */
+	private void unloadPlugin(final boolean parentUnloading) {
 		if (!isPersistent() && (isLoaded() || isTempLoaded())) {
 			if (!isTempLoaded()) {
+				// Unload all children
+				for (PluginInfo child : children) {
+					child.unloadPlugin(true);
+				}
+				// Delete ourself as a child of our parent.
+				if (!parentUnloading && !getKeyValue("requires", "parent", "").isEmpty()) {
+					final String parentName = getKeyValue("requires", "parent", "");
+					final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(parentName, true);
+					if (pi != null) {
+						pi.delChild(this);
+						classloader = pi.getPluginClassLoader().getSubClassLoader(this);
+					}
+				}
+				// Now unload ourself
 				try {
 					plugin.onUnload();
 				} catch (Exception e) {
