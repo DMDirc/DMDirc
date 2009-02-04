@@ -130,6 +130,9 @@ public class ProcessMode extends IRCProcessor {
 				else if (myParser.hChanModesOther.containsKey(cMode)) { nValue = myParser.hChanModesOther.get(cMode); bBooleanMode = false; }
 				else if (myParser.hPrefixModes.containsKey(cMode)) { 
 					// (de) OP/Voice someone
+					if (sModestr.length <= nParam) {
+						myParser.callErrorInfo(new ParserError(ParserError.ERROR_FATAL + ParserError.ERROR_USER, "Broken Modes. Parameter required but not given.", myParser.getLastLine()));
+					}
 					sModeParam = sModestr[nParam++];
 					nValue = myParser.hPrefixModes.get(cMode);
 					callDebugInfo(IRCParser.DEBUG_INFO, "User Mode: %c / %d [%s] {Positive: %b}",cMode, nValue, sModeParam, bPositive);
@@ -170,7 +173,6 @@ public class ProcessMode extends IRCProcessor {
 					if ((bPositive || nValue == IRCParser.MODE_LIST || ((nValue & IRCParser.MODE_UNSET) == IRCParser.MODE_UNSET)) && (sModestr.length <= nParam)) {
 						myParser.callErrorInfo(new ParserError(ParserError.ERROR_FATAL + ParserError.ERROR_USER, "Broken Modes. Parameter required but not given.", myParser.getLastLine()));
 					}
-					
 					
 					if (nValue == IRCParser.MODE_LIST) {
 						// List Mode
