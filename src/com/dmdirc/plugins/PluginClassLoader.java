@@ -95,9 +95,13 @@ public class PluginClassLoader extends ClassLoader {
 	public Class<?> loadClass(final String name, final boolean askGlobal) throws ClassNotFoundException {
 		Class< ? > loadedClass = null;
 		if (getParent() instanceof PluginClassLoader) {
-			loadedClass = ((PluginClassLoader)getParent()).loadClass(name, askGlobal);
-			if (loadedClass != null) {
-				return loadedClass;
+			try {
+				loadedClass = ((PluginClassLoader)getParent()).loadClass(name, askGlobal);
+				if (loadedClass != null) {
+					return loadedClass;
+				}
+			} catch (ClassNotFoundException cnfe) {
+				/* Parent doesn't have the class, load ourself */
 			}
 		}
 		
