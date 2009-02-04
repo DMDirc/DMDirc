@@ -40,9 +40,16 @@ public class Process004005 extends IRCProcessor {
 			myParser.h005Info.put("003IRCD",token[token.length-1]);
 		} else if (sParam.equals("004")) {
 			// 004
-			myParser.h005Info.put("004IRCD",token[4]);
-			myParser.h005Info.put("USERMODES",token[5]);
-			myParser.h005Info.put("USERCHANMODES",token[6]);
+			if (token.count > 4) {
+				myParser.h005Info.put("004IRCD",token[4]);
+				myParser.h005Info.put("USERMODES",token[5]);
+				myParser.h005Info.put("USERCHANMODES",token[6]);
+			} else {
+				final String[] bits = token[3].split(" ");
+				myParser.h005Info.put("004IRCD",bits[1]);
+				myParser.h005Info.put("USERMODES",bits[2]);
+				myParser.h005Info.put("USERCHANMODES",bits[3]);
+			}
 			myParser.parseUserModes();
 		} else if (sParam.equals("005")) {
 			// 005
