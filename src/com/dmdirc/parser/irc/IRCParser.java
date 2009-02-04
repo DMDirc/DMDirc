@@ -1575,6 +1575,9 @@ public class IRCParser implements Runnable {
 			try {
 				result = Integer.parseInt(h005Info.get("MAXBANS"));
 			} catch (NumberFormatException nfe) { result = -1; }
+		} else if (result == -2 && getIRCD(true).equalsIgnoreCase("weircd")) {
+			// -_-
+			result = 6;
 		} else if (result == -2) {
 			result = -1;
 			callDebugInfo(DEBUG_INFO, "Failed");
@@ -1770,6 +1773,7 @@ public class IRCParser implements Runnable {
 				else if (version.matches("(?i).*austhex.*")) { return "austhex"; }
 				else if (version.matches("(?i).*austirc.*")) { return "austirc"; }
 				else if (version.matches("(?i).*ratbox.*")) { return "ratbox"; }
+				else if (version.matches("(?i).*weircd.*")) { return "weircd"; }
 				else {
 					// Stupid networks/ircds go here...
 					if (sNetworkName.equalsIgnoreCase("ircnet")) { return "ircnet"; }
