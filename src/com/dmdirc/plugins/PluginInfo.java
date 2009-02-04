@@ -632,10 +632,10 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	/**
 	 * Are the requirements for this plugin met?
 	 *
-	 * @param tenuous Is this a tenuous check?
+	 * @param preliminary Is this a preliminary check?
 	 * @return true/false (Actual error if false is in the requirementsError field)
 	 */
-	public boolean checkRequirements(final boolean tenuous) {
+	public boolean checkRequirements(final boolean preliminary) {
 		if (metaData == null) {
 			// No meta-data, so no requirements.
 			return true;
@@ -657,8 +657,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 		    !checkMaximumVersion(getMaxVersion(), Main.SVN_REVISION) ||
 		    !checkOS(getKeyValue("requires", "os", ""), System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch")) ||
 		    !checkFiles(getKeyValue("requires", "files", "")) ||
-		    (!tenuous && !checkPlugins(getKeyValue("requires", "plugins", ""))) ||
-		    (!tenuous && !checkServices(getKeyValue("requires", "services", "")))
+		    (!preliminary && !checkPlugins(getKeyValue("requires", "plugins", ""))) ||
+		    (!preliminary && !checkServices(getKeyValue("requires", "services", "")))
 		    ) {
 			return false;
 		}
