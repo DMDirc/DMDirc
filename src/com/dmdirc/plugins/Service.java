@@ -49,6 +49,24 @@ public class Service {
 	}
 	
 	/**
+	 * Get the name of this service
+	 *
+	 * @return The name of this service
+	 */
+	public String getName() {
+		return name;
+	}
+	
+	/**
+	 * Get the type of this service
+	 *
+	 * @return The type of this service
+	 */
+	public String getType() {
+		return type;
+	}
+	
+	/**
 	 * Add the given ServiceProvider as a provider for this service.
 	 *
 	 * @param provider ServiceProvider that provides this service
