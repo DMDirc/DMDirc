@@ -306,7 +306,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 			throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
 		}
 
-		if (checkRequirements()) {
+		if (checkRequirements(true)) {
 			final String mainClass = getMainClass().replace('.', '/')+".class";
 			if (!res.resourceExists(mainClass)) {
 				lastError = "main class file ("+mainClass+") not found in jar.";
@@ -631,9 +631,10 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	/**
 	 * Are the requirements for this plugin met?
 	 *
+	 * @param tenuous Is this a tenuous check?
 	 * @return true/false (Actual error if false is in the requirementsError field)
 	 */
-	public boolean checkRequirements() {
+	public boolean checkRequirements(final boolean tenuous) {
 		if (metaData == null) {
 			// No meta-data, so no requirements.
 			return true;
@@ -655,8 +656,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 		    !checkMaximumVersion(getMaxVersion(), Main.SVN_REVISION) ||
 		    !checkOS(getKeyValue("requires", "os", ""), System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch")) ||
 		    !checkFiles(getKeyValue("requires", "files", "")) ||
-		    !checkPlugins(getKeyValue("requires", "plugins", "")) ||
-		    !checkServices(getKeyValue("requires", "services", ""))
+		    (!tenuous && !checkPlugins(getKeyValue("requires", "plugins", ""))) ||
+		    (!tenuous && !checkServices(getKeyValue("requires", "services", "")))
 		    ) {
 			return false;
 		}
@@ -681,23 +682,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 			
 			final Service service = PluginManager.getPluginManager().getService(type, name, false);
 			if (service != null) {
-				// Service is known, check that at least 1 plugin that provides it is loaded
-				for (ServiceProvider provider : service.getProviders()) {
-					if (!provider.isActive()) {
-						return true;
-					}
-				}
-				
-				// If none of the plugins that provide the service are loaded, load the
-				// first one that registered itself as the provider
-				for (ServiceProvider provider : service.getProviders()) {
-					if (!provider.isActive()) {
-						provider.activateServices();
-						if (provider.isActive()) {
-							return true;
-						}
-					}
-				}
+				return service.activate();
 			}
 		}
 		
@@ -787,6 +772,10 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 * Load the plugin files.
 	 */
 	public void loadPlugin() {
+		if (!checkRequirements(false)) {
+			lastError = "Unable to loadPlugin, all requirements not met. ("+requirementsError+")";
+			return;
+		}
 		if (isTempLoaded()) {
 			tempLoaded = false;
 			loadRequired();
