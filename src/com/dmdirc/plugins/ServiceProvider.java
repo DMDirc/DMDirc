@@ -43,4 +43,7 @@ public interface ServiceProvider {
 	 * @return A list of services provided by this provider.
 	 */
 	List<Service> getServices();
+	
+	/** Get the name of this provider. */
+	String getProviderName();
 }

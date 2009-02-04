@@ -34,6 +34,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
+import com.dmdirc.plugins.ServiceProvider;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.updater.UpdateChecker;
@@ -295,7 +296,12 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
     private void doServices(final InputWindow origin, final boolean isSilent) {
         sendLine(origin, isSilent, FORMAT_OUTPUT, "Available Services:");
         for (Service service : PluginManager.getPluginManager().getAllServices()) {
-            sendLine(origin, isSilent, FORMAT_OUTPUT, "    "+service.toString());
+            sendLine(origin, isSilent, FORMAT_OUTPUT, "    " + service.toString());
+            for (ServiceProvider provider : service.getProviders()) {
+                sendLine(origin, isSilent, FORMAT_OUTPUT, "            "
+                        + provider.getProviderName() + " [Active: "
+                        + provider.isActive() + "]");
+            }
         }
     }
     

@@ -702,6 +702,9 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	
 	/** Activate the services. */
 	public void activateServices() { loadPlugin(); }
+	
+	/** Get the name of this provider. */
+	public String getProviderName() { return "Plugin: "+getNiceName()+" ("+getName()+" / "+getFilename()+")"; }
 
 	/**
 	 * Get a list of services provided by this provider.
