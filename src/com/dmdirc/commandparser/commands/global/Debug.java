@@ -32,6 +32,8 @@ import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.plugins.Service;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.updater.UpdateChecker;
@@ -85,6 +87,8 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
             doServerInfo(origin, isSilent);
         } else if ("benchmark".equals(args[0])) {
             doBenchmark(origin);
+        } else if ("services".equals(args[0])) {
+            doServices(origin, isSilent);
         } else if ("firstrun".equals(args[0])) {
             Main.getUI().showFirstRunWizard();
         } else if ("migration".equals(args[0])) {
@@ -282,6 +286,19 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
         }
     }
     
+    /**
+     * Shows information about all the current services available to plugins.
+     * 
+     * @param origin The window this command was executed in
+     * @param isSilent Whether this command has been silenced or not
+     */
+    private void doServices(final InputWindow origin, final boolean isSilent) {
+        sendLine(origin, isSilent, FORMAT_OUTPUT, "Available Services:");
+        for (Service service : PluginManager.getPluginManager().getAllServices()) {
+            sendLine(origin, isSilent, FORMAT_OUTPUT, "    "+service.toString());
+        }
+    }
+    
     /** {@inheritDoc} */
     @Override
     public String getName() {
@@ -322,6 +339,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
             res.add("firstrun");
             res.add("migration");
             res.add("notify");
+            res.add("services");
         } else if (arg == 1 && "error".equals(previousArgs.get(0))) {
             res.add("user");
             res.add("app");
