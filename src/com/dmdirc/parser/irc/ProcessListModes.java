@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import java.util.List;
 import java.util.LinkedList;
 import java.util.Queue;
 

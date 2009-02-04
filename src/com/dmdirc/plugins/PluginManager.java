@@ -100,6 +100,22 @@ public class PluginManager implements ActionListener {
 	}
 	
 	/**
+	 * Get a List of all services of a specifed type.
+	 *
+	 * @param type Type of service
+	 * @return The list of services requested.
+	 */
+	public List<Service> getServicesByType(final String type) {
+		// Find the type first
+		if (services.containsKey(type)) {
+			final Map<String, Service> map = services.get(type);
+			return new ArrayList<Service>(map.values());
+		}
+		
+		return new ArrayList<Service>();
+	}
+	
+	/**
 	 * Autoloads plugins.
 	 */
 	private void doAutoLoad() {

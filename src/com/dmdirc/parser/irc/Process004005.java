@@ -40,7 +40,7 @@ public class Process004005 extends IRCProcessor {
 			myParser.h005Info.put("003IRCD",token[token.length-1]);
 		} else if (sParam.equals("004")) {
 			// 004
-			if (token.count > 4) {
+			if (token.length > 4) {
 				myParser.h005Info.put("004IRCD",token[4]);
 				myParser.h005Info.put("USERMODES",token[5]);
 				myParser.h005Info.put("USERCHANMODES",token[6]);

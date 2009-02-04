@@ -567,7 +567,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 			try {
 				final DateFormat dateFormat = new SimpleDateFormat(dateFormatString);
 				dateString = dateFormat.format(new Date()).trim();
-			} catch () {
+			} catch (IllegalArgumentException iae) {
 				// Default to known good format
 				final DateFormat dateFormat = new SimpleDateFormat("[dd/MM/yyyy HH:mm:ss]");
 				dateString = dateFormat.format(new Date()).trim();
