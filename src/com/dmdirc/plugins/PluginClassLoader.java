@@ -93,6 +93,14 @@ public class PluginClassLoader extends ClassLoader {
 	 * @throws ClassNotFoundException if the class to be loaded could not be found.
 	 */
 	public Class<?> loadClass(final String name, final boolean askGlobal) throws ClassNotFoundException {
+		Class< ? > loadedClass = null;
+		if (getParent() instanceof PluginClassLoader) {
+			loadedClass = ((PluginClassLoader)getParent()).loadClass(name, askGlobal);
+			if (loadedClass != null) {
+				return loadedClass;
+			}
+		}
+		
 		ResourceManager res;
 		try {
 			res = pluginInfo.getResourceManager();
@@ -100,8 +108,6 @@ public class PluginClassLoader extends ClassLoader {
 			throw new ClassNotFoundException("Error with resourcemanager", ioe);
 		}
 	
-		Class< ? > loadedClass = null;
-
 		final String fileName = name.replace('.', '/')+".class";
 		try {
 			if (pluginInfo.isPersistent(name) || !res.resourceExists(fileName)) {
