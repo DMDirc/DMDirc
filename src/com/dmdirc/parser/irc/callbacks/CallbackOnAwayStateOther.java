@@ -57,7 +57,7 @@ public final class CallbackOnAwayStateOther extends CallbackObjectSpecific {
 			try {
 				eMethod.onAwayStateOther(myParser, client, state);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onAwayStateOther ("+e.getMessage()+")", myParser.getLastLine());
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in callback ("+e.getMessage()+")", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

@@ -67,7 +67,7 @@ public final class CallbackOnChannelMessage extends CallbackObjectSpecific {
 			try {
 				eMethod.onChannelMessage(myParser, cChannel, cChannelClient, sMessage, sHost);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onChannelMessage ("+e.getMessage()+")", myParser.getLastLine());
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in callback ("+e.getMessage()+")", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

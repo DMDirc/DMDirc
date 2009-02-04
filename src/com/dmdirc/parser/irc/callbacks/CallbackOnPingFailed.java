@@ -51,7 +51,7 @@ public final class CallbackOnPingFailed extends CallbackObject {
 			try {
 				((IPingFailed) callbackInfo.get(i)).onPingFailed(myParser);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onPingFailed ("+e.getMessage()+")", myParser.getLastLine());
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in callback ("+e.getMessage()+")", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

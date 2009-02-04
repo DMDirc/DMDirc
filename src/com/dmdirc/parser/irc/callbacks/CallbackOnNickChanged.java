@@ -54,7 +54,7 @@ public final class CallbackOnNickChanged extends CallbackObject {
 			try {
 				((INickChanged) callbackInfo.get(i)).onNickChanged(myParser, cClient, sOldNick);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onNickChanged ("+e.getMessage()+")", myParser.getLastLine());
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in callback ("+e.getMessage()+")", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

@@ -52,7 +52,7 @@ public final class CallbackOnNoticeAuth extends CallbackObject {
 			try {
 				((INoticeAuth) callbackInfo.get(i)).onNoticeAuth(myParser, data);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onNoticeAuth ("+e.getMessage()+")", myParser.getLastLine());
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in callback ("+e.getMessage()+")", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

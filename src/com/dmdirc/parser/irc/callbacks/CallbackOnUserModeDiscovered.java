@@ -54,7 +54,7 @@ public final class CallbackOnUserModeDiscovered extends CallbackObject {
 			try {
 				((IUserModeDiscovered) callbackInfo.get(i)).onUserModeDiscovered(myParser, cClient, sModes);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onUserModeDiscovered ("+e.getMessage()+")", myParser.getLastLine());
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in callback ("+e.getMessage()+")", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

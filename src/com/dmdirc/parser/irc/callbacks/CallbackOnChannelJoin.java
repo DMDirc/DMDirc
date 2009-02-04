@@ -58,7 +58,7 @@ public final class CallbackOnChannelJoin extends CallbackObjectSpecific {
 			try {
 				eMethod.onChannelJoin(myParser, cChannel, cChannelClient);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onChannelJoin ("+e.getMessage()+")", myParser.getLastLine());
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in callback ("+e.getMessage()+")", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

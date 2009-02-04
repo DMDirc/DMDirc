@@ -55,7 +55,7 @@ public final class CallbackOnUnknownCTCP extends CallbackObject {
 			try {
 				((IUnknownCTCP) callbackInfo.get(i)).onUnknownCTCP(myParser, sType, sMessage, sTarget, sHost);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onUnknownCTCP ("+e.getMessage()+")", myParser.getLastLine());
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in callback ("+e.getMessage()+")", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

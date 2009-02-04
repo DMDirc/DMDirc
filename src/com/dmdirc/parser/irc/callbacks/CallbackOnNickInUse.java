@@ -53,7 +53,7 @@ public final class CallbackOnNickInUse extends CallbackObject {
 				((INickInUse) callbackInfo.get(i)).onNickInUse(myParser, nickname);
 				bResult = true;
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onNickInUse ("+e.getMessage()+")", myParser.getLastLine());
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in callback ("+e.getMessage()+")", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

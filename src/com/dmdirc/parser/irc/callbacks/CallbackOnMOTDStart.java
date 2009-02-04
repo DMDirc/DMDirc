@@ -52,7 +52,7 @@ public final class CallbackOnMOTDStart extends CallbackObject {
 			try {
 				((IMOTDStart) callbackInfo.get(i)).onMOTDStart(myParser, data);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onMOTDStart ("+e.getMessage()+")", myParser.getLastLine());
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in callback ("+e.getMessage()+")", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
