@@ -1773,6 +1773,7 @@ public class IRCParser implements Runnable {
 				else if (version.matches("(?i).*austhex.*")) { return "austhex"; }
 				else if (version.matches("(?i).*austirc.*")) { return "austirc"; }
 				else if (version.matches("(?i).*ratbox.*")) { return "ratbox"; }
+				else if (version.matches("(?i).*euircd.*")) { return "euircd"; }
 				else if (version.matches("(?i).*weircd.*")) { return "weircd"; }
 				else {
 					// Stupid networks/ircds go here...

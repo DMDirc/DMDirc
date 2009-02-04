@@ -546,7 +546,7 @@ public final class ChannelInfo {
 	 * @param cMode Character representing mode
 	 * @return ArrayList containing ChannelListModeItem in the list, or null if mode is invalid
 	 */
-	public List<ChannelListModeItem> getListModeParam(final Character cMode) { 
+	public List<ChannelListModeItem> getListModeParam(final Character cMode) {
 		if (!myParser.hChanModesOther.containsKey(cMode) || myParser.hChanModesOther.get(cMode) != myParser.MODE_LIST) { return null; }
 		
 		if (!hListModes.containsKey(cMode)) { 

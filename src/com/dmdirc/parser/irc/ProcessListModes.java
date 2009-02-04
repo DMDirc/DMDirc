@@ -70,8 +70,8 @@ public class ProcessListModes extends IRCProcessor {
 			mode = 'g';
 			isItem = sParam.equals("941");
 		} else if (sParam.equals("344") || sParam.equals("345")) {
-			// Reop List
-			mode = 'R';
+			// Reop List, or bad words list
+			mode = (thisIRCD.equals("euircd")) ? 'w' : 'R';
 			isItem = sParam.equals("344");
 		} else if (sParam.equals(myParser.h005Info.get("LISTMODE")) || sParam.equals(myParser.h005Info.get("LISTMODEEND"))) {
 			// Support for potential future decent mode listing in the protocol
@@ -129,11 +129,16 @@ public class ProcessListModes extends IRCProcessor {
 			
 			if (!channel.getAddState(mode)) {
 				callDebugInfo(IRCParser.DEBUG_INFO, "New List Mode Batch ("+mode+"): Clearing!");
-				channel.getListModeParam(mode).clear();
+				final List<ChannelListModeItem> list = channel.getListModeParam(mode);
+				if (list == null) {
+					myParser.callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got list mode: '"+mode+"' - but channel object doesn't agree.", myParser.getLastLine()));
+				} else {
+					list.clear();
+				}
 				channel.setAddState(mode, true);
 			}
 			
-			if (token.length > (tokenStart+2)) { 
+			if (token.length > (tokenStart+2)) {
 				try { time = Long.parseLong(token[tokenStart+2]); } catch (NumberFormatException e) { time = 0; }
 			}
 			if (token.length > (tokenStart+1)) { owner = token[tokenStart+1]; }
