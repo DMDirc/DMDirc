@@ -56,6 +56,7 @@ import com.dmdirc.updater.Update;
 import com.dmdirc.util.ReturnableThread;
 
 import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import java.net.URI;
 import java.util.List;
@@ -521,6 +522,10 @@ public final class SwingController extends Plugin implements UIController {
     /** {@inheritDoc} */
     @Override
     public void onLoad() {
+        if (GraphicsEnvironment.isHeadless()) {
+            throw new IllegalStateException("Swing UI can't be run in a headless environment");
+        }
+
         Main.setUI(this);
     }
 
