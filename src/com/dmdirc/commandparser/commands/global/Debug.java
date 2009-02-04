@@ -89,7 +89,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
         } else if ("benchmark".equals(args[0])) {
             doBenchmark(origin);
         } else if ("services".equals(args[0])) {
-            doServices(origin, isSilent);
+            doServices(origin, isSilent, args);
         } else if ("firstrun".equals(args[0])) {
             Main.getUI().showFirstRunWizard();
         } else if ("migration".equals(args[0])) {
@@ -292,15 +292,18 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      * 
      * @param origin The window this command was executed in
      * @param isSilent Whether this command has been silenced or not
+     * @param args The arguments that were passed to the command
      */
-    private void doServices(final InputWindow origin, final boolean isSilent) {
+    private void doServices(final InputWindow origin, final boolean isSilent, final String[] args) {
         sendLine(origin, isSilent, FORMAT_OUTPUT, "Available Services:");
         for (Service service : PluginManager.getPluginManager().getAllServices()) {
             sendLine(origin, isSilent, FORMAT_OUTPUT, "    " + service.toString());
-            for (ServiceProvider provider : service.getProviders()) {
-                sendLine(origin, isSilent, FORMAT_OUTPUT, "            "
-                        + provider.getProviderName() + " [Active: "
-                        + provider.isActive() + "]");
+            if (args.length > 1 && args[1].equals("full")) {
+                for (ServiceProvider provider : service.getProviders()) {
+                    sendLine(origin, isSilent, FORMAT_OUTPUT, "            "
+                            + provider.getProviderName() + " [Active: "
+                            + provider.isActive() + "]");
+                }
             }
         }
     }
@@ -349,6 +352,8 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
         } else if (arg == 1 && "error".equals(previousArgs.get(0))) {
             res.add("user");
             res.add("app");
+        } else if (arg == 1 && "services".equals(previousArgs.get(0))) {
+            res.add("full");
         } else if (arg == 2 && "error".equals(previousArgs.get(0))) {
             res.add("low");
             res.add("medium");
