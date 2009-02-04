@@ -143,7 +143,7 @@ public class PluginManager implements ActionListener {
 		if (me == null) {
 			me = new PluginManager();
 			// me.doAutoLoad();
-			getPossiblePluginInfos(false);
+			me.getPossiblePluginInfos(false);
 		}
 		
 		return me;
