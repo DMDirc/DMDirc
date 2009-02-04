@@ -126,6 +126,15 @@ public class Service {
 	 * @return String representation of this service
 	 */
 	public String toString() {
-		return "Service: " + type + "->" + name;
+		final StringBuffer output = new StringBuffer();
+		output.append("Service: ");
+		output.append(type);
+		output.append("->");
+		output.append(name);
+		output.append(" (Providers: ");
+		output.append(serviceproviders.size());
+		output.append(")");
+		
+		return output.toString();
 	}
 }
