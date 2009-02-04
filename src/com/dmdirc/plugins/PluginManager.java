@@ -116,6 +116,21 @@ public class PluginManager implements ActionListener {
 	}
 	
 	/**
+	 * Get a List of all services
+	 *
+	 * @return The list of all services.
+	 */
+	public List<Service> getAllServices() {
+		// Find the type first
+		final List<Service> allServices = new ArrayList<Service>();
+		for (Map<String, Service> map : services.values()) {
+			allServices.addAll(map.values());
+		}
+		
+		return allServices;
+	}
+	
+	/**
 	 * Autoloads plugins.
 	 */
 	public void doAutoLoad() {

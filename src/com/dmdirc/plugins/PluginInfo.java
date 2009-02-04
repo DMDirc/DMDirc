@@ -423,6 +423,10 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	protected boolean checkMinimumVersion(final String desired, final int actual) {
 		int idesired;
 		
+		if (desired.isEmpty()) {
+			return true;
+		}
+		
 		try {
 			idesired = Integer.parseInt(desired);
 		} catch (NumberFormatException ex) {
