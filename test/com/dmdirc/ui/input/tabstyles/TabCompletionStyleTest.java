@@ -21,7 +21,7 @@
  */
 package com.dmdirc.ui.input.tabstyles;
 
-import com.dmdirc.ui.dummy.DummyInputWindow;
+import com.dmdirc.addons.ui_dummy.DummyInputWindow;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;

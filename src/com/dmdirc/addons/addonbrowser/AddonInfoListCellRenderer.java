@@ -22,7 +22,7 @@
 
 package com.dmdirc.addons.addonbrowser;
 
-import com.dmdirc.ui.swing.components.TextLabel;
+import com.dmdirc.addons.ui_swing.components.TextLabel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;

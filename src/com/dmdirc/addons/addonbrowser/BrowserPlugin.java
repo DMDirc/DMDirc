@@ -24,7 +24,7 @@ package com.dmdirc.addons.addonbrowser;
 
 import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.plugins.Plugin;
-import com.dmdirc.ui.swing.components.pluginpanel.PluginPanel;
+import com.dmdirc.addons.ui_swing.components.pluginpanel.PluginPanel;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;

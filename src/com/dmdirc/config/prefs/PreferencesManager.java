@@ -24,10 +24,10 @@ package com.dmdirc.config.prefs;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.prefs.validator.NumericalValidator;
-import com.dmdirc.ui.swing.components.pluginpanel.PluginPanel;
-import com.dmdirc.ui.swing.components.themepanel.ThemePanel;
-import com.dmdirc.ui.swing.dialogs.prefs.URLConfigPanel;
-import com.dmdirc.ui.swing.dialogs.prefs.UpdateConfigPanel;
+import com.dmdirc.addons.ui_swing.components.pluginpanel.PluginPanel;
+import com.dmdirc.addons.ui_swing.components.themepanel.ThemePanel;
+import com.dmdirc.addons.ui_swing.dialogs.prefs.URLConfigPanel;
+import com.dmdirc.addons.ui_swing.dialogs.prefs.UpdateConfigPanel;
 import com.dmdirc.util.ListenerList;
 
 import java.util.ArrayList;

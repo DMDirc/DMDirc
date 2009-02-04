@@ -22,7 +22,7 @@
 
 package com.dmdirc.harness;
 
-import com.dmdirc.ui.dummy.DummyInputWindow;
+import com.dmdirc.addons.ui_dummy.DummyInputWindow;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.util.MapList;
 

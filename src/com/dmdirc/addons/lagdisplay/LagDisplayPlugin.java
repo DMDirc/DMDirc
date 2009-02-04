@@ -37,7 +37,7 @@ import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.interfaces.Window;
-import com.dmdirc.ui.swing.UIUtilities;
+import com.dmdirc.addons.ui_swing.UIUtilities;
 
 import java.awt.Color;
 import java.awt.Component;

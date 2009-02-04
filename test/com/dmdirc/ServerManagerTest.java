@@ -24,8 +24,8 @@ package com.dmdirc;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.harness.parser.TestParserFactory;
-import com.dmdirc.ui.dummy.DummyController;
-import com.dmdirc.ui.dummy.DummyQueryWindow;
+import com.dmdirc.addons.ui_dummy.DummyController;
+import com.dmdirc.addons.ui_dummy.DummyQueryWindow;
 
 import java.util.ArrayList;
 

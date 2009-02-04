@@ -27,7 +27,7 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.harness.TestActionListener;
 import com.dmdirc.harness.parser.TestParserFactory;
-import com.dmdirc.ui.dummy.DummyController;
+import com.dmdirc.addons.ui_dummy.DummyController;
 import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;

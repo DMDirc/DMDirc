@@ -22,9 +22,9 @@
 
 package com.dmdirc.addons.nowplaying;
 
-import com.dmdirc.ui.swing.components.substitutions.Substitution;
-import com.dmdirc.ui.swing.components.substitutions.SubstitutionLabel;
-import com.dmdirc.ui.swing.components.substitutions.SubstitutionsPanel;
+import com.dmdirc.addons.ui_swing.components.substitutions.Substitution;
+import com.dmdirc.addons.ui_swing.components.substitutions.SubstitutionLabel;
+import com.dmdirc.addons.ui_swing.components.substitutions.SubstitutionsPanel;
 
 import java.util.ArrayList;
 import java.util.List;

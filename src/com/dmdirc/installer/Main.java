@@ -26,16 +26,16 @@ import com.dmdirc.installer.cliparser.BooleanParam;
 import com.dmdirc.installer.cliparser.CLIParser;
 import com.dmdirc.installer.cliparser.StringParam;
 import com.dmdirc.ui.IconManager;
-import com.dmdirc.ui.swing.UIUtilities;
-import com.dmdirc.ui.swing.dialogs.wizard.Step;
-import com.dmdirc.ui.swing.dialogs.wizard.WizardFrame;
-import com.dmdirc.ui.swing.dialogs.wizard.WizardListener;
+import com.dmdirc.addons.ui_swing.UIUtilities;
+import com.dmdirc.addons.ui_swing.dialogs.wizard.Step;
+import com.dmdirc.addons.ui_swing.dialogs.wizard.WizardFrame;
+import com.dmdirc.addons.ui_swing.dialogs.wizard.WizardListener;
 
-import com.dmdirc.ui.swing.installer.StepWelcome;
-import com.dmdirc.ui.swing.installer.StepError;
-import com.dmdirc.ui.swing.installer.StepSettings;
-import com.dmdirc.ui.swing.installer.StepConfirm;
-import com.dmdirc.ui.swing.installer.StepInstall;
+import com.dmdirc.addons.ui_swing.installer.StepWelcome;
+import com.dmdirc.addons.ui_swing.installer.StepError;
+import com.dmdirc.addons.ui_swing.installer.StepSettings;
+import com.dmdirc.addons.ui_swing.installer.StepConfirm;
+import com.dmdirc.addons.ui_swing.installer.StepInstall;
 
 import java.awt.Dimension;
 import java.util.ArrayList;

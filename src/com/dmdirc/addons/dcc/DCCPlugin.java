@@ -41,12 +41,12 @@ import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.swing.components.TextFrame;
+import com.dmdirc.addons.ui_swing.components.TextFrame;
 
 import com.dmdirc.addons.dcc.kde.KFileChooser;
 import com.dmdirc.addons.dcc.actions.DCCActions;
 
-import com.dmdirc.ui.swing.components.TextLabel;
+import com.dmdirc.addons.ui_swing.components.TextLabel;
 import java.io.File;
 import java.io.IOException;
 

@@ -32,9 +32,9 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.themes.ThemeManager;
-import com.dmdirc.ui.dummy.DummyController;
+import com.dmdirc.addons.ui_dummy.DummyController;
 import com.dmdirc.ui.interfaces.UIController;
-import com.dmdirc.ui.swing.SwingController;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.updater.UpdateChannel;
 import com.dmdirc.updater.UpdateChecker;
 

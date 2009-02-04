@@ -23,7 +23,7 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.swing.textpane.TextPane;
+import com.dmdirc.addons.ui_swing.textpane.TextPane;
 import java.awt.Color;
 import java.awt.font.TextAttribute;
 import java.text.AttributedCharacterIterator;

@@ -24,10 +24,10 @@ package com.dmdirc.addons.nowplaying;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesInterface;
-import com.dmdirc.ui.swing.components.TextLabel;
-import com.dmdirc.ui.swing.components.reorderablelist.ReorderableJList;
+import com.dmdirc.addons.ui_swing.components.TextLabel;
+import com.dmdirc.addons.ui_swing.components.reorderablelist.ReorderableJList;
 
-import com.dmdirc.ui.swing.components.substitutions.SubstitutionsPanel;
+import com.dmdirc.addons.ui_swing.components.substitutions.SubstitutionsPanel;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;

@@ -23,7 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.dummy.DummyController;
+import com.dmdirc.addons.ui_dummy.DummyController;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;

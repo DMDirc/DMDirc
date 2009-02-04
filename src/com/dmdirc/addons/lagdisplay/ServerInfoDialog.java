@@ -26,9 +26,9 @@ import com.dmdirc.Server;
 import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
 import com.dmdirc.ServerState;
-import com.dmdirc.ui.swing.MainFrame;
-import com.dmdirc.ui.swing.SwingController;
-import com.dmdirc.ui.swing.components.StandardDialog;
+import com.dmdirc.addons.ui_swing.MainFrame;
+import com.dmdirc.addons.ui_swing.SwingController;
+import com.dmdirc.addons.ui_swing.components.StandardDialog;
 
 import java.awt.Component;
 import java.awt.Graphics;

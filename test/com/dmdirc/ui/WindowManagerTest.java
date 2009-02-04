@@ -23,7 +23,7 @@ package com.dmdirc.ui;
 
 import com.dmdirc.harness.TestFrameManager;
 import com.dmdirc.harness.TestWritableFrameContainer;
-import com.dmdirc.ui.dummy.DummyInputWindow;
+import com.dmdirc.addons.ui_dummy.DummyInputWindow;
 import com.dmdirc.ui.interfaces.Window;
 
 import org.junit.Test;

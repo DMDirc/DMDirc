@@ -25,7 +25,7 @@ package com.dmdirc.addons.osd;
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.messages.ColourManager;
-import com.dmdirc.ui.swing.MainFrame;
+import com.dmdirc.addons.ui_swing.MainFrame;
 
 import java.awt.Color;
 import java.awt.Point;

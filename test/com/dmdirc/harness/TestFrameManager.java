@@ -23,7 +23,7 @@
 package com.dmdirc.harness;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.ui.dummy.DummyFrameManager;
+import com.dmdirc.addons.ui_dummy.DummyFrameManager;
 
 public class TestFrameManager extends DummyFrameManager {
 

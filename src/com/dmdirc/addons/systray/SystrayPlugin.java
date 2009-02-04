@@ -35,7 +35,7 @@ import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.messages.Styliser;
-import com.dmdirc.ui.swing.MainFrame;
+import com.dmdirc.addons.ui_swing.MainFrame;
 
 import java.awt.AWTException;
 import java.awt.Frame;

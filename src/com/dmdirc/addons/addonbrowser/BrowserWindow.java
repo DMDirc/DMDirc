@@ -24,8 +24,8 @@ package com.dmdirc.addons.addonbrowser;
 
 import com.dmdirc.Main;
 import com.dmdirc.addons.addonbrowser.AddonInfo.AddonType;
-import com.dmdirc.ui.swing.SwingController;
-import com.dmdirc.ui.swing.components.LoggingSwingWorker;
+import com.dmdirc.addons.ui_swing.SwingController;
+import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
 import com.dmdirc.util.ConfigFile;
 import com.dmdirc.util.InvalidConfigFileException;
 
