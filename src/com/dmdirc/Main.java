@@ -26,19 +26,19 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.DMDircExceptionHandler;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.plugins.Service;
 import com.dmdirc.ui.themes.ThemeManager;
-import com.dmdirc.addons.ui_dummy.DummyController;
 import com.dmdirc.ui.interfaces.UIController;
-import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.updater.UpdateChannel;
 import com.dmdirc.updater.UpdateChecker;
 
-import java.awt.GraphicsEnvironment;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -96,8 +96,10 @@ public final class Main {
         Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
 
         final CommandLineParser clp = new CommandLineParser(args);
-
+        
         IdentityManager.load();
+
+        final PluginManager pm = PluginManager.getPluginManager();
         
         ThemeManager.loadThemes();
 
@@ -105,13 +107,15 @@ public final class Main {
 
         CommandManager.initCommands();
 
+        loadUI(pm, IdentityManager.getGlobalConfig());
+
         getUI().initUISettings();
 
         doFirstRun();
 
         ActionManager.init();
 
-        PluginManager.getPluginManager();
+        pm.doAutoLoad();
 
         ActionManager.loadActions();
 
@@ -134,6 +138,28 @@ public final class Main {
                 IdentityManager.save();
             }
         }, "Shutdown thread"));        
+    }
+
+    protected static void loadUI(final PluginManager pm, final ConfigManager cm) {
+        final List<Service> uis = pm.getServicesByType("ui");
+        final String desired = cm.getOption("general", "ui", "swing");
+
+        // First try: go for our desired service type
+        for (Service service : uis) {
+            if (service.getName().equals(desired) && service.activate()) {
+                return;
+            }
+        }
+
+        // Second try: go for any service type
+        for (Service service : uis) {
+            if (service.activate()) {
+                return;
+            }
+        }
+
+        // Can't find any
+        throw new IllegalStateException("No UIs could be loaded");
     }
     
     /**
@@ -182,14 +208,6 @@ public final class Main {
      * @return The client's UI controller
      */
     public static UIController getUI() {
-        if (controller == null) {
-            if (GraphicsEnvironment.isHeadless()) {
-                controller = new DummyController();
-            } else {
-                controller = new SwingController();
-            }
-        }
-
         return controller;
     }
 
@@ -198,8 +216,12 @@ public final class Main {
      *
      * @param newController The new UI Controller
      */
-    public static void setUI(final UIController newController) {
-        controller = newController;
+    public static synchronized void setUI(final UIController newController) {
+        if (controller == null) {
+            controller = newController;
+        } else {
+            throw new IllegalStateException("User interface is already set");
+        }
     }
 
     /**
