@@ -29,6 +29,7 @@ import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.core.dialogs.sslcertificate.SSLCertificateDialogModel;
 import com.dmdirc.ui.interfaces.ChannelWindow;
@@ -191,6 +192,30 @@ public final class DummyController extends Plugin implements UIController {
     @Override
     public void onUnload() {
         // Do nothing?
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public PreferencesInterface getPluginPrefsPanel() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public PreferencesInterface getUpdatesPrefsPanel() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public PreferencesInterface getUrlHandlersPrefsPanel() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public PreferencesInterface getThemesPrefsPanel() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
 }

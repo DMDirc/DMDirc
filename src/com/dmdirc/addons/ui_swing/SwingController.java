@@ -25,6 +25,7 @@ package com.dmdirc.addons.ui_swing;
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
+import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
@@ -43,10 +44,14 @@ import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.addons.ui_swing.components.FeedbackNag;
 import com.dmdirc.addons.ui_swing.components.SwingStatusBar;
+import com.dmdirc.addons.ui_swing.components.pluginpanel.PluginPanel;
+import com.dmdirc.addons.ui_swing.components.themepanel.ThemePanel;
 import com.dmdirc.addons.ui_swing.dialogs.updater.SwingUpdaterDialog;
 import com.dmdirc.addons.ui_swing.dialogs.url.URLDialog;
 import com.dmdirc.addons.ui_swing.dialogs.channelsetting.ChannelSettingsDialog;
 import com.dmdirc.addons.ui_swing.dialogs.error.ErrorListDialog;
+import com.dmdirc.addons.ui_swing.dialogs.prefs.URLConfigPanel;
+import com.dmdirc.addons.ui_swing.dialogs.prefs.UpdateConfigPanel;
 import com.dmdirc.addons.ui_swing.dialogs.wizard.firstrun.SwingFirstRunWizard;
 import com.dmdirc.addons.ui_swing.dialogs.serversetting.ServerSettingsDialog;
 import com.dmdirc.addons.ui_swing.dialogs.sslcertificate.SSLCertificateDialog;
@@ -66,6 +71,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+
 import net.miginfocom.layout.PlatformDefaults;
 
 /**
@@ -510,6 +516,30 @@ public final class SwingController extends Plugin implements UIController {
         return JOptionPane.showInputDialog(prompt);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public PreferencesInterface getPluginPrefsPanel() {
+        return new PluginPanel();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public PreferencesInterface getUpdatesPrefsPanel() {
+        return new UpdateConfigPanel();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public PreferencesInterface getUrlHandlersPrefsPanel() {
+        return new URLConfigPanel();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public PreferencesInterface getThemesPrefsPanel() {
+        return new ThemePanel();
+    }
+
     /**
      * Returns the current look and feel.
      * 
@@ -534,4 +564,5 @@ public final class SwingController extends Plugin implements UIController {
     public void onUnload() {
         // Do nothing
     }
+
 }

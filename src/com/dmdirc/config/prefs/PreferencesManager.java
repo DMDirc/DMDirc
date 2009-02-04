@@ -21,13 +21,10 @@
  */
 package com.dmdirc.config.prefs;
 
+import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.prefs.validator.NumericalValidator;
-import com.dmdirc.addons.ui_swing.components.pluginpanel.PluginPanel;
-import com.dmdirc.addons.ui_swing.components.themepanel.ThemePanel;
-import com.dmdirc.addons.ui_swing.dialogs.prefs.URLConfigPanel;
-import com.dmdirc.addons.ui_swing.dialogs.prefs.UpdateConfigPanel;
 import com.dmdirc.util.ListenerList;
 
 import java.util.ArrayList;
@@ -432,7 +429,7 @@ public class PreferencesManager {
         // TODO: Abstract the panel
 
         parent.addSubCategory(new PreferencesCategory("Themes", "",
-                "category-addons", new ThemePanel()));
+                "category-addons", Main.getUI().getThemesPrefsPanel()));
     }
 
     /**
@@ -505,7 +502,7 @@ public class PreferencesManager {
         // TODO: Abstract the panel
 
         addCategory(new PreferencesCategory("Plugins", "", "category-addons",
-                new PluginPanel()));
+                Main.getUI().getPluginPrefsPanel()));
     }
 
     /**
@@ -515,7 +512,7 @@ public class PreferencesManager {
         // TODO: Abstract the panel
 
         addCategory(new PreferencesCategory("Updates", "", "category-updates",
-                new UpdateConfigPanel()));
+                Main.getUI().getUpdatesPrefsPanel()));
     }
 
     /**
@@ -526,7 +523,7 @@ public class PreferencesManager {
 
         addCategory(new PreferencesCategory("URL Handlers",
                 "Configure how DMDirc handles different types of URLs",
-                "category-urlhandlers", new URLConfigPanel()));
+                "category-urlhandlers", Main.getUI().getUrlHandlersPrefsPanel()));
     }
 
     /**

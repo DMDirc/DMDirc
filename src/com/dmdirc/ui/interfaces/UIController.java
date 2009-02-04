@@ -22,13 +22,13 @@
 
 package com.dmdirc.ui.interfaces;
 
-import com.dmdirc.CertificateManager;
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.ui.core.dialogs.sslcertificate.SSLCertificateDialogModel;
 import com.dmdirc.updater.Update;
 
@@ -185,5 +185,33 @@ public interface UIController {
      * @return The user-inputted string
      */
     String getUserInput(final String prompt);
+
+    /**
+     * Retrieves the object used to display the plugin preferences panel.
+     *
+     * @return The plugin preferences panel
+     */
+    PreferencesInterface getPluginPrefsPanel();
+
+    /**
+     * Retrieves the object used to display the updates preferences panel.
+     *
+     * @return The updates preferences panel
+     */
+    PreferencesInterface getUpdatesPrefsPanel();
+
+    /**
+     * Retrieves the object used to display the URL handlers preferences panel.
+     *
+     * @return The url handlers preferences panel
+     */
+    PreferencesInterface getUrlHandlersPrefsPanel();
+
+    /**
+     * Retrieves the object used to display the themes preferences panel.
+     *
+     * @return The themes preferences panel
+     */
+    PreferencesInterface getThemesPrefsPanel();
     
 }
