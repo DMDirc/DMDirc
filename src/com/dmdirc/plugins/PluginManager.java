@@ -118,7 +118,7 @@ public class PluginManager implements ActionListener {
 	/**
 	 * Autoloads plugins.
 	 */
-	private void doAutoLoad() {
+	public void doAutoLoad() {
 		possible = getPossiblePluginInfos(false);
 		for (String plugin : IdentityManager.getGlobalConfig().getOptionList("plugins", "autoload")) {
 			plugin = plugin.trim();
@@ -142,7 +142,8 @@ public class PluginManager implements ActionListener {
 	public static final synchronized PluginManager getPluginManager() {
 		if (me == null) {
 			me = new PluginManager();
-			me.doAutoLoad();
+			// me.doAutoLoad();
+			getPossiblePluginInfos(false);
 		}
 		
 		return me;
