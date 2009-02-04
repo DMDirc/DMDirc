@@ -278,31 +278,28 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 		try {
 			metaData = getConfigFile();
 			if (metaData == null) {
-				lastError = "plugin.info doesn't exist in jar";
+				lastError = "plugin.config doesn't exist in jar";
 				throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
 			}
 		} catch (IOException e) {
-			lastError = "plugin.info IOException: "+e.getMessage();
-			throw new PluginException("Plugin "+filename+" failed to load, plugin.info failed to open - "+e.getMessage(), e);
+			lastError = "plugin.config IOException: "+e.getMessage();
+			throw new PluginException("Plugin "+filename+" failed to load, plugin.config failed to open - "+e.getMessage(), e);
 		} catch (IllegalArgumentException e) {
-			lastError = "plugin.info IllegalArgumentException: "+e.getMessage();
-			throw new PluginException("Plugin "+filename+" failed to load, plugin.info failed to open - "+e.getMessage(), e);
+			lastError = "plugin.config IllegalArgumentException: "+e.getMessage();
+			throw new PluginException("Plugin "+filename+" failed to load, plugin.config failed to open - "+e.getMessage(), e);
 		}
 
 		if (getVersion() < 0) {
-			lastError = "Incomplete plugin.info (Missing or invalid 'version')";
+			lastError = "Incomplete plugin.config (Missing or invalid 'version')";
 			throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
 		} else if (getAuthor().isEmpty()) {
-			lastError = "Incomplete plugin.info (Missing or invalid 'author')";
+			lastError = "Incomplete plugin.config (Missing or invalid 'author')";
 			throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
 		} else if (getName().isEmpty()) {
-			lastError = "Incomplete plugin.info (Missing or invalid 'name')";
-			throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
-		} else if (getMinVersion().isEmpty()) {
-			lastError = "Incomplete plugin.info (Missing or invalid 'minversion')";
+			lastError = "Incomplete plugin.config (Missing or invalid 'name')";
 			throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
 		} else if (getMainClass().isEmpty()) {
-			lastError = "Incomplete plugin.info (Missing or invalid 'mainclass')";
+			lastError = "Incomplete plugin.config (Missing or invalid 'mainclass')";
 			throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
 		}
 
@@ -354,7 +351,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	}
 	
 	/**
-	 * Try to reload the metaData from the plugin.info file.
+	 * Try to reload the metaData from the plugin.config file.
 	 * If this fails, the old data will be used still.
 	 *
 	 * @return true if metaData was reloaded ok, else false.
@@ -966,7 +963,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
 	/**
 	 * Get the id for this plugin on the addons site.
-	 * If a plugin has been submitted to addons.dmdirc.com, and plugin.info
+	 * If a plugin has been submitted to addons.dmdirc.com, and plugin.config
 	 * contains a property addonid then this will return it.
 	 * This is used along with the version property to allow the auto-updater to
 	 * update the addon if the author submits a new version to the addons site.

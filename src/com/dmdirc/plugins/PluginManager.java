@@ -142,9 +142,7 @@ public class PluginManager implements ActionListener {
 	public static final synchronized PluginManager getPluginManager() {
 		if (me == null) {
 			me = new PluginManager();
-			for (PluginInfo pi : me.getPossiblePluginInfos(true)) {
-				System.out.println(pi);
-			}
+			me.getPossiblePluginInfos(true);
 		}
 		
 		
