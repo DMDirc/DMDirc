@@ -24,6 +24,7 @@ package com.dmdirc.addons.ui_swing;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.Main;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
@@ -50,6 +51,7 @@ import com.dmdirc.addons.ui_swing.dialogs.wizard.firstrun.SwingFirstRunWizard;
 import com.dmdirc.addons.ui_swing.dialogs.serversetting.ServerSettingsDialog;
 import com.dmdirc.addons.ui_swing.dialogs.sslcertificate.SSLCertificateDialog;
 import com.dmdirc.addons.ui_swing.dialogs.wizard.WizardListener;
+import com.dmdirc.plugins.Plugin;
 import com.dmdirc.updater.Update;
 import com.dmdirc.util.ReturnableThread;
 
@@ -68,7 +70,7 @@ import net.miginfocom.layout.PlatformDefaults;
 /**
  * Controls the main swing UI.
  */
-public final class SwingController implements UIController {
+public final class SwingController extends Plugin implements UIController {
 
     /** Singleton instance of MainFrame. */
     private static MainFrame me;
@@ -514,5 +516,17 @@ public final class SwingController implements UIController {
      */
     public static String getLookAndFeel() {
         return UIManager.getLookAndFeel().getName();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onLoad() {
+        Main.setUI(this);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onUnload() {
+        // Do nothing
     }
 }

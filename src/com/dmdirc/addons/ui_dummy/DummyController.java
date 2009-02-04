@@ -24,10 +24,12 @@ package com.dmdirc.addons.ui_dummy;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.Main;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.core.dialogs.sslcertificate.SSLCertificateDialogModel;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -46,7 +48,7 @@ import java.util.List;
 /**
  * Implements a dummy UI controller.
  */
-public final class DummyController implements UIController {
+public final class DummyController extends Plugin implements UIController {
     
     /** Main window. */
     private final MainWindow mainWindow = new DummyMainWindow();
@@ -177,6 +179,18 @@ public final class DummyController implements UIController {
     @Override
     public void showSSLCertificateDialog(final SSLCertificateDialogModel model) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onLoad() {
+        Main.setUI(this);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onUnload() {
+        // Do nothing?
     }
     
 }
