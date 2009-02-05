@@ -916,12 +916,30 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	}
 	
 	/**
+	 * Can this plugin be unloaded?
+	 * Will return false if:
+	 *   - The plugin is persistent (all its classes are loaded into the global class loader)
+	 *   - The plugin isn't currently loaded
+	 *   - The metadata key "unloadable" is set to false, no or 0
+	 *
+	 * @return true if plugin can be unloaded
+	 */
+	public boolean isUnloadable() {
+		if (isPersistent() || (!isLoaded() && !isTempLoaded()) {
+			return false;
+		} else {
+			final String unloadable = getKeyValue("metadata", "unloadable", "true");
+			return (unloadable.equalsIgnoreCase("yes") || unloadable.equalsIgnoreCase("true") || unloadable.equalsIgnoreCase("1"))
+		}
+	}
+	
+	/**
 	 * Unload the plugin if possible.
 	 *
 	 * @param parentUnloading is our parent already unloading? (if so, don't call delChild)
 	 */
 	private void unloadPlugin(final boolean parentUnloading) {
-		if (!isPersistent() && (isLoaded() || isTempLoaded())) {
+		if (isUnloadable()) {
 			if (!isTempLoaded()) {
 				// Unload all children
 				for (PluginInfo child : children) {
