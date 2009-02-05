@@ -23,10 +23,13 @@
 
 package com.dmdirc.installer.ui;
 
+import com.dmdirc.installer.ui.EtchedLineBorder.BorderSide;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.EtchedBorder;
 
 /**
  * Simple Panel representing the control buttons for a wizard.
@@ -62,9 +65,12 @@ public class WizardControlPanel extends JPanel {
         progress = new JLabel();
         updateProgressLabel();
 
+        setBorder(new EtchedLineBorder(EtchedBorder.LOWERED, BorderSide.TOP));
+        setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         add(progress);
         add(Box.createHorizontalGlue());
         add(prev);
+        add(Box.createHorizontalStrut(InstallerDialog.SMALL_GAP));
         add(next);
     }
 

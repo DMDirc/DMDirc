@@ -27,8 +27,10 @@ import com.dmdirc.installer.Settings;
 import com.dmdirc.installer.DefaultSettings;
 import com.dmdirc.installer.Installer.ShortcutType;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 
@@ -65,31 +67,53 @@ public final class StepSettings extends SwingStep implements Settings {
     public StepSettings() {
         super();
 
-        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-
         DefaultSettings defaultSettings = new DefaultSettings();
         shortcutMenu.setSelected(defaultSettings.getShortcutMenuState());
         shortcutDesktop.setSelected(defaultSettings.getShortcutDesktopState());
         shortcutQuick.setSelected(defaultSettings.getShortcutQuickState());
         shortcutProtocol.setSelected(defaultSettings.getShortcutProtocolState());
 
+        final GridBagConstraints constraints = new GridBagConstraints();
+		setLayout(new GridBagLayout());
+
+        constraints.weightx = 1.0;
+		constraints.fill = GridBagConstraints.BOTH;
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		constraints.gridwidth = 2;
         add(new TextLabel("Here you can choose options for the install." +
-                          "\n\nInstall Location: \n"));
-        add(location);
+                          "\n\nInstall Location:"), constraints);
+
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+		constraints.gridx = 1;
+        constraints.gridy = 1;
+        add(location, constraints);
+
+        constraints.gridwidth = 2;
+		constraints.gridx = 0;
+		constraints.insets = new Insets(InstallerDialog.SMALL_GAP, 0, 0, 0);
 
         if (Main.getInstaller().supportsShortcut(ShortcutType.MENU)) {
-            add(shortcutMenu);
+            constraints.gridy = (constraints.gridy + 1);
+            add(shortcutMenu, constraints);
         }
         if (Main.getInstaller().supportsShortcut(ShortcutType.DESKTOP)) {
-            add(shortcutDesktop);
+            constraints.gridy = (constraints.gridy + 1);
+            add(shortcutDesktop, constraints);
         }
         if (Main.getInstaller().supportsShortcut(ShortcutType.QUICKLAUNCH)) {
-            add(shortcutQuick);
+            constraints.gridy = (constraints.gridy + 1);
+            add(shortcutQuick, constraints);
         }
         if (Main.getInstaller().supportsShortcut(ShortcutType.PROTOCOL)) {
-            add(shortcutProtocol);
+            constraints.gridy = (constraints.gridy + 1);
+            add(shortcutProtocol, constraints);
         }
-        add(Box.createVerticalGlue());
+
+        constraints.gridy = (constraints.gridy + 1);
+		constraints.weighty = 1.0;
+		constraints.fill = GridBagConstraints.BOTH;
+        add(Box.createVerticalGlue(), constraints);
     }
 
     /** {@inheritDoc} */

@@ -27,10 +27,12 @@ import java.awt.Graphics;
 
 import javax.swing.border.EtchedBorder;
 
+import static com.dmdirc.installer.ui.InstallerDialog.SMALL_GAP;
+
 /**
  * An etched line border.
  */
-public class EtchedLineBorder extends EtchedBorder {
+class EtchedLineBorder extends EtchedBorder {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -72,10 +74,10 @@ public class EtchedLineBorder extends EtchedBorder {
                 etchType == LOWERED ? getShadowColor(c) : getHighlightColor(c));
         switch (side) {
             case TOP:
-                g.drawLine(0, 0, width - 2, 0);
+                g.drawLine(-SMALL_GAP, -SMALL_GAP, width + SMALL_GAP, -SMALL_GAP);
                 break;
             case BOTTOM:
-                g.drawLine(0, height - 1, width - 2, height - 1);
+                g.drawLine(-SMALL_GAP, height + SMALL_GAP, width + SMALL_GAP, height + SMALL_GAP);
                 break;
             default:
                 break;
@@ -85,10 +87,10 @@ public class EtchedLineBorder extends EtchedBorder {
                 etchType == LOWERED ? getHighlightColor(c) : getShadowColor(c));
         switch (side) {
             case TOP:
-                g.drawLine(0, 1, width - 2, 1);
+                g.drawLine(-SMALL_GAP, -SMALL_GAP - 1, width + SMALL_GAP, -SMALL_GAP - 1);
                 break;
             case BOTTOM:
-                g.drawLine(0, height, width - 2, height);
+                g.drawLine(-SMALL_GAP, height + SMALL_GAP - 1, width + SMALL_GAP, height + SMALL_GAP - 1);
                 break;
             default:
                 break;

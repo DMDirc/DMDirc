@@ -30,13 +30,15 @@ import com.dmdirc.util.ListenerList;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -52,24 +54,40 @@ public class InstallerDialog extends JFrame implements ActionListener {
     private final WizardPanel wizard;
     private final WizardControlPanel control;
     private final ListenerList listeners;
+    /** Small UI Gap. */
+    public static final int SMALL_GAP = 5;
 
     /**
      *
      * @param dialogTitle
      */
     public InstallerDialog(final String dialogTitle) {
+        super(dialogTitle);
         title = new TitlePanel(dialogTitle);
         wizard = new WizardPanel(this);
         control = new WizardControlPanel();
         listeners = new ListenerList();
 
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(SMALL_GAP, SMALL_GAP));
+
+
+        title.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(SMALL_GAP, SMALL_GAP,SMALL_GAP,
+                SMALL_GAP), title.getBorder()));
+        wizard.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(SMALL_GAP, SMALL_GAP,SMALL_GAP,
+                SMALL_GAP), wizard.getBorder()));
+        control.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(SMALL_GAP, SMALL_GAP,SMALL_GAP,
+                SMALL_GAP), control.getBorder()));
 
         add(title, BorderLayout.NORTH);
         add(wizard, BorderLayout.CENTER);
         add(control, BorderLayout.SOUTH);
 
-        //setIconImage(IconManager.getIconManager().getImage("icon"));
+        setIconImage(Toolkit.getDefaultToolkit().createImage(Thread.
+                currentThread().getContextClassLoader().getResource(
+                "com/dmdirc/res/icon.png")));
         setPreferredSize(new Dimension(400, 350));
         setMaximumSize(new Dimension(400, 350));
 
