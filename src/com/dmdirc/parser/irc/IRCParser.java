@@ -1775,6 +1775,7 @@ public class IRCParser implements Runnable {
 				else if (version.matches("(?i).*ratbox.*")) { return "ratbox"; }
 				else if (version.matches("(?i).*euircd.*")) { return "euircd"; }
 				else if (version.matches("(?i).*weircd.*")) { return "weircd"; }
+				else if (version.matches("(?i).*swiftirc.*")) { return "swiftirc"; }
 				else {
 					// Stupid networks/ircds go here...
 					if (sNetworkName.equalsIgnoreCase("ircnet")) { return "ircnet"; }
