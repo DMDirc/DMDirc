@@ -319,9 +319,14 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 					DCCSend send = DCCSend.findByToken(token);
 					
 					if (send == null && !dontAsk) {
-						ActionManager.processEvent(DCCActions.DCC_SEND_REQUEST, null, ((Server)arguments[0]), nickname, filename);
-						askQuestion("User "+nickname+" on "+((Server)arguments[0]).toString()+" would like to send you a file over DCC.\n\nFile: "+filename+"\n\nDo you want to continue?", "DCC Send Request", JOptionPane.YES_OPTION, type, format, arguments);
-						return;
+						if (!token.isEmpty() && !port.equals(0)) {
+							// This is a reverse DCC Send that we no longer care about.
+							return;
+						} else {
+							ActionManager.processEvent(DCCActions.DCC_SEND_REQUEST, null, ((Server)arguments[0]), nickname, filename);
+							askQuestion("User "+nickname+" on "+((Server)arguments[0]).toString()+" would like to send you a file over DCC.\n\nFile: "+filename+"\n\nDo you want to continue?", "DCC Send Request", JOptionPane.YES_OPTION, type, format, arguments);
+							return;
+						}
 					} else {
 						final boolean newSend = send == null;
 						if (newSend) {
