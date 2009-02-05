@@ -134,8 +134,4 @@ public class MainFrameTest implements UITestIface {
         window.menuItemWithPath("Server", "Server settings").requireDisabled();
     }
 
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(MainFrameTest.class);
-    }
-
 }

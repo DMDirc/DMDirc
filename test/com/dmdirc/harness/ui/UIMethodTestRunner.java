@@ -46,21 +46,7 @@ public class UIMethodTestRunner extends TestMethodRunner {
 
     @Override
     protected void runUnprotected() {
-
-        for (Method method : test.getClass().getMethods()) {
-            System.out.println(method.getName() + " --> " + method.getAnnotation(BeforeClass.class));
-            if (method.getAnnotation(BeforeClass.class) != null) {
-                try {
-                    method.invoke(test);
-                } catch (InvocationTargetException e) {
-                    addFailure(e.getCause());
-                    return;
-                } catch (Throwable e) {
-                    addFailure(e);
-                    return;
-                }
-            }
-        }
+        ((UITestIface) test).setUp();
 
         boolean retry;
         int retries = 5;
@@ -84,6 +70,13 @@ public class UIMethodTestRunner extends TestMethodRunner {
                 addFailure(e);
             }
         } while (retry);
+
+        ((UITestIface) test).tearDown();
+    }
+
+    @Override
+    public void runProtected() {
+        runUnprotected();
     }
 
 }
