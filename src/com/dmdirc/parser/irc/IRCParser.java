@@ -1016,8 +1016,8 @@ public class IRCParser implements Runnable {
 					// Freenode sends a random notice in a stupid place, others might do aswell
 					// These shouldn't cause post005 to be fired, so handle them here.
 					if (token[0].equalsIgnoreCase("NOTICE")) {
-							try { myProcessingManager.process("Notice Auth", token); } catch (ProcessorNotFoundException e) { }
-							return;
+						try { myProcessingManager.process("Notice Auth", token); } catch (ProcessorNotFoundException e) { }
+						return;
 					}
 					if (!post005) {
 						try { nParam = Integer.parseInt(token[1]); } catch (NumberFormatException e) { nParam = -1; }
@@ -1043,6 +1043,10 @@ public class IRCParser implements Runnable {
 								try { myProcessingManager.process(sParam, token); } catch (ProcessorNotFoundException e) { }
 								break;
 							}
+							// Some networks may send a NICK message if you nick change before 001
+							// Eat it up so that it isn't treated as a notice auth.
+							if (token[0].equalsIgnoreCase("NICK")) { break; }
+							
 							// Otherwise, send to Notice Auth
 							try { myProcessingManager.process("Notice Auth", token); } catch (ProcessorNotFoundException e) { }
 							break;
