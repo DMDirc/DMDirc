@@ -112,10 +112,9 @@ public abstract class DCC implements Runnable {
 	 * @throws IOException If the listen socket can't be created
 	 */
 	public void listen() throws IOException {
-		listen = true;
-
 		serverSocketSem.acquireUninterruptibly();
 		serverSocket = new ServerSocket(0, 1);
+		listen = true;
 		serverSocketSem.release();
 
 		connect();
