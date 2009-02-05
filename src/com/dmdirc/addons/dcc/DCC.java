@@ -114,9 +114,9 @@ public abstract class DCC implements Runnable {
 	public void listen() throws IOException {
 		serverSocketSem.acquireUninterruptibly();
 		serverSocket = new ServerSocket(0, 1);
-		listen = true;
 		serverSocketSem.release();
 
+		listen = true;
 		connect();
 	}
 
