@@ -925,11 +925,11 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 * @return true if plugin can be unloaded
 	 */
 	public boolean isUnloadable() {
-		if (isPersistent() || (!isLoaded() && !isTempLoaded()) {
+		if (isPersistent() || (!isLoaded() && !isTempLoaded())) {
 			return false;
 		} else {
 			final String unloadable = getKeyValue("metadata", "unloadable", "true");
-			return (unloadable.equalsIgnoreCase("yes") || unloadable.equalsIgnoreCase("true") || unloadable.equalsIgnoreCase("1"))
+			return (unloadable.equalsIgnoreCase("yes") || unloadable.equalsIgnoreCase("true") || unloadable.equalsIgnoreCase("1"));
 		}
 	}
 	
