@@ -28,6 +28,8 @@ import com.dmdirc.installer.ui.EtchedLineBorder.BorderSide;
 import java.awt.BorderLayout;
 import java.awt.Color;
 
+import java.awt.Toolkit;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
@@ -52,6 +54,9 @@ public class TitlePanel extends JPanel {
         title.setFont(title.getFont().deriveFont((float) (title.getFont().
                 getSize() * 2)));
         add(title, BorderLayout.CENTER);
+        add(new JLabel(new ImageIcon(Toolkit.getDefaultToolkit().createImage(Thread.
+                currentThread().getContextClassLoader().getResource(
+                "com/dmdirc/res/icon.png")))), BorderLayout.EAST);
         setBackground(Color.WHITE);
         setBorder(new EtchedLineBorder(EtchedBorder.RAISED, BorderSide.BOTTOM));
     }
