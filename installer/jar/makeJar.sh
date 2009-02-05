@@ -28,6 +28,13 @@ FILENAME=DMDirc
 # full name of the file to output to
 RUNNAME="${PWD}/${FILENAME}.jar"
 
+# Are we a git working copy, or SVN?
+if [ -e ".svn" ]; then
+	isSVN=1
+else
+	isSVN=0
+fi;
+
 # Go!
 echo "-----------"
 if [ -e "${RUNNAME}" ]; then
@@ -60,9 +67,14 @@ isRelease=""
 finalTag=""
 BRANCH="0"
 plugins=""
-location="../../../"
+if [ $isSVN -eq 1 ]; then
+	location="../../../"
+	current=""
+else
+	location="../../"
+	current="1"
+fi;
 jarfile=""
-current=""
 jre=""
 jrename="jre" # Filename for JRE without the .bin
 while test -n "$1"; do
@@ -109,21 +121,23 @@ else
 	jarPath="${location}"
 fi
 if [ "${isRelease}" != "" ]; then
-	if [ "${BRANCH}" != "0" ]; then
-		if [ -e "${location}/${isRelease}" ]; then
-			jarPath="${location}/${isRelease}"
+	if [ $isSVN -eq 1 ]; then
+		if [ "${BRANCH}" != "0" ]; then
+			if [ -e "${location}/${isRelease}" ]; then
+				jarPath="${location}/${isRelease}"
+			else
+				echo "Branch "${isRelease}" not found."
+				exit 1;
+			fi
 		else
-			echo "Branch "${isRelease}" not found."
-			exit 1;
-		fi
-	else
-		if [ -e "${location}/${isRelease}" ]; then
-			jarPath="${location}/${isRelease}"
-		else
-			echo "Tag "${isRelease}" not found."
-			exit 1;
-		fi
-	fi
+			if [ -e "${location}/${isRelease}" ]; then
+				jarPath="${location}/${isRelease}"
+			else
+				echo "Tag "${isRelease}" not found."
+				exit 1;
+			fi
+		fi;
+	fi	
 fi
 
 if [ "" = "${jarfile}" ]; then
@@ -133,7 +147,9 @@ if [ "" = "${jarfile}" ]; then
 		OLDPWD=${PWD}
 		cd ${jarPath}
 		if [ "${updateSVN}" = "true" ]; then
-			svn update
+			if [ $isSVN -eq 1 ]; then
+				svn update
+			fi;
 		fi
 		ant clean jar
 		if [ ! -e "dist/DMDirc.jar" ]; then

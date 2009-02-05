@@ -35,6 +35,13 @@ INTNAME="${PWD}/${INTNAME}"
 # Get 7zip path
 ZIP=`which 7z`
 
+# Are we a git working copy, or SVN?
+if [ -e ".svn" ]; then
+	isSVN=1
+else
+	isSVN=0
+fi;
+
 if [ "" = "${ZIP}" ]; then
 	echo "7Zip not found, failing."
 	exit 1;
@@ -98,11 +105,17 @@ signEXE="true"
 compilerFlags="-Xs -XX -O2 -Or -Op1"
 BRANCH="0"
 plugins=""
-location="../../../"
+if [ $isSVN -eq 1 ]; then
+	location="../../../"
+	current=""
+else
+	location="../../"
+	current="1"
+fi;
 jarfile=""
-current=""
 jre=""
 jrename="jre" # Filename for JRE without the .exe
+TAGGED="0"
 
 showHelp() {
 	echo "This will generate a DMDirc installer for a windows based system."
@@ -190,6 +203,9 @@ while test -n "$1"; do
 		--branch|-b)
 			BRANCH="1"
 			;;
+		--tag|-t)
+			TAGGED="1"
+			;;
 	esac
 	shift
 done
@@ -212,19 +228,21 @@ else
 	jarPath="${location}"
 fi
 if [ "${isRelease}" != "" ]; then
-	if [ "${BRANCH}" != "0" ]; then
-		if [ -e "${location}/${isRelease}" ]; then
-			jarPath="${location}/${isRelease}"
+	if [ $isSVN -eq 1 ]; then
+		if [ "${BRANCH}" != "0" ]; then
+			if [ -e "${location}/${isRelease}" ]; then
+				jarPath="${location}/${isRelease}"
+			else
+				echo "Branch "${isRelease}" not found."
+				exit 1;
+			fi
 		else
-			echo "Branch "${isRelease}" not found."
-			exit 1;
-		fi
-	else
-		if [ -e "${location}/${isRelease}" ]; then
-			jarPath="${location}/${isRelease}"
-		else
-			echo "Tag "${isRelease}" not found."
-			exit 1;
+			if [ -e "${location}/${isRelease}" ]; then
+				jarPath="${location}/${isRelease}"
+			else
+				echo "Tag "${isRelease}" not found."
+				exit 1;
+			fi
 		fi
 	fi
 fi
@@ -268,7 +286,6 @@ else
 	rm -Rf plugins;
 fi
 
-
 echo "	ReleaseNumber: String = '${isRelease}';" > SetupConsts.inc
 
 FILES=""
@@ -289,7 +306,7 @@ if [ "" = "${1}" ]; then
 	MAJORVER="0"
 	MINORVER="0"
 	RELEASE="0"
-	TEXTVER="Trunk"
+	TEXTVER="${isRelease}"
 	PRIVATE="1"
 	USER=`whoami`
 	HOST=`hostname`

@@ -28,6 +28,13 @@ INSTALLERNAME=DMDirc
 # full name of the file to output to
 RUNNAME="${PWD}/${INSTALLERNAME}.dmg"
 
+# Are we a git working copy, or SVN?
+if [ -e ".svn" ]; then
+	isSVN=1
+else
+	isSVN=0
+fi;
+
 # Linux needs an entry in fstab to allow normal users to mount things (like a
 # dmg image).
 # These 2 config vars choose what dir and file we mount so that fstab can be
@@ -119,9 +126,15 @@ isRelease=""
 finalTag=""
 BRANCH="0"
 plugins=""
-location="../../../"
+if [ $isSVN -eq 1 ]; then
+	location="../../../"
+	current=""
+else
+	location="../../"
+	current="1"
+fi;
 jarfile=""
-current=""
+TAGGED="0"
 while test -n "$1"; do
 	case "$1" in
 		--plugins|-p)
@@ -157,6 +170,9 @@ while test -n "$1"; do
 		--branch|-b)
 			BRANCH="1"
 			;;
+		--tag|-t)
+			TAGGED="1"
+			;;
 	esac
 	shift
 done
@@ -166,19 +182,21 @@ else
 	jarPath="${location}"
 fi
 if [ "${isRelease}" != "" ]; then
-	if [ "${BRANCH}" != "0" ]; then
-		if [ -e "${location}/${isRelease}" ]; then
-			jarPath="${location}/${isRelease}"
+	if [ $isSVN -eq 1 ]; then
+		if [ "${BRANCH}" != "0" ]; then
+			if [ -e "${location}/${isRelease}" ]; then
+				jarPath="${location}/${isRelease}"
+			else
+				echo "Branch "${isRelease}" not found."
+				exit 1;
+			fi
 		else
-			echo "Branch "${isRelease}" not found."
-			exit 1;
-		fi
-	else
-		if [ -e "${location}/${isRelease}" ]; then
-			jarPath="${location}/${isRelease}"
-		else
-			echo "Tag "${isRelease}" not found."
-			exit 1;
+			if [ -e "${location}/${isRelease}" ]; then
+				jarPath="${location}/${isRelease}"
+			else
+				echo "Tag "${isRelease}" not found."
+				exit 1;
+			fi
 		fi
 	fi
 fi

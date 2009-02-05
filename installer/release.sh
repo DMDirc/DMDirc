@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Jar names of plugins to add to ALL installers. (* means all)
-plugins="dcc.jar dns.jar identd.jar lagdisplay.jar logging.jar systray.jar timeplugin.jar osdplugin.jar"
+plugins="ui_swing.jar ui_dummy.jar dcc.jar dns.jar identd.jar lagdisplay.jar logging.jar systray.jar timeplugin.jar osdplugin.jar"
 
 # Additional Jar names of plugins to add to only Windows installers. (* means all)
 plugins_windows=""
@@ -12,13 +12,29 @@ plugins_linux=""
 # Additional Jar names of plugins to add to only osx installers. (* means all)
 plugins_osx=""
 
+# Are we a git working copy, or SVN?
+if [ -e ".svn" ]; then
+	isSVN=1
+else
+	isSVN=0
+fi;
+
+
 showHelp() {
 	echo "This will generate the different DMDirc installers."
-	echo "Usage: ${0} [params] <release>"
-	echo "Release can be either 'trunk', 'this', a valid tag, or a branch (if -b is passed)"
+	if [ ${isSVN} -eq 1 ]; then
+		echo "Usage: ${0} [params] <release>"
+		echo "Release can be either 'trunk', 'this', a valid tag, or a branch (if -b is passed)"
+	else
+		echo "Usage: ${0} [params]"
+	fi;
 	echo "The following params are known:"
 	echo "---------------------"
-	echo "-b,  --branch                       <release> is a branch"
+	if [ ${isSVN} -eq 1 ]; then
+		echo "-b,  --branch                       <release> is a branch"
+	else
+		echo "-t,  --tag                          This is a tagged release"
+	fi;
 	echo "     --jar <file>                   Use <file> instead of compiling a jar."
 	echo "     --fulljar <file>               Use <file> instead of compiling a jar, and don't run makeJar on it."
 	echo "     --jre                          Include a jre in the installers."
@@ -45,6 +61,7 @@ FULLJAR=""
 BUILDTARGET=""
 UPLOAD="0"
 TAG="0"
+TAGGED=""
 while test -n "$1"; do
 	LAST=${1}
 	case "$1" in
@@ -93,9 +110,16 @@ while test -n "$1"; do
 		--branch|-b)
 			BRANCH="-b "
 			;;
+		--tag|-t)
+			TAGGED="-t "
+			;;
 	esac
 	shift
 done
+
+if [ ! -e output ]; then
+	mkdir output
+fi;
 
 if [ "${plugins}" = "*" -o "${plugins_linux}" = "*" -o "${plugins_windows}" = "*" -o "${plugins_osx}" = "*" ]; then
 	echo "Something is all.";
@@ -109,53 +133,62 @@ if [ "${plugins}" = "*" -o "${plugins_linux}" = "*" -o "${plugins_windows}" = "*
 	if [ "${plugins_osx}" = "*" ]; then plugins_osx=${allPlugins}; fi
 fi;
 
-VERSION=""
-if [ "${LAST}" != "" ]; then
-	if [ "${LAST}" = "trunk" ]; then
-		VERSION="Trunk"
-		RELEASE=""
-	elif [ "${LAST}" = "this" ]; then
-		# Work out what type of build this is!
-		thisDIR=${PWD}
-		cd ..
-		tempDIR=${PWD##*/}
-		if [ "${tempDIR}" = "trunk" ]; then
+if [ ${isSVN} -eq 1 ]; then
+	VERSION=""
+	if [ "${LAST}" != "" ]; then
+		if [ "${LAST}" = "trunk" ]; then
 			VERSION="Trunk"
-			echo "This is a trunk release.";
-		else
-			echo "This is not a trunk release.";
-			VERSION=${tempDIR}
+			RELEASE=""
+		elif [ "${LAST}" = "this" ]; then
+			# Work out what type of build this is!
+			thisDIR=${PWD}
 			cd ..
 			tempDIR=${PWD##*/}
-			if [ "${tempDIR}" = "tags" ]; then
-				echo "Release of tag "${version}
-				RELEASE="-r "${VERSION}
-				TAG="1"
-			elif [ "${tempDIR}" = "branches" ]; then
-				echo "Release of branch "${version}
-				BRANCH="-b "
-				RELEASE="-r "${VERSION}
+			if [ "${tempDIR}" = "trunk" ]; then
+				VERSION="Trunk"
+				echo "This is a trunk release.";
 			else
-				VERSION="Unknown"
-				echo "Unknown release target - Building as trunk build"
-				OPT="--current ${OPT}"
-			fi
-		fi;
-		cd ${thisDIR}
-	elif [ "${BRANCH}" != "" -a ! -e "../../branches/"${LAST} ]; then
-		echo "Branch '"${LAST}"' not found."
-		exit 1;
-	elif [ "${BRANCH}" = "" -a ! -e "../../tags/"${LAST} ]; then
-		echo "Tag '"${LAST}"' not found."
-		exit 1;
+				echo "This is not a trunk release.";
+				VERSION=${tempDIR}
+				cd ..
+				tempDIR=${PWD##*/}
+				if [ "${tempDIR}" = "tags" ]; then
+					echo "Release of tag "${version}
+					RELEASE="-r "${VERSION}
+					TAG="1"
+				elif [ "${tempDIR}" = "branches" ]; then
+					echo "Release of branch "${version}
+					BRANCH="-b "
+					RELEASE="-r "${VERSION}
+				else
+					VERSION="Unknown"
+					echo "Unknown release target - Building as trunk build"
+					OPT="--current ${OPT}"
+				fi
+			fi;
+			cd ${thisDIR}
+		elif [ "${BRANCH}" != "" -a ! -e "../../branches/"${LAST} ]; then
+			echo "Branch '"${LAST}"' not found."
+			exit 1;
+		elif [ "${BRANCH}" = "" -a ! -e "../../tags/"${LAST} ]; then
+			echo "Tag '"${LAST}"' not found."
+			exit 1;
+		else
+			RELEASE="-r "${LAST}
+		fi
 	else
-		RELEASE="-r "${LAST}
+		echo "Usage: ${0} [params] <release>"
+		echo "Release can be either 'this', 'trunk' or a valid tag. (see ${0} --help for further information)"
+		exit 1;
 	fi
 else
-	echo "Usage: ${0} [params] <release>"
-	echo "Release can be either 'this', 'trunk' or a valid tag. (see ${0} --help for further information)"
-	exit 1;
-fi
+	VERSION=`git branch | grep ^* | sed "s/^* //g"`
+	if [ "${VERSION}" != "master" ]; then
+		RELEASE=""
+	else
+		RELEASE="-r ${VERSION}"
+	fi;
+fi;
 
 JAR=`which jar`
 JAVAC=`which javac`
@@ -214,7 +247,7 @@ if [ "linux" = "${BUILDTARGET}" -o "" = "${BUILDTARGET}" ]; then
 	echo "Building linux installer"
 	echo "================================================================"
 	cd linux
-	./makeInstallerLinux.sh ${OPT}${JARFILE}${JRE}-k ${BRANCH}${RELEASE} -p "${plugins_linux}"
+	./makeInstallerLinux.sh ${OPT}${JARFILE}${JRE}-k ${BRANCH}${RELEASE}${TAGGED} -p "${plugins_linux}"
 	cd ${THISDIR}
 fi;
 
@@ -223,7 +256,7 @@ if [ "windows" = "${BUILDTARGET}" -o "" = "${BUILDTARGET}" ]; then
 	echo "Building Windows installer"
 	echo "================================================================"
 	cd windows
-	./makeInstallerWindows.sh ${OPT}${JARFILE}${JRE}-k -s ${BRANCH}${RELEASE} -p "${plugins_windows}"
+	./makeInstallerWindows.sh ${OPT}${JARFILE}${JRE}-k -s ${BRANCH}${RELEASE}${TAGGED} -p "${plugins_windows}"
 	cd ${THISDIR}
 fi;
 
@@ -232,7 +265,7 @@ if [ "osx" = "${BUILDTARGET}" -o "" = "${BUILDTARGET}" ]; then
 	echo "Building OSX Bundle"
 	echo "================================================================"
 	cd osx
-	./makeInstallerOSX.sh ${OPT}${JARFILE}-k -s ${BRANCH}${RELEASE} -p "${plugins_osx}"
+	./makeInstallerOSX.sh ${OPT}${JARFILE}-k -s ${BRANCH}${RELEASE}${TAGGED} -p "${plugins_osx}"
 	cd ${THISDIR}
 fi;
 

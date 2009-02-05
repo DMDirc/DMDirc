@@ -28,6 +28,13 @@ INSTALLERNAME=DMDirc-Setup
 # full name of the file to output to
 RUNNAME="${PWD}/${INSTALLERNAME}.run"
 
+# Are we a git working copy, or SVN?
+if [ -e ".svn" ]; then
+	isSVN=1
+else
+	isSVN=0
+fi;
+
 # Find out what params we should pass to things.
 # Solaris has a nice and ancient version of grep in /usr/bin
 grep -na "" /dev/null >/dev/null 2>&1
@@ -124,11 +131,17 @@ isRelease=""
 finalTag=""
 BRANCH="0"
 plugins=""
-location="../../../"
+if [ $isSVN -eq 1 ]; then
+	location="../../../"
+	current=""
+else
+	location="../../"
+	current="1"
+fi;
 jarfile=""
-current=""
 jre=""
 jrename="jre" # Filename for JRE without the .bin
+TAGGED="0"
 while test -n "$1"; do
 	case "$1" in
 		--plugins|-p)
@@ -171,6 +184,9 @@ while test -n "$1"; do
 		--branch|-b)
 			BRANCH="1"
 			;;
+		--tag|-t)
+			TAGGED="1"
+			;;
 	esac
 	shift
 done
@@ -180,21 +196,23 @@ else
 	jarPath="${location}"
 fi
 if [ "${isRelease}" != "" ]; then
-	if [ "${BRANCH}" != "0" ]; then
-		if [ -e "${location}/${isRelease}" ]; then
-			jarPath="${location}/${isRelease}"
+	if [ $isSVN -eq 1 ]; then
+		if [ "${BRANCH}" != "0" ]; then
+			if [ -e "${location}/${isRelease}" ]; then
+				jarPath="${location}/${isRelease}"
+			else
+				echo "Branch "${isRelease}" not found."
+				exit 1;
+			fi
 		else
-			echo "Branch "${isRelease}" not found."
-			exit 1;
+			if [ -e "${location}/${isRelease}" ]; then
+				jarPath="${location}/${isRelease}"
+			else
+				echo "Tag "${isRelease}" not found."
+				exit 1;
+			fi
 		fi
-	else
-		if [ -e "${location}/${isRelease}" ]; then
-			jarPath="${location}/${isRelease}"
-		else
-			echo "Tag "${isRelease}" not found."
-			exit 1;
-		fi
-	fi
+	fi;
 fi
 
 if [ "" = "${jarfile}" ]; then
@@ -241,8 +259,10 @@ echo "Adding stub.."
 cat installerstub.sh > ${RUNNAME}
 
 # Add release info.
-awk '{gsub(/###ADDITIONAL_STUFF###/,"isRelease=\"'${isRelease}'\"");print}' ${RUNNAME} > ${RUNNAME}.tmp
-mv ${RUNNAME}.tmp ${RUNNAME}
+if [ $isSVN -eq 1 -o $TAGGED -eq 1 ]; then
+	awk '{gsub(/###ADDITIONAL_STUFF###/,"isRelease=\"'${isRelease}'\"");print}' ${RUNNAME} > ${RUNNAME}.tmp
+	mv ${RUNNAME}.tmp ${RUNNAME}
+fi;
 
 FILES="DMDirc.jar";
 echo "Compressing files.."
