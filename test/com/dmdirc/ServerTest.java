@@ -22,23 +22,20 @@
 
 package com.dmdirc;
 
-import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.harness.TestActionListener;
 import com.dmdirc.harness.parser.TestParserFactory;
 import com.dmdirc.addons.ui_dummy.DummyController;
 import java.util.ArrayList;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ServerTest extends junit.framework.TestCase {
+public class ServerTest {
 
-    private Server server;
+    private static Server server;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         Main.setUI(new DummyController());
         IdentityManager.load();
         server = new Server("255.255.255.255", 6667, "", false, 

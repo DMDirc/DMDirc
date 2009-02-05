@@ -29,14 +29,14 @@ import com.dmdirc.addons.ui_dummy.DummyQueryWindow;
 
 import java.util.ArrayList;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ServerManagerTest extends junit.framework.TestCase {
+public class ServerManagerTest {
         
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         Main.setUI(new DummyController());
         IdentityManager.load();
     }

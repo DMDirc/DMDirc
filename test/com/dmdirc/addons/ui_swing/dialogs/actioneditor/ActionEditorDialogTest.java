@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.actioneditor;
 
+import com.dmdirc.Main;
 import com.dmdirc.addons.ui_swing.dialogs.actioneditor.ActionEditorDialog;
 import com.dmdirc.addons.ui_swing.dialogs.actioneditor.ActionConditionsTreePanel;
 import com.dmdirc.addons.ui_swing.dialogs.actioneditor.ActionNamePanel;
@@ -32,6 +33,7 @@ import com.dmdirc.addons.ui_swing.dialogs.actioneditor.ActionTriggersPanel;
 import com.dmdirc.addons.ui_swing.dialogs.actioneditor.ActionConditionDisplayPanel;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionManager;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.harness.ui.UIClassTestRunner;
 import com.dmdirc.harness.ui.ClassFinder;
@@ -57,6 +59,7 @@ import org.fest.swing.fixture.JLabelFixture;
 import org.fest.swing.fixture.JPanelFixture;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,6 +69,11 @@ import static org.junit.Assert.*;
 public class ActionEditorDialogTest implements UITestIface {
 
     private DialogFixture window;
+
+    @BeforeClass
+    public static void setUpClass() {
+        Main.setUI(new SwingController());
+    }
 
     @Before
     public void setUp() {

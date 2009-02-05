@@ -22,9 +22,11 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.actionsmanager;
 
+import com.dmdirc.Main;
 import com.dmdirc.addons.ui_swing.dialogs.actionsmanager.ActionsGroupPanel;
 import com.dmdirc.addons.ui_swing.dialogs.actionsmanager.ActionsManagerDialog;
 import com.dmdirc.actions.ActionManager;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.harness.ui.UIClassTestRunner;
 import com.dmdirc.harness.ui.ClassFinder;
@@ -43,6 +45,7 @@ import org.fest.swing.fixture.DialogFixture;
 import org.fest.swing.fixture.JOptionPaneFixture;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
@@ -51,6 +54,11 @@ import static org.junit.Assert.*;
 public class ActionsManagerDialogTest implements UITestIface {
     
     private DialogFixture window;
+
+    @BeforeClass
+    public static void setUpClass() {
+        Main.setUI(new SwingController());
+    }
     
     @Before
     public void setUp() {

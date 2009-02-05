@@ -24,14 +24,14 @@ package com.dmdirc;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.addons.ui_dummy.DummyController;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class TopicTest extends junit.framework.TestCase {
+public class TopicTest {
     
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         Main.setUI(new DummyController());
         IdentityManager.load();
     }
@@ -45,7 +45,7 @@ public class TopicTest extends junit.framework.TestCase {
     @Test
     public void testGetTime() {
         final Topic test = new Topic("abc", "123!456@789", 1);
-        assertEquals(1, test.getTime());        
+        assertEquals(1l, test.getTime());
     }
 
     @Test

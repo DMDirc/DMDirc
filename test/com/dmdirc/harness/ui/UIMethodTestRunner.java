@@ -25,7 +25,10 @@ package com.dmdirc.harness.ui;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.fest.swing.exception.ActionFailedException;
+import org.junit.BeforeClass;
 import org.junit.internal.runners.TestMethodRunner;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
@@ -43,6 +46,21 @@ public class UIMethodTestRunner extends TestMethodRunner {
 
     @Override
     protected void runUnprotected() {
+
+        for (Method method : test.getClass().getMethods()) {
+            System.out.println(method.getName() + " --> " + method.getAnnotation(BeforeClass.class));
+            if (method.getAnnotation(BeforeClass.class) != null) {
+                try {
+                    method.invoke(test);
+                } catch (InvocationTargetException e) {
+                    addFailure(e.getCause());
+                    return;
+                } catch (Throwable e) {
+                    addFailure(e);
+                    return;
+                }
+            }
+        }
 
         boolean retry;
         int retries = 5;

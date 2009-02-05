@@ -22,6 +22,8 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.sslcertificate;
 
+import com.dmdirc.Main;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.dialogs.sslcertificate.CertificateInfoPanel;
 import com.dmdirc.addons.ui_swing.dialogs.sslcertificate.SSLCertificateDialog;
 import com.dmdirc.harness.ui.ClassFinder;
@@ -46,6 +48,7 @@ import org.fest.swing.fixture.DialogFixture;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,6 +58,11 @@ import static org.junit.Assert.*;
 public class SSLCertificateDialogTest implements UITestIface {
 
     private DialogFixture window;
+
+    @BeforeClass
+    public static void setUpClass() {
+        Main.setUI(new SwingController());
+    }
 
     @Before
     public void setUp() {

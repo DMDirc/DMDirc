@@ -33,19 +33,19 @@ import com.dmdirc.harness.parser.TestParserFactory;
 import com.dmdirc.parser.irc.ChannelInfo;
 import com.dmdirc.addons.ui_dummy.DummyController;
 import java.util.ArrayList;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class LoggingPluginTest {
     
-    private Server server;
-    private Channel channel;
-    private Query query;
-    private TestLoggingPlugin lp;
+    private static Server server;
+    private static Channel channel;
+    private static Query query;
+    private static TestLoggingPlugin lp;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         Main.setUI(new DummyController());
         IdentityManager.load();
         server = new Server("255.255.255.255", 6667, "", false,
