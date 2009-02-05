@@ -20,23 +20,43 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.installer;
+package com.dmdirc.installer.ui;
+
+import java.awt.BorderLayout;
 
 /**
- * Quick access methods for a step to have a controllable text field.
+ * This step shows an unable to install error
  */
-public interface TextStep {
-	/**
-	 * Add text to the infolabel on this step
-	 *
-	 * @param text Text to add to infoLabel
-	 */
-	public void addText(final String text);
-	
-	/**
-	 * Sets the text in the infolabel on this step
-	 *
-	 * @param text Text to set the infoLabel to
-	 */
-	public void setText(final String text);
+public final class StepError extends SwingStep {
+
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 2;
+
+    /**
+     * Creates a new instance of StepError with a default error message.
+     */
+    public StepError() {
+        this("Sorry, it is not possible to install DMDirc on this system at this time.\n\n");
+    }
+
+    /**
+     * Creates a new instance of StepError with a given error message.
+     *
+     * @param message Error message to show.
+     */
+    public StepError(final String message) {
+        super();
+        setLayout(new BorderLayout());
+        add(new TextLabel(message), BorderLayout.CENTER);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getStepName() {
+        return "Error";
+    }
 }

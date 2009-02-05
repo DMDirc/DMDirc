@@ -20,46 +20,55 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.installer;
+package com.dmdirc.installer.ui;
 
-import com.dmdirc.installer.cliparser.CLIParser;
+import java.awt.Insets;
+
+import javax.swing.JTextPane;
+import javax.swing.text.DefaultStyledDocument;
 
 /**
- * Default settings for the installer.
+ * Dyamnic text label.
  */
-public class DefaultSettings implements Settings {
+public class TextLabel extends JTextPane {
 
-    /** {@inheritDoc} */
-    @Override
-    public boolean getShortcutMenuState() {
-        return (CLIParser.getCLIParser().getParamNumber("-no-shortcut-menu") ==
-                0);
+    /**
+     * A version number for this class. It should be changed whenever the
+     * class structure is changed (or anything else that would prevent
+     * serialized objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
+
+    /**
+     * Creates a new instance of TextLabel.
+     */
+    public TextLabel() {
+        this(null, true);
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public boolean getShortcutDesktopState() {
-        return (CLIParser.getCLIParser().getParamNumber("-no-shortcut-desktop") ==
-                0);
+    /**
+     * Creates a new instance of TextLabel.
+     *
+     * @param text Text to display
+     */
+    public TextLabel(final String text) {
+        this(text, true);
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public boolean getShortcutQuickState() {
-        return (CLIParser.getCLIParser().getParamNumber(
-                "-no-shortcut-quicklaunch") == 0);
-    }
+    /**
+     * Creates a new instance of TextLabel.
+     *
+     * @param text Text to display
+     * @param justified Justify the text?
+     */
+    public TextLabel(final String text, final boolean justified) {
+        super(new DefaultStyledDocument());
 
-    /** {@inheritDoc} */
-    @Override
-    public boolean getShortcutProtocolState() {
-        return (CLIParser.getCLIParser().getParamNumber("-no-shortcut-protocol") ==
-                0);
-    }
+        setOpaque(false);
+        setEditable(false);
+        setHighlighter(null);
+        setMargin(new Insets(0, 0, 0, 0));
 
-    /** {@inheritDoc} */
-    @Override
-    public String getInstallLocation() {
-        return Main.getInstaller().defaultInstallLocation();
+        setText(text);
     }
 }

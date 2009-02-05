@@ -41,12 +41,7 @@ public class LinuxInstaller extends Installer {
 		return (CLIParser.getCLIParser().getParamNumber("-isroot") > 0);
 	}
 	
-	/**
-	 * Is the given file name vaild to copy to the installation directory?
-	 *
-	 * @param filename File to check
-	 * @return true If the file should be copied, else false.
-	 */
+	/** {@inheritDoc} */
 	@Override
 	public boolean validFile(final String filename) {
 		return (!filename.equalsIgnoreCase("setup.sh") &&
@@ -74,12 +69,7 @@ public class LinuxInstaller extends Installer {
 		return result;
 	}
 
-	/**
-	 * Check if this OS supports a given shortcut Type
-	 *
-	 * @param shortcutType Type of shortcut to check
-	 * @return True if this OS supports a given shortcut Type
-	 */
+	/** {@inheritDoc} */
 	@Override
 	public boolean supportsShortcut(final ShortcutType shortcutType) {
 		switch (shortcutType) {
@@ -100,12 +90,8 @@ public class LinuxInstaller extends Installer {
 		}
 	}
 
-	/**
-	 * Setup shortcut.
-	 *
-	 * @param location Location where app will be installed to.
-	 * @param shortcutType Type of shortcut to add.
-	 */
+	/** {@inheritDoc} */
+	@Override
 	public void setupShortcut(final String location, final ShortcutType shortcutType) {
 		if (!supportsShortcut(shortcutType)) {
 			step.addText(" - Error creating shortcut. Not applicable to this Operating System");
@@ -397,11 +383,8 @@ public class LinuxInstaller extends Installer {
 		writer.println("Type=Application");
 	}
 
-	/**
-	 * Any post-install tasks should be done here.
-	 *
-	 * @param location Location where app was installed to.
-	 */
+	/** {@inheritDoc} */
+	@Override
 	public void postInstall(final String location) {
 		new File(location+"/DMDirc.sh").setExecutable(true, !isRoot());
 	}

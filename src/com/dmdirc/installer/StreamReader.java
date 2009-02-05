@@ -27,87 +27,91 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+/**
+ * Simple stream reader to read a stream and add it to a text step
+ */
 public class StreamReader extends Thread {
-	
-	/** This is the Input Stream we are reading */
-	private final InputStream stream;
-	
-	/** This is the output Prefix */
-	private String prefix = null;
-	
-	/** This is the StringBuffer to store data in if wanted */
-	private StringBuffer data = null;
-	
-	/** This is the Step we are outputting to, */
-	private TextStep step = null;
-	
-	/**
-	 * Create a new Stream Reader
-	 *
-	 * @param stream The stream to read
-	 */
-	public StreamReader(final InputStream stream) {
-		this.stream = stream;
-	}
-	
-	/**
-	 * Create a new Stream Reader that saves what it reads
-	 *
-	 * @param stream The stream to read
-	 * @param data The stringbuffer to store the output in
-	 * @since 0.6
-	 */
-	public StreamReader(final InputStream stream, final StringBuffer data) {
-		this.stream = stream;
-		this.data = data;
-	}
-	
-	/**
-	 * Create a new Stream Reader that outputs what it reads
-	 *
-	 * @param stream The stream to read
-	 * @param prefix Prefix of outputed messages
-	 * @param step Step to output to (null = console)
-	 */
-	public StreamReader(final InputStream stream, final String prefix, final TextStep step) {
-		this.stream = stream;
-		this.prefix = prefix;
-		this.step = step;
-		
-		if (step == null) {
-			System.out.printf("[%s] Started%n", prefix);
-		} else {
-			step.addText(String.format(" - -[%s] Started", prefix));
-		}
-	}
 
-	/** {@inheritDoc} */
-	@Override
-	public void run() {
-		final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-		try {
-			String line;
-			while ((line = reader.readLine()) != null) {
-				if (data != null) {
-					if (data.length() > 0) { data.append("\n"); }
-					data.append(line);
-				}
-				if (prefix != null) {
-					if (step == null) {
-						System.out.printf("[%s] %s%n", prefix, line);
-					} else {
-						step.addText(String.format(" - -[%s] %s", prefix, line));
-					}
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				stream.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+    /** This is the Input Stream we are reading */
+    private final InputStream stream;
+    /** This is the output Prefix */
+    private String prefix = null;
+    /** This is the StringBuffer to store data in if wanted */
+    private StringBuffer data = null;
+    /** This is the Step we are outputting to, */
+    private TextStep step = null;
+
+    /**
+     * Create a new Stream Reader
+     *
+     * @param stream The stream to read
+     */
+    public StreamReader(final InputStream stream) {
+        this.stream = stream;
+    }
+
+    /**
+     * Create a new Stream Reader that saves what it reads
+     *
+     * @param stream The stream to read
+     * @param data The stringbuffer to store the output in
+     * @since 0.6
+     */
+    public StreamReader(final InputStream stream, final StringBuffer data) {
+        this.stream = stream;
+        this.data = data;
+    }
+
+    /**
+     * Create a new Stream Reader that outputs what it reads
+     *
+     * @param stream The stream to read
+     * @param prefix Prefix of outputed messages
+     * @param step Step to output to (null = console)
+     */
+    public StreamReader(final InputStream stream, final String prefix,
+                        final TextStep step) {
+        this.stream = stream;
+        this.prefix = prefix;
+        this.step = step;
+
+        if (step == null) {
+            System.out.printf("[%s] Started%n", prefix);
+        } else {
+            step.addText(String.format(" - -[%s] Started", prefix));
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void run() {
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(
+                stream));
+        try {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (data != null) {
+                    if (data.length() > 0) {
+                        data.append("\n");
+                    }
+                    data.append(line);
+                }
+                if (prefix != null) {
+                    if (step == null) {
+                        System.out.printf("[%s] %s%n", prefix, line);
+                    } else {
+                        step.addText(String.format(" - -[%s] %s", prefix, line));
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                stream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

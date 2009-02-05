@@ -22,39 +22,43 @@
 
 package com.dmdirc.installer;
 
+/**
+ * Simple interface describing available settings for the installer.
+ */
 public interface Settings {
-	/**
-	 * Returns the state of the shortcutMenu checkbox.
-	 *
-	 * @return shortcutMenu checkbox state
-	 */
-	public boolean getShortcutMenuState();
 
-	/**
-	 * Returns the state of the shortcutDesktop checkbox.
-	 *
-	 * @return shortcutDesktop checkbox state
-	 */
-	public boolean getShortcutDesktopState();
+    /**
+     * Returns the state of the shortcutMenu checkbox.
+     *
+     * @return shortcutMenu checkbox state
+     */
+    public boolean getShortcutMenuState();
 
-	/**
-	 * Returns the state of the shortcutDesktop checkbox.
-	 *
-	 * @return shortcutDesktop checkbox state
-	 */
-	public boolean getShortcutQuickState();
+    /**
+     * Returns the state of the shortcutDesktop checkbox.
+     *
+     * @return shortcutDesktop checkbox state
+     */
+    public boolean getShortcutDesktopState();
 
-	/**
-	 * Returns the state of the shortcutProtocol checkbox.
-	 *
-	 * @return shortcutDesktop checkbox state
-	 */
-	public boolean getShortcutProtocolState();
+    /**
+     * Returns the state of the shortcutDesktop checkbox.
+     *
+     * @return shortcutDesktop checkbox state
+     */
+    public boolean getShortcutQuickState();
 
-	/**
-	 * Returns the location chosen for installation.
-	 *
-	 * @return location chosen for installation.
-	 */
-	public String getInstallLocation();
+    /**
+     * Returns the state of the shortcutProtocol checkbox.
+     *
+     * @return shortcutDesktop checkbox state
+     */
+    public boolean getShortcutProtocolState();
+
+    /**
+     * Returns the location chosen for installation.
+     *
+     * @return location chosen for installation.
+     */
+    public String getInstallLocation();
 }

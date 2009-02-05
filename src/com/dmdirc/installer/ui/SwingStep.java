@@ -1,16 +1,17 @@
 /*
- * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
- *
+ * 
+ * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,23 +21,14 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.installer;
+package com.dmdirc.installer.ui;
+
+import com.dmdirc.installer.Step;
+
+import javax.swing.JPanel;
 
 /**
- * Quick access methods for a step to have a controllable text field.
+ * Extention of basic Step to make it a JPanel.
  */
-public interface TextStep {
-	/**
-	 * Add text to the infolabel on this step
-	 *
-	 * @param text Text to add to infoLabel
-	 */
-	public void addText(final String text);
-	
-	/**
-	 * Sets the text in the infolabel on this step
-	 *
-	 * @param text Text to set the infoLabel to
-	 */
-	public void setText(final String text);
+public abstract class SwingStep extends JPanel implements Step {
 }

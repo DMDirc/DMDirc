@@ -23,20 +23,17 @@
 package com.dmdirc.installer;
 
 /**
- * Quick access methods for a step to have a controllable text field.
+ * Wizard interface, notifications on change of step and closing.
  */
-public interface TextStep {
-	/**
-	 * Add text to the infolabel on this step
-	 *
-	 * @param text Text to add to infoLabel
-	 */
-	public void addText(final String text);
-	
-	/**
-	 * Sets the text in the infolabel on this step
-	 *
-	 * @param text Text to set the infoLabel to
-	 */
-	public void setText(final String text);
+public interface WizardListener {
+    
+    /** 
+     * Called when the wizard finishes. 
+     */
+    void wizardFinished();
+    
+    /**
+     * Called when the wizard is cancelled.
+     */
+    void wizardCancelled();
 }
