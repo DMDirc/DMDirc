@@ -119,7 +119,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	private ConfigFile getMigratedConfigFile() throws IOException {
 		final ResourceManager res = getResourceManager();
 		final ConfigFile file = new ConfigFile(res.getResourceInputStream("META-INF/plugin.config"));
-	
 		migrated = true;
 		
 		// Logger.userError(ErrorLevel.LOW, "Plugin '"+getFilename()+"' is using an older plugin.info file, check for updates.");
@@ -132,6 +131,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 		final Map<String, String> version = new HashMap<String, String>();
 		final Map<String, String> misc = new HashMap<String, String>();
 		final List<String> persistent = new ArrayList<String>();
+		final List<String> provides = new ArrayList<String>();
+		final List<String> required_services = new ArrayList<String>();
 		
 		meta.put("name", old.getProperty("name", ""));
 		meta.put("author", old.getProperty("author", ""));
@@ -175,7 +176,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 			misc.put(key, value);
 			
 			// Also handle persistent items here
-			if (hasPersistent && key.toLowerCase().startsWith("persistent-")) {
+			if (!hasPersistent && key.toLowerCase().startsWith("persistent-")) {
 				persistent.add(key.substring(11));
 			}
 		}
@@ -186,6 +187,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 		file.addDomain("version", version);
 		file.addDomain("misc", misc);
 		file.addDomain("persistent", persistent);
+		file.addDomain("provides", provides);
+		file.addDomain("required-services", required_services);
 		
 		return file;
 	}
@@ -677,7 +680,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 * @return true if all services are available
 	 */
 	private boolean checkServices(final List<String> services) {
-		if (services == null || services.count() < 1) { return true; }
+		if (services == null || services.size() < 1) { return true; }
 		
 		for (String requirement : services) {
 			final String[] bits = requirement.split(" ");
