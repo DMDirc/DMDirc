@@ -333,6 +333,10 @@ if [ -e "${jarPath}/launcher/unix" ]; then
 	FILES="${FILES} DMDirc.sh"
 fi
 
+if [ -e "uninstall.sh" ]; then
+	FILES="${FILES} uninstall.sh"
+fi
+
 compress $FILES
 
 MD5BIN=`which md5sum`
