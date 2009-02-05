@@ -33,7 +33,7 @@ showHelp() {
 	if [ ${isSVN} -eq 1 ]; then
 		echo "-b,  --branch                       <release> is a branch"
 	else
-		echo "-t,  --tag                          This is a tagged release"
+		echo "-t,  --tag <release>                This is a tagged release"
 	fi;
 	echo "     --jar <file>                   Use <file> instead of compiling a jar."
 	echo "     --fulljar <file>               Use <file> instead of compiling a jar, and don't run makeJar on it."
@@ -111,7 +111,14 @@ while test -n "$1"; do
 			BRANCH="-b "
 			;;
 		--tag|-t)
-			TAGGED="-t "
+			shift
+			REGEX="^[0-9]+(\.[0-9]+(\.[0-9]+)?)?$"
+			CHECKTAG=`echo ${1} | egrep "${REGEX}"`
+			if [ "" = "${CHECKTAG}" ]; then
+				echo "Specified tag ("${1}") is invalid."
+				exit 1;
+			fi;
+			TAGGED="-t ${1} "
 			;;
 	esac
 	shift
@@ -183,7 +190,7 @@ if [ ${isSVN} -eq 1 ]; then
 	fi
 else
 	VERSION=`git branch | grep ^* | sed "s/^* //g"`
-	if [ "${VERSION}" != "master" ]; then
+	if [ "${VERSION}" = "master" ]; then
 		RELEASE=""
 	else
 		RELEASE="-r ${VERSION}"
@@ -229,7 +236,7 @@ if [ "" = "${FULLJAR}" ]; then
 	echo "Building Release Jar"
 	echo "================================================================"
 	cd jar
-	./makeJar.sh ${OPT}${JARFILE}${JRE}-c -k -s ${BRANCH}${RELEASE} -p "${plugins}"
+	./makeJar.sh ${OPT}${JARFILE}${JRE}-c -k -s ${TAGGED}${BRANCH}${RELEASE} -p "${plugins}"
 	RESULT=${?}
 	cd ${THISDIR}
 
@@ -247,7 +254,7 @@ if [ "linux" = "${BUILDTARGET}" -o "" = "${BUILDTARGET}" ]; then
 	echo "Building linux installer"
 	echo "================================================================"
 	cd linux
-	./makeInstallerLinux.sh ${OPT}${JARFILE}${JRE}-k ${BRANCH}${RELEASE}${TAGGED} -p "${plugins_linux}"
+	./makeInstallerLinux.sh ${OPT}${JARFILE}${JRE}-k ${TAGGED}${BRANCH}${RELEASE} -p "${plugins_linux}"
 	cd ${THISDIR}
 fi;
 
@@ -256,7 +263,7 @@ if [ "windows" = "${BUILDTARGET}" -o "" = "${BUILDTARGET}" ]; then
 	echo "Building Windows installer"
 	echo "================================================================"
 	cd windows
-	./makeInstallerWindows.sh ${OPT}${JARFILE}${JRE}-k -s ${BRANCH}${RELEASE}${TAGGED} -p "${plugins_windows}"
+	./makeInstallerWindows.sh ${OPT}${JARFILE}${JRE}-k -s ${TAGGED}${BRANCH}${RELEASE} -p "${plugins_windows}"
 	cd ${THISDIR}
 fi;
 
@@ -265,7 +272,7 @@ if [ "osx" = "${BUILDTARGET}" -o "" = "${BUILDTARGET}" ]; then
 	echo "Building OSX Bundle"
 	echo "================================================================"
 	cd osx
-	./makeInstallerOSX.sh ${OPT}${JARFILE}-k -s ${BRANCH}${RELEASE}${TAGGED} -p "${plugins_osx}"
+	./makeInstallerOSX.sh ${OPT}${JARFILE}-k -s ${TAGGED}${BRANCH}${RELEASE} -p "${plugins_osx}"
 	cd ${THISDIR}
 fi;
 

@@ -115,7 +115,7 @@ fi;
 jarfile=""
 jre=""
 jrename="jre" # Filename for JRE without the .exe
-TAGGED="0"
+TAGGED=""
 
 showHelp() {
 	echo "This will generate a DMDirc installer for a windows based system."
@@ -125,11 +125,11 @@ showHelp() {
 	echo "-r, --release <version>   Generate a file based on an svn tag (or branch with -b aswell)"
 	echo "-b, --branch              Release in -r is a branch "
 	echo "-s, --setup               Recompile the .exe file"
-	echo "-e,                       If setup.exe compile fails, use old version"
+	echo "-o,                       If setup.exe compile fails, use old version"
 	echo "-p, --plugins <plugins>   What plugins to add to the jar file"
 	echo "-c, --compile             Recompile the .jar file"
 	echo "-u, --unsigned            Don't sign the exe"
-	echo "-t, --tag <tag>           Tag to add to final exe name to distinguish this build from a standard build"
+	echo "-e, --extra <tag>         Tag to add to final exe name to distinguish this build from a standard build"
 	echo "-f, --flags <flags>       Extra flags to pass to the compiler"
 	echo "    --jre                 Include the JRE in this installer"
 	echo "    --jar <file>          use <file> as DMDirc.jar"
@@ -173,14 +173,14 @@ while test -n "$1"; do
 		--setup|-s)
 			compileSetup="true"
 			;;
-		-e)
+		-o)
 			useOldSetup="true"
 			;;
 		--release|-r)
 			shift
 			isRelease=${1}
 			;;
-		--tag|-t)
+		--extra|-e)
 			shift
 			finalTag="-${1}"
 			;;
@@ -204,7 +204,14 @@ while test -n "$1"; do
 			BRANCH="1"
 			;;
 		--tag|-t)
-			TAGGED="1"
+			shift
+			REGEX="^[0-9]+(\.[0-9]+(\.[0-9]+)?)?$"
+			CHECKTAG=`echo ${1} | egrep "${REGEX}"`
+			if [ "" = "${CHECKTAG}" ]; then
+				echo "Specified tag ("${1}") is invalid."
+				exit 1;
+			fi;
+			TAGGED="${1}"
 			;;
 	esac
 	shift
@@ -286,7 +293,11 @@ else
 	rm -Rf plugins;
 fi
 
-echo "	ReleaseNumber: String = '${isRelease}';" > SetupConsts.inc
+if [ $isSVN -eq 1 -o "${TAGGED}" = "" ]; then
+	echo "	ReleaseNumber: String = '${isRelease}';" > SetupConsts.inc
+else
+	echo "	ReleaseNumber: String = '${TAGGED}';" > SetupConsts.inc
+fi;
 
 FILES=""
 # Icon Res file
@@ -301,8 +312,14 @@ echo "extractor RCDATA extractor.exe" > files.rc
 
 COMPILER_IS_BROKEN="0";
 
+if [ $isSVN -eq 1 -o "${TAGGED}" = "" ]; then
+	NUM="${1}"
+else
+	NUM="${TAGGED}"
+fi;
+
 # Version Numbers
-if [ "" = "${1}" ]; then
+if [ "" = "${NUM}" ]; then
 	MAJORVER="0"
 	MINORVER="0"
 	RELEASE="0"
@@ -312,8 +329,8 @@ if [ "" = "${1}" ]; then
 	HOST=`hostname`
 	DATE=`date`
 else
-	MAJORVER=${1%%.*}
-	SUBVER=${1#*.}
+	MAJORVER=${NUM%%.*}
+	SUBVER=${NUM#*.}
 	DOT=`expr index "${SUBVER}" .`
 	if [ "${DOT}" = "0" ]; then
 		MINORVER=${SUBVER}
@@ -322,7 +339,7 @@ else
 		MINORVER=${SUBVER%%.*}
 		RELEASE=${SUBVER##*.}
 	fi
-	TEXTVER=$1
+	TEXTVER=$NUM
 	PRIVATE="0"
 fi;
 
@@ -534,10 +551,13 @@ echo "Creating config.."
 echo ";!@Install@!UTF-8!" > 7zip.conf
 if [ "${isRelease}" != "" ]; then
 	echo "Title=\"DMDirc Installation "${isRelease}"\"" >> 7zip.conf
-#	echo "BeginPrompt=\"Do you want to install DMDirc "${isRelease}"?\"" >> 7zip.conf
+	echo "BeginPrompt=\"Do you want to install DMDirc "${isRelease}"?\"" >> 7zip.conf
+elif [ "${TAGGED}" != "" ]; then
+	echo "Title=\"DMDirc Installation "${TAGGED}"\"" >> 7zip.conf
+	echo "BeginPrompt=\"Do you want to install DMDirc "${TAGGED}"?\"" >> 7zip.conf
 else
-	echo "Title=\"DMDirc Installation\"" > 7zip.conf
-#	echo "BeginPrompt=\"Do you want to install DMDirc?\"" >> 7zip.conf
+	echo "Title=\"DMDirc Installation\"" >> 7zip.conf
+	echo "BeginPrompt=\"Do you want to install DMDirc?\"" >> 7zip.conf
 fi;
 echo "ExecuteFile=\"Setup.exe\"" >> 7zip.conf
 echo ";!@InstallEnd@!" >> 7zip.conf
@@ -555,12 +575,27 @@ fi;
 echo "Creating .exe"
 cat 7zS.sfx 7zip.conf "${INTNAME}" > "${RUNNAME}"
 
+doRename=0
 if [ "${isRelease}" != "" ]; then
-	if [ "${BRANCH}" = "1" ]; then
-		releaseTag=branch-${isRelease}
+	doRename=1
+elif [ $isSVN -eq 0 -a "${TAGGED}" != "" ]; then
+	doRename=1
+fi;
+
+if [ ${doRename} -eq 1 ]; then
+	if [ $isSVN -eq 1 ]; then
+		if [ "${BRANCH}" = "1" ]; then
+			releaseTag=branch-${isRelease}
+		else
+			releaseTag=${isRelease}
+		fi;
 	else
-		releaseTag=${isRelease};
-	fi;
+		if [ "${TAGGED}" = "" ]; then
+			releaseTag=branch-${isRelease}
+		else
+			releaseTag=${TAGGED}
+		fi;
+	fi
 	ORIGNAME="DMDirc-${releaseTag}-Setup${finalTag}.exe"
 else
 	ORIGNAME="${INSTALLNAME}${finalTag}.exe"
