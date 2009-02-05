@@ -103,7 +103,8 @@ public class ProcessListModes extends IRCProcessor {
 					mode = listModeQueue.peek();
 					myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "LMQ says this is "+mode);
 					if (oldMode != mode) {
-						myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "LMQ disagrees with guess LMQ: "+mode+" Guess: "+oldMode);
+						myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "LMQ disagrees with guess. LMQ: "+mode+" Guess: "+oldMode);
+						myParser.callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "LMQ disagrees with guess. LMQ: "+mode+" Guess: "+oldMode, myParser.getLastLine()));
 					}
 					if ((thisIRCD.equals("hyperion") || thisIRCD.equals("dancer")) && (mode == 'b' || mode == 'q')) {
 						LinkedList<Character> lmq = (LinkedList<Character>)listModeQueue;
