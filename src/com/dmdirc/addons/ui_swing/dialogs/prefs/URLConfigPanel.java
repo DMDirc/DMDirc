@@ -24,11 +24,10 @@ package com.dmdirc.addons.ui_swing.dialogs.prefs;
 
 import com.dmdirc.addons.ui_swing.components.renderers.URISchemeCellRenderer;
 import com.dmdirc.addons.ui_swing.components.renderers.URIHandlerCellRenderer;
-import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.config.prefs.validator.URLProtocolValidator;
-import com.dmdirc.addons.ui_swing.MainFrame;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.components.PackingTable;
 import com.dmdirc.addons.ui_swing.components.StandardInputDialog;
 import com.dmdirc.addons.ui_swing.components.URLProtocolPanel;
@@ -253,7 +252,7 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == add) {
-            new StandardInputDialog((MainFrame) Main.getUI().getMainWindow(),
+            new StandardInputDialog(SwingController.getMainFrame(),
                     false, "DMDIRC: New URL handler",
                     "Please enter the name of the new protocol.",
                     new URLProtocolValidator()) {

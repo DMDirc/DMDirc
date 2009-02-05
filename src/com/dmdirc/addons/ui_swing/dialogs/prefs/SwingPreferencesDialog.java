@@ -22,12 +22,11 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.prefs;
 
-import com.dmdirc.Main;
 import com.dmdirc.config.prefs.PreferencesCategory;
 import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.config.prefs.PreferencesSetting;
-import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.addons.ui_swing.PrefsComponentFactory;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.components.ColourChooser;
 import com.dmdirc.addons.ui_swing.components.ListScroller;
 import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
@@ -131,7 +130,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      * Creates a new instance of SwingPreferencesDialog.
      */
     private SwingPreferencesDialog() {
-        super((MainFrame) Main.getUI().getMainWindow(), false);
+        super(SwingController.getMainFrame(), false);
 
         categories = new HashMap<PreferencesCategory, JPanel>();
         components = new HashMap<PreferencesSetting, JComponent>();
@@ -504,8 +503,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         }
 
         if (restart) {
-            JOptionPane.showMessageDialog((MainFrame) Main.getUI().
-                    getMainWindow(),
+            JOptionPane.showMessageDialog(SwingController.getMainFrame(),
                                           "One or more of the changes you made " +
                                           "won't take effect until you restart the client.",
                                           "Restart needed",

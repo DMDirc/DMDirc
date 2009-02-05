@@ -23,12 +23,11 @@
 package com.dmdirc.addons.ui_swing.dialogs.serversetting;
 
 import com.dmdirc.IgnoreList;
-import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.config.prefs.validator.NotEmptyValidator;
 import com.dmdirc.config.prefs.validator.RegexValidator;
 import com.dmdirc.config.prefs.validator.ValidatorChain;
-import com.dmdirc.addons.ui_swing.MainFrame;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.components.StandardInputDialog;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 
@@ -175,7 +174,7 @@ public final class IgnoreListPanel extends JPanel implements ActionListener,
     @SuppressWarnings("unchecked")
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == addButton) {
-            new StandardInputDialog((MainFrame) Main.getUI().getMainWindow(),
+            new StandardInputDialog(SwingController.getMainFrame(),
                     false, "New ignore list entry",
                     "Please enter the new ignore list entry",
                     viewToggle.isSelected() ? new ValidatorChain<String>(

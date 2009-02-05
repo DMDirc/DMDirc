@@ -25,13 +25,12 @@ package com.dmdirc.addons.ui_swing.dialogs.aliases;
 import com.dmdirc.addons.ui_swing.components.renderers.ArrayCellRenderer;
 import com.dmdirc.addons.ui_swing.components.renderers.ActionConditionCellRenderer;
 import com.dmdirc.actions.wrappers.Alias;
-import com.dmdirc.Main;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.wrappers.AliasWrapper;
-import com.dmdirc.addons.ui_swing.MainFrame;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.components.PackingTable;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 
@@ -91,7 +90,7 @@ public final class AliasManagerDialog extends StandardDialog implements
 
     /** Creates a new instance of ErrorListDialog. */
     private AliasManagerDialog() {
-        super((MainFrame) Main.getUI().getMainWindow(), false);
+        super(SwingController.getMainFrame(), false);
 
         setTitle("DMDirc: Alias manager");
 
@@ -108,7 +107,7 @@ public final class AliasManagerDialog extends StandardDialog implements
     public static void showAliasManagerDialog() {
         me = getAliasManagerDialog();
 
-        me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        me.setLocationRelativeTo(SwingController.getMainFrame());
         me.setVisible(true);
         me.requestFocusInWindow();
     }

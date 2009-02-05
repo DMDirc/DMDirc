@@ -22,10 +22,9 @@
 
 package com.dmdirc.addons.osd;
 
-import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.messages.ColourManager;
-import com.dmdirc.addons.ui_swing.MainFrame;
+import com.dmdirc.addons.ui_swing.SwingController;
 
 import java.awt.Color;
 import java.awt.Point;
@@ -146,7 +145,7 @@ public final class OsdWindow extends JDialog implements MouseListener,
      * @param y The y-axis position for the OSD window
      */
     public OsdWindow(final String text, final boolean config, final int x, final int y) {
-        super(((MainFrame) Main.getUI().getMainWindow()), false);
+        super(SwingController.getMainFrame(), false);
         
         this.config = config;
         

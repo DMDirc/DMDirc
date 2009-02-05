@@ -35,7 +35,7 @@ import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.messages.Styliser;
-import com.dmdirc.addons.ui_swing.MainFrame;
+import com.dmdirc.addons.ui_swing.SwingController;
 
 import java.awt.AWTException;
 import java.awt.Frame;
@@ -165,8 +165,8 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
                 Main.getUI().getMainWindow().setVisible(false);
             } else {
                 Main.getUI().getMainWindow().setVisible(true);
-                ((MainFrame) Main.getUI().getMainWindow()).setState(Frame.NORMAL);
-                ((MainFrame) Main.getUI().getMainWindow()).toFront();
+                SwingController.getMainFrame().setState(Frame.NORMAL);
+                SwingController.getMainFrame().toFront();
             }
         }
     }

@@ -22,8 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.components;
 
-import com.dmdirc.Main;
-import com.dmdirc.addons.ui_swing.MainFrame;
+import com.dmdirc.addons.ui_swing.SwingController;
 
 import java.awt.Window;
 import java.awt.event.ActionListener;
@@ -89,7 +88,7 @@ public final class ColourPickerDialog extends StandardDialog {
      */
     public ColourPickerDialog(final boolean showIRC, final boolean showHex,
             final Window window) {
-        super((MainFrame) Main.getUI().getMainWindow(), false);
+        super(SwingController.getMainFrame(), false);
 
         colourChooser = new ColourPickerPanel(showIRC, showHex);
 

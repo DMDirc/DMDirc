@@ -22,9 +22,8 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.url;
 
-import com.dmdirc.Main;
 import com.dmdirc.addons.ui_swing.components.TextLabel;
-import com.dmdirc.addons.ui_swing.MainFrame;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 import com.dmdirc.addons.ui_swing.components.URLProtocolPanel;
 import com.dmdirc.util.URLHandler;
@@ -61,7 +60,7 @@ public class URLDialog extends StandardDialog implements ActionListener {
      * @param url URL to open once added
      */
     private URLDialog(final URI url) {
-        super((MainFrame) Main.getUI().getMainWindow(), false);
+        super(SwingController.getMainFrame(), false);
 
         this.url = url;
 
@@ -82,7 +81,7 @@ public class URLDialog extends StandardDialog implements ActionListener {
     public static void showURLDialog(final URI url) {
         me = getURLDialog(url);
 
-        me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        me.setLocationRelativeTo(SwingController.getMainFrame());
         me.setVisible(true);
         me.requestFocusInWindow();
     }
@@ -150,7 +149,7 @@ public class URLDialog extends StandardDialog implements ActionListener {
     public void validate() {
         super.validate();
 
-        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        setLocationRelativeTo(SwingController.getMainFrame());
     }
 
     /** {@inheritDoc} */

@@ -23,10 +23,9 @@
 package com.dmdirc.addons.ui_swing.components;
 
 import com.dmdirc.ui.IconManager;
-import com.dmdirc.Main;
 import com.dmdirc.ui.interfaces.SearchBar;
 import com.dmdirc.ui.messages.ColourManager;
-import com.dmdirc.addons.ui_swing.MainFrame;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.actions.SearchAction;
 import com.dmdirc.addons.ui_swing.textpane.IRCDocument;
@@ -239,7 +238,7 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
                 || textPane.getSelectedRange().getEndPos() != 0)
                 && ((up && result.getEndLine() > textPane.getSelectedRange().getEndLine())
                 || (!up && result.getStartLine() < textPane.getSelectedRange().getStartLine()))
-                && JOptionPane.showConfirmDialog((MainFrame) Main.getUI().getMainWindow(),
+                && JOptionPane.showConfirmDialog(SwingController.getMainFrame(),
                 "Do you want to continue searching from the " + (up ? "end" : "beginning"),
                 "No more results", JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE) != JOptionPane.OK_OPTION) {

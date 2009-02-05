@@ -24,12 +24,11 @@ package com.dmdirc.addons.ui_swing.dialogs.error;
 
 import com.dmdirc.addons.ui_swing.components.renderers.ErrorLevelIconCellRenderer;
 import com.dmdirc.addons.ui_swing.components.renderers.DateCellRenderer;
-import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorListener;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ErrorReportStatus;
 import com.dmdirc.logger.ProgramError;
-import com.dmdirc.addons.ui_swing.MainFrame;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.components.PackingTable;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 
@@ -86,7 +85,7 @@ public final class ErrorListDialog extends StandardDialog implements
 
     /** Creates a new instance of ErrorListDialog. */
     private ErrorListDialog() {
-        super((MainFrame) Main.getUI().getMainWindow(), false);
+        super(SwingController.getMainFrame(), false);
 
         setTitle("DMDirc: Error list");
 
@@ -388,7 +387,7 @@ public final class ErrorListDialog extends StandardDialog implements
     /** {@inheritDoc} */
     @Override
     public boolean isReady() {
-        return Main.getUI().getStatusBar().isVisible();
+        return SwingController.getSwingStatusBar().isVisible();
     }
     
     /** {@inheritDoc} */

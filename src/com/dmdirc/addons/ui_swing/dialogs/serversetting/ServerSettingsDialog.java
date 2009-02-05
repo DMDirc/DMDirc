@@ -22,10 +22,9 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.serversetting;
 
-import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.config.Identity;
-import com.dmdirc.addons.ui_swing.MainFrame;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 import com.dmdirc.addons.ui_swing.components.expandingsettings.SettingsPanel;
@@ -72,7 +71,7 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
      * @param server The server object that we're editing settings for
      */
     private ServerSettingsDialog(final Server server) {
-        super((MainFrame) Main.getUI().getMainWindow(), false);
+        super(SwingController.getMainFrame(), false);
 
         this.server = server;
 
@@ -92,7 +91,7 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
         me = getServerSettingsDialog(server);
         
         me.pack();
-        me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        me.setLocationRelativeTo(SwingController.getMainFrame());
         me.setVisible(true);
         me.requestFocusInWindow();
     }

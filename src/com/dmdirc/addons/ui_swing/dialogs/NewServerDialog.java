@@ -29,7 +29,7 @@ import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.validator.PortValidator;
 import com.dmdirc.config.prefs.validator.RegexStringValidator;
-import com.dmdirc.addons.ui_swing.MainFrame;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 import com.dmdirc.addons.ui_swing.components.validating.ValidatingJTextField;
 import com.dmdirc.addons.ui_swing.dialogs.profiles.ProfileManagerDialog;
@@ -109,7 +109,7 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
     public static void showNewServerDialog(final Window parentWindow) {
         me = getNewServerDialog(parentWindow);
 
-        me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        me.setLocationRelativeTo(SwingController.getMainFrame());
         me.setVisible(true);
         me.requestFocusInWindow();
     }

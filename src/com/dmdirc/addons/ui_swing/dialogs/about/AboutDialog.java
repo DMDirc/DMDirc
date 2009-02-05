@@ -22,8 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.about;
 
-import com.dmdirc.Main;
-import com.dmdirc.addons.ui_swing.MainFrame;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 
 import java.awt.event.ActionEvent;
@@ -60,7 +59,7 @@ public final class AboutDialog extends StandardDialog implements
 
     /** Creates a new instance of AboutDialog. */
     private AboutDialog() {
-        super((MainFrame) Main.getUI().getMainWindow(), false);
+        super(SwingController.getMainFrame(), false);
         initComponents();
     }
 
@@ -68,7 +67,7 @@ public final class AboutDialog extends StandardDialog implements
     public static void showAboutDialog() {
         me = getAboutDialog();
 
-        me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        me.setLocationRelativeTo(SwingController.getMainFrame());
         me.setVisible(true);
         me.requestFocusInWindow();
     }

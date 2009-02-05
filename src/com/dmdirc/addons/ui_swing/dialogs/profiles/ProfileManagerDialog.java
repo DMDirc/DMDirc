@@ -22,10 +22,8 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.profiles;
 
-import com.dmdirc.Main;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.components.ListScroller;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
@@ -113,7 +111,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
         me = getProfileManagerDialog(SwingController.getMainFrame());
 
         me.pack();
-        me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        me.setLocationRelativeTo(SwingController.getMainFrame());
         me.setVisible(true);
         me.requestFocusInWindow();
     }
@@ -127,7 +125,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
         me = getProfileManagerDialog(parentWindow);
 
         me.pack();
-        me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        me.setLocationRelativeTo(SwingController.getMainFrame());
         me.setVisible(true);
         me.requestFocusInWindow();
     }

@@ -23,10 +23,8 @@
 package com.dmdirc.addons.lagdisplay;
 
 import com.dmdirc.Server;
-import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
 import com.dmdirc.ServerState;
-import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 
@@ -67,7 +65,7 @@ public class ServerInfoDialog extends StandardDialog {
      * @param parent The {@link JPanel} to use for positioning
      */
     public ServerInfoDialog(final LagDisplayPlugin ldp, final JPanel parent) {
-        super((MainFrame) Main.getUI().getMainWindow(), false);
+        super(SwingController.getMainFrame(), false);
 
         this.parent = parent;
 

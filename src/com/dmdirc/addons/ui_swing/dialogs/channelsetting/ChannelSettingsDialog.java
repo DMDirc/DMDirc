@@ -23,10 +23,9 @@
 package com.dmdirc.addons.ui_swing.dialogs.channelsetting;
 
 import com.dmdirc.Channel;
-import com.dmdirc.Main;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.addons.ui_swing.MainFrame;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 import com.dmdirc.addons.ui_swing.components.expandingsettings.SettingsPanel;
@@ -84,7 +83,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
      * @param newChannel The channel object that we're editing settings for
      */
     private ChannelSettingsDialog(final Channel newChannel) {
-        super((MainFrame) Main.getUI().getMainWindow(), false);
+        super(SwingController.getMainFrame(), false);
 
         channel = newChannel;
         identity = IdentityManager.getChannelConfig(channel.getServer().
@@ -103,7 +102,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
         me = getChannelSettingsDialog(channel);
 
         me.pack();
-        me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        me.setLocationRelativeTo(SwingController.getMainFrame());
         me.setVisible(true);
         me.requestFocusInWindow();
     }

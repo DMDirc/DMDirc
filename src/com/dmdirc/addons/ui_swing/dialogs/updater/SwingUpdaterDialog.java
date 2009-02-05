@@ -22,11 +22,10 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.updater;
 
-import com.dmdirc.Main;
 import com.dmdirc.interfaces.UpdateCheckerListener;
 import com.dmdirc.ui.interfaces.UpdaterDialog;
 import com.dmdirc.addons.ui_swing.components.TextLabel;
-import com.dmdirc.addons.ui_swing.MainFrame;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.components.PackingTable;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 import com.dmdirc.addons.ui_swing.components.renderers.UpdateComponentTableCellRenderer;
@@ -81,7 +80,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
      * @param updates A list of updates that are available.
      */
     private SwingUpdaterDialog(final List<Update> updates) {
-        super((MainFrame) Main.getUI().getMainWindow(), false);
+        super(SwingController.getMainFrame(), false);
 
         initComponents(updates);
         layoutComponents();
@@ -188,7 +187,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
     /** {@inheritDoc} */
     @Override
     public void display() {
-        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        setLocationRelativeTo(SwingController.getMainFrame());
         setVisible(true);
         requestFocusInWindow();
     }

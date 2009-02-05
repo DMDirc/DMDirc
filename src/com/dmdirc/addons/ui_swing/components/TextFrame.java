@@ -42,7 +42,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.Styliser;
-import com.dmdirc.addons.ui_swing.MainFrame;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.actions.ChannelCopyAction;
 import com.dmdirc.addons.ui_swing.actions.CommandAction;
 import com.dmdirc.addons.ui_swing.actions.HyperlinkCopyAction;
@@ -182,9 +182,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         setResizable(true);
         setIconifiable(true);
         setFocusable(true);
-        setPreferredSize(new Dimension(((MainFrame) Main.getUI().getMainWindow()).getWidth() /
-                2,
-                ((MainFrame) Main.getUI().getMainWindow()).getHeight() / 3));
+        setPreferredSize(new Dimension(SwingController.getMainFrame().getWidth() /
+                2, SwingController.getMainFrame().getHeight() / 3));
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         addPropertyChangeListener("maximum", this);
