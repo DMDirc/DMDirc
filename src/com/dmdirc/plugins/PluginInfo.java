@@ -661,7 +661,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 		    !checkOS(getKeyValue("requires", "os", ""), System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch")) ||
 		    !checkFiles(getKeyValue("requires", "files", "")) ||
 		    (!preliminary && !checkPlugins(getKeyValue("requires", "plugins", ""))) ||
-		    (!preliminary && !checkServices(getKeyValue("requires", "services", "")))
+		    (!preliminary && !checkServices(metaData.getFlatDomain("required-services")))
 		    ) {
 			return false;
 		}
@@ -676,10 +676,10 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 * @param services Required services
 	 * @return true if all services are available
 	 */
-	private boolean checkServices(final String services) {
-		if (services == null || services.isEmpty()) { return true; }
+	private boolean checkServices(final List<String> services) {
+		if (services == null || services.count() < 1) { return true; }
 		
-		for (String requirement : services.split(",")) {
+		for (String requirement : services) {
 			final String[] bits = requirement.split(" ");
 			final String name = bits[0];
 			final String type = (bits.length > 1) ? bits[1] : "misc";
