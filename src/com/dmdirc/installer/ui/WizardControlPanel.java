@@ -24,6 +24,7 @@
 package com.dmdirc.installer.ui;
 
 import com.dmdirc.installer.ui.EtchedLineBorder.BorderSide;
+import java.awt.Dimension;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -64,6 +65,9 @@ public class WizardControlPanel extends JPanel {
         next = new JButton("Next \u00BB");
         progress = new JLabel();
         updateProgressLabel();
+
+        prev.setPreferredSize(new Dimension(100, prev.getFont().getSize() + 2 * InstallerDialog.SMALL_GAP));
+        next.setPreferredSize(new Dimension(100, next.getFont().getSize() + 2 * InstallerDialog.SMALL_GAP));
 
         setBorder(new EtchedLineBorder(EtchedBorder.LOWERED, BorderSide.TOP));
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
