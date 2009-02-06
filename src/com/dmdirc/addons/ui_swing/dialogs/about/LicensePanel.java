@@ -25,6 +25,7 @@ package com.dmdirc.addons.ui_swing.dialogs.about;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
+import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,6 +40,8 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -70,14 +73,14 @@ public final class LicensePanel extends JPanel {
                 getResourcesStartingWithAsInputStreams("com/dmdirc/licenses/"));
 
         license = new JEditorPane();
-        license.setContentType("text/html");
+        license.setEditorKit(new HTMLEditorKit());
+        final Font font = UIManager.getFont("Label.font");
+        ((HTMLDocument) license.getDocument()).getStyleSheet().addRule("body " +
+                "{ font-family: " + font.getFamily() + "; " + "font-size: " +
+                font.getSize() + "pt; }");
+        
         final StringBuilder licenseText = new StringBuilder();
         licenseText.append("<html>");
-        licenseText.append("<span style='font-family: ");
-        licenseText.append(UIManager.getFont("TextField.font").getFamily());
-        licenseText.append("; font-size:");
-        licenseText.append(UIManager.getFont("TextField.font").getSize());
-        licenseText.append("pt;'>");
         licenseText.append("Below are the licenses used in various components of DMDirc: <br><ul>");
         for (Entry<String, InputStream> entry : licenses.entrySet()) {
             final String licenseString = entry.getKey().substring(entry.getKey().
@@ -101,7 +104,7 @@ public final class LicensePanel extends JPanel {
                         "<br>"));
             }
         }
-        licenseText.append("</span></html>");
+        licenseText.append("</html>");
         license.setText(licenseText.toString());
         license.setEditable(false);
 

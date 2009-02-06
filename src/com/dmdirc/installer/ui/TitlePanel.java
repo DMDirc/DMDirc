@@ -28,7 +28,6 @@ import com.dmdirc.installer.ui.EtchedLineBorder.BorderSide;
 import java.awt.BorderLayout;
 import java.awt.Color;
 
-import java.awt.Font;
 import java.awt.Toolkit;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;

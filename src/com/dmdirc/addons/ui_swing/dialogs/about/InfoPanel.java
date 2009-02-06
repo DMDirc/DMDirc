@@ -28,11 +28,15 @@ import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 
 
+import java.awt.Font;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import javax.swing.UIManager;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
 import net.miginfocom.swing.MigLayout;
 
 /** Info panel. */
@@ -56,7 +60,14 @@ public final class InfoPanel extends JPanel {
     /** Initialises the components. */
     private void initComponents() {
         final JScrollPane scrollPane = new JScrollPane();
-        final JEditorPane infoPane = new JEditorPane("text/html", "<html>" +
+        final JEditorPane infoPane = new JEditorPane();
+        infoPane.setEditorKit(new HTMLEditorKit());
+        final Font font = UIManager.getFont("Label.font");
+        ((HTMLDocument) infoPane.getDocument()).getStyleSheet().addRule("body " +
+                "{ font-family: " + font.getFamily() + "; " + "font-size: " +
+                font.getSize() + "pt; }");
+        
+         infoPane.setText("<html>" +
                 "<b>DMDirc version: </b>" + Info.getDMDircVersion() + "<br>" +
                 "<b>Profile directory: </b>" + Main.getConfigDir() + "<br>" +
                 "<b>Java version: </b>" + Info.getJavaVersion() + "<br>" +
