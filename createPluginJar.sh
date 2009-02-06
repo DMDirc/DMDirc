@@ -7,8 +7,16 @@ if [ "${1}" = "" -o "${2}" = "" ]; then
 	exit;
 fi
 
+srcdir=${PWD}
 pluginname=${1}
 foldername=${pluginname//.//}
+
+newer=`find src/${foldername} -type f -newer ${srcdir}/plugins/${2}.jar 2>&1 | wc -l`
+
+if [ $newer -eq 0 ]; then
+	echo "${2}.jar appears to be up-to-date";
+	exit 0;
+fi
 
 echo "Creating ${2}.jar for ${pluginname} (${foldername})"
 
@@ -18,7 +26,6 @@ if [ ! -e src/${foldername}/plugin.info -a ! -e src/${foldername}/plugin.config 
 fi
 
 #echo "looking for classes"
-srcdir=${PWD}
 TMPDIR=`mktemp -d`
 #echo "Using temp dir: ${TMPDIR}"
 cd $TMPDIR
