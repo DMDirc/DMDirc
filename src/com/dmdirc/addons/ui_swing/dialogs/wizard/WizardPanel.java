@@ -24,6 +24,7 @@ package com.dmdirc.addons.ui_swing.dialogs.wizard;
 
 import com.dmdirc.addons.ui_swing.components.EtchedLineBorder;
 import com.dmdirc.addons.ui_swing.components.EtchedLineBorder.BorderSide;
+import com.dmdirc.addons.ui_swing.components.TitlePanel;
 import com.dmdirc.util.ListenerList;
 
 import java.awt.Color;
@@ -69,7 +70,7 @@ public class WizardPanel extends JPanel implements ActionListener {
     /** Progress label. */
     private JLabel progressLabel;
     /** Step Listeners. */
-    private ListenerList stepListeners;
+    private final ListenerList stepListeners;
 
     /**
      * Creates a new instance of WizardPanel.
@@ -117,14 +118,6 @@ public class WizardPanel extends JPanel implements ActionListener {
 
     /** Lays out the components. */
     private void layoutComponents() {
-        final JPanel titlePanel = new JPanel(new MigLayout("fill, pack"));
-        titlePanel.add(titleLabel, "growx, wrap");
-        titlePanel.setBackground(Color.WHITE);
-        titlePanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0,
-                Color.BLACK));
-        titlePanel.setBorder(new EtchedLineBorder(EtchedBorder.LOWERED,
-                BorderSide.BOTTOM));
-
         final JPanel progressPanel = new JPanel(new MigLayout("fill"));
         progressPanel.add(progressLabel, "growx");
         progressPanel.add(prev, "sg button");
@@ -135,7 +128,8 @@ public class WizardPanel extends JPanel implements ActionListener {
                 BorderSide.TOP));
 
         setLayout(new MigLayout("fill, wrap 1, ins 0"));
-        add(titlePanel, "growx");
+        add(new TitlePanel(new EtchedLineBorder(EtchedBorder.LOWERED,
+                BorderSide.BOTTOM)), "growx");
         add(stepsPanel, "grow");
         add(progressPanel, "growx");
     }

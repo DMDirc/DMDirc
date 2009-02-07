@@ -93,6 +93,33 @@ public class PreferencesManager {
     }
 
     /**
+     * Saves all the settings in this manager.
+     *
+     * @return Is a restart needed after saving?
+     */
+    public boolean save() {
+        fireSaveListeners();
+        
+        boolean restart = false;
+        for (PreferencesCategory category : categories) {
+            if (category.save()) {
+                restart = true;
+            }
+        }
+
+        return restart;
+    }
+
+    /**
+     * Dismisses all the settings in this manager.
+     */
+    public void dismiss() {
+        for (PreferencesCategory category : categories) {
+            category.dismiss();
+        }
+    }
+
+    /**
      * Adds the default categories to this preferences manager.
      */
     private void addDefaultCategories() {

@@ -30,9 +30,12 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.SwingWorker;
 
 /**
+ * Logging swing worker
  *
+ * @param <T> Return type for the doneInBackground method
+ * @param <V> Return type for the progress and publish
  */
-public abstract class LoggingSwingWorker extends SwingWorker {
+public abstract class LoggingSwingWorker<T, V> extends SwingWorker<T, V> {
 
     /** {@inheritDoc} */
     @Override
