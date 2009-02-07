@@ -39,9 +39,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -69,8 +69,7 @@ public final class LicensePanel extends JPanel {
     /** Initialises the components. */
     private void initComponents() {
         final JEditorPane license;
-        final Map<String, InputStream> licenses = new TreeMap<String, InputStream>(ResourceManager.getResourceManager().
-                getResourcesStartingWithAsInputStreams("com/dmdirc/licenses/"));
+        final ResourceManager rm = ResourceManager.getResourceManager();
 
         license = new JEditorPane();
         license.setEditorKit(new HTMLEditorKit());
@@ -78,30 +77,43 @@ public final class LicensePanel extends JPanel {
         ((HTMLDocument) license.getDocument()).getStyleSheet().addRule("body " +
                 "{ font-family: " + font.getFamily() + "; " + "font-size: " +
                 font.getSize() + "pt; }");
-        
+
         final StringBuilder licenseText = new StringBuilder();
         licenseText.append("<html>");
-        licenseText.append("Below are the licenses used in various components of DMDirc: <br><ul>");
-        for (Entry<String, InputStream> entry : licenses.entrySet()) {
-            final String licenseString = entry.getKey().substring(entry.getKey().
-                    lastIndexOf('/') + 1);
-            if (licenseString.length() > 1) {
-                licenseText.append("<li>");
-                licenseText.append(licenseString);
-                licenseText.append("</li>");
+
+        if (rm == null) {
+            licenseText.append("Error loading licenses.");
+        } else {
+            final Map<String, InputStream> licenses =
+                    new TreeMap<String, InputStream>(rm.
+                    getResourcesStartingWithAsInputStreams(
+                    "com/dmdirc/licenses/"));
+            licenseText.append("Below are the licenses used in various " +
+                    "components of DMDirc: <br><ul>");
+            for (Entry<String, InputStream> entry : licenses.entrySet()) {
+                final String licenseString = entry.getKey().substring(entry.
+                        getKey().
+                        lastIndexOf('/') + 1);
+                if (licenseString.length() > 1) {
+                    licenseText.append("<li>");
+                    licenseText.append(licenseString);
+                    licenseText.append("</li>");
+                }
             }
-        }
-        licenseText.append("</ul>");
-        for (Entry<String, InputStream> entry : licenses.entrySet()) {
-            final String licenseString = entry.getKey().substring(entry.getKey().
-                    lastIndexOf('/') + 1);
-            if (licenseString.length() > 1) {
-                licenseText.append("<h1>");
-                licenseText.append(licenseString.substring(0,
-                        licenseString.lastIndexOf(" - ")));
-                licenseText.append("</h1>");
-                licenseText.append(readInputStream(entry.getValue()).replaceAll("\n",
-                        "<br>"));
+            licenseText.append("</ul>");
+            for (Entry<String, InputStream> entry : licenses.entrySet()) {
+                final String licenseString = entry.getKey().substring(entry.
+                        getKey().
+                        lastIndexOf('/') + 1);
+                if (licenseString.length() > 1) {
+                    licenseText.append("<h1>");
+                    licenseText.append(licenseString.substring(0,
+                            licenseString.lastIndexOf(" - ")));
+                    licenseText.append("</h1>");
+                    licenseText.append(
+                            readInputStream(entry.getValue()).replaceAll("\n",
+                            "<br>"));
+                }
             }
         }
         licenseText.append("</html>");
@@ -144,7 +156,7 @@ public final class LicensePanel extends JPanel {
                 line = input.readLine();
             }
         } catch (IOException ex) {
-        //Ignore
+            //Ignore
         }
 
         return text.toString();
