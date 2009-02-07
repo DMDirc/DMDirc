@@ -26,15 +26,15 @@ import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.addons.ui_dummy.DummyController;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class IrcAddressTest {
 
-    @Before
-    public void setUp() {
+    @BeforeClass
+    public static void setUp() {
         IdentityManager.load();
         Main.setUI(new DummyController());
     }
@@ -156,7 +156,4 @@ public class IrcAddressTest {
         assertEquals("#DMDirc", address1.getChannels().get(0));
     }
 
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(IrcAddressTest.class);
-    }
 }
