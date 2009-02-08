@@ -208,9 +208,10 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             if (selected != null) {
                 selected.fireCategoryDeselected();
             }
-
             selected = node;
-            selected.fireCategorySelected();
+            if (selected != null) {
+                selected.fireCategorySelected();
+            }
             mainPanel.setCategory(selected);
         }
     }

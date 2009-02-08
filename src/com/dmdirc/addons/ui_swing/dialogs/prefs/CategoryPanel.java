@@ -35,7 +35,6 @@ import com.dmdirc.config.prefs.PreferencesCategory;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.util.ReturnableThread;
 
 import java.awt.Window;
 import java.util.concurrent.ExecutionException;
@@ -45,6 +44,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingWorker;
 
 import net.miginfocom.layout.PlatformDefaults;
@@ -82,6 +82,8 @@ public class CategoryPanel extends JPanel {
     private JScrollPane scrollPane;
     /** Loading panel. */
     private JPanel loading;
+    /** Loading panel. */
+    private JPanel nullCategory;
 
     /**
      * Instantiates a new category panel.
@@ -102,9 +104,16 @@ public class CategoryPanel extends JPanel {
             final PreferencesCategory category) {
         super(new MigLayout("fillx, wrap"));
         this.parent = parent;
-        scrollPane = new JScrollPane();
-        loading = new JPanel(new MigLayout("ins 0"));
+
+        loading = new JPanel(new MigLayout("fillx"));
         loading.add(new TextLabel("Loading..."));
+
+        nullCategory = new JPanel(new MigLayout("fillx"));
+        nullCategory.add(new TextLabel("Please select a category."));
+        
+        scrollPane = new JScrollPane(loading);
+        scrollPane.setHorizontalScrollBarPolicy(
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         title = new TitlePanel(BorderFactory.createEtchedBorder(),
                 "Preferences");
@@ -145,7 +154,8 @@ public class CategoryPanel extends JPanel {
             @Override
             protected void done() {
                 try {
-                    scrollPane.setViewportView(get());
+                    final JPanel panel = get();
+                    scrollPane.setViewportView(panel);
                     if (category == null) {
                         title.setText("Preferences");
                     } else {
@@ -164,19 +174,14 @@ public class CategoryPanel extends JPanel {
     }
 
     private JPanel initCategory() {
-        return UIUtilities.invokeAndWait(new ReturnableThread<JPanel>() {
-
-            @Override
-            public void run() {
-                if (category == null) {
-                    setObject(new JPanel());
-                } else {
-                    final JPanel panel = addCategory(category);
-                    addListeners();
-                    setObject(panel);
-                }
-            }
-        });
+        final JPanel panel;
+        if (category == null) {
+            panel = nullCategory;
+        } else {
+            panel = addCategory(category);
+            addListeners();
+        }
+        return panel;
     }
 
     /**
