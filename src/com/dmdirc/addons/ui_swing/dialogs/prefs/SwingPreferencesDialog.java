@@ -30,6 +30,7 @@ import com.dmdirc.addons.ui_swing.components.ListScroller;
 import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 
+import com.dmdirc.config.IdentityManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -101,6 +102,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         ((DefaultListModel) tabList.getModel()).clear();
         mainPanel.setCategory(null);
         addCategories(manager.getCategories());
+        restoreActiveCategory();
     }
 
     /** Returns the instance of SwingPreferencesDialog. */
@@ -186,7 +188,10 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     public void actionPerformed(final ActionEvent actionEvent) {
         if (getOkButton().equals(actionEvent.getSource())) {
             if (tabList.getSelectedIndex() > -1) {
-                //Save active category
+                final PreferencesCategory node = (PreferencesCategory) tabList.
+                        getSelectedValue();
+                IdentityManager.getConfigIdentity().setOption("dialogstate",
+                        "preferences", node.getPath());
             }
             saveOptions();
         }
@@ -229,6 +234,23 @@ public final class SwingPreferencesDialog extends StandardDialog implements
                     "Restart needed",
                     JOptionPane.INFORMATION_MESSAGE);
         }
+    }
+
+    private void restoreActiveCategory() {
+        final String oldCategoryPath = IdentityManager.getConfigIdentity().
+                getOption("dialogstate", "preferences", "");
+        final DefaultListModel model = (DefaultListModel) tabList.getModel();
+        int indexToSelect = 1;
+        int size = model.getSize();
+        for (int i = 0; i <= size; i++) {
+            final PreferencesCategory category =
+                    (PreferencesCategory) model.get(i);
+            if (oldCategoryPath.equals(category.getPath())) {
+                indexToSelect = i;
+                break;
+            }
+        }
+        tabList.setSelectedIndex(indexToSelect);
     }
 
     /** {@inheritDoc} */
