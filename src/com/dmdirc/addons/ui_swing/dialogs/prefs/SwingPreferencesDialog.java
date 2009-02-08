@@ -204,6 +204,10 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         if (!e.getValueIsAdjusting()) {
             final PreferencesCategory node = (PreferencesCategory) tabList.
                     getSelectedValue();
+            if (node == null) {
+                tabList.setSelectedValue(selected, true);
+                return;
+            }
 
             if (selected != null) {
                 selected.fireCategoryDeselected();

@@ -292,7 +292,7 @@ public class CategoryPanel extends JPanel {
             final JPanel parent) {
         final JPanel panel =
                 new JPanel(new MigLayout("fillx, gap unrel, wrap 2, hidemode 3, pack, " +
-                "wmax 480-" + leftPadding + "-" +
+                "wmax 470-" + leftPadding + "-" +
                 rightPadding + "-2*" + padding));
         panel.setBorder(BorderFactory.createTitledBorder(category.getTitle()));
 
@@ -311,7 +311,7 @@ public class CategoryPanel extends JPanel {
     private JPanel addCategory(final PreferencesCategory category) {
         final JPanel panel =
                 new JPanel(new MigLayout("fillx, gap unrel, wrap 2, hidemode 3, " +
-                "wmax 480-" + leftPadding + "-" +
+                "wmax 470-" + leftPadding + "-" +
                 rightPadding + "-2*" + padding));
         final String path = category.getPath();
 
