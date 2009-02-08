@@ -150,9 +150,9 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
 
-        setLayout(new MigLayout("fillx, wmax 650, hmin 600, hmax 600, pack"));
+        setLayout(new MigLayout("fillx, wmax 650, hmin 600, hmax 600, pack, debug"));
         add(tabList, "w 150!, growy, spany 3");
-        add(mainPanel, "wrap, w 480!, pushy");
+        add(mainPanel, "wrap, w 480!, pushy, growy");
         add(getLeftButton(), "span, split, right");
         add(getRightButton(), "right");
     }
@@ -242,7 +242,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         final DefaultListModel model = (DefaultListModel) tabList.getModel();
         int indexToSelect = 1;
         int size = model.getSize();
-        for (int i = 0; i <= size; i++) {
+        for (int i = 0; i < size; i++) {
             final PreferencesCategory category =
                     (PreferencesCategory) model.get(i);
             if (oldCategoryPath.equals(category.getPath())) {

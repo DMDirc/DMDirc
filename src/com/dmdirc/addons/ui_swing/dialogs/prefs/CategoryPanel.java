@@ -101,7 +101,7 @@ public class CategoryPanel extends JPanel {
      */
     public CategoryPanel(final Window parent,
             final PreferencesCategory category) {
-        super(new MigLayout("fillx, wrap"));
+        super(new MigLayout("fillx, wrap, ins 0"));
         this.parent = parent;
 
         loading = new JPanel(new MigLayout("fillx"));
