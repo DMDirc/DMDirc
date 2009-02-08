@@ -37,6 +37,8 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
 import java.awt.Window;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.BorderFactory;
@@ -83,6 +85,8 @@ public class CategoryPanel extends JPanel {
     private JPanel loading;
     /** Loading panel. */
     private JPanel nullCategory;
+    /** Category panel map. */
+    private Map<PreferencesCategory, JPanel> panels;
 
     /**
      * Instantiates a new category panel.
@@ -104,12 +108,14 @@ public class CategoryPanel extends JPanel {
         super(new MigLayout("fillx, wrap, ins 0"));
         this.parent = parent;
 
+        panels = new HashMap<PreferencesCategory, JPanel>();
+
         loading = new JPanel(new MigLayout("fillx"));
         loading.add(new TextLabel("Loading..."));
 
         nullCategory = new JPanel(new MigLayout("fillx"));
         nullCategory.add(new TextLabel("Please select a category."));
-        
+
         scrollPane = new JScrollPane(loading);
         scrollPane.setHorizontalScrollBarPolicy(
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -133,40 +139,50 @@ public class CategoryPanel extends JPanel {
      */
     public void setCategory(final PreferencesCategory category) {
         this.category = category;
-        UIUtilities.invokeAndWait(new Runnable() {
 
-            @Override
-            public void run() {
-                scrollPane.setViewportView(loading);
-            }
-        });
+        if (!panels.containsKey(category)) {
+            UIUtilities.invokeAndWait(new Runnable() {
 
-        new SwingWorker<JPanel, Object>() {
-
-            /** {@inheritDoc} */
-            @Override
-            protected JPanel doInBackground() throws Exception {
-                return initCategory();
-            }
-
-            /** {@inheritDoc} */
-            @Override
-            protected void done() {
-                try {
-                    final JPanel panel = get();
-                    scrollPane.setViewportView(panel);
-                    if (category == null) {
-                        title.setText("Preferences");
-                    } else {
-                        title.setText(category.getPath());
-                    }
-                } catch (InterruptedException ex) {
-                    //Ignore
-                    } catch (ExecutionException ex) {
-                    Logger.appError(ErrorLevel.MEDIUM, ex.getMessage(), ex);
+                @Override
+                public void run() {
+                    scrollPane.setViewportView(loading);
                 }
+            });
+
+            new SwingWorker<JPanel, Object>() {
+
+                /** {@inheritDoc} */
+                @Override
+                protected JPanel doInBackground() throws Exception {
+                    return initCategory();
+                }
+
+                /** {@inheritDoc} */
+                @Override
+                protected void done() {
+                    try {
+                        panels.put(category, get());
+                        scrollPane.setViewportView(panels.get(category));
+                        if (category == null) {
+                            title.setText("Preferences");
+                        } else {
+                            title.setText(category.getPath());
+                        }
+                    } catch (InterruptedException ex) {
+                        //Ignore
+                    } catch (ExecutionException ex) {
+                        Logger.appError(ErrorLevel.MEDIUM, ex.getMessage(), ex);
+                    }
+                }
+            }.execute();
+        } else {
+            scrollPane.setViewportView(panels.get(category));
+            if (category == null) {
+                title.setText("Preferences");
+            } else {
+                title.setText(category.getPath());
             }
-        }.execute();
+        }
     }
 
     private void addListeners() {
