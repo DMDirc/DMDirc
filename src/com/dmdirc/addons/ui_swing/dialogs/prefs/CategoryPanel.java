@@ -41,7 +41,6 @@ import java.util.concurrent.ExecutionException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
@@ -120,8 +119,8 @@ public class CategoryPanel extends JPanel {
         tooltip = new ToolTipPanel("Hover over a setting to see a " +
                 "description, if available.");
 
-        add(title, "pushx, growx");
-        add(scrollPane, "grow, push");
+        add(title, "pushx, growx, h 45!");
+        add(scrollPane, "grow, push, h 425!");
         add(tooltip, "pushx, growx, h 65!");
 
         setCategory(category);
@@ -196,7 +195,8 @@ public class CategoryPanel extends JPanel {
             final JPanel panel, final String path) {
 
         if (!category.getDescription().isEmpty()) {
-            panel.add(new TextLabel(category.getDescription()), "span, growx");
+            panel.add(new TextLabel(category.getDescription()), "span, " +
+                    "growx, wrap 2*unrel");
         }
 
         for (PreferencesCategory child : category.getSubcats()) {
@@ -243,7 +243,7 @@ public class CategoryPanel extends JPanel {
             final PreferencesSetting setting,
             final JPanel panel) {
 
-        final JLabel label = getLabel(setting);
+        final TextLabel label = getLabel(setting);
 
         JComponent option = PrefsComponentFactory.getComponent(setting);
         option.setToolTipText(setting.getHelptext());
@@ -256,10 +256,8 @@ public class CategoryPanel extends JPanel {
             ((OptionalColourChooser) option).setWindow(parent);
         }
 
-        panel.add(label, "align label, growx");
-
-        label.setLabelFor(option);
-        panel.add(option, "growx, w 70%");
+        panel.add(label, "align label, wmax 40%");
+        panel.add(option, "growx, w 60%");
 
         tooltip.registerTooltipHandler(option);
     }
@@ -270,8 +268,8 @@ public class CategoryPanel extends JPanel {
      * @param setting The setting whose label is being requested
      * @return A JLabel with the appropriate text and tooltip
      */
-    private JLabel getLabel(final PreferencesSetting setting) {
-        final JLabel label = new JLabel(setting.getTitle() + ": ");
+    private TextLabel getLabel(final PreferencesSetting setting) {
+        final TextLabel label = new TextLabel(setting.getTitle() + ": ", false);
 
         if (setting.getHelptext().isEmpty()) {
             label.setToolTipText("No help available.");
@@ -310,8 +308,8 @@ public class CategoryPanel extends JPanel {
      */
     private JPanel addCategory(final PreferencesCategory category) {
         final JPanel panel =
-                new JPanel(new MigLayout("fillx, gap unrel, wrap 2, hidemode 3, " +
-                "wmax 470-" + leftPadding + "-" +
+                new JPanel(new MigLayout("fillx, gap unrel, " +
+                "wrap 2, hidemode 3, wmax 470-" + leftPadding + "-" +
                 rightPadding + "-2*" + padding));
         final String path = category.getPath();
 

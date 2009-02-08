@@ -43,7 +43,7 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Updates configuration UI.
  */
-public class UpdateConfigPanel extends JPanel implements ActionListener, 
+public class UpdateConfigPanel extends JPanel implements ActionListener,
         PreferencesInterface {
 
     /**
@@ -118,12 +118,12 @@ public class UpdateConfigPanel extends JPanel implements ActionListener,
      * Lays out the components.
      */
     private void layoutComponents() {
-        setLayout(new MigLayout("fillx, ins 0, h "
-                + SwingPreferencesDialog.CLIENT_HEIGHT + "!"));
+        setLayout(new MigLayout("fillx, ins 0, hmax " +
+                SwingPreferencesDialog.CLIENT_HEIGHT));
 
         add(new JLabel("Update checking:"), "split");
         add(enable, "growx, pushx, wrap");
-        add(scrollPane, "growx, wrap");
+        add(scrollPane, "wrap");
         add(checkNow, "right");
     }
 

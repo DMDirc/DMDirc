@@ -55,8 +55,8 @@ import net.miginfocom.swing.MigLayout;
  * URL Config panel. List all known url protocols and allows them to be 
  * configured.
  */
-public class URLConfigPanel extends JPanel implements ListSelectionListener,
-        ActionListener, PreferencesInterface {
+public class URLConfigPanel extends JPanel implements
+        ListSelectionListener, ActionListener, PreferencesInterface {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -88,7 +88,7 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
      */
     public URLConfigPanel() {
         super();
-        
+
         initComponents();
         addListeners();
         layoutComponents();
@@ -145,7 +145,7 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
                 model.addURI(uri);
                 details.put(uri, new URLProtocolPanel(uri, true));
             } catch (URISyntaxException ex) {
-            //Ignore wont happen
+                //Ignore wont happen
             }
         }
     }
@@ -164,9 +164,10 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
      */
     private void layoutComponents() {
         removeAll();
-        setLayout(new MigLayout("ins 0, wrap 1"));
+        setLayout(new MigLayout("ins 0, wrap 1, hmax " +
+                SwingPreferencesDialog.CLIENT_HEIGHT));
 
-        add(tableScrollPane, "growx, hmax 200");
+        add(tableScrollPane, "growx");
         add(add, "split 2, growx");
         add(remove, "growx");
         add(activeComponent, "growx, pushx");
@@ -234,11 +235,13 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
                 selectedRow = -1;
             } else {
                 activeComponent =
-                        details.get(model.getValueAt(table.getRowSorter().convertRowIndexToModel(table.getSelectedRow()), 0));
+                        details.get(model.getValueAt(table.getRowSorter().
+                        convertRowIndexToModel(table.getSelectedRow()), 0));
                 layoutComponents();
                 add.setEnabled(true);
                 remove.setEnabled(true);
-                selectedRow = table.getRowSorter().convertRowIndexToModel(table.getSelectedRow());
+                selectedRow = table.getRowSorter().convertRowIndexToModel(table.
+                        getSelectedRow());
             }
             setVisible(true);
         }
@@ -281,13 +284,13 @@ public class URLConfigPanel extends JPanel implements ListSelectionListener,
                 /** {@inheritDoc} */
                 @Override
                 public void cancelled() {
-                //Ignore
+                    //Ignore
                 }
             }.display();
 
         } else if (e.getSource() == remove) {
-            model.removeURI(table.getRowSorter().convertRowIndexToModel(table.getSelectedRow()));
+            model.removeURI(table.getRowSorter().convertRowIndexToModel(table.
+                    getSelectedRow()));
         }
     }
-
 }

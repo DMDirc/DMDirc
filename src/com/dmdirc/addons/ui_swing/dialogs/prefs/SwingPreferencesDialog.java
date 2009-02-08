@@ -63,7 +63,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      *
      * @since 0.6.3
      */
-    public static int CLIENT_HEIGHT = 430;
+    public static int CLIENT_HEIGHT = 375;
     /** Previously instantiated instance of SwingPreferencesDialog. */
     private static volatile SwingPreferencesDialog me;
     /** Preferences tab list, used to switch option types. */
@@ -148,9 +148,9 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
 
-        setLayout(new MigLayout("fillx, wmax 650, hmax 600"));
+        setLayout(new MigLayout("fillx, wmax 650, hmin 600, hmax 600, pack"));
         add(tabList, "w 150!, growy, spany 3");
-        add(mainPanel, "wrap, w 480!, pushy, h " + (CLIENT_HEIGHT + 20 + 65) + "!");
+        add(mainPanel, "wrap, w 480!, pushy");
         add(getLeftButton(), "span, split, right");
         add(getRightButton(), "right");
     }
@@ -224,10 +224,10 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     public void saveOptions() {
         if (manager.save()) {
             JOptionPane.showMessageDialog(SwingController.getMainFrame(),
-                                          "One or more of the changes you made " +
-                                          "won't take effect until you restart the client.",
-                                          "Restart needed",
-                                          JOptionPane.INFORMATION_MESSAGE);
+                    "One or more of the changes you made " +
+                    "won't take effect until you restart the client.",
+                    "Restart needed",
+                    JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
