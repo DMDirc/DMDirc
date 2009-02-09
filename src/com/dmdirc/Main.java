@@ -38,7 +38,11 @@ import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.updater.UpdateChannel;
 import com.dmdirc.updater.UpdateChecker;
 
+import com.dmdirc.util.resourcemanager.ResourceManager;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -107,7 +111,7 @@ public final class Main {
 
         CommandManager.initCommands();
 
-        loadUI(pm, IdentityManager.getGlobalConfig());
+        loadUI(pm, IdentityManager.getGlobalConfig(), true);
 
         getUI().initUISettings();
 
@@ -140,7 +144,18 @@ public final class Main {
         }, "Shutdown thread"));        
     }
 
-    protected static void loadUI(final PluginManager pm, final ConfigManager cm) {
+    /**
+     * Attempts to find and activate a service which provides a UI that we
+     * can use.
+     *
+     * @param pm The plugin manager to use to load plugins
+     * @param cm The config manager to use to retrieve settings
+     * @param tryExtracting If no suitable plugins are found and tryExtracting
+     * is true, the method will try extracting core UI plugins bundled with
+     * DMDirc before giving up.
+     */
+    protected static void loadUI(final PluginManager pm, final ConfigManager cm,
+            final boolean tryExtracting) {
         final List<Service> uis = pm.getServicesByType("ui");
         final String desired = cm.getOption("general", "ui", "swing");
 
@@ -156,6 +171,15 @@ public final class Main {
             if (service.activate()) {
                 return;
             }
+        }
+
+        // Third try: extract some core plugins and go again
+        if (tryExtracting) {
+            extractCorePlugins("ui_");
+            pm.getPossiblePluginInfos(true);
+
+            loadUI(pm, cm, false);
+            return;
         }
 
         // Can't find any
@@ -257,6 +281,46 @@ public final class Main {
      */
     public static void setConfigDir(final String newdir) {
         configdir = newdir;
+    }
+
+    /**
+     * Extracts plugins bundled with DMDirc to the user's profile's plugin
+     * directory.
+     *
+     * @param prefix If non-null, only plugins whose file name starts with
+     * this prefix will be extracted.
+     */
+    public static void extractCorePlugins(final String prefix) {
+        final Map<String, byte[]> resources = ResourceManager.getResourceManager()
+                .getResourcesStartingWithAsBytes("plugins");
+        for (Map.Entry<String, byte[]> resource : resources.entrySet()) {
+            try {
+                final String resourceName = Main.getConfigDir() + "plugins"
+                        + resource.getKey().substring(7);
+
+                if (prefix != null && !resource.getKey().substring(7).startsWith(prefix)) {
+                    continue;
+                }
+
+                final File newDir = new File(resourceName.substring(0,
+                        resourceName.lastIndexOf('/')) + "/");
+
+                if (!newDir.exists()) {
+                    newDir.mkdirs();
+                }
+
+                final File newFile = new File(newDir,
+                        resourceName.substring(resourceName.lastIndexOf('/') + 1,
+                        resourceName.length()));
+
+                if (!newFile.isDirectory()) {
+                    ResourceManager.getResourceManager().
+                            resourceToFile(resource.getValue(), newFile);
+                }
+            } catch (IOException ex) {
+                Logger.userError(ErrorLevel.LOW, "Failed to extract plugins", ex);
+            }
+        }
     }
 
 }
