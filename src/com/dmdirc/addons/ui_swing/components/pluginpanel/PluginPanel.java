@@ -28,6 +28,7 @@ import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
 import com.dmdirc.addons.ui_swing.components.TextLabel;
 import com.dmdirc.addons.ui_swing.components.renderers.AddonCellRenderer;
+import com.dmdirc.addons.ui_swing.dialogs.prefs.SwingPreferencesDialog;
 import com.dmdirc.util.URLHandler;
 
 import java.awt.event.ActionEvent;
@@ -51,29 +52,24 @@ import net.miginfocom.swing.MigLayout;
  */
 public final class PluginPanel extends JPanel implements
         ActionListener, ListSelectionListener, PreferencesInterface {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 3;
-    
     /** List of plugins. */
     private JList pluginList;
-    
     /** plugin list scroll pane. */
     private JScrollPane scrollPane;
-    
     /** Button to enable/disable plugin. */
     private JButton toggleButton;
-    
     /** Currently selected plugin. */
     private int selectedPlugin;
-    
     /** Blurb label. */
     private TextLabel blurbLabel;
-    
+
     /** Creates a new instance of PluginDialog. */
     public PluginPanel() {
         super();
@@ -81,25 +77,28 @@ public final class PluginPanel extends JPanel implements
         initComponents();
         addListeners();
         layoutComponents();
-        
+
         pluginList.setSelectedIndex(0);
         selectedPlugin = 0;
     }
-    
+
     /** Initialises the components. */
-    private void initComponents() {                        
+    private void initComponents() {
         pluginList = new JList(new DefaultListModel());
         pluginList.setCellRenderer(new AddonCellRenderer());
-        
+
         scrollPane = new JScrollPane(new JLabel("Loading plugins..."));
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-                
+        scrollPane.setHorizontalScrollBarPolicy(
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
         toggleButton = new JButton("Enable");
         toggleButton.setEnabled(false);
-        
-        blurbLabel = new TextLabel("Plugins allow you to extend the functionality of DMDirc.");
-        
+
+        blurbLabel = new TextLabel(
+                "Plugins allow you to extend the functionality of DMDirc.");
+
         /** {@inheritDoc}. */
         new LoggingSwingWorker() {
 
@@ -117,47 +116,48 @@ public final class PluginPanel extends JPanel implements
             }
         }.execute();
     }
-    
+
     /** Lays out the dialog. */
     private void layoutComponents() {
-        setLayout(new MigLayout("ins 0, fill"));
-        
+        setLayout(new MigLayout("ins 0, fill, h " +
+                SwingPreferencesDialog.CLIENT_HEIGHT));
+
         add(blurbLabel, "wrap 10, growx");
-        
+
         add(scrollPane, "wrap 5, growx, growy");
-               
+
         add(toggleButton, "split 2, growx, sg button");
-        
+
         final JButton button = new JButton("Get more plugins");
         button.addActionListener(this);
         add(button, "growx, sg button");
     }
-    
-    
+
     /** 
      * Populates the plugins list with plugins from the plugin manager.
      * 
      * @return Populated list
      */
     private JList populateList() {
-        final List<PluginInfo> list = 
+        final List<PluginInfo> list =
                 PluginManager.getPluginManager().getPossiblePluginInfos(true);
         Collections.sort(list);
-        
+
         ((DefaultListModel) pluginList.getModel()).clear();
         for (PluginInfo plugin : list) {
-            ((DefaultListModel) pluginList.getModel()).addElement(new PluginInfoToggle(plugin));
+            ((DefaultListModel) pluginList.getModel()).addElement(new PluginInfoToggle(
+                    plugin));
         }
         pluginList.repaint();
         return pluginList;
     }
-    
+
     /** Adds listeners to components. */
     private void addListeners() {
         toggleButton.addActionListener(this);
         pluginList.addListSelectionListener(this);
     }
-    
+
     /**
      * Invoked when an action occurs.
      * 
@@ -166,32 +166,34 @@ public final class PluginPanel extends JPanel implements
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == toggleButton && selectedPlugin >= 0) {
-            final PluginInfoToggle pluginInfo = (PluginInfoToggle) pluginList.getSelectedValue();
-            
+            final PluginInfoToggle pluginInfo = (PluginInfoToggle) pluginList.
+                    getSelectedValue();
+
             pluginInfo.toggle();
-            
+
             if (pluginInfo.getState()) {
                 toggleButton.setText("Disable");
             } else {
                 toggleButton.setText("Enable");
             }
-            
+
             pluginList.repaint();
         } else if (e.getSource() != toggleButton) {
             URLHandler.getURLHander().launchApp("http://addons.dmdirc.com/");
         }
     }
-    
+
     /** {@inheritDoc}. */
     @Override
     public void valueChanged(final ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
             final int selected = ((JList) e.getSource()).getSelectedIndex();
             if (selected >= 0) {
-                final PluginInfoToggle pluginInfo = (PluginInfoToggle) 
-                        ((JList) e.getSource()).getSelectedValue();
+                final PluginInfoToggle pluginInfo =
+                        (PluginInfoToggle) ((JList) e.getSource()).
+                        getSelectedValue();
                 toggleButton.setEnabled(true);
-                
+
                 if (pluginInfo.getState()) {
                     if (pluginInfo.getPluginInfo().isPersistent()) {
                         toggleButton.setEnabled(false);
@@ -204,7 +206,7 @@ public final class PluginPanel extends JPanel implements
             selectedPlugin = selected;
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void save() {
@@ -212,5 +214,4 @@ public final class PluginPanel extends JPanel implements
             ((PluginInfoToggle) pit).apply();
         }
     }
-    
 }

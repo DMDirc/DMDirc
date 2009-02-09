@@ -185,16 +185,12 @@ public class CategoryPanel extends JPanel {
         }
     }
 
-    private void addListeners() {
-    }
-
     private JPanel initCategory() {
         final JPanel panel;
         if (category == null) {
             panel = nullCategory;
         } else {
             panel = addCategory(category);
-            addListeners();
         }
         return panel;
     }

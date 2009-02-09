@@ -29,8 +29,8 @@ import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.components.ListScroller;
 import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
-
 import com.dmdirc.config.IdentityManager;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -102,7 +102,6 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         ((DefaultListModel) tabList.getModel()).clear();
         mainPanel.setCategory(null);
         addCategories(manager.getCategories());
-        restoreActiveCategory();
     }
 
     /** Returns the instance of SwingPreferencesDialog. */
@@ -175,6 +174,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
                     addCategories(category.getSubcats());
                 }
                 tabList.addListSelectionListener(SwingPreferencesDialog.this);
+                restoreActiveCategory();
             }
         });
     }
@@ -240,9 +240,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         final String oldCategoryPath = IdentityManager.getConfigIdentity().
                 getOption("dialogstate", "preferences", "");
         final DefaultListModel model = (DefaultListModel) tabList.getModel();
-        int indexToSelect = 1;
-        int size = model.getSize();
-        for (int i = 0; i < size; i++) {
+        int indexToSelect = 0;
+        for (int i = 0; i < model.getSize(); i++) {
             final PreferencesCategory category =
                     (PreferencesCategory) model.get(i);
             if (oldCategoryPath.equals(category.getPath())) {
