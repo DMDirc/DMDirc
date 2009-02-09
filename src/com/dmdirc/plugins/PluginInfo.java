@@ -687,7 +687,26 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 			final String name = bits[0];
 			final String type = (bits.length > 1) ? bits[1] : "misc";
 			
-			final Service service = PluginManager.getPluginManager().getService(type, name, false);
+			Service service = null;
+			if (name.equalsIgnoreCase("any")) {
+				final List<Service> serviceList = PluginManager.getPluginManager().getServicesByType(type);
+				if (serviceList.size() > 0) {
+					// Default to the first Service in the list
+					service = serviceList.get(0);
+					if (serviceList.size() > 1) {
+						// Check to see if any of the others are already active
+						for (Service serv : serviceList) {
+							if (service.isActive()) {
+								// Already active, abort.
+								return true;
+							}
+						}
+					}
+				}
+			} else {
+				service = PluginManager.getPluginManager().getService(type, name, false);
+			}
+			
 			if (service != null) {
 				return service.activate();
 			}

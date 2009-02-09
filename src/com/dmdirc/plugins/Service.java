@@ -94,17 +94,29 @@ public class Service {
 	}
 	
 	/**
-	 * Activate this service.
+	 * Check if this service is active.
 	 *
-	 * @return True if this service is already active, or if it was activated.
+	 * @return True if this service is currently active.
 	 */
-	public boolean activate() {
+	public boolean isActive() {
 		// Service is known, check that at least 1 plugin that provides it is loaded
 		for (ServiceProvider provider : getProviders()) {
 			if (provider.isActive()) {
 				return true;
 			}
 		}
+		
+		return false;
+	}
+		
+	
+	/**
+	 * Activate this service.
+	 *
+	 * @return True if this service is already active, or if it was activated.
+	 */
+	public boolean activate() {
+		if (isActive()) { return true; }
 		
 		// If none of the plugins that provide the service are loaded, load the
 		// first one that registered itself as the provider
