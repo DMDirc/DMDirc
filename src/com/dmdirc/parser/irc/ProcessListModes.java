@@ -71,8 +71,14 @@ public class ProcessListModes extends IRCProcessor {
 			mode = 'g';
 			isItem = sParam.equals("941");
 		} else if (sParam.equals("344") || sParam.equals("345")) {
-			// Reop List, or bad words list
-			mode = (thisIRCD.equals("euircd")) ? 'w' : 'R';
+			// Reop List, or bad words list, or quiet list. god damn.
+			if (thisIRCD.equals("euircd")) {
+				mode = 'w'
+			} else if (thisIRCD.equals("oftc-hybrid")) {
+				mode = 'q'
+			} else {
+				mode = 'R';
+			}
 			isItem = sParam.equals("344");
 		} else if (thisIRCD.equals("swiftirc") && (sParam.equals("386") || sParam.equals("387"))) {
 			// Channel Owner list
@@ -102,20 +108,37 @@ public class ProcessListModes extends IRCProcessor {
 					Character oldMode = mode;
 					mode = listModeQueue.peek();
 					myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "LMQ says this is "+mode);
-					if (oldMode != mode) {
+					
+					boolean error = true;
+					
+					if ((thisIRCD.equals("hyperion") || thisIRCD.equals("dancer")) && (mode == 'b' || mode == 'q' || mode == 'd' )) {
+						LinkedList<Character> lmq = (LinkedList<Character>)listModeQueue;
+						if (mode == 'b') {
+							error = !(oldMode == 'q' || oldMode == 'd');
+							lmq.remove((Character)'q');
+							lmq.remove((Character)'d');
+							myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "Dropping q from list");
+							myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "Dropping d from list");
+						} else if (mode == 'q') {
+							error = !(oldMode == 'b' || oldMode == 'd');
+							lmq.remove((Character)'b');
+							lmq.remove((Character)'d');
+							myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "Dropping b from list");
+							myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "Dropping d from list");
+						} else if (mode == 'd') {
+							error = !(oldMode == 'b' || oldMode == 'q');
+							lmq.remove((Character)'b');
+							lmq.remove((Character)'q');
+							myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "Dropping b from list");
+							myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "Dropping q from list");
+						}
+					}
+					
+					if (oldMode != mode && error) {
 						myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "LMQ disagrees with guess. LMQ: "+mode+" Guess: "+oldMode);
 						myParser.callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "LMQ disagrees with guess. LMQ: "+mode+" Guess: "+oldMode, myParser.getLastLine()));
 					}
-					if ((thisIRCD.equals("hyperion") || thisIRCD.equals("dancer")) && (mode == 'b' || mode == 'q')) {
-						LinkedList<Character> lmq = (LinkedList<Character>)listModeQueue;
-						if (mode == 'b') {
-							lmq.remove((Character)'q');
-							myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "Dropping q from list");
-						} else if (mode == 'q') {
-							lmq.remove((Character)'b');
-							myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "Dropping b from list");
-						}
-					}
+					
 					if (!isItem) {
 						listModeQueue.poll();
 					}

@@ -1764,6 +1764,7 @@ public class IRCParser implements Runnable {
 				else if (version.matches("(?i).*u2\\.[0-9]+\\..*")) { return "ircu"; }
 				else if (version.matches("(?i).*ircu.*")) { return "ircu"; }
 				else if (version.matches("(?i).*plexus.*")) { return "plexus"; }
+				else if (version.matches("(?i).*hybrid.*oftc.*")) { return "oftc-hybrid"; }
 				else if (version.matches("(?i).*ircd.hybrid.*")) { return "hybrid7"; }
 				else if (version.matches("(?i).*hybrid.*")) { return "hybrid"; }
 				else if (version.matches("(?i).*charybdis.*")) { return "charybdis"; }
