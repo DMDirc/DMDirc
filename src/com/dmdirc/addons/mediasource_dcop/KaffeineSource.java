@@ -22,7 +22,6 @@
 
 package com.dmdirc.addons.mediasource_dcop;
 
-import com.dmdirc.addons.dcop.DcopPlugin;
 import com.dmdirc.addons.nowplaying.MediaSource;
 import com.dmdirc.addons.nowplaying.MediaSourceState;
 
@@ -43,7 +42,7 @@ public class KaffeineSource implements MediaSource {
     /** {@inheritDoc} */
     @Override
     public MediaSourceState getState() {
-        final List<String> res = DcopPlugin.getDcopResult("dcop kaffeine KaffeineIface isPlaying");
+        final List<String> res = DcopMediaSourcePlugin.getDcopResult("dcop kaffeine KaffeineIface isPlaying");
         if (res.size() > 0) {
             final String result = res.get(0);
             if (Boolean.parseBoolean(result)) {
@@ -63,31 +62,31 @@ public class KaffeineSource implements MediaSource {
     
     /** {@inheritDoc} */
     public String getArtist() {
-        return DcopPlugin.getDcopResult(
+        return DcopMediaSourcePlugin.getDcopResult(
                 "dcop kaffeine KaffeineIface artist").get(0);
     }
 
     /** {@inheritDoc} */
     public String getTitle() {
-        return DcopPlugin.getDcopResult(
+        return DcopMediaSourcePlugin.getDcopResult(
                 "dcop kaffeine KaffeineIface title").get(0);
     }
 
     /** {@inheritDoc} */
     public String getAlbum() {
-        return DcopPlugin.getDcopResult(
+        return DcopMediaSourcePlugin.getDcopResult(
                 "dcop kaffeine KaffeineIface album").get(0);
     }
 
     /** {@inheritDoc} */
     public String getLength() {
-        return duration(Integer.parseInt(DcopPlugin.getDcopResult(
+        return duration(Integer.parseInt(DcopMediaSourcePlugin.getDcopResult(
                 "dcop kaffeine KaffeineIface getLength").get(0)) /1000);
     }
 
     /** {@inheritDoc} */
     public String getTime() {
-        return duration(Integer.parseInt(DcopPlugin.getDcopResult(
+        return duration(Integer.parseInt(DcopMediaSourcePlugin.getDcopResult(
                 "dcop kaffeine KaffeineIface getTimePos").get(0)) /1000);
     }
 

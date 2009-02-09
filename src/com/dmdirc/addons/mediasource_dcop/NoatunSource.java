@@ -22,7 +22,6 @@
 
 package com.dmdirc.addons.mediasource_dcop;
 
-import com.dmdirc.addons.dcop.DcopPlugin;
 import com.dmdirc.addons.nowplaying.MediaSource;
 import com.dmdirc.addons.nowplaying.MediaSourceState;
 
@@ -43,7 +42,7 @@ public class NoatunSource implements MediaSource {
     /** {@inheritDoc} */
     @Override
     public MediaSourceState getState() {
-        final List<String> res = DcopPlugin.getDcopResult("dcop noatun Noatun state");
+        final List<String> res = DcopMediaSourcePlugin.getDcopResult("dcop noatun Noatun state");
         if (res.size() > 0) {
             final String result = res.get(0).trim();
             try {
@@ -73,7 +72,7 @@ public class NoatunSource implements MediaSource {
     
     /** {@inheritDoc} */
     public String getArtist() {
-        final String result = DcopPlugin.getDcopResult(
+        final String result = DcopMediaSourcePlugin.getDcopResult(
                 "dcop noatun Noatun title").get(0);
         if (result.indexOf(" - ") == -1) {
             return "";
@@ -83,7 +82,7 @@ public class NoatunSource implements MediaSource {
 
     /** {@inheritDoc} */
     public String getTitle() {
-        final String result = DcopPlugin.getDcopResult(
+        final String result = DcopMediaSourcePlugin.getDcopResult(
                 "dcop noatun Noatun title").get(0);
         if (result.indexOf(" - ") == -1) {
             return "";
@@ -98,13 +97,13 @@ public class NoatunSource implements MediaSource {
 
     /** {@inheritDoc} */
     public String getLength() {
-        return DcopPlugin.getDcopResult(
+        return DcopMediaSourcePlugin.getDcopResult(
                 "dcop noatun Noatun lengthString").get(0);
     }
 
     /** {@inheritDoc} */
     public String getTime() {
-        return duration(Integer.parseInt(DcopPlugin.getDcopResult(
+        return duration(Integer.parseInt(DcopMediaSourcePlugin.getDcopResult(
                 "dcop noatun Noatun position").get(0)) /1000);
     }
 

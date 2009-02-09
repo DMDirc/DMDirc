@@ -73,9 +73,9 @@ public class ProcessListModes extends IRCProcessor {
 		} else if (sParam.equals("344") || sParam.equals("345")) {
 			// Reop List, or bad words list, or quiet list. god damn.
 			if (thisIRCD.equals("euircd")) {
-				mode = 'w'
+				mode = 'w';
 			} else if (thisIRCD.equals("oftc-hybrid")) {
-				mode = 'q'
+				mode = 'q';
 			} else {
 				mode = 'R';
 			}
