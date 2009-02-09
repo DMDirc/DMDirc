@@ -22,10 +22,15 @@
 
 package com.dmdirc.addons.mediasource_dcop;
 
-import com.dmdirc.addons.dcop.DcopPlugin;
 import com.dmdirc.addons.nowplaying.MediaSource;
 import com.dmdirc.addons.nowplaying.MediaSourceState;
 
+import com.dmdirc.plugins.Service;
+import com.dmdirc.plugins.ServiceProvider;
+import com.dmdirc.plugins.ExportedService;
+import com.dmdirc.plugins.PluginManager;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,10 +45,33 @@ public class AmarokSource implements MediaSource {
         //Do nothing
     }
     
+    /**
+     * Get DCOP Result
+     *
+     * @param query Query to try
+     */
+    private List<String> getDcopResult(final String query) {
+        List<String> result = new ArrayList<String>();
+        final Service service = PluginManager.getPluginManager().getService("export", "dcop");
+        if (service != null) {
+            final ServiceProvider provider = service.getActiveProvider();
+            
+            if (provider != null) {
+                final ExportedService exportedService = provider.getExportedService("dcop");
+                final Object obj = exportedService.execute(query);
+                if (obj instanceof List) {
+                    result = (List<String>) obj;
+                }
+            }
+        }
+        
+        return result;
+    }
+    
     /** {@inheritDoc} */
     @Override
     public MediaSourceState getState() {
-        final List<String> res = DcopPlugin.getDcopResult("dcop amarok player status");
+        final List<String> res = getDcopResult("dcop amarok player status");
         if (res.size() > 0) {
             final String result = res.get(0).trim();
             try {
@@ -75,44 +103,44 @@ public class AmarokSource implements MediaSource {
     /** {@inheritDoc} */
     @Override
     public String getArtist() {
-        return DcopPlugin.getDcopResult("dcop amarok player artist").get(0);
+        return getDcopResult("dcop amarok player artist").get(0);
     }
     
     /** {@inheritDoc} */
     @Override
     public String getTitle() {
-        return DcopPlugin.getDcopResult("dcop amarok player title").get(0);
+        return getDcopResult("dcop amarok player title").get(0);
     }
     
     /** {@inheritDoc} */
     @Override
     public String getAlbum() {
-        return DcopPlugin.getDcopResult("dcop amarok player album").get(0);
+        return getDcopResult("dcop amarok player album").get(0);
     }
     
     /** {@inheritDoc} */
     @Override
     public String getLength() {
-        return DcopPlugin.getDcopResult("dcop amarok player totalTime").get(0);
+        return getDcopResult("dcop amarok player totalTime").get(0);
     }
     
     /** {@inheritDoc} */
     @Override
     public String getTime() {
-        return DcopPlugin.getDcopResult(
+        return getDcopResult(
                 "dcop amarok player currentTime").get(0);
     }
     
     /** {@inheritDoc} */
     @Override
     public String getFormat() {
-        return DcopPlugin.getDcopResult("dcop amarok player type").get(0);
+        return getDcopResult("dcop amarok player type").get(0);
     }
     
     /** {@inheritDoc} */
     @Override
     public String getBitrate() {
-        return DcopPlugin.getDcopResult("dcop amarok player bitrate").get(0);
+        return getDcopResult("dcop amarok player bitrate").get(0);
     }
     
 }
