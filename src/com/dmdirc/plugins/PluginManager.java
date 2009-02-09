@@ -69,6 +69,17 @@ public class PluginManager implements ActionListener {
 	}
 	
 	/**
+	 * Get a service object for the given name/type if one exists.
+	 *
+	 * @param type Type of this service
+	 * @param name Name of this service
+	 * @return The service requested, or null if service wasn't found and create wasn't specifed
+	 */
+	public Service getService(final String type, final String name) {
+		return getService(type, name, false);
+	}
+	
+	/**
 	 * Get a service object for the given name/type.
 	 *
 	 * @param type Type of this service

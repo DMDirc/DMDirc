@@ -81,6 +81,9 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	
 	/** List of children of this plugin. */
 	private final List<PluginInfo> children = new ArrayList<PluginInfo>();
+	
+	/** Map of exports */
+	private final Map<String, ExportInfo> exports = new HashMap<String, ExportInfo>();
 
 	/**
 	 * Create a new PluginInfo.
@@ -238,11 +241,15 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 				final String name = bits[0];
 				final String type = (bits.length > 1) ? bits[1] : "misc";
 				
-				final Service service = PluginManager.getPluginManager().getService(type, name, true);
-				service.addProvider(this);
-				provides.add(service);
+				if (!name.equalsIgnoreCase("any") && !type.equalsIgnoreCase("export")) {
+					final Service service = PluginManager.getPluginManager().getService(type, name, true);
+					service.addProvider(this);
+					provides.add(service);
+				}
 			}
 		}
+		
+		updateExports();
 	}
 	
 	/**
@@ -683,6 +690,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 		if (services == null || services.size() < 1) { return true; }
 		
 		for (String requirement : services) {
+			boolean available = false;
 			final String[] bits = requirement.split(" ");
 			final String name = bits[0];
 			final String type = (bits.length > 1) ? bits[1] : "misc";
@@ -698,7 +706,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 						for (Service serv : serviceList) {
 							if (service.isActive()) {
 								// Already active, abort.
-								return true;
+								available = true;
 							}
 						}
 					}
@@ -708,11 +716,13 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 			}
 			
 			if (service != null) {
-				return service.activate();
+				available = service.activate();
 			}
+			
+			if (!available) { return false; }
 		}
 		
-		return false;
+		return true;
 	}
 	
 	/**
@@ -1306,5 +1316,57 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	@Override
 	public int compareTo(final PluginInfo o) {
 		return toString().compareTo(o.toString());
+	}
+	
+	/**
+	 * Update exports list.
+	 */
+	private void updateExports() {
+		exports.clear();
+		
+		// Get exports provided by this plugin
+		final List<String> exportsList = metaData.getFlatDomain("exports");
+		if (exportsList != null) {
+			for (String item : exportsList) {
+				final String[] bits = item.split(" ");
+				if (bits.length > 4) {
+					final String methodName = bits[0];
+					final String methodClass = bits[2];
+					final String serviceName = bits[4];
+				
+					// Add a provides for this
+					final Service service = PluginManager.getPluginManager().getService("export", serviceName, true);
+					service.addProvider(this);
+					provides.add(service);
+					
+					// Add is as an export
+					exports.put(serviceName, new ExportInfo(methodName, methodClass, this));
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Get an ExportedService object from this provider.
+	 *
+	 * @param name Service name
+	 * @return ExportedService object. If no such service exists, the execute
+	 *         method of this ExportedService will always return null.
+	 */
+	public ExportedService getExportedService(final String name) {
+		if (exports.containsKey(name)) {
+			return exports.get(name).getExportedService();
+		} else {
+			return new ExportedService(null, null);
+		}
+	}
+	
+	/**
+	 * Get the Plugin object for this plugin.
+	 *
+	 * @return Plugin object for the plugin
+	 */
+	protected Plugin getPluginObject() {
+		return plugin;
 	}
 }

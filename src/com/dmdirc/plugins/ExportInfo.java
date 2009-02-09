@@ -21,38 +21,41 @@
  */
 package com.dmdirc.plugins;
 
-import java.util.List;
+public class ExportInfo {
+	/** Name of class the export is in. */
+	final String className;
+	
+	/** Name of method the export is in. */
+	final String methodName;
+	
+	/** The PluginInfo that defined this export. */
+	final PluginInfo pluginInfo;
 
-/**
- * Defines a ServiceProvider.
- */
-public interface ServiceProvider {
 	/**
-	 * Is this provider active at this time.
+	 * Create a new ExportInfo.
 	 *
-	 * @return true if the provider is able to provide its services
+	 * @param methodName Name of method the export is in.
+	 * @param className Name of class the export is in.
+	 * @param pluginInfo The PluginInfo that defined this export.
 	 */
-	boolean isActive();
-	
-	/** Activate the services. */
-	void activateServices();
-	
-	/**
-	 * Get a list of services provided by this provider.
-	 *
-	 * @return A list of services provided by this provider.
-	 */
-	List<Service> getServices();
-	
-	/** Get the name of this provider. */
-	String getProviderName();
+	public ExportInfo(final String methodName, final String className, final PluginInfo pluginInfo) {
+		this.className = className;
+		this.methodName = methodName;
+		this.pluginInfo = pluginInfo;
+	}
 	
 	/**
-	 * Get an ExportedService object from this provider.
+	 * Get the ExportedService for this Export.
 	 *
-	 * @param name Service name
-	 * @return ExportedService object. If no such service exists, the execute
-	 *         method of this ExportedService will always return null.
+	 * @return ExportedService object for this export.
 	 */
-	ExportedService getExportedService(final String name);
+	public ExportedService getExportedService() {
+		try {
+			final Class<?> c = pluginInfo.getPluginClassLoader().loadClass(className, false);
+			final Plugin p = className.equals(pluginInfo.getMainClass()) ? pluginInfo.getPluginObject() : null;
+			return new ExportedService(c, methodName, p);
+		} catch (ClassNotFoundException cnfe) {
+			return new ExportedService(null, null);
+		}
+	}
 }

@@ -94,6 +94,21 @@ public class Service {
 	}
 	
 	/**
+	 * Get the first active ServiceProvider for this service, or null.
+	 *
+	 * @return First active ServiceProvider for this service, or null.
+	 */
+	public ServiceProvider getActiveProvider() {
+		for (ServiceProvider provider : getProviders()) {
+			if (provider.isActive()) {
+				return provider;
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
 	 * Check if this service is active.
 	 *
 	 * @return True if this service is currently active.
