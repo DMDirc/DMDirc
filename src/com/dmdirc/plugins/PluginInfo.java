@@ -364,6 +364,15 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	}
 	
 	/**
+	 * Check if this plugin was migrated or not.
+	 *
+	 * @return true if the plugins config file was a plugin.info not a plugin.config
+	 */
+	public boolean isMigrated() {
+		return migrated;
+	}
+	
+	/**
 	 * Try to reload the metaData from the plugin.config file.
 	 * If this fails, the old data will be used still.
 	 *
