@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.Server;
+import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -46,9 +47,13 @@ public final class Away extends ServerCommand {
     @Override
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
-        final String line = implodeArgs(args);
-        
-        server.getParser().sendLine("AWAY :" + line);
+        if (server.getState() == ServerState.CONNECTED) {
+            final String line = implodeArgs(args);
+
+            server.getParser().sendLine("AWAY :" + line);
+        } else {
+            sendLine(origin, isSilent, FORMAT_ERROR, "Not connected");
+        }
     }
     
     
