@@ -40,7 +40,7 @@ import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 
 /**
- *
+ * Simple Dialog to inform the user there are no UI plugins.
  */
 public class NoUIDialog extends JDialog {
 
@@ -92,7 +92,7 @@ public class NoUIDialog extends JDialog {
     }
 
     /**
-     *
+     * Static method to instantiate a display the dialog.
      */
     public static void display() {
         SwingUtilities.invokeLater(new Runnable() {
@@ -104,9 +104,5 @@ public class NoUIDialog extends JDialog {
                 me.setVisible(true);
             }
         });
-    }
-
-    public static void main(final String[] args) {
-        NoUIDialog.display();
     }
 }
