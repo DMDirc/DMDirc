@@ -21,20 +21,23 @@
  */
 package com.dmdirc.config.prefs;
 
+import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.harness.TestPreferencesInterface;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.harness.TestActionListener;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class PreferencesManagerTest extends junit.framework.TestCase {
+public class PreferencesManagerTest {
     
-    @Before
-    public void setUp() throws Exception {        
+    @BeforeClass
+    public static void setUp() throws Exception {
         IdentityManager.load();
+        Main.setUI(new SwingController());
     }    
 
     @Test
