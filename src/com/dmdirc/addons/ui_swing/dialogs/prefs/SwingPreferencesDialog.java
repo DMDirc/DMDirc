@@ -33,8 +33,8 @@ import com.dmdirc.config.IdentityManager;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -149,8 +149,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
 
-        setLayout(new MigLayout("fillx, wmax 650, hmin 600, hmax 600, pack"));
-        add(tabList, "w 150!, growy");
+        setLayout(new MigLayout("pack"));
+        add(tabList, "w 150!, hmax 545, growy");
         add(mainPanel, "wrap, w 480!, pushy, growy");
         add(getLeftButton(), "span, split, right");
         add(getRightButton(), "right");
