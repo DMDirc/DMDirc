@@ -176,17 +176,22 @@ public class PluginManager implements ActionListener {
 	}
 
 	/**
-	 * Adds a new plugin.
+	 * Tests and adds the specified plugin to the known plugins list. Plugins
+     * will only be added if: <ul><li>The file exists,<li>No other plugin with
+     * the same name is known,<li>All requirements are met for the plugin,
+     * <li>The plugin has a valid config file that can be read</ul>.
 	 *
 	 * @param filename Filename of Plugin jar
-	 * @return True if loaded, false if failed to load or if already loaded.
+	 * @return True if the plugin is in the known plugins list (either before
+     * this invocation or as a result of it), false if it was not added for
+     * one of the reasons outlined above.
 	 */
 	public boolean addPlugin(final String filename) {
 		if (knownPlugins.containsKey(filename.toLowerCase())) {
-			return false;
+			return true;
 		}
 		
-		if (!(new File(getDirectory() + filename)).exists()) {
+		if (!new File(getDirectory() + filename).exists()) {
 			Logger.userError(ErrorLevel.MEDIUM, "Error loading plugin " + filename + ": File does not exist");
 			return false;
 		}
