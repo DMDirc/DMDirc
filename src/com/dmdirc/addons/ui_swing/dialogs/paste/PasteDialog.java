@@ -208,10 +208,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
                 final String[] lines = textField.getText().split("(\n|\r\n|\r)",
                         Integer.MAX_VALUE);
                 for (String line : lines) {
-                    if (line.isEmpty()) {
-                        parent.getContainer().sendLine("");
-                        parent.getInputHandler().addToBuffer("");
-                    } else {
+                    if (!line.isEmpty()) {
                         parent.getContainer().sendLine(line);
                         parent.getInputHandler().addToBuffer(line);   
                     }
