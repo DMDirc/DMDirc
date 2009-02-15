@@ -92,6 +92,94 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	public PluginInfo(final URL url) throws PluginException {
 		this(url, true);
 	}
+
+	/**
+	 * Create a new PluginInfo.
+	 *
+	 * @param url URL to file that this plugin is stored in.
+	 * @param load Should this plugin be loaded, or is this just a placeholder? (true for load, false for placeholder)
+	 * @throws PluginException if there is an error loading the Plugin
+	 * @since 0.6
+	 */
+	public PluginInfo(final URL url, final boolean load) throws PluginException {
+		this.url = url;
+		this.filename = (new File(url.getPath())).getName();
+
+		ResourceManager res;
+
+		// Check for updates.
+		if (new File(getFullFilename()+".update").exists() && new File(getFullFilename()).delete()) {
+			new File(getFullFilename()+".update").renameTo(new File(getFullFilename()));
+		}
+
+		if (!load) {
+			// Load the metaData if available.
+			try {
+				metaData = getConfigFile();
+			} catch (IOException ioe) {
+				metaData = null;
+			}
+			return;
+		}
+
+		try {
+			res = getResourceManager();
+		} catch (IOException ioe) {
+			lastError = "Error with resourcemanager: "+ioe.getMessage();
+			throw new PluginException("Plugin "+filename+" failed to load. "+lastError, ioe);
+		}
+
+		try {
+			metaData = getConfigFile();
+			if (metaData == null) {
+				lastError = "plugin.config doesn't exist in jar";
+				throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
+			}
+		} catch (IOException e) {
+			lastError = "plugin.config IOException: "+e.getMessage();
+			throw new PluginException("Plugin "+filename+" failed to load, plugin.config failed to open - "+e.getMessage(), e);
+		} catch (IllegalArgumentException e) {
+			lastError = "plugin.config IllegalArgumentException: "+e.getMessage();
+			throw new PluginException("Plugin "+filename+" failed to load, plugin.config failed to open - "+e.getMessage(), e);
+		}
+
+		if (getVersion() < 0) {
+			lastError = "Incomplete plugin.config (Missing or invalid 'version')";
+			throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
+		} else if (getAuthor().isEmpty()) {
+			lastError = "Incomplete plugin.config (Missing or invalid 'author')";
+			throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
+		} else if (getName().isEmpty()) {
+			lastError = "Incomplete plugin.config (Missing or invalid 'name')";
+			throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
+		} else if (getMainClass().isEmpty()) {
+			lastError = "Incomplete plugin.config (Missing or invalid 'mainclass')";
+			throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
+		}
+
+		if (checkRequirements(true)) {
+			final String mainClass = getMainClass().replace('.', '/')+".class";
+			if (!res.resourceExists(mainClass)) {
+				lastError = "main class file ("+mainClass+") not found in jar.";
+				throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
+			}
+
+			for (final String classfilename : res.getResourcesStartingWith("")) {
+				String classname = classfilename.replace('/', '.');
+				if (classname.matches("^.*\\.class$")) {
+					classname = classname.replaceAll("\\.class$", "");
+					myClasses.add(classname);
+				}
+			}
+
+			if (isPersistent() && loadAll()) { loadEntirePlugin(); }
+		} else {
+			lastError = "One or more requirements not met ("+requirementsError+")";
+			throw new PluginException("Plugin "+filename+" was not loaded. "+lastError);
+		}
+
+		updateProvides();
+	}
 	
 	/**
 	 * Get misc meta-information.
@@ -250,94 +338,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	}
 	
 	/**
-	 * Create a new PluginInfo.
-	 *
-	 * @param url URL to file that this plugin is stored in.
-	 * @param load Should this plugin be loaded, or is this just a placeholder? (true for load, false for placeholder)
-	 * @throws PluginException if there is an error loading the Plugin
-	 * @since 0.6
-	 */
-	public PluginInfo(final URL url, final boolean load) throws PluginException {
-		this.url = url;
-		this.filename = (new File(url.getPath())).getName();
-		
-		ResourceManager res;
-
-		// Check for updates.
-		if (new File(getFullFilename()+".update").exists() && new File(getFullFilename()).delete()) {
-			new File(getFullFilename()+".update").renameTo(new File(getFullFilename()));
-		}
-
-		if (!load) {
-			// Load the metaData if available.
-			try {
-				metaData = getConfigFile();
-			} catch (IOException ioe) {
-				metaData = null;
-			}
-			return;
-		}
-
-		try {
-			res = getResourceManager();
-		} catch (IOException ioe) {
-			lastError = "Error with resourcemanager: "+ioe.getMessage();
-			throw new PluginException("Plugin "+filename+" failed to load. "+lastError, ioe);
-		}
-
-		try {
-			metaData = getConfigFile();
-			if (metaData == null) {
-				lastError = "plugin.config doesn't exist in jar";
-				throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
-			}
-		} catch (IOException e) {
-			lastError = "plugin.config IOException: "+e.getMessage();
-			throw new PluginException("Plugin "+filename+" failed to load, plugin.config failed to open - "+e.getMessage(), e);
-		} catch (IllegalArgumentException e) {
-			lastError = "plugin.config IllegalArgumentException: "+e.getMessage();
-			throw new PluginException("Plugin "+filename+" failed to load, plugin.config failed to open - "+e.getMessage(), e);
-		}
-
-		if (getVersion() < 0) {
-			lastError = "Incomplete plugin.config (Missing or invalid 'version')";
-			throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
-		} else if (getAuthor().isEmpty()) {
-			lastError = "Incomplete plugin.config (Missing or invalid 'author')";
-			throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
-		} else if (getName().isEmpty()) {
-			lastError = "Incomplete plugin.config (Missing or invalid 'name')";
-			throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
-		} else if (getMainClass().isEmpty()) {
-			lastError = "Incomplete plugin.config (Missing or invalid 'mainclass')";
-			throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
-		}
-
-		if (checkRequirements(true)) {
-			final String mainClass = getMainClass().replace('.', '/')+".class";
-			if (!res.resourceExists(mainClass)) {
-				lastError = "main class file ("+mainClass+") not found in jar.";
-				throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
-			}
-
-			for (final String classfilename : res.getResourcesStartingWith("")) {
-				String classname = classfilename.replace('/', '.');
-				if (classname.matches("^.*\\.class$")) {
-					classname = classname.replaceAll("\\.class$", "");
-					myClasses.add(classname);
-				}
-			}
-
-			if (isPersistent() && loadAll()) { loadEntirePlugin(); }
-		} else {
-			lastError = "One or more requirements not met ("+requirementsError+")";
-			throw new PluginException("Plugin "+filename+" was not loaded. "+lastError);
-		}
-		
-		updateProvides();
-	}
-
-	/**
 	 * Called when the plugin is updated using the updater.
 	 * Reloads metaData and updates the list of files.
 	 */
@@ -399,8 +399,9 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	}
 
 	/**
-	 * Get the resource manager for this plugin
+	 * Gets a resource manager for this plugin
 	 *
+     * @return The resource manager for this plugin
 	 * @throws IOException if there is any problem getting a ResourceManager for this plugin
 	 */
 	public synchronized ResourceManager getResourceManager() throws IOException {
@@ -410,6 +411,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	/**
 	 * Get the resource manager for this plugin
 	 *
+     * @return The resource manager for this plugin
 	 * @param forceNew Force a new resource manager rather than using the old one.
 	 * @throws IOException if there is any problem getting a ResourceManager for this plugin
 	 * @since 0.6
@@ -420,6 +422,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 			
 			// Clear the resourcemanager in 10 seconds to stop us holding the file open
 			new Timer(filename+"-resourcemanagerTimer").schedule(new TimerTask(){
+                /** {@inheritDoc} */
+                @Override
 				public void run() {
 					myResourceManager = null;
 				}
@@ -736,12 +740,15 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 *
 	 * @return true if the provider is able to provide its services
 	 */
+    @Override
 	public final boolean isActive() { return isLoaded(); }
 	
 	/** Activate the services. */
+    @Override
 	public void activateServices() { loadPlugin(); }
 	
-	/** Get the name of this provider. */
+	/** {@inheritDoc} */
+    @Override
 	public String getProviderName() { return "Plugin: "+getNiceName()+" ("+getName()+" / "+getFilename()+")"; }
 
 	/**
@@ -749,12 +756,16 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 *
 	 * @return A list of services provided by this provider.
 	 */
+    @Override
 	public List<Service> getServices() {
 		return new ArrayList<Service>(provides);
 	}
 
 	/**
 	 * Is this plugin loaded?
+     *
+     * @return True if the plugin is currently (non-temporarily) loaded, false
+     * otherwise
 	 */
 	public boolean isLoaded() {
 		return (plugin != null) && !tempLoaded;
@@ -762,6 +773,9 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
 	/**
 	 * Is this plugin temporarily loaded?
+     *
+     * @return True if this plugin is currently temporarily loaded, false
+     * otherwise
 	 */
 	public boolean isTempLoaded() {
 		return (plugin != null) && tempLoaded;
@@ -1267,6 +1281,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 * Get misc meta-information.
 	 *
 	 * @param metainfo The metainfo to return
+     * @deprecated Use {@link #getKeyValue(String, String, String) instead
 	 * @return Misc Meta Info (or "" if not found);
 	 */
 	@Deprecated
@@ -1277,6 +1292,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 *
 	 * @param metainfo The metainfo to return
 	 * @param fallback Fallback value if requested value is not found
+     * @deprecated Use {@link #getKeyValue(String, String, String) instead
 	 * @return Misc Meta Info (or fallback if not found);
 	 */
 	@Deprecated
@@ -1288,6 +1304,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 * @param metainfo The metainfos to look for in order. If the first item in
 	 *                 the array is not found, the next will be looked for, and
 	 *                 so on until either one is found, or none are found.
+     * @deprecated Use {@link #getKeyValue(String, String, String) instead
 	 * @return Misc Meta Info (or "" if none are found);
 	 */
 	@Deprecated
@@ -1300,6 +1317,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 *                 the array is not found, the next will be looked for, and
 	 *                 so on until either one is found, or none are found.
 	 * @param fallback Fallback value if requested values are not found
+     * @deprecated Use {@link #getKeyValue(String, String, String) instead
 	 * @return Misc Meta Info (or "" if none are found);
 	 */
 	@Deprecated
@@ -1359,6 +1377,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 * @return ExportedService object. If no such service exists, the execute
 	 *         method of this ExportedService will always return null.
 	 */
+    @Override
 	public ExportedService getExportedService(final String name) {
 		if (exports.containsKey(name)) {
 			return exports.get(name).getExportedService();
