@@ -54,7 +54,8 @@ public class PluginClassLoader extends ClassLoader {
 	/**
 	 * Get a PluginClassLoader that is a subclassloader of this one.
 	 *
-	 * @param info PluginInfo the new classloader will be for
+     * @param info PluginInfo the new classloader will be for
+     * @return A classloader configured with this one as its parent
 	 */
 	public PluginClassLoader getSubClassLoader(final PluginInfo info) {
 		return (new PluginClassLoader(info, this));
@@ -67,6 +68,7 @@ public class PluginClassLoader extends ClassLoader {
 	 * @return plugin class
 	 * @throws ClassNotFoundException if the class to be loaded could not be found.
 	 */
+    @Override
 	public Class<?> loadClass(final String name) throws ClassNotFoundException {
 		return loadClass(name, true);
 	}
@@ -75,7 +77,8 @@ public class PluginClassLoader extends ClassLoader {
 	 * Have we already loaded the given class name?
 	 *
 	 * @param name Name to check.
-	 * @param checkGlobal Should we check if the GCL has loaded it aswell?
+     * @param checkGlobal Should we check if the GCL has loaded it aswell?
+     * @return True if the specified class is loaded, false otherwise
 	 */
 	public boolean isClassLoaded(final String name, final boolean checkGlobal) {
 		// Don't duplicate a class
@@ -92,6 +95,7 @@ public class PluginClassLoader extends ClassLoader {
 	 * @return plugin class
 	 * @throws ClassNotFoundException if the class to be loaded could not be found.
 	 */
+    @Override
 	public Class<?> loadClass(final String name, final boolean askGlobal) throws ClassNotFoundException {
 		Class< ? > loadedClass = null;
 		if (getParent() instanceof PluginClassLoader) {
