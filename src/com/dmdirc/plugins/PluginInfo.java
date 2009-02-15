@@ -40,12 +40,9 @@ import java.util.Properties;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
-
 import java.util.Timer;
 import java.util.TimerTask;
-
 import java.net.URL;
-import java.net.URISyntaxException;
 
 public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	/** Plugin Meta Data */
