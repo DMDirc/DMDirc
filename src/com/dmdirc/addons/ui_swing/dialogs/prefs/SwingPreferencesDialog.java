@@ -75,6 +75,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     private PreferencesCategory selected;
     /** Preferences Manager. */
     private PreferencesManager manager;
+    /** Manager loading swing worker. */
+    private LoggingSwingWorker worker;
 
     /**
      * Creates a new instance of SwingPreferencesDialog.
@@ -84,7 +86,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
         initComponents();
 
-        new LoggingSwingWorker() {
+        worker = new LoggingSwingWorker() {
 
             /** {@inheritDoc} */
             @Override
@@ -93,7 +95,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
                 setPrefsManager(manager);
                 return null;
             }
-        }.execute();
+        };
+        worker.execute();
     }
 
     private void setPrefsManager(final PreferencesManager manager) {
@@ -269,12 +272,19 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     @Override
     public void dispose() {
         synchronized (SwingPreferencesDialog.this) {
+            if (worker != null) {
+                worker.cancel(true);
+            }
+            if (manager != null) {
+                manager.close();
+            }
             if (me == null) {
                 return;
             }
-            manager.close();
             super.dispose();
             me = null;
+            worker = null;
+            manager = null;
         }
     }
 }
