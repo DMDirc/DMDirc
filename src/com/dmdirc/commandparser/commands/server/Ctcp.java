@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.Server;
+import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
@@ -54,8 +55,14 @@ public final class Ctcp extends ServerCommand implements IntelligentCommand {
      * @param isSilent Whether this command is silenced or not
      * @param args The user supplied arguments
      */
+    @Override
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
+        if (server.getState() != ServerState.CONNECTED) {
+            sendLine(origin, isSilent, FORMAT_ERROR, "Not connected");
+            return;
+        }
+
         if (args.length < 2) {
             showUsage(origin, isSilent, "ctcp", "<target> <type> [arguments]");
         } else {
@@ -67,21 +74,25 @@ public final class Ctcp extends ServerCommand implements IntelligentCommand {
     
     
     /** {@inheritDoc}. */
+    @Override
     public String getName() {
         return "ctcp";
     }
     
     /** {@inheritDoc}. */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
     /** {@inheritDoc}. */
+    @Override
     public String getHelp() {
         return "ctcp <target> <type> [arguments] - sends a CTCP message";
     }
     
     /** {@inheritDoc} */
+    @Override
     public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
