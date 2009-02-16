@@ -157,9 +157,11 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
         
         if (targetPlugin instanceof MediaSourceManager) {
             managers.add((MediaSourceManager) targetPlugin);
-            
-            for (MediaSource source : ((MediaSourceManager) targetPlugin).getSources()) {
-                addSourceToOrder(source);
+
+            if (((MediaSourceManager) targetPlugin).getSources() != null) {
+                for (MediaSource source : ((MediaSourceManager) targetPlugin).getSources()) {
+                    addSourceToOrder(source);
+                }
             }
         }
     }
