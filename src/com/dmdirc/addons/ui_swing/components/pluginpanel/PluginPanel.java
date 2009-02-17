@@ -195,7 +195,7 @@ public final class PluginPanel extends JPanel implements
                 toggleButton.setEnabled(true);
 
                 if (pluginInfo.getState()) {
-                    if (pluginInfo.getPluginInfo().isPersistent()) {
+                    if (pluginInfo.getPluginInfo().isUnloadable()) {
                         toggleButton.setEnabled(false);
                     }
                     toggleButton.setText("Disable");

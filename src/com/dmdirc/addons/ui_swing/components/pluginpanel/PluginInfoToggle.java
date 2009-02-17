@@ -78,7 +78,7 @@ public class PluginInfoToggle {
      * Applies the changes to the PluginInfo, if any.
      */
     public void apply() {
-        if (toggle) {            
+        if (toggle) {
             if (pi.isLoaded()) {
                 pi.unloadPlugin();
             } else {
