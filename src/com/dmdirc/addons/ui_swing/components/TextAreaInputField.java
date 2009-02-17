@@ -81,7 +81,7 @@ public class TextAreaInputField extends JTextArea implements InputField {
     @Override
     public void showColourPicker(final boolean irc, final boolean hex) {
         if (IdentityManager.getGlobalConfig().getOptionBool("general",
-                "showcolourdialog", false)) {
+                "showcolourdialog")) {
             colourPicker = new ColourPickerDialog(irc, hex);
             colourPicker.addActionListener(new ActionListener() {
 

@@ -143,11 +143,11 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
     /** Updates the values to defaults. */
     private void update() {
         serverField.setText(IdentityManager.getGlobalConfig().getOption("general",
-                "server", ""));
+                "server"));
         portField.setText(IdentityManager.getGlobalConfig().getOption("general",
-                "port", "6667"));
+                "port"));
         passwordField.setText(IdentityManager.getGlobalConfig().getOption("general",
-                "password", ""));
+                "password"));
         sslCheck.setSelected(false);
         newServerWindowCheck.setEnabled(false);
 

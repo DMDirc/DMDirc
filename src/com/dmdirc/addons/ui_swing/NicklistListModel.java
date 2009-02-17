@@ -60,12 +60,10 @@ public final class NicklistListModel extends AbstractListModel implements Config
     public NicklistListModel(final List<ChannelClientInfo> newNicknames) {
         super();
         
-        sortByMode =
-                IdentityManager.getGlobalConfig().
-                getOptionBool("ui", "sortByMode", false);
-        sortByCase =
-                IdentityManager.getGlobalConfig().
-                getOptionBool("ui", "sortByCase", false);
+        sortByMode = IdentityManager.getGlobalConfig().
+                getOptionBool("nicklist", "sortByMode");
+        sortByCase = IdentityManager.getGlobalConfig().
+                getOptionBool("nicklist", "sortByCase");
         nicknames = Collections.synchronizedList(newNicknames);
         
         sort();
@@ -179,13 +177,11 @@ public final class NicklistListModel extends AbstractListModel implements Config
     @Override
     public void configChanged(String domain, String key) {
         if ("sortByMode".equals(key)) {
-            sortByMode =
-                    IdentityManager.getGlobalConfig().
-                    getOptionBool("ui", "sortByMode", false);
+            sortByMode = IdentityManager.getGlobalConfig().
+                    getOptionBool("nicklist", "sortByMode");
         } else if ("sortByCase".equals(key)) {
-            sortByCase =
-                    IdentityManager.getGlobalConfig().
-                    getOptionBool("ui", "sortByCase", false);
+            sortByCase = IdentityManager.getGlobalConfig().
+                    getOptionBool("nicklist", "sortByCase");
         }
         
         sort();

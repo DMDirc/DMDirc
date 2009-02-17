@@ -19,6 +19,8 @@ keysections:
   icon
   ssl
   actions
+  nicklist
+  statusBar
 
 identity:
   name=DMDirc default settings
@@ -41,10 +43,6 @@ general:
 
   reconnectonconnectfailure=true
 
-  server=irc.quakenet.org
-  port=6667
-  password=
-
   #-- new
   bindip=
   closechannelsonquit=false
@@ -54,10 +52,13 @@ general:
   commandhistory=10
   firstRun=true
   hidequeries=true
+  password=
+  port=6667
   reconnectdelay=5000
   reconnectondisconnect=true
   reconnectonconnectfailure=true
   rejoinchannels=true
+  server=irc.quakenet.org
   showcolourdialog=true
   showglobalwindow=false
   showrawwindow=false
@@ -141,26 +142,34 @@ notifications:
 
 ui:
   framemanagerPosition=left
-  sortByMode=true
-  sortByCase=false
-  showversion=true
   stylelinks=true
-  antialias=true
   treeviewActiveBold=true
 
   #-- new
+  antialias=true
   awayindicator=true
   backgroundcolour=0
+  confirmQuit=false
   foregroundcolour=1
   frameBufferSize=25000
+  framemanager=com.dmdirc.ui.swing.framemanager.tree.TreeFrameManager
+  frameManagerSize=150
   inputbackgroundcolour=false:0
   inputbuffersize=50
   inputforegroundcolour=false:1
+  lookandfeel=
   maximisewindows=true
+  mdiBarVisibility=showWhenMaximised
+  nicklistbackgroundcolour=0
+  nicklistforegroundcolour=1
   pasteProtectionLimit=1
   quickCopy=false
+  shownickcoloursinnicklist=true
   shownickcoloursintext=false
+  showversion=true
+  useOneTouchExpandable=false
 
+#-- new
 treeview:
   sortwindows=true
   sortservers=true
@@ -184,20 +193,22 @@ logging:
   debugLogging=true
   debugLoggingSysOut=true
 
+#-- new
 server:
   friendlymodes=true
-
-  #-- new
   pingtimeout=60000
   proxy.address=
   proxy.user=
   proxy.password=
   proxy.port=1080
 
+#-- new
 updater:
+  autoupdate=false
+  channel=STABLE
+  enable=false
   frequency=86400
   lastcheck=0
-  enable=false
 
 popups:
   nick=Query:query %1$s\nWhois:whois %1$s
@@ -258,3 +269,10 @@ ssl:
 
 actions:
   killswitch=false
+
+nicklist:
+  sortByMode=true
+  sortByCase=false
+
+statusBar:
+  messageDisplayLength=5

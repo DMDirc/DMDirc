@@ -65,7 +65,7 @@ public class HistoryWindow extends FrameContainer {
         final int historyLineCount = IdentityManager.getGlobalConfig().getOptionInt(
                 "plugin-Logging", "history.lines", 50000);
         final int frameBufferSize = IdentityManager.getGlobalConfig().getOptionInt(
-                "ui", "frameBufferSize", 10000);
+                "ui", "frameBufferSize");
         window.addLine(reader.getLinesAsString(Math.min(frameBufferSize, historyLineCount)), false);
     }
     

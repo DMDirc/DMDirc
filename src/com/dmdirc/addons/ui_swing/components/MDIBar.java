@@ -68,8 +68,7 @@ public class MDIBar extends JPanel implements FrameManager,
     public MDIBar(final MainFrame mainFrame) {
         this.mainFrame = mainFrame;
         this.config = IdentityManager.getGlobalConfig();
-        visibility = config.getOption("ui", "mdiBarVisibility",
-                                      "showWhenMaximised");
+        visibility = config.getOption("ui", "mdiBarVisibility");
 
         closeButton = new NoFocusButton(IconManager.getIconManager().
                 getScaledIcon("close-12", ICON_SIZE, ICON_SIZE));
@@ -213,8 +212,7 @@ public class MDIBar extends JPanel implements FrameManager,
     /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
-        visibility = config.getOption("ui", "mdiBarVisibility",
-                                      "showWhenMaximised");
+        visibility = config.getOption("ui", "mdiBarVisibility");
         check();
     }
 }

@@ -226,7 +226,7 @@ public class SnappingJSplitPane extends JSplitPane implements ConfigChangeListen
         this.snapDistance = snapDistance;
 
         config = IdentityManager.getGlobalConfig();
-        useOneTouchExpandable = config.getOptionBool("ui", "useOneTouchExpandable", false);
+        useOneTouchExpandable = config.getOptionBool("ui", "useOneTouchExpandable");
 
         setOneTouchExpandable(useOneTouchExpandable);
         setContinuousLayout(true);
@@ -292,7 +292,7 @@ public class SnappingJSplitPane extends JSplitPane implements ConfigChangeListen
     /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
-        useOneTouchExpandable = config.getOptionBool("ui", "useOneTouchExpandable", false);
+        useOneTouchExpandable = config.getOptionBool("ui", "useOneTouchExpandable");
 
         UIUtilities.invokeLater(new Runnable() {
 

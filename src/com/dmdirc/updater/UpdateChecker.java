@@ -22,7 +22,6 @@
 
 package com.dmdirc.updater;
 
-import com.dmdirc.Main;
 import com.dmdirc.Precondition;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
@@ -129,7 +128,7 @@ public final class UpdateChecker implements Runnable {
 
         final ConfigManager config = IdentityManager.getGlobalConfig();
 
-        if (!config.getOptionBool("updater", "enable", true)
+        if (!config.getOptionBool("updater", "enable")
                 || status == STATE.UPDATING) {
             IdentityManager.getConfigIdentity().setOption("updater",
                     "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
@@ -148,8 +147,7 @@ public final class UpdateChecker implements Runnable {
         }
 
         final StringBuilder data = new StringBuilder();
-        final String updateChannel
-                = config.getOption("updater", "channel", Main.UPDATE_CHANNEL.toString());
+        final String updateChannel = config.getOption("updater", "channel");
 
         for (UpdateComponent component : components) {
             if (config.getOptionBool("updater", "enable-" + component.getName(), true)) {
@@ -201,7 +199,7 @@ public final class UpdateChecker implements Runnable {
         
         UpdateChecker.init();
         
-        if (config.getOptionBool("updater", "autoupdate", false)) {
+        if (config.getOptionBool("updater", "autoupdate")) {
             applyUpdates();
         }        
     }
@@ -243,9 +241,9 @@ public final class UpdateChecker implements Runnable {
      */
     public static void init() {
         final int last
-                = IdentityManager.getGlobalConfig().getOptionInt("updater", "lastcheck", 0);
+                = IdentityManager.getGlobalConfig().getOptionInt("updater", "lastcheck");
         final int freq
-                = IdentityManager.getGlobalConfig().getOptionInt("updater", "frequency", 86400);
+                = IdentityManager.getGlobalConfig().getOptionInt("updater", "frequency");
         final int timestamp = (int) (new Date().getTime() / 1000);
         int time = 0;
 

@@ -115,15 +115,10 @@ public final class MainFrame extends JFrame implements WindowListener,
 
         addWindowListener(this);
 
-        showVersion =
-                IdentityManager.getGlobalConfig().
-                getOptionBool("ui", "showversion", false);
-        IdentityManager.getGlobalConfig().
-                addChangeListener("ui", "lookandfeel", this);
-        IdentityManager.getGlobalConfig().
-                addChangeListener("ui", "showversion", this);
-        IdentityManager.getGlobalConfig().
-                addChangeListener("icon", "icon", this);
+        showVersion = IdentityManager.getGlobalConfig().getOptionBool("ui", "showversion");
+        IdentityManager.getGlobalConfig().addChangeListener("ui", "lookandfeel", this);
+        IdentityManager.getGlobalConfig().addChangeListener("ui", "showversion", this);
+        IdentityManager.getGlobalConfig().addChangeListener("icon", "icon", this);
 
 
         addWindowFocusListener(new WindowFocusListener() {
@@ -359,8 +354,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** Initialiases the frame managers. */
     private void initFrameManagers() {
         final String manager = IdentityManager.getGlobalConfig().getOption("ui",
-                "framemanager",
-                "com.dmdirc.ui.swing.framemanager.tree.TreeFrameManager");
+                "framemanager");
 
         try {
             mainFrameManager = (FrameManager) Class.forName(manager).
@@ -440,16 +434,16 @@ public final class MainFrame extends JFrame implements WindowListener,
                 mainSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
                 frameManagerPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE,
                         IdentityManager.getGlobalConfig().
-                        getOptionInt("ui", "frameManagerSize", 50)));
+                        getOptionInt("ui", "frameManagerSize")));
                 break;
             case LEFT:
                 mainSplitPane.setLeftComponent(frameManagerPanel);
                 mainSplitPane.setRightComponent(desktopPane);
                 mainSplitPane.setResizeWeight(0.0);
                 mainSplitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
-                frameManagerPanel.setPreferredSize(new Dimension(IdentityManager.getGlobalConfig().
-                        getOptionInt("ui", "frameManagerSize", 150),
-                        Integer.MAX_VALUE));
+                frameManagerPanel.setPreferredSize(new Dimension(
+                        IdentityManager.getGlobalConfig().getOptionInt("ui",
+                        "frameManagerSize"), Integer.MAX_VALUE));
                 break;
             case BOTTOM:
                 mainSplitPane.setTopComponent(desktopPane);
@@ -458,16 +452,16 @@ public final class MainFrame extends JFrame implements WindowListener,
                 mainSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
                 frameManagerPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE,
                         IdentityManager.getGlobalConfig().
-                        getOptionInt("ui", "frameManagerSize", 50)));
+                        getOptionInt("ui", "frameManagerSize")));
                 break;
             case RIGHT:
                 mainSplitPane.setLeftComponent(desktopPane);
                 mainSplitPane.setRightComponent(frameManagerPanel);
                 mainSplitPane.setResizeWeight(1.0);
                 mainSplitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
-                frameManagerPanel.setPreferredSize(new Dimension(IdentityManager.getGlobalConfig().
-                        getOptionInt("ui", "frameManagerSize", 150),
-                        Integer.MAX_VALUE));
+                frameManagerPanel.setPreferredSize(new Dimension(
+                        IdentityManager.getGlobalConfig().getOptionInt("ui",
+                        "frameManagerSize"), Integer.MAX_VALUE));
                 break;
             default:
                 break;
@@ -479,9 +473,8 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void quit() {
-        if (IdentityManager.getGlobalConfig().
-                getOptionBool("ui", "confirmQuit", false) &&
-                JOptionPane.showConfirmDialog(this,
+        if (IdentityManager.getGlobalConfig().getOptionBool("ui", "confirmQuit")
+                && JOptionPane.showConfirmDialog(this,
                 "You are about to quit DMDirc, are you sure?", "Quit confirm",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE) !=
@@ -504,13 +497,11 @@ public final class MainFrame extends JFrame implements WindowListener,
             if ("lookandfeel".equals(key)) {
                 SwingController.updateLookAndFeel();
             } else {
-                showVersion =
-                        IdentityManager.getGlobalConfig().
-                        getOptionBool("ui", "showversion", false);
+                showVersion = IdentityManager.getGlobalConfig().getOptionBool("ui",
+                        "showversion");
             }
         } else {
-            imageIcon =
-                    new ImageIcon(IconManager.getIconManager().getImage("icon"));
+            imageIcon = new ImageIcon(IconManager.getIconManager().getImage("icon"));
             setIconImage(imageIcon.getImage());
         }
     }

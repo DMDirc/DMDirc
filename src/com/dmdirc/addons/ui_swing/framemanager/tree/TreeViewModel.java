@@ -94,7 +94,7 @@ public class TreeViewModel extends DefaultTreeModel {
         }
 
         if (parent.equals(root) && !IdentityManager.getGlobalConfig().
-                getOptionBool("treeview", "sortservers", false)) {
+                getOptionBool("treeview", "sortservers")) {
             return parent.getChildCount();
         }
 
@@ -103,9 +103,8 @@ public class TreeViewModel extends DefaultTreeModel {
             if (sortBefore(newChild, child)) {
                 return i;
             } else if (!sortAfter(newChild, child) && IdentityManager.getGlobalConfig().
-                    getOptionBool("treeview", "sortwindows", false) && newChild.getUserObject().
-                    toString().compareToIgnoreCase(
-                    child.getUserObject().toString()) < 0) {
+                    getOptionBool("treeview", "sortwindows") && newChild.getUserObject().
+                    toString().compareToIgnoreCase(child.getUserObject().toString()) < 0) {
                 return i;
             }
         }

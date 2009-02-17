@@ -322,8 +322,7 @@ public final class SwingController extends Plugin implements UIController {
     static void updateLookAndFeel() {
         try {
             UIManager.setLookAndFeel(UIUtilities.getLookAndFeel(IdentityManager.
-                    getGlobalConfig().
-                    getOption("ui", "lookandfeel", "")));
+                    getGlobalConfig().getOption("ui", "lookandfeel")));
             final int state = UIUtilities.invokeAndWait(new ReturnableThread<Integer>() {
 
                 /** {@inheritDoc} */
@@ -378,7 +377,7 @@ public final class SwingController extends Plugin implements UIController {
     public void initUISettings() {
         // For this to work it *HAS* to be before anything else UI related.
         final boolean aaSetting = IdentityManager.getGlobalConfig().
-                getOptionBool("ui", "antialias", true);
+                getOptionBool("ui", "antialias");
         System.setProperty("awt.useSystemAAFontSettings",
                            Boolean.toString(aaSetting));
         System.setProperty("swing.aatext", Boolean.toString(aaSetting));
@@ -408,8 +407,7 @@ public final class SwingController extends Plugin implements UIController {
         try {
             UIUtilities.initUISettings();
             UIManager.setLookAndFeel(UIUtilities.getLookAndFeel(IdentityManager.
-                    getGlobalConfig().
-                    getOption("ui", "lookandfeel", "")));
+                    getGlobalConfig().getOption("ui", "lookandfeel")));
 
         } catch (UnsupportedOperationException ex) {
             Logger.userError(ErrorLevel.LOW, "Unable to set UI Settings");

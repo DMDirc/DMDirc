@@ -93,12 +93,10 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
 
         nickList.setBackground(getConfigManager().getOptionColour("ui",
                 "nicklistbackgroundcolour",
-                getConfigManager().getOptionColour("ui", "backgroundcolour",
-                Color.WHITE)));
+                getConfigManager().getOptionColour("ui", "backgroundcolour")));
         nickList.setForeground(getConfigManager().getOptionColour("ui",
                 "nicklistforegroundcolour",
-                getConfigManager().getOptionColour("ui", "foregroundcolour",
-                Color.BLACK)));
+                getConfigManager().getOptionColour("ui", "foregroundcolour")));
 
         getConfigManager().addChangeListener("ui", "nicklistforegroundcolour",
                 this);
@@ -358,12 +356,10 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
                 "foregroundcolour".equals(key)) {
             nickList.setBackground(getConfigManager().getOptionColour("ui",
                     "nicklistbackgroundcolour",
-                    getConfigManager().getOptionColour("ui", "backgroundcolour",
-                    Color.WHITE)));
+                    getConfigManager().getOptionColour("ui", "backgroundcolour")));
             nickList.setForeground(getConfigManager().getOptionColour("ui",
                     "nicklistforegroundcolour",
-                    getConfigManager().getOptionColour("ui", "foregroundcolour",
-                    Color.BLACK)));
+                    getConfigManager().getOptionColour("ui", "foregroundcolour")));
             nickList.repaint();
         }
     }

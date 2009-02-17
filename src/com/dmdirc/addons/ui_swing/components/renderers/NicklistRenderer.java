@@ -73,10 +73,9 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
         altBackgroundColour =
                 config.getOptionColour("ui", "nickListAltBackgroundColour",
                 config.getOptionColour("ui", "nicklistbackgroundcolour",
-                config.getOptionColour("ui", "backgroundcolour",
-                Color.WHITE)));
+                config.getOptionColour("ui", "backgroundcolour")));
         showColours =
-                config.getOptionBool("ui", "shownickcoloursinnicklist", false);
+                config.getOptionBool("ui", "shownickcoloursinnicklist");
     }
 
     /** {@inheritDoc} */
@@ -113,16 +112,13 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
     @Override
     public void configChanged(final String domain, final String key) {
         if ("shownickcoloursinnicklist".equals(key)) {
-            showColours =
-                    config.getOptionBool("ui", "shownickcoloursinnicklist",
-                    false);
+            showColours = config.getOptionBool("ui", "shownickcoloursinnicklist");
 
         } else {
             altBackgroundColour =
                     config.getOptionColour("ui", "nickListAltBackgroundColour",
                     config.getOptionColour("ui", "nicklistbackgroundcolour",
-                    config.getOptionColour("ui", "backgroundcolour",
-                    Color.WHITE)));
+                    config.getOptionColour("ui", "backgroundcolour")));
         }
         nicklist.repaint();
     }
