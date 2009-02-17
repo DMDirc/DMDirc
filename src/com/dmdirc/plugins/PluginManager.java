@@ -53,9 +53,6 @@ public class PluginManager implements ActionListener {
 	/** Singleton instance of the plugin manager. */
 	private static PluginManager me;
 
-	/** Possible plugins available during autoload. */
-	private List<PluginInfo> possible = null;
-	
 	/** Map of services. */
 	private final Map<String, Map<String, Service>> services = new HashMap<String, Map<String, Service>>();
 	
@@ -145,19 +142,12 @@ public class PluginManager implements ActionListener {
 	 * Autoloads plugins.
 	 */
 	public void doAutoLoad() {
-		possible = getPossiblePluginInfos(false);
 		for (String plugin : IdentityManager.getGlobalConfig().getOptionList("plugins", "autoload")) {
 			plugin = plugin.trim();
-			if (!plugin.isEmpty() && plugin.charAt(0) != '#' && addPlugin(plugin)) {
+			if (!plugin.isEmpty() && plugin.charAt(0) != '#' && getPluginInfo(plugin) != null) {
 				getPluginInfo(plugin).loadPlugin();
 			}
 		}
-		
-		// And now addPlugin() the rest
-		for (PluginInfo plugin : possible) {
-			addPlugin(plugin.getFilename());
-		}
-		possible = null;
 	}
 
 	/**
@@ -177,14 +167,14 @@ public class PluginManager implements ActionListener {
 
 	/**
 	 * Tests and adds the specified plugin to the known plugins list. Plugins
-     * will only be added if: <ul><li>The file exists,<li>No other plugin with
-     * the same name is known,<li>All requirements are met for the plugin,
-     * <li>The plugin has a valid config file that can be read</ul>.
+	 * will only be added if: <ul><li>The file exists,<li>No other plugin with
+	 * the same name is known,<li>All requirements are met for the plugin,
+	 * <li>The plugin has a valid config file that can be read</ul>.
 	 *
 	 * @param filename Filename of Plugin jar
 	 * @return True if the plugin is in the known plugins list (either before
-     * this invocation or as a result of it), false if it was not added for
-     * one of the reasons outlined above.
+	 * this invocation or as a result of it), false if it was not added for
+	 * one of the reasons outlined above.
 	 */
 	public boolean addPlugin(final String filename) {
 		if (knownPlugins.containsKey(filename.toLowerCase())) {
@@ -291,34 +281,12 @@ public class PluginManager implements ActionListener {
 	 * @return PluginInfo instance, or null
 	 */
 	public PluginInfo getPluginInfoByName(final String name) {
-		return getPluginInfoByName(name, false);
-	}
-	
-	/**
-	 * Get a plugin instance by plugin name.
-	 *
-	 * @param name Name of plugin to find.
-	 * @param checkPossible Check possible plugins aswell? (used in autoload)
-	 * @return PluginInfo instance, or null
-	 */
-	protected PluginInfo getPluginInfoByName(final String name, final boolean checkPossible) {
 		for (PluginInfo pluginInfo : knownPlugins.values()) {
 			if (pluginInfo.getName().equalsIgnoreCase(name)) {
 				return pluginInfo;
 			}
 		}
 		
-		if (checkPossible && possible != null) {
-			for (PluginInfo pluginInfo : possible) {
-				if (pluginInfo.getName().equalsIgnoreCase(name)) {
-					if (addPlugin(pluginInfo.getFilename())) {
-						return pluginInfo;
-					} else {
-						return null;
-					}
-				}
-			}
-		}
 		return null;
 	}
 

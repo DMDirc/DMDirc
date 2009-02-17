@@ -401,7 +401,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	/**
 	 * Gets a resource manager for this plugin
 	 *
-     * @return The resource manager for this plugin
+	 * @return The resource manager for this plugin
 	 * @throws IOException if there is any problem getting a ResourceManager for this plugin
 	 */
 	public synchronized ResourceManager getResourceManager() throws IOException {
@@ -411,7 +411,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	/**
 	 * Get the resource manager for this plugin
 	 *
-     * @return The resource manager for this plugin
+	 * @return The resource manager for this plugin
 	 * @param forceNew Force a new resource manager rather than using the old one.
 	 * @throws IOException if there is any problem getting a ResourceManager for this plugin
 	 * @since 0.6
@@ -422,8 +422,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 			
 			// Clear the resourcemanager in 10 seconds to stop us holding the file open
 			new Timer(filename+"-resourcemanagerTimer").schedule(new TimerTask(){
-                /** {@inheritDoc} */
-                @Override
+				/** {@inheritDoc} */
+				@Override
 				public void run() {
 					myResourceManager = null;
 				}
@@ -612,7 +612,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	
 		for (String plugin : desired.split(",")) {
 			final String[] data = plugin.split(":");
-			final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(data[0], true);
+			final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(data[0]);
 			if (pi == null) {
 				requirementsError = "Required plugin '"+data[0]+"' was not found";
 				return false;
@@ -740,15 +740,15 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 *
 	 * @return true if the provider is able to provide its services
 	 */
-    @Override
+	@Override
 	public final boolean isActive() { return isLoaded(); }
 	
 	/** Activate the services. */
-    @Override
+	@Override
 	public void activateServices() { loadPlugin(); }
 	
 	/** {@inheritDoc} */
-    @Override
+	@Override
 	public String getProviderName() { return "Plugin: "+getNiceName()+" ("+getName()+" / "+getFilename()+")"; }
 
 	/**
@@ -756,16 +756,16 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 *
 	 * @return A list of services provided by this provider.
 	 */
-    @Override
+	@Override
 	public List<Service> getServices() {
 		return new ArrayList<Service>(provides);
 	}
 
 	/**
 	 * Is this plugin loaded?
-     *
-     * @return True if the plugin is currently (non-temporarily) loaded, false
-     * otherwise
+	 *
+	 * @return True if the plugin is currently (non-temporarily) loaded, false
+	 * otherwise
 	 */
 	public boolean isLoaded() {
 		return (plugin != null) && !tempLoaded;
@@ -773,9 +773,9 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
 	/**
 	 * Is this plugin temporarily loaded?
-     *
-     * @return True if this plugin is currently temporarily loaded, false
-     * otherwise
+	 *
+	 * @return True if this plugin is currently temporarily loaded, false
+	 * otherwise
 	 */
 	public boolean isTempLoaded() {
 		return (plugin != null) && tempLoaded;
@@ -813,7 +813,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 		for (String plugin : required.split(",")) {
 			final String[] data = plugin.split(":");
 			if (!data[0].trim().isEmpty()) {
-				final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(data[0], true);
+				final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(data[0]);
 			
 				if (pi == null) {
 					return;
@@ -884,7 +884,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 					classloader = new PluginClassLoader(this);
 				} else {
 					final String parentName = getKeyValue("requires", "parent", "");
-					final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(parentName, true);
+					final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(parentName);
 					if (pi == null) {
 						lastError = "Required parent '"+parentName+"' was not found";
 						return;
@@ -997,7 +997,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 				// Delete ourself as a child of our parent.
 				if (!parentUnloading && !getKeyValue("requires", "parent", "").isEmpty()) {
 					final String parentName = getKeyValue("requires", "parent", "");
-					final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(parentName, true);
+					final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName(parentName);
 					if (pi != null) {
 						pi.delChild(this);
 						classloader = pi.getPluginClassLoader().getSubClassLoader(this);
@@ -1264,7 +1264,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 *
 	 * @return String Representation of this plugin
 	 */
-    @Override
+	@Override
 	public String toString() { return getNiceName()+" - "+filename; }
 
 	/**
@@ -1281,7 +1281,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 * Get misc meta-information.
 	 *
 	 * @param metainfo The metainfo to return
-     * @deprecated Use {@link #getKeyValue(String, String, String) instead
+	 * @deprecated Use {@link #getKeyValue(String, String, String) instead
 	 * @return Misc Meta Info (or "" if not found);
 	 */
 	@Deprecated
@@ -1292,7 +1292,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 *
 	 * @param metainfo The metainfo to return
 	 * @param fallback Fallback value if requested value is not found
-     * @deprecated Use {@link #getKeyValue(String, String, String) instead
+	 * @deprecated Use {@link #getKeyValue(String, String, String) instead
 	 * @return Misc Meta Info (or fallback if not found);
 	 */
 	@Deprecated
@@ -1304,7 +1304,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 * @param metainfo The metainfos to look for in order. If the first item in
 	 *                 the array is not found, the next will be looked for, and
 	 *                 so on until either one is found, or none are found.
-     * @deprecated Use {@link #getKeyValue(String, String, String) instead
+	 * @deprecated Use {@link #getKeyValue(String, String, String) instead
 	 * @return Misc Meta Info (or "" if none are found);
 	 */
 	@Deprecated
@@ -1317,7 +1317,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 *                 the array is not found, the next will be looked for, and
 	 *                 so on until either one is found, or none are found.
 	 * @param fallback Fallback value if requested values are not found
-     * @deprecated Use {@link #getKeyValue(String, String, String) instead
+	 * @deprecated Use {@link #getKeyValue(String, String, String) instead
 	 * @return Misc Meta Info (or "" if none are found);
 	 */
 	@Deprecated
@@ -1377,7 +1377,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 * @return ExportedService object. If no such service exists, the execute
 	 *         method of this ExportedService will always return null.
 	 */
-    @Override
+	@Override
 	public ExportedService getExportedService(final String name) {
 		if (exports.containsKey(name)) {
 			return exports.get(name).getExportedService();
