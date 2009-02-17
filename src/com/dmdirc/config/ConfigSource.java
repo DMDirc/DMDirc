@@ -56,6 +56,54 @@ public abstract class ConfigSource {
     public abstract boolean hasOption(final String domain, final String option);
 
     /**
+     * Determines if this manager has the specified integer option.
+     *
+     * @param domain The domain of the option
+     * @param option The name of the option
+     * @since 0.6.3
+     * @return True iff the option exists and is parsable as an integer,
+     * false otherwise.
+     */
+    public boolean hasOptionInt(final String domain, final String option) {
+        if (hasOption(domain, option)) {
+            try {
+                getOptionInt(domain, option);
+                return true;
+            } catch (NumberFormatException ex) {
+                // Do nothing
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Determines if this manager has the specified character option.
+     *
+     * @param domain The domain of the option
+     * @param option The name of the option
+     * @since 0.6.3
+     * @return True iff the option exists and is parsable as a char,
+     * false otherwise.
+     */
+    public boolean hasOptionChar(final String domain, final String option) {
+        return hasOption(domain, option) && !getOption(domain, option).isEmpty();
+    }
+
+    /**
+     * Determines if this manager has the specified colour option.
+     *
+     * @param domain The domain of the option
+     * @param option The name of the option
+     * @since 0.6.3
+     * @return True iff the option exists and is parsable as a colour,
+     * false otherwise.
+     */
+    public boolean hasOptionColour(final String domain, final String option) {
+        return getOptionColour(domain, option) != null;
+    }
+
+    /**
      * Retrieves the specified option.
      *
      * @param domain The domain of the option
@@ -92,7 +140,31 @@ public abstract class ConfigSource {
         }
         
         return fallback;
-    }    
+    }
+
+    /**
+     * Retrieves a colour representation of the specified option.
+     *
+     * @param domain The domain of the option
+     * @param option The name of the option
+     * @return The colour representation of the option
+     * @since 0.6.3
+     */
+    public Color getOptionColour(final String domain, final String option) {
+        if (!hasOption(domain, option)) {
+            return null;
+        }
+
+        String value = getOption(domain, option);
+
+        if (value.startsWith("true:")) {
+            value = value.substring(5);
+        } else if (value.startsWith("false:")) {
+            return null;
+        }
+
+        return ColourManager.parseColour(value, null);
+    }
 
     /**
      * Retrieves a colour representation of the specified option.
