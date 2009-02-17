@@ -111,26 +111,16 @@ public class ProcessListModes extends IRCProcessor {
 					
 					boolean error = true;
 					
-					if ((thisIRCD.equals("hyperion") || thisIRCD.equals("dancer")) && (mode == 'b' || mode == 'q' || mode == 'd' )) {
+					if ((thisIRCD.equals("hyperion") || thisIRCD.equals("dancer")) && (mode == 'b' || mode == 'q')) {
 						LinkedList<Character> lmq = (LinkedList<Character>)listModeQueue;
 						if (mode == 'b') {
-							error = !(oldMode == 'q' || oldMode == 'd');
+							error = !(oldMode == 'q');
 							lmq.remove((Character)'q');
-							lmq.remove((Character)'d');
 							myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "Dropping q from list");
-							myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "Dropping d from list");
 						} else if (mode == 'q') {
-							error = !(oldMode == 'b' || oldMode == 'd');
+							error = !(oldMode == 'b');
 							lmq.remove((Character)'b');
-							lmq.remove((Character)'d');
 							myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "Dropping b from list");
-							myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "Dropping d from list");
-						} else if (mode == 'd') {
-							error = !(oldMode == 'b' || oldMode == 'q');
-							lmq.remove((Character)'b');
-							lmq.remove((Character)'q');
-							myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "Dropping b from list");
-							myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "Dropping q from list");
 						}
 					}
 					
