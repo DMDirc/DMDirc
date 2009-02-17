@@ -1012,6 +1012,10 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 					e.printStackTrace();
 				}
 				ActionManager.processEvent(CoreActionType.PLUGIN_UNLOADED, null, this);
+				for (Service service : provides) {
+					service.delProvider(this);
+				}
+				provides.clear();
 			}
 			tempLoaded = false;
 			plugin = null;
