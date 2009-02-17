@@ -100,7 +100,7 @@ public class PluginClassLoader extends ClassLoader {
 		Class< ? > loadedClass = null;
 		if (getParent() instanceof PluginClassLoader) {
 			try {
-				loadedClass = ((PluginClassLoader)getParent()).loadClass(name, askGlobal);
+				loadedClass = ((PluginClassLoader)getParent()).loadClass(name, false);
 				if (loadedClass != null) {
 					return loadedClass;
 				}
