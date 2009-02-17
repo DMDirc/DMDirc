@@ -195,6 +195,12 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             }
             saveOptions();
         }
+
+        if (selected != null) {
+            selected.fireCategoryDeselected();
+            selected = null;
+        }
+        
         manager.dismiss();
         dispose();
     }
