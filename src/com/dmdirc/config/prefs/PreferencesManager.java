@@ -114,8 +114,6 @@ public class PreferencesManager {
      * Dismisses all the settings in this manager.
      */
     public void dismiss() {
-        fireSaveListeners();
-        
         for (PreferencesCategory category : categories) {
             category.dismiss();
         }
