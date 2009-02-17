@@ -103,8 +103,9 @@ public class ServerInfoDialog extends StandardDialog {
 
         final Point point = parent.getLocationOnScreen();
         point.translate(parent.getWidth() / 2 - this.getWidth() / 2, - this.getHeight());
-        final int maxX = SwingController.getMainFrame().getLocationOnScreen().x
-                + SwingController.getMainFrame().getWidth() - 10 - getWidth();
+        final int maxX = Math.max(SwingController.getMainFrame().getLocationOnScreen().x
+                + SwingController.getMainFrame().getWidth() - 10 - getWidth(),
+                parent.getLocationOnScreen().x + parent.getWidth() - 1 - getWidth());
         point.x = Math.min(maxX, point.x);
         setLocation(point);
 
