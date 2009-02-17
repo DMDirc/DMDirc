@@ -129,8 +129,7 @@ public class GlobalWindow extends WritableFrameContainer {
      * Initialises the global window if it's enabled in the config.
      */
     public static void init() {
-        if (IdentityManager.getGlobalConfig().getOptionBool("general", "showglobalwindow",
-                false)) {
+        if (IdentityManager.getGlobalConfig().getOptionBool("general", "showglobalwindow")) {
             globalWindow = new GlobalWindow();
         }        
     }

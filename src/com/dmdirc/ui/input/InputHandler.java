@@ -107,7 +107,7 @@ public abstract class InputHandler implements ConfigChangeListener {
             final InputWindow thisParentWindow) {
 
         buffer = new RollingList<String>(thisParentWindow.getConfigManager().
-                getOptionInt("ui", "inputbuffersize", 50), "");
+                getOptionInt("ui", "inputbuffersize"), "");
 
         this.commandParser = thisCommandParser;
         this.parentWindow = thisParentWindow;
@@ -172,7 +172,7 @@ public abstract class InputHandler implements ConfigChangeListener {
      */
     private void setStyle() {
         if ("bash".equals(parentWindow.getConfigManager().getOption("tabcompletion",
-                "style", "bash"))) {
+                "style"))) {
             style = new BashStyle();
         } else {
             style = new MircStyle();

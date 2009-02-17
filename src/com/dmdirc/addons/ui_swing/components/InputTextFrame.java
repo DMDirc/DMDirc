@@ -103,13 +103,13 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
 
         getInputField().setBackground(config.getOptionColour("ui",
                 "inputbackgroundcolour",
-                config.getOptionColour("ui", "backgroundcolour", Color.WHITE)));
+                config.getOptionColour("ui", "backgroundcolour")));
         getInputField().setForeground(config.getOptionColour("ui",
                 "inputforegroundcolour",
-                config.getOptionColour("ui", "foregroundcolour", Color.BLACK)));
+                config.getOptionColour("ui", "foregroundcolour")));
         getInputField().setCaretColor(config.getOptionColour("ui",
                 "inputforegroundcolour",
-                config.getOptionColour("ui", "foregroundcolour", Color.BLACK)));
+                config.getOptionColour("ui", "foregroundcolour")));
 
         config.addChangeListener("ui", "inputforegroundcolour", this);
         config.addChangeListener("ui", "inputbackgroundcolour", this);
@@ -121,7 +121,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     /** {@inheritDoc} */
     @Override
     public void open() {
-        if (getConfigManager().getOptionBool("ui", "awayindicator", false) && getContainer().
+        if (getConfigManager().getOptionBool("ui", "awayindicator") && getContainer().
                 getServer() != null) {
             awayLabel.setVisible(getContainer().getServer().isAway());
         }
@@ -245,7 +245,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     @Override
     public void setAwayIndicator(final boolean awayState) {
         final boolean awayIndicator = getConfigManager().
-                getOptionBool("ui", "awayindicator", false);
+                getOptionBool("ui", "awayindicator");
         if (awayIndicator || !awayState) {
             if (awayState) {
                 inputPanel.add(awayLabel, BorderLayout.LINE_START);
@@ -349,7 +349,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
                     + clipboard + inputFieldText.substring(caretPosition);
             //check the limit
             final int pasteTrigger = getConfigManager().getOptionInt("ui",
-                    "pasteProtectionLimit", 1);
+                    "pasteProtectionLimit");
             //check whether the number of lines is over the limit
             if (parent.getNumLines(text) > pasteTrigger) {
                 //show the multi line paste dialog
@@ -389,17 +389,17 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
                 getInputField().setBackground(getConfigManager().getOptionColour("ui",
                         "inputbackgroundcolour",
                         getConfigManager().getOptionColour("ui",
-                        "backgroundcolour", Color.WHITE)));
+                        "backgroundcolour")));
             } else if ("inputforegroundcolour".equals(key) ||
                     "foregroundcolour".equals(key)) {
                 getInputField().setForeground(getConfigManager().getOptionColour("ui",
                         "inputforegroundcolour",
                         getConfigManager().getOptionColour("ui",
-                        "foregroundcolour", Color.BLACK)));
+                        "foregroundcolour")));
                 getInputField().setCaretColor(getConfigManager().getOptionColour("ui",
                         "inputforegroundcolour",
                         getConfigManager().getOptionColour("ui",
-                        "foregroundcolour", Color.BLACK)));
+                        "foregroundcolour")));
 
             }
         }

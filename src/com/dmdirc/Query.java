@@ -90,7 +90,7 @@ public final class Query extends MessageTarget implements
 
         ActionManager.processEvent(CoreActionType.QUERY_OPENED, null, this);
 
-        if (!server.getConfigManager().getOptionBool("general", "hidequeries", false)) {
+        if (!server.getConfigManager().getOptionBool("general", "hidequeries")) {
             window.open();
         }
 

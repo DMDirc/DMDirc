@@ -87,7 +87,7 @@ public final class TabCompleter implements Serializable {
                 = new MapList<TabCompletionType, String>(entries);
         
         final boolean caseSensitive = IdentityManager.getGlobalConfig()
-                .getOptionBool("tabcompletion", "casesensitive", false);
+                .getOptionBool("tabcompletion", "casesensitive");
                 
         if (additionals != null) {
             targets.safeGet(TabCompletionType.ADDITIONAL).addAll(additionals);

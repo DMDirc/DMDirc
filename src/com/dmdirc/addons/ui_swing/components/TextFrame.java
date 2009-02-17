@@ -142,11 +142,9 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     public TextFrame(final FrameContainer owner) {
         super();
         final ConfigManager config = owner.getConfigManager();
-        final Boolean pref = config.getOptionBool("ui", "maximisewindows",
-                false);
-        frameBufferSize = config.getOptionInt("ui", "frameBufferSize",
-                Integer.MAX_VALUE);
-        quickCopy = config.getOptionBool("ui", "quickCopy", false);
+        final Boolean pref = config.getOptionBool("ui", "maximisewindows");
+        frameBufferSize = config.getOptionInt("ui", "frameBufferSize");
+        quickCopy = config.getOptionBool("ui", "quickCopy");
         parent = owner;
 
         setFrameIcon(owner.getIcon());
@@ -161,7 +159,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
 
         try {
             transcoder = new StringTranscoder(Charset.forName(
-                    config.getOption("channel", "encoding", "UTF-8")));
+                    config.getOption("channel", "encoding")));
         } catch (UnsupportedCharsetException ex) {
             transcoder = new StringTranscoder(Charset.forName("UTF-8"));
         } catch (IllegalCharsetNameException ex) {
@@ -190,9 +188,9 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         addInternalFrameListener(this);
 
         getTextPane().setBackground(config.getOptionColour("ui",
-                "backgroundcolour", Color.WHITE));
+                "backgroundcolour"));
         getTextPane().setForeground(config.getOptionColour("ui",
-                "foregroundcolour", Color.BLACK));
+                "foregroundcolour"));
 
         config.addChangeListener("ui", "foregroundcolour", this);
         config.addChangeListener("ui", "backgroundcolour", this);
@@ -940,16 +938,16 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         if ("ui".equals(domain)) {
             if ("foregroundcolour".equals(key) && getTextPane() != null) {
                 getTextPane().setForeground(getConfigManager().
-                        getOptionColour("ui", "foregroundcolour", Color.BLACK));
+                        getOptionColour("ui", "foregroundcolour"));
             } else if ("backgroundcolour".equals(key) && getTextPane() != null) {
                 getTextPane().setBackground(getConfigManager().
-                        getOptionColour("ui", "backgroundcolour", Color.WHITE));
+                        getOptionColour("ui", "backgroundcolour"));
             } else if ("frameBufferSize".equals(key)) {
                 frameBufferSize = getContainer().getConfigManager().
-                        getOptionInt("ui", "frameBufferSize", Integer.MAX_VALUE);
+                        getOptionInt("ui", "frameBufferSize");
             } else if ("quickCopy".equals(key)) {
                 quickCopy = getContainer().getConfigManager().
-                        getOptionBool("ui", "quickCopy", false);
+                        getOptionBool("ui", "quickCopy");
             }
         }
     }

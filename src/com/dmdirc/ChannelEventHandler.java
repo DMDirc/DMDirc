@@ -222,7 +222,7 @@ public final class ChannelEventHandler extends EventHandler implements
             final ChannelClientInfo cSetByClient, final String sHost, final String sMode) {
         checkParser(tParser);
 
-        if (owner.getConfigManager().getOptionBool("channel", "splitusermodes", false)) {
+        if (owner.getConfigManager().getOptionBool("channel", "splitusermodes")) {
             String format = "channelSplitUserMode_" + sMode;
 
             if (!owner.getConfigManager().hasOption("formatter", format)) {

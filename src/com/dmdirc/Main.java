@@ -159,7 +159,7 @@ public final class Main {
     protected static void loadUI(final PluginManager pm, final ConfigManager cm,
             final boolean tryExtracting) {
         final List<Service> uis = pm.getServicesByType("ui");
-        final String desired = cm.getOption("general", "ui", "swing");
+        final String desired = cm.getOption("general", "ui");
 
         // First try: go for our desired service type
         for (Service service : uis) {
@@ -197,7 +197,7 @@ public final class Main {
      * Executes the first run or migration wizards as required.
      */
     private static void doFirstRun() {
-        if (IdentityManager.getGlobalConfig().getOptionBool("general", "firstRun", true)) {
+        if (IdentityManager.getGlobalConfig().getOptionBool("general", "firstRun")) {
             IdentityManager.getConfigIdentity().setOption("general", "firstRun", "false");
             getUI().showFirstRunWizard();
             new Timer().schedule(new TimerTask() {
