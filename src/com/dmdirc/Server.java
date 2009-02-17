@@ -210,9 +210,9 @@ public final class Server extends WritableFrameContainer implements Serializable
                     channel.checkWho();
                 }
             }
-        }, 0, getConfigManager().getOptionInt(DOMAIN_GENERAL, "whotime", 60000));
+        }, 0, getConfigManager().getOptionInt(DOMAIN_GENERAL, "whotime"));
 
-        if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "showrawwindow", false)) {
+        if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "showrawwindow")) {
             addRaw();
         }
 
@@ -279,11 +279,11 @@ public final class Server extends WritableFrameContainer implements Serializable
                 serverInfo.setProxyHost(getConfigManager()
                         .getOption(DOMAIN_SERVER, "proxy.address"));
                 serverInfo.setProxyUser(getConfigManager()
-                        .getOption(DOMAIN_SERVER, "proxy.user", ""));
+                        .getOption(DOMAIN_SERVER, "proxy.user"));
                 serverInfo.setProxyPass(getConfigManager()
-                        .getOption(DOMAIN_SERVER, "proxy.password", ""));
+                        .getOption(DOMAIN_SERVER, "proxy.password"));
                 serverInfo.setProxyPort(getConfigManager()
-                        .getOptionInt(DOMAIN_SERVER, "proxy.port", 1080));
+                        .getOptionInt(DOMAIN_SERVER, "proxy.port"));
             }
 
             this.profile = profile;
@@ -385,14 +385,14 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
 
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
-                    "closechannelsonquit", false)) {
+                    "closechannelsonquit")) {
                 closeChannels();
             } else {
                 clearChannels();
             }
 
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
-                    "closequeriesonquit", false)) {
+                    "closequeriesonquit")) {
                 closeQueries();
             }
         }
@@ -410,7 +410,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
 
             final int delay = Math.max(1000,
-                    getConfigManager().getOptionInt(DOMAIN_GENERAL, "reconnectdelay", 5000));
+                    getConfigManager().getOptionInt(DOMAIN_GENERAL, "reconnectdelay"));
 
             handleNotification("connectRetry", getName(), delay / 1000);
 
@@ -1170,14 +1170,14 @@ public final class Server extends WritableFrameContainer implements Serializable
             updateIcon();
 
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
-                    "closechannelsondisconnect", false)) {
+                    "closechannelsondisconnect")) {
                 closeChannels();
             } else {
                 clearChannels();
             }
 
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
-                    "closequeriesondisconnect", false)) {
+                    "closequeriesondisconnect")) {
                 closeQueries();
             }
 
@@ -1185,7 +1185,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             updateAwayState(null);
 
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
-                    "reconnectondisconnect", false)
+                    "reconnectondisconnect")
                     && myState.getState() == ServerState.TRANSIENTLY_DISCONNECTED) {
                 doDelayedReconnect();
             }
@@ -1241,7 +1241,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             handleNotification("connectError", getName(), description);
 
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
-                    "reconnectonconnectfailure", false)) {
+                    "reconnectonconnectfailure")) {
                 doDelayedReconnect();
             }
         }
@@ -1260,7 +1260,7 @@ public final class Server extends WritableFrameContainer implements Serializable
                 Long.valueOf(parser.getPingTime(false)));
 
         if (parser.getPingTime(false)
-                 >= getConfigManager().getOptionInt(DOMAIN_SERVER, "pingtimeout", 60000)) {
+                 >= getConfigManager().getOptionInt(DOMAIN_SERVER, "pingtimeout")) {
             handleNotification("stonedServer", getName());
             reconnect();
         }
@@ -1294,7 +1294,7 @@ public final class Server extends WritableFrameContainer implements Serializable
 
             ActionManager.processEvent(CoreActionType.SERVER_CONNECTED, null, this);
 
-            if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "rejoinchannels", false)) {
+            if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "rejoinchannels")) {
                 for (Channel chan : channels.values()) {
                     chan.join();
                 }
@@ -1356,7 +1356,7 @@ public final class Server extends WritableFrameContainer implements Serializable
                     + "IRCd: " + parser.getIRCD(false)
                     + " (" + parser.getIRCD(true) + ")\n"
                     + "Mode alias version: "
-                    + getConfigManager().getOption("identity", "modealiasversion", "none")
+                    + getConfigManager().getOption("identity", "modealiasversion")
                     + "\n\n"));
         }
     }

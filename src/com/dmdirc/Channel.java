@@ -112,11 +112,11 @@ public final class Channel extends MessageTarget
         getConfigManager().addChangeListener("ui", "shownickcoloursintext", this);
 
         topics = new RollingList<Topic>(getConfigManager().getOptionInt("channel",
-                "topichistorysize", 10));
+                "topichistorysize"));
 
-        sendWho = getConfigManager().getOptionBool("channel", "sendwho", false);
-        showModePrefix = getConfigManager().getOptionBool("channel", "showmodeprefix", false);
-        showColours = getConfigManager().getOptionBool("ui", "shownickcoloursintext", false);
+        sendWho = getConfigManager().getOptionBool("channel", "sendwho");
+        showModePrefix = getConfigManager().getOptionBool("channel", "showmodeprefix");
+        showColours = getConfigManager().getOptionBool("ui", "shownickcoloursintext");
 
         tabCompleter = new TabCompleter(server.getTabCompleter());
         tabCompleter.addEntries(TabCompletionType.COMMAND,
@@ -483,11 +483,11 @@ public final class Channel extends MessageTarget
     @Override
     public void configChanged(final String domain, final String key) {
         if ("sendwho".equals(key)) {
-            sendWho = getConfigManager().getOptionBool("channel", "sendwho", false);
+            sendWho = getConfigManager().getOptionBool("channel", "sendwho");
         } else if ("showmodeprefix".equals(key)) {
-            showModePrefix = getConfigManager().getOptionBool("channel", "showmodeprefix", false);
+            showModePrefix = getConfigManager().getOptionBool("channel", "showmodeprefix");
         } else if ("shownickcoloursintext".equals(key)) {
-            showColours = getConfigManager().getOptionBool("ui", "shownickcoloursintext", false);
+            showColours = getConfigManager().getOptionBool("ui", "shownickcoloursintext");
         }
     }
 

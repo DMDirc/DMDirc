@@ -17,6 +17,7 @@ keysections:
   protocol
   plugin-addonid
   icon
+  ssl
 
 identity:
   name=DMDirc default settings
@@ -39,23 +40,26 @@ general:
 
   hidequeries=false
 
-  closechannelsonquit=false
-  closequeriesonquit=false
-
-  closechannelsondisconnect=false
-  closequeriesondisconnect=false
-
   reconnectonconnectfailure=true
-  reconnectondisconnect=true
-  reconnectdelay=5000
 
   server=irc.quakenet.org
   port=6667
   password=
 
-  whotime=60000
-
   showcolourdialog=true
+
+  #-- new
+  whotime=60000
+  showrawwindow=false
+  bindip=
+  closechannelsonquit=false
+  closequeriesonquit=false
+  closechannelsondisconnect=false
+  closequeriesondisconnect=false
+  reconnectdelay=5000
+  reconnectondisconnect=true
+  reconnectonconnectfailure=true
+  rejoinchannels=true
 
 notifications:
   authNotice=server
@@ -137,7 +141,6 @@ ui:
   foregroundcolour=1
   frameBufferSize=25000
   framemanagerPosition=left
-  maximisewindows=false
   sortByMode=true
   sortByCase=false
   inputbuffersize=50
@@ -146,8 +149,11 @@ ui:
   pasteProtectionLimit=1
   stylelinks=true
   antialias=true
-
   treeviewActiveBold=true
+
+  #-- new
+  maximisewindows=true
+  shownickcoloursintext=false
 
 treeview:
   sortwindows=true
@@ -155,6 +161,8 @@ treeview:
 
 channel:
   splitusermodes=false
+
+  #-- new
   sendwho=false
   showmodeprefix=true
   topichistorysize=10
@@ -170,7 +178,13 @@ logging:
 
 server:
   friendlymodes=true
+
+  #-- new
   pingtimeout=60000
+  proxy.address=
+  proxy.user=
+  proxy.password=
+  proxy.port=1080
 
 updater:
   frequency=86400
@@ -225,3 +239,11 @@ icon:
   category-messages=dmdirc://com/dmdirc/res/feedback.png
   category-updates=dmdirc://com/dmdirc/res/update.png
   category-urlhandlers=dmdirc://com/dmdirc/res/urls.png
+
+#-- new
+
+ssl:
+  cacertpass=changeit
+  checkdate=true
+  checkissuer=true
+  checkhost=true

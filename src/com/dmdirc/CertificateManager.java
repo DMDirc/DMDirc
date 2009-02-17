@@ -99,10 +99,10 @@ public class CertificateManager implements X509TrustManager {
     public CertificateManager(final String serverName, final ConfigManager config) {
         this.serverName = serverName;
         this.config = config;
-        this.cacertpass = config.getOption("ssl", "cacertpass", "changeit");
-        this.checkDate = config.getOptionBool("ssl", "checkdate", true);
-        this.checkIssuer = config.getOptionBool("ssl", "checkissuer", true);
-        this.checkHost = config.getOptionBool("ssl", "checkhost", true);
+        this.cacertpass = config.getOption("ssl", "cacertpass");
+        this.checkDate = config.getOptionBool("ssl", "checkdate");
+        this.checkIssuer = config.getOptionBool("ssl", "checkissuer");
+        this.checkHost = config.getOptionBool("ssl", "checkhost");
 
         loadTrustedCAs();
     }
