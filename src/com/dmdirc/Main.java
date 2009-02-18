@@ -35,10 +35,12 @@ import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.ui.interfaces.UIController;
+import com.dmdirc.ui.NoUIDialog;
 import com.dmdirc.updater.UpdateChannel;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
+import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -180,6 +182,11 @@ public final class Main {
 
             loadUI(pm, cm, false);
             return;
+        }
+
+        if (!GraphicsEnvironment.isHeadless()) {
+            // Show a dialog informing the user that no UI was found.
+            NoUIDialog.display();
         }
 
         // Can't find any
