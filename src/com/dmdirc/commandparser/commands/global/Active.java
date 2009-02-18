@@ -48,6 +48,7 @@ public final class Active extends GlobalCommand implements IntelligentCommand {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         final String command = implodeArgs(args);
@@ -60,17 +61,20 @@ public final class Active extends GlobalCommand implements IntelligentCommand {
     }
     
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "active";
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getHelp() {
         return "active <command> - executes the command as though it had been" +
                 " typed in the active window";

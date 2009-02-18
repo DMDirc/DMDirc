@@ -51,15 +51,8 @@ public final class SetNickColour extends ChannelCommand implements IntelligentCo
         CommandManager.registerCommand(this);
     }
     
-    /**
-     * Executes this command.
-     * @param origin The frame in which this command was issued
-     * @param server The server object that this command is associated with
-     * @param channel The channel object that this command is associated with
-     * @param isSilent Whether this command is silenced or not
-     * @param args The user supplied arguments
-     */
-    @SuppressWarnings("unchecked")
+    /** {@inheritDoc} */
+    @SuppressWarnings("unchecked") @Override
     public void execute(final InputWindow origin, final Server server,
             final Channel channel, final boolean isSilent, final String... args) {
         
@@ -114,17 +107,20 @@ public final class SetNickColour extends ChannelCommand implements IntelligentCo
         }
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "setnickcolour";
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getHelp() {
         return "setnickcolour [--nicklist|--text] <nick> [colour] - "
                 + "set the specified person's display colour";

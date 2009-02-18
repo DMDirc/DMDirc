@@ -30,6 +30,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The cycle command allows users to rapidly part and rejoin a channel.
+ *
  * @author chris
  */
 public final class Cycle extends ChannelCommand {
@@ -41,14 +42,8 @@ public final class Cycle extends ChannelCommand {
         CommandManager.registerCommand(this);
     }
     
-    /**
-     * Executes this command.
-     * @param origin The frame in which this command was issued
-     * @param server The server object that this command is associated with
-     * @param channel The channel object that this command is associated with
-     * @param isSilent Whether this command is silenced or not
-     * @param args The user supplied arguments
-     */
+    /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final Server server,
             final Channel channel, final boolean isSilent, final String... args) {
         channel.part(args.length > 0 ? implodeArgs(args)
@@ -56,17 +51,20 @@ public final class Cycle extends ChannelCommand {
         channel.join();
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "cycle";
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getHelp() {
         return "cycle [message] - parts and rejoins the channel";
     }

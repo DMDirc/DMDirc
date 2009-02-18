@@ -54,21 +54,25 @@ public enum QueryEvents implements ActionMetaType {
     }
     
     /** {@inheritDoc} */
+    @Override
     public int getArity() {
         return argNames.length;
     }
     
     /** {@inheritDoc} */
+    @Override
     public Class[] getArgTypes() {
         return argTypes;
     }
     
     /** {@inheritDoc} */
+    @Override
     public String[] getArgNames() {
         return argNames;
     }
     
     /** {@inheritDoc} */
+    @Override
     public String getGroup() {
         return "Query Events";
     }    
