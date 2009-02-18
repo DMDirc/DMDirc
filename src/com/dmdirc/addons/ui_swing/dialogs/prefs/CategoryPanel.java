@@ -271,6 +271,7 @@ public class CategoryPanel extends JPanel {
         panel.add(label, "align label, wmax 40%");
         panel.add(option, "growx, w 60%");
 
+        tooltip.registerTooltipHandler(label);
         tooltip.registerTooltipHandler(option);
     }
 
