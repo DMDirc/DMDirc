@@ -1271,11 +1271,16 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     @Precondition("State is CONNECTING")
     public void onPost005() {
+        if (myState.getState() != ServerState.CONNECTING) {
+            // Shouldn't happen
+            throw new IllegalStateException("Received onPost005 while not "
+                    + "connecting\n\n" + myState.getTransitionHistory());
+        }
+
         synchronized (this) {
             if (myState.getState() != ServerState.CONNECTING) {
-                // Shouldn't happen
-                throw new IllegalStateException("Received onPost005 while not "
-                        + "connecting\n\n" + myState.getTransitionHistory());
+                // We've transitioned while waiting for the lock. Just abort.
+                return;
             }
 
             myState.transition(ServerState.CONNECTED);
