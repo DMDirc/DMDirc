@@ -29,13 +29,15 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.concurrent.Semaphore;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.text.BadLocationException;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 
@@ -104,5 +106,27 @@ public class NoUIDialog extends JDialog {
                 me.setVisible(true);
             }
         });
+    }
+
+    public static void displayBlocking() {
+        final Semaphore semaphore = new Semaphore(0);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                final NoUIDialog me = new NoUIDialog();
+                me.addWindowListener(new WindowAdapter() {
+
+                    @Override
+                    public void windowClosed(final WindowEvent e) {
+                        semaphore.release();
+                    }
+
+                });
+                me.pack();
+                me.setVisible(true);
+            }
+        });
+        semaphore.acquireUninterruptibly();
     }
 }
