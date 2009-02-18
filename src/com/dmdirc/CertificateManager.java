@@ -142,12 +142,12 @@ public class CertificateManager implements X509TrustManager {
      * @return A KeyManager to use for the SSL connection
      */
     public KeyManager[] getKeyManager() {
-        if (config.hasOption("ssl", "clientcert.file")) {
+        if (config.hasOptionString("ssl", "clientcert.file")) {
             FileInputStream fis = null;
             try {
                 final char[] pass;
 
-                if (config.hasOption("ssl", "clientcert.pass")) {
+                if (config.hasOptionString("ssl", "clientcert.pass")) {
                     pass = config.getOption("ssl", "clientcert.pass").toCharArray();
                 } else {
                     pass = null;

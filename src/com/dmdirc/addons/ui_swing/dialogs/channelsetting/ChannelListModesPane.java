@@ -103,7 +103,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
         this.channel = channel;
 
         if (IdentityManager.getGlobalConfig().getOptionBool("general",
-                "extendedListModes", false)) {
+                "extendedListModes")) {
             renderer = new ExtendedListModeCellRenderer();
         } else {
             renderer = new ListModeCellRenderer();
@@ -122,7 +122,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
         modeCount = new JLabel();
         toggle = new JCheckBox("Show extended information",
                 IdentityManager.getGlobalConfig().getOptionBool("general",
-                "extendedListModes", false));
+                "extendedListModes"));
         toggle.setOpaque(UIUtilities.getTabbedPaneOpaque());
         toggle.setMargin(new Insets(0, 0, 0, 0));
         toggle.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -180,8 +180,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
                 (DefaultComboBoxModel) listModesMenu.getModel();
         for (char mode : listModesArray) {
             String modeText = mode + " list";
-            if (IdentityManager.getGlobalConfig().
-                    getOptionBool("server", "friendlymodes", false) &&
+            if (IdentityManager.getGlobalConfig().getOptionBool("server", "friendlymodes") &&
                     channel.getConfigManager().hasOption("server", "mode" + mode)) {
                 modeText =
                         channel.getConfigManager().
@@ -385,7 +384,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
     @Override
     public void configChanged(final String domain, final String key) {
         if (IdentityManager.getGlobalConfig().getOptionBool("general",
-                "extendedListModes", false)) {
+                "extendedListModes")) {
             renderer = new ListModeCellRenderer();
         } else {
             renderer = new ExtendedListModeCellRenderer();

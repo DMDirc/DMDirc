@@ -204,7 +204,7 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
      * Updates the selection.
      */
     public void updateSelection() {
-        if (uri != null && IdentityManager.getGlobalConfig().hasOption(
+        if (uri != null && IdentityManager.getGlobalConfig().hasOptionString(
                 "protocol", uri.getScheme())) {
             final String option =
                     IdentityManager.getGlobalConfig().getOption("protocol",

@@ -21,6 +21,8 @@ keysections:
   actions
   nicklist
   statusBar
+  temp
+  dialogstate
 
 identity:
   name=DMDirc default settings
@@ -29,8 +31,6 @@ identity:
   defaultsversion=0
 
 general:
-  submitErrors=false
-
   commandchar=/
   silencechar=.
 
@@ -50,8 +50,10 @@ general:
   closechannelsondisconnect=false
   closequeriesondisconnect=false
   commandhistory=10
+  extendedListModes=false
   firstRun=true
   hidequeries=true
+  logerrors=false
   password=
   port=6667
   reconnectdelay=5000
@@ -62,6 +64,7 @@ general:
   showcolourdialog=true
   showglobalwindow=false
   showrawwindow=false
+  submitErrors=false
   ui=swing
   whotime=60000
 
@@ -276,3 +279,10 @@ nicklist:
 
 statusBar:
   messageDisplayLength=5
+
+temp:
+  noerrorreporting=false
+
+dialogstate:
+  channelsettingsdialog=0
+  actionsmanagerdialog=0

@@ -106,9 +106,9 @@ public final class ErrorManager implements Serializable, Runnable {
      */
     public void addError(final ProgramError error, final boolean sendable) {
         boolean report = IdentityManager.getGlobalConfig().getOptionBool(
-                "general", "submitErrors", false)
+                "general", "submitErrors")
                 && !IdentityManager.getGlobalConfig().getOptionBool("temp",
-                "noerrorreporting", false);
+                "noerrorreporting");
 
         synchronized (errors) {
             if (errors.containsValue(error)) {
@@ -148,7 +148,7 @@ public final class ErrorManager implements Serializable, Runnable {
             sendError(error);
         }
 
-        if (IdentityManager.getGlobalConfig().getOptionBool("general", "logerrors", false)) {
+        if (IdentityManager.getGlobalConfig().getOptionBool("general", "logerrors")) {
             writeError(error);
         }
 

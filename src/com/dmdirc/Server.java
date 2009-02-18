@@ -273,7 +273,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             serverInfo = new ServerInfo(server, port, password);
             serverInfo.setSSL(ssl);
 
-            if (getConfigManager().hasOption(DOMAIN_SERVER, "proxy.address")) {
+            if (getConfigManager().hasOptionString(DOMAIN_SERVER, "proxy.address")) {
                 serverInfo.setUseSocks(true);
 
                 serverInfo.setProxyHost(getConfigManager()
@@ -304,7 +304,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             parser.setCreateFake(true);
             parser.setIgnoreList(ignoreList);
 
-            if (getConfigManager().hasOption(DOMAIN_GENERAL, "bindip")) {
+            if (getConfigManager().hasOptionString(DOMAIN_GENERAL, "bindip")) {
                 parser.setBindIP(getConfigManager().getOption(DOMAIN_GENERAL, "bindip"));
             }
 
@@ -686,7 +686,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         myInfo.setNickname(profile.getOptionList(DOMAIN_PROFILE, "nicknames").get(0));
         myInfo.setRealname(profile.getOption(DOMAIN_PROFILE, "realname"));
 
-        if (profile.hasOption(DOMAIN_PROFILE, "ident")) {
+        if (profile.hasOptionString(DOMAIN_PROFILE, "ident")) {
             myInfo.setUsername(profile.getOption(DOMAIN_PROFILE, "ident"));
         }
 
@@ -1126,11 +1126,11 @@ public final class Server extends WritableFrameContainer implements Serializable
         final String sansIrcd = "numeric_" + snumeric;
         StringBuffer target = null;
 
-        if (getConfigManager().hasOption("formatter", withIrcd)) {
+        if (getConfigManager().hasOptionString("formatter", withIrcd)) {
             target = new StringBuffer(withIrcd);
-        } else if (getConfigManager().hasOption("formatter", sansIrcd)) {
+        } else if (getConfigManager().hasOptionString("formatter", sansIrcd)) {
             target = new StringBuffer(sansIrcd);
-        } else if (getConfigManager().hasOption("formatter", "numeric_unknown")) {
+        } else if (getConfigManager().hasOptionString("formatter", "numeric_unknown")) {
             target = new StringBuffer("numeric_unknown");
         }
 
@@ -1321,13 +1321,13 @@ public final class Server extends WritableFrameContainer implements Serializable
         final StringBuffer missingUmodes = new StringBuffer();
 
         for (char mode : modes.toCharArray()) {
-            if (!getConfigManager().hasOption(DOMAIN_SERVER, "mode" + mode)) {
+            if (!getConfigManager().hasOptionString(DOMAIN_SERVER, "mode" + mode)) {
                 missingModes.append(mode);
             }
         }
 
         for (char mode : umodes.toCharArray()) {
-            if (!getConfigManager().hasOption(DOMAIN_SERVER, "umode" + mode)) {
+            if (!getConfigManager().hasOptionString(DOMAIN_SERVER, "umode" + mode)) {
                 missingUmodes.append(mode);
             }
         }

@@ -71,7 +71,7 @@ public final class ParamModePanel extends JPanel implements ActionListener {
         this.originalValue = value;
         String text;
         String tooltip;
-        if (configManager.hasOption("server", "mode" + mode)) {
+        if (configManager.hasOptionString("server", "mode" + mode)) {
             tooltip = "Mode " + mode + ": " + configManager.getOption(
                     "server", "mode" + mode);
         } else {
@@ -83,7 +83,7 @@ public final class ParamModePanel extends JPanel implements ActionListener {
         text = "Mode " + mode + ": ";
 
         if (configManager.getOptionBool("server", "friendlymodes") &&
-                configManager.hasOption("server", "mode" + mode)) {
+                configManager.hasOptionString("server", "mode" + mode)) {
             text = configManager.getOption("server", "mode" + mode) + ": ";
         }
 

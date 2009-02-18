@@ -148,7 +148,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
         initSettingsTab();
 
         tabbedPane.setSelectedIndex(channel.getConfigManager().
-                getOptionInt("dialogstate", "channelsettingsdialog", 0));
+                getOptionInt("dialogstate", "channelsettingsdialog"));
     }
 
     /** Initialises the Topic tab. */
