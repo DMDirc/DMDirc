@@ -44,7 +44,7 @@ public class TestConfigManagerMap extends ConfigManager {
         }
     }
 
-    @Override
+    @Override @Deprecated
     public boolean hasOption(String domain, String option) {
         if (settings.containsKey(domain + "." + option)) {
             return true;

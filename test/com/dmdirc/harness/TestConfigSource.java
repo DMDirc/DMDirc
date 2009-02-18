@@ -31,7 +31,7 @@ public class TestConfigSource extends ConfigSource {
         return option;
     }
 
-    @Override
+    @Override @Deprecated
     public boolean hasOption(String domain, String option) {
         return Boolean.parseBoolean(domain);
     }

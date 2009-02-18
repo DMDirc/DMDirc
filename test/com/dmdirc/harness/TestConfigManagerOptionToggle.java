@@ -35,7 +35,7 @@ public class TestConfigManagerOptionToggle extends ConfigManager {
         return option.substring(1);
     }
 
-    @Override
+    @Override @Deprecated
     public boolean hasOption(String domain, String option) {
         return option.charAt(0) == '1';
     }

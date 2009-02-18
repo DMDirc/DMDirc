@@ -123,7 +123,7 @@ public class ConfigManager extends ConfigSource implements Serializable,
     }
 
     /** {@inheritDoc} */
-    @Override
+    @Override @Deprecated
     public boolean hasOption(final String domain, final String option) {
         doStats(domain, option);
 

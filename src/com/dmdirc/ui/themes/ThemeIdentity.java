@@ -63,7 +63,7 @@ public class ThemeIdentity extends Identity {
     }
     
     /** {@inheritDoc} */
-    @Override
+    @Override @Deprecated
     public boolean hasOption(final String domain, final String option) {
         if (domain.equalsIgnoreCase("ui") || domain.equalsIgnoreCase("identity")
                 || domain.equalsIgnoreCase("icon")  || domain.equalsIgnoreCase("theme")

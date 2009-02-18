@@ -52,8 +52,22 @@ public abstract class ConfigSource {
      * @param domain The domain of the option
      * @param option The name of the option
      * @return True iff the option exists, false otherwise.
+     * @deprecated Should only be used internally by ConfigSource
      */
+    @Deprecated
     public abstract boolean hasOption(final String domain, final String option);
+
+    /**
+     * Determines if this manager has the specified String option.
+     *
+     * @param domain The domain of the option
+     * @param option The name of the option
+     * @since 0.6.3
+     * @return True iff the option exists and is not empty, false otherwise
+     */
+    public boolean hasOptionString(final String domain, final String option) {
+        return hasOption(domain, option) && !getOption(domain, option).isEmpty();
+    }
 
     /**
      * Determines if this manager has the specified integer option.
