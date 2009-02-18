@@ -32,6 +32,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.concurrent.Semaphore;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -46,13 +47,21 @@ import javax.swing.text.html.HTMLEditorKit;
  */
 public class NoUIDialog extends JDialog {
 
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
     private static final long serialVersionUID = -528603916540455178L;
+    /** Dialog heading text. */
     private static final String TITLE = "<h1>No UIs Found</h1>";
+    /** Dialog body text. */
     private static final String BODY = "DMDirc cannot find any UI plugins, " +
             "a UI plugin is required for you to use DMDirc.  You can either " +
             "download a UI plugin or extract one from the jar. DMDirc will " +
             "now exit";
 
+    /** Private constructor to prevent external instantiation. */
     private NoUIDialog() {
         super((JFrame) null, "DMDirc: No UIs Found");
         setResizable(false);
@@ -62,6 +71,7 @@ public class NoUIDialog extends JDialog {
         final JButton button = new JButton("OK");
         button.addActionListener(new ActionListener() {
 
+            /** {@inheritDoc} */
             @Override
             public void actionPerformed(final ActionEvent e) {
                 dispose();
@@ -94,11 +104,12 @@ public class NoUIDialog extends JDialog {
     }
 
     /**
-     * Static method to instantiate a display the dialog.
+     * Static method to instantiate and display the dialog.
      */
     public static void display() {
         SwingUtilities.invokeLater(new Runnable() {
 
+            /** {@inheritDoc} */
             @Override
             public void run() {
                 final NoUIDialog me = new NoUIDialog();
@@ -108,10 +119,15 @@ public class NoUIDialog extends JDialog {
         });
     }
 
+    /**
+     * Static method to instantiate and display the dialog, blocking until it
+     * is closed.
+     */
     public static void displayBlocking() {
         final Semaphore semaphore = new Semaphore(0);
         SwingUtilities.invokeLater(new Runnable() {
 
+            /** {@inheritDoc} */
             @Override
             public void run() {
                 final NoUIDialog me = new NoUIDialog();
