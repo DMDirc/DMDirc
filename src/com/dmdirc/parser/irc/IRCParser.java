@@ -657,6 +657,7 @@ public class IRCParser implements Runnable {
 
 			final Proxy.Type proxyType = Proxy.Type.SOCKS;
 			socket = new Socket(new Proxy(proxyType, new InetSocketAddress(server.getProxyHost(), server.getProxyPort())));
+            currentSocketState = STATE_OPEN;
 			if (server.getProxyUser() != null && !server.getProxyUser().isEmpty()) {
 				IRCAuthenticator.getIRCAuthenticator().addAuthentication(server);
 			}
@@ -664,17 +665,19 @@ public class IRCParser implements Runnable {
 		} else {
 			callDebugInfo(DEBUG_SOCKET, "Not using Proxy");
 			if (!server.getSSL()) {
-				if (bindIP == null || bindIP.isEmpty()) {
-					socket = new Socket(server.getHost(), server.getPort());
-				} else {
+                socket = new Socket();
+
+				if (bindIP != null && !bindIP.isEmpty()) {
 					callDebugInfo(DEBUG_SOCKET, "Binding to IP: "+bindIP);
 					try {
-						socket = new Socket(server.getHost(), server.getPort(), InetAddress.getByName(bindIP), 0);
+                        socket.bind(new InetSocketAddress(InetAddress.getByName(bindIP), 0));
 					} catch (IOException e) {
 						callDebugInfo(DEBUG_SOCKET, "Binding failed: "+e.getMessage());
-						socket = new Socket(server.getHost(), server.getPort());
 					}
 				}
+                
+                currentSocketState = STATE_OPEN;
+                socket.connect(new InetSocketAddress(server.getHost(), server.getPort()));
 			}
 		}
 
@@ -702,11 +705,12 @@ public class IRCParser implements Runnable {
 					}
 				}
 			}
+
+            currentSocketState = STATE_OPEN;
 		}
 
 		callDebugInfo(DEBUG_SOCKET, "\t-> Opening socket output stream PrintWriter");
 		out = new PrintWriter(socket.getOutputStream(), true);
-		currentSocketState = STATE_OPEN;
 		callDebugInfo(DEBUG_SOCKET, "\t-> Opening socket input stream BufferedReader");
 		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		callDebugInfo(DEBUG_SOCKET, "\t-> Socket Opened");
@@ -1676,13 +1680,17 @@ public class IRCParser implements Runnable {
 	 * @param sReason Reason for quitting.
 	 */
 	public void disconnect(final String sReason) {
+        System.out.println("disconnect, state = " + currentSocketState + ", got001 = " + got001);
 		if (currentSocketState == STATE_OPEN && got001) { quit(sReason); }
 		try {
-			if (socket != null) { socket.close(); }
+            System.out.println("   socket = " + socket);
+			if (socket != null) { System.out.println("        closing"); socket.close(); }
 		} catch (IOException e) {
 			/* Do Nothing */
 		} finally {
+            System.out.println("   finally, state = " + currentSocketState);
 			if (currentSocketState != STATE_CLOSED) {
+                System.out.println("           firing close");
 				currentSocketState = STATE_CLOSED;
 				callSocketClosed();
 			}
