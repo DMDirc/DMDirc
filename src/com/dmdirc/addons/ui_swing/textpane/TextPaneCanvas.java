@@ -23,7 +23,6 @@
 package com.dmdirc.addons.ui_swing.textpane;
 
 import com.dmdirc.ui.messages.IRCTextAttribute;
-import com.dmdirc.addons.ui_swing.textpane.TextPane.ClickType;
 
 import java.awt.Cursor;
 import java.awt.Graphics;
@@ -70,28 +69,10 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     private final Map<TextLayout, LineInfo> textLayouts;
     /** Line height. */
     private final int lineHeight;
-
-    /** Selection event types. */
-    protected enum MouseEventType {
-
-        /** Mouse clicked. */
-        CLICK,
-        /** Mouse dragged. */
-        DRAG,
-        /** Mouse released. */
-        RELEASE,
-    }
-
     /** position of the scrollbar. */
     private int scrollBarPosition;
-    /** Start line of the selection. */
-    private int selStartLine;
-    /** Start character of the selection. */
-    private int selStartChar;
-    /** End line of the selection. */
-    private int selEndLine;
-    /** End character of the selection. */
-    private int selEndChar;
+    /** Selection. */
+    private LinePosition selection;
     /** First visible line. */
     private int firstVisibleLine;
     /** Last visible line. */
@@ -116,6 +97,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         textLayouts = new HashMap<TextLayout, LineInfo>();
         positions = new HashMap<Rectangle, TextLayout>();
         lineWrap = new HashMap<Integer, Integer>();
+        selection = new LinePosition(-1, -1, -1, -1);
         addMouseListener(this);
         addMouseMotionListener(this);
         addComponentListener(this);
@@ -141,10 +123,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         float drawPosY = formatHeight;
         int startLine = scrollBarPosition;
 
-        int useStartLine;
-        int useStartChar;
-        int useEndLine;
-        int useEndChar;
         int paragraphStart;
         int paragraphEnd;
         LineBreakMeasurer lineMeasurer;
@@ -155,14 +133,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         textLayouts.clear();
         positions.clear();
 
-        //check theres something to draw
-        if (document.getNumLines() == 0) {
-            setCursor(Cursor.getDefaultCursor());
-            return;
-        }
-
-        //check there is some space to draw in
-        if (formatWidth < 1) {
+        //check theres something to draw and theres some space to draw in
+        if (document.getNumLines() == 0 || formatWidth < 1) {
             setCursor(Cursor.getDefaultCursor());
             return;
         }
@@ -180,35 +152,14 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         lastVisibleLine = startLine;
         firstVisibleLine = startLine;
 
-        if (selStartLine > selEndLine) {
-            // Swap both
-            useStartLine = selEndLine;
-            useStartChar = selEndChar;
-            useEndLine = selStartLine;
-            useEndChar = selStartChar;
-        } else if (selStartLine == selEndLine && selStartChar > selEndChar) {
-            // Just swap the chars
-            useStartLine = selStartLine;
-            useStartChar = selEndChar;
-            useEndLine = selEndLine;
-            useEndChar = selStartChar;
-        } else {
-            // Swap nothing
-            useStartLine = selStartLine;
-            useStartChar = selStartChar;
-            useEndLine = selEndLine;
-            useEndChar = selEndChar;
-        }
-
         // Iterate through the lines
         for (int i = startLine; i >= 0; i--) {
             float drawPosX;
-            final AttributedCharacterIterator iterator = document.getLine(i).
-                    getIterator();
+            final AttributedCharacterIterator iterator = document.getStyledLine(i);
             paragraphStart = iterator.getBeginIndex();
             paragraphEnd = iterator.getEndIndex();
             lineMeasurer = new LineBreakMeasurer(iterator,
-                    g.getFontRenderContext());
+                                                 g.getFontRenderContext());
             lineMeasurer.setPosition(paragraphStart);
 
             final int wrappedLine;
@@ -220,7 +171,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             } else {
                 //get it and populate the cache
                 wrappedLine = getNumWrappedLines(lineMeasurer,
-                        paragraphStart, paragraphEnd, formatWidth);
+                                                 paragraphStart, paragraphEnd,
+                                                 formatWidth);
                 lineWrap.put(i, wrappedLine);
             }
 
@@ -254,12 +206,12 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                     g.setColor(textPane.getForeground());
 
                     layout.draw(g, drawPosX, drawPosY + lineHeight / 2f);
-                    doHighlight(i, useStartLine, useEndLine, useStartChar,
-                            useEndChar, chars, layout, g, drawPosY, drawPosX);
+                    doHighlight(i, chars, layout, g, drawPosY, drawPosX);
                     firstVisibleLine = i;
                     textLayouts.put(layout, new LineInfo(i, j));
                     positions.put(new Rectangle(0, (int) drawPosY,
-                            (int) formatWidth + 6, lineHeight), layout);
+                                                (int) formatWidth + 6,
+                                                lineHeight), layout);
                 }
 
                 j++;
@@ -286,8 +238,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * @return Number of times the line wraps
      */
     private int getNumWrappedLines(final LineBreakMeasurer lineMeasurer,
-            final int paragraphStart, final int paragraphEnd,
-            final float formatWidth) {
+                                   final int paragraphStart,
+                                   final int paragraphEnd,
+                                   final float formatWidth) {
         int wrappedLine = 0;
 
         while (lineMeasurer.getPosition() < paragraphEnd) {
@@ -305,20 +258,41 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * Redraws the text that has been highlighted.
      *
      * @param line Line number
-     * @param startLine Selection start line
-     * @param endLine Selection end line
-     * @param startChar Selection start char
-     * @param endChar Selection end char
      * @param chars Number of characters so far in the line
      * @param layout Current line textlayout
      * @param g Graphics surface to draw highlight on
      * @param drawPosY current y location of the line
      * @param drawPosX current x location of the line
      */
-    private void doHighlight(final int line, final int startLine,
-            final int endLine, final int startChar, final int endChar,
-            final int chars, final TextLayout layout, final Graphics2D g,
-            final float drawPosY, final float drawPosX) {
+    private void doHighlight(final int line, final int chars,
+                             final TextLayout layout, final Graphics2D g,
+                             final float drawPosY, final float drawPosX) {
+        int startLine;
+        int startChar;
+        int endLine;
+        int endChar;
+
+        if (selection.getStartLine() > selection.getEndLine()) {
+            // Swap both
+            startLine = selection.getEndLine();
+            startChar = selection.getEndPos();
+            endLine = selection.getStartLine();
+            endChar = selection.getStartPos();
+        } else if (selection.getStartLine() == selection.getEndLine() &&
+                   selection.getStartPos() > selection.getEndPos()) {
+            // Just swap the chars
+            startLine = selection.getStartLine();
+            startChar = selection.getEndPos();
+            endLine = selection.getEndLine();
+            endChar = selection.getStartPos();
+        } else {
+            // Swap nothing
+            startLine = selection.getStartLine();
+            startChar = selection.getStartPos();
+            endLine = selection.getEndLine();
+            endChar = selection.getEndPos();
+        }
+
         //Does this line need highlighting?
         if (startLine <= line && endLine >= line) {
             int firstChar;
@@ -340,9 +314,10 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
 
             // If the selection includes the chars we're showing
             if (lastChar > chars && firstChar < chars +
-                    layout.getCharacterCount()) {
+                                                layout.getCharacterCount()) {
                 final String text =
-                        textPane.getTextFromLine(line).substring(firstChar,
+                             document.getLine(line).getText().substring(
+                        firstChar,
                         lastChar);
 
                 if (text.isEmpty()) {
@@ -350,17 +325,22 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 }
 
                 final int trans = (int) (lineHeight / 2f + drawPosY);
-                final AttributedString as = new AttributedString(
-                        textPane.getLine(line).getIterator(), firstChar,
-                        lastChar);
+                final AttributedCharacterIterator iterator = document.
+                        getStyledLine(line);
+                final AttributedString as = new AttributedString(iterator,
+                                                                 firstChar,
+                                                                 lastChar);
                 as.addAttribute(TextAttribute.FOREGROUND,
-                        textPane.getBackground());
+                                textPane.getBackground());
                 as.addAttribute(TextAttribute.BACKGROUND,
-                        textPane.getForeground());
+                                textPane.getForeground());
                 final TextLayout newLayout = new TextLayout(as.getIterator(),
-                        g.getFontRenderContext());
+                                                            g.
+                        getFontRenderContext());
                 final Shape shape = layout.getLogicalHighlightShape(firstChar -
-                        chars, lastChar - chars);
+                                                                    chars,
+                                                                    lastChar -
+                                                                    chars);
 
                 if (firstChar != 0) {
                     g.translate(shape.getBounds().getX(), 0);
@@ -387,7 +367,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             }
         }
     }
-    
+
     /**
      * Returns the current scroll bar position.
      * 
@@ -411,28 +391,29 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         final LineInfo lineInfo = getClickPosition(getMousePosition());
 
         if (lineInfo.getLine() != -1) {
-            clickedText = textPane.getTextFromLine(lineInfo.getLine());
+            clickedText = document.getLine(lineInfo.getLine()).getText();
 
             if (lineInfo.getIndex() == -1) {
                 start = -1;
                 end = -1;
             } else {
-                final int[] extent = getSurroundingWordIndexes(clickedText,
-                        lineInfo.getIndex());
+                final int[] extent =
+                            getSurroundingWordIndexes(clickedText,
+                                                      lineInfo.getIndex());
                 start = extent[0];
                 end = extent[1];
             }
 
             if (e.getClickCount() == 2) {
-                selStartLine = lineInfo.getLine();
-                selEndLine = lineInfo.getLine();
-                selStartChar = start;
-                selEndChar = end;
+                selection.setStartLine(lineInfo.getLine());
+                selection.setEndLine(lineInfo.getLine());
+                selection.setStartPos(start);
+                selection.setEndPos(end);
             } else if (e.getClickCount() == 3) {
-                selStartLine = lineInfo.getLine();
-                selEndLine = lineInfo.getLine();
-                selStartChar = 0;
-                selEndChar = clickedText.length();
+                selection.setStartLine(lineInfo.getLine());
+                selection.setEndLine(lineInfo.getLine());
+                selection.setStartPos(0);
+                selection.setEndPos(clickedText.length());
             }
         }
 
@@ -449,26 +430,23 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      */
     public ClickType getClickType(final LineInfo lineInfo) {
         if (lineInfo.getLine() != -1) {
-            final AttributedCharacterIterator iterator = document.getLine(lineInfo.getLine()).
-                    getIterator();
-            if (lineInfo.getIndex() <= iterator.getEndIndex()) {
-                iterator.setIndex(lineInfo.getIndex());
-                Object linkattr =
-                        iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
-                if (linkattr instanceof String) {
-                    return ClickType.HYPERLINK;
-                }
-                linkattr = iterator.getAttributes().get(IRCTextAttribute.CHANNEL);
-                if (linkattr instanceof String) {
-                    return ClickType.CHANNEL;
-                }
-                linkattr = iterator.getAttributes().get(IRCTextAttribute.NICKNAME);
-                if (linkattr instanceof String) {
-                    return ClickType.NICKNAME;
-                }
+            final AttributedCharacterIterator iterator = document.getStyledLine(
+                    lineInfo.getLine());
+            iterator.setIndex(lineInfo.getIndex());
+            Object linkattr =
+                   iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
+            if (linkattr instanceof String) {
+                return ClickType.HYPERLINK;
+            }
+            linkattr = iterator.getAttributes().get(IRCTextAttribute.CHANNEL);
+            if (linkattr instanceof String) {
+                return ClickType.CHANNEL;
+            }
+            linkattr = iterator.getAttributes().get(IRCTextAttribute.NICKNAME);
+            if (linkattr instanceof String) {
+                return ClickType.NICKNAME;
             }
         }
-
         return ClickType.NORMAL;
     }
 
@@ -481,11 +459,11 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      */
     public Object getAttributeValueAtPoint(LineInfo lineInfo) {
         if (lineInfo.getLine() != -1) {
-            final AttributedCharacterIterator iterator = document.getLine(lineInfo.getLine()).
-                    getIterator();
+            final AttributedCharacterIterator iterator = document.getStyledLine(
+                    lineInfo.getLine());
             iterator.setIndex(lineInfo.getIndex());
             Object linkattr =
-                    iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
+                   iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
             if (linkattr instanceof String) {
                 return linkattr;
             }
@@ -511,7 +489,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * @return Indexes of the word surrounding the index (start, end)
      */
     protected int[] getSurroundingWordIndexes(final String text,
-            final int index) {
+                                              final int index) {
         final int start = getSurroundingWordStart(text, index);
         final int end = getSurroundingWordEnd(text, index);
 
@@ -616,7 +594,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      */
     @Override
     public void mouseEntered(final MouseEvent e) {
-    //Ignore
+        //Ignore
     }
 
     /** 
@@ -626,7 +604,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      */
     @Override
     public void mouseExited(final MouseEvent e) {
-    //Ignore
+        //Ignore
     }
 
     /** 
@@ -641,18 +619,19 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
 
     /** Checks for a link under the cursor and sets appropriately. */
     private void checkForLink() {
-        final LineInfo info = getClickPosition(getMousePosition());
+        final LineInfo lineInfo = getClickPosition(getMousePosition());
 
-        if (info.getLine() != -1 && document.getLine(info.getLine()) != null) {
-            final AttributedCharacterIterator iterator = document.getLine(info.getLine()).
-                    getIterator();
-            if (info.getIndex() < iterator.getBeginIndex() || info.getIndex() >
-                    iterator.getEndIndex()) {
+        if (lineInfo.getLine() != -1 && document.getLine(lineInfo.getLine()) !=
+                                        null) {
+            final AttributedCharacterIterator iterator = document.getStyledLine(
+                    lineInfo.getLine());
+            if (lineInfo.getIndex() < iterator.getBeginIndex() ||
+                lineInfo.getIndex() > iterator.getEndIndex()) {
                 return;
             }
-            iterator.setIndex(info.getIndex());
+            iterator.setIndex(lineInfo.getIndex());
             Object linkattr =
-                    iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
+                   iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
             if (linkattr instanceof String) {
                 setCursor(HAND_CURSOR);
                 return;
@@ -680,7 +659,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * @param e responsible mouse event
      */
     protected void highlightEvent(final MouseEventType type,
-            final MouseEvent e) {
+                                  final MouseEvent e) {
         if (isVisible()) {
             Point point = e.getLocationOnScreen();
             SwingUtilities.convertPointFromScreen(point, this);
@@ -691,17 +670,18 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                     point.setLocation(bounds.getX() + 3, point.getY());
                 } else if (mousePos.getX() > (bounds.getX() + bounds.getWidth())) {
                     point.setLocation(bounds.getX() + bounds.getWidth() - 3,
-                            point.getY());
+                                      point.getY());
                 }
                 if (mousePos.getY() < bounds.getY()) {
                     point.setLocation(point.getX(), bounds.getY() + 6);
                 } else if (mousePos.getY() >
-                        (bounds.getY() + bounds.getHeight())) {
+                           (bounds.getY() + bounds.getHeight())) {
                     //Nice text selection behaviour
                     //point.setLocation(point.getX(), bounds.getY() +
                     //        bounds.getHeight() - 6);
-                    point.setLocation(bounds.getX() + bounds.getWidth() - 3, bounds.getY() +
-                            bounds.getHeight() - 6);
+                    point.setLocation(bounds.getX() + bounds.getWidth() - 3,
+                                      bounds.getY() +
+                                      bounds.getHeight() - 6);
                 }
             }
             final LineInfo info = getClickPosition(point);
@@ -715,11 +695,11 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             }
             if (info.getLine() != -1 && info.getPart() != -1) {
                 if (type == MouseEventType.CLICK) {
-                    selStartLine = info.getLine();
-                    selStartChar = info.getIndex();
+                    selection.setStartLine(info.getLine());
+                    selection.setStartPos(info.getIndex());
                 }
-                selEndLine = info.getLine();
-                selEndChar = info.getIndex();
+                selection.setEndLine(info.getLine());
+                selection.setEndPos(info.getIndex());
 
                 repaint();
             }
@@ -748,7 +728,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             }
 
             pos = getHitPosition(lineNumber, linePart, (int) point.getX(),
-                    (int) point.getY());
+                                 (int) point.getY());
         }
 
         return new LineInfo(lineNumber, linePart, pos);
@@ -765,7 +745,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * @return Hit position
      */
     private int getHitPosition(final int lineNumber, final int linePart,
-            final int x, final int y) {
+                               final int x, final int y) {
         int pos = 0;
 
         for (Map.Entry<Rectangle, TextLayout> entry : positions.entrySet()) {
@@ -773,9 +753,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 if (textLayouts.get(entry.getValue()).getPart() < linePart) {
                     pos += entry.getValue().getCharacterCount();
                 } else if (textLayouts.get(entry.getValue()).getPart() ==
-                        linePart) {
+                           linePart) {
                     final TextHitInfo hit = entry.getValue().hitTestChar(x - 6,
-                            y);
+                                                                         y);
                     pos += hit.getInsertionIndex();
                 }
             }
@@ -790,25 +770,30 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * @return Selected range info
      */
     protected LinePosition getSelectedRange() {
-        if (selStartLine > selEndLine) {
+        if (selection.getStartLine() > selection.getEndLine()) {
             // Swap both
-            return new LinePosition(selEndLine, selEndChar, selStartLine,
-                    selStartChar);
-        } else if (selStartLine == selEndLine && selStartChar > selEndChar) {
+            return new LinePosition(selection.getEndLine(),
+                                    selection.getEndPos(), selection.
+                    getStartLine(),
+                                    selection.getStartPos());
+        } else if (selection.getStartLine() == selection.getEndLine() &&
+                   selection.getStartPos() > selection.getEndPos()) {
             // Just swap the chars
-            return new LinePosition(selStartLine, selEndChar, selEndLine,
-                    selStartChar);
+            return new LinePosition(selection.getStartLine(), selection.
+                    getEndPos(), selection.getEndLine(),
+                                    selection.getStartPos());
         } else {
             // Swap nothing
-            return new LinePosition(selStartLine, selStartChar, selEndLine,
-                    selEndChar);
+            return new LinePosition(selection.getStartLine(), selection.
+                    getStartPos(), selection.getEndLine(),
+                                    selection.getEndPos());
         }
     }
 
     /** Clears the selection. */
     protected void clearSelection() {
-        selEndLine = selStartLine;
-        selEndChar = selStartChar;
+        selection.setEndLine(selection.getStartLine());
+        selection.setEndPos(selection.getStartPos());
         if (isVisible()) {
             repaint();
         }
@@ -820,10 +805,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * @param position Line position
      */
     public void setSelectedRange(final LinePosition position) {
-        selStartLine = position.getStartLine();
-        selStartChar = position.getStartPos();
-        selEndLine = position.getEndLine();
-        selEndChar = position.getEndPos();
+        selection = new LinePosition(position);
         if (isVisible()) {
             repaint();
         }
@@ -868,7 +850,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      */
     @Override
     public void componentMoved(final ComponentEvent e) {
-    //Ignore
+        //Ignore
     }
 
     /** 
@@ -878,7 +860,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      */
     @Override
     public void componentShown(final ComponentEvent e) {
-    //Ignore
+        //Ignore
     }
 
     /** 
@@ -888,7 +870,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      */
     @Override
     public void componentHidden(final ComponentEvent e) {
-    //Ignore
+        //Ignore
     }
 
     /** Clears the line wrapping cache. */

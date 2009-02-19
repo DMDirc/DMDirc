@@ -24,17 +24,17 @@ package com.dmdirc.addons.ui_swing;
 
 import com.dmdirc.Channel;
 import com.dmdirc.ServerState;
-import com.dmdirc.commandparser.PopupType;
-import com.dmdirc.commandparser.parsers.ChannelCommandParser;
-import com.dmdirc.commandparser.parsers.CommandParser;
-import com.dmdirc.parser.irc.ChannelClientInfo;
-import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.addons.ui_swing.components.InputTextFrame;
 import com.dmdirc.addons.ui_swing.components.SnappingJSplitPane;
 import com.dmdirc.addons.ui_swing.components.SwingInputHandler;
 import com.dmdirc.addons.ui_swing.components.renderers.NicklistRenderer;
 import com.dmdirc.addons.ui_swing.dialogs.channelsetting.ChannelSettingsDialog;
-import com.dmdirc.addons.ui_swing.textpane.TextPane.ClickType;
+import com.dmdirc.addons.ui_swing.textpane.ClickType;
+import com.dmdirc.commandparser.PopupType;
+import com.dmdirc.commandparser.parsers.ChannelCommandParser;
+import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.parser.irc.ChannelClientInfo;
+import com.dmdirc.ui.interfaces.ChannelWindow;
 
 import java.awt.Color;
 import java.awt.Dimension;

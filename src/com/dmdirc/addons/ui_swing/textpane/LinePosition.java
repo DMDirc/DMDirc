@@ -53,6 +53,18 @@ public class LinePosition {
     }
 
     /**
+     * Constructs a new line position.
+     *
+     * @param position Position to create position from
+     */
+    public LinePosition(final LinePosition position) {
+        this.startLine = position.getStartLine();
+        this.endLine = position.getEndLine();
+        this.startPos = position.getStartPos();
+        this.endPos = position.getEndPos();
+    }
+
+    /**
      * Returns the end line for this position.
      * 
      * @return End line

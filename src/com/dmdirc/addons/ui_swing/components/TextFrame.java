@@ -26,6 +26,15 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.addons.ui_swing.SwingController;
+import com.dmdirc.addons.ui_swing.UIUtilities;
+import com.dmdirc.addons.ui_swing.actions.ChannelCopyAction;
+import com.dmdirc.addons.ui_swing.actions.CommandAction;
+import com.dmdirc.addons.ui_swing.actions.HyperlinkCopyAction;
+import com.dmdirc.addons.ui_swing.actions.NicknameCopyAction;
+import com.dmdirc.addons.ui_swing.actions.SearchAction;
+import com.dmdirc.addons.ui_swing.actions.TextPaneCopyAction;
+import com.dmdirc.addons.ui_swing.textpane.ClickType;
 import com.dmdirc.commandparser.PopupManager;
 import com.dmdirc.commandparser.PopupMenu;
 import com.dmdirc.commandparser.PopupMenuItem;
@@ -41,22 +50,13 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
-import com.dmdirc.ui.messages.Styliser;
-import com.dmdirc.addons.ui_swing.SwingController;
-import com.dmdirc.addons.ui_swing.actions.ChannelCopyAction;
-import com.dmdirc.addons.ui_swing.actions.CommandAction;
-import com.dmdirc.addons.ui_swing.actions.HyperlinkCopyAction;
-import com.dmdirc.addons.ui_swing.actions.NicknameCopyAction;
-import com.dmdirc.addons.ui_swing.actions.SearchAction;
-import com.dmdirc.addons.ui_swing.actions.TextPaneCopyAction;
+import com.dmdirc.addons.ui_swing.textpane.Line;
 import com.dmdirc.addons.ui_swing.textpane.LineInfo;
 import com.dmdirc.addons.ui_swing.textpane.TextPane;
-import com.dmdirc.addons.ui_swing.textpane.TextPane.ClickType;
-import com.dmdirc.addons.ui_swing.textpane.TextPanePageUpAction;
 import com.dmdirc.addons.ui_swing.textpane.TextPanePageDownAction;
-import com.dmdirc.addons.ui_swing.UIUtilities;
-
+import com.dmdirc.addons.ui_swing.textpane.TextPanePageUpAction;
 import com.dmdirc.util.URLHandler;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -72,7 +72,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
-import java.text.AttributedString;
 import java.util.Date;
 
 import java.util.LinkedList;
@@ -239,24 +238,22 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             /** {@inheritDoc} */
             @Override
             public void run() {
-                final List<AttributedString> lines = new LinkedList<AttributedString>();
+                final List<Line> lines = new LinkedList<Line>();
                 for (String myLine : encodedLine.split("\n")) {
                     if (timestamp) {
-                        lines.add(TextPane.styledDocumentToAttributedString(
-                                Styliser.getStyledString(new String[]{
+                        lines.add(new Line(new String[]{
                             Formatter.formatMessage(getConfigManager(),
                             "timestamp", new Date()), myLine,
-                        })));
+                        }));
                     } else {
-                        lines.add(TextPane.styledDocumentToAttributedString(
-                                Styliser.getStyledString(new String[]{myLine,})));
+                        lines.add(new Line(new String[]{myLine,}));
                     }
 
                     ActionManager.processEvent(CoreActionType.CLIENT_LINE_ADDED,
                             null, getContainer(), myLine);
                 }
                 
-                textPane.addText(lines);
+                textPane.getDocument().addText(lines);
 
                 if (frameBufferSize > 0) {
                     textPane.trim(frameBufferSize);

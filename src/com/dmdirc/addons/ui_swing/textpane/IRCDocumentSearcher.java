@@ -66,7 +66,7 @@ public class IRCDocumentSearcher {
      */
     private LinePosition getEndPosition() {
         final int documentSize = document.getNumLines() - 1;
-        final int lineLength = document.getLineLength(documentSize);
+        final int lineLength = document.getLine(documentSize).getLength();
 
         return new LinePosition(documentSize, lineLength, documentSize,
                 lineLength);
@@ -93,7 +93,7 @@ public class IRCDocumentSearcher {
         
         int line = position.getEndLine();        
         for (int remaining = document.getNumLines(); remaining > 0; remaining--) {
-            final String lineText = document.getLineText(line);
+            final String lineText = document.getLine(line).getText();
             
             final List<LinePosition> matches = searchLine(line, lineText);
             
@@ -126,7 +126,7 @@ public class IRCDocumentSearcher {
         
         int line = position.getStartLine();        
         for (int remaining = document.getNumLines(); remaining > 0; remaining--) {
-            final String lineText = document.getLineText(line);
+            final String lineText = document.getLine(line).getText();
                         
             final List<LinePosition> matches = searchLine(line, lineText);
             
