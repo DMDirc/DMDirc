@@ -166,8 +166,8 @@ public final class Update implements DownloadListener {
                 } catch (Throwable ex) {
                     setStatus(UpdateStatus.ERROR);
 
-                    Logger.appError(ErrorLevel.MEDIUM,
-                            "Error when updating component " + component, ex);
+                    Logger.appError(ErrorLevel.MEDIUM, "Error when updating component "
+                            + component.getName(), ex);
 
                     return;
                 }
