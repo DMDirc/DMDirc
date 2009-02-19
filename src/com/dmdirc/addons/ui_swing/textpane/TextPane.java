@@ -201,7 +201,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     /**
      * Returns the selected text.
      * 
-     *     *    <li>0 = start line</li>
+     *    <li>0 = start line</li>
      *    <li>1 = start char</li>
      *    <li>2 = end line</li>
      *    <li>3 = end char</li>

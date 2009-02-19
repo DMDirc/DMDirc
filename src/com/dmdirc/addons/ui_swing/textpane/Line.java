@@ -88,6 +88,21 @@ public class Line {
         for (String linePart : lineParts) {
             lineText.append(linePart);
         }
+        return Styliser.stipControlCodes(lineText.toString());
+    }
+
+    /**
+     * Returns the Line text at the specified number.
+     *
+     * @return Line at the specified number or null
+     *
+     * @since 0.6.3
+     */
+    public String getStyledText() {
+        StringBuilder lineText = new StringBuilder();
+        for (String linePart : lineParts) {
+            lineText.append(linePart);
+        }
         return lineText.toString();
     }
 
