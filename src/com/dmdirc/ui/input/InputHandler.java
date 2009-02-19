@@ -67,17 +67,17 @@ public abstract class InputHandler implements ConfigChangeListener {
      * Indicates that the caret should be moved to the start of a selection when
      * a control code has been inserted.
      */
-    private static final int POSITION_START = 2;
+    protected static final int POSITION_START = 2;
     /** Flag to indicate that this input handler should handle tab completion. */
-    private static final int HANDLE_TABCOMPLETION = 1;
+    protected static final int HANDLE_TABCOMPLETION = 1;
     /** Flag to indicate that this input handler should maintain a back buffer. */
-    private static final int HANDLE_BACKBUFFER = 2;
+    protected static final int HANDLE_BACKBUFFER = 2;
     /** Flag to indicate that this input handler should handle formatting. */
-    private static final int HANDLE_FORMATTING = 4;
+    protected static final int HANDLE_FORMATTING = 4;
     /** Flag to indicate that this input handler should handle returns. */
-    private static final int HANDLE_RETURN = 8;
+    protected static final int HANDLE_RETURN = 8;
     /** The flags for this particular input handler. */
-    private int flags = HANDLE_TABCOMPLETION | HANDLE_BACKBUFFER
+    protected int flags = HANDLE_TABCOMPLETION | HANDLE_BACKBUFFER
             | HANDLE_FORMATTING | HANDLE_RETURN;
     /** The input buffer. */
     protected RollingList<String> buffer;

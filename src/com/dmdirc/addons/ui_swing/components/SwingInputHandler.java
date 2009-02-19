@@ -216,7 +216,8 @@ public class SwingInputHandler extends InputHandler implements KeyListener {
         if (e.getKeyCode() != KeyEvent.VK_TAB && e.getKeyCode() !=
                 KeyEvent.VK_UP && e.getKeyCode() != KeyEvent.VK_DOWN) {
             final String line = target.getText();
-            if (UIUtilities.isCtrlDown(e) && e.getKeyCode() == KeyEvent.VK_ENTER) {
+            if (UIUtilities.isCtrlDown(e) && e.getKeyCode() == KeyEvent.VK_ENTER
+                    && (flags & HANDLE_RETURN) == HANDLE_RETURN) {
                 target.setText("");
             }
             SwingUtilities.invokeLater(new Runnable() {
