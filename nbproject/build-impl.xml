@@ -19,11 +19,11 @@ is divided into following sections:
   - cleanup
 
         -->
-<project xmlns:j2seproject1="http://www.netbeans.org/ns/j2se-project/1" xmlns:j2seproject3="http://www.netbeans.org/ns/j2se-project/3" xmlns:jaxrpc="http://www.netbeans.org/ns/j2se-project/jax-rpc" basedir=".." default="default" name="DMDirc-impl">
+<project xmlns:j2seproject1="http://www.netbeans.org/ns/j2se-project/1" xmlns:j2seproject2="http://www.netbeans.org/ns/j2se-project/2" xmlns:j2seproject3="http://www.netbeans.org/ns/j2se-project/3" xmlns:jaxrpc="http://www.netbeans.org/ns/j2se-project/jax-rpc" basedir=".." default="default" name="DMDirc-impl">
     <target depends="test,jar,javadoc" description="Build and test whole project." name="default"/>
-    <!-- 
+    <!--
                 ======================
-                INITIALIZATION SECTION 
+                INITIALIZATION SECTION
                 ======================
             -->
     <target name="-pre-init">
@@ -102,15 +102,9 @@ is divided into following sections:
         <property name="javadoc.encoding.used" value="${source.encoding}"/>
         <property name="includes" value="**"/>
         <property name="excludes" value=""/>
-        <property name="do.depend" value="false"/>
+        <property name="do.depend" value="true"/>
         <condition property="do.depend.true">
             <istrue value="${do.depend}"/>
-        </condition>
-        <condition else="" property="javac.compilerargs.jaxws" value="-Djava.endorsed.dirs='${jaxws.endorsed.dir}'">
-            <and>
-                <isset property="jaxws.endorsed.dir"/>
-                <available file="nbproject/jaxws-build.xml"/>
-            </and>
         </condition>
     </target>
     <target name="-post-init">
@@ -146,6 +140,7 @@ is divided into following sections:
             <attribute default="${includes}" name="includes"/>
             <attribute default="${excludes}" name="excludes"/>
             <attribute default="${javac.debug}" name="debug"/>
+            <attribute default="" name="javac.compilerargs.jaxws"/>
             <attribute default="" name="sourcepath"/>
             <element name="customize" optional="true"/>
             <sequential>
@@ -153,7 +148,7 @@ is divided into following sections:
                     <classpath>
                         <path path="@{classpath}"/>
                     </classpath>
-                    <compilerarg line="${javac.compilerargs} ${javac.compilerargs.jaxws}"/>
+                    <compilerarg line="${javac.compilerargs} @{javac.compilerargs.jaxws}"/>
                     <customize/>
                 </javac>
             </sequential>
@@ -193,6 +188,9 @@ is divided into following sections:
             <attribute default="**" name="testincludes"/>
             <sequential>
                 <junit dir="${work.dir}" errorproperty="tests.failed" failureproperty="tests.failed" fork="true" showoutput="true">
+                    <classpath>
+                        <pathelement path="${clover.jar}"/>
+                    </classpath>
                     <batchtest todir="${build.test.results.dir}">
                         <fileset dir="${test.src.dir}" excludes="@{excludes},${excludes}" includes="@{includes}">
                             <filename name="@{testincludes}"/>
@@ -212,13 +210,13 @@ is divided into following sections:
             </sequential>
         </macrodef>
     </target>
-    <target depends="-init-debug-args" name="-init-macrodef-nbjpda">
+    <target name="-init-macrodef-nbjpda">
         <macrodef name="nbjpdastart" uri="http://www.netbeans.org/ns/j2se-project/1">
             <attribute default="${main.class}" name="name"/>
             <attribute default="${debug.classpath}" name="classpath"/>
             <attribute default="" name="stopclassname"/>
             <sequential>
-                <nbjpdastart addressproperty="jpda.address" name="@{name}" stopclassname="@{stopclassname}" transport="${debug-transport}">
+                <nbjpdastart addressproperty="jpda.address" name="@{name}" stopclassname="@{stopclassname}" transport="dt_socket">
                     <classpath>
                         <path path="@{classpath}"/>
                     </classpath>
@@ -229,9 +227,7 @@ is divided into following sections:
             <attribute default="${build.classes.dir}" name="dir"/>
             <sequential>
                 <nbjpdareload>
-                    <fileset dir="@{dir}" includes="${fix.classes}">
-                        <include name="${fix.includes}*.class"/>
-                    </fileset>
+                    <fileset dir="@{dir}" includes="${fix.includes}*.class"/>
                 </nbjpdareload>
             </sequential>
         </macrodef>
@@ -249,12 +245,6 @@ is divided into following sections:
         <condition else="-Xdebug" property="debug-args-line" value="-Xdebug -Xnoagent -Djava.compiler=none">
             <istrue value="${have-jdk-older-than-1.4}"/>
         </condition>
-        <condition else="dt_socket" property="debug-transport-by-os" value="dt_shmem">
-            <os family="windows"/>
-        </condition>
-        <condition else="${debug-transport-by-os}" property="debug-transport" value="${debug.transport}">
-            <isset property="debug.transport"/>
-        </condition>
     </target>
     <target depends="-init-debug-args" name="-init-macrodef-debug">
         <macrodef name="debug" uri="http://www.netbeans.org/ns/j2se-project/3">
@@ -264,7 +254,7 @@ is divided into following sections:
             <sequential>
                 <java classname="@{classname}" dir="${work.dir}" fork="true">
                     <jvmarg line="${debug-args-line}"/>
-                    <jvmarg value="-Xrunjdwp:transport=${debug-transport},address=${jpda.address}"/>
+                    <jvmarg value="-Xrunjdwp:transport=dt_socket,address=${jpda.address}"/>
                     <jvmarg line="${run.jvmargs}"/>
                     <classpath>
                         <path path="@{classpath}"/>
@@ -300,7 +290,7 @@ is divided into following sections:
     <target name="-init-presetdef-jar">
         <presetdef name="jar" uri="http://www.netbeans.org/ns/j2se-project/1">
             <jar compress="${jar.compress}" jarfile="${dist.jar}">
-                <j2seproject1:fileset dir="${build.classes.dir}"/>
+                <j2seproject1:fileset dir="${build.classes.dir}" excludes="${dist.jar.excludes}"/>
             </jar>
         </presetdef>
     </target>
@@ -311,13 +301,6 @@ is divided into following sections:
                 ===================
             -->
     <target depends="init" name="deps-jar" unless="no.deps"/>
-    <target depends="init,-check-automatic-build,-clean-after-automatic-build" name="-verify-automatic-build"/>
-    <target depends="init" name="-check-automatic-build">
-        <available file="${build.classes.dir}/.netbeans_automatic_build" property="netbeans.automatic.build"/>
-    </target>
-    <target depends="init" if="netbeans.automatic.build" name="-clean-after-automatic-build">
-        <antcall target="clean"/>
-    </target>
     <target depends="init,deps-jar" name="-pre-pre-compile">
         <mkdir dir="${build.classes.dir}"/>
     </target>
@@ -338,7 +321,7 @@ is divided into following sections:
         <!-- Empty placeholder for easier customization. -->
         <!-- You can override this target in the ../build.xml file. -->
     </target>
-    <target depends="init,deps-jar,-verify-automatic-build,-pre-pre-compile,-pre-compile,-do-compile,-post-compile" description="Compile project." name="compile"/>
+    <target depends="init,deps-jar,-pre-pre-compile,-pre-compile,-do-compile,-post-compile" description="Compile project." name="compile"/>
     <target name="-pre-compile-single">
         <!-- Empty placeholder for easier customization. -->
         <!-- You can override this target in the ../build.xml file. -->
@@ -352,7 +335,7 @@ is divided into following sections:
         <!-- Empty placeholder for easier customization. -->
         <!-- You can override this target in the ../build.xml file. -->
     </target>
-    <target depends="init,deps-jar,-verify-automatic-build,-pre-pre-compile,-pre-compile-single,-do-compile-single,-post-compile-single" name="compile-single"/>
+    <target depends="init,deps-jar,-pre-pre-compile,-pre-compile-single,-do-compile-single,-post-compile-single" name="compile-single"/>
     <!--
                 ====================
                 JAR BUILDING SECTION
@@ -402,7 +385,7 @@ is divided into following sections:
         </pathconvert>
         <taskdef classname="org.netbeans.modules.java.j2seproject.copylibstask.CopyLibs" classpath="${libs.CopyLibs.classpath}" name="copylibs"/>
         <copylibs compress="${jar.compress}" jarfile="${dist.jar}" manifest="${manifest.file}" runtimeclasspath="${run.classpath.without.build.classes.dir}">
-            <fileset dir="${build.classes.dir}"/>
+            <fileset dir="${build.classes.dir}" excludes="${dist.jar.excludes}" />
             <manifest>
                 <attribute name="Main-Class" value="${main.class}"/>
                 <attribute name="Class-Path" value="${jar.classpath}"/>
@@ -476,7 +459,7 @@ is divided into following sections:
             -->
     <target depends="init" name="-javadoc-build">
         <mkdir dir="${dist.javadoc.dir}"/>
-        <javadoc additionalparam="${javadoc.additionalparam}" author="${javadoc.author}" charset="UTF-8" destdir="${dist.javadoc.dir}" docencoding="UTF-8" encoding="${javadoc.encoding.used}" failonerror="true" noindex="${javadoc.noindex}" nonavbar="${javadoc.nonavbar}" notree="${javadoc.notree}" private="${javadoc.private}" source="${javac.source}" splitindex="${javadoc.splitindex}" use="${javadoc.use}" useexternalfile="true" version="${javadoc.version}" windowtitle="${javadoc.windowtitle}">
+        <javadoc additionalparam="${javadoc.additionalparam}" author="${javadoc.author}" charset="${javadoc.encoding.used}" destdir="${dist.javadoc.dir}" docencoding="${javadoc.encoding.used}" encoding="${javadoc.encoding.used}" failonerror="true" noindex="${javadoc.noindex}" nonavbar="${javadoc.nonavbar}" notree="${javadoc.notree}" private="${javadoc.private}" source="${javac.source}" splitindex="${javadoc.splitindex}" use="${javadoc.use}" useexternalfile="true" version="${javadoc.version}" windowtitle="${javadoc.windowtitle}">
             <classpath>
                 <path path="${javac.classpath}"/>
             </classpath>
@@ -485,10 +468,41 @@ is divided into following sections:
             </fileset>
         </javadoc>
     </target>
+
+    <target name="move-javadoc-check">
+        <condition property="move.javadoc">
+            <isset property="javadoc.moveto"/>
+        </condition>
+    </target>
+    <target name="move-javadoc" depends="move-javadoc-check" if="move.javadoc">
+        <delete dir="${javadoc.moveto}"/>
+        <move file="${dist.javadoc.dir}" tofile="${javadoc.moveto}"/>
+    </target>
+
+    <target depends="init,-doccheck-check" name="-doccheck-build" if="doccheck.run">
+        <mkdir dir="${doccheck.dir}"/>
+        <javadoc additionalparam="-doclet com.sun.tools.doclets.doccheck.DocCheck -docletpath ${doccheck.path} -skipPkg net.miginfocom.*" author="${javadoc.author}" destdir="${doccheck.dir}" failonerror="true" private="${javadoc.private}" source="${javac.source}" sourcepath="${src.dir}" useexternalfile="true" version="${javadoc.version}">
+            <classpath>
+                <path path="${javac.classpath}"/>
+            </classpath>
+        </javadoc>
+    </target>
+
+    <target name="-doccheck-check">
+        <condition property="doccheck.run">
+            <and>
+                <isset property="doccheck.path"/>
+                <isset property="doccheck.dir"/>
+                <available file="${doccheck.path}"/>
+            </and>
+        </condition>
+    </target>
+
     <target depends="init,-javadoc-build" if="netbeans.home" name="-javadoc-browse" unless="no.javadoc.preview">
         <nbbrowse file="${dist.javadoc.dir}/index.html"/>
     </target>
-    <target depends="init,-javadoc-build,-javadoc-browse" description="Build Javadoc." name="javadoc"/>
+    <target depends="init,-javadoc-build,-javadoc-browse,move-javadoc,-doccheck-build" description="Build Javadoc." name="javadoc"/>
+    <target depends="-doccheck-build" description="Build Javadoc error report (doccheck)." name="doccheck"/>
     <!--
                 =========================
                 JUNIT COMPILATION SECTION
