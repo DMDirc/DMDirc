@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,9 +40,16 @@ public class Process004005 extends IRCProcessor {
 			myParser.h005Info.put("003IRCD",token[token.length-1]);
 		} else if (sParam.equals("004")) {
 			// 004
-			myParser.h005Info.put("004IRCD",token[4]);
-			myParser.h005Info.put("USERMODES",token[5]);
-			myParser.h005Info.put("USERCHANMODES",token[6]);
+			if (token.length > 4) {
+				myParser.h005Info.put("004IRCD",token[4]);
+				myParser.h005Info.put("USERMODES",token[5]);
+				myParser.h005Info.put("USERCHANMODES",token[6]);
+			} else {
+				final String[] bits = token[3].split(" ");
+				myParser.h005Info.put("004IRCD",bits[1]);
+				myParser.h005Info.put("USERMODES",bits[2]);
+				myParser.h005Info.put("USERCHANMODES",bits[3]);
+			}
 			myParser.parseUserModes();
 		} else if (sParam.equals("005")) {
 			// 005

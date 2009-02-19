@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -192,7 +192,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 			final Query frame = (Query) current;
 
 			textString.append(frame.getHost());
-			if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "client.showname")) {
+			if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "client.showname") && frame.getServer().getParser() != null) {
 				final ClientInfo client = frame.getServer().getParser().getClientInfo(frame.getHost());
 				if (client != null) {
 					final String realname = client.getRealName();

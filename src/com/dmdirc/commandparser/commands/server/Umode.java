@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.Server;
+import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -47,6 +48,11 @@ public class Umode extends ServerCommand {
     @Override
     public void execute(final InputWindow origin, final Server server, 
             final boolean isSilent, final String... args) {
+        if (server.getState() != ServerState.CONNECTED) {
+            sendLine(origin, isSilent, FORMAT_ERROR, "Not connected");
+            return;
+        }
+
         server.getParser().sendLine("MODE " + server.getParser().getMyNickname()
                 + " " + implodeArgs(args));
     }

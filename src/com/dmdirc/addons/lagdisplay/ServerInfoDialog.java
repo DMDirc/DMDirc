@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,12 +23,10 @@
 package com.dmdirc.addons.lagdisplay;
 
 import com.dmdirc.Server;
-import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
 import com.dmdirc.ServerState;
-import com.dmdirc.ui.swing.MainFrame;
-import com.dmdirc.ui.swing.SwingController;
-import com.dmdirc.ui.swing.components.StandardDialog;
+import com.dmdirc.addons.ui_swing.SwingController;
+import com.dmdirc.addons.ui_swing.components.StandardDialog;
 
 import java.awt.Component;
 import java.awt.Graphics;
@@ -67,7 +65,7 @@ public class ServerInfoDialog extends StandardDialog {
      * @param parent The {@link JPanel} to use for positioning
      */
     public ServerInfoDialog(final LagDisplayPlugin ldp, final JPanel parent) {
-        super((MainFrame) Main.getUI().getMainWindow(), false);
+        super(SwingController.getMainFrame(), false);
 
         this.parent = parent;
 
@@ -105,8 +103,9 @@ public class ServerInfoDialog extends StandardDialog {
 
         final Point point = parent.getLocationOnScreen();
         point.translate(parent.getWidth() / 2 - this.getWidth() / 2, - this.getHeight());
-        final int maxX = SwingController.getMainFrame().getLocationOnScreen().x
-                + SwingController.getMainFrame().getWidth() - 10 - getWidth();
+        final int maxX = Math.max(SwingController.getMainFrame().getLocationOnScreen().x
+                + SwingController.getMainFrame().getWidth() - 10 - getWidth(),
+                parent.getLocationOnScreen().x + parent.getWidth() - 1 - getWidth());
         point.x = Math.min(maxX, point.x);
         setLocation(point);
 

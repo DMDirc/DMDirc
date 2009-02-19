@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -112,12 +112,11 @@ public abstract class DCC implements Runnable {
 	 * @throws IOException If the listen socket can't be created
 	 */
 	public void listen() throws IOException {
-		listen = true;
-
 		serverSocketSem.acquireUninterruptibly();
 		serverSocket = new ServerSocket(0, 1);
 		serverSocketSem.release();
 
+		listen = true;
 		connect();
 	}
 

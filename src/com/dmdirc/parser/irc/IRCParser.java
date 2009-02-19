@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -657,6 +657,7 @@ public class IRCParser implements Runnable {
 
 			final Proxy.Type proxyType = Proxy.Type.SOCKS;
 			socket = new Socket(new Proxy(proxyType, new InetSocketAddress(server.getProxyHost(), server.getProxyPort())));
+			currentSocketState = STATE_OPEN;
 			if (server.getProxyUser() != null && !server.getProxyUser().isEmpty()) {
 				IRCAuthenticator.getIRCAuthenticator().addAuthentication(server);
 			}
@@ -664,17 +665,19 @@ public class IRCParser implements Runnable {
 		} else {
 			callDebugInfo(DEBUG_SOCKET, "Not using Proxy");
 			if (!server.getSSL()) {
-				if (bindIP == null || bindIP.isEmpty()) {
-					socket = new Socket(server.getHost(), server.getPort());
-				} else {
+				socket = new Socket();
+
+				if (bindIP != null && !bindIP.isEmpty()) {
 					callDebugInfo(DEBUG_SOCKET, "Binding to IP: "+bindIP);
 					try {
-						socket = new Socket(server.getHost(), server.getPort(), InetAddress.getByName(bindIP), 0);
+						socket.bind(new InetSocketAddress(InetAddress.getByName(bindIP), 0));
 					} catch (IOException e) {
 						callDebugInfo(DEBUG_SOCKET, "Binding failed: "+e.getMessage());
-						socket = new Socket(server.getHost(), server.getPort());
 					}
 				}
+
+				currentSocketState = STATE_OPEN;
+				socket.connect(new InetSocketAddress(server.getHost(), server.getPort()));
 			}
 		}
 
@@ -702,11 +705,12 @@ public class IRCParser implements Runnable {
 					}
 				}
 			}
+
+			currentSocketState = STATE_OPEN;
 		}
 
 		callDebugInfo(DEBUG_SOCKET, "\t-> Opening socket output stream PrintWriter");
 		out = new PrintWriter(socket.getOutputStream(), true);
-		currentSocketState = STATE_OPEN;
 		callDebugInfo(DEBUG_SOCKET, "\t-> Opening socket input stream BufferedReader");
 		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		callDebugInfo(DEBUG_SOCKET, "\t-> Socket Opened");
@@ -736,7 +740,7 @@ public class IRCParser implements Runnable {
 	 */
 	private void handleConnectException(final Exception e) {
 		callDebugInfo(DEBUG_SOCKET, "Error Connecting (" + e.getMessage() + "), Aborted");
-		final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception with server socket");
+		final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception with server socket", getLastLine());
 		ei.setException(e);
 		callConnectError(ei);
 		
@@ -751,7 +755,7 @@ public class IRCParser implements Runnable {
 	 * Begin execution.
 	 * Connect to server, and start parsing incomming lines
 	 */
-  @Override
+	@Override
 	public void run() {
 		callDebugInfo(DEBUG_INFO, "Begin Thread Execution");
 		if (hasBegan) { return; } else { hasBegan = true; }
@@ -1016,8 +1020,8 @@ public class IRCParser implements Runnable {
 					// Freenode sends a random notice in a stupid place, others might do aswell
 					// These shouldn't cause post005 to be fired, so handle them here.
 					if (token[0].equalsIgnoreCase("NOTICE")) {
-							try { myProcessingManager.process("Notice Auth", token); } catch (ProcessorNotFoundException e) { }
-							return;
+						try { myProcessingManager.process("Notice Auth", token); } catch (ProcessorNotFoundException e) { }
+						return;
 					}
 					if (!post005) {
 						try { nParam = Integer.parseInt(token[1]); } catch (NumberFormatException e) { nParam = -1; }
@@ -1043,6 +1047,10 @@ public class IRCParser implements Runnable {
 								try { myProcessingManager.process(sParam, token); } catch (ProcessorNotFoundException e) { }
 								break;
 							}
+							// Some networks may send a NICK message if you nick change before 001
+							// Eat it up so that it isn't treated as a notice auth.
+							if (token[0].equalsIgnoreCase("NICK")) { break; }
+							
 							// Otherwise, send to Notice Auth
 							try { myProcessingManager.process("Notice Auth", token); } catch (ProcessorNotFoundException e) { }
 							break;
@@ -1050,7 +1058,7 @@ public class IRCParser implements Runnable {
 				}
 			}
 		} catch (Exception e) {
-			final ParserError ei = new ParserError(ParserError.ERROR_FATAL, "Fatal Exception in Parser.", lastLine);
+			final ParserError ei = new ParserError(ParserError.ERROR_FATAL, "Fatal Exception in Parser.", getLastLine());
 			ei.setException(e);
 			callErrorInfo(ei);
 		}
@@ -1154,7 +1162,7 @@ public class IRCParser implements Runnable {
 		bits = modeStr.split(",", 5);
 		if (bits.length < 4) {
 			modeStr = sDefaultModes.toString();
-			callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "CHANMODES String not valid. Using default string of \"" + modeStr + "\""));
+			callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "CHANMODES String not valid. Using default string of \"" + modeStr + "\"", getLastLine()));
 			h005Info.put("CHANMODES", modeStr);
 			bits = modeStr.split(",", 5);
 		}
@@ -1365,7 +1373,7 @@ public class IRCParser implements Runnable {
 		bits = modeStr.split("\\)", 2);
 		if (bits.length != 2 || bits[0].length() != bits[1].length()) {
 			modeStr = sDefaultModes;
-			callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "PREFIX String not valid. Using default string of \"" + modeStr + "\""));
+			callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "PREFIX String not valid. Using default string of \"" + modeStr + "\"", getLastLine()));
 			h005Info.put("PREFIX", modeStr);
 			modeStr = modeStr.substring(1);
 			bits = modeStr.split("\\)", 2);
@@ -1524,7 +1532,7 @@ public class IRCParser implements Runnable {
 	public int getMaxLength(final int nLength) {
 		final int lineLint = 5;
 		if (cMyself.isFake()) {
-			callErrorInfo(new ParserError(ParserError.ERROR_ERROR + ParserError.ERROR_USER, "getMaxLength() called, but I don't know who I am?", lastLine));
+			callErrorInfo(new ParserError(ParserError.ERROR_ERROR + ParserError.ERROR_USER, "getMaxLength() called, but I don't know who I am?", getLastLine()));
 			return MAX_LINELENGTH - nLength - lineLint;
 		} else {
 			return MAX_LINELENGTH - cMyself.toString().length() - nLength - lineLint;
@@ -1575,10 +1583,13 @@ public class IRCParser implements Runnable {
 			try {
 				result = Integer.parseInt(h005Info.get("MAXBANS"));
 			} catch (NumberFormatException nfe) { result = -1; }
+		} else if (result == -2 && getIRCD(true).equalsIgnoreCase("weircd")) {
+			// -_-
+			result = 6;
 		} else if (result == -2) {
 			result = -1;
 			callDebugInfo(DEBUG_INFO, "Failed");
-			callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "Unable to discover max list modes."));
+			callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "Unable to discover max list modes.", getLastLine()));
 		}
 		callDebugInfo(DEBUG_INFO, "Result: "+result);
 		return result;
@@ -1757,6 +1768,7 @@ public class IRCParser implements Runnable {
 				else if (version.matches("(?i).*u2\\.[0-9]+\\..*")) { return "ircu"; }
 				else if (version.matches("(?i).*ircu.*")) { return "ircu"; }
 				else if (version.matches("(?i).*plexus.*")) { return "plexus"; }
+				else if (version.matches("(?i).*hybrid.*oftc.*")) { return "oftc-hybrid"; }
 				else if (version.matches("(?i).*ircd.hybrid.*")) { return "hybrid7"; }
 				else if (version.matches("(?i).*hybrid.*")) { return "hybrid"; }
 				else if (version.matches("(?i).*charybdis.*")) { return "charybdis"; }
@@ -1770,6 +1782,9 @@ public class IRCParser implements Runnable {
 				else if (version.matches("(?i).*austhex.*")) { return "austhex"; }
 				else if (version.matches("(?i).*austirc.*")) { return "austirc"; }
 				else if (version.matches("(?i).*ratbox.*")) { return "ratbox"; }
+				else if (version.matches("(?i).*euircd.*")) { return "euircd"; }
+				else if (version.matches("(?i).*weircd.*")) { return "weircd"; }
+				else if (version.matches("(?i).*swiftirc.*")) { return "swiftirc"; }
 				else {
 					// Stupid networks/ircds go here...
 					if (sNetworkName.equalsIgnoreCase("ircnet")) { return "ircnet"; }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,43 +22,41 @@
 
 package com.dmdirc.installer.ui;
 
-import com.dmdirc.installer.Main;
-import com.dmdirc.ui.swing.dialogs.wizard.Step;
-import com.dmdirc.ui.swing.components.TextLabel;
-
-import net.miginfocom.swing.MigLayout;
+import java.awt.BorderLayout;
 
 /**
  * This step shows an unable to install error
  */
-public final class StepError extends Step {
-	/**
-	 * A version number for this class. It should be changed whenever the class
-	 * structure is changed (or anything else that would prevent serialized
-	 * objects being unserialized with the new class).
-	 */
-	private static final long serialVersionUID = 2;
-	
-	/**
-	 * Creates a new instance of StepError with a default error message.
-	 */
-	public StepError() {
-		this("Sorry, it is not possible to install DMDirc on this system at this time.\n\n");
-	}
-	
-	/**
-	 * Creates a new instance of StepError with a given error message.
-	 *
-	 * @param message Error message to show.
-	 */
-	public StepError(final String message) {
-		super();
-		setLayout(new MigLayout());
-		
-		TextLabel infoLabel;
-		infoLabel = new TextLabel(message);
-		infoLabel.setOpaque(false);
-			
-		add(infoLabel, "grow");
-	}
+public final class StepError extends SwingStep {
+
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 2;
+
+    /**
+     * Creates a new instance of StepError with a default error message.
+     */
+    public StepError() {
+        this("Sorry, it is not possible to install DMDirc on this system at this time.\n\n");
+    }
+
+    /**
+     * Creates a new instance of StepError with a given error message.
+     *
+     * @param message Error message to show.
+     */
+    public StepError(final String message) {
+        super();
+        setLayout(new BorderLayout());
+        add(new TextLabel(message), BorderLayout.CENTER);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getStepName() {
+        return "Error";
+    }
 }

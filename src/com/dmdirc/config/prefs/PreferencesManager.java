@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,13 +21,10 @@
  */
 package com.dmdirc.config.prefs;
 
+import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.prefs.validator.NumericalValidator;
-import com.dmdirc.ui.swing.components.pluginpanel.PluginPanel;
-import com.dmdirc.ui.swing.components.themepanel.ThemePanel;
-import com.dmdirc.ui.swing.dialogs.prefs.URLConfigPanel;
-import com.dmdirc.ui.swing.dialogs.prefs.UpdateConfigPanel;
 import com.dmdirc.util.ListenerList;
 
 import java.util.ArrayList;
@@ -93,6 +90,33 @@ public class PreferencesManager {
         }
 
         return null;
+    }
+
+    /**
+     * Saves all the settings in this manager.
+     *
+     * @return Is a restart needed after saving?
+     */
+    public boolean save() {
+        fireSaveListeners();
+        
+        boolean restart = false;
+        for (PreferencesCategory category : categories) {
+            if (category.save()) {
+                restart = true;
+            }
+        }
+
+        return restart;
+    }
+
+    /**
+     * Dismisses all the settings in this manager.
+     */
+    public void dismiss() {
+        for (PreferencesCategory category : categories) {
+            category.dismiss();
+        }
     }
 
     /**
@@ -303,6 +327,12 @@ public class PreferencesManager {
         final PreferencesCategory category = new PreferencesCategory("Advanced", 
                 "", "category-advanced");
 
+        final Map<String, String> options = new HashMap<String, String>();
+
+        options.put("alwaysShow", "Always show");
+        options.put("neverShow", "Never show");
+        options.put("showWhenMaximised", "Show only when windows maximised");
+
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "browser", "userlaunchdelay", "false", "Use browser launch delay",
                 "Enable delay between browser launches (to prevent mistakenly" +
@@ -329,6 +359,13 @@ public class PreferencesManager {
                 new NumericalValidator(10, -1), "ui", "frameBufferSize", "100000",
                 "Window buffer size", "The maximum number of lines in a window" +
                 " buffer"));
+        category.addSetting(new PreferencesSetting("ui", "mdiBarVisibility", 
+                "showWhenMaximised", "MDI Bar Visibility",
+                "Controls the visibility of the MDI bar", options));
+        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, "ui",
+                "useOneTouchExpandable", "false",
+                "Use one touch expandable split panes?",
+                "Use one touch expandable arrows for collapsing/expanding the split panes"));
 
         addCategory(category);
     }
@@ -384,7 +421,7 @@ public class PreferencesManager {
                 lafs));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "antialias", "false", "System anti-alias",
-                "Anti-alias all fonts?"));
+                "Anti-alias all fonts?").setRestartNeeded());
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "maximisewindows", "true", "Auto-maximise windows",
                 "Automatically maximise newly opened windows?"));
@@ -419,7 +456,7 @@ public class PreferencesManager {
         // TODO: Abstract the panel
 
         parent.addSubCategory(new PreferencesCategory("Themes", "",
-                "category-addons", new ThemePanel()));
+                "category-addons", Main.getUI().getThemesPrefsPanel()));
     }
 
     /**
@@ -492,7 +529,7 @@ public class PreferencesManager {
         // TODO: Abstract the panel
 
         addCategory(new PreferencesCategory("Plugins", "", "category-addons",
-                new PluginPanel()));
+                Main.getUI().getPluginPrefsPanel()));
     }
 
     /**
@@ -502,7 +539,7 @@ public class PreferencesManager {
         // TODO: Abstract the panel
 
         addCategory(new PreferencesCategory("Updates", "", "category-updates",
-                new UpdateConfigPanel()));
+                Main.getUI().getUpdatesPrefsPanel()));
     }
 
     /**
@@ -513,7 +550,7 @@ public class PreferencesManager {
 
         addCategory(new PreferencesCategory("URL Handlers",
                 "Configure how DMDirc handles different types of URLs",
-                "category-urlhandlers", new URLConfigPanel()));
+                "category-urlhandlers", Main.getUI().getUrlHandlersPrefsPanel()));
     }
 
     /**

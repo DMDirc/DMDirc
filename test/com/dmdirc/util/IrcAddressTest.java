@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,15 +25,16 @@ package com.dmdirc.util;
 import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.dummy.DummyController;
-import org.junit.Before;
+import com.dmdirc.addons.ui_dummy.DummyController;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class IrcAddressTest {
 
-    @Before
-    public void setUp() {
+    @BeforeClass
+    public static void setUp() {
         IdentityManager.load();
         Main.setUI(new DummyController());
     }
@@ -105,6 +106,7 @@ public class IrcAddressTest {
     }
 
     @Test
+    @Ignore
     public void testConnect() throws InvalidAddressException {
         final IrcAddress address = new IrcAddress("irc://255.255.255.205/a,b,c");
 
@@ -154,7 +156,4 @@ public class IrcAddressTest {
         assertEquals("#DMDirc", address1.getChannels().get(0));
     }
 
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(IrcAddressTest.class);
-    }
 }

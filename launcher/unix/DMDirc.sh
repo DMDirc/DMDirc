@@ -3,7 +3,7 @@
 # This script launches dmdirc and attempts to update the jar file if needed.
 #
 # DMDirc - Open Source IRC Client
-# Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+# Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -168,10 +168,12 @@ else
 	jar=`dirname $0`/DMDirc.jar
 fi
 launcherUpdater=${profiledir}/updateLauncher.sh
+BSDJava1="/usr/local/jdk1.6.0/jre/bin/java"
+BSDJava2="/usr/local/diablo-jdk1.6.0/jre/bin/java"
 echo "---------------------"
 echo "DMDirc - Open Source IRC Client"
 echo "Launcher Version: ${LAUNCHERVERSION}"
-echo "Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes"
+echo "Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes"
 echo "---------------------"
 if [ "${ISOSX}" = "1" ]; then
 	echo "Running on OS X."
@@ -344,21 +346,20 @@ if [ "${ISOSX}" = "1" ]; then
 		JAVA="/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Commands/java"
 	fi;
 else
-	# Location where ports on FreeBSD/PCBSD installs java6
-	# check it first, because it isn't added to the path automatically
-	JAVA="/usr/local/jdk1.6.0/jre/bin/java"
+	if [ -e "${HOME}/.profile" ]; then
+		# Source the profile incase java can't be found otherwise
+		. ${HOME}/.profile
+	fi;
+	JAVA=`which java`
 	if [ ! -e "${JAVA}" ]; then
-		# Try alternative BSD Location
-		JAVA="/usr/local/diablo-jdk1.6.0/jre/bin/java"
+		# Location where ports on FreeBSD/PCBSD installs java6
+		# check it first, because it isn't added to the path automatically
+		JAVA=${BSDJava1}
 		if [ ! -e "${JAVA}" ]; then
-			# Look in path
-			if [ -e "${HOME}/.profile" ]; then
-				# Source the profile incase java can't be found otherwise
-				. ${HOME}/.profile
-			fi;
-			JAVA=`which java`
-		fi
-	fi
+			# Try alternative BSD Location
+			JAVA=${BSDJava2}
+		fi;
+	fi;
 fi;
 
 if [ "" != "${JAVA}" ]; then
@@ -384,17 +385,36 @@ if [ -e "${jar}" ]; then
 	# error message to be printed.
 	${JAVA} -jar ${jar} --help >/dev/null 2>&1
 	if [ $? -ne 0 ]; then
-		echo "Failed."
-		ERROR="Sorry, the currently installed version of java is not compatible with DMDirc.";
-		ERROR=${ERROR}"\n";
-		if [ "${ISOSX}" = "1" ]; then
-			ERROR=${ERROR}"\nDMDirc requires a 1.6.0 compatible JVM.";
-		else
-			ERROR=${ERROR}"\nDMDirc requires a 1.6.0 compatible JVM, you can get one from: http://www.java.com";
-			ERROR=${ERROR}"\nor reinstall DMDirc and let the installer install one for you.";
+		FAILED=1
+		# If we are on BSD, check to see if there is alternative versions of java
+		# than the one in the path.
+		if [ "`echo ${KERNEL} | grep -i BSD`" != "" ]; then
+			if [ "${JAVA}" != "${BSDJava1}" -a "${JAVA}" != "${BSDJava2}" ]; then
+				JAVA=${BSDJava1}
+				if [ ! -e "${JAVA}" ]; then
+					JAVA=${BSDJava2}
+				fi;
+				# Now check to see if DMDirc runs again.
+				${JAVA} -jar ${jar} --help >/dev/null 2>&1
+				if [ $? -eq 0 ]; then
+					# It runs!
+					FAILED=0
+				fi;
+			fi;
 		fi;
-		errordialog "Unable to launch dmdirc!" "${ERROR}";
-		exit 1;
+		if [ ${FAILED} -eq 1 ]; then
+			echo "Failed."
+			ERROR="Sorry, the currently installed version of java is not compatible with DMDirc.";
+			ERROR=${ERROR}"\n";
+			if [ "${ISOSX}" = "1" ]; then
+				ERROR=${ERROR}"\nDMDirc requires a 1.6.0 compatible JVM.";
+			else
+				ERROR=${ERROR}"\nDMDirc requires a 1.6.0 compatible JVM, you can get one from: http://www.java.com";
+				ERROR=${ERROR}"\nor reinstall DMDirc and let the installer install one for you.";
+			fi;
+			errordialog "Unable to launch dmdirc!" "${ERROR}";
+			exit 1;
+		fi;
 	fi
 
 	# Now we can run the client for real, this allows stderr/stdout output

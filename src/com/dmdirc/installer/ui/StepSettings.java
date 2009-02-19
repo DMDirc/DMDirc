@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,125 +25,130 @@ package com.dmdirc.installer.ui;
 import com.dmdirc.installer.Main;
 import com.dmdirc.installer.Settings;
 import com.dmdirc.installer.DefaultSettings;
-import com.dmdirc.installer.cliparser.CLIParser;
 import com.dmdirc.installer.Installer.ShortcutType;
-import com.dmdirc.ui.swing.dialogs.wizard.Step;
-import com.dmdirc.ui.swing.components.TextLabel;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import javax.swing.Box;
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 import javax.swing.JTextField;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * Queries the user for where to install dmdirc, and if they want to setup shortcuts
  */
-public final class StepSettings extends Step implements Settings {
-	/**
-	 * A version number for this class. It should be changed whenever the class
-	 * structure is changed (or anything else that would prevent serialized
-	 * objects being unserialized with the new class).
-	 */
-	private static final long serialVersionUID = 3;
+public final class StepSettings extends SwingStep implements Settings {
 
-	/** Menu Shorcuts checkbox. */
-	private final JCheckBox shortcutMenu = new JCheckBox("Create "+Main.getInstaller().getMenuName()+" shortcut");
-	/** Desktop Shorcuts checkbox. */
-	private final JCheckBox shortcutDesktop = new JCheckBox("Create desktop shortcut");
-	/** Quick-Launch Shorcuts checkbox. */
-	private final JCheckBox shortcutQuick = new JCheckBox("Create Quick Launch shortcut");
-	/** Register IRC:// protocol. */
-	private final JCheckBox shortcutProtocol = new JCheckBox("Make DMDirc handle irc:// links");
-	/** Install Location input. */
-	private final JTextField location = new JTextField(Main.getInstaller().defaultInstallLocation(), 20);
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 3;
+    /** Menu Shorcuts checkbox. */
+    private final JCheckBox shortcutMenu = new JCheckBox("Create " + Main.
+            getInstaller().getMenuName() + " shortcut");
+    /** Desktop Shorcuts checkbox. */
+    private final JCheckBox shortcutDesktop = new JCheckBox(
+            "Create desktop shortcut");
+    /** Quick-Launch Shorcuts checkbox. */
+    private final JCheckBox shortcutQuick = new JCheckBox(
+            "Create Quick Launch shortcut");
+    /** Register IRC:// protocol. */
+    private final JCheckBox shortcutProtocol = new JCheckBox(
+            "Make DMDirc handle irc:// links");
+    /** Install Location input. */
+    private final JTextField location = new JTextField(Main.getInstaller().
+            defaultInstallLocation(), 20);
 
-	/**
-	 * Creates a new instance of StepSettings.
-	 */
-	public StepSettings() {
-		super();
-		setLayout(new MigLayout("wrap 1"));
+    /**
+     * Creates a new instance of StepSettings.
+     */
+    public StepSettings() {
+        super();
 
-		TextLabel infoLabel;
-		infoLabel = new TextLabel("Here you can choose options for the install.\n");
-//		infoLabel.setEditable(false);
-//		infoLabel.setWrapStyleWord(true);
-//		infoLabel.setLineWrap(true);
-//		infoLabel.setHighlighter(null);
-		infoLabel.setOpaque(false);
-//		infoLabel.setBackground(getBackground());
+        DefaultSettings defaultSettings = new DefaultSettings();
+        shortcutMenu.setSelected(defaultSettings.getShortcutMenuState());
+        shortcutDesktop.setSelected(defaultSettings.getShortcutDesktopState());
+        shortcutQuick.setSelected(defaultSettings.getShortcutQuickState());
+        shortcutProtocol.setSelected(defaultSettings.getShortcutProtocolState());
 
-		DefaultSettings defaultSettings = new DefaultSettings();
-		shortcutMenu.setSelected(defaultSettings.getShortcutMenuState());
-		shortcutDesktop.setSelected(defaultSettings.getShortcutDesktopState());
-		shortcutQuick.setSelected(defaultSettings.getShortcutQuickState());
-		shortcutProtocol.setSelected(defaultSettings.getShortcutProtocolState());
+        final GridBagConstraints constraints = new GridBagConstraints();
+		setLayout(new GridBagLayout());
 
-		add(infoLabel);
-		add(new JLabel("Install Location: "));
-		add(location, "growx, pushx");
+        constraints.weightx = 1.0;
+		constraints.fill = GridBagConstraints.BOTH;
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		constraints.gridwidth = 2;
+        add(new TextLabel("Here you can choose options for the install." +
+                          "\n\nInstall Location:"), constraints);
 
-		if (Main.getInstaller().supportsShortcut(ShortcutType.MENU)) {
-			add(shortcutMenu, "");
-		}
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+		constraints.gridx = 1;
+        constraints.gridy = 1;
+        add(location, constraints);
 
-		if (Main.getInstaller().supportsShortcut(ShortcutType.DESKTOP)) {
-			add(shortcutDesktop, "");
-		}
+        constraints.gridwidth = 2;
+		constraints.gridx = 0;
+		constraints.insets = new Insets(InstallerDialog.SMALL_GAP, 0, 0, 0);
 
-		if (Main.getInstaller().supportsShortcut(ShortcutType.QUICKLAUNCH)) {
-			add(shortcutQuick, "");
-		}
+        if (Main.getInstaller().supportsShortcut(ShortcutType.MENU)) {
+            constraints.gridy = (constraints.gridy + 1);
+            add(shortcutMenu, constraints);
+        }
+        if (Main.getInstaller().supportsShortcut(ShortcutType.DESKTOP)) {
+            constraints.gridy = (constraints.gridy + 1);
+            add(shortcutDesktop, constraints);
+        }
+        if (Main.getInstaller().supportsShortcut(ShortcutType.QUICKLAUNCH)) {
+            constraints.gridy = (constraints.gridy + 1);
+            add(shortcutQuick, constraints);
+        }
+        if (Main.getInstaller().supportsShortcut(ShortcutType.PROTOCOL)) {
+            constraints.gridy = (constraints.gridy + 1);
+            add(shortcutProtocol, constraints);
+        }
 
-		if (Main.getInstaller().supportsShortcut(ShortcutType.PROTOCOL)) {
-			add(shortcutProtocol, "");
-		}
-	}
+        constraints.gridy = (constraints.gridy + 1);
+		constraints.weighty = 1.0;
+		constraints.fill = GridBagConstraints.BOTH;
+        add(Box.createVerticalGlue(), constraints);
+    }
 
-	/**
-	 * Returns the state of the shortcutMenu checkbox.
-	 *
-	 * @return shortcutMenu checkbox state
-	 */
-	public boolean getShortcutMenuState() {
-		return shortcutMenu.isSelected();
-	}
+    /** {@inheritDoc} */
+    @Override
+    public String getStepName() {
+        return "Settings";
+    }
 
-	/**
-	 * Returns the state of the shortcutDesktop checkbox.
-	 *
-	 * @return shortcutDesktop checkbox state
-	 */
-	public boolean getShortcutDesktopState() {
-		return shortcutDesktop.isSelected();
-	}
+    /** {@inheritDoc} */
+    @Override
+    public boolean getShortcutMenuState() {
+        return shortcutMenu.isSelected();
+    }
 
-	/**
-	 * Returns the state of the shortcutDesktop checkbox.
-	 *
-	 * @return shortcutDesktop checkbox state
-	 */
-	public boolean getShortcutQuickState() {
-		return shortcutQuick.isSelected();
-	}
+    /** {@inheritDoc} */
+    @Override
+    public boolean getShortcutDesktopState() {
+        return shortcutDesktop.isSelected();
+    }
 
-	/**
-	 * Returns the state of the shortcutProtocol checkbox.
-	 *
-	 * @return shortcutDesktop checkbox state
-	 */
-	public boolean getShortcutProtocolState() {
-		return shortcutProtocol.isSelected();
-	}
+    /** {@inheritDoc} */
+    @Override
+    public boolean getShortcutQuickState() {
+        return shortcutQuick.isSelected();
+    }
 
-	/**
-	 * Returns the location chosen for installation.
-	 *
-	 * @return location chosen for installation.
-	 */
-	public String getInstallLocation() {
-		return location.getText().trim();
-	}
+    /** {@inheritDoc} */
+    @Override
+    public boolean getShortcutProtocolState() {
+        return shortcutProtocol.isSelected();
+    }
 
+    /** {@inheritDoc} */
+    @Override
+    public String getInstallLocation() {
+        return location.getText().trim();
+    }
 }

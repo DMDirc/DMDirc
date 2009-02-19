@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,8 @@ package com.dmdirc.addons.addonbrowser;
 
 import com.dmdirc.Main;
 import com.dmdirc.addons.addonbrowser.AddonInfo.AddonType;
-import com.dmdirc.ui.swing.SwingController;
-import com.dmdirc.ui.swing.components.LoggingSwingWorker;
+import com.dmdirc.addons.ui_swing.SwingController;
+import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
 import com.dmdirc.util.ConfigFile;
 import com.dmdirc.util.InvalidConfigFileException;
 

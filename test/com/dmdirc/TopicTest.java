@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,15 +23,15 @@
 package com.dmdirc;
 
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.dummy.DummyController;
-import org.junit.Before;
+import com.dmdirc.addons.ui_dummy.DummyController;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class TopicTest extends junit.framework.TestCase {
+public class TopicTest {
     
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         Main.setUI(new DummyController());
         IdentityManager.load();
     }
@@ -45,7 +45,7 @@ public class TopicTest extends junit.framework.TestCase {
     @Test
     public void testGetTime() {
         final Topic test = new Topic("abc", "123!456@789", 1);
-        assertEquals(1, test.getTime());        
+        assertEquals(1l, test.getTime());
     }
 
     @Test

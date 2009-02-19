@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -67,17 +67,17 @@ public abstract class InputHandler implements ConfigChangeListener {
      * Indicates that the caret should be moved to the start of a selection when
      * a control code has been inserted.
      */
-    private static final int POSITION_START = 2;
+    protected static final int POSITION_START = 2;
     /** Flag to indicate that this input handler should handle tab completion. */
-    private static final int HANDLE_TABCOMPLETION = 1;
+    protected static final int HANDLE_TABCOMPLETION = 1;
     /** Flag to indicate that this input handler should maintain a back buffer. */
-    private static final int HANDLE_BACKBUFFER = 2;
+    protected static final int HANDLE_BACKBUFFER = 2;
     /** Flag to indicate that this input handler should handle formatting. */
-    private static final int HANDLE_FORMATTING = 4;
+    protected static final int HANDLE_FORMATTING = 4;
     /** Flag to indicate that this input handler should handle returns. */
-    private static final int HANDLE_RETURN = 8;
+    protected static final int HANDLE_RETURN = 8;
     /** The flags for this particular input handler. */
-    private int flags = HANDLE_TABCOMPLETION | HANDLE_BACKBUFFER
+    protected int flags = HANDLE_TABCOMPLETION | HANDLE_BACKBUFFER
             | HANDLE_FORMATTING | HANDLE_RETURN;
     /** The input buffer. */
     protected RollingList<String> buffer;
@@ -194,16 +194,17 @@ public abstract class InputHandler implements ConfigChangeListener {
     /**
      * Handles the pressing of a key. Inserts control chars as appropriate.
      *
+     * @param line Text in the target
      * @param keyCode Keycode for the pressed key
      * @param shiftPressed Was shift pressed
      * @param ctrlPressed Was ctrl key pressed
      */
-    protected void handleKeyPressed(final int keyCode,
+    protected void handleKeyPressed(final String line, final int keyCode,
             final boolean shiftPressed, final boolean ctrlPressed) {
         target.hideColourPicker();
         
         if (ctrlPressed && (flags & HANDLE_FORMATTING) != 0) {
-            handleControlKey(keyCode, shiftPressed);
+            handleControlKey(line, keyCode, shiftPressed);
         }
         
         validateText();
@@ -285,10 +286,11 @@ public abstract class InputHandler implements ConfigChangeListener {
      * Handles the pressing of a key while the control key is pressed.
      * Inserts control chars as appropriate.
      *
+     * @param line Text in the target
      * @param keyCode Keycode for the pressed key
      * @param shiftPressed Was shift pressed
      */
-    protected void handleControlKey(final int keyCode,
+    protected void handleControlKey(final String line, final int keyCode,
             final boolean shiftPressed) {
         switch (keyCode) {
             case KeyEvent.VK_B:
@@ -324,10 +326,9 @@ public abstract class InputHandler implements ConfigChangeListener {
                 break;
 
             case KeyEvent.VK_ENTER:
-                if ((flags & HANDLE_RETURN) != 0) {
-                    commandParser.parseCommandCtrl(parentWindow,
-                            target.getText());
-                    addToBuffer(target.getText());
+                if ((flags & HANDLE_RETURN) != 0 && !line.isEmpty()) {
+                    commandParser.parseCommandCtrl(parentWindow, line);
+                    addToBuffer(line);
                 }
                 break;
 
@@ -364,6 +365,7 @@ public abstract class InputHandler implements ConfigChangeListener {
                 Toolkit.getDefaultToolkit().beep();
             } else {
                 addToBuffer(target.getText());
+                target.setText("");
             }
         }
         validateText();
@@ -527,8 +529,6 @@ public abstract class InputHandler implements ConfigChangeListener {
     public void addToBuffer(final String line) {
         buffer.add(line);
         buffer.seekToEnd();
-
-        target.setText("");
     }
 
     /** {@inheritDoc} */

@@ -3,7 +3,7 @@
 # This script generates a .dmg file that includes dmdirc
 #
 # DMDirc - Open Source IRC Client
-# Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+# Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,13 @@
 INSTALLERNAME=DMDirc
 # full name of the file to output to
 RUNNAME="${PWD}/${INSTALLERNAME}.dmg"
+
+# Are we a git working copy, or SVN?
+if [ -e ".svn" ]; then
+	isSVN=1
+else
+	isSVN=0
+fi;
 
 # Linux needs an entry in fstab to allow normal users to mount things (like a
 # dmg image).
@@ -105,7 +112,7 @@ showHelp() {
 	echo "-c, --compile             Recompile the .jar file"
 	echo "    --jar <file>          use <file> as DMDirc.jar"
 	echo "    --current             Use the current folder as the base for the build"
-	echo "-t, --tag <tag>           Tag to add to final exe name to distinguish this build from a standard build"
+	echo "-e, --extra <tag>         Tag to add to final exe name to distinguish this build from a standard build"
 	echo "-k, --keep                Keep the existing source tree when compiling"
 	echo "                          (don't svn update beforehand)"
 	echo "---------------------"
@@ -119,9 +126,15 @@ isRelease=""
 finalTag=""
 BRANCH="0"
 plugins=""
-location="../../../"
+if [ $isSVN -eq 1 ]; then
+	location="../../../"
+	current=""
+else
+	location="../../"
+	current="1"
+fi;
 jarfile=""
-current=""
+TAGGED=""
 while test -n "$1"; do
 	case "$1" in
 		--plugins|-p)
@@ -143,7 +156,7 @@ while test -n "$1"; do
 			shift
 			isRelease=${1}
 			;;
-		--tag|-t)
+		--extra|-e)
 			shift
 			finalTag=${1}
 			RUNNAME="${PWD}/${INSTALLERNAME}-${1}.dmg"
@@ -157,6 +170,16 @@ while test -n "$1"; do
 		--branch|-b)
 			BRANCH="1"
 			;;
+		--tag|-t)
+			shift
+			REGEX="^[0-9]+(\.[0-9]+(\.[0-9]+)?)?$"
+			CHECKTAG=`echo ${1} | egrep "${REGEX}"`
+			if [ "" = "${CHECKTAG}" ]; then
+				echo "Specified tag ("${1}") is invalid."
+				exit 1;
+			fi;
+			TAGGED="${1}"
+			;;
 	esac
 	shift
 done
@@ -166,19 +189,21 @@ else
 	jarPath="${location}"
 fi
 if [ "${isRelease}" != "" ]; then
-	if [ "${BRANCH}" != "0" ]; then
-		if [ -e "${location}/${isRelease}" ]; then
-			jarPath="${location}/${isRelease}"
+	if [ $isSVN -eq 1 ]; then
+		if [ "${BRANCH}" != "0" ]; then
+			if [ -e "${location}/${isRelease}" ]; then
+				jarPath="${location}/${isRelease}"
+			else
+				echo "Branch "${isRelease}" not found."
+				exit 1;
+			fi
 		else
-			echo "Branch "${isRelease}" not found."
-			exit 1;
-		fi
-	else
-		if [ -e "${location}/${isRelease}" ]; then
-			jarPath="${location}/${isRelease}"
-		else
-			echo "Tag "${isRelease}" not found."
-			exit 1;
+			if [ -e "${location}/${isRelease}" ]; then
+				jarPath="${location}/${isRelease}"
+			else
+				echo "Tag "${isRelease}" not found."
+				exit 1;
+			fi
 		fi
 	fi
 fi
@@ -238,11 +263,26 @@ mkdir -pv ${MACOSDIR}
 echo "Creating meta files"
 echo "APPLDMDI" > ${CONTENTSDIR}/PkgInfo
 
+doRename=0
 if [ "${isRelease}" != "" ]; then
-	if [ "${BRANCH}" = "1" ]; then
-		bundleVersion=branch-${isRelease}
+	doRename=1
+elif [ $isSVN -eq 0 -a "${TAGGED}" != "" ]; then
+	doRename=1	
+fi;
+
+if [ ${doRename} -eq 1 ]; then
+	if [ $isSVN -eq 1 ]; then
+		if [ "${BRANCH}" = "1" ]; then
+			bundleVersion=branch-${isRelease}
+		else
+			bundleVersion=${isRelease}
+		fi;
 	else
-		bundleVersion=${isRelease}
+		if [ "${TAGGED}" = "" ]; then
+			bundleVersion=branch-${isRelease}
+		else
+			bundleVersion=${TAGGED}
+		fi;
 	fi
 else
 	bundleVersion="trunk-"`date +%Y%m%d_%H%M%S`
@@ -436,10 +476,18 @@ fi;
 
 echo "DMG Creation complete!"
 
-if [ "${isRelease}" != "" ]; then
-	if [ "${BRANCH}" = "1" ]; then
-		isRelease=branch-${isRelease}
-	fi;
+if [ ${doRename} -eq 1 ]; then
+	if [ $isSVN -eq 1 ]; then
+		if [ "${BRANCH}" = "1" ]; then
+			isRelease=branch-${isRelease}
+		fi;
+	else
+		if [ "${TAGGED}" = "" ]; then
+			isRelease=branch-${isRelease}
+		else
+			isRelease=${TAGGED}
+		fi;
+	fi
 	if [ "" != "${finalTag}" ]; then
 		finalTag="-${finalTag}"
 	fi;

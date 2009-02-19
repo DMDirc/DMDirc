@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -48,6 +48,7 @@ public final class LoadPlugin extends GlobalCommand implements IntelligentComman
     }
 
     /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         if (args.length == 0) {
@@ -58,37 +59,44 @@ public final class LoadPlugin extends GlobalCommand implements IntelligentComman
         // Add previously unknown plugin to plugin manager
         PluginManager.getPluginManager().addPlugin(args[0]);
         final PluginInfo plugin = PluginManager.getPluginManager().getPluginInfo(args[0]);
+        
         if (plugin == null) {
-            sendLine(origin, isSilent, FORMAT_ERROR, "Plugin Loading failed");
+            sendLine(origin, isSilent, FORMAT_ERROR, "Plugin loading failed");
         } else if (plugin.isLoaded()) {
             sendLine(origin, isSilent, FORMAT_OUTPUT, "Plugin already loaded.");
         } else {
             plugin.loadPlugin();
             if (plugin.isLoaded()) {
                 sendLine(origin, isSilent, FORMAT_OUTPUT, "Plugin loaded.");
+                PluginManager.getPluginManager().updateAutoLoad(plugin);
             } else {
-                sendLine(origin, isSilent, FORMAT_OUTPUT, "Loading plugin failed. ("+plugin.getLastError()+")");
+                sendLine(origin, isSilent, FORMAT_OUTPUT, "Loading plugin failed. ("
+                        + plugin.getLastError() + ")");
             }
         }
     }
 
 
     /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "loadplugin";
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getHelp() {
         return "loadplugin <plugin> - loads the specified class as a plugin";
     }
 
     /** {@inheritDoc} */
+    @Override
     public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
 

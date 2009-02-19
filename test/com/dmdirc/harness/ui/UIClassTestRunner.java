@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,9 @@
 
 package com.dmdirc.harness.ui;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import org.junit.BeforeClass;
 import org.junit.internal.runners.TestClassMethodsRunner;
 import org.junit.internal.runners.TestMethodRunner;
 import org.junit.runner.notification.RunNotifier;
@@ -31,6 +33,18 @@ public class UIClassTestRunner extends TestClassMethodsRunner {
 
     public UIClassTestRunner(Class<?> arg0) {
         super(arg0);
+
+        for (Method method : arg0.getMethods()) {
+            if (method.getAnnotation(BeforeClass.class) != null) {
+                try {
+                    method.invoke(null);
+                } catch (InvocationTargetException e) {
+                    return;
+                } catch (Throwable e) {
+                    return;
+                }
+            }
+        }
     }
 
     protected TestMethodRunner createMethodRunner(Object test, Method method, RunNotifier notifier) {

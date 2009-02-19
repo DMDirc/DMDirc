@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,17 +22,15 @@
 
 package com.dmdirc.addons.nickcolours;
 
-import com.dmdirc.Main;
-import com.dmdirc.ui.swing.MainFrame;
-import com.dmdirc.ui.swing.components.StandardDialog;
-import com.dmdirc.ui.swing.components.ColourChooser;
+import com.dmdirc.addons.ui_swing.SwingController;
+import com.dmdirc.addons.ui_swing.components.StandardDialog;
+import com.dmdirc.addons.ui_swing.components.ColourChooser;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
@@ -81,7 +79,7 @@ public class NickColourInputDialog extends StandardDialog
     public NickColourInputDialog(final NickColourPanel panel, final int row,
             final String nickname, final String network,
             final String textcolour, final String nickcolour) {
-        super((MainFrame) Main.getUI().getMainWindow(), false);
+        super(SwingController.getMainFrame(), false);
         
         this.panel = panel;
         this.row = row;
@@ -94,7 +92,7 @@ public class NickColourInputDialog extends StandardDialog
         
         setTitle("Nick colour editor");
         
-        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        setLocationRelativeTo(SwingController.getMainFrame());
         setVisible(true);
     }
     

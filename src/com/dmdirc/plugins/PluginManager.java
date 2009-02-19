@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,6 +41,7 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 public class PluginManager implements ActionListener {
 	/** List of known plugins. */
@@ -52,8 +53,8 @@ public class PluginManager implements ActionListener {
 	/** Singleton instance of the plugin manager. */
 	private static PluginManager me;
 
-	/** Possible plugins available during autoload. */
-	private List<PluginInfo> possible = null;
+	/** Map of services. */
+	private final Map<String, Map<String, Service>> services = new HashMap<String, Map<String, Service>>();
 	
 	/**
 	 * Creates a new instance of PluginManager.
@@ -63,24 +64,90 @@ public class PluginManager implements ActionListener {
 		myDir = Main.getConfigDir() + "plugins" + fs;
 		ActionManager.addListener(this, CoreActionType.CLIENT_PREFS_OPENED, CoreActionType.CLIENT_PREFS_CLOSED);
 	}
-
+	
+	/**
+	 * Get a service object for the given name/type if one exists.
+	 *
+	 * @param type Type of this service
+	 * @param name Name of this service
+	 * @return The service requested, or null if service wasn't found and create wasn't specifed
+	 */
+	public Service getService(final String type, final String name) {
+		return getService(type, name, false);
+	}
+	
+	/**
+	 * Get a service object for the given name/type.
+	 *
+	 * @param type Type of this service
+	 * @param name Name of this service
+	 * @param create If the requested service doesn't exist, should it be created?
+	 * @return The service requested, or null if service wasn't found and create wasn't specifed
+	 */
+	public Service getService(final String type, final String name, final boolean create) {
+		// Find the type first
+		if (services.containsKey(type)) {
+			final Map<String, Service> map = services.get(type);
+			// Now the name
+			if (map.containsKey(name)) {
+				return map.get(name);
+			} else if (create) {
+				final Service service = new Service(type, name);
+				map.put(name, service);
+				return service;
+			}
+		} else if (create) {
+			final Map<String, Service> map = new HashMap<String, Service>();
+			final Service service = new Service(type, name);
+			map.put(name, service);
+			services.put(type, map);
+			return service;
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Get a List of all services of a specifed type.
+	 *
+	 * @param type Type of service
+	 * @return The list of services requested.
+	 */
+	public List<Service> getServicesByType(final String type) {
+		// Find the type first
+		if (services.containsKey(type)) {
+			final Map<String, Service> map = services.get(type);
+			return new ArrayList<Service>(map.values());
+		}
+		
+		return new ArrayList<Service>();
+	}
+	
+	/**
+	 * Get a List of all services
+	 *
+	 * @return The list of all services.
+	 */
+	public List<Service> getAllServices() {
+		// Find the type first
+		final List<Service> allServices = new ArrayList<Service>();
+		for (Map<String, Service> map : services.values()) {
+			allServices.addAll(map.values());
+		}
+		
+		return allServices;
+	}
+	
 	/**
 	 * Autoloads plugins.
 	 */
-	private void doAutoLoad() {
-		possible = getPossiblePluginInfos(false);
+	public void doAutoLoad() {
 		for (String plugin : IdentityManager.getGlobalConfig().getOptionList("plugins", "autoload")) {
 			plugin = plugin.trim();
-			if (!plugin.isEmpty() && plugin.charAt(0) != '#' && addPlugin(plugin)) {
+			if (!plugin.isEmpty() && plugin.charAt(0) != '#' && getPluginInfo(plugin) != null) {
 				getPluginInfo(plugin).loadPlugin();
 			}
 		}
-		
-		// And now addPlugin() the rest
-		for (PluginInfo plugin : possible) {
-			addPlugin(plugin.getFilename());
-		}
-		possible = null;
 	}
 
 	/**
@@ -91,24 +158,30 @@ public class PluginManager implements ActionListener {
 	public static final synchronized PluginManager getPluginManager() {
 		if (me == null) {
 			me = new PluginManager();
-			me.doAutoLoad();
+			me.getPossiblePluginInfos(true);
 		}
+		
 		
 		return me;
 	}
 
 	/**
-	 * Adds a new plugin.
+	 * Tests and adds the specified plugin to the known plugins list. Plugins
+	 * will only be added if: <ul><li>The file exists,<li>No other plugin with
+	 * the same name is known,<li>All requirements are met for the plugin,
+	 * <li>The plugin has a valid config file that can be read</ul>.
 	 *
 	 * @param filename Filename of Plugin jar
-	 * @return True if loaded, false if failed to load or if already loaded.
+	 * @return True if the plugin is in the known plugins list (either before
+	 * this invocation or as a result of it), false if it was not added for
+	 * one of the reasons outlined above.
 	 */
 	public boolean addPlugin(final String filename) {
 		if (knownPlugins.containsKey(filename.toLowerCase())) {
-			return false;
+			return true;
 		}
 		
-		if (!(new File(getDirectory() + filename)).exists()) {
+		if (!new File(getDirectory() + filename).exists()) {
 			Logger.userError(ErrorLevel.MEDIUM, "Error loading plugin " + filename + ": File does not exist");
 			return false;
 		}
@@ -208,34 +281,12 @@ public class PluginManager implements ActionListener {
 	 * @return PluginInfo instance, or null
 	 */
 	public PluginInfo getPluginInfoByName(final String name) {
-		return getPluginInfoByName(name, false);
-	}
-	
-	/**
-	 * Get a plugin instance by plugin name.
-	 *
-	 * @param name Name of plugin to find.
-	 * @param checkPossible Check possible plugins aswell? (used in autoload)
-	 * @return PluginInfo instance, or null
-	 */
-	protected PluginInfo getPluginInfoByName(final String name, final boolean checkPossible) {
 		for (PluginInfo pluginInfo : knownPlugins.values()) {
 			if (pluginInfo.getName().equalsIgnoreCase(name)) {
 				return pluginInfo;
 			}
 		}
 		
-		if (checkPossible && possible != null) {
-			for (PluginInfo pluginInfo : possible) {
-				if (pluginInfo.getName().equalsIgnoreCase(name)) {
-					if (addPlugin(pluginInfo.getFilename())) {
-						return pluginInfo;
-					} else {
-						return null;
-					}
-				}
-			}
-		}
 		return null;
 	}
 

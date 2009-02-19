@@ -93,7 +93,7 @@ if [ ! -e "$MYDIR/dist/DMDirc.jar" ]; then
 else
 	# Build installers
 	cd "${MYDIR}/installer"
-	./release.sh --jar "${MYDIR}/dist/DMDirc.jar" --opt "--tag ${FILEDATA}" trunk
+	./release.sh --jar "${MYDIR}/dist/DMDirc.jar" --opt "--extra ${FILEDATA}" trunk
 	cd "${MYDIR}"
 	
 	if [ ! -e "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.exe" -o  ! -e "${MYDIR}/installer/output/DMDirc-Setup-${FILEDATA}.run" -o ! -e "${MYDIR}/installer/output/DMDirc-${FILEDATA}.dmg" -o ! -e "${MYDIR}/installer/output/DMDirc-${FILEDATA}.jar" ]; then

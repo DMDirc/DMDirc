@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -81,6 +81,40 @@ public abstract class WritableFrameContainer extends FrameContainer {
      * @return The maximum line length for this container
      */
     public abstract int getMaxLineLength();
+
+    /**
+     * Splits the specified line into chunks that contain a number of bytes
+     * less than or equal to the value returned by {@link #getMaxLineLength()}.
+     *
+     * @param line The line to be split
+     * @return An ordered list of chunks of the desired length
+     */
+    protected List<String> splitLine(final String line) {
+        final List<String> result = new ArrayList<String>();
+
+        if (line.indexOf('\n') > -1) {
+            for (String part : line.split("\n")) {
+                result.addAll(splitLine(part));
+            }
+        } else {
+            final StringBuilder remaining = new StringBuilder(line);
+
+            while (remaining.toString().getBytes().length > getMaxLineLength()) {
+                int number = Math.min(remaining.length(), getMaxLineLength());
+
+                while (remaining.substring(0, number).getBytes().length > getMaxLineLength()) {
+                    number--;
+                }
+
+                result.add(remaining.substring(0, number));
+                remaining.delete(0, number);
+            }
+
+            result.add(remaining.toString());
+        }
+
+        return result;
+    }
     
     /**
      * Returns the number of lines that the specified string would be sent as.
@@ -96,7 +130,8 @@ public abstract class WritableFrameContainer extends FrameContainer {
             if (splitLine.isEmpty() || getMaxLineLength() <= 0) {
                 lines++;
             } else {
-                lines += (int) Math.ceil(splitLine.length() / (double) getMaxLineLength());
+                lines += (int) Math.ceil(splitLine.getBytes().length
+                        / (double) getMaxLineLength());
             }
         }
         
@@ -211,7 +246,8 @@ public abstract class WritableFrameContainer extends FrameContainer {
         } else if (target.startsWith("window:")) {
             final String windowName = target.substring(7);
 
-            Window targetWindow = WindowManager.findCustomWindow(getServer().getFrame(), windowName);
+            Window targetWindow = WindowManager.findCustomWindow(getServer().getFrame(),
+                    windowName);
 
             if (targetWindow == null) {
                 targetWindow = new CustomWindow(windowName, windowName,

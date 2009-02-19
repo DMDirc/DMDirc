@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -51,6 +51,9 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
     
     /** The sources that we know of. */
     private final List<MediaSource> sources = new ArrayList<MediaSource>();
+
+    /** The managers that we know of. */
+    private final List<MediaSourceManager> managers = new ArrayList<MediaSourceManager>();
     
     /** The now playing command we're registering. */
     private NowPlayingCommand command;
@@ -66,8 +69,10 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onLoad() {
         sources.clear();
+        managers.clear();
         
         loadSettings();
         
@@ -87,8 +92,10 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onUnload() {
         sources.clear();
+        managers.clear();
         
         ActionManager.removeListener(this);
         
@@ -125,6 +132,7 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {
         if (type == CoreActionType.PLUGIN_LOADED) {
@@ -148,10 +156,12 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
         }
         
         if (targetPlugin instanceof MediaSourceManager) {
-            sources.addAll(((MediaSourceManager) targetPlugin).getSources());
-            
-            for (MediaSource source : ((MediaSourceManager) targetPlugin).getSources()) {
-                addSourceToOrder(source);
+            managers.add((MediaSourceManager) targetPlugin);
+
+            if (((MediaSourceManager) targetPlugin).getSources() != null) {
+                for (MediaSource source : ((MediaSourceManager) targetPlugin).getSources()) {
+                    addSourceToOrder(source);
+                }
             }
         }
     }
@@ -181,7 +191,7 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
         }
         
         if (targetPlugin instanceof MediaSourceManager) {
-            sources.removeAll(((MediaSourceManager) targetPlugin).getSources());
+            managers.remove((MediaSourceManager) targetPlugin);
         }
     }
     
@@ -191,7 +201,7 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
      * @return True if there are running sources, false otherwise
      */
     public boolean hasRunningSource() {
-        for (final MediaSource source : sources) {
+        for (final MediaSource source : getSources()) {
             if (source.getState() != MediaSourceState.CLOSED) {
                 return true;
             }
@@ -214,7 +224,7 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
         
         Collections.sort(sources, new MediaSourceComparator(order));
         
-        for (final MediaSource source : sources) {
+        for (final MediaSource source : getSources()) {
             if (source.getState() != MediaSourceState.CLOSED) {
                 if (source.getState() == MediaSourceState.PLAYING) {
                     return source;
@@ -264,7 +274,7 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
      * @return The source with the specified name or null if none were found.
      */
     public MediaSource getSource(final String name) {
-        for (final MediaSource source : sources) {
+        for (final MediaSource source : getSources()) {
             if (source.getAppName().equalsIgnoreCase(name)) {
                 return source;
             }
@@ -279,6 +289,12 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
      * @return All known media sources
      */
     public List<MediaSource> getSources() {
-        return new ArrayList<MediaSource>(sources);
+        final List<MediaSource> res = new ArrayList<MediaSource>(sources);
+
+        for (MediaSourceManager manager : managers) {
+            res.addAll(manager.getSources());
+        }
+
+        return res;
     }
 }

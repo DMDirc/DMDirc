@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -289,9 +289,9 @@ public final class ErrorManager implements Serializable, Runnable {
             }
 
             tries++;
-        } while((response.isEmpty() || !response.get(response.size() - 1).
+        } while ((response.isEmpty() || !response.get(response.size() - 1).
                 equalsIgnoreCase("Error report submitted. Thank you."))
-                || tries >= 5);
+                && tries <= 5);
 
         checkResponses(error, response);
     }
@@ -304,11 +304,12 @@ public final class ErrorManager implements Serializable, Runnable {
      */
     private static void checkResponses(final ProgramError error,
             final List<String> response) {
-        if (!response.isEmpty() || response.get(response.size() - 1).
+        if (!response.isEmpty() && response.get(response.size() - 1).
                 equalsIgnoreCase("Error report submitted. Thank you.")) {
             error.setReportStatus(ErrorReportStatus.FINISHED);
         } else {
             error.setReportStatus(ErrorReportStatus.ERROR);
+            return;
         }
 
         if (response.size() == 1) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,9 @@ import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.plugins.Service;
+import com.dmdirc.plugins.ServiceProvider;
+import com.dmdirc.plugins.ExportedService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +53,30 @@ public class DcopMediaSourcePlugin extends Plugin
         sources.add(new AmarokSource());
         sources.add(new KaffeineSource());
         sources.add(new NoatunSource());
+    }
+    
+    /**
+     * Get DCOP Result
+     *
+     * @param query Query to try
+     */
+    @SuppressWarnings("unchecked")
+    protected static List<String> getDcopResult(final String query) {
+        List<String> result = new ArrayList<String>();
+        final Service service = PluginManager.getPluginManager().getService("export", "dcop");
+        if (service != null) {
+            final ServiceProvider provider = service.getActiveProvider();
+            
+            if (provider != null) {
+                final ExportedService exportedService = provider.getExportedService("dcop");
+                final Object obj = exportedService.execute(query);
+                if (obj instanceof List) {
+                    result = (List<String>) obj;
+                }
+            }
+        }
+        
+        return result;
     }
     
     /** {@inheritDoc} */

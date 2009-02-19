@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="DMDirc-jar" default="default" basedir=".">
+
+    <!-- Netbeans property files -->
+    <property file="nbproject/project.properties"/>
+    <property file="nbproject/private/private.properties"/>
+    <property file="${user.properties.file}"/>
+    
+    <target name="-addjarlibs">
+        <jar destfile="plugins/ui_swing.jar" compress="${jar.compress}" keepcompression="true" update="true">
+            <zipfileset src="${file.reference.miglayout.jar}" includes="net/miginfocom/layout/**,net/miginfocom/swing/**"/>
+        </jar>
+    </target>
+
+</project>

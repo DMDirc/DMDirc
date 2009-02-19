@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,8 +28,6 @@ import com.dmdirc.util.URLBuilder;
 
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -86,6 +84,23 @@ public final class IconManager implements ConfigChangeListener {
                     new ImageIcon(getIconURL(type)).getImage(), 16, 16)));
         }
         return icons.get(type);
+    }
+
+    /**
+     * Retrieves the icon with the specified type. Returns null if the icon
+     * wasn't found.
+     *
+     * @param type The name of the icon type to retrieve
+     * @param width width of the image
+     * @param height height of the image
+     * 
+     * @return The icon that should be used for the specified type
+     *
+     * @since 0.6.3
+     */
+    public Icon getScaledIcon(final String type, final int width, final int height) {
+        return new ImageIcon(getScaledImage(new ImageIcon(getIconURL(type)).
+                getImage(), width, height));
     }
     
     /**
@@ -152,6 +167,7 @@ public final class IconManager implements ConfigChangeListener {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void configChanged(final String domain, final String key) {
         if ("icon".equals(domain)) {
             if (images.containsKey(key)) {

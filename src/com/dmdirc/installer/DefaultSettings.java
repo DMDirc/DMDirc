@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,49 +24,42 @@ package com.dmdirc.installer;
 
 import com.dmdirc.installer.cliparser.CLIParser;
 
+/**
+ * Default settings for the installer.
+ */
 public class DefaultSettings implements Settings {
-	/**
-	 * Returns the state of the shortcutMenu checkbox.
-	 *
-	 * @return shortcutMenu checkbox state
-	 */
-	public boolean getShortcutMenuState() {
-		return (CLIParser.getCLIParser().getParamNumber("-no-shortcut-menu") == 0);
-	}
 
-	/**
-	 * Returns the state of the shortcutDesktop checkbox.
-	 *
-	 * @return shortcutDesktop checkbox state
-	 */
-	public boolean getShortcutDesktopState() {
-		return (CLIParser.getCLIParser().getParamNumber("-no-shortcut-desktop") == 0);
-	}
+    /** {@inheritDoc} */
+    @Override
+    public boolean getShortcutMenuState() {
+        return (CLIParser.getCLIParser().getParamNumber("-no-shortcut-menu") ==
+                0);
+    }
 
-	/**
-	 * Returns the state of the shortcutDesktop checkbox.
-	 *
-	 * @return shortcutDesktop checkbox state
-	 */
-	public boolean getShortcutQuickState() {
-		return (CLIParser.getCLIParser().getParamNumber("-no-shortcut-quicklaunch") == 0);
-	}
+    /** {@inheritDoc} */
+    @Override
+    public boolean getShortcutDesktopState() {
+        return (CLIParser.getCLIParser().getParamNumber("-no-shortcut-desktop") ==
+                0);
+    }
 
-	/**
-	 * Returns the state of the shortcutProtocol checkbox.
-	 *
-	 * @return shortcutDesktop checkbox state
-	 */
-	public boolean getShortcutProtocolState() {
-		return (CLIParser.getCLIParser().getParamNumber("-no-shortcut-protocol") == 0);
-	}
+    /** {@inheritDoc} */
+    @Override
+    public boolean getShortcutQuickState() {
+        return (CLIParser.getCLIParser().getParamNumber(
+                "-no-shortcut-quicklaunch") == 0);
+    }
 
-	/**
-	 * Returns the location chosen for installation.
-	 *
-	 * @return location chosen for installation.
-	 */
-	public String getInstallLocation() {
-		return Main.getInstaller().defaultInstallLocation();
-	}
+    /** {@inheritDoc} */
+    @Override
+    public boolean getShortcutProtocolState() {
+        return (CLIParser.getCLIParser().getParamNumber("-no-shortcut-protocol") ==
+                0);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getInstallLocation() {
+        return Main.getInstaller().defaultInstallLocation();
+    }
 }

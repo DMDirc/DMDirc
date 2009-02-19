@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import java.util.List;
 
 /**
- * Wrapping commands are commands whose aruments may be wrapped into multiple
+ * Wrapping commands are commands whose arguments may be wrapped into multiple
  * lines when sending.
  * 
  * @author chris

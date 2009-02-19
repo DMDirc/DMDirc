@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,92 +22,68 @@
 
 package com.dmdirc.installer.ui;
 
-import com.dmdirc.installer.Main;
 import com.dmdirc.installer.TextStep;
-import com.dmdirc.ui.swing.dialogs.wizard.Step;
-import com.dmdirc.ui.swing.dialogs.wizard.StepListener;
-import com.dmdirc.ui.swing.dialogs.wizard.WizardFrame;
 
-import javax.swing.UIManager;
+import java.awt.BorderLayout;
 
-import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
-
-import net.miginfocom.swing.MigLayout;
+import javax.swing.SwingUtilities;
 
 /**
  * This confirms the settings chosen in the previous step
  */
-public final class StepInstall extends Step implements StepListener, TextStep {
-	/**
-	 * A version number for this class. It should be changed whenever the class
-	 * structure is changed (or anything else that would prevent serialized
-	 * objects being unserialized with the new class).
-	 */
-	private static final long serialVersionUID = 2;
+public final class StepInstall extends SwingStep implements TextStep {
 
-	/** Text area showing the install information */
-	private final JTextArea infoLabel = new JTextArea("Beginning Install");
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 2;
+    /** Text area showing the install information */
+    private final TextLabel infoLabel = new TextLabel("Beginning Install");
+    /** Scroll pane holding text area */
+    final JScrollPane scrollPane;
 
-	/** Scroll pane holding text area */
-	final JScrollPane scrollPane;
+    /**
+     * Creates a new instance of StepInstall.
+     */
+    public StepInstall() {
+        super();
+        setLayout(new BorderLayout());
+        scrollPane = new JScrollPane(infoLabel,
+                                     JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                                     JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        add(scrollPane, BorderLayout.CENTER);
+    }
 
-	/**
-	* Creates a new instance of StepInstall.
-	* @param dialog parent wizard dialog
-	*/
-	public StepInstall(final WizardFrame dialog) {
-		super();
-		dialog.addStepListener(this);
-		setLayout(new MigLayout("fill"));
-
-		infoLabel.setFont(UIManager.getFont("Label.font"));
-		infoLabel.setEditable(false);
-		infoLabel.setWrapStyleWord(true);
-		infoLabel.setLineWrap(true);
-		//infoLabel.setHighlighter(null);
-		infoLabel.setOpaque(false);
-		infoLabel.setFont(UIManager.getFont("TextField.font"));
-//		infoLabel.setBackground(getBackground());
-
-		scrollPane = new JScrollPane(infoLabel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		add(scrollPane, "grow");
-	}
-
-	/**
-	 * Add text to the infolabel on this step
-	 *
-	 * @param text Text to add to infoLabel
-	 */
+    /** {@inheritDoc} */
     @Override
-	public synchronized void addText(final String text) {
-		infoLabel.setText(infoLabel.getText() + text +"\n");
-		infoLabel.setCaretPosition(infoLabel.getText().length());
-	}
-	
-	/**
-	 * Sets the text in the infolabel on this step
-	 *
-	 * @param text Text to set the infoLabel to
-	 */
+    public String getStepName() {
+        return "Install";
+    }
+
+    /** {@inheritDoc} */
     @Override
-	public synchronized void setText(final String text) {
-		infoLabel.setText(text);
-	}
+    public synchronized void addText(final String text) {
+        SwingUtilities.invokeLater(new Runnable() {
 
-	/** {@inheritDoc} */
-	@Override
-	public void stepAboutToDisplay(final Step step) {
-		if (step != this) { return; }
-		Main.getWizardFrame().enableNextStep(false);
-		Main.getWizardFrame().enablePreviousStep(false);
-		Main.getInstaller().setInstallStep(this);
-		Main.getInstaller().start();
-	}
+            @Override
+            public void run() {
+                infoLabel.setText(infoLabel.getText() + text + "\n");
+            }
+        });
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public void stepHidden(final Step step) {
-		//Ignore
-	}
+    /** {@inheritDoc} */
+    @Override
+    public synchronized void setText(final String text) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                infoLabel.setText(text);
+            }
+        });
+    }
 }

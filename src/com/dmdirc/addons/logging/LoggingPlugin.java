@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -562,8 +562,19 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 		final StringBuffer finalLine = new StringBuffer();
 		
 		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.addtime")) {
-			final DateFormat dateFormat = new SimpleDateFormat(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.timestamp"));
-			finalLine.append(dateFormat.format(new Date()).trim());
+			String dateString;
+			final String dateFormatString = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.timestamp");
+			try {
+				final DateFormat dateFormat = new SimpleDateFormat(dateFormatString);
+				dateString = dateFormat.format(new Date()).trim();
+			} catch (IllegalArgumentException iae) {
+				// Default to known good format
+				final DateFormat dateFormat = new SimpleDateFormat("[dd/MM/yyyy HH:mm:ss]");
+				dateString = dateFormat.format(new Date()).trim();
+				
+				Logger.userError(ErrorLevel.LOW, "Dateformat String '"+dateFormatString+"' is invalid. For more information: http://java.sun.com/javase/6/docs/api/java/text/SimpleDateFormat.html");
+			}
+			finalLine.append(dateString);
 			finalLine.append(" ");
 		}
 		

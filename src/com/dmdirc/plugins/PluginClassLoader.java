@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,11 +33,32 @@ public class PluginClassLoader extends ClassLoader {
 	/**
 	 * Create a new PluginClassLoader.
 	 *
-	 * @param directory Directory where plugins are stored.
+	 * @param info PluginInfo this classloader will be for
 	 */
 	public PluginClassLoader(final PluginInfo info) {
 		super();
 		pluginInfo = info;
+	}
+	
+	/**
+	 * Create a new PluginClassLoader.
+	 *
+	 * @param info PluginInfo this classloader will be for
+	 * @param parent Parent ClassLoader
+	 */
+	private PluginClassLoader(final PluginInfo info, final PluginClassLoader parent) {
+		super(parent);
+		pluginInfo = info;
+	}
+	
+	/**
+	 * Get a PluginClassLoader that is a subclassloader of this one.
+	 *
+     * @param info PluginInfo the new classloader will be for
+     * @return A classloader configured with this one as its parent
+	 */
+	public PluginClassLoader getSubClassLoader(final PluginInfo info) {
+		return (new PluginClassLoader(info, this));
 	}
 	
 	/**
@@ -47,6 +68,7 @@ public class PluginClassLoader extends ClassLoader {
 	 * @return plugin class
 	 * @throws ClassNotFoundException if the class to be loaded could not be found.
 	 */
+    @Override
 	public Class<?> loadClass(final String name) throws ClassNotFoundException {
 		return loadClass(name, true);
 	}
@@ -55,7 +77,8 @@ public class PluginClassLoader extends ClassLoader {
 	 * Have we already loaded the given class name?
 	 *
 	 * @param name Name to check.
-	 * @param checkGlobal Should we check if the GCL has loaded it aswell?
+     * @param checkGlobal Should we check if the GCL has loaded it aswell?
+     * @return True if the specified class is loaded, false otherwise
 	 */
 	public boolean isClassLoaded(final String name, final boolean checkGlobal) {
 		// Don't duplicate a class
@@ -72,7 +95,20 @@ public class PluginClassLoader extends ClassLoader {
 	 * @return plugin class
 	 * @throws ClassNotFoundException if the class to be loaded could not be found.
 	 */
+    @Override
 	public Class<?> loadClass(final String name, final boolean askGlobal) throws ClassNotFoundException {
+		Class< ? > loadedClass = null;
+		if (getParent() instanceof PluginClassLoader) {
+			try {
+				loadedClass = ((PluginClassLoader)getParent()).loadClass(name, false);
+				if (loadedClass != null) {
+					return loadedClass;
+				}
+			} catch (ClassNotFoundException cnfe) {
+				/* Parent doesn't have the class, load ourself */
+			}
+		}
+		
 		ResourceManager res;
 		try {
 			res = pluginInfo.getResourceManager();
@@ -80,8 +116,6 @@ public class PluginClassLoader extends ClassLoader {
 			throw new ClassNotFoundException("Error with resourcemanager", ioe);
 		}
 	
-		Class< ? > loadedClass = null;
-
 		final String fileName = name.replace('.', '/')+".class";
 		try {
 			if (pluginInfo.isPersistent(name) || !res.resourceExists(fileName)) {

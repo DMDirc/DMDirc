@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,20 +21,23 @@
  */
 package com.dmdirc.config.prefs;
 
+import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.harness.TestPreferencesInterface;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.harness.TestActionListener;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class PreferencesManagerTest extends junit.framework.TestCase {
+public class PreferencesManagerTest {
     
-    @Before
-    public void setUp() throws Exception {        
+    @BeforeClass
+    public static void setUp() throws Exception {
         IdentityManager.load();
+        Main.setUI(new SwingController());
     }    
 
     @Test

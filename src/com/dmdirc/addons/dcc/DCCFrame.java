@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,8 +33,8 @@ import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.ui.swing.components.InputTextFrame;
-import com.dmdirc.ui.swing.components.TextFrame;
+import com.dmdirc.addons.ui_swing.components.InputTextFrame;
+import com.dmdirc.addons.ui_swing.components.TextFrame;
 
 import java.awt.Container;
 

@@ -3,7 +3,7 @@
 # This script generates a .exe file that will install DMDirc
 #
 # DMDirc - Open Source IRC Client
-# Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+# Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +34,13 @@ RUNNAME="${PWD}/${RUNNAME}"
 INTNAME="${PWD}/${INTNAME}"
 # Get 7zip path
 ZIP=`which 7z`
+
+# Are we a git working copy, or SVN?
+if [ -e ".svn" ]; then
+	isSVN=1
+else
+	isSVN=0
+fi;
 
 if [ "" = "${ZIP}" ]; then
 	echo "7Zip not found, failing."
@@ -98,11 +105,17 @@ signEXE="true"
 compilerFlags="-Xs -XX -O2 -Or -Op1"
 BRANCH="0"
 plugins=""
-location="../../../"
+if [ $isSVN -eq 1 ]; then
+	location="../../../"
+	current=""
+else
+	location="../../"
+	current="1"
+fi;
 jarfile=""
-current=""
 jre=""
 jrename="jre" # Filename for JRE without the .exe
+TAGGED=""
 
 showHelp() {
 	echo "This will generate a DMDirc installer for a windows based system."
@@ -112,11 +125,11 @@ showHelp() {
 	echo "-r, --release <version>   Generate a file based on an svn tag (or branch with -b aswell)"
 	echo "-b, --branch              Release in -r is a branch "
 	echo "-s, --setup               Recompile the .exe file"
-	echo "-e,                       If setup.exe compile fails, use old version"
+	echo "-o,                       If setup.exe compile fails, use old version"
 	echo "-p, --plugins <plugins>   What plugins to add to the jar file"
 	echo "-c, --compile             Recompile the .jar file"
 	echo "-u, --unsigned            Don't sign the exe"
-	echo "-t, --tag <tag>           Tag to add to final exe name to distinguish this build from a standard build"
+	echo "-e, --extra <tag>         Tag to add to final exe name to distinguish this build from a standard build"
 	echo "-f, --flags <flags>       Extra flags to pass to the compiler"
 	echo "    --jre                 Include the JRE in this installer"
 	echo "    --jar <file>          use <file> as DMDirc.jar"
@@ -160,14 +173,14 @@ while test -n "$1"; do
 		--setup|-s)
 			compileSetup="true"
 			;;
-		-e)
+		-o)
 			useOldSetup="true"
 			;;
 		--release|-r)
 			shift
 			isRelease=${1}
 			;;
-		--tag|-t)
+		--extra|-e)
 			shift
 			finalTag="-${1}"
 			;;
@@ -189,6 +202,16 @@ while test -n "$1"; do
 			;;
 		--branch|-b)
 			BRANCH="1"
+			;;
+		--tag|-t)
+			shift
+			REGEX="^[0-9]+(\.[0-9]+(\.[0-9]+)?)?$"
+			CHECKTAG=`echo ${1} | egrep "${REGEX}"`
+			if [ "" = "${CHECKTAG}" ]; then
+				echo "Specified tag ("${1}") is invalid."
+				exit 1;
+			fi;
+			TAGGED="${1}"
 			;;
 	esac
 	shift
@@ -212,19 +235,21 @@ else
 	jarPath="${location}"
 fi
 if [ "${isRelease}" != "" ]; then
-	if [ "${BRANCH}" != "0" ]; then
-		if [ -e "${location}/${isRelease}" ]; then
-			jarPath="${location}/${isRelease}"
+	if [ $isSVN -eq 1 ]; then
+		if [ "${BRANCH}" != "0" ]; then
+			if [ -e "${location}/${isRelease}" ]; then
+				jarPath="${location}/${isRelease}"
+			else
+				echo "Branch "${isRelease}" not found."
+				exit 1;
+			fi
 		else
-			echo "Branch "${isRelease}" not found."
-			exit 1;
-		fi
-	else
-		if [ -e "${location}/${isRelease}" ]; then
-			jarPath="${location}/${isRelease}"
-		else
-			echo "Tag "${isRelease}" not found."
-			exit 1;
+			if [ -e "${location}/${isRelease}" ]; then
+				jarPath="${location}/${isRelease}"
+			else
+				echo "Tag "${isRelease}" not found."
+				exit 1;
+			fi
 		fi
 	fi
 fi
@@ -268,8 +293,11 @@ else
 	rm -Rf plugins;
 fi
 
-
-echo "	ReleaseNumber: String = '${isRelease}';" > SetupConsts.inc
+if [ $isSVN -eq 1 -o "${TAGGED}" = "" ]; then
+	echo "	ReleaseNumber: String = '${isRelease}';" > SetupConsts.inc
+else
+	echo "	ReleaseNumber: String = '${TAGGED}';" > SetupConsts.inc
+fi;
 
 FILES=""
 # Icon Res file
@@ -284,19 +312,25 @@ echo "extractor RCDATA extractor.exe" > files.rc
 
 COMPILER_IS_BROKEN="0";
 
+if [ $isSVN -eq 1 -o "${TAGGED}" = "" ]; then
+	NUM="${1}"
+else
+	NUM="${TAGGED}"
+fi;
+
 # Version Numbers
-if [ "" = "${1}" ]; then
+if [ "" = "${NUM}" ]; then
 	MAJORVER="0"
 	MINORVER="0"
 	RELEASE="0"
-	TEXTVER="Trunk"
+	TEXTVER="${isRelease}"
 	PRIVATE="1"
 	USER=`whoami`
 	HOST=`hostname`
 	DATE=`date`
 else
-	MAJORVER=${1%%.*}
-	SUBVER=${1#*.}
+	MAJORVER=${NUM%%.*}
+	SUBVER=${NUM#*.}
 	DOT=`expr index "${SUBVER}" .`
 	if [ "${DOT}" = "0" ]; then
 		MINORVER=${SUBVER}
@@ -305,7 +339,7 @@ else
 		MINORVER=${SUBVER%%.*}
 		RELEASE=${SUBVER##*.}
 	fi
-	TEXTVER=$1
+	TEXTVER=$NUM
 	PRIVATE="0"
 fi;
 
@@ -346,7 +380,7 @@ echo "			VALUE \"FileDescription\", \"Uninstaller for DMDirc\"" >> uninstallvers
 
 echo "			VALUE \"FileVersion\", \"2.0\"" > version.rc.2
 echo "			VALUE \"InternalName\", \"DMDirc.jar\"" >> version.rc.2
-echo "			VALUE \"LegalCopyright\", \"Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes\"" >> version.rc.2
+echo "			VALUE \"LegalCopyright\", \"Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes\"" >> version.rc.2
 echo "			VALUE \"OriginalFilename\", \"$2\"" >> version.rc.2
 echo "			VALUE \"ProductName\", \"DMDirc\"" >> version.rc.2
 echo "			VALUE \"ProductVersion\", \"${TEXTVER}\"" >> version.rc.2
@@ -517,10 +551,13 @@ echo "Creating config.."
 echo ";!@Install@!UTF-8!" > 7zip.conf
 if [ "${isRelease}" != "" ]; then
 	echo "Title=\"DMDirc Installation "${isRelease}"\"" >> 7zip.conf
-#	echo "BeginPrompt=\"Do you want to install DMDirc "${isRelease}"?\"" >> 7zip.conf
+	echo "BeginPrompt=\"Do you want to install DMDirc "${isRelease}"?\"" >> 7zip.conf
+elif [ "${TAGGED}" != "" ]; then
+	echo "Title=\"DMDirc Installation "${TAGGED}"\"" >> 7zip.conf
+	echo "BeginPrompt=\"Do you want to install DMDirc "${TAGGED}"?\"" >> 7zip.conf
 else
-	echo "Title=\"DMDirc Installation\"" > 7zip.conf
-#	echo "BeginPrompt=\"Do you want to install DMDirc?\"" >> 7zip.conf
+	echo "Title=\"DMDirc Installation\"" >> 7zip.conf
+	echo "BeginPrompt=\"Do you want to install DMDirc?\"" >> 7zip.conf
 fi;
 echo "ExecuteFile=\"Setup.exe\"" >> 7zip.conf
 echo ";!@InstallEnd@!" >> 7zip.conf
@@ -538,12 +575,27 @@ fi;
 echo "Creating .exe"
 cat 7zS.sfx 7zip.conf "${INTNAME}" > "${RUNNAME}"
 
+doRename=0
 if [ "${isRelease}" != "" ]; then
-	if [ "${BRANCH}" = "1" ]; then
-		releaseTag=branch-${isRelease}
+	doRename=1
+elif [ $isSVN -eq 0 -a "${TAGGED}" != "" ]; then
+	doRename=1
+fi;
+
+if [ ${doRename} -eq 1 ]; then
+	if [ $isSVN -eq 1 ]; then
+		if [ "${BRANCH}" = "1" ]; then
+			releaseTag=branch-${isRelease}
+		else
+			releaseTag=${isRelease}
+		fi;
 	else
-		releaseTag=${isRelease};
-	fi;
+		if [ "${TAGGED}" = "" ]; then
+			releaseTag=branch-${isRelease}
+		else
+			releaseTag=${TAGGED}
+		fi;
+	fi
 	ORIGNAME="DMDirc-${releaseTag}-Setup${finalTag}.exe"
 else
 	ORIGNAME="${INSTALLNAME}${finalTag}.exe"

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,39 +22,43 @@
 
 package com.dmdirc.installer.ui;
 
-import com.dmdirc.installer.Main;
-import com.dmdirc.ui.swing.dialogs.wizard.Step;
-import com.dmdirc.ui.swing.components.TextLabel;
-
-
-import net.miginfocom.swing.MigLayout;
+import java.awt.BorderLayout;
 
 /**
  * Tells the user what this application does
  */
-public final class StepWelcome extends Step {
-	/**
-	 * A version number for this class. It should be changed whenever the class
-	 * structure is changed (or anything else that would prevent serialized
-	 * objects being unserialized with the new class).
-	 */
-	private static final long serialVersionUID = 2;
-	
-	/**
-	 * Creates a new instance of StepWelcome.
-	 */
-	public StepWelcome(final String releaseName) {
-		super();
-		setLayout(new MigLayout());
-		
-		TextLabel infoLabel;
-		infoLabel = new TextLabel("Welcome to the "+releaseName+" installer. This program will install DMDirc on this computer.\n\n"
-		                        + "DMDirc is a cross-platform IRC client developed by Chris Smith, Shane Mc Cormack and "
-		                        + "Gregory Holmes. DMDirc is released for free under the MIT license; for more information, "
-		                        + "please visit www.DMDirc.com.\n\n"
-		                        + "Click \"Next\" to continue, or close this program to cancel the installation.");
-		infoLabel.setOpaque(false);
-			
-		add(infoLabel, "grow");
-	}
+public final class StepWelcome extends SwingStep {
+
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 2;
+
+    /**
+     * Creates a new instance of StepWelcome.
+     *
+     * @param releaseName 
+     */
+    public StepWelcome(final String releaseName) {
+        super();
+
+        setLayout(new BorderLayout());
+
+        add(new TextLabel(
+                "Welcome to the " + releaseName + " installer. This program " +
+                "will install DMDirc on this computer.\n\nDMDirc is a " +
+                "cross-platform IRC client developed by Chris Smith, Shane " +
+                "Mc Cormack and Gregory Holmes. DMDirc is released for free " +
+                "under the MIT license; for more information, please visit " +
+                "www.DMDirc.com.\n\nClick \"Next\" to continue, or close " +
+                "this program to cancel the installation."), BorderLayout.CENTER);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getStepName() {
+        return "Welcome";
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,12 +41,12 @@ import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.swing.components.TextFrame;
+import com.dmdirc.addons.ui_swing.components.TextFrame;
 
 import com.dmdirc.addons.dcc.kde.KFileChooser;
 import com.dmdirc.addons.dcc.actions.DCCActions;
 
-import com.dmdirc.ui.swing.components.TextLabel;
+import com.dmdirc.addons.ui_swing.components.TextLabel;
 import java.io.File;
 import java.io.IOException;
 
@@ -319,9 +319,14 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 					DCCSend send = DCCSend.findByToken(token);
 					
 					if (send == null && !dontAsk) {
-						ActionManager.processEvent(DCCActions.DCC_SEND_REQUEST, null, ((Server)arguments[0]), nickname, filename);
-						askQuestion("User "+nickname+" on "+((Server)arguments[0]).toString()+" would like to send you a file over DCC.\n\nFile: "+filename+"\n\nDo you want to continue?", "DCC Send Request", JOptionPane.YES_OPTION, type, format, arguments);
-						return;
+						if (!token.isEmpty() && !port.equals(0)) {
+							// This is a reverse DCC Send that we no longer care about.
+							return;
+						} else {
+							ActionManager.processEvent(DCCActions.DCC_SEND_REQUEST, null, ((Server)arguments[0]), nickname, filename);
+							askQuestion("User "+nickname+" on "+((Server)arguments[0]).toString()+" would like to send you a file over DCC.\n\nFile: "+filename+"\n\nDo you want to continue?", "DCC Send Request", JOptionPane.YES_OPTION, type, format, arguments);
+							return;
+						}
 					} else {
 						final boolean newSend = send == null;
 						if (newSend) {

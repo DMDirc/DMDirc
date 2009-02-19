@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -163,31 +163,19 @@ public final class Channel extends MessageTarget
             return;
         }
 
-        if (line.indexOf('\n') > -1) {
-            for (String part : line.split("\n")) {
-                sendLine(part);
-            }
-
-            return;
-        }
-
         final ClientInfo me = server.getParser().getMyself();
-        final String modes = getModes(channelInfo.getUser(me));
         final String[] details = getDetails(channelInfo.getUser(me), showColours);
 
-        if (line.length() <= getMaxLineLength()) {
+        for (String part : splitLine(window.getTranscoder().encode(line))) {
             final StringBuffer buff = new StringBuffer("channelSelfMessage");
 
             ActionManager.processEvent(CoreActionType.CHANNEL_SELF_MESSAGE, buff,
-                    this, channelInfo.getUser(me), line);
+                    this, channelInfo.getUser(me), part);
 
-            addLine(buff, modes, details[0], details[1], details[2],
-                    window.getTranscoder().encode(line), channelInfo);
+            addLine(buff, details[0], details[1], details[2], details[3],
+                    part, channelInfo);
 
-            channelInfo.sendMessage(window.getTranscoder().encode(line));
-        } else {
-            sendLine(line.substring(0, getMaxLineLength()));
-            sendLine(line.substring(getMaxLineLength()));
+            channelInfo.sendMessage(part);
         }
     }
 
@@ -209,7 +197,7 @@ public final class Channel extends MessageTarget
         }
 
         final ClientInfo me = server.getParser().getMyself();
-        final String modes = channelInfo.getUser(me).getImportantModePrefix();
+        final String[] details = getDetails(channelInfo.getUser(me), showColours);
 
         if (server.getParser().getMaxLength("PRIVMSG", getChannelInfo().getName())
                 <= action.length()) {
@@ -220,8 +208,8 @@ public final class Channel extends MessageTarget
             ActionManager.processEvent(CoreActionType.CHANNEL_SELF_ACTION, buff,
                     this, channelInfo.getUser(me), action);
 
-            addLine(buff, modes, me.getNickname(), me.getIdent(),
-                    me.getHost(), window.getTranscoder().encode(action), channelInfo);
+            addLine(buff, details[0], details[1], details[2], details[3],
+                    window.getTranscoder().encode(action), channelInfo);
 
             channelInfo.sendAction(window.getTranscoder().encode(action));
         }
@@ -509,7 +497,7 @@ public final class Channel extends MessageTarget
      * @param showColours Whether or not to show colours
      * @return A string[] containing displayable components
      */
-    private static String[] getDetails(final ChannelClientInfo client,
+    private String[] getDetails(final ChannelClientInfo client,
             final boolean showColours) {
         if (client == null) {
             // WTF?
@@ -517,10 +505,11 @@ public final class Channel extends MessageTarget
                      + " null ChannelClientInfo");
         }
 
-        final String[] res = new String[3];
-        res[0] = Styliser.CODE_NICKNAME + client.getNickname() + Styliser.CODE_NICKNAME;
-        res[1] = client.getClient().getIdent();
-        res[2] = client.getClient().getHost();
+        final String[] res = new String[4];
+        res[0] = getModes(client);
+        res[1] = Styliser.CODE_NICKNAME + client.getNickname() + Styliser.CODE_NICKNAME;
+        res[2] = client.getClient().getIdent();
+        res[3] = client.getClient().getHost();
 
         if (showColours) {
             final Map map = client.getMap();
@@ -537,7 +526,7 @@ public final class Channel extends MessageTarget
             }
 
             if (prefix != null) {
-                res[0] = prefix + res[0] + Styliser.CODE_HEXCOLOUR;
+                res[1] = prefix + res[1] + Styliser.CODE_HEXCOLOUR;
             }
         }
 
@@ -560,7 +549,6 @@ public final class Channel extends MessageTarget
             // Format ChannelClientInfos
 
             final ChannelClientInfo clientInfo = (ChannelClientInfo) arg;
-            args.add(getModes(clientInfo));
             args.addAll(Arrays.asList(getDetails(clientInfo, showColours)));
 
             return true;

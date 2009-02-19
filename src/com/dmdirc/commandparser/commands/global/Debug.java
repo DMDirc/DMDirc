@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,8 +32,12 @@ import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.plugins.Service;
+import com.dmdirc.plugins.ServiceProvider;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.updater.UpdateChecker;
 
 import java.io.Serializable;
@@ -79,12 +83,18 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
             doMemInfo(origin, isSilent);
         } else if ("rungc".equals(args[0])) {
             doGarbage(origin, isSilent);
+        } else if ("threads".equals(args[0])) {
+            doThreads(origin, isSilent);
         } else if ("forceupdate".equals(args[0])) {
             doForceUpdate();
         } else if ("serverinfo".equals(args[0])) {
             doServerInfo(origin, isSilent);
+        } else if ("serverstate".equals(args[0])) {
+            doServerState(origin, isSilent);
         } else if ("benchmark".equals(args[0])) {
             doBenchmark(origin);
+        } else if ("services".equals(args[0])) {
+            doServices(origin, isSilent, args);
         } else if ("firstrun".equals(args[0])) {
             Main.getUI().showFirstRunWizard();
         } else if ("migration".equals(args[0])) {
@@ -230,6 +240,39 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
     private void doForceUpdate() {
         new Thread(new UpdateChecker(), "Forced update checker").start();
     }
+
+    /**
+     * Shows information about active threads.
+     *
+     * @param origin The window this command was executed in
+     * @param isSilent Whether this command has been silenced or not
+     */
+    private void doThreads(final InputWindow origin, final boolean isSilent) {
+        for (Entry<Thread, StackTraceElement[]> thread: Thread.getAllStackTraces().entrySet()) {
+            sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_BOLD
+                    + thread.getKey().getName());
+
+            for (StackTraceElement element : thread.getValue()) {
+                sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
+                        + "    " + element.toString());
+            }
+        }
+    }
+
+    /**
+     * Shows information about the current server's state.
+     *
+     * @param origin The window this command was executed in
+     * @param isSilent Whether this command has been silenced or not
+     */
+    private void doServerState(final InputWindow origin, final boolean isSilent) {
+        if (origin.getContainer().getServer() == null) {
+            sendLine(origin, isSilent, FORMAT_ERROR, "This window isn't connected to a server");
+        } else {
+            final Server server = origin.getContainer().getServer();
+            sendLine(origin, isSilent, FORMAT_OUTPUT, server.getStatus().getTransitionHistory());
+        }
+    }
     
     /**
      * Shows information about the current server.
@@ -278,7 +321,30 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
         }
         
         for (int i = 0; i < results.length; i++) {
-            origin.addLine(FORMAT_OUTPUT, "Iteration " + i + ": " + results[i] + " nanoseconds.");
+            origin.addLine(FORMAT_OUTPUT, "Iteration " + i + ": " + results[i]
+                    + " nanoseconds.");
+        }
+    }
+    
+    /**
+     * Shows information about all the current services available to plugins.
+     * 
+     * @param origin The window this command was executed in
+     * @param isSilent Whether this command has been silenced or not
+     * @param args The arguments that were passed to the command
+     */
+    private void doServices(final InputWindow origin, final boolean isSilent,
+            final String[] args) {
+        sendLine(origin, isSilent, FORMAT_OUTPUT, "Available Services:");
+        for (Service service : PluginManager.getPluginManager().getAllServices()) {
+            sendLine(origin, isSilent, FORMAT_OUTPUT, "    " + service.toString());
+            if (args.length > 1 && args[1].equals("full")) {
+                for (ServiceProvider provider : service.getProviders()) {
+                    sendLine(origin, isSilent, FORMAT_OUTPUT, "            "
+                            + provider.getProviderName() + " [Active: "
+                            + provider.isActive() + "]");
+                }
+            }
         }
     }
     
@@ -318,13 +384,18 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
             res.add("globalconfiginfo");
             res.add("forceupdate");
             res.add("serverinfo");
+            res.add("serverstate");
+            res.add("threads");
             res.add("benchmark");
             res.add("firstrun");
             res.add("migration");
             res.add("notify");
+            res.add("services");
         } else if (arg == 1 && "error".equals(previousArgs.get(0))) {
             res.add("user");
             res.add("app");
+        } else if (arg == 1 && "services".equals(previousArgs.get(0))) {
+            res.add("full");
         } else if (arg == 2 && "error".equals(previousArgs.get(0))) {
             res.add("low");
             res.add("medium");

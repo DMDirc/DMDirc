@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,6 +22,7 @@
 
 package com.dmdirc.parser.irc;
 
+import java.util.List;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -35,7 +36,7 @@ public class ProcessListModes extends IRCProcessor {
 	/**
 	 * Process a ListModes.
 	 *
-	 * @param sParam Type of line to process ("348", "349", "346", "347", "367", "368", "482", "941", "940")
+	 * @param sParam Type of line to process
 	 * @param token IRCTokenised line to process
 	 */
 	@SuppressWarnings("unchecked")
@@ -70,9 +71,23 @@ public class ProcessListModes extends IRCProcessor {
 			mode = 'g';
 			isItem = sParam.equals("941");
 		} else if (sParam.equals("344") || sParam.equals("345")) {
-			// Reop List
-			mode = 'R';
+			// Reop List, or bad words list, or quiet list. god damn.
+			if (thisIRCD.equals("euircd")) {
+				mode = 'w';
+			} else if (thisIRCD.equals("oftc-hybrid")) {
+				mode = 'q';
+			} else {
+				mode = 'R';
+			}
 			isItem = sParam.equals("344");
+		} else if (thisIRCD.equals("swiftirc") && (sParam.equals("386") || sParam.equals("387"))) {
+			// Channel Owner list
+			mode = 'q';
+			isItem = sParam.equals("387");
+		} else if (thisIRCD.equals("swiftirc") && (sParam.equals("388") || sParam.equals("389"))) {
+			// Protected User list
+			mode = 'a';
+			isItem = sParam.equals("389");
 		} else if (sParam.equals(myParser.h005Info.get("LISTMODE")) || sParam.equals(myParser.h005Info.get("LISTMODEEND"))) {
 			// Support for potential future decent mode listing in the protocol
 			//
@@ -93,19 +108,27 @@ public class ProcessListModes extends IRCProcessor {
 					Character oldMode = mode;
 					mode = listModeQueue.peek();
 					myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "LMQ says this is "+mode);
-					if (oldMode != mode) {
-						myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "LMQ disagrees with guess LMQ: "+mode+" Guess: "+oldMode);
-					}
+					
+					boolean error = true;
+					
 					if ((thisIRCD.equals("hyperion") || thisIRCD.equals("dancer")) && (mode == 'b' || mode == 'q')) {
 						LinkedList<Character> lmq = (LinkedList<Character>)listModeQueue;
 						if (mode == 'b') {
+							error = !(oldMode == 'q');
 							lmq.remove((Character)'q');
 							myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "Dropping q from list");
 						} else if (mode == 'q') {
+							error = !(oldMode == 'b');
 							lmq.remove((Character)'b');
 							myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "Dropping b from list");
 						}
 					}
+					
+					if (oldMode != mode && error) {
+						myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "LMQ disagrees with guess. LMQ: "+mode+" Guess: "+oldMode);
+						myParser.callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "LMQ disagrees with guess. LMQ: "+mode+" Guess: "+oldMode, myParser.getLastLine()));
+					}
+					
 					if (!isItem) {
 						listModeQueue.poll();
 					}
@@ -129,11 +152,16 @@ public class ProcessListModes extends IRCProcessor {
 			
 			if (!channel.getAddState(mode)) {
 				callDebugInfo(IRCParser.DEBUG_INFO, "New List Mode Batch ("+mode+"): Clearing!");
-				channel.getListModeParam(mode).clear();
+				final List<ChannelListModeItem> list = channel.getListModeParam(mode);
+				if (list == null) {
+					myParser.callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got list mode: '"+mode+"' - but channel object doesn't agree.", myParser.getLastLine()));
+				} else {
+					list.clear();
+				}
 				channel.setAddState(mode, true);
 			}
 			
-			if (token.length > (tokenStart+2)) { 
+			if (token.length > (tokenStart+2)) {
 				try { time = Long.parseLong(token[tokenStart+2]); } catch (NumberFormatException e) { time = 0; }
 			}
 			if (token.length > (tokenStart+1)) { owner = token[tokenStart+1]; }
@@ -161,34 +189,16 @@ public class ProcessListModes extends IRCProcessor {
 	 */
 	@Override
 	public String[] handles() {
-		/*
-		// Ban List - All IRCds
-		iHandle[i++] = "367"; // Item
-		iHandle[i++] = "368"; // End
-		
-		// Reop List - ircnet 
-		iHandle[i++] = "344"; // Item
-		iHandle[i++] = "345"; // End
-		
-		// Invex List - unreal
-		// Invite List - asuka austhex bahamut dancer hybrid hyperion ircnet ratbox undernet
-		iHandle[i++] = "346"; // Item
-		iHandle[i++] = "347"; // End
-		
-		// Exception list - austhex
-		// Except List - dancer hybrid hyperion ircnet ratbox
-		// Exempt List - bahamut
-		// Ex List =- unreal
-		iHandle[i++] = "348"; // Item
-		iHandle[i++] = "349"; // End
-		
-		// "Only operator can do that"
-		// This pops an item off the list mode queue
-		iHandle[i++] = "482"; // End
-		
-		// This is here to allow finding the processor for adding LISTMODE support
-		iHandle[i++] = "__LISTMODE__"; */
-		return new String[]{"367", "368", "344", "345", "346", "347", "348", "349", "940", "941", "482", "__LISTMODE__"};
+		return new String[]{"367", "368",  /* Bans */
+		                    "344", "345",  /* Reop list (ircnet) or bad words (euirc) */
+		                    "346", "347",  /* Invite List */
+		                    "348", "349",  /* Except/Exempt List */
+		                    "386", "387",  /* Channel Owner List (swiftirc ) */
+		                    "388", "389",  /* Protected User List (swiftirc) */
+		                    "940", "941",  /* Censored words list */
+		                    "482",         /* Permission Denied */
+		                    "__LISTMODE__" /* Sensible List Modes */
+		                   };
 	}
 	
 	/**

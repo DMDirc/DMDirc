@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -282,6 +282,31 @@ public class PreferencesCategory {
      */
     public PreferencesCategory getParent() {
         return parent;
+    }
+
+    /**
+     * Saves all the settings in this category.
+     *
+     * @return Is a restart needed after saving?
+     */
+    public boolean save() {
+        boolean restart = false;
+        for (PreferencesSetting setting : settings) {
+            if (setting.save() && setting.isRestartNeeded()) {
+                restart = true;
+            }
+        }
+
+        return restart;
+    }
+
+    /**
+     * Dismisses all the settings in this category.
+     */
+    public void dismiss() {
+        for (PreferencesSetting setting : settings) {
+            setting.dismiss();
+        }
     }
     
     /**

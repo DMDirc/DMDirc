@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,10 @@ package com.dmdirc.harness.ui;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.fest.swing.exception.ActionFailedException;
+import org.junit.BeforeClass;
 import org.junit.internal.runners.TestMethodRunner;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
@@ -43,6 +46,7 @@ public class UIMethodTestRunner extends TestMethodRunner {
 
     @Override
     protected void runUnprotected() {
+        ((UITestIface) test).setUp();
 
         boolean retry;
         int retries = 5;
@@ -66,6 +70,13 @@ public class UIMethodTestRunner extends TestMethodRunner {
                 addFailure(e);
             }
         } while (retry);
+
+        ((UITestIface) test).tearDown();
+    }
+
+    @Override
+    public void runProtected() {
+        runUnprotected();
     }
 
 }

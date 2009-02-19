@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,10 +24,10 @@ package com.dmdirc.addons.nowplaying;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesInterface;
-import com.dmdirc.ui.swing.components.TextLabel;
-import com.dmdirc.ui.swing.components.reorderablelist.ReorderableJList;
+import com.dmdirc.addons.ui_swing.components.TextLabel;
+import com.dmdirc.addons.ui_swing.components.reorderablelist.ReorderableJList;
 
-import com.dmdirc.ui.swing.components.substitutions.SubstitutionsPanel;
+import com.dmdirc.addons.ui_swing.components.substitutions.SubstitutionsPanel;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;

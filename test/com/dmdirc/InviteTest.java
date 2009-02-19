@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2008 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,21 +24,21 @@ package com.dmdirc;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.harness.parser.TestParserFactory;
-import com.dmdirc.ui.dummy.DummyController;
+import com.dmdirc.addons.ui_dummy.DummyController;
 import java.util.ArrayList;
 import java.util.Date;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class InviteTest extends junit.framework.TestCase {
+public class InviteTest {
     
-    private Server server;
-    private Invite test;
-    private long ts;
+    private static Server server;
+    private static Invite test;
+    private static long ts;
     
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         Main.setUI(new DummyController());
         IdentityManager.load();
         
