@@ -139,8 +139,9 @@ public final class ServerEventHandler extends EventHandler
     /** {@inheritDoc} */
     @Override
     public void onSocketClosed(final IRCParser tParser) {
-        checkParser(tParser);
-        owner.onSocketClosed();
+        if (owner.getParser() == tParser) {
+            owner.onSocketClosed();
+        }
     }
 
     /** {@inheritDoc} */
