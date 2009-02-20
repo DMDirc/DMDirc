@@ -305,7 +305,7 @@ public final class Main {
                 final String resourceName = Main.getConfigDir() + "plugins"
                         + resource.getKey().substring(7);
 
-                if (prefix != null && !resource.getKey().substring(7).startsWith(prefix)) {
+                if (prefix != null && !resource.getKey().substring(8).startsWith(prefix)) {
                     continue;
                 }
 
