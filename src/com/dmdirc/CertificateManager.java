@@ -23,6 +23,9 @@
 package com.dmdirc;
 
 import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.core.dialogs.sslcertificate.CertificateAction;
 import com.dmdirc.ui.core.dialogs.sslcertificate.SSLCertificateDialogModel;
 
@@ -35,10 +38,12 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateParsingException;
 import java.security.cert.PKIXParameters;
 import java.security.cert.TrustAnchor;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -52,6 +57,7 @@ import javax.naming.ldap.Rdn;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.X509TrustManager;
+import net.miginfocom.Base64;
 
 /**
  * Manages storage and validation of certificates used when connecting to
@@ -106,27 +112,26 @@ public class CertificateManager implements X509TrustManager {
      */
     protected void loadTrustedCAs() {
         try {
-            String filename = System.getProperty("java.home")
+            final String filename = System.getProperty("java.home")
                 + "/lib/security/cacerts".replace('/', File.separatorChar);
-            FileInputStream is = new FileInputStream(filename);
-            KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+            final FileInputStream is = new FileInputStream(filename);
+            final KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
             keystore.load(is, cacertpass.toCharArray());
 
-            // This class retrieves the most-trusted CAs from the keystore
-            PKIXParameters params = new PKIXParameters(keystore);
+            final PKIXParameters params = new PKIXParameters(keystore);
             for (TrustAnchor anchor : params.getTrustAnchors()) {
                 globalTrustedCAs.add(anchor.getTrustedCert());
             }
         } catch (CertificateException ex) {
-
+            Logger.appError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
         } catch (IOException ex) {
-
+            Logger.appError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
         } catch (InvalidAlgorithmParameterException ex) {
-
+            Logger.appError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
         } catch (KeyStoreException ex) {
-
+            Logger.appError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
         } catch (NoSuchAlgorithmException ex) {
-
+            Logger.appError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
         }
     }
 
@@ -152,20 +157,21 @@ public class CertificateManager implements X509TrustManager {
                 final KeyStore ks = KeyStore.getInstance("pkcs12");
                 ks.load(fis, pass);
 
-                final KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+                final KeyManagerFactory kmf = KeyManagerFactory.getInstance(
+                        KeyManagerFactory.getDefaultAlgorithm());
                 kmf.init(ks, pass);
 
                 return kmf.getKeyManagers();
             } catch (KeyStoreException ex) {
-                ex.printStackTrace();
+                Logger.appError(ErrorLevel.MEDIUM, "Unable to get key manager", ex);
             } catch (IOException ex) {
-                ex.printStackTrace();
+                Logger.appError(ErrorLevel.MEDIUM, "Unable to get key manager", ex);
             } catch (CertificateException ex) {
-                ex.printStackTrace();
+                Logger.appError(ErrorLevel.MEDIUM, "Unable to get key manager", ex);
             } catch (NoSuchAlgorithmException ex) {
-                ex.printStackTrace();
+                Logger.appError(ErrorLevel.MEDIUM, "Unable to get key manager", ex);
             } catch (UnrecoverableKeyException ex) {
-                ex.printStackTrace();
+                Logger.appError(ErrorLevel.MEDIUM, "Unable to get key manager", ex);
             } finally {
                 if (fis != null) {
                     try {
@@ -187,6 +193,62 @@ public class CertificateManager implements X509TrustManager {
         throw new CertificateException("Not supported.");
     }
 
+    /**
+     * Determines if the specified certificate is trusted by the user.
+     *
+     * @param certificate The certificate to be checked
+     * @return True if the certificate matches one in the trusted certificate
+     * store, or if the certificate's details are marked as trusted in the
+     * DMDirc configuration file.
+     */
+    public boolean isTrusted(final X509Certificate certificate) {
+        try {
+            final String sig = Base64.encodeToString(certificate.getSignature(), false);
+
+            if (config.hasOption("ssl", "trusted") && config.getOptionList("ssl",
+                    "trusted").contains(sig)) {
+                return true;
+            } else {
+                for (X509Certificate trustedCert : globalTrustedCAs) {
+                    if (Arrays.equals(certificate.getSignature(), trustedCert.getSignature())
+                            && certificate.getIssuerDN().getName()
+                            .equals(trustedCert.getIssuerDN().getName())) {
+                        certificate.verify(trustedCert.getPublicKey());
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception ex) {
+           return false;
+        }
+
+        return false;
+    }
+
+    public boolean isValidHost(final X509Certificate certificate) {
+        final Map<String, String> fields = getDNFieldsFromCert(certificate);
+        if (fields.containsKey("CN") && fields.get("CN").equals(serverName)) {
+            return true;
+        }
+
+        try {
+            if (certificate.getSubjectAlternativeNames() != null) {
+                for (List<?> entry : certificate.getSubjectAlternativeNames()) {
+                    final int type = ((Integer) entry.get(0)).intValue();
+
+                    // DNS or IP
+                    if ((type == 2 || type == 7) && entry.get(1).equals(serverName)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (CertificateParsingException ex) {
+            return false;
+        }
+
+        return false;
+    }
+
     /** {@inheritDoc} */
     @Override
     public void checkServerTrusted(final X509Certificate[] chain, final String authType)
@@ -196,22 +258,7 @@ public class CertificateManager implements X509TrustManager {
 
         if (checkHost) {
             // Check that the cert is issued to the correct host
-            final Map<String, String> fields = getDNFieldsFromCert(chain[0]);
-            if (fields.containsKey("CN") && fields.get("CN").equals(serverName)) {
-                verified = true;
-            }
-            
-            if (chain[0].getSubjectAlternativeNames() != null && !verified) {
-                for (List<?> entry : chain[0].getSubjectAlternativeNames()) {
-                    final int type = ((Integer) entry.get(0)).intValue();
-
-                    // DNS or IP
-                    if ((type == 2 || type == 7) && entry.get(1).equals(serverName)) {
-                        verified = true;
-                        break;
-                    }
-                }
-            }
+            verified = isValidHost(chain[0]);
 
             if (!verified) {
                 problems.add(new CertificateDoesntMatchHostException(
@@ -233,18 +280,8 @@ public class CertificateManager implements X509TrustManager {
 
             if (checkIssuer) {
                 // Check that we trust an issuer
-                try {
-                    for (X509Certificate trustedCert : globalTrustedCAs) {
-                        if (cert.getSerialNumber().equals(trustedCert.getSerialNumber())
-                                && cert.getIssuerDN().getName().equals(trustedCert.getIssuerDN().getName())) {
-                            cert.verify(trustedCert.getPublicKey());
-                            verified = true;
-                            break;
-                        }
-                    }
-                } catch (Exception ex) {
-                   problems.add(new CertificateException("Issuer couldn't be verified", ex));
-                }
+
+                verified |= isTrusted(cert);
             }
         }
 
@@ -256,19 +293,22 @@ public class CertificateManager implements X509TrustManager {
             Main.getUI().showSSLCertificateDialog(
                     new SSLCertificateDialogModel(chain, problems, this));
 
-            /*actionSem.acquireUninterruptibly();
+            actionSem.acquireUninterruptibly();
             
             switch (action) {
                 case DISCONNECT:
-                    // TODO: implement
-                    break;
+                    throw new CertificateException("Not trusted");
                 case IGNORE_PERMANENTY:
-                    // TODO: implement
+                    final List<String> list = new ArrayList<String>(config
+                            .getOptionList("ssl", "trusted"));
+                    list.add(Base64.encodeToString(chain[0].getSignature(), false));
+                    IdentityManager.getConfigIdentity().setOption("ssl",
+                            "trusted", list);
                     break;
                 case IGNORE_TEMPORARILY:
-                    // TODO: implement
+                    // Do nothing, continue connecting
                     break;
-            }*/
+            }
         }
     }
 
@@ -281,6 +321,15 @@ public class CertificateManager implements X509TrustManager {
         this.action = action;
         
         actionSem.release();
+    }
+
+    /**
+     * Retrieves the name of the server to which the user is trying to connect.
+     *
+     * @return The name of the server that the user is trying to connect to
+     */
+    public String getServerName() {
+        return serverName;
     }
 
     /**

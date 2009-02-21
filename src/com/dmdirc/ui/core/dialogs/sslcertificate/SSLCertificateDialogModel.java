@@ -25,9 +25,11 @@ package com.dmdirc.ui.core.dialogs.sslcertificate;
 import com.dmdirc.CertificateManager;
 import com.dmdirc.CertificateManager.CertificateDoesntMatchHostException;
 import com.dmdirc.CertificateManager.CertificateNotTrustedException;
+
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
+import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,17 +79,21 @@ public class SSLCertificateDialogModel {
     public List<CertificateChainEntry> getCertificateChain() {
         final List<CertificateChainEntry> res = new ArrayList<CertificateChainEntry>();
 
+        boolean first = true;
+
         for (X509Certificate cert : chain) {
-            boolean invalid = false;
+            boolean invalid = first && !manager.isValidHost(cert);
+            first = false;
 
             try {
                 cert.checkValidity();
             } catch (CertificateException ex) {
-                invalid = true;
+                invalid |= true;
             }
 
-            res.add(new CertificateChainEntry(CertificateManager.getDNFieldsFromCert(cert).get("CN"),
-                    false, invalid)); // TODO: false hardcoded, name?
+            res.add(new CertificateChainEntry(CertificateManager
+                    .getDNFieldsFromCert(cert).get("CN"),
+                    manager.isTrusted(cert), invalid));
         }
 
         return res;
@@ -106,21 +112,38 @@ public class SSLCertificateDialogModel {
         final X509Certificate cert = chain[index];
         List<CertificateInformationEntry> group;
 
+        boolean tooOld = false, tooNew = false;
+
+        try {
+            cert.checkValidity();
+        } catch (CertificateExpiredException ex) {
+            tooOld = true;
+        } catch (CertificateNotYetValidException ex) {
+            tooNew = true;
+        }
+
         group = new ArrayList<CertificateInformationEntry>();
         group.add(new CertificateInformationEntry("Valid from",
-                cert.getNotBefore().toString(), false, false)); // TODO: false!
+                cert.getNotBefore().toString(), tooNew, false));
         group.add(new CertificateInformationEntry("Valid to",
-                cert.getNotAfter().toString(), false, false)); // TODO: false!
+                cert.getNotAfter().toString(), tooOld, false));
         res.add(group);
 
+        final boolean wrongName = index == 0 && !manager.isValidHost(cert);
+        final String names = getAlternateNames(cert);
         final Map<String, String> fields = CertificateManager.getDNFieldsFromCert(cert);
+
         group = new ArrayList<CertificateInformationEntry>();
-        addCertField(fields, group, "Common name", "CN");
-        addCertField(fields, group, "Organisation", "O");
-        addCertField(fields, group, "Unit", "OU");
-        addCertField(fields, group, "Locality", "L");
-        addCertField(fields, group, "State", "ST");
-        addCertField(fields, group, "Country", "C");
+        addCertField(fields, group, "Common name", "CN", wrongName);
+
+        group.add(new CertificateInformationEntry("Alternate names", 
+                names == null ? NOTPRESENT : names, wrongName, names == null));
+
+        addCertField(fields, group, "Organisation", "O", false);
+        addCertField(fields, group, "Unit", "OU", false);
+        addCertField(fields, group, "Locality", "L", false);
+        addCertField(fields, group, "State", "ST", false);
+        addCertField(fields, group, "Country", "C", false);
         res.add(group);
 
         group = new ArrayList<CertificateInformationEntry>();
@@ -135,6 +158,33 @@ public class SSLCertificateDialogModel {
         return res;
     }
 
+    protected String getAlternateNames(final X509Certificate cert) {
+        final StringBuilder res = new StringBuilder();
+
+        try {
+            if (cert.getSubjectAlternativeNames() == null) {
+                return null;
+            }
+
+            for (List<?> entry : cert.getSubjectAlternativeNames()) {
+                final int type = ((Integer) entry.get(0)).intValue();
+
+                // DNS or IP
+                if (type == 2 || type == 7) {
+                    if (res.length() > 0) {
+                        res.append(", ");
+                    }
+
+                    res.append(entry.get(1));
+                }
+            }
+        } catch (CertificateParsingException ex) {
+            // Do nothing
+        }
+
+        return res.toString();
+    }
+
     /**
      * Adds a field to the specified group.
      *
@@ -142,12 +192,13 @@ public class SSLCertificateDialogModel {
      * @param group The group to add an entry to
      * @param title The user-friendly title of the field
      * @param field The name of the field to look for
+     * @param invalid Whether or not the field is a cause for concern
      */
     protected void addCertField(final Map<String, String> fields,
             final List<CertificateInformationEntry> group, final String title,
-            final String field) {
+            final String field, final boolean invalid) {
         group.add(new CertificateInformationEntry(title,
-                fields.containsKey(field) ? fields.get(field) : NOTPRESENT, false,
+                fields.containsKey(field) ? fields.get(field) : NOTPRESENT, invalid,
                 !fields.containsKey(field)));
     }
 
@@ -194,7 +245,7 @@ public class SSLCertificateDialogModel {
                     + "to the host you are connecting to", false));
         } else {
             res.add(new CertificateSummaryEntry("The certificate is issued "
-                    + "to the host you are connecting to", false));
+                    + "to the host you are connecting to", true));
         }
 
         return res;
@@ -208,6 +259,15 @@ public class SSLCertificateDialogModel {
      */
     public boolean needsResponse() {
         return !problems.isEmpty();
+    }
+
+    /**
+     * Retrieves the name of the server to which the user is trying to connect.
+     *
+     * @return The name of the server that the user is trying to connect to
+     */
+    public String getServerName() {
+        return manager.getServerName();
     }
 
     /**
