@@ -42,6 +42,7 @@ import java.security.cert.PKIXParameters;
 import java.security.cert.TrustAnchor;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -55,6 +56,7 @@ import javax.naming.ldap.Rdn;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.X509TrustManager;
+import net.miginfocom.Base64;
 
 /**
  * Manages storage and validation of certificates used when connecting to
@@ -190,6 +192,38 @@ public class CertificateManager implements X509TrustManager {
         throw new CertificateException("Not supported.");
     }
 
+    /**
+     * Determines if the specified certificate is trusted by the user.
+     *
+     * @param certificate The certificate to be checked
+     * @return True if the certificate matches one in the trusted certificate
+     * store, or if the certificate's details are marked as trusted in the
+     * DMDirc configuration file.
+     */
+    public boolean isTrusted(final X509Certificate certificate) {
+        try {
+            final String sig = Base64.encodeToString(certificate.getSignature(), false);
+
+            if (config.hasOption("ssl", "trusted") && config.getOptionList("ssl",
+                    "trusted").contains(sig)) {
+                return true;
+            } else {
+                for (X509Certificate trustedCert : globalTrustedCAs) {
+                    if (Arrays.equals(certificate.getSignature(), trustedCert.getSignature())
+                            && certificate.getIssuerDN().getName()
+                            .equals(trustedCert.getIssuerDN().getName())) {
+                        certificate.verify(trustedCert.getPublicKey());
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception ex) {
+           return false;
+        }
+
+        return false;
+    }
+
     /** {@inheritDoc} */
     @Override
     public void checkServerTrusted(final X509Certificate[] chain, final String authType)
@@ -236,26 +270,8 @@ public class CertificateManager implements X509TrustManager {
 
             if (checkIssuer) {
                 // Check that we trust an issuer
-                try {
-                    if (config.hasOption("ssl", "trusted") &&
-                            config.getOptionList("ssl", "trusted")
-                            .contains(chain[chain.length - 1].getSerialNumber().toString()
-                            + ":" + cert.getSerialNumber().toString())) {
-                        verified = true;
-                    } else {
-                        for (X509Certificate trustedCert : globalTrustedCAs) {
-                            if (cert.getSerialNumber().equals(trustedCert.getSerialNumber())
-                                    && cert.getIssuerDN().getName()
-                                    .equals(trustedCert.getIssuerDN().getName())) {
-                                cert.verify(trustedCert.getPublicKey());
-                                verified = true;
-                                break;
-                            }
-                        }
-                    }
-                } catch (Exception ex) {
-                   problems.add(new CertificateException("Issuer couldn't be verified", ex));
-                }
+
+                verified |= isTrusted(cert);
             }
         }
 
@@ -275,8 +291,7 @@ public class CertificateManager implements X509TrustManager {
                 case IGNORE_PERMANENTY:
                     final List<String> list = new ArrayList<String>(config
                             .getOptionList("ssl", "trusted"));
-                    list.add(chain[chain.length - 1].getSerialNumber().toString()
-                            + ":" + chain[0].getSerialNumber().toString());
+                    list.add(Base64.encodeToString(chain[0].getSignature(), false));
                     IdentityManager.getConfigIdentity().setOption("ssl",
                             "trusted", list);
                     break;

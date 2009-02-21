@@ -25,6 +25,7 @@ package com.dmdirc.ui.core.dialogs.sslcertificate;
 import com.dmdirc.CertificateManager;
 import com.dmdirc.CertificateManager.CertificateDoesntMatchHostException;
 import com.dmdirc.CertificateManager.CertificateNotTrustedException;
+
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
@@ -86,8 +87,9 @@ public class SSLCertificateDialogModel {
                 invalid = true;
             }
 
-            res.add(new CertificateChainEntry(CertificateManager.getDNFieldsFromCert(cert).get("CN"),
-                    false, invalid)); // TODO: false hardcoded, name?
+            res.add(new CertificateChainEntry(CertificateManager
+                    .getDNFieldsFromCert(cert).get("CN"),
+                    manager.isTrusted(cert), invalid));
         }
 
         return res;
