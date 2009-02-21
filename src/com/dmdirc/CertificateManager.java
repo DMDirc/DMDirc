@@ -23,6 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.core.dialogs.sslcertificate.CertificateAction;
@@ -236,13 +237,20 @@ public class CertificateManager implements X509TrustManager {
             if (checkIssuer) {
                 // Check that we trust an issuer
                 try {
-                    for (X509Certificate trustedCert : globalTrustedCAs) {
-                        if (cert.getSerialNumber().equals(trustedCert.getSerialNumber())
-                                && cert.getIssuerDN().getName()
-                                .equals(trustedCert.getIssuerDN().getName())) {
-                            cert.verify(trustedCert.getPublicKey());
-                            verified = true;
-                            break;
+                    if (config.hasOption("ssl", "trusted") &&
+                            config.getOptionList("ssl", "trusted")
+                            .contains(chain[chain.length - 1].getSerialNumber().toString()
+                            + ":" + cert.getSerialNumber().toString())) {
+                        verified = true;
+                    } else {
+                        for (X509Certificate trustedCert : globalTrustedCAs) {
+                            if (cert.getSerialNumber().equals(trustedCert.getSerialNumber())
+                                    && cert.getIssuerDN().getName()
+                                    .equals(trustedCert.getIssuerDN().getName())) {
+                                cert.verify(trustedCert.getPublicKey());
+                                verified = true;
+                                break;
+                            }
                         }
                     }
                 } catch (Exception ex) {
@@ -265,7 +273,12 @@ public class CertificateManager implements X509TrustManager {
                 case DISCONNECT:
                     throw new CertificateException("Not trusted");
                 case IGNORE_PERMANENTY:
-                    // TODO: implement
+                    final List<String> list = new ArrayList<String>(config
+                            .getOptionList("ssl", "trusted"));
+                    list.add(chain[chain.length - 1].getSerialNumber().toString()
+                            + ":" + chain[0].getSerialNumber().toString());
+                    IdentityManager.getConfigIdentity().setOption("ssl",
+                            "trusted", list);
                     break;
                 case IGNORE_TEMPORARILY:
                     // Do nothing, continue connecting
