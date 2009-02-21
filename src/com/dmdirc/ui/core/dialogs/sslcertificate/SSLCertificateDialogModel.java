@@ -29,6 +29,7 @@ import com.dmdirc.CertificateManager.CertificateNotTrustedException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
+import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
@@ -128,10 +129,16 @@ public class SSLCertificateDialogModel {
                 cert.getNotAfter().toString(), tooOld, false));
         res.add(group);
 
+        final boolean wrongName = index == 0 && !manager.isValidHost(cert);
+        final String names = getAlternateNames(cert);
         final Map<String, String> fields = CertificateManager.getDNFieldsFromCert(cert);
+
         group = new ArrayList<CertificateInformationEntry>();
-        addCertField(fields, group, "Common name", "CN", index == 0
-                && !manager.isValidHost(cert));
+        addCertField(fields, group, "Common name", "CN", wrongName);
+
+        group.add(new CertificateInformationEntry("Alternate names", 
+                names == null ? NOTPRESENT : names, wrongName, names == null));
+
         addCertField(fields, group, "Organisation", "O", false);
         addCertField(fields, group, "Unit", "OU", false);
         addCertField(fields, group, "Locality", "L", false);
@@ -149,6 +156,33 @@ public class SSLCertificateDialogModel {
         res.add(group);
 
         return res;
+    }
+
+    protected String getAlternateNames(final X509Certificate cert) {
+        final StringBuilder res = new StringBuilder();
+
+        try {
+            if (cert.getSubjectAlternativeNames() == null) {
+                return null;
+            }
+
+            for (List<?> entry : cert.getSubjectAlternativeNames()) {
+                final int type = ((Integer) entry.get(0)).intValue();
+
+                // DNS or IP
+                if (type == 2 || type == 7) {
+                    if (res.length() > 0) {
+                        res.append(", ");
+                    }
+
+                    res.append(entry.get(1));
+                }
+            }
+        } catch (CertificateParsingException ex) {
+            // Do nothing
+        }
+
+        return res.toString();
     }
 
     /**
