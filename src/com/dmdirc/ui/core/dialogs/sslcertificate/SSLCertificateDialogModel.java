@@ -213,6 +213,15 @@ public class SSLCertificateDialogModel {
     }
 
     /**
+     * Retrieves the name of the server to which the user is trying to connect.
+     *
+     * @return The name of the server that the user is trying to connect to
+     */
+    public String getServerName() {
+        return manager.getServerName();
+    }
+
+    /**
      * Performs the specified action on the certificate chain/connection.
      * Should only be called once per instance, and only if
      * {@link #needsResponse()} returns true.

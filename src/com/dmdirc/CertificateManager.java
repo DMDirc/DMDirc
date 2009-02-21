@@ -314,6 +314,15 @@ public class CertificateManager implements X509TrustManager {
     }
 
     /**
+     * Retrieves the name of the server to which the user is trying to connect.
+     *
+     * @return The name of the server that the user is trying to connect to
+     */
+    public String getServerName() {
+        return serverName;
+    }
+
+    /**
      * Reads the fields from the subject's designated name in the specified
      * certificate.
      *

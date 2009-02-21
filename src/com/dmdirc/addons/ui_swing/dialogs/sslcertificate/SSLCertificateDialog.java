@@ -112,9 +112,9 @@ public class SSLCertificateDialog extends StandardDialog implements ActionListen
         actions.setVisible(model.needsResponse());
         if (model.needsResponse()) {
             blurb.setText("Theres is a problem with the certificate used by " +
-                    chain.getName(0));
+                    model.getServerName());
         } else {
-            blurb.setText("Your connection to " + chain.getName(0) +
+            blurb.setText("Your connection to " + model.getServerName() +
                     " is encrypted using SSL.");
         }
     }
