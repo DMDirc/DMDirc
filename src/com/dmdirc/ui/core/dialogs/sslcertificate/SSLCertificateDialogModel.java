@@ -78,13 +78,16 @@ public class SSLCertificateDialogModel {
     public List<CertificateChainEntry> getCertificateChain() {
         final List<CertificateChainEntry> res = new ArrayList<CertificateChainEntry>();
 
+        boolean first = true;
+
         for (X509Certificate cert : chain) {
-            boolean invalid = false;
+            boolean invalid = first && !manager.isValidHost(cert);
+            first = false;
 
             try {
                 cert.checkValidity();
             } catch (CertificateException ex) {
-                invalid = true;
+                invalid |= true;
             }
 
             res.add(new CertificateChainEntry(CertificateManager
@@ -108,16 +111,14 @@ public class SSLCertificateDialogModel {
         final X509Certificate cert = chain[index];
         List<CertificateInformationEntry> group;
 
-        boolean tooOld = false, tooNew = false, wrongName = false;
+        boolean tooOld = false, tooNew = false;
 
-        for (CertificateException problem : problems) {
-            if (problem instanceof CertificateExpiredException) {
-                tooOld = true;
-            } else if (problem instanceof CertificateNotYetValidException) {
-                tooNew = true;
-            } else if (problem instanceof CertificateDoesntMatchHostException) {
-                wrongName = true;
-            }
+        try {
+            cert.checkValidity();
+        } catch (CertificateExpiredException ex) {
+            tooOld = true;
+        } catch (CertificateNotYetValidException ex) {
+            tooNew = true;
         }
 
         group = new ArrayList<CertificateInformationEntry>();
@@ -129,12 +130,13 @@ public class SSLCertificateDialogModel {
 
         final Map<String, String> fields = CertificateManager.getDNFieldsFromCert(cert);
         group = new ArrayList<CertificateInformationEntry>();
-        addCertField(fields, group, "Common name", "CN");
-        addCertField(fields, group, "Organisation", "O");
-        addCertField(fields, group, "Unit", "OU");
-        addCertField(fields, group, "Locality", "L");
-        addCertField(fields, group, "State", "ST");
-        addCertField(fields, group, "Country", "C");
+        addCertField(fields, group, "Common name", "CN", index == 0
+                && !manager.isValidHost(cert));
+        addCertField(fields, group, "Organisation", "O", false);
+        addCertField(fields, group, "Unit", "OU", false);
+        addCertField(fields, group, "Locality", "L", false);
+        addCertField(fields, group, "State", "ST", false);
+        addCertField(fields, group, "Country", "C", false);
         res.add(group);
 
         group = new ArrayList<CertificateInformationEntry>();
@@ -156,12 +158,13 @@ public class SSLCertificateDialogModel {
      * @param group The group to add an entry to
      * @param title The user-friendly title of the field
      * @param field The name of the field to look for
+     * @param invalid Whether or not the field is a cause for concern
      */
     protected void addCertField(final Map<String, String> fields,
             final List<CertificateInformationEntry> group, final String title,
-            final String field) {
+            final String field, final boolean invalid) {
         group.add(new CertificateInformationEntry(title,
-                fields.containsKey(field) ? fields.get(field) : NOTPRESENT, false,
+                fields.containsKey(field) ? fields.get(field) : NOTPRESENT, invalid,
                 !fields.containsKey(field)));
     }
 

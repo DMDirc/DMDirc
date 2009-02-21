@@ -38,6 +38,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateParsingException;
 import java.security.cert.PKIXParameters;
 import java.security.cert.TrustAnchor;
 import java.security.cert.X509Certificate;
@@ -224,6 +225,30 @@ public class CertificateManager implements X509TrustManager {
         return false;
     }
 
+    public boolean isValidHost(final X509Certificate certificate) {
+        final Map<String, String> fields = getDNFieldsFromCert(certificate);
+        if (fields.containsKey("CN") && fields.get("CN").equals(serverName)) {
+            return true;
+        }
+
+        try {
+            if (certificate.getSubjectAlternativeNames() != null) {
+                for (List<?> entry : certificate.getSubjectAlternativeNames()) {
+                    final int type = ((Integer) entry.get(0)).intValue();
+
+                    // DNS or IP
+                    if ((type == 2 || type == 7) && entry.get(1).equals(serverName)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (CertificateParsingException ex) {
+            return false;
+        }
+
+        return false;
+    }
+
     /** {@inheritDoc} */
     @Override
     public void checkServerTrusted(final X509Certificate[] chain, final String authType)
@@ -233,22 +258,7 @@ public class CertificateManager implements X509TrustManager {
 
         if (checkHost) {
             // Check that the cert is issued to the correct host
-            final Map<String, String> fields = getDNFieldsFromCert(chain[0]);
-            if (fields.containsKey("CN") && fields.get("CN").equals(serverName)) {
-                verified = true;
-            }
-            
-            if (chain[0].getSubjectAlternativeNames() != null && !verified) {
-                for (List<?> entry : chain[0].getSubjectAlternativeNames()) {
-                    final int type = ((Integer) entry.get(0)).intValue();
-
-                    // DNS or IP
-                    if ((type == 2 || type == 7) && entry.get(1).equals(serverName)) {
-                        verified = true;
-                        break;
-                    }
-                }
-            }
+            verified = isValidHost(chain[0]);
 
             if (!verified) {
                 problems.add(new CertificateDoesntMatchHostException(
