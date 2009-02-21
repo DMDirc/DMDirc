@@ -97,4 +97,9 @@ public class TestSSLCertificateDialogModel extends SSLCertificateDialogModel {
         this.action = action;
     }
 
+    @Override
+    public String getServerName() {
+        return "server.name";
+    }
+
 }
