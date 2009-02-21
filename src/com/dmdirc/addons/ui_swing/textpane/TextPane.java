@@ -212,6 +212,10 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         final StringBuffer selectedText = new StringBuffer();
         final LinePosition selectedRange = canvas.getSelectedRange();
 
+        if (selectedRange.getStartLine() == -1) {
+            return null;
+        }
+
         for (int i = selectedRange.getStartLine(); i <=
                                                    selectedRange.getEndLine();
              i++) {
