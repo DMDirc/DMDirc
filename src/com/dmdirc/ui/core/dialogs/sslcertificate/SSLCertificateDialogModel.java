@@ -108,11 +108,23 @@ public class SSLCertificateDialogModel {
         final X509Certificate cert = chain[index];
         List<CertificateInformationEntry> group;
 
+        boolean tooOld = false, tooNew = false, wrongName = false;
+
+        for (CertificateException problem : problems) {
+            if (problem instanceof CertificateExpiredException) {
+                tooOld = true;
+            } else if (problem instanceof CertificateNotYetValidException) {
+                tooNew = true;
+            } else if (problem instanceof CertificateDoesntMatchHostException) {
+                wrongName = true;
+            }
+        }
+
         group = new ArrayList<CertificateInformationEntry>();
         group.add(new CertificateInformationEntry("Valid from",
-                cert.getNotBefore().toString(), false, false)); // TODO: false!
+                cert.getNotBefore().toString(), tooNew, false));
         group.add(new CertificateInformationEntry("Valid to",
-                cert.getNotAfter().toString(), false, false)); // TODO: false!
+                cert.getNotAfter().toString(), tooOld, false));
         res.add(group);
 
         final Map<String, String> fields = CertificateManager.getDNFieldsFromCert(cert);
