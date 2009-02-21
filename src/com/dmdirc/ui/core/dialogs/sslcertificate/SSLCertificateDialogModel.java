@@ -196,7 +196,7 @@ public class SSLCertificateDialogModel {
                     + "to the host you are connecting to", false));
         } else {
             res.add(new CertificateSummaryEntry("The certificate is issued "
-                    + "to the host you are connecting to", false));
+                    + "to the host you are connecting to", true));
         }
 
         return res;
