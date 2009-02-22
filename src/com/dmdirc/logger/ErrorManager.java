@@ -389,8 +389,10 @@ public final class ErrorManager implements Serializable, Runnable {
      */
     protected void fireFatalError(final ProgramError error) {
         if (GraphicsEnvironment.isHeadless()) {
-            System.out.println("A fatal error has occurred: " + error.getMessage());
-            System.out.println(Arrays.toString(error.getTrace()));
+            System.err.println("A fatal error has occurred: " + error.getMessage());
+            for (String line : error.getTrace()) {
+                System.err.println("\t" + line);
+            }
         } else {
             FatalErrorDialog.displayBlocking(error);
         }

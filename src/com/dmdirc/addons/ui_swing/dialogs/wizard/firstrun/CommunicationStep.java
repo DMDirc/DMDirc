@@ -104,4 +104,10 @@ public final class CommunicationStep extends Step {
     public boolean checkErrors() {
         return updates.isSelected();
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getTitle() {
+        return "Communication settings";
+    }
 }

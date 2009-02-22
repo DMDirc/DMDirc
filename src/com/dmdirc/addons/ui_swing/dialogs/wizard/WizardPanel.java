@@ -60,7 +60,7 @@ public class WizardPanel extends JPanel implements ActionListener {
     /** Step panel. */
     private JPanel stepsPanel;
     /** Title panel. */
-    private JLabel titleLabel;
+    private TitlePanel titleLabel;
     /** Current step. */
     private int currentStep;
     /** Prevous step button. */
@@ -99,11 +99,9 @@ public class WizardPanel extends JPanel implements ActionListener {
 
     /** Initialises the components. */
     private void initComponents() {
-        titleLabel = new JLabel(title);
+        titleLabel = new TitlePanel(new EtchedLineBorder(EtchedBorder.LOWERED,
+                BorderSide.BOTTOM), title);
         stepsPanel = new JPanel(steps);
-
-        titleLabel.setFont(titleLabel.getFont().
-                deriveFont((float) (titleLabel.getFont().getSize() * 1.5)));
 
         progressLabel = new JLabel();
 
@@ -128,8 +126,7 @@ public class WizardPanel extends JPanel implements ActionListener {
                 BorderSide.TOP));
 
         setLayout(new MigLayout("fill, wrap 1, ins 0"));
-        add(new TitlePanel(new EtchedLineBorder(EtchedBorder.LOWERED,
-                BorderSide.BOTTOM)), "growx");
+        add(titleLabel, "growx");
         add(stepsPanel, "grow");
         add(progressPanel, "growx");
     }
@@ -139,6 +136,7 @@ public class WizardPanel extends JPanel implements ActionListener {
         if (!steps.isEmpty()) {
             steps.first(stepsPanel);
             currentStep = 0;
+            titleLabel.setText(steps.getStep(currentStep).getTitle());
 
             prev.setEnabled(false);
             if (steps.size() == 1) {
@@ -201,6 +199,7 @@ public class WizardPanel extends JPanel implements ActionListener {
             if (currentStep == steps.size() - 1) {
                 next.setText("Finish");
             }
+            titleLabel.setText(steps.getStep(currentStep).getTitle());
             updateProgressLabel();
         } else if ("Finish".equals(next.getText())) {
             fireWizardFinished();
@@ -217,6 +216,7 @@ public class WizardPanel extends JPanel implements ActionListener {
             prev.setEnabled(false);
         }
         next.setText("Next \u00BB");
+        titleLabel.setText(steps.getStep(currentStep).getTitle());
         updateProgressLabel();
     }
 

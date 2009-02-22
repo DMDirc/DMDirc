@@ -34,4 +34,11 @@ public abstract class Step extends JPanel {
         super();
         //Do nothing
     }
+
+    /**
+     * Returns the title for this step.
+     *
+     * @return Step title
+     */
+    abstract public String getTitle();
 }

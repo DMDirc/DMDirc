@@ -35,6 +35,7 @@ import com.dmdirc.addons.ui_swing.dialogs.profiles.ProfileManagerDialog;
 import com.dmdirc.addons.ui_swing.dialogs.wizard.Step;
 import com.dmdirc.addons.ui_swing.dialogs.wizard.WizardDialog;
 import com.dmdirc.addons.ui_swing.dialogs.wizard.WizardListener;
+import com.dmdirc.ui.IconManager;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
 import java.io.File;
@@ -66,8 +67,9 @@ public final class SwingFirstRunWizard implements WizardListener,
         this.firstRun = firstRun;
         
         wizardDialog =
-                new WizardDialog(firstRun ? "Setup wizard" : "Migration wizard",
-                new ArrayList<Step>(), this, null);
+                new WizardDialog("DMDirc: " + (firstRun ? "Setup wizard" :
+                    "Migration wizard"), new ArrayList<Step>(), this, null);
+        wizardDialog.setIconImage(IconManager.getIconManager().getImage("icon"));
         wizardDialog.addWizardListener(this);
     }
 

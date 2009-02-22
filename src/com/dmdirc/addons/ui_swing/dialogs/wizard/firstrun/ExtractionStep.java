@@ -71,5 +71,11 @@ public abstract class ExtractionStep extends Step {
     public final boolean getActionsState() {
         return actions.isSelected();
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getTitle() {
+        return "Core addon extraction";
+    }
     
 }

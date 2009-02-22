@@ -69,5 +69,11 @@ public final class ProfileStep extends Step {
     public boolean getProfileManagerState() {
         return profile.isSelected();
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getTitle() {
+        return "Profile setup";
+    }
     
 }
