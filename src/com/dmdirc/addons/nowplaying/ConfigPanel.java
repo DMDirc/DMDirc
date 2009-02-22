@@ -27,17 +27,15 @@ import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.addons.ui_swing.components.TextLabel;
 import com.dmdirc.addons.ui_swing.components.reorderablelist.ReorderableJList;
 
-import com.dmdirc.addons.ui_swing.components.substitutions.SubstitutionsPanel;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
-
 import java.util.Timer;
 import java.util.TimerTask;
+
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -110,7 +108,7 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
         }
 
         textfield = new JTextField(IdentityManager.getGlobalConfig()
-                .getOption(NowPlayingPlugin.DOMAIN, "format", "/me is playing $artist - $title"));
+                .getOption(NowPlayingPlugin.DOMAIN, "format"));
         textfield.addKeyListener(this);
         preview = new TextLabel("Preview:\n");
 

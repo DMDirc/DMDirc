@@ -60,6 +60,7 @@ public class DllSource implements MediaSource {
 	}
 	
 	/** {@inheritDoc} */
+    @Override
 	public String getAppName() {
 		return playerName;
 	}
@@ -96,6 +97,7 @@ public class DllSource implements MediaSource {
 	}
 	
 	/** {@inheritDoc} */
+    @Override
 	public String getArtist() {
 		if (useArtistTitle) {
 			return getOutput("getArtistTitle").split("\\s-\\s", 2)[0];
@@ -105,6 +107,7 @@ public class DllSource implements MediaSource {
 	}
 	
 	/** {@inheritDoc} */
+    @Override
 	public String getTitle() {
 		if (useArtistTitle) {
 			String bits[] = getOutput("getArtistTitle").split("\\s-\\s", 2);
@@ -115,6 +118,7 @@ public class DllSource implements MediaSource {
 	}
 	
 	/** {@inheritDoc} */
+    @Override
 	public String getAlbum() {
 		return getOutput("getAlbum");
 	}
@@ -138,6 +142,7 @@ public class DllSource implements MediaSource {
 	}
 	
 	/** {@inheritDoc} */
+    @Override
 	public String getLength() {
 		try {
 			final int seconds = Integer.parseInt(getOutput("getLength"));
@@ -147,6 +152,7 @@ public class DllSource implements MediaSource {
 	}
 	
 	/** {@inheritDoc} */
+    @Override
 	public String getTime() {
 		try {
 			final int seconds = Integer.parseInt(getOutput("getTime"));
@@ -156,11 +162,13 @@ public class DllSource implements MediaSource {
 	}
 	
 	/** {@inheritDoc} */
+    @Override
 	public String getFormat() {
 		return getOutput("getFormat");
 	}
 	
 	/** {@inheritDoc} */
+    @Override
 	public String getBitrate() {
 		return getOutput("getBitrate");
 	}

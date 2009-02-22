@@ -191,6 +191,8 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
     public void onLoad() {
         IdentityManager.getAddonIdentity().setOption("icon", "category-vlc",
                 "plugin://vlcmediasource:com/dmdirc/addons/mediasource_vlc/vlc.png");
+        IdentityManager.getAddonIdentity().setOption("plugin-vlc", "host",
+                "localhost:8082");
     }
 
     /** {@inheritDoc} */
@@ -228,10 +230,10 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
         try {
             res = Downloader.getPage("http://" +
                     IdentityManager.getGlobalConfig().getOption("plugin-vlc",
-                    "host", "localhost:8082") + "/old/info.html");
+                    "host") + "/old/info.html");
             res2 = Downloader.getPage("http://" +
                     IdentityManager.getGlobalConfig().getOption("plugin-vlc",
-                    "host", "localhost:8082") + "/old/");
+                    "host") + "/old/");
         } catch (MalformedURLException ex) {
             return false;
         } catch (IOException ex) {

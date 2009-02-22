@@ -73,7 +73,7 @@ public class KFileChooser extends JFileChooser {
 	 *         JFileChooser
 	 */
 	public static boolean useKFileChooser() {
-		return KDialogProcess.hasKDialog() && IdentityManager.getGlobalConfig().getOptionBool(DCCPlugin.getDomain(), "general.useKFileChooser", false);
+		return KDialogProcess.hasKDialog() && IdentityManager.getGlobalConfig().getOptionBool(DCCPlugin.getDomain(), "general.useKFileChooser");
 	}
 	
 	/**
@@ -187,7 +187,7 @@ public class KFileChooser extends JFileChooser {
 	/**
 	 * Set the file filter.
 	 *
-	 * @param filter File filter (eg "*.php *.jpg" or null for no filter)
+	 * @param fileFilter File filter (eg "*.php *.jpg" or null for no filter)
 	 */
 	public void setKDEFileFilter(final String fileFilter) {
 		this.fileFilter = fileFilter;
@@ -203,6 +203,7 @@ public class KFileChooser extends JFileChooser {
 	}
 	
 	/** {@inheritDoc} */
+    @Override
 	public int showOpenDialog(final Component parent) throws HeadlessException {
 		if (!useKFileChooser()) {
 			return super.showOpenDialog(parent);
@@ -259,6 +260,7 @@ public class KFileChooser extends JFileChooser {
 	}
 	
 	/** {@inheritDoc} */
+    @Override
 	public int showSaveDialog(final Component parent) throws HeadlessException {
 		if (!useKFileChooser()) {
 			return super.showSaveDialog(parent);

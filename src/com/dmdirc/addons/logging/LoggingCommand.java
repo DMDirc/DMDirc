@@ -56,6 +56,7 @@ public final class LoggingCommand extends ServerCommand implements IntelligentCo
 	 * @param isSilent Whether this command is silenced or not
 	 * @param args The user supplied arguments
 	 */
+    @Override
 	public void execute(final InputWindow origin, final Server server, final boolean isSilent, final String... args) {
 		final PluginInfo pluginInfo = PluginManager.getPluginManager().getPluginInfoByName("logging");
 		if (pluginInfo == null) { 
@@ -102,6 +103,7 @@ public final class LoggingCommand extends ServerCommand implements IntelligentCo
 	 * @param previousArgs The contents of the previous arguments, if any
 	 * @return A list of suggestions for the argument
 	 */
+    @Override
 	public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
 			final AdditionalTabTargets res = new AdditionalTabTargets();
 			if (arg == 0) {
@@ -118,6 +120,7 @@ public final class LoggingCommand extends ServerCommand implements IntelligentCo
 	 *
 	 * @return The name of this command
 	 */
+    @Override
 	public String getName() { return "logging"; }
 	
 	/**
@@ -125,6 +128,7 @@ public final class LoggingCommand extends ServerCommand implements IntelligentCo
 	 *
 	 * @return True iff the command should be shown, false otherwise
 	 */
+    @Override
 	public boolean showInHelp() { return true; }
 	
 	/**
@@ -132,6 +136,7 @@ public final class LoggingCommand extends ServerCommand implements IntelligentCo
 	 *
 	 * @return the help message for this command
 	 */
+    @Override
 	public String getHelp() { return this.getName() + " <set|help> [parameters]"; }
 	
 }

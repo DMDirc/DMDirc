@@ -54,6 +54,7 @@ public class MediaSourceComparator implements Comparator<MediaSource>, Serializa
     }
 
     /** {@inheritDoc} */
+    @Override
     public int compare(final MediaSource o1, final MediaSource o2) {
         return getPosition(o1) - getPosition(o2);
     }

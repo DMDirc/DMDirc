@@ -87,7 +87,7 @@ public final class OsdWindow extends JDialog implements MouseListener,
     public OsdWindow(final String text, final boolean config) {
         this(text, config, 
                 IdentityManager.getGlobalConfig().getOptionInt(OsdPlugin.MY_DOMAIN,
-                "locationX", 20), getYPosition());
+                "locationX"), getYPosition());
         
     }
     
@@ -99,9 +99,9 @@ public final class OsdWindow extends JDialog implements MouseListener,
      */
     private static int getYPosition() {
         final String policy = IdentityManager.getGlobalConfig()
-                .getOption(OsdPlugin.MY_DOMAIN, "newbehaviour", "down");
+                .getOption(OsdPlugin.MY_DOMAIN, "newbehaviour");
         int y = IdentityManager.getGlobalConfig().getOptionInt(OsdPlugin.MY_DOMAIN,
-                "locationY", 20);
+                "locationY");
         
         if ("down".equals(policy)) {
             // Place our new window below old windows
@@ -160,18 +160,18 @@ public final class OsdWindow extends JDialog implements MouseListener,
         
         panel = new JPanel();
         panel.setBorder(new LineBorder(Color.BLACK));
-        panel.setBackground(IdentityManager.getGlobalConfig().getOptionColour("plugin-OSD",
-                "bgcolour", Color.decode("#2222aa")));
+        panel.setBackground(IdentityManager.getGlobalConfig().getOptionColour(OsdPlugin.MY_DOMAIN,
+                "bgcolour"));
         
         setContentPane(panel);
         setLayout(new MigLayout("wmin 500, wmax 500, ins rel, fill"));
         
         label = new JLabel(text);
-        label.setForeground(IdentityManager.getGlobalConfig().getOptionColour("plugin-OSD",
-                "fgcolour", Color.decode("#ffffff")));
+        label.setForeground(IdentityManager.getGlobalConfig().getOptionColour(OsdPlugin.MY_DOMAIN,
+                "fgcolour"));
         label.setFont(label.getFont().deriveFont(
-                (float) IdentityManager.getGlobalConfig().getOptionInt("plugin-OSD",
-                "fontSize", 20)));
+                (float) IdentityManager.getGlobalConfig().getOptionInt(OsdPlugin.MY_DOMAIN,
+                "fontSize")));
         label.setHorizontalAlignment(SwingConstants.CENTER);
             add(label, "alignx center");
             
@@ -188,11 +188,13 @@ public final class OsdWindow extends JDialog implements MouseListener,
                     setVisible(false);
                     dispose();
                 }
-            }, IdentityManager.getGlobalConfig().getOptionInt("plugin-OSD", "timeout", 15) * 1000);
+            }, IdentityManager.getGlobalConfig().getOptionInt(OsdPlugin.MY_DOMAIN,
+                    "timeout") * 1000);
         }
     }
     
     /** {@inheritDoc} */
+    @Override
     public void mouseClicked(final MouseEvent e) {
         if (!config) {
             setVisible(false);
@@ -201,6 +203,7 @@ public final class OsdWindow extends JDialog implements MouseListener,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void mousePressed(final MouseEvent e) {
         if (config) {
             startX = e.getPoint().x;
@@ -209,21 +212,25 @@ public final class OsdWindow extends JDialog implements MouseListener,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void mouseReleased(final MouseEvent e) {
         // Do nothing
     }
     
     /** {@inheritDoc} */
+    @Override
     public void mouseEntered(final MouseEvent e) {
         // Do nothing
     }
     
     /** {@inheritDoc} */
+    @Override
     public void mouseExited(final MouseEvent e) {
         // Do nothing
     }
     
     /** {@inheritDoc} */
+    @Override
     public void mouseDragged(final MouseEvent e) {
         final Point p = e.getLocationOnScreen();
         p.translate(-1 * startX, -1 * startY);
@@ -231,6 +238,7 @@ public final class OsdWindow extends JDialog implements MouseListener,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void mouseMoved(final MouseEvent e) {
         // Do nothing
     }

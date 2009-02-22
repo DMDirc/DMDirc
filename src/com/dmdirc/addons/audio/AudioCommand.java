@@ -47,10 +47,10 @@ public final class AudioCommand extends GlobalCommand {
 	 * Executes this command.
 	 *
 	 * @param origin The frame in which this command was issued
-	 * @param server The server object that this command is associated with
 	 * @param isSilent Whether this command is silenced or not
 	 * @param args The user supplied arguments
 	 */
+    @Override
 	public void execute(final InputWindow origin, final boolean isSilent, final String... args) {
 		final String filename = implodeArgs(args);
 		final File file = new File(filename);
@@ -70,6 +70,7 @@ public final class AudioCommand extends GlobalCommand {
 	 *
 	 * @return The name of this command
 	 */
+    @Override
 	public String getName() { return "audio"; }
 	
 	/**
@@ -77,6 +78,7 @@ public final class AudioCommand extends GlobalCommand {
 	 *
 	 * @return True iff the command should be shown, false otherwise
 	 */
+    @Override
 	public boolean showInHelp() { return true; }
 	
 	/**
@@ -84,6 +86,7 @@ public final class AudioCommand extends GlobalCommand {
 	 *
 	 * @return the help message for this command
 	 */
+    @Override
 	public String getHelp() { return this.getName() + " <file>"; }
 	
 }

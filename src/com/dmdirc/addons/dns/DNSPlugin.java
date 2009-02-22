@@ -45,11 +45,13 @@ public final class DNSPlugin extends Plugin {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onLoad() {
         command = new DNSCommand();
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onUnload() {
         CommandManager.unregisterCommand(command);
     }

@@ -38,8 +38,9 @@ import java.net.MalformedURLException;
  * @author Shane "Dataforce" Mc Cormack
  */
 public final class AudioPlayer implements Runnable {
-	/** The AudioType enum */
-	private enum AudioType { WAV, INVALID; }
+
+    /** The AudioType enum */
+	public static enum AudioType { WAV, INVALID; }
 	
 	/** The file object of the file to play */
 	final File myFile;
@@ -63,6 +64,7 @@ public final class AudioPlayer implements Runnable {
 	/**
 	 * Run this AudioPlayer (Should not be invoked directly).
 	 */
+    @Override
 	public void run() {
 		final AudioType type = getAudioType(myFile);
 		switch (type) {

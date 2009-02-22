@@ -80,12 +80,14 @@ public final class DcopPlugin extends Plugin {
         return result;
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public void onLoad() {
         command = new DcopCommand();
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public void onUnload() {
         CommandManager.unregisterCommand(command);
     }

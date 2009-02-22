@@ -69,6 +69,7 @@ public abstract class DCCFrame extends WritableFrameContainer {
 			 *
 			 * @return This window's command parser
 			 */
+        @Override
 			public final CommandParser getCommandParser() {
 				return GlobalCommandParser.getGlobalCommandParser();
 			}

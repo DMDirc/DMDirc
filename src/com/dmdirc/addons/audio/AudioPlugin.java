@@ -24,6 +24,7 @@ package com.dmdirc.addons.audio;
 
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.commandparser.CommandManager;
+
 /**
  * Adds Audio playing facility to client.
  *
@@ -44,6 +45,7 @@ public final class AudioPlugin extends Plugin {
 	/**
 	 * Called when the plugin is loaded.
 	 */
+    @Override
 	public void onLoad() {
 		audioCommand = new AudioCommand();
 		beepCommand = new BeepCommand();
@@ -52,6 +54,7 @@ public final class AudioPlugin extends Plugin {
 	/**
 	 * Called when this plugin is Unloaded
 	 */
+    @Override
 	public void onUnload() {
 		CommandManager.unregisterCommand(beepCommand);
 		CommandManager.unregisterCommand(audioCommand);

@@ -81,6 +81,8 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
 
         IdentityManager.getConfigIdentity().setOption("icon", "category-nowplaying",
                 "plugin://nowplaying:com/dmdirc/addons/nowplaying/nowplaying.png");
+        IdentityManager.getAddonIdentity().setOption(DOMAIN, "format",
+                "/me is playing $artist - $title");
         
         for (PluginInfo target : PluginManager.getPluginManager().getPluginInfos()) {
             if (target.isLoaded()) {
@@ -124,7 +126,7 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
     
     /** Loads the plugins settings. */
     private void loadSettings() {
-        if (IdentityManager.getGlobalConfig().hasOption(DOMAIN, "sourceOrder")) {
+        if (IdentityManager.getGlobalConfig().hasOptionString(DOMAIN, "sourceOrder")) {
             order = IdentityManager.getGlobalConfig().getOptionList(DOMAIN, "sourceOrder");
         } else {
             order = new ArrayList<String>();

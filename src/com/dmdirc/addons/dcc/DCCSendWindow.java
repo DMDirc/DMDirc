@@ -184,7 +184,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 					errorThread.start();
 					return;
 				} else {
-					if (IdentityManager.getGlobalConfig().getOptionBool(DCCPlugin.getDomain(), "send.reverse", false)) {
+					if (IdentityManager.getGlobalConfig().getOptionBool(DCCPlugin.getDomain(), "send.reverse")) {
 						parser.sendCTCP(otherNickname, "DCC", "SEND \""+(new File(dcc.getFileName())).getName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" 0 "+dcc.getFileSize()+" "+dcc.makeToken()+((dcc.isTurbo()) ? " T" : ""));
 						return;
 					} else if (plugin.listen(dcc)) {

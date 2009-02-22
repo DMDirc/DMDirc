@@ -50,11 +50,13 @@ public enum TimeActionType implements ActionType {
     }
     
     /** {@inheritDoc} */
+    @Override
     public ActionMetaType getType() {
         return TimeActionMetaType.TIME_TIME;
     }
     
     /** {@inheritDoc} */
+    @Override
     public String getName() {
         return name;
     }

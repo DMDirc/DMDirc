@@ -65,6 +65,7 @@ public final class IdentClient implements Runnable {
 	/**
 	 * Process this connection.
 	 */
+    @Override
 	public void run() {
 		final Thread thisThread = Thread.currentThread();
 		PrintWriter out = null;

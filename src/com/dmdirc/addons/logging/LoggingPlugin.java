@@ -472,7 +472,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 	 * @param filename File to get backbuffer from
 	 */
 	protected static void showBackBuffer(final Window frame, final String filename) {
-		final int numLines = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "backbuffer.lines", 0);
+		final int numLines = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "backbuffer.lines");
 		final String colour = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "backbuffer.colour");
 		final boolean showTimestamp = IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.timestamp");
 		if (frame == null) {

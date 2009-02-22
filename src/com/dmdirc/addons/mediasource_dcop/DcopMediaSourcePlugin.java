@@ -59,6 +59,7 @@ public class DcopMediaSourcePlugin extends Plugin
      * Get DCOP Result
      *
      * @param query Query to try
+     * @return The result of the dcop query, line-by-line
      */
     @SuppressWarnings("unchecked")
     protected static List<String> getDcopResult(final String query) {

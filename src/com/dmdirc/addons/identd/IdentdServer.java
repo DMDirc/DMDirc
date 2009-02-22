@@ -56,6 +56,7 @@ public final class IdentdServer implements Runnable {
 	/**
 	 * Run this IdentdServer.
 	 */
+    @Override
 	public void run() {
 		final Thread thisThread = Thread.currentThread();
 		while (myThread == thisThread) {
@@ -113,7 +114,7 @@ public final class IdentdServer implements Runnable {
 	public void startServer() {
 		if (myThread == null) {
 			try {
-				final int identPort = IdentityManager.getGlobalConfig().getOptionInt(IdentdPlugin.getDomain(), "advanced.port", 113);
+				final int identPort = IdentityManager.getGlobalConfig().getOptionInt(IdentdPlugin.getDomain(), "advanced.port");
 				serverSocket = new ServerSocket(identPort);
 				myThread = new Thread(this);
 				myThread.start();

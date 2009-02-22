@@ -45,6 +45,7 @@ public final class TimerCommand extends GlobalCommand implements IntelligentComm
     }
     
     /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final boolean isSilent, 
             final String... args) {
         if (args.length < 3) {
@@ -77,16 +78,19 @@ public final class TimerCommand extends GlobalCommand implements IntelligentComm
     }
     
     /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "timer";
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
     /** {@inheritDoc} */
+    @Override
     public String getHelp() {
         return "timer <repetitions> <interval> <command> " +
                 "- schedules a command to be executed after a certain time";

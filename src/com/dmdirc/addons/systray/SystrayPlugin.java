@@ -123,6 +123,7 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
     /** {@inheritDoc} */
     @Override
     public void onLoad() {
+        IdentityManager.getAddonIdentity().setOption("plugin-systray", "autominimise", true);
         try {
             SystemTray.getSystemTray().add(icon);
             command = new PopupCommand(this);
@@ -201,7 +202,7 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
             final Object... arguments) {
         if (type == CoreActionType.CLIENT_MINIMISED
                 && IdentityManager.getGlobalConfig().getOptionBool("plugin-systray",
-                "autominimise", false)) {
+                "autominimise")) {
             Main.getUI().getMainWindow().setVisible(false);
         }
     }

@@ -97,20 +97,20 @@ public final class NickColourPlugin extends Plugin implements ActionListener {
         final String nickOption2 = "color:"
                 + client.getClient().getParser().getIRCStringConverter().toLowerCase("*:" + client.getNickname());
         
-        if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "useowncolour", false)
+        if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "useowncolour")
                 && client.getClient().equals(myself)) {
             final Color color = ColourManager.parseColour(
                     IdentityManager.getGlobalConfig().getOption(DOMAIN, "owncolour"));
             putColour(map, color, color);
-        }  else if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "userandomcolour", false)) {
+        }  else if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "userandomcolour")) {
             putColour(map, getColour(client.getNickname()), getColour(client.getNickname()));
         }
         
         String[] parts = null;
                 
-        if (IdentityManager.getGlobalConfig().hasOption(DOMAIN, nickOption1)) {
+        if (IdentityManager.getGlobalConfig().hasOptionString(DOMAIN, nickOption1)) {
             parts = getParts(nickOption1);
-        } else if (IdentityManager.getGlobalConfig().hasOption(DOMAIN, nickOption2)) {
+        } else if (IdentityManager.getGlobalConfig().hasOptionString(DOMAIN, nickOption2)) {
             parts = getParts(nickOption2);
         }
         
@@ -139,12 +139,12 @@ public final class NickColourPlugin extends Plugin implements ActionListener {
      */
     @SuppressWarnings("unchecked")
     private void putColour(final Map map, final Color textColour, final Color nickColour) {
-        if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "settext", false) 
+        if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "settext") 
                 && textColour != null) {
             map.put(ChannelClientProperty.TEXT_FOREGROUND, textColour);
         }
         
-        if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "setnicklist", false) 
+        if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "setnicklist") 
                 && nickColour != null) {
             map.put(ChannelClientProperty.NICKLIST_FOREGROUND, nickColour);
         }
@@ -221,9 +221,14 @@ public final class NickColourPlugin extends Plugin implements ActionListener {
     /** {@inheritDoc} */
     @Override
     public void onLoad() {
-        if (IdentityManager.getGlobalConfig().hasOption(DOMAIN, "randomcolours")) {
+        if (IdentityManager.getGlobalConfig().hasOptionString(DOMAIN, "randomcolours")) {
             randColours = IdentityManager.getGlobalConfig().getOptionList(DOMAIN, "randomcolours").toArray(new String[0]);
         }
+
+        IdentityManager.getAddonIdentity().setOption(DOMAIN, "useowncolour", false);
+        IdentityManager.getAddonIdentity().setOption(DOMAIN, "userandomcolour", false);
+        IdentityManager.getAddonIdentity().setOption(DOMAIN, "settext", false);
+        IdentityManager.getAddonIdentity().setOption(DOMAIN, "setnicklist", false);
         
         ActionManager.addListener(this, CoreActionType.CHANNEL_GOTNAMES,
                 CoreActionType.CHANNEL_JOIN);

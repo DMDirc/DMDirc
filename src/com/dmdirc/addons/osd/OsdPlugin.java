@@ -71,6 +71,14 @@ public final class OsdPlugin extends Plugin implements CategoryChangeListener,
     @Override
     public void onLoad() {
         command = new OsdCommand();
+
+        IdentityManager.getAddonIdentity().setOption(MY_DOMAIN, "locationX", 20);
+        IdentityManager.getAddonIdentity().setOption(MY_DOMAIN, "locationY", 20);
+        IdentityManager.getAddonIdentity().setOption(MY_DOMAIN, "newbehaviour", "down");
+        IdentityManager.getAddonIdentity().setOption(MY_DOMAIN, "bgcolour", "2222aa");
+        IdentityManager.getAddonIdentity().setOption(MY_DOMAIN, "fgcolour", "ffffff");
+        IdentityManager.getAddonIdentity().setOption(MY_DOMAIN, "fontSize", 20);
+        IdentityManager.getAddonIdentity().setOption(MY_DOMAIN, "timeout", 15);
     }
     
     /** {@inheritDoc} */
@@ -82,8 +90,8 @@ public final class OsdPlugin extends Plugin implements CategoryChangeListener,
     /** {@inheritDoc} */
     @Override
     public void showConfig(final PreferencesManager manager) {
-        x = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "locationX", 20);
-        y = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "locationY", 20);
+        x = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "locationX");
+        y = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "locationY");
         
         final PreferencesCategory category = new PreferencesCategory("OSD",
                 "General configuration for OSD plugin.");

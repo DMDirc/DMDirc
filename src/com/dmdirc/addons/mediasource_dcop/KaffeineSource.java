@@ -56,46 +56,54 @@ public class KaffeineSource implements MediaSource {
     }
     
     /** {@inheritDoc} */
+    @Override
     public String getAppName() {
         return "Kaffeine";
     }
     
     /** {@inheritDoc} */
+    @Override
     public String getArtist() {
         return DcopMediaSourcePlugin.getDcopResult(
                 "dcop kaffeine KaffeineIface artist").get(0);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getTitle() {
         return DcopMediaSourcePlugin.getDcopResult(
                 "dcop kaffeine KaffeineIface title").get(0);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getAlbum() {
         return DcopMediaSourcePlugin.getDcopResult(
                 "dcop kaffeine KaffeineIface album").get(0);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLength() {
         return duration(Integer.parseInt(DcopMediaSourcePlugin.getDcopResult(
                 "dcop kaffeine KaffeineIface getLength").get(0)) /1000);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getTime() {
         return duration(Integer.parseInt(DcopMediaSourcePlugin.getDcopResult(
                 "dcop kaffeine KaffeineIface getTimePos").get(0)) /1000);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getFormat() {
         return null;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getBitrate() {
         return null;
     }

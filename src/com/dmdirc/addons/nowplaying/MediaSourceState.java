@@ -54,6 +54,8 @@ public enum MediaSourceState {
 	
 	/**
 	 * Get the nice name for this state.
+     *
+     * @return This state's nice name
 	 */
 	public String getNiceName() {
 		return niceName;

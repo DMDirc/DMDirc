@@ -47,10 +47,10 @@ public final class BeepCommand extends GlobalCommand {
 	 * Executes this command.
 	 *
 	 * @param origin The frame in which this command was issued
-	 * @param server The server object that this command is associated with
 	 * @param isSilent Whether this command is silenced or not
 	 * @param args The user supplied arguments
 	 */
+    @Override
 	public void execute(final InputWindow origin, final boolean isSilent, final String... args) {
 		Toolkit.getDefaultToolkit().beep();
 	}
@@ -60,6 +60,7 @@ public final class BeepCommand extends GlobalCommand {
 	 *
 	 * @return The name of this command
 	 */
+    @Override
 	public String getName() { return "beep"; }
 	
 	/**
@@ -67,6 +68,7 @@ public final class BeepCommand extends GlobalCommand {
 	 *
 	 * @return True iff the command should be shown, false otherwise
 	 */
+    @Override
 	public boolean showInHelp() { return true; }
 	
 	/**
@@ -74,6 +76,7 @@ public final class BeepCommand extends GlobalCommand {
 	 *
 	 * @return the help message for this command
 	 */
+    @Override
 	public String getHelp() { return this.getName(); }
 }
 

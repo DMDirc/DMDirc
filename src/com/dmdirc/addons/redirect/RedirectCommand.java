@@ -44,6 +44,7 @@ public class RedirectCommand extends ChatCommand implements IntelligentCommand {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final Server server,
             final MessageTarget target, final boolean isSilent, final String... args) {
         target.getFrame().getCommandParser().parseCommand(new FakeInputWindow(target),
@@ -51,16 +52,19 @@ public class RedirectCommand extends ChatCommand implements IntelligentCommand {
     }
     
     /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "redirect";
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
     /** {@inheritDoc} */
+    @Override
     public String getHelp() {
         return "redirect <command> - sends the output of the command to a channel or query window";
     }

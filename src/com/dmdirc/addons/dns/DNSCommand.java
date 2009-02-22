@@ -42,6 +42,7 @@ public final class DNSCommand extends GlobalCommand {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         if (args.length == 0) {
@@ -51,6 +52,8 @@ public final class DNSCommand extends GlobalCommand {
         
         sendLine(origin, isSilent, FORMAT_OUTPUT, "Resolving: " + args[0]);
         new Timer("DNS Command Timer").schedule(new TimerTask() {
+            /** {@inheritDoc} */
+            @Override
             public void run() {
                 if (args[0].matches("\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b")) {
                     sendLine(origin, isSilent, FORMAT_OUTPUT, "Resolved: " + args[0] + ": " + DNSPlugin.getHostname(args[0]));
@@ -62,16 +65,19 @@ public final class DNSCommand extends GlobalCommand {
     }
     
     /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "dns";
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
     /** {@inheritDoc} */
+    @Override
     public String getHelp() {
         return "dns <IP|hostname> - Performs DNS lookup of the specified ip/hostname/nickname";
     }

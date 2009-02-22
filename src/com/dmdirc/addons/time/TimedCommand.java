@@ -66,6 +66,7 @@ public final class TimedCommand extends TimerTask {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void run() {
         CommandParser parser;
         if (origin == null) {
