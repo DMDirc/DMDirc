@@ -95,12 +95,11 @@ public final class TextPane extends JComponent implements AdjustmentListener,
                 if (e.getXOnScreen() > getLocationOnScreen().getX() && e.
                         getXOnScreen() < (getLocationOnScreen().
                         getX() + getWidth()) && e.getModifiersEx() ==
-                                                MouseEvent.BUTTON1_DOWN_MASK) {
+                        MouseEvent.BUTTON1_DOWN_MASK) {
                     if (getLocationOnScreen().getY() > e.getYOnScreen()) {
                         setScrollBarPosition(scrollBar.getValue() - 1);
-                    }
-                    else if (getLocationOnScreen().getY() + getHeight() <
-                             e.getYOnScreen()) {
+                    } else if (getLocationOnScreen().getY() + getHeight() <
+                            e.getYOnScreen()) {
                         setScrollBarPosition(scrollBar.getValue() + 1);
                     }
                     canvas.highlightEvent(MouseEventType.DRAG, e);
@@ -153,8 +152,8 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         scrollBar.setMaximum(lines);
 
         if (!scrollBar.getValueIsAdjusting() && scrollBar.getValue() ==
-                                                lines -
-                                                linesAllowed) {
+                lines -
+                linesAllowed) {
             setScrollBarPosition(lines);
         }
     }
@@ -179,8 +178,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         if (scrollBar.isEnabled()) {
             if (e.getWheelRotation() > 0) {
                 setScrollBarPosition(scrollBar.getValue() + e.getScrollAmount());
-            }
-            else {
+            } else {
                 setScrollBarPosition(scrollBar.getValue() - e.getScrollAmount());
             }
         }
@@ -217,8 +215,8 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         }
 
         for (int i = selectedRange.getStartLine(); i <=
-                                                   selectedRange.getEndLine();
-             i++) {
+                selectedRange.getEndLine();
+                i++) {
             if (i != selectedRange.getStartLine()) {
                 selectedText.append('\n');
             }
@@ -226,23 +224,24 @@ public final class TextPane extends JComponent implements AdjustmentListener,
                 return selectedText.toString();
             }
             final String line = document.getLine(i).getText();
-            if (selectedRange.getEndLine() == selectedRange.getStartLine()) {
-                //loop through range
-                selectedText.append(line.substring(selectedRange.getStartPos(),
-                                                   selectedRange.getEndPos()));
-            }
-            else if (i == selectedRange.getStartLine()) {
-                //loop from start of range to the end
-                selectedText.append(line.substring(selectedRange.getStartPos(),
-                                                   line.length()));
-            }
-            else if (i == selectedRange.getEndLine()) {
-                //loop from start to end of range
-                selectedText.append(line.substring(0, selectedRange.getEndPos()));
-            }
-            else {
-                //loop the whole line
-                selectedText.append(line);
+            if (!line.isEmpty()) {
+                if (selectedRange.getEndLine() == selectedRange.getStartLine()) {
+                    //loop through range
+                    selectedText.append(line.substring(
+                            selectedRange.getStartPos(),
+                            selectedRange.getEndPos()));
+                } else if (i == selectedRange.getStartLine()) {
+                    //loop from start of range to the end
+                    selectedText.append(line.substring(
+                            selectedRange.getStartPos(), line.length()));
+                } else if (i == selectedRange.getEndLine()) {
+                    //loop from start to end of range
+                    selectedText.append(line.substring(0, selectedRange.
+                            getEndPos()));
+                } else {
+                    //loop the whole line
+                    selectedText.append(line);
+                }
             }
         }
 
@@ -266,7 +265,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public boolean hasSelectedRange() {
         final LinePosition selectedRange = canvas.getSelectedRange();
         return !(selectedRange.getStartLine() == selectedRange.getEndLine() &&
-                 selectedRange.getStartPos() == selectedRange.getEndPos());
+                selectedRange.getStartPos() == selectedRange.getEndPos());
     }
 
     /**
@@ -302,11 +301,11 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             return "";
         }
         final int[] indexes =
-                    canvas.getSurroundingWordIndexes(document.getLine(lineNumber).
+                canvas.getSurroundingWordIndexes(document.getLine(lineNumber).
                 getText(),
-                                                     index);
+                index);
         return document.getLine(lineNumber).getText().substring(indexes[0],
-                                                                indexes[1]);
+                indexes[1]);
     }
 
     /**
