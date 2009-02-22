@@ -275,7 +275,7 @@ public final class MainFrame extends JFrame implements WindowListener,
      */
     @Override
     public void windowClosed(final WindowEvent windowEvent) {
-        //ignore
+        Main.quit();
     }
 
     /** 
@@ -481,13 +481,14 @@ public final class MainFrame extends JFrame implements WindowListener,
                 JOptionPane.YES_OPTION) {
             return;
         }
+        ActionManager.processEvent(CoreActionType.CLIENT_CLOSING, null);
         ServerManager.getServerManager().
                 closeAll(IdentityManager.getGlobalConfig().
                 getOption("general", "closemessage"));
         IdentityManager.getConfigIdentity().
                 setOption("ui", "frameManagerSize",
                 String.valueOf(getFrameManagerSize()));
-        Main.quit();
+        dispose();
     }
 
     /** {@inheritDoc} */

@@ -24,6 +24,9 @@ package com.dmdirc.addons.ui_swing;
 
 import com.dmdirc.Channel;
 import com.dmdirc.ServerState;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.addons.ui_swing.components.InputTextFrame;
 import com.dmdirc.addons.ui_swing.components.SnappingJSplitPane;
 import com.dmdirc.addons.ui_swing.components.SwingInputHandler;
@@ -33,6 +36,7 @@ import com.dmdirc.addons.ui_swing.textpane.ClickType;
 import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
 import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.parser.irc.ChannelClientInfo;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 
@@ -57,7 +61,7 @@ import net.miginfocom.swing.MigLayout;
  * The channel frame is the GUI component that represents a channel to the user.
  */
 public final class ChannelFrame extends InputTextFrame implements ActionListener,
-        ChannelWindow {
+        ChannelWindow, com.dmdirc.interfaces.ActionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -77,6 +81,8 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     private JMenuItem settingsMI;
     /** The channel object that owns this frame. */
     private final Channel parent;
+    /** Nick list scroll pane. */
+    private JScrollPane nickScrollPane;
 
     /**
      * Creates a new instance of ChannelFrame. Sets up callbacks and handlers,
@@ -105,6 +111,8 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
         getConfigManager().addChangeListener("ui", "backgroundcolour", this);
         getConfigManager().addChangeListener("ui", "nickListAltBackgroundColour",
                 this);
+        getConfigManager().addChangeListener("ui", "channelSplitPanePosition", this);
+        ActionManager.addListener(this, CoreActionType.CLIENT_CLOSING);
 
         commandParser =
                 new ChannelCommandParser(((Channel) getContainer()).getServer(),
@@ -200,7 +208,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
                 new SnappingJSplitPane(SnappingJSplitPane.Orientation.HORIZONTAL,
                 false);
 
-        final JScrollPane nickScrollPane = new JScrollPane();
+        nickScrollPane = new JScrollPane();
         nickList = new JList();
         nickList.setCellRenderer(new NicklistRenderer(parent.getConfigManager(),
                 nickList));
@@ -213,7 +221,9 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
         nickList.setModel(nicklistModel);
         nickScrollPane.setViewportView(nickList);
 
-        nickScrollPane.setPreferredSize(new Dimension(150, 0));
+        final int splitPanePosition = getConfigManager().getOptionInt("ui",
+                "channelSplitPanePosition");
+        nickScrollPane.setPreferredSize(new Dimension(splitPanePosition, 0));
         nickScrollPane.setMinimumSize(new Dimension(150, 0));
 
         getContentPane().setLayout(new MigLayout("fill, ins 0, hidemode 3, wrap 1"));
@@ -361,6 +371,33 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
                     "ui", "foregroundcolour"));
             nickList.repaint();
         }
+        if ("channelSplitPanePosition".equals(key)) {
+            final int splitPanePosition = getConfigManager().getOptionInt("ui",
+                "channelSplitPanePosition");
+            nickScrollPane.setPreferredSize(new Dimension(splitPanePosition, 0));
+            splitPane.setDividerLocation(splitPane.getWidth() - splitPanePosition);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void processEvent(final ActionType type, final StringBuffer format,
+            final Object... arguments) {
+        saveSplitPanePosition();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void close() {
+        saveSplitPanePosition();
+        super.close();
+    }
+
+    private void saveSplitPanePosition() {
+        IdentityManager.getChannelConfig(getChannel().getServer().getNetwork(),
+                getChannel().getChannelInfo().getName()).setOption(
+                "ui", "channelSplitPanePosition",
+                (int) nickScrollPane.getSize().getWidth());
     }
 
     /** {@inheritDoc} */

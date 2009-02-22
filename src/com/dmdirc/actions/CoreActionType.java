@@ -41,6 +41,8 @@ public enum CoreActionType implements ActionType {
     CLIENT_OPENED(ClientEvents.CLIENT_EVENT, "Client opened"),
     /** Client closed. */
     CLIENT_CLOSED(ClientEvents.CLIENT_EVENT, "Client closed"),
+    /** Client closing. */
+    CLIENT_CLOSING(ClientEvents.CLIENT_EVENT, "Client closing"),
     /** Client minimised. */
     CLIENT_MINIMISED(ClientEvents.CLIENT_EVENT, "Client minimised"),
     /** Client unminimised. */
