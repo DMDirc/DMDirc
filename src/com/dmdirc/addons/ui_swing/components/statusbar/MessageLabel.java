@@ -81,7 +81,7 @@ public class MessageLabel extends JLabel implements MouseListener {
             final StatusMessageNotifier newNotifier) {
         final int timeout =
                 IdentityManager.getGlobalConfig().
-                getOptionInt("statusBar", "messageDisplayLength", 5);
+                getOptionInt("statusBar", "messageDisplayLength");
         setMessage(icon, newMessage, newNotifier, timeout);
     }
 

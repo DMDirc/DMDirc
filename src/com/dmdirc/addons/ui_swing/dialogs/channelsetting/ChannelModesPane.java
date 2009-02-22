@@ -125,8 +125,9 @@ public final class ChannelModesPane extends JPanel {
             checkBox.setOpaque(opaque);
 
             modeCheckBoxes.put(mode, checkBox);
-            if (channel.getConfigManager().
-                    getOptionBool("server", "enablemode" + modeChar, false)) {
+            if (!channel.getConfigManager().hasOptionString("server", "enablemode" + modeChar)
+                    || channel.getConfigManager().getOptionBool("server",
+                    "enablemode" + modeChar)) {
                 checkBox.setEnabled(true);
             } else if (!channel.getServer().getParser().isUserSettable(modeChar)) {
                 checkBox.setEnabled(false);

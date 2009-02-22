@@ -120,21 +120,21 @@ public class URLHandler {
         lastLaunch = new Date();
 
         if (IdentityManager.getGlobalConfig().getOptionBool("browser",
-                "uselaunchdelay", false) && oldLaunch != null) {
+                "uselaunchdelay") && oldLaunch != null) {
             final Long diff = lastLaunch.getTime() - oldLaunch.getTime();
 
             if (diff < IdentityManager.getGlobalConfig().getOptionInt("browser",
-                    "launchdelay", 500)) {
+                    "launchdelay")) {
                 return;
             }
         }
 
-        final String command = config.getOption("protocol", uri.getScheme(), "");
-
-        if (command.isEmpty()) {
+        if (!config.hasOptionString("protocol", uri.getScheme())) {
             Main.getUI().showURLDialog(uri);
             return;
         }
+
+        final String command = config.getOption("protocol", uri.getScheme());
 
         if ("DMDIRC".equals(command)) {
             try {

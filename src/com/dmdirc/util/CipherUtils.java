@@ -226,10 +226,11 @@ public class CipherUtils {
         String passwordHash = null;
         String prompt = "Please enter your password";
         int tries = 1;
-        if (IdentityManager.getGlobalConfig().hasOption("encryption", "password")) {
+        if (IdentityManager.getGlobalConfig().hasOptionString("encryption", "password")) {
             password = IdentityManager.getGlobalConfig().getOption("encryption", "password");
         } else {
-            if (IdentityManager.getGlobalConfig().hasOption("encryption", "passwordHash")) {
+            if (IdentityManager.getGlobalConfig().hasOptionString("encryption",
+                    "passwordHash")) {
                 passwordHash = IdentityManager.getGlobalConfig().getOption("encryption",
                         "passwordHash");
             }

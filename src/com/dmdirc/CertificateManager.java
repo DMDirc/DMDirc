@@ -205,7 +205,7 @@ public class CertificateManager implements X509TrustManager {
         try {
             final String sig = Base64.encodeToString(certificate.getSignature(), false);
 
-            if (config.hasOption("ssl", "trusted") && config.getOptionList("ssl",
+            if (config.hasOptionString("ssl", "trusted") && config.getOptionList("ssl",
                     "trusted").contains(sig)) {
                 return true;
             } else {

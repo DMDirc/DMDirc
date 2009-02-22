@@ -225,7 +225,7 @@ public final class ChannelEventHandler extends EventHandler implements
         if (owner.getConfigManager().getOptionBool("channel", "splitusermodes")) {
             String format = "channelSplitUserMode_" + sMode;
 
-            if (!owner.getConfigManager().hasOption("formatter", format)) {
+            if (!owner.getConfigManager().hasOptionString("formatter", format)) {
                 format = "channelSplitUserMode_default";
             }
 

@@ -155,7 +155,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
     private void doShowOption(final InputWindow origin,
             final boolean isSilent, final ConfigManager manager,
             final String domain, final String option) {
-        if (manager.hasOption(domain, option)) {
+        if (manager.hasOptionString(domain, option)) {
             sendLine(origin, isSilent, FORMAT_OUTPUT, "The current value of "
                     + domain + "." + option + " is: " + manager.getOption(domain, option));
         } else {
@@ -197,7 +197,8 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
             final boolean isSilent, final Identity identity, final ConfigManager manager,
             final String domain,final String option, final String data) {
         doSetOption(origin, isSilent, identity, domain, option,
-                manager.getOption(domain, option, "") + data);
+                (manager.hasOptionString(domain, option) ?
+                    manager.getOption(domain, option) : "") + data);
     }
     
     /**

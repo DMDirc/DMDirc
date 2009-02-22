@@ -150,7 +150,7 @@ public final class UpdateChecker implements Runnable {
         final String updateChannel = config.getOption("updater", "channel");
 
         for (UpdateComponent component : components) {
-            if (config.getOptionBool("updater", "enable-" + component.getName(), true)) {
+            if (isEnabled(component)) {
                 data.append(component.getName());
                 data.append(',');
                 data.append(updateChannel);
@@ -437,8 +437,9 @@ public final class UpdateChecker implements Runnable {
      * @return true iif the update component is enabled
      */
     public static boolean isEnabled(final UpdateComponent component) {
-        return IdentityManager.getGlobalConfig().getOptionBool("updater",
-                component.getName(), true);
+        return !IdentityManager.getGlobalConfig().hasOptionString("updater",
+                component.getName()) || IdentityManager.getGlobalConfig()
+                .getOptionBool("updater", component.getName());
     }
 
 }

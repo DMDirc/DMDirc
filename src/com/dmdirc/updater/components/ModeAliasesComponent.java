@@ -60,10 +60,10 @@ public class ModeAliasesComponent implements UpdateComponent {
     public int getVersion() {
         final ConfigManager globalConfig = IdentityManager.getGlobalConfig();
         
-        if (!globalConfig.hasOption("identity", "modealiasversion")) {
-            return -1;
+        if (globalConfig.hasOptionInt("identity", "modealiasversion")) {
+            return globalConfig.getOptionInt("identity", "modealiasversion");
         } else {
-            return globalConfig.getOptionInt("identity", "modealiasversion", -2);
+            return -1;
         }
     }
 

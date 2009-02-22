@@ -97,17 +97,15 @@ public final class UserModesPane extends JPanel {
             String tooltip;
 
             if (server.getConfigManager().getOptionBool("server", "friendlymodes") &&
-                    server.getConfigManager().hasOption("server", "umode" + mode)) {
+                    server.getConfigManager().hasOptionString("server", "umode" + mode)) {
                 text =  server.getConfigManager().
                         getOption("server", "umode" + mode);
             } else {
                 text = "Mode " + mode;
             }
 
-            if (server.getConfigManager().hasOption("server", "umode" + mode)) {
-                tooltip =
-                        "Mode " + mode + ": " +
-                        server.getConfigManager().
+            if (server.getConfigManager().hasOptionString("server", "umode" + mode)) {
+                tooltip = "Mode " + mode + ": " + server.getConfigManager().
                         getOption("server", "umode" + mode);
             } else {
                 tooltip = "Mode " + mode + ": Unknown";

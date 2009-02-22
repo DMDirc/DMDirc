@@ -23,6 +23,7 @@ keysections:
   statusBar
   temp
   dialogstate
+  browser
 
 identity:
   name=DMDirc default settings
@@ -289,3 +290,7 @@ dialogstate:
   actionsmanagerdialog=0
   serversettingsdialog=0
   preferences=
+
+browser:
+  uselaunchdelay=true
+  launchdelay=500

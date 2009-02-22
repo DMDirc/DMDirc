@@ -61,7 +61,7 @@ public final class ColourManager {
      */
     private static void initColours() {        
         for (int i = 0; i < 16; i++) {
-            if (IdentityManager.getGlobalConfig().hasOption("colour", String.valueOf(i))) {
+            if (IdentityManager.getGlobalConfig().hasOptionColour("colour", String.valueOf(i))) {
                 IRC_COLOURS[i] = getColour(IdentityManager.getGlobalConfig()
                         .getOption("colour", String.valueOf(i)));
                 COLOUR_CACHE.remove(String.valueOf(i));

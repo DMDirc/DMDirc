@@ -199,8 +199,9 @@ public abstract class WritableFrameContainer extends FrameContainer {
      * @param args The arguments for the message
      */
     public void handleNotification(final String messageType, final Object... args) {        
-        despatchNotification(messageType, 
-                getConfigManager().getOption("notifications", messageType, "self"), args);
+        despatchNotification(messageType, getConfigManager().hasOptionString("notifications",
+                messageType) ? getConfigManager().getOption("notifications", messageType)
+                : "", args);
     }
     
     /**
@@ -223,8 +224,9 @@ public abstract class WritableFrameContainer extends FrameContainer {
         }
 
         if (target.startsWith("group:")) {
-            target = getConfigManager().getOption("notifications",
-                    target.substring(6), "self");
+            target = getConfigManager().hasOptionString("notifications", target.substring(6))
+                    ? getConfigManager().getOption("notifications", target.substring(6))
+                    : "self";
         }
         
         if (target.startsWith("fork:")) {
