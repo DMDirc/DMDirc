@@ -103,14 +103,14 @@ public final class ChannelModesPane extends JPanel {
             final boolean opaque = UIUtilities.getTabbedPaneOpaque();
 
             if (channel.getConfigManager().getOptionBool("server", "friendlymodes") &&
-                    channel.getConfigManager().hasOption("server", "mode" + mode)) {
+                    channel.getConfigManager().hasOptionString("server", "mode" + mode)) {
                 text =  channel.getConfigManager().
                         getOption("server", "mode" + mode);
             } else {
                 text = "Mode " + mode;
             }
 
-            if (channel.getConfigManager().hasOption("server", "mode" + mode)) {
+            if (channel.getConfigManager().hasOptionString("server", "mode" + mode)) {
                 tooltip =
                         "Mode " + mode + ": " +
                         channel.getConfigManager().

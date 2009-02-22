@@ -96,7 +96,7 @@ public final class IdentityManager {
         addonConfig = new Identity(addonConfigFile, target);
         IdentityManager.addIdentity(addonConfig);
         
-        if (!getGlobalConfig().hasOption("identity", "defaultsversion")) {
+        if (!getGlobalConfig().hasOptionInt("identity", "defaultsversion")) {
             Logger.userError(ErrorLevel.FATAL, "Default settings "
                     + "could not be loaded");
         }

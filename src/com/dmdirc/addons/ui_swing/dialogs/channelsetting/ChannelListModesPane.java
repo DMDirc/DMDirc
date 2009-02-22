@@ -181,7 +181,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
         for (char mode : listModesArray) {
             String modeText = mode + " list";
             if (IdentityManager.getGlobalConfig().getOptionBool("server", "friendlymodes") &&
-                    channel.getConfigManager().hasOption("server", "mode" + mode)) {
+                    channel.getConfigManager().hasOptionString("server", "mode" + mode)) {
                 modeText =
                         channel.getConfigManager().
                         getOption("server", "mode" + mode) + " list";
@@ -285,14 +285,12 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
         final int selectedIndex = listModesMenu.getSelectedIndex();
         String modeText = String.valueOf(listModesArray[selectedIndex]);
         String modeMask;
-        if (channel.getConfigManager().
-                hasOption("server", "mode" + listModesArray[selectedIndex])) {
-            modeText =
-                    channel.getConfigManager().
+        if (channel.getConfigManager().hasOptionString("server", "mode"
+                + listModesArray[selectedIndex])) {
+            modeText = channel.getConfigManager().
                     getOption("server", "mode" + listModesArray[selectedIndex]);
         }
-        modeMask =
-                JOptionPane.showInputDialog(listModesPanel,
+        modeMask = JOptionPane.showInputDialog(listModesPanel,
                 "Please enter the hostmask for the new " + modeText);
         if (modeMask != null && (!modeMask.isEmpty() || !modeMask.isEmpty())) {
             final DefaultListModel model =

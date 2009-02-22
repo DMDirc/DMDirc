@@ -148,7 +148,7 @@ public final class SettingsPanel extends JPanel {
         names.put(optionName, displayName);
         types.put(optionName, type);
 
-        if (config.hasOption(splitOption[0], splitOption[1])) {
+        if (config.hasOptionString(splitOption[0], splitOption[1])) {
             addCurrentOption(optionName, type,
                     config.getOption(splitOption[0], splitOption[1]));
         } else {
@@ -164,7 +164,7 @@ public final class SettingsPanel extends JPanel {
         for (Entry<String, OptionType> entry : types.entrySet()) {
             final String[] splitOption = entry.getKey().split("\\.");
 
-            if (config.hasOption(splitOption[0], splitOption[1])) {
+            if (config.hasOptionString(splitOption[0], splitOption[1])) {
                 addCurrentOption(entry.getKey(), entry.getValue(),
                         config.getOption(splitOption[0], splitOption[1]));
             } else {

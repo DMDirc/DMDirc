@@ -134,8 +134,7 @@ public class TreeViewTreeCellRenderer implements TreeCellRenderer,
         rolloverColour = config.getOptionColour(
                 "ui", "treeviewRolloverColour",
                 config.getOptionColour("treeview", "backgroundcolour",
-                config.getOptionColour("ui", "backgroundcolour",
-                ColourManager.parseColour("f0f0f0"))));
+                config.getOptionColour("ui", "backgroundcolour")));
         activeBackground = config.getOptionColour(
                 "ui", "treeviewActiveBackground",
                 config.getOptionColour("treeview", "backgroundcolour",
@@ -146,7 +145,7 @@ public class TreeViewTreeCellRenderer implements TreeCellRenderer,
                 config.getOptionColour("treeview", "foregroundcolour",
                 config.getOptionColour("ui", "foregroundcolour",
                 manager.getTree().getForeground())));
-        activeBold = config.getOptionBool("ui", "treeviewActiveBold", false);
+        activeBold = config.getOptionBool("ui", "treeviewActiveBold");
 
         manager.getTree().repaint();
     }

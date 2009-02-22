@@ -259,11 +259,11 @@ public final class TreeFrameManager implements FrameManager,
         tree.setBackground(IdentityManager.getGlobalConfig().getOptionColour("treeview",
                 "backgroundcolour",
                 IdentityManager.getGlobalConfig().getOptionColour("ui",
-                "backgroundcolour", Color.WHITE)));
+                "backgroundcolour")));
         tree.setForeground(IdentityManager.getGlobalConfig().getOptionColour("treeview",
                 "foregroundcolour",
                 IdentityManager.getGlobalConfig().getOptionColour("ui",
-                "foregroundcolour", Color.BLACK)));
+                "foregroundcolour")));
 
         tree.repaint();
     }

@@ -31,9 +31,6 @@ identity:
   defaultsversion=0
 
 general:
-  commandchar=/
-  silencechar=.
-
   reconnectmessage=Reconnecting
   closemessage=DMDirc exiting
   quitmessage=Using DMDirc
@@ -49,6 +46,7 @@ general:
   closequeriesonquit=false
   closechannelsondisconnect=false
   closequeriesondisconnect=false
+  commandchar=/
   commandhistory=10
   extendedListModes=false
   firstRun=true
@@ -64,6 +62,7 @@ general:
   showcolourdialog=true
   showglobalwindow=false
   showrawwindow=false
+  silencechar=.
   submitErrors=false
   ui=swing
   whotime=60000
@@ -146,7 +145,6 @@ notifications:
 ui:
   framemanagerPosition=left
   stylelinks=true
-  treeviewActiveBold=true
 
   #-- new
   antialias=true
@@ -170,10 +168,13 @@ ui:
   shownickcoloursinnicklist=true
   shownickcoloursintext=false
   showversion=true
+  treeviewActiveBold=true
+  treeviewRolloverColour=false:f0f0f0
   useOneTouchExpandable=false
 
 #-- new
 treeview:
+  dragSelection=true
   sortwindows=true
   sortservers=true
 
@@ -286,3 +287,5 @@ temp:
 dialogstate:
   channelsettingsdialog=0
   actionsmanagerdialog=0
+  serversettingsdialog=0
+  preferences=

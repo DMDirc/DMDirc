@@ -165,7 +165,7 @@ public class URLHandlerTableModel extends AbstractTableModel {
      */
     public void addURI(final URI uri) {
         final String handler;
-        if (IdentityManager.getGlobalConfig().hasOption("protocol", uri.getScheme())) {
+        if (IdentityManager.getGlobalConfig().hasOptionString("protocol", uri.getScheme())) {
             handler = IdentityManager.getGlobalConfig().getOption("protocol", uri.getScheme());
         } else {
             handler = "";

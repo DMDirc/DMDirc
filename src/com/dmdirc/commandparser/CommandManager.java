@@ -68,11 +68,11 @@ public final class CommandManager {
     
     /** The command char we're using. */
     private static char commandChar = IdentityManager.getGlobalConfig()
-            .getOptionChar("general", "commandchar", '/');
+            .getOptionChar("general", "commandchar");
     
     /** The silence char we're using. */
     private static char silenceChar = IdentityManager.getGlobalConfig()
-            .getOptionChar("general", "silencechar", '.');
+            .getOptionChar("general", "silencechar");
     
     /**
      * Prevents creation of a new command manager.
@@ -300,9 +300,9 @@ public final class CommandManager {
             @Override
             public void configChanged(String domain, String key) {
                 commandChar = IdentityManager.getGlobalConfig()
-                        .getOptionChar("general", "commandchar", '/');
+                        .getOptionChar("general", "commandchar");
                 silenceChar = IdentityManager.getGlobalConfig()
-                        .getOptionChar("general", "silencechar", '.');
+                        .getOptionChar("general", "silencechar");
             }
         };
         

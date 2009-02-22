@@ -81,6 +81,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 	/**
 	 * Called when the plugin is loaded.
 	 */
+    @Override
 	public void onLoad() {
 		// Set defaults
 		final Identity defaults = IdentityManager.getAddonIdentity();
@@ -97,6 +98,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 	/**
 	 * Called when this plugin is unloaded.
 	 */
+    @Override
 	public void onUnload() {
 		Main.getUI().getStatusBar().removeComponent(panel);
 		ActionManager.removeListener(this);
@@ -157,7 +159,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 
 					if (mode.isEmpty()) {
 						if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "channel.shownone")) {
-							if (IdentityManager.getGlobalConfig().hasOption(MY_DOMAIN, "channel.noneprefix")) {
+							if (IdentityManager.getGlobalConfig().hasOptionString(MY_DOMAIN, "channel.noneprefix")) {
 								mode = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "channel.noneprefix");
 							} else {
 								mode = "None:";

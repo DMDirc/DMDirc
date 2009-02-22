@@ -34,7 +34,7 @@ public class URLProtocolValidator implements Validator<String> {
     public ValidationResponse validate(final String object) {
         if (object == null || object.isEmpty()) {
             return new ValidationResponse("Cannot be empty");
-        } else if (IdentityManager.getGlobalConfig().hasOption("protocol", object)) {
+        } else if (IdentityManager.getGlobalConfig().hasOptionString("protocol", object)) {
             return new ValidationResponse("Cannot already exist");
         } else {
             return new ValidationResponse();

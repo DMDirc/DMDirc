@@ -87,7 +87,7 @@ public class Tree extends JTree implements TreeSelectionListener,
         setFocusable(false);
 
         dragSelect = IdentityManager.getGlobalConfig().getOptionBool("treeview",
-                "dragSelection", true);
+                "dragSelection");
         IdentityManager.getGlobalConfig().addChangeListener("treeview",
                 "dragSelection", this);
 
@@ -126,7 +126,7 @@ public class Tree extends JTree implements TreeSelectionListener,
     @Override
     public void configChanged(final String domain, final String key) {
         dragSelect = IdentityManager.getGlobalConfig().getOptionBool("treeview",
-                "dragSelection", true);
+                "dragSelection");
     }
     
     /** 

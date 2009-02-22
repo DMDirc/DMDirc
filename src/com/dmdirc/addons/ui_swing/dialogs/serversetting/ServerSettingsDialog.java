@@ -157,7 +157,7 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
         add(getRightButton(), "right");
 
         tabbedPane.setSelectedIndex(server.getConfigManager().
-                getOptionInt("dialogstate", "serversettingsdialog", 0));
+                getOptionInt("dialogstate", "serversettingsdialog"));
     }
 
     /** Adds the settings to the panel. */

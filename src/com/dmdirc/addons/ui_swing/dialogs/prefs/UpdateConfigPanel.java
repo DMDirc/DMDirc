@@ -103,7 +103,7 @@ public class UpdateConfigPanel extends JPanel implements ActionListener,
         table = new PackingTable(tableModel, false, scrollPane);
         checkNow = new JButton("Check now");
 
-        enable.setSelected(config.getOptionBool("updater", "enable", true));
+        enable.setSelected(config.getOptionBool("updater", "enable"));
         scrollPane.setViewportView(table);
     }
 

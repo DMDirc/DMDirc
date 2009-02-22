@@ -316,11 +316,8 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
             if (sortBefore(newChild, child)) {
                 return i;
             } else if (!sortAfter(newChild, child) && IdentityManager.
-                    getGlobalConfig().
-                    getOptionBool("treeview", "sortwindows", false) && newChild.
-                    toString().
-                    compareToIgnoreCase(
-                    child.toString()) < 0) {
+                    getGlobalConfig().getOptionBool("treeview", "sortwindows")
+                    && newChild.toString().compareToIgnoreCase(child.toString()) < 0) {
                 return i;
             }
         }

@@ -63,7 +63,7 @@ public final class Ignore extends ServerCommand implements IntelligentCommand {
         
         if (args.length == 0 || args[0].toLowerCase().equals("view")) {
             
-            if (identity.hasOption("network", "ignorelist")) {
+            if (identity.hasOptionString("network", "ignorelist")) {
                 final List<String> list = identity.getOptionList("network", "ignorelist");
                 
                 if (list.isEmpty()) {
@@ -91,7 +91,7 @@ public final class Ignore extends ServerCommand implements IntelligentCommand {
             final String host = implodeArgs(1, args);
             String list = host;
             
-            if (identity.hasOption("network", "ignorelist")) {
+            if (identity.hasOptionString("network", "ignorelist")) {
                 list = identity.getOption("network", "ignorelist");
                 list = list + "\n" + host;
             }
@@ -107,7 +107,7 @@ public final class Ignore extends ServerCommand implements IntelligentCommand {
             final StringBuffer newlist = new StringBuffer();
             boolean found = false;
             
-            if (identity.hasOption("network", "ignorelist")) {
+            if (identity.hasOptionString("network", "ignorelist")) {
                 final String list = identity.getOption("network", "ignorelist");
                 
                 

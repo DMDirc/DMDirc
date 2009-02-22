@@ -41,7 +41,6 @@ import com.dmdirc.addons.ui_swing.dialogs.paste.PasteDialog;
 import com.dmdirc.addons.ui_swing.actions.CommandAction;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
