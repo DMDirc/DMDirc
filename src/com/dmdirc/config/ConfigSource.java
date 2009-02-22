@@ -28,6 +28,7 @@ import com.dmdirc.ui.messages.ColourManager;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -172,23 +173,22 @@ public abstract class ConfigSource {
      *
      * @param domain The domain of the option
      * @param option The name of the option
+     * @param fallbacks An ordered array of further domains and options
+     * (in pairs) to try if the specified domain/option isn't found
      * @return The colour representation of the option
      * @since 0.6.3
      */
-    public Color getOptionColour(final String domain, final String option) {
-        if (!hasOption(domain, option)) {
-            return null;
+    public Color getOptionColour(final String domain, final String option,
+            final String ... fallbacks) {
+        String value;
+
+        if (!hasOption(domain, option) || (value = getOption(domain, option))
+                .startsWith("false:")) {
+            return fallbacks.length >= 2 ? getOptionColour(fallbacks[0], fallbacks[1],
+                    Arrays.copyOfRange(fallbacks, 2, fallbacks.length)) : null;
         }
-
-        String value = getOption(domain, option);
-
-        if (value.startsWith("true:")) {
-            value = value.substring(5);
-        } else if (value.startsWith("false:")) {
-            return null;
-        }
-
-        return ColourManager.parseColour(value, null);
+        return ColourManager.parseColour(value.startsWith("true:")
+                ? value.substring(5) : value, null);
     }
 
     /**

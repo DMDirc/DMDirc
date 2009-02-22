@@ -25,7 +25,6 @@ package com.dmdirc.addons.ui_swing.framemanager.tree;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.messages.ColourManager;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -133,18 +132,16 @@ public class TreeViewTreeCellRenderer implements TreeCellRenderer,
     private void setColours() {
         rolloverColour = config.getOptionColour(
                 "ui", "treeviewRolloverColour",
-                config.getOptionColour("treeview", "backgroundcolour",
-                config.getOptionColour("ui", "backgroundcolour")));
+                "treeview", "backgroundcolour",
+                "ui", "backgroundcolour");
         activeBackground = config.getOptionColour(
                 "ui", "treeviewActiveBackground",
-                config.getOptionColour("treeview", "backgroundcolour",
-                config.getOptionColour("ui", "backgroundcolour",
-                manager.getTree().getBackground())));
+                "treeview", "backgroundcolour",
+                "ui", "backgroundcolour");
         activeForeground = config.getOptionColour(
                 "ui", "treeviewActiveForeground",
-                config.getOptionColour("treeview", "foregroundcolour",
-                config.getOptionColour("ui", "foregroundcolour",
-                manager.getTree().getForeground())));
+                "treeview", "foregroundcolour",
+                "ui", "foregroundcolour");
         activeBold = config.getOptionBool("ui", "treeviewActiveBold");
 
         manager.getTree().repaint();

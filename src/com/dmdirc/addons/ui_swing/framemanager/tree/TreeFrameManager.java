@@ -256,14 +256,12 @@ public final class TreeFrameManager implements FrameManager,
 
     /** Sets treeview colours. */
     private void setColours() {
-        tree.setBackground(IdentityManager.getGlobalConfig().getOptionColour("treeview",
-                "backgroundcolour",
-                IdentityManager.getGlobalConfig().getOptionColour("ui",
-                "backgroundcolour")));
-        tree.setForeground(IdentityManager.getGlobalConfig().getOptionColour("treeview",
-                "foregroundcolour",
-                IdentityManager.getGlobalConfig().getOptionColour("ui",
-                "foregroundcolour")));
+        tree.setBackground(IdentityManager.getGlobalConfig().getOptionColour(
+                "treeview", "backgroundcolour",
+                "ui", "backgroundcolour"));
+        tree.setForeground(IdentityManager.getGlobalConfig().getOptionColour(
+                "treeview", "foregroundcolour",
+                "ui", "foregroundcolour"));
 
         tree.repaint();
     }

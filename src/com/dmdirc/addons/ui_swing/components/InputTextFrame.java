@@ -100,15 +100,15 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
 
         final ConfigManager config = owner.getConfigManager();
 
-        getInputField().setBackground(config.getOptionColour("ui",
-                "inputbackgroundcolour",
-                config.getOptionColour("ui", "backgroundcolour")));
-        getInputField().setForeground(config.getOptionColour("ui",
-                "inputforegroundcolour",
-                config.getOptionColour("ui", "foregroundcolour")));
-        getInputField().setCaretColor(config.getOptionColour("ui",
-                "inputforegroundcolour",
-                config.getOptionColour("ui", "foregroundcolour")));
+        getInputField().setBackground(config.getOptionColour(
+                "ui", "inputbackgroundcolour",
+                "ui", "backgroundcolour"));
+        getInputField().setForeground(config.getOptionColour(
+                "ui", "inputforegroundcolour",
+                "ui", "foregroundcolour"));
+        getInputField().setCaretColor(config.getOptionColour(
+                "ui", "inputforegroundcolour",
+                "ui", "foregroundcolour"));
 
         config.addChangeListener("ui", "inputforegroundcolour", this);
         config.addChangeListener("ui", "inputbackgroundcolour", this);
@@ -385,20 +385,17 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
                 getConfigManager() != null) {
             if ("inputbackgroundcolour".equals(key) ||
                     "backgroundcolour".equals(key)) {
-                getInputField().setBackground(getConfigManager().getOptionColour("ui",
-                        "inputbackgroundcolour",
-                        getConfigManager().getOptionColour("ui",
-                        "backgroundcolour")));
+                getInputField().setBackground(getConfigManager().getOptionColour(
+                        "ui", "inputbackgroundcolour",
+                        "ui", "backgroundcolour"));
             } else if ("inputforegroundcolour".equals(key) ||
                     "foregroundcolour".equals(key)) {
-                getInputField().setForeground(getConfigManager().getOptionColour("ui",
-                        "inputforegroundcolour",
-                        getConfigManager().getOptionColour("ui",
-                        "foregroundcolour")));
-                getInputField().setCaretColor(getConfigManager().getOptionColour("ui",
-                        "inputforegroundcolour",
-                        getConfigManager().getOptionColour("ui",
-                        "foregroundcolour")));
+                getInputField().setForeground(getConfigManager().getOptionColour(
+                        "ui", "inputforegroundcolour",
+                        "ui", "foregroundcolour"));
+                getInputField().setCaretColor(getConfigManager().getOptionColour(
+                        "ui", "inputforegroundcolour",
+                        "ui", "foregroundcolour"));
 
             }
         }

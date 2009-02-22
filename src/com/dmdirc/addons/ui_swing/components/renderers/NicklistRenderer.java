@@ -70,12 +70,11 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
         config.addChangeListener("ui", "nicklistbackgroundcolour", this);
         config.addChangeListener("ui", "backgroundcolour", this);
         config.addChangeListener("ui", "nickListAltBackgroundColour", this);
-        altBackgroundColour =
-                config.getOptionColour("ui", "nickListAltBackgroundColour",
-                config.getOptionColour("ui", "nicklistbackgroundcolour",
-                config.getOptionColour("ui", "backgroundcolour")));
-        showColours =
-                config.getOptionBool("ui", "shownickcoloursinnicklist");
+        altBackgroundColour = config.getOptionColour(
+                "ui", "nickListAltBackgroundColour",
+                "ui", "nicklistbackgroundcolour",
+                "ui", "backgroundcolour");
+        showColours = config.getOptionBool("ui", "shownickcoloursinnicklist");
     }
 
     /** {@inheritDoc} */
@@ -116,9 +115,10 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
 
         } else {
             altBackgroundColour =
-                    config.getOptionColour("ui", "nickListAltBackgroundColour",
-                    config.getOptionColour("ui", "nicklistbackgroundcolour",
-                    config.getOptionColour("ui", "backgroundcolour")));
+                    config.getOptionColour(
+                    "ui", "nickListAltBackgroundColour",
+                    "ui", "nicklistbackgroundcolour",
+                    "ui", "backgroundcolour");
         }
         nicklist.repaint();
     }
