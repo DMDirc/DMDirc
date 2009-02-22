@@ -333,7 +333,7 @@ public class PreferencesManager {
         options.put("showWhenMaximised", "Show only when windows maximised");
 
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "browser", "userlaunchdelay", "Use browser launch delay",
+                "browser", "uselaunchdelay", "Use browser launch delay",
                 "Enable delay between browser launches (to prevent mistakenly" +
                 " double clicking)?"));
         category.addSetting(new PreferencesSetting(PreferencesType.DURATION,

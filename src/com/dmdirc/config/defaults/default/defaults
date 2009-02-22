@@ -163,7 +163,9 @@ ui:
   shownickcoloursintext=false
   showversion=true
   stylelinks=true
+  treeviewActiveBackground=false:f0f0f0
   treeviewActiveBold=true
+  treeviewActiveForeground=false:1
   treeviewRolloverColour=false:f0f0f0
   useOneTouchExpandable=false
 
@@ -171,6 +173,8 @@ treeview:
   dragSelection=true
   sortwindows=true
   sortservers=true
+  backgroundcolour=false:0
+  foregroundcolour=false:0
 
 channel:
   splitusermodes=false
