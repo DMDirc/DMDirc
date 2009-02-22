@@ -357,11 +357,12 @@ public class PluginManager implements ActionListener {
 	 */
 	public void updateAutoLoad(final PluginInfo plugin) {
 		final List<String> list = IdentityManager.getGlobalConfig().getOptionList("plugins", "autoload");
+        final String path = plugin.getRelativeFilename();
 		
-		if (plugin.isLoaded() && !list.contains(plugin.getFilename())) {
-			list.add(plugin.getFilename());
-		} else if (!plugin.isLoaded() && list.contains(plugin.getFilename())) {
-			list.remove(plugin.getFilename());
+		if (plugin.isLoaded() && !list.contains(path)) {
+			list.add(path);
+		} else if (!plugin.isLoaded() && list.contains(path)) {
+			list.remove(path);
 		}
 		
 		IdentityManager.getConfigIdentity().setOption("plugins", "autoload", list);

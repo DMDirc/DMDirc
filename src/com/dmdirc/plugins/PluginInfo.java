@@ -1203,6 +1203,18 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 */
 	public String getFullFilename() { return url.getPath(); }
 
+    /**
+     * Retrieves the path to this plugin relative to the main plugin directory,
+     * if appropriate.
+     *
+     * @return A relative path to the plugin if it is situated under the main
+     * plugin directory, or an absolute path otherwise.
+     */
+    public String getRelativeFilename() {
+        final String dir = PluginManager.getPluginManager().getDirectory();
+        return getFullFilename().startsWith(dir) ? getFullFilename().substring(dir.length()) : getFullFilename();
+    }
+
 	/**
 	 * Get the plugin Author.
 	 *
