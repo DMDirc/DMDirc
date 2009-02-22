@@ -104,6 +104,8 @@ public final class Main {
         final CommandLineParser clp = new CommandLineParser(args);
         
         IdentityManager.load();
+        IdentityManager.getConfigIdentity().setOption("updater", "channel",
+                UPDATE_CHANNEL.name()); // Hack until we set it decently
 
         final PluginManager pm = PluginManager.getPluginManager();
         
