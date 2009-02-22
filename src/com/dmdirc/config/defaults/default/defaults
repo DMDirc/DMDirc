@@ -155,6 +155,7 @@ ui:
   lookandfeel=
   maximisewindows=true
   mdiBarVisibility=showWhenMaximised
+  nickListAltBackgroundColour=false:f0f0f0
   nicklistbackgroundcolour=0
   nicklistforegroundcolour=1
   pasteProtectionLimit=1
