@@ -201,7 +201,7 @@ public abstract class WritableFrameContainer extends FrameContainer {
     public void handleNotification(final String messageType, final Object... args) {        
         despatchNotification(messageType, getConfigManager().hasOptionString("notifications",
                 messageType) ? getConfigManager().getOption("notifications", messageType)
-                : "", args);
+                : "self", args);
     }
     
     /**
