@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.Query;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.ChatCommand;
@@ -78,7 +79,7 @@ public final class QueryCommandParser extends CommandParser {
     /** {@inheritDoc} */
     @Override
     protected void executeCommand(final InputWindow origin,
-            final boolean isSilent, final Command command, final String... args) {
+            final boolean isSilent, final Command command, final CommandArguments args) {
         if (command instanceof QueryCommand) {
             ((QueryCommand) command).execute(origin, server, query, isSilent, args);
         } else if (command instanceof ChatCommand) {

@@ -22,9 +22,17 @@
 
 package com.dmdirc.commandparser;
 
+import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
- * Represents a command and its arguments.
+ * Represents a command and its arguments. In this class, input is split into
+ * 'words' which are separated by any number of whitespace characters;
+ * 'arguments' are the same but exclude the first word, which will normally be
+ * the command name.
  *
+ * @since 0.6.3
  * @author chris
  */
 public class CommandArguments {
@@ -32,31 +40,140 @@ public class CommandArguments {
     /** The raw line that was input. */
     private final String line;
 
-    private String[] arguments;
+    /** The line split into whitespace-delimited words. */
+    private String[] words;
 
+    /**
+     * Creates a new command arguments parser for the specified line.
+     *
+     * @param line The line to be parsed
+     */
     public CommandArguments(final String line) {
         this.line = line;
     }
-    
-    public synchronized String[] getArguments() {
-        if (arguments == null) {
-            parse();
-        }
+
+    /**
+     * Retrieves the raw line that was input, including any command character(s)
+     * and names.
+     *
+     * @return The raw line entered
+     */
+    public String getLine() {
+        return line;
+    }
+
+    /**
+     * Retrieves the raw line that was input, including the command name but
+     * stripped of any command characters.
+     *
+     * @return The raw line entered, without command chars
+     */
+    public String getStrippedLine() {
+        final int offset = isCommand() ? isSilent() ? 2 : 1 : 0;
+
+        return line.substring(offset);
+    }
+
+    /**
+     * Retrieves the input split into distinct, whitespace-separated words. The
+     * first item in the array will be the command name complete with any
+     * command characters.
+     *
+     * @return An array of 'words' that make up the input
+     */
+    public String[] getWords() {
+        parse();
         
-        return arguments;
+        return words;
     }
 
-    protected void parse() {
-        arguments = line.split("\\s+");
+    /**
+     * Retrieves the arguments to the command split into disticnt,
+     * whitespace-separated words.
+     *
+     * @return An array of 'words' that make up the command's arguments
+     */
+    public String[] getArguments() {
+        parse();
+
+        return Arrays.copyOfRange(words, 1, words.length);
     }
 
+    /**
+     * Retrieves all the arguments to the command (i.e., not including the
+     * command name) with their original whitespace separation preserved.
+     *
+     * @return A String representation of the command arguments
+     */
+    public String getArgumentsAsString() {
+        parse();
+        
+        return getWordsAsString(1);
+    }
+
+    /**
+     * Retrieves the specified words with their original whitespace separation
+     * preserved.
+     *
+     * @param start The index of the first word to include (starting at 0)
+     * @return A String representation of the requested words
+     */
+    public String getWordsAsString(final int start) {
+        return getWordsAsString(start, words.length);
+    }
+
+    /**
+     * Retrieves the specified words with their original whitespace separation
+     * preserved.
+     *
+     * @param start The index of the first word to include (starting at 0)
+     * @param end The index of the last word to include
+     * @return A String representation of the requested words
+     */
+    public String getWordsAsString(final int start, final int end) {
+        final Pattern pattern = Pattern.compile("(\\S+\\s*){" + (start) + "}"
+                + "((\\S+\\s*){" + (end - start) + "}).*?");
+        final Matcher matcher = pattern.matcher(line);
+
+        return matcher.matches() ? matcher.group(2) : "";
+    }
+
+    /**
+     * Parses the input into a set of words, if it has not been done before.
+     */
+    protected synchronized void parse() {
+        if (words == null) {
+            words = line.split("\\s+");
+        }
+    }
+
+    /**
+     * Determines if the input was a command or not.
+     *
+     * @return True if the input was a command, false otherwise
+     */
     public boolean isCommand() {
         return !line.isEmpty() && line.charAt(0) == CommandManager.getCommandChar();
     }
 
+    /**
+     * Determines if the input was a silenced command or not.
+     *
+     * @return True if the input was a silenced command, false otherwise
+     */
     public boolean isSilent() {
         return isCommand() && line.length() >= 2 &&
                 line.charAt(1) == CommandManager.getSilenceChar();
+    }
+
+    /**
+     * Retrieves the name of the command that was used.
+     *
+     * @return The command name used
+     */
+    public String getCommandName() {
+        final int offset = isCommand() ? isSilent() ? 2 : 1 : 0;
+        return getWords()[0].substring(offset);
     }
 
 }

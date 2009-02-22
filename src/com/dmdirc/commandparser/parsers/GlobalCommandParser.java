@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.parsers;
 
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
@@ -76,7 +77,7 @@ public final class GlobalCommandParser extends CommandParser {
     /** {@inheritDoc} */
     @Override
     protected void executeCommand(final InputWindow origin,
-            final boolean isSilent, final Command command, final String... args) {
+            final boolean isSilent, final Command command, final CommandArguments args) {
         ((GlobalCommand) command).execute(origin, isSilent, args);
     }
     

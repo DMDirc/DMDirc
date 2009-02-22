@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.Channel;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.ChannelCommand;
@@ -78,7 +79,7 @@ public final class ChannelCommandParser extends CommandParser {
     /** {@inheritDoc} */
     @Override
     protected void executeCommand(final InputWindow origin,
-            final boolean isSilent, final Command command, final String... args) {
+            final boolean isSilent, final Command command, final CommandArguments args) {
         if (command instanceof ChannelCommand) {
             ((ChannelCommand) command).execute(origin, server, channel, isSilent, args);
         } else if (command instanceof ChatCommand) {

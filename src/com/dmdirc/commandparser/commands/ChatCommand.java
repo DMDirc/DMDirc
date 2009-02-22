@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands;
 
 import com.dmdirc.MessageTarget;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -44,9 +45,10 @@ public abstract class ChatCommand extends Command implements CommandInfo {
      * @param target The target of this command
      * @param isSilent Whether this command is silenced or not
      * @param args Arguments passed to this command
+     * @since 0.6.3
      */
     public abstract void execute(InputWindow origin, Server server, MessageTarget target,
-            boolean isSilent, String... args);
+            boolean isSilent, CommandArguments args);
 
     /** {@inheritDoc} */
     @Override
