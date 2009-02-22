@@ -206,12 +206,6 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
 
     /** {@inheritDoc} */
     @Override
-    public void fatalError(final ProgramError error) {
-    //Ignore
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public void errorDeleted(final ProgramError error) {
         checkErrors();
     }
