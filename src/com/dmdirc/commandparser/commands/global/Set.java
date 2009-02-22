@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -52,38 +53,43 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final boolean isSilent,
-            final String... args) {
+            final CommandArguments args) {
         int i = 0;
         
         Identity identity = IdentityManager.getConfigIdentity();
         ConfigManager manager = IdentityManager.getGlobalConfig();
         
-        if (args.length > 0 && "--server".equalsIgnoreCase(args[0]) && origin != null
+        if (args.getArguments().length > 0
+                && "--server".equalsIgnoreCase(args.getArguments()[0]) && origin != null
                 && origin.getContainer().getServer() != null) {
             i = 1;
             identity = origin.getContainer().getServer().getServerIdentity();
             manager = origin.getContainer().getServer().getConfigManager();
         }
         
-        switch (args.length - i) {
+        switch (args.getArguments().length - i) {
         case 0:
             doDomainList(origin, isSilent, manager);
             break;
         case 1:
-            doOptionsList(origin, isSilent, manager, args[i]);
+            doOptionsList(origin, isSilent, manager, args.getArguments()[i]);
             break;
         case 2:
-            doShowOption(origin, isSilent, manager, args[i], args[1 + i]);
+            doShowOption(origin, isSilent, manager, args.getArguments()[i],
+                    args.getArguments()[1 + i]);
             break;
         default:
-            if (args[i].equalsIgnoreCase("--unset")) {
-                doUnsetOption(origin, isSilent, identity, args[1 + i], args[2 + i]);
-            } else if (args[i].equalsIgnoreCase("--append") && args.length > 3 + i) {
-                doAppendOption(origin, isSilent, identity, manager, args[1 + i], args[2 + i],
-                        implodeArgs(3 + i, args));
+            if (args.getArguments()[i].equalsIgnoreCase("--unset")) {
+                doUnsetOption(origin, isSilent, identity, args.getArguments()[1 + i],
+                        args.getArguments()[2 + i]);
+            } else if (args.getArguments()[i].equalsIgnoreCase("--append")
+                    && args.getArguments().length > 3 + i) {
+                doAppendOption(origin, isSilent, identity, manager, 
+                        args.getArguments()[1 + i], args.getArguments()[2 + i],
+                        args.getArgumentsAsString(3 + i));
             } else {
-                doSetOption(origin, isSilent, identity, args[i], args[1 + i],
-                        implodeArgs(2 + i, args));
+                doSetOption(origin, isSilent, identity, args.getArguments()[i],
+                        args.getArguments()[1 + i], args.getArgumentsAsString(2 + i));
             }
         }
     }

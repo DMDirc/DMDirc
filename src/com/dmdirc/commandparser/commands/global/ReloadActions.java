@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.actions.ActionManager;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -48,7 +49,7 @@ public final class ReloadActions extends GlobalCommand implements IntelligentCom
     
     /** {@inheritDoc} */
     public void execute(final InputWindow origin, final boolean isSilent,
-            final String... args) {
+            final CommandArguments args) {
         ActionManager.loadActions();
         sendLine(origin, isSilent, FORMAT_OUTPUT, "Actions reloaded.");
     }

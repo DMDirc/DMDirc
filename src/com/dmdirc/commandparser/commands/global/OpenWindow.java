@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.CustomWindow;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -49,11 +50,11 @@ public class OpenWindow extends GlobalCommand implements IntelligentCommand {
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final boolean isSilent,
-            final String... args) {
+            final CommandArguments args) {
         int start = 0;
         Window parent = null;
 
-        if (args.length > 0 && "--server".equals(args[0])) {
+        if (args.getArguments().length > 0 && "--server".equals(args.getArguments()[0])) {
             if (origin.getContainer().getServer() == null) {
                 sendLine(origin, isSilent, FORMAT_ERROR,
                         "This window doesn't have an associated server.");
@@ -62,31 +63,31 @@ public class OpenWindow extends GlobalCommand implements IntelligentCommand {
 
             parent = origin.getContainer().getServer().getFrame();
             start = 1;
-        } else if (args.length > 0 && "--child".equals(args[0])) {
+        } else if (args.getArguments().length > 0 && "--child".equals(args.getArguments()[0])) {
             parent = origin;
             start = 1;
         }
 
-        if (args.length == start || args[start].isEmpty()) {
+        if (args.getArguments().length == start || args.getArguments()[start].isEmpty()) {
             showUsage(origin, isSilent, "openwindow",
                     "[--server|--child] <name> [title]");
         } else {
             Window window;
             
             if (parent == null) {
-                window = WindowManager.findCustomWindow(args[start]);
+                window = WindowManager.findCustomWindow(args.getArguments()[start]);
             } else {
-                window = WindowManager.findCustomWindow(parent, args[start]);
+                window = WindowManager.findCustomWindow(parent, args.getArguments()[start]);
             }
             
-            final String title = args.length > start + 1 ? implodeArgs(
-                    start + 1, args) : args[start];
+            final String title = args.getArguments().length > start + 1 ?
+                args.getArgumentsAsString(start + 1): args.getArguments()[start];
 
             if (window == null) {
                 if (parent == null) {
-                    new CustomWindow(args[start], title);
+                    new CustomWindow(args.getArguments()[start], title);
                 } else {
-                    new CustomWindow(args[start], title, parent);
+                    new CustomWindow(args.getArguments()[start], title, parent);
                 }
             } else {
                 sendLine(origin, isSilent, FORMAT_ERROR,

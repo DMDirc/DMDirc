@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
@@ -58,11 +59,11 @@ public final class Help extends GlobalCommand implements IntelligentCommand {
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final boolean isSilent,
-            final String... args) {
-        if (args.length == 0) {
+            final CommandArguments args) {
+        if (args.getArguments().length == 0) {
             showAllCommands(origin, isSilent);
         } else {
-            showCommand(origin, isSilent, args[0]);
+            showCommand(origin, isSilent, args.getArguments()[0]);
         }
     }
     

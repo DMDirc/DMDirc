@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -50,15 +51,16 @@ public final class LoadPlugin extends GlobalCommand implements IntelligentComman
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final boolean isSilent,
-            final String... args) {
-        if (args.length == 0) {
+            final CommandArguments args) {
+        if (args.getArguments().length == 0) {
             showUsage(origin, isSilent, "loadplugin", "<plugin>");
             return;
         }
 
         // Add previously unknown plugin to plugin manager
-        PluginManager.getPluginManager().addPlugin(args[0]);
-        final PluginInfo plugin = PluginManager.getPluginManager().getPluginInfo(args[0]);
+        PluginManager.getPluginManager().addPlugin(args.getArguments()[0]);
+        final PluginInfo plugin = PluginManager.getPluginManager()
+                .getPluginInfo(args.getArguments()[0]);
         
         if (plugin == null) {
             sendLine(origin, isSilent, FORMAT_ERROR, "Plugin loading failed");

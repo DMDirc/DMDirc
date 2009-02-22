@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
@@ -54,15 +55,15 @@ public final class Ifplugin extends GlobalCommand implements IntelligentCommand 
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final boolean isSilent,
-            final String... args) {
-        if (args.length <= 1) {
+            final CommandArguments args) {
+        if (args.getArguments().length <= 1) {
             showUsage(origin, isSilent, "ifplugin", "<[!]plugin> <command>");
             return;
         }
         
-        final boolean negative = args[0].charAt(0) == '!';
+        final boolean negative = args.getArguments()[0].charAt(0) == '!';
         
-        final String pname = args[0].substring(negative ? 1 : 0);
+        final String pname = args.getArguments()[0].substring(negative ? 1 : 0);
         
         final PluginInfo pluginInfo = PluginManager.getPluginManager().getPluginInfoByName(pname);
         
@@ -75,9 +76,9 @@ public final class Ifplugin extends GlobalCommand implements IntelligentCommand 
         if (result != negative) {
             if (origin == null) {
                 GlobalCommandParser.getGlobalCommandParser().parseCommand(null,
-                        implodeArgs(1, args));
+                        args.getArgumentsAsString(1));
             } else {
-                origin.getCommandParser().parseCommand(origin, implodeArgs(1, args));
+                origin.getCommandParser().parseCommand(origin, args.getArgumentsAsString(1));
             }
         }
     }

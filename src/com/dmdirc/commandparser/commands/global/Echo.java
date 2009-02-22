@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.Main;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -52,35 +53,36 @@ public final class Echo extends GlobalCommand implements IntelligentCommand {
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final boolean isSilent,
-            final String... args) {
-        if (args.length > 0 && args[0].equalsIgnoreCase("--active")) {
+            final CommandArguments args) {
+        if (args.getArguments().length > 0
+                && args.getArguments()[0].equalsIgnoreCase("--active")) {
             final Window frame = Main.getUI().getActiveWindow();
             if (frame instanceof InputWindow) {
-                ((InputWindow) frame).addLine(FORMAT_OUTPUT, implodeArgs(1,
-                        args));
+                ((InputWindow) frame).addLine(FORMAT_OUTPUT, args.getArgumentsAsString(1));
             }
-        } else if (args.length > 1 && args[0].equalsIgnoreCase("--target")) {
+        } else if (args.getArguments().length > 1
+                && args.getArguments()[0].equalsIgnoreCase("--target")) {
             Window frame = null;
             Window target = origin;
 
             while (frame == null && target != null) {
-                frame = WindowManager.findCustomWindow(target, args[1]);
+                frame = WindowManager.findCustomWindow(target, args.getArguments()[1]);
                 target = WindowManager.getParent(target);
             }
 
             if (frame == null) {
-                frame = WindowManager.findCustomWindow(args[1]);
+                frame = WindowManager.findCustomWindow(args.getArguments()[1]);
             }
 
             if (frame == null) {
                 sendLine(origin, isSilent, FORMAT_ERROR,
                         "Unable to find target window");
             } else {
-                frame.addLine(FORMAT_OUTPUT, implodeArgs(2, args));
+                frame.addLine(FORMAT_OUTPUT, args.getArgumentsAsString(2));
             }
 
         } else {
-            sendLine(origin, isSilent, FORMAT_OUTPUT, implodeArgs(args));
+            sendLine(origin, isSilent, FORMAT_OUTPUT, args.getArgumentsAsString());
         }
     }
 

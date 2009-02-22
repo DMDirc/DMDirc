@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -48,25 +49,29 @@ public final class SaveConfig extends GlobalCommand implements IntelligentComman
     }
     
     /** {@inheritDoc} */
+    @Override
     public void execute(final InputWindow origin, final boolean isSilent,
-            final String... args) {
+            final CommandArguments args) {
         IdentityManager.save();
         
         sendLine(origin, isSilent, FORMAT_OUTPUT, "Configuration file saved.");
     }
     
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "saveconfig";
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getHelp() {
         return "saveconfig - force the client to save its configuration to disk";
     }
