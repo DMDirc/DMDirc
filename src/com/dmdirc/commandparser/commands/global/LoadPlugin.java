@@ -105,7 +105,7 @@ public final class LoadPlugin extends GlobalCommand implements IntelligentComman
         if (arg == 0) {
             for (PluginInfo possPlugin
                     : PluginManager.getPluginManager().getPossiblePluginInfos(false)) {
-                res.add(possPlugin.getFilename());
+                res.add(possPlugin.getRelativeFilename());
             }
         }
 
