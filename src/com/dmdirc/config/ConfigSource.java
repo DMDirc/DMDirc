@@ -22,8 +22,6 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.messages.ColourManager;
 
 import java.awt.Color;
@@ -53,10 +51,8 @@ public abstract class ConfigSource {
      * @param domain The domain of the option
      * @param option The name of the option
      * @return True iff the option exists, false otherwise.
-     * @deprecated Should only be used internally by ConfigSource
      */
-    @Deprecated
-    public abstract boolean hasOption(final String domain, final String option);
+    protected abstract boolean hasOption(final String domain, final String option);
 
     /**
      * Determines if this manager has the specified String option.
@@ -119,21 +115,6 @@ public abstract class ConfigSource {
     }
 
     /**
-     * Retrieves the specified option.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param fallback Value to use if the option isn't set
-     * @return The value of the option
-     * @deprecated Fallback should be specified in configs
-     */
-    @Deprecated
-    public String getOption(final String domain, final String option,
-            final String fallback) {
-        return hasOption(domain, option) ? getOption(domain, option) : fallback;
-    }
-
-    /**
      * Retrieves the specified option as a character.
      *
      * @param domain The domain of the option
@@ -144,30 +125,6 @@ public abstract class ConfigSource {
         return getOption(domain, option).charAt(0);
     }
     
-    /**
-     * Retrieves the specified option as a character.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param fallback Value to use if the option isn't set
-     * @return The value of the option
-     * @deprecated Fallback should be specified in configs
-     */
-    @Deprecated
-    public char getOptionChar(final String domain, final String option,
-            final char fallback) {
-        
-        if (hasOption(domain, option)) {
-            final String value = getOption(domain, option);
-            
-            if (!value.isEmpty()) {
-                return value.charAt(0);
-            }
-        }
-        
-        return fallback;
-    }
-
     /**
      * Retrieves a colour representation of the specified option.
      *
@@ -192,33 +149,6 @@ public abstract class ConfigSource {
     }
 
     /**
-     * Retrieves a colour representation of the specified option.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param fallback The colour that should be used in case of error
-     * @return The colour representation of the option
-     * @deprecated Fallback should be specified in configs
-     */
-    @Deprecated
-    public Color getOptionColour(final String domain, final String option,
-            final Color fallback) {
-        if (!hasOption(domain, option)) {
-            return fallback;
-        }
-
-        String value = getOption(domain, option);
-        
-        if (value.startsWith("true:")) {
-            value = value.substring(5);
-        } else if (value.startsWith("false:")) {
-            return fallback;
-        }
-        
-        return ColourManager.parseColour(value, fallback);
-    }
-
-    /**
      * Retrieves a boolean representation of the specified option.
      *
      * @param domain The domain of the option
@@ -227,22 +157,6 @@ public abstract class ConfigSource {
      */
     public boolean getOptionBool(final String domain, final String option) {
         return Boolean.parseBoolean(getOption(domain, option));
-    }
-
-    /**
-     * Retrieves a boolean representation of the specified option.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param fallback The value to use if the config isn't value
-     * @return The boolean representation of the option
-     * @deprecated Fallback should be specified in configs
-     */
-    @Deprecated
-    public boolean getOptionBool(final String domain, final String option,
-            final boolean fallback) {
-        return hasOption(domain, option) ?
-            Boolean.parseBoolean(getOption(domain, option)) : fallback;
     }
 
     /**
@@ -278,35 +192,6 @@ public abstract class ConfigSource {
      */
     public List<String> getOptionList(final String domain, final String option) {
         return getOptionList(domain, option, true);
-    }
-
-    /**
-     * Retrieves an integral representation of the specified option.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @param fallback The value to use if the config isn't valud
-     * @return The integer representation of the option
-     * @deprecated Fallback should be specified in configs
-     */
-    @Deprecated
-    public int getOptionInt(final String domain, final String option,
-            final int fallback) {
-        if (!hasOption(domain, option)) {
-            return fallback;
-        }
-
-        int res;
-
-        try {
-            res = Integer.parseInt(getOption(domain, option).trim());
-        } catch (NumberFormatException ex) {
-            Logger.userError(ErrorLevel.MEDIUM,
-                    "Invalid number format for " + domain + "." + option);
-            res = fallback;
-        }
-
-        return res;
     }
 
     /**

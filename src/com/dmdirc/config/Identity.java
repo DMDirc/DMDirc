@@ -307,8 +307,8 @@ public class Identity extends ConfigSource implements Serializable,
     }
 
     /** {@inheritDoc} */
-    @Override @Deprecated
-    public boolean hasOption(final String domain, final String option) {
+    @Override
+    protected boolean hasOption(final String domain, final String option) {
         return file.isKeyDomain(domain) && file.getKeyDomain(domain).containsKey(option);
     }
 
