@@ -60,7 +60,7 @@ public final class ReloadPlugin extends GlobalCommand implements IntelligentComm
         final PluginInfo plugin = PluginManager.getPluginManager().getPluginInfoByName(args[0]);
         if (plugin == null) {
             sendLine(origin, isSilent, FORMAT_ERROR, "Plugin Reloading failed - Plugin not loaded");
-        } else if (PluginManager.getPluginManager().reloadPlugin(plugin.getFilename())) {
+        } else if (PluginManager.getPluginManager().reloadPlugin(plugin.getRelativeFilename())) {
             sendLine(origin, isSilent, FORMAT_OUTPUT, "Plugin Reloaded.");
         } else {
             sendLine(origin, isSilent, FORMAT_ERROR, "Plugin Reloading failed");

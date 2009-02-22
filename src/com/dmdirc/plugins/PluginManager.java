@@ -43,8 +43,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
+/**
+ * Searches for and manages plugins and services.
+ *
+ * @author shane
+ * @author chris
+ */
 public class PluginManager implements ActionListener {
-	/** List of known plugins. */
+
+    /** List of known plugins' file names to their corresponding {@link PluginInfo} objects. */
 	private final Map<String, PluginInfo> knownPlugins = new Hashtable<String, PluginInfo>();
 
 	/** Directory where plugins are stored. */
