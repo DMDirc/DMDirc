@@ -315,10 +315,10 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             // If the selection includes the chars we're showing
             if (lastChar > chars && firstChar < chars +
                                                 layout.getCharacterCount()) {
-                final String text =
-                             document.getLine(line).getText().substring(
-                        firstChar,
-                        lastChar);
+                String text = document.getLine(line).getText();
+                if (firstChar >= 0 && text.length() > lastChar) {
+                    text =  text.substring(firstChar, lastChar);
+                }
 
                 if (text.isEmpty()) {
                     return;
