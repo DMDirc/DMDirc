@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
@@ -57,11 +58,12 @@ public final class Ignore extends ServerCommand implements IntelligentCommand {
      */
     @Override
     public void execute(final InputWindow origin, final Server server,
-            final boolean isSilent, final String... args) {
+            final boolean isSilent, final CommandArguments args) {
         
         final Identity identity = server.getNetworkIdentity();
         
-        if (args.length == 0 || args[0].toLowerCase().equals("view")) {
+        if (args.getArguments().length == 0
+                || args.getArguments()[0].toLowerCase().equals("view")) {
             
             if (identity.hasOptionString("network", "ignorelist")) {
                 final List<String> list = identity.getOptionList("network", "ignorelist");
@@ -86,9 +88,10 @@ public final class Ignore extends ServerCommand implements IntelligentCommand {
                 sendLine(origin, isSilent, FORMAT_ERROR, "No ignore list entries for this network.");
             }
             
-        } else if (args[0].toLowerCase().equals("add") && args.length > 1) {
+        } else if (args.getArguments()[0].toLowerCase().equals("add")
+                && args.getArguments().length > 1) {
             
-            final String host = implodeArgs(1, args);
+            final String host = args.getArgumentsAsString(1);
             String list = host;
             
             if (identity.hasOptionString("network", "ignorelist")) {
@@ -100,9 +103,11 @@ public final class Ignore extends ServerCommand implements IntelligentCommand {
             
             sendLine(origin, isSilent, FORMAT_OUTPUT, "Added " + host + " to the ignore list.");
             
-        } else if (args[0].toLowerCase().equals("remove") && args.length > 1) {
+        } else if (args.getArguments()[0].toLowerCase().equals("remove")
+                && args.getArguments().length > 1) {
             
-            final String host = server.getParser().getIRCStringConverter().toLowerCase(implodeArgs(1, args));
+            final String host = server.getParser().getIRCStringConverter()
+                    .toLowerCase(args.getArgumentsAsString(1));
             
             final StringBuffer newlist = new StringBuffer();
             boolean found = false;
@@ -112,7 +117,8 @@ public final class Ignore extends ServerCommand implements IntelligentCommand {
                 
                 
                 for (String entry : list.split("\n")) {
-                    if (server.getParser().getIRCStringConverter().toLowerCase(entry).equals(host)) {
+                    if (server.getParser().getIRCStringConverter()
+                            .toLowerCase(entry).equals(host)) {
                         found = true;
                     } else {
                         if (newlist.length() > 0) {

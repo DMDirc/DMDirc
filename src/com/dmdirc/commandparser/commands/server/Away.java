@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.Server;
 import com.dmdirc.ServerState;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -46,9 +47,9 @@ public final class Away extends ServerCommand {
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final Server server,
-            final boolean isSilent, final String... args) {
+            final boolean isSilent, final CommandArguments args) {
         if (server.getState() == ServerState.CONNECTED) {
-            final String line = implodeArgs(args);
+            final String line = args.getArgumentsAsString();
 
             server.getParser().sendLine("AWAY :" + line);
         } else {

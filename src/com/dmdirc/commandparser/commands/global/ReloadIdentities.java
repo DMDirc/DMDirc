@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -47,7 +48,8 @@ public class ReloadIdentities extends GlobalCommand implements IntelligentComman
 
     /** {@inheritDoc} */
     @Override    
-    public void execute(final InputWindow origin, final boolean isSilent, final String... args) {
+    public void execute(final InputWindow origin, final boolean isSilent,
+            final CommandArguments args) {
         IdentityManager.loadUser();
         
         sendLine(origin, isSilent, FORMAT_OUTPUT, "Identities reloaded.");

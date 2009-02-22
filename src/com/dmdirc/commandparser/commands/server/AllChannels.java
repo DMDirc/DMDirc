@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
@@ -49,8 +50,8 @@ public final class AllChannels extends ServerCommand implements IntelligentComma
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final Server server,
-            final boolean isSilent, final String... args) {
-        final String command = implodeArgs(args);
+            final boolean isSilent, final CommandArguments args) {
+        final String command = args.getArgumentsAsString();
         InputWindow window;
         
         for (String channel : server.getChannels()) {

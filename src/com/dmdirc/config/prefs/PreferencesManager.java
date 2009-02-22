@@ -468,10 +468,10 @@ public class PreferencesManager {
                 "ui", "nickListAltBackgroundColour", "Alternate background colour",
                 "Background colour to use for every other nicklist entry"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "ui", "sortByMode", "Sort nicklist by user mode",
+                "nicklist", "sortByMode", "Sort nicklist by user mode",
                 "Sort nicknames by the modes that they have?"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "ui", "sortByCase", "Sort nicklist by case",
+                "nicklist", "sortByCase", "Sort nicklist by case",
                 "Sort nicknames in a case-sensitive manner?"));
 
         parent.addSubCategory(category);

@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -50,13 +51,13 @@ public final class Disconnect extends ServerCommand {
      * @param args The user supplied arguments
      */
     public void execute(final InputWindow origin, final Server server,
-            final boolean isSilent, final String... args) {
+            final boolean isSilent, final CommandArguments args) {
         String line;
         
-        if (args.length == 0) {
+        if (args.getArguments().length == 0) {
             line = origin.getConfigManager().getOption("general", "quitmessage");
         } else {
-            line = implodeArgs(args);
+            line = args.getArgumentsAsString();
         }
         
         server.disconnect(line);

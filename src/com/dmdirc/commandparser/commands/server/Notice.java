@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.Server;
 import com.dmdirc.ServerState;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
@@ -51,18 +52,19 @@ public final class Notice extends ServerCommand implements IntelligentCommand {
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final Server server,
-            final boolean isSilent, final String... args) {
+            final boolean isSilent, final CommandArguments args) {
         if (server.getState() != ServerState.CONNECTED) {
             sendLine(origin, isSilent, FORMAT_ERROR, "Not connected");
             return;
         }
         
-        if (args.length < 2) {
+        if (args.getArguments().length < 2) {
             showUsage(origin, isSilent, "notice", "<target> <message>");
         } else {
-            server.getParser().sendLine("NOTICE " + args[0] + " :"
-                    + implodeArgs(1, args));
-            sendLine(origin, isSilent, "selfNotice", args[0], implodeArgs(1, args));
+            server.getParser().sendLine("NOTICE " + args.getArguments()[0] + " :"
+                    + args.getArgumentsAsString(1));
+            sendLine(origin, isSilent, "selfNotice", args.getArguments()[0],
+                    args.getArgumentsAsString(1));
         }
     }
     

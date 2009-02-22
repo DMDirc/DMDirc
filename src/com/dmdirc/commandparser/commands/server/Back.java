@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.Server;
 import com.dmdirc.ServerState;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
@@ -56,7 +57,7 @@ public final class Back extends ServerCommand implements IntelligentCommand {
      */
     @Override
     public void execute(final InputWindow origin, final Server server,
-            final boolean isSilent, final String... args) {
+            final boolean isSilent, final CommandArguments args) {
         if (server.getState() != ServerState.CONNECTED) {
             sendLine(origin, isSilent, FORMAT_ERROR, "Not connected");
             return;

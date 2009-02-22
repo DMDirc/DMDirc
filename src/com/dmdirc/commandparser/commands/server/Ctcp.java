@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.Server;
 import com.dmdirc.ServerState;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
@@ -57,18 +58,19 @@ public final class Ctcp extends ServerCommand implements IntelligentCommand {
      */
     @Override
     public void execute(final InputWindow origin, final Server server,
-            final boolean isSilent, final String... args) {
+            final boolean isSilent, final CommandArguments args) {
         if (server.getState() != ServerState.CONNECTED) {
             sendLine(origin, isSilent, FORMAT_ERROR, "Not connected");
             return;
         }
 
-        if (args.length < 2) {
+        if (args.getArguments().length < 2) {
             showUsage(origin, isSilent, "ctcp", "<target> <type> [arguments]");
         } else {
-            server.getParser().sendLine("PRIVMSG " + args[0] + " :"
-                    + ((char) 1) + implodeArgs(1, args) + ((char) 1));
-            sendLine(origin, isSilent, "selfCTCP", args[0], implodeArgs(1, args));
+            server.getParser().sendLine("PRIVMSG " + args.getArguments()[0] + " :"
+                    + ((char) 1) + args.getArgumentsAsString(1) + ((char) 1));
+            sendLine(origin, isSilent, "selfCTCP", args.getArguments()[0],
+                    args.getArgumentsAsString(1));
         }
     }
     
