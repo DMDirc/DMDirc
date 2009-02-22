@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.audio;
 
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -43,16 +44,11 @@ public final class AudioCommand extends GlobalCommand {
 		CommandManager.registerCommand(this);
 	}
 		
-	/**
-	 * Executes this command.
-	 *
-	 * @param origin The frame in which this command was issued
-	 * @param isSilent Whether this command is silenced or not
-	 * @param args The user supplied arguments
-	 */
+	/** {@inheritDoc} */
     @Override
-	public void execute(final InputWindow origin, final boolean isSilent, final String... args) {
-		final String filename = implodeArgs(args);
+	public void execute(final InputWindow origin, final boolean isSilent,
+            final CommandArguments args) {
+		final String filename = args.getArgumentsAsString();
 		final File file = new File(filename);
 		if (file.exists()) {
 			if (AudioPlayer.isValid(file)) {

@@ -24,6 +24,7 @@ package com.dmdirc.addons.redirect;
 
 import com.dmdirc.MessageTarget;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.ChatCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -46,9 +47,9 @@ public class RedirectCommand extends ChatCommand implements IntelligentCommand {
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final Server server,
-            final MessageTarget target, final boolean isSilent, final String... args) {
+            final MessageTarget target, final boolean isSilent, final CommandArguments args) {
         target.getFrame().getCommandParser().parseCommand(new FakeInputWindow(target),
-                implodeArgs(args));
+                args.getArgumentsAsString());
     }
     
     /** {@inheritDoc} */

@@ -23,6 +23,7 @@
 package com.dmdirc.addons.logging;
 
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
@@ -48,16 +49,10 @@ public final class LoggingCommand extends ServerCommand implements IntelligentCo
 		CommandManager.registerCommand(this);
 	}
 		
-	/**
-	 * Executes this command.
-	 *
-	 * @param origin The frame in which this command was issued
-	 * @param server The server object that this command is associated with
-	 * @param isSilent Whether this command is silenced or not
-	 * @param args The user supplied arguments
-	 */
+    /** {@inheritDoc} */
     @Override
-	public void execute(final InputWindow origin, final Server server, final boolean isSilent, final String... args) {
+	public void execute(final InputWindow origin, final Server server,
+            final boolean isSilent, final CommandArguments args) {
 		final PluginInfo pluginInfo = PluginManager.getPluginManager().getPluginInfoByName("logging");
 		if (pluginInfo == null) { 
 			sendLine(origin, isSilent, FORMAT_ERROR, "Logging Plugin is not loaded.");
@@ -72,23 +67,23 @@ public final class LoggingCommand extends ServerCommand implements IntelligentCo
 		
 		final LoggingPlugin plugin = (LoggingPlugin) gotPlugin;
 		
-		if (args.length > 0) {
-			if (args[0].equalsIgnoreCase("reload")) {
+		if (args.getArguments().length > 0) {
+			if (args.getArguments()[0].equalsIgnoreCase("reload")) {
 				if (PluginManager.getPluginManager().reloadPlugin(pluginInfo.getFilename())) {
 					sendLine(origin, isSilent, FORMAT_OUTPUT, "Plugin reloaded.");
 				} else {
 					sendLine(origin, isSilent, FORMAT_ERROR, "Plugin failed to reload.");
 				}
-			} else if (args[0].equalsIgnoreCase("history")) {
+			} else if (args.getArguments()[0].equalsIgnoreCase("history")) {
 				if (!plugin.showHistory(origin)) {
 					sendLine(origin, isSilent, FORMAT_ERROR, "Unable to open history for this window.");
     		}
-			} else if (args[0].equalsIgnoreCase("help")) {
+			} else if (args.getArguments()[0].equalsIgnoreCase("help")) {
 				sendLine(origin, isSilent, FORMAT_OUTPUT, getName() + " reload           - Reload the logging plugin.");
 				sendLine(origin, isSilent, FORMAT_OUTPUT, getName() + " history          - Open the history of this window, if available.");
 				sendLine(origin, isSilent, FORMAT_OUTPUT, getName() + " help             - Show this help.");
 			} else {
-				sendLine(origin, isSilent, FORMAT_ERROR, "Unknown command '" + args[0] + "'. Use " + getName() + " help for a list of commands.");
+				sendLine(origin, isSilent, FORMAT_ERROR, "Unknown command '" + args.getArguments()[0] + "'. Use " + getName() + " help for a list of commands.");
 			}
 		} else {
 			sendLine(origin, isSilent, FORMAT_ERROR, "Use " + getName() + " help for a list of commands.");

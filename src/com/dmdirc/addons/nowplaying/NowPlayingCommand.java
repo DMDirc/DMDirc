@@ -24,6 +24,7 @@ package com.dmdirc.addons.nowplaying;
 
 import com.dmdirc.MessageTarget;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.ChatCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -59,12 +60,14 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final Server server,
-            final MessageTarget target, final boolean isSilent, final String ... args) {
-        if (args.length > 0 && args[0].equalsIgnoreCase("--sources")) {
+            final MessageTarget target, final boolean isSilent, final CommandArguments args) {
+        if (args.getArguments().length > 0 && args.getArguments()[0]
+                .equalsIgnoreCase("--sources")) {
             doSourceList(origin, isSilent);
-        } else if (args.length > 0 && args[0].equalsIgnoreCase("--source")) {
-            if (args.length > 1) {
-                final String sourceName = args[1];
+        } else if (args.getArguments().length > 0 && args.getArguments()[0]
+                .equalsIgnoreCase("--source")) {
+            if (args.getArguments().length > 1) {
+                final String sourceName = args.getArguments()[1];
                 final MediaSource source = parent.getSource(sourceName);
                 
                 if (source == null) {

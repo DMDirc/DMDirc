@@ -23,6 +23,7 @@
 package com.dmdirc.addons.systray;
 
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -52,8 +53,8 @@ public final class PopupCommand extends ServerCommand {
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final Server server,
-            final boolean isSilent, final String ... args) {
-        parent.notify("DMDirc", implodeArgs(args));
+            final boolean isSilent, final CommandArguments args) {
+        parent.notify("DMDirc", args.getArgumentsAsString());
     }
 
     /** {@inheritDoc} */

@@ -108,7 +108,21 @@ public class CommandArguments {
     public String getArgumentsAsString() {
         parse();
         
-        return getWordsAsString(1);
+        return getArgumentsAsString(0);
+    }
+
+    /**
+     * Retrieves arguments to the command (i.e., not including the
+     * command name) starting with the specified argument, with their original
+     * whitespace separation preserved.
+     *
+     * @param start The index of the first argument to include
+     * @return A String representation of the command arguments
+     */
+    public String getArgumentsAsString(final int start) {
+        parse();
+
+        return getWordsAsString(start + 1);
     }
 
     /**
