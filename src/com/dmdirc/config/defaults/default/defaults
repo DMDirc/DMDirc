@@ -32,30 +32,26 @@ identity:
   defaultsversion=0
 
 general:
-  reconnectmessage=Reconnecting
-  closemessage=DMDirc exiting
-  quitmessage=Using DMDirc
-  partmessage=Using DMDirc
-  cyclemessage=Cycling
-  kickmessage=Bye!
-
-  reconnectonconnectfailure=true
-
-  #-- new
   bindip=
   closechannelsonquit=false
   closequeriesonquit=false
   closechannelsondisconnect=false
+  closemessage=DMDirc exiting
   closequeriesondisconnect=false
   commandchar=/
   commandhistory=10
+  cyclemessage=Cycling
   extendedListModes=false
   firstRun=true
   hidequeries=true
+  kickmessage=Bye!
   logerrors=false
+  partmessage=Using DMDirc
   password=
   port=6667
+  quitmessage=Using DMDirc
   reconnectdelay=5000
+  reconnectmessage=Reconnecting
   reconnectondisconnect=true
   reconnectonconnectfailure=true
   rejoinchannels=true
@@ -144,10 +140,6 @@ notifications:
   whois=lastcommand:(raw )?whois %4$s( %4$s)?
 
 ui:
-  framemanagerPosition=left
-  stylelinks=true
-
-  #-- new
   antialias=true
   awayindicator=true
   backgroundcolour=0
@@ -155,6 +147,7 @@ ui:
   foregroundcolour=1
   frameBufferSize=25000
   framemanager=com.dmdirc.ui.swing.framemanager.tree.TreeFrameManager
+  framemanagerPosition=left
   frameManagerSize=150
   inputbackgroundcolour=false:0
   inputbuffersize=50
@@ -169,17 +162,16 @@ ui:
   shownickcoloursinnicklist=true
   shownickcoloursintext=false
   showversion=true
+  stylelinks=true
   treeviewActiveBold=true
   treeviewRolloverColour=false:f0f0f0
   useOneTouchExpandable=false
 
-#-- new
 treeview:
   dragSelection=true
   sortwindows=true
   sortservers=true
 
-#-- new
 channel:
   splitusermodes=false
   sendwho=false
@@ -187,7 +179,6 @@ channel:
   topichistorysize=10
   encoding=UTF-8
 
-#-- new
 tabcompletion:
   casesensitive=false
   style=mirc
@@ -198,7 +189,6 @@ logging:
   debugLogging=true
   debugLoggingSysOut=true
 
-#-- new
 server:
   friendlymodes=true
   pingtimeout=60000
@@ -207,7 +197,6 @@ server:
   proxy.password=
   proxy.port=1080
 
-#-- new
 updater:
   autoupdate=false
   channel=STABLE
@@ -263,8 +252,6 @@ icon:
   category-messages=dmdirc://com/dmdirc/res/feedback.png
   category-updates=dmdirc://com/dmdirc/res/update.png
   category-urlhandlers=dmdirc://com/dmdirc/res/urls.png
-
-#-- new
 
 ssl:
   cacertpass=changeit

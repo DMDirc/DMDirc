@@ -53,7 +53,7 @@ public class PluginComponent implements UpdateComponent {
         this.plugin = plugin;
         
         if ((plugin.getAddonID() > 0 && plugin.getVersion() > -1)
-                || (config.hasOption("plugin-addonid", plugin.getName()))) {
+                || (config.hasOptionInt("plugin-addonid", plugin.getName()))) {
             UpdateChecker.removeComponent(getName());
             UpdateChecker.registerComponent(this);
         }
