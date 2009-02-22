@@ -28,48 +28,17 @@ import static org.junit.Assert.*;
 
 public class ConfigSourceTest extends junit.framework.TestCase {
     
-    private final TestConfigSource s = new TestConfigSource();
-    
-    @Test
-    public void testGetOption() {
-        assertEquals("moo", s.getOption("false", "bar", "moo"));
-        assertEquals("bar", s.getOption("true", "bar", "moo"));
-    }
-    
-    @Test
-    public void testGetColour() {
-        assertEquals(Color.RED, s.getOptionColour("false", "moo", Color.RED));
-        assertEquals(Color.WHITE, s.getOptionColour("true", "0", Color.RED));
-    }
-    
-    @Test
-    public void testGetChar() {
-        assertEquals('c', s.getOptionChar("true", "c", 'd'));
-        assertEquals('c', s.getOptionChar("true", "coo", 'd'));
-        assertEquals('d', s.getOptionChar("false", "c", 'd'));
-        assertEquals('d', s.getOptionChar("true", "", 'd'));
-    }
-    
-    @Test
-    public void testGetOptionalColour() {
-        assertEquals(Color.RED, s.getOptionColour("true", "false:0", Color.RED));
-        assertEquals(Color.WHITE, s.getOptionColour("true", "true:0", Color.RED));
-    }    
+    private final TestConfigSource s = new TestConfigSource(); 
     
     @Test
     public void testGetBoolean() {
         assertTrue(s.getOptionBool("true", "true"));
         assertFalse(s.getOptionBool("true", "false"));
-        assertTrue(s.getOptionBool("true", "true", false));
-        assertTrue(s.getOptionBool("false", "true", true));
-        assertFalse(s.getOptionBool("false", "true", false));
     }
     
     @Test
     public void testGetInt() {
-        assertEquals(42, s.getOptionInt("false", "moo", 42));
-        assertEquals(42, s.getOptionInt("true", "42", 0));
-        assertEquals(42, s.getOptionInt("true", "moo", 42));
+        assertEquals(42, s.getOptionInt("true", "42"));
     }
     
     @Test
