@@ -23,15 +23,22 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.config.IdentityManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ActionModelTest extends junit.framework.TestCase {
+public class ActionModelTest {
+
+    @BeforeClass
+    public static void setUpClass() {
+        IdentityManager.load();
+    }
 
     @Test
     public void testConditions() {

@@ -135,8 +135,4 @@ public class ColourManagerTest {
         IdentityManager.getConfigIdentity().unsetOption("colour", "4");
         assertEquals("ff0000", ColourManager.getHex(ColourManager.getColour(4)).toLowerCase());
     }    
-    
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(ColourManagerTest.class);
-    }
 }

@@ -25,7 +25,7 @@ package com.dmdirc.config.prefs.validator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class FileNameValidatorTest extends junit.framework.TestCase {
+public class FileNameValidatorTest {
 
     @Test
     public void testValidate() {

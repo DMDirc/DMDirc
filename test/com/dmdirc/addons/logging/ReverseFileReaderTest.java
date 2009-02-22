@@ -160,7 +160,4 @@ public class ReverseFileReaderTest {
         assertEquals((byte) 100, reader.getSeekLength());
     }
 
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(ReverseFileReaderTest.class);
-    }
 }

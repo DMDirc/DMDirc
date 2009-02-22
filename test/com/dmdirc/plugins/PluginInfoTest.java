@@ -114,7 +114,4 @@ public class PluginInfoTest {
         assertFalse(new File(pluginDir, "test.jar.update").exists());
     }
 
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(PluginInfoTest.class);
-    }
 }

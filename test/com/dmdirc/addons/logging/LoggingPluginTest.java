@@ -103,9 +103,5 @@ public class LoggingPluginTest {
         assertTrue(lp.lines.get("foo!bar@baz").get(0).indexOf("closed") > -1);
         lp.lines.clear();
     }
-    
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(LoggingPluginTest.class);
-    }
 
 }

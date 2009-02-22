@@ -193,7 +193,4 @@ public class PreferencesSettingTest {
         assertEquals("def", IdentityManager.getConfigIdentity().getOption("unit-test", "ps"));
     }    
 
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(PreferencesSettingTest.class);
-    }
 }

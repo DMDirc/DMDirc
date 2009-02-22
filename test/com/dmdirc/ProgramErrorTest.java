@@ -33,7 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ProgramErrorTest extends junit.framework.TestCase {
+public class ProgramErrorTest {
     
     private ErrorLevel level;
     private String message;

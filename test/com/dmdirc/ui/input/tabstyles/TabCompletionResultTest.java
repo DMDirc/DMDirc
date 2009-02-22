@@ -24,7 +24,7 @@ package com.dmdirc.ui.input.tabstyles;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class TabCompletionResultTest extends junit.framework.TestCase {
+public class TabCompletionResultTest {
 
     @Test
     public void testConstructor() {

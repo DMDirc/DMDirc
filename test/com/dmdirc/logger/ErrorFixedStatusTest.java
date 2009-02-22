@@ -24,7 +24,7 @@ package com.dmdirc.logger;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ErrorFixedStatusTest extends junit.framework.TestCase {
+public class ErrorFixedStatusTest {
 
     @Test
     public void testToString() {

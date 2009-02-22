@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class IdentityManagerTest extends junit.framework.TestCase {
+public class IdentityManagerTest {
 
     @Before
     public void setUp() throws Exception {        

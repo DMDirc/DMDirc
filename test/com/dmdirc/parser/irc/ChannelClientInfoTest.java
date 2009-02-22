@@ -29,7 +29,7 @@ import java.util.Map;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ChannelClientInfoTest extends junit.framework.TestCase {
+public class ChannelClientInfoTest {
         
     @Test
     public void testImportantMode() {
@@ -60,7 +60,7 @@ public class ChannelClientInfoTest extends junit.framework.TestCase {
         assertEquals("", cci.getImportantModePrefix());
         assertEquals("luser", cci.toString());
         assertEquals("luser", cci.toFullString());
-        assertEquals(0, cci.getImportantModeValue());
+        assertEquals(0l, cci.getImportantModeValue());
     }
     
     @Test

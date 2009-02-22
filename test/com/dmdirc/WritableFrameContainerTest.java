@@ -28,7 +28,7 @@ import java.util.Arrays;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class WritableFrameContainerTest extends junit.framework.TestCase {
+public class WritableFrameContainerTest {
     
     @Test
     public void testGetNumLines() {

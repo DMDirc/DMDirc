@@ -24,7 +24,7 @@ package com.dmdirc.config.prefs.validator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class PortValidatorTest extends junit.framework.TestCase {
+public class PortValidatorTest {
 
     @Test
     public void testBounds() {

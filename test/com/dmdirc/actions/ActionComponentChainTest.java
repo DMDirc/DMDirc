@@ -22,6 +22,8 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.config.IdentityManager;
+
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -30,6 +32,7 @@ public class ActionComponentChainTest {
 
     @Before
     public void setUp() throws Exception {
+        IdentityManager.load();
         ActionManager.init();
     }
 
@@ -111,10 +114,6 @@ public class ActionComponentChainTest {
     public void testEmptyToString() {
         final ActionComponentChain chain = new ActionComponentChain(String.class, "");
         chain.toString();
-    }    
-    
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(ActionComponentChainTest.class);
-    }    
+    }      
 
 }

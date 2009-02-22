@@ -28,7 +28,7 @@ import java.util.Map;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ClientInfoTest extends junit.framework.TestCase {
+public class ClientInfoTest {
     
     @Test
     public void testMap() {

@@ -208,8 +208,4 @@ public class ArrayListTransferHandlerTest {
         assertEquals("456", list.getModel().getElementAt(1));
     }        
 
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(ArrayListTransferHandlerTest.class);
-    }
-
 }

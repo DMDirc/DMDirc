@@ -26,7 +26,7 @@ import java.lang.ref.WeakReference;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class EquatableWeakReferenceTest extends junit.framework.TestCase {
+public class EquatableWeakReferenceTest {
 
     @Test
     public void testEquals() {

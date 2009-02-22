@@ -27,7 +27,7 @@ import com.dmdirc.config.IdentityManager;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class UrlCatcherPluginTest extends junit.framework.TestCase {
+public class UrlCatcherPluginTest {
 
     @Test
     public void testURLCounting() {

@@ -104,9 +104,5 @@ public class ProcessNickTest {
         assertNull(tinc.client);
         assertNull(tinc.oldNick);
     }
-    
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(ProcessNickTest.class);
-    }
 
 }

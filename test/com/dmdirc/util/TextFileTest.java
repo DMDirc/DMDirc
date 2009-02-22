@@ -101,8 +101,4 @@ public class TextFileTest {
         assertFalse(tfile.exists());
     }
     
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(TextFileTest.class);
-    }
-
 }

@@ -29,7 +29,7 @@ import com.dmdirc.parser.irc.callbacks.interfaces.IErrorInfo;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ProcessNamesTest extends junit.framework.TestCase {
+public class ProcessNamesTest {
     
     @Test
     public void testExternalNames() throws CallbackNotFoundException {

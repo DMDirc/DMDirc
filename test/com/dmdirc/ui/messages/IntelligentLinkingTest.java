@@ -83,8 +83,5 @@ public class IntelligentLinkingTest {
 
         return Arrays.asList(tests);
     }    
-    
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(IntelligentLinkingTest.class);
-    }    
+
 }

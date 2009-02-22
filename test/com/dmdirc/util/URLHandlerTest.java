@@ -72,8 +72,4 @@ public class URLHandlerTest {
         }
     }
     
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(URLHandlerTest.class);
-    }
-    
 }

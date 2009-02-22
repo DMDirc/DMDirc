@@ -31,7 +31,7 @@ import com.dmdirc.parser.irc.callbacks.interfaces.IQuit;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ProcessQuitTest extends junit.framework.TestCase {
+public class ProcessQuitTest {
     
     @Test
     public void testChannelQuit() throws CallbackNotFoundException {

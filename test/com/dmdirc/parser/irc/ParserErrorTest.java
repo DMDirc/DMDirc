@@ -24,7 +24,7 @@ package com.dmdirc.parser.irc;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ParserErrorTest extends junit.framework.TestCase {
+public class ParserErrorTest {
 
     private final ParserError fatal = new ParserError(ParserError.ERROR_FATAL, "moo", "");
     private final ParserError error = new ParserError(ParserError.ERROR_ERROR, "moo", "last line");

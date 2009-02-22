@@ -28,7 +28,7 @@ import java.io.IOException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class VlcMediaSourcePluginTest extends junit.framework.TestCase {
+public class VlcMediaSourcePluginTest {
 
     @Test
     public void testProcessInformation1() throws IOException {

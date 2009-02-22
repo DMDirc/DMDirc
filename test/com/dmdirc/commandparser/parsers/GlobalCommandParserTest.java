@@ -24,13 +24,14 @@ package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.config.IdentityManager;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class GlobalCommandParserTest extends junit.framework.TestCase {
+public class GlobalCommandParserTest {
     
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         IdentityManager.load();
     }
 

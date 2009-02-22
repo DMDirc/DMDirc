@@ -24,7 +24,7 @@ package com.dmdirc.util;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class InvalidAddressExceptionTest extends junit.framework.TestCase {
+public class InvalidAddressExceptionTest {
 
     @Test
     public void testMessage() {

@@ -22,12 +22,19 @@
 
 package com.dmdirc.updater;
 
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.updater.components.ClientComponent;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class UpdateTest extends junit.framework.TestCase {
+public class UpdateTest {
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        IdentityManager.load();
+    }
     
     private final String subject = "outofdate client channel date version url";
     

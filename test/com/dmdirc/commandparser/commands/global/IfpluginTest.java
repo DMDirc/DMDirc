@@ -21,18 +21,26 @@
  */
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.harness.TestInputWindow;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class IfpluginTest extends junit.framework.TestCase {
+public class IfpluginTest {
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        IdentityManager.load();
+    }
     
     private final Ifplugin command = new Ifplugin();
 
     @Test
     public void testUsageNoArgs() {
         final TestInputWindow tiw = new TestInputWindow();
-        command.execute(tiw, false, new String[0]);
+        command.execute(tiw, false, new CommandArguments("/foo"));
         
         assertTrue(tiw.lines.containsKey("commandUsage"));
     }
@@ -40,7 +48,7 @@ public class IfpluginTest extends junit.framework.TestCase {
     @Test
     public void testUsageOneArg() {
         final TestInputWindow tiw = new TestInputWindow();
-        command.execute(tiw, false, new String[]{"moo"});
+        command.execute(tiw, false, new CommandArguments("/foo bar"));
         
         assertTrue(tiw.lines.containsKey("commandUsage"));
     }    

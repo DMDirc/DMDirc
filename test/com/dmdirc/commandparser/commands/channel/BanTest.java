@@ -22,18 +22,26 @@
 
 package com.dmdirc.commandparser.commands.channel;
 
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.harness.TestInputWindow;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class BanTest extends junit.framework.TestCase {
+public class BanTest {
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        IdentityManager.load();
+    }
     
     private final Ban command = new Ban();
 
     @Test
     public void testUsage() {
         final TestInputWindow tiw = new TestInputWindow();
-        command.execute(tiw, null, null, false, new String[0]);
+        command.execute(tiw, null, null, false, new CommandArguments("/ban"));
         
         assertTrue(tiw.lines.containsKey("commandUsage"));
     }

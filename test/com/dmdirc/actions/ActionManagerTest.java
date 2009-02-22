@@ -22,6 +22,7 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.config.IdentityManager;
 import java.io.File;
 
 import java.util.ArrayList;
@@ -30,17 +31,18 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ActionManagerTest extends junit.framework.TestCase {
+public class ActionManagerTest {
     
     @BeforeClass
-    public void setUpClass() throws Exception {
+    public static void setUpClass() throws Exception {
+        IdentityManager.load();
         ActionManager.init();
         
         tearDownClass();
     }
     
     @AfterClass
-    public void tearDownClass() throws Exception {
+    public static void tearDownClass() throws Exception {
         if (ActionManager.getGroups().containsKey("unit-test")) {
             ActionManager.removeGroup("unit-test");
         }

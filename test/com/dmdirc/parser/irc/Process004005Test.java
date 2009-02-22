@@ -27,7 +27,7 @@ import com.dmdirc.harness.parser.TestParser;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class Process004005Test extends junit.framework.TestCase {
+public class Process004005Test {
     
     private TestParser doCaseMappingTest(final String target, final int expected) {
         final TestParser parser = new TestParser();

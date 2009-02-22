@@ -26,7 +26,7 @@ import java.awt.Color;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ConfigSourceTest extends junit.framework.TestCase {
+public class ConfigSourceTest {
     
     private final TestConfigSource s = new TestConfigSource(); 
     

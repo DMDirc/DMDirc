@@ -23,10 +23,17 @@
 package com.dmdirc.config.prefs.validator;
 
 import com.dmdirc.actions.ActionManager;
+import com.dmdirc.config.IdentityManager;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ActionGroupValidatorTest extends junit.framework.TestCase {
+public class ActionGroupValidatorTest {
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        IdentityManager.load();
+    }
 
     @Test
     public void testValidate() {

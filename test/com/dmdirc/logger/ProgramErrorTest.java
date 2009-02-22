@@ -26,7 +26,7 @@ import java.util.Date;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ProgramErrorTest extends junit.framework.TestCase {
+public class ProgramErrorTest {
 
     @Test
     public void testConstructorNegativeID() {

@@ -35,7 +35,7 @@ import javax.swing.text.JTextComponent;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class UIUtilitiesTest extends junit.framework.TestCase {
+public class UIUtilitiesTest {
     
     @Test
     public void testAddUndoManager() {

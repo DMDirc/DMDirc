@@ -26,7 +26,7 @@ import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class RegexStringListTest extends junit.framework.TestCase {
+public class RegexStringListTest {
 
     @Test
     public void testAdd() {

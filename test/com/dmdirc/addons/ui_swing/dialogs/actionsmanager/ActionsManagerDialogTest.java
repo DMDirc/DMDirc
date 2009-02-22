@@ -227,8 +227,4 @@ public class ActionsManagerDialogTest implements UITestIface {
         window.show();
     }
 
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(ActionsManagerDialogTest.class);
-    }
-
 }

@@ -28,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class CipherUtilsTest extends junit.framework.TestCase {
+public class CipherUtilsTest {
     
     @Before
     public void setUp() throws Exception {

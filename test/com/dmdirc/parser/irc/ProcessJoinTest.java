@@ -30,7 +30,7 @@ import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ProcessJoinTest extends junit.framework.TestCase {
+public class ProcessJoinTest {
     
     @Test
     public void testSelfJoinChannel() throws CallbackNotFoundException {

@@ -22,6 +22,7 @@
 
 package com.dmdirc.harness;
 
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.parsers.*;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
@@ -36,7 +37,7 @@ public class TestCommandParser extends CommandParser {
 
     public boolean wasSilent;
 
-    public String[] commandArgs;
+    public CommandArguments commandArgs;
 
     public String invalidCommand;
 
@@ -47,7 +48,7 @@ public class TestCommandParser extends CommandParser {
 
     @Override
     protected void executeCommand(InputWindow origin, boolean isSilent,
-                                  Command command, String... args) {
+                                  Command command, CommandArguments args) {
         executedCommand = command;
         wasSilent = isSilent;
         commandArgs = args;
@@ -59,8 +60,8 @@ public class TestCommandParser extends CommandParser {
     }
 
     @Override
-    protected void handleInvalidCommand(InputWindow origin, String command,
-                                        String... args) {
-        invalidCommand = command;
+    protected void handleInvalidCommand(InputWindow origin,
+                                        CommandArguments args) {
+        invalidCommand = args.getCommandName();
     }
 }

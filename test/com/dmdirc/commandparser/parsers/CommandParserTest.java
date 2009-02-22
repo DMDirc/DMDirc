@@ -25,6 +25,7 @@ import com.dmdirc.harness.TestCommandParser;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.global.Echo;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.util.Arrays;
@@ -37,6 +38,7 @@ public class CommandParserTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        IdentityManager.load();
         CommandManager.initCommands();
     }
 
@@ -49,7 +51,6 @@ public class CommandParserTest {
         assertNull(tcp.invalidCommand);
         assertNotNull(tcp.executedCommand);
         assertFalse(tcp.wasSilent);
-        assertTrue(Arrays.equals(tcp.commandArgs, new String[]{"this", "is", "a", "test"}));
         assertTrue(tcp.executedCommand instanceof Echo);
     }
 
@@ -62,7 +63,6 @@ public class CommandParserTest {
         assertNull(tcp.invalidCommand);
         assertNotNull(tcp.executedCommand);
         assertFalse(tcp.wasSilent);
-        assertTrue(Arrays.equals(tcp.commandArgs, new String[0]));
         assertTrue(tcp.executedCommand instanceof Echo);
     }
 
@@ -75,7 +75,6 @@ public class CommandParserTest {
         assertNull(tcp.invalidCommand);
         assertNotNull(tcp.executedCommand);
         assertTrue(tcp.wasSilent);
-        assertTrue(Arrays.equals(tcp.commandArgs, new String[0]));
         assertTrue(tcp.executedCommand instanceof Echo);
     }
 
@@ -88,7 +87,6 @@ public class CommandParserTest {
         assertNull(tcp.invalidCommand);
         assertNotNull(tcp.executedCommand);
         assertTrue(tcp.wasSilent);
-        assertTrue(Arrays.equals(tcp.commandArgs, new String[]{"this", "is", "a", "test"}));
         assertTrue(tcp.executedCommand instanceof Echo);
     }
 
@@ -155,9 +153,5 @@ public class CommandParserTest {
         
         assertEquals(0l, tcp.getCommandTime("echo"));
     }    
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(CommandParserTest.class);
-    }
 
 }

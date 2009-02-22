@@ -25,7 +25,7 @@ package com.dmdirc.config.prefs.validator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ValidatorChainTest extends junit.framework.TestCase {
+public class ValidatorChainTest {
 
     @Test
     public void testValidate() {

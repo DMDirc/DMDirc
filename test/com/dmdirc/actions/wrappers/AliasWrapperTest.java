@@ -28,14 +28,21 @@ import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.config.IdentityManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class AliasWrapperTest {
+
+    @BeforeClass
+    public static void setupClass() {
+        IdentityManager.load();
+    }
 
     @Test
     public void testNormal() {

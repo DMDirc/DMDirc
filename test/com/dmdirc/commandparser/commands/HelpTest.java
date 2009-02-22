@@ -21,10 +21,14 @@
  */
 package com.dmdirc.commandparser.commands;
 
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.config.IdentityManager;
+
 import java.util.LinkedList;
 import java.util.List;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -33,26 +37,32 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class HelpTest {
 
-    private Command command;
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        IdentityManager.load();
+    }
 
-    public HelpTest(final Command command) {
-        this.command = command;
+    private CommandInfo info;
+
+    public HelpTest(final CommandInfo info) {
+        this.info = info;
     }
 
     @Test
     public void testHelp() {
         assertTrue("Command's help output should start with its name ("
-                + command.getName() + ")", command.getHelp().startsWith(command.getName()));
+                + info.getName() + ")", info.getHelp().startsWith(info.getName()));
     }
 
     @Parameterized.Parameters
     public static List<Object[]> data() {
         final List<Object[]> res = new LinkedList<Object[]>();
 
+        IdentityManager.load();
         CommandManager.initCommands();
 
         for (CommandType type : CommandType.values()) {
-            for (Command command : CommandManager.getCommands(type)) {
+            for (CommandInfo command : CommandManager.getCommands(type).keySet()) {
                 if (command.showInHelp()) {
                     res.add(new Object[]{command});
                 }
@@ -60,10 +70,6 @@ public class HelpTest {
         }
 
         return res;
-    }
-    
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(HelpTest.class);
     }
     
 }

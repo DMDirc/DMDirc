@@ -495,9 +495,5 @@ public class IRCParserTest {
         assertEquals(ircd, parser.getIRCD(false));
         assertEquals(expected.toLowerCase(), parser.getIRCD(true).toLowerCase());
     }
-    
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(IRCParserTest.class);
-    }
 
 }
