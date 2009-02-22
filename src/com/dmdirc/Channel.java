@@ -345,7 +345,9 @@ public final class Channel extends MessageTarget
         }
 
         // 3: Trigger any actions neccessary
-        part(getConfigManager().getOption("general", "partmessage"));
+        if (onChannel) {
+            part(getConfigManager().getOption("general", "partmessage"));
+        }
 
         // 4: Trigger action for the window closing
         ActionManager.processEvent(CoreActionType.CHANNEL_CLOSED, null, this);
