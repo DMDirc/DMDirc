@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -45,8 +46,8 @@ public final class Cycle extends ChannelCommand {
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final Server server,
-            final Channel channel, final boolean isSilent, final String... args) {
-        channel.part(args.length > 0 ? implodeArgs(args)
+            final Channel channel, final boolean isSilent, final CommandArguments args) {
+        channel.part(args.getArguments().length > 0 ? args.getArgumentsAsString()
                 : origin.getConfigManager().getOption("general", "cyclemessage"));
         channel.join();
     }

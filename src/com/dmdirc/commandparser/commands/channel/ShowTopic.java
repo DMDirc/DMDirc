@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ExternalCommand;
@@ -47,8 +48,8 @@ public final class ShowTopic extends ChannelCommand implements ExternalCommand {
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final Server server,
-            final Channel channel, final boolean isSilent, final String... args) {
-        if (args.length == 0) {
+            final Channel channel, final boolean isSilent, final CommandArguments args) {
+        if (args.getArguments().length == 0) {
             final ChannelInfo cChannel = channel.getChannelInfo();
 
             if (cChannel.getTopic().isEmpty()) {
@@ -61,18 +62,18 @@ public final class ShowTopic extends ChannelCommand implements ExternalCommand {
                         1000 * cChannel.getTopicTime(), cChannel);
             }
         } else {
-            channel.setTopic(implodeArgs(args));
+            channel.setTopic(args.getArgumentsAsString());
         }
     }
 
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final Server server,
-            final String channel, final boolean isSilent, final String ... args) {
-        if (args.length == 0) {
+            final String channel, final boolean isSilent, final CommandArguments args) {
+        if (args.getArguments().length == 0) {
             server.getParser().sendLine("TOPIC " + channel);
         } else {
-            server.getParser().sendLine("TOPIC " + channel + " :" + implodeArgs(args));
+            server.getParser().sendLine("TOPIC " + channel + " :" + args.getArgumentsAsString());
         }
     }
 

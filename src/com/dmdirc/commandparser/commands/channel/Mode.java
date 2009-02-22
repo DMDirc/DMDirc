@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ExternalCommand;
@@ -52,24 +53,24 @@ public final class Mode extends ChannelCommand implements IntelligentCommand,
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final Server server,
-            final Channel channel, final boolean isSilent, final String... args) {
+            final Channel channel, final boolean isSilent, final CommandArguments args) {
         final ChannelInfo cChannel = channel.getChannelInfo();
 
-        if (args.length == 0) {
+        if (args.getArguments().length == 0) {
             sendLine(origin, isSilent, "channelModeDiscovered", cChannel.getModeStr(), cChannel);
         } else {
-            server.getParser().sendLine("MODE " + cChannel + " " + implodeArgs(args));
+            server.getParser().sendLine("MODE " + cChannel + " " + args.getArgumentsAsString());
         }
     }
 
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final Server server,
-            final String channel, final boolean isSilent, final String ... args) {
-        if (args.length == 0) {
+            final String channel, final boolean isSilent, final CommandArguments args) {
+        if (args.getArguments().length == 0) {
             server.getParser().sendLine("MODE " + channel);
         } else {
-            server.getParser().sendLine("MODE " + channel + " " + implodeArgs(args));
+            server.getParser().sendLine("MODE " + channel + " " + args.getArgumentsAsString());
         }
     }
 
