@@ -307,21 +307,6 @@ public final class ErrorListDialog extends StandardDialog implements
 
     /** {@inheritDoc} */
     @Override
-    public void fatalError(final ProgramError error) {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                if (isReady()) {
-                    new FatalErrorDialog(error);
-                }
-            }
-        });
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public void errorDeleted(final ProgramError error) {
         SwingUtilities.invokeLater(new Runnable() {
 

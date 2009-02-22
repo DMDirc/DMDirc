@@ -28,6 +28,11 @@ package com.dmdirc.ui.interfaces;
  */
 public interface StatusMessageNotifier {
     
-    /** Called when a click event is received on the message component. */
-    void clickReceived();
+    /**
+     * Called when a click event is received on the message component.
+     *
+     * @param mousebutton Mouse button clicked
+     * @param clickCount Click count
+     */
+    void clickReceived(final int mousebutton, final int clickCount);
 }

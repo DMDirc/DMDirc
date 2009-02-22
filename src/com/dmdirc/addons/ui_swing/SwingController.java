@@ -43,8 +43,8 @@ import com.dmdirc.ui.interfaces.StatusBar;
 import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.addons.ui_swing.components.FeedbackNag;
-import com.dmdirc.addons.ui_swing.components.SwingStatusBar;
 import com.dmdirc.addons.ui_swing.components.pluginpanel.PluginPanel;
+import com.dmdirc.addons.ui_swing.components.statusbar.SwingStatusBar;
 import com.dmdirc.addons.ui_swing.components.themepanel.ThemePanel;
 import com.dmdirc.addons.ui_swing.dialogs.updater.SwingUpdaterDialog;
 import com.dmdirc.addons.ui_swing.dialogs.url.URLDialog;
@@ -564,5 +564,4 @@ public final class SwingController extends Plugin implements UIController {
     public void onUnload() {
         // Do nothing
     }
-
 }

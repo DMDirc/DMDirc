@@ -24,9 +24,11 @@ package com.dmdirc.logger;
 
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.FatalErrorDialog;
 import com.dmdirc.util.Downloader;
 import com.dmdirc.util.ListenerList;
 
+import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -40,6 +42,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Error manager.
@@ -384,24 +388,28 @@ public final class ErrorManager implements Serializable, Runnable {
      * @param error Error that occurred
      */
     protected void fireFatalError(final ProgramError error) {
-        int firedListeners = 0;
-
-        for (ErrorListener listener : errorListeners.get(ErrorListener.class)) {
-            if (listener.isReady()) {
-                listener.fatalError(error);
-                firedListeners++;
-            }
+        if (GraphicsEnvironment.isHeadless()) {
+            System.out.println("A fatal error has occurred: " + error.getMessage());
+            System.out.println(Arrays.toString(error.getTrace()));
+        } else {
+            FatalErrorDialog.displayBlocking(error);
         }
+        
+        new Timer("Fatal Error Timer").schedule(new TimerTask() {
 
-        if (firedListeners == 0) {
-            System.err.println("A fatal error has occurred: " + error.getMessage());
-
-            for (String line : error.getTrace()) {
-                System.err.println("\t" + line);
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                while (error.getReportStatus() != ErrorReportStatus.FINISHED) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ex) {
+                        //Ignore
+                    }
+                }
             }
-
-            System.exit(-1);
-        }
+        }, 0);
+        System.exit(-1);
     }
 
     /**
