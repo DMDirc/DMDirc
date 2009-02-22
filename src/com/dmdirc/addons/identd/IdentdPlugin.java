@@ -138,46 +138,46 @@ public class IdentdPlugin extends Plugin implements ActionListener {
                 "those above them)");
         
         general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                MY_DOMAIN, "general.useUsername", "false", "Use connection " +
+                MY_DOMAIN, "general.useUsername", "Use connection " +
                 "username rather than system username", "If this is enabled," +
                 " the username for the connection will be used rather than " +
                 "'" + System.getProperty("user.name") + "'"));
         general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                MY_DOMAIN, "general.useNickname", "false", "Use connection " +
+                MY_DOMAIN, "general.useNickname", "Use connection " +
                 "nickname rather than system username", "If this is enabled, " +
                 "the nickname for the connection will be used rather than " +
                 "'" + System.getProperty("user.name") + "'"));
         general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                MY_DOMAIN, "general.useCustomName", "false", "Use custom name" +
+                MY_DOMAIN, "general.useCustomName", "Use custom name" +
                 " all the time", "If this is enabled, the name specified below" +
                 " will be used all the time"));
         general.addSetting(new PreferencesSetting(PreferencesType.TEXT,
-                MY_DOMAIN, "general.customName", "", "Custom Name to use",
+                MY_DOMAIN, "general.customName", "Custom Name to use",
                 "The custom name to use when 'Use Custom Name' is enabled"));
         
         advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                MY_DOMAIN, "advanced.alwaysOn", "false", "Always have ident " +
+                MY_DOMAIN, "advanced.alwaysOn", "Always have ident " +
                 "port open", "By default the identd only runs when there are " +
                 "active connection attempts. This overrides that."));
         advanced.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
-                new PortValidator(), MY_DOMAIN, "advanced.port", "113",
+                new PortValidator(), MY_DOMAIN, "advanced.port",
                 "What port should the identd listen on", "Default port is 113," +
                 " this is probably useless if changed unless you port forward" +
                 " ident to a different port"));
         advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                MY_DOMAIN, "advanced.useCustomSystem", "false", "Use custom OS",
+                MY_DOMAIN, "advanced.useCustomSystem", "Use custom OS",
                 "By default the plugin uses 'UNIX' or 'WIN32' as the system " +
                 "type, this can be overriden by enabling this."));
         advanced.addSetting(new PreferencesSetting(PreferencesType.TEXT,
-                MY_DOMAIN, "advanced.customSystem", "", "Custom OS to use",
+                MY_DOMAIN, "advanced.customSystem", "Custom OS to use",
                 "The custom system to use when 'Use Custom System' is enabled"));
         advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                MY_DOMAIN, "advanced.isHiddenUser", "false", "Respond to ident" +
+                MY_DOMAIN, "advanced.isHiddenUser", "Respond to ident" +
                 " requests with HIDDEN-USER error", "By default the plugin will" +
                 " give a USERID response, this can force an 'ERROR :" +
                 " HIDDEN-USER' response instead."));
         advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                MY_DOMAIN, "advanced.isNoUser", "false", "Respond to ident" +
+                MY_DOMAIN, "advanced.isNoUser", "Respond to ident" +
                 " requests with NO-USER error", "By default the plugin will" +
                 " give a USERID response, this can force an 'ERROR : NO-USER'" +
                 " response instead. (Overrides HIDDEN-USER)"));

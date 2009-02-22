@@ -150,7 +150,7 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
                 "General configuration settings");
         
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "plugin-systray", "autominimise", "false", "Auto-hide DMDirc " +
+                "plugin-systray", "autominimise", "Auto-hide DMDirc " +
                 "when minimised", "If this option is enabled, the systray " +
                 "plugin will hide DMDirc to the system tray whenever DMDirc is" +
                 " minimised"));

@@ -217,13 +217,13 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
                         = new PreferencesCategory("Window status", "");
 
                 category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                        MY_DOMAIN, "channel.shownone", "true", "Show 'none' count",
+                        MY_DOMAIN, "channel.shownone", "Show 'none' count",
                         "Should the count for users with no state be shown?"));
                 category.addSetting(new PreferencesSetting(PreferencesType.TEXT,
-                        MY_DOMAIN, "channel.noneprefix", "None:", "'None' count prefix",
+                        MY_DOMAIN, "channel.noneprefix", "'None' count prefix",
                         "The Prefix to use when showing the 'none' count"));
                 category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                        MY_DOMAIN, "client.showname", "false", "Show real name",
+                        MY_DOMAIN, "client.showname", "Show real name",
                         "Should the realname for clients be shown if known?"));
 
 		manager.getCategory("Plugins").addSubCategory(category);

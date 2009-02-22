@@ -24,24 +24,22 @@ package com.dmdirc.addons.ui_swing.dialogs.sslcertificate;
 
 import com.dmdirc.Main;
 import com.dmdirc.addons.ui_swing.SwingController;
-import com.dmdirc.addons.ui_swing.dialogs.sslcertificate.CertificateInfoPanel;
-import com.dmdirc.addons.ui_swing.dialogs.sslcertificate.SSLCertificateDialog;
 import com.dmdirc.harness.ui.ClassFinder;
 import com.dmdirc.harness.ui.TestSSLCertificateDialogModel;
 import com.dmdirc.harness.ui.UIClassTestRunner;
 import com.dmdirc.harness.ui.UITestIface;
 import com.dmdirc.ui.IconManager;
-
 import com.dmdirc.addons.ui_swing.UIUtilities;
+
 import java.awt.Component;
 import java.util.Arrays;
 
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JList;
-
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
+
 import org.fest.swing.core.EventMode;
 import org.fest.swing.driver.BasicJListCellReader;
 import org.fest.swing.fixture.DialogFixture;
@@ -49,7 +47,6 @@ import org.fest.swing.fixture.DialogFixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;

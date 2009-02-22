@@ -260,7 +260,7 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
         final PreferencesCategory cat = new PreferencesCategory("Lag display plugin",
                                                                 "");
         cat.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "plugin-Lagdisplay", "usealternate", "false",
+                "plugin-Lagdisplay", "usealternate",
                 "Alternate method", "Use an alternate method of determining "
                 + "lag which bypasses bouncers or proxies that may reply."));
         manager.getCategory("Plugins").addSubCategory(cat);

@@ -246,11 +246,10 @@ public class Action extends ActionModel implements Serializable {
             if (data.containsKey("type") && data.containsKey("setting")
                     && data.containsKey("title") && data.containsKey("default")
                     && data.containsKey("tooltip")) {
+                ActionManager.registerDefault(data.get("setting"), data.get("default"));
                 myGroup.getSettings().put(data.get("setting"), new PreferencesSetting(
                         PreferencesType.valueOf(data.get("type")), "actions",
-                        data.get("setting"), data.get("default"), 
-                        data.get("title"), data.get("tooltip")));
-                ActionManager.registerDefault(data.get("setting"), data.get("default"));
+                        data.get("setting"), data.get("title"), data.get("tooltip")));
             }
         }
     }

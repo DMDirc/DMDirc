@@ -223,22 +223,22 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 		final PreferencesCategory backbuffer = new PreferencesCategory("Back Buffer", "Options related to the automatic backbuffer");
 		final PreferencesCategory advanced = new PreferencesCategory("Advanced", "Advanced configuration for Logging plugin. You shouldn't need to edit this unless you know what you are doing.");
 		
-		general.addSetting(new PreferencesSetting(PreferencesType.TEXT, MY_DOMAIN, "general.directory", "false", "Directory", "Directory for log files"));
-		general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "general.networkfolders", "", "Separate logs by network", "Should the files be stored in a sub-dir with the networks name?"));
-		general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "general.addtime", "false", "Timestamp logs", "Should a timestamp be added to the log files?"));
-		general.addSetting(new PreferencesSetting(PreferencesType.TEXT, MY_DOMAIN, "general.timestamp", "", "Timestamp format", "The String to pass to 'SimpleDateFormat' to format the timestamp"));
-		general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "general.stripcodes", "false", "Strip Control Codes", "Remove known irc control codes from lines before saving?"));
-		general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "general.channelmodeprefix", "", "Show channel mode prefix", "Show the @,+ etc next to nicknames"));
+		general.addSetting(new PreferencesSetting(PreferencesType.TEXT, MY_DOMAIN, "general.directory", "Directory", "Directory for log files"));
+		general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "general.networkfolders", "Separate logs by network", "Should the files be stored in a sub-dir with the networks name?"));
+		general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "general.addtime", "Timestamp logs", "Should a timestamp be added to the log files?"));
+		general.addSetting(new PreferencesSetting(PreferencesType.TEXT, MY_DOMAIN, "general.timestamp", "Timestamp format", "The String to pass to 'SimpleDateFormat' to format the timestamp"));
+		general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "general.stripcodes", "Strip Control Codes", "Remove known irc control codes from lines before saving?"));
+		general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "general.channelmodeprefix", "Show channel mode prefix", "Show the @,+ etc next to nicknames"));
 		
-		backbuffer.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "backbuffer.autobackbuffer", "", "Automatically display", "Automatically display the backbuffer when a channel is joined"));
-		backbuffer.addSetting(new PreferencesSetting(PreferencesType.COLOUR, MY_DOMAIN, "backbuffer.colour", "0", "Colour to use for display", "Colour used when displaying the backbuffer"));
-		backbuffer.addSetting(new PreferencesSetting(PreferencesType.INTEGER, MY_DOMAIN, "backbuffer.lines", "0", "Number of lines to show", "Number of lines used when displaying backbuffer"));
-		backbuffer.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "backbuffer.timestamp", "false", "Show Formatter-Timestamp", "Should the line be added to the frame with the timestamp from the formatter aswell as the file contents"));
+		backbuffer.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "backbuffer.autobackbuffer", "Automatically display", "Automatically display the backbuffer when a channel is joined"));
+		backbuffer.addSetting(new PreferencesSetting(PreferencesType.COLOUR, MY_DOMAIN, "backbuffer.colour", "Colour to use for display", "Colour used when displaying the backbuffer"));
+		backbuffer.addSetting(new PreferencesSetting(PreferencesType.INTEGER, MY_DOMAIN, "backbuffer.lines", "Number of lines to show", "Number of lines used when displaying backbuffer"));
+		backbuffer.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "backbuffer.timestamp", "Show Formatter-Timestamp", "Should the line be added to the frame with the timestamp from the formatter aswell as the file contents"));
 
-		advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "advanced.filenamehash", "false", "Add Filename hash", "Add the MD5 hash of the channel/client name to the filename. (This is used to allow channels with similar names (ie a _ not a  -) to be logged separately)"));
+		advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "advanced.filenamehash", "Add Filename hash", "Add the MD5 hash of the channel/client name to the filename. (This is used to allow channels with similar names (ie a _ not a  -) to be logged separately)"));
 
-		advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "advanced.usedate", "false", "Use Date directories", "Should the log files be in separate directories based on the date?"));
-		advanced.addSetting(new PreferencesSetting(PreferencesType.TEXT, MY_DOMAIN, "advanced.usedateformat", "yyyy/MMMM", "Archive format", "The String to pass to 'SimpleDateFormat' to format the directory name(s) for archiving"));
+		advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "advanced.usedate", "Use Date directories", "Should the log files be in separate directories based on the date?"));
+		advanced.addSetting(new PreferencesSetting(PreferencesType.TEXT, MY_DOMAIN, "advanced.usedateformat", "Archive format", "The String to pass to 'SimpleDateFormat' to format the directory name(s) for archiving"));
 
 		general.addSubCategory(backbuffer.setInline());
 		general.addSubCategory(advanced.setInline());

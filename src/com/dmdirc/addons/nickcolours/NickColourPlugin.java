@@ -249,25 +249,25 @@ public final class NickColourPlugin extends Plugin implements ActionListener {
                 "Set colours for specific nicknames.", new NickColourPanel(this));
         
         general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "ui", "shownickcoloursintext", "false", "Show colours in text" +
+                "ui", "shownickcoloursintext", "Show colours in text" +
                 "area", "Colour nicknames in main text area?"));
         general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "ui", "shownickcoloursinnicklist", "false", "Show colours in" +
+                "ui", "shownickcoloursinnicklist", "Show colours in" +
                 " nick list", "Colour nicknames in channel nick lists?"));
         general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                DOMAIN, "settext", "false", "Set colours in textarea",
+                DOMAIN, "settext", "Set colours in textarea",
                 "Should the plugin set the textarea colour of nicks?"));
         general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                DOMAIN, "setnicklist", "false", "Set colours in nick list",
+                DOMAIN, "setnicklist", "Set colours in nick list",
                 "Should the plugin set the nick list colour of nicks?"));
         general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                DOMAIN, "userandomcolour", "false", "Use random colour",
+                DOMAIN, "userandomcolour", "Use random colour",
                 "Use a pseudo-random colour for each person?"));
         general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                DOMAIN, "useowncolour", "false", "Use colour for own nick",
+                DOMAIN, "useowncolour", "Use colour for own nick",
                 "Always use the same colour for our own nickname?"));
         general.addSetting(new PreferencesSetting(PreferencesType.COLOUR,
-                DOMAIN, "owncolour", "1", "Colour to use for own nick",
+                DOMAIN, "owncolour", "Colour to use for own nick",
                 "Colour used for our own nickname, if above setting is enabled."));        
 
         general.addSubCategory(colours);

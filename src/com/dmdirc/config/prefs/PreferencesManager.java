@@ -140,33 +140,33 @@ public class PreferencesManager {
         final PreferencesCategory category = new PreferencesCategory("General", "");
 
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "ui", "confirmQuit", "false", "Confirm quit",
+                "ui", "confirmQuit", "Confirm quit",
                 "Do you want to confirm closing the client?"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "channel", "splitusermodes", "false", "Split user modes",
+                "channel", "splitusermodes", "Split user modes",
                 "Show individual mode lines for each mode change that affects" +
                 " a user (e.g. op, devoice)"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "channel", "sendwho", "false", "Send channel WHOs",
+                "channel", "sendwho", "Send channel WHOs",
                 "Request information (away state, hostname, etc) on channel " +
                 "users automatically"));
         category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
-                "general", "whotime", "60000", "Who request interval",
+                "general", "whotime", "Who request interval",
                 "How often to send WHO requests for a channel"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "channel", "showmodeprefix", "false", "Show mode prefix",
+                "channel", "showmodeprefix", "Show mode prefix",
                 "Prefix users' names with their mode in channels"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "server", "friendlymodes", "false", "Friendly modes",
+                "server", "friendlymodes", "Friendly modes",
                 "Show friendly mode names"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "general", "hidequeries", "false", "Hide queries",
+                "general", "hidequeries", "Hide queries",
                 "Initially hide queries so that they don't steal focus"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "ui", "awayindicator", "false", "Away indicator",
+                "ui", "awayindicator", "Away indicator",
                 "Shows an indicator in windows when you are marked as away"));
         category.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
-                new NumericalValidator(0, 100), "ui", "pasteProtectionLimit", "1",
+                new NumericalValidator(0, 100), "ui", "pasteProtectionLimit",
                 "Paste protection trigger", "Confirm pasting of text that " +
                 "contains more than this many lines."));
         
@@ -175,7 +175,7 @@ public class PreferencesManager {
         taboptions.put("mirc", "mIRC style (cyclic)");
         
         category.addSetting(new PreferencesSetting("tabcompletion", "style",
-                "bash", "Tab completion style", "Determines the behaviour of " +
+                "Tab completion style", "Determines the behaviour of " +
                 "the tab completer when there are multiple matches.", taboptions));
 
         addCategory(category);
@@ -189,34 +189,34 @@ public class PreferencesManager {
                 "", "category-connection");
 
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "general", "closechannelsonquit", "false", "Close channels on quit",
+                "general", "closechannelsonquit", "Close channels on quit",
                 "Close channel windows when you quit the server?"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "general", "closechannelsondisconnect", "false",
+                "general", "closechannelsondisconnect",
                 "Close channels on disconnect", "Close channel windows when " +
                 "the server is disconnected?"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "general", "closequeriesonquit", "false", "Close queries on quit",
+                "general", "closequeriesonquit", "Close queries on quit",
                 "Close query windows when you quit the server?"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "general", "closequeriesondisconnect", "false",
+                "general", "closequeriesondisconnect",
                 "Close queries on disconnect", "Close query windows when " +
                 "the server is disconnected?"));
         category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
-                "server", "pingtimeout", "60000", "Server ping timeout",
+                "server", "pingtimeout", "Server ping timeout",
                 "How long to wait for a server to reply to a PING request " +
                 "before disconnecting"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "general", "reconnectonconnectfailure", "false", "Reconnect on failure",
+                "general", "reconnectonconnectfailure", "Reconnect on failure",
                 "Attempt to reconnect if there is an error when connecting?"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "general", "reconnectondisconnect", "false", "Reconnect on disconnect",
+                "general", "reconnectondisconnect", "Reconnect on disconnect",
                 "Attempt to reconnect if the server is disconnected?"));
         category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
-                "general", "reconnectdelay", "30000", "Reconnect delay",
+                "general", "reconnectdelay", "Reconnect delay",
                 "How long to wait before attempting to reconnect to a server"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "general", "rejoinchannels", "false", "Rejoin open channels",
+                "general", "rejoinchannels", "Rejoin open channels",
                 "Rejoin open channels when reconnecting to a server?"));
 
         addCategory(category);
@@ -230,22 +230,22 @@ public class PreferencesManager {
                 "", "category-messages");
 
         category.addSetting(new PreferencesSetting(PreferencesType.TEXT,
-                "general", "closemessage", "DMDirc exiting",
+                "general", "closemessage",
                 "Close message", "Default quit message to use when closing DMDirc"));
         category.addSetting(new PreferencesSetting(PreferencesType.TEXT,
-                "general", "partmessage", "Using DMDirc",
+                "general", "partmessage",
                 "Part message", "Default part message to use when leaving channels"));
         category.addSetting(new PreferencesSetting(PreferencesType.TEXT,
-                "general", "quitmessage", "Using DMDirc",
+                "general", "quitmessage",
                 "Quit message", "Default quit message to use when disconnecting"));
         category.addSetting(new PreferencesSetting(PreferencesType.TEXT,
-                "general", "cyclemessage", "Rejoining",
+                "general", "cyclemessage",
                 "Cycle message", "Default part message to use when cycling channels"));
         category.addSetting(new PreferencesSetting(PreferencesType.TEXT,
-                "general", "kickmessage", "Bye bye!",
+                "general", "kickmessage",
                 "Kick message", "Default message to use when kicking people"));
         category.addSetting(new PreferencesSetting(PreferencesType.TEXT,
-                "general", "reconnectmessage", "Reconnecting",
+                "general", "reconnectmessage",
                 "Reconnect message", "Default quit message to use when reconnecting"));
 
         addNotificationsCategory(category);
@@ -280,41 +280,40 @@ public class PreferencesManager {
         mapOptions.put("window:Network Map", "Map window");
 
         category.addSetting(new PreferencesSetting("notifications", "socketClosed",
-                "server", "Socket closed", "Where to display socket closed notifications",
+                "Socket closed", "Where to display socket closed notifications",
                 options));
         category.addSetting(new PreferencesSetting("notifications", "privateNotice",
-                "server", "Private notice", "Where to display private notices",
+                "Private notice", "Where to display private notices",
                 options));
         category.addSetting(new PreferencesSetting("notifications", "privateCTCP",
-                "server", "CTCP request", "Where to display CTCP request notifications",
+                "CTCP request", "Where to display CTCP request notifications",
                 options));
         category.addSetting(new PreferencesSetting("notifications", "privateCTCPreply",
-                "server", "CTCP reply", "Where to display CTCP replies",
+                "CTCP reply", "Where to display CTCP replies",
                 ctcprOptions));
         category.addSetting(new PreferencesSetting("notifications", "connectError",
-                "server", "Connect error", "Where to display connect error notifications",
+                "Connect error", "Where to display connect error notifications",
                 options));
         category.addSetting(new PreferencesSetting("notifications", "connectRetry",
-                "server", "Connect retry", "Where to display connect retry notifications",
+                "Connect retry", "Where to display connect retry notifications",
                 options));
         category.addSetting(new PreferencesSetting("notifications", "stonedServer",
-                "server", "Stoned server", "Where to display stoned server notifications",
+                "Stoned server", "Where to display stoned server notifications",
                 options));
         category.addSetting(new PreferencesSetting("notifications", "whois",
-                "lastcommand:(raw )?whois %4$s( %4$s)?", "Whois output", "Where to " +
-                "display /whois output",
+                "Whois output", "Where to display /whois output",
                 whoisOptions));
         category.addSetting(new PreferencesSetting("notifications", "lusers",
-                "server", "Lusers output", "Where to display /lusers output",
+                "Lusers output", "Where to display /lusers output",
                 options));
         category.addSetting(new PreferencesSetting("notifications", "map",
-                "window:Network Map", "Map output", "Where to display /map output",
+                "Map output", "Where to display /map output",
                 mapOptions));
         category.addSetting(new PreferencesSetting("notifications", "away",
-                "server", "Away notification", "Where to display /away output",
+                "Away notification", "Where to display /away output",
                 options));
         category.addSetting(new PreferencesSetting("notifications", "back",
-                "server", "Back notification", "Where to display /away output",
+                "Back notification", "Where to display /away output",
                 options));
 
         parent.addSubCategory(category);
@@ -334,37 +333,35 @@ public class PreferencesManager {
         options.put("showWhenMaximised", "Show only when windows maximised");
 
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "browser", "userlaunchdelay", "false", "Use browser launch delay",
+                "browser", "userlaunchdelay", "Use browser launch delay",
                 "Enable delay between browser launches (to prevent mistakenly" +
                 " double clicking)?"));
         category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
-                "browser", "launchdelay", "500", "Browser launch delay",
+                "browser", "launchdelay", "Browser launch delay",
                 "Minimum time between opening of URLs"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "general", "submitErrors", "false", "Automatically submit errors",
+                "general", "submitErrors", "Automatically submit errors",
                 "Automatically submit client errors to the developers?"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "general", "logerrors", "false", "Log errors to disk",
+                "general", "logerrors", "Log errors to disk",
                 "Save copies of all errors to disk?"));        
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "tabcompletion", "casesensitive", "false", "Case-sensitive tab completion",
+                "tabcompletion", "casesensitive", "Case-sensitive tab completion",
                 "Respect case when tab completing?"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "ui", "quickCopy", "false", "Quick copy", "Automatically copy" +
+                "ui", "quickCopy", "Quick copy", "Automatically copy" +
                 " text that's selected when the mouse button is released?"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "ui", "showversion", "true", "Show version",
+                "ui", "showversion", "Show version",
                 "Show DMDirc version in the titlebar?"));
         category.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
-                new NumericalValidator(10, -1), "ui", "frameBufferSize", "100000",
+                new NumericalValidator(10, -1), "ui", "frameBufferSize",
                 "Window buffer size", "The maximum number of lines in a window" +
                 " buffer"));
         category.addSetting(new PreferencesSetting("ui", "mdiBarVisibility", 
-                "showWhenMaximised", "MDI Bar Visibility",
-                "Controls the visibility of the MDI bar", options));
+                "MDI Bar Visibility", "Controls the visibility of the MDI bar", options));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, "ui",
-                "useOneTouchExpandable", "false",
-                "Use one touch expandable split panes?",
+                "useOneTouchExpandable", "Use one touch expandable split panes?",
                 "Use one touch expandable arrows for collapsing/expanding the split panes"));
 
         addCategory(category);
@@ -390,56 +387,50 @@ public class PreferencesManager {
 
         final LookAndFeelInfo[] plaf = UIManager.getInstalledLookAndFeels();
         final String sysLafClass = UIManager.getSystemLookAndFeelClassName();
-        String sysLafName = "";
 
         lafs.put("Native", "Native");
         for (LookAndFeelInfo laf : plaf) {
             lafs.put(laf.getName(), laf.getName());
-
-            if (laf.getClassName().equals(sysLafClass)) {
-                sysLafName = laf.getName();
-            }
         }
 
         category.addSetting(new PreferencesSetting(PreferencesType.COLOUR,
-                "ui", "backgroundcolour", "0", "Background colour", "Default " +
+                "ui", "backgroundcolour", "Background colour", "Default " +
                 "background colour to use"));
         category.addSetting(new PreferencesSetting(PreferencesType.COLOUR,
-                "ui", "foregroundcolour", "1", "Foreground colour", "Default " +
+                "ui", "foregroundcolour", "Foreground colour", "Default " +
                 "foreground colour to use"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "ui", "inputbackgroundcolour", "false:0", "Input background colour",
+                "ui", "inputbackgroundcolour", "Input background colour",
                 "Default background colour to use for input fields"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "ui", "inputforegroundcolour", "false:1", "Input foreground colour",
+                "ui", "inputforegroundcolour", "Input foreground colour",
                 "Default foreground colour to use for input fields"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "general", "showcolourdialog", "false", "Show colour dialog",
+                "general", "showcolourdialog", "Show colour dialog",
                 "Show colour picker dialog when using colour control codes?"));
         category.addSetting(new PreferencesSetting("ui", "lookandfeel",
-                sysLafName, "Look and feel", "The Java look and feel to use",
+                "Look and feel", "The Java look and feel to use",
                 lafs));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "ui", "antialias", "false", "System anti-alias",
+                "ui", "antialias", "System anti-alias",
                 "Anti-alias all fonts?").setRestartNeeded());
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "ui", "maximisewindows", "true", "Auto-maximise windows",
+                "ui", "maximisewindows", "Auto-maximise windows",
                 "Automatically maximise newly opened windows?"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "ui", "shownickcoloursintext", "false", "Show nick colours in text area",
+                "ui", "shownickcoloursintext", "Show nick colours in text area",
                 "Show nickname colours in text areas?"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "ui", "shownickcoloursinnicklist", "false", "Show nick colours in nicklists",
+                "ui", "shownickcoloursinnicklist", "Show nick colours in nicklists",
                 "Show nickname colours in channel nicklists?"));
         category.addSetting(new PreferencesSetting("ui", "framemanager",
-                "treeview", "Window manager", "Which window manager should be used?",
+                "Window manager", "Which window manager should be used?",
                 framemanagers).setRestartNeeded());
         category.addSetting(new PreferencesSetting("ui", "framemanagerPosition",
-                "left", "Window manager position", "Where should the window " +
+                "Window manager position", "Where should the window " +
                 "manager be positioned?", fmpositions).setRestartNeeded());
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "ui", "stylelinks", "true", "Style links",
-                "Style links in text areas"));
+                "ui", "stylelinks", "Style links", "Style links in text areas"));
 
         addThemesCategory(category);
         addNicklistCategory(category);
@@ -468,19 +459,19 @@ public class PreferencesManager {
         final PreferencesCategory category = new PreferencesCategory("Nicklist", "");
 
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "ui", "nicklistbackgroundcolour", "false:0", "Nicklist background colour",
+                "ui", "nicklistbackgroundcolour", "Nicklist background colour",
                 "Background colour to use for the nicklist"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "ui", "nicklistforegroundcolour", "false:1", "Nicklist foreground colour",
+                "ui", "nicklistforegroundcolour", "Nicklist foreground colour",
                 "Foreground colour to use for the nicklist"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "ui", "nickListAltBackgroundColour", "false:f0f0f0", "Alternate background colour",
+                "ui", "nickListAltBackgroundColour", "Alternate background colour",
                 "Background colour to use for every other nicklist entry"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "ui", "sortByMode", "true", "Sort nicklist by user mode",
+                "ui", "sortByMode", "Sort nicklist by user mode",
                 "Sort nicknames by the modes that they have?"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "ui", "sortByCase", "false", "Sort nicklist by case",
+                "ui", "sortByCase", "Sort nicklist by case",
                 "Sort nicknames in a case-sensitive manner?"));
 
         parent.addSubCategory(category);
@@ -495,28 +486,28 @@ public class PreferencesManager {
         final PreferencesCategory category = new PreferencesCategory("Treeview", "");
 
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "treeview", "backgroundcolour", "false:0", "Treeview background colour",
+                "treeview", "backgroundcolour", "Treeview background colour",
                 "Background colour to use for the treeview"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "treeview", "foregroundcolour", "false:1", "Treeview foreground colour",
+                "treeview", "foregroundcolour", "Treeview foreground colour",
                 "Foreground colour to use for the treeview"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "ui", "treeviewRolloverColour", "false:f0f0f0", "Treeview rollover colour",
+                "ui", "treeviewRolloverColour", "Treeview rollover colour",
                 "Background colour to use when the mouse cursor is over a node"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "treeview", "sortwindows", "true", "Sort windows",
+                "treeview", "sortwindows", "Sort windows",
                 "Sort windows belonging to servers in the treeview?"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "treeview", "sortservers", "true", "Sort servers",
+                "treeview", "sortservers", "Sort servers",
                 "Sort servers in the treeview?"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "ui", "treeviewActiveBold", "false", "Active node bold",
+                "ui", "treeviewActiveBold", "Active node bold",
                 "Make the active node bold?"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "ui", "treeviewActiveBackground", "false:0", "Active node background",
+                "ui", "treeviewActiveBackground", "Active node background",
                 "Background colour to use for active treeview node"));
         category.addSetting(new PreferencesSetting(PreferencesType.OPTIONALCOLOUR,
-                "ui", "treeviewActiveForeground", "false:1", "Active node foreground",
+                "ui", "treeviewActiveForeground", "Active node foreground",
                 "Foreground colour to use for active treeview node"));
 
         parent.addSubCategory(category);

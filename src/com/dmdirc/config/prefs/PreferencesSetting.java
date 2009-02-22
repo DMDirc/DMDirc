@@ -58,9 +58,6 @@ public class PreferencesSetting {
     /** Text to inform the user what the setting is for. */
     protected final String helptext;
     
-    /** The fallback value of the setting. */
-    protected final String fallback;
-    
     /** The current value of the setting. */
     protected String current;
     
@@ -80,14 +77,12 @@ public class PreferencesSetting {
      * @param validator A validator to validate the setting's value
      * @param domain The domain of the setting
      * @param option The option name of the setting
-     * @param fallback A fallback value if the option isn't set
      * @param title The title of this setting
      * @param helptext Text to display to help the user
      */
     public PreferencesSetting(final PreferencesType type,
             final Validator<String> validator, final String domain,
-            final String option, final String fallback, final String title,
-            final String helptext) {
+            final String option, final String title, final String helptext) {
         if (PreferencesType.MULTICHOICE.equals(type)) {
             throw new IllegalArgumentException("Multi-choice preferences must " +
                     "have their options specified.");
@@ -98,11 +93,10 @@ public class PreferencesSetting {
         this.validator = validator;
         this.domain = domain;
         this.option = option;
-        this.fallback = fallback;
         this.title = title;
         this.helptext = helptext;
         
-        current = IdentityManager.getGlobalConfig().getOption(domain, option, fallback);
+        current = IdentityManager.getGlobalConfig().getOption(domain, option);
         original = current;
     }
     
@@ -113,13 +107,11 @@ public class PreferencesSetting {
      * @param type The type of the setting to create
      * @param domain The domain of the setting
      * @param option The option name of the setting
-     * @param fallback A fallback value if the option isn't set
      * @param title The title of this setting
      * @param helptext Text to display to help the user
      */
     public PreferencesSetting(final PreferencesType type, final String domain,
-            final String option, final String fallback, final String title,
-            final String helptext) {
+            final String option, final String title, final String helptext) {
         if (PreferencesType.MULTICHOICE.equals(type)) {
             throw new IllegalArgumentException("Multi-choice preferences must " +
                     "have their options specified.");
@@ -130,11 +122,10 @@ public class PreferencesSetting {
         this.validator = new PermissiveValidator<String>();
         this.domain = domain;
         this.option = option;
-        this.fallback = fallback;
         this.title = title;
         this.helptext = helptext;
         
-        current = IdentityManager.getGlobalConfig().getOption(domain, option, fallback);
+        current = IdentityManager.getGlobalConfig().getOption(domain, option);
         original = current;
     }    
     
@@ -143,24 +134,22 @@ public class PreferencesSetting {
      * 
      * @param domain The domain of the setting
      * @param option The option name of the setting
-     * @param fallback A fallback value if the option isn't set
      * @param options A map of setting values to display names for this setting
      * @param title The title of this setting
      * @param helptext Text to display to help the user
      */
     public PreferencesSetting(final String domain, final String option,
-            final String fallback, final String title, final String helptext,
+            final String title, final String helptext,
             final Map<String, String> options) {
         this.type = PreferencesType.MULTICHOICE;
         this.combooptions = new HashMap<String, String>(options);
         this.validator = new PermissiveValidator<String>();
         this.domain = domain;
         this.option = option;
-        this.fallback = fallback;
         this.title = title;
         this.helptext = helptext;
         
-        current = IdentityManager.getGlobalConfig().getOption(domain, option, fallback);
+        current = IdentityManager.getGlobalConfig().getOption(domain, option);
         original = current;
         
         if (!combooptions.containsKey(current)) {

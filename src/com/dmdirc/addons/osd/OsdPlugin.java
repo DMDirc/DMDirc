@@ -97,20 +97,20 @@ public final class OsdPlugin extends Plugin implements CategoryChangeListener,
                 "General configuration for OSD plugin.");
         
         fontSizeSetting = new PreferencesSetting(PreferencesType.INTEGER,
-                MY_DOMAIN, "fontSize", "20", "Font size", "Changes the font " +
+                MY_DOMAIN, "fontSize", "Font size", "Changes the font " +
                 "size of the OSD").registerChangeListener(this);
         backgroundSetting = new PreferencesSetting(PreferencesType.COLOUR,
-                MY_DOMAIN, "bgcolour", "2222aa", "Background colour", 
+                MY_DOMAIN, "bgcolour", "Background colour",
                 "Background colour for the OSD").registerChangeListener(this);
         foregroundSetting = new PreferencesSetting(PreferencesType.COLOUR,
-                MY_DOMAIN, "fgcolour", "ffffff", "Foreground colour", 
+                MY_DOMAIN, "fgcolour", "Foreground colour", 
                 "Foreground colour for the OSD").registerChangeListener(this);
                 
         category.addSetting(fontSizeSetting);
         category.addSetting(backgroundSetting);
         category.addSetting(foregroundSetting);
         category.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
-                MY_DOMAIN, "timeout", "15", "Timeout", "Length of time in " +
+                MY_DOMAIN, "timeout", "Timeout", "Length of time in " +
                 "seconds before the OSD window closes"));
         
         final Map<String, String> posOptions = new HashMap<String, String>();
@@ -120,7 +120,7 @@ public final class OsdPlugin extends Plugin implements CategoryChangeListener,
         posOptions.put("ontop", "Place new windows on top of existing window");
         
         category.addSetting(new PreferencesSetting(MY_DOMAIN, "newbehaviour", 
-                "down", "New window policy:", "What to do when an OSD Window "
+                "New window policy:", "What to do when an OSD Window "
                 + "is opened when there are other, existing windows open", posOptions));
 
         category.addChangeListener(this);

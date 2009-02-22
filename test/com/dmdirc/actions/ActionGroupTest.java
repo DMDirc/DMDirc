@@ -69,7 +69,7 @@ public class ActionGroupTest extends junit.framework.TestCase {
         Map<String, PreferencesSetting> result = instance.getSettings();
         assertEquals(expResult, result);
         
-        result.put("", new PreferencesSetting(PreferencesType.BOOLEAN, "", "", "", "", ""));
+        result.put("", new PreferencesSetting(PreferencesType.BOOLEAN, "", "", "", ""));
         assertEquals(1, instance.getSettings().size());
     }
 
