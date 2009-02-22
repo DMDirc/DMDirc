@@ -24,7 +24,7 @@ package com.dmdirc.config.prefs.validator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class PermissiveValidatorTest extends junit.framework.TestCase {
+public class PermissiveValidatorTest {
 
     @Test
     public void testValidate() {

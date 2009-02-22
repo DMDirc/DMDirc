@@ -37,6 +37,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.addons.dcc.kde.KFileChooser;
 import com.dmdirc.addons.dcc.actions.DCCActions;
 
+import com.dmdirc.commandparser.CommandArguments;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -66,19 +67,13 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 		CommandManager.registerCommand(this);
 	}
 		
-	/**
-	 * Executes this command.
-	 *
-	 * @param origin The frame in which this command was issued
-	 * @param server The server instance that this command is being executed on
-	 * @param isSilent Whether this command is silenced or not
-	 * @param args The user supplied arguments
-	 */
+	/** {@inheritDoc} */
 	@Override
-	public void execute(final InputWindow origin, final Server server, final boolean isSilent, final String... args) {
-		if (args.length > 1) {
-			final String type = args[0];
-			final String target = args[1];
+	public void execute(final InputWindow origin, final Server server,
+            final boolean isSilent, final CommandArguments args) {
+		if (args.getArguments().length > 1) {
+			final String type = args.getArguments()[0];
+			final String target = args.getArguments()[1];
 			final IRCParser parser = server.getParser();
 			final String myNickname = parser.getMyNickname();
 				
@@ -112,7 +107,7 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 					sendLine(origin, isSilent, "DCCChatError", "Unable to start chat with "+target+" - unable to create listen socket");
 				}
 			} else if (type.equalsIgnoreCase("send")) {
-				sendFile(target, origin, server, isSilent, args);
+				sendFile(target, origin, server, isSilent, args.getArgumentsAsString(2));
 			} else {
 				sendLine(origin, isSilent, FORMAT_ERROR, "Unknown DCC Type: '"+type+"'");
 			}
@@ -128,11 +123,12 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 	 * @param origin The InputWindow this command was issued on
 	 * @param server The server instance that this command is being executed on
 	 * @param isSilent Whether this command is silenced or not
-	 * @param args Arguments passed.
+	 * @param filename The file to send
+     * @since 0.6.3
 	 */
-	public void sendFile(final String target, final InputWindow origin, final Server server, final boolean isSilent, final String... args) {
+	public void sendFile(final String target, final InputWindow origin, final Server server, final boolean isSilent, final String filename) {
 		// New thread to ask the user what file to send
-		final File givenFile = new File(implodeArgs(2, args));
+		final File givenFile = new File(filename);
 		final Thread dccThread = new Thread(new Runnable() {
 			/** {@inheritDoc} */
 			@Override

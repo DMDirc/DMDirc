@@ -24,7 +24,7 @@ package com.dmdirc.actions;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ActionTypeComparatorTest extends junit.framework.TestCase {
+public class ActionTypeComparatorTest {
 
     @Test
     public void testCompare() {

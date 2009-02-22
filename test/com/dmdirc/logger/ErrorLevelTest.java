@@ -25,7 +25,7 @@ import javax.swing.Icon;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ErrorLevelTest extends junit.framework.TestCase {
+public class ErrorLevelTest {
 
     @Test
     public void testToString() {

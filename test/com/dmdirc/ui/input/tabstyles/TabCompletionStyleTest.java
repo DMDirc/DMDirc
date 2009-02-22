@@ -28,7 +28,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class TabCompletionStyleTest extends junit.framework.TestCase {
+public class TabCompletionStyleTest {
 
     @Test
     public void testSetContext() {

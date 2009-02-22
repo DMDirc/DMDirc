@@ -109,8 +109,4 @@ public class PreferencesCategoryTest {
         assertSame(category, test.cat);
     }
 
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(PreferencesCategoryTest.class);
-    }
-
 }

@@ -22,21 +22,33 @@
 
 package com.dmdirc.commandparser.commands;
 
+import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * Represents a generic global command. Global commands are associated with
  * no servers.
+ *
  * @author chris
  */
-public abstract class GlobalCommand extends Command {
+public abstract class GlobalCommand extends Command implements CommandInfo {
         
     /**
      * Executes this command. Note that for global commands, origin may be
      * null.
+     *
      * @param origin The window in which the command was typed
      * @param isSilent Whether this command is silenced or not
      * @param args Arguments passed to this command
+     * @since 0.6.3
      */
-    public abstract void execute(InputWindow origin, boolean isSilent, String ... args);
+    public abstract void execute(InputWindow origin, boolean isSilent, CommandArguments args);
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_GLOBAL;
+    }
 }

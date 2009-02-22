@@ -29,7 +29,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class IdentClientTest extends junit.framework.TestCase {
+public class IdentClientTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {

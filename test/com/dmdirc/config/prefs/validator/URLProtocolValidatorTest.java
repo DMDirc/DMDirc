@@ -26,12 +26,8 @@ import com.dmdirc.config.IdentityManager;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class URLProtocolValidatorTest extends junit.framework.TestCase {
+public class URLProtocolValidatorTest {
     
-    public URLProtocolValidatorTest(String testName) {
-        super(testName);
-    }
-
     @Test
     public void testValidate() {
         IdentityManager.load();

@@ -117,10 +117,6 @@ public class SSLCertificateDialogTest implements UITestIface {
         window.show();
     }
 
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(SSLCertificateDialogTest.class);
-    }
-
     private static class CertificateListCellReader extends BasicJListCellReader {
 
         public String valueAt(JList arg0, int arg1) {

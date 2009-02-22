@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -51,18 +52,20 @@ public final class KickReason extends ChannelCommand implements IntelligentComma
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final Server server,
-            final Channel channel, final boolean isSilent, final String... args) {
-        if (args.length == 0) {
+            final Channel channel, final boolean isSilent, final CommandArguments args) {
+        if (args.getArguments().length == 0) {
             showUsage(origin, isSilent, "kick", "<user> [reason]");
             return;
         }
         
-        final ChannelClientInfo victim = channel.getChannelInfo().getUser(args[0]);
+        final ChannelClientInfo victim = channel.getChannelInfo().getUser(args
+                .getArguments()[0]);
         
         if (victim == null) {
-            sendLine(origin, isSilent, FORMAT_ERROR, "User not found: " + args[0]);
+            sendLine(origin, isSilent, FORMAT_ERROR, "User not found: "
+                    + args.getArguments()[0]);
         } else {
-            victim.kick(args.length > 1 ? implodeArgs(1, args) :
+            victim.kick(args.getArguments().length > 1 ? args.getArgumentsAsString(1) :
                 origin.getConfigManager().getOption("general", "kickmessage"));
         }
     }

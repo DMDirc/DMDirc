@@ -30,7 +30,7 @@ import java.util.Map;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ActionGroupTest extends junit.framework.TestCase {
+public class ActionGroupTest {
 
     @Test
     public void testGetAuthor() {

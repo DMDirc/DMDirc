@@ -66,9 +66,5 @@ public class ArrayListTransferableTest {
         
         assertFalse(alt.isDataFlavorSupported(null));
     }
-    
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(ArrayListTransferableTest.class);
-    }
 
 }

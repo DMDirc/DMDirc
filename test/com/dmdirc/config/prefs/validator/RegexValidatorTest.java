@@ -25,7 +25,7 @@ package com.dmdirc.config.prefs.validator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class RegexValidatorTest extends junit.framework.TestCase {
+public class RegexValidatorTest {
 
     @Test
     public void testValidate() {

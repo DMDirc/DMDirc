@@ -24,7 +24,7 @@ package com.dmdirc.parser.irc;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class IRCStringConverterTest extends junit.framework.TestCase {
+public class IRCStringConverterTest {
 
     @Test
     public void testCaseConversion() {

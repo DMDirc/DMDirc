@@ -71,8 +71,4 @@ public class ConfigManagerTest {
         assertEquals(1, listener.count);        
     }    
     
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(ConfigManagerTest.class);
-    }
-    
 }

@@ -23,7 +23,9 @@
 package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
@@ -58,14 +60,15 @@ public final class ServerCommandParser extends CommandParser {
     }
     
     /** Loads the relevant commands into the parser. */
+    @Override
     protected void loadCommands() {
-        CommandManager.loadGlobalCommands(this);
-        CommandManager.loadServerCommands(this);
+        CommandManager.loadCommands(this, CommandType.TYPE_GLOBAL, CommandType.TYPE_SERVER);
     }
     
     /** {@inheritDoc} */
+    @Override
     protected void executeCommand(final InputWindow origin,
-            final boolean isSilent, final Command command, final String... args) {
+            final boolean isSilent, final Command command, final CommandArguments args) {
         if (command instanceof ServerCommand) {
             ((ServerCommand) command).execute(origin, server, isSilent, args);
         } else {
@@ -79,6 +82,7 @@ public final class ServerCommandParser extends CommandParser {
      * @param origin The window in which the command was typed
      * @param line The line input by the user
      */
+    @Override
     protected void handleNonCommand(final InputWindow origin, final String line) {
         server.sendLine(line);
     }

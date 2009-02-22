@@ -322,7 +322,4 @@ public class ActionEditorDialogTest implements UITestIface {
         window.show();
     }
 
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(ActionEditorDialogTest.class);
-    }
 }

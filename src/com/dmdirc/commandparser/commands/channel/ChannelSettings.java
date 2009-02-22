@@ -25,6 +25,7 @@ package com.dmdirc.commandparser.commands.channel;
 import com.dmdirc.Channel;
 import com.dmdirc.Main;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -49,7 +50,7 @@ public final class ChannelSettings extends ChannelCommand implements Intelligent
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final Server server,
-            final Channel channel, final boolean isSilent, final String... args) {
+            final Channel channel, final boolean isSilent, final CommandArguments args) {
         Main.getUI().showChannelSettingsDialog(channel);
     }
     

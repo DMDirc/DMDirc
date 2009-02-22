@@ -25,12 +25,7 @@ package com.dmdirc.commandparser;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
-import com.dmdirc.commandparser.commands.ChannelCommand;
-import com.dmdirc.commandparser.commands.ChatCommand;
 import com.dmdirc.commandparser.commands.Command;
-import com.dmdirc.commandparser.commands.GlobalCommand;
-import com.dmdirc.commandparser.commands.QueryCommand;
-import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.commandparser.commands.channel.*;
 import com.dmdirc.commandparser.commands.chat.*;
 import com.dmdirc.commandparser.commands.global.*;
@@ -39,8 +34,6 @@ import com.dmdirc.commandparser.commands.server.*;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.util.MapList;
@@ -78,7 +71,7 @@ public final class CommandManager {
      * Prevents creation of a new command manager.
      */
     private CommandManager() {
-        //do nothing
+        // Do nothing
     }
     
     /**
@@ -103,76 +96,75 @@ public final class CommandManager {
      * Registers a command with the command manager.
      * 
      * @param command The command to be registered
+     * @param info The information about the command
+     * @since 0.6.3
      */
-    public static void registerCommand(final Command command) {
-        registerCommand(command, true);
+    public static void registerCommand(final Command command, final CommandInfo info) {
+        registerCommand(info, command, true);
+    }
+
+    /**
+     * Registers a {@link Command} which also implements the {@link CommandInfo}
+     * interface with the command manager.
+     *
+     * @param <T> The type of object that's being registered
+     * @param command An object that extends {@link Command} and implements
+     * {@link CommandInfo} to be registered.
+     * @since 0.6.3
+     */
+    public static <T extends Command & CommandInfo> void registerCommand(final T command) {
+        registerCommand(command, command);
     }
     
     /**
      * Unregisters a command with the command manager.
      * 
-     * @param command The command to be unregistered
+     * @param info The information object for the command that should be unregistered
+     * @since 0.6.3
      */
-    public static void unregisterCommand(final Command command) {
-        registerCommand(command, false);
+    public static void unregisterCommand(final CommandInfo info) {
+        registerCommand(info, commands.get(info), false);
     }
     
     /**
      * Registers or unregisters a command.
      *
+     * @param info The information about the command
      * @param command The command to be (un)registered
      * @param register True if the command should be registered, false if it
      * should be unregistered.
+     * @since 0.6.3
      */
-    private static void registerCommand(final Command command, final boolean register) {
-        boolean canContinue = true;
+    private static void registerCommand(final CommandInfo info, final Command command,
+            final boolean register) {
+        if (parsers.containsKey(info.getType())) {
+            registerCommand(info, command, parsers.get(info.getType()), register);
+        }
         
-        if (command instanceof ChannelCommand) {
-            registerCommand(command, parsers.get(CommandType.TYPE_CHANNEL), register);
-        } else if (command instanceof ServerCommand) {
-            registerCommand(command, parsers.get(CommandType.TYPE_SERVER), register);
-        } else if (command instanceof QueryCommand) {
-            registerCommand(command, parsers.get(CommandType.TYPE_QUERY), register);
-        } else if (command instanceof GlobalCommand) {
-            registerCommand(command, parsers.get(CommandType.TYPE_GLOBAL), register);
-        } else if (command instanceof ChatCommand) {
-            registerCommand(command, parsers.get(CommandType.TYPE_QUERY), register);
-            registerCommand(command, parsers.get(CommandType.TYPE_CHANNEL), register);
+        if (register) {
+            commands.put(info, command);
         } else {
-            canContinue = false;
-            
-            Logger.userError(ErrorLevel.HIGH, "Attempted to (un)register an invalid command: "
-                    + command.getClass().getName());
+            commands.remove(info);
         }
-        
-        if (canContinue) {
-            if (register) {
-                commands.put(command, command);
-            } else {
-                commands.remove(command);
-            }
-            
-            registerCommandName(command, register);
-        }
+
+        registerCommandName(info, register);
     }
     
     /**
      * Registers the specified command with all of the specified parsers.
      *
+     * @param info The command information object
      * @param command The command to be reigstered
      * @param parsers The parsers to register the command with
+     * @since 0.6.3
      */
-    private static void registerCommand(final Command command,
-            final List<? extends CommandParser> parsers, final boolean register) {
-        if (parsers == null) {
-            return;
-        }
-        
-        for (CommandParser parser : parsers) {
+    private static void registerCommand(final CommandInfo info, final Command command,
+            final List<? extends CommandParser> myParsers, final boolean register) {
+        for (CommandParser parser : myParsers) {
             if (register) {
-                parser.registerCommand(command);
+                parser.registerCommand(command, info);
             } else {
-                parser.unregisterCommand(command);
+                parser.unregisterCommand(info);
             }
         }
     }
@@ -184,25 +176,30 @@ public final class CommandManager {
      * @param command The command to be registered
      * @param register True if the command should be registered, false if it
      * should be unregistered.
+     * @since 0.6.3
      */
-    private static void registerCommandName(final Command command,
+    private static void registerCommandName(final CommandInfo command,
             final boolean register) {
         // Do tab completion
         final String commandName = getCommandChar() + command.getName();
-        
+
+        // TODO: This logic is probably in two places. Abstract it.
         for (Server server : ServerManager.getServerManager().getServers()) {
-            if (command instanceof ServerCommand || command instanceof GlobalCommand) {
+            if (command.getType() == CommandType.TYPE_SERVER ||
+                    command.getType() == CommandType.TYPE_GLOBAL) {
                 registerCommandName(server.getTabCompleter(), commandName, register);
             }
             
-            if (command instanceof ChannelCommand || command instanceof ChatCommand) {
+            if (command.getType() == CommandType.TYPE_CHANNEL
+                    || command.getType() == CommandType.TYPE_CHAT) {
                 for (String channelName : server.getChannels()) {
                     registerCommandName(server.getChannel(channelName).getTabCompleter(),
                             commandName, register);
                 }
             }
             
-            if (command instanceof QueryCommand || command instanceof ChatCommand) {
+            if (command.getType() == CommandType.TYPE_QUERY
+                    || command.getType() == CommandType.TYPE_CHAT) {
                 for (Query query : server.getQueries()) {
                     registerCommandName(query.getTabCompleter(),
                             commandName, register);
@@ -309,65 +306,26 @@ public final class CommandManager {
         IdentityManager.getGlobalConfig().addChangeListener("general", "commandchar", listener);
         IdentityManager.getGlobalConfig().addChangeListener("general", "silencechar", listener);
     }
-    
+
     /**
-     * Loads all channel commands into the specified parser.
-     * 
-     * @param parser The parser to load commands into
+     * Loads all commands of the specified types into the specified parser.
+     *
+     * @see CommandType#getComponentTypes()
+     * @since 0.6.3
+     * @param parser The {@link CommandParser} to load commands in to
+     * @param supertypes The types of commands that should be loaded
      */
-    public static void loadChannelCommands(final CommandParser parser) {
-        for (Command com : getCommands(CommandType.TYPE_CHANNEL, null)) {
-            parser.registerCommand(com);
+    public static void loadCommands(final CommandParser parser,
+            final CommandType ... supertypes) {
+        for (CommandType supertype : supertypes) {
+            for (CommandType type : supertype.getComponentTypes()) {
+                for (Map.Entry<CommandInfo, Command> pair : getCommands(type, null).entrySet()) {
+                    parser.registerCommand(pair.getValue(), pair.getKey());
+                }
+
+                parsers.add(type, parser);
+            }
         }
-        
-        for (Command com : getCommands(CommandType.TYPE_CHAT, null)) {
-            parser.registerCommand(com);
-        }
-        
-        parsers.add(CommandType.TYPE_CHANNEL, parser);
-    }
-    
-    /**
-     * Loads all server commands into the specified parser.
-     * 
-     * @param parser The parser to load commands into
-     */
-    public static void loadServerCommands(final CommandParser parser) {
-        for (Command command : getCommands(CommandType.TYPE_SERVER, null)) {
-            parser.registerCommand(command);
-        }
-        
-        parsers.add(CommandType.TYPE_SERVER, parser);
-    }
-    
-    /**
-     * Loads all global commands into the specified parser.
-     * 
-     * @param parser The parser to load commands into
-     */
-    public static void loadGlobalCommands(final CommandParser parser) {
-        for (Command com : getCommands(CommandType.TYPE_GLOBAL, null)) {
-            parser.registerCommand(com);
-        }
-        
-        parsers.add(CommandType.TYPE_GLOBAL, parser);
-    }
-    
-    /**
-     * Loads all query commands into the specified parser.
-     * 
-     * @param parser The parser to load commands into
-     */
-    public static void loadQueryCommands(final CommandParser parser) {
-        for (Command com : getCommands(CommandType.TYPE_QUERY, null)) {
-            parser.registerCommand(com);
-        }
-        
-        for (Command com : getCommands(CommandType.TYPE_CHAT, null)) {
-            parser.registerCommand(com);
-        }
-        
-        parsers.add(CommandType.TYPE_QUERY, parser);
     }
     
     /**
@@ -389,9 +347,9 @@ public final class CommandManager {
      * @return A command with a matching signature, or null if none were found
      */
     public static Command getCommand(final CommandType type, final String name) {
-        final List<Command> res = getCommands(type, name);
+        final Map<CommandInfo, Command> res = getCommands(type, name);
         
-        return res.isEmpty() ? null : res.get(0);
+        return res.isEmpty() ? null : res.values().iterator().next();
     }    
      
     /**
@@ -414,7 +372,7 @@ public final class CommandManager {
     public static List<String> getCommandNames(final CommandType type) {
         final List<String> res = new ArrayList<String>();
         
-        for (Command command : getCommands(type)) {
+        for (CommandInfo command : getCommands(type).keySet()) {
             res.add(getCommandChar() + command.getName());
         }
         
@@ -422,31 +380,34 @@ public final class CommandManager {
     }
     
     /**
-     * Retrieves a list of all commands of the specified type.
+     * Retrieves a map of all {@link CommandInfo}s and their associated
+     * {@link Command}s of the specified type.
      * 
      * @param type The type of command to list
-     * @return A list of commands
+     * @return A map of commands
+     * @since 0.6.3
      */    
-    public static List<Command> getCommands(final CommandType type) {    
+    public static Map<CommandInfo, Command> getCommands(final CommandType type) {
         return getCommands(type, null);
     }
     
     /**
-     * Retrieves a list of all commands of the specified type, with the
+     * Retrieves a map of all commands of the specified type, with the
      * specified name.
      * 
      * @param type The type of command to list, or null for all types
      * @param name The name of the command to look for, or null for any name
-     * @return A list of matching commands
+     * @return A map of {@link CommandInfo}s and their associated {@link Command}.
+     * @since 0.6.3
      */    
-    private static List<Command> getCommands(final CommandType type,
+    private static Map<CommandInfo, Command> getCommands(final CommandType type,
             final String name) {
-        final List<Command> res = new ArrayList<Command>();
+        final Map<CommandInfo, Command> res = new HashMap<CommandInfo, Command>();
         
         for (Map.Entry<CommandInfo, Command> entry : commands.entrySet()) {
             if ((type == null || type.equals(entry.getKey().getType()))
                     && (name == null || name.equals(entry.getKey().getName()))) {
-                res.add(entry.getValue());
+                res.put(entry.getKey(), entry.getValue());
             }
         }
         

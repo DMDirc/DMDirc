@@ -26,7 +26,7 @@ import java.util.Arrays;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class AliasTest extends junit.framework.TestCase {
+public class AliasTest {
 
     @Test
     public void testBasics() {

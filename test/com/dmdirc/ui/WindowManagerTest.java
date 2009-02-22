@@ -29,7 +29,7 @@ import com.dmdirc.ui.interfaces.Window;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class WindowManagerTest extends junit.framework.TestCase {
+public class WindowManagerTest {
 
     @Test
     public void testFrameManagers() {

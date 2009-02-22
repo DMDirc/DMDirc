@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.urlcatcher;
 
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -44,7 +45,7 @@ public class UrlListCommand extends GlobalCommand implements IntelligentCommand 
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final boolean isSilent,
-            final String... args) {
+            final CommandArguments args) {
         final String[] headers = {"URL", "Count"};
         final Map<String, Integer> map = plugin.getURLS();
         final String[][] data = new String[map.size()][];

@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -51,13 +52,14 @@ public final class UnloadPlugin extends GlobalCommand implements IntelligentComm
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final boolean isSilent,
-            final String... args) {
-        if (args.length == 0) {
+            final CommandArguments args) {
+        if (args.getArguments().length == 0) {
             showUsage(origin, isSilent, "unloadplugin", "<plugin>");
             return;
         }
         
-        final PluginInfo plugin = PluginManager.getPluginManager().getPluginInfoByName(args[0]);
+        final PluginInfo plugin = PluginManager.getPluginManager()
+                .getPluginInfoByName(args.getArguments()[0]);
         if (plugin == null) {
             sendLine(origin, isSilent, FORMAT_ERROR, "Plugin unloading failed - Plugin not loaded");
         } else if (PluginManager.getPluginManager().delPlugin(plugin.getRelativeFilename())) {

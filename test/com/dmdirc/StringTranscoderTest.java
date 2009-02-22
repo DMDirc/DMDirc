@@ -29,7 +29,7 @@ import java.nio.charset.Charset;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class StringTranscoderTest extends junit.framework.TestCase {
+public class StringTranscoderTest {
 
     @Test
     public void testTranscode() {

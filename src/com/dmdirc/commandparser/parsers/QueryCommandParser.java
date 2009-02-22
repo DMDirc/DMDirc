@@ -24,7 +24,9 @@ package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.Query;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.ChatCommand;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.GlobalCommand;
@@ -68,15 +70,16 @@ public final class QueryCommandParser extends CommandParser {
     }
     
     /** Loads the relevant commands into the parser. */
+    @Override
     protected void loadCommands() {
-        CommandManager.loadGlobalCommands(this);
-        CommandManager.loadServerCommands(this);
-        CommandManager.loadQueryCommands(this);
+        CommandManager.loadCommands(this, CommandType.TYPE_GLOBAL,
+                CommandType.TYPE_SERVER, CommandType.TYPE_QUERY);
     }
     
     /** {@inheritDoc} */
+    @Override
     protected void executeCommand(final InputWindow origin,
-            final boolean isSilent, final Command command, final String... args) {
+            final boolean isSilent, final Command command, final CommandArguments args) {
         if (command instanceof QueryCommand) {
             ((QueryCommand) command).execute(origin, server, query, isSilent, args);
         } else if (command instanceof ChatCommand) {
@@ -94,6 +97,7 @@ public final class QueryCommandParser extends CommandParser {
      * @param origin The window in which the command was typed
      * @param line The line input by the user
      */
+    @Override
     protected void handleNonCommand(final InputWindow origin, final String line) {
         query.sendLine(line);
     }

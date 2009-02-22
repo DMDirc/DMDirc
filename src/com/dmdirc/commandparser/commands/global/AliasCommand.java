@@ -26,6 +26,7 @@ import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.wrappers.Alias;
 import com.dmdirc.actions.wrappers.AliasWrapper;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -55,15 +56,15 @@ public final class AliasCommand extends GlobalCommand implements
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final boolean isSilent,
-                        final String... args) {
-        if (args.length < 2) {
+                        final CommandArguments args) {
+        if (args.getArguments().length < 2) {
             showUsage(origin, isSilent, "alias", "[--remove] <name> [command]");
             return;
         }
 
-        if (args[0].equalsIgnoreCase("--remove")) {
-            final String name = args[1].charAt(0) == CommandManager.getCommandChar()
-                ? args[1].substring(1) : args[1];
+        if (args.getArguments()[0].equalsIgnoreCase("--remove")) {
+            final String name = args.getArguments()[1].charAt(0) == CommandManager.getCommandChar()
+                ? args.getArguments()[1].substring(1) : args.getArguments()[1];
 
             if (doRemove(name)) {
                 sendLine(origin, isSilent, FORMAT_OUTPUT, "Alias '" + name +
@@ -76,8 +77,8 @@ public final class AliasCommand extends GlobalCommand implements
             return;
         }
 
-        final String name = args[0].charAt(0) == CommandManager.getCommandChar()
-                ? args[0].substring(0) : args[1];
+        final String name = args.getArguments()[0].charAt(0) == CommandManager.getCommandChar()
+                ? args.getArguments()[0].substring(0) : args.getArguments()[1];
 
         for (Action alias : AliasWrapper.getAliasWrapper()) {
             if (AliasWrapper.getCommandName(alias).substring(1).equalsIgnoreCase(
@@ -89,7 +90,7 @@ public final class AliasCommand extends GlobalCommand implements
         }
 
         final Alias myAlias = new Alias(name);
-        myAlias.setResponse(new String[]{implodeArgs(1, args)});
+        myAlias.setResponse(new String[]{args.getArgumentsAsString(1)});
         myAlias.createAction().save();
 
         sendLine(origin, isSilent, FORMAT_OUTPUT, "Alias '" + name +

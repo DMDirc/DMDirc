@@ -23,6 +23,7 @@
 package com.dmdirc.addons.dcop;
 
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -43,23 +44,17 @@ public final class DcopCommand extends ServerCommand {
         
         CommandManager.registerCommand(this);
     }
-    
-    /**
-     * Executes this command.
-     * @param origin The frame in which this command was issued
-     * @param server The server object that this command is associated with
-     * @param isSilent Whether this command is silenced or not
-     * @param args The user supplied arguments
-     */
+
+    /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final Server server,
-            final boolean isSilent, final String... args) {
-        if (args.length != 3) {
+            final boolean isSilent, final CommandArguments args) {
+        if (args.getArguments().length != 3) {
             showUsage(origin, isSilent, "dcop", "<app> <object> <function>");
             return;
         }
         
-        final List<String> res = DcopPlugin.getDcopResult("dcop " + implodeArgs(args));
+        final List<String> res = DcopPlugin.getDcopResult("dcop " + args.getArgumentsAsString());
         for (String line : res) {
             sendLine(origin, isSilent, FORMAT_OUTPUT, line);
         }

@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
@@ -53,30 +54,31 @@ public final class OpenQuery extends ServerCommand implements
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final Server server,
-            final boolean isSilent, final String... args) {
-        if (args.length == 0) {
+            final boolean isSilent, final CommandArguments args) {
+        if (args.getArguments().length == 0) {
             showUsage(origin, isSilent, "query", "<target> <message>");
             return;
         }
             
-        if (server.getParser().isValidChannelName(args[0])) {
+        if (server.getParser().isValidChannelName(args.getArguments()[0])) {
             sendLine(origin, isSilent, FORMAT_ERROR, "You can't open a query "
                     + "with a channel; maybe you meant " + Styliser.CODE_FIXED
                     + Styliser.CODE_BOLD + CommandManager.getCommandChar()
-                    + (args.length > 1 ? "msg" : "join") + " " + implodeArgs(args)
+                    + (args.getArguments().length > 1 ? "msg" : "join") + " "
+                    + args.getArgumentsAsString()
                     + Styliser.CODE_BOLD + Styliser.CODE_FIXED + "?");
             return;
         }
 
-        if (server.hasQuery(args[0])) {
-            server.getQuery(args[0]).activateFrame();
+        if (server.hasQuery(args.getArguments()[0])) {
+            server.getQuery(args.getArguments()[0]).activateFrame();
         } else {
-            server.addQuery(args[0]);
-            server.getQuery(args[0]).show();                
+            server.addQuery(args.getArguments()[0]);
+            server.getQuery(args.getArguments()[0]).show();
         }
 
-        if (args.length > 1) {
-            server.getQuery(args[0]).sendLine(implodeArgs(1, args));
+        if (args.getArguments().length > 1) {
+            server.getQuery(args.getArguments()[0]).sendLine(args.getArgumentsAsString(1));
         }
     }
     

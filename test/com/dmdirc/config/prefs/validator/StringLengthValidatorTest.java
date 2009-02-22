@@ -24,7 +24,7 @@ package com.dmdirc.config.prefs.validator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class StringLengthValidatorTest extends junit.framework.TestCase {
+public class StringLengthValidatorTest {
 
     @Test
     public void testUnlimited() {

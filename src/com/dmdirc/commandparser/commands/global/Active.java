@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.Main;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -50,8 +51,8 @@ public final class Active extends GlobalCommand implements IntelligentCommand {
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final boolean isSilent,
-            final String... args) {
-        final String command = implodeArgs(args);
+            final CommandArguments args) {
+        final String command = args.getArgumentsAsString();
         
         final InputWindow window = (InputWindow) Main.getUI().getActiveWindow();
         

@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.logger.ErrorLevel;
@@ -48,8 +49,8 @@ public final class ChangeServer extends ServerCommand {
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final Server server,
-            final boolean isSilent, final String... args) {
-        if (args.length == 0) {
+            final boolean isSilent, final CommandArguments args) {
+        if (args.getArguments().length == 0) {
             showUsage(origin, isSilent, "server", "<host[:[+]port]> [password]");
             return;
         }
@@ -61,7 +62,7 @@ public final class ChangeServer extends ServerCommand {
         int offset = 0;
         
         // Check for SSL
-        if (args[offset].equalsIgnoreCase("--ssl")) {
+        if (args.getArguments()[offset].equalsIgnoreCase("--ssl")) {
             Logger.userError(ErrorLevel.LOW,
                     "Using /server --ssl is deprecated, and may be removed in the future."
                     + " Use /server <host>:+<port> instead.");
@@ -71,8 +72,8 @@ public final class ChangeServer extends ServerCommand {
         }
         
         // Check for port
-        if (args[offset].indexOf(':') > -1) {
-            final String[] parts = args[offset].split(":");
+        if (args.getArguments()[offset].indexOf(':') > -1) {
+            final String[] parts = args.getArguments()[offset].split(":");
             host = parts[0];
             
             if (parts[1].length() > 0 && parts[1].charAt(0) == '+') {
@@ -92,12 +93,12 @@ public final class ChangeServer extends ServerCommand {
                 return;
             }
         } else {
-            host = args[offset];
+            host = args.getArguments()[offset];
         }
         
         // Check for password
-        if (args.length > ++offset) {
-            pass = implodeArgs(offset, args);
+        if (args.getArguments().length > ++offset) {
+            pass = args.getArgumentsAsString(offset);
         }
         
         server.connect(host, port, pass, ssl, server.getProfile());

@@ -24,7 +24,9 @@ package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.Channel;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.commands.ChatCommand;
 import com.dmdirc.commandparser.commands.Command;
@@ -67,16 +69,17 @@ public final class ChannelCommandParser extends CommandParser {
         this.channel = newChannel;
     }
     
-    /** Loads the relevant commands into the parser. */
+    /** {@inheritDoc} */
+    @Override
     protected void loadCommands() {
-        CommandManager.loadGlobalCommands(this);
-        CommandManager.loadServerCommands(this);
-        CommandManager.loadChannelCommands(this);
+        CommandManager.loadCommands(this, CommandType.TYPE_GLOBAL,
+                CommandType.TYPE_SERVER, CommandType.TYPE_CHANNEL);
     }
     
     /** {@inheritDoc} */
+    @Override
     protected void executeCommand(final InputWindow origin,
-            final boolean isSilent, final Command command, final String... args) {
+            final boolean isSilent, final Command command, final CommandArguments args) {
         if (command instanceof ChannelCommand) {
             ((ChannelCommand) command).execute(origin, server, channel, isSilent, args);
         } else if (command instanceof ChatCommand) {
@@ -91,9 +94,11 @@ public final class ChannelCommandParser extends CommandParser {
     /**
      * Called when the input was a line of text that was not a command. This normally
      * means it is sent to the server/channel/user as-is, with no further processing.
+     *
      * @param origin The window in which the command was typed
      * @param line The line input by the user
      */
+    @Override
     protected void handleNonCommand(final InputWindow origin, final String line) {
         channel.sendLine(line);
     }

@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -51,14 +52,14 @@ public final class Ban extends ChannelCommand implements IntelligentCommand {
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final Server server,
-            final Channel channel, final boolean isSilent, final String... args) {
-        if (args.length == 0) {
+            final Channel channel, final boolean isSilent, final CommandArguments args) {
+        if (args.getArguments().length == 0) {
             showUsage(origin, isSilent, "ban", "<user|host>");
             return;
         }
         
-        String host = args[0];
-        final ChannelClientInfo user = channel.getChannelInfo().getUser(args[0]);
+        String host = args.getArguments()[0];
+        final ChannelClientInfo user = channel.getChannelInfo().getUser(host);
         if (user != null && !user.getClient().getHost().isEmpty()) {
             // TODO: Customisable ban masks, somehow.
             host = "*!*@" + user.getClient().getHost();
@@ -95,6 +96,6 @@ public final class Ban extends ChannelCommand implements IntelligentCommand {
         }
         
         return res;
-    } 
+    }
     
 }

@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -49,8 +50,8 @@ public final class AllServers extends GlobalCommand implements IntelligentComman
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final boolean isSilent,
-            final String... args) {
-        final String command = implodeArgs(args);
+            final CommandArguments args) {
+        final String command = args.getArgumentsAsString();
         InputWindow window;
         
         for (Server target : ServerManager.getServerManager().getServers()) {

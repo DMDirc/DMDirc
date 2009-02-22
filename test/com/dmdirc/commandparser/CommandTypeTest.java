@@ -35,14 +35,14 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class CommandTypeTest extends junit.framework.TestCase {
+public class CommandTypeTest {
 
     @Test
     public void testGlobal() {
         final Command command = new GlobalCommand() {
 
             @Override
-            public void execute(InputWindow origin, boolean isSilent, String... args) {
+            public void execute(InputWindow origin, boolean isSilent, CommandArguments args) {
                 throw new UnsupportedOperationException("Not supported yet.");
             }
 
@@ -70,7 +70,7 @@ public class CommandTypeTest extends junit.framework.TestCase {
         final Command command = new ServerCommand() {
 
             @Override
-            public void execute(InputWindow origin, Server server, boolean isSilent, String... args) {
+            public void execute(InputWindow origin, Server server, boolean isSilent, CommandArguments args) {
                 throw new UnsupportedOperationException("Not supported yet.");
             }
 
@@ -114,7 +114,7 @@ public class CommandTypeTest extends junit.framework.TestCase {
 
             @Override
             public void execute(InputWindow origin, Server server,
-                    MessageTarget target, boolean isSilent, String... args) {
+                    MessageTarget target, boolean isSilent, CommandArguments args) {
                 throw new UnsupportedOperationException("Not supported yet.");
             }
         };
@@ -142,7 +142,7 @@ public class CommandTypeTest extends junit.framework.TestCase {
 
             @Override
             public void execute(InputWindow origin, Server server,
-                    Channel channel, boolean isSilent, String... args) {
+                    Channel channel, boolean isSilent, CommandArguments args) {
                 throw new UnsupportedOperationException("Not supported yet.");
             }
         };
@@ -171,7 +171,7 @@ public class CommandTypeTest extends junit.framework.TestCase {
 
             @Override
             public void execute(InputWindow origin, Server server, Query query,
-                    boolean isSilent, String... args) {
+                    boolean isSilent, CommandArguments args) {
                 throw new UnsupportedOperationException("Not supported yet.");
             }
         };

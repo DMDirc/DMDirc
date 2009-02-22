@@ -27,7 +27,7 @@ import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class MapListTest extends junit.framework.TestCase {
+public class MapListTest {
 
     @Test
     public void testIsEmpty() {

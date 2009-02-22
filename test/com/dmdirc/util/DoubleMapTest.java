@@ -61,8 +61,5 @@ public class DoubleMapTest {
         assertEquals("b", dm.getKey("c"));
         assertEquals("c", dm.getKey("a"));
     }    
-    
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(DoubleMapTest.class);
-    }
+
 }

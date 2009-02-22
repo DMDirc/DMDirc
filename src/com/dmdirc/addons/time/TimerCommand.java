@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.time;
 
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -47,17 +48,17 @@ public final class TimerCommand extends GlobalCommand implements IntelligentComm
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final boolean isSilent, 
-            final String... args) {
-        if (args.length < 3) {
+            final CommandArguments args) {
+        if (args.getArguments().length < 3) {
             doUsage(origin, isSilent);
         } else {
             int repetitions = 0;
             int interval = 0;
-            final String command = implodeArgs(2, args);
+            final String command = args.getArgumentsAsString(2);
             
             try {
-                repetitions = Integer.parseInt(args[0]);
-                interval = Integer.parseInt(args[1]);
+                repetitions = Integer.parseInt(args.getArguments()[0]);
+                interval = Integer.parseInt(args.getArguments()[1]);
             } catch (NumberFormatException ex) {
                 doUsage(origin, isSilent);
                 return;

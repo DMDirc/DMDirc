@@ -21,19 +21,27 @@
  */
 package com.dmdirc.commandparser.commands.chat;
 
+import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.harness.TestMessageTarget;
 import com.dmdirc.harness.TestInputWindow;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class MeTest extends junit.framework.TestCase {
+public class MeTest {
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        IdentityManager.load();
+    }
     
     private final Me command = new Me();
 
     @Test
     public void testUsage() {
         final TestInputWindow tiw = new TestInputWindow();
-        command.execute(tiw, null, null, false, new String[0]);
+        command.execute(tiw, null, null, false, new CommandArguments("/foo"));
         
         assertTrue(tiw.lines.containsKey("commandUsage"));
     }
@@ -41,7 +49,7 @@ public class MeTest extends junit.framework.TestCase {
     @Test
     public void testSend() {
         final TestMessageTarget mtt = new TestMessageTarget();
-        command.execute(null, null, mtt, false, new String[]{"hello", "meep", "moop"});
+        command.execute(null, null, mtt, false, new CommandArguments("/foo hello meep moop"));
         assertEquals("hello meep moop", mtt.action);
     }
 }

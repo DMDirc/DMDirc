@@ -25,7 +25,7 @@ package com.dmdirc.config;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ConfigTargetTest extends junit.framework.TestCase {
+public class ConfigTargetTest {
 
     @Test
     public void testDefault() {

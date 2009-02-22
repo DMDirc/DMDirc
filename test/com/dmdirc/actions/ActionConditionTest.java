@@ -22,14 +22,18 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.config.IdentityManager;
+
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ActionConditionTest extends junit.framework.TestCase {
+public class ActionConditionTest {
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
+        IdentityManager.load();
         ActionManager.init();
     }
 

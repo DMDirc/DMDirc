@@ -25,7 +25,7 @@ package com.dmdirc.util;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class RollingListTest extends junit.framework.TestCase {
+public class RollingListTest {
 
     @Test
     public void testIsEmpty() {

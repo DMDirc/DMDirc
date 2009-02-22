@@ -21,18 +21,26 @@
  */
 package com.dmdirc.commandparser.commands.channel;
 
+import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.harness.TestInputWindow;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class SetNickColourTest extends junit.framework.TestCase {
+public class SetNickColourTest {
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        IdentityManager.load();
+    }
     
     private final SetNickColour command = new SetNickColour();
 
     @Test
     public void testUsageNoArgs() {
         final TestInputWindow tiw = new TestInputWindow();
-        command.execute(tiw, null, null, false, new String[0]);
+        command.execute(tiw, null, null, false, new CommandArguments("/foo"));
         
         assertTrue(tiw.lines.containsKey("commandUsage"));
     }
@@ -40,7 +48,7 @@ public class SetNickColourTest extends junit.framework.TestCase {
     @Test
     public void testUsageNicklist() {
         final TestInputWindow tiw = new TestInputWindow();
-        command.execute(tiw, null, null, false, new String[]{"--nicklist"});
+        command.execute(tiw, null, null, false, new CommandArguments("/foo --nicklist"));
         
         assertTrue(tiw.lines.containsKey("commandUsage"));
     }    
@@ -48,7 +56,7 @@ public class SetNickColourTest extends junit.framework.TestCase {
     @Test
     public void testUsageText() {
         final TestInputWindow tiw = new TestInputWindow();
-        command.execute(tiw, null, null, false, new String[]{"--text"});
+        command.execute(tiw, null, null, false, new CommandArguments("/foo --text"));
         
         assertTrue(tiw.lines.containsKey("commandUsage"));
     }       

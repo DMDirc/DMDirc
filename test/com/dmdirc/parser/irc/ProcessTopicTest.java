@@ -29,7 +29,7 @@ import com.dmdirc.parser.irc.callbacks.interfaces.IChannelTopic;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ProcessTopicTest extends junit.framework.TestCase {
+public class ProcessTopicTest {
     
     @Test
     public void testBasicTopic() throws CallbackNotFoundException {

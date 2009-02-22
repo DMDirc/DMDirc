@@ -25,7 +25,7 @@ import com.dmdirc.actions.interfaces.ActionMetaType;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ActionEventsTest extends junit.framework.TestCase {
+public class ActionEventsTest {
 
     @Test
     public void testArity() {

@@ -204,8 +204,4 @@ public class IdentityTest {
         assertEquals("test", listener.key);
     }
     
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(IdentityTest.class);
-    }  
-    
 }

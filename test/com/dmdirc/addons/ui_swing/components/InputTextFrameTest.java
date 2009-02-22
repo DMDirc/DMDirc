@@ -162,10 +162,6 @@ public class InputTextFrameTest implements UITestIface {
         }
     }
 
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(InputTextFrameTest.class);
-    }
-
     protected void setupWindow(final ConfigManager configManager) {
         UIUtilities.initUISettings();
 

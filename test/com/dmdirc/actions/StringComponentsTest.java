@@ -79,9 +79,5 @@ public class StringComponentsTest {
             {"abc foo def", "foo"}
         });
     }
-    
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(StringComponentsTest.class);
-    }    
 
 }

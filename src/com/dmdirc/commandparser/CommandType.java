@@ -70,6 +70,24 @@ public enum CommandType {
         }
     }
 
+    /**
+     * Retrieves an array of component types that make up this command type.
+     * Generally this will only contain the type itself, but some commands may
+     * be registered in multiple queues (such as CHANNEL commands going into
+     * both CHAT and CHANNEL queues). Note that for obvious reasons there is
+     * no recursion done on the values returned here.
+     *
+     * @since 0.6.3
+     * @return An array of types which this type should be registered as.
+     */
+    public CommandType[] getComponentTypes() {
+        if (this == TYPE_CHANNEL || this == TYPE_QUERY) {
+            return new CommandType[]{this, TYPE_CHAT};
+        } else {
+            return new CommandType[]{this};
+        }
+    }
+
     /** {@inheritDoc} */
     @Override
     public String toString() {

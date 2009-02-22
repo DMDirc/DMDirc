@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.dns;
 
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -44,21 +45,25 @@ public final class DNSCommand extends GlobalCommand {
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final boolean isSilent,
-            final String... args) {
-        if (args.length == 0) {
+            final CommandArguments args) {
+        if (args.getArguments().length == 0) {
             showUsage(origin, isSilent, "dns", "<IP|hostname>");
             return;
         }
         
-        sendLine(origin, isSilent, FORMAT_OUTPUT, "Resolving: " + args[0]);
+        sendLine(origin, isSilent, FORMAT_OUTPUT, "Resolving: " + args.getArguments()[0]);
         new Timer("DNS Command Timer").schedule(new TimerTask() {
             /** {@inheritDoc} */
             @Override
             public void run() {
-                if (args[0].matches("\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b")) {
-                    sendLine(origin, isSilent, FORMAT_OUTPUT, "Resolved: " + args[0] + ": " + DNSPlugin.getHostname(args[0]));
+                if (args.getArguments()[0].matches("\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b")) {
+                    sendLine(origin, isSilent, FORMAT_OUTPUT, "Resolved: "
+                            + args.getArguments()[0] + ": "
+                            + DNSPlugin.getHostname(args.getArguments()[0]));
                 } else {
-                    sendLine(origin, isSilent, FORMAT_OUTPUT, "Resolved: " + args[0] + ": " + DNSPlugin.getIPs(args[0]));
+                    sendLine(origin, isSilent, FORMAT_OUTPUT, "Resolved: "
+                            + args.getArguments()[0] + ": "
+                            + DNSPlugin.getIPs(args.getArguments()[0]));
                 }
             }
         }, 0);

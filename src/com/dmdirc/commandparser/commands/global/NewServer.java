@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.config.IdentityManager;
@@ -49,8 +50,8 @@ public final class NewServer extends GlobalCommand {
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final boolean isSilent,
-            final String... args) {
-        if (args.length == 0) {
+            final CommandArguments args) {
+        if (args.getArguments().length == 0) {
             showUsage(origin, isSilent, "newserver", "<host[:[+]port]> [password]");
             return;
         }
@@ -62,7 +63,7 @@ public final class NewServer extends GlobalCommand {
         int offset = 0;
         
         // Check for SSL
-        if (args[offset].equalsIgnoreCase("--ssl")) {
+        if (args.getArguments()[offset].equalsIgnoreCase("--ssl")) {
             Logger.userError(ErrorLevel.LOW, 
                     "Using /newserver --ssl is deprecated, and may be removed in the future."
                     + " Use /newserver <host>:+<port> instead.");
@@ -72,8 +73,8 @@ public final class NewServer extends GlobalCommand {
         }
         
         // Check for port
-        if (args[offset].indexOf(':') > -1) {
-            final String[] parts = args[offset].split(":");
+        if (args.getArguments()[offset].indexOf(':') > -1) {
+            final String[] parts = args.getArguments()[offset].split(":");
             host = parts[0];
             
             if (parts[1].length() > 0 && parts[1].charAt(0) == '+') {
@@ -93,12 +94,12 @@ public final class NewServer extends GlobalCommand {
                 return;
             }            
         } else {
-            host = args[offset];
+            host = args.getArguments()[offset];
         }
         
         // Check for password
-        if (args.length > ++offset) {
-            pass = implodeArgs(offset, args);
+        if (args.getArguments().length > ++offset) {
+            pass = args.getArgumentsAsString(offset);
         }
         
         new Server(host, port, pass, ssl, IdentityManager.getProfiles().get(0));

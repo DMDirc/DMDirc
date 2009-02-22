@@ -22,17 +22,16 @@
 
 package com.dmdirc.commandparser.commands;
 
-import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.Styliser;
 
 /**
  * Represents a generic command.
+ *
  * @author chris
  */
-public abstract class Command extends CommandInfo implements Comparable<Command> {
+public abstract class Command {
     
     /** The format name used for command output. */
     protected static final String FORMAT_OUTPUT = "commandOutput";
@@ -45,8 +44,10 @@ public abstract class Command extends CommandInfo implements Comparable<Command>
      * @param offset The index to start at
      * @param args The arguments to implode
      * @return A string containing each argument seperated by a space
+     * @deprecated Should be no need for this now
      */
-    protected final String implodeArgs(final int offset, final String... args) {
+    @Deprecated
+    protected static final String implodeArgs(final int offset, final String... args) {
         String res = "";
         for (int i = offset; i < args.length; i++) {
             if (res.isEmpty()) {
@@ -62,8 +63,10 @@ public abstract class Command extends CommandInfo implements Comparable<Command>
      * Implodes the given list of arguments.
      * @param args The arguments to implode
      * @return A string containing each argument seperated by a space
+     * @deprecated Should be no need for this now
      */
-    protected final String implodeArgs(final String... args) {
+    @Deprecated
+    protected static final String implodeArgs(final String... args) {
         return implodeArgs(0, args);
     } 
     
@@ -148,18 +151,6 @@ public abstract class Command extends CommandInfo implements Comparable<Command>
         for (int i = 0; i < size - data.length(); i++) {
             builder.append(' ');
         }
-    }    
-    
-    /** {@inheritDoc} */
-    @Override
-    public final int compareTo(final Command o) {
-        return getName().compareTo(o.getName());
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public CommandType getType() {
-        return CommandType.fromCommand(this);
     }
 
 }

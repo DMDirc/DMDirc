@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -52,13 +53,13 @@ public final class Notify extends GlobalCommand implements IntelligentCommand {
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final boolean isSilent,
-            final String... args) {
-        if (args.length == 0) {
+            final CommandArguments args) {
+        if (args.getArguments().length == 0) {
             showUsage(origin, isSilent, "notify", "<colour>");
             return;
         }
         
-        final Color colour = ColourManager.parseColour(args[0], null);
+        final Color colour = ColourManager.parseColour(args.getArguments()[0], null);
         
         if (colour == null) {
             showUsage(origin, isSilent, "notify",

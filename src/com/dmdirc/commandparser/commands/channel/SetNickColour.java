@@ -25,6 +25,7 @@ package com.dmdirc.commandparser.commands.channel;
 import com.dmdirc.Channel;
 import com.dmdirc.ChannelClientProperty;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -54,31 +55,31 @@ public final class SetNickColour extends ChannelCommand implements IntelligentCo
     /** {@inheritDoc} */
     @SuppressWarnings("unchecked") @Override
     public void execute(final InputWindow origin, final Server server,
-            final Channel channel, final boolean isSilent, final String... args) {
+            final Channel channel, final boolean isSilent, final CommandArguments args) {
         
         int offset = 0;
         boolean nicklist = true;
         boolean text = true;
         
-        if (args.length > offset && args[offset].equalsIgnoreCase("--nicklist")) {
+        if (args.getArguments().length > offset && args.getArguments()[offset].equalsIgnoreCase("--nicklist")) {
             text = false;
             offset++;
-        } else if (args.length > offset && args[offset].equalsIgnoreCase("--text")) {
+        } else if (args.getArguments().length > offset && args.getArguments()[offset].equalsIgnoreCase("--text")) {
             nicklist = false;
             offset++;
         }
         
-        if (args.length <= offset) {
+        if (args.getArguments().length <= offset) {
             showUsage(origin, isSilent, "setnickcolour", "[--nicklist|--text] <nick> [colour]");
             return;
         }
         
-        final ChannelClientInfo target = channel.getChannelInfo().getUser(args[offset]);
+        final ChannelClientInfo target = channel.getChannelInfo().getUser(args.getArguments()[offset]);
         offset++;
         
         if (target == null) {
-            sendLine(origin, isSilent, FORMAT_ERROR, "No such nickname (" + args[offset - 1] + ")!");
-        } else if (args.length <= offset) {
+            sendLine(origin, isSilent, FORMAT_ERROR, "No such nickname (" + args.getArguments()[offset - 1] + ")!");
+        } else if (args.getArguments().length <= offset) {
             // We're removing the colour
             if (nicklist) {
                 target.getMap().remove(ChannelClientProperty.NICKLIST_FOREGROUND);
@@ -89,7 +90,7 @@ public final class SetNickColour extends ChannelCommand implements IntelligentCo
             ((ChannelWindow) channel.getFrame()).redrawNicklist();
         } else {
             // We're setting the colour
-            final Color newColour = ColourManager.parseColour(args[offset], null);
+            final Color newColour = ColourManager.parseColour(args.getArguments()[offset], null);
             if (newColour == null) {
                 sendLine(origin, isSilent, FORMAT_ERROR, "Invalid colour specified.");
                 return;

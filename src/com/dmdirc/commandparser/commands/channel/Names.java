@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.commands.ExternalCommand;
@@ -52,7 +53,7 @@ public class Names extends ChannelCommand implements IntelligentCommand, Externa
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final Server server, 
-            final Channel channel, final boolean isSilent, final String... args) {
+            final Channel channel, final boolean isSilent, final CommandArguments args) {
         server.getParser().sendLine("NAMES " + channel.getChannelInfo().getName());
     }
     
@@ -60,7 +61,7 @@ public class Names extends ChannelCommand implements IntelligentCommand, Externa
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final Server server,
-            final String channel, final boolean isSilent, final String ... args) {
+            final String channel, final boolean isSilent, final CommandArguments args) {
         server.getParser().sendLine("NAMES " + channel);
     }    
 

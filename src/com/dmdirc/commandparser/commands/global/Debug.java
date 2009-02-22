@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.Main;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -64,42 +65,42 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
     /** {@inheritDoc} */
     @Override
     public void execute(final InputWindow origin, final boolean isSilent,
-            final String ... args) {
-        if (args.length == 0) {
+            final CommandArguments args) {
+        if (args.getArguments().length == 0) {
             showUsage(origin, isSilent, "debug", "<debug command> [options]");
-        } else if ("error".equals(args[0])) {
-            doError(args);
-        } else if ("showraw".equals(args[0])) {
+        } else if ("error".equals(args.getArguments()[0])) {
+            doError(args.getArguments());
+        } else if ("showraw".equals(args.getArguments()[0])) {
             doShowRaw(origin, isSilent);
-        } else if ("configstats".equals(args[0])) {
+        } else if ("configstats".equals(args.getArguments()[0])) {
             doConfigStats(origin, isSilent);
-        } else if ("configinfo".equals(args[0])) {
+        } else if ("configinfo".equals(args.getArguments()[0])) {
             doConfigInfo(origin, isSilent);
-        } else if ("globalconfiginfo".equals(args[0])) {
+        } else if ("globalconfiginfo".equals(args.getArguments()[0])) {
             doGlobalConfigInfo(origin, isSilent);
-        } else if ("colourspam".equals(args[0])) {
+        } else if ("colourspam".equals(args.getArguments()[0])) {
             doColourSpam(origin, isSilent);
-        } else if ("meminfo".equals(args[0])) {
+        } else if ("meminfo".equals(args.getArguments()[0])) {
             doMemInfo(origin, isSilent);
-        } else if ("rungc".equals(args[0])) {
+        } else if ("rungc".equals(args.getArguments()[0])) {
             doGarbage(origin, isSilent);
-        } else if ("threads".equals(args[0])) {
+        } else if ("threads".equals(args.getArguments()[0])) {
             doThreads(origin, isSilent);
-        } else if ("forceupdate".equals(args[0])) {
+        } else if ("forceupdate".equals(args.getArguments()[0])) {
             doForceUpdate();
-        } else if ("serverinfo".equals(args[0])) {
+        } else if ("serverinfo".equals(args.getArguments()[0])) {
             doServerInfo(origin, isSilent);
-        } else if ("serverstate".equals(args[0])) {
+        } else if ("serverstate".equals(args.getArguments()[0])) {
             doServerState(origin, isSilent);
-        } else if ("benchmark".equals(args[0])) {
+        } else if ("benchmark".equals(args.getArguments()[0])) {
             doBenchmark(origin);
-        } else if ("services".equals(args[0])) {
-            doServices(origin, isSilent, args);
-        } else if ("firstrun".equals(args[0])) {
+        } else if ("services".equals(args.getArguments()[0])) {
+            doServices(origin, isSilent, args.getArguments());
+        } else if ("firstrun".equals(args.getArguments()[0])) {
             Main.getUI().showFirstRunWizard();
-        } else if ("migration".equals(args[0])) {
+        } else if ("migration".equals(args.getArguments()[0])) {
             Main.getUI().showMigrationWizard();
-        } else if ("notify".equals(args[0])) {
+        } else if ("notify".equals(args.getArguments()[0])) {
             sendLine(origin, isSilent, FORMAT_OUTPUT, "Current notification colour is: "
                     + origin.getContainer().getNotification());
         } else {

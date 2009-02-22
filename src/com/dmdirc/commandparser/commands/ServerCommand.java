@@ -23,22 +23,34 @@
 package com.dmdirc.commandparser.commands;
 
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * Represents a generic server command. Server commands are associated with
  * a server instance.
+ *
  * @author chris
  */
-public abstract class ServerCommand extends Command {
+public abstract class ServerCommand extends Command implements CommandInfo {
     
     /**
      * Executes this command.
+     *
      * @param origin The window in which the command was typed
      * @param server The server instance that this command is being executed on
      * @param isSilent Whether this command is silenced or not
      * @param args Arguments passed to this command
+     * @since 0.6.3
      */
     public abstract void execute(InputWindow origin, Server server,
-            boolean isSilent, String ... args);
+            boolean isSilent, CommandArguments args);
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandType getType() {
+        return CommandType.TYPE_SERVER;
+    }
 }

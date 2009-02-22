@@ -26,7 +26,7 @@ import com.dmdirc.config.ConfigManager;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class FormatterTest extends junit.framework.TestCase {
+public class FormatterTest {
     
     private final TestConfigManagerOptionToggle mcm = new TestConfigManagerOptionToggle();
     

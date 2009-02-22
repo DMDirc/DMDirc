@@ -29,13 +29,14 @@ import com.dmdirc.config.prefs.validator.StringLengthValidator;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class PreferencesSettingTest {
     
-    @Before
-    public void setUp() throws Exception {        
+    @BeforeClass
+    public static void setUp() throws Exception {
         IdentityManager.load();
     }    
 
@@ -128,7 +129,7 @@ public class PreferencesSettingTest {
                 "option", "title", "helptext");
         ps2.setValue(null);
         ps2.dismiss();
-        assertEquals(null, ps2.getValue());        
+        assertEquals("fallback", ps2.getValue());
     }
     
     @Test
@@ -158,11 +159,12 @@ public class PreferencesSettingTest {
         ps.setValue("abcdefg");
         assertTrue(ps.needsSaving());
 
+        IdentityManager.getConfigIdentity().setOption("domain", "option2", "fallback");
         final PreferencesSetting ps2 = new PreferencesSetting(PreferencesType.TEXT, "domain",
-                "option", "title", "helptext");
+                "option2", "title", "helptext");
         
         ps2.setValue(null);
-        assertFalse(ps2.needsSaving());
+        assertTrue(ps2.needsSaving());
     }
     
     @Test
@@ -193,7 +195,4 @@ public class PreferencesSettingTest {
         assertEquals("def", IdentityManager.getConfigIdentity().getOption("unit-test", "ps"));
     }    
 
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(PreferencesSettingTest.class);
-    }
 }

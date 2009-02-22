@@ -24,7 +24,7 @@ package com.dmdirc.actions.metatypes;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ChannelEventsTest extends junit.framework.TestCase {
+public class ChannelEventsTest {
 
     @Test
     public void testArity() {

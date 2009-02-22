@@ -25,6 +25,8 @@ package com.dmdirc.commandparser.parsers;
 import com.dmdirc.Server;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
@@ -79,19 +81,22 @@ public abstract class CommandParser implements Serializable {
     /**
      * Registers the specified command with this parser.
      *
+     * @since 0.6.3
      * @param command Command to be registered
+     * @param info The information the command should be registered with
      */
-    public final void registerCommand(final Command command) {
-        commands.put(command.getName().toLowerCase(), command);
+    public final void registerCommand(final Command command, final CommandInfo info) {
+        commands.put(info.getName().toLowerCase(), command);
     }
 
     /**
      * Unregisters the specified command with this parser.
      *
-     * @param command Command to be unregistered
+     * @param info Command information to be unregistered
+     * @since 0.6.3
      */
-    public final void unregisterCommand(final Command command) {
-        commands.remove(command.getName().toLowerCase());
+    public final void unregisterCommand(final CommandInfo info) {
+        commands.remove(info.getName().toLowerCase());
     }
 
     /**
@@ -104,67 +109,42 @@ public abstract class CommandParser implements Serializable {
      */
     public final void parseCommand(final InputWindow origin,
             final String line, final boolean parseChannel) {
-        if (line.isEmpty()) {
-            return;
-        }
+        final CommandArguments args = new CommandArguments(line);
 
-        if (line.charAt(0) == CommandManager.getCommandChar()) {
-            int offset = 1;
-            boolean silent = false;
+        if (args.isCommand()) {
+            final boolean silent = args.isSilent();
+            final String command = args.getCommandName();
+            final String[] cargs = args.getArguments();
 
-            if (line.length() > offset && line.charAt(offset) == CommandManager.getSilenceChar()) {
-                silent = true;
-                offset++;
-            }
-
-            final String[] args = line.split(" ");
-            final String command = args[0].substring(offset);
-            String[] comargs;
-
-            if (args.length >= 2 && parseChannel && origin != null
+            if (args.getArguments().length > 0 && parseChannel && origin != null
                     && origin.getContainer() != null
                     && origin.getContainer().getServer() != null
-                    && origin.getContainer().getServer().isValidChannelName(args[1])
+                    && origin.getContainer().getServer().isValidChannelName(cargs[0])
                     && CommandManager.isChannelCommand(command)) {
                 final Server server = origin.getContainer().getServer();
 
-                if (server.hasChannel(args[1])) {
-
-                    final StringBuilder newLine = new StringBuilder();
-                    for (int i = 0; i < args.length; i++) {
-                        if (i == 1) { continue; }
-                        newLine.append(" ").append(args[i]);
-                    }
-
-                    server.getChannel(args[1]).getFrame().getCommandParser()
-                            .parseCommand(origin, newLine.substring(1), false);
-
+                if (server.hasChannel(cargs[0])) {
+                    server.getChannel(cargs[0]).getFrame().getCommandParser()
+                            .parseCommand(origin, args.getWordsAsString(2), false);
                     return;
                 } else {
                     final Command actCommand = CommandManager.getCommand(
                             CommandType.TYPE_CHANNEL, command);
 
                     if (actCommand instanceof ExternalCommand) {
-                        comargs = new String[args.length - 2];
-                        System.arraycopy(args, 2, comargs, 0, args.length - 2);
-
-                        ((ExternalCommand) actCommand).execute(origin, server,
-                                args[1], silent, comargs);
+                        ((ExternalCommand) actCommand).execute(
+                                origin, server, cargs[0], silent,
+                                new CommandArguments(args.getWordsAsString(2)));
                         return;
                     }
                 }
             }
 
-            comargs = new String[args.length - 1];
-            System.arraycopy(args, 1, comargs, 0, args.length - 1);
-
-            final String signature = command;
-
-            if (commands.containsKey(signature.toLowerCase())) {
-                addHistory(line.substring(offset));
-                executeCommand(origin, silent, commands.get(signature.toLowerCase()), comargs);
+            if (commands.containsKey(command.toLowerCase())) {
+                addHistory(args.getStrippedLine());
+                executeCommand(origin, silent, commands.get(command.toLowerCase()), args);
            } else {
-                handleInvalidCommand(origin, command, comargs);
+                handleInvalidCommand(origin, args);
             }
         } else {
             handleNonCommand(origin, line);
@@ -233,30 +213,32 @@ public abstract class CommandParser implements Serializable {
      * @param isSilent Whether the command is being silenced or not
      * @param command The command to be executed
      * @param args The arguments to the command
+     * @since 0.6.3
      */
     protected abstract void executeCommand(final InputWindow origin,
-            final boolean isSilent, final Command command, final String... args);
+            final boolean isSilent, final Command command, final CommandArguments args);
 
     /**
      * Called when the user attempted to issue a command (i.e., used the command
      * character) that wasn't found. It could be that the command has a different
      * arity, or that it plain doesn't exist.
+     *
      * @param origin The window in which the command was typed
-     * @param command The command the user tried to execute
      * @param args The arguments passed to the command
+     * @since 0.6.3
      */
     protected void handleInvalidCommand(final InputWindow origin,
-            final String command, final String... args) {
+            final CommandArguments args) {
         if (origin == null) {
             ActionManager.processEvent(CoreActionType.UNKNOWN_COMMAND, null,
-                    null, command, args);
+                    null, args.getCommandName(), args.getArguments());
         } else {
             final StringBuffer buff = new StringBuffer("unknownCommand");
 
             ActionManager.processEvent(CoreActionType.UNKNOWN_COMMAND, buff,
-                    origin.getContainer(), command, args);
+                    origin.getContainer(), args.getCommandName(), args.getArguments());
 
-            origin.addLine(buff, command);
+            origin.addLine(buff, args.getCommandName());
         }
     }
 

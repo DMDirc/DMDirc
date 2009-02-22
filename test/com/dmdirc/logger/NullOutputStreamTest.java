@@ -25,7 +25,7 @@ import java.io.IOException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class NullOutputStreamTest extends junit.framework.TestCase {
+public class NullOutputStreamTest {
 
     @Test
     public void testWrite() {

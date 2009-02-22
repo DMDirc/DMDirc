@@ -56,9 +56,5 @@ public class ActionComparisonNamesTest {
         
         return res;
     }
-    
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(ActionComparisonNamesTest.class);
-    }    
 
 }

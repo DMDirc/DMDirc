@@ -63,9 +63,5 @@ public class IpToLongTest {
 
         return Arrays.asList(tests);
     }
-    
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(IpToLongTest.class);
-    }
-    
+
 }

@@ -21,18 +21,26 @@
  */
 package com.dmdirc.commandparser.commands.server;
 
+import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.harness.TestInputWindow;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ChangeServerTest extends junit.framework.TestCase {
+public class ChangeServerTest {
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        IdentityManager.load();
+    }
 
     private final ChangeServer command = new ChangeServer();
 
     @Test
     public void testUsageNoArgs() {
         final TestInputWindow tiw = new TestInputWindow();
-        command.execute(tiw, null, false, new String[0]);
+        command.execute(tiw, null, false, new CommandArguments("/server"));
         
         assertTrue(tiw.lines.containsKey("commandUsage"));
     }
@@ -40,7 +48,7 @@ public class ChangeServerTest extends junit.framework.TestCase {
     @Test
     public void testInvalidPort() {
         final TestInputWindow tiw = new TestInputWindow();
-        command.execute(tiw, null, false, new String[]{"foo:abc"});
+        command.execute(tiw, null, false, new CommandArguments("/server foo:abc"));
         
         assertTrue(tiw.lines.containsKey("commandError"));
     }
@@ -48,7 +56,7 @@ public class ChangeServerTest extends junit.framework.TestCase {
     @Test
     public void testOutOfRangePort1() {
         final TestInputWindow tiw = new TestInputWindow();
-        command.execute(tiw, null, false, new String[]{"foo:0"});
+        command.execute(tiw, null, false, new CommandArguments("/server foo:0"));
         
         assertTrue(tiw.lines.containsKey("commandError"));
     }
@@ -56,7 +64,7 @@ public class ChangeServerTest extends junit.framework.TestCase {
     @Test
     public void testOutOfRangePort2() {
         final TestInputWindow tiw = new TestInputWindow();
-        command.execute(tiw, null, false, new String[]{"foo:65537"});
+        command.execute(tiw, null, false,new CommandArguments("/server foo:65537"));
         
         assertTrue(tiw.lines.containsKey("commandError"));
     }

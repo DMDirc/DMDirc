@@ -26,7 +26,7 @@ import com.dmdirc.harness.parser.TestParser;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class Process001Test extends junit.framework.TestCase {
+public class Process001Test {
        
     @Test
     public void testDuplicate001() {

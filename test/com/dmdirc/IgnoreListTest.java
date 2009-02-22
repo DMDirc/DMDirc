@@ -29,7 +29,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 
-public class IgnoreListTest extends junit.framework.TestCase {
+public class IgnoreListTest {
     
     private final String[][] tests = {
         {"a@b.c", "a@b\\.c"},

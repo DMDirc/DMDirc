@@ -22,6 +22,7 @@
 package com.dmdirc.commandparser.commands;
 
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
@@ -40,8 +41,9 @@ public interface ExternalCommand {
      * @param channel The name of the channel the command is being executed for
      * @param isSilent Whether this command is silenced or not
      * @param args Arguments passed to this command
+     * @since 0.6.3
      */
     void execute(InputWindow origin, Server server, String channel,
-            boolean isSilent, String... args);    
+            boolean isSilent, CommandArguments args);
 
 }
