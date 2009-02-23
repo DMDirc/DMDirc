@@ -237,7 +237,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             @Override
             public void run() {
                 final List<Line> lines = new LinkedList<Line>();
-                for (String myLine : encodedLine.split("\n")) {
+                for (final String myLine : encodedLine.split("\n")) {
                     if (timestamp) {
                         lines.add(new Line(new String[]{
                             Formatter.formatMessage(getConfigManager(),
@@ -247,8 +247,16 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                         lines.add(new Line(new String[]{myLine,}));
                     }
 
-                    ActionManager.processEvent(CoreActionType.CLIENT_LINE_ADDED,
+                    new LoggingSwingWorker() {
+
+                        /** {@inheritDoc} */
+                        @Override
+                        protected Object doInBackground() throws Exception {
+                            ActionManager.processEvent(CoreActionType.CLIENT_LINE_ADDED,
                             null, getContainer(), myLine);
+                            return null;
+                        }
+                    }.execute();
                 }
                 
                 textPane.getDocument().addText(lines);
