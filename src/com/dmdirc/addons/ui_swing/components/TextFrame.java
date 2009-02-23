@@ -486,7 +486,15 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void internalFrameActivated(final InternalFrameEvent event) {
-        parent.windowActivated();
+        new LoggingSwingWorker() {
+
+            /** {@inheritDoc} */
+            @Override
+            protected Object doInBackground() throws Exception {
+                parent.windowActivated();
+                return null;
+            }
+        }.execute();
     }
 
     /**
@@ -496,7 +504,15 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void internalFrameDeactivated(final InternalFrameEvent event) {
-        parent.windowDeactivated();
+        new LoggingSwingWorker() {
+
+            /** {@inheritDoc} */
+            @Override
+            protected Object doInBackground() throws Exception {
+                parent.windowDeactivated();
+                return null;
+            }
+        }.execute();
     }
 
     /** {@inheritDoc} */

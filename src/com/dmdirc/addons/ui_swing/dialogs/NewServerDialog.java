@@ -30,6 +30,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.validator.PortValidator;
 import com.dmdirc.config.prefs.validator.RegexStringValidator;
 import com.dmdirc.addons.ui_swing.SwingController;
+import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 import com.dmdirc.addons.ui_swing.components.validating.ValidatingJTextField;
 import com.dmdirc.addons.ui_swing.dialogs.profiles.ProfileManagerDialog;
@@ -264,19 +265,33 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
         // Open in a new window?
         if (newServerWindowCheck.isSelected() || ServerManager.getServerManager().
                 numServers() == 0 || Main.getUI().getActiveWindow() == null) {
-            new Server(host, port, pass, sslCheck.isSelected(), profile);
+            new LoggingSwingWorker() {
+
+                @Override
+                protected Object doInBackground() throws Exception {
+                    new Server(host, port, pass, sslCheck.isSelected(), profile);
+                    return null;
+                }
+            }.execute();
         } else {
             final com.dmdirc.ui.interfaces.Window active =
                     Main.getUI().getActiveWindow();
             final Server server = ServerManager.getServerManager().
                     getServerFromFrame(active);
-            if (server == null) {
-                new Server(host, port, pass, sslCheck.isSelected(),
-                        profile);
-            } else {
-                server.connect(host, port, pass, sslCheck.isSelected(),
-                        profile);
-            }
+            new LoggingSwingWorker() {
+
+                @Override
+                protected Object doInBackground() throws Exception {
+                    if (server == null) {
+                        new Server(host, port, pass, sslCheck.isSelected(),
+                            profile);
+                    } else {
+                        server.connect(host, port, pass, sslCheck.isSelected(),
+                            profile);
+                    }
+                    return null;
+                }
+            }.execute();
         }
     }
 
@@ -302,7 +317,7 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
         if (me == null) {
             return;
         }
-        synchronized (me) {
+        synchronized (NewServerDialog.this) {
             super.dispose();
             me = null;
         }
