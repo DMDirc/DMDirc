@@ -34,7 +34,6 @@ import com.dmdirc.addons.ui_swing.actions.HyperlinkCopyAction;
 import com.dmdirc.addons.ui_swing.actions.NicknameCopyAction;
 import com.dmdirc.addons.ui_swing.actions.SearchAction;
 import com.dmdirc.addons.ui_swing.actions.TextPaneCopyAction;
-import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
 import com.dmdirc.addons.ui_swing.textpane.ClickType;
 import com.dmdirc.addons.ui_swing.textpane.Line;
 import com.dmdirc.addons.ui_swing.textpane.LineInfo;

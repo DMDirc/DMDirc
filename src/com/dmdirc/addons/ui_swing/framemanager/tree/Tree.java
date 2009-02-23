@@ -26,7 +26,6 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.addons.ui_swing.actions.CloseFrameContainerAction;
 import com.dmdirc.addons.ui_swing.components.TextFrame;
-import com.dmdirc.addons.ui_swing.components.TreeScroller;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -47,7 +46,7 @@ import javax.swing.tree.TreeSelectionModel;
 import net.miginfocom.layout.PlatformDefaults;
 
 /**
- *
+ * Specialised JTree for the frame manager.
  */
 public class Tree extends JTree implements TreeSelectionListener,
         MouseMotionListener, ConfigChangeListener, MouseListener {
@@ -91,7 +90,7 @@ public class Tree extends JTree implements TreeSelectionListener,
                 (int) PlatformDefaults.getUnitValueX("related").getValue(),
                 (int) PlatformDefaults.getUnitValueX("related").getValue(),
                 (int) PlatformDefaults.getUnitValueX("related").getValue()));
-        new TreeScroller(this);
+        new TreeTreeScroller(this);
         setFocusable(false);
 
         dragSelect = IdentityManager.getGlobalConfig().getOptionBool("treeview",
@@ -117,9 +116,17 @@ public class Tree extends JTree implements TreeSelectionListener,
     @Override
     public void valueChanged(final TreeSelectionEvent e) {
         if (path != null && !path.equals(e.getPath())) {
-            ((TreeViewNode) e.getPath().getLastPathComponent()).getFrameContainer().
-                    activateFrame();
+            setSelection(e.getPath());
         }
+    }
+
+    /**
+     * Sets the tree selection path.
+     *
+     * @param path Tree path
+     */
+    public void setSelection(final TreePath path) {
+        ((TreeViewNode) path.getLastPathComponent()).getFrameContainer().activateFrame();
     }
 
     /**
@@ -158,7 +165,7 @@ public class Tree extends JTree implements TreeSelectionListener,
         if (dragSelect) {
             final TreeViewNode node = getNodeForLocation(e.getX(), e.getY());
             if (node != null) {
-                node.getFrameContainer().activateFrame();
+                setSelection(new TreePath(node.getPath()));
             }
         }
         manager.checkRollover(e);
@@ -194,7 +201,7 @@ public class Tree extends JTree implements TreeSelectionListener,
         if (e.getButton() == MouseEvent.BUTTON1) {
             final TreePath selectedPath = getPathForLocation(e.getX(), e.getY());
             if (selectedPath != null) {
-                setSelectionPath(selectedPath);
+                setSelection(selectedPath);
             }
         }
         processMouseEvents(e);
@@ -235,10 +242,10 @@ public class Tree extends JTree implements TreeSelectionListener,
      * @param e mouse event
      */
     public void processMouseEvents(final MouseEvent e) {
-        final TreePath path = getPathForLocation(e.getX(), e.getY());
-        if (path != null) {
+        final TreePath localPath = getPathForLocation(e.getX(), e.getY());
+        if (localPath != null) {
             if (e.isPopupTrigger()) {
-                final TextFrame frame = (TextFrame) ((TreeViewNode) path.getLastPathComponent()).getFrameContainer().
+                final TextFrame frame = (TextFrame) ((TreeViewNode) localPath.getLastPathComponent()).getFrameContainer().
                         getFrame();
                 final JPopupMenu popupMenu = frame.getPopupMenu(null, "");
                 frame.addCustomPopupItems(popupMenu);
@@ -248,12 +255,12 @@ public class Tree extends JTree implements TreeSelectionListener,
                 popupMenu.add(new JMenuItem(new CloseFrameContainerAction(frame.getContainer())));
                 popupMenu.show(this, e.getX(), e.getY());
             }
-            if (((TextFrame) ((TreeViewNode) path.getLastPathComponent()).getFrameContainer().
+            if (((TextFrame) ((TreeViewNode) localPath.getLastPathComponent()).getFrameContainer().
                     getFrame()).isIcon()) {
                 try {
-                    ((TextFrame) ((TreeViewNode) path.getLastPathComponent()).getFrameContainer().
+                    ((TextFrame) ((TreeViewNode) localPath.getLastPathComponent()).getFrameContainer().
                             getFrame()).setIcon(false);
-                    ((TreeViewNode) path.getLastPathComponent()).getFrameContainer().
+                    ((TreeViewNode) localPath.getLastPathComponent()).getFrameContainer().
                             activateFrame();
                 } catch (PropertyVetoException ex) {
                 //Ignore

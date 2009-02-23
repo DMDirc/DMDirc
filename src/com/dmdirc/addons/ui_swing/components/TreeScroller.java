@@ -44,6 +44,8 @@ public class TreeScroller implements MouseWheelListener {
     private final boolean rootVisible;
     /** Root node. */
     private final DefaultMutableTreeNode rootNode;
+    /** Tree. */
+    protected JTree tree;
 
     /**
      * Creates a new instance of TreeScroller.
@@ -51,6 +53,7 @@ public class TreeScroller implements MouseWheelListener {
      * @param tree Tree to scroll over
      */
     public TreeScroller(final JTree tree) {
+        this.tree = tree;
         this.model = (DefaultTreeModel) tree.getModel();
         this.selectionModel = tree.getSelectionModel();
 
@@ -76,7 +79,11 @@ public class TreeScroller implements MouseWheelListener {
         rootNode = (DefaultMutableTreeNode) model.getRoot();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @param e Mouse wheel event
+     */
     @Override
     public void mouseWheelMoved(final MouseWheelEvent e) {
         if (e.getWheelRotation() < 0) {
@@ -134,7 +141,16 @@ public class TreeScroller implements MouseWheelListener {
             //down
             nextNode = changeFocusDown(thisNode);
         }
-        selectionModel.setSelectionPath(new TreePath(model.getPathToRoot(nextNode)));
+        setPath(new TreePath(model.getPathToRoot(nextNode)));
+    }
+
+    /**
+     * Sets the tree selection path.
+     *
+     * @param path Path
+     */
+    protected void setPath(final TreePath path) {
+        selectionModel.setSelectionPath(path);
     }
 
     /**
