@@ -184,7 +184,17 @@ public class WindowManager {
 
         if (childWindows.get(window) != null && !childWindows.get(window).isEmpty()) {
             for (Window child : new ArrayList<Window>(childWindows.get(window))) {
-                removeWindow(child);
+                child.close();
+            }
+
+            while (!childWindows.get(window).isEmpty()) {
+                try {
+                    synchronized (childWindows) {
+                        childWindows.wait();
+                    }
+                } catch (InterruptedException ex) {
+                    // Ignore it
+                }
             }
         }
 
@@ -204,7 +214,10 @@ public class WindowManager {
                         " " + window.getTitle()));
                 return;
             } else {
-                childWindows.remove(parent, window);
+                synchronized (childWindows) {
+                    childWindows.remove(parent, window);
+                    childWindows.notifyAll();
+                }
 
                 fireDeleteWindow(parent, window);
             }
