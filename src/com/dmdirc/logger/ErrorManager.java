@@ -135,7 +135,8 @@ public final class ErrorManager implements Serializable, Runnable {
 
         if (error.getMessage().startsWith("java.lang.NoSuchMethodError")
                 || error.getMessage().startsWith("java.lang.NoClassDefFoundError")
-                || error.getMessage().startsWith("java.lang.UnsatisfiedLinkError")) {
+                || error.getMessage().startsWith("java.lang.UnsatisfiedLinkError")
+                || error.getMessage().startsWith("java.lang.AbstractMethodError")) {
             error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
             error.setFixedStatus(ErrorFixedStatus.INVALID);
             report = false;
