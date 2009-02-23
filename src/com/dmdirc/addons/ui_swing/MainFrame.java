@@ -500,6 +500,7 @@ public final class MainFrame extends JFrame implements WindowListener,
             @Override
             protected void done() {
                 super.done();
+                dispose();
             }
         }.execute();
         
