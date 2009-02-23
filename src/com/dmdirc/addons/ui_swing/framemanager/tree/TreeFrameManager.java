@@ -285,7 +285,9 @@ public final class TreeFrameManager implements FrameManager,
             final TreeNode[] treePath =
                     ((DefaultTreeModel) tree.getModel()).getPathToRoot(nodes.get(window.getContainer()));
             if (treePath != null && treePath.length > 0) {
-                tree.setSelectionPath(new TreePath(treePath));
+                final TreePath path = new TreePath(treePath);
+                tree.setTreePath(path);
+                tree.setSelectionPath(path);
             }
         }
     }

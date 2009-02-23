@@ -62,7 +62,15 @@ public class Tree extends JTree implements TreeSelectionListener,
     private boolean dragSelect;
     /** Tree frame manager. */
     private TreeFrameManager manager;
+    /** Current selection path. */
+    private TreePath path;
 
+    /**
+     * Specialised JTree for frame manager.
+     *
+     * @param manager Frame manager
+     * @param model tree model.
+     */
     public Tree(final TreeFrameManager manager, final TreeModel model) {
         super(model);
         
@@ -96,11 +104,22 @@ public class Tree extends JTree implements TreeSelectionListener,
         addTreeSelectionListener(this);
     }
 
+    /**
+     * Set path.
+     *
+     * @param path Path
+     */
+    public void setTreePath(final TreePath path) {
+        this.path = path;
+    }
+
     /** {@inheritDoc} */
     @Override
     public void valueChanged(final TreeSelectionEvent e) {
-        ((TreeViewNode) e.getPath().getLastPathComponent()).getFrameContainer().
-                activateFrame();
+        if (path != null && !path.equals(e.getPath())) {
+            ((TreeViewNode) e.getPath().getLastPathComponent()).getFrameContainer().
+                    activateFrame();
+        }
     }
 
     /**
