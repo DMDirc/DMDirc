@@ -40,6 +40,9 @@ public abstract class LoggingSwingWorker<T, V> extends SwingWorker<T, V> {
     /** {@inheritDoc} */
     @Override
     protected void done() {
+        if (isCancelled()) {
+            return;
+        }
         try {
             get();
         } catch (InterruptedException ex) {

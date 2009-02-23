@@ -229,8 +229,12 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     @Override
     public void valueChanged(final ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
-            final PreferencesCategory node = (PreferencesCategory) tabList.
-                    getSelectedValue();
+            PreferencesCategory node = null;
+            try {
+                node = (PreferencesCategory) tabList.getSelectedValue();
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                //I hate the JVM
+            }
             if (node == null) {
                 tabList.setSelectedValue(selected, true);
                 return;
@@ -245,6 +249,15 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             }
             mainPanel.setCategory(selected);
         }
+    }
+
+    /**
+     * Returns the selected category.
+     *
+     * @return Selected category
+     */
+    protected PreferencesCategory getSelectedCategory() {
+        return selected;
     }
 
     /** {@inheritDoc} */

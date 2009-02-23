@@ -87,6 +87,8 @@ public class CategoryPanel extends JPanel {
     private JPanel nullCategory;
     /** Category panel map. */
     private Map<PreferencesCategory, JPanel> panels;
+    /** Category loading swing worker. */
+    private SwingWorker worker;
 
     /**
      * Instantiates a new category panel.
@@ -139,6 +141,9 @@ public class CategoryPanel extends JPanel {
      */
     public void setCategory(final PreferencesCategory category) {
         this.category = category;
+        if (worker != null) {
+            worker.cancel(true);
+        }
 
         if (!panels.containsKey(category)) {
             UIUtilities.invokeAndWait(new Runnable() {
@@ -149,7 +154,7 @@ public class CategoryPanel extends JPanel {
                 }
             });
 
-            new SwingWorker<JPanel, Object>() {
+            worker = new SwingWorker<JPanel, Object>() {
 
                 /** {@inheritDoc} */
                 @Override
@@ -160,6 +165,9 @@ public class CategoryPanel extends JPanel {
                 /** {@inheritDoc} */
                 @Override
                 protected void done() {
+                    if (isCancelled()) {
+                        return;
+                    }
                     try {
                         panels.put(category, get());
                         scrollPane.setViewportView(panels.get(category));
@@ -174,7 +182,8 @@ public class CategoryPanel extends JPanel {
                         Logger.appError(ErrorLevel.MEDIUM, ex.getMessage(), ex);
                     }
                 }
-            }.execute();
+            };
+            worker.execute();
         } else {
             scrollPane.setViewportView(panels.get(category));
             if (category == null) {
