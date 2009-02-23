@@ -30,11 +30,14 @@ import com.dmdirc.addons.ui_swing.components.ListScroller;
 import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+import java.util.concurrent.ExecutionException;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -86,14 +89,24 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
         initComponents();
 
-        worker = new LoggingSwingWorker() {
+        worker = new LoggingSwingWorker<PreferencesManager, Void>() {
 
             /** {@inheritDoc} */
             @Override
-            protected Object doInBackground() throws Exception {
-                final PreferencesManager manager = new PreferencesManager();
-                setPrefsManager(manager);
-                return null;
+            protected PreferencesManager doInBackground() throws Exception {
+                return new PreferencesManager();
+            }
+
+            /** {@inheritDoc} */
+            @Override
+            protected void done() {
+                try {
+                    setPrefsManager(get());
+                } catch (InterruptedException ex) {
+                    //Ignore
+                } catch (ExecutionException ex) {
+                    Logger.appError(ErrorLevel.MEDIUM, ex.getMessage(), ex);
+                }
             }
         };
         worker.execute();
@@ -203,7 +216,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             selected.fireCategoryDeselected();
             selected = null;
         }
-        
+
         manager.dismiss();
         dispose();
     }
