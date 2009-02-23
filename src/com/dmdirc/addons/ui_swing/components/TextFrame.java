@@ -34,7 +34,13 @@ import com.dmdirc.addons.ui_swing.actions.HyperlinkCopyAction;
 import com.dmdirc.addons.ui_swing.actions.NicknameCopyAction;
 import com.dmdirc.addons.ui_swing.actions.SearchAction;
 import com.dmdirc.addons.ui_swing.actions.TextPaneCopyAction;
+import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
 import com.dmdirc.addons.ui_swing.textpane.ClickType;
+import com.dmdirc.addons.ui_swing.textpane.Line;
+import com.dmdirc.addons.ui_swing.textpane.LineInfo;
+import com.dmdirc.addons.ui_swing.textpane.TextPane;
+import com.dmdirc.addons.ui_swing.textpane.TextPanePageDownAction;
+import com.dmdirc.addons.ui_swing.textpane.TextPanePageUpAction;
 import com.dmdirc.commandparser.PopupManager;
 import com.dmdirc.commandparser.PopupMenu;
 import com.dmdirc.commandparser.PopupMenuItem;
@@ -50,14 +56,8 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
-import com.dmdirc.addons.ui_swing.textpane.Line;
-import com.dmdirc.addons.ui_swing.textpane.LineInfo;
-import com.dmdirc.addons.ui_swing.textpane.TextPane;
-import com.dmdirc.addons.ui_swing.textpane.TextPanePageDownAction;
-import com.dmdirc.addons.ui_swing.textpane.TextPanePageUpAction;
 import com.dmdirc.util.URLHandler;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -412,7 +412,15 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void internalFrameOpened(final InternalFrameEvent event) {
-        parent.windowOpened();
+        new LoggingSwingWorker() {
+
+            /** {@inheritDoc} */
+            @Override
+            protected Object doInBackground() throws Exception {
+                parent.windowOpened();
+                return null;
+            }
+        }.execute();
     }
 
     /**
@@ -422,7 +430,15 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void internalFrameClosing(final InternalFrameEvent event) {
-        parent.windowClosing();
+        new LoggingSwingWorker() {
+
+            /** {@inheritDoc} */
+            @Override
+            protected Object doInBackground() throws Exception {
+                parent.windowClosing();
+                return null;
+            }
+        }.execute();
     }
 
     /**
@@ -432,7 +448,15 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void internalFrameClosed(final InternalFrameEvent event) {
-        parent.windowClosed();
+        new LoggingSwingWorker() {
+
+            /** {@inheritDoc} */
+            @Override
+            protected Object doInBackground() throws Exception {
+                parent.windowClosed();
+                return null;
+            }
+        }.execute();
     }
 
     /**

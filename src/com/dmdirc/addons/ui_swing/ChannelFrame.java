@@ -36,6 +36,7 @@ import com.dmdirc.addons.ui_swing.textpane.ClickType;
 import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
 import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.parser.irc.ChannelClientInfo;
 import com.dmdirc.ui.interfaces.ChannelWindow;
@@ -83,6 +84,8 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     private final Channel parent;
     /** Nick list scroll pane. */
     private JScrollPane nickScrollPane;
+    /** Identity. */
+    private Identity identity;
 
     /**
      * Creates a new instance of ChannelFrame. Sets up callbacks and handlers,
@@ -120,6 +123,9 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
 
         setInputHandler(new SwingInputHandler(getInputField(), commandParser,
                 this));
+
+        identity = IdentityManager.getChannelConfig(getChannel().getServer().
+                getNetwork(), getChannel().getChannelInfo().getName());
     }
 
     /**
@@ -394,9 +400,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     }
 
     private void saveSplitPanePosition() {
-        IdentityManager.getChannelConfig(getChannel().getServer().getNetwork(),
-                getChannel().getChannelInfo().getName()).setOption(
-                "ui", "channelSplitPanePosition",
+        identity.setOption("ui", "channelSplitPanePosition",
                 (int) nickScrollPane.getSize().getWidth());
     }
 

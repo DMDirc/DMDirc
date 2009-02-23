@@ -21,6 +21,7 @@
  */
 package com.dmdirc.addons.ui_swing;
 
+import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
 import com.dmdirc.addons.ui_swing.components.desktopPane.DMDircDesktopPane;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
@@ -481,14 +482,27 @@ public final class MainFrame extends JFrame implements WindowListener,
                 JOptionPane.YES_OPTION) {
             return;
         }
-        ActionManager.processEvent(CoreActionType.CLIENT_CLOSING, null);
-        ServerManager.getServerManager().
-                closeAll(IdentityManager.getGlobalConfig().
-                getOption("general", "closemessage"));
-        IdentityManager.getConfigIdentity().
-                setOption("ui", "frameManagerSize",
-                String.valueOf(getFrameManagerSize()));
-        dispose();
+
+        new LoggingSwingWorker() {
+
+            /** {@inheritDoc} */
+            @Override
+            protected Object doInBackground() throws Exception {
+                ActionManager.processEvent(CoreActionType.CLIENT_CLOSING, null);
+                ServerManager.getServerManager().closeAll(IdentityManager.
+                        getGlobalConfig().getOption("general", "closemessage"));
+                IdentityManager.getConfigIdentity().setOption("ui",
+                        "frameManagerSize", String.valueOf(getFrameManagerSize()));
+                return null;
+            }
+
+            /** {@inheritDoc} */
+            @Override
+            protected void done() {
+                super.done();
+            }
+        }.execute();
+        
     }
 
     /** {@inheritDoc} */
