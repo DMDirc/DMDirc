@@ -22,9 +22,6 @@
 
 package com.dmdirc.addons.ui_swing.components;
 
-import com.dmdirc.addons.ui_swing.components.TextAreaInputField;
-import com.dmdirc.addons.ui_swing.components.InputTextFrame;
-import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
@@ -33,16 +30,13 @@ import com.dmdirc.harness.TestWritableFrameContainer;
 import com.dmdirc.harness.ui.ClassFinder;
 import com.dmdirc.harness.ui.UIClassTestRunner;
 import com.dmdirc.harness.ui.UITestIface;
-
 import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.addons.ui_swing.CustomInputFrame;
 import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.UIUtilities;
-import java.awt.Toolkit;
-import java.awt.datatransfer.StringSelection;
+
 import java.awt.event.KeyEvent;
-import javax.swing.text.JTextComponent;
+
 import org.fest.swing.core.EventMode;
 import org.fest.swing.core.KeyPressInfo;
 import org.fest.swing.core.matcher.DialogByTitleMatcher;
@@ -50,14 +44,12 @@ import org.fest.swing.core.matcher.JButtonByTextMatcher;
 import org.fest.swing.fixture.DialogFixture;
 import org.fest.swing.fixture.FrameFixture;
 import org.fest.swing.fixture.JInternalFrameFixture;
-import org.fest.swing.util.Platform;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.*;
 
 @RunWith(UIClassTestRunner.class)
 public class InputTextFrameTest implements UITestIface {
