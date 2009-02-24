@@ -454,11 +454,13 @@ public final class ActionManager {
 
         final File dir = new File(getDirectory() + group);
 
-        for (File file : dir.listFiles()) {
-            if (!file.delete()) {
-                Logger.userError(ErrorLevel.MEDIUM, "Unable to remove file: "
-                        + file.getAbsolutePath());
-                return;
+        if (dir.isDirectory()) {
+            for (File file : dir.listFiles()) {
+                if (!file.delete()) {
+                    Logger.userError(ErrorLevel.MEDIUM, "Unable to remove file: "
+                            + file.getAbsolutePath());
+                    return;
+                }
             }
         }
 
