@@ -22,6 +22,9 @@
 
 package com.dmdirc.ui;
 
+import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
+import com.dmdirc.logger.ErrorManager;
+import com.dmdirc.logger.ErrorReportStatus;
 import com.dmdirc.logger.ProgramError;
 
 import java.awt.BorderLayout;
@@ -33,6 +36,8 @@ import java.awt.event.WindowEvent;
 
 import java.util.concurrent.Semaphore;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -65,6 +70,8 @@ public final class FatalErrorDialog extends JDialog implements ActionListener {
     private final ProgramError error;
     /** button. */
     private JButton okButton;
+    /** button. */
+    private JButton sendButton;
     /** info label. */
     private JTextPane infoLabel;
     /** message label. */
@@ -112,6 +119,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener {
         
         scrollPane = new JScrollPane();
         okButton = new JButton();
+        sendButton = new JButton();
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("DMDirc: Fatal Error");
@@ -140,8 +148,10 @@ public final class FatalErrorDialog extends JDialog implements ActionListener {
         scrollPane.setViewportView(stacktraceField);
 
         okButton.setText("OK");
+        sendButton.setText("Send");
 
         okButton.addActionListener(this);
+        sendButton.addActionListener(this);
     }
 
     /**
@@ -154,7 +164,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener {
         final JPanel buttons = new JPanel();
         blurb.setLayout(new BorderLayout(5, 5));
         info.setLayout(new BorderLayout(5, 5));
-        buttons.setLayout(new BorderLayout(5, 5));
+        buttons.setLayout(new BoxLayout(buttons, BoxLayout.LINE_AXIS));
         
         blurb.add(new JLabel(icon), BorderLayout.LINE_START);
         blurb.add(infoLabel, BorderLayout.CENTER);
@@ -162,7 +172,10 @@ public final class FatalErrorDialog extends JDialog implements ActionListener {
         info.add(messageLabel, BorderLayout.NORTH);
         info.add(scrollPane, BorderLayout.CENTER);
 
-        buttons.add(okButton, BorderLayout.LINE_END);
+        buttons.add(Box.createHorizontalGlue());
+        buttons.add(sendButton);
+        buttons.add(Box.createHorizontalStrut(5));
+        buttons.add(okButton);
 
         panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         panel.setLayout(new BorderLayout(5, 5));
@@ -182,7 +195,30 @@ public final class FatalErrorDialog extends JDialog implements ActionListener {
      */
     @Override
     public void actionPerformed(final ActionEvent actionEvent) {
-        dispose();
+        if (actionEvent.getSource() == sendButton) {
+            sendButton.setText("Sending...");
+            okButton.setEnabled(false);
+            sendButton.setEnabled(false);
+            new LoggingSwingWorker() {
+
+                /** {@inheritDoc} */
+                @Override
+                protected Object doInBackground() throws Exception {
+                    error.send();
+                    ErrorManager.getErrorManager().sendError(error);
+                    return null;
+                }
+
+                /** {@inheritDoc} */
+                @Override
+                protected void done() {
+                    super.done();
+                    dispose();
+                }
+            }.execute();
+        } else {
+            dispose();
+        }
     }
 
     /**
