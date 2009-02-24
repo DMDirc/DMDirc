@@ -75,8 +75,6 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     protected JPanel inputPanel;
     /** Away label. */
     protected JLabel awayLabel;
-    /** The container that owns this frame. */
-    private final WritableFrameContainer parent;
     /** The InputHandler for our input field. */
     private InputHandler inputHandler;
     /** Frame input field. */
@@ -93,8 +91,6 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
      */
     public InputTextFrame(final WritableFrameContainer owner) {
         super(owner);
-
-        parent = owner;
 
         initComponents();
 
@@ -186,7 +182,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
      */
     @Override
     public WritableFrameContainer getContainer() {
-        return parent;
+        return (WritableFrameContainer) super.getContainer();
     }
 
     /**
@@ -350,14 +346,14 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
             final int pasteTrigger = getConfigManager().getOptionInt("ui",
                     "pasteProtectionLimit");
             //check whether the number of lines is over the limit
-            if (parent.getNumLines(text) > pasteTrigger) {
+            if (getContainer().getNumLines(text) > pasteTrigger) {
                 //show the multi line paste dialog
                 new PasteDialog(this, text).setVisible(true);
                 inputField.setText("");
             } else {
                 //send the lines
                 for (String clipboardLine : clipboardLines) {
-                    parent.sendLine(clipboardLine);
+                    getContainer().sendLine(clipboardLine);
                 }
             }
         } else {

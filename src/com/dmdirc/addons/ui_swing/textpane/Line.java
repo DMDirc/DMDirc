@@ -19,14 +19,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.dmdirc.addons.ui_swing.textpane;
 
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.messages.IRCTextAttribute;
 import com.dmdirc.ui.messages.Styliser;
 
+import java.awt.Font;
 import java.awt.font.TextAttribute;
 import java.text.AttributedString;
 import java.util.Arrays;
@@ -47,13 +48,17 @@ import javax.swing.text.StyledDocument;
 public class Line {
 
     private final String[] lineParts;
+    private final ConfigManager config;
 
     /**
      * Creates a new line.
+     * 
      * @param lineParts Parts of the line
+     * @param config Configuration manager for this line
      */
-    public Line(final String[] lineParts) {
+    public Line(final String[] lineParts, final ConfigManager config) {
         this.lineParts = lineParts;
+        this.config = config;
     }
 
     /**
@@ -118,20 +123,30 @@ public class Line {
         final Element line = doc.getParagraphElement(0);
         try {
             attString = new AttributedString(line.getDocument().getText(0,
-                                                                        line.
-                    getDocument().getLength()));
-        }
-        catch (BadLocationException ex) {
+                    line.getDocument().getLength()));
+        } catch (BadLocationException ex) {
             Logger.userError(ErrorLevel.MEDIUM,
-                             "Unable to insert styled string: " +
-                             ex.getMessage());
+                    "Unable to insert styled string: " +
+                    ex.getMessage());
         }
 
         if (attString.getIterator().getEndIndex() != 0) {
-            attString.addAttribute(TextAttribute.SIZE,
-                                   UIManager.getFont("TextPane.font").getSize());
-            attString.addAttribute(TextAttribute.FAMILY,
-                                   UIManager.getFont("TextPane.font").getFamily());
+            final Font defaultFont = UIManager.getFont("TextPane.font");
+            final int fontSize;
+            final String fontName;
+            if (config.hasOptionString("ui", "textPaneFontName")) {
+                fontName = config.getOption("ui", "textPaneFontName");
+            } else {
+                fontName = defaultFont.getName();
+            }
+            if (config.hasOptionString("ui", "textPaneFontSize")) {
+                fontSize = config.getOptionInt("ui", "textPaneFontSize");
+            } else {
+                fontSize = defaultFont.getSize();
+            }
+            final Font font = new Font(fontName, Font.PLAIN, fontSize);
+            attString.addAttribute(TextAttribute.SIZE, font.getSize());
+            attString.addAttribute(TextAttribute.FAMILY, font.getFamily());
         }
 
         for (int i = 0; i < line.getElementCount(); i++) {
@@ -146,67 +161,50 @@ public class Line {
                 if (attrib == IRCTextAttribute.HYPERLINK) {
                     //Hyperlink
                     attString.addAttribute(IRCTextAttribute.HYPERLINK,
-                                           as.getAttribute(attrib), element.
-                            getStartOffset(),
-                                           element.getEndOffset());
-                }
-                else if (attrib == IRCTextAttribute.NICKNAME) {
+                            as.getAttribute(attrib), element.getStartOffset(),
+                            element.getEndOffset());
+                } else if (attrib == IRCTextAttribute.NICKNAME) {
                     //Nicknames
                     attString.addAttribute(IRCTextAttribute.NICKNAME,
-                                           as.getAttribute(attrib), element.
-                            getStartOffset(),
-                                           element.getEndOffset());
-                }
-                else if (attrib == IRCTextAttribute.CHANNEL) {
+                            as.getAttribute(attrib), element.getStartOffset(),
+                            element.getEndOffset());
+                } else if (attrib == IRCTextAttribute.CHANNEL) {
                     //Channels
                     attString.addAttribute(IRCTextAttribute.CHANNEL,
-                                           as.getAttribute(attrib), element.
-                            getStartOffset(),
-                                           element.getEndOffset());
-                }
-                else if (attrib == ColorConstants.Foreground) {
+                            as.getAttribute(attrib), element.getStartOffset(),
+                            element.getEndOffset());
+                } else if (attrib == ColorConstants.Foreground) {
                     //Foreground
                     attString.addAttribute(TextAttribute.FOREGROUND,
-                                           as.getAttribute(attrib), element.
-                            getStartOffset(),
-                                           element.getEndOffset());
-                }
-                else if (attrib == ColorConstants.Background) {
+                            as.getAttribute(attrib), element.getStartOffset(),
+                            element.getEndOffset());
+                } else if (attrib == ColorConstants.Background) {
                     //Background
                     attString.addAttribute(TextAttribute.BACKGROUND,
-                                           as.getAttribute(attrib), element.
-                            getStartOffset(),
-                                           element.getEndOffset());
-                }
-                else if (attrib == FontConstants.Bold) {
+                            as.getAttribute(attrib), element.getStartOffset(),
+                            element.getEndOffset());
+                } else if (attrib == FontConstants.Bold) {
                     //Bold
                     attString.addAttribute(TextAttribute.WEIGHT,
-                                           TextAttribute.WEIGHT_BOLD, element.
-                            getStartOffset(),
-                                           element.getEndOffset());
-                }
-                else if (attrib == FontConstants.Family) {
+                            TextAttribute.WEIGHT_BOLD, element.getStartOffset(),
+                            element.getEndOffset());
+                } else if (attrib == FontConstants.Family) {
                     //Family
                     attString.addAttribute(TextAttribute.FAMILY,
-                                           as.getAttribute(attrib), element.
-                            getStartOffset(),
-                                           element.getEndOffset());
-                }
-                else if (attrib == FontConstants.Italic) {
+                            as.getAttribute(attrib), element.getStartOffset(),
+                            element.getEndOffset());
+                } else if (attrib == FontConstants.Italic) {
                     //italics
                     attString.addAttribute(TextAttribute.POSTURE,
-                                           TextAttribute.POSTURE_OBLIQUE,
-                                           element.getStartOffset(),
-                                           element.getEndOffset());
-                }
-                else if (attrib == CharacterConstants.Underline) {
+                            TextAttribute.POSTURE_OBLIQUE,
+                            element.getStartOffset(),
+                            element.getEndOffset());
+                } else if (attrib == CharacterConstants.Underline) {
                     //Underline
                     attString.addAttribute(TextAttribute.UNDERLINE,
-                                           TextAttribute.UNDERLINE_ON, element.
-                            getStartOffset(),
-                                           element.getEndOffset());
-                }
-                else if (attrib == IRCTextAttribute.SMILEY) {
+                            TextAttribute.UNDERLINE_ON, element.getStartOffset(),
+                            element.getEndOffset());
+                } else if (attrib == IRCTextAttribute.SMILEY) {
                     /* Lets avoid showing broken smileys shall we!
                     final Image image = IconManager.getIconManager().getImage((String) as.getAttribute(attrib)).
                     getScaledInstance(14, 14, Image.SCALE_DEFAULT);

@@ -72,6 +72,8 @@ public final class TextPane extends JComponent implements AdjustmentListener,
 
         this.frame = frame;
         document = new IRCDocument();
+        frame.getConfigManager().addChangeListener("ui", "textPaneFontName", document);
+        frame.getConfigManager().addChangeListener("ui", "textPaneFontSize", document);
 
         setLayout(new MigLayout("fill"));
         canvas = new TextPaneCanvas(this, document);

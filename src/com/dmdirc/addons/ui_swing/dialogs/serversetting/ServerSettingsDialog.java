@@ -182,8 +182,14 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
                 OptionType.COLOUR);
         settingsPanel.addOption("ui.frameBufferSize", "Textpane buffer limit",
                 OptionType.SPINNER);
+        
         settingsPanel.addOption("ui.inputBufferSize", "Input buffer size",
                 OptionType.SPINNER);
+        settingsPanel.addOption("ui.textPaneFontName", "Textpane font name",
+                OptionType.TEXTFIELD);
+        settingsPanel.addOption("ui.textPaneFontSize", "Textpane font size",
+                OptionType.SPINNER);
+        
         settingsPanel.addOption("ui.inputbackgroundcolour",
                 "Input field background colour",
                 OptionType.COLOUR);

@@ -19,9 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.dmdirc.addons.ui_swing.textpane;
 
+import com.dmdirc.config.ConfigManager;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.util.RollingList;
 
 import java.io.Serializable;
@@ -35,7 +36,7 @@ import javax.swing.event.EventListenerList;
 /**
  * Data contained in a TextPane.
  */
-public final class IRCDocument implements Serializable {
+public final class IRCDocument implements Serializable, ConfigChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -163,7 +164,7 @@ public final class IRCDocument implements Serializable {
         for (int i = 0; i < listenerList.length; i += 2) {
             if (listenerList[i] == IRCDocumentListener.class) {
                 ((IRCDocumentListener) listenerList[i + 1]).lineAdded(index,
-                                                                      lines.size());
+                        lines.size());
             }
         }
     }
@@ -179,9 +180,8 @@ public final class IRCDocument implements Serializable {
         for (int i = 0; i < listenerList.length; i += 2) {
             if (listenerList[i] == IRCDocumentListener.class) {
                 ((IRCDocumentListener) listenerList[i + 1]).linesAdded(index,
-                                                                       size,
-                                                                       lines.
-                        size());
+                        size,
+                        lines.size());
             }
         }
     }
@@ -244,6 +244,13 @@ public final class IRCDocument implements Serializable {
      */
     public AttributedCharacterIterator getStyledLine(final int line) {
         return getStyledLine(getLine(line));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void configChanged(final String domain, final String key) {
+        cachedLines.clear();
+        cachedStrings.clear();
     }
 }
 
