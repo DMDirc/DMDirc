@@ -314,7 +314,7 @@ public class Identity extends ConfigSource implements Serializable,
 
     /** {@inheritDoc} */
     @Override
-    public String getOption(final String domain, final String option) {
+    public synchronized String getOption(final String domain, final String option) {
         return file.getKeyDomain(domain).get(option);
     }
 
