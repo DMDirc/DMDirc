@@ -436,7 +436,7 @@ public class Identity extends ConfigSource implements Serializable,
      * @since 0.6
      * @return A map of option names to values
      */
-    public Map<String, String> getOptions(final String domain) {
+    public synchronized Map<String, String> getOptions(final String domain) {
         return new HashMap<String, String>(file.getKeyDomain(domain));
     }
 
