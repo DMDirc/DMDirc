@@ -54,7 +54,7 @@ public class ConfigManager extends ConfigSource implements Serializable,
     private static final Map<String, Integer> stats = new TreeMap<String, Integer>();
 
     /** A list of sources for this config manager. */
-    private List<Identity> sources;
+    private final List<Identity> sources;
 
     /** The listeners registered for this manager. */
     private final MapList<String, ConfigChangeListener> listeners
@@ -170,11 +170,8 @@ public class ConfigManager extends ConfigSource implements Serializable,
         final List<String[]> changed = new ArrayList<String[]>();
 
         // Determine which settings will have changed
-        for (Map.Entry<String, Map<String, String>> entry
-                : identity.getFile().getKeyDomains().entrySet()) {
-            final String domain = entry.getKey();
-
-            for (String option : entry.getValue().keySet()) {
+        for (String domain : identity.getDomains()) {
+            for (String option : identity.getOptions(domain).keySet()) {
                 if (identity.equals(getScope(domain, option))) {
                     changed.add(new String[]{domain, option});
                 }
@@ -261,11 +258,8 @@ public class ConfigManager extends ConfigSource implements Serializable,
             }
             
             // Determine which settings will have changed
-            for (Map.Entry<String, Map<String, String>> entry
-                    : identity.getFile().getKeyDomains().entrySet()) {
-                final String domain = entry.getKey();
-
-                for (String option : entry.getValue().keySet()) {
+            for (String domain : identity.getDomains()) {
+                for (String option : identity.getOptions(domain).keySet()) {
                     if (identity.equals(getScope(domain, option))) {
                         configChanged(domain, option);
                     }
