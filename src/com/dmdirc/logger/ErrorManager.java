@@ -22,33 +22,25 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.Main;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.ui.FatalErrorDialog;
-import com.dmdirc.util.Downloader;
 import com.dmdirc.util.ListenerList;
 
 import java.awt.GraphicsEnvironment;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Error manager.
  */
-public final class ErrorManager implements Serializable, Runnable {
+public final class ErrorManager implements Serializable, ConfigChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -57,34 +49,55 @@ public final class ErrorManager implements Serializable, Runnable {
      */
     private static final long serialVersionUID = 4;
 
-    /** Time to wait between error submissions. */
-    private static final int SLEEP_TIME = 5000;
-
     /** Previously instantiated instance of ErrorManager. */
     private static final ErrorManager me = new ErrorManager();
 
-    /** ProgramError folder. */
-    private static File errorDir;
+    /** A list of exceptions which we don't consider bugs and thus don't report. */
+    private static final Class[] BANNED_EXCEPTIONS = new Class[]{
+        NoSuchMethodError.class, NoClassDefFoundError.class,
+        UnsatisfiedLinkError.class, AbstractMethodError.class,
+    };
+
+    /** Whether or not to send error reports. */
+    private boolean sendReports;
+
+    /** Whether or not to log error reports. */
+    private boolean logReports;
 
     /** Queue of errors to be reported. */
-    private final List<ProgramError> reportQueue = new ArrayList<ProgramError>();
+    private final BlockingQueue<ProgramError> reportQueue = new LinkedBlockingQueue<ProgramError>();
 
     /** Thread used for sending errors. */
     private volatile Thread reportThread;
 
     /** Error list. */
-    private final Map<Long, ProgramError> errors;
+    private final List<ProgramError> errors;
 
     /** Listener list. */
     private final ListenerList errorListeners = new ListenerList();
 
     /** Next error ID. */
-    private long nextErrorID;
+    private AtomicLong nextErrorID;
 
     /** Creates a new instance of ErrorListDialog. */
     private ErrorManager() {
-        errors = new HashMap<Long, ProgramError>();
-        nextErrorID = 0;
+        errors = new LinkedList<ProgramError>();
+        nextErrorID = new AtomicLong();
+
+        final ConfigManager config = IdentityManager.getGlobalConfig();
+
+        try {
+            sendReports = config.getOptionBool("general", "submitErrors")
+                    && !config.getOptionBool("temp", "noerrorreporting");
+            logReports = config.getOptionBool("general", "logerrors");
+        } catch (IllegalArgumentException ex) {
+            sendReports = false;
+            logReports = true;
+        }
+
+        config.addChangeListener("general", "logerrors", this);
+        config.addChangeListener("general", "submitErrors", this);
+        config.addChangeListener("temp", "noerrorreporting", this);
     }
 
     /**
@@ -99,71 +112,202 @@ public final class ErrorManager implements Serializable, Runnable {
     }
 
     /**
-     * Called when an error occurs in the program.
+     * Adds a new error to the manager with the specified details. It is
+     * assumed that errors without exceptions or details are not application
+     * errors.
      *
-     * @param error ProgramError that occurred
-     * @param sendable True if the error is reportable, false otherwise
+     * @param level The severity of the error
+     * @param message The error message
+     * @since 0.6.3
      */
-    public void addError(final ProgramError error, final boolean sendable) {
-        boolean report = IdentityManager.getGlobalConfig().getOptionBool(
-                "general", "submitErrors")
-                && !IdentityManager.getGlobalConfig().getOptionBool("temp",
-                "noerrorreporting");
+    protected void addError(final ErrorLevel level, final String message) {
+        addError(level, message, new String[0], false);
+    }
 
-        synchronized (errors) {
-            if (errors.containsValue(error)) {
-                // It's a duplicate
+    /**
+     * Adds a new error to the manager with the specified details.
+     *
+     * @param level The severity of the error
+     * @param message The error message
+     * @param exception The exception that caused this error
+     * @param appError Whether or not this is an application error
+     * @since 0.6.3
+     */
+    protected void addError(final ErrorLevel level, final String message,
+            final Throwable exception, final boolean appError) {
+        addError(level, message, getTrace(exception), appError, isValidError(exception));
+    }
 
-                error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
-                error.setFixedStatus(ErrorFixedStatus.UNREPORTED);
-                report = false;
-            }
+    /**
+     * Adds a new error to the manager with the specified details.
+     *
+     * @param level The severity of the error
+     * @param message The error message
+     * @param details The details of the exception
+     * @param appError Whether or not this is an application error
+     * @since 0.6.3
+     */
+    protected void addError(final ErrorLevel level, final String message,
+            final String[] details, final boolean appError) {
+        addError(level, message, details, appError, true);
+    }
 
-            errors.put(error.getID(), error);
-        }
+    /**
+     * Adds a new error to the manager with the specified details.
+     *
+     * @param level The severity of the error
+     * @param message The error message
+     * @param details The details of the exception
+     * @param appError Whether or not this is an application error
+     * @param canReport Whether or not this error can be reported
+     * @since 0.6.3
+     */
+    protected void addError(final ErrorLevel level, final String message,
+            final String[] details, final boolean appError, final boolean canReport) {
+        final ProgramError error = getError(level, message, details, appError);
 
-        for (String line : error.getTrace()) {
-            if (line.startsWith("com.dmdirc.ui.swing.DMDircEventQueue")) {
-                error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
-                error.setFixedStatus(ErrorFixedStatus.INVALID);
-                report = false;
-                break;
-            } else if (line.startsWith("com.dmdirc")) {
-                break;
-            }
-        }
-
-        if (error.getMessage().startsWith("java.lang.NoSuchMethodError")
-                || error.getMessage().startsWith("java.lang.NoClassDefFoundError")
-                || error.getMessage().startsWith("java.lang.UnsatisfiedLinkError")
-                || error.getMessage().startsWith("java.lang.AbstractMethodError")) {
+        if (addError(error) && canReport) {
+            error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
+            error.setFixedStatus(ErrorFixedStatus.KNOWN);
+        } else if (!canReport || (appError && !error.isValidSource())) {
             error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
             error.setFixedStatus(ErrorFixedStatus.INVALID);
-            report = false;
-        }
-
-        if (!sendable) {
+        } else if (!appError) {
             error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
             error.setFixedStatus(ErrorFixedStatus.UNREPORTED);
-        } else if (report) {
+        } else if (sendReports) {
             sendError(error);
         }
 
-        if (IdentityManager.getGlobalConfig().getOptionBool("general", "logerrors")) {
-            writeError(error);
+        if (logReports) {
+            error.save();
         }
 
-        if (error.getLevel() == ErrorLevel.FATAL && !report) {
-            error.setReportStatus(ErrorReportStatus.FINISHED);
-        }
-
-        if (error.getLevel() == ErrorLevel.FATAL) {
+        if (level == ErrorLevel.FATAL) {
             fireFatalError(error);
         } else {
             fireErrorAdded(error);
         }
     }
 
+    /**
+     * Adds the specified error to the list of known errors and determines if
+     * it was previously added.
+     *
+     * @param error The error to be added
+     * @return True if a duplicate error has already been registered, false
+     * otherwise
+     */
+    protected boolean addError(final ProgramError error) {
+        boolean res = false;
+
+        synchronized (errors) {
+            res = errors.contains(error);
+            errors.add(error);
+        }
+
+        return res;
+    }
+
+    /**
+     * Retrieves a {@link ProgramError} that represents the specified details.
+     *
+     * @param level The severity of the error
+     * @param message The error message
+     * @param details The details of the exception
+     * @param appError Whether or not this is an application error
+     * @since 0.6.3
+     * @return A corresponding ProgramError
+     */
+    protected ProgramError getError(final ErrorLevel level, final String message,
+            final String[] details, final boolean appError) {
+        return new ProgramError(nextErrorID.getAndIncrement(), level, message,
+                details, new Date());
+    }
+
+    /**
+     * Determines whether or not the specified exception is one that we are
+     * willing to report.
+     *
+     * @param exception The exception to test
+     * @since 0.6.3
+     * @return True if the exception may be reported, false otherwise
+     */
+    protected boolean isValidError(final Throwable exception) {
+        Throwable target = exception;
+
+        while (target != null) {
+            for (Class bad : BANNED_EXCEPTIONS) {
+                if (bad.equals(target.getClass())) {
+                    return false;
+                }
+            }
+
+            target = target.getCause();
+        }
+
+        return true;
+    }
+
+    /**
+     * Converts an exception into a string array.
+     *
+     * @param throwable Exception to convert
+     * @since 0.6.3
+     * @return Exception string array
+     */
+    protected String[] getTrace(final Throwable throwable) {
+        String[] trace;
+
+        if (throwable == null) {
+            trace = new String[0];
+        } else {
+            final StackTraceElement[] traceElements = throwable.getStackTrace();
+            trace = new String[traceElements.length + 1];
+
+            trace[0] = throwable.toString();
+
+            for (int i = 0; i < traceElements.length; i++) {
+                trace[i + 1] = traceElements[i].toString();
+            }
+
+            if (throwable.getCause() != null) {
+                final String[] causeTrace = getTrace(throwable.getCause());
+                final String[] newTrace = new String[trace.length + causeTrace.length];
+                trace[0] = "\nWhich caused: " + trace[0];
+
+                System.arraycopy(causeTrace, 0, newTrace, 0, causeTrace.length);
+                System.arraycopy(trace, 0, newTrace, causeTrace.length, trace.length);
+
+                trace = newTrace;
+            }
+        }
+
+        return trace;
+    }
+
+    /**
+     * Sends an error to the developers.
+     *
+     * @param error error to be sent
+     */
+    public void sendError(final ProgramError error) {
+        if (error.getReportStatus() != ErrorReportStatus.ERROR
+                && error.getReportStatus() != ErrorReportStatus.WAITING) {
+            return;
+        }
+
+        if (error.getLevel().equals(ErrorLevel.FATAL)) {
+            error.send();
+        } else {
+            reportQueue.add(error);
+
+            if (reportThread == null || !reportThread.isAlive()) {
+                reportThread = new ErrorReportingThread(reportQueue);
+                reportThread.start();
+            }
+        }
+    }
 
     /**
      * Called when an error needs to be deleted from the list.
@@ -172,20 +316,24 @@ public final class ErrorManager implements Serializable, Runnable {
      */
     public void deleteError(final ProgramError error) {
         synchronized (errors) {
-            errors.remove(error.getID());
+            errors.remove(error);
         }
 
         fireErrorDeleted(error);
     }
 
     /**
-     * Returns a list of errors.
+     * Deletes all errors from the manager.
      *
-     * @return Error list
+     * @since 0.6.3
      */
-    public Map<Long, ProgramError> getErrorList() {
+    public void deleteAll() {
         synchronized (errors) {
-            return new HashMap<Long, ProgramError>(errors);
+            for (ProgramError error : errors) {
+                fireErrorDeleted(error);
+            }
+
+            errors.clear();
         }
     }
 
@@ -199,140 +347,13 @@ public final class ErrorManager implements Serializable, Runnable {
     }
 
     /**
-     * Returns the next error ID.
-     *
-     * @return Next error ID
-     */
-    public long getNextErrorID() {
-        return nextErrorID++;
-    }
-
-    /**
-     * Returns specified program error.
-     *
-     * @param id ID of the error to fetch
-     *
-     * @return ProgramError with specified ID
-     */
-    public ProgramError getError(final long id) {
-        return errors.get(id);
-    }
-
-    /**
      * Returns the list of program errors.
      *
      * @return Program error list
      */
     public List<ProgramError> getErrors() {
         synchronized (errors) {
-            return new ArrayList<ProgramError>(errors.values());
-        }
-    }
-
-    /**
-     * Sends an error to the developers.
-     *
-     * @param error error to be sent
-     */
-    public void sendError(final ProgramError error) {
-        if (error.getLevel().equals(ErrorLevel.FATAL)) {
-            sendErrorInternal(error);
-        } else {
-            reportQueue.add(error);
-
-            if (reportThread == null || !reportThread.isAlive()) {
-                reportThread = new Thread(this, "Error reporting thread");
-                reportThread.start();
-            }
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void run() {
-        while (!reportQueue.isEmpty()) {
-            sendErrorInternal(reportQueue.remove(0));
-
-            try {
-                Thread.sleep(SLEEP_TIME);
-            } catch (InterruptedException ex) {
-                // Do nothing
-            }
-        }
-    }
-
-    /**
-     * Sends an error to the developers.
-     *
-     * @param error ProgramError to be sent
-     */
-    private void sendErrorInternal(final ProgramError error) {
-        final Map<String, String> postData = new HashMap<String, String>();
-        List<String> response = new ArrayList<String>();
-        int tries = 0;
-
-        postData.put("message", error.getMessage());
-        postData.put("trace", Arrays.toString(error.getTrace()));
-        postData.put("version", Main.VERSION + "(" + Main.SVN_REVISION + ")");
-
-        error.setReportStatus(ErrorReportStatus.SENDING);
-
-        do {
-            if (tries != 0) {
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException ex) {
-                    //Ignore
-                }
-            }
-            try {
-                response = Downloader.getPage("http://www.dmdirc.com/error.php", postData);
-            } catch (MalformedURLException ex) {
-                //Ignore, wont happen
-            } catch (IOException ex) {
-                //Ignore being handled
-            }
-
-            tries++;
-        } while ((response.isEmpty() || !response.get(response.size() - 1).
-                equalsIgnoreCase("Error report submitted. Thank you."))
-                && tries <= 5);
-
-        checkResponses(error, response);
-    }
-
-    /**
-     * Checks the responses and sets status accordingly.
-     *
-     * @param error Error to check response
-     * @param response Response to check
-     */
-    private static void checkResponses(final ProgramError error,
-            final List<String> response) {
-        if (!response.isEmpty() && response.get(response.size() - 1).
-                equalsIgnoreCase("Error report submitted. Thank you.")) {
-            error.setReportStatus(ErrorReportStatus.FINISHED);
-        } else {
-            error.setReportStatus(ErrorReportStatus.ERROR);
-            return;
-        }
-
-        if (response.size() == 1) {
-            error.setFixedStatus(ErrorFixedStatus.NEW);
-            return;
-        }
-
-        final String responseToCheck = response.get(0);
-        if (responseToCheck.matches(".*fixed.*")) {
-            error.setFixedStatus(ErrorFixedStatus.FIXED);
-        } else if (responseToCheck.matches(".*more recent version.*")) {
-            error.setFixedStatus(ErrorFixedStatus.TOOOLD);
-        } else if (responseToCheck.matches(".*invalid.*")) {
-            error.setFixedStatus(ErrorFixedStatus.INVALID);
-        } else if (responseToCheck.matches(".*previously.*")) {
-            error.setFixedStatus(ErrorFixedStatus.KNOWN);
-        } else {
-            error.setFixedStatus(ErrorFixedStatus.NEW);
+            return new LinkedList<ProgramError>(errors);
         }
     }
 
@@ -397,21 +418,7 @@ public final class ErrorManager implements Serializable, Runnable {
         } else {
             FatalErrorDialog.displayBlocking(error);
         }
-        
-        new Timer("Fatal Error Timer").schedule(new TimerTask() {
 
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                while (error.getReportStatus() != ErrorReportStatus.FINISHED) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ex) {
-                        //Ignore
-                    }
-                }
-            }
-        }, 0);
         System.exit(-1);
     }
 
@@ -437,67 +444,14 @@ public final class ErrorManager implements Serializable, Runnable {
         }
     }
 
-    /**
-     * Writes the specified error to a file.
-     *
-     * @param error ProgramError to write to a file.
-     */
-    private static void writeError(final ProgramError error) {
-        final PrintWriter out = new PrintWriter(createNewErrorFile(error), true);
-        out.println("Date:" + error.getDate());
-        out.println("Level: " + error.getLevel());
-        out.println("Description: " + error.getMessage());
-        out.println("Details:");
-        final String[] trace = error.getTrace();
-        for (String traceLine : trace) {
-            out.println('\t' + traceLine);
-        }
-        out.close();
-    }
-
-    /**
-     * Creates a new file for an error and returns the output stream.
-     *
-     * @param error Error to create file for
-     *
-     * @return BufferedOutputStream to write to the error file
-     */
-    @SuppressWarnings("PMD.SystemPrintln")
-    private static synchronized OutputStream createNewErrorFile(final ProgramError error) {
-        if (errorDir == null || !errorDir.exists()) {
-            errorDir = new File(Main.getConfigDir() + "errors");
-            if (!errorDir.exists()) {
-                errorDir.mkdirs();
-            }
-        }
-        final String logName = error.getDate().getTime() + "-" + error.getLevel();
-
-
-        final File errorFile = new File(errorDir, logName + ".log");
-
-        if (errorFile.exists()) {
-            boolean rename = false;
-            int i = 0;
-            while (!rename) {
-                i++;
-                rename = errorFile.renameTo(new File(errorDir, logName + "-" + i + ".log"));
-            }
-        }
-        try {
-            errorFile.createNewFile();
-        } catch (IOException ex) {
-            System.err.println("Error creating new file: ");
-            ex.printStackTrace();
-            return new NullOutputStream();
-        }
-
-        try {
-            return new FileOutputStream(errorFile);
-        } catch (FileNotFoundException ex) {
-            System.err.println("Error creating new stream: ");
-            ex.printStackTrace();
-            return new NullOutputStream();
-        }
+    /** {@inheritDoc} */
+    @Override
+    public void configChanged(final String domain, final String key) {
+        final ConfigManager config = IdentityManager.getGlobalConfig();
+        
+        sendReports = config.getOptionBool("general", "submitErrors")
+                && !config.getOptionBool("temp", "noerrorreporting");
+        logReports = config.getOptionBool("general", "logerrors");
     }
 
 }

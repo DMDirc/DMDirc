@@ -22,20 +22,19 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.error;
 
+import com.dmdirc.addons.ui_swing.SwingController;
+import com.dmdirc.addons.ui_swing.components.PackingTable;
+import com.dmdirc.addons.ui_swing.components.StandardDialog;
 import com.dmdirc.addons.ui_swing.components.renderers.ErrorLevelIconCellRenderer;
 import com.dmdirc.addons.ui_swing.components.renderers.DateCellRenderer;
 import com.dmdirc.logger.ErrorListener;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ErrorReportStatus;
 import com.dmdirc.logger.ProgramError;
-import com.dmdirc.addons.ui_swing.SwingController;
-import com.dmdirc.addons.ui_swing.components.PackingTable;
-import com.dmdirc.addons.ui_swing.components.StandardDialog;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.swing.JButton;
@@ -118,8 +117,7 @@ public final class ErrorListDialog extends StandardDialog implements
                 me = new ErrorListDialog();
             } else if (me.tableModel.getRowCount() !=
                     me.errorManager.getErrorCount()) {
-                me.tableModel = new ErrorTableModel(new ArrayList<ProgramError>(
-                        me.errorManager.getErrorList().values()));
+                me.tableModel = new ErrorTableModel(me.errorManager.getErrors());
                 me.table.setModel(me.tableModel);
                 if (me.tableModel.getRowCount() > 0) {
                     me.deleteAllButton.setEnabled(true);
@@ -138,8 +136,7 @@ public final class ErrorListDialog extends StandardDialog implements
 
         scrollPane = new JScrollPane();
 
-        tableModel = new ErrorTableModel(new ArrayList<ProgramError>(
-                errorManager.getErrorList().values()));
+        tableModel = new ErrorTableModel(errorManager.getErrors());
         table = new PackingTable(tableModel, false, scrollPane) {
 
             private static final long serialVersionUID = 1;
@@ -277,7 +274,7 @@ public final class ErrorListDialog extends StandardDialog implements
             }
         } else if (e.getSource() == deleteAllButton) {
             final Collection<ProgramError> errors =
-                    ErrorManager.getErrorManager().getErrorList().values();
+                    ErrorManager.getErrorManager().getErrors();
             for (ProgramError error : errors) {
                 ErrorManager.getErrorManager().deleteError(error);
             }

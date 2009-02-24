@@ -226,7 +226,7 @@ public class ErrorLabel extends JLabel implements MouseListener, ErrorListener,
             ErrorListDialog.showErrorListDialog();
         } else {
             final Collection<ProgramError> errors =
-                    ErrorManager.getErrorManager().getErrorList().values();
+                    ErrorManager.getErrorManager().getErrors();
             for (ProgramError error : errors) {
                 ErrorManager.getErrorManager().deleteError(error);
             }
