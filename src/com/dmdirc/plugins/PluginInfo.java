@@ -24,6 +24,8 @@ package com.dmdirc.plugins;
 import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.config.Identity;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 import com.dmdirc.util.ConfigFile;
@@ -315,7 +317,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	private void getDefaults() {
 		final Map<String, String> keysection = metaData.getKeyDomain("defaults");
 		final Identity defaults = IdentityManager.getAddonIdentity();
-		final String domain = "plugin-".getName();
+		final String domain = "plugin-"+getName();
 		
 		for (Map.Entry entry : keysection.entrySet()) {
 			final String key = entry.getKey().toString();

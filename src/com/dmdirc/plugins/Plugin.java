@@ -48,7 +48,7 @@ public abstract class Plugin implements Comparable<Plugin> {
 	 */
 	public final void setDomain(final String newDomain) {
 		if (!domainSet) {
-			domainSet = true
+			domainSet = true;
 			myDomain = newDomain;
 			domainUpdated();
 		}
