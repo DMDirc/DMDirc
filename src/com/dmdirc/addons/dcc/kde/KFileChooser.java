@@ -73,7 +73,7 @@ public class KFileChooser extends JFileChooser {
 	 *         JFileChooser
 	 */
 	public static boolean useKFileChooser() {
-		return KDialogProcess.hasKDialog() && IdentityManager.getGlobalConfig().getOptionBool(DCCPlugin.getDomain(), "general.useKFileChooser");
+		return KDialogProcess.hasKDialog() && IdentityManager.getGlobalConfig().getOptionBool("plugin-dcc", "general.useKFileChooser");
 	}
 	
 	/**
