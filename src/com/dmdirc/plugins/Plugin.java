@@ -50,6 +50,7 @@ public abstract class Plugin implements Comparable<Plugin> {
 		if (!domainSet) {
 			domainSet = true
 			myDomain = newDomain;
+			domainUpdated();
 		}
 	}
 	
@@ -61,6 +62,13 @@ public abstract class Plugin implements Comparable<Plugin> {
 	public final String getDomain() {
 		return myDomain;
 	}
+	
+	/**
+	 * Called when the domain for plugin settings has been set.
+	 * This will only be called once (either when the plugin is loading, or when
+	 * its config is being shown).
+	 */
+	public void domainUpdated() { }
 	
 	/**
 	 * Called when the plugin is loaded.
