@@ -82,7 +82,7 @@ public class IdentdPlugin extends Plugin implements ActionListener {
 		defaults.setOption(getDomain(), "advanced.isHiddenUser", "false");
 		defaults.setOption(getDomain(), "advanced.isNoUser", "false");
 		
-		myServer = new IdentdServer();
+		myServer = new IdentdServer(this);
 		if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "advanced.alwaysOn")) {
 			myServer.startServer();
 		}
@@ -186,11 +186,4 @@ public class IdentdPlugin extends Plugin implements ActionListener {
         general.addSubCategory(advanced);
 	}
 	
-	/**
-	 * Get the name of the domain we store all settings in the global config under.
-	 *
-	 * @return the plugins domain
-	 */
-	protected static String getDomain() { return MY_DOMAIN; }
-		
 }

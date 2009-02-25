@@ -47,6 +47,8 @@ public final class IdentClient implements Runnable {
 	private final Socket mySocket;
 	/** The Thread in use for this client. */
 	private volatile Thread myThread;
+	/** The plugin that owns us. */
+	private final IdentdPlugin myPlugin;
 	
 	/**
 	 * Create the IdentClient.
@@ -54,9 +56,10 @@ public final class IdentClient implements Runnable {
 	 * @param server The server that owns this
 	 * @param socket The socket we are handing
 	 */
-	public IdentClient(final IdentdServer server, final Socket socket) {
+	public IdentClient(final IdentdServer server, final Socket socket, final IdentdPlugin plugin) {
 		myServer = server;
 		mySocket = socket;
+		myPlugin = plugin;
 		
 		myThread = new Thread(this);
 		myThread.start();
@@ -99,7 +102,7 @@ public final class IdentClient implements Runnable {
 	 * @param config The config manager to use for settings
 	 * @return the ident response for the given line
 	 */
-	protected static String getIdentResponse(final String input, final ConfigManager config) {
+	protected String getIdentResponse(final String input, final ConfigManager config) {
 		final String unescapedInput = unescapeString(input);
 		final String[] bits = unescapedInput.replaceAll("\\s+", "").split(",", 2);
 		if (bits.length < 2) {
@@ -119,11 +122,11 @@ public final class IdentClient implements Runnable {
 		}
 		
 		final Server server = getServerByPort(myPort);
-		if (!config.getOptionBool(IdentdPlugin.getDomain(), "advanced.alwaysOn") && (server == null || config.getOptionBool(IdentdPlugin.getDomain(), "advanced.isNoUser"))) {
+		if (!config.getOptionBool(myPlugin.getDomain(), "advanced.alwaysOn") && (server == null || config.getOptionBool(myPlugin.getDomain(), "advanced.isNoUser"))) {
 			return String.format("%d , %d : ERROR : NO-USER", myPort, theirPort);
 		}
 		
-		if (config.getOptionBool(IdentdPlugin.getDomain(), "advanced.isHiddenUser")) {
+		if (config.getOptionBool(myPlugin.getDomain(), "advanced.isHiddenUser")) {
 			return String.format("%d , %d : ERROR : HIDDEN-USER", myPort, theirPort);
 		}
 		
@@ -131,8 +134,8 @@ public final class IdentClient implements Runnable {
 		final String os;
 		final String username;
 
-		final String customSystem = config.getOption(IdentdPlugin.getDomain(), "advanced.customSystem");
-		if (config.getOptionBool(IdentdPlugin.getDomain(), "advanced.useCustomSystem") && customSystem != null && customSystem.length() > 0 && customSystem.length() < 513) {
+		final String customSystem = config.getOption(myPlugin.getDomain(), "advanced.customSystem");
+		if (config.getOptionBool(myPlugin.getDomain(), "advanced.useCustomSystem") && customSystem != null && customSystem.length() > 0 && customSystem.length() < 513) {
 			os = customSystem;
 		} else {
 			// Tad excessive maybe, but complete!
@@ -148,12 +151,12 @@ public final class IdentClient implements Runnable {
 			else { os = "UNKNOWN"; }
 		}
 		
-		final String customName = config.getOption(IdentdPlugin.getDomain(), "general.customName");
-		if (config.getOptionBool(IdentdPlugin.getDomain(), "general.useCustomName") && customName != null && customName.length() > 0 && customName.length() < 513) {
+		final String customName = config.getOption(myPlugin.getDomain(), "general.customName");
+		if (config.getOptionBool(myPlugin.getDomain(), "general.useCustomName") && customName != null && customName.length() > 0 && customName.length() < 513) {
 			username = customName;
-		} else if (server != null && config.getOptionBool(IdentdPlugin.getDomain(), "general.useNickname")) {
+		} else if (server != null && config.getOptionBool(myPlugin.getDomain(), "general.useNickname")) {
 			username = server.getParser().getMyNickname();
-		} else if (server != null && config.getOptionBool(IdentdPlugin.getDomain(), "general.useUsername")) {
+		} else if (server != null && config.getOptionBool(myPlugin.getDomain(), "general.useUsername")) {
 			username = server.getParser().getMyUsername();
 		} else {
 			username = System.getProperty("user.name");

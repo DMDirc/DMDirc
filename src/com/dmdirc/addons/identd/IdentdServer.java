@@ -39,18 +39,21 @@ import java.util.List;
  */
 public final class IdentdServer implements Runnable {
 
-    /** The Thread in use for this server */
+	/** The Thread in use for this server */
 	private volatile Thread myThread = null;
 	/** The current socket in use for this server */
 	private ServerSocket serverSocket;
 	/** Arraylist of all the clients we have */
 	private final List<IdentClient> clientList = new ArrayList<IdentClient>();
+	/** The plugin that owns us. */
+	private final IdentdPlugin myPlugin;
 	
 	/**
 	 * Create the IdentdServer.
 	 */
-	public IdentdServer() {
-        super();
+	public IdentdServer(final IdentdPlugin plugin) {
+		super();
+		myPlugin = plugin;
 	}
 	
 	/**
@@ -62,7 +65,7 @@ public final class IdentdServer implements Runnable {
 		while (myThread == thisThread) {
 			try {
 				final Socket clientSocket = serverSocket.accept();
-				final IdentClient client = new IdentClient(this, clientSocket);
+				final IdentClient client = new IdentClient(this, clientSocket, myPlugin);
 				addClient(client);
 			} catch (IOException e) {
 				if (myThread == thisThread) {
@@ -114,7 +117,7 @@ public final class IdentdServer implements Runnable {
 	public void startServer() {
 		if (myThread == null) {
 			try {
-				final int identPort = IdentityManager.getGlobalConfig().getOptionInt(IdentdPlugin.getDomain(), "advanced.port");
+				final int identPort = IdentityManager.getGlobalConfig().getOptionInt(myPlugin.getDomain(), "advanced.port");
 				serverSocket = new ServerSocket(identPort);
 				myThread = new Thread(this);
 				myThread.start();
