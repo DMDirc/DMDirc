@@ -930,7 +930,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 					final ValidationResponse prerequisites = ((Plugin) temp).checkPrerequisites();
 					if (!prerequisites.isFailure()) {
 						plugin = (Plugin) temp;
-						plugin.setDomain("plugin-".getName());
+						plugin.setDomain("plugin-"+getName());
 						if (!tempLoaded) {
 							try {
 								plugin.onLoad();
