@@ -246,13 +246,6 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 	}
 
 	/**
-	 * Get the name of the domain we store all settings in the global config under.
-	 *
-	 * @return the plugins domain
-	 */
-	protected static String getDomain() { return MY_DOMAIN; }
-
-	/**
 	 * Log a query-related event
 	 *
 	 * @param type The type of the event to process

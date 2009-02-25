@@ -154,8 +154,8 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 					}
 					final IRCParser parser = server.getParser();
 					final String myNickname = parser.getMyNickname();
-					DCCSend send = new DCCSend(IdentityManager.getGlobalConfig().getOptionInt(DCCPlugin.getDomain(), "send.blocksize"));
-					send.setTurbo(IdentityManager.getGlobalConfig().getOptionBool(DCCPlugin.getDomain(), "send.forceturbo"));
+					DCCSend send = new DCCSend(IdentityManager.getGlobalConfig().getOptionInt(myPlugin.getDomain(), "send.blocksize"));
+					send.setTurbo(IdentityManager.getGlobalConfig().getOptionBool(myPlugin.getDomain(), "send.forceturbo"));
 					send.setType(DCCSend.TransferType.SEND);
 					
 					ActionManager.processEvent(DCCActions.DCC_SEND_REQUEST_SENT, null, server, target, jc.getSelectedFile());
@@ -165,7 +165,7 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 					send.setFileName(jc.getSelectedFile().getAbsolutePath());
 					send.setFileSize(jc.getSelectedFile().length());
 					
-					if (IdentityManager.getGlobalConfig().getOptionBool(DCCPlugin.getDomain(), "send.reverse")) {
+					if (IdentityManager.getGlobalConfig().getOptionBool(myPlugin.getDomain(), "send.reverse")) {
 						new DCCSendWindow(myPlugin, send, "Send: "+target, myNickname, target, parser);
 						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" 0 "+send.getFileSize()+" "+send.makeToken()+((send.isTurbo()) ? " T" : ""));
 					} else {

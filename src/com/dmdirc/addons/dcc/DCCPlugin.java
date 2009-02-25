@@ -608,13 +608,5 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		          "Change the block size for send/receive, this can " +
 		          "sometimes speed up transfers."));
 	}
-
-	/**
-	 * Get the name of the domain we store all settings in the global config under.
-	 *
-	 * @return the plugins domain
-	 */
-	public static String getDomain() { return MY_DOMAIN; }
-
 }
 

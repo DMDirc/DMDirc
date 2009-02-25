@@ -228,12 +228,4 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 
 		manager.getCategory("Plugins").addSubCategory(category);
 	}
-
-	/**
-	 * Get the name of the domain we store all settings in the global config under.
-	 *
-	 * @return the plugins domain
-	 */
-	protected static String getDomain() { return MY_DOMAIN; }
-
 }
