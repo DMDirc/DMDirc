@@ -67,8 +67,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     private final Map<Rectangle, TextLayout> positions;
     /** TextLayout -> Line numbers. */
     private final Map<TextLayout, LineInfo> textLayouts;
-    /** Line height. */
-    private final int lineHeight;
     /** position of the scrollbar. */
     private int scrollBarPosition;
     /** Selection. */
@@ -90,7 +88,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         super();
         this.document = document;
         scrollBarPosition = 0;
-        lineHeight = getFont().getSize() + 2;
         textPane = parent;
         setDoubleBuffered(true);
         setOpaque(true);
@@ -156,6 +153,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         for (int i = startLine; i >= 0; i--) {
             float drawPosX;
             final AttributedCharacterIterator iterator = document.getStyledLine(i);
+            final int lineHeight = document.getLineHeight(i) + 2;
             paragraphStart = iterator.getBeginIndex();
             paragraphEnd = iterator.getEndIndex();
             lineMeasurer = new LineBreakMeasurer(iterator,
@@ -323,13 +321,15 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 if (text.isEmpty()) {
                     return;
                 }
-
-                final int trans = (int) (lineHeight / 2f + drawPosY);
+                
                 final AttributedCharacterIterator iterator = document.
                         getStyledLine(line);
+                final int lineHeight = document.getLineHeight(line) + 2;
                 final AttributedString as = new AttributedString(iterator,
                                                                  firstChar,
                                                                  lastChar);
+                final int trans = (int) (lineHeight / 2f + drawPosY);
+                
                 as.addAttribute(TextAttribute.FOREGROUND,
                                 textPane.getBackground());
                 as.addAttribute(TextAttribute.BACKGROUND,

@@ -71,7 +71,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         setUI(new TextPaneUI());
 
         this.frame = frame;
-        document = new IRCDocument();
+        document = new IRCDocument(frame.getConfigManager());
         frame.getConfigManager().addChangeListener("ui", "textPaneFontName", document);
         frame.getConfigManager().addChangeListener("ui", "textPaneFontSize", document);
 
@@ -406,6 +406,12 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     @Override
     public void linesAdded(int line, int length, int size) {
         setScrollBarMax(length);
+    }
+    
+    /** {@inheritDoc}. */
+    @Override
+    public void repaintNeeded() {
+        canvas.repaint();
     }
 
     /**

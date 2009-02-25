@@ -52,9 +52,16 @@ public final class IRCDocument implements Serializable, ConfigChangeListener {
     private RollingList<Line> cachedLines;
     /** Cached attributed strings. */
     private RollingList<AttributedString> cachedStrings;
+    /** Configuration manager. */
+    private ConfigManager config;
 
-    /** Creates a new instance of IRCDocument. */
-    public IRCDocument() {
+    /** 
+     * Creates a new instance of IRCDocument.
+     * 
+     * @param config Document's config manager
+     */
+    public IRCDocument(final ConfigManager config) {
+        this.config = config;
         lines = new ArrayList<Line>();
         listeners = new EventListenerList();
 
@@ -78,7 +85,7 @@ public final class IRCDocument implements Serializable, ConfigChangeListener {
      *
      * @return Line at the specified number or null
      */
-    public Line getLine(final int lineNumber) {
+    Line getLine(final int lineNumber) {
         return lines.get(lineNumber);
     }
 
@@ -87,9 +94,9 @@ public final class IRCDocument implements Serializable, ConfigChangeListener {
      * 
      * @param text stylised string to add to the text
      */
-    public void addText(final Line text) {
+    public void addText(final String[] text) {
         synchronized (lines) {
-            lines.add(text);
+            lines.add(new Line(text, config));
             fireLineAdded(lines.indexOf(text));
         }
     }
@@ -99,11 +106,11 @@ public final class IRCDocument implements Serializable, ConfigChangeListener {
      * 
      * @param text stylised string to add to the text
      */
-    public void addText(final List<Line> text) {
+    public void addText(final List<String[]> text) {
         synchronized (lines) {
             final int start = lines.size();
-            for (Line string : text) {
-                lines.add(string);
+            for (String[] string : text) {
+                lines.add(new Line(string, config));
             }
             fireLinesAdded(start, text.size());
         }
@@ -209,6 +216,18 @@ public final class IRCDocument implements Serializable, ConfigChangeListener {
             }
         }
     }
+    
+    /**
+     * fires the need repaint method on all listeners.
+     */
+    protected void fireRepaintNeeded() {
+        final Object[] listenerList = listeners.getListenerList();
+        for (int i = 0; i < listenerList.length; i += 2) {
+            if (listenerList[i] == IRCDocumentListener.class) {
+                ((IRCDocumentListener) listenerList[i + 1]).repaintNeeded();
+            }
+        }
+    }
 
     /**
      * Returns an attributed character iterator for a particular line,
@@ -218,7 +237,7 @@ public final class IRCDocument implements Serializable, ConfigChangeListener {
      *
      * @return Styled line
      */
-    public AttributedCharacterIterator getStyledLine(final Line line) {
+    AttributedCharacterIterator getStyledLine(final Line line) {
         AttributedString styledLine = null;
         if (cachedLines.contains(line)) {
             final int index = cachedLines.getList().indexOf(line);
@@ -245,12 +264,35 @@ public final class IRCDocument implements Serializable, ConfigChangeListener {
     public AttributedCharacterIterator getStyledLine(final int line) {
         return getStyledLine(getLine(line));
     }
+    
+    /**
+     * Returns the line height of the specified line
+     * 
+     * @param line Line
+     * 
+     * @return Line height
+     */
+    int getLineHeight(final Line line) {
+        return line.getHeight();
+    }
+    
+    /**
+     * Returns the line height of the specified line
+     * 
+     * @param line Line
+     * 
+     * @return Line height
+     */
+    public int getLineHeight(final int line) {
+        return  getLineHeight(getLine(line));
+    }
 
     /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
         cachedLines.clear();
         cachedStrings.clear();
+        fireRepaintNeeded();
     }
 }
 

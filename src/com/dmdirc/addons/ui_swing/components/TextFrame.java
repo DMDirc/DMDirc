@@ -35,7 +35,6 @@ import com.dmdirc.addons.ui_swing.actions.NicknameCopyAction;
 import com.dmdirc.addons.ui_swing.actions.SearchAction;
 import com.dmdirc.addons.ui_swing.actions.TextPaneCopyAction;
 import com.dmdirc.addons.ui_swing.textpane.ClickType;
-import com.dmdirc.addons.ui_swing.textpane.Line;
 import com.dmdirc.addons.ui_swing.textpane.LineInfo;
 import com.dmdirc.addons.ui_swing.textpane.TextPane;
 import com.dmdirc.addons.ui_swing.textpane.TextPanePageDownAction;
@@ -235,16 +234,15 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             /** {@inheritDoc} */
             @Override
             public void run() {
-                final List<Line> lines = new LinkedList<Line>();
+                final List<String[]> lines = new LinkedList<String[]>();
                 for (final String myLine : encodedLine.split("\n")) {
                     if (timestamp) {
-                        lines.add(new Line(new String[]{
+                        lines.add(new String[]{
                             Formatter.formatMessage(getConfigManager(),
                             "timestamp", new Date()), myLine,
-                        }, getConfigManager()));
+                        });
                     } else {
-                        lines.add(new Line(new String[]{myLine,}, 
-                                getConfigManager()));
+                        lines.add(new String[]{myLine,});
                     }
 
                     new LoggingSwingWorker() {

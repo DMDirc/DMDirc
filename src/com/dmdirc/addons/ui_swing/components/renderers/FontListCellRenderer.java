@@ -19,47 +19,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.dmdirc.addons.ui_swing.components.renderers;
 
-package com.dmdirc.addons.ui_swing.textpane;
-
-import java.util.EventListener;
+import java.awt.Component;
+import java.awt.Font;
+    
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
 
 /**
- * Interface for IRCDocument listeners.
+ * Font list cell renderer.
  */
-public interface IRCDocumentListener extends EventListener {
-    
+public class FontListCellRenderer extends DefaultListCellRenderer {
+
     /**
-     * A line has been added to the textpane.
-     * 
-     * @param line Index of the added line
-     * @param size New number of lines
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
      */
-    void lineAdded(final int line, final int size);
-    
-    /**
-     * A line has been added to the textpane.
-     * 
-     * @param line Index of the added line
-     * @param length Number of lines added
-     * @param size New number of lines
-     */
-    void linesAdded(final int line, final int length, final int size);
-    
-    /**
-     * The textpane has been trimmed to a new size.
-     *
-     * @param numLines New size
-     */
-    void trimmed(final int numLines);
-    
-    /**
-     * The textpane has been cleared.
-     */
-    void cleared();
-    
-    /**
-     * The textpane requires repainting.
-     */
-    void repaintNeeded();
+    private static final long serialVersionUID = -3559254527228184993L;
+
+    /** {@inheritDoc} */
+    @Override
+    public Component getListCellRendererComponent(final JList list,
+            final Object value, final int index, final boolean isSelected,
+            final boolean cellHasFocus) {
+
+        super.getListCellRendererComponent(list, value, index, isSelected,
+                cellHasFocus);
+        if (value == null) {
+            setText("Default");
+        } else if (value instanceof Font) {
+            setFont((Font) value);
+            setText(((Font) value).getFamily());
+        } else {
+            setText(value.toString());
+        }
+
+        return this;
+    }
 }

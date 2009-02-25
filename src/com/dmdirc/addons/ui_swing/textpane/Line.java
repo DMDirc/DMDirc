@@ -45,10 +45,11 @@ import javax.swing.text.StyledDocument;
 /**
  * Represents a line of text in IRC.
  */
-public class Line {
+class Line {
 
     private final String[] lineParts;
     private final ConfigManager config;
+    private int lineHeight;
 
     /**
      * Creates a new line.
@@ -59,6 +60,7 @@ public class Line {
     public Line(final String[] lineParts, final ConfigManager config) {
         this.lineParts = lineParts;
         this.config = config;
+        this.lineHeight = UIManager.getFont("TextPane.font").getSize();
     }
 
     /**
@@ -81,6 +83,15 @@ public class Line {
             length += linePart.length();
         }
         return length;
+    }
+    
+    /**
+     * Returns the height of the specified line.
+     * 
+     * @return Line height
+     */
+    public int getHeight() {
+        return lineHeight;
     }
 
     /**
@@ -144,6 +155,7 @@ public class Line {
             } else {
                 fontSize = defaultFont.getSize();
             }
+            lineHeight = fontSize;
             final Font font = new Font(fontName, Font.PLAIN, fontSize);
             attString.addAttribute(TextAttribute.SIZE, font.getSize());
             attString.addAttribute(TextAttribute.FAMILY, font.getFamily());

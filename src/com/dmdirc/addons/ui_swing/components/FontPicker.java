@@ -19,30 +19,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.dmdirc.config.prefs;
+package com.dmdirc.addons.ui_swing.components;
+
+import com.dmdirc.addons.ui_swing.components.renderers.FontListCellRenderer;
+
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 
 /**
- * Enumerates the possible types of preferences.
- * 
- * @author chris
+ * System font picking component.
  */
-public enum PreferencesType {
-    
-    /** A free-form text preference. */
-    TEXT,
-    /** A free-form integer preference. */
-    INTEGER,
-    /** A boolean preference. */
-    BOOLEAN,
-    /** A colour preference. */
-    COLOUR,
-    /** An optional colour preference. */
-    OPTIONALCOLOUR,
-    /** A multiple choice preference. */
-    MULTICHOICE,
-    /** A duration specified in milliseconds. */
-    DURATION,
-    /** Font type. */
-    FONT;
+public class FontPicker extends JComboBox {
 
+    private static final long serialVersionUID = -9054812588033935839L;
+
+    public FontPicker(final String fontFamily) {
+        super(new DefaultComboBoxModel());
+
+        final String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+        final int size = getFont().getSize();
+        for (String font : fonts) {
+            ((DefaultComboBoxModel) getModel()).addElement(new Font(font, Font.PLAIN, size));
+        }
+
+        setRenderer(new FontListCellRenderer());
+    }
 }

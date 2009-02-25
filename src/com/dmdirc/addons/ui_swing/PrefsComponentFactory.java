@@ -25,6 +25,7 @@ package com.dmdirc.addons.ui_swing;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.validator.NumericalValidator;
 import com.dmdirc.addons.ui_swing.components.ColourChooser;
+import com.dmdirc.addons.ui_swing.components.FontPicker;
 import com.dmdirc.addons.ui_swing.components.OptionalColourChooser;
 import com.dmdirc.addons.ui_swing.components.durationeditor.DurationDisplay;
 import com.dmdirc.addons.ui_swing.components.durationeditor.DurationListener;
@@ -32,6 +33,7 @@ import com.dmdirc.addons.ui_swing.components.renderers.MapEntryRenderer;
 import com.dmdirc.addons.ui_swing.components.validating.ValidatingJTextField;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -49,8 +51,6 @@ import javax.swing.event.ChangeListener;
 
 /**
  * Provides methods for constructing a JComponent from a PreferencesSetting.
- *
- * @author chris
  */
 public final class PrefsComponentFactory {
 
@@ -93,6 +93,9 @@ public final class PrefsComponentFactory {
                 break;
             case OPTIONALCOLOUR:
                 option = getOptionalColourOption(setting);
+                break;
+            case FONT:
+                option = getFontOption(setting);
                 break;
             default:
                 throw new IllegalArgumentException(setting.getType()
@@ -287,6 +290,34 @@ public final class PrefsComponentFactory {
             }
         });
 
+        return option;
+    }
+    
+    /**
+     * Initialises and returns an Font Chooser for the specified setting.
+     *
+     * @param setting The setting to create the component for
+     * @return A JComponent descendent for the specified setting
+     */
+    private static JComponent getFontOption(final PreferencesSetting setting) {
+        final String value = setting.getValue();
+        
+        final FontPicker option = new FontPicker(value);
+        
+        option.addActionListener(new ActionListener() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                Object value = ((FontPicker) e.getSource()).getSelectedItem();
+                if (value instanceof Font) {
+                    setting.setValue(((Font) value).getFamily());
+                } else {
+                    setting.setValue(null);
+                }
+            }
+        });        
+        
         return option;
     }
 

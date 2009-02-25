@@ -170,6 +170,7 @@ ui:
   treeviewRolloverColour=false:f0f0f0
   useOneTouchExpandable=false
   channelSplitPanePosition=150
+  textPaneFontName=Dialog
 
 treeview:
   dragSelection=true
