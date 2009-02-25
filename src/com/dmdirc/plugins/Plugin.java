@@ -46,7 +46,7 @@ public abstract class Plugin implements Comparable<Plugin> {
 	 *
 	 * @param newDomain Domain name for plugin settings
 	 */
-	public final void setDomain(final String newDomain) {
+	public void setDomain(final String newDomain) {
 		if (!domainSet) {
 			domainSet = true;
 			myDomain = newDomain;
@@ -57,9 +57,9 @@ public abstract class Plugin implements Comparable<Plugin> {
 	/**
 	 * Get the domain name settings for this plugin should be stored in.
 	 *
-	 * @ereturn Domain name for plugin settings
+	 * @return Domain name for plugin settings
 	 */
-	public final String getDomain() {
+	public String getDomain() {
 		return myDomain;
 	}
 	
