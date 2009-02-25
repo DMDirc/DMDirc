@@ -45,7 +45,7 @@ import javax.swing.text.StyledDocument;
 /**
  * Represents a line of text in IRC.
  */
-class Line {
+public class Line {
 
     private final String[] lineParts;
     private final ConfigManager config;

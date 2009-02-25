@@ -57,8 +57,8 @@ public class StyliserStylesTest {
         final DefaultStyledDocument doc = new DefaultStyledDocument();
         final StringBuilder builder = new StringBuilder();
         Styliser.addStyledString(doc, new String[]{input});
-        final AttributedCharacterIterator aci = new Line(
-                new String[]{input, }).getStyled().getIterator();
+        final AttributedCharacterIterator aci = new Line(new String[]{input, }, 
+                IdentityManager.getGlobalConfig()).getStyled().getIterator();
          
         Map<AttributedCharacterIterator.Attribute, Object> map = null;
         char chr = aci.current();
