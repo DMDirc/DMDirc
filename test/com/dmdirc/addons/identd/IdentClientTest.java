@@ -28,6 +28,7 @@ import com.dmdirc.config.IdentityManager;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class IdentClientTest {
 
@@ -36,9 +37,17 @@ public class IdentClientTest {
         IdentityManager.load();
     }
 
+    protected IdentClient getClient() {
+        IdentdPlugin plugin = mock(IdentdPlugin.class);
+        
+        when(plugin.getDomain()).thenReturn("plugin-Identd");
+        
+        return new IdentClient(null, null, plugin);
+    }
+
     @Test
     public void testInvalidIdent() {
-        final String response = IdentClient.getIdentResponse("invalid request!",
+        final String response = getClient().getIdentResponse("invalid request!",
                 IdentityManager.getGlobalConfig());
         
         assertContains("Illegal requests must result in an ERROR response",
@@ -47,7 +56,7 @@ public class IdentClientTest {
     
     @Test
     public void testQuoting() {
-        final String response = IdentClient.getIdentResponse("in\\valid:invalid",
+        final String response = getClient().getIdentResponse("in\\valid:invalid",
                 IdentityManager.getGlobalConfig());
         
         assertStartsWith("Special chars in illegal requests must be quoted",
@@ -56,7 +65,7 @@ public class IdentClientTest {
     
     @Test
     public void testQuoting2() {
-        final String response = IdentClient.getIdentResponse("in\\\\valid\\ inv\\:alid",
+        final String response = getClient().getIdentResponse("in\\\\valid\\ inv\\:alid",
                 IdentityManager.getGlobalConfig());
         
         assertStartsWith("Escaped characters in illegal requests shouldn't be doubly-escaped",
@@ -65,7 +74,7 @@ public class IdentClientTest {
     
     @Test
     public void testNonNumericPort() {
-        final String response = IdentClient.getIdentResponse("abc, def",
+        final String response = getClient().getIdentResponse("abc, def",
                 IdentityManager.getGlobalConfig());
         
         assertContains("Non-numeric ports must result in an ERROR response",
@@ -75,7 +84,7 @@ public class IdentClientTest {
     }
     
     private void doPortTest(final String ports) {
-        final String response = IdentClient.getIdentResponse(ports,
+        final String response = getClient().getIdentResponse(ports,
                 IdentityManager.getGlobalConfig());
         
         assertContains("Illegal ports must result in an ERROR response",
@@ -99,7 +108,7 @@ public class IdentClientTest {
         final TestConfigManagerMap tcm = new TestConfigManagerMap();
         tcm.settings.put("plugin-Identd.advanced.alwaysOn", "false");
         
-        final String response = IdentClient.getIdentResponse("50, 50", tcm);
+        final String response = getClient().getIdentResponse("50, 50", tcm);
         assertContains("Unknown port requests must return an ERROR response",
                 response, "ERROR");
         assertContains("Unknown port requests must return a NO-USER response",
@@ -112,7 +121,7 @@ public class IdentClientTest {
         tcm.settings.put("plugin-Identd.advanced.alwaysOn", "true");
         tcm.settings.put("plugin-Identd.advanced.isHiddenUser", "true");
         
-        final String response = IdentClient.getIdentResponse("50, 50", tcm);
+        final String response = getClient().getIdentResponse("50, 50", tcm);
         assertContains("Hidden requests must return an ERROR response",
                 response, "ERROR");
         assertContains("Hidden requests must return a HIDDEN-USER response",
@@ -129,7 +138,7 @@ public class IdentClientTest {
         tcm.settings.put("plugin-Identd.general.useCustomName", "false");
         tcm.settings.put("plugin-Identd.general.customName", "");
         
-        final String response = IdentClient.getIdentResponse("50, 50", tcm);
+        final String response = getClient().getIdentResponse("50, 50", tcm);
         assertContains("Special characters must be quoted in system names",
                 response, "a\\:b\\\\c\\,d");        
     }
@@ -144,7 +153,7 @@ public class IdentClientTest {
         tcm.settings.put("plugin-Identd.general.useCustomName", "true");
         tcm.settings.put("plugin-Identd.general.customName", "a:b\\c,d");
         
-        final String response = IdentClient.getIdentResponse("50, 50", tcm);
+        final String response = getClient().getIdentResponse("50, 50", tcm);
         assertContains("Special characters must be quoted in custom names",
                 response, "a\\:b\\\\c\\,d");        
     }
@@ -159,7 +168,7 @@ public class IdentClientTest {
         tcm.settings.put("plugin-Identd.general.useCustomName", "true");
         tcm.settings.put("plugin-Identd.general.customName", "name");
         
-        final String response = IdentClient.getIdentResponse("50, 60", tcm);
+        final String response = getClient().getIdentResponse("50, 60", tcm);
         final String[] bits = response.split(":");
         
         assertTrue("Responses must include port pair",
