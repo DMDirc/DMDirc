@@ -29,11 +29,38 @@ import com.dmdirc.config.prefs.validator.ValidationResponse;
  * Defines the standard methods that should be implemented by plugins.
  */
 public abstract class Plugin implements Comparable<Plugin> {
-
+	/** Domain name for the settings in this plugin. */
+	private String myDomain = "plugin-unknown";
+	
+	/** Has the domain been set? */
+	private boolean domainSet = false;
+	
 	/**
 	 * Called when the plugin is constructed.
 	 */
 	public Plugin() { }
+	
+	/**
+	 * Called by PluginInfo to set the domain name.
+	 * This can only be called once, all other attempts will be ignored.
+	 *
+	 * @param newDomain Domain name for plugin settings
+	 */
+	public final void setDomain(final String newDomain) {
+		if (!domainSet) {
+			domainSet = true
+			myDomain = newDomain;
+		}
+	}
+	
+	/**
+	 * Get the domain name settings for this plugin should be stored in.
+	 *
+	 * @ereturn Domain name for plugin settings
+	 */
+	public final String getDomain() {
+		return myDomain;
+	}
 	
 	/**
 	 * Called when the plugin is loaded.
@@ -69,7 +96,7 @@ public abstract class Plugin implements Comparable<Plugin> {
 	 * @param o Object to compare to
 	 * @return a negative integer, zero, or a positive integer.
 	 */
-    @Override
+	@Override
 	public int compareTo(final Plugin o) {
 		return toString().compareTo(o.toString());
 	}

@@ -179,6 +179,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 		}
 
 		updateProvides();
+		getDefaults();
 	}
 	
 	/**
@@ -306,6 +307,22 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 		}
 
 		return file;
+	}
+	
+	/**
+	 * Get the defaults for this plugin.
+	 */
+	private void getDefaults() {
+		final Map<String, String> keysection = metaData.getKeyDomain("defaults");
+		final Identity defaults = IdentityManager.getAddonIdentity();
+		final String domain = "plugin-".getName();
+		
+		for (Map.Entry entry : keysection.entrySet()) {
+			final String key = entry.getKey().toString();
+			final String value = entry.getValue().toString();
+			
+			defaults.setOption(domain, key, value);
+		}
 	}
 	
 	/**
@@ -913,6 +930,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 					final ValidationResponse prerequisites = ((Plugin) temp).checkPrerequisites();
 					if (!prerequisites.isFailure()) {
 						plugin = (Plugin) temp;
+						plugin.setDomain("plugin-".getName());
 						if (!tempLoaded) {
 							try {
 								plugin.onLoad();
