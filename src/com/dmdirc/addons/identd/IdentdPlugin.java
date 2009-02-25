@@ -67,20 +67,6 @@ public class IdentdPlugin extends Plugin implements ActionListener {
 	public void onLoad() {
 		// Add action hooks
 		ActionManager.addListener(this, CoreActionType.SERVER_CONNECTED, CoreActionType.SERVER_CONNECTING, CoreActionType.SERVER_CONNECTERROR);
-
-		// Set defaults
-		final Identity defaults = IdentityManager.getAddonIdentity();
-		defaults.setOption(getDomain(), "general.useUsername", "false");
-		defaults.setOption(getDomain(), "general.useNickname", "false");
-		defaults.setOption(getDomain(), "general.useCustomName", "false");
-		defaults.setOption(getDomain(), "general.customName", "DMDirc-user");
-		
-		defaults.setOption(getDomain(), "advanced.alwaysOn", "false");
-		defaults.setOption(getDomain(), "advanced.port", "113");
-		defaults.setOption(getDomain(), "advanced.useCustomSystem", "false");
-		defaults.setOption(getDomain(), "advanced.customSystem", "OTHER");
-		defaults.setOption(getDomain(), "advanced.isHiddenUser", "false");
-		defaults.setOption(getDomain(), "advanced.isNoUser", "false");
 		
 		myServer = new IdentdServer(this);
 		if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "advanced.alwaysOn")) {

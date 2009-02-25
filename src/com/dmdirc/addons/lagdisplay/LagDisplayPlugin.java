@@ -29,7 +29,6 @@ import com.dmdirc.ServerState;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesCategory;
 import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.config.prefs.PreferencesSetting;
@@ -88,8 +87,6 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
     @Override
     public void onLoad() {
         Main.getUI().getStatusBar().addComponent(panel);
-        IdentityManager.getAddonIdentity().setOption("plugin-Lagdisplay",
-                "usealternate", false);
         
         ActionManager.addListener(this, CoreActionType.SERVER_GOTPING,
                 CoreActionType.SERVER_NOPING, CoreActionType.CLIENT_FRAME_CHANGED,
@@ -116,7 +113,7 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
         for (Object obj : arguments) {
             if (obj instanceof FrameContainer && ((FrameContainer) obj).getServer() != null) {
                 useAlternate = ((FrameContainer) obj).getServer().getConfigManager()
-                        .getOptionBool("plugin-Lagdisplay", "usealternate");
+                        .getOptionBool(getDomain(), "usealternate");
                 break;
             }
         }
@@ -260,7 +257,7 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
         final PreferencesCategory cat = new PreferencesCategory("Lag display plugin",
                                                                 "");
         cat.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "plugin-Lagdisplay", "usealternate",
+                getDomain(), "usealternate",
                 "Alternate method", "Use an alternate method of determining "
                 + "lag which bypasses bouncers or proxies that may reply."));
         manager.getCategory("Plugins").addSubCategory(cat);
