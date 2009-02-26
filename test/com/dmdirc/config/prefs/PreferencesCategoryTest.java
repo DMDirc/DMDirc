@@ -47,11 +47,7 @@ public class PreferencesCategoryTest {
     @Test(expected=IllegalArgumentException.class)
     public void testAddWithObject() {
         final PreferencesCategory category = new PreferencesCategory("unit", "test",
-                new PreferencesInterface() {
-            public void save() {
-                // Do nothing
-            }
-        });
+                mock(PreferencesInterface.class));
 
         category.addSetting(null);
     }
