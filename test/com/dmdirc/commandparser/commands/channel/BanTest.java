@@ -24,10 +24,11 @@ package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.commandparser.CommandArguments;
-import com.dmdirc.harness.TestInputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class BanTest {
 
@@ -40,9 +41,9 @@ public class BanTest {
 
     @Test
     public void testUsage() {
-        final TestInputWindow tiw = new TestInputWindow();
+        final InputWindow tiw = mock(InputWindow.class);
         command.execute(tiw, null, null, false, new CommandArguments("/ban"));
         
-        assertTrue(tiw.lines.containsKey("commandUsage"));
+        verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
 }

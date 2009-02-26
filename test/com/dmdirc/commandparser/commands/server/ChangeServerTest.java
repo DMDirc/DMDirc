@@ -23,10 +23,11 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.harness.TestInputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class ChangeServerTest {
 
@@ -39,34 +40,34 @@ public class ChangeServerTest {
 
     @Test
     public void testUsageNoArgs() {
-        final TestInputWindow tiw = new TestInputWindow();
+        final InputWindow tiw = mock(InputWindow.class);
         command.execute(tiw, null, false, new CommandArguments("/server"));
         
-        assertTrue(tiw.lines.containsKey("commandUsage"));
+        verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
     
     @Test
     public void testInvalidPort() {
-        final TestInputWindow tiw = new TestInputWindow();
+        final InputWindow tiw = mock(InputWindow.class);
         command.execute(tiw, null, false, new CommandArguments("/server foo:abc"));
         
-        assertTrue(tiw.lines.containsKey("commandError"));
+        verify(tiw).addLine(eq("commandError"), anyString());
     }
     
     @Test
     public void testOutOfRangePort1() {
-        final TestInputWindow tiw = new TestInputWindow();
+        final InputWindow tiw = mock(InputWindow.class);
         command.execute(tiw, null, false, new CommandArguments("/server foo:0"));
         
-        assertTrue(tiw.lines.containsKey("commandError"));
+        verify(tiw).addLine(eq("commandError"), anyString());
     }
     
     @Test
     public void testOutOfRangePort2() {
-        final TestInputWindow tiw = new TestInputWindow();
+        final InputWindow tiw = mock(InputWindow.class);
         command.execute(tiw, null, false,new CommandArguments("/server foo:65537"));
         
-        assertTrue(tiw.lines.containsKey("commandError"));
+        verify(tiw).addLine(eq("commandError"), anyString());
     }
 
 }

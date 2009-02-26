@@ -23,10 +23,10 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.harness.TestInputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class DebugTest {
 
@@ -39,17 +39,19 @@ public class DebugTest {
 
     @Test
     public void testUsage() {
-        final TestInputWindow tiw = new TestInputWindow();
+        final InputWindow tiw = mock(InputWindow.class);
+
         command.execute(tiw, false, new CommandArguments("/foo"));
         
-        assertTrue(tiw.lines.containsKey("commandUsage"));
+        verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
     
     @Test
     public void testInvalidArg() {
-        final TestInputWindow tiw = new TestInputWindow();
+        final InputWindow tiw = mock(InputWindow.class);
+
         command.execute(tiw, false, new CommandArguments("/foo flubadee"));
         
-        assertTrue(tiw.lines.containsKey("commandError"));
+        verify(tiw).addLine(eq("commandError"), anyString());
     }    
 }
