@@ -95,12 +95,7 @@ public class InputTextFrameTest implements UITestIface {
         dlg.requireVisible().button(JButtonByTextMatcher.withText("Edit")).click();
         dlg.textBox(new ClassFinder<TextAreaInputField>(TextAreaInputField.class, null))
                 .requireText("line1\nline2");
-        dlg.close();
-
-        int i = 0;
-        while (dlg.target.isVisible() && ++i < 100) {
-            Thread.sleep(100);
-        }
+        dlg.target.dispose();
     }
 
     @Test
@@ -114,12 +109,7 @@ public class InputTextFrameTest implements UITestIface {
         dlg.requireVisible().button(JButtonByTextMatcher.withText("Edit")).click();
         dlg.textBox(new ClassFinder<TextAreaInputField>(TextAreaInputField.class, null))
                 .requireText("testing:line1\nline2");
-        dlg.close();
-
-        int i = 0;
-        while (dlg.target.isVisible() && ++i < 100) {
-            Thread.sleep(100);
-        }
+        dlg.target.dispose();
     }
 
     @Test
@@ -134,12 +124,7 @@ public class InputTextFrameTest implements UITestIface {
         dlg.requireVisible().button(JButtonByTextMatcher.withText("Edit")).click();
         dlg.textBox(new ClassFinder<TextAreaInputField>(TextAreaInputField.class, null))
                 .requireText("line1\nline2<- testing");
-        dlg.close();
-
-        int i = 0;
-        while (dlg.target.isVisible() && ++i < 100) {
-            Thread.sleep(100);
-        }
+        dlg.target.dispose();
     }
 
     @Test
@@ -153,12 +138,7 @@ public class InputTextFrameTest implements UITestIface {
         dlg.requireVisible().button(JButtonByTextMatcher.withText("Edit")).click();
         dlg.textBox(new ClassFinder<TextAreaInputField>(TextAreaInputField.class, null))
                 .requireText("testing:line1\nline2<- testing");
-        dlg.close();
-
-        int i = 0;
-        while (dlg.target.isVisible() && ++i < 100) {
-            Thread.sleep(100);
-        }
+        dlg.target.dispose();
     }
 
     protected void setupWindow(final ConfigManager configManager) {
