@@ -181,7 +181,42 @@ is divided into following sections:
             </sequential>
         </macrodef>
     </target>
-    <target name="-init-macrodef-junit">
+
+    <target name="-init-macrodef-junit" depends="-init-macrodef-junit-clover,-init-macrodef-junit-noclover"/>
+
+    <target name="-init-macrodef-junit-clover" if="clover.installed">
+        <macrodef name="junit" uri="http://www.netbeans.org/ns/j2se-project/3">
+            <attribute default="${includes}" name="includes"/>
+            <attribute default="${excludes}" name="excludes"/>
+            <attribute default="**" name="testincludes"/>
+            <sequential>
+                <junit dir="${work.dir}" errorproperty="tests.failed" failureproperty="tests.failed" fork="true" showoutput="true" timeout="120000">
+                    <classpath>
+                        <pathelement path="${clover.jar}"/>
+                    </classpath>
+                    <batchtest todir="${build.test.results.dir}">
+                        <clover-optimized-testset fullrunevery="${clover.fullrunevery}" optimize="${clover.optimize}" ordering="${clover.ordering}">
+                            <fileset dir="${test.src.dir}" excludes="@{excludes},${excludes}" includes="@{includes}">
+                                <filename name="@{testincludes}"/>
+                            </fileset>
+                        </clover-optimized-testset>
+                    </batchtest>
+                    <classpath>
+                        <path path="${run.test.classpath}"/>
+                    </classpath>
+                    <syspropertyset>
+                        <propertyref prefix="test-sys-prop."/>
+                        <mapper from="test-sys-prop.*" to="*" type="glob"/>
+                    </syspropertyset>
+                    <formatter type="brief" usefile="false"/>
+                    <formatter type="xml"/>
+                    <jvmarg line="${run.jvmargs}"/>
+                </junit>
+            </sequential>
+        </macrodef>
+    </target>
+
+    <target name="-init-macrodef-junit-noclover" unless="clover.installed">
         <macrodef name="junit" uri="http://www.netbeans.org/ns/j2se-project/3">
             <attribute default="${includes}" name="includes"/>
             <attribute default="${excludes}" name="excludes"/>
@@ -210,6 +245,7 @@ is divided into following sections:
             </sequential>
         </macrodef>
     </target>
+
     <target name="-init-macrodef-nbjpda">
         <macrodef name="nbjpdastart" uri="http://www.netbeans.org/ns/j2se-project/1">
             <attribute default="${main.class}" name="name"/>

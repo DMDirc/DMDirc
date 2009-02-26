@@ -4,11 +4,13 @@
 
     <property name="clover.jar" location="/home/dmdirc/clover/clover/lib/clover.jar"/>
     <taskdef resource="cloverlib.xml" classpath="${clover.jar}"/>
+    <taskdef resource="cloverjunitlib.xml" classpath="${clover.jar}"/>
     <available property="clover.installed" classname="com.cenqua.clover.CloverInstr" />
 
     <target name="with.clover" depends="clean" if="clover.installed"
             description="Set up Clover to instrument tests.">
         <clover-clean/>
+        <clover-env/>
         <clover-setup>
             <fileset dir="src/com/" includes="**/*.java" />
             <fileset dir="test/com/">
@@ -16,6 +18,10 @@
                 <exclude name="**/harness/**/*.java" />
             </fileset>
         </clover-setup>
+    </target>
+
+    <target name="clover.snapshot" depends="with.clover">
+        <clover-snapshot file="${clover.snapshot.file}"/>
     </target>
 
     <target name="clover.xml" if="clover.installed"
@@ -51,9 +57,9 @@
         </junitreport>
     </target>
 
-    <target name="test-html" depends="with.clover,compile-test,test,clover.html"
+    <target name="test-html" depends="with.clover,compile-test,test,clover.html,clover.snapshot"
             description="Run tests and generate a Clover HTML report."/>
-    <target name="test-xml" depends="with.clover,compile-test,test,clover.xml"
+    <target name="test-xml" depends="with.clover,compile-test,test,clover.xml,clover.snapshot"
             description="Run tests and generate a Clover XML report."/>
     <target name="test-both" depends="test-html,test-xml"
             description="Run tests and generate Clover XML and HTML reports."/>
