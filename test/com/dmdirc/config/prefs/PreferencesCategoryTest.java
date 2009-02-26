@@ -67,6 +67,27 @@ public class PreferencesCategoryTest {
         
         assertEquals("This is a desc.", category.getDescription());
     }
+
+    @Test
+    public void testIcon() {
+        final PreferencesCategory category = new PreferencesCategory("unit",
+                "This is a desc.", "icon");
+
+        assertEquals("icon", category.getIcon());
+    }
+
+    @Test
+    public void testParent() {
+        final PreferencesCategory parent = mock(PreferencesCategory.class);
+        when(parent.getPath()).thenReturn("parent path");
+        
+        final PreferencesCategory category = new PreferencesCategory("unit",
+                "This is a desc.");
+        category.setParent(parent);
+
+        assertSame(parent, category.getParent());
+        assertEquals("parent path → unit", category.getPath());
+    }
     
     @Test
     public void testGetSettings() {
@@ -103,6 +124,54 @@ public class PreferencesCategoryTest {
         
         verify(test, never()).categorySelected(category);
         verify(test).categoryDeselected((PreferencesCategory) anyObject());
+    }
+
+    @Test
+    public void testDismiss() {
+        final PreferencesCategory category = new PreferencesCategory("unit", "test");
+        final PreferencesSetting setting = mock(PreferencesSetting.class);
+        category.addSetting(setting);
+        category.dismiss();
+
+        verify(setting).dismiss();
+    }
+
+    @Test
+    public void testSaveNotUpdated() {
+        final PreferencesCategory category = new PreferencesCategory("unit", "test");
+        final PreferencesSetting setting = mock(PreferencesSetting.class);
+        when(setting.save()).thenReturn(false);
+
+        category.addSetting(setting);
+        assertFalse(category.save());
+
+        verify(setting).save();
+    }
+
+    @Test
+    public void testSaveUpdatedNoRestart() {
+        final PreferencesCategory category = new PreferencesCategory("unit", "test");
+        final PreferencesSetting setting = mock(PreferencesSetting.class);
+        when(setting.save()).thenReturn(true);
+        when(setting.isRestartNeeded()).thenReturn(false);
+
+        category.addSetting(setting);
+        assertFalse(category.save());
+
+        verify(setting).save();
+    }
+
+    @Test
+    public void testSaveUpdatedRestart() {
+        final PreferencesCategory category = new PreferencesCategory("unit", "test");
+        final PreferencesSetting setting = mock(PreferencesSetting.class);
+        when(setting.save()).thenReturn(true);
+        when(setting.isRestartNeeded()).thenReturn(true);
+
+        category.addSetting(setting);
+        assertTrue(category.save());
+
+        verify(setting).save();
     }
 
 }
