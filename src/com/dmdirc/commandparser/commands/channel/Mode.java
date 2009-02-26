@@ -67,10 +67,10 @@ public final class Mode extends ChannelCommand implements IntelligentCommand,
     @Override
     public void execute(final InputWindow origin, final Server server,
             final String channel, final boolean isSilent, final CommandArguments args) {
-        if (args.getArguments().length == 0) {
+        if (args.getArguments().length == 1) {
             server.getParser().sendLine("MODE " + channel);
         } else {
-            server.getParser().sendLine("MODE " + channel + " " + args.getArgumentsAsString());
+            server.getParser().sendLine("MODE " + channel + " " + args.getArgumentsAsString(1));
         }
     }
 

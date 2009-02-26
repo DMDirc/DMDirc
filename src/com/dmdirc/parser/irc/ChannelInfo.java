@@ -37,7 +37,7 @@ import java.util.Queue;
  * @author Chris Smith
  * @see IRCParser
  */
-public final class ChannelInfo {
+public class ChannelInfo {
 	/**
 	 * Boolean repreenting the status of names requests.
 	 * When this is false, any new names reply will cause current known channelclients to be removed.

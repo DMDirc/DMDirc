@@ -54,8 +54,8 @@ import java.util.Map;
  *
  * @author chris
  */
-public final class Channel extends MessageTarget
-        implements ConfigChangeListener, Serializable {
+public class Channel extends MessageTarget implements ConfigChangeListener,
+        Serializable {
 
     /**
      * A version number for this class. It should be changed whenever the class
