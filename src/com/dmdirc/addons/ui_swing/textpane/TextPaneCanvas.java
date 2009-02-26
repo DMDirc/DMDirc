@@ -157,7 +157,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             final AttributedCharacterIterator iterator = document.getStyledLine(i);
             int lineHeight = document.getLineHeight(i);
             lineHeight += lineHeight * 0.2;
-            System.out.println(lineHeight);
             paragraphStart = iterator.getBeginIndex();
             paragraphEnd = iterator.getEndIndex();
             lineMeasurer = new LineBreakMeasurer(iterator,
