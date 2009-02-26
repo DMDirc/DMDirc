@@ -22,7 +22,7 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.harness.TestConfigListener;
+import com.dmdirc.interfaces.ConfigChangeListener;
 
 import java.io.IOException;
 import java.util.Map;
@@ -31,6 +31,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class IdentityTest {
     
@@ -180,28 +181,27 @@ public class IdentityTest {
     
     @Test
     public void testSetListener() {
-        final TestConfigListener listener = new TestConfigListener();
+        final ConfigChangeListener listener = mock(ConfigChangeListener.class);
         myIdent.addListener(listener);
-        assertEquals(0, listener.count);
+
+        verify(listener, never()).configChanged(anyString(), anyString());
         
         myIdent.setOption("unit", "test", "meep");        
 
-        assertEquals(1, listener.count);
-        assertEquals("unit", listener.domain);
-        assertEquals("test", listener.key);
+        verify(listener).configChanged("unit", "test");
     }    
     
     @Test
     public void testUnsetListener() {
-        final TestConfigListener listener = new TestConfigListener();
+        final ConfigChangeListener listener = mock(ConfigChangeListener.class);
         myIdent.setOption("unit", "test", "meep");
         myIdent.addListener(listener);
+
+        verify(listener, never()).configChanged(anyString(), anyString());
         
-        assertEquals(0, listener.count);
         myIdent.unsetOption("unit", "test");
-        assertEquals(1, listener.count);
-        assertEquals("unit", listener.domain);
-        assertEquals("test", listener.key);
+
+        verify(listener).configChanged("unit", "test");
     }
     
 }

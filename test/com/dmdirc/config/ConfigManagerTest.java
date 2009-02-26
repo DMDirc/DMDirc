@@ -21,10 +21,11 @@
  */
 package com.dmdirc.config;
 
-import com.dmdirc.harness.TestConfigListener;
 import com.dmdirc.interfaces.ConfigChangeListener;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class ConfigManagerTest {
     
@@ -44,31 +45,31 @@ public class ConfigManagerTest {
     
     @Test
     public void testDomainListener() {
-        final TestConfigListener listener = new TestConfigListener();
+        final ConfigChangeListener listener = mock(ConfigChangeListener.class);
         final ConfigManager cm = new ConfigManager("", "", "");
         cm.addChangeListener("unit-test", listener);
         
         cm.configChanged("foo", "bar");
-        assertEquals(0, listener.count);
+        verify(listener, never()).configChanged(anyString(), anyString());
         
         cm.configChanged("unit-test", "bar");
-        assertEquals(1, listener.count);
+        verify(listener).configChanged("unit-test", "bar");
     }
     
     @Test
     public void testDomainKeyListener() {
-        final TestConfigListener listener = new TestConfigListener();
+        final ConfigChangeListener listener = mock(ConfigChangeListener.class);
         final ConfigManager cm = new ConfigManager("", "", "");
         cm.addChangeListener("unit-test", "foo", listener);
         
         cm.configChanged("foo", "bar");
-        assertEquals(0, listener.count);
+        verify(listener, never()).configChanged(anyString(), anyString());
         
         cm.configChanged("unit-test", "bar");
-        assertEquals(0, listener.count);
+        verify(listener, never()).configChanged(anyString(), anyString());
         
         cm.configChanged("unit-test", "foo");
-        assertEquals(1, listener.count);        
+        verify(listener).configChanged("unit-test", "foo");
     }    
     
 }
