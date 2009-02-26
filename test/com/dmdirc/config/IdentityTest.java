@@ -48,6 +48,7 @@ public class IdentityTest {
     
     @After
     public void tearDown() throws Exception {
+        myIdent.file.delete();
         myIdent = null;
     }    
     
@@ -142,12 +143,9 @@ public class IdentityTest {
         
         myIdent.save();
         
-        myIdent = new Identity(myIdent.getFile().getFile(), false);
+        myIdent = new Identity(myIdent.file.getFile(), false);
         
         assertEquals("baz!", myIdent.getOption("foo", "bar"));
-        
-        myIdent.unsetOption("foo", "bar");
-        myIdent.save();
     }
 
     @Test
@@ -170,13 +168,13 @@ public class IdentityTest {
     public void testMigrate() throws IOException, InvalidIdentityFileException {
         final Identity id = new Identity(getClass().getResourceAsStream("identity3"), false);
         
-        assertTrue(id.getFile().isKeyDomain("identity"));
-        assertTrue(id.getFile().isKeyDomain("meep"));
-        assertTrue(id.getFile().isKeyDomain("unit"));
+        assertTrue(id.file.isKeyDomain("identity"));
+        assertTrue(id.file.isKeyDomain("meep"));
+        assertTrue(id.file.isKeyDomain("unit"));
         
-        assertEquals("unit test", id.getFile().getKeyDomain("identity").get("name"));
-        assertEquals("true", id.getFile().getKeyDomain("unit").get("test"));
-        assertEquals("2", id.getFile().getKeyDomain("meep").get("moop"));
+        assertEquals("unit test", id.file.getKeyDomain("identity").get("name"));
+        assertEquals("true", id.file.getKeyDomain("unit").get("test"));
+        assertEquals("2", id.file.getKeyDomain("meep").get("moop"));
     }
     
     @Test
