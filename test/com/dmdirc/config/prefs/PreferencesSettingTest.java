@@ -21,17 +21,16 @@
  */
 package com.dmdirc.config.prefs;
 
-import com.dmdirc.harness.TestSettingChangeListener;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.validator.NotEmptyValidator;
 import com.dmdirc.config.prefs.validator.PermissiveValidator;
 import com.dmdirc.config.prefs.validator.StringLengthValidator;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class PreferencesSettingTest {
     
@@ -137,14 +136,13 @@ public class PreferencesSettingTest {
         IdentityManager.getConfigIdentity().setOption("domain", "option", "fallback");
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, "domain",
                 "option", "title", "helptext");
-        final TestSettingChangeListener tl = new TestSettingChangeListener();
+        final SettingChangeListener tl = mock(SettingChangeListener.class);
         ps.registerChangeListener(tl);
         ps.setValue("newvalue");
         ps.dismiss();
         ps.dismiss();
 
-        assertEquals(2, tl.count);
-        assertSame(ps, tl.setting);
+        verify(tl, times(2)).settingChanged(ps);
     }
     
     @Test
