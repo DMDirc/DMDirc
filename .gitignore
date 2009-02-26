@@ -4,5 +4,6 @@
 /dist
 /nbproject/private
 /plugins
+/junitreports
 .svn
 *.class
