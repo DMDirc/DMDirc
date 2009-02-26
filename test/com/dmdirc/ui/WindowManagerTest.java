@@ -21,52 +21,94 @@
  */
 package com.dmdirc.ui;
 
-import com.dmdirc.harness.TestFrameManager;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.harness.TestWritableFrameContainer;
 import com.dmdirc.addons.ui_dummy.DummyInputWindow;
+import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class WindowManagerTest {
 
     @Test
-    public void testFrameManagers() {
-        final TestFrameManager tfm = new TestFrameManager();
+    public void testAddRoot() {
+        final FrameManager tfm = mock(FrameManager.class);
         final Window parent = new DummyInputWindow(new TestWritableFrameContainer(512), null);
-        final Window child = new DummyInputWindow(new TestWritableFrameContainer(512), null);
         
         WindowManager.addFrameManager(tfm);
-        
-        assertEquals(0, tfm.orphans);
-        assertEquals(0, tfm.children);
+
+        verify(tfm, never()).addWindow((FrameContainer) anyObject());
+        verify(tfm, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject());
         
         WindowManager.addWindow(parent);
         
-        assertEquals(1, tfm.orphans);
-        assertEquals(0, tfm.children);
+        verify(tfm).addWindow(same(parent.getContainer()));
+        verify(tfm, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject());
+    }
+
+    @Test
+    public void testAddChild() {
+        final FrameManager tfm = mock(FrameManager.class);
+        final Window parent = new DummyInputWindow(new TestWritableFrameContainer(512), null);
+        final Window child = new DummyInputWindow(new TestWritableFrameContainer(512), null);
+        WindowManager.addWindow(parent);
+        WindowManager.addFrameManager(tfm);
         
         WindowManager.addWindow(parent, child);
         
-        assertEquals(1, tfm.orphans);
-        assertEquals(1, tfm.children);
-        
+        verify(tfm, never()).addWindow((FrameContainer) anyObject());
+        verify(tfm).addWindow(same(parent.getContainer()), same(child.getContainer()));
+    }
+
+    @Test
+    public void testRemoveRoot() {
+        final FrameManager tfm = mock(FrameManager.class);
+        final Window parent = new DummyInputWindow(new TestWritableFrameContainer(512), null);
+        final Window child = new DummyInputWindow(new TestWritableFrameContainer(512), null);
+        WindowManager.addWindow(parent);
+        WindowManager.addFrameManager(tfm);
+
         WindowManager.removeWindow(parent);
         
-        assertEquals(0, tfm.orphans);
-        assertEquals(0, tfm.children);  
-        
+        verify(tfm).delWindow(same(parent.getContainer()));
+    }
+
+    @Test
+    public void testRemoveChild() {
+        final FrameManager tfm = mock(FrameManager.class);
+        final Window parent = new DummyInputWindow(new TestWritableFrameContainer(512), null);
+        final Window child = new DummyInputWindow(new TestWritableFrameContainer(512), null);
+        WindowManager.addWindow(parent);
+        WindowManager.addWindow(parent, child);
+        WindowManager.addFrameManager(tfm);
+
         WindowManager.removeWindow(child);
-        
-        assertEquals(0, tfm.orphans);
-        assertEquals(0, tfm.children);       
-        
-        WindowManager.removeFrameManager(tfm);
+
+        verify(tfm, never()).addWindow((FrameContainer) anyObject());
+        verify(tfm, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject());
+        verify(tfm, never()).delWindow((FrameContainer) anyObject());
+        verify(tfm).delWindow(same(parent.getContainer()), same(child.getContainer()));
+    }
+
+    @Test
+    public void testRemoveFrameManager() {
+        final FrameManager tfm = mock(FrameManager.class);
+        final Window parent = new DummyInputWindow(new TestWritableFrameContainer(512), null);
+        final Window child = new DummyInputWindow(new TestWritableFrameContainer(512), null);
         WindowManager.addWindow(parent);
         
-        assertEquals(0, tfm.orphans);
-        assertEquals(0, tfm.children);       
+        WindowManager.addFrameManager(tfm);
+
+        WindowManager.removeFrameManager(tfm);
+        WindowManager.addWindow(parent, child);
+        
+        verify(tfm, never()).addWindow((FrameContainer) anyObject());
+        verify(tfm, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject());
+        verify(tfm, never()).delWindow((FrameContainer) anyObject());
+        verify(tfm, never()).delWindow((FrameContainer) anyObject(), (FrameContainer) anyObject());
     }
     
     @Test

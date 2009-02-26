@@ -26,6 +26,7 @@ import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 public class TestWritableFrameContainer extends WritableFrameContainer {
@@ -60,7 +61,8 @@ public class TestWritableFrameContainer extends WritableFrameContainer {
     }
 
     public void windowClosing() {
-        // Do nothing
+        System.out.println("windowClosing");
+        WindowManager.removeWindow(window);
     }
 
     public Server getServer() {
