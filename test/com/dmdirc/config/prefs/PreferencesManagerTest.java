@@ -53,6 +53,40 @@ public class PreferencesManagerTest {
         assertNotNull(pm.getCategory("Updates"));
         assertNotNull(pm.getCategory("URL Handlers"));
     }
+
+    @Test
+    public void testDismiss() {
+        final PreferencesCategory category = mock(PreferencesCategory.class);
+        final PreferencesManager pm = new PreferencesManager();
+        pm.addCategory(category);
+        pm.dismiss();
+
+        verify(category).dismiss();
+    }
+
+    @Test
+    public void testSaveNoRestart() {
+        final PreferencesCategory category = mock(PreferencesCategory.class);
+        when(category.save()).thenReturn(false);
+        
+        final PreferencesManager pm = new PreferencesManager();
+        pm.addCategory(category);
+        assertFalse(pm.save());
+
+        verify(category).save();
+    }
+
+    @Test
+    public void testSaveRestart() {
+        final PreferencesCategory category = mock(PreferencesCategory.class);
+        when(category.save()).thenReturn(true);
+
+        final PreferencesManager pm = new PreferencesManager();
+        pm.addCategory(category);
+        assertTrue(pm.save());
+
+        verify(category).save();
+    }
     
     @Test
     public void testGetCategory() {
