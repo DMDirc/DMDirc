@@ -56,6 +56,7 @@ public final class ErrorManager implements Serializable, ConfigChangeListener {
     private static final Class[] BANNED_EXCEPTIONS = new Class[]{
         NoSuchMethodError.class, NoClassDefFoundError.class,
         UnsatisfiedLinkError.class, AbstractMethodError.class,
+        IllegalAccessError.class,
     };
 
     /** Whether or not to send error reports. */
