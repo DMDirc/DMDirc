@@ -21,13 +21,14 @@
  */
 package com.dmdirc.commandparser.commands.chat;
 
+import com.dmdirc.MessageTarget;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.harness.TestMessageTarget;
-import com.dmdirc.harness.TestInputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class MeTest {
 
@@ -40,16 +41,17 @@ public class MeTest {
 
     @Test
     public void testUsage() {
-        final TestInputWindow tiw = new TestInputWindow();
+        final InputWindow tiw = mock(InputWindow.class);
         command.execute(tiw, null, null, false, new CommandArguments("/foo"));
         
-        assertTrue(tiw.lines.containsKey("commandUsage"));
+        verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
     
     @Test
     public void testSend() {
-        final TestMessageTarget mtt = new TestMessageTarget();
+        final MessageTarget mtt = mock(MessageTarget.class);
         command.execute(null, null, mtt, false, new CommandArguments("/foo hello meep moop"));
-        assertEquals("hello meep moop", mtt.action);
+
+        verify(mtt).sendAction("hello meep moop");
     }
 }
