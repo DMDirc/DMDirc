@@ -422,4 +422,13 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public IRCDocument getDocument() {
         return document;
     }
+    
+    /**
+     * Retrives the parent framecontainer for this textpane.
+     * 
+     * @return Parent frame container
+     */
+    public FrameContainer getFrameContainer() {
+        return frame;
+    }
 }

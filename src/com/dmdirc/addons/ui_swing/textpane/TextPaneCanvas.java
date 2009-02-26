@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.textpane;
 
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.ui.messages.IRCTextAttribute;
 
 import java.awt.Cursor;
@@ -49,7 +50,7 @@ import javax.swing.event.MouseInputListener;
 
 /** Canvas object to draw text. */
 class TextPaneCanvas extends JPanel implements MouseInputListener,
-        ComponentListener {
+        ComponentListener, ConfigChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the
@@ -98,6 +99,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         addMouseListener(this);
         addMouseMotionListener(this);
         addComponentListener(this);
+        parent.getFrameContainer().getConfigManager().addChangeListener("ui", "textPaneFontSize", this);
     }
 
     /**
@@ -153,7 +155,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         for (int i = startLine; i >= 0; i--) {
             float drawPosX;
             final AttributedCharacterIterator iterator = document.getStyledLine(i);
-            final int lineHeight = document.getLineHeight(i) + 2;
+            int lineHeight = document.getLineHeight(i);
+            lineHeight += lineHeight * 0.2;
+            System.out.println(lineHeight);
             paragraphStart = iterator.getBeginIndex();
             paragraphEnd = iterator.getEndIndex();
             lineMeasurer = new LineBreakMeasurer(iterator,
@@ -324,7 +328,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 
                 final AttributedCharacterIterator iterator = document.
                         getStyledLine(line);
-                final int lineHeight = document.getLineHeight(line) + 2;
+                int lineHeight = document.getLineHeight(line);
+                lineHeight += lineHeight * 0.2;
                 final AttributedString as = new AttributedString(iterator,
                                                                  firstChar,
                                                                  lastChar);
@@ -876,5 +881,14 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     /** Clears the line wrapping cache. */
     protected void clearWrapCache() {
         lineWrap.clear();
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void configChanged(final String domain, final String key) {
+        lineWrap.clear();
+        if (isVisible()) {
+            repaint();
+        }
     }
 }

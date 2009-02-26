@@ -84,7 +84,7 @@ public class Line {
         }
         return length;
     }
-    
+
     /**
      * Returns the height of the specified line.
      * 
@@ -141,21 +141,21 @@ public class Line {
                     ex.getMessage());
         }
 
+        final Font defaultFont = UIManager.getFont("TextPane.font");
+        String fontName = null;
+        int fontSize = -1;
+        if (config.hasOptionString("ui", "textPaneFontName")) {
+            fontName = config.getOption("ui", "textPaneFontName");
+        } else {
+            fontName = defaultFont.getName();
+        }
+        if (config.hasOptionString("ui", "textPaneFontSize")) {
+            fontSize = config.getOptionInt("ui", "textPaneFontSize");
+        } else {
+            fontSize = defaultFont.getSize();
+        }
+        lineHeight = fontSize;
         if (attString.getIterator().getEndIndex() != 0) {
-            final Font defaultFont = UIManager.getFont("TextPane.font");
-            final int fontSize;
-            final String fontName;
-            if (config.hasOptionString("ui", "textPaneFontName")) {
-                fontName = config.getOption("ui", "textPaneFontName");
-            } else {
-                fontName = defaultFont.getName();
-            }
-            if (config.hasOptionString("ui", "textPaneFontSize")) {
-                fontSize = config.getOptionInt("ui", "textPaneFontSize");
-            } else {
-                fontSize = defaultFont.getSize();
-            }
-            lineHeight = fontSize;
             final Font font = new Font(fontName, Font.PLAIN, fontSize);
             attString.addAttribute(TextAttribute.SIZE, font.getSize());
             attString.addAttribute(TextAttribute.FAMILY, font.getFamily());
