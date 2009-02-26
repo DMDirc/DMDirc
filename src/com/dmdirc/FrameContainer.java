@@ -91,7 +91,7 @@ public abstract class FrameContainer {
     /**
      * Closes this container (and it's associated frame).
      */
-    public final void close() {
+    public void close() {
         if (getFrame() == null) {
             throw new IllegalStateException("No frame associated with this container!");
         } else {
