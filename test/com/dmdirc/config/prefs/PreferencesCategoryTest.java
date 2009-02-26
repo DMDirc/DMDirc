@@ -21,10 +21,10 @@
  */
 package com.dmdirc.config.prefs;
 
-import com.dmdirc.harness.TestChangeListener;
 import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class PreferencesCategoryTest {
 
@@ -84,29 +84,29 @@ public class PreferencesCategoryTest {
     @Test
     public void testSelectionListener() {
         final PreferencesCategory category = new PreferencesCategory("unit", "test");
-        final TestChangeListener test = new TestChangeListener();
+        final CategoryChangeListener test = mock(CategoryChangeListener.class);
+
         category.addChangeListener(test);
         category.fireCategorySelected();
         category.removeChangeListener(test);
         category.fireCategorySelected();
         
-        assertEquals(1, test.selected);
-        assertEquals(0, test.deselected);
-        assertSame(category, test.cat);
+        verify(test).categorySelected(category);
+        verify(test, never()).categoryDeselected((PreferencesCategory) anyObject());
     }
     
     @Test
     public void testDeSelectionListener() {
         final PreferencesCategory category = new PreferencesCategory("unit", "test");
-        final TestChangeListener test = new TestChangeListener();
+        final CategoryChangeListener test = mock(CategoryChangeListener.class);
+        
         category.addChangeListener(test);
         category.fireCategoryDeselected();
         category.removeChangeListener(test);
         category.fireCategoryDeselected();
         
-        assertEquals(0, test.selected);
-        assertEquals(1, test.deselected);
-        assertSame(category, test.cat);
+        verify(test, never()).categorySelected(category);
+        verify(test).categoryDeselected((PreferencesCategory) anyObject());
     }
 
 }
