@@ -75,11 +75,11 @@ public class PreferencesManagerTest {
     @Test
     public void testSaveListener() {        
         final PreferencesManager pm = new PreferencesManager();
-        final TestPreferencesInterface tpi = new TestPreferencesInterface();
+        final PreferencesInterface tpi = mock(PreferencesInterface.class);
         
         pm.registerSaveListener(tpi);
         pm.fireSaveListeners();
-        assertTrue(tpi.saved);
+        verify(tpi).save();
     }
     
     @Test
