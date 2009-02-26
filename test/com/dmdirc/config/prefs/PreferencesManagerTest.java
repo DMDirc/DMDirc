@@ -27,10 +27,12 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.harness.TestPreferencesInterface;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.harness.TestActionListener;
+import com.dmdirc.interfaces.ActionListener;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class PreferencesManagerTest {
     
@@ -82,26 +84,29 @@ public class PreferencesManagerTest {
     
     @Test
     public void testOpenAction() {
-        final TestActionListener tal = new TestActionListener();
+        final ActionListener tal = mock(ActionListener.class);
+
         ActionManager.init();
         ActionManager.addListener(tal, CoreActionType.CLIENT_PREFS_OPENED);
         
-        new PreferencesManager();
-        
-        assertNotNull(tal.events.get(CoreActionType.CLIENT_PREFS_OPENED));
-        assertEquals(1, tal.events.get(CoreActionType.CLIENT_PREFS_OPENED).size());
+        final PreferencesManager pm = new PreferencesManager();
+
+        verify(tal).processEvent(eq(CoreActionType.CLIENT_PREFS_OPENED),
+                (StringBuffer) same(null), same(pm));
     }
     
     @Test
     public void testCloseAction() {
-        final TestActionListener tal = new TestActionListener();
+        final ActionListener tal = mock(ActionListener.class);
+        
         ActionManager.init();
         ActionManager.addListener(tal, CoreActionType.CLIENT_PREFS_CLOSED);
+
+        final PreferencesManager pm = new PreferencesManager();
+        pm.close();
         
-        new PreferencesManager().close();
-        
-        assertNotNull(tal.events.get(CoreActionType.CLIENT_PREFS_CLOSED));
-        assertEquals(1, tal.events.get(CoreActionType.CLIENT_PREFS_CLOSED).size());
+        verify(tal).processEvent(eq(CoreActionType.CLIENT_PREFS_CLOSED),
+                (StringBuffer) same(null));
     }
 
 }
