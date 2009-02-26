@@ -24,7 +24,6 @@ package com.dmdirc.parser.irc;
 
 import com.dmdirc.harness.parser.TestIPrivateCTCP;
 import com.dmdirc.harness.parser.TestParser;
-import com.dmdirc.harness.parser.TestIChannelKick;
 import com.dmdirc.harness.parser.TestIConnectError;
 import com.dmdirc.harness.parser.TestINoticeAuth;
 import com.dmdirc.harness.parser.TestINumeric;
@@ -34,14 +33,16 @@ import com.dmdirc.harness.parser.TestIPrivateMessage;
 import com.dmdirc.harness.parser.TestIPrivateAction;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.irc.callbacks.interfaces.IAwayState;
+import com.dmdirc.parser.irc.callbacks.interfaces.IChannelKick;
 
 import java.util.Arrays;
-
 import java.util.List;
+
 import javax.net.ssl.TrustManager;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class IRCParserTest {
 
@@ -430,15 +431,16 @@ public class IRCParserTest {
     @Test
     public void testKick() throws CallbackNotFoundException {
         final TestParser parser = new TestParser();
-        final TestIChannelKick ick = new TestIChannelKick();
+        final IChannelKick ick = mock(IChannelKick.class);
         parser.injectConnectionStrings();
 
         parser.injectLine(":nick JOIN #D");
         parser.getCallbackManager().addCallback("onChannelKick", ick, "#D");
         parser.injectLine(":bar!me@moo KICK #D nick :Bye!");
-     
-        assertTrue("onChannelKick must be called", ick.called);
-        assertNotNull("cKickedClient must not be null", ick.cKickedClient);
+
+        verify(ick).onChannelKick(same(parser), (ChannelInfo) anyObject(),
+                (ChannelClientInfo) anyObject(), (ChannelClientInfo) anyObject(),
+                anyString(), anyString());
     }
 
     @Test

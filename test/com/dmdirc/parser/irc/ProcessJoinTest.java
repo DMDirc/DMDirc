@@ -22,13 +22,14 @@
 
 package com.dmdirc.parser.irc;
 
-import com.dmdirc.harness.parser.TestIChannelJoin;
 import com.dmdirc.harness.parser.TestIChannelSelfJoin;
 import com.dmdirc.harness.parser.TestParser;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
+import com.dmdirc.parser.irc.callbacks.interfaces.IChannelJoin;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class ProcessJoinTest {
     
@@ -53,7 +54,7 @@ public class ProcessJoinTest {
     @Test
     public void testOtherJoinChannel() throws CallbackNotFoundException {
         final TestParser parser = new TestParser();
-        final TestIChannelJoin test = new TestIChannelJoin();
+        final IChannelJoin test = mock(IChannelJoin.class);
 
         parser.injectConnectionStrings();
         parser.getCallbackManager().addCallback("onChannelJoin", test);
@@ -61,13 +62,8 @@ public class ProcessJoinTest {
         parser.injectLine(":nick JOIN #DMDirc_testing");
         parser.injectLine(":foo!bar@baz JOIN #DMDirc_testing");
 
-        assertNotNull(test.channel);
-        assertEquals("#DMDirc_testing", test.channel.getName());
-        assertEquals("#DMDirc_testing", test.channel.toString());
-        assertSame(parser, test.channel.getParser());
-        assertNotNull(parser.getClientInfo("foo"));
-        assertSame(test.client.getClient(), parser.getClientInfo("foo"));
-        assertTrue(parser.getClientInfo("foo").getChannelClients().contains(test.client));
+        verify(test).onChannelJoin(parser, parser.getChannelInfo("#DMDirc_testing"),
+                parser.getClientInfo("foo!bar@baz").getChannelClients().get(0));
     }    
 
 }

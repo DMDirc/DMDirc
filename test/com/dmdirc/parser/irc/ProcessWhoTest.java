@@ -22,18 +22,18 @@
 
 package com.dmdirc.parser.irc;
 
-import com.dmdirc.harness.parser.TestIAwayState;
 import com.dmdirc.harness.parser.TestParser;
 import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
+import com.dmdirc.parser.irc.callbacks.interfaces.IAwayState;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class ProcessWhoTest {
 
     @Test
     public void testSelfAway() throws CallbackNotFoundException {
         final TestParser parser = new TestParser();
-        final TestIAwayState test = new TestIAwayState();
+        final IAwayState test = mock(IAwayState.class);
         parser.injectConnectionStrings();
         parser.getCallbackManager().addCallback("OnAwayState", test);
 
@@ -41,12 +41,11 @@ public class ProcessWhoTest {
 
         parser.injectLine(":server 352 nick #DMDirc_testing nick2 host2 server nick2 G@ :0 rn");
 
-        assertFalse(test.called);
+        verify(test, never()).onAwayState((IRCParser) anyObject(),anyBoolean(), anyString());
 
         parser.injectLine(":server 352 nick #DMDirc_testing nick host server nick G@ :0 rn");
 
-        assertTrue(test.called);
-        assertTrue(test.state);
+        verify(test).onAwayState(parser, true, "");
     }
 
 }
