@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.components;
 
+import com.dmdirc.Main;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
@@ -46,6 +47,7 @@ import org.fest.swing.fixture.FrameFixture;
 import org.fest.swing.fixture.JInternalFrameFixture;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,6 +60,11 @@ public class InputTextFrameTest implements UITestIface {
     static JInternalFrameFixture window;
     static TestConfigManagerMap cmmap;
     static TestWritableFrameContainer owner;
+
+    @BeforeClass
+    public static void setUpClass() {
+        Main.setUI(new SwingController());
+    }
 
     @Before
     public void setUp() {
@@ -96,7 +103,7 @@ public class InputTextFrameTest implements UITestIface {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void testPasteDialogWithTextBefore() throws InterruptedException {
         window.textBox().enterText("testing:");
         ((InputTextFrame) window.target).doPaste("line1\nline2");
@@ -115,7 +122,7 @@ public class InputTextFrameTest implements UITestIface {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void testPasteDialogWithTextAfter() throws InterruptedException {
         window.textBox().enterText("<- testing").pressAndReleaseKey(
                 KeyPressInfo.keyCode(KeyEvent.VK_HOME));
@@ -135,7 +142,7 @@ public class InputTextFrameTest implements UITestIface {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void testPasteDialogWithTextAround() throws InterruptedException {
         window.textBox().enterText("testing:<- testing").selectText(8, 8);
         ((InputTextFrame) window.target).doPaste("line1\nline2");

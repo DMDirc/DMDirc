@@ -21,7 +21,7 @@
     </target>
 
     <target name="clover.snapshot" depends="with.clover">
-        <clover-snapshot file="${clover.snapshot.file}"/>
+        <clover-snapshot/>
     </target>
 
     <target name="clover.xml" if="clover.installed"
