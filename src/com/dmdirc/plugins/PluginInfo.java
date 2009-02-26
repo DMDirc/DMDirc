@@ -315,15 +315,17 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 * Get the defaults for this plugin.
 	 */
 	private void getDefaults() {
-		final Map<String, String> keysection = metaData.getKeyDomain("defaults");
-		final Identity defaults = IdentityManager.getAddonIdentity();
-		final String domain = "plugin-"+getName();
-		
-		for (Map.Entry entry : keysection.entrySet()) {
-			final String key = entry.getKey().toString();
-			final String value = entry.getValue().toString();
+		if (metaData != null && metaData.isKeyDomain("defaults")) {
+			final Map<String, String> keysection = metaData.getKeyDomain("defaults");
+			final Identity defaults = IdentityManager.getAddonIdentity();
+			final String domain = "plugin-"+getName();
 			
-			defaults.setOption(domain, key, value);
+			for (Map.Entry entry : keysection.entrySet()) {
+				final String key = entry.getKey().toString();
+				final String value = entry.getValue().toString();
+				
+				defaults.setOption(domain, key, value);
+			}
 		}
 	}
 	
