@@ -100,7 +100,7 @@ public final class ChangeServer extends ServerCommand {
         if (args.getArguments().length > ++offset) {
             pass = args.getArgumentsAsString(offset);
         }
-        
+
         server.connect(host, port, pass, ssl, server.getProfile());
     }
     

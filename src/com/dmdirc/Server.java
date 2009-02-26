@@ -64,7 +64,7 @@ import javax.net.ssl.TrustManager;
  *
  * @author chris
  */
-public final class Server extends WritableFrameContainer implements Serializable {
+public class Server extends WritableFrameContainer implements Serializable {
 
     /**
      * A version number for this class. It should be changed whenever the class

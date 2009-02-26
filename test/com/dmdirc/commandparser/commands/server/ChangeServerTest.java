@@ -21,7 +21,9 @@
  */
 package com.dmdirc.commandparser.commands.server;
 
+import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
@@ -68,6 +70,30 @@ public class ChangeServerTest {
         command.execute(tiw, null, false,new CommandArguments("/server foo:65537"));
         
         verify(tiw).addLine(eq("commandError"), anyString());
+    }
+
+    @Test
+    public void testExecuteBasic() {
+        final InputWindow tiw = mock(InputWindow.class);
+        final Identity profile = mock(Identity.class);
+        final Server server = mock(Server.class);
+        when(server.getProfile()).thenReturn(profile);
+
+        command.execute(tiw, server, false,new CommandArguments("/server foo:1234"));
+
+        verify(server).connect("foo", 1234, "", false, profile);
+    }
+
+    @Test
+    public void testExecuteComplex() {
+        final InputWindow tiw = mock(InputWindow.class);
+        final Identity profile = mock(Identity.class);
+        final Server server = mock(Server.class);
+        when(server.getProfile()).thenReturn(profile);
+
+        command.execute(tiw, server, false,new CommandArguments("/server foo:+1234 password"));
+
+        verify(server).connect("foo", 1234, "password", true, profile);
     }
 
 }
