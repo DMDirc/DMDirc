@@ -1585,7 +1585,7 @@ public class IRCParser implements Runnable {
 			} catch (NumberFormatException nfe) { result = -1; }
 		} else if (result == -2 && getIRCD(true).equalsIgnoreCase("weircd")) {
 			// -_-
-			result = 6;
+			result = 50;
 		} else if (result == -2) {
 			result = -1;
 			callDebugInfo(DEBUG_INFO, "Failed");
