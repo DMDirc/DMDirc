@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.dmdirc.addons.ui_swing.textpane;
 
+import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.ui.messages.IRCTextAttribute;
 
@@ -160,7 +160,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             paragraphStart = iterator.getBeginIndex();
             paragraphEnd = iterator.getEndIndex();
             lineMeasurer = new LineBreakMeasurer(iterator,
-                                                 g.getFontRenderContext());
+                    g.getFontRenderContext());
             lineMeasurer.setPosition(paragraphStart);
 
             final int wrappedLine;
@@ -172,8 +172,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             } else {
                 //get it and populate the cache
                 wrappedLine = getNumWrappedLines(lineMeasurer,
-                                                 paragraphStart, paragraphEnd,
-                                                 formatWidth);
+                        paragraphStart, paragraphEnd,
+                        formatWidth);
                 lineWrap.put(i, wrappedLine);
             }
 
@@ -211,8 +211,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                     firstVisibleLine = i;
                     textLayouts.put(layout, new LineInfo(i, j));
                     positions.put(new Rectangle(0, (int) drawPosY,
-                                                (int) formatWidth + 6,
-                                                lineHeight), layout);
+                            (int) formatWidth + 6,
+                            lineHeight), layout);
                 }
 
                 j++;
@@ -239,9 +239,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * @return Number of times the line wraps
      */
     private int getNumWrappedLines(final LineBreakMeasurer lineMeasurer,
-                                   final int paragraphStart,
-                                   final int paragraphEnd,
-                                   final float formatWidth) {
+            final int paragraphStart,
+            final int paragraphEnd,
+            final float formatWidth) {
         int wrappedLine = 0;
 
         while (lineMeasurer.getPosition() < paragraphEnd) {
@@ -266,8 +266,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * @param drawPosX current x location of the line
      */
     private void doHighlight(final int line, final int chars,
-                             final TextLayout layout, final Graphics2D g,
-                             final float drawPosY, final float drawPosX) {
+            final TextLayout layout, final Graphics2D g,
+            final float drawPosY, final float drawPosX) {
         int startLine;
         int startChar;
         int endLine;
@@ -280,7 +280,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             endLine = selection.getStartLine();
             endChar = selection.getStartPos();
         } else if (selection.getStartLine() == selection.getEndLine() &&
-                   selection.getStartPos() > selection.getEndPos()) {
+                selection.getStartPos() > selection.getEndPos()) {
             // Just swap the chars
             startLine = selection.getStartLine();
             startChar = selection.getEndPos();
@@ -315,36 +315,34 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
 
             // If the selection includes the chars we're showing
             if (lastChar > chars && firstChar < chars +
-                                                layout.getCharacterCount()) {
+                    layout.getCharacterCount()) {
                 String text = document.getLine(line).getText();
                 if (firstChar >= 0 && text.length() > lastChar) {
-                    text =  text.substring(firstChar, lastChar);
+                    text = text.substring(firstChar, lastChar);
                 }
 
                 if (text.isEmpty()) {
                     return;
                 }
-                
-                final AttributedCharacterIterator iterator = document.
-                        getStyledLine(line);
+
+                final AttributedCharacterIterator iterator = document.getStyledLine(line);
                 int lineHeight = document.getLineHeight(line);
                 lineHeight += lineHeight * 0.2;
                 final AttributedString as = new AttributedString(iterator,
-                                                                 firstChar,
-                                                                 lastChar);
+                        firstChar,
+                        lastChar);
                 final int trans = (int) (lineHeight / 2f + drawPosY);
-                
+
                 as.addAttribute(TextAttribute.FOREGROUND,
-                                textPane.getBackground());
+                        textPane.getBackground());
                 as.addAttribute(TextAttribute.BACKGROUND,
-                                textPane.getForeground());
+                        textPane.getForeground());
                 final TextLayout newLayout = new TextLayout(as.getIterator(),
-                                                            g.
-                        getFontRenderContext());
+                        g.getFontRenderContext());
                 final Shape shape = layout.getLogicalHighlightShape(firstChar -
-                                                                    chars,
-                                                                    lastChar -
-                                                                    chars);
+                        chars,
+                        lastChar -
+                        chars);
 
                 if (firstChar != 0) {
                     g.translate(shape.getBounds().getX(), 0);
@@ -402,8 +400,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 end = -1;
             } else {
                 final int[] extent =
-                            getSurroundingWordIndexes(clickedText,
-                                                      lineInfo.getIndex());
+                        getSurroundingWordIndexes(clickedText,
+                        lineInfo.getIndex());
                 start = extent[0];
                 end = extent[1];
             }
@@ -438,7 +436,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                     lineInfo.getLine());
             iterator.setIndex(lineInfo.getIndex());
             Object linkattr =
-                   iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
+                    iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
             if (linkattr instanceof String) {
                 return ClickType.HYPERLINK;
             }
@@ -467,7 +465,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                     lineInfo.getLine());
             iterator.setIndex(lineInfo.getIndex());
             Object linkattr =
-                   iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
+                    iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
             if (linkattr instanceof String) {
                 return linkattr;
             }
@@ -493,7 +491,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * @return Indexes of the word surrounding the index (start, end)
      */
     protected int[] getSurroundingWordIndexes(final String text,
-                                              final int index) {
+            final int index) {
         final int start = getSurroundingWordStart(text, index);
         final int end = getSurroundingWordEnd(text, index);
 
@@ -626,16 +624,16 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         final LineInfo lineInfo = getClickPosition(getMousePosition());
 
         if (lineInfo.getLine() != -1 && document.getLine(lineInfo.getLine()) !=
-                                        null) {
+                null) {
             final AttributedCharacterIterator iterator = document.getStyledLine(
                     lineInfo.getLine());
             if (lineInfo.getIndex() < iterator.getBeginIndex() ||
-                lineInfo.getIndex() > iterator.getEndIndex()) {
+                    lineInfo.getIndex() > iterator.getEndIndex()) {
                 return;
             }
             iterator.setIndex(lineInfo.getIndex());
             Object linkattr =
-                   iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
+                    iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
             if (linkattr instanceof String) {
                 setCursor(HAND_CURSOR);
                 return;
@@ -663,7 +661,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * @param e responsible mouse event
      */
     protected void highlightEvent(final MouseEventType type,
-                                  final MouseEvent e) {
+            final MouseEvent e) {
         if (isVisible()) {
             Point point = e.getLocationOnScreen();
             SwingUtilities.convertPointFromScreen(point, this);
@@ -674,18 +672,18 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                     point.setLocation(bounds.getX() + 3, point.getY());
                 } else if (mousePos.getX() > (bounds.getX() + bounds.getWidth())) {
                     point.setLocation(bounds.getX() + bounds.getWidth() - 3,
-                                      point.getY());
+                            point.getY());
                 }
                 if (mousePos.getY() < bounds.getY()) {
                     point.setLocation(point.getX(), bounds.getY() + 6);
                 } else if (mousePos.getY() >
-                           (bounds.getY() + bounds.getHeight())) {
+                        (bounds.getY() + bounds.getHeight())) {
                     //Nice text selection behaviour
                     //point.setLocation(point.getX(), bounds.getY() +
                     //        bounds.getHeight() - 6);
                     point.setLocation(bounds.getX() + bounds.getWidth() - 3,
-                                      bounds.getY() +
-                                      bounds.getHeight() - 6);
+                            bounds.getY() +
+                            bounds.getHeight() - 6);
                 }
             }
             final LineInfo info = getClickPosition(point);
@@ -732,7 +730,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             }
 
             pos = getHitPosition(lineNumber, linePart, (int) point.getX(),
-                                 (int) point.getY());
+                    (int) point.getY());
         }
 
         return new LineInfo(lineNumber, linePart, pos);
@@ -749,7 +747,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * @return Hit position
      */
     private int getHitPosition(final int lineNumber, final int linePart,
-                               final int x, final int y) {
+            final int x, final int y) {
         int pos = 0;
 
         for (Map.Entry<Rectangle, TextLayout> entry : positions.entrySet()) {
@@ -757,9 +755,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 if (textLayouts.get(entry.getValue()).getPart() < linePart) {
                     pos += entry.getValue().getCharacterCount();
                 } else if (textLayouts.get(entry.getValue()).getPart() ==
-                           linePart) {
+                        linePart) {
                     final TextHitInfo hit = entry.getValue().hitTestChar(x - 6,
-                                                                         y);
+                            y);
                     pos += hit.getInsertionIndex();
                 }
             }
@@ -777,20 +775,17 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         if (selection.getStartLine() > selection.getEndLine()) {
             // Swap both
             return new LinePosition(selection.getEndLine(),
-                                    selection.getEndPos(), selection.
-                    getStartLine(),
-                                    selection.getStartPos());
+                    selection.getEndPos(), selection.getStartLine(),
+                    selection.getStartPos());
         } else if (selection.getStartLine() == selection.getEndLine() &&
-                   selection.getStartPos() > selection.getEndPos()) {
+                selection.getStartPos() > selection.getEndPos()) {
             // Just swap the chars
-            return new LinePosition(selection.getStartLine(), selection.
-                    getEndPos(), selection.getEndLine(),
-                                    selection.getStartPos());
+            return new LinePosition(selection.getStartLine(), selection.getEndPos(), selection.getEndLine(),
+                    selection.getStartPos());
         } else {
             // Swap nothing
-            return new LinePosition(selection.getStartLine(), selection.
-                    getStartPos(), selection.getEndLine(),
-                                    selection.getEndPos());
+            return new LinePosition(selection.getStartLine(), selection.getStartPos(), selection.getEndLine(),
+                    selection.getEndPos());
         }
     }
 
@@ -815,7 +810,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         }
     }
 
-    /**
+    /**nee
      * Returns the first visible line.
      *
      * @return the line number of the first visible line
@@ -879,15 +874,28 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
 
     /** Clears the line wrapping cache. */
     protected void clearWrapCache() {
-        lineWrap.clear();
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                lineWrap.clear();
+            }
+        });
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
-        lineWrap.clear();
-        if (isVisible()) {
-            repaint();
-        }
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                if (isVisible()) {
+                    repaint();
+                }
+            }
+        });
     }
 }
