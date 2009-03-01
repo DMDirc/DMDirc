@@ -144,26 +144,33 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void setActiveFrame(final Window frame) {
-        if (frame != null) {
-            if (maximised) {
-                setTitle(getTitlePrefix() + " - " + frame.getTitle());
-            }
+        UIUtilities.invokeLater(new Runnable() {
 
-            ActionManager.processEvent(CoreActionType.CLIENT_FRAME_CHANGED, null,
-                    frame.getContainer());
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                if (frame != null) {
+                    if (maximised) {
+                        setTitle(getTitlePrefix() + " - " + frame.getTitle());
+                    }
 
-            try {
-                ((JInternalFrame) frame).setVisible(true);
-                ((JInternalFrame) frame).setIcon(false);
-                ((JInternalFrame) frame).moveToFront();
-                ((JInternalFrame) frame).setSelected(true);
-            } catch (PropertyVetoException ex) {
-                Logger.userError(ErrorLevel.LOW, "Unable to set active window");
+                    ActionManager.processEvent(CoreActionType.CLIENT_FRAME_CHANGED, null,
+                            frame.getContainer());
+
+                    try {
+                        ((JInternalFrame) frame).setVisible(true);
+                        ((JInternalFrame) frame).setIcon(false);
+                        ((JInternalFrame) frame).moveToFront();
+                        ((JInternalFrame) frame).setSelected(true);
+                    } catch (PropertyVetoException ex) {
+                        Logger.userError(ErrorLevel.LOW, "Unable to set active window");
+                    }
+                }
+                if (frame instanceof InputTextFrame) {
+                    ((InputTextFrame) frame).requestInputFieldFocus();
+                }
             }
-        }
-        if (frame instanceof InputTextFrame) {
-            ((InputTextFrame) frame).requestInputFieldFocus();
-        }
+        });
     }
 
     /**
@@ -369,7 +376,7 @@ public final class MainFrame extends JFrame implements WindowListener,
 
         WindowManager.addFrameManager(mainFrameManager);
         mainFrameManager.setParent(frameManagerPanel);
-        
+
         WindowManager.addFrameManager(this);
     }
 
@@ -474,8 +481,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void quit() {
-        if (IdentityManager.getGlobalConfig().getOptionBool("ui", "confirmQuit")
-                && JOptionPane.showConfirmDialog(this,
+        if (IdentityManager.getGlobalConfig().getOptionBool("ui", "confirmQuit") && JOptionPane.showConfirmDialog(this,
                 "You are about to quit DMDirc, are you sure?", "Quit confirm",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE) !=
@@ -489,8 +495,7 @@ public final class MainFrame extends JFrame implements WindowListener,
             @Override
             protected Object doInBackground() throws Exception {
                 ActionManager.processEvent(CoreActionType.CLIENT_CLOSING, null);
-                ServerManager.getServerManager().closeAll(IdentityManager.
-                        getGlobalConfig().getOption("general", "closemessage"));
+                ServerManager.getServerManager().closeAll(IdentityManager.getGlobalConfig().getOption("general", "closemessage"));
                 IdentityManager.getConfigIdentity().setOption("ui",
                         "frameManagerSize", String.valueOf(getFrameManagerSize()));
                 return null;
@@ -503,7 +508,7 @@ public final class MainFrame extends JFrame implements WindowListener,
                 dispose();
             }
         }.execute();
-        
+
     }
 
     /** {@inheritDoc} */

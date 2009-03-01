@@ -91,7 +91,14 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
         model = new TreeViewModel(new TreeViewNode(null, null));
         selectionModel = new DefaultTreeSelectionModel();
         treeScroller =
-        new TreeScroller(model, selectionModel);
+        new TreeScroller(model, selectionModel) {
+
+            @Override
+            protected void setPath(TreePath path) {
+                ((TreeViewNode) path.getLastPathComponent()).getFrameContainer().activateFrame();
+            }
+            
+        };
         selectionModel.addTreeSelectionListener(this);
 
         WindowManager.addFrameManager(this);
@@ -261,7 +268,9 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
         final TreeNode[] path =
                          model.getPathToRoot(nodes.get(window.getContainer()));
         if (path != null && path.length > 0) {
-            selectionModel.setSelectionPath(new TreePath(path));
+            
+            ((TreeViewNode) new TreePath(path).getLastPathComponent()).getFrameContainer().
+                activateFrame();
         }
     }
 }
