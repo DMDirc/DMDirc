@@ -72,6 +72,10 @@ import net.miginfocom.swing.MigLayout;
 public final class MainFrame extends JFrame implements WindowListener,
         MainWindow, ConfigChangeListener, FrameManager, PropertyChangeListener {
 
+    /** Logger to use. */
+    private static final java.util.logging.Logger LOGGER = java.util.logging
+            .Logger.getLogger(MainFrame.class.getName());
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
@@ -160,11 +164,14 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void setActiveFrame(final Window frame) {
-        UIUtilities.invokeAndWait(new Runnable() {
+        LOGGER.finer("setActiveFrame(" + frame.getTitle() + ")");
 
+        UIUtilities.invokeAndWait(new Runnable() {
             /** {@inheritDoc} */
             @Override
             public void run() {
+                LOGGER.finer("setActiveFrame(" + frame.getTitle() + ").run()");
+
                 if (frame != null) {
                     ActionManager.processEvent(CoreActionType.CLIENT_FRAME_CHANGED, null,
                             frame.getContainer());

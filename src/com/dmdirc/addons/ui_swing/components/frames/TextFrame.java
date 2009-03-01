@@ -98,6 +98,10 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         PropertyChangeListener, InternalFrameListener,
         MouseListener, KeyListener, ConfigChangeListener {
 
+    /** Logger to use. */
+    private static final java.util.logging.Logger LOGGER = java.util.logging
+            .Logger.getLogger(TextFrame.class.getName());
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
@@ -521,11 +525,14 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void internalFrameActivated(final InternalFrameEvent event) {
+        LOGGER.finer(getName() + ": internalFrameActivated()");
+
         new LoggingSwingWorker() {
 
             /** {@inheritDoc} */
             @Override
             protected Object doInBackground() throws Exception {
+                LOGGER.finer(getName() + ": internalFrameActivated(): doInBackground");
                 frameParent.windowActivated();
                 return null;
             }

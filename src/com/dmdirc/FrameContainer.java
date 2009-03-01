@@ -43,6 +43,10 @@ import javax.swing.Icon;
  */
 public abstract class FrameContainer {
 
+    /** Logger to use. */
+    private static final java.util.logging.Logger LOGGER = java.util.logging
+            .Logger.getLogger(FrameContainer.class.getName());
+
     /** The colour of our frame's notifications. */
     protected Color notification = Color.BLACK;
 
@@ -152,6 +156,9 @@ public abstract class FrameContainer {
      * Requests that this object's frame be activated.
      */
     public void activateFrame() {
+        LOGGER.finer(toString() + ": activateFrame(): frame = "
+                + (getFrame() == null ? null : getFrame().getClass().getName()));
+
         Main.getUI().getMainWindow().setActiveFrame(getFrame());
     }
 
@@ -159,6 +166,9 @@ public abstract class FrameContainer {
      * Clears any outstanding notifications this frame has set.
      */
     protected void clearNotification() {
+        LOGGER.finer(toString() + ": clearNotification(): frame = "
+                + (getFrame() == null ? null : getFrame().getClass().getName()));
+
         // TODO: This should default ot something colour independent
         notification = Color.BLACK;
 
@@ -238,6 +248,9 @@ public abstract class FrameContainer {
      * Invoked when our window is activated.
      */
     public void windowActivated() {
+        LOGGER.finer(toString() + ": windowActivated(): frame = "
+                + (getFrame() == null ? null : getFrame().getClass().getName()));
+
         if (getFrame() == null) {
             return;
         }
@@ -263,7 +276,8 @@ public abstract class FrameContainer {
      * Invoked when our window is deactivated.
      */
     public void windowDeactivated() {
-        // Do nothing.
+        LOGGER.finer(toString() + ": windowDeactivated(): frame = "
+                + (getFrame() == null ? null : getFrame().getClass().getName()));
     }
 
     /**
