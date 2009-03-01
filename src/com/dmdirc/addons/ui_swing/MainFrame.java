@@ -52,6 +52,10 @@ import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Level;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -164,7 +168,11 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void setActiveFrame(final Window frame) {
-        LOGGER.finer("setActiveFrame(" + frame.getTitle() + ")");
+        if (LOGGER.isLoggable(Level.FINER)) {
+            final StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+            LOGGER.finer("setActiveFrame(" + frame.getTitle() + ").run() ← "
+                    + Arrays.toString(trace));
+        }
 
         UIUtilities.invokeAndWait(new Runnable() {
             /** {@inheritDoc} */
