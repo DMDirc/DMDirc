@@ -43,7 +43,6 @@ import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.plaf.DesktopPaneUI;
 import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreeNode;
@@ -54,7 +53,7 @@ import javax.swing.tree.TreeSelectionModel;
  * DMDirc Extentions to JDesktopPane.
  */
 public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
-        TreeSelectionListener, SelectionListener {
+        SelectionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -90,8 +89,7 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
         nodes = new HashMap<FrameContainer, TreeViewNode>();
         model = new TreeViewModel(new TreeViewNode(null, null));
         selectionModel = new DefaultTreeSelectionModel();
-        treeScroller =
-        new TreeScroller(model, selectionModel) {
+        treeScroller = new TreeScroller(model, selectionModel) {
 
             @Override
             protected void setPath(TreePath path) {
@@ -99,7 +97,6 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
             }
             
         };
-        selectionModel.addTreeSelectionListener(this);
 
         WindowManager.addFrameManager(this);
     }
@@ -240,7 +237,7 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
                 }
                 node.setUserObject(window);
                 model.insertNodeInto(node, parent);
-                window.addSelectionListener(DMDircDesktopPane.this);
+                //window.addSelectionListener(DMDircDesktopPane.this);
             }
         });
     }
@@ -257,20 +254,11 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
 
     /** {@inheritDoc} */
     @Override
-    public void valueChanged(final TreeSelectionEvent e) {
-        ((TreeViewNode) e.getPath().getLastPathComponent()).getFrameContainer().
-                activateFrame();
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public void selectionChanged(final Window window) {
         final TreeNode[] path =
                          model.getPathToRoot(nodes.get(window.getContainer()));
         if (path != null && path.length > 0) {
-            
-            ((TreeViewNode) new TreePath(path).getLastPathComponent()).getFrameContainer().
-                activateFrame();
+            selectionModel.setSelectionPath(new TreePath(path));
         }
     }
 }

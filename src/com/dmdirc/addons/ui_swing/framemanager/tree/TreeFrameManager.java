@@ -281,14 +281,15 @@ public final class TreeFrameManager implements FrameManager,
                 label.selectionChanged(window);
             }
         }
+
         if (window != null) {
             final TreeNode[] treePath =
                     ((DefaultTreeModel) tree.getModel()).getPathToRoot(nodes.get(window.getContainer()));
             if (treePath != null && treePath.length > 0) {
                 final TreePath path = new TreePath(treePath);
                 if (path != null) {
-                    //tree.setTreePath(path);
-                    tree.setSelectionPath(path);
+                    tree.setTreePath(path);
+                    tree.setSelection(path);
                 }
             }
         }
