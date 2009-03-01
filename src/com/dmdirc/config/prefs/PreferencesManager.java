@@ -433,9 +433,6 @@ public class PreferencesManager {
                 "ui", "stylelinks", "Style links", "Style links in text areas"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "stylelinks", "Style links", "Style links in text areas"));
-        category.addSetting(new PreferencesSetting(PreferencesType.FONT,
-                "ui", "textPaneFontName", "Textpane font", "Text family to use " +
-                "in the textpane"));
 
         addThemesCategory(category);
         addNicklistCategory(category);
