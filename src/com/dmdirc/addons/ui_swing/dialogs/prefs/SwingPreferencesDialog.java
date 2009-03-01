@@ -19,7 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.dmdirc.addons.ui_swing.dialogs.prefs;
 
 import com.dmdirc.config.prefs.PreferencesCategory;
@@ -204,8 +203,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     public void actionPerformed(final ActionEvent actionEvent) {
         if (getOkButton().equals(actionEvent.getSource())) {
             if (tabList.getSelectedIndex() > -1) {
-                final PreferencesCategory node = (PreferencesCategory) tabList.
-                        getSelectedValue();
+                final PreferencesCategory node = (PreferencesCategory) tabList.getSelectedValue();
                 IdentityManager.getConfigIdentity().setOption("dialogstate",
                         "preferences", node.getPath());
             }
@@ -262,12 +260,14 @@ public final class SwingPreferencesDialog extends StandardDialog implements
 
     /** {@inheritDoc} */
     public void saveOptions() {
-        if (manager.save()) {
-            JOptionPane.showMessageDialog(SwingController.getMainFrame(),
-                    "One or more of the changes you made " +
-                    "won't take effect until you restart the client.",
-                    "Restart needed",
-                    JOptionPane.INFORMATION_MESSAGE);
+        if (manager != null) {
+            if (manager.save()) {
+                JOptionPane.showMessageDialog(SwingController.getMainFrame(),
+                        "One or more of the changes you made " +
+                        "won't take effect until you restart the client.",
+                        "Restart needed",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
         }
     }
 
