@@ -99,12 +99,14 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             /** {@inheritDoc} */
             @Override
             protected void done() {
-                try {
-                    setPrefsManager(get());
-                } catch (InterruptedException ex) {
-                    //Ignore
-                } catch (ExecutionException ex) {
-                    Logger.appError(ErrorLevel.MEDIUM, ex.getMessage(), ex);
+                if (!isCancelled()) {
+                    try {
+                        setPrefsManager(get());
+                    } catch (InterruptedException ex) {
+                        //Ignore
+                    } catch (ExecutionException ex) {
+                        Logger.appError(ErrorLevel.MEDIUM, ex.getMessage(), ex);
+                    }
                 }
             }
         };
