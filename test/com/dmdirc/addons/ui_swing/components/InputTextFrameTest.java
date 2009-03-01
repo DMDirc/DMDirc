@@ -33,6 +33,7 @@ import com.dmdirc.harness.ui.UIClassTestRunner;
 import com.dmdirc.harness.ui.UITestIface;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.addons.ui_swing.CustomInputFrame;
+import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 
@@ -98,7 +99,7 @@ public class InputTextFrameTest implements UITestIface {
         dlg.target.dispose();
     }
 
-    @Test
+    @Test @Ignore
     public void testPasteDialogWithTextBefore() throws InterruptedException {
         window.textBox().enterText("testing:");
         ((InputTextFrame) window.target).doPaste("line1\nline2");
@@ -112,7 +113,7 @@ public class InputTextFrameTest implements UITestIface {
         dlg.target.dispose();
     }
 
-    @Test
+    @Test @Ignore
     public void testPasteDialogWithTextAfter() throws InterruptedException {
         window.textBox().enterText("<- testing").pressAndReleaseKey(
                 KeyPressInfo.keyCode(KeyEvent.VK_HOME));
@@ -127,7 +128,7 @@ public class InputTextFrameTest implements UITestIface {
         dlg.target.dispose();
     }
 
-    @Test
+    @Test @Ignore
     public void testPasteDialogWithTextAround() throws InterruptedException {
         window.textBox().enterText("testing:<- testing").selectText(8, 8);
         ((InputTextFrame) window.target).doPaste("line1\nline2");
