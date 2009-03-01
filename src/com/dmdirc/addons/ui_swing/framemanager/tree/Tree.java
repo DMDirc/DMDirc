@@ -129,6 +129,7 @@ public class Tree extends JTree implements TreeSelectionListener,
         if (this.path != null && !this.path.equals(path)) {
             setTreePath(path);
             ((TreeViewNode) path.getLastPathComponent()).getFrameContainer().activateFrame();
+            setSelectionPath(path);
         }
     }
 
