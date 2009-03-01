@@ -34,6 +34,8 @@ import com.dmdirc.addons.ui_swing.dialogs.actionsmanager.ActionsManagerDialog;
 import com.dmdirc.addons.ui_swing.dialogs.aliases.AliasManagerDialog;
 import com.dmdirc.addons.ui_swing.dialogs.prefs.SwingPreferencesDialog;
 import com.dmdirc.addons.ui_swing.dialogs.profiles.ProfileManagerDialog;
+import java.lang.reflect.InvocationTargetException;
+import javax.swing.SwingUtilities;
 import org.fest.swing.finder.WindowFinder;
 import org.fest.swing.fixture.DialogFixture;
 import org.fest.swing.fixture.FrameFixture;
@@ -47,31 +49,29 @@ import static org.junit.Assert.*;
 @RunWith(UIClassTestRunner.class)
 public class MainFrameTest implements UITestIface {
     
-    private FrameFixture window;
+    private static FrameFixture window;
+    private DialogFixture newwin;
 
     @BeforeClass
     public static void setUpClass() {
+        IdentityManager.load();
+
         Main.setUI(new SwingController());
+        
     }
 
     @Before
     public void setUp() {
-        IdentityManager.load();
-        window = new FrameFixture(SwingController.getMainFrame());
-        window.show();
-    }
-    
-    @After
-    public void tearDown() {
-        if (window != null) {
-            window.cleanUp();
+        if (window == null) {
+            window = new FrameFixture(SwingController.getMainFrame());
+            window.show();
         }
     }
     
     @Test
     public void testNewServerDialog() {
         window.menuItemWithPath("Server", "New Server...").click();
-        DialogFixture newwin = WindowFinder.findDialog(NewServerDialog.class)
+        newwin = WindowFinder.findDialog(NewServerDialog.class)
                 .withTimeout(5000).using(window.robot);
         newwin.requireVisible();
     }
@@ -79,7 +79,7 @@ public class MainFrameTest implements UITestIface {
     @Test
     public void testAboutDialog() {
         window.menuItemWithPath("Help", "About").click();
-        DialogFixture newwin = WindowFinder.findDialog(AboutDialog.class)
+        newwin = WindowFinder.findDialog(AboutDialog.class)
                 .withTimeout(5000).using(window.robot);
         newwin.requireVisible();
     }
@@ -87,7 +87,7 @@ public class MainFrameTest implements UITestIface {
     @Test
     public void testFeedbackDialog() {
         window.menuItemWithPath("Help", "Send Feedback").click();
-        DialogFixture newwin = WindowFinder.findDialog(FeedbackDialog.class)
+        newwin = WindowFinder.findDialog(FeedbackDialog.class)
                 .withTimeout(5000).using(window.robot);
         newwin.requireVisible();
     }
@@ -95,7 +95,7 @@ public class MainFrameTest implements UITestIface {
     @Test
     public void testPreferencesDialog() {
         window.menuItemWithPath("Settings", "Preferences").click();
-        DialogFixture newwin = WindowFinder.findDialog(SwingPreferencesDialog.class)
+        newwin = WindowFinder.findDialog(SwingPreferencesDialog.class)
                 .withTimeout(5000).using(window.robot);
         newwin.requireVisible();
     }
@@ -103,7 +103,7 @@ public class MainFrameTest implements UITestIface {
     @Test
     public void testProfileManagerDialog() {
         window.menuItemWithPath("Settings", "Profile Manager").click();
-        DialogFixture newwin = WindowFinder.findDialog(ProfileManagerDialog.class)
+        newwin = WindowFinder.findDialog(ProfileManagerDialog.class)
                 .withTimeout(5000).using(window.robot);
         newwin.requireVisible();
     }
@@ -111,7 +111,7 @@ public class MainFrameTest implements UITestIface {
     @Test
     public void testActionsManagerDialog() {
         window.menuItemWithPath("Settings", "Actions Manager").click();
-        DialogFixture newwin = WindowFinder.findDialog(ActionsManagerDialog.class)
+        newwin = WindowFinder.findDialog(ActionsManagerDialog.class)
                 .withTimeout(5000).using(window.robot);
         newwin.requireVisible();
     }
@@ -119,7 +119,7 @@ public class MainFrameTest implements UITestIface {
     @Test
     public void testAliasManagerDialog() {
         window.menuItemWithPath("Settings", "Alias Manager").click();
-        DialogFixture newwin = WindowFinder.findDialog(AliasManagerDialog.class)
+        newwin = WindowFinder.findDialog(AliasManagerDialog.class)
                 .withTimeout(5000).using(window.robot);
         newwin.requireVisible();
     }
@@ -132,6 +132,26 @@ public class MainFrameTest implements UITestIface {
     @Test
     public void testServerServerSettings() {
         window.menuItemWithPath("Server", "Server settings").requireDisabled();
+    }
+
+    @Override @After
+    public void tearDown() throws InterruptedException, InvocationTargetException {
+        SwingUtilities.invokeAndWait(new Runnable() {
+            @Override
+            public void run() {
+                close();
+            }
+        });
+    }
+
+    protected void close() {
+        if (newwin != null && newwin.target != null) {
+            try {
+                newwin.target.dispose();
+            } catch (Throwable ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
 }

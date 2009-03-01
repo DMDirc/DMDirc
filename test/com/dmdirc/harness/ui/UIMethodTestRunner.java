@@ -25,10 +25,7 @@ package com.dmdirc.harness.ui;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.fest.swing.exception.ActionFailedException;
-import org.junit.BeforeClass;
 import org.junit.internal.runners.TestMethodRunner;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
@@ -46,32 +43,36 @@ public class UIMethodTestRunner extends TestMethodRunner {
 
     @Override
     protected void runUnprotected() {
-        ((UITestIface) test).setUp();
+        try {
+            ((UITestIface) test).setUp();
 
-        boolean retry;
-        int retries = 5;
+            boolean retry;
+            int retries = 5;
 
-        do {
-            retry = false;
+            do {
+                retry = false;
 
-            try {
-                executeMethodBody();
-            } catch (ActionFailedException e) {
-                if (--retries > 0) {
-                    retry = true;
-                    ((UITestIface) test).tearDown();
-                    ((UITestIface) test).setUp();
-                } else {
+                try {
+                    executeMethodBody();
+                } catch (ActionFailedException e) {
+                    if (--retries > 0) {
+                        retry = true;
+                        ((UITestIface) test).tearDown();
+                        ((UITestIface) test).setUp();
+                    } else {
+                        addFailure(e);
+                    }
+                } catch (InvocationTargetException e) {
+                    addFailure(e.getCause());
+                } catch (Throwable e) {
                     addFailure(e);
                 }
-            } catch (InvocationTargetException e) {
-                addFailure(e.getCause());
-            } catch (Throwable e) {
-                addFailure(e);
-            }
-        } while (retry);
+            } while (retry);
 
-        ((UITestIface) test).tearDown();
+            ((UITestIface) test).tearDown();
+        } catch (Exception ex) {
+            addFailure(ex);
+        }
     }
 
     @Override

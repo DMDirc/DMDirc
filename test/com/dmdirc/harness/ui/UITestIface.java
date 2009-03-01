@@ -25,6 +25,6 @@ package com.dmdirc.harness.ui;
 public interface UITestIface {
 
     void setUp();
-    void tearDown();
+    void tearDown() throws Exception;
 
 }

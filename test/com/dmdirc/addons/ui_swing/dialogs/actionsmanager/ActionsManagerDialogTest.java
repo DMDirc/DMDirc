@@ -23,8 +23,6 @@
 package com.dmdirc.addons.ui_swing.dialogs.actionsmanager;
 
 import com.dmdirc.Main;
-import com.dmdirc.addons.ui_swing.dialogs.actionsmanager.ActionsGroupPanel;
-import com.dmdirc.addons.ui_swing.dialogs.actionsmanager.ActionsManagerDialog;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.config.IdentityManager;
@@ -46,6 +44,7 @@ import org.fest.swing.fixture.JOptionPaneFixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
@@ -87,7 +86,7 @@ public class ActionsManagerDialogTest implements UITestIface {
         }
     }
     
-    @Test
+    @Test @Ignore
     public void testAddGroup() throws InterruptedException {
         setupWindow();
         

@@ -51,5 +51,4 @@ public class UIClassTestRunner extends TestClassMethodsRunner {
         return new UIMethodTestRunner(test, method, notifier, methodDescription(method));
     }
 
-
 }
