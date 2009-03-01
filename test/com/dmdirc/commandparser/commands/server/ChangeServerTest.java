@@ -85,6 +85,30 @@ public class ChangeServerTest {
     }
 
     @Test
+    public void testExecuteNoPort() {
+        final InputWindow tiw = mock(InputWindow.class);
+        final Identity profile = mock(Identity.class);
+        final Server server = mock(Server.class);
+        when(server.getProfile()).thenReturn(profile);
+
+        command.execute(tiw, server, false,new CommandArguments("/server foo"));
+
+        verify(server).connect("foo", 6667, "", false, profile);
+    }
+
+    @Test
+    public void testDeprecatedSSL() {
+        final InputWindow tiw = mock(InputWindow.class);
+        final Identity profile = mock(Identity.class);
+        final Server server = mock(Server.class);
+        when(server.getProfile()).thenReturn(profile);
+
+        command.execute(tiw, server, false,new CommandArguments("/server --ssl foo"));
+
+        verify(server).connect("foo", 6667, "", true, profile);
+    }
+
+    @Test
     public void testExecuteComplex() {
         final InputWindow tiw = mock(InputWindow.class);
         final Identity profile = mock(Identity.class);

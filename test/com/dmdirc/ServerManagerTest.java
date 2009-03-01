@@ -29,9 +29,11 @@ import com.dmdirc.addons.ui_dummy.DummyQueryWindow;
 
 import java.util.ArrayList;
 
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class ServerManagerTest {
         
@@ -39,6 +41,13 @@ public class ServerManagerTest {
     public static void setUp() throws Exception {
         Main.setUI(new DummyController());
         IdentityManager.load();
+    }
+
+    @After
+    public void tearDown() {
+        for (Server server : ServerManager.getServerManager().getServers()) {
+            ServerManager.getServerManager().unregisterServer(server);
+        }
     }
     
     @Test
@@ -53,26 +62,23 @@ public class ServerManagerTest {
     
     @Test
     public void testRegisterServer() {
-        final Server server = new Server("255.255.255.255", 6667, "", false,
-                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
-                new TestParserFactory());
+        final Server server = mock(Server.class);
         
         final ServerManager instance = ServerManager.getServerManager();
+
+        instance.registerServer(server);
         
         assertEquals(1, instance.numServers());
-        
-        server.close();
     }
     
     @Test
     public void testUnregisterServer() {
-        final Server server = new Server("255.255.255.255", 6667, "", false,
-                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
-                new TestParserFactory());
-        
-        server.close();
-        
+        final Server server = mock(Server.class);
+
         final ServerManager instance = ServerManager.getServerManager();
+
+        instance.registerServer(server);
+        instance.unregisterServer(server);
         
         assertEquals(0, instance.numServers());
     }
@@ -83,13 +89,13 @@ public class ServerManagerTest {
         
         assertEquals(instance.getServers().size(), instance.numServers());
         
-        final Server server = new Server("255.255.255.255", 6667, "", false,
-                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
-                new TestParserFactory());
+        final Server server = mock(Server.class);
+
+        instance.registerServer(server);
         
         assertEquals(instance.getServers().size(), instance.numServers());
         
-        server.close();
+        instance.unregisterServer(server);
         
         assertEquals(instance.getServers().size(), instance.numServers());
     }
@@ -115,38 +121,36 @@ public class ServerManagerTest {
     
     @Test
     public void testGetServerByAddress() {
-        final Server serverA = new Server("255.255.255.255", 6667, "", false,
-                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
-                new TestParserFactory());
-        final Server serverB = new Server("255.255.255.254", 6667, "", false,
-                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
-                new TestParserFactory());
+        final Server serverA = mock(Server.class);
+        final Server serverB = mock(Server.class);
+        when(serverA.getName()).thenReturn("255.255.255.255");
+        when(serverB.getName()).thenReturn("255.255.255.254");
         
         final ServerManager sm = ServerManager.getServerManager();
+
+        sm.registerServer(serverA);
+        sm.registerServer(serverB);
         
         assertEquals(serverA, sm.getServersByAddress("255.255.255.255").get(0));
         assertEquals(serverB, sm.getServersByAddress("255.255.255.254").get(0));
         assertEquals(0, sm.getServersByAddress("255.255.255.253").size());
-        
-        serverA.close();
-        serverB.close();
     }    
     
     @Test
     public void testGetServerByNetwork() throws InterruptedException {
-        final Server serverA = new Server("255.255.255.255", 6667, "", false,
-                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
-                new TestParserFactory("Net1"));
-        final Server serverB = new Server("255.255.255.254", 6667, "", false,
-                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
-                new TestParserFactory("Net2"));
-        final Server serverC = new Server("255.255.255.254", 6667, "", false,
-                IdentityManager.getProfiles().get(0), new ArrayList<String>(),
-                new TestParserFactory("Net2"));
-        
-        Thread.sleep(1000); // Time for parsers to connect
+        final Server serverA = mock(Server.class);
+        final Server serverB = mock(Server.class);
+        final Server serverC = mock(Server.class);
+
+        when(serverA.getNetwork()).thenReturn("Net1");
+        when(serverB.getNetwork()).thenReturn("Net2");
+        when(serverC.getNetwork()).thenReturn("Net2");
         
         final ServerManager sm = ServerManager.getServerManager();
+
+        sm.registerServer(serverA);
+        sm.registerServer(serverB);
+        sm.registerServer(serverC);
         
         assertEquals(1, sm.getServersByNetwork("Net1").size());
         assertEquals(serverA, sm.getServersByNetwork("Net1").get(0));
@@ -155,11 +159,24 @@ public class ServerManagerTest {
         assertEquals(serverB, sm.getServersByNetwork("Net2").get(0));
         assertEquals(serverC, sm.getServersByNetwork("Net2").get(1));
         
-        assertEquals(0, sm.getServersByAddress("Net3").size());
-        
-        serverA.close();
-        serverB.close();
-        serverC.close();
+        assertEquals(0, sm.getServersByNetwork("Net3").size());
+    }
+
+    @Test
+    public void testCloseAll() {
+        final Server serverA = mock(Server.class);
+        ServerManager.getServerManager().registerServer(serverA);
+        ServerManager.getServerManager().closeAll();
+        verify(serverA).disconnect();
+        verify(serverA).close();
+    }
+
+    @Test
+    public void testDisconnectAll() {
+        final Server serverA = mock(Server.class);
+        ServerManager.getServerManager().registerServer(serverA);
+        ServerManager.getServerManager().disconnectAll("message here");
+        verify(serverA).disconnect("message here");
     }
     
 }
