@@ -215,7 +215,9 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             selected = null;
         }
 
-        manager.dismiss();
+        if (manager != null) {
+            manager.dismiss();
+        }
         dispose();
     }
 
