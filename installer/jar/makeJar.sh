@@ -28,6 +28,10 @@ FILENAME=DMDirc
 # full name of the file to output to
 RUNNAME="${PWD}/${FILENAME}.jar"
 
+# Channel to use for builds
+# TODO: Should be specified on command line somehow
+CHANNEL="STABLE"
+
 # Are we a git working copy, or SVN?
 if [ -e ".svn" ]; then
 	isSVN=1
@@ -162,7 +166,7 @@ if [ "" = "${jarfile}" ]; then
 				svn update
 			fi;
 		fi
-		ant clean jar
+		ant -Dchannel=${channel} clean jar
 		if [ ! -e "dist/DMDirc.jar" ]; then
 			echo "There was an error creating the .jar file. Aborting."
 			exit 1;
