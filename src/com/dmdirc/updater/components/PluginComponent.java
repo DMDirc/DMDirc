@@ -28,6 +28,7 @@ import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateComponent;
 
+import com.dmdirc.updater.Version;
 import java.io.File;
 
 /**
@@ -83,8 +84,8 @@ public class PluginComponent implements UpdateComponent {
 
     /** {@inheritDoc} */
     @Override    
-    public int getVersion() {
-        return plugin.getVersion();
+    public Version getVersion() {
+        return new Version(plugin.getVersion());
     }
 
     /** {@inheritDoc} */

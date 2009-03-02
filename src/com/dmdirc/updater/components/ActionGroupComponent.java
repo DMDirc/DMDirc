@@ -26,6 +26,7 @@ import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateComponent;
+import com.dmdirc.updater.Version;
 
 /**
  * Update component for action groups.
@@ -65,8 +66,8 @@ public class ActionGroupComponent implements UpdateComponent {
 
     /** {@inheritDoc} */
     @Override
-    public int getVersion() {
-        return group.getVersion();
+    public Version getVersion() {
+        return new Version(group.getVersion());
     }
 
     /** {@inheritDoc} */

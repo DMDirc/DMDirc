@@ -25,6 +25,7 @@ package com.dmdirc.updater.components;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.updater.UpdateComponent;
+import com.dmdirc.updater.Version;
 import com.dmdirc.util.resourcemanager.ZipResourceManager;
 
 import java.io.File;
@@ -57,13 +58,13 @@ public class DefaultsComponent implements UpdateComponent {
 
     /** {@inheritDoc} */
     @Override    
-    public int getVersion() {
+    public Version getVersion() {
         final ConfigManager globalConfig = IdentityManager.getGlobalConfig();
         
         if (globalConfig.hasOptionInt("identity", "defaultsversion")) {
-            return globalConfig.getOptionInt("identity", "defaultsversion");
+            return new Version(globalConfig.getOptionInt("identity", "defaultsversion"));
         } else {
-            return -1;
+            return new Version(-1);
         }
     }
 

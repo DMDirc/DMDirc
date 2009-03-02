@@ -23,7 +23,9 @@
 package com.dmdirc.updater.components;
 
 import com.dmdirc.Main;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.updater.UpdateComponent;
+import com.dmdirc.updater.Version;
 import com.dmdirc.util.resourcemanager.DMDircResourceManager;
 
 import java.io.File;
@@ -49,18 +51,14 @@ public class ClientComponent implements UpdateComponent {
 
     /** {@inheritDoc} */
     @Override
-    public int getVersion() {
-        return Main.SVN_REVISION;
+    public Version getVersion() {
+        return new Version(getFriendlyVersion());
     }
 
     /** {@inheritDoc} */
     @Override
     public String getFriendlyVersion() {
-        if (Main.VERSION.equals("SVN")) {
-            return Main.VERSION+" ("+Main.SVN_REVISION+")";
-        } else {
-            return Main.VERSION;
-        }
+        return IdentityManager.getGlobalConfig().getOption("version", "version");
     }
 
     /** {@inheritDoc} */

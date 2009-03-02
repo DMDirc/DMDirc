@@ -24,6 +24,7 @@ package com.dmdirc.updater.components;
 
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateComponent;
+import com.dmdirc.updater.Version;
 import com.dmdirc.util.resourcemanager.ZipResourceManager;
 
 import java.io.File;
@@ -92,8 +93,8 @@ public class LauncherComponent implements UpdateComponent {
 
     /** {@inheritDoc} */
     @Override
-    public int getVersion() {
-        return version;
+    public Version getVersion() {
+        return new Version(version);
     }
 
     /** {@inheritDoc} */

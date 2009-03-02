@@ -54,13 +54,12 @@ public interface UpdateComponent {
     String getFriendlyVersion();
 
     /**
-     * Retrieves the currently installed version number of this component.
-     * Version numbers are normally dates in the format YYYYMMDD, but there is
-     * no technical reason why they have to be.
+     * Retrieves the currently installed version of this component.
      * 
-     * @return This component's current version number
+     * @return This component's current version
+     * @since 0.6.3
      */
-    int getVersion();
+    Version getVersion();
     
     /**
      * Installs the updated version of this component. After the update has
