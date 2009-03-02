@@ -210,11 +210,7 @@ public final class Main {
                     getUI().showFeedbackNag();
                 }
             }, FEEDBACK_DELAY);
-        } else if (IdentityManager.getGlobalConfig().hasOptionInt("general", "addonrevision")) {
-            // @Deprecated - can be removed after 0.6 is released
-            IdentityManager.getConfigIdentity().unsetOption("general", "addonrevision");
-            getUI().showMigrationWizard();
-        }        
+        }
     }
 
     /**
