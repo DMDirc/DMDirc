@@ -36,7 +36,6 @@ import com.dmdirc.plugins.Service;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.ui.NoUIDialog;
-import com.dmdirc.updater.UpdateChannel;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
@@ -54,28 +53,6 @@ import java.util.TimerTask;
  * @author chris
  */
 public final class Main {
-
-    /**
-     * Stores the current textual program version.
-     *
-     * @deprecated Should be read from bundled file instead
-     */
-    @Deprecated
-    public static final String VERSION = "SVN";
-
-    /** The SVN revision that this build was made from.
-     *
-     * @deprecated Should be read from bundled file instead
-     */
-    @Deprecated
-    public static final int SVN_REVISION = 4085;
-
-    /** Stores the update channel that this version came from, if any.
-     *
-     * @deprecated Should be read from bundled file and config instead
-     */
-    @Deprecated
-    public static final UpdateChannel UPDATE_CHANNEL = UpdateChannel.NONE;
 
     /** Feedback nag delay. */
     private static final int FEEDBACK_DELAY = 30 * 60 * 1000;

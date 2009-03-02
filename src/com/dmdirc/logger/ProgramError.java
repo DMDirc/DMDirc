@@ -23,6 +23,7 @@
 package com.dmdirc.logger;
 
 import com.dmdirc.Main;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.util.Downloader;
 
 import java.io.File;
@@ -275,7 +276,7 @@ public final class ProgramError implements Serializable {
 
         postData.put("message", getMessage());
         postData.put("trace", Arrays.toString(getTrace()));
-        postData.put("version", Main.VERSION + "(" + Main.SVN_REVISION + ")");
+        postData.put("version", IdentityManager.getGlobalConfig().getOption("version", "version"));
 
         setReportStatus(ErrorReportStatus.SENDING);
 

@@ -31,6 +31,7 @@ import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 import com.dmdirc.addons.ui_swing.components.TextLabel;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.util.Downloader;
 
 import java.awt.Insets;
@@ -384,7 +385,7 @@ class SendWorker extends LoggingSwingWorker {
         if (!feedback.isEmpty()) {
             postData.put("feedback", feedback);
         }
-        postData.put("version", Main.VERSION + "(" + Main.SVN_REVISION + ")");
+        postData.put("version", IdentityManager.getGlobalConfig().getOption("version", "version"));
         if (!serverInfo.isEmpty()) {
             postData.put("serverInfo", serverInfo);
         }

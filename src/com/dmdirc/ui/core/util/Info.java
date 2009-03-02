@@ -22,7 +22,8 @@
 
 package com.dmdirc.ui.core.util;
 
-import com.dmdirc.Main;
+import com.dmdirc.config.IdentityManager;
+
 import java.util.Locale;
 
 /**
@@ -41,8 +42,7 @@ public class Info {
      * @return DMDirc version string
      */
     public static String getDMDircVersion() {
-        return Main.VERSION + " (" + Main.SVN_REVISION + "; " +
-                Main.UPDATE_CHANNEL + ")";
+        return IdentityManager.getGlobalConfig().getOption("version", "version");
     }
 
     /**

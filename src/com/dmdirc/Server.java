@@ -1006,7 +1006,8 @@ public class Server extends WritableFrameContainer implements Serializable {
      */
     public void sendCTCPReply(final String source, final String type, final String args) {
         if (type.equalsIgnoreCase("VERSION")) {
-            parser.sendCTCPReply(source, "VERSION", "DMDirc " + Main.VERSION
+            parser.sendCTCPReply(source, "VERSION", "DMDirc " +
+                    getConfigManager().getOption("version", "version")
                     + " - http://www.dmdirc.com/");
         } else if (type.equalsIgnoreCase("PING")) {
             parser.sendCTCPReply(source, "PING", args);

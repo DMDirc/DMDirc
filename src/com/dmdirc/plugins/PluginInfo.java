@@ -697,8 +697,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 			}
 		} */
 		
-		if (!checkMinimumVersion(getMinVersion(), Main.SVN_REVISION) ||
-		    !checkMaximumVersion(getMaxVersion(), Main.SVN_REVISION) ||
+		if (/*!checkMinimumVersion(getMinVersion(), Main.SVN_REVISION) ||
+		    !checkMaximumVersion(getMaxVersion(), Main.SVN_REVISION) ||*/
 		    !checkOS(getKeyValue("requires", "os", ""), System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch")) ||
 		    !checkFiles(getKeyValue("requires", "files", "")) ||
 		    (!preliminary && !checkPlugins(getKeyValue("requires", "plugins", ""))) ||
