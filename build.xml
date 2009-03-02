@@ -12,8 +12,7 @@
     <import file="build-tests.xml"/>
     <import file="build-versioning.xml"/>
 
-    <target name="-post-compile" depends="-unsvn, build-plugins"/>
-    <target name="-pre-compile" depends="-addsvn"/>
+    <target name="-post-compile" depends="-write-version, build-plugins"/>
     <target name="-post-test-run" depends="-do-test-reports"/>
     <target name="-post-jar" depends="-addjarlibs"/>
 
