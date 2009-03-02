@@ -34,14 +34,6 @@ SVNREV=`$SVN info | grep Revision`
 SVNREV=${SVNREV##*: }
 export DMDIRC_SVN=${SVNREV}
 
-# Substitute the version string
-awk '{gsub(/String VERSION = "SVN"/,"String VERSION = \"Nightly - SVN Rev: '${SVNREV}'\"");print}' src/com/dmdirc/Main.java > src/com/dmdirc/Main.java.tmp
-mv src/com/dmdirc/Main.java.tmp src/com/dmdirc/Main.java
-
-# Substitute the update channel
-awk '{gsub(/UpdateChannel UPDATE_CHANNEL = UpdateChannel.NONE/,"UpdateChannel UPDATE_CHANNEL = UpdateChannel.NIGHTLY");print}' src/com/dmdirc/Main.java > src/com/dmdirc/Main.java.tmp
-mv src/com/dmdirc/Main.java.tmp src/com/dmdirc/Main.java
-
 # Archive old nightlies
 if [ `date +%d` = "01" ]; then
 	echo "Archiving Last Months Nightlies"
@@ -68,7 +60,7 @@ if [ -e "${HOME}/www/updates/" ]; then
 fi;
 
 # Build plugins/jar
-$ANT -k clean jar
+$ANT -Dchannel=NIGHTLY -k clean jar
 
 # Now revert the trunk so as not to break updates.
 for updatedir in ${REVERTLIST}; do
