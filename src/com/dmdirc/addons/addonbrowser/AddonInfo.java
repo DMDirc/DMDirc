@@ -150,9 +150,9 @@ public class AddonInfo {
     }
     
     public boolean isDownloadable() {
-        return !stableDownload.isEmpty() ||
+        return false; /*!stableDownload.isEmpty() ||
                 (Main.UPDATE_CHANNEL != UpdateChannel.STABLE
-                && !unstableDownload.isEmpty());
+                && !unstableDownload.isEmpty());*/
     }
 
     public boolean matches(final String text) {

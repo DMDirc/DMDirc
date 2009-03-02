@@ -42,7 +42,10 @@ public class Info {
      * @return DMDirc version string
      */
     public static String getDMDircVersion() {
-        return IdentityManager.getGlobalConfig().getOption("version", "version");
+        return IdentityManager.getGlobalConfig().getOption("version", "version")
+                + " ("
+                + IdentityManager.getGlobalConfig().getOption("updater", "channel")
+                + ")";
     }
 
     /**
