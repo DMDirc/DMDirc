@@ -33,6 +33,7 @@ import com.dmdirc.util.resourcemanager.ResourceManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -70,8 +71,9 @@ public final class IdentityManager {
     public static void load() {
         identities.clear();
         managers.clear();
-        
+
         loadDefaults();
+        loadVersion();
         loadUser();
         loadConfig();
         
@@ -221,6 +223,15 @@ public final class IdentityManager {
             Logger.userError(ErrorLevel.MEDIUM,
                     "I/O error when reading identity file: "
                     + file.getAbsolutePath());
+        }
+    }
+
+    /** Loads the version information. */
+    private static void loadVersion() {
+        try {
+            loadIdentity(new File(Main.class.getResource("version.config").toURI()));
+        } catch (URISyntaxException ex) {
+            Logger.appError(ErrorLevel.FATAL, "Unable to read version information", ex);
         }
     }
     

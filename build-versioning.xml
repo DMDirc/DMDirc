@@ -14,8 +14,14 @@
 # the build process.
 
 keysections:
+   identity
    version
    updater
+
+identity:
+   name=DMDirc version information
+   globaldefault=true
+   order=95000
 
 version:
    version=</echo>

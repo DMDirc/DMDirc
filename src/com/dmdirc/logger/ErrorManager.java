@@ -87,18 +87,11 @@ public final class ErrorManager implements Serializable, ConfigChangeListener {
 
         final ConfigManager config = IdentityManager.getGlobalConfig();
 
-        try {
-            sendReports = config.getOptionBool("general", "submitErrors")
-                    && !config.getOptionBool("temp", "noerrorreporting");
-            logReports = config.getOptionBool("general", "logerrors");
-        } catch (IllegalArgumentException ex) {
-            sendReports = false;
-            logReports = true;
-        }
-
         config.addChangeListener("general", "logerrors", this);
         config.addChangeListener("general", "submitErrors", this);
         config.addChangeListener("temp", "noerrorreporting", this);
+
+        updateSettings();
     }
 
     /**
@@ -448,11 +441,21 @@ public final class ErrorManager implements Serializable, ConfigChangeListener {
     /** {@inheritDoc} */
     @Override
     public void configChanged(final String domain, final String key) {
+        updateSettings();
+    }
+
+    /** Updates the settings used by this error manager. */
+    protected void updateSettings() {
         final ConfigManager config = IdentityManager.getGlobalConfig();
-        
-        sendReports = config.getOptionBool("general", "submitErrors")
-                && !config.getOptionBool("temp", "noerrorreporting");
-        logReports = config.getOptionBool("general", "logerrors");
+
+        try {
+            sendReports = config.getOptionBool("general", "submitErrors")
+                    && !config.getOptionBool("temp", "noerrorreporting");
+            logReports = config.getOptionBool("general", "logerrors");
+        } catch (IllegalArgumentException ex) {
+            sendReports = false;
+            logReports = true;
+        }
     }
 
 }
