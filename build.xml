@@ -9,8 +9,8 @@
     <import file="build-jar.xml"/>
     <import file="build-plugins.xml"/>
     <import file="build-reports.xml"/>
-    <import file="build-svn.xml"/>
     <import file="build-tests.xml"/>
+    <import file="build-versioning.xml"/>
 
     <target name="-post-compile" depends="-unsvn, build-plugins"/>
     <target name="-pre-compile" depends="-addsvn"/>

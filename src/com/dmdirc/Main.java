@@ -101,8 +101,7 @@ public final class Main {
         try {
             init(args);
         } catch (Throwable ex) {
-            Logger.appError(ErrorLevel.FATAL, "Exception while "
-                    + "initialising", ex);
+            Logger.appError(ErrorLevel.FATAL, "Exception while initialising", ex);
         }
     }
     
