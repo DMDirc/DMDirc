@@ -229,9 +229,11 @@ public final class IdentityManager {
     /** Loads the version information. */
     private static void loadVersion() {
         try {
-            loadIdentity(new File(Main.class.getResource("version.config").toURI()));
-        } catch (URISyntaxException ex) {
-            Logger.appError(ErrorLevel.FATAL, "Unable to read version information", ex);
+            addIdentity(new Identity(Main.class.getResourceAsStream("version.config"), false));
+        } catch (IOException ex) {
+            Logger.appError(ErrorLevel.FATAL, "Unable to load version information", ex);
+        } catch (InvalidIdentityFileException ex) {
+            Logger.appError(ErrorLevel.FATAL, "Unable to load version information", ex);
         }
     }
     
