@@ -41,7 +41,7 @@ public class Version implements Comparable<Version> {
 
     public Version(final String version) {
         this.intVersion = -1;
-        this.strVersion = null;
+        this.strVersion = version;
     }
 
     /** {@inheritDoc} */
