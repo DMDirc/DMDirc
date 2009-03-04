@@ -24,6 +24,7 @@
 package com.dmdirc.addons.ui_swing.framemanager.tree;
 
 import com.dmdirc.addons.ui_swing.components.TreeScroller;
+
 import javax.swing.tree.TreePath;
 
 /**
@@ -43,6 +44,7 @@ public class TreeTreeScroller extends TreeScroller {
     /** {@inheritDoc} */
     @Override
     protected void setPath(final TreePath path) {
+        super.setPath(path);
         ((Tree) tree).setSelection(path);
     }
 
