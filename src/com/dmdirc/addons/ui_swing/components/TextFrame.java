@@ -83,7 +83,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.InternalFrameEvent;
@@ -203,7 +202,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     /** {@inheritDoc} */
     @Override
     public void setTitle(final String title) {
-        SwingUtilities.invokeLater(new Runnable() {
+        UIUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
@@ -216,7 +215,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     /** {@inheritDoc} */
     @Override
     public void open() {
-        SwingUtilities.invokeLater(new Runnable() {
+        UIUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
@@ -229,7 +228,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     @Override
     public final void addLine(final String line, final boolean timestamp) {
         final String encodedLine = transcoder.decode(line);
-        SwingUtilities.invokeLater(new Runnable() {
+        UIUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
@@ -290,7 +289,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     /** {@inheritDoc} */
     @Override
     public final void clear() {
-        SwingUtilities.invokeLater(new Runnable() {
+        UIUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
@@ -901,7 +900,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     /** Closes this frame. */
     @Override
     public void close() {
-        SwingUtilities.invokeLater(new Runnable() {
+        UIUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
@@ -923,7 +922,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
 
     /** Minimises the frame. */
     public void minimise() {
-        SwingUtilities.invokeLater(new Runnable() {
+        UIUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
@@ -939,7 +938,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     
     /** Maximises the frame. */
     public void maximise() {
-        SwingUtilities.invokeLater(new Runnable() {
+        UIUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
@@ -957,7 +956,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     
     /** restores the frame. */
     public void restore() {
-        SwingUtilities.invokeLater(new Runnable() {
+        UIUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {

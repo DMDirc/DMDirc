@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.dmdirc.addons.ui_swing.framemanager.tree;
 
+import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.addons.ui_swing.actions.CloseFrameContainerAction;
@@ -72,9 +72,9 @@ public class Tree extends JTree implements TreeSelectionListener,
      */
     public Tree(final TreeFrameManager manager, final TreeModel model) {
         super(model);
-        
+
         this.manager = manager;
-        
+
         putClientProperty("JTree.lineStyle", "Angled");
         getInputMap().setParent(null);
         getInputMap(JComponent.WHEN_FOCUSED).clear();
@@ -127,9 +127,16 @@ public class Tree extends JTree implements TreeSelectionListener,
      */
     public void setSelection(final TreePath path) {
         if (this.path != null && !this.path.equals(path)) {
-            setTreePath(path);
-            ((TreeViewNode) path.getLastPathComponent()).getFrameContainer().activateFrame();
-            setSelectionPath(path);
+            UIUtilities.invokeLater(new Runnable() {
+
+                /** {@inheritDoc} */
+                @Override
+                public void run() {
+                    setTreePath(path);
+                    ((TreeViewNode) path.getLastPathComponent()).getFrameContainer().activateFrame();
+                    setSelectionPath(path);
+                }
+            });
         }
     }
 
@@ -158,7 +165,7 @@ public class Tree extends JTree implements TreeSelectionListener,
         dragSelect = IdentityManager.getGlobalConfig().getOptionBool("treeview",
                 "dragSelection");
     }
-    
+
     /** 
      * {@inheritDoc}
      * 
@@ -228,7 +235,7 @@ public class Tree extends JTree implements TreeSelectionListener,
      */
     @Override
     public void mouseEntered(MouseEvent e) {
-    //Ignore
+        //Ignore
     }
 
     /** 
@@ -267,7 +274,7 @@ public class Tree extends JTree implements TreeSelectionListener,
                     ((TreeViewNode) localPath.getLastPathComponent()).getFrameContainer().
                             activateFrame();
                 } catch (PropertyVetoException ex) {
-                //Ignore
+                    //Ignore
                 }
             }
         }

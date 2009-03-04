@@ -42,7 +42,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
-import javax.swing.event.TreeSelectionEvent;
 import javax.swing.plaf.DesktopPaneUI;
 import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreeNode;
@@ -89,7 +88,7 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
         nodes = new HashMap<FrameContainer, TreeViewNode>();
         model = new TreeViewModel(new TreeViewNode(null, null));
         selectionModel = new DefaultTreeSelectionModel();
-        treeScroller = new TreeScroller(model, selectionModel) {
+        treeScroller = new TreeScroller(model, selectionModel, false) {
 
             /** {@inheritDoc} */
             @Override
@@ -239,7 +238,7 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
                 }
                 node.setUserObject(window);
                 model.insertNodeInto(node, parent);
-                //window.addSelectionListener(DMDircDesktopPane.this);
+                window.addSelectionListener(DMDircDesktopPane.this);
             }
         });
     }

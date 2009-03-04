@@ -19,7 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.dmdirc.addons.ui_swing.components;
 
 import java.awt.event.MouseWheelEvent;
@@ -69,13 +68,14 @@ public class TreeScroller implements MouseWheelListener {
      *
      * @param model Tree model to scroll over
      * @param selectionModel Tree selection model to scroll over
+     * @param rootVisible Is the root node visible
      */
     public TreeScroller(final DefaultTreeModel model,
-            final TreeSelectionModel selectionModel) {
+            final TreeSelectionModel selectionModel, final boolean rootVisible) {
         this.model = model;
         this.selectionModel = selectionModel;
 
-        rootVisible = false;
+        this.rootVisible = rootVisible;
         rootNode = (DefaultMutableTreeNode) model.getRoot();
     }
 
@@ -107,30 +107,19 @@ public class TreeScroller implements MouseWheelListener {
             return;
         }
 
-        if (rootNode.getChildCount() == 0 && !rootVisible) {
+        if (!rootVisible && rootNode.getChildCount() == 0) {
             //root node has no children
             return;
         }
 
-        if (selectionModel.isSelectionEmpty() && rootVisible) {
-            //no selected node, start from the root node
-            thisNode = rootNode;
-        } else if (selectionModel.isSelectionEmpty()) {
-            //no selected node, get the root node
-            thisNode = rootNode;
-            //are there any children to select?
-            if (thisNode.getChildCount() > 0) {
-                thisNode =
-                        (DefaultMutableTreeNode) thisNode.getChildAt(0);
+        if (selectionModel.isSelectionEmpty()) {
+            if (rootVisible) {
+                thisNode = rootNode;
             } else {
-                //then wait till there are
-                return;
+                thisNode = (DefaultMutableTreeNode) rootNode.getChildAt(0);
             }
         } else {
-            //use the selected node to start from
-            thisNode =
-                    (DefaultMutableTreeNode) selectionModel.
-                    getSelectionPath().getLastPathComponent();
+            thisNode = (DefaultMutableTreeNode) selectionModel.getSelectionPath().getLastPathComponent();
         }
 
         //are we going up or down?
