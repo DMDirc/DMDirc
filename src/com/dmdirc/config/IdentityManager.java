@@ -92,7 +92,7 @@ public final class IdentityManager {
         
         final ConfigFile addonConfigFile = new ConfigFile((File) null);
         final Map<String, String> addonSettings = new HashMap<String, String>();
-        addonSettings.put("name", "Action defaults");
+        addonSettings.put("name", "Addon defaults");
         addonConfigFile.addDomain("identity", addonSettings);
         
         addonConfig = new Identity(addonConfigFile, target);
