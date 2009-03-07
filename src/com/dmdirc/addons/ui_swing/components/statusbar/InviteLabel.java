@@ -33,6 +33,7 @@ import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.InviteListener;
+import com.dmdirc.ui.interfaces.StatusBarComponent;
 import com.dmdirc.util.MapList;
 
 import java.awt.event.ActionEvent;
@@ -52,8 +53,8 @@ import javax.swing.JSeparator;
 /**
  * Invite label.
  */
-public class InviteLabel extends JLabel implements InviteListener,
-        ActionListener, MouseListener {
+public class InviteLabel extends JLabel implements StatusBarComponent, 
+        InviteListener, ActionListener, MouseListener {
 
     /**
      * A version number for this class. It should be changed whenever the class

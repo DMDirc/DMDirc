@@ -26,6 +26,7 @@ import com.dmdirc.Main;
 import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.dialogs.FeedbackDialog;
 import com.dmdirc.ui.IconManager;
+import com.dmdirc.ui.interfaces.StatusBarComponent;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -41,8 +42,8 @@ import javax.swing.JPopupMenu;
 /**
  * Feedback nag icon.
  */
-public class FeedbackNag extends JLabel implements MouseListener,
-        ActionListener {
+public class FeedbackNag extends JLabel implements StatusBarComponent, 
+        MouseListener, ActionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class

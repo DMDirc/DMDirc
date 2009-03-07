@@ -22,10 +22,6 @@
 
 package com.dmdirc.ui.interfaces;
 
-import java.awt.Component;
-
-import javax.swing.Icon;
-
 /**
  * Status bar interface.
  */
@@ -41,12 +37,12 @@ public interface StatusBar {
     /**
      * sets the message in the status bar.
      *
-     * @param icon Message icon
+     * @param iconType Message icon
      * @param newMessage Message to display
      * 
      * @since 0.6
      */
-    void setMessage(final Icon icon, final String newMessage);
+    void setMessage(final String iconType, final String newMessage);
     
     /**
      * Sets the message in the status bar with a specified callback event
@@ -65,14 +61,14 @@ public interface StatusBar {
      * Sets the message in the status bar with a specified callback event
      * using the default timeout.
      *
-     * @param icon Message icon
+     * @param iconType Message icon
      * @param newMessage Message to display
      * @param newNotifier status message notifier to be notified for events on
      * this message
      * 
      * @since 0.6
      */
-    void setMessage(final Icon icon, final String newMessage, 
+    void setMessage(final String iconType, final String newMessage, 
             final StatusMessageNotifier newNotifier);
     
     /**
@@ -91,7 +87,7 @@ public interface StatusBar {
      * Sets the message in the status bar with a specified callback event for
      * a specified time.
      *
-     * @param icon Message icon
+     * @param iconType Message icon
      * @param newMessage Message to display
      * @param newNotifier status message notifier to be notified for events on
      * this message
@@ -99,7 +95,7 @@ public interface StatusBar {
      * 
      * @since 0.6
      */
-    void setMessage(final Icon icon, final String newMessage,
+    void setMessage(final String iconType, final String newMessage,
             final StatusMessageNotifier newNotifier, final int timeout);
     
     /**
@@ -112,14 +108,14 @@ public interface StatusBar {
      *
      * @param component component to add
      */
-    void addComponent(final Component component);
+    void addComponent(final StatusBarComponent component);
     
     /**
      * Removes a component to the status bar.
      *
      * @param component component to add
      */
-    void removeComponent(final Component component);
+    void removeComponent(final StatusBarComponent component);
     
     /**
      * Returns true if the status bar is visible.

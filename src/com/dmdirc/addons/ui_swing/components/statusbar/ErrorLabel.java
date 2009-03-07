@@ -28,6 +28,7 @@ import com.dmdirc.logger.ErrorListener;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ProgramError;
 import com.dmdirc.ui.IconManager;
+import com.dmdirc.ui.interfaces.StatusBarComponent;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,8 +47,8 @@ import javax.swing.SwingUtilities;
 /**
  * Error label, responsible for showing errors in the status bar.
  */
-public class ErrorLabel extends JLabel implements MouseListener, ErrorListener,
-        ActionListener {
+public class ErrorLabel extends JLabel implements StatusBarComponent, 
+        MouseListener, ErrorListener, ActionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class

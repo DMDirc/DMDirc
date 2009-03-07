@@ -23,6 +23,8 @@
 package com.dmdirc.addons.ui_swing.components.statusbar;
 
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.IconManager;
+import com.dmdirc.ui.interfaces.StatusBarComponent;
 import com.dmdirc.ui.interfaces.StatusMessageNotifier;
 
 import java.awt.event.MouseEvent;
@@ -39,7 +41,8 @@ import javax.swing.SwingUtilities;
 /**
  * Message label handles showing messages in the status bar.
  */
-public class MessageLabel extends JLabel implements MouseListener {
+public class MessageLabel extends JLabel implements StatusBarComponent, 
+        MouseListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -65,7 +68,7 @@ public class MessageLabel extends JLabel implements MouseListener {
     }
 
     public void setMessage(final String newMessage) {
-        setMessage(newMessage, null);
+        setMessage(newMessage, (StatusMessageNotifier) null);
     }
 
     public void setMessage(final String newMessage,
@@ -73,16 +76,16 @@ public class MessageLabel extends JLabel implements MouseListener {
         setMessage(null, newMessage, newNotifier);
     }
 
-    public void setMessage(final Icon icon, final String newMessage) {
-        setMessage(icon, newMessage, null);
+    public void setMessage(final String iconType, final String newMessage) {
+        setMessage(iconType, newMessage, null);
     }
 
-    public void setMessage(final Icon icon, final String newMessage,
+    public void setMessage(final String iconType, final String newMessage,
             final StatusMessageNotifier newNotifier) {
         final int timeout =
                 IdentityManager.getGlobalConfig().
                 getOptionInt("statusBar", "messageDisplayLength");
-        setMessage(icon, newMessage, newNotifier, timeout);
+        setMessage(iconType, newMessage, newNotifier, timeout);
     }
 
     public void setMessage(final String newMessage,
@@ -90,8 +93,9 @@ public class MessageLabel extends JLabel implements MouseListener {
         setMessage(null, newMessage, newNotifier, timeout);
     }
 
-    public synchronized void setMessage(final Icon icon, final String newMessage,
+    public synchronized void setMessage(final String iconType, final String newMessage,
             final StatusMessageNotifier newNotifier, final int timeout) {
+        final Icon icon = IconManager.getIconManager().getIcon(iconType);
         SwingUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */

@@ -28,8 +28,6 @@ import com.dmdirc.config.ConfigManager;
 
 import java.beans.PropertyVetoException;
 
-import javax.swing.Icon;
-
 /**
  * The Window interface specifies common methods that should be implemented
  * by all windows. It is assumed that all windows have a main text area.

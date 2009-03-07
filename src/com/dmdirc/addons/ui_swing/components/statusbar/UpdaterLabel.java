@@ -25,6 +25,7 @@ package com.dmdirc.addons.ui_swing.components.statusbar;
 import com.dmdirc.addons.ui_swing.dialogs.updater.SwingUpdaterDialog;
 import com.dmdirc.interfaces.UpdateCheckerListener;
 import com.dmdirc.ui.IconManager;
+import com.dmdirc.ui.interfaces.StatusBarComponent;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateChecker.STATE;
 
@@ -38,8 +39,8 @@ import javax.swing.JLabel;
  * Updater label is responsible for handling the display of updates in the
  * status bar.
  */
-public class UpdaterLabel extends JLabel implements MouseListener,
-        UpdateCheckerListener {
+public class UpdaterLabel extends JLabel implements StatusBarComponent, 
+        MouseListener, UpdateCheckerListener {
 
     /**
      * A version number for this class. It should be changed whenever the class

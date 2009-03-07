@@ -36,51 +36,26 @@ import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.interfaces.Window;
-import com.dmdirc.addons.ui_swing.UIUtilities;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.Date;
 import java.util.Map;
 import java.util.WeakHashMap;
-
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.UIManager;
-import javax.swing.border.EtchedBorder;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * Displays the current server's lag in the status bar.
  * @author chris
  */
-public final class LagDisplayPlugin extends Plugin implements ActionListener,
-        MouseListener {
+public final class LagDisplayPlugin extends Plugin implements ActionListener {
     
     /** The panel we use in the status bar. */
-    private final JPanel panel = new JPanel();
+    private final LagDisplayPanel panel = new LagDisplayPanel(this);
     
     /** A cache of ping times. */
     private final Map<Server, String> pings = new WeakHashMap<Server, String>();
     
-    /** The label we use to show lag. */
-    private final JLabel label = new JLabel("Unknown");
-
-    /** The dialog we're using to show extra info. */
-    private ServerInfoDialog dialog;
-    
     /** Creates a new instance of LagDisplayPlugin. */
     public LagDisplayPlugin() {
         super();
-        
-        panel.setBorder(BorderFactory.createEtchedBorder());
-        panel.setLayout(new MigLayout("ins 0 rel 0 rel, aligny center"));
-        panel.add(label);
     }
     
     /** {@inheritDoc} */
@@ -92,8 +67,6 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
                 CoreActionType.SERVER_NOPING, CoreActionType.CLIENT_FRAME_CHANGED,
                 CoreActionType.SERVER_DISCONNECTED, CoreActionType.SERVER_PINGSENT,
                 CoreActionType.SERVER_NUMERIC);
-
-        panel.addMouseListener(this);
     }
     
     /** {@inheritDoc} */
@@ -125,10 +98,10 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
             pings.put(((Server) arguments[0]), value);
             
             if (((Server) arguments[0]).ownsFrame(active)) {
-                label.setText(value);
+                panel.setText(value);
             }
 
-            refreshDialog();
+            panel.refreshDialog();
         } else if (!useAlternate && type.equals(CoreActionType.SERVER_NOPING)) {
             final Window active = Main.getUI().getActiveWindow();
             final String value = formatTime(arguments[1]) + "+";
@@ -136,30 +109,30 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
             pings.put(((Server) arguments[0]), value);
             
             if (((Server) arguments[0]).ownsFrame(active)) {
-                label.setText(value);
+                panel.setText(value);
             }
 
-            refreshDialog();
+            panel.refreshDialog();
         } else if (type.equals(CoreActionType.SERVER_DISCONNECTED)) {
             final Window active = Main.getUI().getActiveWindow();
             
             if (((Server) arguments[0]).ownsFrame(active)) {
-                label.setText("Not connected");
+                panel.setText("Not connected");
                 pings.remove(arguments[0]);
             }
 
-            refreshDialog();
+            panel.refreshDialog();
         } else if (type.equals(CoreActionType.CLIENT_FRAME_CHANGED)) {
             final FrameContainer source = (FrameContainer) arguments[0];
             if (source.getServer() == null) {
-                label.setText("Unknown");
+                panel.setText("Unknown");
             } else if (source.getServer().getState() != ServerState.CONNECTED) {
-                label.setText("Not connected");
+                panel.setText("Not connected");
             } else {
-                label.setText(getTime(source.getServer()));
+                panel.setText(getTime(source.getServer()));
             }
 
-            refreshDialog();
+            panel.refreshDialog();
         } else if (useAlternate && type.equals(CoreActionType.SERVER_PINGSENT)) {
             ((Server) arguments[0]).getParser().sendLine("LAGCHECK_" + new Date().getTime());
         } else if (useAlternate && type.equals(CoreActionType.SERVER_NUMERIC)
@@ -174,7 +147,7 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
                 pings.put((Server) arguments[0], value);
                 
                 if (((Server) arguments[0]).ownsFrame(active)) {
-                    label.setText(value);
+                    panel.setText(value);
                 }                
             } catch (NumberFormatException ex) {
                 pings.remove((Server) arguments[0]);
@@ -184,7 +157,7 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
                 format.delete(0, format.length());
             }
 
-            refreshDialog();
+            panel.refreshDialog();
         }
     }
 
@@ -215,44 +188,6 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
 
     /** {@inheritDoc} */
     @Override
-    public void mouseClicked(final MouseEvent e) {
-        // Don't care
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void mousePressed(final MouseEvent e) {
-        // Don't care
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void mouseReleased(final MouseEvent e) {
-        // Don't care
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void mouseEntered(final MouseEvent e) {
-        panel.setBackground(UIManager.getColor("ToolTip.background"));
-        panel.setForeground(UIManager.getColor("ToolTip.foreground"));
-        panel.setBorder(new ToplessEtchedBorder());
-
-        openDialog();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void mouseExited(final MouseEvent e) {
-        panel.setBackground(null);
-        panel.setForeground(null);
-        panel.setBorder(new EtchedBorder());
-
-        closeDialog();
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public void showConfig(final PreferencesManager manager) {
         final PreferencesCategory cat = new PreferencesCategory("Lag display plugin",
                                                                 "");
@@ -261,79 +196,5 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener,
                 "Alternate method", "Use an alternate method of determining "
                 + "lag which bypasses bouncers or proxies that may reply."));
         manager.getCategory("Plugins").addSubCategory(cat);
-    }
-
-    /**
-     * Closes and reopens the dialog to update information and border positions.
-     */
-    protected void refreshDialog() {
-        UIUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                synchronized (ServerInfoDialog.class) {
-                    if (dialog != null) {
-                        closeDialog();
-                        openDialog();
-                    }
-                }
-            }
-        });
-    }
-
-    /**
-     * Opens the information dialog.
-     */
-    protected void openDialog() {
-        synchronized (ServerInfoDialog.class) {
-            dialog = new ServerInfoDialog(this, panel);
-            dialog.setVisible(true);
-        }
-    }
-
-    /**
-     * Closes the information dialog.
-     */
-    protected void closeDialog() {
-        synchronized (ServerInfoDialog.class) {
-            if (dialog != null) {
-                dialog.setVisible(false);
-                dialog.dispose();
-                dialog = null;
-            }
-        }
-    }
-
-    /**
-     * An {@link EtchedBorder} with no top.
-     */
-    private static class ToplessEtchedBorder extends EtchedBorder {
-
-        /**
-         * A version number for this class. It should be changed whenever the class
-         * structure is changed (or anything else that would prevent serialized
-         * objects being unserialized with the new class).
-         */
-        private static final long serialVersionUID = 1;
-
-        @Override
-        public void paintBorder(Component c, Graphics g, int x, int y, int width,
-                                int height) {
-            int w = width;
-            int h = height;
-
-            g.translate(x, y);
-
-            g.setColor(etchType == LOWERED? getShadowColor(c) : getHighlightColor(c));
-            g.drawLine(0, h-2, w, h-2);
-            g.drawLine(0, 0, 0, h-1);
-            g.drawLine(w-2, 0, w-2, h-1);
-
-            g.setColor(Color.WHITE);
-            g.drawLine(0, h-1, w, h-1);
-            g.drawLine(w-1, 0, w-1, h-1);
-
-            g.translate(-x, -y);
-        }
-
     }
 }

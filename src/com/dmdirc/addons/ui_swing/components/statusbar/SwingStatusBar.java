@@ -22,13 +22,15 @@
 
 package com.dmdirc.addons.ui_swing.components.statusbar;
 
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.StatusBar;
+import com.dmdirc.ui.interfaces.StatusBarComponent;
 import com.dmdirc.ui.interfaces.StatusMessageNotifier;
 
 import java.awt.Component;
 import java.util.Arrays;
 
-import javax.swing.Icon;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -86,15 +88,15 @@ public final class SwingStatusBar extends JPanel implements StatusBar {
 
     /** {@inheritDoc} */
     @Override
-    public void setMessage(final Icon icon, final String newMessage) {
-        messageLabel.setMessage(icon, newMessage);
+    public void setMessage(final String iconType, final String newMessage) {
+        messageLabel.setMessage(iconType, newMessage);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void setMessage(final Icon icon, final String newMessage,
+    public void setMessage(final String iconType, final String newMessage,
             final StatusMessageNotifier newNotifier) {
-        messageLabel.setMessage(icon, newMessage, newNotifier);
+        messageLabel.setMessage(iconType, newMessage, newNotifier);
     }
 
     /** {@inheritDoc} */
@@ -106,10 +108,10 @@ public final class SwingStatusBar extends JPanel implements StatusBar {
 
     /** {@inheritDoc} */
     @Override
-    public synchronized void setMessage(final Icon icon,
+    public synchronized void setMessage(final String iconType, 
             final String newMessage,
             final StatusMessageNotifier newNotifier, final int timeout) {
-        messageLabel.setMessage(icon, newMessage, newNotifier, timeout);
+        messageLabel.setMessage(iconType, newMessage, newNotifier, timeout);
     }
 
     /** {@inheritDoc} */
@@ -120,7 +122,13 @@ public final class SwingStatusBar extends JPanel implements StatusBar {
 
     /** {@inheritDoc} */
     @Override
-    public void addComponent(final Component component) {
+    public void addComponent(final StatusBarComponent component) {
+        if (!(component instanceof Component)) {
+            Logger.appError(ErrorLevel.HIGH, "Error adding status bar component", 
+                    new IllegalArgumentException("Component must be an " +
+                    "instance of java.awt.component"));
+            return;
+        }
         if (!Arrays.asList(getComponents()).contains(component)) {
             SwingUtilities.invokeLater(new Runnable() {
 
@@ -130,7 +138,7 @@ public final class SwingStatusBar extends JPanel implements StatusBar {
                     remove(updateLabel);
                     remove(errorLabel);
                     remove(inviteLabel);
-                    add(component,
+                    add((Component) component,
                             "sgy components, hmax 20, hmin 20, wmin 20, shrink 0");
                     add(updateLabel,
                             "sgy components, hmax 20, hmin 20, wmin 20, shrink 0");
@@ -146,13 +154,19 @@ public final class SwingStatusBar extends JPanel implements StatusBar {
 
     /** {@inheritDoc} */
     @Override
-    public void removeComponent(final Component component) {
+    public void removeComponent(final StatusBarComponent component) {
+        if (!(component instanceof Component)) {
+            Logger.appError(ErrorLevel.HIGH, "Error adding status bar component", 
+                    new IllegalArgumentException("Component must be an " +
+                    "instance of java.awt.component"));
+            return;
+        }
         SwingUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
             public void run() {
-                remove(component);
+                remove((Component) component);
                 validate();
             }
             });

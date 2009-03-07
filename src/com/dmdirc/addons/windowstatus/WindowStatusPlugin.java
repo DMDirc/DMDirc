@@ -48,12 +48,6 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import net.miginfocom.swing.MigLayout;
-
 /**
  * Displays information related to the current window in the status bar.
  *
@@ -65,17 +59,11 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 	private static final String MY_DOMAIN = "plugin-Logging";
 
 	/** The panel we use in the status bar. */
-	private final JPanel panel = new JPanel();
-
-	/** The label we use to show window status. */
-	private final JLabel label = new JLabel("???");
+	private final WindowStatusPanel panel = new WindowStatusPanel();
 
 	/** Creates a new instance of WindowStatusPlugin. */
 	public WindowStatusPlugin() {
 		super();
-		panel.setBorder(BorderFactory.createEtchedBorder());
-		panel.setLayout(new MigLayout("ins 0 rel 0 rel, aligny center"));
-		panel.add(label);
 	}
 
 	/**
@@ -207,7 +195,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 		} else {
 			textString.append("???");
 		}
-		label.setText(textString.toString());
+		panel.setText(textString.toString());
 	}
 
 	/** {@inheritDoc} */
