@@ -283,7 +283,7 @@ dialogstate:
   channelsettingsdialog=0
   actionsmanagerdialog=0
   serversettingsdialog=0
-  preferences=
+  preferences=0
 
 browser:
   uselaunchdelay=true

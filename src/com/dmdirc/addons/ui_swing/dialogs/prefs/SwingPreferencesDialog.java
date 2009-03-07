@@ -276,7 +276,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     }
 
     private void restoreActiveCategory() {
-        final String oldCategoryPath = IdentityManager.getConfigIdentity().
+        final String oldCategoryPath = IdentityManager.getGlobalConfig().
                 getOption("dialogstate", "preferences");
         final DefaultListModel model = (DefaultListModel) tabList.getModel();
         int indexToSelect = 0;
