@@ -78,11 +78,6 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
         
         ActionManager.addListener(this, CoreActionType.PLUGIN_LOADED,
                 CoreActionType.PLUGIN_UNLOADED);
-
-        IdentityManager.getConfigIdentity().setOption("icon", "category-nowplaying",
-                "plugin://nowplaying:com/dmdirc/addons/nowplaying/nowplaying.png");
-        IdentityManager.getAddonIdentity().setOption(DOMAIN, "format",
-                "/me is playing $artist - $title");
         
         for (PluginInfo target : PluginManager.getPluginManager().getPluginInfos()) {
             if (target.isLoaded()) {
@@ -102,6 +97,15 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
         ActionManager.removeListener(this);
         
         CommandManager.unregisterCommand(command);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void domainUpdated() {
+        IdentityManager.getAddonIdentity().setOption("icon", "category-nowplaying",
+                "plugin://nowplaying:com/dmdirc/addons/nowplaying/nowplaying.png");
+        IdentityManager.getAddonIdentity().setOption(DOMAIN, "format",
+                "/me is playing $artist - $title");
     }
     
     /** {@inheritDoc} */
