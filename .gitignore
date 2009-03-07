@@ -6,5 +6,11 @@
 /plugins
 /junitreports
 /junit*.properties
+/installer/output/*
+/installer/osx/compress-dmg
+/installer/windows/*.rc
+/installer/windows/*.inc
+/installer/windows/*.ico
+/installer/windows/DMDirc.jar
 .svn
 *.class
