@@ -27,7 +27,6 @@ import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.addons.ui_swing.actions.CloseFrameContainerAction;
 import com.dmdirc.addons.ui_swing.components.TextFrame;
 
-import com.dmdirc.addons.ui_swing.components.TreeScroller;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -40,7 +39,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
@@ -117,7 +115,9 @@ public class Tree extends JTree implements TreeSelectionListener,
     /** {@inheritDoc} */
     @Override
     public void valueChanged(final TreeSelectionEvent e) {
-        setSelection(e.getPath());
+        if (!this.path.equals(path)) {
+            setSelection(e.getPath());
+        }
     }
 
     /**
@@ -126,17 +126,19 @@ public class Tree extends JTree implements TreeSelectionListener,
      * @param path Tree path
      */
     public void setSelection(final TreePath path) {
-        setSelectionPath(path);
-        if (this.path != null && !this.path.equals(path)) {
-            UIUtilities.invokeLater(new Runnable() {
+        if (this.path != null) {
+            setSelectionPath(path);
+            if (!this.path.equals(path)) {
+                UIUtilities.invokeLater(new Runnable() {
 
-                /** {@inheritDoc} */
-                @Override
-                public void run() {
-                    setTreePath(path);
-                    ((TreeViewNode) path.getLastPathComponent()).getFrameContainer().activateFrame();
-                }
-            });
+                    /** {@inheritDoc} */
+                    @Override
+                    public void run() {
+                        setTreePath(path);
+                        ((TreeViewNode) path.getLastPathComponent()).getFrameContainer().activateFrame();
+                    }
+                });
+            }
         }
     }
 
