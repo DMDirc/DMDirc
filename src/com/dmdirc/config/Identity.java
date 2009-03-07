@@ -71,6 +71,9 @@ public class Identity extends ConfigSource implements Serializable,
     /** A regular expression that will match all characters illegal in file names. */
     protected static final String ILLEGAL_CHARS = "[\\\\\"/:\\*\\?\"<>\\|]";
 
+    private static final java.util.logging.Logger LOGGER = java.util.logging
+            .Logger.getLogger(Identity.class.getName());
+
     /** The target for this identity. */
     protected final ConfigTarget myTarget;
 
@@ -341,6 +344,7 @@ public class Identity extends ConfigSource implements Serializable,
     public synchronized void setOption(final String domain, final String option,
             final String value) {
         final String oldValue = getOption(domain, option);
+        LOGGER.finer(getName() + ": setting " + domain + "." + option + " to " + value);
 
         if (myTarget.getType() == ConfigTarget.TYPE.GLOBAL) {
             // If we're the global config, don't set useless settings that are
