@@ -97,7 +97,6 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
     /** Creates a new instance of ActionsManagerDialog. */
     private ActionsManagerDialog() {
         super(null, ModalityType.MODELESS);
-        setIconImage(SwingController.getMainFrame().getIcon().getImage());
 
         initComponents();
         addListeners();
@@ -113,6 +112,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
     public static void showActionsManagerDialog() {
         getActionsManagerDialog();
 
+        me.setIconImage(SwingController.getMainFrame().getIcon().getImage());
         me.pack();
         me.setLocationRelativeTo(SwingController.getMainFrame());
         me.setVisible(true);

@@ -32,7 +32,9 @@ import com.dmdirc.harness.ui.UITestIface;
 
 import com.dmdirc.addons.ui_swing.components.StandardInputDialog;
 import com.dmdirc.addons.ui_swing.dialogs.actioneditor.ActionEditorDialog;
+import java.lang.reflect.InvocationTargetException;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
 
 import org.fest.swing.core.EventMode;
@@ -44,7 +46,6 @@ import org.fest.swing.fixture.JOptionPaneFixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
@@ -57,23 +58,31 @@ public class ActionsManagerDialogTest implements UITestIface {
     @BeforeClass
     public static void setUpClass() {
         Main.setUI(new SwingController());
+        IdentityManager.load();
+        ActionManager.init();
     }
     
     @Before
     public void setUp() {
-        IdentityManager.load();
-        ActionManager.init();
-        
         removeGroups();
     }
     
     @After
-    public void tearDown() {
+    public void tearDown() throws InterruptedException, InvocationTargetException {
+        SwingUtilities.invokeAndWait(new Runnable() {
+            @Override
+            public void run() {
+                close();
+            }
+        });
+
+        removeGroups();
+    }
+
+    protected void close() {
         if (window != null) {
             window.cleanUp();
         }
-
-        removeGroups();
     }
     
     protected void removeGroups() {
@@ -86,7 +95,7 @@ public class ActionsManagerDialogTest implements UITestIface {
         }
     }
     
-    @Test @Ignore
+    @Test
     public void testAddGroup() throws InterruptedException {
         setupWindow();
         

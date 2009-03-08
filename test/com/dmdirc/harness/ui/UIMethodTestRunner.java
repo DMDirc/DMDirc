@@ -70,7 +70,7 @@ public class UIMethodTestRunner extends TestMethodRunner {
             } while (retry);
 
             ((UITestIface) test).tearDown();
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             addFailure(ex);
         }
     }
