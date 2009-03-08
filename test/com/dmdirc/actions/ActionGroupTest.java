@@ -23,13 +23,12 @@ package com.dmdirc.actions;
 
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class ActionGroupTest {
 
@@ -62,15 +61,13 @@ public class ActionGroupTest {
         assertEquals(expResult, result);
     }
 
-    @Test @Ignore
+    @Test
     public void testGetSettings() {
         ActionGroup instance = new ActionGroup("foo");
         
-        Map<String, PreferencesSetting> expResult = new HashMap<String, PreferencesSetting>();
-        Map<String, PreferencesSetting> result = instance.getSettings();
-        assertEquals(expResult, result);
+        assertTrue(instance.getSettings().isEmpty());
         
-        result.put("", new PreferencesSetting(PreferencesType.BOOLEAN, "", "", "", ""));
+        instance.getSettings().put("", mock(PreferencesSetting.class));
         assertEquals(1, instance.getSettings().size());
     }
 
