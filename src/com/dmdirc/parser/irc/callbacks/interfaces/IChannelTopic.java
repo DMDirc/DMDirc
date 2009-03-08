@@ -24,11 +24,13 @@ package com.dmdirc.parser.irc.callbacks.interfaces;
 
 import com.dmdirc.parser.irc.ChannelInfo;
 import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
 /** 
  * Called when the topic is changed or discovered for the first time.
  * bIsNewTopic is true if someone sets the topic, false if the topic is discovered on join
  */
+@SpecificCallback
 public interface IChannelTopic extends ICallbackInterface {
 	/**
 	 * Called when the topic is changed or discovered for the first time.

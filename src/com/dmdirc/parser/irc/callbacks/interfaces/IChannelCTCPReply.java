@@ -25,12 +25,14 @@ package com.dmdirc.parser.irc.callbacks.interfaces;
 import com.dmdirc.parser.irc.ChannelClientInfo;
 import com.dmdirc.parser.irc.ChannelInfo;
 import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
 /**
  * Called when a person sends a CTCPRReply to a channel.
  * sHost is the hostname of the person sending the CTCPReply. (Can be a server or a person)<br>
  * cChannelClient is null if user is a server.
  */
+@SpecificCallback
 public interface IChannelCTCPReply extends ICallbackInterface {
 	/**
 	 * Called when a person sends a CTCPRReply to a channel.

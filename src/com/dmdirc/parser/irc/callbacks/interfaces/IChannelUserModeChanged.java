@@ -25,10 +25,12 @@ package com.dmdirc.parser.irc.callbacks.interfaces;
 import com.dmdirc.parser.irc.ChannelClientInfo;
 import com.dmdirc.parser.irc.ChannelInfo;
 import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
 /** 
  * Called when a users channel mode is changed.
  */
+@SpecificCallback
 public interface IChannelUserModeChanged extends ICallbackInterface {
 	/**
 	 * Called when a users channel mode is changed.

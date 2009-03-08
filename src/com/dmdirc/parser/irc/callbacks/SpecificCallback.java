@@ -20,23 +20,19 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.parser.irc.callbacks.interfaces;
+package com.dmdirc.parser.irc.callbacks;
 
-import com.dmdirc.parser.irc.ChannelInfo;
-import com.dmdirc.parser.irc.IRCParser;
-import com.dmdirc.parser.irc.callbacks.SpecificCallback;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * Called when a names reply is parsed.
+ * Used to indicate that a callback interface can be called for specified
+ * objects (hosts/channels/etc).
+ *
+ * @since 0.6.3
+ * @author chris
  */
-@SpecificCallback
-public interface IChannelGotNames extends ICallbackInterface {
-	/**
-	 * Called when a names reply is parsed.
-	 *
-	 * @param tParser Reference to the parser object that made the callback.
-	 * @param cChannel Channel which the names reply is for
-	 * @see com.dmdirc.parser.irc.ProcessNames#callChannelGotNames
-	 */
-	void onChannelGotNames(IRCParser tParser, ChannelInfo cChannel);
+@Retention(RetentionPolicy.RUNTIME)
+public @interface SpecificCallback {
+
 }

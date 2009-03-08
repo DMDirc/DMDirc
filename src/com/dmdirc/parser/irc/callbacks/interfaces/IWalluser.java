@@ -23,11 +23,13 @@
 package com.dmdirc.parser.irc.callbacks.interfaces;
 
 import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
 /**
  * Called when an all-users message is recieved over wallops.
  * sHost is the hostname of the person sending the message. (Can be a server or a person)<br>
  */
+@SpecificCallback
 public interface IWalluser extends ICallbackInterface {
 	/**
 	 * Called when an all-users message is recieved over wallops.

@@ -23,12 +23,14 @@
 package com.dmdirc.parser.irc.callbacks.interfaces;
 
 import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
 /**
  * Called when a person sends a CTCP to you directly.
  * sHost is the hostname of the person sending the CTCP. (Can be a server or a person)<br>
  * cClient is null if user is a server, or not on any common channels.
  */
+@SpecificCallback
 public interface IPrivateCTCP extends ICallbackInterface {
 	/**
 	 * Called when a person sends a CTCP to you directly.

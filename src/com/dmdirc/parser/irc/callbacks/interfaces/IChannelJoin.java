@@ -25,11 +25,13 @@ package com.dmdirc.parser.irc.callbacks.interfaces;
 import com.dmdirc.parser.irc.ChannelClientInfo;
 import com.dmdirc.parser.irc.ChannelInfo;
 import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
 /** 
  * Called When we, or another client joins a channel.
  * This is called AFTER client has been added to channel as a ChannelClientInfo
  */
+@SpecificCallback
 public interface IChannelJoin extends ICallbackInterface {
 	/**
 	 * Called When another client joins a channel.

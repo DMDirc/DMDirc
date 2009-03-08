@@ -25,11 +25,13 @@ package com.dmdirc.parser.irc.callbacks.interfaces;
 import com.dmdirc.parser.irc.ChannelClientInfo;
 import com.dmdirc.parser.irc.ChannelInfo;
 import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
 /** 
  * Called When we, or another client parts a channel.
  * This is called BEFORE client has been removed from the channel.
  */
+@SpecificCallback
 public interface IChannelPart extends ICallbackInterface {
 	/**
 	 * Called When we, or another client parts a channel.

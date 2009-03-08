@@ -23,12 +23,14 @@
 package com.dmdirc.parser.irc.callbacks.interfaces;
 
 import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
 /**
  * Called when a person does an action to you (PM).
  * sHost is the hostname of the person sending the action. (Can be a server or a person)<br>
  * cClient is null if user is a server, or not on any common channel.
  */
+@SpecificCallback
 public interface IPrivateAction extends ICallbackInterface {
 	/**
 	 * Called when a person does an action to you (PM).

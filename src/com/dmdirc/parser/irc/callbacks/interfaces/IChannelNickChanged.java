@@ -25,11 +25,13 @@ package com.dmdirc.parser.irc.callbacks.interfaces;
 import com.dmdirc.parser.irc.ChannelClientInfo;
 import com.dmdirc.parser.irc.ChannelInfo;
 import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
 /** 
  * Called when we or another user change nickname (Called once per channel the user is on).
  * This is called after the nickname change has been done internally
  */
+@SpecificCallback
 public interface IChannelNickChanged extends ICallbackInterface {
 	/**
 	 * Called when we or another user change nickname (Called once per channel the user is on).

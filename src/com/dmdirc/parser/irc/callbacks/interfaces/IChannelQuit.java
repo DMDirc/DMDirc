@@ -25,11 +25,13 @@ package com.dmdirc.parser.irc.callbacks.interfaces;
 import com.dmdirc.parser.irc.ChannelClientInfo;
 import com.dmdirc.parser.irc.ChannelInfo;
 import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
 /** 
  * Called When we, or another client quits IRC (Called once per channel the user was on).
  * This is called BEFORE client has been removed from the channel.
  */
+@SpecificCallback
 public interface IChannelQuit extends ICallbackInterface {
 	/**
 	 * Called When we, or another client quits IRC (Called once per channel the user was on).

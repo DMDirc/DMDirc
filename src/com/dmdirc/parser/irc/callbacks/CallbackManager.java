@@ -22,13 +22,10 @@
 
 package com.dmdirc.parser.irc.callbacks;
 
-import java.util.Hashtable;
-
-import com.dmdirc.parser.irc.ChannelInfo;
-import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.callbacks.interfaces.*;
-import java.lang.reflect.Method;
+
+import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -76,11 +73,7 @@ public final class CallbackManager {
 		myParser = parser;
 		
         for (Class<?> type : CLASSES) {
-            final Method method = type.getMethods()[0];
-
-            if (method.getParameterTypes().length > 1 &&
-                    (type.getMethods()[0].getParameterTypes()[1].equals(ClientInfo.class)
-                    || type.getMethods()[0].getParameterTypes()[1].equals(ChannelInfo.class))) {
+            if (type.isAnnotationPresent(SpecificCallback.class)) {
                 addCallbackType(new CallbackObjectSpecific(myParser, this,
                         type.asSubclass(ICallbackInterface.class)));
             } else {

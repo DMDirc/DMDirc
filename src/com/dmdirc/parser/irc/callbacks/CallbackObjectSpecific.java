@@ -137,11 +137,14 @@ public class CallbackObjectSpecific extends CallbackObject {
         newArgs[0] = myParser;
 
 		for (ICallbackInterface iface :new ArrayList<ICallbackInterface>(callbackInfo)) {
-            if (args[0] instanceof ClientInfo
-                    && !isValidUser(iface, ((ClientInfo) args[0]).getHost())) {
-                continue;
-            } else if (args[0] instanceof ChannelInfo
-                    && !isValidChan(iface, (ChannelInfo) args[0])) {
+            if (type.isAnnotationPresent(SpecificCallback.class) &&
+                    ((args[0] instanceof ClientInfo
+                        && !isValidUser(iface, ((ClientInfo) args[0]).getHost()))
+                        || (args[0] instanceof ChannelInfo
+                        && !isValidChan(iface, (ChannelInfo) args[0]))
+                        || (!(args[0] instanceof ClientInfo || args[0] instanceof ChannelInfo) &&
+                        args[args.length - 1] instanceof String
+                        && !isValidUser(iface, (String) args[args.length - 1])))) {
                 continue;
             }
 

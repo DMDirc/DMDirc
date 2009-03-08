@@ -25,11 +25,13 @@ package com.dmdirc.parser.irc.callbacks.interfaces;
 import com.dmdirc.parser.irc.ChannelClientInfo;
 import com.dmdirc.parser.irc.ChannelInfo;
 import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
 /**
  * Called when a person is kicked.
  * cKickedByClient can be null if kicked by a server. sKickedByHost is the hostname of the person/server doing the kicking.
  */
+@SpecificCallback
 public interface IChannelKick extends ICallbackInterface {
 	/**
 	 * Called when a person is kicked.

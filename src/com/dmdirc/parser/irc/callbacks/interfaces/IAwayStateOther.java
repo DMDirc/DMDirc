@@ -24,10 +24,12 @@ package com.dmdirc.parser.irc.callbacks.interfaces;
 
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.ClientInfo;
+import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
 /**
  * Called when we go away, or come back.
  */
+@SpecificCallback
 public interface IAwayStateOther extends ICallbackInterface { 
 	/**
 	 * Called when we go away, or come back.

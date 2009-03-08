@@ -24,12 +24,14 @@ package com.dmdirc.parser.irc.callbacks.interfaces;
 
 import com.dmdirc.parser.irc.ChannelInfo;
 import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
 /**
  * Called when all requested ListModes have been sent.
  * This is decided by ProcessListModes, and is called when an "end of list"
  * reply is sent, and the listModeQueue is empty (or non-existant).
  */
+@SpecificCallback
 public interface IChannelGotListModes extends ICallbackInterface {
 	/**
 	 * Called when a ListModes reply is parsed.
