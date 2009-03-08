@@ -38,37 +38,6 @@ public abstract class Command {
     
     /** The format name used for command errors. */
     protected static final String FORMAT_ERROR = "commandError";
-               
-    /**
-     * Implodes the given list of arguments.
-     * @param offset The index to start at
-     * @param args The arguments to implode
-     * @return A string containing each argument seperated by a space
-     * @deprecated Should be no need for this now
-     */
-    @Deprecated
-    protected static final String implodeArgs(final int offset, final String... args) {
-        String res = "";
-        for (int i = offset; i < args.length; i++) {
-            if (res.isEmpty()) {
-                res = args[i];
-            } else {
-                res = res.concat(" " + args[i]);
-            }
-        }
-        return res;
-    }
-    
-    /**
-     * Implodes the given list of arguments.
-     * @param args The arguments to implode
-     * @return A string containing each argument seperated by a space
-     * @deprecated Should be no need for this now
-     */
-    @Deprecated
-    protected static final String implodeArgs(final String... args) {
-        return implodeArgs(0, args);
-    } 
     
     /**
      * Sends a line, if appropriate, to the specified target.

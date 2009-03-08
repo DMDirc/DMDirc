@@ -78,13 +78,13 @@ public final class Me extends ChatCommand implements ValidatingCommand {
     /** {@inheritDoc} */
     @Override
     public ValidationResponse validateArguments(final InputWindow origin, 
-            final List<String> arguments) {
+            final CommandArguments arguments) {
         if (origin.getContainer().getServer() == null
                 || origin.getContainer().getServer().getParser() == null) {
             return new ValidationResponse();
         }
         
-        final int length = implodeArgs(arguments.toArray(new String[arguments.size()])).length();
+        final int length = 2 + arguments.getArgumentsAsString().length();
         
         if (origin.getContainer().getServer().getParser().getMaxLength("PRIVMSG",
                 origin.getContainer().toString()) <= length) {

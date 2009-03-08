@@ -106,12 +106,11 @@ public final class Message extends ServerCommand implements IntelligentCommand,
 
     /** {@inheritDoc} */
     @Override
-    public int getLineCount(final InputWindow origin, final List<String> arguments) {
-        if (arguments.size() >= 2) {
-            final String target = arguments.get(0);
+    public int getLineCount(final InputWindow origin, final CommandArguments arguments) {
+        if (arguments.getArguments().length >= 2) {
+            final String target = arguments.getArguments()[0];
             return origin.getContainer().getServer().getNumLines("PRIVMSG "
-                    + target + " :" + implodeArgs(1,
-                    arguments.toArray(new String[arguments.size()])));
+                    + target + " :" + arguments.getArgumentsAsString(1));
         } else {
             return 1;
         }

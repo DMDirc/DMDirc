@@ -21,10 +21,9 @@
  */
 package com.dmdirc.commandparser.commands;
 
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.ui.interfaces.InputWindow;
-
-import java.util.List;
 
 /**
  * Validating commands are capable of validating their arguments to determine
@@ -40,7 +39,8 @@ public interface ValidatingCommand {
      * @param origin The window the command is being executed in
      * @param arguments The arguments that the user has entered (so far)
      * @return A validation response indicating the validity of the arguments
+     * @since 0.6.3
      */
-    ValidationResponse validateArguments(InputWindow origin, List<String> arguments);
+    ValidationResponse validateArguments(InputWindow origin, CommandArguments arguments);
 
 }

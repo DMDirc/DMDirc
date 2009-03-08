@@ -24,6 +24,7 @@ package com.dmdirc.ui.input;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.ValidatingCommand;
@@ -45,7 +46,6 @@ import com.dmdirc.util.RollingList;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -215,11 +215,11 @@ public abstract class InputHandler implements ConfigChangeListener {
      */
     protected void validateText() {
         final String text = target.getText();
-        
-        if (!text.isEmpty() && text.charAt(0) == CommandManager.getCommandChar()) {
-            final List<String> args = Arrays.asList(text.split(" "));
-            final String signature = args.get(0).substring(1);
-            final Command command = CommandManager.getCommand(signature);
+
+        final CommandArguments args = new CommandArguments(text);
+
+        if (args.isCommand()) {
+            final Command command = CommandManager.getCommand(args.getCommandName());
             
             if (command instanceof ValidatingCommand) {
                 final ValidationResponse vr

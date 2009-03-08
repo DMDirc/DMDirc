@@ -22,9 +22,8 @@
 
 package com.dmdirc.commandparser.commands;
 
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.ui.interfaces.InputWindow;
-
-import java.util.List;
 
 /**
  * Wrapping commands are commands whose arguments may be wrapped into multiple
@@ -41,7 +40,8 @@ public interface WrappableCommand {
      * @param origin The window the command is being executed in
      * @param arguments The arguments that the user has entered (so far)
      * @return The number of lines that the arguments will result in
+     * @since 0.6.3
      */
-    int getLineCount(InputWindow origin, List<String> arguments);
+    int getLineCount(InputWindow origin, CommandArguments arguments);
 
 }
