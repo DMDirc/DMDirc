@@ -95,7 +95,12 @@ public class MessageLabel extends JLabel implements StatusBarComponent,
 
     public synchronized void setMessage(final String iconType, final String newMessage,
             final StatusMessageNotifier newNotifier, final int timeout) {
-        final Icon icon = IconManager.getIconManager().getIcon(iconType);
+        final Icon icon;
+        if (iconType == null) {
+            icon = null;
+        } else {
+            icon = IconManager.getIconManager().getIcon(iconType);
+        }
         SwingUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
