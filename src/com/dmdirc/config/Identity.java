@@ -42,6 +42,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 /**
  * An identity is a group of settings that are applied to a connection, server,
@@ -456,8 +457,11 @@ public class Identity extends ConfigSource implements Serializable,
      * Saves this identity to disk if it has been updated.
      */
     public synchronized void save() {
+        LOGGER.fine(getName() + ": save(); needsave = " + needSave);
+
         if (needSave && file != null && file.isWritable()) {
             if (myTarget != null && myTarget.getType() == ConfigTarget.TYPE.GLOBAL) {
+                LOGGER.finer(getName() + ": I'm a global config");
                 // If we're the global config, unset useless settings that are
                 // covered by global defaults.
 
@@ -466,6 +470,12 @@ public class Identity extends ConfigSource implements Serializable,
                 }
 
                 globalConfig.removeIdentity(this);
+
+                if (LOGGER.isLoggable(Level.FINEST)) {
+                    for (Identity source : globalConfig.getSources()) {
+                        LOGGER.finest(getName() + ": source: " + source.getName());
+                    }
+                }
 
                 for (Map.Entry<String, Map<String, String>> entry
                         : file.getKeyDomains().entrySet()) {
@@ -478,6 +488,8 @@ public class Identity extends ConfigSource implements Serializable,
 
                         if (globalConfig.hasOption(domain, key) &&
                                 globalConfig.getOption(domain, key).equals(value)) {
+                            LOGGER.finest(getName() + ": found superfluous setting: "
+                                    + domain + "." + key + " (= " + value + ")");
                             file.getKeyDomain(domain).remove(key);
                         }
                     }
