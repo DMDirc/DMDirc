@@ -27,7 +27,7 @@ import com.dmdirc.updater.Update;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.UpdateStatus;
 
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +51,7 @@ public class UpdateTableModel extends AbstractTableModel implements UpdateListen
     /** Enabled list. */
     private Map<Update, Boolean> enabled;
     /** Number formatter. */
-    private DecimalFormat formatter;
+    private NumberFormat formatter;
 
     /** Creates a new instance of UpdateTableModel. */
     public UpdateTableModel() {
@@ -67,7 +67,9 @@ public class UpdateTableModel extends AbstractTableModel implements UpdateListen
         super();
 
         setUpdates(updates);
-        formatter = new DecimalFormat("0.#");
+        formatter = NumberFormat.getNumberInstance();
+        formatter.setMaximumFractionDigits(1);
+        formatter.setMinimumFractionDigits(1);
     }
 
     /**
