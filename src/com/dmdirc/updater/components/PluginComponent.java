@@ -27,8 +27,8 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateComponent;
-
 import com.dmdirc.updater.Version;
+
 import java.io.File;
 
 /**
@@ -93,11 +93,11 @@ public class PluginComponent implements UpdateComponent {
     public boolean doInstall(final String path) throws Throwable {
         final File target = new File(plugin.getFullFilename());
         
-        if (!plugin.hasPersistent() && target.exists()) {
+        if (plugin.isUnloadable() && target.exists()) {
             target.delete();
         }
         
-        if (plugin.hasPersistent() || !new File(path).renameTo(target)) {
+        if (!plugin.isUnloadable() || !new File(path).renameTo(target)) {
             // Windows rocks!
             final File newTarget = new File(plugin.getFullFilename() + ".update");
             
