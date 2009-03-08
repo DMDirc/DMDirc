@@ -184,6 +184,10 @@ public final class ProgramError implements Serializable {
         if (newStatus != null && !reportStatus.equals(newStatus)) {
             reportStatus = newStatus;
             ErrorManager.getErrorManager().fireErrorStatusChanged(this);
+
+            synchronized (this) {
+                notifyAll();
+            }
         }
     }
     
@@ -196,6 +200,10 @@ public final class ProgramError implements Serializable {
         if (newStatus != null && !fixedStatus.equals(newStatus)) {
             fixedStatus = newStatus;
             ErrorManager.getErrorManager().fireErrorStatusChanged(this);
+
+            synchronized (this) {
+                notifyAll();
+            }
         }
     }
     

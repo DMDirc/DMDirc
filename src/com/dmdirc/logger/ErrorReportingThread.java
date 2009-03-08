@@ -48,7 +48,7 @@ public class ErrorReportingThread extends Thread {
             while (true) {
                 final ProgramError error = queue.take();
 
-                if (error.getReportStatus() == ErrorReportStatus.WAITING) {
+                if (error.getReportStatus() == ErrorReportStatus.QUEUED) {
                     error.send();
                 }
             }

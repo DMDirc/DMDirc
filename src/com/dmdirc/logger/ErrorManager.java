@@ -291,15 +291,13 @@ public final class ErrorManager implements Serializable, ConfigChangeListener {
             return;
         }
 
-        if (error.getLevel().equals(ErrorLevel.FATAL)) {
-            error.send();
-        } else {
-            reportQueue.add(error);
+        error.setReportStatus(ErrorReportStatus.QUEUED);
 
-            if (reportThread == null || !reportThread.isAlive()) {
-                reportThread = new ErrorReportingThread(reportQueue);
-                reportThread.start();
-            }
+        reportQueue.add(error);
+
+        if (reportThread == null || !reportThread.isAlive()) {
+            reportThread = new ErrorReportingThread(reportQueue);
+            reportThread.start();
         }
     }
 
@@ -411,6 +409,16 @@ public final class ErrorManager implements Serializable, ConfigChangeListener {
             }
         } else {
             FatalErrorDialog.displayBlocking(error);
+        }
+
+        while (error.getReportStatus() == ErrorReportStatus.QUEUED) {
+            try {
+                synchronized (error) {
+                    error.wait();
+                }
+            } catch (InterruptedException ex) {
+                // Do nothing
+            }
         }
 
         System.exit(-1);

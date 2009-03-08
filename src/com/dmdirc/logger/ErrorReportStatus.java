@@ -34,6 +34,8 @@ public enum ErrorReportStatus {
     SENDING("Sending..."),
     /** Error sending. */
     ERROR("Error sending"),
+    /** Report queued. */
+    QUEUED("Queued"),
     /** Waiting state. */
     WAITING("Waiting");
     
