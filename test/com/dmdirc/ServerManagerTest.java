@@ -172,11 +172,64 @@ public class ServerManagerTest {
     }
 
     @Test
+    public void testCloseAllWithMessage() {
+        final Server serverA = mock(Server.class);
+        ServerManager.getServerManager().registerServer(serverA);
+        ServerManager.getServerManager().closeAll("message here");
+        verify(serverA).disconnect("message here");
+        verify(serverA).close();
+    }
+
+    @Test
     public void testDisconnectAll() {
         final Server serverA = mock(Server.class);
         ServerManager.getServerManager().registerServer(serverA);
         ServerManager.getServerManager().disconnectAll("message here");
         verify(serverA).disconnect("message here");
+    }
+
+    @Test
+    public void testDevChatWithChannel() {
+        final Server serverA = mock(Server.class);
+        when(serverA.getNetwork()).thenReturn("Quakenet");
+        when(serverA.hasChannel("#DMDirc")).thenReturn(true);
+        when(serverA.getState()).thenReturn(ServerState.CONNECTED);
+
+        ServerManager.getServerManager().registerServer(serverA);
+        ServerManager.getServerManager().joinDevChat();
+
+        verify(serverA).join("#DMDirc");
+    }
+
+    @Test
+    public void testDevChatWithoutChannel() {
+        final Server serverA = mock(Server.class);
+        when(serverA.getNetwork()).thenReturn("Quakenet");
+        when(serverA.hasChannel("#DMDirc")).thenReturn(false);
+        when(serverA.getState()).thenReturn(ServerState.CONNECTED);
+
+        ServerManager.getServerManager().registerServer(serverA);
+        ServerManager.getServerManager().joinDevChat();
+
+        verify(serverA).join("#DMDirc");
+    }
+
+    @Test
+    public void testDevChatNoServers() {
+        final Server serverA = mock(Server.class);
+        when(serverA.getNetwork()).thenReturn("Quakenet");
+        when(serverA.getState()).thenReturn(ServerState.DISCONNECTING);
+
+        final Server serverB = mock(Server.class);
+        when(serverB.getNetwork()).thenReturn("Foonet");
+        when(serverB.getState()).thenReturn(ServerState.CONNECTED);
+
+        ServerManager.getServerManager().registerServer(serverA);
+        ServerManager.getServerManager().registerServer(serverB);
+
+        ServerManager.getServerManager().joinDevChat();
+
+        assertEquals(3, ServerManager.getServerManager().numServers());
     }
     
 }
