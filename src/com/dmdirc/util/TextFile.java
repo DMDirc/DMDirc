@@ -25,11 +25,12 @@ package com.dmdirc.util;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,32 +49,64 @@ public class TextFile {
     
     /** The lines we've read from the file. */
     private List<String> lines;
+
+    /** The charset to use to read the file. */
+    private final Charset charset;
     
     /**
-     * Creates a new instance of TextFile for the specified file.
+     * Creates a new instance of TextFile for the specified file, and uses the
+     * default charset.
      * 
      * @param filename The file to be read/written
      */
     public TextFile(final String filename) {
-        file = new File(filename);
+        this(new File(filename));
     }
 
     /**
-     * Creates a new instance of TextFile for the specified File.
+     * Creates a new instance of TextFile for the specified File, and uses the
+     * default charset.
      * 
      * @param file The file to read
      */
     public TextFile(final File file) {
-        this.file = file;
+        this(file, Charset.defaultCharset());
     }
     
     /**
-     * Creates a new instance of TextFile for an input stream.
+     * Creates a new instance of TextFile for an input stream, and uses the
+     * default charset.
      * 
      * @param is The input stream to read from
      */
     public TextFile(final InputStream is) {
+        this(is, Charset.defaultCharset());
+    }
+
+    /**
+     * Creates a new instance of TextFile for the specified File, which is to
+     * be read using the specified charset.
+     *
+     * @param file The file to read
+     * @param charset The charset to read the file in
+     * @since 0.6.3
+     */
+    public TextFile(final File file, final Charset charset) {
+        this.file = file;
+        this.charset = charset;
+    }
+
+    /**
+     * Creates a new instance of TextFile for an input stream, which is to
+     * be read using the specified charset.
+     *
+     * @param is The input stream to read from
+     * @param charset The charset to read the file in
+     * @since 0.6.3
+     */
+    public TextFile(final InputStream is, final Charset charset) {
         this.is = is;
+        this.charset = charset;
     }
     
     /**
@@ -98,7 +131,8 @@ public class TextFile {
      */
     public void readLines() throws IOException {
         final BufferedReader reader = new BufferedReader(
-                file == null ? new InputStreamReader(is) : new FileReader(file));
+                new InputStreamReader(file == null ? is : new FileInputStream(file),
+                charset));
         lines = new ArrayList<String>();
         
         String line;
