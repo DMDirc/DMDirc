@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -459,7 +460,8 @@ public class Identity extends ConfigSource implements Serializable,
                         : file.getKeyDomains().entrySet()) {
                     final String domain = entry.getKey();
 
-                    for (Map.Entry<String, String> subentry : entry.getValue().entrySet()) {
+                    for (Map.Entry<String, String> subentry : 
+                        new HashSet<Map.Entry<String, String>>(entry.getValue().entrySet())) {
                         final String key = subentry.getKey();
                         final String value = subentry.getValue();
 
