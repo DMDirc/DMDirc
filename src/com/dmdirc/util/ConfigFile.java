@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -58,7 +59,7 @@ public class ConfigFile extends TextFile {
      * @param is The input stream to read
      */
     public ConfigFile(final InputStream is) {
-        super(is);
+        super(is, Charset.forName("UTF-8"));
     }
 
     /**
@@ -67,7 +68,7 @@ public class ConfigFile extends TextFile {
      * @param file The file to read/write
      */
     public ConfigFile(final File file) {
-        super(file);
+        super(file, Charset.forName("UTF-8"));
     }
 
     /**
@@ -76,9 +77,8 @@ public class ConfigFile extends TextFile {
      * @param filename The name of the file to read/write
      */
     public ConfigFile(final String filename) {
-        super(filename);
+        this(new File(filename));
     }
-
 
     /**
      * Sets the "automake" value of this config file. If automake is set to
