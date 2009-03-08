@@ -27,28 +27,46 @@ package com.dmdirc.logger;
  */
 public enum ErrorReportStatus {
     /** Not applicable. */
-    NOT_APPLICABLE("Not applicable"),
+    NOT_APPLICABLE("Not applicable", true),
     /** Finished state. */
-    FINISHED("Finished"),
+    FINISHED("Finished", true),
     /** Sending state. */
-    SENDING("Sending..."),
+    SENDING("Sending...", false),
     /** Error sending. */
-    ERROR("Error sending"),
+    ERROR("Error sending", true),
     /** Report queued. */
-    QUEUED("Queued"),
+    QUEUED("Queued", false),
     /** Waiting state. */
-    WAITING("Waiting");
+    WAITING("Waiting", true);
     
     /** toString value of the item. */
-    private String value;
+    private final String value;
+
+    /** Whether this state is terminal. */
+    private final boolean terminal;
     
     /** 
      * Instantiates the enum. 
      *
      * @param value toString value
+     * @param terminal Whether or not the state is terminal (i.e., whether there
+     * are pending actions to be performed on the error)
      */
-    ErrorReportStatus(final String value) {
+    ErrorReportStatus(final String value, final boolean terminal) {
         this.value = value;
+        this.terminal = terminal;
+    }
+
+    /**
+     * Determines whether or not this state is terminal. Terminal states are
+     * defined as those on which no further actions will be performed without
+     * user interaction. Non-terminal states may start or finish sending in
+     * the future.
+     * 
+     * @return True if the state is terminal, false otherwise
+     */
+    public boolean isTerminal() {
+        return terminal;
     }
     
     /** {@inheritDoc} */

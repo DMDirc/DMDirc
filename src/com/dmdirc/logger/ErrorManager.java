@@ -411,7 +411,7 @@ public final class ErrorManager implements Serializable, ConfigChangeListener {
             FatalErrorDialog.displayBlocking(error);
         }
 
-        while (error.getReportStatus() == ErrorReportStatus.QUEUED) {
+        while (!error.getReportStatus().isTerminal()) {
             try {
                 synchronized (error) {
                     error.wait();
