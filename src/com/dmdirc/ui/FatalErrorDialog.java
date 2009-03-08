@@ -19,10 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.dmdirc.ui;
 
 import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
+import com.dmdirc.logger.ErrorListener;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ErrorReportStatus;
 import com.dmdirc.logger.ProgramError;
@@ -53,12 +53,12 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-
 /**
  * The fatal error dialog is used to inform the user that a fatal error has
  * occured.
  */
-public final class FatalErrorDialog extends JDialog implements ActionListener {
+public final class FatalErrorDialog extends JDialog implements ActionListener,
+        ErrorListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -95,6 +95,8 @@ public final class FatalErrorDialog extends JDialog implements ActionListener {
 
         initComponents();
         layoutComponents();
+        
+        ErrorManager.getErrorManager().addErrorListener(this);
 
         setLocationRelativeTo(getParent());
         setResizable(false);
@@ -116,7 +118,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener {
         messageLabel.setHighlighter(null);
         final SimpleAttributeSet sas = new SimpleAttributeSet();
         StyleConstants.setAlignment(sas, StyleConstants.ALIGN_JUSTIFIED);
-        
+
         scrollPane = new JScrollPane();
         okButton = new JButton();
         sendButton = new JButton();
@@ -150,6 +152,10 @@ public final class FatalErrorDialog extends JDialog implements ActionListener {
         okButton.setText("OK");
         sendButton.setText("Send");
 
+        final ErrorReportStatus status = error.getReportStatus();
+        okButton.setEnabled(status.isTerminal());
+        updateSendButtonText(status);
+
         okButton.addActionListener(this);
         sendButton.addActionListener(this);
     }
@@ -165,7 +171,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener {
         blurb.setLayout(new BorderLayout(5, 5));
         info.setLayout(new BorderLayout(5, 5));
         buttons.setLayout(new BoxLayout(buttons, BoxLayout.LINE_AXIS));
-        
+
         blurb.add(new JLabel(icon), BorderLayout.LINE_START);
         blurb.add(infoLabel, BorderLayout.CENTER);
 
@@ -184,7 +190,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener {
         panel.add(buttons, BorderLayout.SOUTH);
 
         getContentPane().add(panel);
-        
+
         setSize(new Dimension(550, 260));
     }
 
@@ -204,7 +210,6 @@ public final class FatalErrorDialog extends JDialog implements ActionListener {
                 /** {@inheritDoc} */
                 @Override
                 protected Object doInBackground() throws Exception {
-                    error.send();
                     ErrorManager.getErrorManager().sendError(error);
                     return null;
                 }
@@ -213,7 +218,6 @@ public final class FatalErrorDialog extends JDialog implements ActionListener {
                 @Override
                 protected void done() {
                     super.done();
-                    dispose();
                 }
             }.execute();
         } else {
@@ -263,5 +267,67 @@ public final class FatalErrorDialog extends JDialog implements ActionListener {
             }
         });
         semaphore.acquireUninterruptibly();
+    }
+
+    private void updateSendButtonText(final ErrorReportStatus status) {
+        switch (status) {
+            case WAITING:
+                sendButton.setText("Send");
+                sendButton.setEnabled(true);
+                break;
+            case QUEUED:
+                sendButton.setText("Queued");
+                sendButton.setEnabled(false);
+                break;
+            case SENDING:
+                sendButton.setText("Sending");
+                sendButton.setEnabled(false);
+                break;
+            case ERROR:
+                sendButton.setText("Error, resend");
+                sendButton.setEnabled(true);
+                break;
+            case FINISHED:
+                sendButton.setText("Sent");
+                sendButton.setEnabled(false);
+                break;
+            case NOT_APPLICABLE:
+                sendButton.setText("N/A");
+                sendButton.setEnabled(false);
+                break;
+            default:
+                sendButton.setText("Send");
+                sendButton.setEnabled(true);
+                break;
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void errorAdded(final ProgramError error) {
+        //Ignore
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void errorDeleted(final ProgramError error) {
+        //Ignore
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void errorStatusChanged(final ProgramError error) {
+        if (this.error.equals(error)) {
+            final ErrorReportStatus status = error.getReportStatus();
+            okButton.setEnabled(status.isTerminal());   
+            updateSendButtonText(status);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isReady() {
+        //We're never ready
+        return false;
     }
 }
