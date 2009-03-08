@@ -106,7 +106,6 @@ public class IrcAddressTest {
     }
 
     @Test
-    @Ignore
     public void testConnect() throws InvalidAddressException {
         final IrcAddress address = new IrcAddress("irc://255.255.255.205/a,b,c");
 
