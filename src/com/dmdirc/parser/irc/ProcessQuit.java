@@ -23,8 +23,6 @@
 package com.dmdirc.parser.irc;
 
 import java.util.ArrayList;
-import com.dmdirc.parser.irc.callbacks.CallbackOnChannelQuit;
-import com.dmdirc.parser.irc.callbacks.CallbackOnQuit;
 
 /**
  * Process a Quit message.
@@ -89,7 +87,7 @@ public class ProcessQuit extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelQuit(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sReason) {
-		return ((CallbackOnChannelQuit) getCallbackManager().getCallbackType("OnChannelQuit")).call(cChannel, cChannelClient, sReason);
+		return getCallbackManager().getCallbackType("OnChannelQuit").call(cChannel, cChannelClient, sReason);
 	}
 	
 	/**
@@ -101,7 +99,7 @@ public class ProcessQuit extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callQuit(final ClientInfo cClient, final String sReason) {
-		return ((CallbackOnQuit) getCallbackManager().getCallbackType("OnQuit")).call(cClient, sReason);
+		return getCallbackManager().getCallbackType("OnQuit").call(cClient, sReason);
 	}
 	
 	/**

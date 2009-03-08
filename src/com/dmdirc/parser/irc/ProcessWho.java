@@ -22,10 +22,6 @@
 
 package com.dmdirc.parser.irc;
 
-import com.dmdirc.parser.irc.callbacks.CallbackOnAwayState;
-import com.dmdirc.parser.irc.callbacks.CallbackOnAwayStateOther;
-import com.dmdirc.parser.irc.callbacks.CallbackOnChannelAwayStateOther;
-
 /**
  * Process a /who reply.
  */
@@ -92,7 +88,7 @@ public class ProcessWho extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callAwayState(boolean currentState, String reason) {
-		return ((CallbackOnAwayState) myParser.getCallbackManager().getCallbackType("OnAwayState")).call(currentState, reason);
+		return getCallbackManager().getCallbackType("OnAwayState").call(currentState, reason);
 	}
 	
 	/**
@@ -104,7 +100,7 @@ public class ProcessWho extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callAwayStateOther(final ClientInfo client, final boolean state) {
-		return ((CallbackOnAwayStateOther) myParser.getCallbackManager().getCallbackType("OnAwayStateOther")).call(client, state);
+		return getCallbackManager().getCallbackType("OnAwayStateOther").call(client, state);
 	}
 	
 	/**
@@ -117,7 +113,7 @@ public class ProcessWho extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelAwayStateOther(final ChannelInfo channel, final ChannelClientInfo channelClient, final boolean state) {
-		return ((CallbackOnChannelAwayStateOther) myParser.getCallbackManager().getCallbackType("OnChannelAwayStateOther")).call(channel, channelClient, state);
+		return getCallbackManager().getCallbackType("OnChannelAwayStateOther").call(channel, channelClient, state);
 	}
 	
 	/**

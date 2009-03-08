@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.ParserError;
 import com.dmdirc.parser.irc.callbacks.interfaces.ICallbackInterface;
+import java.util.List;
 
 /**
  * CallbackObject.
@@ -34,9 +35,13 @@ import com.dmdirc.parser.irc.callbacks.interfaces.ICallbackInterface;
  *
  * @author            Shane Mc Cormack
  */
-public abstract class CallbackObject {
+public class CallbackObject {
+
+    /** The type of callback that this object is operating with. */
+    protected final Class<? extends ICallbackInterface> type;
+
 	/** Arraylist for storing callback information related to the callback. */
-	protected volatile ArrayList<ICallbackInterface> callbackInfo = new ArrayList<ICallbackInterface>();
+	protected final List<ICallbackInterface> callbackInfo = new ArrayList<ICallbackInterface>();
 	
 	/** Reference to the IRCParser that owns this callback. */
 	protected IRCParser myParser;
@@ -48,10 +53,14 @@ public abstract class CallbackObject {
 	 *
 	 * @param parser IRCParser That owns this callback
 	 * @param manager CallbackManager that is in charge of this callback
+     * @param type The type of callback to use
+     * @since 0.6.3
 	 */
-	protected CallbackObject(final IRCParser parser, final CallbackManager manager) {
+	protected CallbackObject(final IRCParser parser, final CallbackManager manager,
+            final Class<? extends ICallbackInterface> type) {
 		this.myParser = parser;
 		this.myManager = manager;
+        this.type = type;
 	}
 	
 	/**
@@ -84,7 +93,7 @@ public abstract class CallbackObject {
 	 * @return true if error call succeeded, false otherwise
 	 */
 	protected final boolean callErrorInfo(final ParserError errorInfo) {
-		return ((CallbackOnErrorInfo) myManager.getCallbackType("OnErrorInfo")).call(errorInfo);
+		return myManager.getCallbackType("OnErrorInfo").call(errorInfo);
 	}
 	
 	/**
@@ -107,12 +116,7 @@ public abstract class CallbackObject {
 	 * @return Name of callback
 	 */
 	public String getName() {
-		final Package thisPackage = this.getClass().getPackage();
-		int packageLength = 0;
-		if (thisPackage != null) {
-			packageLength = thisPackage.getName().length() + 1;
-		}
-		return this.getClass().getName().substring(packageLength + 8); // 8 is the length of "Callback"
+		return "On" + type.getSimpleName().substring(1); // Trim the 'I'
 	}
 	
 	/**
@@ -121,5 +125,33 @@ public abstract class CallbackObject {
 	 * @return Name of callback, in lowercase
 	 */
 	public final String getLowerName() { return this.getName().toLowerCase(); }
+
+    /**
+     * Actually calls this callback. The specified arguments must match those
+     * specified in the callback's interface, or an error will be raised.
+     *
+     * @param args The arguments to pass to the callback implementation
+     * @return True if a method was called, false otherwise
+     */
+    public boolean call(final Object ... args) {
+		boolean bResult = false;
+
+        final Object[] newArgs = new Object[args.length + 1];
+        System.arraycopy(args, 0, newArgs, 1, args.length);
+        newArgs[0] = myParser;
+
+		for (ICallbackInterface iface : new ArrayList<ICallbackInterface>(callbackInfo)) {
+			try {
+                type.getMethods()[0].invoke(iface, newArgs);
+			} catch (Exception e) {
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR,
+                        "Exception in callback ("+e.getMessage()+")", myParser.getLastLine());
+				ei.setException(e);
+				callErrorInfo(ei);
+			}
+			bResult = true;
+		}
+		return bResult;
+    }
 
 }

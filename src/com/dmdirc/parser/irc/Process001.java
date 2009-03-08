@@ -22,8 +22,6 @@
 
 package com.dmdirc.parser.irc;
 
-import com.dmdirc.parser.irc.callbacks.CallbackOnServerReady;
-
 /**
  * Process a 001 message.
  */
@@ -86,7 +84,7 @@ public class Process001 extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */	
 	protected boolean callServerReady() {
-		return ((CallbackOnServerReady) getCallbackManager().getCallbackType("OnServerReady")).call();
+		return getCallbackManager().getCallbackType("OnServerReady").call();
 	}
 	
 	/**

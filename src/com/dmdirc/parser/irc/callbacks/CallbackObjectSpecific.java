@@ -27,7 +27,9 @@ import java.util.Hashtable;
 import com.dmdirc.parser.irc.ChannelInfo;
 import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.irc.ParserError;
 import com.dmdirc.parser.irc.callbacks.interfaces.ICallbackInterface;
+import java.util.ArrayList;
 
 /**
  * CallbackObjectSpecific.
@@ -35,7 +37,7 @@ import com.dmdirc.parser.irc.callbacks.interfaces.ICallbackInterface;
  *
  * @author            Shane Mc Cormack
  */
-public abstract class CallbackObjectSpecific extends CallbackObject {
+public class CallbackObjectSpecific extends CallbackObject {
 	
 	/** Hashtable for storing specific information for callback. */	
 	protected volatile Hashtable<ICallbackInterface, String> specificData = new Hashtable<ICallbackInterface, String>();
@@ -45,8 +47,13 @@ public abstract class CallbackObjectSpecific extends CallbackObject {
 	 *
 	 * @param parser IRCParser That owns this callback
 	 * @param manager CallbackManager that is in charge of this callback
+     * @param type The type of callback to use
+     * @since 0.6.3
 	 */
-	public CallbackObjectSpecific(final IRCParser parser, final CallbackManager manager) { super(parser, manager);  }
+	public CallbackObjectSpecific(final IRCParser parser,
+            final CallbackManager manager, final Class<? extends ICallbackInterface> type) {
+        super(parser, manager, type);
+    }
 	
 	/**
 	 * Used to check if a channel matches the specificData.
@@ -84,6 +91,7 @@ public abstract class CallbackObjectSpecific extends CallbackObject {
 	 *
 	 * @param eMethod Object to callback to.
 	 */
+    @Override
 	public void add(final ICallbackInterface eMethod) {
 		addCallback(eMethod);
 		if (specificData.containsKey(eMethod)) { specificData.remove(eMethod); }
@@ -107,9 +115,47 @@ public abstract class CallbackObjectSpecific extends CallbackObject {
 	 *
 	 * @param eMethod Object to remove callback to.
 	 */
+    @Override
 	public void del(final ICallbackInterface eMethod) {
 		delCallback(eMethod);
 		if (specificData.containsKey(eMethod)) { specificData.remove(eMethod); }
 	}
+
+    /**
+     * Actually calls this callback. The specified arguments must match those
+     * specified in the callback's interface, or an error will be raised.
+     *
+     * @param args The arguments to pass to the callback implementation
+     * @return True if a method was called, false otherwise
+     */
+    @Override
+    public boolean call(final Object ... args) {
+		boolean bResult = false;
+
+        final Object[] newArgs = new Object[args.length + 1];
+        System.arraycopy(args, 0, newArgs, 1, args.length);
+        newArgs[0] = myParser;
+
+		for (ICallbackInterface iface :new ArrayList<ICallbackInterface>(callbackInfo)) {
+            if (args[0] instanceof ClientInfo
+                    && !isValidUser(iface, ((ClientInfo) args[0]).getHost())) {
+                continue;
+            } else if (args[0] instanceof ChannelInfo
+                    && !isValidChan(iface, (ChannelInfo) args[0])) {
+                continue;
+            }
+
+			try {
+                type.getMethods()[0].invoke(iface, newArgs);
+			} catch (Exception e) {
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR,
+                        "Exception in callback ("+e.getMessage()+")", myParser.getLastLine());
+				ei.setException(e);
+				callErrorInfo(ei);
+			}
+			bResult = true;
+		}
+		return bResult;
+    }
 
 }

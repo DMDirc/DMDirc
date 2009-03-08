@@ -26,9 +26,6 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import com.dmdirc.parser.irc.callbacks.CallbackOnChannelGotListModes;
-// import com.dmdirc.parser.irc.callbacks.interfaces.;
-
 /**
  * Process a List Modes.
  */
@@ -209,7 +206,7 @@ public class ProcessListModes extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelGotListModes(ChannelInfo cChannel) {
-		return ((CallbackOnChannelGotListModes) getCallbackManager().getCallbackType("OnChannelGotListModes")).call(cChannel);
+		return getCallbackManager().getCallbackType("OnChannelGotListModes").call(cChannel);
 	}
 	
 	/**

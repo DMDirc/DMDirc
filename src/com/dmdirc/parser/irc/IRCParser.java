@@ -23,17 +23,6 @@
 package com.dmdirc.parser.irc;
 
 import com.dmdirc.parser.irc.callbacks.CallbackManager;
-import com.dmdirc.parser.irc.callbacks.CallbackOnConnectError;
-import com.dmdirc.parser.irc.callbacks.CallbackOnDataIn;
-import com.dmdirc.parser.irc.callbacks.CallbackOnDataOut;
-import com.dmdirc.parser.irc.callbacks.CallbackOnDebugInfo;
-import com.dmdirc.parser.irc.callbacks.CallbackOnErrorInfo;
-import com.dmdirc.parser.irc.callbacks.CallbackOnServerError;
-import com.dmdirc.parser.irc.callbacks.CallbackOnSocketClosed;
-import com.dmdirc.parser.irc.callbacks.CallbackOnPingFailed;
-import com.dmdirc.parser.irc.callbacks.CallbackOnPingSent;
-import com.dmdirc.parser.irc.callbacks.CallbackOnPingSuccess;
-import com.dmdirc.parser.irc.callbacks.CallbackOnPost005;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -440,7 +429,7 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callServerError(final String message) {
-		return ((CallbackOnServerError) myCallbackManager.getCallbackType("OnServerError")).call(message);
+		return myCallbackManager.getCallbackType("OnServerError").call(message);
 	}
 
 	/**
@@ -451,7 +440,7 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callDataIn(final String data) {
-		return ((CallbackOnDataIn) myCallbackManager.getCallbackType("OnDataIn")).call(data);
+		return myCallbackManager.getCallbackType("OnDataIn").call(data);
 	}
 
 	/**
@@ -463,7 +452,7 @@ public class IRCParser implements Runnable {
 	 * @see com.dmdirc.parser.irc.callbacks.interfaces.IDataOut
 	 */
 	protected boolean callDataOut(final String data, final boolean fromParser) {
-		return ((CallbackOnDataOut) myCallbackManager.getCallbackType("OnDataOut")).call(data, fromParser);
+		return myCallbackManager.getCallbackType("OnDataOut").call(data, fromParser);
 	}
 
 	/**
@@ -487,7 +476,7 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callDebugInfo(final int level, final String data) {
-		return ((CallbackOnDebugInfo) myCallbackManager.getCallbackType("OnDebugInfo")).call(level, data);
+		return myCallbackManager.getCallbackType("OnDebugInfo").call(level, data);
 	}
 
 	/**
@@ -498,7 +487,7 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callErrorInfo(final ParserError errorInfo) {
-		return ((CallbackOnErrorInfo) myCallbackManager.getCallbackType("OnErrorInfo")).call(errorInfo);
+		return myCallbackManager.getCallbackType("OnErrorInfo").call(errorInfo);
 	}
 
 	/**
@@ -509,7 +498,7 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callConnectError(final ParserError errorInfo) {
-		return ((CallbackOnConnectError) myCallbackManager.getCallbackType("OnConnectError")).call(errorInfo);
+		return myCallbackManager.getCallbackType("OnConnectError").call(errorInfo);
 	}
 
 	/**
@@ -519,7 +508,7 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callSocketClosed() {
-		return ((CallbackOnSocketClosed) myCallbackManager.getCallbackType("OnSocketClosed")).call();
+		return myCallbackManager.getCallbackType("OnSocketClosed").call();
 	}
 
 	/**
@@ -529,7 +518,7 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callPingFailed() {
-		return ((CallbackOnPingFailed) myCallbackManager.getCallbackType("OnPingFailed")).call();
+		return myCallbackManager.getCallbackType("OnPingFailed").call();
 	}
 
 	/**
@@ -539,7 +528,7 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callPingSent() {
-		return ((CallbackOnPingSent) myCallbackManager.getCallbackType("OnPingSent")).call();
+		return myCallbackManager.getCallbackType("OnPingSent").call();
 	}
 
 	/**
@@ -549,7 +538,7 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callPingSuccess() {
-		return ((CallbackOnPingSuccess) myCallbackManager.getCallbackType("OnPingSuccess")).call();
+		return myCallbackManager.getCallbackType("OnPingSuccess").call();
 	}
 
 	/**
@@ -562,7 +551,7 @@ public class IRCParser implements Runnable {
 		if (post005) { return false; }
 		post005 = true;
 
-		return ((CallbackOnPost005) getCallbackManager().getCallbackType("OnPost005")).call();
+		return getCallbackManager().getCallbackType("OnPost005").call();
 	}
 
 	//---------------------------------------------------------------------------

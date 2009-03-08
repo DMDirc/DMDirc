@@ -22,10 +22,6 @@
 
 package com.dmdirc.parser.irc;
 
-import com.dmdirc.parser.irc.callbacks.CallbackOnMOTDEnd;
-import com.dmdirc.parser.irc.callbacks.CallbackOnMOTDLine;
-import com.dmdirc.parser.irc.callbacks.CallbackOnMOTDStart;
-
 /**
  * Process a MOTD Related Line.
  */
@@ -61,7 +57,7 @@ public class ProcessMOTD extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callMOTDEnd(final boolean noMOTD, final String data) {
-		return ((CallbackOnMOTDEnd) getCallbackManager().getCallbackType("OnMOTDEnd")).call(noMOTD, data);
+		return getCallbackManager().getCallbackType("OnMOTDEnd").call(noMOTD, data);
 	}
 	
 	/**
@@ -72,7 +68,7 @@ public class ProcessMOTD extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callMOTDLine(final String data) {
-		return ((CallbackOnMOTDLine) getCallbackManager().getCallbackType("OnMOTDLine")).call(data);
+		return getCallbackManager().getCallbackType("OnMOTDLine").call(data);
 	}
 	
 	/**
@@ -83,7 +79,7 @@ public class ProcessMOTD extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callMOTDStart(String data) {
-		return ((CallbackOnMOTDStart) getCallbackManager().getCallbackType("OnMOTDStart")).call(data);
+		return getCallbackManager().getCallbackType("OnMOTDStart").call(data);
 	}
 	
 	/**

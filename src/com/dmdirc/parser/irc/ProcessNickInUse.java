@@ -22,8 +22,6 @@
 
 package com.dmdirc.parser.irc;
 
-import com.dmdirc.parser.irc.callbacks.CallbackOnNickInUse;
-
 /**
  * Process a NickInUse message.
  * Parser implements handling of this if Pre-001 and no other handler found,
@@ -75,7 +73,7 @@ public class ProcessNickInUse extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callNickInUse(final String nickname) {
-		return ((CallbackOnNickInUse) getCallbackManager().getCallbackType("OnNickInUse")).call(nickname);
+		return getCallbackManager().getCallbackType("OnNickInUse").call(nickname);
 	}
 	
 	/**

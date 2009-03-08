@@ -22,9 +22,6 @@
 
 package com.dmdirc.parser.irc;
 
-import com.dmdirc.parser.irc.callbacks.CallbackOnChannelNickChanged;
-import com.dmdirc.parser.irc.callbacks.CallbackOnNickChanged;
-
 /**
  * Process a Nick change.
  */
@@ -91,7 +88,7 @@ public class ProcessNick extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelNickChanged(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sOldNick) {
-		return ((CallbackOnChannelNickChanged) getCallbackManager().getCallbackType("OnChannelNickChanged")).call(cChannel, cChannelClient, sOldNick);
+		return getCallbackManager().getCallbackType("OnChannelNickChanged").call(cChannel, cChannelClient, sOldNick);
 	}
 	
 	/**
@@ -103,7 +100,7 @@ public class ProcessNick extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callNickChanged(ClientInfo cClient, String sOldNick) {
-		return ((CallbackOnNickChanged) getCallbackManager().getCallbackType("OnNickChanged")).call(cClient, sOldNick);
+		return getCallbackManager().getCallbackType("OnNickChanged").call(cClient, sOldNick);
 	}
 	
 	/**

@@ -22,8 +22,6 @@
 
 package com.dmdirc.parser.irc;
 
-import com.dmdirc.parser.irc.callbacks.CallbackOnChannelGotNames;
-
 /**
  * Process a Names reply.
  */
@@ -108,7 +106,7 @@ public class ProcessNames extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelGotNames(ChannelInfo cChannel) {
-		return ((CallbackOnChannelGotNames) getCallbackManager().getCallbackType("OnChannelGotNames")).call(cChannel);
+		return getCallbackManager().getCallbackType("OnChannelGotNames").call(cChannel);
 	}
 	
 	/**

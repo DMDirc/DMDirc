@@ -22,8 +22,6 @@
 
 package com.dmdirc.parser.irc;
 
-import com.dmdirc.parser.irc.callbacks.CallbackOnChannelTopic;
-
 /**
  * Process a topic change.
  */
@@ -77,7 +75,7 @@ public class ProcessTopic extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelTopic(final ChannelInfo cChannel, final boolean bIsJoinTopic) {
-		return ((CallbackOnChannelTopic) getCallbackManager().getCallbackType("OnChannelTopic")).call(cChannel, bIsJoinTopic);
+		return getCallbackManager().getCallbackType("OnChannelTopic").call(cChannel, bIsJoinTopic);
 	}
 	
 	/**

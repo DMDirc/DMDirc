@@ -22,8 +22,6 @@
 
 package com.dmdirc.parser.irc;
 
-import com.dmdirc.parser.irc.callbacks.CallbackOnAwayState;
-
 /**
  * Process an Away/Back message.
  */
@@ -54,7 +52,7 @@ public class ProcessAway extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callAwayState(boolean currentState, String reason) {
-		return ((CallbackOnAwayState) myParser.getCallbackManager().getCallbackType("OnAwayState")).call(currentState, reason);
+		return myParser.getCallbackManager().getCallbackType("OnAwayState").call(currentState, reason);
 	}
 	
 	/**

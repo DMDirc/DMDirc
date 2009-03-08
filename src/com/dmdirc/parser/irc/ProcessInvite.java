@@ -22,8 +22,6 @@
 
 package com.dmdirc.parser.irc;
 
-import com.dmdirc.parser.irc.callbacks.CallbackOnInvite;
-
 /**
  * Process an Invite Request.
  */
@@ -51,7 +49,7 @@ public class ProcessInvite extends IRCProcessor {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callInvite(final String userHost, final String channel) {
-		return ((CallbackOnInvite) getCallbackManager().getCallbackType("OnInvite")).call(userHost, channel);
+		return getCallbackManager().getCallbackType("OnInvite").call(userHost, channel);
 	}
 	
 	/**

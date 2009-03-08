@@ -24,8 +24,12 @@ package com.dmdirc.parser.irc.callbacks;
 
 import java.util.Hashtable;
 
+import com.dmdirc.parser.irc.ChannelInfo;
+import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.parser.irc.IRCParser;
-import com.dmdirc.parser.irc.callbacks.interfaces.ICallbackInterface;
+import com.dmdirc.parser.irc.callbacks.interfaces.*;
+import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
  * IRC Parser Callback Manager.
@@ -34,11 +38,34 @@ import com.dmdirc.parser.irc.callbacks.interfaces.ICallbackInterface;
  * @author            Shane Mc Cormack
  */
 public final class CallbackManager {
+
+    private static final Class[] CLASSES = {
+        IAwayState.class, IAwayStateOther.class, IChannelAwayStateOther.class,
+        IChannelAction.class, IChannelCTCP.class, IChannelCTCPReply.class,
+        IChannelGotListModes.class, IChannelGotNames.class, IChannelJoin.class,
+        IChannelKick.class, IChannelMessage.class, IChannelModeChanged.class,
+        IChannelNickChanged.class, IChannelNonUserModeChanged.class,
+        IChannelNotice.class, IChannelPart.class, IChannelQuit.class,
+        IChannelSelfJoin.class, IChannelSingleModeChanged.class,
+        IChannelTopic.class, IChannelUserModeChanged.class, IConnectError.class,
+        IDataIn.class, IDataOut.class, IDebugInfo.class, IErrorInfo.class,
+        IGotNetwork.class, IInvite.class, IMOTDEnd.class, IMOTDLine.class,
+        IMOTDStart.class, INickChanged.class, INickInUse.class,
+        INoticeAuth.class, INumeric.class, IPasswordRequired.class,
+        IPingFailed.class, IPingSuccess.class, IPingSent.class, IPrivateAction.class,
+        IPrivateCTCP.class, IPrivateCTCPReply.class, IPrivateMessage.class,
+        IPrivateNotice.class, IPost005.class, IQuit.class, IServerError.class,
+        IServerReady.class, ISocketClosed.class, IUnknownAction.class,
+        IUnknownCTCP.class, IUnknownCTCPReply.class, IUnknownMessage.class,
+        IUnknownNotice.class, IUserModeChanged.class, IUserModeDiscovered.class,
+        IWallDesync.class, IWallop.class, IWalluser.class,
+    };
+
 	/** Reference to the parser object that owns this CallbackManager. */
 	IRCParser myParser;
 	
 	/** Hashtable used to store the different types of callback known. */
-	private Hashtable<String, CallbackObject> callbackHash = new Hashtable<String, CallbackObject>();
+	private final Map<String, CallbackObject> callbackHash = new Hashtable<String, CallbackObject>();
 	
 	/**
 	 * Constructor to create a CallbackManager.
@@ -47,66 +74,20 @@ public final class CallbackManager {
 	 */
 	public CallbackManager(final IRCParser parser) {
 		myParser = parser;
-		// Add callbacks
-		addCallbackType(new CallbackOnAwayState(myParser, this));
-		addCallbackType(new CallbackOnAwayStateOther(myParser, this));
-		addCallbackType(new CallbackOnChannelAwayStateOther(myParser, this));
-		addCallbackType(new CallbackOnChannelAction(myParser, this));
-		addCallbackType(new CallbackOnChannelCTCP(myParser, this));
-		addCallbackType(new CallbackOnChannelCTCPReply(myParser, this));
-		addCallbackType(new CallbackOnChannelGotListModes(myParser, this));
-		addCallbackType(new CallbackOnChannelGotNames(myParser, this));
-		addCallbackType(new CallbackOnChannelJoin(myParser, this));
-		addCallbackType(new CallbackOnChannelKick(myParser, this));
-		addCallbackType(new CallbackOnChannelMessage(myParser, this));
-		addCallbackType(new CallbackOnChannelModeChanged(myParser, this));
-		addCallbackType(new CallbackOnChannelNickChanged(myParser, this));
-		addCallbackType(new CallbackOnChannelNonUserModeChanged(myParser, this));
-		addCallbackType(new CallbackOnChannelNotice(myParser, this));
-		addCallbackType(new CallbackOnChannelPart(myParser, this));
-		addCallbackType(new CallbackOnChannelQuit(myParser, this));
-		addCallbackType(new CallbackOnChannelSelfJoin(myParser, this));
-		addCallbackType(new CallbackOnChannelSingleModeChanged(myParser, this));
-		addCallbackType(new CallbackOnChannelTopic(myParser, this));
-		addCallbackType(new CallbackOnChannelUserModeChanged(myParser, this));
-		addCallbackType(new CallbackOnConnectError(myParser, this));
-		addCallbackType(new CallbackOnDataIn(myParser, this));
-		addCallbackType(new CallbackOnDataOut(myParser, this));
-		addCallbackType(new CallbackOnDebugInfo(myParser, this));
-		addCallbackType(new CallbackOnErrorInfo(myParser, this));
-		addCallbackType(new CallbackOnGotNetwork(myParser, this));
-		addCallbackType(new CallbackOnInvite(myParser, this));
-		addCallbackType(new CallbackOnMOTDEnd(myParser, this));
-		addCallbackType(new CallbackOnMOTDLine(myParser, this));
-		addCallbackType(new CallbackOnMOTDStart(myParser, this));
-		addCallbackType(new CallbackOnNickChanged(myParser, this));
-		addCallbackType(new CallbackOnNickInUse(myParser, this));
-		addCallbackType(new CallbackOnNoticeAuth(myParser, this));
-		addCallbackType(new CallbackOnNumeric(myParser, this));
-		addCallbackType(new CallbackOnPasswordRequired(myParser, this));
-		addCallbackType(new CallbackOnPingFailed(myParser, this));
-		addCallbackType(new CallbackOnPingSent(myParser, this));
-		addCallbackType(new CallbackOnPingSuccess(myParser, this));
-		addCallbackType(new CallbackOnPrivateAction(myParser, this));
-		addCallbackType(new CallbackOnPrivateCTCP(myParser, this));
-		addCallbackType(new CallbackOnPrivateCTCPReply(myParser, this));
-		addCallbackType(new CallbackOnPrivateMessage(myParser, this));
-		addCallbackType(new CallbackOnPrivateNotice(myParser, this));
-		addCallbackType(new CallbackOnPost005(myParser, this));
-		addCallbackType(new CallbackOnQuit(myParser, this));
-		addCallbackType(new CallbackOnServerError(myParser, this));
-		addCallbackType(new CallbackOnServerReady(myParser, this));
-		addCallbackType(new CallbackOnSocketClosed(myParser, this));
-		addCallbackType(new CallbackOnUnknownAction(myParser, this));
-		addCallbackType(new CallbackOnUnknownCTCP(myParser, this));
-		addCallbackType(new CallbackOnUnknownCTCPReply(myParser, this));
-		addCallbackType(new CallbackOnUnknownMessage(myParser, this));
-		addCallbackType(new CallbackOnUnknownNotice(myParser, this));
-		addCallbackType(new CallbackOnUserModeChanged(myParser, this));
-		addCallbackType(new CallbackOnUserModeDiscovered(myParser, this));
-		addCallbackType(new CallbackOnWallDesync(myParser, this));
-		addCallbackType(new CallbackOnWallop(myParser, this));
-		addCallbackType(new CallbackOnWalluser(myParser, this));
+		
+        for (Class<?> type : CLASSES) {
+            final Method method = type.getMethods()[0];
+
+            if (method.getParameterTypes().length > 1 &&
+                    (type.getMethods()[0].getParameterTypes()[1].equals(ClientInfo.class)
+                    || type.getMethods()[0].getParameterTypes()[1].equals(ChannelInfo.class))) {
+                addCallbackType(new CallbackObjectSpecific(myParser, this,
+                        type.asSubclass(ICallbackInterface.class)));
+            } else {
+                addCallbackType(new CallbackObject(myParser, this,
+                        type.asSubclass(ICallbackInterface.class)));
+            }
+        }
 	}
 
 	/**
