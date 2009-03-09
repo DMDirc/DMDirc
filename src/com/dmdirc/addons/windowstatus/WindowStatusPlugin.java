@@ -68,12 +68,6 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 	 */
     @Override
 	public void onLoad() {
-		// Set defaults
-		final Identity defaults = IdentityManager.getAddonIdentity();
-		defaults.setOption(getDomain(), "channel.shownone", "true");
-		defaults.setOption(getDomain(), "channel.noneprefix", "None:");
-		defaults.setOption(getDomain(), "client.showname", "false");
-
 		Main.getUI().getStatusBar().addComponent(panel);
 		updateStatus();
 
