@@ -27,6 +27,10 @@ import com.dmdirc.Server;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.addons.dcc.kde.KFileChooser;
+import com.dmdirc.addons.dcc.actions.DCCActions;
+import com.dmdirc.addons.ui_swing.components.TextFrame;
+import com.dmdirc.addons.ui_swing.components.TextLabel;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
@@ -41,18 +45,11 @@ import com.dmdirc.parser.irc.ClientInfo;
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.WindowManager;
-import com.dmdirc.addons.ui_swing.components.TextFrame;
 
-import com.dmdirc.addons.dcc.kde.KFileChooser;
-import com.dmdirc.addons.dcc.actions.DCCActions;
-
-import com.dmdirc.addons.ui_swing.components.TextLabel;
 import java.io.File;
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
