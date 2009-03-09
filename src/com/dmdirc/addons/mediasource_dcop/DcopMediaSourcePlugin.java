@@ -29,6 +29,7 @@ import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
+import com.dmdirc.plugins.NoSuchProviderException;
 import com.dmdirc.plugins.ServiceProvider;
 import com.dmdirc.plugins.ExportedService;
 
@@ -64,18 +65,15 @@ public class DcopMediaSourcePlugin extends Plugin
     @SuppressWarnings("unchecked")
     protected static List<String> getDcopResult(final String query) {
         List<String> result = new ArrayList<String>();
-        final Service service = PluginManager.getPluginManager().getService("export", "dcop");
-        if (service != null) {
-            final ServiceProvider provider = service.getActiveProvider();
+        try {
+            final ServiceProvider provider = PluginManager.getPluginManager().getServiceProvider("export", "dcop");
             
-            if (provider != null) {
-                final ExportedService exportedService = provider.getExportedService("dcop");
-                final Object obj = exportedService.execute(query);
-                if (obj instanceof List) {
-                    result = (List<String>) obj;
-                }
+            final ExportedService exportedService = provider.getExportedService("dcop");
+            final Object obj = exportedService.execute(query);
+            if (obj instanceof List) {
+                result = (List<String>) obj;
             }
-        }
+        } catch (NoSuchProviderException nspe) { }
         
         return result;
     }

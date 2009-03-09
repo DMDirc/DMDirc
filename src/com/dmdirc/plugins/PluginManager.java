@@ -115,6 +115,26 @@ public class PluginManager implements ActionListener {
 	}
 	
 	/**
+	 * Get a ServiceProvider object for the given name/type if one exists.
+	 *
+	 * @param type Type of this service
+	 * @param name Name of this service
+	 * @return A ServiceProvider that provides the requested service.
+	 * @throws NoSuchProviderException If no provider exists for the requested service
+	 */
+	public ServiceProvider getServiceProvider(final String type, final String name) {
+		final Service service = getService("export", "dcop");
+		if (service != null) {
+			final ServiceProvider provider = service.getActiveProvider();
+			if (provider != null) {
+				return provider;
+			}
+		}
+		
+		throw new NoSuchProviderException("No provider found for: "+type+"->"+name);
+	}
+	
+	/**
 	 * Get a List of all services of a specifed type.
 	 *
 	 * @param type Type of service
