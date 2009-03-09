@@ -38,6 +38,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -215,36 +216,44 @@ public class Identity extends ConfigSource implements Serializable,
      * @throws java.io.IOException On I/O exception when reading the identity
      * @throws InvalidConfigFileException if the config file is no longer valid
      */
-    public synchronized void reload() throws IOException, InvalidConfigFileException {
+    public void reload() throws IOException, InvalidConfigFileException {
         if (needSave) {
             return;
         }
 
-        final Map<String, Map<String, String>> oldProps = file.getKeyDomains();
+        final List<String[]> changes = new LinkedList<String[]>();
 
-        file.read();
+        synchronized (this) {
+            final Map<String, Map<String, String>> oldProps = file.getKeyDomains();
 
-        for (Map.Entry<String, Map<String, String>> entry : file.getKeyDomains().entrySet()) {
-            final String domain = entry.getKey();
+            file.read();
 
-            for (Map.Entry<String, String> subentry : entry.getValue().entrySet()) {
-                final String key = subentry.getKey();
-                final String value = subentry.getValue();
+            for (Map.Entry<String, Map<String, String>> entry : file.getKeyDomains().entrySet()) {
+                final String domain = entry.getKey();
 
-                if (!oldProps.containsKey(domain)) {
-                    fireReloadChange(domain, key);
-                } else if (!oldProps.get(domain).containsKey(key)
-                        || !oldProps.get(domain).get(key).equals(value)) {
-                    fireReloadChange(domain, key);
-                    oldProps.get(domain).remove(key);
+                for (Map.Entry<String, String> subentry : entry.getValue().entrySet()) {
+                    final String key = subentry.getKey();
+                    final String value = subentry.getValue();
+
+                    if (!oldProps.containsKey(domain)) {
+                        changes.add(new String[]{domain, key});
+                    } else if (!oldProps.get(domain).containsKey(key)
+                            || !oldProps.get(domain).get(key).equals(value)) {
+                        changes.add(new String[]{domain, key});
+                        oldProps.get(domain).remove(key);
+                    }
+                }
+
+                if (oldProps.containsKey(domain)) {
+                    for (String key : oldProps.get(domain).keySet()) {
+                        changes.add(new String[]{domain, key});
+                    }
                 }
             }
+        }
 
-            if (oldProps.containsKey(domain)) {
-                for (String key : oldProps.get(domain).keySet()) {
-                    fireReloadChange(domain, key);
-                }
-            }
+        for (String[] change : changes) {
+            fireSettingChange(change[0], change[1]);
         }
     }
 
@@ -254,8 +263,9 @@ public class Identity extends ConfigSource implements Serializable,
      *
      * @param domain The domain of the option that's changed
      * @param key The key of the option that's changed
+     * @since 0.6.3
      */
-    private void fireReloadChange(final String domain, final String key) {
+    private void fireSettingChange(final String domain, final String key) {
         for (ConfigChangeListener listener : new ArrayList<ConfigChangeListener>(listeners)) {
             listener.configChanged(domain, key);
         }
@@ -355,10 +365,7 @@ public class Identity extends ConfigSource implements Serializable,
             file.getKeyDomain(domain).put(option, value);
             needSave = true;
 
-            for (ConfigChangeListener listener :
-                new ArrayList<ConfigChangeListener>(listeners)) {
-                listener.configChanged(domain, option);
-            }
+            fireSettingChange(domain, value);
         }
     }
 
@@ -413,9 +420,7 @@ public class Identity extends ConfigSource implements Serializable,
         file.getKeyDomain(domain).remove(option);
         needSave = true;
 
-        for (ConfigChangeListener listener : new ArrayList<ConfigChangeListener>(listeners)) {
-            listener.configChanged(domain, option);
-        }
+        fireSettingChange(domain, option);
     }
 
     /**
