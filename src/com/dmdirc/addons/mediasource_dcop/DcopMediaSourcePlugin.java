@@ -24,14 +24,8 @@ package com.dmdirc.addons.mediasource_dcop;
 
 import com.dmdirc.addons.nowplaying.MediaSource;
 import com.dmdirc.addons.nowplaying.MediaSourceManager;
-import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.plugins.Plugin;
-import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
-import com.dmdirc.plugins.Service;
-import com.dmdirc.plugins.NoSuchProviderException;
-import com.dmdirc.plugins.ServiceProvider;
-import com.dmdirc.plugins.ExportedService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,17 +58,8 @@ public class DcopMediaSourcePlugin extends Plugin
      */
     @SuppressWarnings("unchecked")
     protected static List<String> getDcopResult(final String query) {
-        List<String> result = new ArrayList<String>();
-        try {
-            final ExportedService exportedService = PluginManager.getPluginManager().getExportedService("dcop");
-
-            final Object obj = exportedService.execute(query);
-            if (obj instanceof List) {
-                result = (List<String>) obj;
-            }
-        } catch (NoSuchProviderException nspe) { }
-        
-        return result;
+        return (List<String>) PluginManager.getPluginManager()
+                .getExportedService("dcop").execute(query);
     }
     
     /** {@inheritDoc} */
@@ -94,22 +79,5 @@ public class DcopMediaSourcePlugin extends Plugin
     public void onUnload() {
         // Nothing to do
     }
-    
-    /** {@inheritDoc} */
-    @Override
-    public ValidationResponse checkPrerequisites() {
-        PluginManager.getPluginManager().addPlugin("dcop.jar");
-        
-        final PluginInfo pi = PluginManager.getPluginManager().getPluginInfoByName("dcop");
-        
-        if (pi == null) {
-            return new ValidationResponse("DCOP Plugin not found");
-        }
-        
-        if (!pi.isLoaded()) {
-            pi.loadPlugin();
-        }
 
-        return new ValidationResponse();
-    }
 }
