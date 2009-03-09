@@ -80,6 +80,9 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	
 	/** Button */
 	private final JButton button = new JButton("Cancel");
+
+    /** Plugin that this send belongs to. */
+    private final DCCPlugin myPlugin;
 	
 	/** IRC Parser that caused this send */
 	private IRCParser parser = null;
@@ -98,6 +101,8 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 		super(plugin, title, dcc.getType() == DCCSend.TransferType.SEND ? "dcc-send-inactive" : "dcc-receive-inactive");
 		this.dcc = dcc;
 		this.parser = parser;
+        this.myPlugin = plugin;
+        
 		if (parser != null) {
 			parser.getCallbackManager().addNonCriticalCallback("onSocketClosed", this);
 		}
@@ -186,10 +191,10 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 					return;
 				} else {
 					if (IdentityManager.getGlobalConfig().getOptionBool(plugin.getDomain(), "send.reverse")) {
-						parser.sendCTCP(otherNickname, "DCC", "SEND \""+(new File(dcc.getFileName())).getName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" 0 "+dcc.getFileSize()+" "+dcc.makeToken()+((dcc.isTurbo()) ? " T" : ""));
+						parser.sendCTCP(otherNickname, "DCC", "SEND \""+(new File(dcc.getFileName())).getName()+"\" "+DCC.ipToLong(myPlugin.getListenIP(parser))+" 0 "+dcc.getFileSize()+" "+dcc.makeToken()+((dcc.isTurbo()) ? " T" : ""));
 						return;
 					} else if (plugin.listen(dcc)) {
-						parser.sendCTCP(otherNickname, "DCC", "SEND \""+(new File(dcc.getFileName())).getName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" "+dcc.getPort()+" "+dcc.getFileSize()+((dcc.isTurbo()) ? " T" : ""));
+						parser.sendCTCP(otherNickname, "DCC", "SEND \""+(new File(dcc.getFileName())).getName()+"\" "+DCC.ipToLong(myPlugin.getListenIP(parser))+" "+dcc.getPort()+" "+dcc.getFileSize()+((dcc.isTurbo()) ? " T" : ""));
 						return;
 					}
 				}

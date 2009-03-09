@@ -97,7 +97,7 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 				if (myPlugin.listen(chat)) {
 					final DCCChatWindow window = new DCCChatWindow(myPlugin, chat, "*Chat: "+target, myNickname, target);
 					
-					parser.sendCTCP(target, "DCC", "CHAT chat "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" "+chat.getPort());
+					parser.sendCTCP(target, "DCC", "CHAT chat "+DCC.ipToLong(myPlugin.getListenIP(parser))+" "+chat.getPort());
 					
 					ActionManager.processEvent(DCCActions.DCC_CHAT_REQUEST_SENT, null, server, target);
 					
@@ -167,11 +167,11 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 					
 					if (IdentityManager.getGlobalConfig().getOptionBool(myPlugin.getDomain(), "send.reverse")) {
 						new DCCSendWindow(myPlugin, send, "Send: "+target, myNickname, target, parser);
-						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" 0 "+send.getFileSize()+" "+send.makeToken()+((send.isTurbo()) ? " T" : ""));
+						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(myPlugin.getListenIP(parser))+" 0 "+send.getFileSize()+" "+send.makeToken()+((send.isTurbo()) ? " T" : ""));
 					} else {
 						if (myPlugin.listen(send)) {
 							new DCCSendWindow(myPlugin, send, "*Send: "+target, myNickname, target, parser);
-							parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(DCCPlugin.getListenIP(parser))+" "+send.getPort()+" "+send.getFileSize()+((send.isTurbo()) ? " T" : ""));
+							parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(myPlugin.getListenIP(parser))+" "+send.getPort()+" "+send.getFileSize()+((send.isTurbo()) ? " T" : ""));
 						} else {
 							sendLine(origin, isSilent, "DCCSendError", "Unable to start dcc send with "+target+" - unable to create listen socket");
 						}

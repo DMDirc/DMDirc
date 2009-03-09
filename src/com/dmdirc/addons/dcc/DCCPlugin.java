@@ -64,9 +64,6 @@ import javax.swing.JOptionPane;
  */
 public final class DCCPlugin extends Plugin implements ActionListener {
 
-	/** What domain do we store all settings in the global config under. */
-	private static final String MY_DOMAIN = "plugin-DCC";
-
 	/** The DCCCommand we created. */
 	private DCCCommand command;
 
@@ -125,13 +122,13 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 			/** {@inheritDoc} */
 			@Override
 			public void run() {
-				final JFileChooser jc = KFileChooser.getFileChooser(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "receive.savelocation"));
+				final JFileChooser jc = KFileChooser.getFileChooser(IdentityManager.getGlobalConfig().getOption(getDomain(), "receive.savelocation"));
 				jc.setDialogTitle("Save "+sendFilename+" As - DMDirc ");
 				jc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				jc.setMultiSelectionEnabled(false);
 				jc.setSelectedFile(new File(send.getFileName()));
 				int result;
-				if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "receive.autoaccept")) {
+				if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "receive.autoaccept")) {
 					result = JFileChooser.APPROVE_OPTION;
 				} else {
 					result = jc.showSaveDialog((JFrame)Main.getUI().getMainWindow());
@@ -141,7 +138,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 					boolean resume = false;
 					if (jc.getSelectedFile().exists()) {
 						if (send.getFileSize() > -1 && send.getFileSize() <= jc.getSelectedFile().length()) {
-							if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "receive.autoaccept")) {
+							if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "receive.autoaccept")) {
 								return;
 							} else {
 								JOptionPane.showMessageDialog((JFrame)Main.getUI().getMainWindow(), "This file has already been completed, or is longer than the file you are reciving.\n Please choose a different file.", "Problem with selected file", JOptionPane.ERROR_MESSAGE);
@@ -149,7 +146,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 								return;
 							}
 						} else {
-							if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "receive.autoaccept")) {
+							if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "receive.autoaccept")) {
 								resume = true;
 							} else {
 								result = JOptionPane.showConfirmDialog((JFrame)Main.getUI().getMainWindow(), "This file exists already, do you want to resume an exisiting download?", "Resume Download?", JOptionPane.YES_NO_OPTION);
@@ -161,7 +158,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 						new DCCSendWindow(DCCPlugin.this, send, "*Receive: "+nickname, parser.getMyNickname(), nickname, null);
 						send.setToken(token);
 						if (resume) {
-							if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "receive.reverse.sendtoken")) {
+							if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "receive.reverse.sendtoken")) {
 								parser.sendCTCP(nickname, "DCC", "RESUME "+sendFilename+" 0 "+jc.getSelectedFile().length()+" "+token);
 							} else {
 								parser.sendCTCP(nickname, "DCC", "RESUME "+sendFilename+" 0 "+jc.getSelectedFile().length());
@@ -210,9 +207,9 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 */
 	protected boolean listen(final DCC dcc) {
 	
-		final boolean usePortRange = IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "firewall.ports.usePortRange");
-		final int startPort  = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "firewall.ports.startPort");
-		final int endPort  = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "firewall.ports.endPort");
+		final boolean usePortRange = IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "firewall.ports.usePortRange");
+		final int startPort  = IdentityManager.getGlobalConfig().getOptionInt(getDomain(), "firewall.ports.startPort");
+		final int endPort  = IdentityManager.getGlobalConfig().getOptionInt(getDomain(), "firewall.ports.endPort");
 
 		try {
 			if (usePortRange) {
@@ -235,7 +232,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 * @param arguments The arguments for the event
 	 */
 	public void handleProcessEvent(final ActionType type, final StringBuffer format, final boolean dontAsk, final Object... arguments) {
-		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "receive.autoaccept") && !dontAsk) {
+		if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "receive.autoaccept") && !dontAsk) {
 			handleProcessEvent(type, format, true, arguments);
 			return;
 		}
@@ -326,8 +323,8 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 					} else {
 						final boolean newSend = send == null;
 						if (newSend) {
-							send = new DCCSend(IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "send.blocksize"));
-							send.setTurbo(IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "send.forceturbo"));
+							send = new DCCSend(IdentityManager.getGlobalConfig().getOptionInt(getDomain(), "send.blocksize"));
+							send.setTurbo(IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "send.forceturbo"));
 						}
 						try {
 							send.setAddress(Long.parseLong(ip), Integer.parseInt(port));
@@ -458,18 +455,18 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	@Override
 	public void onLoad() {
 		final Identity defaults = IdentityManager.getAddonIdentity();
-		defaults.setOption(MY_DOMAIN, "general.useKFileChooser", "false");
+		defaults.setOption(getDomain(), "general.useKFileChooser", "false");
 		
-		defaults.setOption(MY_DOMAIN, "receive.savelocation", Main.getConfigDir() + "downloads" + System.getProperty("file.separator"));
-		defaults.setOption(MY_DOMAIN, "send.reverse", "false");
-		defaults.setOption(MY_DOMAIN, "send.forceturbo", "true");
-		defaults.setOption(MY_DOMAIN, "receive.reverse.sendtoken", "false");
-		defaults.setOption(MY_DOMAIN, "send.blocksize", "1024");
-		defaults.setOption(MY_DOMAIN, "receive.autoaccept", "false");
-		defaults.setOption(MY_DOMAIN, "firewall.ip", "");
-		defaults.setOption(MY_DOMAIN, "firewall.ports.usePortRange", "false");
-		defaults.setOption(MY_DOMAIN, "firewall.ports.startPort", "11000");
-		defaults.setOption(MY_DOMAIN, "firewall.ports.endPort", "11019");
+		defaults.setOption(getDomain(), "receive.savelocation", Main.getConfigDir() + "downloads" + System.getProperty("file.separator"));
+		defaults.setOption(getDomain(), "send.reverse", "false");
+		defaults.setOption(getDomain(), "send.forceturbo", "true");
+		defaults.setOption(getDomain(), "receive.reverse.sendtoken", "false");
+		defaults.setOption(getDomain(), "send.blocksize", "1024");
+		defaults.setOption(getDomain(), "receive.autoaccept", "false");
+		defaults.setOption(getDomain(), "firewall.ip", "");
+		defaults.setOption(getDomain(), "firewall.ports.usePortRange", "false");
+		defaults.setOption(getDomain(), "firewall.ports.startPort", "11000");
+		defaults.setOption(getDomain(), "firewall.ports.endPort", "11019");
 		
 		final String url = "plugin://dcc:com/dmdirc/addons/dcc/res/";
         defaults.setOption("icon", "category-dcc", url + "transfers.png");
@@ -492,7 +489,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		defaults.setOption("formatter", "DCCChatSelfMessage", "<%1$s> %2$s");
 		defaults.setOption("formatter", "DCCChatMessage", "<%1$s> %2$s");
 
-		final File dir = new File(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "receive.savelocation"));
+		final File dir = new File(IdentityManager.getGlobalConfig().getOption(getDomain(), "receive.savelocation"));
 		if (dir.exists()) {
 			if (!dir.isDirectory()) {
 				Logger.userError(ErrorLevel.LOW, "Unable to create download dir (file exists instead)");
@@ -528,7 +525,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 *
 	 * @return The IP Address we should send as our listening IP.
 	 */
-	public static String getListenIP() {
+	public String getListenIP() {
 		return getListenIP(null);
 	}
 	
@@ -538,8 +535,8 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 	 * @param parser IRCParser the IRC Parser where this dcc is initiated
 	 * @return The IP Address we should send as our listening IP.
 	 */
-	public static String getListenIP(final IRCParser parser) {
-		final String configIP = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "firewall.ip");
+	public String getListenIP(final IRCParser parser) {
+		final String configIP = IdentityManager.getGlobalConfig().getOption(getDomain(), "firewall.ip");
 		if (!configIP.isEmpty()) {
 			return configIP;
 		} else if (parser != null) {
@@ -573,35 +570,35 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		general.addSubCategory(receiving.setInline());
 
 		firewall.addSetting(new PreferencesSetting(PreferencesType.TEXT,
-		          MY_DOMAIN, "firewall.ip", "Forced IP",
+		          getDomain(), "firewall.ip", "Forced IP",
 		          "What IP should be sent as our IP (Blank = work it out)"));
 		firewall.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-		          MY_DOMAIN, "firewall.ports.usePortRange", "Use Port Range",
+		          getDomain(), "firewall.ports.usePortRange", "Use Port Range",
 		          "Useful if you have a firewall that only forwards specific ports"));
 		firewall.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
-		          MY_DOMAIN, "firewall.ports.startPort", "Start Port",
+		          getDomain(), "firewall.ports.startPort", "Start Port",
 		          "Port to try to listen on first"));
 		firewall.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
-		          MY_DOMAIN, "firewall.ports.endPort", "End Port",
+		          getDomain(), "firewall.ports.endPort", "End Port",
 		          "Port to try to listen on last"));
 		receiving.addSetting(new PreferencesSetting(PreferencesType.TEXT,
-		          MY_DOMAIN, "receive.savelocation", "Default save location",
+		          getDomain(), "receive.savelocation", "Default save location",
 		          "Where the save as window defaults to?"));
 		sending.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-		          MY_DOMAIN, "send.reverse", "Reverse DCC",
+		          getDomain(), "send.reverse", "Reverse DCC",
 		          "With reverse DCC, the sender connects rather than " +
 		          "listens like normal dcc"));
 		sending.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-		          MY_DOMAIN, "send.forceturbo", "Use Turbo DCC",
+		          getDomain(), "send.forceturbo", "Use Turbo DCC",
 		          "Turbo DCC doesn't wait for ack packets. this is " +
 		          "faster but not always supported."));
 		receiving.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-		          MY_DOMAIN, "receive.reverse.sendtoken",
+		          getDomain(), "receive.reverse.sendtoken",
 		          "Send token in reverse receive",
 		          "If you have problems with reverse dcc receive resume," +
 		          " try toggling this."));
 		general.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
-		          MY_DOMAIN, "send.blocksize", "Blocksize to use for DCC",
+		          getDomain(), "send.blocksize", "Blocksize to use for DCC",
 		          "Change the block size for send/receive, this can " +
 		          "sometimes speed up transfers."));
 	}
