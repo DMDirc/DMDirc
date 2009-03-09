@@ -36,6 +36,7 @@ import java.util.Map;
 
 /**
  * The tab completer handles a user's request to tab complete some word.
+ * 
  * @author chris
  */
 public final class TabCompleter implements Serializable {
@@ -52,6 +53,7 @@ public final class TabCompleter implements Serializable {
      * from this completer.
      */
     private TabCompleter parent;
+
     /**
      * The entries in this completer.
      */
@@ -88,6 +90,12 @@ public final class TabCompleter implements Serializable {
         
         final boolean caseSensitive = IdentityManager.getGlobalConfig()
                 .getOptionBool("tabcompletion", "casesensitive");
+        final boolean allowEmpty = IdentityManager.getGlobalConfig()
+                .getOptionBool("tabcompletion", "allowempty");
+
+        if (partial.isEmpty() && !allowEmpty) {
+            return result;
+        }
                 
         if (additionals != null) {
             targets.safeGet(TabCompletionType.ADDITIONAL).addAll(additionals);

@@ -187,6 +187,7 @@ channel:
   encoding=UTF-8
 
 tabcompletion:
+  allowempty=false
   casesensitive=false
   style=mirc
 
