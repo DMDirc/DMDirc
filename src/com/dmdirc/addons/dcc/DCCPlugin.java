@@ -449,26 +449,15 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		}
 	}
 
-	/**
-	 * Called when the plugin is loaded.
-	 */
-	@Override
-	public void onLoad() {
-		final Identity defaults = IdentityManager.getAddonIdentity();
-		defaults.setOption(getDomain(), "general.useKFileChooser", "false");
-		
-		defaults.setOption(getDomain(), "receive.savelocation", Main.getConfigDir() + "downloads" + System.getProperty("file.separator"));
-		defaults.setOption(getDomain(), "send.reverse", "false");
-		defaults.setOption(getDomain(), "send.forceturbo", "true");
-		defaults.setOption(getDomain(), "receive.reverse.sendtoken", "false");
-		defaults.setOption(getDomain(), "send.blocksize", "1024");
-		defaults.setOption(getDomain(), "receive.autoaccept", "false");
-		defaults.setOption(getDomain(), "firewall.ip", "");
-		defaults.setOption(getDomain(), "firewall.ports.usePortRange", "false");
-		defaults.setOption(getDomain(), "firewall.ports.startPort", "11000");
-		defaults.setOption(getDomain(), "firewall.ports.endPort", "11019");
-		
+    /** {@inheritDoc} */
+    @Override
+    public void domainUpdated() {
+        final Identity defaults = IdentityManager.getAddonIdentity();
+
+        defaults.setOption(getDomain(), "receive.savelocation",
+                Main.getConfigDir() + "downloads" + System.getProperty("file.separator"));
 		final String url = "plugin://dcc:com/dmdirc/addons/dcc/res/";
+        
         defaults.setOption("icon", "category-dcc", url + "transfers.png");
 		defaults.setOption("icon", "dcc", url + "transfers.png");
 		defaults.setOption("icon", "dcc-chat-active", url + "chat.png");
@@ -481,14 +470,20 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		defaults.setOption("icon", "dcc-receive-inactive", url + "receive-inactive.png");
 		defaults.setOption("icon", "dcc-receive-done", url + "receive-done.png");
 		defaults.setOption("icon", "dcc-receive-failed", url + "receive-failed.png");
-		
+
 		defaults.setOption("formatter", "DCCChatStarting", "Starting DCC Chat with: %1$s on %2$s:%3$s");
 		defaults.setOption("formatter", "DCCChatInfo", "%1$s");
 		defaults.setOption("formatter", "DCCChatError", "\u00034 Error: %1$s");
 		defaults.setOption("formatter", "DCCSendError", "\u00034 Error: %1$s");
 		defaults.setOption("formatter", "DCCChatSelfMessage", "<%1$s> %2$s");
 		defaults.setOption("formatter", "DCCChatMessage", "<%1$s> %2$s");
+    }
 
+	/**
+	 * Called when the plugin is loaded.
+	 */
+	@Override
+	public void onLoad() {		
 		final File dir = new File(IdentityManager.getGlobalConfig().getOption(getDomain(), "receive.savelocation"));
 		if (dir.exists()) {
 			if (!dir.isDirectory()) {
