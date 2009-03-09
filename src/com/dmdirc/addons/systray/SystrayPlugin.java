@@ -123,7 +123,6 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
     /** {@inheritDoc} */
     @Override
     public void onLoad() {
-        IdentityManager.getAddonIdentity().setOption(getDomain(), "autominimise", true);
         try {
             SystemTray.getSystemTray().add(icon);
             command = new PopupCommand(this);
