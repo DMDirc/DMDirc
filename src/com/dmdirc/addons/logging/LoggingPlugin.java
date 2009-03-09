@@ -30,7 +30,6 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesCategory;
 import com.dmdirc.config.prefs.PreferencesManager;
@@ -100,28 +99,19 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 	 */
 	public LoggingPlugin() { super(); }
 
+    /** {@inheritDoc} */
+    @Override
+    public void domainUpdated() {
+        IdentityManager.getAddonIdentity().setOption(getDomain(),
+                "general.directory", Main.getConfigDir() + "logs"
+                + System.getProperty("file.separator"));
+    }
+
 	/**
 	 * Called when the plugin is loaded.
 	 */
 	@Override
 	public void onLoad() {
-		// Set defaults
-		final Identity defaults = IdentityManager.getAddonIdentity();
-		defaults.setOption(getDomain(), "general.directory", Main.getConfigDir() + "logs" + System.getProperty("file.separator"));
-		defaults.setOption(getDomain(), "general.networkfolders", "true");
-		defaults.setOption(getDomain(), "advanced.filenamehash", "false");
-		defaults.setOption(getDomain(), "general.addtime", "true");
-		defaults.setOption(getDomain(), "general.timestamp", "[dd/MM/yyyy HH:mm:ss]");
-		defaults.setOption(getDomain(), "general.stripcodes", "true");
-		defaults.setOption(getDomain(), "general.channelmodeprefix", "true");
-		defaults.setOption(getDomain(), "backbuffer.autobackbuffer", "true");
-		defaults.setOption(getDomain(), "backbuffer.lines", "10");
-		defaults.setOption(getDomain(), "backbuffer.colour", "14");
-		defaults.setOption(getDomain(), "backbuffer.timestamp", "false");
-		defaults.setOption(getDomain(), "history.lines", "50000");
-		defaults.setOption(getDomain(), "advanced.usedate", "false");
-		defaults.setOption(getDomain(), "advanced.usedateformat", "yyyy/MMMM");
-
 		final File dir = new File(IdentityManager.getGlobalConfig().getOption(getDomain(), "general.directory"));
 		if (dir.exists()) {
 			if (!dir.isDirectory()) {
