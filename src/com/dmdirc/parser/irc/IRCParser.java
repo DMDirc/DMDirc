@@ -44,6 +44,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.Queue;
 
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -94,7 +96,7 @@ public class IRCParser implements Runnable {
 	/** Length of time to wait between ping stuff. */
 	private long pingTimerLength = 10000;
 	/** Is a ping needed? */
-	private volatile Boolean pingNeeded = false;
+	private volatile AtomicBoolean pingNeeded = new AtomicBoolean(false);
 	/** Time last ping was sent at. */
 	private long pingTime;
 	/** Current Server Lag. */
@@ -1906,9 +1908,7 @@ public class IRCParser implements Runnable {
 	 * @param newStatus new value to set pingNeeded to.
 	 */
 	private void setPingNeeded(final boolean newStatus)  {
-		synchronized (pingNeeded) {
-			pingNeeded = newStatus;
-		}
+		pingNeeded.set(newStatus);
 	}
 
 	/**
@@ -1917,9 +1917,7 @@ public class IRCParser implements Runnable {
 	 * @return value of pingNeeded.
 	 */
 	private boolean getPingNeeded()  {
-		synchronized (pingNeeded) {
-			return pingNeeded;
-		}
+		return pingNeeded.get();
 	}
 
 	/**
