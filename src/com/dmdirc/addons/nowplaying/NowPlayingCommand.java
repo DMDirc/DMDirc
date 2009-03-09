@@ -137,7 +137,7 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
      */ 
     private String getInformation(final MediaSource source) {
         return parent.doSubstitution(IdentityManager.getGlobalConfig()
-                .getOption(NowPlayingPlugin.DOMAIN, "format"), source);
+                .getOption(parent.getDomain(), "format"), source);
     }
     
     /** {@inheritDoc}. */

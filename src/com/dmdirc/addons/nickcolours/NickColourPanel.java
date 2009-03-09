@@ -213,14 +213,12 @@ public class NickColourPanel extends JPanel implements ActionListener,
         // Remove all old config entries
         for (Object[] parts : plugin.getData()) {
             IdentityManager.getConfigIdentity().unsetOption(
-                    NickColourPlugin.DOMAIN,
-                    "color:" + parts[0] + ":" + parts[1]);
+                    plugin.getDomain(), "color:" + parts[0] + ":" + parts[1]);
         }
 
         // And write the new ones
         for (Object[] row : getData()) {
-            IdentityManager.getConfigIdentity().setOption(
-                    NickColourPlugin.DOMAIN,
+            IdentityManager.getConfigIdentity().setOption(plugin.getDomain(),
                     "color:" + row[0] + ":" + row[1], row[2] + ":" + row[3]);
         }
     }

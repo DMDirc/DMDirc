@@ -108,7 +108,7 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
         }
 
         textfield = new JTextField(IdentityManager.getGlobalConfig()
-                .getOption(NowPlayingPlugin.DOMAIN, "format"));
+                .getOption(plugin.getDomain(), "format"));
         textfield.addKeyListener(this);
         preview = new TextLabel("Preview:\n");
 
@@ -187,7 +187,7 @@ public class ConfigPanel extends JPanel implements PreferencesInterface, KeyList
     @Override
     public void save() {
         plugin.saveSettings(getSources());
-        IdentityManager.getConfigIdentity().setOption(NowPlayingPlugin.DOMAIN,
+        IdentityManager.getConfigIdentity().setOption(plugin.getDomain(),
                 "format", textfield.getText());
     }
 

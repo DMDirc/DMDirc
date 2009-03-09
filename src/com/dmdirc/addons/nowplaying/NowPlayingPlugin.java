@@ -46,9 +46,6 @@ import java.util.List;
  */
 public class NowPlayingPlugin extends Plugin implements ActionListener  {
     
-    /** Config domain. */
-    public static final String DOMAIN = "plugin-nowplaying";
-    
     /** The sources that we know of. */
     private final List<MediaSource> sources = new ArrayList<MediaSource>();
 
@@ -104,7 +101,7 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
     public void domainUpdated() {
         IdentityManager.getAddonIdentity().setOption("icon", "category-nowplaying",
                 "plugin://nowplaying:com/dmdirc/addons/nowplaying/nowplaying.png");
-        IdentityManager.getAddonIdentity().setOption(DOMAIN, "format",
+        IdentityManager.getAddonIdentity().setOption(getDomain(), "format",
                 "/me is playing $artist - $title");
     }
     
@@ -125,13 +122,13 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
      */
     protected void saveSettings(final List<String> newOrder) {
         order = newOrder;
-        IdentityManager.getConfigIdentity().setOption(DOMAIN, "sourceOrder", order);
+        IdentityManager.getConfigIdentity().setOption(getDomain(), "sourceOrder", order);
     }
     
     /** Loads the plugins settings. */
     private void loadSettings() {
-        if (IdentityManager.getGlobalConfig().hasOptionString(DOMAIN, "sourceOrder")) {
-            order = IdentityManager.getGlobalConfig().getOptionList(DOMAIN, "sourceOrder");
+        if (IdentityManager.getGlobalConfig().hasOptionString(getDomain(), "sourceOrder")) {
+            order = IdentityManager.getGlobalConfig().getOptionList(getDomain(), "sourceOrder");
         } else {
             order = new ArrayList<String>();
         }
