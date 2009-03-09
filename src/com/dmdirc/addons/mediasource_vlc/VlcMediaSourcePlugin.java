@@ -189,10 +189,14 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
     /** {@inheritDoc} */
     @Override    
     public void onLoad() {
+        // Do nothing
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void domainUpdated() {
         IdentityManager.getAddonIdentity().setOption("icon", "category-vlc",
                 "plugin://vlcmediasource:com/dmdirc/addons/mediasource_vlc/vlc.png");
-        IdentityManager.getAddonIdentity().setOption(getDomain(), "host",
-                "localhost:8082");
     }
 
     /** {@inheritDoc} */
