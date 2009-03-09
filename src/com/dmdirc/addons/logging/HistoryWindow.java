@@ -51,8 +51,10 @@ public class HistoryWindow extends FrameContainer {
      * @param title The title of the window
      * @param reader The reader to use to get the history
      * @param parent The window this history window was opened from
+     * @param numLines The number of lines to show
      */
-    public HistoryWindow(final String title, final ReverseFileReader reader, final Window parent) {
+    public HistoryWindow(final String title, final ReverseFileReader reader, 
+            final Window parent, final int numLines) {
         super("raw", parent.getConfigManager());
         this.title = title;
         this.parent = parent;
@@ -62,11 +64,9 @@ public class HistoryWindow extends FrameContainer {
         WindowManager.addWindow(parent, window);
         window.setTitle(title);
         window.setVisible(true);
-        final int historyLineCount = IdentityManager.getGlobalConfig().getOptionInt(
-                "plugin-Logging", "history.lines");
         final int frameBufferSize = IdentityManager.getGlobalConfig().getOptionInt(
                 "ui", "frameBufferSize");
-        window.addLine(reader.getLinesAsString(Math.min(frameBufferSize, historyLineCount)), false);
+        window.addLine(reader.getLinesAsString(Math.min(frameBufferSize, numLines)), false);
     }
     
     /** {@inheritDoc} */

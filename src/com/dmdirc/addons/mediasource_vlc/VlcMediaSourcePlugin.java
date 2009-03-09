@@ -191,7 +191,7 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
     public void onLoad() {
         IdentityManager.getAddonIdentity().setOption("icon", "category-vlc",
                 "plugin://vlcmediasource:com/dmdirc/addons/mediasource_vlc/vlc.png");
-        IdentityManager.getAddonIdentity().setOption("plugin-vlc", "host",
+        IdentityManager.getAddonIdentity().setOption(getDomain(), "host",
                 "localhost:8082");
     }
 
@@ -210,7 +210,7 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
                 "", new InstructionsPanel());
         
         general.addSetting(new PreferencesSetting(PreferencesType.TEXT, 
-                "plugin-vlc", "host", "Hostname and port",
+                getDomain(), "host", "Hostname and port",
                 "The host and port that VLC listens on for web connections"));
         
         manager.getCategory("Plugins").addSubCategory(general);
@@ -229,10 +229,10 @@ public class VlcMediaSourcePlugin extends Plugin implements MediaSource {
         
         try {
             res = Downloader.getPage("http://" +
-                    IdentityManager.getGlobalConfig().getOption("plugin-vlc",
+                    IdentityManager.getGlobalConfig().getOption(getDomain(),
                     "host") + "/old/info.html");
             res2 = Downloader.getPage("http://" +
-                    IdentityManager.getGlobalConfig().getOption("plugin-vlc",
+                    IdentityManager.getGlobalConfig().getOption(getDomain(),
                     "host") + "/old/");
         } catch (MalformedURLException ex) {
             return false;

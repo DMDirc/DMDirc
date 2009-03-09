@@ -821,7 +821,8 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 			return false;
 		}
 
-		new HistoryWindow("History", reader, target);
+		new HistoryWindow("History", reader, target,
+                IdentityManager.getGlobalConfig().getOptionInt(getDomain(), "history.lines"));
 
 		return true;
 	}

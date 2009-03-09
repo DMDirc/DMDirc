@@ -123,7 +123,7 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
     /** {@inheritDoc} */
     @Override
     public void onLoad() {
-        IdentityManager.getAddonIdentity().setOption("plugin-systray", "autominimise", true);
+        IdentityManager.getAddonIdentity().setOption(getDomain(), "autominimise", true);
         try {
             SystemTray.getSystemTray().add(icon);
             command = new PopupCommand(this);
@@ -150,7 +150,7 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
                 "General configuration settings");
         
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "plugin-systray", "autominimise", "Auto-hide DMDirc " +
+                getDomain(), "autominimise", "Auto-hide DMDirc " +
                 "when minimised", "If this option is enabled, the systray " +
                 "plugin will hide DMDirc to the system tray whenever DMDirc is" +
                 " minimised"));
@@ -201,7 +201,7 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {
         if (type == CoreActionType.CLIENT_MINIMISED
-                && IdentityManager.getGlobalConfig().getOptionBool("plugin-systray",
+                && IdentityManager.getGlobalConfig().getOptionBool(getDomain(),
                 "autominimise")) {
             Main.getUI().getMainWindow().setVisible(false);
         }
