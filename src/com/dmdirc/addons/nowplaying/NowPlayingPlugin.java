@@ -95,13 +95,6 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
         
         CommandManager.unregisterCommand(command);
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public void domainUpdated() {
-        IdentityManager.getAddonIdentity().setOption("icon", "category-nowplaying",
-                "plugin://nowplaying:com/dmdirc/addons/nowplaying/nowplaying.png");
-    }
     
     /** {@inheritDoc} */
     @Override

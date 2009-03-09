@@ -456,27 +456,6 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 
         defaults.setOption(getDomain(), "receive.savelocation",
                 Main.getConfigDir() + "downloads" + System.getProperty("file.separator"));
-		final String url = "plugin://dcc:com/dmdirc/addons/dcc/res/";
-        
-        defaults.setOption("icon", "category-dcc", url + "transfers.png");
-		defaults.setOption("icon", "dcc", url + "transfers.png");
-		defaults.setOption("icon", "dcc-chat-active", url + "chat.png");
-		defaults.setOption("icon", "dcc-chat-inactive", url + "chat-inactive.png");
-		defaults.setOption("icon", "dcc-send-active", url + "send.png");
-		defaults.setOption("icon", "dcc-send-inactive", url + "send-inactive.png");
-		defaults.setOption("icon", "dcc-send-done", url + "send-done.png");
-		defaults.setOption("icon", "dcc-send-failed", url + "send-failed.png");
-		defaults.setOption("icon", "dcc-receive-active", url + "receive.png");
-		defaults.setOption("icon", "dcc-receive-inactive", url + "receive-inactive.png");
-		defaults.setOption("icon", "dcc-receive-done", url + "receive-done.png");
-		defaults.setOption("icon", "dcc-receive-failed", url + "receive-failed.png");
-
-		defaults.setOption("formatter", "DCCChatStarting", "Starting DCC Chat with: %1$s on %2$s:%3$s");
-		defaults.setOption("formatter", "DCCChatInfo", "%1$s");
-		defaults.setOption("formatter", "DCCChatError", "\u00034 Error: %1$s");
-		defaults.setOption("formatter", "DCCSendError", "\u00034 Error: %1$s");
-		defaults.setOption("formatter", "DCCChatSelfMessage", "<%1$s> %2$s");
-		defaults.setOption("formatter", "DCCChatMessage", "<%1$s> %2$s");
     }
 
 	/**
