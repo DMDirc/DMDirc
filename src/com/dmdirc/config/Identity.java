@@ -365,7 +365,7 @@ public class Identity extends ConfigSource implements Serializable,
             file.getKeyDomain(domain).put(option, value);
             needSave = true;
 
-            fireSettingChange(domain, value);
+            fireSettingChange(domain, option);
         }
     }
 
