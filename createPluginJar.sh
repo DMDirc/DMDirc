@@ -38,26 +38,6 @@ if [ -e ${srcdir}/src/${foldername}/plugin.config ]; then
 	cp ${srcdir}/src/${foldername}/plugin.config META-INF/
 fi;
 
-# Add the SVN version if there's no version specified and we know the SVN rev
-if [ -e META-INF/plugin.info ]; then
-	if ! grep "^version=" META-INF/plugin.info >/dev/null; then
-		SVN=`which svn`	
-		SVNREV=`$SVN info $srcdir/src/$foldername 2>&1 | grep "Last Changed Rev"`
-		SVNREV=${SVNREV##*: }
-		echo "" >> META-INF/plugin.info
-	
-		if [ -n "$SVNREV" ]; then
-			echo "version=$SVNREV" >> META-INF/plugin.info;
-		else
-			echo "version=0" >> META-INF/plugin.info;
-		fi
-	
-		if ! grep "^friendlyversion=" META-INF/plugin.info >/dev/null; then
-			echo "friendlyversion=$SVNREV" >> META-INF/plugin.info
-		fi
-	fi
-fi;
-
 # Do the same for plugin.config
 # This is rudimentary, it a version: section already exists (eg to specify
 # friendlyversion) then it won't add the number= key.
@@ -89,6 +69,12 @@ cd ${foo}
 ln -s ${srcdir}/build/classes/${foldername} .
 cd $TMPDIR
 mkdir -p ${srcdir}/plugins/
+
+if [ -d ${srcdir}/build/classes -a ! -e ${srcdir}/build/classes/plugins ]; then
+	ln -s ${srcdir}/plugins ${srcdir}/build/classes/plugins;
+fi
+
+
 rm -Rf ${srcdir}/plugins/${2}.jar
 jar -cvf ${srcdir}/src/${foldername}/${2}.jar META-INF >/dev/null
 bit=""
