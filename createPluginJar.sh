@@ -20,8 +20,8 @@ fi
 
 echo "Creating ${2}.jar for ${pluginname} (${foldername})"
 
-if [ ! -e src/${foldername}/plugin.info -a ! -e src/${foldername}/plugin.config ]; then
-	echo "no plugin.info or plugin.config found";
+if [ ! -e src/${foldername}/plugin.config ]; then
+	echo "no plugin.config found";
 	exit 0;
 fi
 
@@ -31,9 +31,6 @@ TMPDIR=`mktemp -d`
 cd $TMPDIR
 
 mkdir META-INF
-if [ -e ${srcdir}/src/${foldername}/plugin.info ]; then
-	cp ${srcdir}/src/${foldername}/plugin.info META-INF/
-fi;
 if [ -e ${srcdir}/src/${foldername}/plugin.config ]; then
 	cp ${srcdir}/src/${foldername}/plugin.config META-INF/
 fi;
