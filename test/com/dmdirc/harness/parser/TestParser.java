@@ -35,12 +35,12 @@ public class TestParser extends IRCParser {
 
     public TestParser() {
         super();
-        currentSocketState = STATE_OPEN;
+        currentSocketState = SocketState.OPEN;
     }
 
     public TestParser(MyInfo myDetails, ServerInfo serverDetails) {
         super(myDetails, serverDetails);
-        currentSocketState = STATE_OPEN;
+        currentSocketState = SocketState.OPEN;
     }
 
     @Override
