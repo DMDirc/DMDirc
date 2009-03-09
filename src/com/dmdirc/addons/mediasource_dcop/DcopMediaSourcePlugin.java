@@ -66,9 +66,8 @@ public class DcopMediaSourcePlugin extends Plugin
     protected static List<String> getDcopResult(final String query) {
         List<String> result = new ArrayList<String>();
         try {
-            final ServiceProvider provider = PluginManager.getPluginManager().getServiceProvider("export", "dcop");
-            
-            final ExportedService exportedService = provider.getExportedService("dcop");
+            final ExportedService exportedService = PluginManager.getPluginManager().getExportedService("dcop");
+
             final Object obj = exportedService.execute(query);
             if (obj instanceof List) {
                 result = (List<String>) obj;
