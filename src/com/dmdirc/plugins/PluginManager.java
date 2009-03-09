@@ -123,7 +123,7 @@ public class PluginManager implements ActionListener {
 	 * @throws NoSuchProviderException If no provider exists for the requested service
 	 */
 	public ServiceProvider getServiceProvider(final String type, final String name) {
-		final Service service = getService("export", "dcop");
+		final Service service = getService(type, name);
 		if (service != null) {
 			ServiceProvider provider = service.getActiveProvider();
 			if (provider != null) {
