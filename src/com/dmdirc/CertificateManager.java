@@ -111,10 +111,12 @@ public class CertificateManager implements X509TrustManager {
      * Loads the trusted CA certificates from the Java cacerts store.
      */
     protected void loadTrustedCAs() {
+        FileInputStream is = null;
+
         try {
             final String filename = System.getProperty("java.home")
                 + "/lib/security/cacerts".replace('/', File.separatorChar);
-            final FileInputStream is = new FileInputStream(filename);
+            is = new FileInputStream(filename);
             final KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
             keystore.load(is, cacertpass.toCharArray());
 
@@ -132,6 +134,14 @@ public class CertificateManager implements X509TrustManager {
             Logger.appError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
         } catch (NoSuchAlgorithmException ex) {
             Logger.appError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException ex) {
+                    // ...
+                }
+            }
         }
     }
 
