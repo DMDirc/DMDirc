@@ -49,8 +49,8 @@ import javax.swing.filechooser.FileSystemView;
  * - FileSystemView's are ignored
  * - showOpenDialog and showSaveDialog shell kdialog, so only options available
  *   in kdialog work.
- * - getFileChooser() will return a JFileChooser object unless the config option
- *   "plugin-DCC.general.useKFileChooser" is set to "true" (defaults to false)
+ * - getFileChooser() will return a JFileChooser object unless the DCC plugin's
+ *   config option "general.useKFileChooser" is set to "true" (defaults to false)
  *   and kdialog is in either /usr/bin or /bin
  * - Selection mode FILES_AND_DIRECTORIES can not be used
  */
@@ -77,7 +77,7 @@ public class KFileChooser extends JFileChooser {
 	 *         JFileChooser
 	 */
 	public static boolean useKFileChooser(final DCCPlugin plugin) {
-		return KDialogProcess.hasKDialog() && IdentityManager.getGlobalConfig().getOptionBool("plugin-dcc", "general.useKFileChooser");
+		return KDialogProcess.hasKDialog() && IdentityManager.getGlobalConfig().getOptionBool(plugin.getDomain(), "general.useKFileChooser");
 	}
 	
 	/**
