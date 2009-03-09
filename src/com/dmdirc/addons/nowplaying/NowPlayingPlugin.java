@@ -101,8 +101,6 @@ public class NowPlayingPlugin extends Plugin implements ActionListener  {
     public void domainUpdated() {
         IdentityManager.getAddonIdentity().setOption("icon", "category-nowplaying",
                 "plugin://nowplaying:com/dmdirc/addons/nowplaying/nowplaying.png");
-        IdentityManager.getAddonIdentity().setOption(getDomain(), "format",
-                "/me is playing $artist - $title");
     }
     
     /** {@inheritDoc} */
