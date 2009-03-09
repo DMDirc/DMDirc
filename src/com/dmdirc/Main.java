@@ -148,7 +148,7 @@ public final class Main {
      * @param pm The plugin manager to use to access services
      * @param serviceType The type of service that should exist
      */
-    protected static void ensureExists(final PluginManager pm, final String serviceType) {
+    public static void ensureExists(final PluginManager pm, final String serviceType) {
         if (pm.getServicesByType(serviceType).isEmpty()) {
             extractCorePlugins(serviceType + "_");
             pm.getPossiblePluginInfos(true);

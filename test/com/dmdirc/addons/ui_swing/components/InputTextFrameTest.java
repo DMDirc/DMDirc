@@ -36,6 +36,7 @@ import com.dmdirc.addons.ui_swing.CustomInputFrame;
 import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.UIUtilities;
+import com.dmdirc.plugins.PluginManager;
 
 import java.awt.event.KeyEvent;
 
@@ -64,13 +65,13 @@ public class InputTextFrameTest implements UITestIface {
 
     @BeforeClass
     public static void setUpClass() {
+        IdentityManager.load();
         Main.setUI(new SwingController());
+        Main.ensureExists(PluginManager.getPluginManager(), "tabcompletion");
     }
 
     @Before
     public void setUp() {
-        IdentityManager.load();
-
         cmmap = new TestConfigManagerMap();
         cmmap.settings.put("ui.pasteProtectionLimit", "1");
 

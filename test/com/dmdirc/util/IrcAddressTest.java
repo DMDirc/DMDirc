@@ -26,8 +26,9 @@ import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.addons.ui_dummy.DummyController;
+import com.dmdirc.plugins.PluginManager;
+
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -37,6 +38,7 @@ public class IrcAddressTest {
     public static void setUp() {
         IdentityManager.load();
         Main.setUI(new DummyController());
+        Main.ensureExists(PluginManager.getPluginManager(), "tabcompletion");
     }
 
     @Test(expected=InvalidAddressException.class)

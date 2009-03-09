@@ -26,6 +26,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.harness.parser.TestParserFactory;
 import com.dmdirc.addons.ui_dummy.DummyController;
 import com.dmdirc.addons.ui_dummy.DummyQueryWindow;
+import com.dmdirc.plugins.PluginManager;
 
 import java.util.ArrayList;
 
@@ -39,8 +40,9 @@ public class ServerManagerTest {
         
     @BeforeClass
     public static void setUp() throws Exception {
-        Main.setUI(new DummyController());
         IdentityManager.load();
+        Main.setUI(new DummyController());
+        Main.ensureExists(PluginManager.getPluginManager(), "tabcompletion");
     }
 
     @After
