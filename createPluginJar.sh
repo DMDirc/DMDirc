@@ -39,25 +39,26 @@ fi;
 # This is rudimentary, it a version: section already exists (eg to specify
 # friendlyversion) then it won't add the number= key.
 if [ -e META-INF/plugin.config ]; then
-	if ! grep "^version:" META-INF/plugin.config >/dev/null; then
-		SVN=`which svn`	
-		SVNREV=`$SVN info $srcdir/src/$foldername 2>&1 | grep "Last Changed Rev"`
-		SVNREV=${SVNREV##*: }
-		echo "" >> META-INF/plugin.config
-		echo "" >> META-INF/plugin.config
-	
-		echo "version:" >> META-INF/plugin.config;
-		if [ -n "$SVNREV" ]; then
-			echo "  number=$SVNREV" >> META-INF/plugin.config;
-		else
-			echo "  number=0" >> META-INF/plugin.config;
-		fi
-		
-		# Add to keysections list
+	VERSIONLINE=`grep -n "version:$" META-INF/plugin.config | cut -f 1 -d ':'`
+
+	if [ -z "$VERSIONLINE" ]; then
 		sed 's/keysections:/keysections:\n  version/g' META-INF/plugin.config > META-INF/plugin.config.temp
 		rm -Rf META-INF/plugin.config
-		mv META-INF/plugin.config.temp META-INF/plugin.config
-	fi
+		mv META-INF/plugin.config.temp META-INF/plugin.config		
+	fi;
+
+	SVN=`which svn`	
+	SVNREV=`$SVN info $srcdir/src/$foldername 2>&1 | grep "Last Changed Rev"`
+	SVNREV=${SVNREV##*: }
+	echo "" >> META-INF/plugin.config
+	echo "" >> META-INF/plugin.config
+	
+	echo "version:" >> META-INF/plugin.config;
+	if [ -n "$SVNREV" ]; then
+		echo "  number=$SVNREV" >> META-INF/plugin.config;
+	else
+		echo "  number=0" >> META-INF/plugin.config;
+	fi;
 fi;
 
 foo=`echo $foldername | sed -e 's/\/[^\/]*$//g'`
