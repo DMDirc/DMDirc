@@ -122,7 +122,7 @@ public class PluginManager implements ActionListener {
 	 * @return A ServiceProvider that provides the requested service.
 	 * @throws NoSuchProviderException If no provider exists for the requested service
 	 */
-	public ServiceProvider getServiceProvider(final String type, final String name) {
+	public ServiceProvider getServiceProvider(final String type, final String name) throws NoSuchProviderException {
 		final Service service = getService(type, name);
 		if (service != null) {
 			ServiceProvider provider = service.getActiveProvider();
@@ -139,6 +139,34 @@ public class PluginManager implements ActionListener {
 		}
 		
 		throw new NoSuchProviderException("No provider found for: "+type+"->"+name);
+	}
+	
+	/**
+	 * Get a ServiceProvider object for the given tpye, prioritising those in the list of names.
+	 *
+	 * @param type Type to look for
+	 * @param names Names to look for
+	 * @param fallback Fallback to the first provider of type that exists if one from the list is not found.
+	 * @return A ServiceProvider that provides the requested service.
+	 * @throws NoSuchProviderException If no provider exists for the requested service and fallback is false, or no providers exist at all.
+	 */
+	public ServiceProvider getServiceProvider(final String type, final List<String> names, final boolean fallback) throws NoSuchProviderException {
+		for (final String name : names) {
+			final ServiceProvider provider = getServiceProvider(type, name);
+			if (provider != null) {
+				return provider;
+			}
+		}
+		
+		if (fallback) {
+			final List<Service> servicesType = getServicesByType(type);
+			if (servicesType.size() > 0) {
+				final Service service = servicesType.get(0);
+				return getServiceProvider(type, service.getName());
+			}
+		}
+		
+		throw new NoSuchProviderException("No provider found for "+type+ "from the given list");
 	}
 	
 	/**
