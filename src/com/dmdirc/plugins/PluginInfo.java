@@ -311,13 +311,16 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	}
 	
 	/**
-	 * Get the defaults for this plugin.
+	 * Get the defaults, formatters and icons for this plugin.
 	 */
 	private void getDefaults() {
-		if (metaData != null && metaData.isKeyDomain("defaults")) {
+		if (metaData == null) { return; }
+	
+		final Identity defaults = IdentityManager.getAddonIdentity();
+		final String domain = "plugin-"+getName();
+		
+		if (metaData.isKeyDomain("defaults")) {
 			final Map<String, String> keysection = metaData.getKeyDomain("defaults");
-			final Identity defaults = IdentityManager.getAddonIdentity();
-			final String domain = "plugin-"+getName();
 			
 			for (Map.Entry entry : keysection.entrySet()) {
 				final String key = entry.getKey().toString();
@@ -326,7 +329,31 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 				defaults.setOption(domain, key, value);
 			}
 		}
+		
+		if (metaData.isKeyDomain("formatters")) {
+			final Map<String, String> keysection = metaData.getKeyDomain("formatters");
+			
+			for (Map.Entry entry : keysection.entrySet()) {
+				final String key = entry.getKey().toString();
+				final String value = entry.getValue().toString();
+				
+				defaults.setOption("formatter", key, value);
+			}
+		}
+		
+		if (metaData.isKeyDomain("icons")) {
+			final Map<String, String> keysection = metaData.getKeyDomain("icons");
+			
+			for (Map.Entry entry : keysection.entrySet()) {
+				final String key = entry.getKey().toString();
+				final String value = entry.getValue().toString();
+				
+				defaults.setOption("icons", key, value);
+			}
+		}
 	}
+	
+
 	
 	/**
 	 * Update provides list.
