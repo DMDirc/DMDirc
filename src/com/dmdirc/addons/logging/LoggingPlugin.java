@@ -74,9 +74,6 @@ import java.util.TimerTask;
  */
 public class LoggingPlugin extends Plugin implements ActionListener {
 
-	/** What domain do we store all settings in the global config under. */
-	private static final String MY_DOMAIN = "plugin-Logging";
-
 	/** The command we registered. */
 	private LoggingCommand command;
 
@@ -110,22 +107,22 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 	public void onLoad() {
 		// Set defaults
 		final Identity defaults = IdentityManager.getAddonIdentity();
-		defaults.setOption(MY_DOMAIN, "general.directory", Main.getConfigDir() + "logs" + System.getProperty("file.separator"));
-		defaults.setOption(MY_DOMAIN, "general.networkfolders", "true");
-		defaults.setOption(MY_DOMAIN, "advanced.filenamehash", "false");
-		defaults.setOption(MY_DOMAIN, "general.addtime", "true");
-		defaults.setOption(MY_DOMAIN, "general.timestamp", "[dd/MM/yyyy HH:mm:ss]");
-		defaults.setOption(MY_DOMAIN, "general.stripcodes", "true");
-		defaults.setOption(MY_DOMAIN, "general.channelmodeprefix", "true");
-		defaults.setOption(MY_DOMAIN, "backbuffer.autobackbuffer", "true");
-		defaults.setOption(MY_DOMAIN, "backbuffer.lines", "10");
-		defaults.setOption(MY_DOMAIN, "backbuffer.colour", "14");
-		defaults.setOption(MY_DOMAIN, "backbuffer.timestamp", "false");
-		defaults.setOption(MY_DOMAIN, "history.lines", "50000");
-		defaults.setOption(MY_DOMAIN, "advanced.usedate", "false");
-		defaults.setOption(MY_DOMAIN, "advanced.usedateformat", "yyyy/MMMM");
+		defaults.setOption(getDomain(), "general.directory", Main.getConfigDir() + "logs" + System.getProperty("file.separator"));
+		defaults.setOption(getDomain(), "general.networkfolders", "true");
+		defaults.setOption(getDomain(), "advanced.filenamehash", "false");
+		defaults.setOption(getDomain(), "general.addtime", "true");
+		defaults.setOption(getDomain(), "general.timestamp", "[dd/MM/yyyy HH:mm:ss]");
+		defaults.setOption(getDomain(), "general.stripcodes", "true");
+		defaults.setOption(getDomain(), "general.channelmodeprefix", "true");
+		defaults.setOption(getDomain(), "backbuffer.autobackbuffer", "true");
+		defaults.setOption(getDomain(), "backbuffer.lines", "10");
+		defaults.setOption(getDomain(), "backbuffer.colour", "14");
+		defaults.setOption(getDomain(), "backbuffer.timestamp", "false");
+		defaults.setOption(getDomain(), "history.lines", "50000");
+		defaults.setOption(getDomain(), "advanced.usedate", "false");
+		defaults.setOption(getDomain(), "advanced.usedateformat", "yyyy/MMMM");
 
-		final File dir = new File(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.directory"));
+		final File dir = new File(IdentityManager.getGlobalConfig().getOption(getDomain(), "general.directory"));
 		if (dir.exists()) {
 			if (!dir.isDirectory()) {
 				Logger.userError(ErrorLevel.LOW, "Unable to create logging dir (file exists instead)");
@@ -223,22 +220,22 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 		final PreferencesCategory backbuffer = new PreferencesCategory("Back Buffer", "Options related to the automatic backbuffer");
 		final PreferencesCategory advanced = new PreferencesCategory("Advanced", "Advanced configuration for Logging plugin. You shouldn't need to edit this unless you know what you are doing.");
 		
-		general.addSetting(new PreferencesSetting(PreferencesType.TEXT, MY_DOMAIN, "general.directory", "Directory", "Directory for log files"));
-		general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "general.networkfolders", "Separate logs by network", "Should the files be stored in a sub-dir with the networks name?"));
-		general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "general.addtime", "Timestamp logs", "Should a timestamp be added to the log files?"));
-		general.addSetting(new PreferencesSetting(PreferencesType.TEXT, MY_DOMAIN, "general.timestamp", "Timestamp format", "The String to pass to 'SimpleDateFormat' to format the timestamp"));
-		general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "general.stripcodes", "Strip Control Codes", "Remove known irc control codes from lines before saving?"));
-		general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "general.channelmodeprefix", "Show channel mode prefix", "Show the @,+ etc next to nicknames"));
+		general.addSetting(new PreferencesSetting(PreferencesType.TEXT, getDomain(), "general.directory", "Directory", "Directory for log files"));
+		general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, getDomain(), "general.networkfolders", "Separate logs by network", "Should the files be stored in a sub-dir with the networks name?"));
+		general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, getDomain(), "general.addtime", "Timestamp logs", "Should a timestamp be added to the log files?"));
+		general.addSetting(new PreferencesSetting(PreferencesType.TEXT, getDomain(), "general.timestamp", "Timestamp format", "The String to pass to 'SimpleDateFormat' to format the timestamp"));
+		general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, getDomain(), "general.stripcodes", "Strip Control Codes", "Remove known irc control codes from lines before saving?"));
+		general.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, getDomain(), "general.channelmodeprefix", "Show channel mode prefix", "Show the @,+ etc next to nicknames"));
 		
-		backbuffer.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "backbuffer.autobackbuffer", "Automatically display", "Automatically display the backbuffer when a channel is joined"));
-		backbuffer.addSetting(new PreferencesSetting(PreferencesType.COLOUR, MY_DOMAIN, "backbuffer.colour", "Colour to use for display", "Colour used when displaying the backbuffer"));
-		backbuffer.addSetting(new PreferencesSetting(PreferencesType.INTEGER, MY_DOMAIN, "backbuffer.lines", "Number of lines to show", "Number of lines used when displaying backbuffer"));
-		backbuffer.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "backbuffer.timestamp", "Show Formatter-Timestamp", "Should the line be added to the frame with the timestamp from the formatter aswell as the file contents"));
+		backbuffer.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, getDomain(), "backbuffer.autobackbuffer", "Automatically display", "Automatically display the backbuffer when a channel is joined"));
+		backbuffer.addSetting(new PreferencesSetting(PreferencesType.COLOUR, getDomain(), "backbuffer.colour", "Colour to use for display", "Colour used when displaying the backbuffer"));
+		backbuffer.addSetting(new PreferencesSetting(PreferencesType.INTEGER, getDomain(), "backbuffer.lines", "Number of lines to show", "Number of lines used when displaying backbuffer"));
+		backbuffer.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, getDomain(), "backbuffer.timestamp", "Show Formatter-Timestamp", "Should the line be added to the frame with the timestamp from the formatter aswell as the file contents"));
 
-		advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "advanced.filenamehash", "Add Filename hash", "Add the MD5 hash of the channel/client name to the filename. (This is used to allow channels with similar names (ie a _ not a  -) to be logged separately)"));
+		advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, getDomain(), "advanced.filenamehash", "Add Filename hash", "Add the MD5 hash of the channel/client name to the filename. (This is used to allow channels with similar names (ie a _ not a  -) to be logged separately)"));
 
-		advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, MY_DOMAIN, "advanced.usedate", "Use Date directories", "Should the log files be in separate directories based on the date?"));
-		advanced.addSetting(new PreferencesSetting(PreferencesType.TEXT, MY_DOMAIN, "advanced.usedateformat", "Archive format", "The String to pass to 'SimpleDateFormat' to format the directory name(s) for archiving"));
+		advanced.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN, getDomain(), "advanced.usedate", "Use Date directories", "Should the log files be in separate directories based on the date?"));
+		advanced.addSetting(new PreferencesSetting(PreferencesType.TEXT, getDomain(), "advanced.usedateformat", "Archive format", "The String to pass to 'SimpleDateFormat' to format the directory name(s) for archiving"));
 
 		general.addSubCategory(backbuffer.setInline());
 		general.addSubCategory(advanced.setInline());
@@ -264,7 +261,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 		
 		if (parser == null) {
 			// Without a parser object, we might not be able to find the file to log this to.
-			if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.networkfolders")) {
+			if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "general.networkfolders")) {
 				// We *wont* be able to, so rather than logging to an incorrect file we just won't log.
 				return;
 			}
@@ -280,7 +277,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 		
 		switch (type) {
 			case QUERY_OPENED:
-				if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer")) {
+				if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "backbuffer.autobackbuffer")) {
 					showBackBuffer(query.getFrame(), filename);
 				}
 
@@ -335,7 +332,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 		
 		switch (type) {
 			case CHANNEL_OPENED:
-				if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer")) {
+				if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "backbuffer.autobackbuffer")) {
 					showBackBuffer(chan.getFrame(), filename);
 				}
 
@@ -464,10 +461,10 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 	 * @param frame The frame to add the backbuffer lines to
 	 * @param filename File to get backbuffer from
 	 */
-	protected static void showBackBuffer(final Window frame, final String filename) {
-		final int numLines = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "backbuffer.lines");
-		final String colour = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "backbuffer.colour");
-		final boolean showTimestamp = IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.timestamp");
+	protected void showBackBuffer(final Window frame, final String filename) {
+		final int numLines = IdentityManager.getGlobalConfig().getOptionInt(getDomain(), "backbuffer.lines");
+		final String colour = IdentityManager.getGlobalConfig().getOption(getDomain(), "backbuffer.colour");
+		final boolean showTimestamp = IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "backbuffer.timestamp");
 		if (frame == null) {
 			Logger.userError(ErrorLevel.LOW, "Given a null frame");
 			return;
@@ -554,9 +551,9 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 	protected boolean appendLine(final String filename, final String line) {
 		final StringBuffer finalLine = new StringBuffer();
 		
-		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.addtime")) {
+		if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "general.addtime")) {
 			String dateString;
-			final String dateFormatString = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.timestamp");
+			final String dateFormatString = IdentityManager.getGlobalConfig().getOption(getDomain(), "general.timestamp");
 			try {
 				final DateFormat dateFormat = new SimpleDateFormat(dateFormatString);
 				dateString = dateFormat.format(new Date()).trim();
@@ -571,7 +568,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 			finalLine.append(" ");
 		}
 		
-		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.stripcodes")) {
+		if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "general.stripcodes")) {
 			finalLine.append(Styliser.stipControlCodes(line));
 		} else {
 			finalLine.append(line);
@@ -614,7 +611,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 		final StringBuffer file = new StringBuffer();
 		String md5String = "";
 	
-		directory.append(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.directory"));
+		directory.append(IdentityManager.getGlobalConfig().getOption(getDomain(), "general.directory"));
 		if (directory.charAt(directory.length()-1) != File.separatorChar) {
 			directory.append(File.separatorChar);
 		}
@@ -640,8 +637,8 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 			md5String = obj.toString();
 		}
 		
-		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "advanced.usedate")) {
-			final String dateFormat = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "advanced.usedateformat");
+		if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "advanced.usedate")) {
+			final String dateFormat = IdentityManager.getGlobalConfig().getOption(getDomain(), "advanced.usedateformat");
 			final String dateDir = (new SimpleDateFormat(dateFormat)).format(new Date());
 			directory.append(dateDir);
 			if (directory.charAt(directory.length()-1) != File.separatorChar) {
@@ -653,7 +650,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 			}
 		}
 		
-		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "advanced.filenamehash")) {
+		if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "advanced.filenamehash")) {
 			file.append('.');
 			file.append(md5(md5String));
 		}
@@ -672,7 +669,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 	 * @param networkName Name of network
 	 */
 	protected void addNetworkDir(final StringBuffer directory, final StringBuffer file, final String networkName) {
-		if (!IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.networkfolders")) {
+		if (!IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "general.networkfolders")) {
 			return;
 		}
 	
@@ -770,7 +767,7 @@ public class LoggingPlugin extends Plugin implements ActionListener {
 	 * @return name to display
 	 */
 	protected String getDisplayName(final ChannelClientInfo channelClient, final String overrideNick) {
-		final boolean addModePrefix = (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.channelmodeprefix"));
+		final boolean addModePrefix = (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "general.channelmodeprefix"));
 		
 		if (channelClient == null) {
 			return (overrideNick.isEmpty()) ? "Unknown Client" : overrideNick;
