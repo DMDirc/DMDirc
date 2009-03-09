@@ -68,14 +68,6 @@ public final class OsdPlugin extends Plugin implements CategoryChangeListener,
     @Override
     public void onLoad() {
         command = new OsdCommand(this);
-
-        IdentityManager.getAddonIdentity().setOption(getDomain(), "locationX", 20);
-        IdentityManager.getAddonIdentity().setOption(getDomain(), "locationY", 20);
-        IdentityManager.getAddonIdentity().setOption(getDomain(), "newbehaviour", "down");
-        IdentityManager.getAddonIdentity().setOption(getDomain(), "bgcolour", "2222aa");
-        IdentityManager.getAddonIdentity().setOption(getDomain(), "fgcolour", "ffffff");
-        IdentityManager.getAddonIdentity().setOption(getDomain(), "fontSize", 20);
-        IdentityManager.getAddonIdentity().setOption(getDomain(), "timeout", 15);
     }
     
     /** {@inheritDoc} */
