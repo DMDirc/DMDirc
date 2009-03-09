@@ -348,7 +348,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 				final String key = entry.getKey().toString();
 				final String value = entry.getValue().toString();
 				
-				defaults.setOption("icons", key, value);
+				defaults.setOption("icon", key, value);
 			}
 		}
 	}
