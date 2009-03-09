@@ -859,7 +859,14 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 		if (isTempLoaded()) {
 			tempLoaded = false;
 			loadRequired();
-			plugin.onLoad();
+            
+            try {
+                plugin.onLoad();
+            } catch (Throwable e) {
+                lastError = "Error in onLoad for "+getName()+":"+e.getMessage();
+                Logger.userError(ErrorLevel.MEDIUM, lastError, e);
+                unloadPlugin();
+            }
 		} else {
 			if (isLoaded() || metaData == null || isLoading) {
 				lastError = "Not Loading: ("+isLoaded()+"||"+(metaData == null)+"||"+isLoading+")";
@@ -938,7 +945,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 						if (!tempLoaded) {
 							try {
 								plugin.onLoad();
-							} catch (Exception e) {
+							} catch (Throwable e) {
 								lastError = "Error in onLoad for "+getName()+":"+e.getMessage();
 								Logger.userError(ErrorLevel.MEDIUM, lastError, e);
 								unloadPlugin();
