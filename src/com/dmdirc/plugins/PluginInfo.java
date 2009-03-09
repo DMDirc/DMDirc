@@ -21,7 +21,6 @@
  */
 package com.dmdirc.plugins;
 
-import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.Identity;
