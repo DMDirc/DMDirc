@@ -37,12 +37,19 @@ import java.util.List;
  * @author chris
  */
 public final class OsdCommand extends GlobalCommand implements IntelligentCommand {
+
+    /** The plugin that owns this command. */
+    private final OsdPlugin plugin;
     
     /**
      * Creates a new instance of OsdCommand.
+     *
+     * @param plugin The plugin that owns this command
      */
-    public OsdCommand() {
+    public OsdCommand(final OsdPlugin plugin) {
         super();
+
+        this.plugin = plugin;
         
         CommandManager.registerCommand(this);
     }
@@ -55,7 +62,7 @@ public final class OsdCommand extends GlobalCommand implements IntelligentComman
                 && "--close".equalsIgnoreCase(args.getArguments()[0])) {
             OsdWindow.closeAll();
         } else {
-            new OsdWindow(Styliser.stipControlCodes(args.getArgumentsAsString()), false);
+            new OsdWindow(Styliser.stipControlCodes(args.getArgumentsAsString()), false, plugin);
         }
     }
     

@@ -65,6 +65,9 @@ public final class OsdWindow extends JDialog implements MouseListener,
     
     /** A list of open OSD windows. */
     private static List<OsdWindow> windows = new ArrayList<OsdWindow>();
+
+    /** Plugin this window belongs to. */
+    private final OsdPlugin plugin;
     
     /** OSD Label. */
     private final JLabel label;
@@ -80,15 +83,75 @@ public final class OsdWindow extends JDialog implements MouseListener,
 
     /**
      * Creates a new instance of OsdWindow.
+     * 
      * @param text The text to be displayed in the OSD window
      * @param config Is the window being configured (should it timeout and
      * allow itself to be moved)
+     * @param plugin The plugin that owns this window
      */    
-    public OsdWindow(final String text, final boolean config) {
-        this(text, config, 
-                IdentityManager.getGlobalConfig().getOptionInt(OsdPlugin.MY_DOMAIN,
-                "locationX"), getYPosition());
-        
+    public OsdWindow(final String text, final boolean config, final OsdPlugin plugin) {
+        this(text, config, IdentityManager.getGlobalConfig()
+                .getOptionInt(plugin.getDomain(), "locationX"), getYPosition(plugin), plugin);
+    }
+
+    /**
+     * Creates a new instance of OsdWindow.
+     *
+     * @param text The text to be displayed in the OSD window
+     * @param config Is the window being configured (should it timeout and
+     * allow itself to be moved)
+     * @param x The x-axis position for the OSD Window
+     * @param y The y-axis position for the OSD window
+     */
+    public OsdWindow(final String text, final boolean config, final int x,
+            final int y, final OsdPlugin plugin) {
+        super(SwingController.getMainFrame(), false);
+
+        this.plugin = plugin;
+        this.config = config;
+
+        setFocusableWindowState(false);
+        setAlwaysOnTop(true);
+        setResizable(false);
+        setUndecorated(true);
+
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+        setLocation(x, y);
+
+        panel = new JPanel();
+        panel.setBorder(new LineBorder(Color.BLACK));
+        panel.setBackground(IdentityManager.getGlobalConfig().getOptionColour(plugin.getDomain(),
+                "bgcolour"));
+
+        setContentPane(panel);
+        setLayout(new MigLayout("wmin 500, wmax 500, ins rel, fill"));
+
+        label = new JLabel(text);
+        label.setForeground(IdentityManager.getGlobalConfig().getOptionColour(plugin.getDomain(),
+                "fgcolour"));
+        label.setFont(label.getFont().deriveFont(
+                (float) IdentityManager.getGlobalConfig().getOptionInt(plugin.getDomain(),
+                "fontSize")));
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+            add(label, "alignx center");
+
+        setVisible(true);
+        pack();
+
+        if (config) {
+            this.addMouseMotionListener(this);
+            this.addMouseListener(this);
+        } else {
+            addMouseListener(this);
+            new Timer("OSD Display Timer").schedule(new TimerTask() {
+                public void run() {
+                    setVisible(false);
+                    dispose();
+                }
+            }, IdentityManager.getGlobalConfig().getOptionInt(plugin.getDomain(),
+                    "timeout") * 1000);
+        }
     }
     
     /**
@@ -97,10 +160,10 @@ public final class OsdWindow extends JDialog implements MouseListener,
      * 
      * @return The y-axis position for a new OSD window.
      */
-    private static int getYPosition() {
+    private static int getYPosition(final OsdPlugin plugin) {
         final String policy = IdentityManager.getGlobalConfig()
-                .getOption(OsdPlugin.MY_DOMAIN, "newbehaviour");
-        int y = IdentityManager.getGlobalConfig().getOptionInt(OsdPlugin.MY_DOMAIN,
+                .getOption(plugin.getDomain(), "newbehaviour");
+        int y = IdentityManager.getGlobalConfig().getOptionInt(plugin.getDomain(),
                 "locationY");
         
         if ("down".equals(policy)) {
@@ -133,64 +196,6 @@ public final class OsdWindow extends JDialog implements MouseListener,
             window.setVisible(false);
             window.dispose();
         }        
-    }
-    
-    /**
-     * Creates a new instance of OsdWindow.
-     * 
-     * @param text The text to be displayed in the OSD window
-     * @param config Is the window being configured (should it timeout and
-     * allow itself to be moved)
-     * @param x The x-axis position for the OSD Window
-     * @param y The y-axis position for the OSD window
-     */
-    public OsdWindow(final String text, final boolean config, final int x, final int y) {
-        super(SwingController.getMainFrame(), false);
-        
-        this.config = config;
-        
-        setFocusableWindowState(false);
-        setAlwaysOnTop(true);
-        setResizable(false);
-        setUndecorated(true);
-        
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        
-        setLocation(x, y);
-        
-        panel = new JPanel();
-        panel.setBorder(new LineBorder(Color.BLACK));
-        panel.setBackground(IdentityManager.getGlobalConfig().getOptionColour(OsdPlugin.MY_DOMAIN,
-                "bgcolour"));
-        
-        setContentPane(panel);
-        setLayout(new MigLayout("wmin 500, wmax 500, ins rel, fill"));
-        
-        label = new JLabel(text);
-        label.setForeground(IdentityManager.getGlobalConfig().getOptionColour(OsdPlugin.MY_DOMAIN,
-                "fgcolour"));
-        label.setFont(label.getFont().deriveFont(
-                (float) IdentityManager.getGlobalConfig().getOptionInt(OsdPlugin.MY_DOMAIN,
-                "fontSize")));
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-            add(label, "alignx center");
-            
-        setVisible(true);
-        pack();
-        
-        if (config) {
-            this.addMouseMotionListener(this);
-            this.addMouseListener(this);
-        } else {
-            addMouseListener(this);
-            new Timer("OSD Display Timer").schedule(new TimerTask() {
-                public void run() {
-                    setVisible(false);
-                    dispose();
-                }
-            }, IdentityManager.getGlobalConfig().getOptionInt(OsdPlugin.MY_DOMAIN,
-                    "timeout") * 1000);
-        }
     }
     
     /** {@inheritDoc} */

@@ -42,9 +42,6 @@ import java.util.Map;
 public final class OsdPlugin extends Plugin implements CategoryChangeListener,
         PreferencesInterface, SettingChangeListener {
     
-    /** What domain do we store all settings in the global config under. */
-    protected static final String MY_DOMAIN = "plugin-OSD";
-    
     /** Config OSD Window. */
     private OsdWindow osdWindow;
     
@@ -70,15 +67,15 @@ public final class OsdPlugin extends Plugin implements CategoryChangeListener,
     /** {@inheritDoc} */
     @Override
     public void onLoad() {
-        command = new OsdCommand();
+        command = new OsdCommand(this);
 
-        IdentityManager.getAddonIdentity().setOption(MY_DOMAIN, "locationX", 20);
-        IdentityManager.getAddonIdentity().setOption(MY_DOMAIN, "locationY", 20);
-        IdentityManager.getAddonIdentity().setOption(MY_DOMAIN, "newbehaviour", "down");
-        IdentityManager.getAddonIdentity().setOption(MY_DOMAIN, "bgcolour", "2222aa");
-        IdentityManager.getAddonIdentity().setOption(MY_DOMAIN, "fgcolour", "ffffff");
-        IdentityManager.getAddonIdentity().setOption(MY_DOMAIN, "fontSize", 20);
-        IdentityManager.getAddonIdentity().setOption(MY_DOMAIN, "timeout", 15);
+        IdentityManager.getAddonIdentity().setOption(getDomain(), "locationX", 20);
+        IdentityManager.getAddonIdentity().setOption(getDomain(), "locationY", 20);
+        IdentityManager.getAddonIdentity().setOption(getDomain(), "newbehaviour", "down");
+        IdentityManager.getAddonIdentity().setOption(getDomain(), "bgcolour", "2222aa");
+        IdentityManager.getAddonIdentity().setOption(getDomain(), "fgcolour", "ffffff");
+        IdentityManager.getAddonIdentity().setOption(getDomain(), "fontSize", 20);
+        IdentityManager.getAddonIdentity().setOption(getDomain(), "timeout", 15);
     }
     
     /** {@inheritDoc} */
@@ -90,27 +87,27 @@ public final class OsdPlugin extends Plugin implements CategoryChangeListener,
     /** {@inheritDoc} */
     @Override
     public void showConfig(final PreferencesManager manager) {
-        x = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "locationX");
-        y = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "locationY");
+        x = IdentityManager.getGlobalConfig().getOptionInt(getDomain(), "locationX");
+        y = IdentityManager.getGlobalConfig().getOptionInt(getDomain(), "locationY");
         
         final PreferencesCategory category = new PreferencesCategory("OSD",
                 "General configuration for OSD plugin.");
         
         fontSizeSetting = new PreferencesSetting(PreferencesType.INTEGER,
-                MY_DOMAIN, "fontSize", "Font size", "Changes the font " +
+                getDomain(), "fontSize", "Font size", "Changes the font " +
                 "size of the OSD").registerChangeListener(this);
         backgroundSetting = new PreferencesSetting(PreferencesType.COLOUR,
-                MY_DOMAIN, "bgcolour", "Background colour",
+                getDomain(), "bgcolour", "Background colour",
                 "Background colour for the OSD").registerChangeListener(this);
         foregroundSetting = new PreferencesSetting(PreferencesType.COLOUR,
-                MY_DOMAIN, "fgcolour", "Foreground colour", 
+                getDomain(), "fgcolour", "Foreground colour",
                 "Foreground colour for the OSD").registerChangeListener(this);
                 
         category.addSetting(fontSizeSetting);
         category.addSetting(backgroundSetting);
         category.addSetting(foregroundSetting);
         category.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
-                MY_DOMAIN, "timeout", "Timeout", "Length of time in " +
+                getDomain(), "timeout", "Timeout", "Length of time in " +
                 "seconds before the OSD window closes"));
         
         final Map<String, String> posOptions = new HashMap<String, String>();
@@ -119,7 +116,7 @@ public final class OsdPlugin extends Plugin implements CategoryChangeListener,
         posOptions.put("close", "Close existing windows");
         posOptions.put("ontop", "Place new windows on top of existing window");
         
-        category.addSetting(new PreferencesSetting(MY_DOMAIN, "newbehaviour", 
+        category.addSetting(new PreferencesSetting(getDomain(), "newbehaviour",
                 "New window policy:", "What to do when an OSD Window "
                 + "is opened when there are other, existing windows open", posOptions));
 
@@ -131,7 +128,7 @@ public final class OsdPlugin extends Plugin implements CategoryChangeListener,
     /** {@inheritDoc} */
     @Override
     public void categorySelected(final PreferencesCategory category) {
-        osdWindow = new OsdWindow("Please drag this OSD to position", true, x, y);
+        osdWindow = new OsdWindow("Please drag this OSD to position", true, x, y, this);
         osdWindow.setBackgroundColour(backgroundSetting.getValue());
         osdWindow.setForegroundColour(foregroundSetting.getValue());
         osdWindow.setFontSize(Integer.parseInt(fontSizeSetting.getValue()));
@@ -150,8 +147,8 @@ public final class OsdPlugin extends Plugin implements CategoryChangeListener,
     /** {@inheritDoc} */
     @Override
     public void save() {
-        IdentityManager.getConfigIdentity().setOption(MY_DOMAIN, "locationX", x);
-        IdentityManager.getConfigIdentity().setOption(MY_DOMAIN, "locationY", y);
+        IdentityManager.getConfigIdentity().setOption(getDomain(), "locationX", x);
+        IdentityManager.getConfigIdentity().setOption(getDomain(), "locationY", y);
     }
 
     /** {@inheritDoc} */
