@@ -37,6 +37,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.util.RollingList;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -100,6 +101,16 @@ public abstract class CommandParser implements Serializable {
     }
 
     /**
+     * Retrieves a map of commands known by this command parser.
+     *
+     * @since 0.6.3
+     * @return A map of commands known to this parser
+     */
+    public Map<String, Command> getCommands() {
+        return new HashMap<String, Command>(commands);
+    }
+
+    /**
      * Parses the specified string as a command.
      *
      * @param origin The window in which the command was typed
@@ -128,11 +139,11 @@ public abstract class CommandParser implements Serializable {
                             .parseCommand(origin, args.getWordsAsString(2), false);
                     return;
                 } else {
-                    final Command actCommand = CommandManager.getCommand(
+                    final Map.Entry<CommandInfo, Command> actCommand = CommandManager.getCommand(
                             CommandType.TYPE_CHANNEL, command);
 
-                    if (actCommand instanceof ExternalCommand) {
-                        ((ExternalCommand) actCommand).execute(
+                    if (actCommand != null && actCommand.getValue() instanceof ExternalCommand) {
+                        ((ExternalCommand) actCommand.getValue()).execute(
                                 origin, server, cargs[0], silent,
                                 new CommandArguments(args.getWordsAsString(2)));
                         return;

@@ -335,7 +335,7 @@ public final class CommandManager {
      * @param name The name to look for
      * @return A command with a matching signature, or null if none were found
      */
-    public static Command getCommand(final String name) {
+    public static Map.Entry<CommandInfo, Command> getCommand(final String name) {
         return getCommand(null, name);
     }
     
@@ -346,10 +346,11 @@ public final class CommandManager {
      * @param name The name to look for
      * @return A command with a matching signature, or null if none were found
      */
-    public static Command getCommand(final CommandType type, final String name) {
+    public static Map.Entry<CommandInfo, Command> getCommand(final CommandType type,
+            final String name) {
         final Map<CommandInfo, Command> res = getCommands(type, name);
         
-        return res.isEmpty() ? null : res.values().iterator().next();
+        return res.isEmpty() ? null : res.entrySet().iterator().next();
     }    
      
     /**

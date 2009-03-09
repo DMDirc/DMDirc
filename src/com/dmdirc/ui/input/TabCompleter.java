@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.input;
 
+import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -230,10 +231,10 @@ public final class TabCompleter implements Serializable {
         }
         
         final String signature = args.get(0).substring(1);
-        final Command command = CommandManager.getCommand(signature);
+        final Map.Entry<CommandInfo, Command> command = CommandManager.getCommand(signature);
         
-        if (command instanceof IntelligentCommand) {
-            return ((IntelligentCommand) command).getSuggestions(args.size() - 1,
+        if (command != null && command.getValue() instanceof IntelligentCommand) {
+            return ((IntelligentCommand) command.getValue()).getSuggestions(args.size() - 1,
                     args.subList(1, args.size()));
         } else {
             return null;

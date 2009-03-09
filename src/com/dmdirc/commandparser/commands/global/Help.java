@@ -25,19 +25,18 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.ui.interfaces.QueryWindow;
-import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.messages.Styliser;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The help command shows the user a list of available commands, along with
@@ -74,38 +73,25 @@ public final class Help extends GlobalCommand implements IntelligentCommand {
      * @param isSilent Whether this command has been silenced or not
      */
     private void showAllCommands(final InputWindow origin, final boolean isSilent) {
-        final List<CommandInfo> commands = new ArrayList<CommandInfo>();
+        final List<String> commands = new ArrayList<String>(origin.getCommandParser()
+                .getCommands().keySet());
 
-        commands.addAll(CommandManager.getCommands(CommandType.TYPE_GLOBAL).keySet());
-        
-        if (origin instanceof ServerWindow) {
-            commands.addAll(CommandManager.getCommands(CommandType.TYPE_SERVER).keySet());
-        } else if (origin instanceof ChannelWindow) {
-            commands.addAll(CommandManager.getCommands(CommandType.TYPE_CHANNEL).keySet());
-            commands.addAll(CommandManager.getCommands(CommandType.TYPE_CHAT).keySet());
-            commands.addAll(CommandManager.getCommands(CommandType.TYPE_SERVER).keySet());
-        } else if (origin instanceof QueryWindow) {
-            commands.addAll(CommandManager.getCommands(CommandType.TYPE_QUERY).keySet());
-            commands.addAll(CommandManager.getCommands(CommandType.TYPE_CHAT).keySet());
-            commands.addAll(CommandManager.getCommands(CommandType.TYPE_SERVER).keySet());
-        }
-        
-        //Collections.sort(commands);
+        Collections.sort(commands);
         
         sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
                 + "----------------------- Available commands -------");
         
         final StringBuilder builder = new StringBuilder();
         
-        for (CommandInfo command : commands) {
-            if (builder.length() + command.getName().length() + 1 > 50) {
+        for (String command : commands) {
+            if (builder.length() + command.length() + 1 > 50) {
                 sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED + builder.toString());
                 builder.delete(0, builder.length());
             } else if (builder.length() > 0) {
                 builder.append(' ');
             }
             
-            builder.append(command.getName());
+            builder.append(command);
         }
         
         if (builder.length() > 0) {
@@ -125,14 +111,13 @@ public final class Help extends GlobalCommand implements IntelligentCommand {
      */
     private void showCommand(final InputWindow origin, final boolean isSilent,
             final String name) {
-        CommandInfo command = null;
+        Map.Entry<CommandInfo, Command> command = null;
 
-        /* TODO: Add methods to enable this to work and uncomment
         if (name.length() > 0 && name.charAt(0) == CommandManager.getCommandChar()) {
             command = CommandManager.getCommand(name.substring(1));
         } else {
             command = CommandManager.getCommand(name);
-        }*/
+        }
         
         if (command == null) {
             sendLine(origin, isSilent, FORMAT_ERROR, "Command '" + name + "' not found.");
@@ -142,9 +127,9 @@ public final class Help extends GlobalCommand implements IntelligentCommand {
             sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
                     + " Name: " + name);
             sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
-                    + " Type: " + command.getType());
+                    + " Type: " + command.getKey().getType());
             sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
-                    + "Usage: " + command.getHelp());
+                    + "Usage: " + command.getKey().getHelp());
             sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
                     + "--------------------------------------------------");            
         }
