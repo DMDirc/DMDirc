@@ -55,9 +55,6 @@ import java.util.Map.Entry;
  */
 public final class WindowStatusPlugin extends Plugin implements ActionListener {
 
-        /** What domain do we store all settings in the global config under. */
-	private static final String MY_DOMAIN = "plugin-Logging";
-
 	/** The panel we use in the status bar. */
 	private final WindowStatusPanel panel = new WindowStatusPanel();
 
@@ -73,9 +70,9 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 	public void onLoad() {
 		// Set defaults
 		final Identity defaults = IdentityManager.getAddonIdentity();
-		defaults.setOption(MY_DOMAIN, "channel.shownone", "true");
-		defaults.setOption(MY_DOMAIN, "channel.noneprefix", "None:");
-		defaults.setOption(MY_DOMAIN, "client.showname", "false");
+		defaults.setOption(getDomain(), "channel.shownone", "true");
+		defaults.setOption(getDomain(), "channel.noneprefix", "None:");
+		defaults.setOption(getDomain(), "client.showname", "false");
 
 		Main.getUI().getStatusBar().addComponent(panel);
 		updateStatus();
@@ -146,9 +143,9 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 					String mode = client.getImportantModePrefix();
 
 					if (mode.isEmpty()) {
-						if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "channel.shownone")) {
-							if (IdentityManager.getGlobalConfig().hasOptionString(MY_DOMAIN, "channel.noneprefix")) {
-								mode = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "channel.noneprefix");
+						if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "channel.shownone")) {
+							if (IdentityManager.getGlobalConfig().hasOptionString(getDomain(), "channel.noneprefix")) {
+								mode = IdentityManager.getGlobalConfig().getOption(getDomain(), "channel.noneprefix");
 							} else {
 								mode = "None:";
 							}
@@ -182,7 +179,7 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
 			final Query frame = (Query) current;
 
 			textString.append(frame.getHost());
-			if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "client.showname") && frame.getServer().getParser() != null) {
+			if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "client.showname") && frame.getServer().getParser() != null) {
 				final ClientInfo client = frame.getServer().getParser().getClientInfo(frame.getHost());
 				if (client != null) {
 					final String realname = client.getRealName();
@@ -205,13 +202,13 @@ public final class WindowStatusPlugin extends Plugin implements ActionListener {
                         = new PreferencesCategory("Window status", "");
 
                 category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                        MY_DOMAIN, "channel.shownone", "Show 'none' count",
+                        getDomain(), "channel.shownone", "Show 'none' count",
                         "Should the count for users with no state be shown?"));
                 category.addSetting(new PreferencesSetting(PreferencesType.TEXT,
-                        MY_DOMAIN, "channel.noneprefix", "'None' count prefix",
+                        getDomain(), "channel.noneprefix", "'None' count prefix",
                         "The Prefix to use when showing the 'none' count"));
                 category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                        MY_DOMAIN, "client.showname", "Show real name",
+                        getDomain(), "client.showname", "Show real name",
                         "Should the realname for clients be shown if known?"));
 
 		manager.getCategory("Plugins").addSubCategory(category);
