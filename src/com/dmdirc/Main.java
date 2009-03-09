@@ -102,7 +102,11 @@ public final class Main {
 
         CommandManager.initCommands();
 
-        loadUI(pm, IdentityManager.getGlobalConfig(), true);
+        for (String service : new String[]{"ui", "tabcompletion"}) {
+            ensureExists(pm, service);
+        }
+
+        loadUI(pm, IdentityManager.getGlobalConfig());
 
         getUI().initUISettings();
 
@@ -136,17 +140,29 @@ public final class Main {
     }
 
     /**
+     * Ensures that there is at least one provider of the specified
+     * service type by extracting matching core plugins. Plugins must be named
+     * so that their file name starts with the service type, and then an
+     * underscore.
+     *
+     * @param pm The plugin manager to use to access services
+     * @param serviceType The type of service that should exist
+     */
+    protected static void ensureExists(final PluginManager pm, final String serviceType) {
+        if (pm.getServicesByType(serviceType).isEmpty()) {
+            extractCorePlugins(serviceType + "_");
+            pm.getPossiblePluginInfos(true);
+        }
+    }
+
+    /**
      * Attempts to find and activate a service which provides a UI that we
      * can use.
      *
      * @param pm The plugin manager to use to load plugins
      * @param cm The config manager to use to retrieve settings
-     * @param tryExtracting If no suitable plugins are found and tryExtracting
-     * is true, the method will try extracting core UI plugins bundled with
-     * DMDirc before giving up.
      */
-    protected static void loadUI(final PluginManager pm, final ConfigManager cm,
-            final boolean tryExtracting) {
+    protected static void loadUI(final PluginManager pm, final ConfigManager cm) {
         final List<Service> uis = pm.getServicesByType("ui");
         final String desired = cm.getOption("general", "ui");
 
@@ -162,15 +178,6 @@ public final class Main {
             if (service.activate()) {
                 return;
             }
-        }
-
-        // Third try: extract some core plugins and go again
-        if (tryExtracting) {
-            extractCorePlugins("ui_");
-            pm.getPossiblePluginInfos(true);
-
-            loadUI(pm, cm, false);
-            return;
         }
 
         if (!GraphicsEnvironment.isHeadless()) {
