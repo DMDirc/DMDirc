@@ -40,6 +40,7 @@ import java.util.List;
 
 import javax.net.ssl.TrustManager;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -180,6 +181,17 @@ public class IRCParserTest {
 
         assertNotNull(test.message);
         assertEquals("Stupid notice", test.message);
+    }
+
+    @Test @Ignore
+    public void testPre001NickChange() throws CallbackNotFoundException {
+        final TestINoticeAuth test = new TestINoticeAuth();
+        final TestParser parser = new TestParser();
+        parser.getCallbackManager().addCallback("onNoticeAuth", test);
+        parser.sendConnectionStrings();
+        parser.injectLine(":chris!@ NICK :user2");
+
+        assertNull(test.message);
     }
 
     @Test
