@@ -20,19 +20,21 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.input.tabstyles;
+package com.dmdirc.addons.tabcompletion_mirc;
 
 import com.dmdirc.Channel;
+import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompleterResult;
+import com.dmdirc.ui.input.tabstyles.TabCompletionResult;
+import com.dmdirc.ui.input.tabstyles.TabCompletionStyle;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.awt.Toolkit;
 import java.util.List;
 
-public class MircStyle extends TabCompletionStyle {
-    
-    /** The name of this style. */
-    private static final String NAME = "mirc";
+public class MircStyle extends Plugin implements TabCompletionStyle {
     
     /** The last set of results we retrieved. */
     private List<String> lastResult;
@@ -40,12 +42,21 @@ public class MircStyle extends TabCompletionStyle {
     /** The last word that was tab completed. */
     private String lastWord;
     
+    /** The tab completer that we use. */
+    protected TabCompleter tabCompleter;
+
+    /** The input window that we use. */
+    protected InputWindow window;
+
     /** {@inheritDoc} */
-    public String getName() {
-        return NAME;
+    @Override
+    public void setContext(final TabCompleter completer, final InputWindow window) {
+        this.tabCompleter = completer;
+        this.window = window;
     }
     
     /** {@inheritDoc} */
+    @Override
     public TabCompletionResult getResult(final String original, final int start,
             final int end, final AdditionalTabTargets additional) {
         
@@ -64,7 +75,8 @@ public class MircStyle extends TabCompletionStyle {
                 return null;
             } else {
                 if (word.length() > 0 && window.getContainer() instanceof Channel
-                        && ((Channel) window.getContainer()).getChannelInfo().getName().startsWith(word)) {
+                        && ((Channel) window.getContainer())
+                        .getChannelInfo().getName().startsWith(word)) {
                     target = ((Channel) window.getContainer()).getChannelInfo().getName();
                 } else {
                     target = res.getResults().get(0);
@@ -75,9 +87,20 @@ public class MircStyle extends TabCompletionStyle {
         
         lastWord = target;
         
-        return new TabCompletionResult(
-                original.substring(0, start) + target + original.substring(end),
-                start + target.length());
+        return new TabCompletionResult(original.substring(0, start) + target
+                + original.substring(end), start + target.length());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onLoad() {
+        // Do nothing
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onUnload() {
+        // Do nothing
     }
     
 }

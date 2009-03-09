@@ -32,13 +32,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
  * 
  * @author Chris
  */
-public abstract class TabCompletionStyle {
-        
-    /** The tab completer that we use. */
-    protected TabCompleter tabCompleter;
-    
-    /** The input window that we use. */
-    protected InputWindow window;
+public interface TabCompletionStyle {
     
     /**
      * Sets this style's tab completer and window to the ones specified.
@@ -46,17 +40,7 @@ public abstract class TabCompletionStyle {
      * @param completer The new tab completer to use
      * @param window The window in which the tab completer is used
      */
-    public void setContext(final TabCompleter completer, final InputWindow window) {
-        this.tabCompleter = completer;
-        this.window = window;
-    }
-    
-    /**
-     * Retrieves a name for this completion style.
-     * 
-     * @return The name for this completion style
-     */
-    public abstract String getName();
+    void setContext(final TabCompleter completer, final InputWindow window);
     
     /**
      * Retrieves this style's result for the specified parameters.
@@ -67,7 +51,7 @@ public abstract class TabCompletionStyle {
      * @param additional A list of additional targets which may match
      * @return This style's proposed result
      */
-    public abstract TabCompletionResult getResult(final String original,
-            final int start, final int end, final AdditionalTabTargets additional);
+    TabCompletionResult getResult(final String original, final int start,
+            final int end, final AdditionalTabTargets additional);
     
 }

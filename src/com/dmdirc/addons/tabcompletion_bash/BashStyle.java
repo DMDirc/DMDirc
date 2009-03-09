@@ -20,17 +20,19 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.input.tabstyles;
+package com.dmdirc.addons.tabcompletion_bash;
 
+import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompleterResult;
+import com.dmdirc.ui.input.tabstyles.TabCompletionResult;
+import com.dmdirc.ui.input.tabstyles.TabCompletionStyle;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.awt.Toolkit;
 
-public class BashStyle extends TabCompletionStyle {
-    
-    /** The name of this style. */
-    private static final String NAME = "bash";
+public class BashStyle extends Plugin implements TabCompletionStyle {
     
     /** The last position the user tab-completed at. */
     private int lastPosition = -1;
@@ -40,13 +42,22 @@ public class BashStyle extends TabCompletionStyle {
     
     /** The last word that was tab completed. */
     private String lastWord = "";
-    
+
+    /** The tab completer that we use. */
+    protected TabCompleter tabCompleter;
+
+    /** The input window that we use. */
+    protected InputWindow window;
+
     /** {@inheritDoc} */
-    public String getName() {
-        return NAME;
+    @Override
+    public void setContext(final TabCompleter completer, final InputWindow window) {
+        this.tabCompleter = completer;
+        this.window = window;
     }
     
     /** {@inheritDoc} */
+    @Override
     public TabCompletionResult getResult(final String original, final int start,
             final int end, final AdditionalTabTargets additional) {
         final String word = original.substring(start, end);
@@ -86,6 +97,18 @@ public class BashStyle extends TabCompletionStyle {
                         start + sub.length());
             }
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onLoad() {
+        // Do nothing
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onUnload() {
+        // Do nothing
     }
     
 }

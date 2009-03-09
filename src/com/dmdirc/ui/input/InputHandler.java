@@ -33,8 +33,8 @@ import com.dmdirc.commandparser.commands.WrappableCommand;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.interfaces.ConfigChangeListener;
-import com.dmdirc.ui.input.tabstyles.BashStyle;
-import com.dmdirc.ui.input.tabstyles.MircStyle;
+import com.dmdirc.plugins.PluginInfo;
+import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.tabstyles.TabCompletionResult;
 import com.dmdirc.ui.input.tabstyles.TabCompletionStyle;
 import com.dmdirc.ui.interfaces.InputField;
@@ -173,12 +173,9 @@ public abstract class InputHandler implements ConfigChangeListener {
      * Sets this inputhandler's tab completion style.
      */
     private void setStyle() {
-        if ("bash".equals(parentWindow.getConfigManager().getOption("tabcompletion",
-                "style"))) {
-            style = new BashStyle();
-        } else {
-            style = new MircStyle();
-        }
+        style = (TabCompletionStyle) ((PluginInfo) PluginManager.getPluginManager()
+                .getServiceProvider("tabcompletion", parentWindow.getConfigManager()
+                .getOption("tabcompletion", "style"))).getPlugin();
         
         style.setContext(tabCompleter, parentWindow);
     }

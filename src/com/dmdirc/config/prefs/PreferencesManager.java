@@ -25,6 +25,8 @@ import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.prefs.validator.NumericalValidator;
+import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.plugins.Service;
 import com.dmdirc.util.ListenerList;
 
 import java.util.ArrayList;
@@ -171,8 +173,9 @@ public class PreferencesManager {
                 "contains more than this many lines."));
         
         final Map<String, String> taboptions = new HashMap<String, String>();
-        taboptions.put("bash", "Bash style");
-        taboptions.put("mirc", "mIRC style (cyclic)");
+        for (Service service : PluginManager.getPluginManager().getServicesByType("tabcompletion")) {
+            taboptions.put(service.getName(), service.getName());
+        }
         
         category.addSetting(new PreferencesSetting("tabcompletion", "style",
                 "Tab completion style", "Determines the behaviour of " +
