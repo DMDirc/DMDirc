@@ -1,9 +1,0 @@
-mainclass=com.dmdirc.addons.windowstatus.WindowStatusPlugin
-friendlyversion=0.5
-author=Shane <shane@dmdirc.com>
-description=Displays information related to the current window in the status bar.
-name=windowstatus
-nicename=WindowStatus Plugin
-minversion=0
-require-ui=com.dmdirc.ui.swing
-addonid=13

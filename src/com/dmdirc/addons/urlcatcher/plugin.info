@@ -1,8 +1,0 @@
-mainclass=com.dmdirc.addons.urlcatcher.UrlCatcherPlugin
-friendlyversion=0.1
-author=Chris <chris@dmdirc.com>
-description=Logs all URLs that are mentioned
-name=urlcatcher
-nicename=URL Catcher
-minversion=0
-addonid=25

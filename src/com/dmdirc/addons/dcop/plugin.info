@@ -1,8 +1,0 @@
-mainclass=com.dmdirc.addons.dcop.DcopPlugin
-friendlyversion=0.3
-author=Chris <chris@dmdirc.com>
-description=Provides commands to interface with DCOP applications
-name=dcop
-nicename=DCOP Plugin
-minversion=0
-addonid=1

@@ -1,8 +1,0 @@
-mainclass=com.dmdirc.addons.dns.DNSPlugin
-friendlyversion=0.2
-author=Greboid <greg@dmdirc.com>
-description=Provides a DNS command and method to the client
-name=dns
-nicename=DNS Plugin
-minversion=0
-addonid=10
