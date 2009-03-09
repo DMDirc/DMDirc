@@ -221,11 +221,6 @@ public final class NickColourPlugin extends Plugin implements ActionListener {
         if (IdentityManager.getGlobalConfig().hasOptionString(getDomain(), "randomcolours")) {
             randColours = IdentityManager.getGlobalConfig().getOptionList(getDomain(), "randomcolours").toArray(new String[0]);
         }
-
-        IdentityManager.getAddonIdentity().setOption(getDomain(), "useowncolour", false);
-        IdentityManager.getAddonIdentity().setOption(getDomain(), "userandomcolour", false);
-        IdentityManager.getAddonIdentity().setOption(getDomain(), "settext", false);
-        IdentityManager.getAddonIdentity().setOption(getDomain(), "setnicklist", false);
         
         ActionManager.addListener(this, CoreActionType.CHANNEL_GOTNAMES,
                 CoreActionType.CHANNEL_JOIN);
