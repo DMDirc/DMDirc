@@ -32,7 +32,10 @@ import com.dmdirc.harness.TestLoggingPlugin;
 import com.dmdirc.harness.parser.TestParserFactory;
 import com.dmdirc.parser.irc.ChannelInfo;
 import com.dmdirc.addons.ui_dummy.DummyController;
+import com.dmdirc.plugins.PluginInfo;
+import com.dmdirc.util.ConfigFile;
 import java.util.ArrayList;
+import java.util.Map;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -53,7 +56,19 @@ public class LoggingPluginTest {
                 new TestParserFactory());
         channel = new Channel(server, new ChannelInfo(server.getParser(), "#test"));
         query = new Query(server, "foo!bar@baz");
+
+        final ConfigFile file = new ConfigFile(LoggingPlugin.class
+                .getResourceAsStream("plugin.config"));
+        file.read();
+
+        for (Map.Entry<String, String> entry : file.getKeyDomain("defaults").entrySet()) {
+            IdentityManager.getAddonIdentity().setOption("temp-plugin-logging",
+                    entry.getKey(), entry.getValue());
+        }
+
         lp = new TestLoggingPlugin();
+        lp.setDomain("temp-plugin-logging");
+        lp.domainUpdated();
         lp.onLoad();
     }
     
