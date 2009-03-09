@@ -122,7 +122,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 			/** {@inheritDoc} */
 			@Override
 			public void run() {
-				final JFileChooser jc = KFileChooser.getFileChooser(IdentityManager.getGlobalConfig().getOption(getDomain(), "receive.savelocation"));
+				final JFileChooser jc = KFileChooser.getFileChooser(DCCPlugin.this, IdentityManager.getGlobalConfig().getOption(getDomain(), "receive.savelocation"));
 				jc.setDialogTitle("Save "+sendFilename+" As - DMDirc ");
 				jc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				jc.setMultiSelectionEnabled(false);

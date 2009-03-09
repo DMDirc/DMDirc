@@ -54,7 +54,7 @@ import java.util.List;
 public final class DCCCommand extends ServerCommand implements IntelligentCommand {
 
 	/** My Plugin */
-	final DCCPlugin myPlugin;
+	private final DCCPlugin myPlugin;
 
 	/**
 	 * Creates a new instance of DCCCommand.
@@ -133,7 +133,7 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 			/** {@inheritDoc} */
 			@Override
 			public void run() {
-				final JFileChooser jc = (givenFile.exists()) ? KFileChooser.getFileChooser(givenFile) : KFileChooser.getFileChooser();
+				final JFileChooser jc = (givenFile.exists()) ? KFileChooser.getFileChooser(myPlugin, givenFile) : KFileChooser.getFileChooser(myPlugin);
 				int result;
 				if (!givenFile.exists() || !givenFile.isFile() ) {
 					jc.setDialogTitle("Send file to "+target+" - DMDirc ");
