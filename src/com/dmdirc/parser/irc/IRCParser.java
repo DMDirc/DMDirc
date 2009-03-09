@@ -70,13 +70,6 @@ public class IRCParser implements Runnable {
 	public static final int DEBUG_LMQ = 8;
 //	public static final int DEBUG_SOMETHING = 16; //Next thingy
 
-	/** Socket is not created yet. */
-	public static final byte STATE_NULL = 0;
-	/** Socket is closed. */
-	public static final byte STATE_CLOSED = 1;
-	/** Socket is Open. */
-	public static final byte STATE_OPEN = 2;
-
 	/** Attempt to update user host all the time, not just on Who/Add/NickChange. */
 	static final boolean ALWAYS_UPDATECLIENT = true;
 
@@ -213,7 +206,7 @@ public class IRCParser implements Runnable {
 	private boolean disconnectOnFatal = true;
 
 	/** Current Socket State. */
-	protected byte currentSocketState;
+	protected SocketState currentSocketState = SocketState.NULL;
 
 	/** This is the socket used for reading from/writing to the IRC server. */
 	private Socket socket;
@@ -357,9 +350,10 @@ public class IRCParser implements Runnable {
 	/**
 	 * Get the current socket State.
 	 *
-	 * @return Current SocketState (STATE_NULL, STATE_CLOSED or STATE_OPEN)
+     * @since 0.6.3
+	 * @return Current {@link SocketState}
 	 */
-	public byte getSocketState() { return currentSocketState; }
+	public SocketState getSocketState() { return currentSocketState; }
 
 	/**
 	 * Get a reference to the Processing Manager.
@@ -586,7 +580,7 @@ public class IRCParser implements Runnable {
 			pingTimer.cancel();
 			pingTimer = null;
 		}
-		currentSocketState = STATE_CLOSED;
+		currentSocketState = SocketState.CLOSED;
 		// Char Mapping
 		updateCharArrays((byte)4);
 	}
@@ -646,7 +640,7 @@ public class IRCParser implements Runnable {
 
 			final Proxy.Type proxyType = Proxy.Type.SOCKS;
 			socket = new Socket(new Proxy(proxyType, new InetSocketAddress(server.getProxyHost(), server.getProxyPort())));
-			currentSocketState = STATE_OPEN;
+			currentSocketState = SocketState.OPEN;
 			if (server.getProxyUser() != null && !server.getProxyUser().isEmpty()) {
 				IRCAuthenticator.getIRCAuthenticator().addAuthentication(server);
 			}
@@ -665,7 +659,7 @@ public class IRCParser implements Runnable {
 					}
 				}
 
-				currentSocketState = STATE_OPEN;
+				currentSocketState = SocketState.OPEN;
 				socket.connect(new InetSocketAddress(server.getHost(), server.getPort()));
 			}
 		}
@@ -695,7 +689,7 @@ public class IRCParser implements Runnable {
 				}
 			}
 
-			currentSocketState = STATE_OPEN;
+			currentSocketState = SocketState.OPEN;
 		}
 
 		callDebugInfo(DEBUG_SOCKET, "\t-> Opening socket output stream PrintWriter");
@@ -733,8 +727,8 @@ public class IRCParser implements Runnable {
 		ei.setException(e);
 		callConnectError(ei);
 		
-		if (currentSocketState != STATE_CLOSED) {
-			currentSocketState = STATE_CLOSED;
+		if (currentSocketState != SocketState.CLOSED) {
+			currentSocketState = SocketState.CLOSED;
 			callSocketClosed();
 		}
 		resetState();
@@ -772,8 +766,8 @@ public class IRCParser implements Runnable {
 			try {
 				lastLine = in.readLine(); // Blocking :/
 				if (lastLine == null) {
-					if (currentSocketState != STATE_CLOSED) {
-						currentSocketState = STATE_CLOSED;
+					if (currentSocketState != SocketState.CLOSED) {
+						currentSocketState = SocketState.CLOSED;
 						callSocketClosed();
 					}
 					resetState();
@@ -784,8 +778,8 @@ public class IRCParser implements Runnable {
 			} catch (IOException e) {
 				callDebugInfo(DEBUG_SOCKET, "Exception in main loop (" + e.getMessage() + "), Aborted");
 				
-				if (currentSocketState != STATE_CLOSED) {
-					currentSocketState = STATE_CLOSED;
+				if (currentSocketState != SocketState.CLOSED) {
+					currentSocketState = SocketState.CLOSED;
 					callSocketClosed();
 				}
 				resetState();
@@ -801,7 +795,7 @@ public class IRCParser implements Runnable {
 	 * @return 0 if not connected, else the current local port number
 	 */
 	public int getLocalPort() {
-		if (currentSocketState == STATE_OPEN) {
+		if (currentSocketState == SocketState.OPEN) {
 			return socket.getLocalPort();
 		} else {
 			return 0;
@@ -1483,7 +1477,7 @@ public class IRCParser implements Runnable {
 	 * @param sNewNickName New nickname wanted.
 	 */
 	public void setNickname(final String sNewNickName) {
-		if (getSocketState() == STATE_OPEN) {
+		if (getSocketState() == SocketState.OPEN) {
 			if (!cMyself.isFake() && cMyself.getNickname().equals(sNewNickName)) {
 				return;
 			}
@@ -1669,14 +1663,14 @@ public class IRCParser implements Runnable {
 	 * @param sReason Reason for quitting.
 	 */
 	public void disconnect(final String sReason) {
-		if (currentSocketState == STATE_OPEN && got001) { quit(sReason); }
+		if (currentSocketState == SocketState.OPEN && got001) { quit(sReason); }
 		try {
 			if (socket != null) { socket.close(); }
 		} catch (IOException e) {
 			/* Do Nothing */
 		} finally {
-			if (currentSocketState != STATE_CLOSED) {
-				currentSocketState = STATE_CLOSED;
+			if (currentSocketState != SocketState.CLOSED) {
+				currentSocketState = SocketState.CLOSED;
 				callSocketClosed();
 			}
 			resetState();
