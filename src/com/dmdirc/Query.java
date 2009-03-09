@@ -323,7 +323,9 @@ public final class Query extends MessageTarget implements
         ActionManager.processEvent(CoreActionType.QUERY_CLOSED, null, this);
 
         // 5: Inform any parents that the window is closing
-        server.delQuery(this);
+        if (server != null) {
+            server.delQuery(this);
+        }
 
         // 6: Remove the window from the window manager
         WindowManager.removeWindow(window);
