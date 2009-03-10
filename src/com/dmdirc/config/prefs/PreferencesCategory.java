@@ -297,6 +297,10 @@ public class PreferencesCategory {
             }
         }
 
+        for (PreferencesCategory child : getSubcats()) {
+            restart |= child.save();
+        }
+
         return restart;
     }
 
@@ -306,6 +310,10 @@ public class PreferencesCategory {
     public void dismiss() {
         for (PreferencesSetting setting : settings) {
             setting.dismiss();
+        }
+
+        for (PreferencesCategory child : getSubcats()) {
+            child.dismiss();
         }
     }
     
