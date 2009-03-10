@@ -47,6 +47,11 @@ import java.util.TimerTask;
 import java.net.URL;
 
 public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
+
+    /** A logger for this class. */
+    private static final java.util.logging.Logger LOGGER = java.util.logging
+            .Logger.getLogger(PluginInfo.class.getName());
+
 	/** Plugin Meta Data */
 	private ConfigFile metaData = null;
 	/** URL that this plugin was loaded from */
@@ -319,6 +324,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	
 		final Identity defaults = IdentityManager.getAddonIdentity();
 		final String domain = "plugin-"+getName();
+
+        LOGGER.finer(getName() + ": Using domain '" + domain + "'");
 		
 		if (metaData.isKeyDomain("defaults")) {
 			final Map<String, String> keysection = metaData.getKeyDomain("defaults");
@@ -956,6 +963,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 					final ValidationResponse prerequisites = ((Plugin) temp).checkPrerequisites();
 					if (!prerequisites.isFailure()) {
 						plugin = (Plugin) temp;
+                        LOGGER.finer(getName() + ": Setting domain 'plugin-" + getName() + "'");
 						plugin.setDomain("plugin-"+getName());
 						if (!tempLoaded) {
 							try {

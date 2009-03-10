@@ -34,6 +34,10 @@ import java.util.List;
  * @author chris
  */
 public class PreferencesCategory {
+
+    /** A logger for this class. */
+    private static final java.util.logging.Logger LOGGER = java.util.logging
+            .Logger.getLogger(PreferencesCategory.class.getName());
         
     /** The title (name) of this category. */
     private final String title;
@@ -290,8 +294,11 @@ public class PreferencesCategory {
      * @return Is a restart needed after saving?
      */
     public boolean save() {
+        LOGGER.fine(getTitle() + ": save method called");
+
         boolean restart = false;
         for (PreferencesSetting setting : settings) {
+            LOGGER.finest(getTitle() + ": saving setting '" + setting.getTitle() + "'");
             if (setting.save() && setting.isRestartNeeded()) {
                 restart = true;
             }

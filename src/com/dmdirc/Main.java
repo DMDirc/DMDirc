@@ -96,7 +96,8 @@ public final class Main {
             handler.setLevel(Level.ALL);
         }
         
-        java.util.logging.Logger.getLogger("com").setLevel(Level.ALL);
+        java.util.logging.Logger.getLogger("com.dmdirc.plugins").setLevel(Level.ALL);
+        java.util.logging.Logger.getLogger("com.dmdirc.config").setLevel(Level.ALL);
 
         final CommandLineParser clp = new CommandLineParser(args);
         

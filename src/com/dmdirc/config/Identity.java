@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -73,6 +72,7 @@ public class Identity extends ConfigSource implements Serializable,
     /** A regular expression that will match all characters illegal in file names. */
     protected static final String ILLEGAL_CHARS = "[\\\\\"/:\\*\\?\"<>\\|]";
 
+    /** A logger for this class. */
     private static final java.util.logging.Logger LOGGER = java.util.logging
             .Logger.getLogger(Identity.class.getName());
 
