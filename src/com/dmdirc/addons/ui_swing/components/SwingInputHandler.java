@@ -145,7 +145,15 @@ public class SwingInputHandler extends InputHandler implements KeyListener {
             /** {@inheritDoc} */
             @Override
             public void actionPerformed(ActionEvent e) {
-                doTabCompletion();
+                new LoggingSwingWorker() {
+
+                    /** {@inheritDoc} */
+                    @Override
+                    protected Object doInBackground() throws Exception {
+                        doTabCompletion();
+                        return null;
+                    }
+                }.execute();
             }
         });
         localTarget.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).
