@@ -34,13 +34,22 @@ public class WritableFrameContainerTest {
     public void testGetNumLines() {
         final WritableFrameContainer container10 = new TestWritableFrameContainer(10);
         
+        final int res0a = container10.getNumLines("");
+        final int res0b = container10.getNumLines("\r");
+        final int res0c = container10.getNumLines("\r\n");
+
         final int res1a = container10.getNumLines("0123456789");
-        final int res1b = container10.getNumLines("");
+        final int res1b = container10.getNumLines("\r\n123456789");
         final int res1c = container10.getNumLines("qaaa");
+
         final int res2a = container10.getNumLines("01234567890");
-        final int res2b = container10.getNumLines("\n");
-        final int res2c = container10.getNumLines("\r\n");
+        final int res2b = container10.getNumLines("012345\r\n\r\n34567890");
+        final int res2c = container10.getNumLines("01234567890\r\n\r\n");
         
+        assertEquals(0, res0a);
+        assertEquals(0, res0b);
+        assertEquals(0, res0c);
+
         assertEquals(1, res1a);
         assertEquals(1, res1b);
         assertEquals(1, res1c);
