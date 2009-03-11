@@ -403,6 +403,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 			}
 			updateMetaData();
 			updateProvides();
+			getDefaults();
 		} catch (IOException ioe) {
 		}
 	}
