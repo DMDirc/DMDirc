@@ -1424,10 +1424,10 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 		if (exportsList != null) {
 			for (String item : exportsList) {
 				final String[] bits = item.split(" ");
-				if (bits.length > 4) {
+				if (bits.length > 2) {
 					final String methodName = bits[0];
 					final String methodClass = bits[2];
-					final String serviceName = bits[4];
+					final String serviceName = (bits.length > 4) ? bits[4] : bits[0];
 				
 					// Add a provides for this
 					final Service service = PluginManager.getPluginManager().getService("export", serviceName, true);
