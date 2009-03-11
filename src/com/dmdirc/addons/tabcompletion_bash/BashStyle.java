@@ -22,7 +22,6 @@
 
 package com.dmdirc.addons.tabcompletion_bash;
 
-import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompleterResult;
@@ -32,7 +31,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.awt.Toolkit;
 
-public class BashStyle extends Plugin implements TabCompletionStyle {
+public class BashStyle implements TabCompletionStyle {
     
     /** The last position the user tab-completed at. */
     private int lastPosition = -1;
@@ -44,14 +43,18 @@ public class BashStyle extends Plugin implements TabCompletionStyle {
     private String lastWord = "";
 
     /** The tab completer that we use. */
-    protected TabCompleter tabCompleter;
+    protected final TabCompleter tabCompleter;
 
     /** The input window that we use. */
-    protected InputWindow window;
+    protected final InputWindow window;
 
-    /** {@inheritDoc} */
-    @Override
-    public void setContext(final TabCompleter completer, final InputWindow window) {
+    /**
+     * Creates a new Bash-style tab completer.
+     *
+     * @param completer The tab completer this style is for
+     * @param window The window this tab style is for
+     */
+    public BashStyle(final TabCompleter completer, final InputWindow window) {
         this.tabCompleter = completer;
         this.window = window;
     }
@@ -97,18 +100,6 @@ public class BashStyle extends Plugin implements TabCompletionStyle {
                         start + sub.length());
             }
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void onLoad() {
-        // Do nothing
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void onUnload() {
-        // Do nothing
     }
     
 }

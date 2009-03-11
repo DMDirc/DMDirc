@@ -33,7 +33,6 @@ import com.dmdirc.commandparser.commands.WrappableCommand;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.interfaces.ConfigChangeListener;
-import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.tabstyles.TabCompletionResult;
 import com.dmdirc.ui.input.tabstyles.TabCompletionStyle;
@@ -173,11 +172,10 @@ public abstract class InputHandler implements ConfigChangeListener {
      * Sets this inputhandler's tab completion style.
      */
     private void setStyle() {
-        style = (TabCompletionStyle) ((PluginInfo) PluginManager.getPluginManager()
+        style = (TabCompletionStyle) PluginManager.getPluginManager()
                 .getServiceProvider("tabcompletion", parentWindow.getConfigManager()
-                .getOption("tabcompletion", "style"))).getPlugin();
-        
-        style.setContext(tabCompleter, parentWindow);
+                .getOption("tabcompletion", "style"))
+                .getExportedService("getCompletionStyle").execute(tabCompleter, parentWindow);
     }
 
     /**
@@ -187,7 +185,7 @@ public abstract class InputHandler implements ConfigChangeListener {
      */
     public void setTabCompleter(final TabCompleter newTabCompleter) {
         tabCompleter = newTabCompleter;
-        style.setContext(tabCompleter, parentWindow);
+        setStyle();
     }
 
     /**

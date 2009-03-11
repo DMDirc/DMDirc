@@ -20,28 +20,37 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.input.tabstyles;
+package com.dmdirc.addons.tabcompletion_bash;
 
-import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.plugins.Plugin;
+import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.input.tabstyles.TabCompletionStyle;
+import com.dmdirc.ui.interfaces.InputWindow;
 
-/**
- * Defines the methods that should be implemented by tab completion styles.
- * Styles control the result of tab completing.
- * 
- * @author Chris
- */
-public interface TabCompletionStyle {
+public class BashStylePlugin extends Plugin {
     
+    /** {@inheritDoc} */
+    @Override
+    public void onLoad() {
+        // Do nothing
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onUnload() {
+        // Do nothing
+    }
+
     /**
-     * Retrieves this style's result for the specified parameters.
+     * Retrieves a new instance of the Bash tab completion style.
      * 
-     * @param original The original string which the user inputted
-     * @param start The start offset of the word that's being tab-completed
-     * @param end The end offset of the word that's being tab-completed
-     * @param additional A list of additional targets which may match
-     * @return This style's proposed result
+     * @param completer The tab completer the instance is for
+     * @param window The window the instance is for
+     * @return A relevant TabCompletionStyle
      */
-    TabCompletionResult getResult(final String original, final int start,
-            final int end, final AdditionalTabTargets additional);
+    public TabCompletionStyle getCompletionStyle(final TabCompleter completer,
+            final InputWindow window) {
+        return new BashStyle(completer, window);
+    }
     
 }
