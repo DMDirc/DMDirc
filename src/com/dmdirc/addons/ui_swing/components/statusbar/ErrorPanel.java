@@ -28,16 +28,13 @@ import com.dmdirc.logger.ErrorListener;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ProgramError;
 import com.dmdirc.ui.IconManager;
-import com.dmdirc.ui.interfaces.StatusBarComponent;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.Collection;
 import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -45,28 +42,29 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
 /**
- * Error label, responsible for showing errors in the status bar.
+ * Shows error status in the status bar.
+ *
+ * @since 0.6.3
+ * @author chris
  */
-public class ErrorLabel extends JLabel implements StatusBarComponent, 
-        MouseListener, ErrorListener, ActionListener {
+public class ErrorPanel extends StatusbarPopupPanel implements ErrorListener, ActionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
+
     /** non error state image icon. */
     private static final Icon DEFAULT_ICON = IconManager.getIconManager().
             getIcon("normal");
     /** Currently showing error level. */
     private ErrorLevel errorLevel;
     /** Status bar. */
-    private SwingStatusBar statusBar;
+    private final SwingStatusBar statusBar;
     /** Error manager. */
     private final ErrorManager errorManager = ErrorManager.getErrorManager();
-    /** Error count. */
-    private int errorCount = 0;
     /** Dismiss menu. */
     private final JPopupMenu menu;
     /** Dismiss menu item. */
@@ -75,19 +73,18 @@ public class ErrorLabel extends JLabel implements StatusBarComponent,
     private final JMenuItem show;
 
     /**
-     * Instantiates a new error label, handles show errors in the status bar.
+     * Creates a new ErrorPanel for the speicified status bar.
      *
-     * @param statusBar Status bar
+     * @param statusbar The status bar to which
      */
-    public ErrorLabel(final SwingStatusBar statusBar) {
-        super();
-        this.statusBar = statusBar;
+    public ErrorPanel(final SwingStatusBar statusbar) {
+        super(new JLabel());
+
+        this.statusBar = statusbar;
         menu = new JPopupMenu();
         dismiss = new JMenuItem("Clear All");
         show = new JMenuItem("Open");
-        setIcon(DEFAULT_ICON);
-        setBorder(BorderFactory.createEtchedBorder());
-        addMouseListener(this);
+        label.setIcon(DEFAULT_ICON);
         setVisible(errorManager.getErrorCount() > 0);
         menu.add(show);
         menu.add(dismiss);
@@ -97,9 +94,15 @@ public class ErrorLabel extends JLabel implements StatusBarComponent,
         checkErrors();
     }
 
+    /** {@inheritDoc} */
+    @Override
+    protected StatusbarPopupWindow getWindow() {
+        return new ErrorPopup(this);
+    }
+
     /** Clears the error. */
     public void clearError() {
-        setIcon(DEFAULT_ICON);
+        label.setIcon(DEFAULT_ICON);
         errorLevel = null;
     }
 
@@ -129,19 +132,20 @@ public class ErrorLabel extends JLabel implements StatusBarComponent,
             @Override
             public void run() {
                 clearError();
-                errorCount = errorManager.getErrorCount();
                 final List<ProgramError> errors = errorManager.getErrors();
-                if (errors.size() > 0) {
+
+                if (errors.isEmpty()) {
+                    setVisible(false);
+                } else {
                     for (ProgramError error : errors) {
                         if (errorLevel == null ||
                                 !error.getLevel().moreImportant(errorLevel)) {
                             errorLevel = error.getLevel();
-                            setIcon(errorLevel.getIcon());
+                            label.setIcon(errorLevel.getIcon());
                         }
                     }
                     setVisible(true);
                 }
-                setVisible(errorCount > 0);
             }
         });
     }
@@ -159,6 +163,7 @@ public class ErrorLabel extends JLabel implements StatusBarComponent,
      */
     @Override
     public void mousePressed(final MouseEvent mouseEvent) {
+        super.mousePressed(mouseEvent);
         checkMouseEvent(mouseEvent);
     }
 
@@ -169,6 +174,7 @@ public class ErrorLabel extends JLabel implements StatusBarComponent,
      */
     @Override
     public void mouseReleased(final MouseEvent mouseEvent) {
+        super.mouseReleased(mouseEvent);
         checkMouseEvent(mouseEvent);
     }
 
@@ -179,6 +185,7 @@ public class ErrorLabel extends JLabel implements StatusBarComponent,
      */
     @Override
     public void mouseEntered(final MouseEvent mouseEvent) {
+        super.mouseEntered(mouseEvent);
         checkMouseEvent(mouseEvent);
     }
 
@@ -189,6 +196,7 @@ public class ErrorLabel extends JLabel implements StatusBarComponent,
      */
     @Override
     public void mouseExited(final MouseEvent mouseEvent) {
+        super.mouseExited(mouseEvent);
         checkMouseEvent(mouseEvent);
     }
 
@@ -199,6 +207,7 @@ public class ErrorLabel extends JLabel implements StatusBarComponent,
      */
     @Override
     public void mouseClicked(final MouseEvent mouseEvent) {
+        super.mouseClicked(mouseEvent);
         if (mouseEvent.getButton() == MouseEvent.BUTTON1) {
             ErrorListDialog.showErrorListDialog();
         }
@@ -233,4 +242,5 @@ public class ErrorLabel extends JLabel implements StatusBarComponent,
             }
         }
     }
+
 }

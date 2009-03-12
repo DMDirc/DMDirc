@@ -47,8 +47,8 @@ public final class SwingStatusBar extends JPanel implements StatusBar {
     private static final long serialVersionUID = 5;
     /** message label. */
     private final MessageLabel messageLabel;
-    /** error label. */
-    private final ErrorLabel errorLabel;
+    /** error panel. */
+    private final ErrorPanel errorPanel;
     /** update label. */
     private final UpdaterLabel updateLabel;
     /** Invite label. */
@@ -61,7 +61,7 @@ public final class SwingStatusBar extends JPanel implements StatusBar {
         super();
 
         messageLabel = new MessageLabel();
-        errorLabel = new ErrorLabel(this);
+        errorPanel = new ErrorPanel(this);
         updateLabel = new UpdaterLabel();
         inviteLabel = new InviteLabel();
 
@@ -69,7 +69,7 @@ public final class SwingStatusBar extends JPanel implements StatusBar {
 
         add(messageLabel, "growx, sgy components, hmax 20, hmin 20");
         add(updateLabel, "sgy components, hmax 20, hmin 20, wmin 20, shrink 0");
-        add(errorLabel, "sgy components, hmax 20, hmin 20, wmin 20, shrink 0");
+        add(errorPanel, "sgy components, hmax 20, hmin 20, wmin 20, shrink 0");
         add(inviteLabel, "sgy components, hmax 20, hmin 20, wmin 20, shrink 0");
     }
 
@@ -136,7 +136,7 @@ public final class SwingStatusBar extends JPanel implements StatusBar {
                 @Override
                 public void run() {
                     remove(updateLabel);
-                    remove(errorLabel);
+                    remove(errorPanel);
                     remove(inviteLabel);
                     add((Component) component,
                             "sgy components, hmax 20, hmin 20, wmin 20, shrink 0");
@@ -144,7 +144,7 @@ public final class SwingStatusBar extends JPanel implements StatusBar {
                             "sgy components, hmax 20, hmin 20, wmin 20, shrink 0");
                     add(inviteLabel,
                             "sgy components, hmax 20, hmin 20, wmin 20, shrink 0");
-                    add(errorLabel,
+                    add(errorPanel,
                             "sgy components, hmax 20, hmin 20, wmin 20, shrink 0");
                     validate();
                 }

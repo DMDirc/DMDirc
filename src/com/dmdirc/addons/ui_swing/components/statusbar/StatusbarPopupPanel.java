@@ -56,14 +56,28 @@ public abstract class StatusbarPopupPanel extends JPanel
     private static final long serialVersionUID = 2;
     
     /** The label we use to show information. */
-    private final JLabel label = new JLabel("Unknown");
+    protected final JLabel label;
 
     /** The popup window we're using to show extra info. */
     private StatusbarPopupWindow dialog;
 
+    /**
+     * Creates a new {@link StatusbarPopupPanel}, using a default text label.
+     */
     public StatusbarPopupPanel() {
+        this(new JLabel("Unknown"));
+    }
+
+    /**
+     * Creates a new {@link StatusbarPopupPanel}, using the specified label.
+     *
+     * @param label The label to be displayed in the status bar
+     */
+    public StatusbarPopupPanel(final JLabel label) {
         super();
-        
+
+        this.label = label;
+
         setBorder(BorderFactory.createEtchedBorder());
         setLayout(new MigLayout("ins 0 rel 0 rel, aligny center"));
         add(label);
@@ -74,7 +88,7 @@ public abstract class StatusbarPopupPanel extends JPanel
     /**
      * Closes and reopens the dialog to update information and border positions.
      */
-    protected void refreshDialog() {
+    public final void refreshDialog() {
         UIUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -91,7 +105,7 @@ public abstract class StatusbarPopupPanel extends JPanel
     /**
      * Opens the information dialog.
      */
-    protected void openDialog() {
+    protected final void openDialog() {
         synchronized (StatusbarPopupPanel.this) {
             dialog = getWindow();
             dialog.setVisible(true);
@@ -101,7 +115,7 @@ public abstract class StatusbarPopupPanel extends JPanel
     /**
      * Closes the information dialog.
      */
-    protected void closeDialog() {
+    protected final void closeDialog() {
         synchronized (StatusbarPopupPanel.this) {
             if (dialog != null) {
                 dialog.setVisible(false);
