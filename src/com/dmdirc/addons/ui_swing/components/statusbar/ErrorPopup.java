@@ -24,13 +24,16 @@ package com.dmdirc.addons.ui_swing.components.statusbar;
 
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.ErrorManager;
+import com.dmdirc.logger.ErrorReportStatus;
 import com.dmdirc.logger.ProgramError;
 import com.dmdirc.util.MapList;
 
+import java.awt.Font;
 import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 
 /**
  * Shows a breakdown of errors that have occured.
@@ -56,18 +59,47 @@ public class ErrorPopup extends StatusbarPopupWindow {
     protected void initContent(final JPanel panel) {
         final List<ProgramError> errors = ErrorManager.getErrorManager().getErrors();
         final MapList<ErrorLevel, ProgramError> buckets = new MapList<ErrorLevel, ProgramError>();
+        final MapList<ErrorReportStatus, ProgramError> statuses
+                = new MapList<ErrorReportStatus, ProgramError>();
 
         for (ProgramError error : errors) {
             buckets.add(error.getLevel(), error);
+            statuses.add(error.getReportStatus(), error);
         }
+
+        JLabel header = new JLabel("Severity");
+        header.setFont(header.getFont().deriveFont(Font.BOLD));
+        panel.add(header);
+
+        header = new JLabel("#", JLabel.RIGHT);
+        header.setFont(header.getFont().deriveFont(Font.BOLD));
+        panel.add(header, "growx, wrap");
 
         for (ErrorLevel level : ErrorLevel.values()) {
             if (buckets.containsKey(level)) {
                 final int count = buckets.values(level).size();
 
                 panel.add(new JLabel(level.toString(), level.getIcon(), JLabel.LEFT));
-                panel.add(new JLabel(count + " error" + ((count > 1) ? "s" : ""), JLabel.RIGHT),
-                        "growx, wrap");
+                panel.add(new JLabel(String.valueOf(count), JLabel.RIGHT), "growx, wrap");
+            }
+        }
+
+        panel.add(new JSeparator(), "span, growx, wrap");
+
+        header = new JLabel("Report status");
+        header.setFont(header.getFont().deriveFont(Font.BOLD));
+        panel.add(header);
+
+        header = new JLabel("#", JLabel.RIGHT);
+        header.setFont(header.getFont().deriveFont(Font.BOLD));
+        panel.add(header, "growx, wrap");
+
+        for (ErrorReportStatus status : ErrorReportStatus.values()) {
+            if (statuses.containsKey(status)) {
+                final int count = statuses.values(status).size();
+
+                panel.add(new JLabel(status.toString(), JLabel.LEFT));
+                panel.add(new JLabel(String.valueOf(count), JLabel.RIGHT), "growx, wrap");
             }
         }
     }
