@@ -69,7 +69,7 @@ public abstract class StatusbarPopupWindow extends StandardDialog {
 
         final JPanel panel = new JPanel();
 
-        panel.setLayout(new MigLayout("ins 3 5 7 5, gap 10 5"));
+        panel.setLayout(new MigLayout("ins 3 5 6 10, gap 10 5"));
         
         panel.setBackground(UIManager.getColor("ToolTip.background"));
         panel.setForeground(UIManager.getColor("ToolTip.foreground"));
