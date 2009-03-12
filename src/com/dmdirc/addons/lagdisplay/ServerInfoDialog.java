@@ -25,38 +25,31 @@ package com.dmdirc.addons.lagdisplay;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.ServerState;
-import com.dmdirc.addons.ui_swing.SwingController;
-import com.dmdirc.addons.ui_swing.components.StandardDialog;
+import com.dmdirc.addons.ui_swing.components.statusbar.StatusbarPopupPanel;
+import com.dmdirc.addons.ui_swing.components.statusbar.StatusbarPopupWindow;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Point;
 import java.util.List;
 
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.UIManager;
-import javax.swing.border.EtchedBorder;
 
-import net.miginfocom.swing.MigLayout;
 
 /**
  * Shows information about all connected servers.
  *
  * @author chris
  */
-public class ServerInfoDialog extends StandardDialog {
+public class ServerInfoDialog extends StatusbarPopupWindow {
 
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
 
-    /** The parent JPanel. */
-    private final JPanel parent;
+    /** The lag display plugin. */
+    protected final LagDisplayPlugin plugin;
 
     /**
      * Creates a new ServerInfoDialog.
@@ -64,19 +57,15 @@ public class ServerInfoDialog extends StandardDialog {
      * @param ldp The {@link LagDisplayPlugin} we're using for info
      * @param parent The {@link JPanel} to use for positioning
      */
-    public ServerInfoDialog(final LagDisplayPlugin ldp, final JPanel parent) {
-        super(SwingController.getMainFrame(), false);
+    public ServerInfoDialog(final LagDisplayPlugin ldp, final StatusbarPopupPanel parent) {
+        super(parent);
 
-        this.parent = parent;
+        this.plugin = ldp;
+    }
 
-        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-
-        setTitle("Server info");
-
-        final JPanel panel = new JPanel();
-
-        panel.setLayout(new MigLayout("ins 3 5 7 5, gap 10 5"));
-        
+    /** {@inheritDoc} */
+    @Override
+    protected void initContent(final JPanel panel) {
         final List<Server> servers = ServerManager.getServerManager().getServers();
 
         if (servers.isEmpty()) {
@@ -84,66 +73,13 @@ public class ServerInfoDialog extends StandardDialog {
         } else {
             for (Server server : servers) {
                 panel.add(new JLabel(server.getName()));
-                panel.add(new JLabel(server.getState() == ServerState.CONNECTED ? server.getNetwork() : "---", JLabel.CENTER), "grow");
-                panel.add(new JLabel(server.getState() == ServerState.CONNECTED ? ldp.getTime(server) : "---", JLabel.RIGHT), "grow, wrap");
+                panel.add(new JLabel(server.getState() == ServerState.CONNECTED
+                        ? server.getNetwork() : "---", JLabel.CENTER), "grow");
+                panel.add(new JLabel(server.getState() == ServerState.CONNECTED
+                        ? plugin.getTime(server) : "---", JLabel.RIGHT), "grow, wrap");
             }
         }
-
-        panel.setBackground(UIManager.getColor("ToolTip.background"));
-        panel.setForeground(UIManager.getColor("ToolTip.foreground"));
-
-        add(panel);
-
-        setUndecorated(true);
-        setFocusableWindowState(false);
-        setFocusable(false);
-        setResizable(false);
-
-        pack();
-
-        final Point point = parent.getLocationOnScreen();
-        point.translate(parent.getWidth() / 2 - this.getWidth() / 2, - this.getHeight());
-        final int maxX = Math.max(SwingController.getMainFrame().getLocationOnScreen().x
-                + SwingController.getMainFrame().getWidth() - 10 - getWidth(),
-                parent.getLocationOnScreen().x + parent.getWidth() - 1 - getWidth());
-        point.x = Math.min(maxX, point.x);
-        setLocation(point);
-
-        panel.setBorder(new GappedEtchedBorder());
     }
 
-    /**
-     * An {@link EtchedBorder} that leaves a gap in the bottom where the
-     * lag display panel is.
-     */
-    private class GappedEtchedBorder extends EtchedBorder {
-
-        /**
-         * A version number for this class. It should be changed whenever the class
-         * structure is changed (or anything else that would prevent serialized
-         * objects being unserialized with the new class).
-         */
-        private static final long serialVersionUID = 1;
-
-        /** {@inheritDoc} */
-        @Override
-        public void paintBorder(final Component c, final Graphics g,
-                final int x, final int y, final int width, final int height) {
-            int w = width;
-            int h = height;
-
-            g.translate(x, y);
-
-            g.setColor(etchType == LOWERED? getShadowColor(c) : getHighlightColor(c));
-            g.drawLine(0, 0, w-1, 0);
-            g.drawLine(0, h-1, parent.getLocationOnScreen().x - getLocationOnScreen().x, h-1);
-            g.drawLine(parent.getWidth() + parent.getLocationOnScreen().x - getLocationOnScreen().x - 2, h-1, w-1, h-1);
-            g.drawLine(0, 0, 0, h-1);
-            g.drawLine(w-1, 0, w-1, h-1);
-
-            g.translate(-x, -y);
-        }
-
-    }
 
 }
