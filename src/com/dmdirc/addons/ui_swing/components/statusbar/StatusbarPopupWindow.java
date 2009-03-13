@@ -36,7 +36,8 @@ import javax.swing.border.EtchedBorder;
 
 import net.miginfocom.swing.MigLayout;
 
-/**
+
+    /**
  * A popup window which is shown above a status bar component to provide more
  * detailed information.
  *
@@ -66,34 +67,42 @@ public abstract class StatusbarPopupWindow extends StandardDialog {
         this.parent = parent;
 
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    }
 
-        final JPanel panel = new JPanel();
+    /** {@inheritDoc} */
+    @Override
+    public void setVisible(boolean b) {
+        if (b) {
+            final JPanel panel = new JPanel();
 
-        panel.setLayout(new MigLayout("ins 3 5 6 10, gap 10 5"));
-        
-        panel.setBackground(UIManager.getColor("ToolTip.background"));
-        panel.setForeground(UIManager.getColor("ToolTip.foreground"));
+            panel.setLayout(new MigLayout("ins 3 5 6 10, gap 10 5"));
 
-        initContent(panel);
+            panel.setBackground(UIManager.getColor("ToolTip.background"));
+            panel.setForeground(UIManager.getColor("ToolTip.foreground"));
 
-        add(panel);
+            initContent(panel);
 
-        setUndecorated(true);
-        setFocusableWindowState(false);
-        setFocusable(false);
-        setResizable(false);
+            add(panel);
 
-        pack();
+            setUndecorated(true);
+            setFocusableWindowState(false);
+            setFocusable(false);
+            setResizable(false);
 
-        final Point point = parent.getLocationOnScreen();
-        point.translate(parent.getWidth() / 2 - this.getWidth() / 2, - this.getHeight());
-        final int maxX = Math.max(SwingController.getMainFrame().getLocationOnScreen().x
-                + SwingController.getMainFrame().getWidth() - 10 - getWidth(),
-                parent.getLocationOnScreen().x + parent.getWidth() - 1 - getWidth());
-        point.x = Math.min(maxX, point.x);
-        setLocation(point);
+            pack();
 
-        panel.setBorder(new GappedEtchedBorder());
+            final Point point = parent.getLocationOnScreen();
+            point.translate(parent.getWidth() / 2 - this.getWidth() / 2, - this.getHeight());
+            final int maxX = Math.max(SwingController.getMainFrame().getLocationOnScreen().x
+                    + SwingController.getMainFrame().getWidth() - 10 - getWidth(),
+                    parent.getLocationOnScreen().x + parent.getWidth() - 1 - getWidth());
+            point.x = Math.min(maxX, point.x);
+            setLocation(point);
+
+            panel.setBorder(new GappedEtchedBorder());
+        }
+
+        super.setVisible(b);
     }
 
     /**
