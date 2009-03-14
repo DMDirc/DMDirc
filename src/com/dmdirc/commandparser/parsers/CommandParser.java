@@ -30,6 +30,7 @@ import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.PreviousCommand;
 import com.dmdirc.config.IdentityManager;
@@ -262,4 +263,25 @@ public abstract class CommandParser implements Serializable {
      */
     protected abstract void handleNonCommand(final InputWindow origin,
             final String line);
+
+    /**
+     * Determines if the specified command has defined any command options.
+     *
+     * @param command The command to investigate
+     * @return True if the command defines options, false otherwise
+     */
+    protected boolean hasCommandOptions(final Command command) {
+        return command.getClass().isAnnotationPresent(CommandOptions.class);
+    }
+
+    /**
+     * Retrieves the command options for the specified command. If the command
+     * does not define options, this method will return null.
+     *
+     * @param command The command whose options should be retrieved
+     * @return The command's options, or null if not available
+     */
+    protected CommandOptions getCommandOptions(final Command command) {
+        return command.getClass().getAnnotation(CommandOptions.class);
+    }
 }

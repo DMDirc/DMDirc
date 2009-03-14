@@ -26,6 +26,7 @@ import com.dmdirc.Server;
 import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -38,6 +39,7 @@ import java.util.List;
  * Allows the user to send notices.
  * @author chris
  */
+@CommandOptions(allowOffline=false)
 public final class Notice extends ServerCommand implements IntelligentCommand {
     
     /**
@@ -53,11 +55,6 @@ public final class Notice extends ServerCommand implements IntelligentCommand {
     @Override
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final CommandArguments args) {
-        if (server.getState() != ServerState.CONNECTED) {
-            sendLine(origin, isSilent, FORMAT_ERROR, "Not connected");
-            return;
-        }
-        
         if (args.getArguments().length < 2) {
             showUsage(origin, isSilent, "notice", "<target> <message>");
         } else {

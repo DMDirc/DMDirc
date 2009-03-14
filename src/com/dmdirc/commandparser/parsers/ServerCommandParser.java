@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.Server;
+import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandType;
@@ -70,7 +71,16 @@ public final class ServerCommandParser extends CommandParser {
     protected void executeCommand(final InputWindow origin,
             final boolean isSilent, final Command command, final CommandArguments args) {
         if (command instanceof ServerCommand) {
-            ((ServerCommand) command).execute(origin, server, isSilent, args);
+            if (hasCommandOptions(command) && !getCommandOptions(command).allowOffline()
+                    && ((server.getState() != ServerState.CONNECTED
+                    && server.getState() != ServerState.CONNECTING)
+                    || server.getParser() == null)) {
+                if (!isSilent) {
+                    origin.addLine("commandError", "You must be connected to use this command");
+                }
+            } else {
+                ((ServerCommand) command).execute(origin, server, isSilent, args);
+            }
         } else {
             ((GlobalCommand) command).execute(origin, isSilent, args);
         }

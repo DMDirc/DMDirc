@@ -23,9 +23,9 @@
 package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.Server;
-import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.commandparser.commands.WrappableCommand;
@@ -39,6 +39,7 @@ import java.util.List;
  * Allows the user to send privmsgs.
  * @author chris
  */
+@CommandOptions(allowOffline=false)
 public final class Message extends ServerCommand implements IntelligentCommand,
         WrappableCommand {
     
@@ -55,11 +56,6 @@ public final class Message extends ServerCommand implements IntelligentCommand,
     @Override
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final CommandArguments args) {
-        if (server.getState() != ServerState.CONNECTED) {
-            sendLine(origin, isSilent, FORMAT_ERROR, "Not connected");
-            return;
-        }
-        
         if (args.getArguments().length < 2) {
             showUsage(origin, isSilent, "msg", "<target> <message>");
         } else {

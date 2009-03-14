@@ -25,6 +25,7 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -37,6 +38,7 @@ import java.util.List;
  * Allows the user to change nickname.
  * @author chris
  */
+@CommandOptions(allowOffline=false)
 public final class Nick extends ServerCommand implements IntelligentCommand {
     
     /**

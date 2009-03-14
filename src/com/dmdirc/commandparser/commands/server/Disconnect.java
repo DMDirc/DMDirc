@@ -50,6 +50,7 @@ public final class Disconnect extends ServerCommand {
      * @param isSilent Whether this command is silenced or not
      * @param args The user supplied arguments
      */
+    @Override
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final CommandArguments args) {
         String line;
@@ -64,17 +65,20 @@ public final class Disconnect extends ServerCommand {
     }
     
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "disconnect";
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public boolean showInHelp() {
         return true;
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Override
     public String getHelp() {
         return "disconnect [reason] - disconnect from this server";
     }

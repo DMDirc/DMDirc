@@ -23,9 +23,9 @@
 package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.Server;
-import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -37,6 +37,7 @@ import java.util.List;
  * The back command allows the user to unset their away status.
  * @author chris
  */
+@CommandOptions(allowOffline=false)
 public final class Back extends ServerCommand implements IntelligentCommand {
     
     /**
@@ -57,12 +58,7 @@ public final class Back extends ServerCommand implements IntelligentCommand {
      */
     @Override
     public void execute(final InputWindow origin, final Server server,
-            final boolean isSilent, final CommandArguments args) {
-        if (server.getState() != ServerState.CONNECTED) {
-            sendLine(origin, isSilent, FORMAT_ERROR, "Not connected");
-            return;
-        }
-        
+            final boolean isSilent, final CommandArguments args) {        
         server.getParser().sendLine("AWAY");
     }
     

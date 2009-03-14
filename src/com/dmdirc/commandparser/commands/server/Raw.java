@@ -25,6 +25,7 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
 
@@ -33,6 +34,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
  * irc server.
  * @author chris
  */
+@CommandOptions(allowOffline=false)
 public final class Raw extends ServerCommand {
     
     /**
