@@ -37,12 +37,4 @@ import java.lang.annotation.Target;
 @Target(ElementType.PARAMETER)
 public @interface FakableArgument {
 
-    /**
-     * A group name used to differentiate between multiple fakable arguments
-     * in the same method.
-     *
-     * @return The name of the group for multiple fakable arguments
-     */
-    String group() default "default";
-
 }

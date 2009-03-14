@@ -31,7 +31,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -180,9 +179,7 @@ public class CallbackObject {
             for (Annotation ann : anns) {
                 if (ann.annotationType().equals(FakableArgument.class)
                         && args[i] == null) {
-                    args[i] = getFakeArg(args,
-                            type.getMethods()[0].getParameterTypes()[i],
-                            ((FakableArgument) ann).group());
+                    args[i] = getFakeArg(args, type.getMethods()[0].getParameterTypes()[i]);
                 }
             }
 
@@ -193,8 +190,6 @@ public class CallbackObject {
     /**
      * Tries to create fake argument of the specified target class, by using
      * {@link FakableSource} denoted parameters from the specified arg array.
-     * Parameters are only used if their groups value contains the specified
-     * group.
      *
      * If an argument is missing, the method attempts to create a fake instance
      * by recursing into this method again. Note that this could cause an
@@ -206,17 +201,15 @@ public class CallbackObject {
      *
      * @param args The arguments array to use for sources
      * @param target The class that should be constructed
-     * @param group The group of arguments to use
      * @return An instance of the target class, or null on failure
      */
-    protected Object getFakeArg(final Object[] args, final Class<?> target, final String group) {
+    protected Object getFakeArg(final Object[] args, final Class<?> target) {
         final Map<Class, Object> sources = new HashMap<Class, Object>();
         int i = 0;
 
         for (Annotation[] anns : type.getMethods()[0].getParameterAnnotations()) {
             for (Annotation ann : anns) {
-                if (ann.annotationType().equals(FakableSource.class)
-                        && Arrays.asList(((FakableSource) ann).group()).contains(group)) {
+                if (ann.annotationType().equals(FakableSource.class)) {
                     sources.put(type.getMethods()[0].getParameterTypes()[i], args[i]);
                 }
             }
@@ -234,7 +227,7 @@ public class CallbackObject {
             for (Class<?> needed : ctor.getParameterTypes()) {
                 if (sources.containsKey(needed)) {
                     params[i] = sources.get(needed);
-                } else if ((param = getFakeArg(args, needed, group)) != null) {
+                } else if ((param = getFakeArg(args, needed)) != null) {
                     params[i] = param;
                 } else {
                     failed = true;
