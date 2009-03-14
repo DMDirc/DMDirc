@@ -25,6 +25,8 @@ package com.dmdirc.parser.irc.callbacks.interfaces;
 import com.dmdirc.parser.irc.ChannelClientInfo;
 import com.dmdirc.parser.irc.ChannelInfo;
 import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.irc.callbacks.FakableArgument;
+import com.dmdirc.parser.irc.callbacks.FakableSource;
 import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
 /** 
@@ -45,5 +47,10 @@ public interface IChannelUserModeChanged extends ICallbackInterface {
 	 * @param sMode String representing mode change (ie +o)
 	 * @see com.dmdirc.parser.irc.ProcessMode#callChannelUserModeChanged
 	 */
-	void onChannelUserModeChanged(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChangedClient, ChannelClientInfo cSetByClient, String sHost, String sMode);
+	void onChannelUserModeChanged(@FakableSource IRCParser tParser,
+            @FakableSource ChannelInfo cChannel,
+            ChannelClientInfo cChangedClient,
+            @FakableArgument ChannelClientInfo cSetByClient,
+            @FakableSource String sHost,
+            String sMode);
 }

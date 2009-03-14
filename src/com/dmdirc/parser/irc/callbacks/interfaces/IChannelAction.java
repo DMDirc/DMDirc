@@ -25,6 +25,8 @@ package com.dmdirc.parser.irc.callbacks.interfaces;
 import com.dmdirc.parser.irc.ChannelClientInfo;
 import com.dmdirc.parser.irc.ChannelInfo;
 import com.dmdirc.parser.irc.IRCParser;
+import com.dmdirc.parser.irc.callbacks.FakableArgument;
+import com.dmdirc.parser.irc.callbacks.FakableSource;
 import com.dmdirc.parser.irc.callbacks.SpecificCallback;
 
 /**
@@ -46,5 +48,10 @@ public interface IChannelAction extends ICallbackInterface {
 	 * @param sHost Hostname of sender (or servername)
 	 * @see com.dmdirc.parser.irc.ProcessMessage#callChannelAction
 	 */
-	void onChannelAction(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost);
+	void onChannelAction(
+            @FakableSource IRCParser tParser,
+            @FakableSource ChannelInfo cChannel,
+            @FakableArgument ChannelClientInfo cChannelClient,
+            String sMessage,
+            @FakableSource String sHost);
 }

@@ -22,12 +22,19 @@
 
 package com.dmdirc.parser.irc.callbacks;
 
-import java.util.ArrayList;
-
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.ParserError;
 import com.dmdirc.parser.irc.callbacks.interfaces.ICallbackInterface;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * CallbackObject.
@@ -140,6 +147,10 @@ public class CallbackObject {
         System.arraycopy(args, 0, newArgs, 1, args.length);
         newArgs[0] = myParser;
 
+        if (myParser.getCreateFake()) {
+            createFakeArgs(newArgs);
+        }
+
 		for (ICallbackInterface iface : new ArrayList<ICallbackInterface>(callbackInfo)) {
 			try {
                 type.getMethods()[0].invoke(iface, newArgs);
@@ -152,6 +163,113 @@ public class CallbackObject {
 			bResult = true;
 		}
 		return bResult;
+    }
+
+    /**
+     * Replaces all null entries in the specified array with fake values,
+     * if the corresponding parameter of this callback's type is marked with
+     * the {@link FakableArgument} annotation. The fake classes are constructed
+     * by using parameters designated {@link FakableSource}.
+     *
+     * @param args The arguments to be faked
+     */
+    protected void createFakeArgs(final Object[] args) {
+        int i = 0;
+
+        for (Annotation[] anns : type.getMethods()[0].getParameterAnnotations()) {
+            for (Annotation ann : anns) {
+                if (ann.annotationType().equals(FakableArgument.class)
+                        && args[i] == null) {
+                    args[i] = getFakeArg(args,
+                            type.getMethods()[0].getParameterTypes()[i],
+                            ((FakableArgument) ann).group());
+                }
+            }
+
+            i++;
+        }
+    }
+
+    /**
+     * Tries to create fake argument of the specified target class, by using
+     * {@link FakableSource} denoted parameters from the specified arg array.
+     * Parameters are only used if their groups value contains the specified
+     * group.
+     *
+     * If an argument is missing, the method attempts to create a fake instance
+     * by recursing into this method again. Note that this could cause an
+     * infinite recursion in cases of cyclic dependencies. If recursion fails,
+     * the constructor is skipped.
+     *
+     * If the created object has a <code>setFake(boolean)</code> method, it
+     * is automatically invoked with an argument of <code>true</code>.
+     *
+     * @param args The arguments array to use for sources
+     * @param target The class that should be constructed
+     * @param group The group of arguments to use
+     * @return An instance of the target class, or null on failure
+     */
+    protected Object getFakeArg(final Object[] args, final Class<?> target, final String group) {
+        final Map<Class, Object> sources = new HashMap<Class, Object>();
+        int i = 0;
+
+        for (Annotation[] anns : type.getMethods()[0].getParameterAnnotations()) {
+            for (Annotation ann : anns) {
+                if (ann.annotationType().equals(FakableSource.class)
+                        && Arrays.asList(((FakableSource) ann).group()).contains(group)) {
+                    sources.put(type.getMethods()[0].getParameterTypes()[i], args[i]);
+                }
+            }
+
+            i++;
+        }
+
+        for (Constructor<?> ctor : target.getConstructors()) {
+            Object[] params = new Object[ctor.getParameterTypes().length];
+
+            i = 0;
+            Object param;
+            boolean failed = false;
+
+            for (Class<?> needed : ctor.getParameterTypes()) {
+                if (sources.containsKey(needed)) {
+                    params[i] = sources.get(needed);
+                } else if ((param = getFakeArg(args, needed, group)) != null) {
+                    params[i] = param;
+                } else {
+                    failed = true;
+                }
+
+                i++;
+            }
+
+            if (!failed) {
+                try {
+                    final Object instance = ctor.newInstance(params);
+
+                    for (Method method : target.getMethods()) {
+                        if (method.getName().equals("setFake")
+                                && method.getParameterTypes().length == 1
+                                && method.getParameterTypes()[0].equals(Boolean.TYPE)) {
+
+                            method.invoke(instance, true);
+                        }
+                    }
+
+                    return instance;
+                } catch (InstantiationException ex) {
+                    // Do nothing
+                } catch (IllegalAccessException ex) {
+                    // Do nothing
+                } catch (IllegalArgumentException ex) {
+                    // Do nothing
+                } catch (InvocationTargetException ex) {
+                    // Do nothing
+                }
+            }
+        }
+
+        return null;
     }
 
 }

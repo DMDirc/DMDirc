@@ -136,6 +136,10 @@ public class CallbackObjectSpecific extends CallbackObject {
         System.arraycopy(args, 0, newArgs, 1, args.length);
         newArgs[0] = myParser;
 
+        if (myParser.getCreateFake()) {
+            createFakeArgs(newArgs);
+        }
+
 		for (ICallbackInterface iface :new ArrayList<ICallbackInterface>(callbackInfo)) {
             if (type.isAnnotationPresent(SpecificCallback.class) &&
                     ((args[0] instanceof ClientInfo
