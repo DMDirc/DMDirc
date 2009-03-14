@@ -38,7 +38,6 @@ import com.dmdirc.util.MapList;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,11 +49,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 
+
 /**
  * Invite label.
  */
-public class InviteLabel extends JLabel implements StatusBarComponent, 
-        InviteListener, ActionListener, MouseListener {
+public class InviteLabel extends StatusbarPopupPanel implements StatusBarComponent,
+        InviteListener, ActionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -77,10 +77,10 @@ public class InviteLabel extends JLabel implements StatusBarComponent,
      * Instantiates a new invite label.
      */
     public InviteLabel() {
-        super();
+        super(new JLabel());
 
         setBorder(BorderFactory.createEtchedBorder());
-        setIcon(IconManager.getIconManager().getIcon("invite"));
+        label.setIcon(IconManager.getIconManager().getIcon("invite"));
 
         inviteList = new MapList<Server, Invite>();
         menu = new JPopupMenu();
@@ -120,9 +120,14 @@ public class InviteLabel extends JLabel implements StatusBarComponent,
         }
 
         ActionManager.addListener(this, CoreActionType.CLIENT_FRAME_CHANGED);
-        addMouseListener(this);
 
         update();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected StatusbarPopupWindow getWindow() {
+        return new InvitePopup(this, activeServer);
     }
 
     /**
@@ -161,7 +166,9 @@ public class InviteLabel extends JLabel implements StatusBarComponent,
 
         if (activeServer == null || inviteList.get(activeServer).isEmpty()) {
             setVisible(false);
+            closeDialog();
         } else {
+            refreshDialog();
             setVisible(true);
             setToolTipText(inviteList.get(activeServer).size() +
                     " pending invites.");
@@ -206,53 +213,14 @@ public class InviteLabel extends JLabel implements StatusBarComponent,
      */
     @Override
     public void mouseClicked(final MouseEvent e) {
+        super.mouseClicked(e);
         popuplateMenu();
         if (menu.getComponentCount() > 0) {
             menu.show(this, e.getX(), e.getY());
         }
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @param e Mouse event
-     */
-    @Override
-    public void mousePressed(final MouseEvent e) {
-        //Ignore
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param e Mouse event
-     */
-    @Override
-    public void mouseReleased(final MouseEvent e) {
-        //Ignore
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param e Mouse event
-     */
-    @Override
-    public void mouseEntered(final MouseEvent e) {
-        //Ignore
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param e Mouse event
-     */
-    @Override
-    public void mouseExited(final MouseEvent e) {
-        //Ignore
-    }
 }
-
 /**
  * Invite action.
  */
