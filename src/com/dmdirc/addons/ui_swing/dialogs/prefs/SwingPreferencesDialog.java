@@ -203,6 +203,11 @@ public final class SwingPreferencesDialog extends StandardDialog implements
      */
     @Override
     public void actionPerformed(final ActionEvent actionEvent) {
+        if (selected != null) {
+            selected.fireCategoryDeselected();
+            selected = null;
+        }
+        
         if (getOkButton().equals(actionEvent.getSource())) {
             if (tabList.getSelectedIndex() > -1) {
                 final PreferencesCategory node = (PreferencesCategory) tabList.getSelectedValue();
@@ -211,12 +216,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             }
             saveOptions();
         }
-
-        if (selected != null) {
-            selected.fireCategoryDeselected();
-            selected = null;
-        }
-
+        
         if (manager != null) {
             manager.dismiss();
         }
