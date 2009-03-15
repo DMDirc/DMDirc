@@ -19,10 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.dmdirc.installer.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.net.URL;
 
 /**
  * Tells the user what this application does
@@ -60,5 +62,17 @@ public final class StepWelcome extends SwingStep {
     @Override
     public String getStepName() {
         return "Welcome";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Image getIcon() {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getStepDescription() {
+        return "";
     }
 }

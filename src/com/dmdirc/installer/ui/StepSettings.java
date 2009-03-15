@@ -29,6 +29,7 @@ import com.dmdirc.installer.Installer.ShortcutType;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import javax.swing.Box;
 import javax.swing.JCheckBox;
@@ -120,6 +121,18 @@ public final class StepSettings extends SwingStep implements Settings {
     @Override
     public String getStepName() {
         return "Settings";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Image getIcon() {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getStepDescription() {
+        return "";
     }
 
     /** {@inheritDoc} */

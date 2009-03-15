@@ -58,12 +58,13 @@ public class InstallerDialog extends JFrame implements ActionListener {
     public static final int SMALL_GAP = 5;
 
     /**
-     *
+     * Instantiates a new installer dialog
+     * 
      * @param dialogTitle
      */
     public InstallerDialog(final String dialogTitle) {
         super(dialogTitle);
-        title = new TitlePanel(dialogTitle);
+        title = new TitlePanel(null);
         wizard = new WizardPanel(this);
         control = new WizardControlPanel();
         listeners = new ListenerList();
@@ -96,19 +97,20 @@ public class InstallerDialog extends JFrame implements ActionListener {
     }
 
     /**
-     *
+     * Adds a step.
      * 
-     * @param step
+     * @param step Step to add
      */
     public void addStep(final SwingStep step) {
         wizard.addStep(step);
     }
 
     /**
-     *
+     * Displays the installer.
      */
     public void display() {
         wizard.display();
+        title.setStep(wizard.getCurrentStep());
         control.setTotal(wizard.getTotalSteps());
         control.setProgress(wizard.getCurrentStepIndex());
         addWindowListener(new WindowAdapter() {
@@ -127,8 +129,9 @@ public class InstallerDialog extends JFrame implements ActionListener {
     }
 
     /**
-     *
-     * @param steps 
+     * Displays the installer with these steps added.
+     * 
+     * @param steps Steps to add
      */
     public void display(final List<Step> steps) {
         final List<SwingStep> swingSteps = new ArrayList<SwingStep>();
@@ -141,27 +144,27 @@ public class InstallerDialog extends JFrame implements ActionListener {
     }
 
     /**
+     * Enables the next step.
      *
-     *
-     * @param enable
+     * @param enable true to enable false to disable
      */
     public void enableNextStep(final boolean enable) {
         control.getNextButton().setEnabled(enable);
     }
 
     /**
+     * Enables the previous step.
      *
-     *
-     * @param enable
+     * @param enable true to enable false to disable
      */
     public void enablePreviousStep(final boolean enable) {
         control.getPrevButton().setEnabled(enable);
     }
 
     /**
-     *
+     * shows the cancel confirmation.
      * 
-     * @return
+     * @return true if confirmed
      */
     public boolean showCancelConfirmation() {
         return JOptionPane.showConfirmDialog(this,
@@ -318,7 +321,7 @@ public class InstallerDialog extends JFrame implements ActionListener {
         } catch (IllegalAccessException ex) {
             throw new UnsupportedOperationException("Unable to switch to the " +
                                                     "system look and feel", ex);
-        }
+        }   
 
         UIManager.put("swing.useSystemFontSettings", true);
         UIManager.put("swing.boldMetal", false);
@@ -346,6 +349,7 @@ public class InstallerDialog extends JFrame implements ActionListener {
         } else {
             return;
         }
+        title.setStep(shownStep);
         if (shownStep != null) {
             fireStepAboutToBeDisplayed(shownStep);
         }

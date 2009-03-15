@@ -26,6 +26,7 @@ import com.dmdirc.installer.TextStep;
 
 import java.awt.BorderLayout;
 
+import java.awt.Image;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
@@ -61,6 +62,18 @@ public final class StepInstall extends SwingStep implements TextStep {
     @Override
     public String getStepName() {
         return "Install";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Image getIcon() {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getStepDescription() {
+        return "";
     }
 
     /** {@inheritDoc} */

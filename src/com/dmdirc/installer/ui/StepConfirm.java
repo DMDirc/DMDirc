@@ -25,6 +25,7 @@ package com.dmdirc.installer.ui;
 import com.dmdirc.installer.TextStep;
 
 import java.awt.BorderLayout;
+import java.awt.Image;
 import javax.swing.SwingUtilities;
 
 /**
@@ -54,6 +55,18 @@ public final class StepConfirm extends SwingStep implements TextStep {
     @Override
     public String getStepName() {
         return "Confirm";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Image getIcon() {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getStepDescription() {
+        return "";
     }
 
     /** {@inheritDoc} */

@@ -132,6 +132,10 @@ public class WizardControlPanel extends JPanel {
         updateProgressLabel();
         if (step + 1 == total) {
             next.setText("Finish");
+        } else if (step == 0) {
+            prev.setEnabled(false);
+        } else if (step > 0) {
+            prev.setEnabled(true);
         } else {
             next.setText("Next \u00BB");
         }

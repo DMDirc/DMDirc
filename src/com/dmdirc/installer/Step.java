@@ -23,6 +23,8 @@
 
 package com.dmdirc.installer;
 
+import java.awt.Image;
+
 /**
  * Simple step interface.
  */
@@ -34,4 +36,18 @@ public interface Step {
      * @return Step name
      */
     public abstract String getStepName();
+    
+    /**
+     * Returns the description for this step.
+     * 
+     * @return Step description
+     */
+    public abstract String getStepDescription();
+    
+    /**
+     * Returns the icon for this step.
+     * 
+     * @return Step icon
+     */
+    public abstract Image getIcon();
 }

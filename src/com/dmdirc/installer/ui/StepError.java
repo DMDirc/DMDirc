@@ -23,6 +23,7 @@
 package com.dmdirc.installer.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Image;
 
 /**
  * This step shows an unable to install error
@@ -58,5 +59,17 @@ public final class StepError extends SwingStep {
     @Override
     public String getStepName() {
         return "Error";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Image getIcon() {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getStepDescription() {
+        return "";
     }
 }
