@@ -21,7 +21,6 @@
  */
 package com.dmdirc.ui;
 
-import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
 import com.dmdirc.logger.ErrorListener;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ErrorReportStatus;
@@ -47,6 +46,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.SimpleAttributeSet;
@@ -205,7 +205,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
             sendButton.setText("Sending...");
             okButton.setEnabled(false);
             sendButton.setEnabled(false);
-            new LoggingSwingWorker() {
+            new SwingWorker() {
 
                 /** {@inheritDoc} */
                 @Override
