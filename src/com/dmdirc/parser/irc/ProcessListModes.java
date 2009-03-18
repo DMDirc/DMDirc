@@ -161,6 +161,20 @@ public class ProcessListModes extends IRCProcessor {
 					myParser.callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got list mode: '"+mode+"' - but channel object doesn't agree.", myParser.getLastLine()));
 				} else {
 					list.clear();
+					if ((thisIRCD.equals("hyperion") || thisIRCD.equals("dancer")) && (mode == 'b' || mode == 'q')) {
+						// Also clear the other list if b or q.
+						final Character otherMode = (mode == 'b') ? 'q' : 'b';
+						
+						if (!channel.getAddState(otherMode)) {
+							callDebugInfo(IRCParser.DEBUG_INFO, "New List Mode Batch ("+mode+"): Clearing!");
+							final List<ChannelListModeItem> otherList = channel.getListModeParam(otherMode);
+							if (otherList == null) {
+								myParser.callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got list mode: '"+otherMode+"' - but channel object doesn't agree.", myParser.getLastLine()));
+							} else {
+								otherList.clear();
+							}
+						}
+					}
 				}
 				channel.setAddState(mode, true);
 			}
