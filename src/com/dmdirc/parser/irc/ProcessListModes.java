@@ -108,16 +108,23 @@ public class ProcessListModes extends IRCProcessor {
 					
 					boolean error = true;
 					
-					if ((thisIRCD.equals("hyperion") || thisIRCD.equals("dancer")) && (mode == 'b' || mode == 'q')) {
+					// b or q are given in the same list, d is separate.
+					// b and q remove each other from the LMQ.
+					//
+					// Only raise an LMQ error if the lmqmode isn't one of bdq if the
+					// guess is one of bdq
+					if ((thisIRCD.equals("hyperion") || thisIRCD.equals("dancer")) && (mode == 'b' || mode == 'q' || mode == 'd')) {
 						LinkedList<Character> lmq = (LinkedList<Character>)listModeQueue;
 						if (mode == 'b') {
-							error = !(oldMode == 'q');
+							error = !(oldMode == 'q' || oldMode == 'd');
 							lmq.remove((Character)'q');
 							myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "Dropping q from list");
 						} else if (mode == 'q') {
-							error = !(oldMode == 'b');
+							error = !(oldMode == 'b' || oldMode == 'd');
 							lmq.remove((Character)'b');
 							myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "Dropping b from list");
+						} else if (mode == 'd') {
+							error = !(oldMode == 'b' || oldMode == 'q');
 						}
 					}
 					
