@@ -29,15 +29,20 @@ import com.dmdirc.ServerState;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesCategory;
 import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionListener;
+import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.interfaces.Window;
 
+import com.dmdirc.util.RollingList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -45,13 +50,23 @@ import java.util.WeakHashMap;
  * Displays the current server's lag in the status bar.
  * @author chris
  */
-public final class LagDisplayPlugin extends Plugin implements ActionListener {
+public final class LagDisplayPlugin extends Plugin implements ActionListener, ConfigChangeListener {
     
     /** The panel we use in the status bar. */
     private final LagDisplayPanel panel = new LagDisplayPanel(this);
     
     /** A cache of ping times. */
     private final Map<Server, String> pings = new WeakHashMap<Server, String>();
+
+    /** Ping history. */
+    private final Map<Server, RollingList<Integer>> history
+            = new HashMap<Server, RollingList<Integer>>();
+
+    /** Whether or not to show a graph in the info popup. */
+    private boolean showGraph = true;
+
+    /** The length of history to keep per-server. */
+    private int historySize = 100;
     
     /** Creates a new instance of LagDisplayPlugin. */
     public LagDisplayPlugin() {
@@ -62,17 +77,30 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener {
     @Override
     public void onLoad() {
         Main.getUI().getStatusBar().addComponent(panel);
+        IdentityManager.getGlobalConfig().addChangeListener(getDomain(), this);
+
+        readConfig();
         
         ActionManager.addListener(this, CoreActionType.SERVER_GOTPING,
                 CoreActionType.SERVER_NOPING, CoreActionType.CLIENT_FRAME_CHANGED,
                 CoreActionType.SERVER_DISCONNECTED, CoreActionType.SERVER_PINGSENT,
                 CoreActionType.SERVER_NUMERIC);
     }
+
+    /**
+     * Reads the plugin's global configuration settings.
+     */
+    protected void readConfig() {
+        final ConfigManager manager = IdentityManager.getGlobalConfig();
+        showGraph = manager.getOptionBool(getDomain(), "graph");
+        historySize = manager.getOptionInt(getDomain(), "history");
+    }
     
     /** {@inheritDoc} */
     @Override
     public void onUnload() {
         Main.getUI().getStatusBar().removeComponent(panel);
+        IdentityManager.getConfigIdentity().removeListener(this);
         
         ActionManager.removeListener(this);
     }
@@ -196,5 +224,11 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener {
                 "Alternate method", "Use an alternate method of determining "
                 + "lag which bypasses bouncers or proxies that may reply."));
         manager.getCategory("Plugins").addSubCategory(cat);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void configChanged(final String domain, final String key) {
+        readConfig();
     }
 }
