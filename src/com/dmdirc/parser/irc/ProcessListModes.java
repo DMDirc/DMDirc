@@ -130,7 +130,7 @@ public class ProcessListModes extends IRCProcessor {
 					
 					if (oldMode != mode && error) {
 						myParser.callDebugInfo(IRCParser.DEBUG_LMQ, "LMQ disagrees with guess. LMQ: "+mode+" Guess: "+oldMode);
-						myParser.callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "LMQ disagrees with guess. LMQ: "+mode+" Guess: "+oldMode, myParser.getLastLine()));
+//						myParser.callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "LMQ disagrees with guess. LMQ: "+mode+" Guess: "+oldMode, myParser.getLastLine()));
 					}
 					
 					if (!isItem) {
