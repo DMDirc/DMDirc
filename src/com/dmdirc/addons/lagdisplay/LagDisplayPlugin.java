@@ -39,8 +39,8 @@ import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.interfaces.Window;
-
 import com.dmdirc.util.RollingList;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,8 +59,8 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener, Co
     private final Map<Server, String> pings = new WeakHashMap<Server, String>();
 
     /** Ping history. */
-    private final Map<Server, RollingList<Integer>> history
-            = new HashMap<Server, RollingList<Integer>>();
+    private final Map<Server, RollingList<Long>> history
+            = new HashMap<Server, RollingList<Long>>();
 
     /** Whether or not to show a graph in the info popup. */
     private boolean showGraph = true;
@@ -95,6 +95,21 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener, Co
         showGraph = manager.getOptionBool(getDomain(), "graph");
         historySize = manager.getOptionInt(getDomain(), "history");
     }
+
+    /**
+     * Retrieves the history of the specified server. If there is no history,
+     * a new list is added to the history map and returned.
+     * 
+     * @param server The server whose history is being requested
+     * @return The history for the specified server
+     */
+    protected RollingList<Long> getHistory(final Server server) {
+        if (!history.containsKey(server)) {
+            history.put(server, new RollingList<Long>(historySize));
+        }
+
+        return history.get(server);
+    }
     
     /** {@inheritDoc} */
     @Override
@@ -122,7 +137,8 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener, Co
         if (!useAlternate && type.equals(CoreActionType.SERVER_GOTPING)) {
             final Window active = Main.getUI().getActiveWindow();
             final String value = formatTime(arguments[1]);
-            
+
+            getHistory(((Server) arguments[0])).add((Long) arguments[1]);
             pings.put(((Server) arguments[0]), value);
             
             if (((Server) arguments[0]).ownsFrame(active)) {
@@ -173,6 +189,7 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener, Co
                 final Window active = Main.getUI().getActiveWindow();
                 
                 pings.put((Server) arguments[0], value);
+                getHistory(((Server) arguments[0])).add(duration);
                 
                 if (((Server) arguments[0]).ownsFrame(active)) {
                     panel.setText(value);
