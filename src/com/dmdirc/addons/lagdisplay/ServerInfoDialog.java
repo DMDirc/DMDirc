@@ -46,7 +46,7 @@ public class ServerInfoDialog extends StatusbarPopupWindow {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
 
     /** The lag display plugin. */
     protected final LagDisplayPlugin plugin;
@@ -71,6 +71,10 @@ public class ServerInfoDialog extends StatusbarPopupWindow {
         if (servers.isEmpty()) {
             panel.add(new JLabel("No open servers."));
         } else {
+            if (plugin.shouldShowGraph()) {
+                panel.add(new PingHistoryPanel(plugin), "span, grow, wrap");
+            }
+
             for (Server server : servers) {
                 panel.add(new JLabel(server.getName()));
                 panel.add(new JLabel(server.getState() == ServerState.CONNECTED

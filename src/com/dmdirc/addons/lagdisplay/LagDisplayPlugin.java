@@ -110,6 +110,16 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener, Co
 
         return history.get(server);
     }
+
+    /**
+     * Determines if the {@link ServerInfoDialog} should show a graph of the
+     * ping time for the current server.
+     * 
+     * @return True if a graph should be shown, false otherwise
+     */
+    public boolean shouldShowGraph() {
+        return showGraph;
+    }
     
     /** {@inheritDoc} */
     @Override
