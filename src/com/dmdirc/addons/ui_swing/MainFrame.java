@@ -214,7 +214,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         if (max) {
             final Window window = getActiveFrame();
             if (window != null) {
-                setTitle(getTitlePrefix() + " - " + getActiveFrame().getTitle());
+                setTitle(getTitlePrefix() + " - " + window.getTitle());
             }
         } else {
             setTitle(getTitlePrefix());
