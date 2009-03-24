@@ -87,7 +87,11 @@ public final class ServerEventHandler extends EventHandler
     public void onPrivateMessage(final IRCParser tParser, final String sMessage,
             final String sHost) {
         checkParser(tParser);
-        owner.addQuery(sHost);
+
+        if (!owner.hasQuery(sHost)) {
+            owner.addQuery(sHost);
+            owner.getQuery(sHost).onPrivateMessage(tParser, sMessage, sHost);
+        }
     }
 
     /** {@inheritDoc} */
@@ -95,7 +99,11 @@ public final class ServerEventHandler extends EventHandler
     public void onPrivateAction(final IRCParser tParser, final String sMessage,
             final String sHost) {
         checkParser(tParser);
-        owner.addQuery(sHost);
+
+        if (!owner.hasQuery(sHost)) {
+            owner.addQuery(sHost);
+            owner.getQuery(sHost).onPrivateAction(tParser, sMessage, sHost);
+        }
     }
 
     /** {@inheritDoc} */
