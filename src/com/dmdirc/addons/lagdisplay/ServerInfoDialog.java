@@ -32,6 +32,7 @@ import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 
 
 /**
@@ -73,6 +74,7 @@ public class ServerInfoDialog extends StatusbarPopupWindow {
         } else {
             if (plugin.shouldShowGraph()) {
                 panel.add(new PingHistoryPanel(plugin), "span, grow, wrap");
+                panel.add(new JSeparator(), "span, grow, wrap");
             }
 
             for (Server server : servers) {
