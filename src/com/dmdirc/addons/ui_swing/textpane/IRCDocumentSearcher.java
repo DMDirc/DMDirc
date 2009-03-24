@@ -166,26 +166,4 @@ public class IRCDocumentSearcher {
         return matches;
     }
 
-    /**
-     * Random test method.
-     * 
-     * @param args CLI params
-     *
-    public static void main(final String[] args) {
-        final String search = "these";
-        IRCDocument document = new IRCDocument();
-        document.addText(new AttributedString("rar! this these a text these sentence to search"));
-        document.addText(new AttributedString("we need to have several of these"));
-        document.addText(new AttributedString("then we can pretend to search through them if we want"));
-
-        IRCDocumentSearcher searcher = new IRCDocumentSearcher(search, document);
-
-        for (int i = 0; i < 10; i++) {
-            System.out.println("Searching for: \"" + search + "\"");
-            LinePosition position = searcher.searchDown();
-            System.out.println(position);
-            searcher.setPosition(position);
-        }
-    }*/
-
 }
