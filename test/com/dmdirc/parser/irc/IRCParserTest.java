@@ -183,7 +183,7 @@ public class IRCParserTest {
         assertEquals("Stupid notice", test.message);
     }
 
-    @Test @Ignore
+    @Test
     public void testPre001NickChange() throws CallbackNotFoundException {
         final TestINoticeAuth test = new TestINoticeAuth();
         final TestParser parser = new TestParser();
