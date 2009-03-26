@@ -880,6 +880,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 * Load the plugin files.
 	 */
 	public void loadPlugin() {
+		updateProvides();
 		if (!checkRequirements(isTempLoaded() || tempLoaded)) {
 			lastError = "Unable to loadPlugin, all requirements not met. ("+requirementsError+")";
 			return;
@@ -887,14 +888,14 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 		if (isTempLoaded()) {
 			tempLoaded = false;
 			loadRequired();
-            
-            try {
-                plugin.onLoad();
-            } catch (Throwable e) {
-                lastError = "Error in onLoad for "+getName()+":"+e.getMessage();
-                Logger.userError(ErrorLevel.MEDIUM, lastError, e);
-                unloadPlugin();
-            }
+			
+			try {
+				plugin.onLoad();
+			} catch (Throwable e) {
+				lastError = "Error in onLoad for "+getName()+":"+e.getMessage();
+				Logger.userError(ErrorLevel.MEDIUM, lastError, e);
+				unloadPlugin();
+			}
 		} else {
 			if (isLoaded() || metaData == null || isLoading) {
 				lastError = "Not Loading: ("+isLoaded()+"||"+(metaData == null)+"||"+isLoading+")";
@@ -1435,7 +1436,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 					final Service service = PluginManager.getPluginManager().getService("export", serviceName, true);
 					service.addProvider(this);
 					provides.add(service);
-					
 					// Add is as an export
 					exports.put(serviceName, new ExportInfo(methodName, methodClass, this));
 				}
