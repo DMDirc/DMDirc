@@ -68,6 +68,9 @@ public class Identity extends ConfigSource implements Serializable,
     /** The domain used for profile settings. */
     private static final String PROFILE_DOMAIN = "profile".intern();
 
+    /** A regular expression that will match all characters illegal in file names. */
+    protected static final String ILLEGAL_CHARS = "[\\\\\"/:\\*\\?\"<>\\|]";
+
     /** The target for this identity. */
     protected final ConfigTarget myTarget;
 
@@ -600,7 +603,7 @@ public class Identity extends ConfigSource implements Serializable,
 
         final String fs = System.getProperty("file.separator");
         final String location = Main.getConfigDir() + "identities" + fs;
-        final String name = settings.get(DOMAIN).get("name");
+        final String name = settings.get(DOMAIN).get("name").replaceAll(ILLEGAL_CHARS, "_");
 
         File file = new File(location + name);
         int attempt = 0;
