@@ -95,7 +95,9 @@ public final class UnloadPlugin extends GlobalCommand implements IntelligentComm
         
         if (arg == 0) {            
             for (PluginInfo possPlugin : PluginManager.getPluginManager().getPluginInfos()) {
-                res.add(possPlugin.getName());
+                if (possPlugin.isLoaded()) {
+                    res.add(possPlugin.getName());
+                }
             }
         }
         
