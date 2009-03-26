@@ -1034,7 +1034,7 @@ public class IRCParser implements Runnable {
 							}
 							// Some networks may send a NICK message if you nick change before 001
 							// Eat it up so that it isn't treated as a notice auth.
-							if (token[0].equalsIgnoreCase("NICK")) { break; }
+							if (token[1].equalsIgnoreCase("NICK")) { break; }
 							
 							// Otherwise, send to Notice Auth
 							try { myProcessingManager.process("Notice Auth", token); } catch (ProcessorNotFoundException e) { }
