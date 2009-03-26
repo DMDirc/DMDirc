@@ -753,6 +753,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 			final String name = bits[0];
 			final String type = (bits.length > 1) ? bits[1] : "misc";
 			
+			// System.out.println(toString()+" Looking for: "+requirement);
 			Service service = null;
 			if (name.equalsIgnoreCase("any")) {
 				final List<Service> serviceList = PluginManager.getPluginManager().getServicesByType(type);
@@ -772,7 +773,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 			} else {
 				service = PluginManager.getPluginManager().getService(type, name, false);
 			}
-			
+			// System.out.println("\tSatisfied by: "+service+" "+(PluginInfo)service.getActiveProvider());
 			if (service != null) {
 				available = service.activate();
 			}
@@ -879,7 +880,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 * Load the plugin files.
 	 */
 	public void loadPlugin() {
-		if (!checkRequirements(false)) {
+		if (!checkRequirements(isTempLoaded() || tempLoaded)) {
 			lastError = "Unable to loadPlugin, all requirements not met. ("+requirementsError+")";
 			return;
 		}
