@@ -355,7 +355,7 @@ public class PluginManager implements ActionListener {
 	 * @return PluginInfo instance, or null
 	 */
 	public PluginInfo getPluginInfoByName(final String name) {
-		for (PluginInfo pluginInfo : knownPlugins.values()) {
+		for (PluginInfo pluginInfo : getPluginInfos()) {
 			if (pluginInfo.getName().equalsIgnoreCase(name)) {
 				return pluginInfo;
 			}
