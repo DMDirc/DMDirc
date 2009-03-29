@@ -30,6 +30,7 @@ import com.dmdirc.util.DownloadListener;
 import com.dmdirc.util.Downloader;
 import com.dmdirc.util.WeakList;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -163,10 +164,10 @@ public final class Update implements DownloadListener {
 
                 try {
                     Downloader.downloadPage(getUrl(), path, Update.this);
-                } catch (Throwable ex) {
+                } catch (IOException ex) {
                     setStatus(UpdateStatus.ERROR);
 
-                    Logger.appError(ErrorLevel.MEDIUM, "Error when updating component "
+                    Logger.userError(ErrorLevel.MEDIUM, "Error when updating component "
                             + component.getName(), ex);
 
                     return;
