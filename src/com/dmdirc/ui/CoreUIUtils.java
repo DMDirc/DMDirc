@@ -34,11 +34,11 @@ import java.awt.Window;
 public class CoreUIUtils {
     
     /**
-     * Center the specified window on the active monitor.
+     * Centre the specified window on the active monitor.
      * 
-     * @param window Window to center
+     * @param window Window to centre
      */
-    public static void centerWindow(final Window window) {
+    public static void centreWindow(final Window window) {
         // Get the Location of the mouse pointer
         final PointerInfo myPointerInfo = MouseInfo.getPointerInfo();
         // Get the Device (screen) the mouse pointer is on
@@ -48,7 +48,7 @@ public class CoreUIUtils {
                 myDevice.getDefaultConfiguration();
         // Get the bounds of the device
         final Rectangle gcBounds = myGraphicsConfig.getBounds();
-        // Calculate the center of the screen
+        // Calculate the centre of the screen
         // gcBounds.x and gcBounds.y give the co ordinates where the screen
         // starts. gcBounds.width and gcBounds.height return the size in pixels
         // of the screen.

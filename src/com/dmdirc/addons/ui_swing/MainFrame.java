@@ -111,7 +111,7 @@ public final class MainFrame extends JFrame implements WindowListener,
                 new ImageIcon(IconManager.getIconManager().getImage("icon"));
         setIconImage(imageIcon.getImage());
 
-        CoreUIUtils.centerWindow(this);
+        CoreUIUtils.centreWindow(this);
 
         setVisible(true);
 

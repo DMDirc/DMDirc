@@ -114,7 +114,7 @@ public class NoUIDialog extends JDialog {
             public void run() {
                 final NoUIDialog me = new NoUIDialog();
                 me.pack();
-                CoreUIUtils.centerWindow(me);
+                CoreUIUtils.centreWindow(me);
                 me.setVisible(true);
             }
         });

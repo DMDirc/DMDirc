@@ -70,7 +70,7 @@ public final class WizardFrame extends JFrame {
     /** Displays the wizard. */
     public void display() {
         wizard.display();
-        CoreUIUtils.centerWindow(this);
+        CoreUIUtils.centreWindow(this);
         setResizable(false);
         setVisible(true);
     }
@@ -79,7 +79,7 @@ public final class WizardFrame extends JFrame {
     @Override
     public void validate() {
         super.validate();
-        CoreUIUtils.centerWindow(this);
+        CoreUIUtils.centreWindow(this);
     }
 
     /**

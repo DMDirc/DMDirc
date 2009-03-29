@@ -125,7 +125,7 @@ public class InstallerDialog extends JFrame implements ActionListener {
 
         pack();
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        CoreUIUtils.centerWindow(this);
+        CoreUIUtils.centreWindow(this);
         setVisible(true);
         fireStepAboutToBeDisplayed(wizard.getStep(wizard.getCurrentStepIndex()));
     }

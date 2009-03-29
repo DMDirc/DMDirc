@@ -100,7 +100,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
         ErrorManager.getErrorManager().addErrorListener(this);
         
         setResizable(false);
-        CoreUIUtils.centerWindow(this);
+        CoreUIUtils.centreWindow(this);
     }
 
     /**
