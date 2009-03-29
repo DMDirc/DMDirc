@@ -34,6 +34,8 @@ import com.dmdirc.logger.Logger;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.List;
 
 import java.util.concurrent.ExecutionException;
@@ -155,7 +157,16 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         tabList.addListSelectionListener(this);
         new ListScroller(tabList);
 
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void windowClosing(final WindowEvent e) {
+                super.windowClosing(e);
+                actionPerformed(null);
+            }
+        });
         setTitle("Preferences");
         setResizable(false);
 
@@ -207,8 +218,9 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             selected.fireCategoryDeselected();
             selected = null;
         }
+        mainPanel.setCategory(null);
         
-        if (getOkButton().equals(actionEvent.getSource())) {
+        if (actionEvent != null && getOkButton().equals(actionEvent.getSource())) {
             if (tabList.getSelectedIndex() > -1) {
                 final PreferencesCategory node = (PreferencesCategory) tabList.getSelectedValue();
                 IdentityManager.getConfigIdentity().setOption("dialogstate",
