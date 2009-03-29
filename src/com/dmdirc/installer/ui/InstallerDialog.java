@@ -26,6 +26,7 @@ package com.dmdirc.installer.ui;
 import com.dmdirc.installer.Step;
 import com.dmdirc.installer.StepListener;
 import com.dmdirc.installer.WizardListener;
+import com.dmdirc.ui.CoreUIUtils;
 import com.dmdirc.util.ListenerList;
 
 import java.awt.BorderLayout;
@@ -124,6 +125,7 @@ public class InstallerDialog extends JFrame implements ActionListener {
 
         pack();
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        CoreUIUtils.centerWindow(this);
         setVisible(true);
         fireStepAboutToBeDisplayed(wizard.getStep(wizard.getCurrentStepIndex()));
     }

@@ -27,6 +27,7 @@ import com.dmdirc.logger.ErrorReportStatus;
 import com.dmdirc.logger.ProgramError;
 
 import java.awt.BorderLayout;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -87,7 +88,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
      * @param error Error
      */
     private FatalErrorDialog(final ProgramError error) {
-        super();
+        super(null, Dialog.ModalityType.TOOLKIT_MODAL);
 
         setModal(true);
 
@@ -97,9 +98,9 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
         layoutComponents();
         
         ErrorManager.getErrorManager().addErrorListener(this);
-
-        setLocationRelativeTo(getParent());
+        
         setResizable(false);
+        CoreUIUtils.centerWindow(this);
     }
 
     /**

@@ -43,6 +43,7 @@ import com.dmdirc.addons.ui_swing.components.MenuBar;
 import com.dmdirc.addons.ui_swing.components.SnappingJSplitPane;
 import com.dmdirc.addons.ui_swing.framemanager.tree.TreeFrameManager;
 
+import com.dmdirc.ui.CoreUIUtils;
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
@@ -110,7 +111,7 @@ public final class MainFrame extends JFrame implements WindowListener,
                 new ImageIcon(IconManager.getIconManager().getImage("icon"));
         setIconImage(imageIcon.getImage());
 
-        UIUtilities.centerWindow(this);
+        CoreUIUtils.centerWindow(this);
 
         setVisible(true);
 

@@ -22,9 +22,9 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.wizard;
 
-import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 
+import com.dmdirc.ui.CoreUIUtils;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -85,7 +85,7 @@ public final class WizardDialog extends StandardDialog implements ActionListener
         if (parentWindow != null) {
             setLocationRelativeTo(parentWindow);
         } else {
-            UIUtilities.centerWindow(this);
+            CoreUIUtils.centerWindow(this);
         }
         addWindowListener(new WindowAdapter() {
 

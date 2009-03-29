@@ -22,8 +22,8 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.wizard;
 
-import com.dmdirc.addons.ui_swing.UIUtilities;
 
+import com.dmdirc.ui.CoreUIUtils;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -70,7 +70,7 @@ public final class WizardFrame extends JFrame {
     /** Displays the wizard. */
     public void display() {
         wizard.display();
-        UIUtilities.centerWindow(this);
+        CoreUIUtils.centerWindow(this);
         setResizable(false);
         setVisible(true);
     }
@@ -79,7 +79,7 @@ public final class WizardFrame extends JFrame {
     @Override
     public void validate() {
         super.validate();
-        UIUtilities.centerWindow(this);
+        CoreUIUtils.centerWindow(this);
     }
 
     /**
