@@ -53,7 +53,7 @@ public class PluginComponent implements UpdateComponent {
     public PluginComponent(final PluginInfo plugin) {
         this.plugin = plugin;
         
-        if ((plugin.getAddonID() > 0 && plugin.getVersion() > -1)
+        if ((plugin.getAddonID() > 0 && plugin.getVersion().isValid())
                 || (config.hasOptionInt("plugin-addonid", plugin.getName()))) {
             UpdateChecker.removeComponent(getName());
             UpdateChecker.registerComponent(this);
@@ -85,7 +85,7 @@ public class PluginComponent implements UpdateComponent {
     /** {@inheritDoc} */
     @Override    
     public Version getVersion() {
-        return new Version(plugin.getVersion());
+        return plugin.getVersion();
     }
 
     /** {@inheritDoc} */

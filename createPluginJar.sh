@@ -47,18 +47,25 @@ if [ -e META-INF/plugin.config ]; then
 		mv META-INF/plugin.config.temp META-INF/plugin.config		
 	fi;
 
-	SVN=`which svn`	
-	SVNREV=`$SVN info $srcdir/src/$foldername 2>&1 | grep "Last Changed Rev"`
-	SVNREV=${SVNREV##*: }
-	echo "" >> META-INF/plugin.config
-	echo "" >> META-INF/plugin.config
-	
-	echo "version:" >> META-INF/plugin.config;
-	if [ -n "$SVNREV" ]; then
-		echo "  number=$SVNREV" >> META-INF/plugin.config;
+	if [ -d "$srcdir/.git" ]; then
+		GIT="`which git` --git-dir $srcdir/.git";
+		REV=$($GIT describe --tags `$GIT rev-list --max-count=1 HEAD -- src/$foldername`);
 	else
-		echo "  number=0" >> META-INF/plugin.config;
+		SVN=`which svn`	
+		SVNREV=`$SVN info $srcdir/src/$foldername 2>&1 | grep "Last Changed Rev"`
+		SVNREV=${SVNREV##*: }
+
+		if [ -n "$SVNREV" ]; then
+	                REV=`$SVN log -r $SVNREV | grep ^Git-version: | cut -f 2 -d ' '`
+		else
+			REV=0;
+		fi;
 	fi;
+
+        echo "" >> META-INF/plugin.config
+        echo "" >> META-INF/plugin.config
+	echo "version:" >> META-INF/plugin.config;
+	echo "  number=$REV" >> META-INF/plugin.config;
 fi;
 
 foo=`echo $foldername | sed -e 's/\/[^\/]*$//g'`

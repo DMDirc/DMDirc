@@ -32,6 +32,7 @@ import com.dmdirc.util.InvalidConfigFileException;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.logger.ErrorLevel;
 
+import com.dmdirc.updater.Version;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -144,7 +145,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 			throw new PluginException("Plugin "+filename+" failed to load, plugin.config failed to open - "+e.getMessage(), e);
 		}
 
-		if (getVersion() < 0) {
+		if (!getVersion().isValid()) {
 			lastError = "Incomplete plugin.config (Missing or invalid 'version')";
 			throw new PluginException("Plugin "+filename+" failed to load. "+lastError);
 		} else if (getAuthor().isEmpty()) {
@@ -664,36 +665,21 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 			if (pi == null) {
 				requirementsError = "Required plugin '"+data[0]+"' was not found";
 				return false;
-			} else if  (pi.getVersion() == 0) {
-				// Probably compiled from a non-svn version, assume version is ok
-				return true;
 			} else {
 				if (data.length > 1) {
 					// Check plugin minimum version matches.
-					try {
-						final int minversion = Integer.parseInt(data[1]);
-						if (pi.getVersion() < minversion) {
-							requirementsError = "Plugin '"+data[0]+"' is too old (Required Version: "+minversion+", Actual Version: "+pi.getVersion()+")";
-							return false;
-						} else {
-							if (data.length > 2) {
-								// Check plugin maximum version matches.
-								try {
-									final int maxversion = Integer.parseInt(data[2]);
-									if (pi.getVersion() > maxversion) {
-										requirementsError = "Plugin '"+data[0]+"' is too new (Required Version: "+maxversion+", Actual Version: "+pi.getVersion()+")";
-										return false;
-									}
-								} catch (NumberFormatException nfe) {
-									requirementsError = "Plugin max-version '"+data[2]+"' for plugin ('"+data[0]+"') is a non-integer";
-									return false;
-								}
-							}
-						}
-					} catch (NumberFormatException nfe) {
-						requirementsError = "Plugin min-version '"+data[1]+"' for plugin ('"+data[0]+"') is a non-integer";
-						return false;
-					}
+                    if (pi.getVersion().compareTo(new Version(data[1])) < 0) {
+                        requirementsError = "Plugin '"+data[0]+"' is too old (Required Version: "+data[1]+", Actual Version: "+pi.getVersion()+")";
+                        return false;
+                    } else {
+                        if (data.length > 2) {
+                            // Check plugin maximum version matches.
+                            if (pi.getVersion().compareTo(new Version(data[2])) > 0) {
+                                requirementsError = "Plugin '"+data[0]+"' is too new (Required Version: "+data[2]+", Actual Version: "+pi.getVersion()+")";
+                                return false;
+                            }
+                        }
+                    }
 				}
 			}
 		}
@@ -1148,12 +1134,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 	 *
 	 * @return Plugin Version
 	 */
-	public int getVersion() {
-		try {
-			return Integer.parseInt(getKeyValue("version", "number", "0"));
-		} catch (NumberFormatException nfe) {
-			return -1;
-		}
+	public Version getVersion() {
+        return new Version(getKeyValue("version", "number", "0"));
 	}
 
 	/**
