@@ -31,8 +31,8 @@ package com.dmdirc.updater;
  */
 public class Version implements Comparable<Version> {
 
-    private final int intVersion;
-    private final String strVersion;
+    protected final int intVersion;
+    protected final String strVersion;
 
     public Version(final int version) {
         this.intVersion = version;
@@ -40,16 +40,58 @@ public class Version implements Comparable<Version> {
     }
 
     public Version(final String version) {
-        this.intVersion = -1;
-        this.strVersion = version;
+        if (version.matches("^[0-9]+$")) {
+            this.intVersion = Integer.parseInt(version);
+            this.strVersion = null;
+        } else if (version.matches("^[0-9]+(\\.[0-9]+)*(\\-[0-9]+\\-g[a-z0-9]{7})?$")) {
+            this.intVersion = Integer.MIN_VALUE;
+            this.strVersion = version;
+        } else {
+            this.intVersion = Integer.MIN_VALUE;
+            this.strVersion = null;
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public int compareTo(final Version o) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (o.intVersion > Integer.MIN_VALUE && this.intVersion > Integer.MIN_VALUE) {
+            return this.intVersion - o.intVersion;
+        } else if (o.strVersion == null || this.strVersion == null) {
+            return 0;
+        } else {
+            final String myParts[] = this.strVersion.split("-");
+            final String thParts[] = o.strVersion.split("-");
+
+            final String myFirstParts[] = myParts[0].split("\\.");
+            final String thFirstParts[] = thParts[0].split("\\.");
+
+            for (int i = 0; i < Math.max(myFirstParts.length, thFirstParts.length); i++) {
+                final int myInt = myFirstParts.length > i ? Integer.parseInt(myFirstParts[i]) : 0;
+                final int thInt = thFirstParts.length > i ? Integer.parseInt(thFirstParts[i]) : 0;
+
+                if (myInt != thInt) {
+                    return myInt - thInt;
+                }
+            }
+
+            final int myInt = myParts.length > 1 ? Integer.parseInt(myParts[1]) : 0;
+            final int thInt = thParts.length > 1 ? Integer.parseInt(thParts[1]) : 0;
+
+            return myInt - thInt;
+        }
     }
 
+    /**
+     * Determines whether or not this represents a valid version.
+     *
+     * @return True if the version is valid, false otherwise
+     */
+    public boolean isValid() {
+        return intVersion > Integer.MIN_VALUE || strVersion != null;
+    }
+
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return strVersion == null ? String.valueOf(intVersion) : strVersion;
