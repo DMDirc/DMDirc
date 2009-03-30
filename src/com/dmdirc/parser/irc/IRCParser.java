@@ -43,9 +43,8 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Timer;
 import java.util.Queue;
-
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -113,13 +112,13 @@ public class IRCParser implements Runnable {
 	 *
 	 * @see setPingCountDownLength
 	 */
-	private byte pingCountDown;
+	private int pingCountDown;
 	/**
 	 * Amount of times the timer has to fire for inactivity before sending a ping.
 	 *
 	 * @see setPingCountDownLength
 	 */
-	private byte pingCountDownLength = 6;
+	private int pingCountDownLength = 6;
 
 	/** Name the server calls itself. */
 	String sServerName;
@@ -1814,7 +1813,7 @@ public class IRCParser implements Runnable {
 	 * @return current time used.
 	 * @see setPingCountDownLength
 	 */
-	public byte getPingCountDownLength() { return pingCountDownLength; }
+	public int getPingCountDownLength() { return pingCountDownLength; }
 
 	/**
 	 * Set the time used for the ping countdown.
@@ -1839,7 +1838,7 @@ public class IRCParser implements Runnable {
 	 * @see pingTimerLength
 	 * @see pingTimerTask
 	 */
-	public void setPingCountDownLength(final byte newValue) {
+	public void setPingCountDownLength(final int newValue) {
 		pingCountDownLength = newValue;
 	}
 

@@ -270,21 +270,7 @@ public class Server extends WritableFrameContainer implements Serializable {
 
             getConfigManager().migrate("", "", server);
 
-            serverInfo = new ServerInfo(server, port, password);
-            serverInfo.setSSL(ssl);
-
-            if (getConfigManager().hasOptionString(DOMAIN_SERVER, "proxy.address")) {
-                serverInfo.setUseSocks(true);
-
-                serverInfo.setProxyHost(getConfigManager()
-                        .getOption(DOMAIN_SERVER, "proxy.address"));
-                serverInfo.setProxyUser(getConfigManager()
-                        .getOption(DOMAIN_SERVER, "proxy.user"));
-                serverInfo.setProxyPass(getConfigManager()
-                        .getOption(DOMAIN_SERVER, "proxy.password"));
-                serverInfo.setProxyPort(getConfigManager()
-                        .getOptionInt(DOMAIN_SERVER, "proxy.port"));
-            }
+            serverInfo = buildServerInfo(server, port, password, ssl);
 
             this.profile = profile;
 
@@ -292,21 +278,7 @@ public class Server extends WritableFrameContainer implements Serializable {
 
             addLine("serverConnecting", server, port);
 
-            final MyInfo myInfo = getMyInfo();
-
-            CertificateManager certManager
-                    = new CertificateManager(server, getConfigManager());
-
-            parser = parserFactory.getParser(myInfo, serverInfo);
-            parser.setTrustManager(new TrustManager[]{certManager});
-            parser.setKeyManagers(certManager.getKeyManager());
-            parser.setRemoveAfterCallback(true);
-            parser.setCreateFake(true);
-            parser.setIgnoreList(ignoreList);
-
-            if (getConfigManager().hasOptionString(DOMAIN_GENERAL, "bindip")) {
-                parser.setBindIP(getConfigManager().getOption(DOMAIN_GENERAL, "bindip"));
-            }
+            parser = buildParser();
 
             doCallbacks();
 
@@ -660,13 +632,61 @@ public class Server extends WritableFrameContainer implements Serializable {
     // --------------------------------------------- MISCELLANEOUS METHODS -----
 
     /**
-     * Updates this server's icon.
+     * Construsts a {@link ServerInfo} object for the specified details.
+     *
+     * @param server The hostname or IP address of the server
+     * @param port The port of the server
+     * @param password The password to use, if any
+     * @param ssl Whether or not to use SSL
+     * @return An appropriately configured ServerInfo instance
      */
-    private void updateIcon() {
-        final String icon = myState.getState() == ServerState.CONNECTED
-                    ? serverInfo.getSSL() ? "secure-server" : "server"
-                    : "server-disconnected";
-        setIcon(icon);
+    private ServerInfo buildServerInfo(final String server, final int port,
+            final String password, final boolean ssl) {
+        final ServerInfo myInfo = new ServerInfo(server, port, password);
+        myInfo.setSSL(ssl);
+
+        if (getConfigManager().hasOptionString(DOMAIN_SERVER, "proxy.address")) {
+            myInfo.setUseSocks(true);
+
+            myInfo.setProxyHost(getConfigManager()
+                    .getOption(DOMAIN_SERVER, "proxy.address"));
+            myInfo.setProxyUser(getConfigManager()
+                    .getOption(DOMAIN_SERVER, "proxy.user"));
+            myInfo.setProxyPass(getConfigManager()
+                    .getOption(DOMAIN_SERVER, "proxy.password"));
+            myInfo.setProxyPort(getConfigManager()
+                    .getOptionInt(DOMAIN_SERVER, "proxy.port"));
+        }
+
+        return myInfo;
+    }
+
+    /**
+     * Builds an appropriately configured {@link IRCParser} for this server.
+     *
+     * @return A configured IRC parser.
+     */
+    private IRCParser buildParser() {
+        final CertificateManager certManager = new CertificateManager(serverInfo.getHost(),
+                getConfigManager());
+
+        final MyInfo myInfo = buildMyInfo();
+        final IRCParser myParser = parserFactory.getParser(myInfo, serverInfo);
+        myParser.setTrustManager(new TrustManager[]{certManager});
+        myParser.setKeyManagers(certManager.getKeyManager());
+        myParser.setRemoveAfterCallback(true);
+        myParser.setCreateFake(true);
+        myParser.setIgnoreList(ignoreList);
+        myParser.setPingTimerLength(getConfigManager().getOptionInt(DOMAIN_SERVER,
+                "pingtimer"));
+        myParser.setPingCountDownLength((int) (getConfigManager().getOptionInt(DOMAIN_SERVER,
+                "pingfrequency") / myParser.getPingTimerLength()));
+
+        if (getConfigManager().hasOptionString(DOMAIN_GENERAL, "bindip")) {
+            myParser.setBindIP(getConfigManager().getOption(DOMAIN_GENERAL, "bindip"));
+        }
+
+        return myParser;
     }
 
     /**
@@ -678,7 +698,7 @@ public class Server extends WritableFrameContainer implements Serializable {
         "The current profile is not null",
         "The current profile specifies at least one nickname"
     })
-    private MyInfo getMyInfo() {
+    private MyInfo buildMyInfo() {
         Logger.assertTrue(profile != null);
         Logger.assertTrue(!profile.getOptionList(DOMAIN_PROFILE, "nicknames").isEmpty());
 
@@ -691,6 +711,16 @@ public class Server extends WritableFrameContainer implements Serializable {
         }
 
         return myInfo;
+    }
+
+    /**
+     * Updates this server's icon.
+     */
+    private void updateIcon() {
+        final String icon = myState.getState() == ServerState.CONNECTED
+                    ? serverInfo.getSSL() ? "secure-server" : "server"
+                    : "server-disconnected";
+        setIcon(icon);
     }
 
     /**

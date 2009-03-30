@@ -200,6 +200,8 @@ logging:
 server:
   friendlymodes=true
   pingtimeout=60000
+  pingtimer=10000
+  pingfrequency=60000
   proxy.address=
   proxy.user=
   proxy.password=

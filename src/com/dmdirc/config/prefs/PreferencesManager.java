@@ -206,9 +206,17 @@ public class PreferencesManager {
                 "Close queries on disconnect", "Close query windows when " +
                 "the server is disconnected?"));
         category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
-                "server", "pingtimeout", "Server ping timeout",
+                "server", "pingtimer", "Ping warning time",
+                "How long to wait after a ping reply is sent before showing " +
+                "a warning message"));
+        category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
+                "server", "pingtimeout", "Ping timeout",
                 "How long to wait for a server to reply to a PING request " +
-                "before disconnecting"));
+                "before assume it has died and disconnecting"));
+        category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
+                "server", "pingfrequency", "Ping frequency",
+                "How often a PING request should be sent to the server (to " +
+                "check that it is still alive)"));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "reconnectonconnectfailure", "Reconnect on failure",
                 "Attempt to reconnect if there is an error when connecting?"));
