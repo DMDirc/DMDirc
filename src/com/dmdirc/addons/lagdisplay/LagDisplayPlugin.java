@@ -249,7 +249,13 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener, Co
         cat.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 getDomain(), "usealternate",
                 "Alternate method", "Use an alternate method of determining "
-                + "lag which bypasses bouncers or proxies that may reply."));
+                + "lag which bypasses bouncers or proxies that may reply?"));
+        cat.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                getDomain(), "graph", "Show graph", "Show a graph of ping times " +
+                "for the current server in the information popup?"));
+        cat.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
+                getDomain(), "history", "Graph points", "Number of data points " +
+                "to plot on the graph, if enabled."));
         manager.getCategory("Plugins").addSubCategory(cat);
     }
 
