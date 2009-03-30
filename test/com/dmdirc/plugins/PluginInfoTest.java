@@ -91,7 +91,7 @@ public class PluginInfoTest {
         assertEquals("Description goes here", pi.getDescription());
         assertEquals("randomname", pi.getName());
         assertEquals("Friendly name", pi.getNiceName());
-        assertEquals(3, pi.getVersion());
+        assertEquals("3", pi.getVersion().toString());
     }
     
     @Test
