@@ -57,7 +57,7 @@ public class NoUIDialog extends JDialog {
     private static final String TITLE = "<h1>No UIs Found</h1>";
     /** Dialog body text. */
     private static final String BODY = "DMDirc cannot find any UI plugins, " +
-            "a UI plugin is required for you to use DMDirc.  You can either " +
+            "which are required for you to use DMDirc.  You can either " +
             "download a UI plugin or extract one from the jar. DMDirc will " +
             "now exit";
 
@@ -141,6 +141,7 @@ public class NoUIDialog extends JDialog {
 
                 });
                 me.pack();
+                CoreUIUtils.centreWindow(me);
                 me.setVisible(true);
             }
         });
