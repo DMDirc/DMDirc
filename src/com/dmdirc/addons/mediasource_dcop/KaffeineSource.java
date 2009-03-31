@@ -86,14 +86,14 @@ public class KaffeineSource implements MediaSource {
     @Override
     public String getLength() {
         return duration(Integer.parseInt(DcopMediaSourcePlugin.getDcopResult(
-                "dcop kaffeine KaffeineIface getLength").get(0)) /1000);
+                "dcop kaffeine KaffeineIface getLength").get(0)));
     }
 
     /** {@inheritDoc} */
     @Override
     public String getTime() {
         return duration(Integer.parseInt(DcopMediaSourcePlugin.getDcopResult(
-                "dcop kaffeine KaffeineIface getTimePos").get(0)) /1000);
+                "dcop kaffeine KaffeineIface getTimePos").get(0)));
     }
 
     /** {@inheritDoc} */
@@ -121,12 +121,25 @@ public class KaffeineSource implements MediaSource {
         final long minutes = secondsInput / 60 % 60;
         final long seconds = secondsInput % 60;
         
-        if (hours > 0) { 
+        if (hours > 0) {
+            if (hours < 10) {
+                result.append('0');
+            }
+
             result.append(hours).append(":");
+        }
+
+        if (minutes < 10) {
+            result.append('0');
         }
         
         result.append(minutes).append(":");
-        result.append(seconds).append(":");
+
+        if (seconds < 10) {
+            result.append('0');
+        }
+
+        result.append(seconds);
         
         return result.toString();
     }
