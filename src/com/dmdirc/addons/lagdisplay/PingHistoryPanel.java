@@ -28,6 +28,11 @@ import com.dmdirc.util.RollingList;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JPanel;
 
 /**
@@ -82,17 +87,24 @@ public class PingHistoryPanel extends JPanel {
         g.setColor(Color.DARK_GRAY);
         g.drawLine(2, 1, 2, getHeight() - 1);
         g.drawLine(1, getHeight() - 2, getWidth() - 1, getHeight() - 2);
+        g.setFont(g.getFont().deriveFont(10f));
 
         float lastX = -1, lastY = -1;
         float pixelsperpointX = (getWidth() - 3) / (float) (history.getList().size() == 1 ? 1
                 : history.getList().size() - 1);
-        float pixelsperpointY = (getHeight() - 5) / (float) maximum;
+        float pixelsperpointY = (getHeight() - 10) / (float) maximum;
 
         if (history.isEmpty()) {
             g.drawString("No data", getWidth() / 2 - 25, getHeight() / 2 + 5);
         }
 
-        for (Long value : history.getList()) {
+        long last1 = -1, last2 = -1;
+        final List<Long> list = history.getList();
+        final List<Rectangle> rects = new ArrayList<Rectangle>();
+
+        for (int i = 0; i < list.size(); i++) {
+            final Long value = list.get(i);
+           
             float x = lastX == -1 ? 2 : lastX + pixelsperpointX;
             float y = getHeight() - 5 - value * pixelsperpointY;
 
@@ -102,8 +114,62 @@ public class PingHistoryPanel extends JPanel {
 
             g.drawRect((int) x - 1, (int) y - 1, 2, 2);
 
+            if (last1 > -1 && (last2 <= last1 || last1 >= value)) {
+                final String text = plugin.formatTime(last1);
+                final Rectangle2D rect = g.getFont().getStringBounds(text,
+                        ((Graphics2D) g).getFontRenderContext());
+                final int width = 10 + (int) rect.getWidth();
+                final int points = (int) Math.ceil(width / pixelsperpointX);
+                final int diffy = (int) (last1 - (10 + rect.getHeight()) / pixelsperpointY);
+
+                float posX = lastX - width + 7;
+                float posY = (float) (lastY + rect.getHeight() / 2) - 1;
+                boolean failed = posX < 0;
+
+                // Check left
+                for (int j = Math.max(0, i - points); j < i - 1; j++) {
+                    if (list.get(j) > diffy) {
+                        failed = true;
+                        break;
+                    }
+                }
+
+                if (failed) {
+                    posX = lastX + 3;
+                    failed = posX + width > getWidth();
+
+                    // Check right
+                    for (int j = i; j < Math.min(list.size(), i + points); j++) {
+                        if (list.get(j) > diffy) {
+                            failed = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!failed) {
+                    final Rectangle myrect = new Rectangle((int) posX - 2,
+                            (int) lastY - 7, 5 + (int) rect.getWidth(),
+                            3 + (int) rect.getHeight());
+
+                    for (Rectangle test : rects) {
+                        if (test.intersects(myrect)) {
+                            failed = true;
+                        }
+                    }
+
+                    if (!failed) {
+                        g.drawString(text, (int) posX, (int) posY);
+                        rects.add(myrect);
+                    }
+                }
+            }
+
             lastX = x;
             lastY = y;
+
+            last2 = last1;
+            last1 = value;
         }
     }
 
