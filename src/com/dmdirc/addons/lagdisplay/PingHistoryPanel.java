@@ -114,7 +114,7 @@ public class PingHistoryPanel extends JPanel {
 
             g.drawRect((int) x - 1, (int) y - 1, 2, 2);
 
-            if (last1 > -1 && (last2 <= last1 || last1 >= value)) {
+            if (plugin.shouldShowLabels() && last1 > -1 && (last2 <= last1 || last1 >= value)) {
                 final String text = plugin.formatTime(last1);
                 final Rectangle2D rect = g.getFont().getStringBounds(text,
                         ((Graphics2D) g).getFontRenderContext());

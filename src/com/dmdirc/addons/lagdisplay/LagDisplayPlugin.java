@@ -65,6 +65,9 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener, Co
     /** Whether or not to show a graph in the info popup. */
     private boolean showGraph = true;
 
+    /** Whether or not to show labels on that graph. */
+    private boolean showLabels = true;
+
     /** The length of history to keep per-server. */
     private int historySize = 100;
     
@@ -93,6 +96,7 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener, Co
     protected void readConfig() {
         final ConfigManager manager = IdentityManager.getGlobalConfig();
         showGraph = manager.getOptionBool(getDomain(), "graph");
+        showLabels = manager.getOptionBool(getDomain(), "labels");
         historySize = manager.getOptionInt(getDomain(), "history");
     }
 
@@ -119,6 +123,16 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener, Co
      */
     public boolean shouldShowGraph() {
         return showGraph;
+    }
+
+    /**
+     * Determines if the {@link PingHistoryPanel} should show labels on selected
+     * points.
+     *
+     * @return True if labels should be shown, false otherwise
+     */
+    public boolean shouldShowLabels() {
+        return showLabels;
     }
     
     /** {@inheritDoc} */
@@ -231,7 +245,7 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener, Co
      * @param object An uncast Long representing the time to be formatted
      * @return Formatted time string
      */
-    private String formatTime(final Object object) {
+    protected String formatTime(final Object object) {
         final Long time = (Long) object;
         
         if (time >= 10000) {
@@ -253,6 +267,9 @@ public final class LagDisplayPlugin extends Plugin implements ActionListener, Co
         cat.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 getDomain(), "graph", "Show graph", "Show a graph of ping times " +
                 "for the current server in the information popup?"));
+        cat.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
+                getDomain(), "labels", "Show labels", "Show labels on selected " +
+                "points on the ping graph?"));
         cat.addSetting(new PreferencesSetting(PreferencesType.INTEGER,
                 getDomain(), "history", "Graph points", "Number of data points " +
                 "to plot on the graph, if enabled."));
