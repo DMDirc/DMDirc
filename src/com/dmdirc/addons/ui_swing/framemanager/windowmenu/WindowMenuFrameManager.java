@@ -19,7 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.dmdirc.addons.ui_swing.framemanager.windowmenu;
 
 import com.dmdirc.FrameContainer;
@@ -66,7 +65,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
     private final Map<FrameContainer, FrameContainerMenuItem> menuItemMap;
     /** Comparator. */
     private final FrameContainerComparator comparator =
-                                           new FrameContainerComparator();
+            new FrameContainerComparator();
     /** Non frame container menu count. */
     private final int itemCount;
     /** Menu items for toggling, closing and minimising. */
@@ -81,7 +80,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
         super();
 
         menuItemMap =
-        new TreeMap<FrameContainer, FrameContainerMenuItem>(comparator);
+                new TreeMap<FrameContainer, FrameContainerMenuItem>(comparator);
 
         setText("Window");
         setMnemonic('w');
@@ -154,14 +153,14 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
     /** {@inheritDoc} */
     @Override
     public void addWindow(final FrameContainer parent,
-                          final FrameContainer window) {
+            final FrameContainer window) {
         addFrameContainer(window);
     }
 
     /** {@inheritDoc} */
     @Override
     public void delWindow(final FrameContainer parent,
-                          final FrameContainer window) {
+            final FrameContainer window) {
         removeFramecontainer(window);
     }
 
@@ -181,7 +180,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                 }
 
                 final FrameContainerMenuItem mi =
-                                             new FrameContainerMenuItem(window);
+                        new FrameContainerMenuItem(window);
                 synchronized (menuItemMap) {
                     if (isShowing()) {
                         setSelected(false);
@@ -237,16 +236,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
         if ("ToggleState".equals(e.getActionCommand())) {
             final Window window = Main.getUI().getActiveWindow();
             if (window != null) {
-                try {
-                    if (window.isMaximum()) {
-                        ((TextFrame) Main.getUI().getActiveWindow()).restore();
-                    } else {
-                        ((TextFrame) Main.getUI().getActiveWindow()).maximise();
-                    }
-                    window.setMaximum(!window.isMaximum());
-                } catch (PropertyVetoException ex) {
-                    Logger.userError(ErrorLevel.LOW, "Unable to maximise window");
-                }
+                window.toggleMaximise();
             }
         } else if (e.getActionCommand().equals("Minimise")) {
             ((TextFrame) Main.getUI().getActiveWindow()).minimise();
@@ -259,7 +249,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
     @Override
     public void selectionChanged(final Window window) {
         final Map<FrameContainer, FrameContainerMenuItem> newMap =
-                                                          new TreeMap<FrameContainer, FrameContainerMenuItem>(
+                new TreeMap<FrameContainer, FrameContainerMenuItem>(
                 comparator);
         synchronized (menuItemMap) {
             newMap.putAll(menuItemMap);
@@ -311,13 +301,10 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                 continue;
             }
             final FrameContainer child =
-                                 ((FrameContainerMenuItem) getMenuComponent(i)).
-                    getFrame();
+                    ((FrameContainerMenuItem) getMenuComponent(i)).getFrame();
             if (sortBefore(newChild, child)) {
                 return i;
-            } else if (!sortAfter(newChild, child) && IdentityManager.
-                    getGlobalConfig().getOptionBool("treeview", "sortwindows")
-                    && newChild.toString().compareToIgnoreCase(child.toString()) < 0) {
+            } else if (!sortAfter(newChild, child) && IdentityManager.getGlobalConfig().getOptionBool("treeview", "sortwindows") && newChild.toString().compareToIgnoreCase(child.toString()) < 0) {
                 return i;
             }
         }
@@ -335,7 +322,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
      * @return True iff newChild should be sorted before child
      */
     private boolean sortBefore(final FrameContainer newChild,
-                               final FrameContainer child) {
+            final FrameContainer child) {
 
         return comparator.compare(newChild, child) <= -1;
     }
@@ -350,7 +337,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
      * @return True iff newChild should be sorted before child
      */
     private boolean sortAfter(final FrameContainer newChild,
-                              final FrameContainer child) {
+            final FrameContainer child) {
 
         return comparator.compare(newChild, child) >= 1;
     }

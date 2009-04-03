@@ -27,14 +27,11 @@ import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.interfaces.IconChangeListener;
 import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.interfaces.SelectionListener;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.util.ListenerList;
 
 import java.awt.Color;
-import java.beans.PropertyVetoException;
 
 import javax.swing.Icon;
 
@@ -221,11 +218,7 @@ public abstract class FrameContainer {
 
         final boolean pref = getConfigManager().getOptionBool("ui", "maximisewindows");
         if (pref || Main.getUI().getMainWindow().getMaximised()) {
-            try {
-                getFrame().setMaximum(true);
-            } catch (PropertyVetoException ex) {
-                Logger.userError(ErrorLevel.LOW, "Unable to maximise window");
-            }
+            getFrame().maximise();
         }
     }
 
@@ -250,11 +243,7 @@ public abstract class FrameContainer {
         }
 
         if (Main.getUI().getMainWindow().getMaximised()) {
-            try {
-                getFrame().setMaximum(true);
-            } catch (PropertyVetoException ex) {
-                Logger.userError(ErrorLevel.LOW, "Unable to maximise window");
-            }
+            getFrame().maximise();
         }
 
         synchronized (listeners) {

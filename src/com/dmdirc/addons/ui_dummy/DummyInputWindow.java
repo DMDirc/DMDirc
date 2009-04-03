@@ -24,7 +24,6 @@ package com.dmdirc.addons.ui_dummy;
 
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.CommandParser;
-import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -140,8 +139,13 @@ public class DummyInputWindow implements InputWindow {
         return maximised;
     }
     
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc} 
+     * 
+     * @deprecated 
+     */
     @Override
+    @Deprecated
     public void setMaximum(final boolean b) throws PropertyVetoException {
         maximised = b;
     }
@@ -168,6 +172,30 @@ public class DummyInputWindow implements InputWindow {
     @Override
     public void close() {
         container.windowClosing();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void restore() {
+        // Do nothing
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void maximise() {
+        // Do nothing
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleMaximise() {
+        // Do nothing
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void minimise() {
+        // Do nothing
     }
     
 }

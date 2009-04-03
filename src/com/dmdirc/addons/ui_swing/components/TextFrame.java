@@ -19,7 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.dmdirc.addons.ui_swing.components;
 
 import com.dmdirc.FrameContainer;
@@ -237,9 +236,9 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 for (final String myLine : encodedLine.split("\n")) {
                     if (timestamp) {
                         lines.add(new String[]{
-                            Formatter.formatMessage(getConfigManager(),
-                            "timestamp", new Date()), myLine,
-                        });
+                                    Formatter.formatMessage(getConfigManager(),
+                                    "timestamp", new Date()), myLine,
+                                });
                     } else {
                         lines.add(new String[]{myLine,});
                     }
@@ -250,12 +249,12 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                         @Override
                         protected Object doInBackground() throws Exception {
                             ActionManager.processEvent(CoreActionType.CLIENT_LINE_ADDED,
-                            null, getContainer(), myLine);
+                                    null, getContainer(), myLine);
                             return null;
                         }
                     }.execute();
                 }
-                
+
                 textPane.getDocument().addText(lines);
 
                 if (frameBufferSize > 0) {
@@ -375,14 +374,14 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         final String componentUI = (String) UIManager.get("InternalFrameUI");
 
         if ("javax.swing.plaf.synth.SynthLookAndFeel".equals(componentUI)) {
-            temp = SynthLookAndFeel.createUI(this);
+            temp = SynthLookAndFeel.createUI(TextFrame.this);
         } else {
             try {
                 c = getClass().getClassLoader().loadClass(componentUI);
                 constructor =
                         c.getConstructor(new Class[]{javax.swing.JInternalFrame.class});
                 temp =
-                        constructor.newInstance(new Object[]{this});
+                        constructor.newInstance(new Object[]{TextFrame.this});
             } catch (ClassNotFoundException ex) {
                 Logger.appError(ErrorLevel.MEDIUM, "Unable to readd titlebar",
                         ex);
@@ -404,10 +403,10 @@ public abstract class TextFrame extends JInternalFrame implements Window,
 
         setBorder(UIManager.getBorder("InternalFrame.border"));
         if (temp == null) {
-            temp = new BasicInternalFrameUI(this);
+            temp = new BasicInternalFrameUI(TextFrame.this);
         }
 
-        this.setUI((BasicInternalFrameUI) temp);
+        setUI((BasicInternalFrameUI) temp);
     }
 
     /**
@@ -481,7 +480,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void internalFrameDeiconified(final InternalFrameEvent event) {
-    //Ignore.
+        //Ignore.
     }
 
     /**
@@ -861,7 +860,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void keyTyped(final KeyEvent event) {
-    //Ignore.
+        //Ignore.
     }
 
     /** 
@@ -885,7 +884,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void keyReleased(final KeyEvent event) {
-    //Ignore.
+        //Ignore.
     }
 
     /**
@@ -920,7 +919,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         });
     }
 
-    /** Minimises the frame. */
+    /** {@inheritDoc} */
+    @Override
     public void minimise() {
         UIUtilities.invokeLater(new Runnable() {
 
@@ -935,8 +935,9 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             }
         });
     }
-    
-    /** Maximises the frame. */
+
+    /** {@inheritDoc} */
+    @Override
     public void maximise() {
         UIUtilities.invokeLater(new Runnable() {
 
@@ -954,7 +955,30 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         });
     }
     
-    /** restores the frame. */
+    /** {@inheritDoc} */
+    @Override
+    public void toggleMaximise() {
+        if (isMaximum()) {
+            restore();
+        } else {
+            maximise();
+        }
+    }
+    
+    /** 
+     * {@inheritDoc} 
+     * 
+     * @deprecated
+     */
+    @Deprecated
+    @Override
+    @SuppressWarnings("deprecation")
+    public void setMaximum(final boolean b) throws PropertyVetoException {
+        super.setMaximum(b);
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public void restore() {
         UIUtilities.invokeLater(new Runnable() {
 

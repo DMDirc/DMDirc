@@ -112,7 +112,10 @@ public interface Window {
      * 
      * @param b true if the frame should be maximised, false otherwise
      * @throws java.beans.PropertyVetoException if the change is vetoed
+     * 
+     * @deprecated
      */
+    @Deprecated
     void setMaximum(boolean b) throws PropertyVetoException;
     
     /**
@@ -126,6 +129,33 @@ public interface Window {
      * Opens this window.
      */
     void open();
+    
+    /**
+     * Restores this window.
+     * 
+     * @since 0.6.3
+     */
+    void restore();
+    
+    
+    /** 
+     * Maximises this window.
+     * 
+     * @since 0.6.3
+     */
+    void maximise();
+    
+    /**
+     * Toggles Maximise State.
+     * 
+     * @since 0.6.3
+     */
+    void toggleMaximise();
+    
+    /**
+     * Minimises this window.
+     */
+    void minimise();
     
     /**
      * Returns the transcoder that is being used by the UI.

@@ -132,8 +132,13 @@ public class FakeInputWindow implements InputWindow {
         return false;
     }
 
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @deprecated 
+     */
     @Override
+    @Deprecated
     public void setMaximum(final boolean b) throws PropertyVetoException {
         // Do nothing
     }
@@ -160,6 +165,30 @@ public class FakeInputWindow implements InputWindow {
     @Override
     public void close() {
         /// Do nothing
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void restore() {
+        // Do nothing
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void maximise() {
+        // Do nothing
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleMaximise() {
+        // Do nothing
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void minimise() {
+        // Do nothing
     }
 
 }

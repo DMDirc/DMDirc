@@ -75,6 +75,8 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
 
     /**
      * Instantiates a new menu bar.
+     * 
+     * @param mainFrame Main frame instance
      */
     public MenuBar(final MainFrame mainFrame) {
         super();
@@ -138,7 +140,6 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
      * Initialises the channel menu.
      */
     private void initChannelMenu() {
-        JMenuItem menuItem;
         final JMenu menu = new JMenu("Channel");
         menu.setMnemonic('c');
         menu.addMenuListener(this);
