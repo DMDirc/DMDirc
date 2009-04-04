@@ -95,6 +95,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
             /** {@inheritDoc} */
             @Override
             protected PreferencesManager doInBackground() throws Exception {
+                mainPanel.setWaiting(true);
                 return new PreferencesManager();
             }
 
@@ -205,6 +206,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
                 restoreActiveCategory();
             }
         });
+        mainPanel.setWaiting(false);
     }
 
     /**

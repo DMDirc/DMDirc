@@ -26,7 +26,6 @@ package com.dmdirc.addons.ui_swing.dialogs.prefs;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.PrefsComponentFactory;
 import com.dmdirc.addons.ui_swing.components.ColourChooser;
-import com.dmdirc.addons.ui_swing.components.FontPicker;
 import com.dmdirc.addons.ui_swing.components.OptionalColourChooser;
 import com.dmdirc.addons.ui_swing.components.TextLabel;
 import com.dmdirc.addons.ui_swing.components.TitlePanel;
@@ -86,10 +85,14 @@ public class CategoryPanel extends JPanel {
     private JPanel loading;
     /** Loading panel. */
     private JPanel nullCategory;
+    /** Loading panel. */
+    private JPanel waitingCategory;
     /** Category panel map. */
     private Map<PreferencesCategory, JPanel> panels;
     /** Category loading swing worker. */
     private SwingWorker worker;
+    /** Waiting. */
+    private boolean waiting;
 
     /**
      * Instantiates a new category panel.
@@ -118,6 +121,9 @@ public class CategoryPanel extends JPanel {
 
         nullCategory = new JPanel(new MigLayout("fillx"));
         nullCategory.add(new TextLabel("Please select a category."));
+        
+        waitingCategory = new JPanel(new MigLayout("fillx"));
+        waitingCategory.add(new TextLabel("Please wait, loading..."));
 
         scrollPane = new JScrollPane(loading);
         scrollPane.setHorizontalScrollBarPolicy(
@@ -197,7 +203,9 @@ public class CategoryPanel extends JPanel {
 
     private JPanel initCategory() {
         final JPanel panel;
-        if (category == null) {
+        if (category == null && waiting) {
+            panel = waitingCategory;
+        } else if (category == null) {
             panel = nullCategory;
         } else {
             panel = addCategory(category);
@@ -339,5 +347,15 @@ public class CategoryPanel extends JPanel {
         initCategory(category, panel, path);
 
         return panel;
+    }
+
+    /** 
+     * Sets this panel to a waiting to load state.
+     * 
+     * @param b
+     */
+    public void setWaiting(boolean b) {
+       waiting = b;
+       scrollPane.setViewportView(waitingCategory);
     }
 }
