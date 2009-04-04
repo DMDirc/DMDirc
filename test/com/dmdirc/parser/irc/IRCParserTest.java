@@ -40,7 +40,6 @@ import java.util.List;
 
 import javax.net.ssl.TrustManager;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
