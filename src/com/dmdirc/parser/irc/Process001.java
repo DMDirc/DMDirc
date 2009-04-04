@@ -38,17 +38,7 @@ public class Process001 extends IRCProcessor {
 		// << :demon1.uk.quakenet.org 001 Java-Test :Welcome to the QuakeNet IRC Network, Java-Test
 		myParser.sServerName = token[0].substring(1,token[0].length());
 		final String sNick = token[2];
-		
-		/* Code below is here incase relying on token[2] breaks somewhere
-		String[] temp = token[token.length-1].split(" ");
-		sConfirmedNickname = temp[temp.length-1];
-		// Some servers give a full host in 001
-		temp = sNick.split("!",2);
-		sNick = temp[0];  /* */
-		
-		// Get old nickname incase we need it later
-		final String oldnick = myParser.getMyself().getNickname();
-		
+				
 		// myself will be fake if we havn't recieved a 001 yet
 		if (myParser.getMyself().isFake()) {
 			// Update stored information
