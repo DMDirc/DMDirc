@@ -14,6 +14,6 @@ if [ ${?} = "0" ]; then
 	done
 fi
 
-if [ -d ${srcdir}/build/classes -a ! -e ${srcdir}/build/classes/plugins ]; then
-	ln -s ${srcdir}/plugins ${srcdir}/build/classes/plugins;
+if [ -d ${PWD}/build/classes -a ! -e ${PWD}/build/classes/plugins ]; then
+	ln -s ${PWD}/plugins ${PWD}/build/classes/plugins;
 fi
