@@ -23,14 +23,6 @@
 package com.dmdirc.addons.ui_swing.dialogs.actioneditor;
 
 import com.dmdirc.Main;
-import com.dmdirc.addons.ui_swing.dialogs.actioneditor.ActionEditorDialog;
-import com.dmdirc.addons.ui_swing.dialogs.actioneditor.ActionConditionsTreePanel;
-import com.dmdirc.addons.ui_swing.dialogs.actioneditor.ActionNamePanel;
-import com.dmdirc.addons.ui_swing.dialogs.actioneditor.ActionTriggersListPanel;
-import com.dmdirc.addons.ui_swing.dialogs.actioneditor.ActionConditionsPanel;
-import com.dmdirc.addons.ui_swing.dialogs.actioneditor.ActionConditionEditorPanel;
-import com.dmdirc.addons.ui_swing.dialogs.actioneditor.ActionTriggersPanel;
-import com.dmdirc.addons.ui_swing.dialogs.actioneditor.ActionConditionDisplayPanel;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.addons.ui_swing.SwingController;
@@ -60,7 +52,6 @@ import org.fest.swing.fixture.JPanelFixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
@@ -76,6 +67,7 @@ public class ActionEditorDialogTest implements UITestIface {
     }
 
     @Before
+    @Override
     public void setUp() {
         IdentityManager.load();
         ActionManager.init();
@@ -86,6 +78,7 @@ public class ActionEditorDialogTest implements UITestIface {
     }
 
     @After
+    @Override
     public void tearDown() {
         if (window != null) {
             window.cleanUp();
@@ -103,6 +96,18 @@ public class ActionEditorDialogTest implements UITestIface {
         window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).
                 textBox().requireEnabled().requireEditable().requireEmpty();
         window.button(JButtonByTextMatcher.withText("OK")).requireDisabled();
+    }
+
+    @Test
+    public void testIssue1785() {
+        // Invalidating+validating name allows enables OK button despite invalid conditions
+        // 'Fix' was disabling the add trigger button when name was invalid
+        setupWindow(null);
+
+        window.panel(new ClassFinder<JPanel>(ActionNamePanel.class, null)).
+                textBox().requireEnabled().requireEditable().requireEmpty();
+        window.panel(new ClassFinder<JPanel>(ActionTriggersPanel.class, null)).
+                button(JButtonByTextMatcher.withText("Add")).requireDisabled();
     }
 
     @Test
