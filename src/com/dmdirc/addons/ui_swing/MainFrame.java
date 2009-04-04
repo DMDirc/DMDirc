@@ -569,9 +569,8 @@ public final class MainFrame extends JFrame implements WindowListener,
     public void delWindow(FrameContainer window) {
         if (desktopPane.getAllFrames().length == 1) {
             setTitle(getTitlePrefix());
-        } else {
-            setActiveFrame((Window) desktopPane.selectFrame(true));
         }
+        
         desktopPane.remove((JInternalFrame) window.getFrame());
 
         ((JInternalFrame) window.getFrame()).removePropertyChangeListener("title",
