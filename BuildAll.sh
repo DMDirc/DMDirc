@@ -84,6 +84,9 @@ if [ ! -e "$MYDIR/dist/DMDirc.jar" ]; then
 	fi
 else
 	# Build installers
+	# Delete all automatically added plugins from the jar to allow the installer
+	# to add its own on a per-os basis
+	unzip -l ${MYDIR}/dist/DMDirc.jar | grep " plugins/" | tr -s ' ' | cut -d ' ' -f 5- | xargs zip ${MYDIR}/dist/DMDirc.jar -d
 	cd "${MYDIR}/installer"
 	./release.sh --jar "${MYDIR}/dist/DMDirc.jar" --opt "--extra ${FILEDATA}" trunk
 	cd "${MYDIR}"
@@ -98,7 +101,7 @@ else
 		fi
 	fi;
 
-	# Add plugins to jar
+	# Re-Add all plugins to the jar so that the nightly .jar has everything.
 	$JAR -uvf "dist/DMDirc.jar" plugins
 
 	# Submit plugins to addons site
