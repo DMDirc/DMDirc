@@ -14,6 +14,7 @@
 
     <target name="-post-compile" depends="-write-version, build-plugins"/>
     <target name="-post-test-run" depends="-do-test-reports"/>
+    <target name="-pre-jar" depends="-addpluginlibs"/>
     <target name="-post-jar" depends="-addjarlibs"/>
 
 </project>

@@ -13,3 +13,7 @@ if [ ${?} = "0" ]; then
 		fi
 	done
 fi
+
+if [ -d ${srcdir}/build/classes -a ! -e ${srcdir}/build/classes/plugins ]; then
+	ln -s ${srcdir}/plugins ${srcdir}/build/classes/plugins;
+fi

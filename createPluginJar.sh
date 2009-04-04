@@ -75,11 +75,6 @@ ln -s ${srcdir}/build/classes/${foldername} .
 cd $TMPDIR
 mkdir -p ${srcdir}/plugins/
 
-if [ -d ${srcdir}/build/classes -a ! -e ${srcdir}/build/classes/plugins ]; then
-	ln -s ${srcdir}/plugins ${srcdir}/build/classes/plugins;
-fi
-
-
 rm -Rf ${srcdir}/plugins/${2}.jar
 jar -cvf ${srcdir}/src/${foldername}/${2}.jar META-INF >/dev/null
 bit=""
