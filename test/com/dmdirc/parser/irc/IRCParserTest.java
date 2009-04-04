@@ -35,6 +35,7 @@ import com.dmdirc.parser.irc.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.irc.callbacks.interfaces.IAwayState;
 import com.dmdirc.parser.irc.callbacks.interfaces.IChannelKick;
 
+import com.dmdirc.parser.irc.callbacks.interfaces.IErrorInfo;
 import java.util.Arrays;
 import java.util.List;
 
@@ -47,22 +48,34 @@ import static org.mockito.Mockito.*;
 public class IRCParserTest {
 
     @Test
-    public void testIssue042() {
+    public void testIssue42() {
+        // Invalid callback names are silently ignored instead of raising exceptions
+        
         boolean res = false;
 
         try {
             final IRCParser myParser = new IRCParser();
-            myParser.getCallbackManager().addCallback("non-existant",new IAwayState() {
-                public void onAwayState(IRCParser tParser, boolean currentState,
-                        String reason) {
-                    throw new UnsupportedOperationException("Not supported yet.");
-                }
-            });
+            myParser.getCallbackManager().addCallback("non-existant", mock(IAwayState.class));
         } catch (CallbackNotFoundException ex) {
             res = true;
         }
 
         assertTrue("addCallback() should throw exception for non-existant callbacks", res);
+    }
+
+    @Test
+    public void testIssue1674() {
+        // parser nick change error with dual 001
+        final IErrorInfo error = mock(IErrorInfo.class);
+
+        final TestParser myParser = new TestParser();
+        myParser.getCallbackManager().addCallback("onErrorInfo", error);
+        myParser.injectConnectionStrings();
+        myParser.nick = "nick2";
+        myParser.injectConnectionStrings();
+        myParser.injectLine(":nick2!ident@host NICK :nick");
+
+        verify(error, never()).onErrorInfo((IRCParser) anyObject(), (ParserError) anyObject());
     }
     
     @Test
