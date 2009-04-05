@@ -179,7 +179,6 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 2, SwingController.getMainFrame().getHeight() / 3));
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-        addPropertyChangeListener("maximum", this);
         addPropertyChangeListener("UI", this);
         addInternalFrameListener(this);
 
@@ -342,18 +341,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public final void propertyChange(final PropertyChangeEvent event) {
-        if ("maximum".equals(event.getPropertyName())) {
-            if (event.getNewValue().equals(Boolean.TRUE)) {
-                hideTitlebar();
-                Main.getUI().getMainWindow().setMaximised(true);
-            } else {
-                showTitlebar();
-
-                Main.getUI().getMainWindow().setMaximised(false);
-                Main.getUI().getMainWindow().setActiveFrame(this);
-            }
-
-        } else if ("UI".equals(event.getPropertyName()) && isMaximum()) {
+        if (isMaximum()) {
             hideTitlebar();
         }
 
@@ -361,52 +349,66 @@ public abstract class TextFrame extends JInternalFrame implements Window,
 
     /** Hides the titlebar for this frame. */
     private void hideTitlebar() {
-        setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        ((BasicInternalFrameUI) getUI()).setNorthPane(null);
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+                ((BasicInternalFrameUI) getUI()).setNorthPane(null);
+            }
+        });
     }
 
     /** Shows the titlebar for this frame. */
     private void showTitlebar() {
-        final Class<?> c;
-        Object temp = null;
-        Constructor<?> constructor;
+        UIUtilities.invokeLater(new Runnable() {
 
-        final String componentUI = (String) UIManager.get("InternalFrameUI");
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                final Class<?> c;
+                Object temp = null;
+                Constructor<?> constructor;
 
-        if ("javax.swing.plaf.synth.SynthLookAndFeel".equals(componentUI)) {
-            temp = SynthLookAndFeel.createUI(TextFrame.this);
-        } else {
-            try {
-                c = getClass().getClassLoader().loadClass(componentUI);
-                constructor =
-                        c.getConstructor(new Class[]{javax.swing.JInternalFrame.class});
-                temp =
-                        constructor.newInstance(new Object[]{TextFrame.this});
-            } catch (ClassNotFoundException ex) {
-                Logger.appError(ErrorLevel.MEDIUM, "Unable to readd titlebar",
-                        ex);
-            } catch (NoSuchMethodException ex) {
-                Logger.appError(ErrorLevel.MEDIUM, "Unable to readd titlebar",
-                        ex);
-            } catch (InstantiationException ex) {
-                Logger.appError(ErrorLevel.MEDIUM, "Unable to readd titlebar",
-                        ex);
-            } catch (IllegalAccessException ex) {
-                Logger.appError(ErrorLevel.MEDIUM, "Unable to readd titlebar",
-                        ex);
-            } catch (InvocationTargetException ex) {
-                Logger.appError(ErrorLevel.MEDIUM, "Unable to readd titlebar",
-                        ex);
+                final String componentUI = (String) UIManager.get("InternalFrameUI");
+
+                if ("javax.swing.plaf.synth.SynthLookAndFeel".equals(componentUI)) {
+                    temp = SynthLookAndFeel.createUI(TextFrame.this);
+                } else {
+                    try {
+                        c = getClass().getClassLoader().loadClass(componentUI);
+                        constructor =
+                                c.getConstructor(new Class[]{javax.swing.JInternalFrame.class});
+                        temp =
+                                constructor.newInstance(new Object[]{TextFrame.this});
+                    } catch (ClassNotFoundException ex) {
+                        Logger.appError(ErrorLevel.MEDIUM, "Unable to readd titlebar",
+                                ex);
+                    } catch (NoSuchMethodException ex) {
+                        Logger.appError(ErrorLevel.MEDIUM, "Unable to readd titlebar",
+                                ex);
+                    } catch (InstantiationException ex) {
+                        Logger.appError(ErrorLevel.MEDIUM, "Unable to readd titlebar",
+                                ex);
+                    } catch (IllegalAccessException ex) {
+                        Logger.appError(ErrorLevel.MEDIUM, "Unable to readd titlebar",
+                                ex);
+                    } catch (InvocationTargetException ex) {
+                        Logger.appError(ErrorLevel.MEDIUM, "Unable to readd titlebar",
+                                ex);
+                    }
+
+                }
+
+                setBorder(UIManager.getBorder("InternalFrame.border"));
+                if (temp == null) {
+                    temp = new BasicInternalFrameUI(TextFrame.this);
+                }
+
+                setUI((BasicInternalFrameUI) temp);
             }
-
-        }
-
-        setBorder(UIManager.getBorder("InternalFrame.border"));
-        if (temp == null) {
-            temp = new BasicInternalFrameUI(TextFrame.this);
-        }
-
-        setUI((BasicInternalFrameUI) temp);
+        });
     }
 
     /**
@@ -922,7 +924,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     /** {@inheritDoc} */
     @Override
     public void minimise() {
-        UIUtilities.invokeLater(new Runnable() {
+        UIUtilities.invokeAndWait(new Runnable() {
 
             @Override
             public void run() {
@@ -931,7 +933,6 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 } catch (PropertyVetoException ex) {
                     Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
                 }
-
             }
         });
     }
@@ -939,14 +940,16 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     /** {@inheritDoc} */
     @Override
     public void maximise() {
-        UIUtilities.invokeLater(new Runnable() {
+        UIUtilities.invokeAndWait(new Runnable() {
 
+            /** {@inheritDoc} */
             @Override
             public void run() {
                 try {
                     setIcon(false);
-                    setMaximum(true);
+                    TextFrame.super.setMaximum(true);
                     setVisible(true);
+                    hideTitlebar();
                 } catch (PropertyVetoException ex) {
                     Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
                 }
@@ -954,17 +957,44 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             }
         });
     }
-    
+
+    /** {@inheritDoc} */
+    @Override
+    public void restore() {
+        UIUtilities.invokeAndWait(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                try {
+                    setIcon(false);
+                    TextFrame.super.setMaximum(false);
+                    setVisible(true);
+                    showTitlebar();
+                } catch (PropertyVetoException ex) {
+                    Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
+                }
+            }
+        });
+    }
+
     /** {@inheritDoc} */
     @Override
     public void toggleMaximise() {
-        if (isMaximum()) {
-            restore();
-        } else {
-            maximise();
-        }
+        UIUtilities.invokeAndWait(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                if (isMaximum()) {
+                    restore();
+                } else {
+                    maximise();
+                }
+            }
+        });
     }
-    
+
     /** 
      * {@inheritDoc} 
      * 
@@ -975,25 +1005,6 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     @SuppressWarnings("deprecation")
     public void setMaximum(final boolean b) throws PropertyVetoException {
         super.setMaximum(b);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void restore() {
-        UIUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    setIcon(false);
-                    setMaximum(false);
-                    setVisible(true);
-                } catch (PropertyVetoException ex) {
-                    Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
-                }
-
-            }
-        });
     }
 
     /** {@inheritDoc} */

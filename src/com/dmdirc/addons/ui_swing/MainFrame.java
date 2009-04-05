@@ -210,23 +210,29 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void setMaximised(final boolean max) {
-        maximised = max;
+        if (max == maximised) {
+            return;
+        }
+        UIUtilities.invokeAndWait(new Runnable() {
 
-        if (max) {
-            final Window window = getActiveFrame();
-            if (window != null) {
-                setTitle(getTitlePrefix() + " - " + window.getTitle());
-            }
-        } else {
-            setTitle(getTitlePrefix());
-            for (JInternalFrame frame : desktopPane.getAllFrames()) {
-                try {
-                    frame.setMaximum(false);
-                } catch (PropertyVetoException ex) {
-                    Logger.userError(ErrorLevel.LOW, "Unable to maximise window");
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                maximised = max;
+
+                if (max) {
+                    final Window window = getActiveFrame();
+                    if (window != null) {
+                        setTitle(getTitlePrefix() + " - " + window.getTitle());
+                    }
+                } else {
+                    setTitle(getTitlePrefix());
+                    for (JInternalFrame frame : desktopPane.getAllFrames()) {
+                        ((Window) frame).restore();
+                    }
                 }
             }
-        }
+        });
     }
 
     /** {@inheritDoc}. */
@@ -570,7 +576,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         if (desktopPane.getAllFrames().length == 1) {
             setTitle(getTitlePrefix());
         }
-        
+
         desktopPane.remove((JInternalFrame) window.getFrame());
 
         ((JInternalFrame) window.getFrame()).removePropertyChangeListener("title",
