@@ -51,6 +51,7 @@ if [ -e META-INF/plugin.config ]; then
 		GIT="`which git` --git-dir $srcdir/.git";
 		REV=$($GIT describe --tags `$GIT rev-list --max-count=1 HEAD -- src/$foldername`);
 	else
+		cd $srcdir;
 		SVN=`which svn`	
 		SVNREV=`$SVN info $srcdir/src/$foldername 2>&1 | grep "Last Changed Rev"`
 		SVNREV=${SVNREV##*: }
@@ -60,6 +61,7 @@ if [ -e META-INF/plugin.config ]; then
 		else
 			REV=0;
 		fi;
+		cd $TMPDIR;
 	fi;
 
         echo "" >> META-INF/plugin.config
