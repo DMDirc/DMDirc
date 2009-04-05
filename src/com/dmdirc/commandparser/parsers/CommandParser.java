@@ -137,7 +137,8 @@ public abstract class CommandParser implements Serializable {
 
                 if (server.hasChannel(cargs[0])) {
                     server.getChannel(cargs[0]).getFrame().getCommandParser()
-                            .parseCommand(origin, args.getWordsAsString(2), false);
+                            .parseCommand(origin, CommandManager.getCommandChar()
+                            + args.getCommandName() + " " + args.getWordsAsString(2), false);
                     return;
                 } else {
                     final Map.Entry<CommandInfo, Command> actCommand = CommandManager.getCommand(
