@@ -64,7 +64,8 @@ public final class Formatter {
         assert(messageType != null);
                 
         final String res = config.hasOptionString("formatter", messageType) ?
-            config.getOption("formatter", messageType) : null;
+            config.getOption("formatter", messageType).replace("%-1$", "%"
+            + arguments.length + "$"): null;
         
         if (res == null) {
             return "<No format string for message type " + messageType + ">";
