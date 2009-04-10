@@ -94,7 +94,13 @@ public class ToolTipPanel extends JPanel implements MouseListener {
      * @param text The text to be displayed
      */
     protected void setText(final String text) {
+        if (tooltip == null) {
+            return;
+        }
         tooltip.setText(text);
+        if (tooltip.getDocument() == null) {
+            return;
+        }
         SimpleAttributeSet sas = new SimpleAttributeSet();
         StyleConstants.setItalic(sas, false);
         tooltip.getDocument().setParagraphAttributes(0, text.length(), sas, true);
