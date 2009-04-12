@@ -35,6 +35,7 @@ import com.dmdirc.addons.ui_swing.framemanager.tree.TreeViewModel;
 import com.dmdirc.addons.ui_swing.framemanager.tree.TreeViewNode;
 
 import java.awt.Color;
+import java.awt.Frame;
 import java.util.HashMap;
 import java.util.Map;
 

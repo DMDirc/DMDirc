@@ -202,11 +202,7 @@ public class MDIBar extends JPanel implements FrameManager,
         } else if (minimiseButton.equals(e.getSource())) {
             ((TextFrame) activeFrame).minimise();
         } else if (restoreButton.equals(e.getSource())) {
-            if (activeFrame.isMaximum()) {
-                ((TextFrame) activeFrame).restore();
-            } else {
-                ((TextFrame) activeFrame).maximise();
-            }
+            activeFrame.toggleMaximise();
         }
     }
 

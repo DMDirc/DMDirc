@@ -1004,7 +1004,6 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Deprecated
     @Override
-    @SuppressWarnings("deprecation")
     public void setMaximum(final boolean b) throws PropertyVetoException {
         super.setMaximum(b);
     }

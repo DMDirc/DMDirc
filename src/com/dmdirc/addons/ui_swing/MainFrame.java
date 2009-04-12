@@ -42,8 +42,8 @@ import com.dmdirc.addons.ui_swing.components.frames.InputTextFrame;
 import com.dmdirc.addons.ui_swing.components.MenuBar;
 import com.dmdirc.addons.ui_swing.components.SnappingJSplitPane;
 import com.dmdirc.addons.ui_swing.framemanager.tree.TreeFrameManager;
-
 import com.dmdirc.ui.CoreUIUtils;
+
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
@@ -51,9 +51,9 @@ import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
-
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
@@ -147,7 +147,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void setActiveFrame(final Window frame) {
-        UIUtilities.invokeLater(new Runnable() {
+        UIUtilities.invokeAndWait(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
@@ -579,19 +579,22 @@ public final class MainFrame extends JFrame implements WindowListener,
         desktopPane.add(frame, index);
 
         frame.addPropertyChangeListener("title", this);
+        frame.addPropertyChangeListener("maximum", this);
     }
 
     /** {@inheritDoc}. */
     @Override
     public void delWindow(FrameContainer window) {
+        final JInternalFrame frame = (JInternalFrame) window.getFrame();
+        
         if (desktopPane.getAllFrames().length == 1) {
             setTitle(getTitlePrefix());
         }
 
-        desktopPane.remove((JInternalFrame) window.getFrame());
+        desktopPane.remove(frame);
 
-        ((JInternalFrame) window.getFrame()).removePropertyChangeListener("title",
-                this);
+        frame.removePropertyChangeListener("title", this);
+        frame.removePropertyChangeListener("maximum", this);
     }
 
     /** {@inheritDoc}. */

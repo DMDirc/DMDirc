@@ -26,8 +26,6 @@ import com.dmdirc.FrameContainerComparator;
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.SelectionListener;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.FrameManager;
@@ -37,7 +35,6 @@ import com.dmdirc.addons.ui_swing.components.frames.TextFrame;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyVetoException;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -304,7 +301,10 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                     ((FrameContainerMenuItem) getMenuComponent(i)).getFrame();
             if (sortBefore(newChild, child)) {
                 return i;
-            } else if (!sortAfter(newChild, child) && IdentityManager.getGlobalConfig().getOptionBool("treeview", "sortwindows") && newChild.toString().compareToIgnoreCase(child.toString()) < 0) {
+            } else if (!sortAfter(newChild, child) && 
+                    IdentityManager.getGlobalConfig().getOptionBool("treeview", 
+                    "sortwindows") && newChild.toString().compareToIgnoreCase(
+                    child.toString()) < 0) {
                 return i;
             }
         }
