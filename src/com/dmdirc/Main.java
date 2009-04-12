@@ -230,6 +230,15 @@ public final class Main {
      * Quits the client nicely.
      *
      * @param reason The quit reason to send
+     */
+    public static void quit(final String reason) {
+        quit(reason, 0);
+    }
+    
+    /**
+     * Quits the client nicely.
+     *
+     * @param reason The quit reason to send
      * @param exitCode This is the exit code that will be returned to the 
      *                  operating system when the client exits
      */
