@@ -27,16 +27,9 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.addons.ui_swing.actions.RedoAction;
 import com.dmdirc.addons.ui_swing.actions.UndoAction;
 import com.dmdirc.addons.ui_swing.components.DMDircUndoableEditListener;
-import com.dmdirc.addons.ui_swing.components.NullBorder;
 import com.dmdirc.util.ReturnableThread;
 
 import java.awt.Dimension;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.MouseInfo;
-import java.awt.PointerInfo;
-import java.awt.Rectangle;
-import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.InvocationTargetException;
 
@@ -131,7 +124,7 @@ public final class UIUtilities {
                 BorderFactory.createEmptyBorder());
         UIManager.put("Tree.scrollsOnExpand", true);
         UIManager.put("Tree.scrollsHorizontallyAndVertically", true);
-        UIManager.put("SplitPane.border", new NullBorder());
+        UIManager.put("SplitPane.border", BorderFactory.createEmptyBorder());
         UIManager.put("SplitPane.dividerSize", (int) PlatformDefaults.getPanelInsets(0).getValue());
         UIManager.put("TreeUI", "javax.swing.plaf.metal.MetalTreeUI");
         PlatformDefaults.setDefaultRowAlignmentBaseline(false);

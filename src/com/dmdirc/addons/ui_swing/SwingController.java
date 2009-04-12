@@ -22,6 +22,11 @@
 
 package com.dmdirc.addons.ui_swing;
 
+import com.dmdirc.addons.ui_swing.components.frames.ServerFrame;
+import com.dmdirc.addons.ui_swing.components.frames.CustomFrame;
+import com.dmdirc.addons.ui_swing.components.frames.QueryFrame;
+import com.dmdirc.addons.ui_swing.components.frames.CustomInputFrame;
+import com.dmdirc.addons.ui_swing.components.frames.ChannelFrame;
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;

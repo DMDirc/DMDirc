@@ -78,7 +78,7 @@ public class TopicHistoryPane extends JPanel {
         
         setLayout(new MigLayout("ins 0"));
         topicHistory.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
-        add(topicHistory, "growy, growx");
+        add(topicHistory, "grow, push");
         
         this.setOpaque(UIUtilities.getTabbedPaneOpaque());
     }

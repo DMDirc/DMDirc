@@ -26,6 +26,7 @@ import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.addons.ui_swing.UIUtilities;
+
 import java.awt.Component;
 
 import javax.swing.JSplitPane;

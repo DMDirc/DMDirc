@@ -73,18 +73,18 @@ public class ErrorPopup extends StatusbarPopupWindow {
 
         header = new JLabel("#", JLabel.RIGHT);
         header.setFont(header.getFont().deriveFont(Font.BOLD));
-        panel.add(header, "growx, wrap");
+        panel.add(header, "growx, pushx, wrap");
 
         for (ErrorLevel level : ErrorLevel.values()) {
             if (buckets.containsKey(level)) {
                 final int count = buckets.values(level).size();
 
                 panel.add(new JLabel(level.toString(), level.getIcon(), JLabel.LEFT));
-                panel.add(new JLabel(String.valueOf(count), JLabel.RIGHT), "growx, wrap");
+                panel.add(new JLabel(String.valueOf(count), JLabel.RIGHT), "growx, pushx, wrap");
             }
         }
 
-        panel.add(new JSeparator(), "span, growx, wrap");
+        panel.add(new JSeparator(), "span, growx, pushx, wrap");
 
         header = new JLabel("Report status");
         header.setFont(header.getFont().deriveFont(Font.BOLD));
@@ -92,14 +92,14 @@ public class ErrorPopup extends StatusbarPopupWindow {
 
         header = new JLabel("#", JLabel.RIGHT);
         header.setFont(header.getFont().deriveFont(Font.BOLD));
-        panel.add(header, "growx, wrap");
+        panel.add(header, "growx, pushx, wrap");
 
         for (ErrorReportStatus status : ErrorReportStatus.values()) {
             if (statuses.containsKey(status)) {
                 final int count = statuses.values(status).size();
 
                 panel.add(new JLabel(status.toString(), JLabel.LEFT));
-                panel.add(new JLabel(String.valueOf(count), JLabel.RIGHT), "growx, wrap");
+                panel.add(new JLabel(String.valueOf(count), JLabel.RIGHT), "growx, pushx, wrap");
             }
         }
     }

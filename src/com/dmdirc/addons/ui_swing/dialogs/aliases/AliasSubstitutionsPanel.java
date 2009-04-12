@@ -49,7 +49,9 @@ public class AliasSubstitutionsPanel extends SubstitutionsPanel<ActionType>  {
 
     /** Instantiates the panel. */
     public AliasSubstitutionsPanel() {
-        super("Substitutions may be used in the response field", SubstitutionsPanel.Alignment.VERTICAL, CoreActionType.UNKNOWN_COMMAND);
+        super("Substitutions may be used in the response field", 
+                SubstitutionsPanel.Alignment.VERTICAL, 
+                CoreActionType.UNKNOWN_COMMAND);
     }
 
     /**

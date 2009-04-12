@@ -87,6 +87,6 @@ public final class InfoPanel extends JPanel {
         });
 
         setLayout(new MigLayout("ins rel, fill"));
-        add(scrollPane, "grow, wrap");
+        add(scrollPane, "grow, push, wrap");
     }
 }

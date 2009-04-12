@@ -137,7 +137,7 @@ public class DurationDisplay extends JPanel implements ActionListener,
     private void layoutComponents() {
         setLayout(new MigLayout("ins 0, fill"));
 
-        add(durationLabel, "growx");
+        add(durationLabel, "growx, pushx");
         add(button, "");
     }
 

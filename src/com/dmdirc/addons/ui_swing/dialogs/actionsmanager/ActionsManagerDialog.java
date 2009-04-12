@@ -212,7 +212,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
     private void layoutGroupPanel() {
         groupPanel.setLayout(new MigLayout("fill, wrap 1"));
 
-        groupPanel.add(new JScrollPane(groups), "growy, w 150!");
+        groupPanel.add(new JScrollPane(groups), "growy, pushy, w 150!");
         groupPanel.add(add, "sgx button, w 150!");
         groupPanel.add(edit, "sgx button, w 150!");
         groupPanel.add(delete, "sgx button, w 150!");
@@ -225,17 +225,17 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
 
         getContentPane().setLayout(new MigLayout("fill, wrap 2, hidemode 3"));
 
-        getContentPane().add(infoLabel, "spanx 2, growx");
+        getContentPane().add(infoLabel, "spanx 2, growx, pushx");
         if (info.isVisible() && activeSettings.isVisible()) {
-            getContentPane().add(groupPanel, "growy, spany 3");
+            getContentPane().add(groupPanel, "growy, pushy, spany 3");
         } else if (info.isVisible() || activeSettings.isVisible()) {
-            getContentPane().add(groupPanel, "growy, spany 2");
+            getContentPane().add(groupPanel, "growy, pushy, spany 2");
         } else {
-            getContentPane().add(groupPanel, "growy");
+            getContentPane().add(groupPanel, "growy, pushy");
         }
-        getContentPane().add(info, "growx");
-        getContentPane().add(actions, "grow, pushx");
-        getContentPane().add(activeSettings, "growx");
+        getContentPane().add(info, "growx, pushx");
+        getContentPane().add(actions, "grow, pushx, pushx");
+        getContentPane().add(activeSettings, "growx, pushx");
         getContentPane().add(getOkButton(), "skip, right, sgx button");
     }
 

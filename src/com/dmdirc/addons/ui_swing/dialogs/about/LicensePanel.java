@@ -131,7 +131,7 @@ public final class LicensePanel extends JPanel {
         });
 
         setLayout(new MigLayout("ins rel, fill"));
-        add(scrollPane, "grow");
+        add(scrollPane, "grow, push");
     }
 
     /**

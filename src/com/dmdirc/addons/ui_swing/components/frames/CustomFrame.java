@@ -19,74 +19,55 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.dmdirc.addons.ui_swing.components.frames;
 
-package com.dmdirc.addons.ui_swing;
-
-import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.PopupType;
-import com.dmdirc.commandparser.parsers.CommandParser;
-import com.dmdirc.addons.ui_swing.components.InputTextFrame;
-import com.dmdirc.addons.ui_swing.components.SwingInputHandler;
 
 import javax.swing.JPopupMenu;
 
 import net.miginfocom.swing.MigLayout;
 
 /**
- * A custom frame that includes an input field (for use with writable
- * containers).
+ * A very basic custom frame.
  * 
  * @author chris
  */
-public class CustomInputFrame extends InputTextFrame {
-    
+public class CustomFrame extends TextFrame {
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 2;
-    
-    /** The command parser to use. */
-    private final CommandParser commandParser;
-    
+
     /**
-     * Creates a new instance of CustomInputFrame.
-     * 
+     * Creates a new instance of CustomFrame.
+     *
      * @param owner The frame container that owns this frame
-     * @param commandParser The command parser to use for this frmae
      */
-    public CustomInputFrame(final WritableFrameContainer owner,
-            final CommandParser commandParser) {
+    public CustomFrame(final FrameContainer owner) {
         super(owner);
-        
-        this.commandParser = commandParser;
-        
-        setInputHandler(new SwingInputHandler(getInputField(), commandParser, this));
-        
+
         initComponents();
+
+        addKeyListener(this);
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public final CommandParser getCommandParser() {
-        return commandParser;
-    }
-    
     /**
      * Initialises components in this frame.
      */
-    private void initComponents() {       
-        setTitle("Custom Input Frame");
-        
+    private void initComponents() {
+        setTitle("Custom Frame");
+
         getContentPane().setLayout(new MigLayout("ins 0, fill, hidemode 3, wrap 1"));
-        getContentPane().add(getTextPane(), "grow");
+        getContentPane().add(getTextPane(), "grow, push");
         getContentPane().add(getSearchBar(), "growx, pushx");
-        getContentPane().add(inputPanel, "growx, pushx");
-        
+
         pack();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public PopupType getNicknamePopupType() {
@@ -104,7 +85,7 @@ public class CustomInputFrame extends InputTextFrame {
     public PopupType getHyperlinkPopupType() {
         return null;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public PopupType getNormalPopupType() {
@@ -116,5 +97,4 @@ public class CustomInputFrame extends InputTextFrame {
     public void addCustomPopupItems(final JPopupMenu popupMenu) {
         //Add no custom popup items
     }
-    
 }

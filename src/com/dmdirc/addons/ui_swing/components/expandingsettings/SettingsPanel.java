@@ -121,9 +121,9 @@ public final class SettingsPanel extends JPanel {
     private void layoutComponents() {
         setLayout(new MigLayout("fill, wrap 1"));
 
-        add(infoLabel, "growx");
-        add(scrollPane, "grow");
-        add(addOptionPanel, "growx");
+        add(infoLabel, "growx, pushx");
+        add(scrollPane, "grow, push");
+        add(addOptionPanel, "growx, pushx");
     }
 
     /**

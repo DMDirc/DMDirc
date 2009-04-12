@@ -117,7 +117,7 @@ public class URLDialog extends StandardDialog implements ActionListener {
         setLayout(new MigLayout("fill, wrap 1, pack"));
 
         add(blurb, "");
-        add(panel, "grow");
+        add(panel, "grow, push");
         add(getLeftButton(), "split 2, right");
         add(getRightButton(), "right");
     }

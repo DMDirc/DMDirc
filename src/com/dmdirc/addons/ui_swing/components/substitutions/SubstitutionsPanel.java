@@ -36,7 +36,7 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Generic substitutions panel
  * 
- * @param T Type of substitution
+ * @param <T> Type of substitution
  */
 public abstract class SubstitutionsPanel<T> extends JPanel {
 
@@ -115,9 +115,9 @@ public abstract class SubstitutionsPanel<T> extends JPanel {
     private void initComponents() {
         setBorder(BorderFactory.createTitledBorder(getBorder(), "Substitutions"));
         if (alignment.equals(Alignment.VERTICAL)) {
-            setLayout(new MigLayout("fillx, wrap 4, pack"));
+            setLayout(new MigLayout("fill, wrap 4, pack"));
         } else {
-            setLayout(new MigLayout("fillx, wrap 3, pack"));
+            setLayout(new MigLayout("fill, wrap 3, pack"));
         }
     }
 
@@ -136,19 +136,19 @@ public abstract class SubstitutionsPanel<T> extends JPanel {
                 "editing the field, to insert it.");
         if (alignment.equals(Alignment.VERTICAL)) {
             add(textLabel, "spany, aligny top, wmin 225, wmax 225");
-            add(new JSeparator(JSeparator.VERTICAL), "growy, spany");
+            add(new JSeparator(JSeparator.VERTICAL), "growy, pushy, spany");
         } else {
             add(textLabel, "spanx, aligny top");
-            add(new JSeparator(JSeparator.HORIZONTAL), "growy, spanx");
+            add(new JSeparator(JSeparator.HORIZONTAL), "growy, pushy, spanx");
         }
 
         for (SubstitutionLabel label : substitutions) {
-            add(label, "sgx subslabel, aligny top, growx");
+            add(label, "sgx subslabel, aligny top, growx, pushx");
         }
 
         if (getComponentCount() == 2) {
             add(new JLabel("No substitutions."),
-                    "growx, aligny top, align center");
+                    "growx, pushx, aligny top, align center");
         }
 
         setVisible(visible);

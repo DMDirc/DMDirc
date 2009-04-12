@@ -113,11 +113,11 @@ public class ActionConditionsTreePanel extends JPanel implements ActionListener,
     /** Lays out the components. */
     private void layoutComponents() {
         setLayout(new MigLayout("fill, wrap 1, pack, hidemode 3"));
-        add(new TextLabel("Only execute this action if..."), "growx");
-        add(allButton, "growx");
-        add(oneButton, "growx");
-        add(customButton, "growx");
-        add(rule, "growx");
+        add(new TextLabel("Only execute this action if..."), "growx, pushx");
+        add(allButton, "growx, pushx");
+        add(oneButton, "growx, pushx");
+        add(customButton, "growx, pushx");
+        add(rule, "growx, pushx");
     }
 
     /**

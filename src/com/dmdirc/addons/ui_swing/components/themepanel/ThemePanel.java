@@ -125,15 +125,15 @@ public final class ThemePanel extends JPanel implements
     private void layoutComponents() {
         setLayout(new MigLayout("ins 0, fill"));
         
-        add(blurbLabel, "wrap 10, growx");
+        add(blurbLabel, "wrap 10, growx, pushx");
         
-        add(scrollPane, "wrap 5, growx, growy");
+        add(scrollPane, "wrap 5, grow, push");
                
-        add(toggleButton, "split 2, growx, sg button");
+        add(toggleButton, "split 2, growx, pushx, sg button");
         
         final JButton button = new JButton("Get more themes");
         button.addActionListener(this);
-        add(button, "growx, sg button");
+        add(button, "growx, pushx, sg button");
     }
     
     

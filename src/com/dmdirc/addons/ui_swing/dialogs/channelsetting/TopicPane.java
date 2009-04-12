@@ -165,10 +165,10 @@ public final class TopicPane extends JPanel implements DocumentListener,
     private void layoutComponents() {
         setLayout(new MigLayout("wrap 1, fill, wmax 450"));
 
-        add(topicHistory, "growx");
-        add(new JScrollPane(topicText), "grow");
-        add(topicLengthLabel, "pushx, growx");
-        add(topicWho, "growx");
+        add(topicHistory, "growx, pushx");
+        add(new JScrollPane(topicText), "grow, push");
+        add(topicLengthLabel, "pushx, growx, pushx");
+        add(topicWho, "growx, pushx");
     }
 
     /** Processes the topic and changes it if necessary. */

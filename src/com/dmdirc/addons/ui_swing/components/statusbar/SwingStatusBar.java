@@ -67,7 +67,7 @@ public final class SwingStatusBar extends JPanel implements StatusBar {
 
         setLayout(new MigLayout("fill, ins 0, hidemode 3"));
 
-        add(messageLabel, "growx, sgy components, hmax 20, hmin 20");
+        add(messageLabel, "growx, pushx, sgy components, hmax 20, hmin 20");
         add(updateLabel, "sgy components, hmax 20, hmin 20, wmin 20, shrink 0");
         add(errorPanel, "sgy components, hmax 20, hmin 20, wmin 20, shrink 0");
         add(inviteLabel, "sgy components, hmax 20, hmin 20, wmin 20, shrink 0");

@@ -26,6 +26,7 @@ import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.SettingChangeListener;
 
 import java.awt.Insets;
+
 import javax.swing.JButton;
 
 /**

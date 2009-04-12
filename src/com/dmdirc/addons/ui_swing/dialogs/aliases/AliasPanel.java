@@ -1,4 +1,4 @@
-/*
+    /*
  * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -100,17 +100,17 @@ public final class AliasPanel extends JPanel implements ActionListener {
 
     /** Lays out and initialises the components. */
     private void layoutComponents() {
-        setLayout(new MigLayout("fill", "[right]rel[]rel[]", ""));
+        setLayout(new MigLayout("fill"));
 
         add(new JLabel("Command: "));
-        add(command, "span 2, growx, wrap");
+        add(command, "span 2, growx, pushx, wrap");
 
         add(new JLabel("#Arguments: "));
         add(argumentComponent, "sgy args");
-        add(argumentNumber, "sgy args, growx, wrap");
+        add(argumentNumber, "sgy args, growx, pushx, wrap");
 
         add(new JLabel("Response: "));
-        add(new JScrollPane(response), "span 2, grow, wrap");
+        add(new JScrollPane(response), "span 2, grow, push, wrap");
     }
 
     /** Clears the details. */

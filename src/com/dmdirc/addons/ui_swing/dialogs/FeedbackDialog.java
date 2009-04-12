@@ -170,21 +170,21 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
 
         setLayout(new MigLayout("fill, wmin 600, wmax 600, hmin 400, hmax 400"));
 
-        add(info, "span 3, growx, wrap, gapbottom unrel");
+        add(info, "span, growx, wrap, gapbottom unrel");
 
-        add(new JLabel("Name: "), "aligny top");
-        add(name, "span 2, growx, wrap");
+        add(new JLabel("Name: "), "aligny top, shrink");
+        add(name, "growx, pushx, wrap");
 
-        add(new JLabel("Email: "), "aligny top");
-        add(email, "span 2, growx, wrap");
+        add(new JLabel("Email: "), "aligny top, shrink");
+        add(email, "growx, pushx, wrap");
 
-        add(new JLabel("Feedback: "), "aligny top");
-        add(new JScrollPane(feedback), "span 2, grow, pushx, wrap");
-        add(serverCheckbox, "skip 1, span 2, growx, wrap");
-        add(DMDircCheckbox, "skip 1, span 2, growx, wrap");
+        add(new JLabel("Feedback: "), "aligny top, shrink");
+        add(new JScrollPane(feedback), "grow, push, wrap");
+        add(serverCheckbox, "skip 1, growx, wrap");
+        add(DMDircCheckbox, "skip 1, growx, wrap");
 
-        add(getCancelButton(), "skip, right, sg button");
-        add(getOkButton(), "right,  sg button");
+        add(getCancelButton(), "skip, split 2, right, sg button");
+        add(getOkButton(), "right, sg button");
     }
 
     /**
@@ -203,7 +203,7 @@ public class FeedbackDialog extends StandardDialog implements ActionListener,
 
         info.setText(error.toString());
 
-        add(info, "span 3, grow, wrap");
+        add(info, "span 3, grow, push, wrap");
 
         add(getOkButton(), "skip, right, tag ok, sg button");
         getContentPane().setVisible(true);

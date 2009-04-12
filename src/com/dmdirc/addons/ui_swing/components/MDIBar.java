@@ -23,6 +23,7 @@
 
 package com.dmdirc.addons.ui_swing.components;
 
+import com.dmdirc.addons.ui_swing.components.frames.TextFrame;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;

@@ -30,8 +30,8 @@ import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.addons.ui_swing.components.InputTextFrame;
-import com.dmdirc.addons.ui_swing.components.TextFrame;
+import com.dmdirc.addons.ui_swing.components.frames.InputTextFrame;
+import com.dmdirc.addons.ui_swing.components.frames.TextFrame;
 
 import java.awt.Container;
 

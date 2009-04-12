@@ -166,7 +166,7 @@ public final class ChannelModesPane extends JPanel {
                 new JPanel(new MigLayout("wrap 2, fillx"));
         for (ParamModePanel modePanel : modeInputs.values()) {
             paramModes.add(modePanel.getCheckboxComponent());
-            paramModes.add(modePanel.getValueComponent(), "growx");
+            paramModes.add(modePanel.getValueComponent(), "growx, pushx");
         }
 
         booleanModes.setBorder(BorderFactory.createTitledBorder("Boolean modes"));

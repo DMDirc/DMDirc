@@ -138,15 +138,15 @@ public class URLProtocolPanel extends JPanel implements ActionListener,
             setLayout(new MigLayout("ins 0, fillx, wrap 1, hidemode 3"));
         }
 
-        add(dmdirc, "growx");
-        add(browser, "growx");
-        add(mail, "growx");
-        add(custom, "growx");
+        add(dmdirc, "growx, pushx");
+        add(browser, "growx, pushx");
+        add(mail, "growx, pushx");
+        add(custom, "growx, pushx");
         add(commandPath, "split 2, growx, pushx, sgy line");
         add(showFileChooser, "sgy line");
-        add(subsLabel, "growx");
+        add(subsLabel, "growx, pushx");
         add(exampleLabel, "width ::100%" + (useInsets ? "-2*u" : ""));
-        add(subsPanel, "growx");
+        add(subsPanel, "growx, pushx");
     }
 
     /** Adds listeners to the components. */

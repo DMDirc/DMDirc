@@ -22,8 +22,6 @@
 
 package com.dmdirc.addons.ui_swing.components;
 
-import static com.dmdirc.addons.ui_swing.UIUtilities.SMALL_BORDER;
-
 import java.awt.Graphics;
 
 import javax.swing.JScrollPane;
@@ -32,6 +30,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
+import net.miginfocom.layout.PlatformDefaults;
 
 /**
  * Creates a new table that automatically sizes its columns to the size of its
@@ -51,6 +50,9 @@ public class PackingTable extends JTable {
     private final JScrollPane scrollPane;
     /** Should the last column fit text (true), or fit viewport (false). */
     private boolean lastColumnFit;
+    /** Border padding. */
+    private final int padding = (int) PlatformDefaults.getUnitValueX("related").
+            getValue();
     
     /**
      * Creates a new packing table.
@@ -192,7 +194,7 @@ public class PackingTable extends JTable {
                 false, false, -1, col).getPreferredSize().getWidth();
 
         if (getRowCount() == 0) {
-            return width + SMALL_BORDER;
+            return width + padding;
         }
 
         for (int row = 0; row < getRowCount(); row++) {
@@ -204,6 +206,6 @@ public class PackingTable extends JTable {
             }
         }
 
-        return width + SMALL_BORDER;
+        return width + padding;
     }
 }

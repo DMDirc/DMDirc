@@ -203,7 +203,7 @@ public final class ActionsGroupPanel extends JPanel implements ActionListener,
     private void layoutComponents() {
         setLayout(new MigLayout("fill"));
 
-        add(scrollPane, "grow, span 3, wrap");
+        add(scrollPane, "grow, push, span 3, wrap");
         add(add, "right, sgx button");
         add(edit, "right, sgx button");
         add(delete, "right, sgx button");

@@ -122,7 +122,7 @@ public class ActionConditionsPanel extends JPanel implements ActionListener,
 
         add(tree, "growx, pushx");
         add(new JSeparator(JSeparator.HORIZONTAL), "growx, pushx");
-        add(sp, "grow");
+        add(sp, "grow, push");
         add(add, "right, gaptop push");
     }
 

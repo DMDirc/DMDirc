@@ -109,7 +109,7 @@ public final class AboutDialog extends StandardDialog implements
         tabbedPane.addChangeListener(this);
 
         getContentPane().setLayout(new MigLayout("ins rel, wrap 1, fill, wmax 550, hmax 300"));
-        getContentPane().add(tabbedPane, "grow");
+        getContentPane().add(tabbedPane, "grow, push");
         getContentPane().add(getOkButton(), "right");
 
         pack();

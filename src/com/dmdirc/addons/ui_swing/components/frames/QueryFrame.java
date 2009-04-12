@@ -19,53 +19,67 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.dmdirc.addons.ui_swing.components.frames;
 
-package com.dmdirc.addons.ui_swing;
-
-import com.dmdirc.FrameContainer;
+import com.dmdirc.Query;
 import com.dmdirc.commandparser.PopupType;
+import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.commandparser.parsers.QueryCommandParser;
+import com.dmdirc.ui.interfaces.QueryWindow;
+import com.dmdirc.addons.ui_swing.components.SwingInputHandler;
 
-import com.dmdirc.addons.ui_swing.components.TextFrame;
 import javax.swing.JPopupMenu;
 
 import net.miginfocom.swing.MigLayout;
 
 /**
- * A very basic custom frame.
- * 
- * @author chris
+ * The QueryFrame is the MDI window that shows query messages to the user.
  */
-public class CustomFrame extends TextFrame {
+public final class QueryFrame extends InputTextFrame implements QueryWindow {
 
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 8;
+    /** This channel's command parser. */
+    private final QueryCommandParser commandParser;
+    /** This frame's parent. */
+    private final Query parentQuery;
 
     /**
-     * Creates a new instance of CustomFrame.
-     *
-     * @param owner The frame container that owns this frame
+     * Creates a new QueryFrame.
+     * @param owner Parent Frame container
      */
-    public CustomFrame(final FrameContainer owner) {
+    public QueryFrame(final Query owner) {
         super(owner);
 
+        parentQuery = owner;
+
         initComponents();
-        
-        addKeyListener(this);
+
+        commandParser = new QueryCommandParser(((Query) getContainer()).getServer(), (Query) getContainer());
+
+        setInputHandler(new SwingInputHandler(getInputField(), commandParser, this));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public CommandParser getCommandParser() {
+        return commandParser;
     }
 
     /**
      * Initialises components in this frame.
      */
     private void initComponents() {
-        setTitle("Custom Frame");
+        setTitle("Query Frame");
 
         getContentPane().setLayout(new MigLayout("ins 0, fill, hidemode 3, wrap 1"));
-        getContentPane().add(getTextPane(), "grow");
+        getContentPane().add(getTextPane(), "grow, push");
         getContentPane().add(getSearchBar(), "growx, pushx");
+        getContentPane().add(inputPanel, "growx, pushx");
 
         pack();
     }
@@ -73,30 +87,30 @@ public class CustomFrame extends TextFrame {
     /** {@inheritDoc} */
     @Override
     public PopupType getNicknamePopupType() {
-        return null;
+        return PopupType.QUERY_NICK;
     }
 
     /** {@inheritDoc} */
     @Override
     public PopupType getChannelPopupType() {
-        return null;
+        return PopupType.QUERY_NORMAL;
     }
 
     /** {@inheritDoc} */
     @Override
     public PopupType getHyperlinkPopupType() {
-        return null;
+        return PopupType.QUERY_HYPERLINK;
     }
 
     /** {@inheritDoc} */
     @Override
     public PopupType getNormalPopupType() {
-        return null;
+        return PopupType.QUERY_NORMAL;
     }
 
     /** {@inheritDoc} */
     @Override
     public void addCustomPopupItems(final JPopupMenu popupMenu) {
-    //Add no custom popup items
+        //Add no custom popup items
     }
 }

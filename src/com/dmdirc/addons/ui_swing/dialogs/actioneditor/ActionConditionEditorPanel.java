@@ -219,13 +219,13 @@ public class ActionConditionEditorPanel extends JPanel implements ActionListener
         setLayout(new MigLayout("wrap 2, pack"));
 
         add(new JLabel("Argument:"), "align right");
-        add(arguments, "growx");
+        add(arguments, "growx, pushx");
         add(new JLabel("Component:"), "align right");
-        add(components, "growx");
+        add(components, "growx, pushx");
         add(new JLabel("Comparison:"), "align right");
-        add(comparisons, "growx");
+        add(comparisons, "growx, pushx");
         add(new JLabel("Target:"), "align right");
-        add(target, "growx");
+        add(target, "growx, pushx");
     }
 
     /** 

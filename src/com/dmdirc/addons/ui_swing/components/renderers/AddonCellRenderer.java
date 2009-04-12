@@ -111,8 +111,8 @@ public final class AddonCellRenderer extends JPanel implements ListCellRenderer 
         add(name, "gapleft 3");
         add(version, "pushx");
         add(author, "wrap, gapright 3");
-        add(desc, "span 3, growx, wrap, gapleft 3, gapright 3");
-        add(new JSeparator(), "span 3, growx");
+        add(desc, "span 3, growx, pushx, wrap, gapleft 3, gapright 3");
+        add(new JSeparator(), "span 3, growx, pushx");
         
         return this;
     }

@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.ui_swing;
+package com.dmdirc.addons.ui_swing.components.frames;
 
 import com.dmdirc.Server;
 import com.dmdirc.ServerState;
@@ -28,7 +28,6 @@ import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
 import com.dmdirc.ui.interfaces.ServerWindow;
-import com.dmdirc.addons.ui_swing.components.InputTextFrame;
 import com.dmdirc.addons.ui_swing.components.SwingInputHandler;
 import com.dmdirc.addons.ui_swing.dialogs.serversetting.ServerSettingsDialog;
 
@@ -59,6 +58,7 @@ public final class ServerFrame extends InputTextFrame implements ServerWindow,
 
     /**
      * Creates a new ServerFrame.
+     * 
      * @param owner Parent Frame container
      */
     public ServerFrame(final Server owner) {
@@ -90,14 +90,18 @@ public final class ServerFrame extends InputTextFrame implements ServerWindow,
         setTitle("Server Frame");
 
         getContentPane().setLayout(new MigLayout("ins 0, fill, hidemode 3, wrap 1"));
-        getContentPane().add(getTextPane(), "grow");
+        getContentPane().add(getTextPane(), "grow, push");
         getContentPane().add(getSearchBar(), "growx, pushx");
         getContentPane().add(inputPanel, "growx, pushx");
 
         pack();
     }
 
-    /** {@inheritDoc}. */
+    /** 
+     * {@inheritDoc}.
+     * 
+     * @param actionEvent Action event
+     */
     @Override
     public void actionPerformed(final ActionEvent actionEvent) {
         if (actionEvent.getSource() == settingsMI) {

@@ -74,7 +74,7 @@ public class ToolTipPanel extends JPanel implements MouseListener {
         tooltip = new TextLabel();
         reset();
 
-        add(tooltip, "growx, growy");
+        add(tooltip, "grow, push");
     }
 
     /**

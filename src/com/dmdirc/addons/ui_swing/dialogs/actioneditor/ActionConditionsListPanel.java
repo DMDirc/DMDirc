@@ -127,21 +127,21 @@ public class ActionConditionsListPanel extends JPanel implements ActionCondition
         int index = 0;
         if (trigger == null) {
             add(new TextLabel("You must add at least one trigger before you can add conditions."),
-                    "alignx center, aligny top, grow, w 90%!");
+                    "alignx center, aligny top, grow, push, w 90%!");
         } else if (trigger.getType().getArgNames().length == 0) {
             add(new TextLabel("Trigger does not have any arguments."),
-                    "alignx center, aligny top, grow, w 90%!");
+                    "alignx center, aligny top, grow, push, w 90%!");
         } else {
             synchronized (conditions) {
                 for (ActionConditionDisplayPanel condition : conditions) {
                     index++;
                     add(new JLabel(index + "."), "aligny top");
-                    add(condition, "growx, aligny top");
+                    add(condition, "growx, pushx, aligny top");
                 }
             }
             if (index == 0) {
                 add(new JLabel("No conditions."),
-                        "alignx center, aligny top, growx");
+                        "alignx center, aligny top, growx, pushx");
             }
         }
         setVisible(true);

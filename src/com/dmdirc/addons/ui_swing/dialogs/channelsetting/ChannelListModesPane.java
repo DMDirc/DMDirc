@@ -211,12 +211,12 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
 
         setLayout(new MigLayout("fill, wrap 1"));
 
-        add(listModesMenu, "growx");
-        add(listModesPanel, "grow");
+        add(listModesMenu, "growx, pushx");
+        add(listModesPanel, "grow, push");
         add(modeCount, "split 2, growx, pushx");
         add(toggle, "alignx center");
-        add(addListModeButton, "split 2, growx");
-        add(removeListModeButton, "growx");
+        add(addListModeButton, "split 2, growx, pushx");
+        add(removeListModeButton, "growx, pushx");
 
         update();
         updateModeCount();

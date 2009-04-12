@@ -224,13 +224,13 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
         getContentPane().add(new JLabel("Enter the details of the server that " +
                 "you wish to connect to."), "span 3, wrap 1.5*unrel");
         getContentPane().add(new JLabel("Server: "), "");
-        getContentPane().add(serverField, "growx, wrap");
+        getContentPane().add(serverField, "growx, pushx, wrap");
         getContentPane().add(new JLabel("Port: "), "");
-        getContentPane().add(portField, "growx, wrap");
+        getContentPane().add(portField, "growx, pushx, wrap");
         getContentPane().add(new JLabel("Password: "), "");
-        getContentPane().add(passwordField, "growx, wrap");
+        getContentPane().add(passwordField, "growx, pushx, wrap");
         getContentPane().add(new JLabel("Profile: "), "");
-        getContentPane().add(identityField, "split 2, growx");
+        getContentPane().add(identityField, "split 2, growx, pushx");
         getContentPane().add(editProfileButton, "sg button, wrap");
         getContentPane().add(sslCheck, "skip, wrap");
         getContentPane().add(newServerWindowCheck, "skip, wrap 1.5*unrel");

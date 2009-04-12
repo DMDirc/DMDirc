@@ -68,12 +68,12 @@ public class TopicCellRenderer extends JPanel implements ListCellRenderer {
 
             final TextLabel label = new TextLabel(topic.getTopic());
             label.setMaximumSize(new Dimension(list.getWidth(), 0));
-            add(label, "growx");
+            add(label, "growx, pushx");
             add(new JLabel(new Date(topic.getTime() * 1000).toString()),
                     "split 2");
             add(new JLabel(topic.getClient()), "growx, pushx");
         } else {
-            add(new JLabel(value.toString()), "grow");
+            add(new JLabel(value.toString()), "grow, push");
         }
         add(new JSeparator(), "growx, pushx");
         return this;

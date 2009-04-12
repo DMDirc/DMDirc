@@ -88,9 +88,9 @@ public class ActionResponsePanel extends JPanel {
         setLayout(new MigLayout("fill, wrap 1"));
 
         add(new JLabel("Execute these commands: "));
-        add(new JScrollPane(response), "grow");
+        add(new JScrollPane(response), "grow, push");
         add(new JLabel("Alter the event's formatter"));
-        add(formatter, "growx");
+        add(formatter, "growx, pushx");
     }
     
     /**

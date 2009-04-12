@@ -19,8 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-package com.dmdirc.addons.ui_swing.components;
+package com.dmdirc.addons.ui_swing.components.frames;
 
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.PopupManager;
@@ -39,6 +38,7 @@ import com.dmdirc.addons.ui_swing.actions.CutAction;
 import com.dmdirc.addons.ui_swing.actions.InputTextFramePasteAction;
 import com.dmdirc.addons.ui_swing.dialogs.paste.PasteDialog;
 import com.dmdirc.addons.ui_swing.actions.CommandAction;
+import com.dmdirc.addons.ui_swing.components.SwingInputField;
 
 import java.awt.BorderLayout;
 import java.awt.Point;
@@ -303,7 +303,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     /** Checks and pastes text. */
     public void doPaste() {
         String clipboard = null;
-        
+
         try {
             if (!Toolkit.getDefaultToolkit().getSystemClipboard().
                     isDataFlavorAvailable(DataFlavor.stringFlavor)) {
@@ -340,8 +340,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
         if (clipboard != null && (clipboardLines = getSplitLine(clipboard)).length > 1) {
             final int caretPosition = getInputField().getCaretPosition();
             final String inputFieldText = getInputField().getText();
-            final String text = inputFieldText.substring(0, caretPosition)
-                    + clipboard + inputFieldText.substring(caretPosition);
+            final String text = inputFieldText.substring(0, caretPosition) + clipboard + inputFieldText.substring(caretPosition);
             //check the limit
             final int pasteTrigger = getConfigManager().getOptionInt("ui",
                     "pasteProtectionLimit");

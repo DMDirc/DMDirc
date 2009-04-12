@@ -22,9 +22,8 @@
 
 package com.dmdirc.addons.ui_swing.components.renderers;
 
-import com.dmdirc.updater.Update;
-
 import com.dmdirc.updater.UpdateStatus;
+
 import java.awt.Component;
 
 import javax.swing.JTable;

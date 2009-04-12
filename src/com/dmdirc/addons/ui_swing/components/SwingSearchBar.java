@@ -19,9 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.dmdirc.addons.ui_swing.components;
 
+import com.dmdirc.addons.ui_swing.components.frames.TextFrame;
+import com.dmdirc.addons.ui_swing.components.frames.InputTextFrame;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.interfaces.SearchBar;
 import com.dmdirc.ui.messages.ColourManager;
@@ -32,8 +33,8 @@ import com.dmdirc.addons.ui_swing.textpane.IRCDocument;
 import com.dmdirc.addons.ui_swing.textpane.IRCDocumentSearcher;
 import com.dmdirc.addons.ui_swing.textpane.LinePosition;
 import com.dmdirc.addons.ui_swing.textpane.TextPane;
-
 import com.dmdirc.util.ListenerList;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -64,25 +65,18 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 6;
-
     /** Frame parent. */
     private final TextFrame parent;
-
     /** Close button. */
     private ImageButton closeButton;
-
     /** Next match button. */
     private JButton nextButton;
-
     /** Previous match button. */
     private JButton prevButton;
-
     /** Case sensitive checkbox. */
     private JCheckBox caseCheck;
-
     /** Search text field. */
     private JTextField searchBox;
-
     /** Line to search from. */
     private int line;
     /** Character to search from. */
@@ -173,7 +167,7 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
     @Override
     public void open() {
         SwingUtilities.invokeLater(new Runnable() {
-            
+
             /** {@inheritDoc} */
             @Override
             public void run() {
@@ -181,15 +175,14 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
                 searchBox.setBackground(ColourManager.getColour("FFFFFF"));
                 getFocus();
             }
-        }
-        );
+        });
     }
 
     /** {@inheritDoc}. */
     @Override
     public void close() {
         SwingUtilities.invokeLater(new Runnable() {
-            
+
             /** {@inheritDoc} */
             @Override
             public void run() {
@@ -200,8 +193,7 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
                     parent.requestFocusInWindow();
                 }
             }
-        }
-        );
+        });
     }
 
     /** {@inheritDoc}. */
@@ -230,15 +222,10 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
         searcher.setPosition(textPane.getSelectedRange());
 
         final LinePosition result = up ? searcher.searchUp() : searcher.searchDown();
-        
+
         if (result == null) {
             foundText = false;
-        } else if (
-                (textPane.getSelectedRange().getEndLine() != 0
-                || textPane.getSelectedRange().getEndPos() != 0)
-                && ((up && result.getEndLine() > textPane.getSelectedRange().getEndLine())
-                || (!up && result.getStartLine() < textPane.getSelectedRange().getStartLine()))
-                && JOptionPane.showConfirmDialog(SwingController.getMainFrame(),
+        } else if ((textPane.getSelectedRange().getEndLine() != 0 || textPane.getSelectedRange().getEndPos() != 0) && ((up && result.getEndLine() > textPane.getSelectedRange().getEndLine()) || (!up && result.getStartLine() < textPane.getSelectedRange().getStartLine())) && JOptionPane.showConfirmDialog(SwingController.getMainFrame(),
                 "Do you want to continue searching from the " + (up ? "end" : "beginning"),
                 "No more results", JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE) != JOptionPane.OK_OPTION) {
@@ -271,8 +258,7 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
                 close();
             } else if (event.getKeyCode() == KeyEvent.VK_ENTER) {
                 search(Direction.UP, searchBox.getText(), caseCheck.isSelected());
-            } else if (event.getKeyCode() != KeyEvent.VK_F3
-                    && event.getKeyCode() != KeyEvent.VK_F) {
+            } else if (event.getKeyCode() != KeyEvent.VK_F3 && event.getKeyCode() != KeyEvent.VK_F) {
                 line = parent.getTextPane().getLastVisibleLine();
                 index = 0;
             }
@@ -306,7 +292,7 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
     /** Focuses the search box in the search bar. */
     public void getFocus() {
         SwingUtilities.invokeLater(new Runnable() {
-            
+
             /** {@inheritDoc} */
             @Override
             public void run() {
@@ -314,8 +300,7 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
                 searchBox.setSelectionStart(0);
                 searchBox.setSelectionEnd(searchBox.getText().length());
             }
-        }
-        );
+        });
     }
 
     /** {@inheritDoc}. */
@@ -348,29 +333,28 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
         //Ignore
     }
 
-
     /** {@inheritDoc} */
     @Override
-    public void addKeyListener(final KeyListener listener) {
+    public void addKeyListener(final KeyListener l) {
         UIUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
             public void run() {
-                listeners.add(KeyListener.class, listener);
+                listeners.add(KeyListener.class, l);
             }
         });
     }
 
     /** {@inheritDoc} */
     @Override
-    public void removeKeyListener(final KeyListener listener) {
+    public void removeKeyListener(final KeyListener l) {
         UIUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
             public void run() {
-                listeners.remove(KeyListener.class, listener);
+                listeners.remove(KeyListener.class, l);
             }
         });
     }

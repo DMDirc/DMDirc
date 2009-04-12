@@ -127,7 +127,7 @@ public final class ActionGroupSettingsPanel extends JPanel implements ActionList
             settingMap.put(button, setting);
             button.addActionListener(this);
             add(label, "newline");
-            add(component, "growx");
+            add(component, "growx, pushx");
             add(button, "");
         }
     }

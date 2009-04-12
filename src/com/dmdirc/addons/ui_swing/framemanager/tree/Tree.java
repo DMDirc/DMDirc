@@ -25,7 +25,7 @@ import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
 import com.dmdirc.addons.ui_swing.actions.CloseFrameContainerAction;
-import com.dmdirc.addons.ui_swing.components.TextFrame;
+import com.dmdirc.addons.ui_swing.components.frames.TextFrame;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;

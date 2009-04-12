@@ -28,7 +28,7 @@ import javax.swing.JToggleButton;
 /**
  * JButton that holds an object.
  * 
- * @param T Holds an object of this type
+ * @param <T> Holds an object of this type
  */
 public class ContainerToggleButton<T> extends JToggleButton {
 

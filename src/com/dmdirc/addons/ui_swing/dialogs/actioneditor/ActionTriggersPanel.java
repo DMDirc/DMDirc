@@ -138,9 +138,9 @@ public class ActionTriggersPanel extends JPanel implements ActionListener,
         setLayout(new MigLayout("fill, pack"));
 
         add(new TextLabel("This action will be triggered when any of these events occurs: "),
-                "growx, wrap, spanx");
-        add(triggerList, "grow, wrap, spanx");
-        add(trigger, "growx");
+                "growx, pushx, wrap, spanx");
+        add(triggerList, "grow, push, wrap, spanx");
+        add(trigger, "growx, pushx");
         add(add, "right");
     }
 

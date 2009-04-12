@@ -94,7 +94,7 @@ public final class ActionGroupInformationPanel extends JPanel {
     private void layoutComponents() {
         setLayout(new MigLayout("fill, wrap 2, hidemode 3"));
 
-        add(infoLabel, "span 2, growx");
+        add(infoLabel, "span 2, growx, pushx");
         add(authorLabel, "");
         add(author, "growx, pushx");
         add(versionLabel, "");

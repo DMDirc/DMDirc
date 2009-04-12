@@ -117,13 +117,13 @@ public class NickColourPanel extends JPanel implements ActionListener,
         JButton button;
         button = new JButton("Add");
         button.addActionListener(this);
-        add(button, "sg button, growx");
+        add(button, "sg button, growx, pushx");
         button = new JButton("Edit");
         button.addActionListener(this);
-        add(button, "sg button, growx");
+        add(button, "sg button, growx, pushx");
         button = new JButton("Delete");
         button.addActionListener(this);
-        add(button, "sg button, growx");
+        add(button, "sg button, growx, pushx");
     }
 
     /** 

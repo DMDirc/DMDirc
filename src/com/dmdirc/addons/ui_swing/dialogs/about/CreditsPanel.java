@@ -84,7 +84,7 @@ public final class CreditsPanel extends JPanel implements HyperlinkListener {
         final JScrollPane scrollPane = new JScrollPane(about);
         scrollPane.setOpaque(UIUtilities.getTabbedPaneOpaque());
         scrollPane.getViewport().setOpaque(UIUtilities.getTabbedPaneOpaque());
-        add(scrollPane, "grow");
+        add(scrollPane, "grow, push");
     }
     
     /** {@inheritDoc} */

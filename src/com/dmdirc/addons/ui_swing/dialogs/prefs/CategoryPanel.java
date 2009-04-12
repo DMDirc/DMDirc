@@ -226,7 +226,7 @@ public class CategoryPanel extends JPanel {
 
         if (!category.getDescription().isEmpty()) {
             panel.add(new TextLabel(category.getDescription()), "span, " +
-                    "growx, wrap 2*unrel");
+                    "growx, pushx, wrap 2*unrel");
         }
 
         for (PreferencesCategory child : category.getSubcats()) {
@@ -244,7 +244,7 @@ public class CategoryPanel extends JPanel {
                         " for this UI must extend JPanel.");
             }
 
-            panel.add((JPanel) category.getObject(), "growx");
+            panel.add((JPanel) category.getObject(), "growx, pushx");
 
             return;
         }
@@ -287,7 +287,7 @@ public class CategoryPanel extends JPanel {
         }
 
         panel.add(label, "align label, wmax 40%");
-        panel.add(option, "growx, w 60%");
+        panel.add(option, "growx, pushx, w 60%");
 
         tooltip.registerTooltipHandler(label);
         tooltip.registerTooltipHandler(option);
@@ -325,7 +325,7 @@ public class CategoryPanel extends JPanel {
                 rightPadding + "-2*" + padding));
         panel.setBorder(BorderFactory.createTitledBorder(category.getTitle()));
 
-        parent.add(panel, "span, growx, wrap");
+        parent.add(panel, "span, growx, pushx, wrap");
 
         initCategory(category, panel, "");
     }

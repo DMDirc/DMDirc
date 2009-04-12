@@ -106,7 +106,7 @@ public class ActionTriggersListPanel extends JPanel {
                 
                 button.setEnabled(isEnabled());
                 
-                add(new JLabel(trigger.getName()), "growx");
+                add(new JLabel(trigger.getName()), "growx, pushx");
                 add(button, "right");
             }
 

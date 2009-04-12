@@ -22,7 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.actions;
 
-import com.dmdirc.addons.ui_swing.components.InputTextFrame;
+import com.dmdirc.addons.ui_swing.components.frames.InputTextFrame;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;

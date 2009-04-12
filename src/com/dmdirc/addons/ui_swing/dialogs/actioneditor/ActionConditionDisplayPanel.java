@@ -139,7 +139,7 @@ public class ActionConditionDisplayPanel extends JPanel implements ActionListene
     /** Lays out the components. */
     private void layoutComponents() {
         setLayout(new MigLayout("ins 0, fillx, hidemode 3, pack, wmax 90%"));
-        add(label, "grow");
+        add(label, "grow, push");
         add(editButton, "right");
         add(deleteButton, "right, wrap");
         add(editPanel, "alignx right");

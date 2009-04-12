@@ -227,15 +227,15 @@ public final class AliasManagerDialog extends StandardDialog implements
 
     /** Lays out the components. */
     private void layoutComponents() {
-        setLayout(new MigLayout("pack"));
+        setLayout(new MigLayout("fill"));
         final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
                 true);
         final JPanel panel = new JPanel();
 
-        panel.setLayout(new MigLayout("fill, hidemode 3, pack"));
+        panel.setLayout(new MigLayout("fill, hidemode 3, debug"));
 
         panel.add(aliasDetails, "span 7, wrap, grow, pushy");
-        panel.add(subsPanel, "spanx, wrap, grow");
+        panel.add(subsPanel, "spanx, wrap, grow, push");
         panel.add(showSubs, "split 7, sgx button, left");
         panel.add(addButton, "skip 2, sgx button, gap unrel");
         panel.add(deleteButton, "sgx button");
@@ -248,7 +248,7 @@ public final class AliasManagerDialog extends StandardDialog implements
         splitPane.setDividerSize((int) PlatformDefaults.getPanelInsets(0).
                 getValue());
 
-        getContentPane().add(splitPane);
+        getContentPane().add(splitPane, "grow, push");
     }
 
     /** {@inheritDoc}. */

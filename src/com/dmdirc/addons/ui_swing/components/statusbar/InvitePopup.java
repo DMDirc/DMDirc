@@ -61,11 +61,11 @@ public class InvitePopup extends StatusbarPopupWindow {
     @Override
     protected void initContent(final JPanel panel) {
         for (Invite invite : server.getInvites()) {
-            panel.add(new JLabel(invite.getChannel()), "growx");
-            panel.add(new JLabel(invite.getSource()[0], JLabel.CENTER), "growx, al center");
+            panel.add(new JLabel(invite.getChannel()), "growx, pushx");
+            panel.add(new JLabel(invite.getSource()[0], JLabel.CENTER), "growx, pushx, al center");
             panel.add(new JLabel(Formatter.formatDuration((int)
                     (System.currentTimeMillis() - invite.getTimestamp()) / 1000) + " ago",
-                    JLabel.RIGHT), "growx, al right, wrap");
+                    JLabel.RIGHT), "growx, pushx, al right, wrap");
         }
     }
 

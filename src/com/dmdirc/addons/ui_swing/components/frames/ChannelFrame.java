@@ -19,15 +19,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.dmdirc.addons.ui_swing.components.frames;
 
-package com.dmdirc.addons.ui_swing;
-
+import com.dmdirc.addons.ui_swing.components.NicklistListModel;
 import com.dmdirc.Channel;
 import com.dmdirc.ServerState;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
-import com.dmdirc.addons.ui_swing.components.InputTextFrame;
 import com.dmdirc.addons.ui_swing.components.SnappingJSplitPane;
 import com.dmdirc.addons.ui_swing.components.SwingInputHandler;
 import com.dmdirc.addons.ui_swing.components.renderers.NicklistRenderer;
@@ -81,7 +80,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     /** popup menu item. */
     private JMenuItem settingsMI;
     /** The channel object that owns this frame. */
-    private final Channel parent;
+    private final Channel parentChannel;
     /** Nick list scroll pane. */
     private JScrollPane nickScrollPane;
     /** Identity. */
@@ -95,7 +94,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     public ChannelFrame(final Channel owner) {
         super(owner);
 
-        parent = owner;
+        parentChannel = owner;
 
         initComponents();
 
@@ -200,7 +199,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     /** {@inheritDoc} */
     @Override
     public Channel getChannel() {
-        return parent;
+        return parentChannel;
     }
 
     /**
@@ -216,7 +215,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
 
         nickScrollPane = new JScrollPane();
         nickList = new JList();
-        nickList.setCellRenderer(new NicklistRenderer(parent.getConfigManager(),
+        nickList.setCellRenderer(new NicklistRenderer(parentChannel.getConfigManager(),
                 nickList));
         nickList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
@@ -234,7 +233,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
 
         getContentPane().setLayout(new MigLayout("fill, ins 0, hidemode 3, wrap 1"));
 
-        getContentPane().add(splitPane, "grow");
+        getContentPane().add(splitPane, "grow, push");
         getContentPane().add(getSearchBar(), "growx, pushx");
         getContentPane().add(inputPanel, "growx, pushx");
 
@@ -379,7 +378,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
         }
         if ("channelSplitPanePosition".equals(key)) {
             final int splitPanePosition = getConfigManager().getOptionInt("ui",
-                "channelSplitPanePosition");
+                    "channelSplitPanePosition");
             nickScrollPane.setPreferredSize(new Dimension(splitPanePosition, 0));
             splitPane.setDividerLocation(splitPane.getWidth() - splitPanePosition);
         }

@@ -258,7 +258,12 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
         setVisible(true);
     }
     
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Action performed
+     */
+    @Override
     public void actionPerformed(final ActionEvent e) {
         delOption(e.getActionCommand(), parent.getOptionType(e.getActionCommand()));
         parent.addAddableOption(e.getActionCommand());

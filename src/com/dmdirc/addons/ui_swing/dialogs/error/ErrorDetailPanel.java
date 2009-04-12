@@ -194,7 +194,7 @@ public final class ErrorDetailPanel extends JPanel implements ErrorListener {
         add(errorStatus);
         
         add(new JLabel("Details: "));
-        add(scrollPane, "grow");
+        add(scrollPane, "grow, push");
     }
 
     @Override
