@@ -429,7 +429,12 @@ if [ -e "${jar}" ]; then
 		#APPLEOPTS="${APPLEOPTS} -Dapple.laf.useScreenMenuBar=true"
 	fi;
 	${JAVA}${APPLEOPTS} -ea -jar ${jar} -l unix-${LAUNCHERVERSION} ${params}
-	exit $?;
+	EXITCODE=${?}
+	if [ ${EXITCODE} -eq -42 ]; then
+		# The client says we need to up update, rerun ourself before exiting.
+		${0} ${params}
+	fi;
+	exit ${EXITCODE};
 else
 	echo "Failed.";
 	errordialog "Unable to launch dmdirc!" "No jar file found";
