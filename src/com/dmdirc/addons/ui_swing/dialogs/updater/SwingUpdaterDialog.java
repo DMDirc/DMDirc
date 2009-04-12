@@ -200,6 +200,9 @@ public final class SwingUpdaterDialog extends StandardDialog implements
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource().equals(getOkButton())) {
+            if (UpdateChecker.getStatus() != STATE.RESTART_REQUIRED) {
+                SwingController.getMainFrame().quit(-42);
+            }
             getOkButton().setEnabled(false);
 
             header.setText("DMDirc is updating the following components:");

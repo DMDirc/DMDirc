@@ -97,6 +97,8 @@ public final class MainFrame extends JFrame implements WindowListener,
     private MenuBar menu;
     /** Top level window list. */
     private final List<java.awt.Window> windows;
+    /** Exit code. */
+    private int exitCode = 0;
 
     /**
      * Creates new form MainFrame.
@@ -277,7 +279,7 @@ public final class MainFrame extends JFrame implements WindowListener,
      */
     @Override
     public void windowClosing(final WindowEvent windowEvent) {
-        quit();
+        quit(exitCode);
     }
 
     /** 
@@ -287,7 +289,7 @@ public final class MainFrame extends JFrame implements WindowListener,
      */
     @Override
     public void windowClosed(final WindowEvent windowEvent) {
-        Main.quit();
+        Main.quit(exitCode);
     }
 
     /** 
@@ -512,7 +514,16 @@ public final class MainFrame extends JFrame implements WindowListener,
                 dispose();
             }
         }.execute();
-
+    }
+    
+    /** 
+     * Exit code call to quit. 
+     * 
+     * @param exitCode Exit code
+     */
+    public void quit(final int exitCode) {
+        this.exitCode = exitCode;
+        quit();
     }
 
     /** {@inheritDoc} */

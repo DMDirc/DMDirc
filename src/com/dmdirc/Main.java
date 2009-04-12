@@ -183,6 +183,7 @@ public final class Main {
         if (!GraphicsEnvironment.isHeadless()) {
             // Show a dialog informing the user that no UI was found.
             NoUIDialog.displayBlocking();
+            return;
         }
 
         // Can't find any
@@ -211,15 +212,28 @@ public final class Main {
      * Quits the client nicely, with the default closing message.
      */
     public static void quit() {
-        quit(IdentityManager.getGlobalConfig().getOption("general", "closemessage"));
+        quit(0);
+    }
+    
+    /**
+     * Quits the client nicely, with the default closing message.
+     * 
+     * @param exitCode This is the exit code that will be returned to the 
+     *                  operating system when the client exits
+     */
+    public static void quit(final int exitCode) {
+        quit(IdentityManager.getGlobalConfig().getOption("general", 
+                "closemessage"), exitCode);
     }
 
     /**
      * Quits the client nicely.
      *
      * @param reason The quit reason to send
+     * @param exitCode This is the exit code that will be returned to the 
+     *                  operating system when the client exits
      */
-    public static void quit(final String reason) {
+    public static void quit(final String reason, final int exitCode) {
         ServerManager.getServerManager().disconnectAll(reason);
 
         System.exit(0);
