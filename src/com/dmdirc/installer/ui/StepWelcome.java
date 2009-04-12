@@ -24,7 +24,6 @@ package com.dmdirc.installer.ui;
 import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.net.URL;
 
 /**
  * Tells the user what this application does
@@ -67,7 +66,7 @@ public final class StepWelcome extends SwingStep {
     /** {@inheritDoc} */
     @Override
     public Image getIcon() {
-        return null;
+        return Toolkit.getDefaultToolkit().createImage(ClassLoader.getSystemResource("com/dmdirc/res/icon.png"));
     }
 
     /** {@inheritDoc} */
