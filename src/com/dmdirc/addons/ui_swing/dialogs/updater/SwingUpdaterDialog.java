@@ -215,7 +215,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
             if (UpdateChecker.getStatus() != STATE.UPDATING) {
                 dispose();
                 if (UpdateChecker.getStatus() == STATE.RESTART_REQUIRED) {
-                    SwingController.getMainFrame().quit(42);
+                    SwingController.getMainFrame().quit(-42);
                 }
             }
         } else if (e.getSource().equals(getCancelButton())) {
