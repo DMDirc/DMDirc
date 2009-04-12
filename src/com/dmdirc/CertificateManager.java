@@ -300,10 +300,14 @@ public class CertificateManager implements X509TrustManager {
         }
 
         if (!problems.isEmpty()) {
-            Main.getUI().showSSLCertificateDialog(
-                    new SSLCertificateDialogModel(chain, problems, this));
+            final SSLCertificateDialogModel test = new SSLCertificateDialogModel(chain, problems, this);
+            Main.getUI().showSSLCertificateDialog(test);
 
-            actionSem.acquireUninterruptibly();
+            try {
+                actionSem.acquire();
+            } catch (InterruptedException ie) {
+              throw new CertificateException("Thread aborted, ");
+            }
             
             switch (action) {
                 case DISCONNECT:

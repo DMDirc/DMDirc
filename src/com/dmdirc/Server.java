@@ -87,6 +87,8 @@ public class Server extends WritableFrameContainer implements Serializable {
 
     /** The IRC Parser instance handling this server. */
     private transient IRCParser parser;
+    /** The IRC Parser Thread. */
+    private transient Thread parserThread;
     /** The raw frame used for this server instance. */
     private Raw raw;
     /** The ServerWindow corresponding to this server. */
@@ -287,7 +289,8 @@ public class Server extends WritableFrameContainer implements Serializable {
             window.setAwayIndicator(false);
 
             try {
-                new Thread(parser, "IRC Parser thread").start();
+                parserThread = new Thread(parser, "IRC Parser thread");
+                parserThread.start();
             } catch (IllegalThreadStateException ex) {
                 Logger.appError(ErrorLevel.FATAL, "Unable to start IRC Parser", ex);
             }
@@ -353,6 +356,7 @@ public class Server extends WritableFrameContainer implements Serializable {
                 removeInvites();
                 updateIcon();
 
+                parserThread.interrupt();
                 parser.disconnect(reason);
             }
 
