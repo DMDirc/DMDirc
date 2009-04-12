@@ -20,24 +20,20 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.ui_swing.dialogs.wizard;
+package com.dmdirc.addons.ui_swing.wizard;
 
 /**
- * Step listener interfaces.
+ * Wizard interface, notifications on change of step and closing.
  */
-public interface StepListener {
-
-    /**
-     * Called just before a step is displayed
-     * 
-     * @param step Step to be displayed
+public interface WizardListener {
+    
+    /** 
+     * Called when the wizard finishes. 
      */
-    void stepAboutToDisplay(final Step step);
-
+    void wizardFinished();
+    
     /**
-     * Called when a step is hidden.
-     * 
-     * @param step Step thats been hidden
+     * Called when the wizard is cancelled.
      */
-    void stepHidden(final Step step);
+    void wizardCancelled();
 }

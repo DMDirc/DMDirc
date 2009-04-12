@@ -20,20 +20,25 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.ui_swing.dialogs.wizard;
+package com.dmdirc.addons.ui_swing.wizard;
+
+import javax.swing.JPanel;
 
 /**
- * Wizard interface, notifications on change of step and closing.
+ * Wizard step.
  */
-public interface WizardListener {
+public abstract class Step extends JPanel {
     
-    /** 
-     * Called when the wizard finishes. 
-     */
-    void wizardFinished();
-    
+    /** Instantiates a new step. */
+    public Step() {
+        super();
+        //Do nothing
+    }
+
     /**
-     * Called when the wizard is cancelled.
+     * Returns the title for this step.
+     *
+     * @return Step title
      */
-    void wizardCancelled();
+    abstract public String getTitle();
 }

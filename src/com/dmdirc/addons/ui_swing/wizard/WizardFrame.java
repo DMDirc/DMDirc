@@ -20,27 +20,20 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.ui_swing.dialogs.wizard;
+package com.dmdirc.addons.ui_swing.wizard;
 
-import com.dmdirc.addons.ui_swing.components.StandardDialog;
 
 import com.dmdirc.ui.CoreUIUtils;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.List;
 
-import javax.swing.JButton;
+import javax.swing.JFrame;
 
 import net.miginfocom.swing.MigLayout;
-
 
 /**
  * Basic wizard container.
  */
-public final class WizardDialog extends StandardDialog implements ActionListener {
+public final class WizardFrame extends JFrame {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -50,8 +43,6 @@ public final class WizardDialog extends StandardDialog implements ActionListener
     private static final long serialVersionUID = 2;
     /** Wizard. */
     private final WizardPanel wizard;
-    /** Parent container. */
-    private Window parentWindow;
 
     /**
      * Creates a new instance of WizardFrame that requires a mainframe.
@@ -59,18 +50,15 @@ public final class WizardDialog extends StandardDialog implements ActionListener
      * @param title Title for the wizard
      * @param steps Steps for the wizard
      * @param wizard Wizard to inform of changes
-     * @param parentWindow Parent component
      */
-    public WizardDialog(final String title, final List<Step> steps,
-            final WizardListener wizard, final Window parentWindow) {
-        super(parentWindow, ModalityType.MODELESS);
+    public WizardFrame(final String title, final List<Step> steps,
+            final WizardListener wizard) {
+        super();
 
         setTitle(title);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new MigLayout("ins 0, fill, pack, wmin 400, wmax 400"));
-        orderButtons(new JButton(), new JButton());
         this.wizard = new WizardPanel(title, steps, wizard);
-        this.parentWindow = parentWindow;
         layoutComponents();
     }
 
@@ -82,20 +70,7 @@ public final class WizardDialog extends StandardDialog implements ActionListener
     /** Displays the wizard. */
     public void display() {
         wizard.display();
-        if (parentWindow != null) {
-            setLocationRelativeTo(parentWindow);
-        } else {
-            CoreUIUtils.centreWindow(this);
-        }
-        addWindowListener(new WindowAdapter() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void windowClosed(final WindowEvent e) {
-                removeWindowListener(this);
-                wizard.fireWizardCancelled();
-            }
-        });
+        CoreUIUtils.centreWindow(this);
         setResizable(false);
         setVisible(true);
     }
@@ -104,24 +79,9 @@ public final class WizardDialog extends StandardDialog implements ActionListener
     @Override
     public void validate() {
         super.validate();
-        
-        setLocationRelativeTo(parentWindow);
+        CoreUIUtils.centreWindow(this);
     }
 
-    /** 
-     * {@inheritDoc}
-     * 
-     * @param e Action event
-     */
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-        if (e.getSource() == getOkButton()) {
-            wizard.nextStep();
-        } else if (e.getSource() == getCancelButton()) {
-            wizard.fireWizardCancelled();
-        }
-    }
-    
     /**
      * Adds a step to the wizard.
      *
@@ -130,7 +90,7 @@ public final class WizardDialog extends StandardDialog implements ActionListener
     public void addStep(final Step step) {
         wizard.addStep(step);
     }
-    
+
     /**
      * Returns the step at the specified index.
      *
@@ -141,7 +101,7 @@ public final class WizardDialog extends StandardDialog implements ActionListener
     public Step getStep(final int stepNumber) {
         return wizard.getStep(stepNumber);
     }
-    
+
     /**
      * Returns the current step.
      *
@@ -150,7 +110,7 @@ public final class WizardDialog extends StandardDialog implements ActionListener
     public int getCurrentStep() {
         return wizard.getCurrentStep();
     }
-    
+
     /**
      * Enables or disables the "next step" button.
      *

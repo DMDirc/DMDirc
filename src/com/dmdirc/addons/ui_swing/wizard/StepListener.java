@@ -20,25 +20,24 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.ui_swing.dialogs.wizard;
-
-import javax.swing.JPanel;
+package com.dmdirc.addons.ui_swing.wizard;
 
 /**
- * Wizard step.
+ * Step listener interfaces.
  */
-public abstract class Step extends JPanel {
-    
-    /** Instantiates a new step. */
-    public Step() {
-        super();
-        //Do nothing
-    }
+public interface StepListener {
 
     /**
-     * Returns the title for this step.
-     *
-     * @return Step title
+     * Called just before a step is displayed
+     * 
+     * @param step Step to be displayed
      */
-    abstract public String getTitle();
+    void stepAboutToDisplay(final Step step);
+
+    /**
+     * Called when a step is hidden.
+     * 
+     * @param step Step thats been hidden
+     */
+    void stepHidden(final Step step);
 }

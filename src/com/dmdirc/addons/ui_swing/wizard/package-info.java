@@ -23,4 +23,4 @@
 /**
  * Wizard thingy.
  */
-package com.dmdirc.addons.ui_swing.dialogs.wizard;
+package com.dmdirc.addons.ui_swing.wizard;

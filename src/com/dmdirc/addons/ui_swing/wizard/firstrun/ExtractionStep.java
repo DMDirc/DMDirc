@@ -20,60 +20,62 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.ui_swing.dialogs.wizard.firstrun;
+package com.dmdirc.addons.ui_swing.wizard.firstrun;
 
-import com.dmdirc.addons.ui_swing.components.TextLabel;
-import com.dmdirc.addons.ui_swing.dialogs.wizard.Step;
+import com.dmdirc.addons.ui_swing.wizard.Step;
 
 import javax.swing.JCheckBox;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * Queries the user for which core actions they wish to extract.
  */
-public final class ProfileStep extends Step {
+public abstract class ExtractionStep extends Step {
     
-    /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
-     */
-    private static final long serialVersionUID = 2;
+    /** Plugins checkbox. */
+    protected final JCheckBox plugins;
+    /** Actions checkbox. */
+    protected final JCheckBox actions;
     
-    /** Profile manager checkbox. */
-    private final JCheckBox profile;
-    
-    /**
-     * Creates a new instance of StepOne.
-     */
-    public ProfileStep() {
+    /** Creates a new instance of StepOne. */
+    public ExtractionStep() {
         super();
-        setLayout(new MigLayout("fillx, wrap 1"));
         
-        profile = new JCheckBox("Launch profile manager?");
+        plugins = new JCheckBox("Install core plugins?");
+        actions = new JCheckBox("Install core actions?");
         
-        final TextLabel infoLabel = new TextLabel("DMDirc uses a set of 'profiles' to determine"
-                + " your nickname, realname, etc when connecting to a server. "
-                + "If you would like the wizard to open the profile manager "
-                + "for you, tick the box below.");
-        add(infoLabel, "growx, pushx");
-        add(profile, "");
+        plugins.setSelected(true);
+        actions.setSelected(true);
+        
+        initComponents();
     }
     
     /**
-     * Returns the state of the profile manager checkbox.
-     *
-     * @return Profile manager checkbox state
+     * Initialises the components.
      */
-    public boolean getProfileManagerState() {
-        return profile.isSelected();
+    protected abstract void initComponents();
+    
+    /**
+     * Returns the state of the plugins checkbox.
+     *
+     * @return Plugins checkbox state
+     */
+    public final boolean getPluginsState() {
+        return plugins.isSelected();
+    }
+
+    /**
+     * Returns the state of the actions checkbox.
+     *
+     * @return Actions checkbox state
+     */
+    public final boolean getActionsState() {
+        return actions.isSelected();
     }
 
     /** {@inheritDoc} */
     @Override
     public String getTitle() {
-        return "Profile setup";
+        return "Core addon extraction";
     }
     
 }

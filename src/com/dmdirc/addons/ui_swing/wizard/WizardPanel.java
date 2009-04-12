@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.ui_swing.dialogs.wizard;
+package com.dmdirc.addons.ui_swing.wizard;
 
 import com.dmdirc.addons.ui_swing.components.EtchedLineBorder;
 import com.dmdirc.addons.ui_swing.components.EtchedLineBorder.BorderSide;

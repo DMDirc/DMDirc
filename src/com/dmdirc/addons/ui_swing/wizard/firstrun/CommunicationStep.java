@@ -20,10 +20,10 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.ui_swing.dialogs.wizard.firstrun;
+package com.dmdirc.addons.ui_swing.wizard.firstrun;
 
 import com.dmdirc.addons.ui_swing.components.TextLabel;
-import com.dmdirc.addons.ui_swing.dialogs.wizard.Step;
+import com.dmdirc.addons.ui_swing.wizard.Step;
 
 import javax.swing.JCheckBox;
 

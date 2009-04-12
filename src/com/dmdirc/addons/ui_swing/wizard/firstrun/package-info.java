@@ -23,4 +23,4 @@
 /**
  * First run wizard.
  */
-package com.dmdirc.addons.ui_swing.dialogs.wizard.firstrun;
+package com.dmdirc.addons.ui_swing.wizard.firstrun;

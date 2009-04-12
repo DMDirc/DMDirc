@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.ui_swing.dialogs.wizard.firstrun;
+package com.dmdirc.addons.ui_swing.wizard.firstrun;
 
 
 import com.dmdirc.addons.ui_swing.components.TextLabel;
