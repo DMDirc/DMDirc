@@ -214,6 +214,9 @@ public final class SwingUpdaterDialog extends StandardDialog implements
 
             if (UpdateChecker.getStatus() != STATE.UPDATING) {
                 dispose();
+                if (UpdateChecker.getStatus() == STATE.RESTART_REQUIRED) {
+                    SwingController.getMainFrame().quit(42);
+                }
             }
         } else if (e.getSource().equals(getCancelButton())) {
             setVisible(false);
@@ -229,8 +232,11 @@ public final class SwingUpdaterDialog extends StandardDialog implements
             getOkButton().setEnabled(true);
         }
         if (newStatus == STATE.RESTART_REQUIRED) {
-            getCancelButton().setVisible(false);
+            getOkButton().setText("Restart now");
+            getCancelButton().setText("Restart later");
         } else {
+            getOkButton().setText("OK");
+            getCancelButton().setText("Cancel");
             getCancelButton().setVisible(true);
         }
     }
