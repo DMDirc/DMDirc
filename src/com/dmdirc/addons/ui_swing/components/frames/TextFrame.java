@@ -105,7 +105,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     private static final long serialVersionUID = 5;
     /** The channel object that owns this frame. */
-    protected final FrameContainer parent;
+    protected final FrameContainer frameParent;
     /** Frame output pane. */
     private TextPane textPane;
     /** search bar. */
@@ -140,10 +140,9 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     public TextFrame(final FrameContainer owner) {
         super();
         final ConfigManager config = owner.getConfigManager();
-        final Boolean pref = config.getOptionBool("ui", "maximisewindows");
         frameBufferSize = config.getOptionInt("ui", "frameBufferSize");
         quickCopy = config.getOptionBool("ui", "quickCopy");
-        parent = owner;
+        frameParent = owner;
         setFrameIcon(owner.getIcon());
         owner.addIconChangeListener(new IconChangeListener() {
 
@@ -194,10 +193,6 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         config.addChangeListener("ui", "frameBufferSize", this);
 
         addPropertyChangeListener("maximum", this);
-
-        if (pref || Main.getUI().getMainWindow().getMaximised()) {
-            //Maximise, stop the magical mystery error
-        }
     }
 
     /** {@inheritDoc} */
@@ -220,6 +215,11 @@ public abstract class TextFrame extends JInternalFrame implements Window,
 
             @Override
             public void run() {
+                final boolean pref = frameParent.getConfigManager().
+                        getOptionBool("ui", "maximisewindows");
+                if (pref || Main.getUI().getMainWindow().getMaximised()) {
+                    maximise();
+                }
                 setVisible(true);
             }
         });
@@ -433,7 +433,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             /** {@inheritDoc} */
             @Override
             protected Object doInBackground() throws Exception {
-                parent.windowOpened();
+                frameParent.windowOpened();
                 return null;
             }
         }.execute();
@@ -451,7 +451,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             /** {@inheritDoc} */
             @Override
             protected Object doInBackground() throws Exception {
-                parent.windowClosing();
+                frameParent.windowClosing();
                 return null;
             }
         }.execute();
@@ -469,7 +469,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             /** {@inheritDoc} */
             @Override
             protected Object doInBackground() throws Exception {
-                parent.windowClosed();
+                frameParent.windowClosed();
                 return null;
             }
         }.execute();
@@ -507,7 +507,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             /** {@inheritDoc} */
             @Override
             protected Object doInBackground() throws Exception {
-                parent.windowActivated();
+                frameParent.windowActivated();
                 return null;
             }
         }.execute();
@@ -525,7 +525,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             /** {@inheritDoc} */
             @Override
             protected Object doInBackground() throws Exception {
-                parent.windowDeactivated();
+                frameParent.windowDeactivated();
                 return null;
             }
         }.execute();
@@ -534,7 +534,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     /** {@inheritDoc} */
     @Override
     public FrameContainer getContainer() {
-        return parent;
+        return frameParent;
     }
 
     /** {@inheritDoc} */
@@ -565,11 +565,11 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     /** {@inheritDoc} */
     @Override
     public final String getName() {
-        if (parent == null) {
+        if (frameParent == null) {
             return "";
         }
 
-        return parent.toString();
+        return frameParent.toString();
     }
 
     /**
@@ -659,7 +659,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 if (type == MouseClickType.CLICKED) {
                     switch (clickType) {
                         case CHANNEL:
-                            parent.getServer().join(attribute);
+                            frameParent.getServer().join(attribute);
                             break;
                         case HYPERLINK:
                             URLHandler.getURLHander().launchApp(attribute);
