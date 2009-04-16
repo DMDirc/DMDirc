@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
@@ -87,7 +88,7 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
     /** Maximised state. */
     private boolean maximised;
     /** Changing maximisation. */
-    private boolean changing;
+    private AtomicBoolean changing = new AtomicBoolean(false);
     
     /**
      * Initialises the DMDirc desktop pane.
@@ -285,10 +286,10 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
         if (!"maximum".equals(evt.getPropertyName())) {
             return;
         }
-        if (changing) {
+        if (changing.get()) {
             return;
         }
-        changing = true;
+        changing.set(true);
         maximised = (Boolean) evt.getNewValue();
         Stack<JInternalFrame> stack = new Stack<JInternalFrame>();
         stack.addAll(Arrays.asList(getAllFrames()));
@@ -306,6 +307,6 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
             }
         }
         SwingController.getMainFrame().setMaximised(maximised);
-        changing = false;
+        changing.set(false);
     }
 }
