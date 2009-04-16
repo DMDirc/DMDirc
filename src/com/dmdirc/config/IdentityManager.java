@@ -193,6 +193,7 @@ public final class IdentityManager {
      * 
      * @param file The file to load the identity from.
      */
+    @SuppressWarnings("deprecation")
     private static void loadIdentity(final File file) {
         synchronized (identities) {
             for (Identity identity : identities) {

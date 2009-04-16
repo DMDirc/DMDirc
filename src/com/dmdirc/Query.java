@@ -374,7 +374,7 @@ public final class Query extends MessageTarget implements
             show();
         }
 
-        Main.getUI().getMainWindow().setActiveFrame(window);
+        super.activateFrame();
     }
 
 }

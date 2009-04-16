@@ -65,7 +65,7 @@ public final class ServerFrame extends InputTextFrame implements ServerWindow,
         super(owner);
 
         initComponents();
-
+        
         commandParser = new ServerCommandParser((Server) getContainer());
 
         setInputHandler(new SwingInputHandler(getInputField(), commandParser, this));

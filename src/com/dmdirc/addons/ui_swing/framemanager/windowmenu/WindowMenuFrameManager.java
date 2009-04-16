@@ -111,10 +111,22 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
         checkToggleState();
 
         separator = new JPopupMenu.Separator();
-        separator.setVisible(false);
         add(separator);
 
         itemCount = getMenuComponentCount();
+        checkMenuItems();
+    }
+
+    /**
+     * Checks the number of components in the menu and enables menus items 
+     * appropriately.
+     */
+    private void checkMenuItems() {
+        final boolean enable = (getMenuComponentCount() > itemCount);
+        separator.setVisible(enable);
+        closeMenuItem.setEnabled(enable);
+        toggleStateMenuItem.setEnabled(enable);
+        minimiseMenuItem.setEnabled(enable);
     }
 
     /** {@inheritDoc} */
@@ -172,9 +184,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
             /** {@inheritDoc} */
             @Override
             public void run() {
-                if (getMenuComponentCount() == itemCount) {
-                    separator.setVisible(true);
-                }
+                checkMenuItems();
 
                 final FrameContainerMenuItem mi =
                         new FrameContainerMenuItem(window);
@@ -216,9 +226,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                     }
                 }
 
-                if (getMenuComponentCount() == itemCount) {
-                    separator.setVisible(false);
-                }
+                checkMenuItems();
             }
         });
     }
@@ -301,8 +309,8 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                     ((FrameContainerMenuItem) getMenuComponent(i)).getFrame();
             if (sortBefore(newChild, child)) {
                 return i;
-            } else if (!sortAfter(newChild, child) && 
-                    IdentityManager.getGlobalConfig().getOptionBool("treeview", 
+            } else if (!sortAfter(newChild, child) &&
+                    IdentityManager.getGlobalConfig().getOptionBool("treeview",
                     "sortwindows") && newChild.toString().compareToIgnoreCase(
                     child.toString()) < 0) {
                 return i;

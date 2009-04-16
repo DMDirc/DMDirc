@@ -144,7 +144,6 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         frameBufferSize = config.getOptionInt("ui", "frameBufferSize");
         quickCopy = config.getOptionBool("ui", "quickCopy");
         parent = owner;
-
         setFrameIcon(owner.getIcon());
         owner.addIconChangeListener(new IconChangeListener() {
 
@@ -194,8 +193,10 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         config.addChangeListener("ui", "quickCopy", this);
         config.addChangeListener("ui", "frameBufferSize", this);
 
+        addPropertyChangeListener("maximum", this);
+
         if (pref || Main.getUI().getMainWindow().getMaximised()) {
-            hideTitlebar();
+            //Maximise, stop the magical mystery error
         }
     }
 
@@ -343,10 +344,17 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public final void propertyChange(final PropertyChangeEvent event) {
-        if (isMaximum()) {
-            hideTitlebar();
+        if ("UI".equals(event.getPropertyName())) {
+            if (isMaximum()) {
+                hideTitlebar();
+            }
+        } else {
+            if ((Boolean) event.getNewValue()) {
+                hideTitlebar();
+            } else {
+                showTitlebar();
+            }
         }
-
     }
 
     /** Hides the titlebar for this frame. */
@@ -942,6 +950,9 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     /** {@inheritDoc} */
     @Override
     public void maximise() {
+        if (isMaximum()) {
+            return;
+        }
         UIUtilities.invokeAndWait(new Runnable() {
 
             /** {@inheritDoc} */
@@ -949,9 +960,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             public void run() {
                 try {
                     setIcon(false);
-                    TextFrame.super.setMaximum(true);
                     setVisible(true);
-                    hideTitlebar();
+                    setMaximum(true);
                 } catch (PropertyVetoException ex) {
                     Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
                 }
@@ -963,6 +973,9 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     /** {@inheritDoc} */
     @Override
     public void restore() {
+        if (!isMaximum()) {
+            return;
+        }
         UIUtilities.invokeAndWait(new Runnable() {
 
             /** {@inheritDoc} */
@@ -970,9 +983,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             public void run() {
                 try {
                     setIcon(false);
-                    TextFrame.super.setMaximum(false);
                     setVisible(true);
-                    showTitlebar();
+                    setMaximum(false);
                 } catch (PropertyVetoException ex) {
                     Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
                 }

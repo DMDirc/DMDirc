@@ -44,6 +44,7 @@ import com.dmdirc.addons.ui_swing.components.SnappingJSplitPane;
 import com.dmdirc.addons.ui_swing.framemanager.tree.TreeFrameManager;
 import com.dmdirc.ui.CoreUIUtils;
 
+import com.dmdirc.util.ReturnableThread;
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
@@ -202,36 +203,25 @@ public final class MainFrame extends JFrame implements WindowListener,
      * @return The active window
      */
     public Window getActiveFrame() {
-        if (desktopPane.getSelectedFrame() instanceof Window) {
-            return (Window) desktopPane.getSelectedFrame();
-        } else {
-            return null;
-        }
+        return desktopPane.getSelectedWindow();
     }
 
     /** {@inheritDoc}. */
     @Override
     public void setMaximised(final boolean max) {
-        if (max == maximised) {
-            return;
-        }
         UIUtilities.invokeAndWait(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
             public void run() {
                 maximised = max;
-
                 if (max) {
-                    final Window window = getActiveFrame();
+                    final Window window = desktopPane.getSelectedWindow();
                     if (window != null) {
                         setTitle(getTitlePrefix() + " - " + window.getTitle());
                     }
                 } else {
                     setTitle(getTitlePrefix());
-                    for (JInternalFrame frame : desktopPane.getAllFrames()) {
-                        ((Window) frame).restore();
-                    }
                 }
             }
         });
@@ -250,7 +240,14 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public boolean getMaximised() {
-        return maximised;
+        return UIUtilities.invokeAndWait(new ReturnableThread<Boolean>() {
+
+            /** {@inheritDoc}. */
+            @Override
+            public void run() {
+                setObject(maximised);
+            }
+        });
     }
 
     /**

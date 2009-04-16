@@ -115,7 +115,7 @@ public class Tree extends JTree implements TreeSelectionListener,
     /** {@inheritDoc} */
     @Override
     public void valueChanged(final TreeSelectionEvent e) {
-        if (!this.path.equals(path)) {
+        if (path == null || !this.path.equals(path)) {
             setSelection(e.getPath());
         }
     }
@@ -274,12 +274,12 @@ public class Tree extends JTree implements TreeSelectionListener,
                 try {
                     ((TextFrame) ((TreeViewNode) localPath.getLastPathComponent()).getFrameContainer().
                             getFrame()).setIcon(false);
-                    ((TreeViewNode) localPath.getLastPathComponent()).getFrameContainer().
-                            activateFrame();
                 } catch (PropertyVetoException ex) {
                     //Ignore
                 }
             }
+            ((TreeViewNode) localPath.getLastPathComponent()).getFrameContainer().
+                            activateFrame();
         }
     }
 }

@@ -23,6 +23,7 @@
 package com.dmdirc.addons.ui_swing.components.desktopPane;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -31,14 +32,18 @@ import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.components.TreeScroller;
+import com.dmdirc.addons.ui_swing.components.frames.TextFrame;
 import com.dmdirc.addons.ui_swing.framemanager.tree.TreeViewModel;
 import com.dmdirc.addons.ui_swing.framemanager.tree.TreeViewNode;
 
 import java.awt.Color;
-import java.awt.Frame;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.util.Stack;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
@@ -53,7 +58,7 @@ import javax.swing.tree.TreeSelectionModel;
  * DMDirc Extentions to JDesktopPane.
  */
 public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
-        SelectionListener {
+        SelectionListener, PropertyChangeListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -77,7 +82,13 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
     private final TreeSelectionModel selectionModel;
     /** Tree Scroller. */
     private final TreeScroller treeScroller;
-
+    /** Selected window. */
+    private Window selectedWindow;
+    /** Maximised state. */
+    private boolean maximised;
+    /** Changing maximisation. */
+    private boolean changing;
+    
     /**
      * Initialises the DMDirc desktop pane.
      */
@@ -137,15 +148,14 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
         xOffset += FRAME_OPENING_OFFSET;
         yOffset += FRAME_OPENING_OFFSET;
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public JInternalFrame getSelectedFrame() {
-        if (getComponentCount() > 0) {
-            return super.getSelectedFrame();
-        } else {
-            return null;
-        }
+    
+    /**
+     * Returns the select window.
+     * 
+     * @return Selected window, or null.
+     */
+    public Window getSelectedWindow() {
+        return selectedWindow;
     }
 
     /** {@inheritDoc} */
@@ -216,6 +226,8 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
                 }
                 nodes.remove(window);
                 window.removeSelectionListener(DMDircDesktopPane.this);
+                ((TextFrame) window.getFrame()).removePropertyChangeListener(
+                        DMDircDesktopPane.this);
             }
         });
     }
@@ -240,6 +252,8 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
                 node.setUserObject(window);
                 model.insertNodeInto(node, parent);
                 window.addSelectionListener(DMDircDesktopPane.this);
+                ((TextFrame) window.getFrame()).addPropertyChangeListener(
+                        DMDircDesktopPane.this);
             }
         });
     }
@@ -257,10 +271,41 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
     /** {@inheritDoc} */
     @Override
     public void selectionChanged(final Window window) {
+        selectedWindow = window;
         final TreeNode[] path =
                          model.getPathToRoot(nodes.get(window.getContainer()));
         if (path != null && path.length > 0) {
             selectionModel.setSelectionPath(new TreePath(path));
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void propertyChange(final PropertyChangeEvent evt) {
+        if (!"maximum".equals(evt.getPropertyName())) {
+            return;
+        }
+        if (changing) {
+            return;
+        }
+        changing = true;
+        maximised = (Boolean) evt.getNewValue();
+        Stack<JInternalFrame> stack = new Stack<JInternalFrame>();
+        stack.addAll(Arrays.asList(getAllFrames()));
+        
+        while (!stack.empty()) {
+            JInternalFrame frame = stack.pop();
+            if (maximised) {
+                if (!frame.isMaximum()) {
+                    ((Window) frame).maximise();
+                }
+            } else {
+                if (frame.isMaximum()) {
+                    ((Window) frame).restore();
+                }
+            }
+        }
+        SwingController.getMainFrame().setMaximised(maximised);
+        changing = false;
     }
 }
