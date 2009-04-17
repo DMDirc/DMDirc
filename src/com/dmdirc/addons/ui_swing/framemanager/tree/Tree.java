@@ -59,6 +59,8 @@ public class Tree extends JTree implements TreeSelectionListener,
     private static final long serialVersionUID = 1;
     /** Drag selection enabled? */
     private boolean dragSelect;
+    /** Drag button 1? */
+    private boolean dragButton;
     /** Tree frame manager. */
     private TreeFrameManager manager;
     /** Current selection path. */
@@ -136,6 +138,15 @@ public class Tree extends JTree implements TreeSelectionListener,
                     @Override
                     public void run() {
                         setTreePath(path);
+                        if (((TextFrame) ((TreeViewNode) path.getLastPathComponent()).
+                                getFrameContainer().getFrame()).isIcon()) {
+                            try {
+                                ((TextFrame) ((TreeViewNode) path.getLastPathComponent()).
+                                        getFrameContainer().getFrame()).setIcon(false);
+                            } catch (PropertyVetoException ex) {
+                                //Ignore
+                            }
+                        }
                         ((TreeViewNode) path.getLastPathComponent()).getFrameContainer().activateFrame();
                     }
                 });
@@ -176,7 +187,7 @@ public class Tree extends JTree implements TreeSelectionListener,
      */
     @Override
     public void mouseDragged(final MouseEvent e) {
-        if (dragSelect) {
+        if (dragSelect && dragButton) {
             final TreeViewNode node = getNodeForLocation(e.getX(), e.getY());
             if (node != null) {
                 setSelection(new TreePath(node.getPath()));
@@ -213,6 +224,7 @@ public class Tree extends JTree implements TreeSelectionListener,
     @Override
     public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
+            dragButton = true;
             final TreePath selectedPath = getPathForLocation(e.getX(), e.getY());
             if (selectedPath != null) {
                 setSelection(selectedPath);
@@ -228,6 +240,7 @@ public class Tree extends JTree implements TreeSelectionListener,
      */
     @Override
     public void mouseReleased(MouseEvent e) {
+        dragButton = false;
         processMouseEvents(e);
     }
 
@@ -269,17 +282,6 @@ public class Tree extends JTree implements TreeSelectionListener,
                 popupMenu.add(new JMenuItem(new CloseFrameContainerAction(frame.getContainer())));
                 popupMenu.show(this, e.getX(), e.getY());
             }
-            if (((TextFrame) ((TreeViewNode) localPath.getLastPathComponent()).getFrameContainer().
-                    getFrame()).isIcon()) {
-                try {
-                    ((TextFrame) ((TreeViewNode) localPath.getLastPathComponent()).getFrameContainer().
-                            getFrame()).setIcon(false);
-                } catch (PropertyVetoException ex) {
-                    //Ignore
-                }
-            }
-            ((TreeViewNode) localPath.getLastPathComponent()).getFrameContainer().
-                            activateFrame();
         }
     }
 }
