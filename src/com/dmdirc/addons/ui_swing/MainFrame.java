@@ -478,13 +478,24 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void quit() {
-        if (IdentityManager.getGlobalConfig().getOptionBool("ui", "confirmQuit") && JOptionPane.showConfirmDialog(this,
+        quit(0);
+    }
+
+    /** 
+     * Exit code call to quit. 
+     * 
+     * @param exitCode Exit code
+     */
+    public void quit(final int exitCode) {
+        if (exitCode == 0 && IdentityManager.getGlobalConfig().getOptionBool("ui", "confirmQuit") && JOptionPane.showConfirmDialog(this,
                 "You are about to quit DMDirc, are you sure?", "Quit confirm",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE) !=
                 JOptionPane.YES_OPTION) {
             return;
         }
+        
+        this.exitCode = exitCode;
 
         new LoggingSwingWorker() {
 
@@ -505,16 +516,6 @@ public final class MainFrame extends JFrame implements WindowListener,
                 dispose();
             }
         }.execute();
-    }
-
-    /** 
-     * Exit code call to quit. 
-     * 
-     * @param exitCode Exit code
-     */
-    public void quit(final int exitCode) {
-        this.exitCode = exitCode;
-        quit();
     }
 
     /** {@inheritDoc} */

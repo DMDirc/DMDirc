@@ -245,7 +245,7 @@ public final class Main {
     public static void quit(final String reason, final int exitCode) {
         ServerManager.getServerManager().disconnectAll(reason);
 
-        System.exit(0);
+        System.exit(exitCode);
     }
 
     /**
