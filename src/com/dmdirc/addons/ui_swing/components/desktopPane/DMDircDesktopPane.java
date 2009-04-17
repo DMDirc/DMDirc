@@ -19,11 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.dmdirc.addons.ui_swing.components.desktopPane;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.addons.ui_swing.SwingController;
+import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -32,6 +31,7 @@ import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.components.TreeScroller;
+import com.dmdirc.addons.ui_swing.components.frames.InputTextFrame;
 import com.dmdirc.addons.ui_swing.components.frames.TextFrame;
 import com.dmdirc.addons.ui_swing.framemanager.tree.TreeViewModel;
 import com.dmdirc.addons.ui_swing.framemanager.tree.TreeViewNode;
@@ -42,9 +42,9 @@ import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
@@ -89,11 +89,18 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
     private boolean maximised;
     /** Changing maximisation. */
     private AtomicBoolean changing = new AtomicBoolean(false);
-    
+    /** Main Frame. */
+    private MainFrame mainFrame;
+
     /**
      * Initialises the DMDirc desktop pane.
+     * 
+     * @param mainFrame Main frame
      */
-    public DMDircDesktopPane() {
+    public DMDircDesktopPane(final MainFrame mainFrame) {
+        super();
+        
+        this.mainFrame = mainFrame;
         setBackground(new Color(238, 238, 238));
         setBorder(BorderFactory.createEtchedBorder());
         setUI(new ProxyDesktopPaneUI(getUI(), this));
@@ -109,7 +116,6 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
                 super.setPath(path);
                 ((TreeViewNode) path.getLastPathComponent()).getFrameContainer().activateFrame();
             }
-            
         };
 
         WindowManager.addFrameManager(this);
@@ -149,7 +155,7 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
         xOffset += FRAME_OPENING_OFFSET;
         yOffset += FRAME_OPENING_OFFSET;
     }
-    
+
     /**
      * Returns the select window.
      * 
@@ -185,7 +191,7 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
 
     @Override
     public void addWindow(final FrameContainer parent,
-                          final FrameContainer window) {
+            final FrameContainer window) {
         UIUtilities.invokeAndWait(new Runnable() {
 
             /** {@inheritDoc} */
@@ -201,7 +207,7 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
     /** {@inheritDoc} */
     @Override
     public void delWindow(final FrameContainer parent,
-                          final FrameContainer window) {
+            final FrameContainer window) {
         delWindow(window);
     }
 
@@ -219,9 +225,9 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
                 final TreeViewNode node = nodes.get(window);
                 if (node.getLevel() == 0) {
                     Logger.appError(ErrorLevel.MEDIUM,
-                                    "delServer triggered for root node" +
-                                    node.toString(),
-                                    new IllegalArgumentException());
+                            "delServer triggered for root node" +
+                            node.toString(),
+                            new IllegalArgumentException());
                 } else {
                     model.removeNodeFromParent(nodes.get(window));
                 }
@@ -240,7 +246,7 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
      * @param window Window to add
      */
     public void addWindow(final TreeViewNode parent,
-                          final FrameContainer window) {
+            final FrameContainer window) {
         UIUtilities.invokeAndWait(new Runnable() {
 
             /** {@inheritDoc} */
@@ -274,10 +280,14 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
     public void selectionChanged(final Window window) {
         selectedWindow = window;
         final TreeNode[] path =
-                         model.getPathToRoot(nodes.get(window.getContainer()));
+                model.getPathToRoot(nodes.get(window.getContainer()));
         if (path != null && path.length > 0) {
             selectionModel.setSelectionPath(new TreePath(path));
         }
+        if (window instanceof InputTextFrame) {
+            ((InputTextFrame) window).requestInputFieldFocus();
+        }
+        mainFrame.setTitle(window.getTitle());
     }
 
     /** {@inheritDoc} */
@@ -293,7 +303,7 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
         maximised = (Boolean) evt.getNewValue();
         Stack<JInternalFrame> stack = new Stack<JInternalFrame>();
         stack.addAll(Arrays.asList(getAllFrames()));
-        
+
         while (!stack.empty()) {
             JInternalFrame frame = stack.pop();
             if (maximised) {
@@ -306,7 +316,8 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
                 }
             }
         }
-        SwingController.getMainFrame().setMaximised(maximised);
+        mainFrame.setMaximised(maximised);
+        mainFrame.setTitle(((Window) evt.getSource()).getTitle());
         changing.set(false);
     }
 }

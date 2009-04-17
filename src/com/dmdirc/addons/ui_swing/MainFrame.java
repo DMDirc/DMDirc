@@ -38,7 +38,6 @@ import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.FramemanagerPosition;
 import com.dmdirc.ui.interfaces.MainWindow;
 import com.dmdirc.ui.interfaces.Window;
-import com.dmdirc.addons.ui_swing.components.frames.InputTextFrame;
 import com.dmdirc.addons.ui_swing.components.MenuBar;
 import com.dmdirc.addons.ui_swing.components.SnappingJSplitPane;
 import com.dmdirc.addons.ui_swing.framemanager.tree.TreeFrameManager;
@@ -154,10 +153,6 @@ public final class MainFrame extends JFrame implements WindowListener,
             @Override
             public void run() {
                 if (frame != null) {
-                    if (maximised) {
-                        setTitle(getTitlePrefix() + " - " + frame.getTitle());
-                    }
-
                     ActionManager.processEvent(CoreActionType.CLIENT_FRAME_CHANGED, null,
                             frame.getContainer());
 
@@ -169,9 +164,6 @@ public final class MainFrame extends JFrame implements WindowListener,
                     } catch (PropertyVetoException ex) {
                         Logger.userError(ErrorLevel.LOW, "Unable to set active window");
                     }
-                }
-                if (frame instanceof InputTextFrame) {
-                    ((InputTextFrame) frame).requestInputFieldFocus();
                 }
             }
         });
@@ -215,16 +207,18 @@ public final class MainFrame extends JFrame implements WindowListener,
             @Override
             public void run() {
                 maximised = max;
-                if (max) {
-                    final Window window = desktopPane.getSelectedWindow();
-                    if (window != null) {
-                        setTitle(getTitlePrefix() + " - " + window.getTitle());
-                    }
-                } else {
-                    setTitle(getTitlePrefix());
-                }
             }
         });
+    }
+
+    /** {@inheritDoc}. */
+    @Override
+    public void setTitle(final String title) {
+        if (maximised) {
+            super.setTitle(getTitlePrefix() + " - " + title);
+        } else {
+            super.setTitle(getTitlePrefix());
+        }
     }
 
     /** {@inheritDoc}. */
@@ -388,7 +382,7 @@ public final class MainFrame extends JFrame implements WindowListener,
      */
     private void initComponents() {
         frameManagerPanel = new JPanel();
-        desktopPane = new DMDircDesktopPane();
+        desktopPane = new DMDircDesktopPane(this);
 
         initFrameManagers();
 
@@ -512,7 +506,7 @@ public final class MainFrame extends JFrame implements WindowListener,
             }
         }.execute();
     }
-    
+
     /** 
      * Exit code call to quit. 
      * 
@@ -583,7 +577,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     @Override
     public void delWindow(FrameContainer window) {
         final JInternalFrame frame = (JInternalFrame) window.getFrame();
-        
+
         if (desktopPane.getAllFrames().length == 1) {
             setTitle(getTitlePrefix());
         }
@@ -611,11 +605,9 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (maximised) {
-            if (evt.getSource().equals(getActiveFrame()) &&
-                    "title".equals(evt.getPropertyName())) {
-                setTitle(getTitlePrefix() + " - " + (String) evt.getNewValue());
-            }
+        if (evt.getSource().equals(getActiveFrame()) &&
+                "title".equals(evt.getPropertyName())) {
+            setTitle((String) evt.getNewValue());
         }
     }
 }
