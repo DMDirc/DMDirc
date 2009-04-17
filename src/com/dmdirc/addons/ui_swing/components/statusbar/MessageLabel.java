@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.components.statusbar;
 
+import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.interfaces.StatusBarComponent;
@@ -107,7 +108,8 @@ public class MessageLabel extends JLabel implements StatusBarComponent,
             @Override
             public void run() {
                 setIcon(icon);
-                setText(newMessage);
+                    setText(UIUtilities.clipStringifNeeded(MessageLabel.this,
+                            newMessage, getWidth()));
                 messageNotifier = newNotifier;
 
                 if (messageTimer != null &&

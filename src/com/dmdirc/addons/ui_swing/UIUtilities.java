@@ -30,10 +30,12 @@ import com.dmdirc.addons.ui_swing.components.DMDircUndoableEditListener;
 import com.dmdirc.util.ReturnableThread;
 
 import java.awt.Dimension;
+import java.awt.FontMetrics;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -272,6 +274,55 @@ public final class UIUtilities {
      */
     public static boolean isCtrlDown(final KeyEvent e) {
         return Apple.isAppleUI() ? e.isMetaDown() : e.isControlDown();
+    }
+    
+    /**
+     * Clips a string if its longer than the specified width.
+     * 
+     * @param component Component containing string
+     * @param string String to check
+     * @param avaiableWidth Available Width
+     * 
+     * @return String (clipped if required)
+     */
+    public static String clipStringifNeeded(final JComponent component, 
+            final String string, final int avaiableWidth) {
+        if ((string == null) || (string.equals(""))) {
+            return "";
+        }
+        final FontMetrics fm = component.getFontMetrics(component.getFont());
+        final int width = SwingUtilities.computeStringWidth(fm, string);
+        if (width > avaiableWidth) {
+             return clipString(component, string, avaiableWidth);
+         }
+        return string;
+    }
+     /**
+     * Clips the passed string .
+     * 
+     * @param component Component containing string
+     * @param string String to check
+     * @param avaiableWidth Available Width
+     * 
+     * @return String (clipped if required)
+     */
+    public static String clipString(final JComponent component, 
+            final String string, final int avaiableWidth) {
+        if ((string == null) || (string.equals(""))) {
+            return "";
+        }
+        final FontMetrics fm = component.getFontMetrics(component.getFont());
+        final String clipString = "...";
+        int width = SwingUtilities.computeStringWidth(fm, clipString);
+        
+         int nChars = 0;
+         for(int max = string.length(); nChars < max; nChars++) {
+             width += fm.charWidth(string.charAt(nChars));
+             if (width > avaiableWidth) {
+                 break;
+             }
+         }
+         return string.substring(0, nChars) + clipString;
     }
 
 }
