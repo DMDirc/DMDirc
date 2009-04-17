@@ -430,7 +430,7 @@ if [ -e "${jar}" ]; then
 	fi;
 	${JAVA}${APPLEOPTS} -ea -jar ${jar} -l unix-${LAUNCHERVERSION} ${params}
 	EXITCODE=${?}
-	if [ ${EXITCODE} -eq -42 ]; then
+	if [ ${EXITCODE} -eq 42 ]; then
 		# The client says we need to up update, rerun ourself before exiting.
 		${0} ${params}
 	fi;
