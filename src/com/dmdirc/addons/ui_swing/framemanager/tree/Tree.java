@@ -129,7 +129,6 @@ public class Tree extends JTree implements TreeSelectionListener,
      */
     public void setSelection(final TreePath path) {
         if (this.path != null) {
-            final TreePath pathCopy = new TreePath(path);
             setSelectionPath(path);
             if (!this.path.equals(path)) {
                 UIUtilities.invokeLater(new Runnable() {
