@@ -25,19 +25,30 @@ package com.dmdirc.addons.ui_swing.dialogs.updater;
 import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 import com.dmdirc.addons.ui_swing.components.TextLabel;
+
 import java.awt.Dialog.ModalityType;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
- * 
- * @author greboid
+ * Prompts the user to restart the client, and restarts the client.
  */
 public class SwingRestartDialog extends StandardDialog implements ActionListener {
+    
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
     private static final long serialVersionUID = -7446499281414990074L;
+    /** Informational label. */
+    private TextLabel info;
+    
 
     /**
      * Dialog to restart the client.
@@ -47,25 +58,33 @@ public class SwingRestartDialog extends StandardDialog implements ActionListener
      */
     public SwingRestartDialog(final Window owner, final ModalityType modal) {
         super(owner, modal);
-        
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         
-        orderButtons(new JButton(), new JButton());
+        initComponents();
+        layoutComponents();
         
+        pack();
+        setLocationRelativeTo(owner);
+    }
+    
+    /** Initialise components. */
+    private void initComponents() {
+        orderButtons(new JButton(), new JButton());
+        info = new TextLabel("Your client needs to be restart to finish updating.");
         getOkButton().setText("Now");
         getCancelButton().setText("Later");
         
         getOkButton().addActionListener(this);  
         getCancelButton().addActionListener(this);
-        
+    }
+    
+    /** Layout Components. */
+    public void layoutComponents() {
         setLayout(new MigLayout("fill, wrap 2"));
         
-        add(new TextLabel("Your client needs to be restart to finish updating."), "grow, pushy, span 2");
+        add(info, "grow, pushy, span 2");
         add(getLeftButton(), "split, right");
         add(getRightButton(), "right");
-        
-        pack();
-        setLocationRelativeTo(owner);
     }
 
     /** 
@@ -77,10 +96,8 @@ public class SwingRestartDialog extends StandardDialog implements ActionListener
     public void actionPerformed(final ActionEvent e) {
         if (getOkButton().equals(e.getSource())) {
             SwingController.getMainFrame().quit(42);
-            dispose();
-        } else {
-            dispose();
         }
+        dispose();
     }
     
 }

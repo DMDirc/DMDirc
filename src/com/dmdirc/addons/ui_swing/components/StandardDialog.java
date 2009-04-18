@@ -63,6 +63,10 @@ public class StandardDialog extends JDialog {
      */
     public StandardDialog(final Frame owner, final boolean modal) {
         super(owner, modal);
+        
+        if (owner != null) {
+            setIconImages(owner.getIconImages());
+        }
     }
 
     /**
@@ -72,6 +76,10 @@ public class StandardDialog extends JDialog {
      */
     public StandardDialog(final Window owner, final ModalityType modal) {
         super(owner, modal);
+        
+        if (owner != null) {
+            setIconImages(owner.getIconImages());
+        }
     }
 
     /**
@@ -81,6 +89,10 @@ public class StandardDialog extends JDialog {
      */
     public StandardDialog(final Dialog owner, final boolean modal) {
         super(owner, modal);
+        
+        if (owner != null) {
+            setIconImages(owner.getIconImages());
+        }
     }
 
     /**
