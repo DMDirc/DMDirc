@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.components.statusbar;
 
+import com.dmdirc.addons.ui_swing.dialogs.updater.SwingRestartDialog;
 import com.dmdirc.addons.ui_swing.dialogs.updater.SwingUpdaterDialog;
 import com.dmdirc.interfaces.UpdateCheckerListener;
 import com.dmdirc.ui.IconManager;
@@ -29,6 +30,7 @@ import com.dmdirc.ui.interfaces.StatusBarComponent;
 import com.dmdirc.updater.UpdateChecker;
 import com.dmdirc.updater.UpdateChecker.STATE;
 
+import java.awt.Dialog.ModalityType;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -108,7 +110,10 @@ public class UpdaterLabel extends JLabel implements StatusBarComponent,
     @Override
     public void mouseClicked(final MouseEvent mouseEvent) {
         if (mouseEvent.getButton() == MouseEvent.BUTTON1) {
-            if (!UpdateChecker.getStatus().equals(UpdateChecker.STATE.CHECKING)) {
+            if (UpdateChecker.getStatus().equals(UpdateChecker.STATE.RESTART_REQUIRED)) {
+                SwingRestartDialog restartDialog = new SwingRestartDialog(null, ModalityType.MODELESS);
+                restartDialog.setVisible(true);
+            } else if (!UpdateChecker.getStatus().equals(UpdateChecker.STATE.CHECKING)) {
                 SwingUpdaterDialog.showSwingUpdaterDialog(UpdateChecker.getAvailableUpdates());
             }
         }

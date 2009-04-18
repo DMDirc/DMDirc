@@ -201,6 +201,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource().equals(getOkButton())) {
             getOkButton().setEnabled(false);
+            getCancelButton().setVisible(false);
 
             header.setText("DMDirc is updating the following components:");
 
@@ -214,12 +215,9 @@ public final class SwingUpdaterDialog extends StandardDialog implements
 
             if (UpdateChecker.getStatus() != STATE.UPDATING) {
                 dispose();
-                if (UpdateChecker.getStatus() == STATE.RESTART_REQUIRED) {
-                    SwingController.getMainFrame().quit(42);
-                }
             }
         } else if (e.getSource().equals(getCancelButton())) {
-            setVisible(false);
+            dispose();
         }
     }
 
@@ -232,11 +230,8 @@ public final class SwingUpdaterDialog extends StandardDialog implements
             getOkButton().setEnabled(true);
         }
         if (newStatus == STATE.RESTART_REQUIRED) {
-            getOkButton().setText("Restart now");
-            getCancelButton().setText("Restart later");
+            getCancelButton().setVisible(false);
         } else {
-            getOkButton().setText("OK");
-            getCancelButton().setText("Cancel");
             getCancelButton().setVisible(true);
         }
     }
