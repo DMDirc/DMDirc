@@ -22,11 +22,12 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.error;
 
-import com.dmdirc.addons.ui_swing.SwingController;
+import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.addons.ui_swing.components.PackingTable;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 import com.dmdirc.addons.ui_swing.components.renderers.ErrorLevelIconCellRenderer;
 import com.dmdirc.addons.ui_swing.components.renderers.DateCellRenderer;
+import com.dmdirc.addons.ui_swing.components.statusbar.SwingStatusBar;
 import com.dmdirc.logger.ErrorListener;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ErrorReportStatus;
@@ -82,16 +83,22 @@ public final class ErrorListDialog extends StandardDialog implements
     /** Delete all button. */
     private JButton deleteAllButton;
     /** Swing Controller. */
-    private SwingController controller;
+    private MainFrame mainFrame;
+    /** Status bar. */
+    private SwingStatusBar statusBar;
 
     /** 
      * Creates a new instance of ErrorListDialog. 
      * 
      * @param controller Swing controller
      */
-    private ErrorListDialog(final SwingController controller) {
-        super(controller.getMainFrame(), ModalityType.MODELESS);
-        this.controller = controller;
+    private ErrorListDialog(final MainFrame mainFrame, final SwingStatusBar statusBar) {
+        super(mainFrame, ModalityType.MODELESS);
+        if (statusBar == null) {
+            new Exception().printStackTrace();
+        }
+        this.mainFrame = mainFrame;
+        this.statusBar = statusBar;
 
         setTitle("DMDirc: Error list");
 
@@ -107,10 +114,12 @@ public final class ErrorListDialog extends StandardDialog implements
     /** 
      * Returns the instance of ErrorListDialog.
      * 
-     * @param controller Swing controller
+     * @param mainFrame Main frame
+     * @param statusBar Status bar
      */
-    public static void showErrorListDialog(final SwingController controller) {
-        me = getErrorListDialog(controller);
+    public static void showErrorListDialog(final MainFrame mainFrame, 
+            final SwingStatusBar statusBar) {
+        me = getErrorListDialog(mainFrame, statusBar);
 
         me.setLocationRelativeTo(me.getParent());
         me.setVisible(true);
@@ -120,14 +129,16 @@ public final class ErrorListDialog extends StandardDialog implements
     /**
      * Returns the current instance of the ErrorListDialog.
      * 
-     * @param controller Swing controller
+     * @param mainFrame Main frame
+     * @param statusBar Status bar
      *
      * @return The current PluginDErrorListDialogialog instance
      */
-    public static ErrorListDialog getErrorListDialog(final SwingController controller) {
+    public static ErrorListDialog getErrorListDialog(final MainFrame mainFrame, 
+            final SwingStatusBar statusBar) {
         synchronized (ErrorListDialog.class) {
             if (me == null) {
-                me = new ErrorListDialog(controller);
+                me = new ErrorListDialog(mainFrame, statusBar);
             } else if (me.tableModel.getRowCount() !=
                     me.errorManager.getErrorCount()) {
                 me.tableModel = new ErrorTableModel(me.errorManager.getErrors());
@@ -382,10 +393,7 @@ public final class ErrorListDialog extends StandardDialog implements
     /** {@inheritDoc} */
     @Override
     public boolean isReady() {
-        if (controller == null) {
-            return false;
-        }
-        return controller.getSwingStatusBar().isVisible();
+        return statusBar.isVisible();
     }
     
     /** {@inheritDoc} */

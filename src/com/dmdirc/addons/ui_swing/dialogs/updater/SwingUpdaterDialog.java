@@ -22,10 +22,10 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.updater;
 
+import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.interfaces.UpdateCheckerListener;
 import com.dmdirc.ui.interfaces.UpdaterDialog;
 import com.dmdirc.addons.ui_swing.components.TextLabel;
-import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.components.PackingTable;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 import com.dmdirc.addons.ui_swing.components.renderers.UpdateComponentTableCellRenderer;
@@ -74,18 +74,18 @@ public final class SwingUpdaterDialog extends StandardDialog implements
     /** Update.Status renderer. */
     private UpdateStatusTableCellRenderer updateStatusRenderer;
     /** Swing controller. */
-    private SwingController controller;
+    private MainFrame mainFrame;
 
     /**
      * Creates a new instance of the updater dialog.
      * 
      * @param updates A list of updates that are available.
-     * @param controller Swing controller
+     * @param mainFrame Main frame
      */
-    private SwingUpdaterDialog(final List<Update> updates, final SwingController controller) {
-        super(controller.getMainFrame(), false);
+    private SwingUpdaterDialog(final List<Update> updates, final MainFrame mainFrame) {
+        super(mainFrame, ModalityType.MODELESS);
         
-        this.controller = controller;
+        this.mainFrame = mainFrame;
 
         initComponents(updates);
         layoutComponents();
@@ -103,11 +103,11 @@ public final class SwingUpdaterDialog extends StandardDialog implements
      * Creates the dialog if one doesn't exist, and displays it.
      * 
      * @param updates The updates that are available
-     * @param controller Swing controller
+     * @param mainFrame Main frame
      */
     public static void showSwingUpdaterDialog(
-            final List<Update> updates, final SwingController controller) {
-        me = getSwingUpdaterDialog(updates, controller);
+            final List<Update> updates, final MainFrame mainFrame) {
+        me = getSwingUpdaterDialog(updates, mainFrame);
         me.display();
     }
 
@@ -115,15 +115,14 @@ public final class SwingUpdaterDialog extends StandardDialog implements
      * Gets the dialog if one doesn't exist.
      * 
      * @param updates The updates that are available
-     * @param controller Swing controller
-     * 
+     * @param mainFrame Main frame
      * @return SwingUpdaterDialog instance
      */
     public static SwingUpdaterDialog getSwingUpdaterDialog(
-            final List<Update> updates, final SwingController controller) {
+            final List<Update> updates, final MainFrame mainFrame) {
         synchronized (SwingUpdaterDialog.class) {
             if (me == null) {
-                me = new SwingUpdaterDialog(updates, controller);
+                me = new SwingUpdaterDialog(updates, mainFrame);
             } else {
                 ((UpdateTableModel) me.table.getModel()).setUpdates(updates);
             }
@@ -194,7 +193,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
     /** {@inheritDoc} */
     @Override
     public void display() {
-        setLocationRelativeTo(controller.getMainFrame());
+        setLocationRelativeTo(mainFrame);
         setVisible(true);
         requestFocusInWindow();
     }

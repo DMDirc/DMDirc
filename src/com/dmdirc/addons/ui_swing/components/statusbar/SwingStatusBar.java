@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.components.statusbar;
 
+import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -56,21 +57,25 @@ public final class SwingStatusBar extends JPanel implements StatusBar {
     private final InviteLabel inviteLabel;
     /** Swing controller. */
     private SwingController controller;
+    /** Main frame. */
+    private MainFrame mainFrame;
 
     /**
      * Creates a new instance of SwingStatusBar.
      * 
      * @param controller Swing controller
+     * @param mainFrame Main frame
      */
-    public SwingStatusBar(final SwingController controller) {
+    public SwingStatusBar(final SwingController controller, final MainFrame mainFrame) {
         super();
         
         this.controller = controller;
+        this.mainFrame = mainFrame;
 
         messageLabel = new MessageLabel();
-        errorPanel = new ErrorPanel(controller);
-        updateLabel = new UpdaterLabel(controller);
-        inviteLabel = new InviteLabel(controller.getMainFrame());
+        errorPanel = new ErrorPanel(mainFrame, this);
+        updateLabel = new UpdaterLabel(mainFrame);
+        inviteLabel = new InviteLabel(mainFrame);
 
         setLayout(new MigLayout("fill, ins 0, hidemode 3"));
 

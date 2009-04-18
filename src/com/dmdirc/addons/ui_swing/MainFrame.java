@@ -361,7 +361,7 @@ public final class MainFrame extends JFrame implements WindowListener,
      * Initialises the components for this frame.
      */
     private void initComponents() {
-        statusBar = new SwingStatusBar(controller);
+        statusBar = new SwingStatusBar(controller, this);
         frameManagerPanel = new JPanel();
         desktopPane = new DMDircDesktopPane(this);
 

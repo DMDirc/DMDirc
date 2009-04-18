@@ -22,7 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.components.statusbar;
 
-import com.dmdirc.addons.ui_swing.SwingController;
+import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.addons.ui_swing.dialogs.updater.SwingRestartDialog;
 import com.dmdirc.addons.ui_swing.dialogs.updater.SwingUpdaterDialog;
 import com.dmdirc.interfaces.UpdateCheckerListener;
@@ -52,17 +52,17 @@ public class UpdaterLabel extends JLabel implements StatusBarComponent,
      */
     private static final long serialVersionUID = 1;
     /** Swing controller. */
-    private SwingController controller;
+    private MainFrame mainFrame;
 
     /**
      * Instantiates a new updater label, handles showing updates on the status bar.
      * 
-     * @param controller Swing controller
+     * @param mainFrame Main frame
      */
-    public UpdaterLabel(final SwingController controller) {
+    public UpdaterLabel(final MainFrame mainFrame) {
         super();
         
-        this.controller = controller;
+        this.mainFrame = mainFrame;
         setBorder(BorderFactory.createEtchedBorder());
         addMouseListener(this);
         UpdateChecker.addListener(this);
@@ -123,7 +123,7 @@ public class UpdaterLabel extends JLabel implements StatusBarComponent,
                 restartDialog.setVisible(true);
             } else if (!UpdateChecker.getStatus().equals(UpdateChecker.STATE.CHECKING)) {
                 SwingUpdaterDialog.showSwingUpdaterDialog(
-                        UpdateChecker.getAvailableUpdates(), controller);
+                        UpdateChecker.getAvailableUpdates(), mainFrame);
             }
         }
     }

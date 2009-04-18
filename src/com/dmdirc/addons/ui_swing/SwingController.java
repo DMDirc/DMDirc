@@ -88,11 +88,9 @@ public final class SwingController extends Plugin implements UIController {
     private MainFrame me;
     /** Status bar. */
     private SwingStatusBar statusBar;
-    /** Semaphore used for controlling access to statusBar. */
-    private static final Semaphore STATUSBAR_SEMAPHORE = new Semaphore(1);
     /** Top level window list. */
     private final List<java.awt.Window> windows;
-    
+
     /** Instantiates a new SwingController. */
     public SwingController() {
         windows = new ArrayList<java.awt.Window>();
@@ -119,29 +117,7 @@ public final class SwingController extends Plugin implements UIController {
      * @return This UI's main window
      */
     public MainFrame getMainFrame() {
-        synchronized (SwingController.this) {
-            if (me == null) {
-                UIUtilities.invokeAndWait(new Runnable() {
-
-                    /** {@inheritDoc} */
-                    @Override
-                    public void run() {
-                        me = new MainFrame(SwingController.this);
-                        statusBar = me.getStatusBar();
-                    }
-                });
-                UIUtilities.invokeLater(new Runnable() {
-
-                    /** {@inheritDoc} */
-                    @Override
-                    public void run() {
-                        ErrorListDialog.getErrorListDialog(SwingController.this);
-                    }
-                });
-            }
-
-            return me;
-        }
+        return me;
     }
 
     /** {@inheritDoc} */
@@ -156,11 +132,6 @@ public final class SwingController extends Plugin implements UIController {
      * @return This UI's status bar
      */
     public SwingStatusBar getSwingStatusBar() {
-        STATUSBAR_SEMAPHORE.acquireUninterruptibly();
-        if (statusBar == null) {
-            getMainFrame();
-        }
-        STATUSBAR_SEMAPHORE.release();
         return statusBar;
     }
 
@@ -238,8 +209,7 @@ public final class SwingController extends Plugin implements UIController {
             /** {@inheritDoc} */
             @Override
             public void run() {
-                setObject(SwingUpdaterDialog.getSwingUpdaterDialog(updates,
-                        SwingController.this));
+                setObject(SwingUpdaterDialog.getSwingUpdaterDialog(updates, me));
             }
         });
     }
@@ -299,7 +269,7 @@ public final class SwingController extends Plugin implements UIController {
             /** {@inheritDoc} */
             @Override
             public void run() {
-                ChannelSettingsDialog.showChannelSettingsDialog(channel, getMainFrame());
+                ChannelSettingsDialog.showChannelSettingsDialog(channel, me);
             }
         });
     }
@@ -312,7 +282,7 @@ public final class SwingController extends Plugin implements UIController {
             /** {@inheritDoc} */
             @Override
             public void run() {
-                ServerSettingsDialog.showServerSettingsDialog(server, getMainFrame());
+                ServerSettingsDialog.showServerSettingsDialog(server, me);
             }
         });
     }
@@ -328,7 +298,7 @@ public final class SwingController extends Plugin implements UIController {
                 /** {@inheritDoc} */
                 @Override
                 public void run() {
-                    setObject(getMainFrame().getExtendedState());
+                    setObject(me.getExtendedState());
                 }
             });
             for (final java.awt.Window window : getTopLevelWindows()) {
@@ -338,7 +308,7 @@ public final class SwingController extends Plugin implements UIController {
                     @Override
                     public void run() {
                         SwingUtilities.updateComponentTreeUI(window);
-                        if (window != getMainFrame()) {
+                        if (window != me) {
                             window.pack();
                         }
                     }
@@ -349,7 +319,7 @@ public final class SwingController extends Plugin implements UIController {
                 /** {@inheritDoc} */
                 @Override
                 public void run() {
-                    getMainFrame().setExtendedState(state);
+                    me.setExtendedState(state);
                 }
             });
         } catch (ClassNotFoundException ex) {
@@ -460,7 +430,7 @@ public final class SwingController extends Plugin implements UIController {
             /** {@inheritDoc} */
             @Override
             public void run() {
-                URLDialog.showURLDialog(url, getMainFrame());
+                URLDialog.showURLDialog(url, me);
 
             }
         });
@@ -474,7 +444,7 @@ public final class SwingController extends Plugin implements UIController {
             /** {@inheritDoc} */
             @Override
             public void run() {
-                new SSLCertificateDialog(getMainFrame(), model).setVisible(true);
+                new SSLCertificateDialog(me, model).setVisible(true);
             }
         });
     }
@@ -527,7 +497,7 @@ public final class SwingController extends Plugin implements UIController {
     /** {@inheritDoc} */
     @Override
     public PreferencesInterface getUrlHandlersPrefsPanel() {
-        return new URLConfigPanel(getMainFrame());
+        return new URLConfigPanel(me);
     }
 
     /** {@inheritDoc} */
@@ -551,6 +521,16 @@ public final class SwingController extends Plugin implements UIController {
         if (GraphicsEnvironment.isHeadless()) {
             throw new IllegalStateException("Swing UI can't be run in a headless environment");
         }
+        UIUtilities.invokeAndWait(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                me = new MainFrame(SwingController.this);
+                statusBar = me.getStatusBar();
+                ErrorListDialog.getErrorListDialog(me, me.getStatusBar());
+            }
+        });
 
         Main.setUI(this);
     }
