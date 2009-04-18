@@ -215,6 +215,9 @@ public final class SwingUpdaterDialog extends StandardDialog implements
 
             if (UpdateChecker.getStatus() != STATE.UPDATING) {
                 dispose();
+                if (UpdateChecker.getStatus() == STATE.RESTART_REQUIRED) {
+                    new SwingRestartDialog(null, ModalityType.MODELESS).setVisible(true);
+                }
             }
         } else if (e.getSource().equals(getCancelButton())) {
             dispose();
