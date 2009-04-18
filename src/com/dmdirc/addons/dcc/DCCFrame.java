@@ -22,8 +22,10 @@
 
 package com.dmdirc.addons.dcc;
 
+import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
@@ -56,7 +58,7 @@ public abstract class DCCFrame extends WritableFrameContainer {
 			 * @param owner The frame container that owns this frame
 			 */
 			public EmptyFrame(final WritableFrameContainer owner) {
-				super(owner);
+				super(owner, (SwingController) Main.getUI());
 				setTextPane(null);
 				pack();
 			}

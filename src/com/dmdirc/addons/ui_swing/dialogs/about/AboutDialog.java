@@ -22,9 +22,9 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.about;
 
-import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -57,30 +57,39 @@ public final class AboutDialog extends StandardDialog implements
     /** Tab history. */
     private int history = 0;
 
-    /** Creates a new instance of AboutDialog. */
-    private AboutDialog() {
-        super(SwingController.getMainFrame(), false);
+    /** 
+     * Creates a new instance of AboutDialog. 
+     * 
+     * @param parentWindow Parent window
+     */
+    private AboutDialog(final Window parentWindow) {
+        super(parentWindow, ModalityType.MODELESS);
         initComponents();
     }
 
-    /** Creates the dialog if one doesn't exist, and displays it. */
-    public static void showAboutDialog() {
-        me = getAboutDialog();
+    /** 
+     * Creates the dialog if one doesn't exist, and displays it. 
+     * 
+     * @param parentWindow Parent window*/
+    public static void showAboutDialog(final Window parentWindow) {
+        me = getAboutDialog(parentWindow);
 
-        me.setLocationRelativeTo(SwingController.getMainFrame());
+        me.setLocationRelativeTo(parentWindow);
         me.setVisible(true);
         me.requestFocusInWindow();
     }
 
     /**
      * Returns the current instance of the AboutDialog.
+     * 
+     * @param parentWindow Parent window
      *
      * @return The current AboutDialog instance
      */
-    public static AboutDialog getAboutDialog() {
+    public static AboutDialog getAboutDialog(final Window parentWindow) {
         synchronized (AboutDialog.class) {
             if (me == null) {
-                me = new AboutDialog();
+                me = new AboutDialog(parentWindow);
             }
         }
 

@@ -23,11 +23,11 @@
 package com.dmdirc.addons.ui_swing.dialogs.url;
 
 import com.dmdirc.addons.ui_swing.components.TextLabel;
-import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 import com.dmdirc.addons.ui_swing.components.URLProtocolPanel;
 import com.dmdirc.util.URLHandler;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URI;
@@ -53,17 +53,21 @@ public class URLDialog extends StandardDialog implements ActionListener {
     private URI url;
     /** Blurb label. */
     private TextLabel blurb;
+    /** Swing controller. */
+    private Window parentWindow;
 
     /**
      * Instantiates the URLDialog.
      *
      * @param url URL to open once added
+     * @param parentWindow Parent window
      */
-    private URLDialog(final URI url) {
-        super(SwingController.getMainFrame(), false);
-
+    private URLDialog(final URI url, final Window parentWindow) {
+        super(parentWindow, ModalityType.MODELESS);
+        
         this.url = url;
-
+        this.parentWindow = parentWindow;
+        
         initComponents();
         layoutComponents();
         addListeners();
@@ -77,11 +81,12 @@ public class URLDialog extends StandardDialog implements ActionListener {
      * Creates the new URLDialog if one doesn't exist, and displays it.
      *
      * @param url URL to open once added
+     * @param parentWindow Parent window
      */
-    public static void showURLDialog(final URI url) {
-        me = getURLDialog(url);
+    public static void showURLDialog(final URI url, final Window parentWindow) {
+        me = getURLDialog(url, parentWindow);
 
-        me.setLocationRelativeTo(SwingController.getMainFrame());
+        me.setLocationRelativeTo(parentWindow);
         me.setVisible(true);
         me.requestFocusInWindow();
     }
@@ -90,13 +95,14 @@ public class URLDialog extends StandardDialog implements ActionListener {
      * Returns the current instance of the URLDialog.
      *
      * @param url URL to open once added
+     * @param parentWindow Parent window
      * 
      * @return The current URLDialog instance
      */
-    public static URLDialog getURLDialog(final URI url) {
+    public static URLDialog getURLDialog(final URI url, final Window parentWindow) {
         synchronized (URLDialog.class) {
             if (me == null) {
-                me = new URLDialog(url);
+                me = new URLDialog(url, parentWindow);
             }
         }
 
@@ -149,7 +155,7 @@ public class URLDialog extends StandardDialog implements ActionListener {
     public void validate() {
         super.validate();
 
-        setLocationRelativeTo(SwingController.getMainFrame());
+        setLocationRelativeTo(parentWindow);
     }
 
     /** {@inheritDoc} */

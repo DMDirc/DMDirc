@@ -22,6 +22,7 @@
 package com.dmdirc.addons.ui_swing.components.frames;
 
 import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.addons.ui_swing.components.SwingInputHandler;
@@ -52,10 +53,11 @@ public class CustomInputFrame extends InputTextFrame {
      * 
      * @param owner The frame container that owns this frame
      * @param commandParser The command parser to use for this frmae
+     * @param controller Swing controller
      */
     public CustomInputFrame(final WritableFrameContainer owner,
-            final CommandParser commandParser) {
-        super(owner);
+            final CommandParser commandParser, final SwingController controller) {
+        super(owner, controller);
 
         this.commandParser = commandParser;
 

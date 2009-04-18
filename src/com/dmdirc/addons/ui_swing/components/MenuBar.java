@@ -28,7 +28,6 @@ import com.dmdirc.ServerManager;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.addons.ui_swing.Apple;
 import com.dmdirc.addons.ui_swing.components.frames.ChannelFrame;
-import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.dialogs.FeedbackDialog;
 import com.dmdirc.addons.ui_swing.dialogs.NewServerDialog;
@@ -72,14 +71,18 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
     private JMenuItem disconnect;
     /** join. */
     private JMenuItem join;
+    /** Swing controller. */
+    private SwingController controller;
 
     /**
      * Instantiates a new menu bar.
      * 
-     * @param mainFrame Main frame instance
+     * @param controller Swing controller
      */
-    public MenuBar(final MainFrame mainFrame) {
+    public MenuBar(final SwingController controller) {
         super();
+        this.controller = controller;
+        
         setLayout(new MigLayout("ins 0, fillx"));
 
         initServerMenu();
@@ -88,7 +91,7 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         add(new WindowMenuFrameManager());
         initHelpMenu();
         add(Box.createHorizontalGlue(), "growx, pushx");
-        add(new MDIBar(mainFrame));
+        add(new MDIBar(controller.getMainFrame()));
         add(Box.createHorizontalStrut(PlatformDefaults.getPanelInsets(1).getUnit()));
 
         getActionMap().setParent(null);
@@ -242,24 +245,24 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
     @Override
     public void actionPerformed(final ActionEvent e) {
         if ("NewServer".equals(e.getActionCommand())) {
-            NewServerDialog.showNewServerDialog(SwingController.getMainFrame());
+            NewServerDialog.showNewServerDialog(controller.getMainFrame());
         } else if ("Preferences".equals(e.getActionCommand())) {
-            SwingPreferencesDialog.showSwingPreferencesDialog();
+            SwingPreferencesDialog.showSwingPreferencesDialog(controller.getMainFrame());
         } else if (e.getActionCommand().equals("About")) {
-            AboutDialog.showAboutDialog();
+            AboutDialog.showAboutDialog(controller.getMainFrame());
         } else if (e.getActionCommand().equals("Profile")) {
-            ProfileManagerDialog.showProfileManagerDialog(SwingController.
+            ProfileManagerDialog.showProfileManagerDialog(controller.
                     getMainFrame());
         } else if (e.getActionCommand().equals("Exit")) {
-            SwingController.getMainFrame().quit();
+            controller.getMainFrame().quit();
         } else if (e.getActionCommand().equals("Actions")) {
-            ActionsManagerDialog.showActionsManagerDialog();
+            ActionsManagerDialog.showActionsManagerDialog(controller.getMainFrame());
         } else if (e.getActionCommand().equals("Aliases")) {
-            AliasManagerDialog.showAliasManagerDialog();
+            AliasManagerDialog.showAliasManagerDialog(controller.getMainFrame());
         } else if (e.getActionCommand().equals("JoinDevChat")) {
             ServerManager.getServerManager().joinDevChat();
         } else if (e.getActionCommand().equals("feedback")) {
-            FeedbackDialog.showFeedbackDialog(SwingController.getMainFrame());
+            FeedbackDialog.showFeedbackDialog(controller.getMainFrame());
         } else if (e.getActionCommand().equals("ChannelSettings")) {
             final Window activeWindow = Main.getUI().getActiveWindow();
             if (activeWindow instanceof ChannelFrame) {
@@ -271,7 +274,7 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         } else if (e.getActionCommand().equals("Disconnect")) {
             Main.getUI().getActiveServer().disconnect();
         } else if (e.getActionCommand().equals("JoinChannel")) {
-            new StandardInputDialog(SwingController.getMainFrame(),
+            new StandardInputDialog(controller.getMainFrame(),
                                     ModalityType.MODELESS, "Join channel",
                                     "Enter the name of the channel to join.") {
 

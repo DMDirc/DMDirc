@@ -73,14 +73,19 @@ public final class SwingUpdaterDialog extends StandardDialog implements
     private UpdateComponentTableCellRenderer updateComponentRenderer;
     /** Update.Status renderer. */
     private UpdateStatusTableCellRenderer updateStatusRenderer;
+    /** Swing controller. */
+    private SwingController controller;
 
     /**
      * Creates a new instance of the updater dialog.
      * 
      * @param updates A list of updates that are available.
+     * @param controller Swing controller
      */
-    private SwingUpdaterDialog(final List<Update> updates) {
-        super(SwingController.getMainFrame(), false);
+    private SwingUpdaterDialog(final List<Update> updates, final SwingController controller) {
+        super(controller.getMainFrame(), false);
+        
+        this.controller = controller;
 
         initComponents(updates);
         layoutComponents();
@@ -98,10 +103,11 @@ public final class SwingUpdaterDialog extends StandardDialog implements
      * Creates the dialog if one doesn't exist, and displays it.
      * 
      * @param updates The updates that are available
+     * @param controller Swing controller
      */
     public static void showSwingUpdaterDialog(
-            final List<Update> updates) {
-        me = getSwingUpdaterDialog(updates);
+            final List<Update> updates, final SwingController controller) {
+        me = getSwingUpdaterDialog(updates, controller);
         me.display();
     }
 
@@ -109,14 +115,15 @@ public final class SwingUpdaterDialog extends StandardDialog implements
      * Gets the dialog if one doesn't exist.
      * 
      * @param updates The updates that are available
+     * @param controller Swing controller
      * 
      * @return SwingUpdaterDialog instance
      */
     public static SwingUpdaterDialog getSwingUpdaterDialog(
-            final List<Update> updates) {
+            final List<Update> updates, final SwingController controller) {
         synchronized (SwingUpdaterDialog.class) {
             if (me == null) {
-                me = new SwingUpdaterDialog(updates);
+                me = new SwingUpdaterDialog(updates, controller);
             } else {
                 ((UpdateTableModel) me.table.getModel()).setUpdates(updates);
             }
@@ -187,7 +194,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
     /** {@inheritDoc} */
     @Override
     public void display() {
-        setLocationRelativeTo(SwingController.getMainFrame());
+        setLocationRelativeTo(controller.getMainFrame());
         setVisible(true);
         requestFocusInWindow();
     }

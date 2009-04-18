@@ -27,11 +27,12 @@ import com.dmdirc.addons.ui_swing.components.renderers.URIHandlerCellRenderer;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesInterface;
 import com.dmdirc.config.prefs.validator.URLProtocolValidator;
-import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.components.PackingTable;
 import com.dmdirc.addons.ui_swing.components.StandardInputDialog;
 import com.dmdirc.addons.ui_swing.components.URLProtocolPanel;
 
+import java.awt.Dialog.ModalityType;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URI;
@@ -82,12 +83,18 @@ public class URLConfigPanel extends JPanel implements
     private JButton remove;
     /** Selected row. */
     private int selectedRow;
+    /** Parent window. */
+    private Window parentWindow;
 
     /**
      * Instantiates a new URL config panel.
+     * 
+     * @param parentWindow Parent window
      */
-    public URLConfigPanel() {
+    public URLConfigPanel(final Window parentWindow) {
         super();
+        
+        this.parentWindow = parentWindow;
 
         initComponents();
         addListeners();
@@ -255,8 +262,8 @@ public class URLConfigPanel extends JPanel implements
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == add) {
-            new StandardInputDialog(SwingController.getMainFrame(),
-                    false, "DMDIRC: New URL handler",
+            new StandardInputDialog(parentWindow, ModalityType.MODELESS, 
+                    "DMDIRC: New URL handler", 
                     "Please enter the name of the new protocol.",
                     new URLProtocolValidator()) {
 

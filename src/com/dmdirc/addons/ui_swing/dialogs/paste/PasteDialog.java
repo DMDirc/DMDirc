@@ -30,6 +30,7 @@ import com.dmdirc.addons.ui_swing.components.SwingInputHandler;
 import com.dmdirc.addons.ui_swing.components.TextAreaInputField;
 import com.dmdirc.addons.ui_swing.components.TextLabel;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -69,17 +70,22 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
     private final InputTextFrame parent;
     /** Edit button. */
     private JButton editButton;
+    /** Parent window. */
+    private Window parentWindow;
 
     /**
      * Creates a new instance of PreferencesDialog.
      * 
      * @param newParent The frame that owns this dialog
      * @param text text to show in the paste dialog
+     * @param parentWindow Parent window
      */
-    public PasteDialog(final InputTextFrame newParent, final String text) {
-        super(SwingController.getMainFrame(), false);
+    public PasteDialog(final InputTextFrame newParent, final String text,
+            final Window parentWindow) {
+        super(parentWindow, ModalityType.MODELESS);
 
         this.parent = newParent;
+        this.parentWindow = parentWindow;
 
         initComponents(text);
         initListeners();
@@ -92,7 +98,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         getOkButton().setSelected(true);
 
         pack();
-        setLocationRelativeTo(SwingController.getMainFrame());
+        setLocationRelativeTo(parentWindow);
     }
 
     /**
@@ -227,7 +233,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
 
                 @Override
                 public void run() {
-                    setLocationRelativeTo(SwingController.getMainFrame());
+                    setLocationRelativeTo(parentWindow);
                 }
             });
         } else if (getCancelButton().equals(actionEvent.getSource())) {

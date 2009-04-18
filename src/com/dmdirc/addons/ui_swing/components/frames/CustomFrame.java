@@ -22,6 +22,7 @@
 package com.dmdirc.addons.ui_swing.components.frames;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.commandparser.PopupType;
 
 import javax.swing.JPopupMenu;
@@ -46,9 +47,10 @@ public class CustomFrame extends TextFrame {
      * Creates a new instance of CustomFrame.
      *
      * @param owner The frame container that owns this frame
+     * @param controller Swing controller
      */
-    public CustomFrame(final FrameContainer owner) {
-        super(owner);
+    public CustomFrame(final FrameContainer owner, final SwingController controller) {
+        super(owner, controller);
 
         initComponents();
 

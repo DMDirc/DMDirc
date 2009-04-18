@@ -28,7 +28,6 @@ import com.dmdirc.config.prefs.validator.Validator;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 
 import java.awt.Component;
-import java.awt.Frame;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,7 +35,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
-import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -55,42 +53,6 @@ public abstract class StandardInputDialog extends StandardDialog {
     private TextLabel blurb;
     /** Message. */
     private String message;
-
-    /**
-     * Instantiates a new standard input dialog.
-     * 
-     * @param owner Dialog owner
-     * @param modal modal?
-     * @param title Dialog title
-     * @param message Dialog message
-     */
-    public StandardInputDialog(Frame owner, boolean modal, final String title,
-            final String message) {
-        this(owner, modal, title, message, new Validator<String>() {
-
-            /** {@inheritDoc} */
-            @Override
-            public ValidationResponse validate(final String object) {
-                return new ValidationResponse();
-            }
-        });
-    }
-
-    /**
-     * Instantiates a new standard input dialog.
-     * 
-     * @param owner Dialog owner
-     * @param modal modal?
-     * @param validator Textfield validator
-     * @param title Dialog title
-     * @param message Dialog message
-     */
-    public StandardInputDialog(Frame owner, boolean modal, final String title,
-            final String message, final Validator<String> validator) {
-        this(owner,
-                (modal) ? ModalityType.APPLICATION_MODAL : ModalityType.MODELESS,
-                title, message, validator);
-    }
 
     /**
      * Instantiates a new standard input dialog.

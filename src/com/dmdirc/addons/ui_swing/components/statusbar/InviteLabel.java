@@ -36,6 +36,7 @@ import com.dmdirc.interfaces.InviteListener;
 import com.dmdirc.ui.interfaces.StatusBarComponent;
 import com.dmdirc.util.MapList;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 
@@ -72,12 +73,18 @@ public class InviteLabel extends StatusbarPopupPanel implements StatusBarCompone
     private final JMenuItem dismiss;
     /** Accept invites menu item. */
     private final JMenuItem accept;
+    /** Parent window. */
+    private Window parentWindow;
 
     /**
      * Instantiates a new invite label.
+     * 
+     * @param parentWindow Parent window
      */
-    public InviteLabel() {
+    public InviteLabel(final Window parentWindow) {
         super(new JLabel());
+        
+        this.parentWindow = parentWindow;
 
         setBorder(BorderFactory.createEtchedBorder());
         label.setIcon(IconManager.getIconManager().getIcon("invite"));
@@ -127,7 +134,7 @@ public class InviteLabel extends StatusbarPopupPanel implements StatusBarCompone
     /** {@inheritDoc} */
     @Override
     protected StatusbarPopupWindow getWindow() {
-        return new InvitePopup(this, activeServer);
+        return new InvitePopup(this, activeServer, parentWindow);
     }
 
     /**

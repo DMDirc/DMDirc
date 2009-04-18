@@ -22,6 +22,7 @@
 package com.dmdirc.addons.ui_swing.components.frames;
 
 import com.dmdirc.Query;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.QueryCommandParser;
@@ -50,10 +51,12 @@ public final class QueryFrame extends InputTextFrame implements QueryWindow {
 
     /**
      * Creates a new QueryFrame.
+     * 
      * @param owner Parent Frame container
+     * @param controller Swing controller
      */
-    public QueryFrame(final Query owner) {
-        super(owner);
+    public QueryFrame(final Query owner, final SwingController controller) {
+        super(owner, controller);
 
         parentQuery = owner;
 

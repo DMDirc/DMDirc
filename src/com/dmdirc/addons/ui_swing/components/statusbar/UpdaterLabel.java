@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.components.statusbar;
 
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.dialogs.updater.SwingRestartDialog;
 import com.dmdirc.addons.ui_swing.dialogs.updater.SwingUpdaterDialog;
 import com.dmdirc.interfaces.UpdateCheckerListener;
@@ -50,12 +51,18 @@ public class UpdaterLabel extends JLabel implements StatusBarComponent,
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    /** Swing controller. */
+    private SwingController controller;
 
     /**
      * Instantiates a new updater label, handles showing updates on the status bar.
+     * 
+     * @param controller Swing controller
      */
-    public UpdaterLabel() {
+    public UpdaterLabel(final SwingController controller) {
         super();
+        
+        this.controller = controller;
         setBorder(BorderFactory.createEtchedBorder());
         addMouseListener(this);
         UpdateChecker.addListener(this);
@@ -111,10 +118,12 @@ public class UpdaterLabel extends JLabel implements StatusBarComponent,
     public void mouseClicked(final MouseEvent mouseEvent) {
         if (mouseEvent.getButton() == MouseEvent.BUTTON1) {
             if (UpdateChecker.getStatus().equals(UpdateChecker.STATE.RESTART_REQUIRED)) {
-                SwingRestartDialog restartDialog = new SwingRestartDialog(null, ModalityType.MODELESS);
+                SwingRestartDialog restartDialog = new SwingRestartDialog(
+                        null, ModalityType.MODELESS);
                 restartDialog.setVisible(true);
             } else if (!UpdateChecker.getStatus().equals(UpdateChecker.STATE.CHECKING)) {
-                SwingUpdaterDialog.showSwingUpdaterDialog(UpdateChecker.getAvailableUpdates());
+                SwingUpdaterDialog.showSwingUpdaterDialog(
+                        UpdateChecker.getAvailableUpdates(), controller);
             }
         }
     }

@@ -120,6 +120,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     private boolean closing = false;
     /** Input window for popup commands. */
     private Window inputWindow;
+    /** Swing controller. */
+    private SwingController controller;
 
     /** Click types. */
     public enum MouseClickType {
@@ -136,9 +138,12 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      * Creates a new instance of Frame.
      *
      * @param owner FrameContainer owning this frame.
+     * @param controller Swing controller
      */
-    public TextFrame(final FrameContainer owner) {
+    public TextFrame(final FrameContainer owner, final SwingController controller) {
         super();
+        this.controller = controller;
+        
         final ConfigManager config = owner.getConfigManager();
         frameBufferSize = config.getOptionInt("ui", "frameBufferSize");
         quickCopy = config.getOptionBool("ui", "quickCopy");
@@ -175,8 +180,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         setResizable(true);
         setIconifiable(true);
         setFocusable(true);
-        setPreferredSize(new Dimension(SwingController.getMainFrame().getWidth() /
-                2, SwingController.getMainFrame().getHeight() / 3));
+        setPreferredSize(new Dimension(controller.getMainFrame().getWidth() /
+                2, controller.getMainFrame().getHeight() / 3));
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         addPropertyChangeListener("UI", this);
@@ -193,6 +198,15 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         config.addChangeListener("ui", "frameBufferSize", this);
 
         addPropertyChangeListener("maximum", this);
+    }
+    
+    /**
+     * Returns this text frames swing controller.
+     * 
+     * @return Swing controller
+     */
+    public SwingController getController() {
+        return controller;
     }
 
     /** {@inheritDoc} */
@@ -309,8 +323,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         getTextPane().addMouseListener(this);
         getTextPane().addKeyListener(this);
 
-        searchBar =
-                new SwingSearchBar(this);
+        searchBar = new SwingSearchBar(this, controller.getMainFrame());
         searchBar.setVisible(false);
         searchBar.addKeyListener(this);
 

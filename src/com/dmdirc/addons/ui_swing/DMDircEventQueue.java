@@ -46,10 +46,19 @@ import javax.swing.text.JTextComponent;
  * Custom event queue to add commong functionality to certain components.
  */
 public final class DMDircEventQueue extends EventQueue {
+    
+    /** Swing Controller. */
+    private SwingController controller;
 
-    /** Instantiates the DMDircEventQueue. */
-    public DMDircEventQueue() {
+    /** 
+     * Instantiates the DMDircEventQueue. 
+     * 
+     * @param controller Swing controller
+     */
+    public DMDircEventQueue(final SwingController controller) {
         super();
+        
+        this.controller = controller;
     }
 
     /** {@inheritDoc} */
@@ -177,11 +186,11 @@ public final class DMDircEventQueue extends EventQueue {
      */
     private void handleWindowEvent(final WindowEvent we) {
         if (we.getSource() instanceof Window) {
-            if (SwingController.hasMainFrame()) {
+            if (controller.hasMainFrame()) {
                 if (we.getID() == WindowEvent.WINDOW_OPENED) {
-                    SwingController.getMainFrame().addTopLevelWindow((Window) we.getSource());
+                    controller.addTopLevelWindow((Window) we.getSource());
                 } else if (we.getID() == WindowEvent.WINDOW_CLOSED) {
-                    SwingController.getMainFrame().delTopLevelWindow((Window) we.getSource());
+                    controller.delTopLevelWindow((Window) we.getSource());
                 }
             }
         }

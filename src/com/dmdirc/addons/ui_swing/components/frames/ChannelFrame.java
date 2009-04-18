@@ -27,6 +27,7 @@ import com.dmdirc.ServerState;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.components.SnappingJSplitPane;
 import com.dmdirc.addons.ui_swing.components.SwingInputHandler;
 import com.dmdirc.addons.ui_swing.components.renderers.NicklistRenderer;
@@ -89,10 +90,12 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     /**
      * Creates a new instance of ChannelFrame. Sets up callbacks and handlers,
      * and default options for the form.
+     * 
      * @param owner The Channel object that owns this frame
+     * @param controller Swing controller
      */
-    public ChannelFrame(final Channel owner) {
-        super(owner);
+    public ChannelFrame(final Channel owner, final SwingController controller) {
+        super(owner, controller);
 
         parentChannel = owner;
 
@@ -252,7 +255,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     @Override
     public void actionPerformed(final ActionEvent actionEvent) {
         if (actionEvent.getSource() == settingsMI) {
-            ChannelSettingsDialog.showChannelSettingsDialog((Channel) getContainer());
+            ChannelSettingsDialog.showChannelSettingsDialog((Channel) getContainer(), getController().getMainFrame());
         }
     }
 

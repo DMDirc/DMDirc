@@ -35,6 +35,7 @@ import com.dmdirc.addons.ui_swing.components.PackingTable;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 
 import java.awt.Dimension;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -88,9 +89,13 @@ public final class AliasManagerDialog extends StandardDialog implements
     /** Show/Hide subsitution button. */
     private JButton showSubs;
 
-    /** Creates a new instance of ErrorListDialog. */
-    private AliasManagerDialog() {
-        super(SwingController.getMainFrame(), false);
+    /** 
+     * Creates a new instance of ErrorListDialog. 
+     * 
+     * @param parentWindow Parent window     
+     */
+    private AliasManagerDialog(final Window parentWindow) {
+        super(parentWindow, ModalityType.MODELESS);
 
         setTitle("DMDirc: Alias manager");
 
@@ -103,24 +108,30 @@ public final class AliasManagerDialog extends StandardDialog implements
         pack();
     }
 
-    /** Creates the dialog if one doesn't exist, and displays it. */
-    public static void showAliasManagerDialog() {
-        me = getAliasManagerDialog();
+    /** 
+     * Creates the dialog if one doesn't exist, and displays it. 
+     * 
+     * @param parentWindow Parent window     
+     */
+    public static void showAliasManagerDialog(final Window parentWindow) {
+        me = getAliasManagerDialog(parentWindow);
 
-        me.setLocationRelativeTo(SwingController.getMainFrame());
+        me.setLocationRelativeTo(parentWindow);
         me.setVisible(true);
         me.requestFocusInWindow();
     }
 
     /**
      * Returns the instance of AliasManagerDialog.
+     * 
+     * @param parentWindow Parent window     
      *
      * @return Instance of AliasManagerDialog
      */
-    public static AliasManagerDialog getAliasManagerDialog() {
+    public static AliasManagerDialog getAliasManagerDialog(final Window parentWindow) {
         synchronized (AliasManagerDialog.class) {
             if (me == null) {
-                me = new AliasManagerDialog();
+                me = new AliasManagerDialog(parentWindow);
             }
         }
 

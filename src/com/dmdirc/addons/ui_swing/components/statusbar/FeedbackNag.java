@@ -22,7 +22,6 @@
 
 package com.dmdirc.addons.ui_swing.components.statusbar;
 
-import com.dmdirc.Main;
 import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.dialogs.FeedbackDialog;
 import com.dmdirc.ui.IconManager;
@@ -59,12 +58,17 @@ public class FeedbackNag extends JLabel implements StatusBarComponent,
     private final JMenuItem dismiss;
     /** Show menu item. */
     private final JMenuItem show;
+    /** Swing Controller. */
+    private SwingController controller;
 
     /**
      * Creates a new feedback nag.
+     * 
+     * @param controller Swing controller
      */
-    public FeedbackNag() {
+    public FeedbackNag(final SwingController controller) {
         super();
+        this.controller = controller;
         icon = new ImageIcon(IconManager.getIconManager().getImage("feedback"));
         menu = new JPopupMenu();
         dismiss = new JMenuItem("Dismiss");
@@ -81,7 +85,7 @@ public class FeedbackNag extends JLabel implements StatusBarComponent,
         dismiss.addActionListener(this);
         addMouseListener(this);
 
-        Main.getUI().getStatusBar().addComponent(this);
+        controller.getStatusBar().addComponent(this);
     }
 
     /**
@@ -92,8 +96,8 @@ public class FeedbackNag extends JLabel implements StatusBarComponent,
     @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getButton() == 1) {
-            FeedbackDialog.showFeedbackDialog(SwingController.getMainFrame());
-            Main.getUI().getStatusBar().removeComponent(this);
+            FeedbackDialog.showFeedbackDialog(controller.getMainFrame());
+            controller.getStatusBar().removeComponent(this);
         }
         checkMouseEvent(e);
     }
@@ -157,8 +161,8 @@ public class FeedbackNag extends JLabel implements StatusBarComponent,
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == show) {
-            FeedbackDialog.showFeedbackDialog(SwingController.getMainFrame());
+            FeedbackDialog.showFeedbackDialog(controller.getMainFrame());
         }
-        Main.getUI().getStatusBar().removeComponent(this);
+        controller.getStatusBar().removeComponent(this);
     }
 }

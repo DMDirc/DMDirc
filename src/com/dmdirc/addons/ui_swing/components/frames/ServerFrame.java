@@ -24,6 +24,7 @@ package com.dmdirc.addons.ui_swing.components.frames;
 
 import com.dmdirc.Server;
 import com.dmdirc.ServerState;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
@@ -60,9 +61,10 @@ public final class ServerFrame extends InputTextFrame implements ServerWindow,
      * Creates a new ServerFrame.
      * 
      * @param owner Parent Frame container
+     * @param controller Swing controller
      */
-    public ServerFrame(final Server owner) {
-        super(owner);
+    public ServerFrame(final Server owner, final SwingController controller) {
+        super(owner, controller);
 
         initComponents();
         
@@ -106,7 +108,7 @@ public final class ServerFrame extends InputTextFrame implements ServerWindow,
     public void actionPerformed(final ActionEvent actionEvent) {
         if (actionEvent.getSource() == settingsMI) {
             ServerSettingsDialog.showServerSettingsDialog(getContainer().
-                    getServer());
+                    getServer(), getController().getMainFrame());
         }
     }
 

@@ -22,9 +22,10 @@
 
 package com.dmdirc.addons.osd;
 
+import com.dmdirc.Main;
+import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.messages.ColourManager;
-import com.dmdirc.addons.ui_swing.SwingController;
 
 import java.awt.Color;
 import java.awt.Point;
@@ -102,10 +103,11 @@ public final class OsdWindow extends JDialog implements MouseListener,
      * allow itself to be moved)
      * @param x The x-axis position for the OSD Window
      * @param y The y-axis position for the OSD window
+     * @param plugin Parent OSD Plugin
      */
     public OsdWindow(final String text, final boolean config, final int x,
             final int y, final OsdPlugin plugin) {
-        super(SwingController.getMainFrame(), false);
+        super((MainFrame) Main.getUI().getMainWindow(), false);
 
         this.plugin = plugin;
         this.config = config;
@@ -145,6 +147,9 @@ public final class OsdWindow extends JDialog implements MouseListener,
         } else {
             addMouseListener(this);
             new Timer("OSD Display Timer").schedule(new TimerTask() {
+                
+                /** {@inheritDoc} */
+                @Override
                 public void run() {
                     setVisible(false);
                     dispose();
@@ -198,7 +203,11 @@ public final class OsdWindow extends JDialog implements MouseListener,
         }        
     }
     
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event
+     */
     @Override
     public void mouseClicked(final MouseEvent e) {
         if (!config) {
@@ -207,7 +216,11 @@ public final class OsdWindow extends JDialog implements MouseListener,
         }
     }
     
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event
+     */
     @Override
     public void mousePressed(final MouseEvent e) {
         if (config) {
@@ -216,25 +229,41 @@ public final class OsdWindow extends JDialog implements MouseListener,
         }
     }
     
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event
+     */
     @Override
     public void mouseReleased(final MouseEvent e) {
         // Do nothing
     }
     
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event
+     */
     @Override
     public void mouseEntered(final MouseEvent e) {
         // Do nothing
     }
     
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event
+     */
     @Override
     public void mouseExited(final MouseEvent e) {
         // Do nothing
     }
     
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event
+     */
     @Override
     public void mouseDragged(final MouseEvent e) {
         final Point p = e.getLocationOnScreen();
@@ -242,7 +271,11 @@ public final class OsdWindow extends JDialog implements MouseListener,
         setLocation(p);
     }
     
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event
+     */
     @Override
     public void mouseMoved(final MouseEvent e) {
         // Do nothing

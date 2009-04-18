@@ -24,12 +24,12 @@ package com.dmdirc.addons.ui_swing.dialogs.serversetting;
 
 import com.dmdirc.Server;
 import com.dmdirc.config.Identity;
-import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 import com.dmdirc.addons.ui_swing.components.expandingsettings.SettingsPanel;
 import com.dmdirc.addons.ui_swing.components.expandingsettings.SettingsPanel.OptionType;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -61,19 +61,23 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
     /** Perform panel. */
     private PerformPanel performPanel;
     /** Settings panel. */
-    private SettingsPanel settingsPanel;
+    private SettingsPanel settingsPanel;    
     /** The tabbed pane. */
     private JTabbedPane tabbedPane;
+    /** Parent window. */
+    private Window parentWindow;
 
     /**
      * Creates a new instance of ServerSettingsDialog.
      *
      * @param server The server object that we're editing settings for
+     * @param parentWindow Parent window
      */
-    private ServerSettingsDialog(final Server server) {
-        super(SwingController.getMainFrame(), false);
+    private ServerSettingsDialog(final Server server, final Window parentWindow) {
+        super(parentWindow, ModalityType.MODELESS);
 
         this.server = server;
+        this.parentWindow = parentWindow;
 
         setTitle("Server settings");
         setResizable(false);
@@ -86,12 +90,14 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
      * Creates the dialog if one doesn't exist, and displays it.
      *
      * @param server The server object that we're editing settings for
+     * @param parentWindow Parent window
      */
-    public static void showServerSettingsDialog(final Server server) {
-        me = getServerSettingsDialog(server);
+    public static void showServerSettingsDialog(final Server server, 
+            final Window parentWindow) {
+        me = getServerSettingsDialog(server, parentWindow);
         
         me.pack();
-        me.setLocationRelativeTo(SwingController.getMainFrame());
+        me.setLocationRelativeTo(parentWindow);
         me.setVisible(true);
         me.requestFocusInWindow();
     }
@@ -100,13 +106,15 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
      * Returns the current instance of the ServerSettingsDialog.
      *
      * @param server The server object that we're editing settings for
-     *
+     * @param parentWindow Parent window
+     * 
      * @return The current ServerSettingsDialog instance
      */
-    public static ServerSettingsDialog getServerSettingsDialog(final Server server) {
+    public static ServerSettingsDialog getServerSettingsDialog(
+            final Server server, final Window parentWindow) {
         synchronized (ServerSettingsDialog.class) {
             if (me == null) {
-                me = new ServerSettingsDialog(server);
+                me = new ServerSettingsDialog(server, parentWindow);
             }
         }
 
@@ -122,7 +130,7 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
         modesPanel = new UserModesPane(server);
 
         ignoreList =
-                new IgnoreListPanel(server);
+                new IgnoreListPanel(server, parentWindow);
 
         performPanel =
                 new PerformPanel(server);

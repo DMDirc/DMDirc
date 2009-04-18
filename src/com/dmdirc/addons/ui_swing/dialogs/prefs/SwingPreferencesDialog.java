@@ -23,7 +23,6 @@ package com.dmdirc.addons.ui_swing.dialogs.prefs;
 
 import com.dmdirc.config.prefs.PreferencesCategory;
 import com.dmdirc.config.prefs.PreferencesManager;
-import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.components.ListScroller;
 import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
@@ -32,6 +31,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -81,12 +81,16 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     private PreferencesManager manager;
     /** Manager loading swing worker. */
     private LoggingSwingWorker worker;
+    /** Parent window. */
+    private Window parentWindow;
 
     /**
      * Creates a new instance of SwingPreferencesDialog.
+     * 
+     * @param parentWindow Parent window
      */
-    private SwingPreferencesDialog() {
-        super(SwingController.getMainFrame(), false);
+    private SwingPreferencesDialog(final Window parentWindow) {
+        super(parentWindow, ModalityType.MODELESS);
 
         initComponents();
 
@@ -124,9 +128,13 @@ public final class SwingPreferencesDialog extends StandardDialog implements
         addCategories(manager.getCategories());
     }
 
-    /** Returns the instance of SwingPreferencesDialog. */
-    public static void showSwingPreferencesDialog() {
-        me = getSwingPreferencesDialog();
+    /** 
+     * Returns the instance of SwingPreferencesDialog.
+     * 
+     * @param parentWindow Parent window
+     */
+    public static void showSwingPreferencesDialog(final Window parentWindow) {
+        me = getSwingPreferencesDialog(parentWindow);
 
         me.display();
     }
@@ -134,12 +142,14 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     /**
      * Returns the current instance of the ErrorListDialog.
      *
+     * @param parentWindow Parent window
+     * 
      * @return The current PluginDErrorListDialogialog instance
      */
-    public static SwingPreferencesDialog getSwingPreferencesDialog() {
+    public static SwingPreferencesDialog getSwingPreferencesDialog(final Window parentWindow) {
         synchronized (SwingPreferencesDialog.class) {
             if (me == null) {
-                me = new SwingPreferencesDialog();
+                me = new SwingPreferencesDialog(parentWindow);
             }
         }
 
@@ -280,7 +290,7 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     public void saveOptions() {
         if (manager != null) {
             if (manager.save()) {
-                JOptionPane.showMessageDialog(SwingController.getMainFrame(),
+                JOptionPane.showMessageDialog(parentWindow,
                         "One or more of the changes you made " +
                         "won't take effect until you restart the client.",
                         "Restart needed",

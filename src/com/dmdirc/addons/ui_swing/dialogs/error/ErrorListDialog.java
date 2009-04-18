@@ -81,10 +81,17 @@ public final class ErrorListDialog extends StandardDialog implements
     private JButton deleteButton;
     /** Delete all button. */
     private JButton deleteAllButton;
+    /** Swing Controller. */
+    private SwingController controller;
 
-    /** Creates a new instance of ErrorListDialog. */
-    private ErrorListDialog() {
-        super(SwingController.getMainFrame(), false);
+    /** 
+     * Creates a new instance of ErrorListDialog. 
+     * 
+     * @param controller Swing controller
+     */
+    private ErrorListDialog(final SwingController controller) {
+        super(controller.getMainFrame(), ModalityType.MODELESS);
+        this.controller = controller;
 
         setTitle("DMDirc: Error list");
 
@@ -97,9 +104,13 @@ public final class ErrorListDialog extends StandardDialog implements
         pack();
     }
 
-    /** Returns the instance of ErrorListDialog. */
-    public static void showErrorListDialog() {
-        me = getErrorListDialog();
+    /** 
+     * Returns the instance of ErrorListDialog.
+     * 
+     * @param controller Swing controller
+     */
+    public static void showErrorListDialog(final SwingController controller) {
+        me = getErrorListDialog(controller);
 
         me.setLocationRelativeTo(me.getParent());
         me.setVisible(true);
@@ -108,13 +119,15 @@ public final class ErrorListDialog extends StandardDialog implements
 
     /**
      * Returns the current instance of the ErrorListDialog.
+     * 
+     * @param controller Swing controller
      *
      * @return The current PluginDErrorListDialogialog instance
      */
-    public static ErrorListDialog getErrorListDialog() {
+    public static ErrorListDialog getErrorListDialog(final SwingController controller) {
         synchronized (ErrorListDialog.class) {
             if (me == null) {
-                me = new ErrorListDialog();
+                me = new ErrorListDialog(controller);
             } else if (me.tableModel.getRowCount() !=
                     me.errorManager.getErrorCount()) {
                 me.tableModel = new ErrorTableModel(me.errorManager.getErrors());
@@ -369,7 +382,10 @@ public final class ErrorListDialog extends StandardDialog implements
     /** {@inheritDoc} */
     @Override
     public boolean isReady() {
-        return SwingController.getSwingStatusBar().isVisible();
+        if (controller == null) {
+            return false;
+        }
+        return controller.getSwingStatusBar().isVisible();
     }
     
     /** {@inheritDoc} */

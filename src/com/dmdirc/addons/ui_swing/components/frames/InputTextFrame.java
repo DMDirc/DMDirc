@@ -22,6 +22,7 @@
 package com.dmdirc.addons.ui_swing.components.frames;
 
 import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.commandparser.PopupManager;
 import com.dmdirc.commandparser.PopupMenu;
 import com.dmdirc.commandparser.PopupMenuItem;
@@ -88,9 +89,10 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
      * Creates a new instance of InputFrame.
      *
      * @param owner WritableFrameContainer owning this frame.
+     * @param controller Swing controller
      */
-    public InputTextFrame(final WritableFrameContainer owner) {
-        super(owner);
+    public InputTextFrame(final WritableFrameContainer owner, final SwingController controller) {
+        super(owner, controller);
 
         initComponents();
 
@@ -347,7 +349,7 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
             //check whether the number of lines is over the limit
             if (getContainer().getNumLines(text) > pasteTrigger) {
                 //show the multi line paste dialog
-                new PasteDialog(this, text).setVisible(true);
+                new PasteDialog(this, text, getController().getMainFrame()).setVisible(true);
                 inputField.setText("");
             } else {
                 //send the lines

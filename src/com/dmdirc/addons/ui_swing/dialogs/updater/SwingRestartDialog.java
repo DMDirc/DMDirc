@@ -27,7 +27,6 @@ import com.dmdirc.addons.ui_swing.components.StandardDialog;
 import com.dmdirc.addons.ui_swing.components.TextLabel;
 
 import java.awt.Dialog.ModalityType;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -48,23 +47,27 @@ public class SwingRestartDialog extends StandardDialog implements ActionListener
     private static final long serialVersionUID = -7446499281414990074L;
     /** Informational label. */
     private TextLabel info;
+    /** Swing controller. */
+    private SwingController controller;
     
 
     /**
      * Dialog to restart the client.
      * 
-     * @param owner Parent window
+     * @param controller Swing controller
      * @param modal Modality
      */
-    public SwingRestartDialog(final Window owner, final ModalityType modal) {
-        super(owner, modal);
+    public SwingRestartDialog(final SwingController controller, final ModalityType modal) {
+        super(controller.getMainFrame(), modal);
+        this.controller = controller;
+        
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         
         initComponents();
         layoutComponents();
         
         pack();
-        setLocationRelativeTo(owner);
+        setLocationRelativeTo(controller.getMainFrame());
     }
     
     /** Initialise components. */
@@ -95,7 +98,7 @@ public class SwingRestartDialog extends StandardDialog implements ActionListener
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (getOkButton().equals(e.getSource())) {
-            SwingController.getMainFrame().quit(42);
+            controller.getMainFrame().quit(42);
         }
         dispose();
     }

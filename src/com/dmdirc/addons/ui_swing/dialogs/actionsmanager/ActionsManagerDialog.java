@@ -39,6 +39,7 @@ import com.dmdirc.addons.ui_swing.components.StandardInputDialog;
 import com.dmdirc.addons.ui_swing.components.renderers.ActionGroupListCellRenderer;
 
 import com.dmdirc.addons.ui_swing.dialogs.actioneditor.ActionEditorDialog;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -108,13 +109,17 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
         setResizable(false);
     }
 
-    /** Creates the dialog if one doesn't exist, and displays it. */
-    public static void showActionsManagerDialog() {
+    /** 
+     * Creates the dialog if one doesn't exist, and displays it. 
+     * 
+     * @param parentWindow Parent window
+     */
+    public static void showActionsManagerDialog(final Window parentWindow) {
         getActionsManagerDialog();
 
-        me.setIconImage(SwingController.getMainFrame().getIcon().getImage());
+        me.setIconImages(parentWindow.getIconImages());
         me.pack();
-        me.setLocationRelativeTo(SwingController.getMainFrame());
+        me.setLocationRelativeTo(parentWindow);
         me.setVisible(true);
         me.requestFocusInWindow();
 

@@ -22,16 +22,15 @@
 
 package com.dmdirc.addons.ui_swing.components.durationeditor;
 
-import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 import com.dmdirc.util.ListenerList;
 
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
@@ -99,7 +98,7 @@ public class DurationEditor extends StandardDialog implements ActionListener {
      * @since 0.6
      */
     public DurationEditor(final Window window, final long duration) {
-        super(SwingController.getMainFrame(), false);
+        super(window, ModalityType.MODELESS);
 
         this.window = window;
 

@@ -25,12 +25,12 @@ package com.dmdirc.addons.ui_swing.dialogs.channelsetting;
 import com.dmdirc.Channel;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 import com.dmdirc.addons.ui_swing.components.expandingsettings.SettingsPanel;
 import com.dmdirc.addons.ui_swing.components.expandingsettings.SettingsPanel.OptionType;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -82,8 +82,9 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
      *
      * @param newChannel The channel object that we're editing settings for
      */
-    private ChannelSettingsDialog(final Channel newChannel) {
-        super(SwingController.getMainFrame(), false);
+    private ChannelSettingsDialog(final Channel newChannel, 
+            final Window parentWindow) {
+        super(parentWindow, ModalityType.MODELESS);
 
         channel = newChannel;
         identity = IdentityManager.getChannelConfig(channel.getServer().
@@ -97,12 +98,14 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
      * Creates the dialog if one doesn't exist, and displays it.
      *
      * @param channel The channel object that we're editing settings for
+     * @param parentWindow Parent window
      */
-    public static void showChannelSettingsDialog(final Channel channel) {
-        me = getChannelSettingsDialog(channel);
+    public static void showChannelSettingsDialog(
+            final Channel channel, final Window parentWindow) {
+        me = getChannelSettingsDialog(channel, parentWindow);
 
         me.pack();
-        me.setLocationRelativeTo(SwingController.getMainFrame());
+        me.setLocationRelativeTo(parentWindow);
         me.setVisible(true);
         me.requestFocusInWindow();
     }
@@ -111,13 +114,15 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
      * Returns the current instance of the ChannelSettingsDialog.
      *
      * @param channel The channel object that we're editing settings for
+     * @param parentWindow Parent window
      *
      * @return The current ChannelSettingsDialog instance
      */
-    public static ChannelSettingsDialog getChannelSettingsDialog(final Channel channel) {
+    public static ChannelSettingsDialog getChannelSettingsDialog(
+            final Channel channel, final Window parentWindow) {
         synchronized (ChannelSettingsDialog.class) {
             if (me == null) {
-                me = new ChannelSettingsDialog(channel);
+                me = new ChannelSettingsDialog(channel, parentWindow);
             }
         }
 

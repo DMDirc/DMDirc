@@ -22,12 +22,12 @@
 
 package com.dmdirc.addons.ui_swing.components.statusbar;
 
-import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Window;
 
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -55,16 +55,20 @@ public abstract class StatusbarPopupWindow extends StandardDialog {
 
     /** The parent JPanel. */
     private final JPanel parent;
+    /** Parent window. */
+    private Window parentWindow;
 
     /**
      * Creates a new status bar popup window.
      *
      * @param parent The {@link JPanel} to use for positioning
+     * @param parentWindow Parent window
      */
-    public StatusbarPopupWindow(final JPanel parent) {
-        super(SwingController.getMainFrame(), false);
+    public StatusbarPopupWindow(final JPanel parent, final Window parentWindow) {
+        super(parentWindow, ModalityType.MODELESS);
 
         this.parent = parent;
+        this.parentWindow = parentWindow;
 
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     }
@@ -93,8 +97,8 @@ public abstract class StatusbarPopupWindow extends StandardDialog {
 
             final Point point = parent.getLocationOnScreen();
             point.translate(parent.getWidth() / 2 - this.getWidth() / 2, - this.getHeight());
-            final int maxX = Math.max(SwingController.getMainFrame().getLocationOnScreen().x
-                    + SwingController.getMainFrame().getWidth() - 10 - getWidth(),
+            final int maxX = Math.max(parentWindow.getLocationOnScreen().x
+                    + parentWindow.getWidth() - 10 - getWidth(),
                     parent.getLocationOnScreen().x + parent.getWidth() - 1 - getWidth());
             point.x = Math.min(maxX, point.x);
             setLocation(point);

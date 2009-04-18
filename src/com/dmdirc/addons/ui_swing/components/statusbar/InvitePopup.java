@@ -25,6 +25,7 @@ package com.dmdirc.addons.ui_swing.components.statusbar;
 import com.dmdirc.Invite;
 import com.dmdirc.Server;
 import com.dmdirc.ui.messages.Formatter;
+import java.awt.Window;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -51,9 +52,10 @@ public class InvitePopup extends StatusbarPopupWindow {
      * 
      * @param parent The parent of this popup
      * @param server The server to show invites for
+     * @param parentWindow Parent window
      */
-    public InvitePopup(final JPanel parent, final Server server) {
-        super(parent);
+    public InvitePopup(final JPanel parent, final Server server, final Window parentWindow) {
+        super(parent, parentWindow);
         this.server = server;
     }
 

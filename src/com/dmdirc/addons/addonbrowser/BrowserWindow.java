@@ -19,11 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.dmdirc.addons.addonbrowser;
 
 import com.dmdirc.Main;
 import com.dmdirc.addons.addonbrowser.AddonInfo.AddonType;
+import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
 import com.dmdirc.util.ConfigFile;
@@ -61,57 +61,42 @@ import net.miginfocom.swing.MigLayout;
  */
 public class BrowserWindow extends JDialog implements ActionListener,
         Comparator<AddonInfo> {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
     /** The search box. */
     private final JTextField searchBox = new JTextField();
-    
     /** The plugins check box. */
     private final JCheckBox pluginsBox = new JCheckBox("Plugins", true);
-    
     /** The themes check box. */
     private final JCheckBox themesBox = new JCheckBox("Themes", true);
-    
     /** The actions check box. */
     private final JCheckBox actionsBox = new JCheckBox("Action Packs", true);
-    
     /** The verified check box. */
     private final JCheckBox verifiedBox = new JCheckBox("Verified", true);
-    
     /** The unverified check box. */
     private final JCheckBox unverifiedBox = new JCheckBox("Unverified", false);
-    
     /** The installed checkbox. */
     private final JCheckBox installedBox = new JCheckBox("Installed", true);
-    
     /** The not installed checkbox. */
     private final JCheckBox notinstalledBox = new JCheckBox("Not installed", true);
-    
     /** The panel used to list addons. */
     private final JList list = new JList(new DefaultListModel());
-    
     /** The scrollpane for the list panel. */
-    private final JScrollPane scrollPane = new JScrollPane(list, 
+    private final JScrollPane scrollPane = new JScrollPane(list,
             JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    
     /** The sort by name button. */
     private final JRadioButton nameButton = new JRadioButton("Name", true);
-    
     /** The sort by rating button. */
     private final JRadioButton ratingButton = new JRadioButton("Rating", false);
-    
     /** The sort by date button. */
     private final JRadioButton dateButton = new JRadioButton("Date", false);
-    
     /** The sort by status button. */
     private final JRadioButton statusButton = new JRadioButton("Status", false);
-    
     /** All known addon infos. */
     private final List<AddonInfo> infos = new ArrayList<AddonInfo>();
 
@@ -119,30 +104,30 @@ public class BrowserWindow extends JDialog implements ActionListener,
      * Creates and displays a new browser window.
      */
     public BrowserWindow() {
-        super(SwingController.getMainFrame(), "DMDirc Addon Browser", false);
-        setIconImage(SwingController.getMainFrame().getIcon().getImage());
+        super((MainFrame) Main.getUI().getMainWindow(), "DMDirc Addon Browser", false);
+        setIconImage(((MainFrame) Main.getUI().getMainWindow()).getIcon().getImage());
         setResizable(false);
         setLayout(new MigLayout("fill, wmin 650, hmin 600"));
         scrollPane.getVerticalScrollBar().setUnitIncrement(15);
         list.setCellRenderer(new AddonInfoListCellRenderer());
-        
+
         JPanel panel = new JPanel(new MigLayout("fill"));
         panel.setBorder(BorderFactory.createTitledBorder("Search"));
         panel.add(searchBox, "growx");
         add(panel, "width 150!");
-        
+
         panel = new JPanel(new MigLayout("fill"));
         panel.setBorder(BorderFactory.createTitledBorder("Results"));
         panel.add(scrollPane, "grow");
         add(panel, "wrap, spany 4, grow");
-        
+
         panel = new JPanel(new MigLayout("fill, wrap"));
         panel.setBorder(BorderFactory.createTitledBorder("Types"));
         panel.add(pluginsBox, "grow");
         panel.add(themesBox, "grow");
         panel.add(actionsBox, "grow");
         add(panel, "wrap, pushy, growy, width 150!");
-        
+
         panel = new JPanel(new MigLayout("fill, wrap"));
         panel.setBorder(BorderFactory.createTitledBorder("Status"));
         panel.add(verifiedBox, "grow");
@@ -150,7 +135,7 @@ public class BrowserWindow extends JDialog implements ActionListener,
         panel.add(installedBox, "grow");
         panel.add(notinstalledBox, "grow");
         add(panel, "wrap, pushy, growy, width 150!");
-        
+
         panel = new JPanel(new MigLayout("fill, wrap"));
         panel.setBorder(BorderFactory.createTitledBorder("Sort by"));
         panel.add(nameButton, "grow");
@@ -158,23 +143,21 @@ public class BrowserWindow extends JDialog implements ActionListener,
         panel.add(dateButton, "grow");
         panel.add(statusButton, "grow");
         add(panel, "wrap, pushy, growy, width 150!");
-        
+
         initListeners();
-        
+
         try {
             loadData();
         } catch (IOException ex) {
-            
         } catch (InvalidConfigFileException ex) {
-            
         }
-        
+
         pack();
-        setLocationRelativeTo(SwingController.getMainFrame());
+        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         setVisible(true);
-        setLocationRelativeTo(SwingController.getMainFrame());
+        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
     }
-    
+
     /**
      * Registers listeners and sets up button groups.
      */
@@ -184,24 +167,24 @@ public class BrowserWindow extends JDialog implements ActionListener,
         group.add(ratingButton);
         group.add(dateButton);
         group.add(statusButton);
-        
+
         pluginsBox.addActionListener(this);
         themesBox.addActionListener(this);
         actionsBox.addActionListener(this);
-        
+
         nameButton.addActionListener(this);
         ratingButton.addActionListener(this);
         dateButton.addActionListener(this);
         statusButton.addActionListener(this);
-        
+
         verifiedBox.addActionListener(this);
         unverifiedBox.addActionListener(this);
         installedBox.addActionListener(this);
         notinstalledBox.addActionListener(this);
-        
+
         searchBox.addActionListener(this);
     }
-    
+
     /**
      * Loads addon data from the locally cached feed file.
      * 
@@ -212,20 +195,20 @@ public class BrowserWindow extends JDialog implements ActionListener,
         ConfigFile data = new ConfigFile(Main.getConfigDir() + File.separator + "addons.feed");
         data.read();
         int i = 0;
-        
+
         for (Map<String, String> entry : data.getKeyDomains().values()) {
             final AddonInfo info = new AddonInfo(entry);
             infos.add(info);
         }
-        
+
         sortAndFilter();
     }
-    
+
     /**
      * Sorts and filters the list of addons according to the currently selected
      * options.
      */
-         private void sortAndFilter() {
+    private void sortAndFilter() {
         ((DefaultListModel) list.getModel()).clear();
         list.add(new JLabel("Sorting list.", JLabel.CENTER), "grow, pushy");
 
@@ -278,7 +261,11 @@ public class BrowserWindow extends JDialog implements ActionListener,
         }.execute();
     }
 
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Action event
+     */
     @Override
     public void actionPerformed(final ActionEvent e) {
         sortAndFilter();
@@ -299,5 +286,4 @@ public class BrowserWindow extends JDialog implements ActionListener,
             return 0;
         }
     }
-
 }

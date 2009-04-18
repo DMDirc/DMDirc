@@ -27,6 +27,7 @@ import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.PreferencesCategory;
 import com.dmdirc.config.prefs.PreferencesManager;
@@ -35,7 +36,6 @@ import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.messages.Styliser;
-import com.dmdirc.addons.ui_swing.SwingController;
 
 import java.awt.AWTException;
 import java.awt.Frame;
@@ -100,7 +100,11 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
         notify(title, message, TrayIcon.MessageType.NONE);
     }
     
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     * 
+     * @param e Action event
+     */
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getActionCommand().equals("Show/hide")) {
@@ -157,7 +161,11 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
         manager.getCategory("Plugins").addSubCategory(category);
     }
     
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event
+     */
     @Override
     public void mouseClicked(final MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
@@ -165,31 +173,47 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
                 Main.getUI().getMainWindow().setVisible(false);
             } else {
                 Main.getUI().getMainWindow().setVisible(true);
-                SwingController.getMainFrame().setState(Frame.NORMAL);
-                SwingController.getMainFrame().toFront();
+                ((MainFrame) Main.getUI().getMainWindow()).setState(Frame.NORMAL);
+                ((MainFrame) Main.getUI().getMainWindow()).toFront();
             }
         }
     }
     
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event
+     */
     @Override
     public void mousePressed(final MouseEvent e) {
         //Ignore
     }
     
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event
+     */
     @Override
     public void mouseReleased(final MouseEvent e) {
         //Ignore
     }
     
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event
+     */
     @Override
     public void mouseEntered(final MouseEvent e) {
         //Ignore
     }
     
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Mouse event
+     */
     @Override
     public void mouseExited(final MouseEvent e) {
         //Ignore

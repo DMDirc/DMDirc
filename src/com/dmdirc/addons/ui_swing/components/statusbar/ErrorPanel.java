@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.components.statusbar;
 
+import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.dialogs.error.ErrorListDialog;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.ErrorListener;
@@ -61,8 +62,8 @@ public class ErrorPanel extends StatusbarPopupPanel implements ErrorListener, Ac
             getIcon("normal");
     /** Currently showing error level. */
     private ErrorLevel errorLevel;
-    /** Status bar. */
-    private final SwingStatusBar statusBar;
+    /** Status controller. */
+    private final SwingController controller;
     /** Error manager. */
     private final ErrorManager errorManager = ErrorManager.getErrorManager();
     /** Dismiss menu. */
@@ -75,12 +76,12 @@ public class ErrorPanel extends StatusbarPopupPanel implements ErrorListener, Ac
     /**
      * Creates a new ErrorPanel for the speicified status bar.
      *
-     * @param statusbar The status bar to which
+     * @param controller Swing controller
      */
-    public ErrorPanel(final SwingStatusBar statusbar) {
+    public ErrorPanel(final SwingController controller) {
         super(new JLabel());
 
-        this.statusBar = statusbar;
+        this.controller = controller;
         menu = new JPopupMenu();
         dismiss = new JMenuItem("Clear All");
         show = new JMenuItem("Open");
@@ -97,7 +98,7 @@ public class ErrorPanel extends StatusbarPopupPanel implements ErrorListener, Ac
     /** {@inheritDoc} */
     @Override
     protected StatusbarPopupWindow getWindow() {
-        return new ErrorPopup(this);
+        return new ErrorPopup(this, controller.getMainFrame());
     }
 
     /** Clears the error. */
@@ -153,7 +154,7 @@ public class ErrorPanel extends StatusbarPopupPanel implements ErrorListener, Ac
     /** {@inheritDoc} */
     @Override
     public boolean isReady() {
-        return statusBar.isValid();
+        return controller.getMainFrame().getStatusBar().isValid();
     }
 
     /**
@@ -209,7 +210,7 @@ public class ErrorPanel extends StatusbarPopupPanel implements ErrorListener, Ac
     public void mouseClicked(final MouseEvent mouseEvent) {
         super.mouseClicked(mouseEvent);
         if (mouseEvent.getButton() == MouseEvent.BUTTON1) {
-            ErrorListDialog.showErrorListDialog();
+            ErrorListDialog.showErrorListDialog(controller);
         }
         checkMouseEvent(mouseEvent);
     }
@@ -233,7 +234,7 @@ public class ErrorPanel extends StatusbarPopupPanel implements ErrorListener, Ac
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == show) {
-            ErrorListDialog.showErrorListDialog();
+            ErrorListDialog.showErrorListDialog(controller);
         } else {
             final Collection<ProgramError> errors =
                     ErrorManager.getErrorManager().getErrors();

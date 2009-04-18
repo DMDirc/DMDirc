@@ -40,6 +40,7 @@ import com.dmdirc.ui.interfaces.MainWindow;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.addons.ui_swing.components.MenuBar;
 import com.dmdirc.addons.ui_swing.components.SnappingJSplitPane;
+import com.dmdirc.addons.ui_swing.components.statusbar.SwingStatusBar;
 import com.dmdirc.addons.ui_swing.framemanager.tree.TreeFrameManager;
 import com.dmdirc.ui.CoreUIUtils;
 
@@ -51,8 +52,6 @@ import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -95,18 +94,23 @@ public final class MainFrame extends JFrame implements WindowListener,
     private boolean showVersion;
     /** Menu bar. */
     private MenuBar menu;
-    /** Top level window list. */
-    private final List<java.awt.Window> windows;
     /** Exit code. */
     private int exitCode = 0;
+    /** Swing Controller. */
+    private SwingController controller;
+    /** Status bar. */
+    private SwingStatusBar statusBar;
 
     /**
      * Creates new form MainFrame.
+     * 
+     * @param controller Swing controller
      */
-    protected MainFrame() {
+    protected MainFrame(final SwingController controller) {
         super();
-
-        windows = new ArrayList<java.awt.Window>();
+        
+        this.controller = controller;
+        
         initComponents();
 
         imageIcon =
@@ -142,6 +146,15 @@ public final class MainFrame extends JFrame implements WindowListener,
         });
 
         setTitle(getTitlePrefix());
+    }
+    
+    /**
+     * Returns the status bar for this frame.
+     * 
+     * @return Status bar
+     */
+    public SwingStatusBar getStatusBar() {
+        return statusBar;
     }
 
     /** {@inheritDoc}. */
@@ -323,39 +336,6 @@ public final class MainFrame extends JFrame implements WindowListener,
         //ignore
     }
 
-    /**
-     * Adds a top level window to the window list.
-     * 
-     * @param source New window
-     */
-    protected void addTopLevelWindow(final java.awt.Window source) {
-        synchronized (windows) {
-            windows.add(source);
-        }
-    }
-
-    /**
-     * Deletes a top level window to the window list.
-     * 
-     * @param source Old window
-     */
-    protected void delTopLevelWindow(final java.awt.Window source) {
-        synchronized (windows) {
-            windows.remove(source);
-        }
-    }
-
-    /**
-     * Returns a list of top level windows.
-     *
-     * @return Top level window list
-     */
-    public List<java.awt.Window> getTopLevelWindows() {
-        synchronized (windows) {
-            return windows;
-        }
-    }
-
     /** Initialiases the frame managers. */
     private void initFrameManagers() {
         final String manager = IdentityManager.getGlobalConfig().getOption("ui",
@@ -381,12 +361,13 @@ public final class MainFrame extends JFrame implements WindowListener,
      * Initialises the components for this frame.
      */
     private void initComponents() {
+        statusBar = new SwingStatusBar(controller);
         frameManagerPanel = new JPanel();
         desktopPane = new DMDircDesktopPane(this);
 
         initFrameManagers();
 
-        menu = new MenuBar(this);
+        menu = new MenuBar(controller);
         Apple.getApple().setMenuBar(menu);
         setJMenuBar(menu);
 
@@ -394,8 +375,7 @@ public final class MainFrame extends JFrame implements WindowListener,
 
         getContentPane().setLayout(new MigLayout("fill, ins rel, wrap 1, hidemode 2"));
         getContentPane().add(initSplitPane(), "grow, push");
-        getContentPane().add(SwingController.getSwingStatusBar(),
-                "hmax 20, wmax 100%-2*rel, wmin 100%-2*rel");
+        getContentPane().add(statusBar, "hmax 20, wmax 100%-2*rel, wmin 100%-2*rel");
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -523,7 +503,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     public void configChanged(final String domain, final String key) {
         if ("ui".equals(domain)) {
             if ("lookandfeel".equals(key)) {
-                SwingController.updateLookAndFeel();
+                controller.updateLookAndFeel();
             } else {
                 showVersion = IdentityManager.getGlobalConfig().getOptionBool("ui",
                         "showversion");

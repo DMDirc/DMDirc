@@ -26,7 +26,6 @@ import com.dmdirc.addons.ui_swing.components.frames.InputTextFrame;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.interfaces.SearchBar;
 import com.dmdirc.ui.messages.ColourManager;
-import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.actions.SearchAction;
 import com.dmdirc.addons.ui_swing.textpane.IRCDocument;
@@ -35,6 +34,7 @@ import com.dmdirc.addons.ui_swing.textpane.LinePosition;
 import com.dmdirc.addons.ui_swing.textpane.TextPane;
 import com.dmdirc.util.ListenerList;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -79,21 +79,24 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
     private JTextField searchBox;
     /** Line to search from. */
     private int line;
-    /** Character to search from. */
-    private int index;
     /** Listener list. */
     private final ListenerList listeners;
+    /** Parent window. */
+    private Window parentWindow;
 
     /**
      * Creates a new instance of StatusBar.
+     * 
      * @param newParent parent frame for the dialog
+     * @param parentWindow Parent window
      */
-    public SwingSearchBar(final TextFrame newParent) {
+    public SwingSearchBar(final TextFrame newParent, final Window parentWindow) {
         super();
 
         listeners = new ListenerList();
 
         this.parent = newParent;
+        this.parentWindow = parentWindow;
 
         getInputMap(JComponent.WHEN_FOCUSED).
                 put(KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0), "searchAction");
@@ -120,7 +123,6 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
         caseCheck.setText("Case sensitive");
 
         line = -1;
-        index = 0;
     }
 
     /** Lays out components. */
@@ -159,7 +161,6 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
         } else if (e.getSource() == caseCheck) {
             searchBox.setBackground(ColourManager.getColour("FFFFFF"));
             line = parent.getTextPane().getLastVisibleLine();
-            index = 0;
         }
     }
 
@@ -225,7 +226,11 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
 
         if (result == null) {
             foundText = false;
-        } else if ((textPane.getSelectedRange().getEndLine() != 0 || textPane.getSelectedRange().getEndPos() != 0) && ((up && result.getEndLine() > textPane.getSelectedRange().getEndLine()) || (!up && result.getStartLine() < textPane.getSelectedRange().getStartLine())) && JOptionPane.showConfirmDialog(SwingController.getMainFrame(),
+        } else if ((textPane.getSelectedRange().getEndLine() != 0 || 
+                textPane.getSelectedRange().getEndPos() != 0) 
+                && ((up && result.getEndLine() > textPane.getSelectedRange().getEndLine()) 
+                || (!up && result.getStartLine() < textPane.getSelectedRange().getStartLine())) 
+                && JOptionPane.showConfirmDialog(parentWindow,
                 "Do you want to continue searching from the " + (up ? "end" : "beginning"),
                 "No more results", JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE) != JOptionPane.OK_OPTION) {
@@ -260,7 +265,6 @@ public final class SwingSearchBar extends JPanel implements ActionListener,
                 search(Direction.UP, searchBox.getText(), caseCheck.isSelected());
             } else if (event.getKeyCode() != KeyEvent.VK_F3 && event.getKeyCode() != KeyEvent.VK_F) {
                 line = parent.getTextPane().getLastVisibleLine();
-                index = 0;
             }
         }
 

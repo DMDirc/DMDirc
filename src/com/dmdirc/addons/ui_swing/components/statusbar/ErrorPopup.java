@@ -29,6 +29,7 @@ import com.dmdirc.logger.ProgramError;
 import com.dmdirc.util.MapList;
 
 import java.awt.Font;
+import java.awt.Window;
 import java.util.List;
 
 import javax.swing.JLabel;
@@ -50,8 +51,14 @@ public class ErrorPopup extends StatusbarPopupWindow {
      */
     private static final long serialVersionUID = 1;
 
-    public ErrorPopup(final JPanel parent) {
-        super(parent);
+    /**
+     * Creates a new error popup.
+     * 
+     * @param parent Parent panel
+     * @param parentWindow Parent window
+     */
+    public ErrorPopup(final JPanel parent, final Window parentWindow) {
+        super(parent, parentWindow);
     }
 
     /** {@inheritDoc} */
