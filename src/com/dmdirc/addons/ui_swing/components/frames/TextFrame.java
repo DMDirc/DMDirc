@@ -236,7 +236,9 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 final boolean pref = frameParent.getConfigManager().
                         getOptionBool("ui", "maximisewindows");
                 if (pref || Main.getUI().getMainWindow().getMaximised()) {
+                    LOGGER.finest("Needs maximising");
                     maximise();
+                    LOGGER.finest("Done maximising");
                 }
                 setVisible(true);
             }
@@ -361,6 +363,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public final void propertyChange(final PropertyChangeEvent event) {
+        LOGGER.finer("Property change: name: " + event.getPropertyName()
+                + " value: " + event.getOldValue() + "->" + event.getNewValue());
         if ("UI".equals(event.getPropertyName())) {
             if (isMaximum()) {
                 hideTitlebar();
@@ -372,6 +376,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 showTitlebar();
             }
         }
+        LOGGER.finest("Done property change");
     }
 
     /** Hides the titlebar for this frame. */
@@ -976,25 +981,35 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     /** {@inheritDoc} */
     @Override
     public void maximise() {
+        LOGGER.finest("maximise(): About to invokeAndWait");
+
         UIUtilities.invokeAndWait(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
             public void run() {
+                LOGGER.finest("maximise(): Running");
+
                 try {
                     if (isMaximum()) {
                         return;
                     }
 
+                    LOGGER.finest("maximise(): About to set icon");
                     setIcon(false);
+                    LOGGER.finest("maximise(): About to set visible");
                     setVisible(true);
+                    LOGGER.finest("maximise(): About to set maximum");
                     setMaximum(true);
+                    LOGGER.finest("maximise(): Done?");
                 } catch (PropertyVetoException ex) {
                     Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
                 }
 
+                LOGGER.finest("maximise(): Done running");
             }
         });
+        LOGGER.finest("maximise(): Done");
     }
 
     /** {@inheritDoc} */

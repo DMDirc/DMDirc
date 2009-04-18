@@ -84,6 +84,10 @@ import net.miginfocom.layout.PlatformDefaults;
  */
 public final class SwingController extends Plugin implements UIController {
 
+    /** Logger to use. */
+    private static final java.util.logging.Logger LOGGER = java.util.logging
+            .Logger.getLogger(SwingController.class.getName());
+
     /** Singleton instance of MainFrame. */
     private MainFrame me;
     /** Status bar. */
@@ -191,12 +195,16 @@ public final class SwingController extends Plugin implements UIController {
     @Override
     public InputWindow getInputWindow(final WritableFrameContainer owner,
             final CommandParser commandParser) {
+        LOGGER.finest("getInputWindow()");
+
         return UIUtilities.invokeAndWait(new ReturnableThread<CustomInputFrame>() {
 
             /** {@inheritDoc} */
             @Override
             public void run() {
+                LOGGER.finest("getInputWindow(): run");
                 setObject(new CustomInputFrame(owner, commandParser, SwingController.this));
+                LOGGER.finest("getInputWindow(): object set: " + getObject());
             }
         });
     }

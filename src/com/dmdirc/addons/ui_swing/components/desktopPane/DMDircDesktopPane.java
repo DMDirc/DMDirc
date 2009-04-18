@@ -62,6 +62,10 @@ import javax.swing.tree.TreeSelectionModel;
 public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
         SelectionListener, PropertyChangeListener {
 
+    /** Logger to use. */
+    private static final java.util.logging.Logger LOGGER = java.util.logging
+            .Logger.getLogger(DMDircDesktopPane.class.getName());
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
@@ -315,6 +319,9 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
     /** {@inheritDoc} */
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
+        LOGGER.finer("Property change: name: " + evt.getPropertyName()
+                + " value: " + evt.getOldValue() + "->" + evt.getNewValue());
+        
         if (!"maximum".equals(evt.getPropertyName())) {
             return;
         }
