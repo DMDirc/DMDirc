@@ -51,19 +51,22 @@ public class MainFrameTest implements UITestIface {
     
     private static FrameFixture window;
     private DialogFixture newwin;
+    private static SwingController controller;
 
     @BeforeClass
     public static void setUpClass() {
         IdentityManager.load();
+        controller = new SwingController();
+        controller.onLoad();
 
-        Main.setUI(new SwingController());
+        Main.setUI(controller);
         
     }
 
     @Before
     public void setUp() {
         if (window == null) {
-            window = new FrameFixture((MainFrame) Main.getUI().getMainWindow());
+            window = new FrameFixture(controller.getMainWindow());
             window.show();
         }
     }

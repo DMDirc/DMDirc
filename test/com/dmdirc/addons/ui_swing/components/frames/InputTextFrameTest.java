@@ -64,11 +64,14 @@ public class InputTextFrameTest implements UITestIface {
     static JInternalFrameFixture window;
     static TestConfigManagerMap cmmap;
     static TestWritableFrameContainer owner;
+    static SwingController controller;
 
     @BeforeClass
     public static void setUpClass() {
         IdentityManager.load();
-        Main.setUI(new SwingController());
+        controller = new SwingController();
+        controller.onLoad();
+        Main.setUI(controller);
         Main.ensureExists(PluginManager.getPluginManager(), "tabcompletion");
     }
 
@@ -148,12 +151,11 @@ public class InputTextFrameTest implements UITestIface {
     protected void setupWindow(final ConfigManager configManager) {
         UIUtilities.initUISettings();
 
-        mainframe = new FrameFixture((MainFrame) Main.getUI().getMainWindow());
+        mainframe = new FrameFixture(controller.getMainWindow());
         mainframe.robot.settings().eventMode(EventMode.AWT);
 
         final CustomInputFrame titf = new CustomInputFrame(owner,
-                GlobalCommandParser.getGlobalCommandParser(), 
-                (SwingController) Main.getUI());
+                GlobalCommandParser.getGlobalCommandParser(), controller);
 
         titf.setTitle("testing123");
 
