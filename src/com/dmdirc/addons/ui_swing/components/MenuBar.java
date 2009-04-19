@@ -264,15 +264,15 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         } else if (e.getActionCommand().equals("feedback")) {
             FeedbackDialog.showFeedbackDialog(controller.getMainFrame());
         } else if (e.getActionCommand().equals("ChannelSettings")) {
-            final Window activeWindow = Main.getUI().getActiveWindow();
+            final Window activeWindow = controller.getActiveWindow();
             if (activeWindow instanceof ChannelFrame) {
-                Main.getUI().showChannelSettingsDialog(((ChannelFrame) activeWindow).
+                controller.showChannelSettingsDialog(((ChannelFrame) activeWindow).
                         getChannel());
             }
         } else if (e.getActionCommand().equals("ServerSettings")) {
-            Main.getUI().showServerSettingsDialog(Main.getUI().getActiveServer());
+            controller.showServerSettingsDialog(controller.getActiveServer());
         } else if (e.getActionCommand().equals("Disconnect")) {
-            Main.getUI().getActiveServer().disconnect();
+            controller.getActiveServer().disconnect();
         } else if (e.getActionCommand().equals("JoinChannel")) {
             new StandardInputDialog(controller.getMainFrame(),
                                     ModalityType.MODELESS, "Join channel",
@@ -284,7 +284,7 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
                 /** {@inheritDoc} */
                 @Override
                 public boolean save() {
-                    Main.getUI().getActiveServer().join(getText());
+                    controller.getActiveServer().join(getText());
                     return true;
                 }
 
@@ -300,7 +300,7 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
     /** {@inheritDoc} */
     @Override
     public void menuSelected(final MenuEvent e) {
-        final Window activeWindow = Main.getUI().getActiveWindow();
+        final Window activeWindow = controller.getActiveWindow();
 
         ssd.setEnabled(activeWindow != null && activeWindow.getContainer().
                 getServer() != null);

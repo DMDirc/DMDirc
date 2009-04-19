@@ -22,9 +22,9 @@
 
 package com.dmdirc.addons.ui_swing.dialogs;
 
-import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
+import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.prefs.validator.PortValidator;
@@ -36,7 +36,6 @@ import com.dmdirc.addons.ui_swing.dialogs.profiles.ProfileManagerDialog;
 
 import java.awt.Dialog.ModalityType;
 import java.awt.Insets;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -80,18 +79,18 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
     private JComboBox identityField;
     /** button. */
     private JButton editProfileButton;
-    /** Parent window. */
-    private Window parentWindow;
+    /** Main frame. */
+    private MainFrame mainFrame;
 
     /**
      * Creates a new instance of the dialog.
      * 
-     * @param parentWindow Parent window
+     * @param parentWindow Main frame
      */
-    private NewServerDialog(final Window parentWindow) {
-        super(parentWindow, ModalityType.MODELESS);
+    private NewServerDialog(final MainFrame mainFrame) {
+        super(mainFrame, ModalityType.MODELESS);
         
-        this.parentWindow = parentWindow;
+        this.mainFrame = mainFrame;
 
         initComponents();
         layoutComponents();
@@ -104,12 +103,12 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
     /**
      * Creates the new server dialog if one doesn't exist, and displays it.
      * 
-     * @param parentWindow Parent window
+     * @param mainFrame Main frame
      */
-    public static void showNewServerDialog(final Window parentWindow) {
-        me = getNewServerDialog(parentWindow);
+    public static void showNewServerDialog(final MainFrame mainFrame) {
+        me = getNewServerDialog(mainFrame);
 
-        me.setLocationRelativeTo(parentWindow);
+        me.setLocationRelativeTo(mainFrame);
         me.setVisible(true);
         me.requestFocusInWindow();
     }
@@ -117,14 +116,14 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
     /**
      * Returns the current instance of the NewServerDialog.
      * 
-     * @param parentWindow Parent window
+     * @param mainFrame Main frame
      *
      * @return The current NewServerDialog instance
      */
-    public static NewServerDialog getNewServerDialog(final Window parentWindow) {
+    public static NewServerDialog getNewServerDialog(final MainFrame mainFrame) {
         synchronized (NewServerDialog.class) {
             if (me == null) {
-                me = new NewServerDialog(parentWindow);
+                me = new NewServerDialog(mainFrame);
             }
         }
 
@@ -153,8 +152,8 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
 
         serverField.requestFocusInWindow();
 
-        if (ServerManager.getServerManager().numServers() == 0 || Main.getUI().
-                getActiveWindow() == null) {
+        if (ServerManager.getServerManager().numServers() == 0 || 
+                mainFrame.getActiveFrame() == null) {
             newServerWindowCheck.setSelected(true);
             newServerWindowCheck.setEnabled(false);
         } else {
@@ -263,7 +262,7 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
 
         // Open in a new window?
         if (newServerWindowCheck.isSelected() || ServerManager.getServerManager().
-                numServers() == 0 || Main.getUI().getActiveWindow() == null) {
+                numServers() == 0 || mainFrame.getActiveFrame() == null) {
             new LoggingSwingWorker() {
 
                 @Override
@@ -274,7 +273,7 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
             }.execute();
         } else {
             final com.dmdirc.ui.interfaces.Window active =
-                    Main.getUI().getActiveWindow();
+                    mainFrame.getActiveFrame();
             final Server server = ServerManager.getServerManager().
                     getServerFromFrame(active);
             new LoggingSwingWorker() {
@@ -304,7 +303,7 @@ public final class NewServerDialog extends StandardDialog implements ActionListe
         if (e.getSource() == getOkButton()) {
             save();
         } else if (e.getSource() == editProfileButton) {
-            ProfileManagerDialog.showProfileManagerDialog(parentWindow);
+            ProfileManagerDialog.showProfileManagerDialog(mainFrame );
         } else if (e.getSource() == getCancelButton()) {
             dispose();
         }
