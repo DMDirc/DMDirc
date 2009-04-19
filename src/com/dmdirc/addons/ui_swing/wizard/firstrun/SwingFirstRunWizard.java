@@ -26,6 +26,7 @@ import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.interfaces.ActionType;
+import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.logger.ErrorLevel;
@@ -103,7 +104,7 @@ public final class SwingFirstRunWizard implements WizardListener,
                 @Override
                 public void processEvent(final ActionType type,
                         final StringBuffer format, final Object... arguments) {
-                    ProfileManagerDialog.showProfileManagerDialog(wizardDialog);
+                    ProfileManagerDialog.showProfileManagerDialog((MainFrame) Main.getUI().getMainWindow());
                 }
             }, CoreActionType.CLIENT_OPENED);
             

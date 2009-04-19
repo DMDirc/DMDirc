@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.profiles;
 
+import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.addons.ui_swing.components.ListScroller;
@@ -31,7 +32,6 @@ import com.dmdirc.addons.ui_swing.components.renderers.ProfileListCellRenderer;
 import com.dmdirc.addons.ui_swing.dialogs.NewServerDialog;
 
 import java.awt.Dialog.ModalityType;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -77,17 +77,17 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     private int selectedIndex;
     /** Deleted profiles. */
     private final List<Profile> deletedProfiles;
-    /** Parent window. */
-    private Window parentWindow;
+    /** main frame. */
+    private MainFrame mainFrame;
 
     /** 
      * Creates a new instance of ProfileEditorDialog. 
      * 
-     * @param parentWindow Parent window
+     * @param parentWindow main frame
      */
-    private ProfileManagerDialog(final Window parentWindow) {
-        super(parentWindow, ModalityType.MODELESS);
-        this.parentWindow = parentWindow;
+    private ProfileManagerDialog(final MainFrame mainFrame) {
+        super(mainFrame, ModalityType.MODELESS);
+        this.mainFrame = mainFrame;
         deletedProfiles = new ArrayList<Profile>();
 
         initComponents();
@@ -106,13 +106,13 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     /** 
      * Creates the dialog if one doesn't exist, and displays it. 
      * 
-     * @param parentWindow Parent window
+     * @param mainFrame Main frame
      */
-    public static void showProfileManagerDialog(final Window parentWindow) {
-        me = getProfileManagerDialog(parentWindow);
+    public static void showProfileManagerDialog(final MainFrame mainFrame) {
+        me = getProfileManagerDialog(mainFrame);
 
         me.pack();
-        me.setLocationRelativeTo(parentWindow);
+        me.setLocationRelativeTo(mainFrame);
         me.setVisible(true);
         me.requestFocusInWindow();
     }
@@ -120,14 +120,14 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
     /**
      * Returns the current instance of the ProfileManagerDialog.
      * 
-     * @param parentWindow Parent window
+     * @param mainFrame Main frame
      *
      * @return The current ProfileManagerDialog instance
      */
-    public static ProfileManagerDialog getProfileManagerDialog(final Window parentWindow) {
+    public static ProfileManagerDialog getProfileManagerDialog(final MainFrame mainFrame) {
         synchronized (ProfileManagerDialog.class) {
             if (me == null) {
-                me = new ProfileManagerDialog(parentWindow);
+                me = new ProfileManagerDialog(mainFrame);
             }
         }
 
@@ -144,7 +144,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
 
         model = new ProfileListModel();
         profileList = new JList(model);
-        details = new ProfileDetailPanel(model, parentWindow);
+        details = new ProfileDetailPanel(model, mainFrame);
         addButton = new JButton("Add");
         deleteButton = new JButton("Delete");
         infoLabel =
@@ -217,7 +217,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
             dispose();
         }
         if (NewServerDialog.isNewServerDialogShowing()) {
-            NewServerDialog.getNewServerDialog(parentWindow).populateProfiles();
+            NewServerDialog.getNewServerDialog(mainFrame).populateProfiles();
         }
     }
 

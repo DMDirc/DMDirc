@@ -25,6 +25,7 @@ package com.dmdirc.harness;
 import com.dmdirc.config.ConfigManager;
 
 public class TestConfigManagerOptionToggle extends ConfigManager {
+    private static final long serialVersionUID = 8078917248288638755L;
 
     public TestConfigManagerOptionToggle() {
         super(null, null, null);

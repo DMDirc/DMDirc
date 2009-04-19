@@ -63,7 +63,7 @@ public class MainFrameTest implements UITestIface {
     @Before
     public void setUp() {
         if (window == null) {
-            window = new FrameFixture(SwingController.getMainFrame());
+            window = new FrameFixture((MainFrame) Main.getUI().getMainWindow());
             window.show();
         }
     }

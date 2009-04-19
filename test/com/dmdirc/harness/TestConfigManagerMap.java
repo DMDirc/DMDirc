@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TestConfigManagerMap extends ConfigManager {
+    private static final long serialVersionUID = 3604727894041756961L;
 
     public final Map<String, String> settings =
             new HashMap<String, String>();

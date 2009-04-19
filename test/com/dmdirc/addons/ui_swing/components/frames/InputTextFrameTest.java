@@ -25,6 +25,7 @@ package com.dmdirc.addons.ui_swing.components.frames;
 import com.dmdirc.addons.ui_swing.components.*;
 import com.dmdirc.addons.ui_swing.components.frames.InputTextFrame;
 import com.dmdirc.Main;
+import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
@@ -147,11 +148,12 @@ public class InputTextFrameTest implements UITestIface {
     protected void setupWindow(final ConfigManager configManager) {
         UIUtilities.initUISettings();
 
-        mainframe = new FrameFixture(SwingController.getMainFrame());
+        mainframe = new FrameFixture((MainFrame) Main.getUI().getMainWindow());
         mainframe.robot.settings().eventMode(EventMode.AWT);
 
         final CustomInputFrame titf = new CustomInputFrame(owner,
-                GlobalCommandParser.getGlobalCommandParser());
+                GlobalCommandParser.getGlobalCommandParser(), 
+                (SwingController) Main.getUI());
 
         titf.setTitle("testing123");
 

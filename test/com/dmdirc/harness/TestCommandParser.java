@@ -30,6 +30,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 public class TestCommandParser extends CommandParser {
+    private static final long serialVersionUID = 7073002401375438532L;
 
     public String nonCommandLine;
 
