@@ -31,18 +31,18 @@ import com.dmdirc.ServerManager;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.interfaces.ActionType;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.InviteListener;
 import com.dmdirc.ui.interfaces.StatusBarComponent;
 import com.dmdirc.util.MapList;
 
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -74,17 +74,19 @@ public class InviteLabel extends StatusbarPopupPanel implements StatusBarCompone
     /** Accept invites menu item. */
     private final JMenuItem accept;
     /** Parent window. */
-    private Window parentWindow;
+    private MainFrame mainFrame;
+    /** Active frame. */
+    private FrameContainer activeFrame;
 
     /**
      * Instantiates a new invite label.
      * 
-     * @param parentWindow Parent window
+     * @param mainFrame Parent window
      */
-    public InviteLabel(final Window parentWindow) {
+    public InviteLabel(final MainFrame mainFrame) {
         super(new JLabel());
         
-        this.parentWindow = parentWindow;
+        this.mainFrame = mainFrame;
 
         setBorder(BorderFactory.createEtchedBorder());
         label.setIcon(IconManager.getIconManager().getIcon("invite"));
@@ -134,7 +136,7 @@ public class InviteLabel extends StatusbarPopupPanel implements StatusBarCompone
     /** {@inheritDoc} */
     @Override
     protected StatusbarPopupWindow getWindow() {
-        return new InvitePopup(this, activeServer, parentWindow);
+        return new InvitePopup(this, activeServer, mainFrame);
     }
 
     /**
@@ -156,19 +158,14 @@ public class InviteLabel extends StatusbarPopupPanel implements StatusBarCompone
      * Updates the invite label for the currently active server.
      */
     private void update() {
-        update(Main.getUI().getActiveServer());
-    }
-
-    /**
-     * Updates the invite label for the server.
-     *
-     * @param server Server to update
-     */
-    private void update(final Server server) {
-        activeServer = server;
-        if (server != null && !inviteList.containsKey(server)) {
-            inviteList.add(server, server.getInvites());
-            server.addInviteListener(this);
+        if (activeFrame == null) {
+            activeServer = null;
+        } else {
+            activeServer = activeFrame.getServer();
+        }
+        if (activeServer != null && !inviteList.containsKey(activeServer)) {
+            inviteList.add(activeServer, activeServer.getInvites());
+            activeServer.addInviteListener(this);
         }
 
         if (activeServer == null || inviteList.get(activeServer).isEmpty()) {
@@ -206,11 +203,7 @@ public class InviteLabel extends StatusbarPopupPanel implements StatusBarCompone
     @Override
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {
-        if (arguments[0] == null) {
-            update((Server) null);
-        } else {
-            update(((FrameContainer) arguments[0]).getServer());
-        }
+        update();
     }
 
     /**

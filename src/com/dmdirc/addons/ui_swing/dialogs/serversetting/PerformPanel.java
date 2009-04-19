@@ -108,7 +108,7 @@ public final class PerformPanel extends JPanel implements ActionListener {
         textarea = new JTextArea();
         textarea.setColumns(40);
         
-        add(new JScrollPane(textarea), "grow");
+        add(new JScrollPane(textarea), "grow, push");
     }
     
     /** Adds listeners to the components. */

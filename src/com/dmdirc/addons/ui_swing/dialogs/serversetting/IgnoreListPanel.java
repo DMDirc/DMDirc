@@ -117,7 +117,7 @@ public final class IgnoreListPanel extends JPanel implements ActionListener,
         viewToggle.setEnabled(cachedIgnoreList.canConvert());
 
         setLayout(new MigLayout("fill, wrap 1"));
-        add(scrollPane, "growx, growy");
+        add(scrollPane, "grow, push");
         add(sizeLabel, "split 2, pushx, growx");
         add(viewToggle, "alignx center");
         add(addButton, "split 2, width 50%");

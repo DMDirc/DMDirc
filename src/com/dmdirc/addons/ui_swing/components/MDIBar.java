@@ -35,6 +35,7 @@ import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.addons.ui_swing.UIUtilities;
 
+import com.dmdirc.interfaces.SelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -49,7 +50,7 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Provides an MDI style bar for restore/minimise/close.
  */
-public class MDIBar extends JPanel implements FrameManager,
+public class MDIBar extends JPanel implements FrameManager, SelectionListener,
         PropertyChangeListener, ActionListener, ConfigChangeListener {
 
     private static final long serialVersionUID = -8028057596226636245L;
@@ -60,6 +61,8 @@ public class MDIBar extends JPanel implements FrameManager,
     private MainFrame mainFrame;
     private ConfigManager config;
     private String visibility;
+    /** Active frame. */
+    private Window activeFrame;
 
     /**
      * Instantiates a new MDI bar.
@@ -86,6 +89,7 @@ public class MDIBar extends JPanel implements FrameManager,
 
 
         WindowManager.addFrameManager(this);
+        WindowManager.addSelectionListener(this);
         closeButton.addActionListener(this);
         minimiseButton.addActionListener(this);
         restoreButton.addActionListener(this);
@@ -108,7 +112,10 @@ public class MDIBar extends JPanel implements FrameManager,
             @Override
             public void run() {
                 boolean show = true;
-                if ("alwaysShow".equalsIgnoreCase(visibility)) {
+                if (mainFrame == null) {
+                    show = false;
+                    return;
+                } else if ("alwaysShow".equalsIgnoreCase(visibility)) {
                     show = mainFrame.getDesktopPane().getAllFrames().length > 0;
                 } else if ("neverShow".equalsIgnoreCase(visibility)) {
                     show = false;
@@ -193,7 +200,6 @@ public class MDIBar extends JPanel implements FrameManager,
      */
     @Override
     public void actionPerformed(final ActionEvent e) {
-        final Window activeFrame = mainFrame.getActiveFrame();
         if (activeFrame == null) {
             return;
         }
@@ -211,5 +217,10 @@ public class MDIBar extends JPanel implements FrameManager,
     public void configChanged(final String domain, final String key) {
         visibility = config.getOption("ui", "mdiBarVisibility");
         check();
+    }
+
+    @Override
+    public void selectionChanged(Window window) {
+        activeFrame = window;
     }
 }

@@ -69,6 +69,8 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
     private final JMenuItem toggleStateMenuItem,  closeMenuItem,  minimiseMenuItem;
     /** Seperator. */
     private final JSeparator separator;
+    /** Active window. */
+    private Window activeWindow;
 
     /** 
      * Creates a new instance of WindowMenuFrameManager.
@@ -239,20 +241,20 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
     @Override
     public void actionPerformed(final ActionEvent e) {
         if ("ToggleState".equals(e.getActionCommand())) {
-            final Window window = Main.getUI().getActiveWindow();
-            if (window != null) {
-                window.toggleMaximise();
+            if (activeWindow != null) {
+                activeWindow.toggleMaximise();
             }
         } else if (e.getActionCommand().equals("Minimise")) {
-            ((TextFrame) Main.getUI().getActiveWindow()).minimise();
+            activeWindow.minimise();
         } else if (e.getActionCommand().equals("Close")) {
-            ((TextFrame) Main.getUI().getActiveWindow()).close();
+            activeWindow.close();
         }
     }
 
     /** {@inheritDoc} */
     @Override
     public void selectionChanged(final Window window) {
+        activeWindow = window;
         final Map<FrameContainer, FrameContainerMenuItem> newMap =
                 new TreeMap<FrameContainer, FrameContainerMenuItem>(
                 comparator);
@@ -269,7 +271,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
      * Checks and sets the state of the toggle menu item.
      */
     private void checkToggleState() {
-        if (Main.getUI().getActiveWindow() == null) {
+        if (activeWindow == null) {
             toggleStateMenuItem.setEnabled(false);
             closeMenuItem.setEnabled(false);
             minimiseMenuItem.setEnabled(false);
@@ -278,7 +280,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
             closeMenuItem.setEnabled(true);
             minimiseMenuItem.setEnabled(true);
 
-            if (Main.getUI().getActiveWindow().isMaximum()) {
+            if (activeWindow.isMaximum()) {
                 toggleStateMenuItem.setText("Restore");
                 toggleStateMenuItem.setIcon(IconManager.getIconManager().getIcon(
                         "restore"));

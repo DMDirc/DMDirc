@@ -108,8 +108,6 @@ public final class Main {
 
         loadUI(pm, IdentityManager.getGlobalConfig());
 
-        getUI().initUISettings();
-
         doFirstRun();
 
         ActionManager.init();
