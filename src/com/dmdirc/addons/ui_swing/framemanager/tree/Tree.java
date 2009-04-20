@@ -32,7 +32,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
@@ -64,8 +63,6 @@ public class Tree extends JTree implements MouseMotionListener,
     private TreeFrameManager manager;
     /** Current selection path. */
     private TreePath path;
-    /** Core wheel syncing. */
-    private final AtomicBoolean coreWait = new AtomicBoolean(false);
 
     /**
      * Specialised JTree for frame manager.
@@ -99,10 +96,7 @@ public class Tree extends JTree implements MouseMotionListener,
             @Override
             protected void setPath(final TreePath path) {
                 super.setPath(path);
-                if (!coreWait.get()) {
-                    coreWait.set(true);
-                    ((TreeViewNode) path.getLastPathComponent()).getFrameContainer().activateFrame();
-                }
+                ((TreeViewNode) path.getLastPathComponent()).getFrameContainer().activateFrame();
             }
         };
         setFocusable(false);
@@ -122,7 +116,6 @@ public class Tree extends JTree implements MouseMotionListener,
      * @param path Path
      */
     public void setTreePath(final TreePath path) {
-        coreWait.set(false);
         this.path = path;
         UIUtilities.invokeAndWait(new Runnable() {
 
@@ -169,10 +162,7 @@ public class Tree extends JTree implements MouseMotionListener,
         if (dragSelect && dragButton) {
             final TreeViewNode node = getNodeForLocation(e.getX(), e.getY());
             if (node != null) {
-                if (!coreWait.get()) {
-                    coreWait.set(true);
-                    ((TreeViewNode) new TreePath(node.getPath()).getLastPathComponent()).getFrameContainer().activateFrame();
-                }
+                ((TreeViewNode) new TreePath(node.getPath()).getLastPathComponent()).getFrameContainer().activateFrame();
             }
         }
         manager.checkRollover(e);
@@ -209,10 +199,7 @@ public class Tree extends JTree implements MouseMotionListener,
             dragButton = true;
             final TreePath selectedPath = getPathForLocation(e.getX(), e.getY());
             if (selectedPath != null) {
-                if (!coreWait.get()) {
-                    coreWait.set(true);
-                    ((TreeViewNode) selectedPath.getLastPathComponent()).getFrameContainer().activateFrame();
-                }
+                ((TreeViewNode) selectedPath.getLastPathComponent()).getFrameContainer().activateFrame();
             }
         }
         processMouseEvents(e);
