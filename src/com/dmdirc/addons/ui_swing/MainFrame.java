@@ -108,9 +108,9 @@ public final class MainFrame extends JFrame implements WindowListener,
      */
     protected MainFrame(final SwingController controller) {
         super();
-        
+
         this.controller = controller;
-        
+
         initComponents();
 
         imageIcon =
@@ -147,7 +147,7 @@ public final class MainFrame extends JFrame implements WindowListener,
 
         setTitle(getTitlePrefix());
     }
-    
+
     /**
      * Returns the status bar for this frame.
      * 
@@ -170,9 +170,8 @@ public final class MainFrame extends JFrame implements WindowListener,
                             frame.getContainer());
 
                     try {
-                        ((JInternalFrame) frame).setVisible(true);
                         ((JInternalFrame) frame).setIcon(false);
-                        ((JInternalFrame) frame).moveToFront();
+                        ((JInternalFrame) frame).setVisible(true);
                         ((JInternalFrame) frame).setSelected(true);
                     } catch (PropertyVetoException ex) {
                         Logger.userError(ErrorLevel.LOW, "Unable to set active window");
@@ -188,18 +187,32 @@ public final class MainFrame extends JFrame implements WindowListener,
      * @return Frame manager size.
      */
     public int getFrameManagerSize() {
-        if (position == FramemanagerPosition.LEFT ||
-                position == FramemanagerPosition.RIGHT) {
-            return frameManagerPanel.getWidth();
-        } else {
-            return frameManagerPanel.getHeight();
-        }
+        return UIUtilities.invokeAndWait(new ReturnableThread<Integer>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                if (position == FramemanagerPosition.LEFT ||
+                        position == FramemanagerPosition.RIGHT) {
+                    setObject(frameManagerPanel.getWidth());
+                } else {
+                    setObject(frameManagerPanel.getHeight());
+                }
+            }
+        });
     }
 
     /** {@inheritDoc}. */
     @Override
     public ImageIcon getIcon() {
-        return imageIcon;
+        return UIUtilities.invokeAndWait(new ReturnableThread<ImageIcon>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                setObject(imageIcon);
+            }
+        });
     }
 
     /**
@@ -208,7 +221,14 @@ public final class MainFrame extends JFrame implements WindowListener,
      * @return The active window
      */
     public Window getActiveFrame() {
-        return desktopPane.getSelectedWindow();
+        return UIUtilities.invokeAndWait(new ReturnableThread<Window>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                setObject(desktopPane.getSelectedWindow());
+            }
+        });
     }
 
     /** {@inheritDoc}. */
@@ -338,23 +358,30 @@ public final class MainFrame extends JFrame implements WindowListener,
 
     /** Initialiases the frame managers. */
     private void initFrameManagers() {
-        final String manager = IdentityManager.getGlobalConfig().getOption("ui",
-                "framemanager");
+        UIUtilities.invokeAndWait(new Runnable() {
 
-        try {
-            mainFrameManager = (FrameManager) Class.forName(manager).
-                    getConstructor().newInstance();
-        } catch (Exception ex) {
-            // Throws craploads of exceptions and we want to handle them all
-            // the same way, so we might as well catch Exception
-            mainFrameManager = new TreeFrameManager();
-        }
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                final String manager = IdentityManager.getGlobalConfig().getOption("ui",
+                        "framemanager");
+
+                try {
+                    mainFrameManager = (FrameManager) Class.forName(manager).
+                            getConstructor().newInstance();
+                } catch (Exception ex) {
+                    // Throws craploads of exceptions and we want to handle them all
+                    // the same way, so we might as well catch Exception
+                    mainFrameManager = new TreeFrameManager();
+                }
 
 
-        WindowManager.addFrameManager(mainFrameManager);
-        mainFrameManager.setParent(frameManagerPanel);
+                WindowManager.addFrameManager(mainFrameManager);
+                mainFrameManager.setParent(frameManagerPanel);
 
-        WindowManager.addFrameManager(this);
+                WindowManager.addFrameManager(MainFrame.this);
+            }
+        });
     }
 
     /**
@@ -474,7 +501,7 @@ public final class MainFrame extends JFrame implements WindowListener,
                 JOptionPane.YES_OPTION) {
             return;
         }
-        
+
         this.exitCode = exitCode;
 
         new LoggingSwingWorker() {
@@ -535,7 +562,14 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** {@inheritDoc}. */
     @Override
     public void addWindow(final FrameContainer window) {
-        addWindow(window, desktopPane.getAllFrames().length - 1);
+        UIUtilities.invokeAndWait(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                addWindow(window, desktopPane.getAllFrames().length - 1);
+            }
+        });
     }
 
     /**
@@ -545,28 +579,42 @@ public final class MainFrame extends JFrame implements WindowListener,
      * @param index Index of the window to be added
      */
     public void addWindow(final FrameContainer window, final int index) {
-        final JInternalFrame frame = (JInternalFrame) window.getFrame();
+        UIUtilities.invokeAndWait(new Runnable() {
 
-        // Add the frame
-        desktopPane.add(frame, index);
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                final JInternalFrame frame = (JInternalFrame) window.getFrame();
 
-        frame.addPropertyChangeListener("title", this);
-        frame.addPropertyChangeListener("maximum", this);
+                // Add the frame
+                desktopPane.add(frame, index);
+
+                frame.addPropertyChangeListener("title", MainFrame.this);
+                frame.addPropertyChangeListener("maximum", MainFrame.this);
+            }
+        });
     }
 
     /** {@inheritDoc}. */
     @Override
-    public void delWindow(FrameContainer window) {
-        final JInternalFrame frame = (JInternalFrame) window.getFrame();
+    public void delWindow(final FrameContainer window) {
+        UIUtilities.invokeAndWait(new Runnable() {
 
-        if (desktopPane.getAllFrames().length == 1) {
-            setTitle(getTitlePrefix());
-        }
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                final JInternalFrame frame = (JInternalFrame) window.getFrame();
 
-        desktopPane.remove(frame);
+                if (desktopPane.getAllFrames().length == 1) {
+                    setTitle(getTitlePrefix());
+                }
 
-        frame.removePropertyChangeListener("title", this);
-        frame.removePropertyChangeListener("maximum", this);
+                desktopPane.remove(frame);
+
+                frame.removePropertyChangeListener("title", MainFrame.this);
+                frame.removePropertyChangeListener("maximum", MainFrame.this);
+            }
+        });
     }
 
     /** {@inheritDoc}. */

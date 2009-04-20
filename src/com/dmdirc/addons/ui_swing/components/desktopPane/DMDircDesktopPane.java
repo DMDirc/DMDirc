@@ -36,6 +36,7 @@ import com.dmdirc.addons.ui_swing.components.frames.TextFrame;
 import com.dmdirc.addons.ui_swing.framemanager.tree.TreeViewModel;
 import com.dmdirc.addons.ui_swing.framemanager.tree.TreeViewNode;
 
+import com.dmdirc.util.ReturnableThread;
 import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -99,7 +100,7 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
      */
     public DMDircDesktopPane(final MainFrame mainFrame) {
         super();
-        
+
         this.mainFrame = mainFrame;
         setBackground(new Color(238, 238, 238));
         setBorder(BorderFactory.createEtchedBorder());
@@ -138,22 +139,29 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
      * @param index Index for insertion
      */
     public void add(final JComponent comp, final int index) {
-        addImpl(comp, null, index);
+        UIUtilities.invokeAndWait(new Runnable() {
 
-        // Make sure it'll fit with our offsets
-        if (comp.getWidth() + xOffset > getWidth()) {
-            xOffset = 0;
-        }
-        if (comp.getHeight() + yOffset > getHeight()) {
-            yOffset = 0;
-        }
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                addImpl(comp, null, index);
 
-        // Position the frame
-        comp.setLocation(xOffset, yOffset);
+                // Make sure it'll fit with our offsets
+                if (comp.getWidth() + xOffset > getWidth()) {
+                    xOffset = 0;
+                }
+                if (comp.getHeight() + yOffset > getHeight()) {
+                    yOffset = 0;
+                }
 
-        // Increase the offsets
-        xOffset += FRAME_OPENING_OFFSET;
-        yOffset += FRAME_OPENING_OFFSET;
+                // Position the frame
+                comp.setLocation(xOffset, yOffset);
+
+                // Increase the offsets
+                xOffset += FRAME_OPENING_OFFSET;
+                yOffset += FRAME_OPENING_OFFSET;
+            }
+        });
     }
 
     /**
@@ -162,7 +170,14 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
      * @return Selected window, or null.
      */
     public Window getSelectedWindow() {
-        return selectedWindow;
+        return UIUtilities.invokeAndWait(new ReturnableThread<Window>() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                setObject(selectedWindow);
+            }
+        });
     }
 
     /** {@inheritDoc} */
@@ -278,16 +293,23 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
     /** {@inheritDoc} */
     @Override
     public void selectionChanged(final Window window) {
-        selectedWindow = window;
-        final TreeNode[] path =
-                model.getPathToRoot(nodes.get(window.getContainer()));
-        if (path != null && path.length > 0) {
-            selectionModel.setSelectionPath(new TreePath(path));
-        }
-        if (window instanceof InputTextFrame) {
-            ((InputTextFrame) window).requestInputFieldFocus();
-        }
-        mainFrame.setTitle(window.getTitle());
+        UIUtilities.invokeAndWait(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                selectedWindow = window;
+                final TreeNode[] path =
+                        model.getPathToRoot(nodes.get(window.getContainer()));
+                if (path != null && path.length > 0) {
+                    selectionModel.setSelectionPath(new TreePath(path));
+                }
+                if (window instanceof InputTextFrame) {
+                    ((InputTextFrame) window).requestInputFieldFocus();
+                }
+                mainFrame.setTitle(window.getTitle());
+            }
+        });
     }
 
     /** {@inheritDoc} */

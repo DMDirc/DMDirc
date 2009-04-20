@@ -143,7 +143,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     public TextFrame(final FrameContainer owner, final SwingController controller) {
         super();
         this.controller = controller;
-        
+
         final ConfigManager config = owner.getConfigManager();
         frameBufferSize = config.getOptionInt("ui", "frameBufferSize");
         quickCopy = config.getOptionBool("ui", "quickCopy");
@@ -199,7 +199,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
 
         addPropertyChangeListener("maximum", this);
     }
-    
+
     /**
      * Returns this text frames swing controller.
      * 
@@ -495,7 +495,13 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void internalFrameIconified(final InternalFrameEvent event) {
-        event.getInternalFrame().setVisible(false);
+        UIUtilities.invokeAndWait(new Runnable() {
+
+            @Override
+            public void run() {
+                event.getInternalFrame().setVisible(false);
+            }
+        });
     }
 
     /**
@@ -963,15 +969,16 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     /** {@inheritDoc} */
     @Override
     public void maximise() {
-        if (isMaximum()) {
-            return;
-        }
         UIUtilities.invokeAndWait(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
             public void run() {
                 try {
+                    if (isMaximum()) {
+                        return;
+                    }
+
                     setIcon(false);
                     setVisible(true);
                     setMaximum(true);
@@ -986,15 +993,16 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     /** {@inheritDoc} */
     @Override
     public void restore() {
-        if (!isMaximum()) {
-            return;
-        }
         UIUtilities.invokeAndWait(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
             public void run() {
                 try {
+                    if (!isMaximum()) {
+                        return;
+                    }
+
                     setIcon(false);
                     setVisible(true);
                     setMaximum(false);
@@ -1030,7 +1038,17 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     @Deprecated
     @Override
     public void setMaximum(final boolean b) throws PropertyVetoException {
-        super.setMaximum(b);
+        UIUtilities.invokeAndWait(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    TextFrame.super.setMaximum(b);
+                } catch (PropertyVetoException ex) {
+                    //Ignore
+                }
+            }
+        });
     }
 
     /** {@inheritDoc} */
