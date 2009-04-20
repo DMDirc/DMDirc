@@ -289,7 +289,6 @@ public final class TreeFrameManager implements FrameManager,
                 final TreePath path = new TreePath(treePath);
                 if (path != null) {
                     tree.setTreePath(path);
-                    tree.setSelection(path);
                 }
             }
         }
