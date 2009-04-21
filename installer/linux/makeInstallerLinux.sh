@@ -433,11 +433,13 @@ mv setup.sh setup.sh.tmp
 mv getjre.sh getjre.sh.tmp
 mv installjre.sh installjre.sh.tmp
 mv progressbar.sh progressbar.sh.tmp
+mv uninstall.sh uninstall.sh.tmp
 rm -f ${FILES}
 mv setup.sh.tmp setup.sh
 mv getjre.sh.tmp getjre.sh
 mv installjre.sh.tmp installjre.sh
 mv progressbar.sh.tmp progressbar.sh
+mv uninstall.sh.tmp uninstall.sh
 
 echo "-----------"
 echo "Done."
