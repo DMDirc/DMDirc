@@ -93,11 +93,11 @@ public final class Main {
         Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
 
         for (Handler handler : java.util.logging.Logger.getLogger("").getHandlers()) {
-            handler.setLevel(Level.ALL);
+            handler.setLevel(Level.OFF); // Needs to be changed to enable debugging
         }
-        
-        java.util.logging.Logger.getLogger("com.dmdirc.plugins").setLevel(Level.ALL);
-        java.util.logging.Logger.getLogger("com.dmdirc.config").setLevel(Level.ALL);
+
+        // Enable finer debugging for specific components like so:
+        //java.util.logging.Logger.getLogger("com.dmdirc.plugins").setLevel(Level.ALL);
 
         final CommandLineParser clp = new CommandLineParser(args);
         
