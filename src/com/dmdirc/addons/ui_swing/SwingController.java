@@ -534,7 +534,8 @@ public final class SwingController extends Plugin implements UIController {
             /** {@inheritDoc} */
             @Override
             public void run() {
-                UIUtilities.initUISettings();
+                initUISettings();
+                // UIUtilities.initUISettings();
                 me = new MainFrame(SwingController.this);
                 statusBar = me.getStatusBar();
                 ErrorListDialog.getErrorListDialog(me, me.getStatusBar());
