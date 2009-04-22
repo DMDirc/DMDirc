@@ -1,4 +1,4 @@
-/*
+    /*
  * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -521,7 +521,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     @Override
     public void internalFrameDeiconified(final InternalFrameEvent event) {
         //Ignore.
-    }
+        }
 
     /**
      * Activates the input field on frame focus. {@inheritDoc}
@@ -658,7 +658,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     @Override
     public void mouseEntered(final MouseEvent mouseEvent) {
         //Ignore.
-    }
+        }
 
     /**
      * {@inheritDoc}
@@ -668,7 +668,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     @Override
     public void mouseExited(final MouseEvent mouseEvent) {
         //Ignore.
-    }
+        }
 
     /**
      * Processes every mouse button event to check for a popup trigger.
@@ -904,7 +904,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     @Override
     public void keyTyped(final KeyEvent event) {
         //Ignore.
-    }
+        }
 
     /** 
      * {@inheritDoc}
@@ -928,7 +928,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     @Override
     public void keyReleased(final KeyEvent event) {
         //Ignore.
-    }
+        }
 
     /**
      * Gets the search bar.
@@ -1068,7 +1068,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                     TextFrame.super.setMaximum(b);
                 } catch (PropertyVetoException ex) {
                     //Ignore
-                }
+                    }
             }
         });
     }

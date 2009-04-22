@@ -12,5 +12,6 @@
 /installer/windows/*.inc
 /installer/windows/*.ico
 /installer/windows/DMDirc.jar
+/installer/windows/*.exe
 .svn
 *.class
