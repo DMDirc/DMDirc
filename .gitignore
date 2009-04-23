@@ -1,4 +1,4 @@
-# DMDirc .gitignore file
+Oh# DMDirc .gitignore file
 
 /build
 /dist
@@ -12,6 +12,10 @@
 /installer/windows/*.inc
 /installer/windows/*.ico
 /installer/windows/DMDirc.jar
-/installer/windows/*.exe
 .svn
 *.class
+*.exe
+__history
+*.bdsproj
+*.bdsproj.local
+*.identcache
