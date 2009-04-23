@@ -30,6 +30,8 @@ uses Windows, SysUtils, registry, Vista;
 
 {$R uninstall.res}
 
+procedure InitCommonControls; stdcall; External 'comctl32.dll' name 'InitCommonControls'; 
+
 procedure dowriteln(line: String);
 begin
 	if IsConsole then writeln(line);
@@ -146,6 +148,7 @@ var
 	profileDir: String;
 	deleteProtocol: boolean;
 begin
+        InitCommonControls;
 	if (ParamCount > 0) then begin
 		for i := 1 to ParamCount do begin
 			InstallDir := InstallDir+' '+paramstr(i);
