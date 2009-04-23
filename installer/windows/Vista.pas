@@ -105,6 +105,8 @@ end;
 
 //from http://www.tmssoftware.com/atbdev5.htm
 function TaskDialog(const AHandle: THandle; const ATitle, ADescription, AContent: WideString; const Icon, Buttons: integer; includeDescInXP: boolean = false; stripLineFeed: boolean = true): Integer;
+type
+        tTaskDialogProc = function(HWND: THandle; hInstance: THandle; cTitle, cDescription, cContent: pwidechar; Buttons: Integer; Icon: integer; ResButton: pinteger): integer; stdcall;
 var
 	DLLHandle: THandle;
 	res: integer;
@@ -118,14 +120,14 @@ var
 	myIcon: Integer;
 	{$ENDIF}
 	TaskDialogFound: boolean;
-	TaskDialogProc: function(HWND: THandle; hInstance: THandle; cTitle, cDescription, cContent: pwidechar; Buttons: Integer; Icon: integer; ResButton: pinteger): integer; stdcall;
+	TaskDialogProc: tTaskDialogProc;
 begin
 	TaskDialogFound := false;
 	Result := 0;
 	if IsWindowsVista then begin
 		DLLHandle := LoadLibrary('comctl32.dll');
 		if DLLHandle >= 32 then begin
-			@TaskDialogProc := GetProcAddress(DLLHandle,'TaskDialog');
+			TaskDialogProc := tTaskDialogProc(GetProcAddress(DLLHandle,'TaskDialog'));
 			
 			if Assigned(TaskDialogProc) then begin
 				
@@ -190,8 +192,8 @@ begin
 				TD_ICON_ERROR : myIcon := MB_ICONSTOP;
 				TD_ICON_INFORMATION: myIcon := MB_ICONINFORMATION;
 			end;
-			
-			Result := MessageBox(0, pchar(S), pchar(String(ATitle)), Btns + myIcon);
+
+                        Result := MessageBox(0, pchar(S), pchar(String(ATitle)), Btns + myIcon);
 		{$ENDIF}
 	end;
 end;
