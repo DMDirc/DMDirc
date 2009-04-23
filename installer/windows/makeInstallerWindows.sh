@@ -418,7 +418,6 @@ cat uninstallversion.rc >> uninstall.rc
 cat icon.rc >> uninstall.rc
 
 windres -F pe-i386 -i uninstall.rc -o uninstall.res
-cp uninstall.rc ~
 
 cat UAC.rc > all.rc
 cat version.rc >> all.rc
@@ -431,7 +430,6 @@ cat version.rc >> most.rc
 cat icon.rc >> most.rc
 
 windres -F pe-i386 -i most.rc -o most.res
-cp most.rc ~
 
 FILES="${FILES} DMDirc.jar Setup.exe";
 if [ "" != "${jre}" ]; then
