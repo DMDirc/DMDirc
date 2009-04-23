@@ -401,16 +401,24 @@ cat version.rc.2 >> uninstallversion.rc
 rm version.rc.2
 
 echo "1 24 \"UAC.manifest\"" > UAC.rc
+echo "1 24 \"UAC_uninstaller.manifest\"" > UAC_uninstaller.rc
 
 # Build res files
 #windres -F pe-i386 -i version.rc -o version.res
 #windres -F pe-i386 -i files.rc -o files.res
 #windres -F pe-i386 -i icon.rc -o icon.res
 
-cat UAC.rc > uninstall.rc
-cat uninstallversion.rc >> all.rc
+# UAC really needs to match the product name / description properly
+# so we have a special one for the uninstaller
+cat UAC_uninstaller.rc > uninstall.rc
+# Next line seems to be silly because we add a version resource
+# later as all.rc is not for the uninstaller.
+# cat uninstallversion.rc >> all.rc
+cat uninstallversion.rc >> uninstall.rc
 cat icon.rc >> uninstall.rc
+
 windres -F pe-i386 -i uninstall.rc -o uninstall.res
+cp uninstall.rc ~
 
 cat UAC.rc > all.rc
 cat version.rc >> all.rc
@@ -423,6 +431,7 @@ cat version.rc >> most.rc
 cat icon.rc >> most.rc
 
 windres -F pe-i386 -i most.rc -o most.res
+cp most.rc ~
 
 FILES="${FILES} DMDirc.jar Setup.exe";
 if [ "" != "${jre}" ]; then
