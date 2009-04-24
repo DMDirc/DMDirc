@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.addons.ui_swing.components.frames;
 
 import com.dmdirc.FrameContainer;
@@ -99,9 +100,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
         MouseListener, KeyListener, ConfigChangeListener {
 
     /** Logger to use. */
-    private static final java.util.logging.Logger LOGGER = java.util.logging
-            .Logger.getLogger(TextFrame.class.getName());
-
+    private static final java.util.logging.Logger LOGGER =
+            java.util.logging.Logger.getLogger(TextFrame.class.getName());
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
@@ -144,7 +144,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      * @param owner FrameContainer owning this frame.
      * @param controller Swing controller
      */
-    public TextFrame(final FrameContainer owner, final SwingController controller) {
+    public TextFrame(final FrameContainer owner,
+            final SwingController controller) {
         super();
         this.controller = controller;
 
@@ -229,7 +230,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     /** {@inheritDoc} */
     @Override
     public void open() {
-        UIUtilities.invokeLater(new Runnable() {
+        UIUtilities.invokeAndWait(new Runnable() {
 
             @Override
             public void run() {
@@ -240,7 +241,28 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                     maximise();
                     LOGGER.finest("Done maximising");
                 }
-                setVisible(true);
+                activateFrame();
+            }
+        });
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void activateFrame() {
+        UIUtilities.invokeAndWait(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    ActionManager.processEvent(
+                            CoreActionType.CLIENT_FRAME_CHANGED,
+                            null, getContainer());
+                    setIcon(false);
+                    setVisible(true);
+                    setSelected(true);
+                } catch (PropertyVetoException ex) {
+                    //Ignore
+                }
             }
         });
     }
@@ -259,8 +281,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                     if (timestamp) {
                         lines.add(new String[]{
                                     Formatter.formatMessage(getConfigManager(),
-                                    "timestamp", new Date()), myLine,
-                                });
+                                    "timestamp", new Date()), myLine,});
                     } else {
                         lines.add(new String[]{myLine,});
                     }
@@ -270,7 +291,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                         /** {@inheritDoc} */
                         @Override
                         protected Object doInBackground() throws Exception {
-                            ActionManager.processEvent(CoreActionType.CLIENT_LINE_ADDED,
+                            ActionManager.processEvent(
+                                    CoreActionType.CLIENT_LINE_ADDED,
                                     null, getContainer(), myLine);
                             return null;
                         }
@@ -363,8 +385,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public final void propertyChange(final PropertyChangeEvent event) {
-        LOGGER.finer("Property change: name: " + event.getPropertyName()
-                + " value: " + event.getOldValue() + "->" + event.getNewValue());
+        LOGGER.finer("Property change: name: " + event.getPropertyName() +
+                " value: " + event.getOldValue() + "->" + event.getNewValue());
         if ("UI".equals(event.getPropertyName())) {
             if (isMaximum()) {
                 hideTitlebar();
@@ -403,7 +425,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 Object temp = null;
                 Constructor<?> constructor;
 
-                final String componentUI = (String) UIManager.get("InternalFrameUI");
+                final String componentUI = (String) UIManager.get(
+                        "InternalFrameUI");
 
                 if ("javax.swing.plaf.synth.SynthLookAndFeel".equals(componentUI)) {
                     temp = SynthLookAndFeel.createUI(TextFrame.this);
@@ -411,23 +434,30 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                     try {
                         c = getClass().getClassLoader().loadClass(componentUI);
                         constructor =
-                                c.getConstructor(new Class[]{javax.swing.JInternalFrame.class});
+                                c.getConstructor(new Class[]{
+                                    javax.swing.JInternalFrame.class});
                         temp =
-                                constructor.newInstance(new Object[]{TextFrame.this});
+                                constructor.newInstance(new Object[]{
+                                    TextFrame.this});
                     } catch (ClassNotFoundException ex) {
-                        Logger.appError(ErrorLevel.MEDIUM, "Unable to readd titlebar",
+                        Logger.appError(ErrorLevel.MEDIUM,
+                                "Unable to readd titlebar",
                                 ex);
                     } catch (NoSuchMethodException ex) {
-                        Logger.appError(ErrorLevel.MEDIUM, "Unable to readd titlebar",
+                        Logger.appError(ErrorLevel.MEDIUM,
+                                "Unable to readd titlebar",
                                 ex);
                     } catch (InstantiationException ex) {
-                        Logger.appError(ErrorLevel.MEDIUM, "Unable to readd titlebar",
+                        Logger.appError(ErrorLevel.MEDIUM,
+                                "Unable to readd titlebar",
                                 ex);
                     } catch (IllegalAccessException ex) {
-                        Logger.appError(ErrorLevel.MEDIUM, "Unable to readd titlebar",
+                        Logger.appError(ErrorLevel.MEDIUM,
+                                "Unable to readd titlebar",
                                 ex);
                     } catch (InvocationTargetException ex) {
-                        Logger.appError(ErrorLevel.MEDIUM, "Unable to readd titlebar",
+                        Logger.appError(ErrorLevel.MEDIUM,
+                                "Unable to readd titlebar",
                                 ex);
                     }
 
@@ -537,7 +567,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
             /** {@inheritDoc} */
             @Override
             protected Object doInBackground() throws Exception {
-                LOGGER.finer(getName() + ": internalFrameActivated(): doInBackground");
+                LOGGER.finer(getName() +
+                        ": internalFrameActivated(): doInBackground");
                 frameParent.windowActivated();
                 return null;
             }
@@ -886,7 +917,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 menu.add(populatePopupMenu(new JMenu(menuItem.getName()),
                         menuItem.getSubMenu(), arguments));
             } else {
-                menu.add(new JMenuItem(new CommandAction(inputWindow == null ? GlobalCommandParser.getGlobalCommandParser()
+                menu.add(new JMenuItem(new CommandAction(inputWindow == null ? GlobalCommandParser.
+                        getGlobalCommandParser()
                         : ((InputWindow) inputWindow).getCommandParser(),
                         (InputWindow) inputWindow, menuItem.getName(),
                         menuItem.getCommand(arguments))));
@@ -913,7 +945,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void keyPressed(final KeyEvent event) {
-        if (!quickCopy && (event.getModifiers() & UIUtilities.getCtrlMask()) != 0 &&
+        if (!quickCopy && (event.getModifiers() & UIUtilities.getCtrlMask()) !=
+                0 &&
                 event.getKeyCode() == KeyEvent.VK_C) {
             getTextPane().copy();
         }
@@ -998,7 +1031,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                     LOGGER.finest("maximise(): About to set icon");
                     setIcon(false);
                     LOGGER.finest("maximise(): About to set visible");
-                    setVisible(true);
+                    //setVisible(true);
                     LOGGER.finest("maximise(): About to set maximum");
                     setMaximum(true);
                     LOGGER.finest("maximise(): Done?");
@@ -1026,7 +1059,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                     }
 
                     setIcon(false);
-                    setVisible(true);
+                    //setVisible(true);
                     setMaximum(false);
                 } catch (PropertyVetoException ex) {
                     Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");

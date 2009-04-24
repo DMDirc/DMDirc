@@ -156,10 +156,7 @@ public abstract class FrameContainer {
      * Requests that this object's frame be activated.
      */
     public void activateFrame() {
-        LOGGER.finer(toString() + ": activateFrame(): frame = "
-                + (getFrame() == null ? null : getFrame().getClass().getName()));
-
-        Main.getUI().getMainWindow().setActiveFrame(getFrame());
+        getFrame().activateFrame();
     }
 
     /**
@@ -225,11 +222,6 @@ public abstract class FrameContainer {
         if (config == null || getFrame() == null) {
             return;
         }
-
-        final boolean pref = getConfigManager().getOptionBool("ui", "maximisewindows");
-        if (pref || Main.getUI().getMainWindow().getMaximised()) {
-            getFrame().maximise();
-        }
     }
 
     /**
@@ -253,10 +245,6 @@ public abstract class FrameContainer {
 
         if (getFrame() == null) {
             return;
-        }
-
-        if (Main.getUI().getMainWindow().getMaximised()) {
-            getFrame().maximise();
         }
 
         synchronized (listeners) {

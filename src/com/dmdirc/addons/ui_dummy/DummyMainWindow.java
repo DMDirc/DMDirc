@@ -23,7 +23,6 @@
 package com.dmdirc.addons.ui_dummy;
 
 import com.dmdirc.ui.interfaces.MainWindow;
-import com.dmdirc.ui.interfaces.Window;
 
 import javax.swing.ImageIcon;
 
@@ -42,12 +41,6 @@ public final class DummyMainWindow implements MainWindow {
      */
     public DummyMainWindow() {
         //Do nothing.
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void setActiveFrame(final Window frame) {
-        // Do nothing
     }
     
     /** {@inheritDoc} */

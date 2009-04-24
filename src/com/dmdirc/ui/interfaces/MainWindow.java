@@ -28,13 +28,6 @@ import javax.swing.ImageIcon;
  * Main window interface.
  */
 public interface MainWindow {
-    
-    /**
-     * Sets the active internal frame to the one specified.
-     *
-     * @param frame The frame to be activated
-     */
-    void setActiveFrame(final Window frame);
         
     /**
      * Retrieves the application icon.

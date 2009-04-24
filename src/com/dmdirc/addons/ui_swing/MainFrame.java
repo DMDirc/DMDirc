@@ -30,8 +30,6 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.FrameManager;
@@ -43,19 +41,14 @@ import com.dmdirc.addons.ui_swing.components.SnappingJSplitPane;
 import com.dmdirc.addons.ui_swing.components.statusbar.SwingStatusBar;
 import com.dmdirc.addons.ui_swing.framemanager.tree.TreeFrameManager;
 import com.dmdirc.ui.CoreUIUtils;
-
 import com.dmdirc.util.ReturnableThread;
+
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyVetoException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.logging.Level;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -163,37 +156,6 @@ public final class MainFrame extends JFrame implements WindowListener,
      */
     public SwingStatusBar getStatusBar() {
         return statusBar;
-    }
-
-    /** {@inheritDoc}. */
-    @Override
-    public void setActiveFrame(final Window frame) {
-        if (LOGGER.isLoggable(Level.FINER)) {
-            final StackTraceElement[] trace = Thread.currentThread().getStackTrace();
-            LOGGER.finer("setActiveFrame(" + frame.getTitle() + ").run() ← "
-                    + Arrays.toString(trace));
-        }
-
-        UIUtilities.invokeAndWait(new Runnable() {
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                LOGGER.finer("setActiveFrame(" + frame.getTitle() + ").run()");
-
-                if (frame != null) {
-                    ActionManager.processEvent(CoreActionType.CLIENT_FRAME_CHANGED, null,
-                            frame.getContainer());
-
-                    try {
-                        ((JInternalFrame) frame).setIcon(false);
-                        ((JInternalFrame) frame).setVisible(true);
-                        ((JInternalFrame) frame).setSelected(true);
-                    } catch (PropertyVetoException ex) {
-                        Logger.userError(ErrorLevel.LOW, "Unable to set active window");
-                    }
-                }
-            }
-        });
     }
 
     /**

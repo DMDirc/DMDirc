@@ -191,4 +191,10 @@ public class FakeInputWindow implements InputWindow {
         // Do nothing
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void activateFrame() {
+        // Do nothing
+    }
+
 }

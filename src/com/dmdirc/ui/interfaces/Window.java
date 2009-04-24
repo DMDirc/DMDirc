@@ -166,5 +166,10 @@ public interface Window {
     
     /** Closes this window. */
     void close();
+
+    /**
+     * Requests that this object's frame be activated.
+     */
+    public void activateFrame();
     
 }

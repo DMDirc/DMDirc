@@ -197,5 +197,11 @@ public class DummyInputWindow implements InputWindow {
     public void minimise() {
         // Do nothing
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public void activateFrame() {
+        // Do nothing
+    }
     
 }
