@@ -42,6 +42,7 @@ public class ErrorReportingThread extends Thread {
      */
     public ErrorReportingThread(final BlockingQueue<ProgramError> queue) {
         super("Error reporting thread");
+        setDaemon(false);
 
         this.queue = queue;
     }
