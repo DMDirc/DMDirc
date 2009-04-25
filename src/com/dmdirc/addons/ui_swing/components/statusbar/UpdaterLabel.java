@@ -119,7 +119,7 @@ public class UpdaterLabel extends JLabel implements StatusBarComponent,
         if (mouseEvent.getButton() == MouseEvent.BUTTON1) {
             if (UpdateChecker.getStatus().equals(UpdateChecker.STATE.RESTART_REQUIRED)) {
                 SwingRestartDialog restartDialog = new SwingRestartDialog(
-                        null, ModalityType.MODELESS);
+                        mainFrame, ModalityType.MODELESS);
                 restartDialog.setVisible(true);
             } else if (!UpdateChecker.getStatus().equals(UpdateChecker.STATE.CHECKING)) {
                 SwingUpdaterDialog.showSwingUpdaterDialog(

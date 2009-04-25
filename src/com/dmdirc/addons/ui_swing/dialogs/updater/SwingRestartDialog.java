@@ -22,7 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.updater;
 
-import com.dmdirc.addons.ui_swing.SwingController;
+import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 import com.dmdirc.addons.ui_swing.components.TextLabel;
 
@@ -48,18 +48,18 @@ public class SwingRestartDialog extends StandardDialog implements ActionListener
     /** Informational label. */
     private TextLabel info;
     /** Swing controller. */
-    private SwingController controller;
+    private MainFrame mainFrame;
     
 
     /**
      * Dialog to restart the client.
      * 
-     * @param controller Swing controller
+     * @param mainFrame Main Frame
      * @param modal Modality
      */
-    public SwingRestartDialog(final SwingController controller, final ModalityType modal) {
-        super(controller.getMainFrame(), modal);
-        this.controller = controller;
+    public SwingRestartDialog(final MainFrame mainFrame, final ModalityType modal) {
+        super(mainFrame, modal);
+        this.mainFrame = mainFrame;
         
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         
@@ -67,7 +67,7 @@ public class SwingRestartDialog extends StandardDialog implements ActionListener
         layoutComponents();
         
         pack();
-        setLocationRelativeTo(controller.getMainFrame());
+        setLocationRelativeTo(mainFrame);
     }
     
     /** Initialise components. */
@@ -98,7 +98,7 @@ public class SwingRestartDialog extends StandardDialog implements ActionListener
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (getOkButton().equals(e.getSource())) {
-            controller.getMainFrame().quit(42);
+            mainFrame.quit(42);
         }
         dispose();
     }
