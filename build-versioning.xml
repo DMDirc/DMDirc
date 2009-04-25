@@ -30,7 +30,8 @@ version:
     <target name="-add-version" depends="-add-git-version, -add-svn-version"/>
 
     <target name="-add-git-version" if="is.git">
-        <exec executable="git-describe" output="${version.config}" append="true">
+        <exec executable="git" output="${version.config}" append="true">
+            <arg value="describe"/>
             <arg value="--tags"/>
         </exec>
     </target>
