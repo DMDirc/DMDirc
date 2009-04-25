@@ -1,19 +1,19 @@
 {*
  * This application launches the dmdirc java-based installer.
- * 
+ *
  * DMDirc - Open Source IRC Client
  * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -60,7 +60,9 @@ program Setup;
 // {$DEFINE LAZARUS}
 // {$UNDEF LAZARUS}
 
-uses 
+//{$DEFINE FORCEJREDOWNLOAD}
+
+uses
 	{$IFDEF LAZARUS}Interfaces, Forms, ComCtrls, Buttons, Messages, Controls, StdCtrls, {$ENDIF}
 	Vista, Windows, SysUtils, classes, registry, strutils {$IFNDEF FPC},masks{$ENDIF};
 
@@ -293,8 +295,13 @@ begin
 	dir := IncludeTrailingPathDelimiter(ExtractFileDir(paramstr(0)));
 	url := 'http://www.dmdirc.com/getjava/windows/all';
 	Result := false;
-	ExecAndWait('wget.exe -o '+dir+'wgetoutput --spider '+url, true);
-	
+	ExecAndWait('wget.exe -o "'+dir+'wgetoutput" --spider '+url, true);
+
+  if not fileexists(dir+'wgetoutput') then begin
+    showerror('Internal error: wget returned no output.');
+    result := false;
+    exit;
+  end;
 	AssignFile(f, dir+'wgetoutput');
 	Reset(f);
 	line := '';
@@ -385,7 +392,7 @@ begin
 		if not isUpgrade then question := 'Java was not detected on your machine. Would you like to install it now?'
 		else question := 'The version of java detected on your machine is not compatible with DMDirc. Would you like to install a compatible version now?';
 	end;
-	
+
 	canContinue := true;
 	if (needDownload) then begin
 		canContinue := downloadJRE(question);
@@ -421,19 +428,24 @@ begin
 		writeln('');
 		writeln('Please wait whilst the GUI part of the installer loads...');
 		writeln('-----------------------------------------------------------------------');
-//	end
-//	else begin
-//		errorMessage := 'This will install DMDirc on your computer, please click OK to continue, or Cancel to abort.';
-//		if (MessageBox(0, PChar(errorMessage), 'DMDirc Installer', MB_OKCANCEL + MB_ICONINFORMATION) <> IDOK) then begin
-//			exit;
-//		end;
+	//end
+	//else begin
+	//	errorMessage := 'This will install DMDirc on your computer, please click OK to continue, or Cancel to abort.';
+	//	if (MessageBox(0, PChar(errorMessage), 'DMDirc Installer', MB_OKCANCEL + MB_ICONINFORMATION) <> IDOK) then begin
+	//		exit;
+	//	end;
 	end;
+
 	errorMessage := '';
 	dowrite('Checking for DMDirc.jar.. ');
 	if FileExists('DMDirc.jar') then begin
 		dowriteln('Success!');
 		dowrite('Checking for JVM.. ');
+    {$IFDEF FORCEJREDOWNLOAD}
+		if (1 <> 0) then begin
+    {$ELSE}
 		if (ExecAndWait(javaCommand+' -version') <> 0) then begin
+    {$ENDIF}
 			dowriteln('Failed!');
 			if not installJRE(false) then begin
 				showError('DMDirc setup can not continue without java. Please install java and try again', false, false);
