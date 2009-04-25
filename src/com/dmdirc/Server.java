@@ -348,6 +348,8 @@ public class Server extends WritableFrameContainer implements Serializable {
                 break;
             }
 
+            clearChannels();
+
             if (parser == null) {
                 myState.transition(ServerState.DISCONNECTED);
             } else {
@@ -363,8 +365,6 @@ public class Server extends WritableFrameContainer implements Serializable {
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
                     "closechannelsonquit")) {
                 closeChannels();
-            } else {
-                clearChannels();
             }
 
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
@@ -1200,6 +1200,8 @@ public class Server extends WritableFrameContainer implements Serializable {
                 myState.transition(ServerState.TRANSIENTLY_DISCONNECTED);
             }
 
+            clearChannels();
+
             parser = null;
 
             updateIcon();
@@ -1207,8 +1209,6 @@ public class Server extends WritableFrameContainer implements Serializable {
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
                     "closechannelsondisconnect")) {
                 closeChannels();
-            } else {
-                clearChannels();
             }
 
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
