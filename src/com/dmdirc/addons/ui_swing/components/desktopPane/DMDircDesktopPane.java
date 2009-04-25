@@ -143,7 +143,7 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
      * @param index Index for insertion
      */
     public void add(final JComponent comp, final int index) {
-        UIUtilities.invokeAndWait(new Runnable() {
+        UIUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
             @Override
@@ -297,7 +297,7 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
     /** {@inheritDoc} */
     @Override
     public void selectionChanged(final Window window) {
-        UIUtilities.invokeAndWait(new Runnable() {
+        UIUtilities.invokeLater(new Runnable() {
 
             /** {@inheritDoc} */
             @Override

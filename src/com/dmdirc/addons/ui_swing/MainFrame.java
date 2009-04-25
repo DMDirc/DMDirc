@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.addons.ui_swing;
 
 import com.dmdirc.addons.ui_swing.components.LoggingSwingWorker;
@@ -70,9 +71,8 @@ public final class MainFrame extends JFrame implements WindowListener,
         MainWindow, ConfigChangeListener, FrameManager, PropertyChangeListener {
 
     /** Logger to use. */
-    private static final java.util.logging.Logger LOGGER = java.util.logging
-            .Logger.getLogger(MainFrame.class.getName());
-
+    private static final java.util.logging.Logger LOGGER =
+            java.util.logging.Logger.getLogger(MainFrame.class.getName());
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
@@ -124,9 +124,12 @@ public final class MainFrame extends JFrame implements WindowListener,
 
         addWindowListener(this);
 
-        showVersion = IdentityManager.getGlobalConfig().getOptionBool("ui", "showversion");
-        IdentityManager.getGlobalConfig().addChangeListener("ui", "lookandfeel", this);
-        IdentityManager.getGlobalConfig().addChangeListener("ui", "showversion", this);
+        showVersion = IdentityManager.getGlobalConfig().getOptionBool("ui",
+                "showversion");
+        IdentityManager.getGlobalConfig().addChangeListener("ui", "lookandfeel",
+                this);
+        IdentityManager.getGlobalConfig().addChangeListener("ui", "showversion",
+                this);
         IdentityManager.getGlobalConfig().addChangeListener("icon", "icon", this);
 
 
@@ -235,7 +238,8 @@ public final class MainFrame extends JFrame implements WindowListener,
     @Override
     public String getTitlePrefix() {
         if (showVersion) {
-            return "DMDirc " + IdentityManager.getGlobalConfig().getOption("version", "version");
+            return "DMDirc " + IdentityManager.getGlobalConfig().getOption(
+                    "version", "version");
         } else {
             return "DMDirc";
         }
@@ -290,7 +294,14 @@ public final class MainFrame extends JFrame implements WindowListener,
      */
     @Override
     public void windowClosed(final WindowEvent windowEvent) {
-        Main.quit(exitCode);
+        new Thread(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                Main.quit(exitCode);
+            }
+        }, "Quit thread").start();
     }
 
     /** 
@@ -340,7 +351,8 @@ public final class MainFrame extends JFrame implements WindowListener,
             /** {@inheritDoc} */
             @Override
             public void run() {
-                final String manager = IdentityManager.getGlobalConfig().getOption("ui",
+                final String manager = IdentityManager.getGlobalConfig().
+                        getOption("ui",
                         "framemanager");
 
                 try {
@@ -377,9 +389,11 @@ public final class MainFrame extends JFrame implements WindowListener,
 
         setPreferredSize(new Dimension(800, 600));
 
-        getContentPane().setLayout(new MigLayout("fill, ins rel, wrap 1, hidemode 2"));
+        getContentPane().setLayout(new MigLayout(
+                "fill, ins rel, wrap 1, hidemode 2"));
         getContentPane().add(initSplitPane(), "grow, push");
-        getContentPane().add(statusBar, "hmax 20, wmax 100%-2*rel, wmin 100%-2*rel");
+        getContentPane().add(statusBar,
+                "hmax 20, wmax 100%-2*rel, wmin 100%-2*rel");
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -421,7 +435,8 @@ public final class MainFrame extends JFrame implements WindowListener,
                 mainSplitPane.setBottomComponent(desktopPane);
                 mainSplitPane.setResizeWeight(0.0);
                 mainSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-                frameManagerPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE,
+                frameManagerPanel.setPreferredSize(new Dimension(
+                        Integer.MAX_VALUE,
                         IdentityManager.getGlobalConfig().
                         getOptionInt("ui", "frameManagerSize")));
                 break;
@@ -439,7 +454,8 @@ public final class MainFrame extends JFrame implements WindowListener,
                 mainSplitPane.setBottomComponent(frameManagerPanel);
                 mainSplitPane.setResizeWeight(1.0);
                 mainSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-                frameManagerPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE,
+                frameManagerPanel.setPreferredSize(new Dimension(
+                        Integer.MAX_VALUE,
                         IdentityManager.getGlobalConfig().
                         getOptionInt("ui", "frameManagerSize")));
                 break;
@@ -471,7 +487,8 @@ public final class MainFrame extends JFrame implements WindowListener,
      * @param exitCode Exit code
      */
     public void quit(final int exitCode) {
-        if (exitCode == 0 && IdentityManager.getGlobalConfig().getOptionBool("ui", "confirmQuit") && JOptionPane.showConfirmDialog(this,
+        if (exitCode == 0 && IdentityManager.getGlobalConfig().getOptionBool(
+                "ui", "confirmQuit") && JOptionPane.showConfirmDialog(this,
                 "You are about to quit DMDirc, are you sure?", "Quit confirm",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE) !=
@@ -487,9 +504,11 @@ public final class MainFrame extends JFrame implements WindowListener,
             @Override
             protected Object doInBackground() throws Exception {
                 ActionManager.processEvent(CoreActionType.CLIENT_CLOSING, null);
-                ServerManager.getServerManager().closeAll(IdentityManager.getGlobalConfig().getOption("general", "closemessage"));
+                ServerManager.getServerManager().closeAll(IdentityManager.
+                        getGlobalConfig().getOption("general", "closemessage"));
                 IdentityManager.getConfigIdentity().setOption("ui",
-                        "frameManagerSize", String.valueOf(getFrameManagerSize()));
+                        "frameManagerSize",
+                        String.valueOf(getFrameManagerSize()));
                 return null;
             }
 
@@ -509,11 +528,13 @@ public final class MainFrame extends JFrame implements WindowListener,
             if ("lookandfeel".equals(key)) {
                 controller.updateLookAndFeel();
             } else {
-                showVersion = IdentityManager.getGlobalConfig().getOptionBool("ui",
+                showVersion = IdentityManager.getGlobalConfig().getOptionBool(
+                        "ui",
                         "showversion");
             }
         } else {
-            imageIcon = new ImageIcon(IconManager.getIconManager().getImage("icon"));
+            imageIcon = new ImageIcon(IconManager.getIconManager().getImage(
+                    "icon"));
             setIconImage(imageIcon.getImage());
         }
     }
