@@ -117,7 +117,7 @@ public class WizardPanel extends JPanel implements ActionListener {
     /** Lays out the components. */
     private void layoutComponents() {
         final JPanel progressPanel = new JPanel(new MigLayout("fill"));
-        progressPanel.add(progressLabel, "growx");
+        progressPanel.add(progressLabel, "growx, pushx");
         progressPanel.add(prev, "sg button");
         progressPanel.add(next, "sg button");
         progressPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0,
@@ -125,10 +125,10 @@ public class WizardPanel extends JPanel implements ActionListener {
         progressPanel.setBorder(new EtchedLineBorder(EtchedBorder.LOWERED,
                 BorderSide.TOP));
 
-        setLayout(new MigLayout("fill, wrap 1, ins 0"));
-        add(titleLabel, "growx");
-        add(stepsPanel, "grow");
-        add(progressPanel, "growx");
+        setLayout(new MigLayout("fill, wrap 1, ins 0, w 400!, pack"));
+        add(titleLabel, "growx, pushx");
+        add(stepsPanel, "grow, pushx");
+        add(progressPanel, "growx, pushx");
     }
 
     /** Displays the wizard. */

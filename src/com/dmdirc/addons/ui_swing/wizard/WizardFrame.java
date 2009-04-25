@@ -24,6 +24,7 @@ package com.dmdirc.addons.ui_swing.wizard;
 
 
 import com.dmdirc.ui.CoreUIUtils;
+
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -57,14 +58,13 @@ public final class WizardFrame extends JFrame {
 
         setTitle(title);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setLayout(new MigLayout("ins 0, fill, pack, wmin 400, wmax 400"));
         this.wizard = new WizardPanel(title, steps, wizard);
         layoutComponents();
     }
 
     /** Lays out the components. */
     private void layoutComponents() {
-        add(wizard, "grow");
+        add(wizard);
     }
 
     /** Displays the wizard. */
