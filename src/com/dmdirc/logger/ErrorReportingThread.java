@@ -35,9 +35,13 @@ public class ErrorReportingThread extends Thread {
     /** The queue to retrieve errors from. */
     private final BlockingQueue<ProgramError> queue;
 
+    /**
+     * Thread used to report errors.
+     *
+     * @param queue Error queue
+     */
     public ErrorReportingThread(final BlockingQueue<ProgramError> queue) {
         super("Error reporting thread");
-        setDaemon(false);
 
         this.queue = queue;
     }
