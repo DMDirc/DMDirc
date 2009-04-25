@@ -37,6 +37,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
+import net.miginfocom.layout.LayoutUtil;
 import net.miginfocom.swing.MigLayout;
 
 /** Info panel. */
@@ -73,6 +74,7 @@ public final class InfoPanel extends JPanel {
                 "<b>Java version: </b>" + Info.getJavaVersion() + "<br>" +
                 "<b>OS Version: </b>" + Info.getOSVersion() + "<br>" +
                 "<b>Look and Feel: </b>" + SwingController.getLookAndFeel() + "<br>" +
+                "<b>MiG Layout version: </b>" + LayoutUtil.getVersion() + "<br>" +
                 "</html>");
         infoPane.setEditable(false);
         scrollPane.setViewportView(infoPane);

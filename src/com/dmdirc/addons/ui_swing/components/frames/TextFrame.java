@@ -76,6 +76,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -126,6 +127,8 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     private Window inputWindow;
     /** Swing controller. */
     private SwingController controller;
+    /** Are we maximising/restoring? */
+    private AtomicBoolean maximiseRestoreInProgress = new AtomicBoolean(false);
 
     /** Click types. */
     public enum MouseClickType {
@@ -562,6 +565,9 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     public void internalFrameActivated(final InternalFrameEvent event) {
         LOGGER.finer(getName() + ": internalFrameActivated()");
 
+        if (maximiseRestoreInProgress.get()) {
+            return;
+        }
         new LoggingSwingWorker() {
 
             /** {@inheritDoc} */
@@ -582,6 +588,9 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void internalFrameDeactivated(final InternalFrameEvent event) {
+        if (maximiseRestoreInProgress.get()) {
+            return;
+        }
         new LoggingSwingWorker() {
 
             /** {@inheritDoc} */
@@ -1028,6 +1037,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                         return;
                     }
 
+                    maximiseRestoreInProgress.set(true);
                     LOGGER.finest("maximise(): About to set icon");
                     setIcon(false);
                     LOGGER.finest("maximise(): About to set visible");
@@ -1038,6 +1048,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                 } catch (PropertyVetoException ex) {
                     Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
                 }
+                maximiseRestoreInProgress.set(false);
 
                 LOGGER.finest("maximise(): Done running");
             }
@@ -1058,12 +1069,14 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                         return;
                     }
 
+                    maximiseRestoreInProgress.set(true);
                     setIcon(false);
                     //setVisible(true);
                     setMaximum(false);
                 } catch (PropertyVetoException ex) {
                     Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
                 }
+                maximiseRestoreInProgress.set(false);
             }
         });
     }
