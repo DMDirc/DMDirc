@@ -1451,7 +1451,9 @@ public class Server extends WritableFrameContainer implements Serializable {
      * @param listener The listener to be added
      */
     public void addInviteListener(final InviteListener listener) {
-        listeners.add(InviteListener.class, listener);
+        synchronized (listeners) {
+            listeners.add(InviteListener.class, listener);
+        }
     }
 
     /**
@@ -1460,7 +1462,9 @@ public class Server extends WritableFrameContainer implements Serializable {
      * @param listener The listener to be removed
      */
     public void removeInviteListener(final InviteListener listener) {
-        listeners.remove(InviteListener.class, listener);
+        synchronized (listeners) {
+            listeners.remove(InviteListener.class, listener);
+        }
     }
 
     /**
@@ -1478,8 +1482,10 @@ public class Server extends WritableFrameContainer implements Serializable {
 
             invites.add(invite);
 
-            for (InviteListener listener : listeners.get(InviteListener.class)) {
-                listener.inviteReceived(this, invite);
+            synchronized (listeners) {
+                for (InviteListener listener : listeners.get(InviteListener.class)) {
+                    listener.inviteReceived(this, invite);
+                }
             }
         }
     }
@@ -1515,8 +1521,10 @@ public class Server extends WritableFrameContainer implements Serializable {
         synchronized (invites) {
             invites.remove(invite);
 
-            for (InviteListener listener : listeners.get(InviteListener.class)) {
-                listener.inviteExpired(this, invite);
+            synchronized (listeners) {
+                for (InviteListener listener : listeners.get(InviteListener.class)) {
+                    listener.inviteExpired(this, invite);
+                }
             }
         }
     }
@@ -1529,7 +1537,9 @@ public class Server extends WritableFrameContainer implements Serializable {
      * @param listener The listener to be added
      */
     public void addAwayStateListener(final AwayStateListener listener) {
-        listeners.add(AwayStateListener.class, listener);
+        synchronized (listeners) {
+            listeners.add(AwayStateListener.class, listener);
+        }
     }
 
     /**
@@ -1538,7 +1548,9 @@ public class Server extends WritableFrameContainer implements Serializable {
      * @param listener The listener to be removed
      */
     public void removeAwayStateListener(final AwayStateListener listener) {
-        listeners.remove(AwayStateListener.class, listener);
+        synchronized (listeners) {
+            listeners.remove(AwayStateListener.class, listener);
+        }
     }
 
     /**
@@ -1554,13 +1566,15 @@ public class Server extends WritableFrameContainer implements Serializable {
 
         awayMessage = message;
 
-        if (message == null) {
-            for (AwayStateListener listener : listeners.get(AwayStateListener.class)) {
-                listener.onBack();
-            }
-        } else {
-            for (AwayStateListener listener : listeners.get(AwayStateListener.class)) {
-                listener.onAway(message);
+        synchronized (listeners) {
+            if (message == null) {
+                for (AwayStateListener listener : listeners.get(AwayStateListener.class)) {
+                    listener.onBack();
+                }
+            } else {
+                for (AwayStateListener listener : listeners.get(AwayStateListener.class)) {
+                    listener.onAway(message);
+                }
             }
         }
     }
