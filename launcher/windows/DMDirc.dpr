@@ -37,58 +37,6 @@ procedure InitCommonControls; stdcall; External 'comctl32.dll' name 'InitCommonC
 { ---------------------------------------------------------------------------- }
 
 { ----------------------------------------------------------------------------
-  Launch a process (hidden if requested) and wait for it to finish
-  ---------------------------------------------------------------------------- }
-function ExecAndWait(sProgramToRun: String): Longword;
-var
-  StartupInfo: TStartupInfo;
-  ProcessInfo: TProcessInformation;
-begin
-  FillChar(StartupInfo, SizeOf(TStartupInfo), 0);
-  with StartupInfo do begin
-    cb := SizeOf(TStartupInfo);
-    dwFlags := STARTF_USESHOWWINDOW;
-    wShowWindow := SW_SHOWNORMAL;
-  end;
-
-  CreateProcess(nil, PChar(sProgramToRun), nil, nil, False, NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo, ProcessInfo);
-  getExitCodeProcess(ProcessInfo.hProcess, Result);
-
-  while Result=STILL_ACTIVE do begin
-    sleep(1000);
-    GetExitCodeProcess(ProcessInfo.hProcess, Result);
-  end;
-end;
-
-{ ----------------------------------------------------------------------------
-  Launch a process (hidden if requested) and immediately return control to
-  the current thread
-  ---------------------------------------------------------------------------- }
-procedure Launch(sProgramToRun: String);
-var
-  StartupInfo: TStartupInfo;
-  ProcessInfo: TProcessInformation;
-begin
-  FillChar(StartupInfo, SizeOf(TStartupInfo), 0);
-  with StartupInfo do begin
-    cb := SizeOf(TStartupInfo);
-    dwFlags := STARTF_USESHOWWINDOW;
-    wShowWindow := SW_SHOWNORMAL;
-  end;
-
-  CreateProcess(nil, PChar(sProgramToRun), nil, nil, False, NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo, ProcessInfo);
-end;
-
-{ ----------------------------------------------------------------------------
-  Launch a process and either waits for it or returns control immediately
-  ---------------------------------------------------------------------------- }
-procedure RunProgram(sProgramToRun: String; wait: boolean);
-begin
-  if wait then ExecAndWait(sProgramToRun)
-  else Launch(sProgramToRun);
-end;
-
-{ ----------------------------------------------------------------------------
   MAIN PROGRAM
   ---------------------------------------------------------------------------- }
 const

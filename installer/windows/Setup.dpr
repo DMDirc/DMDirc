@@ -212,41 +212,6 @@ begin
 end;
 
 { ----------------------------------------------------------------------------
-  Launch a process (hidden if requested) and immediately return control to
-  the current thread
-  ---------------------------------------------------------------------------- }
-function Launch(sProgramToRun: String; hide: boolean = false): TProcessInformation;
-var
-  StartupInfo: TStartupInfo;
-begin
-  FillChar(StartupInfo, SizeOf(TStartupInfo), 0);
-  with StartupInfo do begin
-    cb := SizeOf(TStartupInfo);
-    dwFlags := STARTF_USESHOWWINDOW;
-    if hide then wShowWindow := SW_HIDE
-    else wShowWindow := SW_SHOWNORMAL;
-  end;
-
-  CreateProcess(nil, PChar(sProgramToRun), nil, nil, False, NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo, Result);
-end;
-
-{ ----------------------------------------------------------------------------
-  Launch a process (hidden if requested) and wait for it to finish
-  ---------------------------------------------------------------------------- }
-function ExecAndWait(sProgramToRun: String; hide: boolean = false): Longword;
-var
-  ProcessInfo: TProcessInformation;
-begin
-  ProcessInfo := Launch(sProgramToRun, hide);
-  getExitCodeProcess(ProcessInfo.hProcess, Result);
-
-  while Result = STILL_ACTIVE do begin
-    sleep(1000);
-    GetExitCodeProcess(ProcessInfo.hProcess, Result);
-  end;
-end;
-
-{ ----------------------------------------------------------------------------
   Return the size in bytes of the file specified by <name>
   Returns -1 on error
   ---------------------------------------------------------------------------- }
@@ -442,7 +407,6 @@ begin
 end;
 
 { ----------------------------------------------------------------------------
- 
   MAIN PROGRAM
   ---------------------------------------------------------------------------- }
 var
