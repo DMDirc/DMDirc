@@ -32,43 +32,9 @@ program DMDirc;
 {$R icon.rc}
 {$R version.rc}
 
-uses Windows, SysUtils, classes, StrUtils, Vista;
+uses Vista, shared, Windows, SysUtils, classes, StrUtils;
 procedure InitCommonControls; stdcall; External 'comctl32.dll' name 'InitCommonControls';
 { ---------------------------------------------------------------------------- }
-
-{ ----------------------------------------------------------------------------
-  Ask a question and return True for YES and False for NO
-  Uses nifty vista task dialog if available
-  ---------------------------------------------------------------------------- }
-function askQuestion(Question: String): boolean;
-begin
-  Result := TaskDialog(0, 'DMDirc', 'Question', Question, TD_ICON_QUESTION, TD_BUTTON_YES + TD_BUTTON_NO) = mrYes;
-end;
-
-{ ----------------------------------------------------------------------------
-  Show an error message
-  Uses nifty vista task dialog if available
-  ---------------------------------------------------------------------------- }
-procedure showError(ErrorMessage: String; addFooter: boolean = true);
-begin
-  if addFooter then begin
-    ErrorMessage := ErrorMessage+#13#10;
-    ErrorMessage := ErrorMessage+#13#10+'If you feel this is incorrect, or you require some further assistance,';
-    ErrorMessage := ErrorMessage+#13#10+'please feel free to contact us.';
-  end;
-
-  TaskDialog(0, 'DMDirc', 'There was an error starting DMDirc', ErrorMessage, TD_ICON_ERROR, TD_BUTTON_OK, false, false);
-end;
-
-{ ----------------------------------------------------------------------------
-  Show a message box (information)
-  Uses nifty vista task dialog if available
-  ---------------------------------------------------------------------------- }
-procedure showmessage(message: String; context:String = 'Information');
-begin
-  TaskDialog(0, 'DMDirc', context, message, TD_ICON_INFORMATION, TD_BUTTON_OK);
-end;
-
 
 { ----------------------------------------------------------------------------
   Launch a process (hidden if requested) and wait for it to finish
@@ -170,7 +136,7 @@ begin
         errorMessage := errorMessage+#13#10;
         errorMessage := errorMessage+#13#10+'Please click ''Allow'' on the UAC prompt to complete the update, or click no ';
         errorMessage := errorMessage+#13#10+'here to continue without updating. ';
-        if askQuestion(errorMessage) then begin
+        if askQuestion(errorMessage, 'DMDirc') then begin
           RunProgram('"'+ExtractFileDir(paramstr(0))+'\DMDircUpdater.exe" --UpdateSourceDir "'+directory+'"', not launcherUpdate);
         end;
       end
@@ -186,7 +152,7 @@ begin
       errorMessage := errorMessage+#13#10;
       errorMessage := errorMessage+#13#10+'DMDirc requires a 1.6.0 compatible JVM, you can get one from:';
       errorMessage := errorMessage+#13#10+'http://java.com/';
-      showError(errorMessage, true);
+      showError(errorMessage, 'DMDirc', true);
     end
     // Else try and run client. (This only asks for help output to check that client
     // runs on this OS, otherwise later segfaults or so would cause the error to
@@ -197,7 +163,7 @@ begin
         errorMessage := errorMessage+#13#10;
         errorMessage := errorMessage+#13#10+'DMDirc requires a 1.6.0 compatible JVM, you can get one from:';
         errorMessage := errorMessage+#13#10+'http://java.com/';
-        showError(errorMessage, True);
+        showError(errorMessage, 'DMDirc', True);
       end
       else begin
         Launch(javaCommand+' -ea -jar "'+jarName+'"'+' -l windows-'+launcherVersion+' '+cliParams)
@@ -207,7 +173,7 @@ begin
       errorMessage := 'A file required to start DMDirc is missing. Please re-install DMDirc to rectify the problem.';
       errorMessage := errorMessage+#13#10;
       errorMessage := errorMessage+#13#10 + 'File: DMDirc.jar';
-      showError(errorMessage);
+      showError(errorMessage, 'DMDirc');
     end;
   end;
 end.

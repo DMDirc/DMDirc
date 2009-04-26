@@ -75,7 +75,7 @@ program Setup;
 //{$DEFINE FORCEJREDOWNLOAD}
 
 uses
-  kol, Vista, Windows, SysUtils, classes, registry;
+  kol, shared, Vista, Windows, SysUtils, classes, registry;
 
 const
   // SetupConsts holds build information for this release
@@ -212,67 +212,6 @@ begin
 end;
 
 { ----------------------------------------------------------------------------
-  Takes a size, <dsize> in bytes, and converts it a human readable string with
-  a suffix (MB or GB).
-  ---------------------------------------------------------------------------- }
-function nicesize(dsize: extended): string;
-var
-  kbytes: single;
-  mbytes: single;
-  gbytes: single;
-begin
-  kbytes := dsize / 1024;
-  mbytes := kbytes / 1024;
-  gbytes := mbytes / 1024;
-
-  if kbytes < 1024 then begin
-    result := FloatToStrF(kbytes, ffFixed, 10, 2) + ' kB';
-    exit;
-  end;
-
-  if mbytes < 1024 then begin
-    result := FloatToStrF(mbytes, ffFixed, 10, 2) + ' MB';
-    exit;
-  end;
-
-  result := FloatToStrF(gbytes, ffFixed, 10, 2) + ' GB';
-  exit;
-end;
-
-{ ----------------------------------------------------------------------------
-  Ask a question and return True for YES and False for NO
-  Uses nifty vista task dialog if available
-  ---------------------------------------------------------------------------- }
-function askQuestion(Question: String): boolean;
-begin
-  Result := TaskDialog(0, 'DMDirc Setup', 'Question', Question, TD_ICON_QUESTION, TD_BUTTON_YES + TD_BUTTON_NO) = mrYes;
-end;
-
-{ ----------------------------------------------------------------------------
-  Show an error message
-  Uses nifty vista task dialog if available
-  ---------------------------------------------------------------------------- }
-procedure showError(ErrorMessage: String; addFooter: boolean = true; includeDescInXP: boolean = true);
-begin
-  if addFooter then begin
-    ErrorMessage := ErrorMessage+#13#10;
-    ErrorMessage := ErrorMessage+#13#10+'If you feel this is incorrect, or you require some further assistance,';
-    if not IsWindowsVista then ErrorMessage := ErrorMessage+#13#10;
-    ErrorMessage := ErrorMessage+'please feel free to contact us.';
-  end;
-  TaskDialog(0, 'DMDirc Setup', 'Sorry, setup is unable to continue.', ErrorMessage, TD_ICON_ERROR, TD_BUTTON_OK, includeDescInXP, false);
-end;
-
-{ ----------------------------------------------------------------------------
-  Show a message box (information)
-  Uses nifty vista task dialog if available
-  ---------------------------------------------------------------------------- }
-procedure showmessage(message: String; context:String = 'Information');
-begin
-  TaskDialog(0, 'DMDirc Setup', context, message, TD_ICON_INFORMATION, TD_BUTTON_OK);
-end;
-
-{ ----------------------------------------------------------------------------
   Launch a process (hidden if requested) and immediately return control to
   the current thread
   ---------------------------------------------------------------------------- }
@@ -374,7 +313,7 @@ begin
 
   { Just incase wget fails ... }
   if not fileexists(dir+'wgetoutput') then begin
-    showerror('Internal error: wget returned no output.');
+    showerror('Internal error: wget returned no output.', 'DMDirc Setup');
     result := false;
     exit;
   end;
@@ -406,7 +345,7 @@ begin
       end;
 
       { We ask the user if they wish to download the JRE }
-      if askQuestion(message+' (Download Size: '+AnsiMidStr(bits[2], 2, length(bits[2])-2)+')') then begin
+      if askQuestion(message+' (Download Size: '+AnsiMidStr(bits[2], 2, length(bits[2])-2)+')', 'DMDirc Setup') then begin
         { Create progress window and show it }
         CreateMainWindow;
         { Get wget to start the download }
@@ -448,12 +387,12 @@ begin
         if (terminateDownload) then begin
           Result := false;
           TerminateProcess(ProcessInfo.hProcess, 0);
-          showError('JRE Download was aborted', false);
+          showError('JRE Download was aborted', 'DMDirc Setup', false);
         end
         else Result := processResult = 0;
         if not Result then begin
           if not terminateDownload then begin
-            showError('JRE Download Failed', false);
+            showError('JRE Download Failed', 'DMDirc Setup', false);
           end
           else begin
             // If the download was cancelled by the form, this error will already
@@ -495,8 +434,8 @@ begin
 
   if canContinue then begin
     // Final result of this function is the return value of installing java.
-    if needDownload or askQuestion(question) then begin
-      showmessage('The Java installer will now run. Please follow the instructions given. '+#13#10+'The DMDirc installation will continue afterwards.');
+    if needDownload or askQuestion(question, 'DMDirc Setup') then begin
+      showmessage('The Java installer will now run. Please follow the instructions given. '+#13#10+'The DMDirc installation will continue afterwards.', 'DMDirc Setup');
       Result := (ExecAndWait('jre.exe') = 0);
     end;
   end
@@ -519,7 +458,7 @@ begin
   if FileExists('DMDirc.jar') then begin
     {$IFDEF FORCEJREDOWNLOAD}if (1 <> 0) then begin{$ELSE}if (ExecAndWait(javaCommand+' -version') <> 0) then begin{$ENDIF}
       if not installJRE(false) then begin
-        showError('DMDirc setup can not continue without Java. Please install Java and try again.', false, false);
+        showError('DMDirc setup can not continue without Java. Please install Java and try again.', 'DMDirc Setup', false, false);
         exit;
       end;
     end;
@@ -540,7 +479,7 @@ begin
     // Check if the installer runs
     if (ExecAndWait(javaCommand+' -cp DMDirc.jar com.dmdirc.installer.Main --help') <> 0) then begin
       if not installJRE(true) then begin
-        showError('Sorry, DMDirc setup can not continue without an updated version of java.', false, false);
+        showError('Sorry, DMDirc setup can not continue without an updated version of java.', 'DMDirc Setup', false, false);
         exit;
       end
       else begin
@@ -558,6 +497,6 @@ begin
     errorMessage := errorMessage+#13#10;
     errorMessage := errorMessage+#13#10+'This is likely because of a corrupt installer build.';
     errorMessage := errorMessage+#13#10+'Please check http://www.dmdirc.com/ for an updated build.';
-    showError(errorMessage);
+    showError(errorMessage, 'DMDirc Setup');
   end;
 end.
