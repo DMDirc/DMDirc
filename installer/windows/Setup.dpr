@@ -387,7 +387,10 @@ begin
   while not Eof(f) do begin
     ReadLn(f, line);
     if length(line) > 8 then begin
-      if copy(line, 1, 7) = 'Length:' then break;
+      if copy(line, 1, 7) = 'Length:' then begin
+        match := true;
+        break;
+      end;
     end;
   end;
   if match then begin
