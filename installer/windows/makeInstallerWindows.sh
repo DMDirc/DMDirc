@@ -460,16 +460,7 @@ if [ ! -e "Setup.exe"  -o "${compileSetup}" = "true" ]; then
 		exit 1;
 	else
 		echo "Building Setup.exe..."
-		extraFlags=""
-		if [ -e "../../libwin/kolfpc" ]; then
-			echo "Using KOLFPC"
-			mkdir -p ${PWD}/lazarus-build
-			extraFlags="-dKOL -FU${PWD}/../../libwin/kolfpc -Fu${PWD}/../../libwin/kolfpc"
-		else
-			echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@";
-			echo "@        Building installer *WITHOUT* KOLFPC.         @";
-			echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@";
-		fi;
+		extraFlags="-dKOL -FU${PWD}/../../libwin/kolfpc -Fu${PWD}/../../libwin/kolfpc"
 		${FPC} ${compilerFlags} ${extraFlags} Setup.dpr
 		if [ $? -ne 0 ]; then
 			if [ -e "Setup.exe" -a "${useOldSetup}" = "true" ]; then

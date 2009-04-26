@@ -2,7 +2,8 @@
  * This application launches the dmdirc java-based installer.
  *
  * DMDirc - Open Source IRC Client
- * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes,
+ * Michael Nixon
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,13 +23,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *}
+
+(* Current DMDirc windows setup flow:
+ *
+ * 1) Outer wrapper EXE that extracts a 7zip SFX to windows temp dir
+ * 2) 7zip SFX unpacks
+ * 3) Wrapper EXE starts Setup.exe (this program)
+ * 4) Setup checks for existence of the JRE and offers to download/install it
+ * 5) Setup starts the java portion of the DMDirc installer
+ *)
 program Setup;
 
+// Resource file - icon, versioninfo, manifest
 {$R most.res}
 
+{ ---------------------------------------------------------------------------- }
 {$IFDEF FPC}
-	{$MODE Delphi}
+  {$MODE Delphi}
 {$ENDIF}
+
 // Use this instead of {$APPTYPE XXX}
 // APP_XXX is the same as {$APPTYPE XXX}
 // Defaults to console
@@ -38,59 +51,67 @@ program Setup;
 
 // This block actually does the work for the above work-around
 {$IFDEF APP_GUI}
-	{$APPTYPE GUI}
+  {$APPTYPE GUI}
 {$ELSE}
-	{$IFDEF APP_FS}
-		{$APPTYPE FS}
-	{$ELSE}
-		{$IFDEF APP_TOOL}
-			{$DEFINE APP_CONSOLE}
-			{$APPTYPE TOOL}
-		{$ELSE}
-			{$DEFINE APP_CONSOLE}
-			{$APPTYPE CONSOLE}
-		{$ENDIF}
-	{$ENDIF}
+  {$IFDEF APP_FS}
+    {$APPTYPE FS}
+  {$ELSE}
+    {$IFDEF APP_TOOL}
+      {$DEFINE APP_CONSOLE}
+      {$APPTYPE TOOL}
+    {$ELSE}
+      {$DEFINE APP_CONSOLE}
+      {$APPTYPE CONSOLE}
+    {$ENDIF}
+  {$ENDIF}
 {$ENDIF}
 
-// If this is defined, lazarus-specific code (gui progress bar) will be compiled
-// without it, a wget console window will be used for progress instead.
-// This is automatically set by the build script when lazarus is detected in /usr/lib/lazarus
-// You can forcibly define or undefine it here.
-// {$DEFINE LAZARUS}
-// {$UNDEF LAZARUS}
+{ ----------------------------------------------------------------------------
+  Debugging specific compiler directives
+  ---------------------------------------------------------------------------- }
 
+// If defined the JRE will always be downloaded as if it didn't exist. Used for
+// testing the JRE download dialog.
 //{$DEFINE FORCEJREDOWNLOAD}
 
 uses
-	{$IFDEF KOL}kol,{$ENDIF}
-	Vista, Windows, SysUtils, classes, registry, strutils {$IFNDEF FPC},masks{$ENDIF};
-
+  kol, Vista, Windows, SysUtils, classes, registry, strutils {$IFNDEF FPC},masks{$ENDIF};
 
 const
-{$I SetupConsts.inc}
-// This is also part of the above work-around.
-{$IFDEF APP_CONSOLE}
-	IsConsole: boolean = true;
-{$ELSE}
-	IsConsole: boolean = false;
-{$ENDIF}
+  // SetupConsts holds build information for this release
+  {$I SetupConsts.inc}
+  // This is also part of the above IsConsole workaround.
+  {$IFDEF APP_CONSOLE}
+    IsConsole: boolean = true;
+  {$ELSE}
+    IsConsole: boolean = false;
+  {$ENDIF}
 
 var
-  {$IFDEF KOL}
-    frmmain: pcontrol;
-    progressbar, btncancel: pcontrol;
-    label1, label2, label3, label4, labelurl, labelspeed, labelprogress: pcontrol;
-  {$ENDIF}
-	terminateDownload: boolean = false;
+  { --------------------------------------------------------------------------
+    KOL form objects
+    -------------------------------------------------------------------------- }
+  frmmain: pcontrol;
+  progressbar, btncancel: pcontrol;
+  label1, label2, label3, label4, labelurl, labelspeed, labelprogress: pcontrol;
 
-{$IFDEF KOL}
+  { --------------------------------------------------------------------------
+    Other globals
+    -------------------------------------------------------------------------- }
+  terminateDownload: boolean = false;
+
+{ ----------------------------------------------------------------------------
+  Main form: Cancel button clicked event
+  ---------------------------------------------------------------------------- }
 procedure btnCancel_Click(Dummy: Pointer; Sender: PControl);
 begin
   { Button clicked }
   terminateDownload := true;
 end;
 
+{ ----------------------------------------------------------------------------
+  Main form: Set progress percentage to <value> and display in label <msg>
+  ---------------------------------------------------------------------------- }
 procedure setProgress(value: integer; msg: string);
 begin
   ProgressBar.progress := value;
@@ -100,19 +121,30 @@ begin
   applet.processmessages;
 end;
 
+{ ----------------------------------------------------------------------------
+  Initialise KOL and create the main window
+  ---------------------------------------------------------------------------- }
 procedure CreateMainWindow;
 var
   screenw, screenh: longint;
 begin
+  { This call is required for common control 6 DLL to be correctly imported.
+    Without it strange things happen on windows XP }
   InitCommonControls;
 
+  { We need the screen size to centre the window later }
   screenw := GetSystemMetrics(SM_CXSCREEN);
   screenh := GetSystemMetrics(SM_CYSCREEN);
 
+  { KOL programs ideally need an Applet created }
   Applet := NewApplet('DMDirc Setup');
   Applet.Visible := true;
+
+  { Currently this icon does not work }
   Applet.Icon := THandle(-1);
 
+  { Create main form and set sane defaults. If we don't set the font here then
+    all child objects will have a rubbish font as a holdover from Windows 3.1! }
   frmmain := NewForm( Applet, 'DMDirc Setup').SetClientSize(400, 184);
   frmmain.CreateVisible := True;
   frmmain.CanResize := False;
@@ -120,6 +152,8 @@ begin
   frmmain.Font.FontName := 'Ms Sans Serif';
   frmmain.Font.FontHeight := 8;
   frmmain.SetPosition((screenw div 2) - (frmmain.Width div 2), (screenh div 2) - (frmmain.height div 2));
+
+  { Currently this icon does not work }
   frmmain.Icon := THandle(-1);
 
   progressbar := NewProgressBar(frmmain).SetPosition(16, 114);
@@ -145,41 +179,49 @@ begin
   label4 := NewLabel(frmmain, 'Progress:').SetPosition(16, label3.top + 20);
   label4.SetSize(frmmain.ClientWidth - 32, 16);
 
-  labelurl := NewLabel(frmmain, 'http://java.ftw.com/foo/').SetPosition(70, label1.top + 28);
+  { BringToFront calls are needed on the following labels because the labels
+    created earlier are as wide as the form and cover them as they are not
+    transparent. It seems windows creates controls in a backwards order so newer
+    controls are behind older ones. I could rearrange this order in the code but
+    it would look messy. }
+
+  labelurl := NewLabel(frmmain, '').SetPosition(70, label1.top + 28);
   labelurl.SetSize(frmmain.ClientWidth - 32, 16);
   labelurl.BringToFront;
 
-  labelspeed := NewLabel(frmmain, '328KByte/sec').SetPosition(70, label2.top + 20);
+  labelspeed := NewLabel(frmmain, '').SetPosition(70, label2.top + 20);
   labelspeed.SetSize(frmmain.ClientWidth - 32, 16);
   labelspeed.BringToFront;
 
-  labelprogress := NewLabel(frmmain, '500KByte of 10.4MByte (50%)').SetPosition(70, label3.top + 20);
+  labelprogress := NewLabel(frmmain, '').SetPosition(70, label3.top + 20);
   labelprogress.SetSize(frmmain.ClientWidth - 32, 16);
   labelprogress.BringToFront;
 
+  { Assign UI methods }
   btncancel.OnClick := TOnEvent(MakeMethod(nil, @btnCancel_Click ));
 
-  { Usually we would not call CreateWindow here because we will enter the
-    message loop. However as we don't want to enter the messageloop normally
-    we must do this or the window wont show! }
+  { The window will not appear until the messageloop is started with Run() but
+    this means we must yield this thread to the UI. This is unacceptable for
+    such a simple program. Calling CreateWindow here will cause the window to
+    appear but the message loop does not run; consequently the app must service
+    messages by hand at a timely interval to avoid windows from marking the
+    program as unresponsive. This is a hack but acceptable here. }
+
+  { /!\ WARNING /!\ Run() can no longer be used to enter the message loop after
+    this call or a nasty crash will occur. }
   applet.createwindow;
 end;
-{$ENDIF}
 
-// -----------------------------------------------------------------------------
-// Takes a size, <dsize> in bytes, and converts it a human readable string with
-// a suffix (MB or GB).
-// -----------------------------------------------------------------------------
+{ ----------------------------------------------------------------------------
+  Takes a size, <dsize> in bytes, and converts it a human readable string with
+  a suffix (MB or GB).
+  ---------------------------------------------------------------------------- }
 function nicesize(dsize: extended): string;
 var
   kbytes: single;
   mbytes: single;
   gbytes: single;
 begin
- { if dsize = 0 then begin
-    result := '0.00 kB';
-    exit;
-  end; --commented by beware}
   kbytes := dsize / 1024;
   mbytes := kbytes / 1024;
   gbytes := mbytes / 1024;
@@ -198,379 +240,326 @@ begin
   exit;
 end;
 
+{ ----------------------------------------------------------------------------
+  Ask a question and return True for YES and False for NO
+  Uses nifty vista task dialog if available
+  ---------------------------------------------------------------------------- }
 function askQuestion(Question: String): boolean;
 begin
-	Result := TaskDialog(0, 'DMDirc Setup', 'Question', Question, TD_ICON_QUESTION, TD_BUTTON_YES + TD_BUTTON_NO) = mrYes;
+  Result := TaskDialog(0, 'DMDirc Setup', 'Question', Question, TD_ICON_QUESTION, TD_BUTTON_YES + TD_BUTTON_NO) = mrYes;
 end;
 
+{ ----------------------------------------------------------------------------
+  Show an error message
+  Uses nifty vista task dialog if available
+  ---------------------------------------------------------------------------- }
 procedure showError(ErrorMessage: String; addFooter: boolean = true; includeDescInXP: boolean = true);
 begin
-	if IsConsole then begin
-		writeln('');
-		writeln('-----------------------------------------------------------------------');
-		writeln('Sorry, setup is unable to continue.!');
-		writeln('-----------------------------------------------------------------------');
-		writeln('Reason:');
-		writeln('----------');
-		writeln(ErrorMessage);
-		if addFooter then begin
-			writeln('-----------------------------------------------------------------------');
-			writeln('If you feel this is incorrect, or you require some further assistance,');
-			writeln('please feel free to contact us.');
-		end;
-		writeln('-----------------------------------------------------------------------');
-		readln;
-	end
-	else begin
-		if addFooter then begin
-			ErrorMessage := ErrorMessage+#13#10;
-			ErrorMessage := ErrorMessage+#13#10+'If you feel this is incorrect, or you require some further assistance,';
-			if not IsWindowsVista then ErrorMessage := ErrorMessage+#13#10;
-			ErrorMessage := ErrorMessage+'please feel free to contact us.';
-		end;
-		
-		TaskDialog(0, 'DMDirc Setup', 'Sorry, setup is unable to continue.', ErrorMessage, TD_ICON_ERROR, TD_BUTTON_OK, includeDescInXP, false);
-	end;
+  if addFooter then begin
+    ErrorMessage := ErrorMessage+#13#10;
+    ErrorMessage := ErrorMessage+#13#10+'If you feel this is incorrect, or you require some further assistance,';
+    if not IsWindowsVista then ErrorMessage := ErrorMessage+#13#10;
+    ErrorMessage := ErrorMessage+'please feel free to contact us.';
+  end;
+  TaskDialog(0, 'DMDirc Setup', 'Sorry, setup is unable to continue.', ErrorMessage, TD_ICON_ERROR, TD_BUTTON_OK, includeDescInXP, false);
 end;
 
+{ ----------------------------------------------------------------------------
+  Show a message box (information)
+  Uses nifty vista task dialog if available
+  ---------------------------------------------------------------------------- }
 procedure showmessage(message: String; context:String = 'Information');
 begin
-	if IsConsole then begin
-		writeln('');
-		writeln('-----------------------------------------------------------------------');
-		writeln(context+':');
-		writeln('-----------------------------------------------------------------------');
-		writeln(message);
-		writeln('-----------------------------------------------------------------------');
-		readln;
-	end
-	else begin
-		TaskDialog(0, 'DMDirc Setup', context, message, TD_ICON_INFORMATION, TD_BUTTON_OK);
-	end;
+  TaskDialog(0, 'DMDirc Setup', context, message, TD_ICON_INFORMATION, TD_BUTTON_OK);
 end;
 
-// Run an application and don't wait for it to finish.
+{ ----------------------------------------------------------------------------
+  Launch a process (hidden if requested) and immediately return control to
+  the current thread
+  ---------------------------------------------------------------------------- }
 function Launch(sProgramToRun: String; hide: boolean = false): TProcessInformation;
 var
-	StartupInfo: TStartupInfo;
+  StartupInfo: TStartupInfo;
 begin
-	FillChar(StartupInfo, SizeOf(TStartupInfo), 0);
-	with StartupInfo do begin
-		cb := SizeOf(TStartupInfo);
-		dwFlags := STARTF_USESHOWWINDOW;
-		if hide then wShowWindow := SW_HIDE
-		else wShowWindow := SW_SHOWNORMAL;
-	end;
+  FillChar(StartupInfo, SizeOf(TStartupInfo), 0);
+  with StartupInfo do begin
+    cb := SizeOf(TStartupInfo);
+    dwFlags := STARTF_USESHOWWINDOW;
+    if hide then wShowWindow := SW_HIDE
+    else wShowWindow := SW_SHOWNORMAL;
+  end;
 
-	CreateProcess(nil, PChar(sProgramToRun), nil, nil, False, NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo, Result);
+  CreateProcess(nil, PChar(sProgramToRun), nil, nil, False, NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo, Result);
 end;
 
-// Run an application and wait for it to finish.
+{ ----------------------------------------------------------------------------
+  Launch a process (hidden if requested) and wait for it to finish
+  ---------------------------------------------------------------------------- }
 function ExecAndWait(sProgramToRun: String; hide: boolean = false): Longword;
 var
-	ProcessInfo: TProcessInformation;
+  ProcessInfo: TProcessInformation;
 begin
-	ProcessInfo := Launch(sProgramToRun, hide);
-	getExitCodeProcess(ProcessInfo.hProcess, Result);
+  ProcessInfo := Launch(sProgramToRun, hide);
+  getExitCodeProcess(ProcessInfo.hProcess, Result);
 
-	while Result=STILL_ACTIVE do begin
-		sleep(1000);
-		GetExitCodeProcess(ProcessInfo.hProcess, Result);
-	end;
+  while Result = STILL_ACTIVE do begin
+    sleep(1000);
+    GetExitCodeProcess(ProcessInfo.hProcess, Result);
+  end;
 end;
 
-procedure dowriteln(line: String);
-begin
-	if IsConsole then writeln(line);
-end;
-
-procedure dowrite(line: String);
-begin
-	if IsConsole then write(line);
-end;
-
+{ ----------------------------------------------------------------------------
+  Return the size in bytes of the file specified by <name>
+  Returns -1 on error
+  ---------------------------------------------------------------------------- }
 function GetFileSizeByName(name: String): Integer;
 var
-	hand: THandle;
+  hand: THandle;
 begin
-	hand := 0;
-	Result := 0;
-	if FileExists(name) then begin
-		try
-			hand := CreateFile(PChar(name), GENERIC_READ, FILE_SHARE_WRITE or FILE_SHARE_READ, nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-			Result := GetFileSize(hand, nil);
-		finally
-			try
-				if (hand <> 0) then CloseHandle(hand);
-			except
-				Result := -1;
-			end;
-		end;
-	end;
+  hand := 0;
+  Result := 0;
+  if FileExists(name) then begin
+    try
+      hand := CreateFile(PChar(name), GENERIC_READ, FILE_SHARE_WRITE or FILE_SHARE_READ, nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+      Result := GetFileSize(hand, nil);
+    finally
+      try
+        if (hand <> 0) then CloseHandle(hand);
+      except
+        Result := -1;
+      end;
+    end;
+  end;
 end;
 
+{ ----------------------------------------------------------------------------
+  Perform a wildcard match
+  Seems redundant, will remove at some point
+  ---------------------------------------------------------------------------- }
 function DoMatch(Input: String; Wildcard: String): boolean;
 begin
-	{$ifdef FPC}
-		Result := IsWild(Input,Wildcard,True);
-	{$else}
-		Result := MatchesMask(Input,Wildcard);
-	{$endif}
+  Result := IsWild(Input,Wildcard,True);
 end;
 
 {$IFNDEF VER150}
+{ ----------------------------------------------------------------------------
+  Return part of a string
+  ---------------------------------------------------------------------------- }
 function AnsiMidStr(Source: String; Start: Integer; Count: Integer): String;
 begin
-	// Not perfectly accurate, but does the job
-	Result := Copy(Source, Start, Count);
+  // Not perfectly accurate, but does the job
+  { ^ What does that mean? // Zipplet }
+  Result := Copy(Source, Start, Count);
 end;
 {$ENDIF}
 
+{ ----------------------------------------------------------------------------
+  Downloads the JRE. Returns TRUE if the user installed it. False otherwise
+  ---------------------------------------------------------------------------- }
 function downloadJRE(message: String = 'Would you like to download the java JRE?'): boolean;
 var
-	ProcessInfo: TProcessInformation;
-	processResult: Longword;
-	url: String;
-	dir: String;
-	line: String;
-	f: TextFile;
-	bits: TStringList;
-	match: boolean;
-	{$IFDEF KOL}
-		wantedsize: double;
-		currentsize: double;
-    lastsize: double;
-    i: double;
-    c: longint;
-	{$ENDIF}
+  ProcessInfo: TProcessInformation;
+  processResult: Longword;
+  url: String;
+  dir: String;
+  line: String;
+  f: TextFile;
+  bits: TStringList;
+  match: boolean;
+  wantedsize: double;
+  currentsize: double;
+   lastsize: double;
+   i: double;
+   c: longint;
 begin
-	dir := IncludeTrailingPathDelimiter(ExtractFileDir(paramstr(0)));
-	url := 'http://www.dmdirc.com/getjava/windows/all';
-	Result := false;
-	ExecAndWait('wget.exe -o "'+dir+'wgetoutput" --spider '+url, true);
+  dir := IncludeTrailingPathDelimiter(ExtractFileDir(paramstr(0)));
+  url := 'http://www.dmdirc.com/getjava/windows/all';
+  Result := false;
 
+  { First we will determine the approximate size of the download.
+    In my opinion we should not do this until we have asked the user if they
+    would like to download the JRE. Might change this later.
+    We obtain the size by asking wget to find out. }
+  ExecAndWait('wget.exe -o "'+dir+'wgetoutput" --spider '+url, true);
+
+  { Just incase wget fails ... }
   if not fileexists(dir+'wgetoutput') then begin
     showerror('Internal error: wget returned no output.');
     result := false;
     exit;
   end;
-	AssignFile(f, dir+'wgetoutput');
-	Reset(f);
-	line := '';
-	match := false;
-	while not Eof(f) do begin
-		ReadLn(f, line);
-		match := DoMatch(line,'Length:*');
-		if match then break;
-	end;
-	if match then begin
-		bits := TStringList.create;
-		try
-			bits.Clear;
-			bits.Delimiter := ' ';
-			bits.DelimitedText := line;
-			{$IFDEF KOL}
-				try
-					wantedsize := strtoint(StringReplace(bits[1], ',', '', [rfReplaceAll]))
-				except
-					wantedsize := 0;
-				end;
-			{$ENDIF}
-			if askQuestion(message+' (Download Size: '+AnsiMidStr(bits[2], 2, length(bits[2])-2)+')') then begin
-				{$IFDEF KOL}
-					ProcessInfo := Launch('wget.exe '+url+' -O jre.exe', true);
-          CreateMainWindow;
-          labelurl.caption := url;
-          labelspeed.caption := 'Unknown';
-					if wantedsize <= 0 then begin
-            progressbar.progress := 50;
-					end;
-				{$ELSE}
-					ProcessInfo := Launch('wget.exe '+url+' -O jre.exe');
-				{$ENDIF}
-				getExitCodeProcess(ProcessInfo.hProcess, processResult);
 
-        {$IFDEF KOL}
+  { Parse the output and grab the approximate size }
+  AssignFile(f, dir+'wgetoutput');
+  Reset(f);
+  line := '';
+  match := false;
+  while not Eof(f) do begin
+    ReadLn(f, line);
+    match := DoMatch(line,'Length:*');
+    if match then break;
+  end;
+  if match then begin
+    bits := TStringList.create;
+    try
+      bits.Clear;
+      bits.Delimiter := ' ';
+      bits.DelimitedText := line;
+      try
+        wantedsize := strtoint(StringReplace(bits[1], ',', '', [rfReplaceAll]))
+      except
+        wantedsize := 0;
+      end;
+
+      { We ask the user if they wish to download the JRE }
+      if askQuestion(message+' (Download Size: '+AnsiMidStr(bits[2], 2, length(bits[2])-2)+')') then begin
+        { Create progress window and show it }
+        CreateMainWindow;
+        { Get wget to start the download }
+        ProcessInfo := Launch('wget.exe '+url+' -O jre.exe', true);
+        labelurl.caption := url;
+        labelspeed.caption := 'Connecting to site...';
+
+        { Why is this case needed ?! }
+        if wantedsize <= 0 then begin
+          progressbar.progress := 50;
+        end;
+        getExitCodeProcess(ProcessInfo.hProcess, processResult);
+
         lastsize := 0;
         c := 0;
-        {$ENDIF}
-				while (processResult=STILL_ACTIVE) and (not terminateDownload) do begin
-					// Update progress bar.
-					{$IFDEF KOL}
-						if wantedsize > 0 then begin
-							currentsize := GetFileSizeByName(dir + 'jre.exe');
-              inc(c);
-              if (c >= 5) then begin
-                i := (i + currentsize - lastsize) / 2;
-                labelspeed.caption := nicesize(round(i * 2)) + '/sec';
-                lastsize := currentsize;
-                c := 0;
-              end;
-							//if (currentsize > 0) then setProgress(Round((currentsize/wantedsize)*100));
-							if (currentsize > 0) then setProgress(Round((currentsize/wantedsize)*100),
-                nicesize(currentsize) + ' of ' + nicesize(wantedsize) +
-                ' (' + inttostr(Round((currentsize/wantedsize)*100)) + '%)');
-						end;
-						applet.ProcessMessages;
-					{$ENDIF}
-					sleep(100);
-					GetExitCodeProcess(ProcessInfo.hProcess, processResult);
-				end;
-				{$IFDEF KOL}
-          frmmain.visible := false;
-          applet.visible := false;
-        {$ENDIF}
-				if (terminateDownload) then begin
-					Result := false;
-					{$IFDEF KOL}
-						TerminateProcess(ProcessInfo.hProcess, 0);
-						showError('JRE Download was aborted', false);
-					{$ENDIF}
-				end
-				else Result := processResult = 0;
-				if not Result then begin
-					if not terminateDownload then begin
-						showError('JRE Download Failed', false);
-					end
-					else begin
-						// If the download was cancelled by the form, this error will already
-						// have been given.
-						{$IFNDEF KOL}
-							showError('JRE Download was aborted', false);
-						{$ENDIF}
-					end;
-				end;
-			end;
-		finally
-			bits.free;
-		end;
-	end;
+        i := 0;
+        while (processResult = STILL_ACTIVE) and (not terminateDownload) do begin
+          if wantedsize > 0 then begin
+            currentsize := GetFileSizeByName(dir + 'jre.exe');
+            inc(c);
+            if (c >= 5) then begin
+              i := (i + currentsize - lastsize) / 2;
+              labelspeed.caption := nicesize(round(i * 2)) + '/sec';
+              lastsize := currentsize;
+              c := 0;
+            end;
+            if (currentsize > 0) then setProgress(Round((currentsize/wantedsize)*100),
+              nicesize(currentsize) + ' of ' + nicesize(wantedsize) +
+              ' (' + inttostr(Round((currentsize/wantedsize)*100)) + '%)');
+          end;
+          { We must process the message loop or the window wont respond to the user }
+          applet.ProcessMessages;
+          { Sleep to prevent 100% CPU usage }
+          sleep(100);
+          GetExitCodeProcess(ProcessInfo.hProcess, processResult);
+        end;
+        frmmain.visible := false;
+        applet.visible := false;
+        if (terminateDownload) then begin
+          Result := false;
+          TerminateProcess(ProcessInfo.hProcess, 0);
+          showError('JRE Download was aborted', false);
+        end
+        else Result := processResult = 0;
+        if not Result then begin
+          if not terminateDownload then begin
+            showError('JRE Download Failed', false);
+          end
+          else begin
+            // If the download was cancelled by the form, this error will already
+            // have been given.
+            { No action needed here anymore }
+          end;
+        end;
+      end;
+    finally
+      bits.free;
+    end;
+  end;
 end;
 
+{ ----------------------------------------------------------------------------
+  Begin the JRE download/install.
+  ---------------------------------------------------------------------------- }
 function installJRE(isUpgrade: boolean): boolean;
 var
-	question: String;
-	needDownload: boolean;
-	canContinue: boolean;
+  question: String;
+  needDownload: boolean;
+  canContinue: boolean;
 begin
-	Result := false;
-	needDownload := not FileExists(IncludeTrailingPathDelimiter(ExtractFileDir(paramstr(0)))+'jre.exe');
-	if needDownload then begin
-		if not isUpgrade then question := 'Java was not detected on your machine. Would you like to download and install it now?'
-		else question := 'The version of java detected on your machine is not compatible with DMDirc. Would you like to download and install a compatible version now?';
-	end
-	else begin
-		if not isUpgrade then question := 'Java was not detected on your machine. Would you like to install it now?'
-		else question := 'The version of java detected on your machine is not compatible with DMDirc. Would you like to install a compatible version now?';
-	end;
+  Result := false;
+  needDownload := not FileExists(IncludeTrailingPathDelimiter(ExtractFileDir(paramstr(0)))+'jre.exe');
+  if needDownload then begin
+    if not isUpgrade then question := 'Java was not detected on your machine. Would you like to download and install it now?'
+    else question := 'The version of java detected on your machine is not compatible with DMDirc. Would you like to download and install a compatible version now?';
+  end
+  else begin
+    if not isUpgrade then question := 'Java was not detected on your machine. Would you like to install it now?'
+    else question := 'The version of java detected on your machine is not compatible with DMDirc. Would you like to install a compatible version now?';
+  end;
 
-	canContinue := true;
-	if (needDownload) then begin
-		canContinue := downloadJRE(question);
-	end;
-	
-	if canContinue then begin
-		// Final result of this function is the return value of installing java.
-		if needDownload or askQuestion(question) then begin
-			showmessage('The Java installer will now run. Please follow the instructions given. '+#13#10+'The DMDirc installation will continue afterwards.');
-			Result := (ExecAndWait('jre.exe') = 0);
-		end;
-	end
+  canContinue := true;
+  if (needDownload) then begin
+    canContinue := downloadJRE(question);
+  end;
+
+  if canContinue then begin
+    // Final result of this function is the return value of installing java.
+    if needDownload or askQuestion(question) then begin
+      showmessage('The Java installer will now run. Please follow the instructions given. '+#13#10+'The DMDirc installation will continue afterwards.');
+      Result := (ExecAndWait('jre.exe') = 0);
+    end;
+  end
 end;
 
 var
-	errorMessage: String;
-	javaCommand: String = 'javaw.exe';
-	params: String = '';
-	dir: String = '';
-	Reg: TRegistry;
-	result: Integer;
+  errorMessage: String;
+  javaCommand: String = 'javaw.exe';
+  params: String = '';
+  dir: String = '';
+  Reg: TRegistry;
+  result: Integer;
 begin
 
-	if IsConsole then begin
-		writeln('-----------------------------------------------------------------------');
-		writeln('Welcome to the DMDirc installer.');
-		writeln('-----------------------------------------------------------------------');
-		writeln('This will install DMDirc on your computer.');
-		writeln('');
-		writeln('Please wait whilst the GUI part of the installer loads...');
-		writeln('-----------------------------------------------------------------------');
-	//end
-	//else begin
-	//	errorMessage := 'This will install DMDirc on your computer, please click OK to continue, or Cancel to abort.';
-	//	if (MessageBox(0, PChar(errorMessage), 'DMDirc Installer', MB_OKCANCEL + MB_ICONINFORMATION) <> IDOK) then begin
-	//		exit;
-	//	end;
-	end;
+  errorMessage := '';
+  if FileExists('DMDirc.jar') then begin
+    {$IFDEF FORCEJREDOWNLOAD}if (1 <> 0) then begin{$ELSE}if (ExecAndWait(javaCommand+' -version') <> 0) then begin{$ENDIF}
+      if not installJRE(false) then begin
+        showError('DMDirc setup can not continue without Java. Please install Java and try again.', false, false);
+        exit;
+      end;
+    end;
 
-	errorMessage := '';
-	dowrite('Checking for DMDirc.jar.. ');
-	if FileExists('DMDirc.jar') then begin
-		dowriteln('Success!');
-		dowrite('Checking for JVM.. ');
-    {$IFDEF FORCEJREDOWNLOAD}
-		if (1 <> 0) then begin
-    {$ELSE}
-		if (ExecAndWait(javaCommand+' -version') <> 0) then begin
-    {$ENDIF}
-			dowriteln('Failed!');
-			if not installJRE(false) then begin
-				showError('DMDirc setup can not continue without java. Please install java and try again', false, false);
-				exit;
-			end;
-		end
-		else begin
-			if IsConsole then begin
-				writeln('Success!');
-				write('Starting installer.. ');
-				javaCommand := 'java.exe';
-			end;
-		end;
-		
-		Reg := TRegistry.Create;
-		Reg.RootKey := HKEY_LOCAL_MACHINE;
-		if Reg.OpenKey('SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DMDirc', false) then begin
-			dir := Reg.ReadString('InstallDir');
-			if (dir <> '') then begin
-				params := params+' --directory "'+dir+'"';
-			end;
-		end;
-		Reg.CloseKey;
-		Reg.Free;
-		if (ReleaseNumber <> '') then begin
-			params := params+' --release '+ReleaseNumber;
-		end;
-		// Check if the installer runs
-		if (ExecAndWait(javaCommand+' -cp DMDirc.jar com.dmdirc.installer.Main --help') <> 0) then begin
-			dowriteln('Failed!');
-			if not installJRE(true) then begin
-				showError('Sorry, DMDirc setup can not continue without an updated version of java.', false, false);
-				exit;
-			end
-			else begin
-				// Try again now that java is installed.
-				result := ExecAndWait(javaCommand+' -cp DMDirc.jar com.dmdirc.installer.Main '+params);
-			end;
-		end
-		else begin
-			// Java is the right version, run the installer
-			result := ExecAndWait(javaCommand+' -cp DMDirc.jar com.dmdirc.installer.Main '+params);
-		end;
-		if result = 0 then dowriteln('Installation completed.')
-		else dowriteln('Installation did not complete.')
-	end
-	else begin
-		dowriteln('Failed!');
-		errorMessage := errorMessage+'DMDirc.jar was not found.';
-		errorMessage := errorMessage+#13#10;
-		errorMessage := errorMessage+#13#10+'This is likely because of a corrupt installer build.';
-		errorMessage := errorMessage+#13#10+'Please check http://www.dmdirc.com/ for an updated build.';
-		showError(errorMessage);
-	end;
-	if IsConsole then begin
-		writeln('');
-		writeln('-----------------------------------------------------------------------');
-		writeln('Installation Completed. Thank you for choosing DMDirc');
-		writeln('-----------------------------------------------------------------------');	
-	end;
+    Reg := TRegistry.Create;
+    Reg.RootKey := HKEY_LOCAL_MACHINE;
+    if Reg.OpenKey('SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DMDirc', false) then begin
+      dir := Reg.ReadString('InstallDir');
+      if (dir <> '') then begin
+        params := params+' --directory "'+dir+'"';
+      end;
+    end;
+    Reg.CloseKey;
+    Reg.Free;
+    if (ReleaseNumber <> '') then begin
+      params := params+' --release '+ReleaseNumber;
+    end;
+    // Check if the installer runs
+    if (ExecAndWait(javaCommand+' -cp DMDirc.jar com.dmdirc.installer.Main --help') <> 0) then begin
+      if not installJRE(true) then begin
+        showError('Sorry, DMDirc setup can not continue without an updated version of java.', false, false);
+        exit;
+      end
+      else begin
+        // Try again now that java is installed.
+        result := ExecAndWait(javaCommand+' -cp DMDirc.jar com.dmdirc.installer.Main '+params);
+      end;
+    end
+    else begin
+      // Java is the right version, run the installer
+      result := ExecAndWait(javaCommand+' -cp DMDirc.jar com.dmdirc.installer.Main '+params);
+    end;
+  end
+  else begin
+    errorMessage := errorMessage+'DMDirc.jar was not found.';
+    errorMessage := errorMessage+#13#10;
+    errorMessage := errorMessage+#13#10+'This is likely because of a corrupt installer build.';
+    errorMessage := errorMessage+#13#10+'Please check http://www.dmdirc.com/ for an updated build.';
+    showError(errorMessage);
+  end;
 end.
