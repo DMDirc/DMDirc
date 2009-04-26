@@ -75,7 +75,7 @@ program Setup;
 //{$DEFINE FORCEJREDOWNLOAD}
 
 uses
-  kol, Vista, Windows, SysUtils, classes, registry, strutils {$IFNDEF FPC},masks{$ENDIF};
+  kol, Vista, Windows, SysUtils, classes, registry;
 
 const
   // SetupConsts holds build information for this release
@@ -105,7 +105,6 @@ var
   ---------------------------------------------------------------------------- }
 procedure btnCancel_Click(Dummy: Pointer; Sender: PControl);
 begin
-  { Button clicked }
   terminateDownload := true;
 end;
 
@@ -145,7 +144,7 @@ begin
 
   { Create main form and set sane defaults. If we don't set the font here then
     all child objects will have a rubbish font as a holdover from Windows 3.1! }
-  frmmain := NewForm( Applet, 'DMDirc Setup').SetClientSize(400, 184);
+  frmmain := NewForm(Applet, 'DMDirc Setup').SetClientSize(400, 184);
   frmmain.CreateVisible := True;
   frmmain.CanResize := False;
   frmmain.Style := frmmain.style and (not WS_MAXIMIZEBOX);
@@ -332,15 +331,6 @@ begin
   end;
 end;
 
-{ ----------------------------------------------------------------------------
-  Perform a wildcard match
-  Seems redundant, will remove at some point
-  ---------------------------------------------------------------------------- }
-function DoMatch(Input: String; Wildcard: String): boolean;
-begin
-  Result := IsWild(Input,Wildcard,True);
-end;
-
 {$IFNDEF VER150}
 { ----------------------------------------------------------------------------
   Return part of a string
@@ -396,8 +386,9 @@ begin
   match := false;
   while not Eof(f) do begin
     ReadLn(f, line);
-    match := DoMatch(line,'Length:*');
-    if match then break;
+    if length(line) > 8 then begin
+      if copy(line, 1, 7) = 'Length:' then break;
+    end;
   end;
   if match then begin
     bits := TStringList.create;
