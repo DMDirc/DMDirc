@@ -72,7 +72,7 @@ program Setup;
 
 // If defined the JRE will always be downloaded as if it didn't exist. Used for
 // testing the JRE download dialog.
-//{$DEFINE FORCEJREDOWNLOAD}
+// {$DEFINE FORCEJREDOWNLOAD}
 
 uses
   kol, shared, Vista, Windows, SysUtils, classes, registry;
@@ -117,8 +117,6 @@ procedure setProgress(value: integer; msg: string);
 begin
   ProgressBar.progress := value;
   labelprogress.Caption := msg;
-  //self.Caption := pChar('DMDirc Setup - '+CaptionLabel.Caption);
-  //Application.Title := self.Caption;
   applet.processmessages;
 end;
 
@@ -128,10 +126,14 @@ end;
 procedure CreateMainWindow;
 var
   screenw, screenh: longint;
+  iconhandle: thandle;
 begin
   { This call is required for common control 6 DLL to be correctly imported.
     Without it strange things happen on windows XP }
   InitCommonControls;
+
+  { Load the icon to assign to our window }
+  iconhandle := LoadIcon(hInstance, 'icon.ico');
 
   { We need the screen size to centre the window later }
   screenw := GetSystemMetrics(SM_CXSCREEN);
@@ -141,8 +143,7 @@ begin
   Applet := NewApplet('DMDirc Setup');
   Applet.Visible := true;
 
-  { Currently this icon does not work }
-  Applet.Icon := THandle(-1);
+  Applet.Icon := iconhandle;
 
   { Create main form and set sane defaults. If we don't set the font here then
     all child objects will have a rubbish font as a holdover from Windows 3.1! }
@@ -154,8 +155,7 @@ begin
   frmmain.Font.FontHeight := 8;
   frmmain.SetPosition((screenw div 2) - (frmmain.Width div 2), (screenh div 2) - (frmmain.height div 2));
 
-  { Currently this icon does not work }
-  frmmain.Icon := THandle(-1);
+  frmmain.Icon := iconhandle;
 
   progressbar := NewProgressBar(frmmain).SetPosition(16, 114);
   progressbar.SetSize(frmmain.clientWidth - (progressbar.Left * 2), 16);
@@ -164,7 +164,7 @@ begin
   progressbar.Visible := true;
 
   btncancel := NewButton(frmmain, 'Cancel').SetPosition(progressbar.Left +
-    progressbar.width - 60, progressbar.Top + progressbar.Height + 14);
+  progressbar.width - 60, progressbar.Top + progressbar.Height + 14);
   btncancel.SetSize(60, 24);
 
   label1 := NewLabel(frmmain, 'Downloading Java Runtime Environment').SetPosition(16, 16);
