@@ -461,13 +461,13 @@ if [ ! -e "Setup.exe"  -o "${compileSetup}" = "true" ]; then
 	else
 		echo "Building Setup.exe..."
 		extraFlags=""
-		if [ -e "${lazarusDir}/lcl" ]; then
-			echo "Using Lazarus"
+		if [ -e "../../libwin/kolfpc" ]; then
+			echo "Using KOLFPC"
 			mkdir -p ${PWD}/lazarus-build
-			extraFlags="-dLAZARUS -FU${PWD}/lazarus-build -Fu${PWD}/lazarus-build -Fu${lazarusDir}/lcl/widgetset/ -Fu${lazarusDir}/lcl/interfaces/win32/ -Fu${lazarusDir}/lcl/ -Fi${lazarusDir}/lcl/include/"
+			extraFlags="-dKOL -FU${PWD}/../../libwin/kolfpc -Fu${PWD}/../../libwin/kolfpc"
 		else
 			echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@";
-			echo "@        Building installer *WITHOUT* lazarus.        @";
+			echo "@        Building installer *WITHOUT* KOLFPC.         @";
 			echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@";
 		fi;
 		${FPC} ${compilerFlags} ${extraFlags} Setup.dpr

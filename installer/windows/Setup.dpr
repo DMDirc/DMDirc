@@ -63,22 +63,9 @@ program Setup;
 //{$DEFINE FORCEJREDOWNLOAD}
 
 uses
-	{$IFDEF LAZARUS}Interfaces, Forms, ComCtrls, Buttons, Messages, Controls, StdCtrls, {$ENDIF}
+	{$IFDEF KOL}kol,{$ENDIF}
 	Vista, Windows, SysUtils, classes, registry, strutils {$IFNDEF FPC},masks{$ENDIF};
 
-{$IFDEF LAZARUS}
-	type
-		TProgressForm = class(TForm)
-			ProgressBar: TProgressBar;
-			CancelButton: TButton;
-			CaptionLabel: TLabel;
-			constructor Create(AOwner: TComponent); override;
-		private
-			procedure onButtonClick(Sender: TObject);
-		public
-			procedure setProgress(value: integer);
-		end;
-{$ENDIF}
 
 const
 {$I SetupConsts.inc}
@@ -90,63 +77,88 @@ const
 {$ENDIF}
 
 var
-{$IFDEF LAZARUS} form: TProgressForm; {$ENDIF}
+  {$IFDEF KOL}
+    frmmain: pcontrol;
+    progressbar, btncancel: pcontrol;
+    label1, label2, label3, label4, label5, label6, label7: pcontrol;
+  {$ENDIF}
 	terminateDownload: boolean = false;
-	
-{$IFDEF LAZARUS}
-	constructor TProgressForm.Create(AOwner: TComponent);
-	begin
-		inherited;
-		self.Width := 500;
-		self.Height := 80;
-		self.Position := poScreenCenter;
-		self.BorderStyle := bsSingle;
-		CaptionLabel := TLabel.create(self);
-		CaptionLabel.Parent := self;
-		CaptionLabel.Width := 490;
-		CaptionLabel.Height := 15;
-		CaptionLabel.Top := 5;
-		CaptionLabel.Left := 5;
-		CaptionLabel.Caption := 'Downloading JRE - 0%';
-		
-		ProgressBar := TProgressBar.create(self);
-		ProgressBar.Parent := self;
-		ProgressBar.Width := 490;
-		ProgressBar.Height := 20;
-		ProgressBar.Top := CaptionLabel.Top+CaptionLabel.Height+5;
-		ProgressBar.Left := 5;
-		ProgressBar.Visible := true;
-		ProgressBar.Max := 100;
-		ProgressBar.Position := 0;
-		
-		CancelButton := TButton.create(self);
-		CancelButton.Parent := self;
-		CancelButton.Width := 80;
-		CancelButton.Height := 25;
-		CancelButton.Top := ProgressBar.Top+ProgressBar.Height+5;
-		CancelButton.Left := Round((self.Width/2) - (CancelButton.Width/2));
-		CancelButton.Visible := true;
-		CancelButton.Caption := 'Cancel';
-		CancelButton.onClick := self.onButtonClick;
-		
-		self.Caption := pChar('DMDirc Setup');
-		Application.Title := self.Caption;
-		
-		SetVistaFonts(self);
-	end;
-	
-	procedure TProgressForm.onButtonClick(Sender: TObject);
-	begin
-		terminateDownload := true;
-	end;
-	
-	procedure TProgressForm.setProgress(value: integer);
-	begin
-		ProgressBar.Position := value;
-		CaptionLabel.Caption := pchar('Downloading JRE - '+inttostr(value)+'%');
-		self.Caption := pChar('DMDirc Setup - '+CaptionLabel.Caption);
-		Application.Title := self.Caption;
-	end;
+
+{$IFDEF KOL}
+procedure btnCancel_Click(Dummy: Pointer; Sender: PControl);
+begin
+  { Button clicked }
+  terminateDownload := true;
+end;
+
+procedure setProgress(value: integer);
+begin
+  ProgressBar.progress := value;
+  //CaptionLabel.Caption := pchar('Downloading JRE - '+inttostr(value)+'%');
+  //self.Caption := pChar('DMDirc Setup - '+CaptionLabel.Caption);
+  //Application.Title := self.Caption;
+  applet.processmessages;
+end;
+
+procedure CreateMainWindow;
+var
+  screenw, screenh: longint;
+begin
+  InitCommonControls;
+
+  screenw := GetSystemMetrics(SM_CXSCREEN);
+  screenh := GetSystemMetrics(SM_CYSCREEN);
+
+  Applet := NewApplet('DMDirc Setup');
+  Applet.Visible := true;
+  Applet.Icon := THandle(-1);
+
+  frmmain := NewForm( Applet, 'DMDirc Setup').SetClientSize(400, 184);
+  frmmain.CreateVisible := True;
+  frmmain.CanResize := False;
+  frmmain.Style := frmmain.style and (not WS_MAXIMIZEBOX);
+  frmmain.Font.FontName := 'Ms Sans Serif';
+  frmmain.Font.FontHeight := 8;
+  frmmain.SetPosition((screenw div 2) - (frmmain.Width div 2), (screenh div 2) - (frmmain.height div 2));
+  frmmain.Icon := THandle(-1);
+
+  progressbar := NewProgressBar(frmmain).SetPosition(16, 114);
+  progressbar.SetSize(frmmain.clientWidth - (progressbar.Left * 2), 16);
+  progressbar.MaxProgress := 100;
+  progressbar.Progress := 0;
+  progressbar.Visible := true;
+
+  btncancel := NewButton(frmmain, 'Cancel').SetPosition(progressbar.Left +
+    progressbar.width - 60, progressbar.Top + progressbar.Height + 14);
+  btncancel.SetSize(60, 24);
+
+  label1 := NewLabel(frmmain, 'Downloading Java Runtime Environment').SetPosition(16, 16);
+  label1.SetSize(frmmain.ClientWidth - 32, 16);
+  label1.Font.FontStyle := [fsBold];
+
+  label2 := NewLabel(frmmain, 'Address:').SetPosition(16, label1.top + 28);
+  label2.SetSize(frmmain.ClientWidth - 32, 16);
+
+  label3 := NewLabel(frmmain, 'Speed:').SetPosition(16, label2.top + 20);
+  label3.SetSize(frmmain.ClientWidth - 32, 16);
+
+  label4 := NewLabel(frmmain, 'Progress:').SetPosition(16, label3.top + 20);
+  label4.SetSize(frmmain.ClientWidth - 32, 16);
+
+  label5 := NewLabel(frmmain, 'http://java.ftw.com/foo/').SetPosition(70, label1.top + 28);
+  label5.SetSize(frmmain.ClientWidth - 32, 16);
+  label5.BringToFront;
+
+  label6 := NewLabel(frmmain, '328KByte/sec').SetPosition(70, label2.top + 20);
+  label6.SetSize(frmmain.ClientWidth - 32, 16);
+  label6.BringToFront;
+
+  label7 := NewLabel(frmmain, '500KByte of 10.4MByte (50%)').SetPosition(70, label3.top + 20);
+  label7.SetSize(frmmain.ClientWidth - 32, 16);
+  label7.BringToFront;
+
+  btncancel.OnClick := TOnEvent(MakeMethod(nil, @btnCancel_Click ));
+end;
 {$ENDIF}
 
 function askQuestion(Question: String): boolean;
@@ -287,7 +299,7 @@ var
 	f: TextFile;
 	bits: TStringList;
 	match: boolean;
-	{$IFDEF LAZARUS}
+	{$IFDEF KOL}
 		wantedsize: double;
 		currentsize: double;
 	{$ENDIF}
@@ -317,7 +329,7 @@ begin
 			bits.Clear;
 			bits.Delimiter := ' ';
 			bits.DelimitedText := line;
-			{$IFDEF LAZARUS}
+			{$IFDEF KOL}
 				try
 					wantedsize := strtoint(StringReplace(bits[1], ',', '', [rfReplaceAll]))
 				except
@@ -325,33 +337,33 @@ begin
 				end;
 			{$ENDIF}
 			if askQuestion(message+' (Download Size: '+AnsiMidStr(bits[2], 2, length(bits[2])-2)+')') then begin
-				{$IFDEF LAZARUS}
+				{$IFDEF KOL}
 					ProcessInfo := Launch('wget.exe '+url+' -O jre.exe', true);
-					form.show();
+          CreateMainWindow;
 					if wantedsize <= 0 then begin
-						form.setProgress(50);
+            progressbar.progress := 50;
 					end;
 				{$ELSE}
 					ProcessInfo := Launch('wget.exe '+url+' -O jre.exe');
 				{$ENDIF}
 				getExitCodeProcess(ProcessInfo.hProcess, processResult);
-			
+
 				while (processResult=STILL_ACTIVE) and (not terminateDownload) do begin
 					// Update progress bar.
-					{$IFDEF LAZARUS}
+					{$IFDEF KOL}
 						if wantedsize > 0 then begin
 							currentsize := GetFileSizeByName('jre.exe');
-							if (currentsize > 0) then form.setProgress(Round((currentsize/wantedsize)*100));
+							if (currentsize > 0) then setProgress(Round((currentsize/wantedsize)*100));
 						end;
-						Application.ProcessMessages;
+						applet.ProcessMessages;
 					{$ENDIF}
 					sleep(10);
 					GetExitCodeProcess(ProcessInfo.hProcess, processResult);
 				end;
-				{$IFDEF LAZARUS}form.hide();{$ENDIF}
+				{$IFDEF KOL}frmmain.visible := false;{$ENDIF}
 				if (terminateDownload) then begin
 					Result := false;
-					{$IFDEF LAZARUS}
+					{$IFDEF KOL}
 						TerminateProcess(ProcessInfo.hProcess, 0);
 						showError('JRE Download was aborted', false);
 					{$ENDIF}
@@ -364,7 +376,7 @@ begin
 					else begin
 						// If the download was cancelled by the form, this error will already
 						// have been given.
-						{$IFNDEF LAZARUS}
+						{$IFNDEF KOL}
 							showError('JRE Download was aborted', false);
 						{$ENDIF}
 					end;
@@ -415,11 +427,7 @@ var
 	Reg: TRegistry;
 	result: Integer;
 begin
-	{$IFDEF LAZARUS}
-		Application.Initialize;
-		Application.CreateForm(TProgressForm, form);
-	{$ENDIF}
-	
+
 	if IsConsole then begin
 		writeln('-----------------------------------------------------------------------');
 		writeln('Welcome to the DMDirc installer.');
