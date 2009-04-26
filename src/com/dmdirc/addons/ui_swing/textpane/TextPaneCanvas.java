@@ -99,7 +99,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         addMouseListener(this);
         addMouseMotionListener(this);
         addComponentListener(this);
-        parent.getFrameContainer().getConfigManager().addChangeListener("ui", "textPaneFontSize", this);
+        //TODO issue 2251
+        //parent.getFrameContainer().getConfigManager().addChangeListener("ui", "textPaneFontSize", this);
     }
 
     /**

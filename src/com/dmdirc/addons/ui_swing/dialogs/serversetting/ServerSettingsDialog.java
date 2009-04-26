@@ -195,8 +195,9 @@ public final class ServerSettingsDialog extends StandardDialog implements Action
                 OptionType.SPINNER);
         settingsPanel.addOption("ui.textPaneFontName", "Textpane font name",
                 OptionType.TEXTFIELD);
-        settingsPanel.addOption("ui.textPaneFontSize", "Textpane font size",
-                OptionType.SPINNER);
+        //TODO issue 2251
+        //settingsPanel.addOption("ui.textPaneFontSize", "Textpane font size",
+        //        OptionType.SPINNER);
         
         settingsPanel.addOption("ui.inputbackgroundcolour",
                 "Input field background colour",
