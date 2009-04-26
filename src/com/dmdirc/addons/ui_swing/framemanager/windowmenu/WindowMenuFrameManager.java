@@ -236,10 +236,8 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
      */
     @Override
     public void actionPerformed(final ActionEvent e) {
-        if ("ToggleState".equals(e.getActionCommand())) {
-            if (activeWindow != null) {
-                activeWindow.toggleMaximise();
-            }
+        if (e.getActionCommand().equals("ToggleState")) {
+            activeWindow.toggleMaximise();
         } else if (e.getActionCommand().equals("Minimise")) {
             activeWindow.minimise();
         } else if (e.getActionCommand().equals("Close")) {
