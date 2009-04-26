@@ -64,7 +64,7 @@ public class InstallerListener implements WizardListener, StepListener {
         if ("Install".equals(step.getStepName())) {
             installerToBeDisplayed(step);
         } else if ("Confirm".equals(step.getStepName())) {
-            confirmToBeDisplayed((TextStep) step);
+            confirmToBeDisplayed(step);
         }
     }
 
@@ -82,7 +82,7 @@ public class InstallerListener implements WizardListener, StepListener {
         Main.getInstaller().start();
     }
 
-    private void confirmToBeDisplayed(final TextStep step) {
+    private void confirmToBeDisplayed(final Step step) {
         String shortcutText = "";
 
         final Settings settings = (Settings) Main.getWizardFrame().getStep(1);
@@ -113,19 +113,22 @@ public class InstallerListener implements WizardListener, StepListener {
         final String installLocation = settings.getInstallLocation();
 
 
-        if (installLocation.isEmpty()) {
-            step.setText(
-                    "You have chosen an invalid install location\n\n" +
-                    "Please press the \"Previous\" button to go back and correct it.");
-            Main.getWizardFrame().enableNextStep(false);
-        } else {
-            step.setText(
-                    "Please review your chosen settings:\n\n" +
-                    " - Install Location:\n" + "    " + installLocation +
-                    "\n" + shortcutText + "\n" +
-                    "If you wish to change any of these settings, press the \"Previous\" button," +
-                    "otherwise click \"Next\" to begin the installation");
-            Main.getWizardFrame().enableNextStep(true);
+        if (step instanceof TextStep) {
+            final TextStep textStep = (TextStep) step;
+            if (installLocation.isEmpty()) {
+                textStep.setText(
+                        "You have chosen an invalid install location\n\n" +
+                        "Please press the \"Previous\" button to go back and correct it.");
+               Main.getWizardFrame().enableNextStep(false);
+            } else {
+                textStep.setText(
+                        "Please review your chosen settings:\n\n" +
+                        " - Install Location:\n" + "    " + installLocation +
+                        "\n" + shortcutText + "\n" + "If you wish to change " +
+                        "any of these settings, press the \"Previous\" " +
+                        "button, otherwise click \"Next\" to begin the installation");
+                Main.getWizardFrame().enableNextStep(true);
+           }
         }
     }
 }
