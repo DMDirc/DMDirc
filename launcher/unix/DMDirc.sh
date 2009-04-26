@@ -161,6 +161,32 @@ messagedialog() {
 	fi;
 }
 
+getConfigOption() {
+	FILE="${profiledir}/dmdirc.config"
+	WANTED_DOMAIN="${1}"
+	WANTED_KEY="${2}"
+	CURRENT_SECTION=""
+	if [ "${WANTED_KEY}" != "" -a "${WANTED_DOMAIN}" = "" ]; then
+		if [ -e "${FILE}" ]; then
+			cat ${FILE} | sed 's/\\/\\\\/g' | while IFS='' read -r LINE; do
+				IS_SECTION=`echo ${LINE} | egrep "^.*:$"`
+				IS_KEYVALUE=`echo ${LINE} | egrep "^[[:space:]]+.*=.*$"`
+				if [ "" != "${IS_SECTION}" ]; then
+					CURRENT_SECTION=${LINE%%:*}
+				elif [ "" != "${IS_KEYVALUE}" ]; then
+					KEY=`echo ${LINE%%=*} | sed 's/^\s*//g'`
+					VALUE=${LINE##*=}
+					if [ "${WANTED_DOMAIN}" = "${CURRENT_SECTION}" -a "${WANTED_KEY}" = "${KEY}" ]; then
+						echo ${VALUE};
+					fi;
+				fi;
+			done;
+		fi;
+	fi;
+}
+
+# LOOKANDFEEL=`getConfigOption "ui" "lookandfeel" | tail -n 1`
+
 if [ "${ISOSX}" = "1" ]; then
 	jarDir=`dirname $0`/../Resources/Java/
 	jar=${jarDir}DMDirc.jar
