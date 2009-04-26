@@ -1,0 +1,75 @@
+// Dummy menu resources. Needed for menu support.
+//*****************************************************
+
+// 2 simple menu items
+20000 MENU DISCARDABLE
+BEGIN
+  MENUITEM " ", 1
+  MENUITEM " ", 2
+END
+
+20000 RCDATA DISCARDABLE
+BEGIN
+    20000, 2,
+    -2, 1, 8, 0x10, 0, 0, 0xFFFF,
+    -2, 2, 8, 0x10, 0, 0, 0xFFFF
+END
+
+// popup and simple menu item
+20001 MENU DISCARDABLE
+BEGIN
+  POPUP " "
+  BEGIN
+    MENUITEM " ", 1
+  END
+  MENUITEM " ", 2
+END
+
+20001 RCDATA DISCARDABLE
+BEGIN
+    20001, 2,
+    -2, 1, 4, 0x18, 0, 0, 0,
+    -2, 2, 4, 0x10, 0, 0, 0xFFFF
+END
+
+// simple item and popup menu
+20002 MENU DISCARDABLE
+BEGIN
+  MENUITEM " ", 1
+  POPUP " "
+  BEGIN
+    MENUITEM " ", 2
+  END
+END
+
+20002 RCDATA DISCARDABLE
+BEGIN
+    20002, 2,
+    -2, 1, 4, 0x10, 0, 0, 0xFFFF,
+    -2, 2, 4, 0x18, 0, 0, 1
+END
+
+// 2 popup menus
+20003 MENU DISCARDABLE
+BEGIN
+  POPUP " "
+  BEGIN
+    MENUITEM " ", 1
+  END
+  POPUP " "
+  BEGIN
+    MENUITEM " ", 2
+  END
+END
+
+20003 RCDATA DISCARDABLE
+BEGIN
+    20003, 2,
+    -2, 1, 4, 0x18, 0, 0, 0,
+    -2, 2, 4, 0x18, 0, 0, 1
+END
+
+//*****************************************************
+
+// Uncomment the line below to run application in real VGA mode
+// HI_RES_AWARE CEUX {1}

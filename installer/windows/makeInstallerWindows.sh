@@ -460,16 +460,7 @@ if [ ! -e "Setup.exe"  -o "${compileSetup}" = "true" ]; then
 		exit 1;
 	else
 		echo "Building Setup.exe..."
-		extraFlags=""
-		if [ -e "${lazarusDir}/lcl" ]; then
-			echo "Using Lazarus"
-			mkdir -p ${PWD}/lazarus-build
-			extraFlags="-dLAZARUS -FU${PWD}/lazarus-build -Fu${PWD}/lazarus-build -Fu${lazarusDir}/lcl/widgetset/ -Fu${lazarusDir}/lcl/interfaces/win32/ -Fu${lazarusDir}/lcl/ -Fi${lazarusDir}/lcl/include/"
-		else
-			echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@";
-			echo "@        Building installer *WITHOUT* lazarus.        @";
-			echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@";
-		fi;
+		extraFlags="-dKOL -FU${PWD}/../../libwin/kolfpc -Fu${PWD}/../../libwin/kolfpc"
 		${FPC} ${compilerFlags} ${extraFlags} Setup.dpr
 		if [ $? -ne 0 ]; then
 			if [ -e "Setup.exe" -a "${useOldSetup}" = "true" ]; then
