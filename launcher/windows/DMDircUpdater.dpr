@@ -46,6 +46,8 @@ var
   myName: String;
   canDoMore: boolean = true;
 begin
+  InitCommonControls;
+
   myName := ExtractFileName(paramstr(0));
   thisDir := ExtractFileDir(paramstr(0));
   jarName := thisDir+'\DMDirc.jar';

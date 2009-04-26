@@ -100,6 +100,8 @@ var
     -------------------------------------------------------------------------- }
   terminateDownload: boolean = false;
 
+procedure InitCommonControls; stdcall; External 'comctl32.dll' name 'InitCommonControls';
+
 { ----------------------------------------------------------------------------
   Main form: Cancel button clicked event
   ---------------------------------------------------------------------------- }
