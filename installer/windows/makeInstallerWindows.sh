@@ -460,7 +460,7 @@ if [ ! -e "Setup.exe"  -o "${compileSetup}" = "true" ]; then
 		exit 1;
 	else
 		echo "Building Setup.exe..."
-		extraFlags="-dKOL -FU${PWD}/../../libwin/kolfpc -Fu${PWD}/../../libwin/kolfpc"
+		extraFlags="-dKOL -Fu${PWD}/../../libwin/kolfpc -Fu{$PWD}/../../libwin/lcore -Fu{$PWD} -Fu${PWD}/../../libwin"
 		${FPC} ${compilerFlags} ${extraFlags} Setup.dpr
 		if [ $? -ne 0 ]; then
 			if [ -e "Setup.exe" -a "${useOldSetup}" = "true" ]; then
@@ -525,7 +525,8 @@ if [ -e "${jarPath}/launcher/windows" ]; then
 	done
 fi
 
-${FPC} ${compilerFlags} ${3}Uninstaller.dpr
+extraFlags="-dKOL -Fu${PWD}/../../libwin/kolfpc -Fu{$PWD} -Fu${PWD}/../../libwin"
+${FPC} ${compilerFlags} ${extraFlags} ${3}Uninstaller.dpr
 if [ -e "Uninstaller.exe" ]; then
 	FILES="${FILES} Uninstaller.exe"
 #	DELETEFILES="${DELETEFILES} Uninstaller.exe"

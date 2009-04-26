@@ -1,3 +1,31 @@
+{*
+ * DMDirc Uninstaller
+ *
+ * This application launches DMDirc on windows and passes control to the
+ * update engine as necessary.
+ *
+ * DMDirc - Open Source IRC Client
+ * Copyright (c) 2006-2009 Chris Smith, Shane Mc Cormack, Gregory Holmes,
+ * Michael Nixon
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *}
 program Uninstaller;
 {$IFDEF FPC}
 	{$MODE Delphi}
@@ -26,43 +54,15 @@ program Uninstaller;
 	{$ENDIF}
 {$ENDIF}
 
-uses Windows, SysUtils, registry, Vista;
+uses shared, Windows, SysUtils, registry, Vista;
+procedure InitCommonControls; stdcall; External 'comctl32.dll' name 'InitCommonControls';
 
 {$R uninstall.res}
+{ ---------------------------------------------------------------------------- }
 
-procedure InitCommonControls; stdcall; External 'comctl32.dll' name 'InitCommonControls'; 
-
-procedure dowriteln(line: String);
-begin
-	if IsConsole then writeln(line);
-end;
-
-procedure dowrite(line: String);
-begin
-	if IsConsole then write(line);
-end;
-
-function askQuestion(Question: String): boolean;
-begin
-	Result := TaskDialog(0, 'DMDirc Uninstaller', 'Question', Question, TD_ICON_QUESTION, TD_BUTTON_YES + TD_BUTTON_NO) = mrYes;
-end;
-
-procedure showError(context: String; ErrorMessage: String; addFooter: boolean = true);
-begin
-	if addFooter then begin
-		ErrorMessage := ErrorMessage+#13#10;
-		ErrorMessage := ErrorMessage+#13#10+' If you feel this is incorrect, or you require some further assistance, ';
-		ErrorMessage := ErrorMessage+#13#10+'please feel free to contact us.';
-	end;
-	
-	TaskDialog(0, 'DMDirc Setup', context, ErrorMessage, TD_ICON_ERROR, TD_BUTTON_OK, true);
-end;
-
-procedure showmessage(message: String; context:String = 'Information');
-begin
-	TaskDialog(0, 'DMDirc Uninstaller', context, message, TD_ICON_INFORMATION, TD_BUTTON_OK);
-end;
-
+{ ----------------------------------------------------------------------------
+  Create a temp directory and return the path to it
+  ---------------------------------------------------------------------------- }
 function GetTempDirectory(): String;
 var
 	buf: array[0..MAX_PATH] of Char;
@@ -79,37 +79,9 @@ begin
 	result := wintemp+temp+'\';
 end;
 
-
-// Run an application and don't wait for it to finish.
-function Launch(sProgramToRun: String; hide: boolean = false): TProcessInformation;
-var
-	StartupInfo: TStartupInfo;
-begin
-	FillChar(StartupInfo, SizeOf(TStartupInfo), 0);
-	with StartupInfo do begin
-		cb := SizeOf(TStartupInfo);
-		dwFlags := STARTF_USESHOWWINDOW;
-		if hide then wShowWindow := SW_HIDE
-		else wShowWindow := SW_SHOWNORMAL;
-	end;
-
-	CreateProcess(nil, PChar(sProgramToRun), nil, nil, False, NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo, Result);
-end;
-
-// Run an application and wait for it to finish.
-function ExecAndWait(sProgramToRun: String; hide: boolean = false): Longword;
-var
-	ProcessInfo: TProcessInformation;
-begin
-	ProcessInfo := Launch(sProgramToRun, hide);
-	getExitCodeProcess(ProcessInfo.hProcess, Result);
-
-	while Result=STILL_ACTIVE do begin
-		sleep(1000);
-		GetExitCodeProcess(ProcessInfo.hProcess, Result);
-	end;
-end;
-
+{ ----------------------------------------------------------------------------
+  Delete a directory and all files it contains
+  ---------------------------------------------------------------------------- }
 function KillDir(Dir: string): Integer;
 var
 	searchResult: TSearchRec;
@@ -139,6 +111,9 @@ begin
 	end;
 end;
 
+{ ----------------------------------------------------------------------------
+  MAIN PROGRAM
+  ---------------------------------------------------------------------------- }
 var
 	TempDir: String;
 	InstallDir: String = '';
@@ -203,21 +178,22 @@ begin
 		Reg.Free;
 		
 		if (FileExists(profileDir+'\dmdirc.config')) then begin
-			if MessageBox(0, PChar('A dmdirc profile has been detected ('+profileDir+') '+#13#10+'Do you want to delete it aswell?'), 'DMDirc Uninstaller', MB_YESNO) = 
-IDYES then begin
+			if MessageBox(0, PChar('A dmdirc profile has been detected ('+profileDir+') '+#13#10+'Do you want to delete it aswell?'), 'DMDirc Uninstaller', MB_YESNO) = IDYES then begin
 				KillDir(profileDir);
 			end;
 		end;
 		
-		showmessage('DMDirc has been uninstalled from "'+InstallDir+'".', 'Uninstall Successful');
+		showmessage('DMDirc has been uninstalled from "'+InstallDir+'".', 'DMDirc Uninstaller', 'Uninstall Successful');
 	end
-	else if askQuestion('This will uninstall DMDirc. '+#13#10+#13#10+'Do you want to continue?') then begin
+	else if askQuestion('This will uninstall DMDirc. '+#13#10+#13#10+'Do you want to continue?', 'DMDirc Uninstaller') then begin
 		if (ExecAndWait('java -jar "' + ExtractFileDir(paramstr(0)) + '\DMDirc.jar" -k', true) <> 0) then begin
 			TempDir := GetTempDirectory;
 			CopyFile(pchar(paramstr(0)), pchar(TempDir+'/uninstall.exe'), false);
 			Launch('"'+TempDir+'/uninstall.exe" '+ExtractFileDir(paramstr(0))+'\');
 		end else begin
-			showError('Uninstall Aborted - DMDirc is still running.', 'Please close DMDirc before continuing')
+			showError('Uninstall Aborted - DMDirc is still running.' +
+                #13#10 + 'Please close DMDirc before continuing',
+                'DMDirc Uninstaller', False, False);
 		end;
 	end;
 end.

@@ -27,6 +27,7 @@ program Launcher;
 {$APPTYPE GUI}
 
 uses Windows, SysUtils, classes, MD5;
+procedure InitCommonControls; stdcall; External 'comctl32.dll' name 'InitCommonControls';
 
 //{$R files.res}
 //{$R version.res}
@@ -107,6 +108,7 @@ var
 	ErrorMessage: String;
 	TempDir: String;
 begin
+        InitCommonControls;
 	TempDir := GetTempDirectory;
 	ErrorMessage := '';
 	{$I ExtractCode.inc}
