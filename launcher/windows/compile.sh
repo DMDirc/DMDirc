@@ -7,6 +7,10 @@ else
 	cp ../../installer/windows/UAC.manifest ../../installer/windows/UAC.rc .
 fi;
 
+if [ ! -e ./icon.ico ]; then
+	ln -sf "../../src/com/dmdirc/res/icon.ico" ./icon.ico
+fi
+
 rm -Rf ./*.exe
 compilerFlags="-Xs -XX -O2 -Or -Op1"
 extraFlags="-Fu${PWD}/../../libwin"
