@@ -49,8 +49,26 @@ var
   i: integer;
   jarName: String;
   launcherUpdate: boolean = false;
+  result: integer;
+  s: string;
+  handle: thandle;
 begin
   InitCommonControls;
+
+  { Check for a mutex created by the DMDirc update process. Wait until it no
+    longer exists before we continue. This prevents us from proceeding if any
+    previous instance of the launcher is shutting down. }
+  handle := OpenMutex(SYNCHRONIZE, False, 'DMDirc_Launcher_Restart_Wait');
+  if handle <> 0 then begin
+    { The mutex exists. Wait for it for up to 5 seconds. }
+    if WaitForSingleObject(handle, 5000) = WAIT_TIMEOUT then begin
+      { Timed out - we cannot continue, there is some kind of serious issue? }
+      showError('Internal error: Timed out waiting for previous instance of launcher to stop during restart upgrade', 'DMDirc', true, true);
+      exit;
+    end;
+    { If we get to here, the mutex has been released and we can continue }
+    CloseHandle(handle);
+  end;
 
   jarName := ExtractFileDir(paramstr(0))+'\DMDirc.jar';
 
@@ -92,7 +110,7 @@ begin
     end
     else RunProgram('"'+ExtractFileDir(paramstr(0))+'\DMDircUpdater.exe" --UpdateSourceDir "'+directory+'"', not launcherUpdate);
   end;
-  
+
   if not launcherUpdate then begin
     // Check JVM
     if (ExecAndWait(javaCommand+' -version') <> 0) then begin
@@ -114,7 +132,33 @@ begin
         showError(errorMessage, 'DMDirc', True);
       end
       else begin
-        Launch(javaCommand+' -ea -jar "'+jarName+'"'+' -l windows-'+launcherVersion+' '+cliParams)
+        //Launch(javaCommand+' -ea -jar "'+jarName+'"'+' -l windows-'+launcherVersion+' '+cliParams)
+        { Need to wait so we can deal with exit code 42 to restart }
+        result := ExecAndWait(javaCommand+' -ea -jar "'+jarName+'"'+' -l windows-'+launcherVersion+' '+cliParams);
+        if result = 42 then begin
+          { Need to restart DMDirc launcher
+            We can't just rerun the EXE because it is possible for the new
+            process to launch the updater and try to replace this EXE before
+            the current thread ends - remote but possible. We deal with this
+            case by creating a mutex that this program will spin on when it
+            restarts until this instance ends. }
+          handle := CreateMutex(nil, True, 'DMDirc_Launcher_Restart_Wait');
+          if handle = 0 then begin
+            showError('Internal error: Failed to create restart mutex', 'DMDirc', true, true);
+            exit;
+          end;
+
+          { Build new command line }
+          s := '';
+          for i := 1 to paramcount do begin
+            if pos(' ', paramstr(i)) <> 0 then s := s + '"' + paramstr(i) + '"' else
+              s := s + paramstr(i);
+            if i < paramcount then s := s + ' ';
+          end;
+
+          { Launch self }
+          Launch('"' + paramstr(0)+ '" ' + s);
+        end;
       end;
     end
     else begin
