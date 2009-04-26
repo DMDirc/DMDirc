@@ -22,11 +22,10 @@
 
 package com.dmdirc.addons.ui_swing.components;
 
-
-import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.addons.ui_swing.Apple;
+import com.dmdirc.addons.ui_swing.MainFrame;
 import com.dmdirc.addons.ui_swing.components.frames.ChannelFrame;
 import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.dialogs.FeedbackDialog;
@@ -73,15 +72,19 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
     private JMenuItem join;
     /** Swing controller. */
     private SwingController controller;
+    /** Main frame. */
+    private MainFrame mainFrame;
 
     /**
      * Instantiates a new menu bar.
      * 
      * @param controller Swing controller
+     * @param mainFrame Main frame
      */
-    public MenuBar(final SwingController controller) {
+    public MenuBar(final SwingController controller, final MainFrame mainFrame) {
         super();
         this.controller = controller;
+        this.mainFrame = mainFrame;
         
         setLayout(new MigLayout("ins 0, fillx"));
 
@@ -91,7 +94,7 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         add(new WindowMenuFrameManager());
         initHelpMenu();
         add(Box.createHorizontalGlue(), "growx, pushx");
-        add(new MDIBar(controller.getMainFrame()));
+        add(new MDIBar(mainFrame));
         add(Box.createHorizontalStrut(PlatformDefaults.getPanelInsets(1).getUnit()));
 
         getActionMap().setParent(null);
@@ -245,24 +248,23 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
     @Override
     public void actionPerformed(final ActionEvent e) {
         if ("NewServer".equals(e.getActionCommand())) {
-            NewServerDialog.showNewServerDialog(controller.getMainFrame());
+            NewServerDialog.showNewServerDialog(mainFrame);
         } else if ("Preferences".equals(e.getActionCommand())) {
-            SwingPreferencesDialog.showSwingPreferencesDialog(controller.getMainFrame());
+            SwingPreferencesDialog.showSwingPreferencesDialog(mainFrame);
         } else if (e.getActionCommand().equals("About")) {
-            AboutDialog.showAboutDialog(controller.getMainFrame());
+            AboutDialog.showAboutDialog(mainFrame);
         } else if (e.getActionCommand().equals("Profile")) {
-            ProfileManagerDialog.showProfileManagerDialog(controller.
-                    getMainFrame());
+            ProfileManagerDialog.showProfileManagerDialog(mainFrame);
         } else if (e.getActionCommand().equals("Exit")) {
-            controller.getMainFrame().quit();
+            mainFrame.quit();
         } else if (e.getActionCommand().equals("Actions")) {
-            ActionsManagerDialog.showActionsManagerDialog(controller.getMainFrame());
+            ActionsManagerDialog.showActionsManagerDialog(mainFrame);
         } else if (e.getActionCommand().equals("Aliases")) {
-            AliasManagerDialog.showAliasManagerDialog(controller.getMainFrame());
+            AliasManagerDialog.showAliasManagerDialog(mainFrame);
         } else if (e.getActionCommand().equals("JoinDevChat")) {
             ServerManager.getServerManager().joinDevChat();
         } else if (e.getActionCommand().equals("feedback")) {
-            FeedbackDialog.showFeedbackDialog(controller.getMainFrame());
+            FeedbackDialog.showFeedbackDialog(mainFrame);
         } else if (e.getActionCommand().equals("ChannelSettings")) {
             final Window activeWindow = controller.getActiveWindow();
             if (activeWindow instanceof ChannelFrame) {
@@ -274,9 +276,8 @@ public class MenuBar extends JMenuBar implements ActionListener, MenuListener {
         } else if (e.getActionCommand().equals("Disconnect")) {
             controller.getActiveServer().disconnect();
         } else if (e.getActionCommand().equals("JoinChannel")) {
-            new StandardInputDialog(controller.getMainFrame(),
-                                    ModalityType.MODELESS, "Join channel",
-                                    "Enter the name of the channel to join.") {
+            new StandardInputDialog(mainFrame, ModalityType.MODELESS,
+                    "Join channel", "Enter the name of the channel to join.") {
 
                 /** Serial version UID. */
                 private static final long serialVersionUID = 1;

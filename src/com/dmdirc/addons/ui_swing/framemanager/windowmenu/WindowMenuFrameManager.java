@@ -23,7 +23,6 @@ package com.dmdirc.addons.ui_swing.framemanager.windowmenu;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.FrameContainerComparator;
-import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.ui.IconManager;
@@ -31,7 +30,6 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.addons.ui_swing.UIUtilities;
-import com.dmdirc.addons.ui_swing.components.frames.TextFrame;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -186,8 +184,6 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
             /** {@inheritDoc} */
             @Override
             public void run() {
-                checkMenuItems();
-
                 final FrameContainerMenuItem mi =
                         new FrameContainerMenuItem(window);
                 synchronized (menuItemMap) {
@@ -199,6 +195,7 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                     window.addSelectionListener(WindowMenuFrameManager.this);
                     add(mi, getIndex(window));
                 }
+                checkMenuItems();
             }
         });
     }
@@ -227,7 +224,6 @@ public final class WindowMenuFrameManager extends JMenu implements FrameManager,
                                 WindowMenuFrameManager.this);
                     }
                 }
-
                 checkMenuItems();
             }
         });

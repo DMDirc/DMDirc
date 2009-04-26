@@ -383,7 +383,7 @@ public final class MainFrame extends JFrame implements WindowListener,
 
         initFrameManagers();
 
-        menu = new MenuBar(controller);
+        menu = new MenuBar(controller, this);
         Apple.getApple().setMenuBar(menu);
         setJMenuBar(menu);
 
