@@ -60,7 +60,7 @@ program Setup;
 // {$DEFINE LAZARUS}
 // {$UNDEF LAZARUS}
 
-//{$DEFINE FORCEJREDOWNLOAD}
+{$DEFINE FORCEJREDOWNLOAD}
 
 uses
 	{$IFDEF KOL}kol,{$ENDIF}
@@ -80,7 +80,7 @@ var
   {$IFDEF KOL}
     frmmain: pcontrol;
     progressbar, btncancel: pcontrol;
-    label1, label2, label3, label4, label5, label6, label7: pcontrol;
+    label1, label2, label3, label4, labelurl, labelspeed, labelprogress: pcontrol;
   {$ENDIF}
 	terminateDownload: boolean = false;
 
@@ -94,7 +94,7 @@ end;
 procedure setProgress(value: integer);
 begin
   ProgressBar.progress := value;
-  //CaptionLabel.Caption := pchar('Downloading JRE - '+inttostr(value)+'%');
+  labelprogress.Caption :=  inttostr(value) + '%';
   //self.Caption := pChar('DMDirc Setup - '+CaptionLabel.Caption);
   //Application.Title := self.Caption;
   applet.processmessages;
@@ -145,19 +145,24 @@ begin
   label4 := NewLabel(frmmain, 'Progress:').SetPosition(16, label3.top + 20);
   label4.SetSize(frmmain.ClientWidth - 32, 16);
 
-  label5 := NewLabel(frmmain, 'http://java.ftw.com/foo/').SetPosition(70, label1.top + 28);
-  label5.SetSize(frmmain.ClientWidth - 32, 16);
-  label5.BringToFront;
+  labelurl := NewLabel(frmmain, 'http://java.ftw.com/foo/').SetPosition(70, label1.top + 28);
+  labelurl.SetSize(frmmain.ClientWidth - 32, 16);
+  labelurl.BringToFront;
 
-  label6 := NewLabel(frmmain, '328KByte/sec').SetPosition(70, label2.top + 20);
-  label6.SetSize(frmmain.ClientWidth - 32, 16);
-  label6.BringToFront;
+  labelspeed := NewLabel(frmmain, '328KByte/sec').SetPosition(70, label2.top + 20);
+  labelspeed.SetSize(frmmain.ClientWidth - 32, 16);
+  labelspeed.BringToFront;
 
-  label7 := NewLabel(frmmain, '500KByte of 10.4MByte (50%)').SetPosition(70, label3.top + 20);
-  label7.SetSize(frmmain.ClientWidth - 32, 16);
-  label7.BringToFront;
+  labelprogress := NewLabel(frmmain, '500KByte of 10.4MByte (50%)').SetPosition(70, label3.top + 20);
+  labelprogress.SetSize(frmmain.ClientWidth - 32, 16);
+  labelprogress.BringToFront;
 
   btncancel.OnClick := TOnEvent(MakeMethod(nil, @btnCancel_Click ));
+
+  { Usually we would not call CreateWindow here because we will enter the
+    message loop. However as we don't want to enter the messageloop normally
+    we must do this or the window wont show! }
+  applet.createwindow;
 end;
 {$ENDIF}
 
@@ -340,6 +345,8 @@ begin
 				{$IFDEF KOL}
 					ProcessInfo := Launch('wget.exe '+url+' -O jre.exe', true);
           CreateMainWindow;
+          labelurl.caption := url;
+          labelspeed.caption := 'Unknown';
 					if wantedsize <= 0 then begin
             progressbar.progress := 50;
 					end;
