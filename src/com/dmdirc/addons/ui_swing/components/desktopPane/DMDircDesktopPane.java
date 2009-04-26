@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.addons.ui_swing.components.desktopPane;
 
 import com.dmdirc.FrameContainer;
@@ -63,9 +64,8 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
         SelectionListener, PropertyChangeListener {
 
     /** Logger to use. */
-    private static final java.util.logging.Logger LOGGER = java.util.logging
-            .Logger.getLogger(DMDircDesktopPane.class.getName());
-
+    private static final java.util.logging.Logger LOGGER =
+            java.util.logging.Logger.getLogger(DMDircDesktopPane.class.getName());
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
@@ -119,7 +119,8 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
             @Override
             protected void setPath(final TreePath path) {
                 super.setPath(path);
-                ((TreeViewNode) path.getLastPathComponent()).getFrameContainer().activateFrame();
+                ((TreeViewNode) path.getLastPathComponent()).getFrameContainer().
+                        activateFrame();
             }
         };
 
@@ -319,9 +320,9 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
     /** {@inheritDoc} */
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
-        LOGGER.finer("Property change: name: " + evt.getPropertyName()
-                + " value: " + evt.getOldValue() + "->" + evt.getNewValue());
-        
+        LOGGER.finer("Property change: name: " + evt.getPropertyName() +
+                " value: " + evt.getOldValue() + "->" + evt.getNewValue());
+
         if (!"maximum".equals(evt.getPropertyName())) {
             return;
         }
@@ -330,18 +331,20 @@ public class DMDircDesktopPane extends JDesktopPane implements FrameManager,
         }
         changing.set(true);
         maximised = (Boolean) evt.getNewValue();
-        Stack<JInternalFrame> stack = new Stack<JInternalFrame>();
-        stack.addAll(Arrays.asList(getAllFrames()));
+        if (!UIUtilities.isWindowsUI()) {
+            Stack<JInternalFrame> stack = new Stack<JInternalFrame>();
+            stack.addAll(Arrays.asList(getAllFrames()));
 
-        while (!stack.empty()) {
-            JInternalFrame frame = stack.pop();
-            if (maximised) {
-                if (!frame.isMaximum()) {
-                    ((Window) frame).maximise();
-                }
-            } else {
-                if (frame.isMaximum()) {
-                    ((Window) frame).restore();
+            while (!stack.empty()) {
+                JInternalFrame frame = stack.pop();
+                if (maximised) {
+                    if (!frame.isMaximum()) {
+                        ((Window) frame).maximise();
+                    }
+                } else {
+                    if (frame.isMaximum()) {
+                        ((Window) frame).restore();
+                    }
                 }
             }
         }

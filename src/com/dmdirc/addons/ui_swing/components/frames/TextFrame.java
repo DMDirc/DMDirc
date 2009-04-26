@@ -232,19 +232,24 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     /** {@inheritDoc} */
     @Override
     public void open() {
-        UIUtilities.invokeAndWait(new Runnable() {
+        final boolean pref = frameParent.getConfigManager().
+                getOptionBool("ui", "maximisewindows");
+        UIUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
-                activateFrame();
-                final boolean pref = frameParent.getConfigManager().
-                        getOptionBool("ui", "maximisewindows");
-                if (pref || controller.getMainFrame().getMaximised()) {
-                    try {
+                setVisible(true);
+                try {
+                    setSelected(true);
+                } catch (PropertyVetoException ex) {
+                    //Ignore
+                }
+                try {
+                    if (pref || controller.getMainFrame().getMaximised()) {
                         setMaximum(true);
-                    } catch (PropertyVetoException ex) {
-                        //Ignore
                     }
+                } catch (PropertyVetoException ex) {
+                    //Ignore
                 }
             }
         });
@@ -253,7 +258,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
     /** {@inheritDoc} */
     @Override
     public void activateFrame() {
-        UIUtilities.invokeAndWait(new Runnable() {
+        UIUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
@@ -266,6 +271,120 @@ public abstract class TextFrame extends JInternalFrame implements Window,
                     setSelected(true);
                 } catch (PropertyVetoException ex) {
                     //Ignore
+                }
+            }
+        });
+    }
+
+    /** Closes this frame. */
+    @Override
+    public void close() {
+        UIUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                if (closing) {
+                    return;
+                }
+
+                closing = true;
+
+                try {
+                    setClosed(true);
+                } catch (PropertyVetoException ex) {
+                    Logger.userError(ErrorLevel.LOW, "Unable to close frame");
+                }
+
+            }
+        });
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void minimise() {
+        UIUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    setIcon(true);
+                } catch (PropertyVetoException ex) {
+                    Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
+                }
+            }
+        });
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void maximise() {
+        LOGGER.finest("maximise(): About to invokeAndWait");
+
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                LOGGER.finest("maximise(): Running");
+
+                try {
+                    if (isMaximum()) {
+                        return;
+                    }
+
+                    maximiseRestoreInProgress.set(true);
+                    LOGGER.finest("maximise(): About to set icon");
+                    setIcon(false);
+                    LOGGER.finest("maximise(): About to set maximum");
+                    setMaximum(true);
+                    LOGGER.finest("maximise(): Done?");
+                } catch (PropertyVetoException ex) {
+                    Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
+                }
+                maximiseRestoreInProgress.set(false);
+
+                LOGGER.finest("maximise(): Done running");
+            }
+        });
+        LOGGER.finest("maximise(): Done");
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void restore() {
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                try {
+                    if (!isMaximum()) {
+                        return;
+                    }
+
+                    maximiseRestoreInProgress.set(true);
+                    setIcon(false);
+                    setMaximum(false);
+                } catch (PropertyVetoException ex) {
+                    Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
+                }
+                maximiseRestoreInProgress.set(false);
+            }
+        });
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleMaximise() {
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                if (isMaximum()) {
+                    restore();
+                } else {
+                    maximise();
                 }
             }
         });
@@ -538,7 +657,7 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     @Override
     public void internalFrameIconified(final InternalFrameEvent event) {
-        UIUtilities.invokeAndWait(new Runnable() {
+        UIUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
@@ -980,123 +1099,6 @@ public abstract class TextFrame extends JInternalFrame implements Window,
      */
     public final SwingSearchBar getSearchBar() {
         return searchBar;
-    }
-
-    /** Closes this frame. */
-    @Override
-    public void close() {
-        UIUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                if (closing) {
-                    return;
-                }
-
-                closing = true;
-
-                try {
-                    setClosed(true);
-                } catch (PropertyVetoException ex) {
-                    Logger.userError(ErrorLevel.LOW, "Unable to close frame");
-                }
-
-            }
-        });
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void minimise() {
-        UIUtilities.invokeAndWait(new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    setIcon(true);
-                } catch (PropertyVetoException ex) {
-                    Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
-                }
-            }
-        });
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void maximise() {
-        LOGGER.finest("maximise(): About to invokeAndWait");
-
-        UIUtilities.invokeAndWait(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                LOGGER.finest("maximise(): Running");
-
-                try {
-                    if (isMaximum()) {
-                        return;
-                    }
-
-                    maximiseRestoreInProgress.set(true);
-                    LOGGER.finest("maximise(): About to set icon");
-                    setIcon(false);
-                    LOGGER.finest("maximise(): About to set visible");
-                    //setVisible(true);
-                    LOGGER.finest("maximise(): About to set maximum");
-                    setMaximum(true);
-                    LOGGER.finest("maximise(): Done?");
-                } catch (PropertyVetoException ex) {
-                    Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
-                }
-                maximiseRestoreInProgress.set(false);
-
-                LOGGER.finest("maximise(): Done running");
-            }
-        });
-        LOGGER.finest("maximise(): Done");
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void restore() {
-        UIUtilities.invokeAndWait(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                try {
-                    if (!isMaximum()) {
-                        return;
-                    }
-
-                    maximiseRestoreInProgress.set(true);
-                    setIcon(false);
-                    //setVisible(true);
-                    setMaximum(false);
-                } catch (PropertyVetoException ex) {
-                    Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
-                }
-                maximiseRestoreInProgress.set(false);
-            }
-        });
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void toggleMaximise() {
-        UIUtilities.invokeAndWait(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                if (isMaximum()) {
-                    restore();
-                } else {
-                    maximise();
-                }
-            }
-        });
     }
 
     /** {@inheritDoc} */

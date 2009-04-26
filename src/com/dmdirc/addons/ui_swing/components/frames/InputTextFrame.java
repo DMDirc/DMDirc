@@ -118,11 +118,11 @@ public abstract class InputTextFrame extends TextFrame implements InputWindow,
     /** {@inheritDoc} */
     @Override
     public void open() {
+        super.open();
         if (getConfigManager().getOptionBool("ui", "awayindicator") && getContainer().
                 getServer() != null) {
             awayLabel.setVisible(getContainer().getServer().isAway());
         }
-        super.open();
 
         inputField.requestFocusInWindow();
     }
