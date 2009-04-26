@@ -130,11 +130,8 @@ public class WindowManager {
         "The specified Window has not already been added"
     })
     public static void addWindow(final Window window) {
-        if (window == null) {
-            throw new IllegalArgumentException();
-        }
-        //Logger.assertTrue(window != null);
-        //Logger.assertTrue(!rootWindows.contains(window));
+        Logger.assertTrue(window != null);
+        Logger.assertTrue(!rootWindows.contains(window));
 
         rootWindows.add(window);
         childWindows.add(window);

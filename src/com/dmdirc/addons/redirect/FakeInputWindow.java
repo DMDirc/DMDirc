@@ -132,17 +132,6 @@ public class FakeInputWindow implements InputWindow {
         return false;
     }
 
-    /** 
-     * {@inheritDoc}
-     * 
-     * @deprecated 
-     */
-    @Override
-    @Deprecated
-    public void setMaximum(final boolean b) throws PropertyVetoException {
-        // Do nothing
-    }
-
     /** {@inheritDoc} */
     @Override
     public void setTitle(final String title) {

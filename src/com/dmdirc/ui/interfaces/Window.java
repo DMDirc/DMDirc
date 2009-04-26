@@ -108,17 +108,6 @@ public interface Window {
     boolean isMaximum();
     
     /**
-     * Sets the maximised state of this window.
-     * 
-     * @param b true if the frame should be maximised, false otherwise
-     * @throws java.beans.PropertyVetoException if the change is vetoed
-     * 
-     * @deprecated
-     */
-    @Deprecated
-    void setMaximum(boolean b) throws PropertyVetoException;
-    
-    /**
      * Sets the title of this window.
      * 
      * @param title The new title to be used.

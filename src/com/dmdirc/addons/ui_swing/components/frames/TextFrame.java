@@ -23,7 +23,6 @@
 package com.dmdirc.addons.ui_swing.components.frames;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.addons.ui_swing.SwingController;
@@ -237,14 +236,16 @@ public abstract class TextFrame extends JInternalFrame implements Window,
 
             @Override
             public void run() {
+                activateFrame();
                 final boolean pref = frameParent.getConfigManager().
                         getOptionBool("ui", "maximisewindows");
-                if (pref || Main.getUI().getMainWindow().getMaximised()) {
-                    LOGGER.finest("Needs maximising");
-                    maximise();
-                    LOGGER.finest("Done maximising");
+                if (pref || controller.getMainFrame().getMaximised()) {
+                    try {
+                        setMaximum(true);
+                    } catch (PropertyVetoException ex) {
+                        //Ignore
+                    }
                 }
-                activateFrame();
             }
         });
     }

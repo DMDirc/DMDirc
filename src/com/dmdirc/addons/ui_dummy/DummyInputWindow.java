@@ -142,11 +142,9 @@ public class DummyInputWindow implements InputWindow {
     /** 
      * {@inheritDoc} 
      * 
-     * @deprecated 
+     * @param b maximised or not
      */
-    @Override
-    @Deprecated
-    public void setMaximum(final boolean b) throws PropertyVetoException {
+    public void setMaximum(final boolean b) {
         maximised = b;
     }
     
