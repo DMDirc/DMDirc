@@ -91,10 +91,10 @@ begin
   terminateDownload := true;
 end;
 
-procedure setProgress(value: integer);
+procedure setProgress(value: integer; msg: string);
 begin
   ProgressBar.progress := value;
-  labelprogress.Caption :=  inttostr(value) + '%';
+  labelprogress.Caption := msg;
   //self.Caption := pChar('DMDirc Setup - '+CaptionLabel.Caption);
   //Application.Title := self.Caption;
   applet.processmessages;
@@ -165,6 +165,38 @@ begin
   applet.createwindow;
 end;
 {$ENDIF}
+
+// -----------------------------------------------------------------------------
+// Takes a size, <dsize> in bytes, and converts it a human readable string with
+// a suffix (MB or GB).
+// -----------------------------------------------------------------------------
+function nicesize(dsize: extended): string;
+var
+  kbytes: single;
+  mbytes: single;
+  gbytes: single;
+begin
+ { if dsize = 0 then begin
+    result := '0.00 kB';
+    exit;
+  end; --commented by beware}
+  kbytes := dsize / 1024;
+  mbytes := kbytes / 1024;
+  gbytes := mbytes / 1024;
+
+  if kbytes < 1024 then begin
+    result := FloatToStrF(kbytes, ffFixed, 10, 2) + ' kB';
+    exit;
+  end;
+
+  if mbytes < 1024 then begin
+    result := FloatToStrF(mbytes, ffFixed, 10, 2) + ' MB';
+    exit;
+  end;
+
+  result := FloatToStrF(gbytes, ffFixed, 10, 2) + ' GB';
+  exit;
+end;
 
 function askQuestion(Question: String): boolean;
 begin
@@ -307,6 +339,9 @@ var
 	{$IFDEF KOL}
 		wantedsize: double;
 		currentsize: double;
+    lastsize: double;
+    i: double;
+    c: longint;
 	{$ENDIF}
 begin
 	dir := IncludeTrailingPathDelimiter(ExtractFileDir(paramstr(0)));
@@ -355,19 +390,36 @@ begin
 				{$ENDIF}
 				getExitCodeProcess(ProcessInfo.hProcess, processResult);
 
+        {$IFDEF KOL}
+        lastsize := 0;
+        c := 0;
+        {$ENDIF}
 				while (processResult=STILL_ACTIVE) and (not terminateDownload) do begin
 					// Update progress bar.
 					{$IFDEF KOL}
 						if wantedsize > 0 then begin
-							currentsize := GetFileSizeByName('jre.exe');
-							if (currentsize > 0) then setProgress(Round((currentsize/wantedsize)*100));
+							currentsize := GetFileSizeByName(dir + 'jre.exe');
+              inc(c);
+              if (c >= 5) then begin
+                i := (i + currentsize - lastsize) / 2;
+                labelspeed.caption := nicesize(round(i * 2)) + '/sec';
+                lastsize := currentsize;
+                c := 0;
+              end;
+							//if (currentsize > 0) then setProgress(Round((currentsize/wantedsize)*100));
+							if (currentsize > 0) then setProgress(Round((currentsize/wantedsize)*100),
+                nicesize(currentsize) + ' of ' + nicesize(wantedsize) +
+                ' (' + inttostr(Round((currentsize/wantedsize)*100)) + '%)');
 						end;
 						applet.ProcessMessages;
 					{$ENDIF}
-					sleep(10);
+					sleep(100);
 					GetExitCodeProcess(ProcessInfo.hProcess, processResult);
 				end;
-				{$IFDEF KOL}frmmain.visible := false;{$ENDIF}
+				{$IFDEF KOL}
+          frmmain.visible := false;
+          applet.visible := false;
+        {$ENDIF}
 				if (terminateDownload) then begin
 					Result := false;
 					{$IFDEF KOL}
