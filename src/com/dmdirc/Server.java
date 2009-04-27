@@ -949,25 +949,26 @@ public class Server extends WritableFrameContainer implements Serializable {
             }
 
             myState.transition(ServerState.CLOSING);
-            closeChannels();
-            closeQueries();
-            removeInvites();
-
-            if (raw != null) {
-                raw.close();
-            }
-
-            // 4: Trigger action for the window closing
-            // 5: Inform any parents that the window is closing
-            ServerManager.getServerManager().unregisterServer(this);
-
-            // 6: Remove the window from the window manager
-            WindowManager.removeWindow(window);
-
-            // 7: Remove any references to the window and parents
-            window = null; //NOPMD
-            parser = null; //NOPMD
         }
+        
+        closeChannels();
+        closeQueries();
+        removeInvites();
+
+        if (raw != null) {
+            raw.close();
+        }
+
+        // 4: Trigger action for the window closing
+        // 5: Inform any parents that the window is closing
+        ServerManager.getServerManager().unregisterServer(this);
+
+        // 6: Remove the window from the window manager
+        WindowManager.removeWindow(window);
+
+        // 7: Remove any references to the window and parents
+        window = null; //NOPMD
+        parser = null; //NOPMD
     }
 
     /**
