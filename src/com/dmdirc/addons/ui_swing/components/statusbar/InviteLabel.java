@@ -25,7 +25,6 @@ package com.dmdirc.addons.ui_swing.components.statusbar;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.Invite;
-import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.actions.ActionManager;
@@ -129,6 +128,9 @@ public class InviteLabel extends StatusbarPopupPanel implements StatusBarCompone
         }
 
         ActionManager.addListener(this, CoreActionType.CLIENT_FRAME_CHANGED);
+        ActionManager.addListener(this, CoreActionType.SERVER_CONNECTED);
+        ActionManager.addListener(this, CoreActionType.SERVER_DISCONNECTED);
+        ActionManager.addListener(this, CoreActionType.SERVER_CONNECTERROR);
 
         update();
     }
@@ -203,7 +205,20 @@ public class InviteLabel extends StatusbarPopupPanel implements StatusBarCompone
     @Override
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {
-        update();
+        if (type == CoreActionType.CLIENT_FRAME_CHANGED) {
+            if (arguments[0] instanceof FrameContainer) {
+            activeFrame = (FrameContainer) arguments[0];
+                update();
+            }
+        } else if (type == CoreActionType.SERVER_CONNECTED) {
+            if (arguments[0] instanceof Server) {
+                ((Server) arguments[0]).addInviteListener(this);
+            }
+        } else {
+            if (arguments[0] instanceof Server) {
+                ((Server) arguments[0]).removeInviteListener(this);
+            }
+        }
     }
 
     /**
