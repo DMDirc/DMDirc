@@ -77,6 +77,8 @@ public final class ErrorListDialog extends StandardDialog implements
     private SwingStatusBar statusBar;
     /** Selected row. */
     private int selectedRow = -1;
+    /** Row being deleted. */
+    private boolean rowBeingDeleted = false;
 
     /** 
      * Creates a new instance of ErrorListDialog. 
@@ -190,7 +192,12 @@ public final class ErrorListDialog extends StandardDialog implements
                 deleteButton.setEnabled(false);
                 sendButton.setEnabled(false);
             }
-            selectedRow = localRow;
+            if (rowBeingDeleted) {
+                table.getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
+                rowBeingDeleted = false;
+            } else {
+                selectedRow = localRow;
+            }
         }
     }
 
@@ -227,15 +234,14 @@ public final class ErrorListDialog extends StandardDialog implements
     public void tableChanged(final TableModelEvent e) {
         switch (e.getType()) {
             case TableModelEvent.DELETE:
-                //This selects the incorrect row
                 if (selectedRow >= tableModel.getRowCount()) {
                     selectedRow = tableModel.getRowCount() - 1;
                 }
                 table.getSelectionModel().setSelectionInterval(selectedRow,
                         selectedRow);
+                rowBeingDeleted = true;
                 break;
             case TableModelEvent.INSERT:
-                //This selects the incorrect row
                 table.getSelectionModel().setSelectionInterval(selectedRow,
                         selectedRow);
                 break;
