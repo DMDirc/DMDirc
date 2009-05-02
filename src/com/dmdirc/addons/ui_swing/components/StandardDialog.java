@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.components;
 
+import com.dmdirc.ui.CoreUIUtils;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -93,6 +94,14 @@ public class StandardDialog extends JDialog {
         if (owner != null) {
             setIconImages(owner.getIconImages());
         }
+    }
+
+    /**
+     * Centers and displays this dialog.
+     */
+    public void display() {
+        CoreUIUtils.centreWindow(this);
+        setVisible(true);
     }
 
     /**

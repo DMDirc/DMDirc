@@ -23,12 +23,8 @@
 package com.dmdirc.addons.ui_swing.dialogs.error;
 
 import com.dmdirc.addons.ui_swing.MainFrame;
-import com.dmdirc.addons.ui_swing.components.PackingTable;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
-import com.dmdirc.addons.ui_swing.components.renderers.ErrorLevelIconCellRenderer;
-import com.dmdirc.addons.ui_swing.components.renderers.DateCellRenderer;
 import com.dmdirc.addons.ui_swing.components.statusbar.SwingStatusBar;
-import com.dmdirc.logger.ErrorListener;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ErrorReportStatus;
 import com.dmdirc.logger.ProgramError;
@@ -36,19 +32,16 @@ import com.dmdirc.logger.ProgramError;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collection;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableCellRenderer;
 
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import net.miginfocom.layout.PlatformDefaults;
 import net.miginfocom.swing.MigLayout;
 
@@ -56,7 +49,7 @@ import net.miginfocom.swing.MigLayout;
  * Error list dialog.
  */
 public final class ErrorListDialog extends StandardDialog implements
-        ActionListener, ErrorListener, ListSelectionListener {
+        ActionListener, ListSelectionListener, TableModelListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -64,16 +57,12 @@ public final class ErrorListDialog extends StandardDialog implements
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 5;
-    /** Previously instantiated instance of ErrorListDialog. */
-    private static volatile ErrorListDialog me;
-    /** Error manager. */
-    private final ErrorManager errorManager;
+    /** Table model. */
+    private final ErrorTableModel tableModel;
     /** Table scrollpane. */
     private JScrollPane scrollPane;
     /** Error table. */
-    private JTable table;
-    /** Table model. */
-    private ErrorTableModel tableModel;
+    private ErrorTable table;
     /** Error detail panel. */
     private ErrorDetailPanel errorDetails;
     /** Send button. */
@@ -86,23 +75,25 @@ public final class ErrorListDialog extends StandardDialog implements
     private MainFrame mainFrame;
     /** Status bar. */
     private SwingStatusBar statusBar;
+    /** Selected row. */
+    private int selectedRow = -1;
 
     /** 
      * Creates a new instance of ErrorListDialog. 
      * 
-     * @param controller Swing controller
+     * @param mainFrame Main frame
+     * @param statusBar Status bar
      */
-    private ErrorListDialog(final MainFrame mainFrame, final SwingStatusBar statusBar) {
+    public ErrorListDialog(final MainFrame mainFrame,
+            final SwingStatusBar statusBar) {
         super(mainFrame, ModalityType.MODELESS);
-        if (statusBar == null) {
-            new Exception().printStackTrace();
-        }
+
         this.mainFrame = mainFrame;
         this.statusBar = statusBar;
 
         setTitle("DMDirc: Error list");
 
-        errorManager = ErrorManager.getErrorManager();
+        tableModel = new ErrorTableModel();
 
         initComponents();
         layoutComponents();
@@ -111,86 +102,13 @@ public final class ErrorListDialog extends StandardDialog implements
         pack();
     }
 
-    /** 
-     * Returns the instance of ErrorListDialog.
-     * 
-     * @param mainFrame Main frame
-     * @param statusBar Status bar
-     */
-    public static void showErrorListDialog(final MainFrame mainFrame, 
-            final SwingStatusBar statusBar) {
-        me = getErrorListDialog(mainFrame, statusBar);
-
-        me.setLocationRelativeTo(me.getParent());
-        me.setVisible(true);
-        me.requestFocusInWindow();
-    }
-
-    /**
-     * Returns the current instance of the ErrorListDialog.
-     * 
-     * @param mainFrame Main frame
-     * @param statusBar Status bar
-     *
-     * @return The current PluginDErrorListDialogialog instance
-     */
-    public static ErrorListDialog getErrorListDialog(final MainFrame mainFrame, 
-            final SwingStatusBar statusBar) {
-        synchronized (ErrorListDialog.class) {
-            if (me == null) {
-                me = new ErrorListDialog(mainFrame, statusBar);
-            } else if (me.tableModel.getRowCount() !=
-                    me.errorManager.getErrorCount()) {
-                me.tableModel = new ErrorTableModel(me.errorManager.getErrors());
-                me.table.setModel(me.tableModel);
-                if (me.tableModel.getRowCount() > 0) {
-                    me.deleteAllButton.setEnabled(true);
-                } else {
-                    me.deleteAllButton.setEnabled(false);
-                }
-            }
-        }
-
-        return me;
-    }
-
     /** Initialises the components. */
     private void initComponents() {
         initButtons();
 
         scrollPane = new JScrollPane();
 
-        tableModel = new ErrorTableModel(errorManager.getErrors());
-        table = new PackingTable(tableModel, false, scrollPane) {
-
-            private static final long serialVersionUID = 1;
-
-            /** {@inheritDoc} */
-            @Override
-            public TableCellRenderer getCellRenderer(final int row,
-                    final int column) {
-                switch (column) {
-                    case 1:
-                        return new DateCellRenderer();
-                    case 2:
-                        return new ErrorLevelIconCellRenderer();
-                    default:
-                        return super.getCellRenderer(row, column);
-                }
-            }
-        };
-
-        table.setAutoCreateRowSorter(true);
-        table.setAutoCreateColumnsFromModel(true);
-        table.setColumnSelectionAllowed(false);
-        table.setCellSelectionEnabled(false);
-        table.setDragEnabled(false);
-        table.setFillsViewportHeight(false);
-        table.setRowSelectionAllowed(true);
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        table.getRowSorter().toggleSortOrder(0);
-
-        table.getTableHeader().setReorderingAllowed(false);
+        table = new ErrorTable(tableModel, scrollPane);
 
         table.setPreferredScrollableViewportSize(new Dimension(600, 150));
 
@@ -210,7 +128,7 @@ public final class ErrorListDialog extends StandardDialog implements
 
         sendButton.setEnabled(false);
         deleteButton.setEnabled(false);
-        if (ErrorManager.getErrorManager().getErrorCount() > 0) {
+        if (tableModel.getRowCount() > 0) {
             deleteAllButton.setEnabled(true);
         } else {
             deleteAllButton.setEnabled(false);
@@ -219,7 +137,7 @@ public final class ErrorListDialog extends StandardDialog implements
 
     /** Initialises the listeners. */
     private void initListeners() {
-        ErrorManager.getErrorManager().addErrorListener(this);
+        tableModel.addTableModelListener(this);
         table.getSelectionModel().addListSelectionListener(this);
         sendButton.addActionListener(this);
         deleteButton.addActionListener(this);
@@ -255,10 +173,10 @@ public final class ErrorListDialog extends StandardDialog implements
     @Override
     public void valueChanged(final ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
-            if (table.getSelectedRow() > -1) {
+            final int localRow = table.getSelectedRow();
+            if (localRow > -1) {
                 final ProgramError error = tableModel.getError(
-                        table.getRowSorter().convertRowIndexToModel(
-                        table.getSelectedRow()));
+                        table.getRowSorter().convertRowIndexToModel(localRow));
                 errorDetails.setError(error);
                 deleteButton.setEnabled(true);
                 if (error.getReportStatus() == ErrorReportStatus.NOT_APPLICABLE ||
@@ -272,6 +190,7 @@ public final class ErrorListDialog extends StandardDialog implements
                 deleteButton.setEnabled(false);
                 sendButton.setEnabled(false);
             }
+            selectedRow = localRow;
         }
     }
 
@@ -287,124 +206,58 @@ public final class ErrorListDialog extends StandardDialog implements
         } else if (e.getSource() == deleteButton) {
             synchronized (tableModel) {
                 ErrorManager.getErrorManager().deleteError(tableModel.getError(
-                        table.getRowSorter().convertRowIndexToModel(
-                        table.getSelectedRow())));
+                        table.getRowSorter().convertRowIndexToModel(selectedRow)));
             }
         } else if (e.getSource() == sendButton) {
             synchronized (tableModel) {
                 ErrorManager.getErrorManager().sendError(tableModel.getError(
-                        table.getRowSorter().convertRowIndexToModel(
-                        table.getSelectedRow())));
+                        table.getRowSorter().convertRowIndexToModel(selectedRow)));
             }
         } else if (e.getSource() == deleteAllButton) {
-            final Collection<ProgramError> errors =
-                    ErrorManager.getErrorManager().getErrors();
-            for (ProgramError error : errors) {
-                ErrorManager.getErrorManager().deleteError(error);
-            }
+            ErrorManager.getErrorManager().deleteAll();
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @param e Table model event
+     */
     @Override
-    public void errorAdded(final ProgramError error) {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                if (isReady()) {
-                    synchronized (tableModel) {
-                        final int selectedRow = table.getSelectedRow();
-                        tableModel.addRow(error);
-                        table.getSelectionModel().setSelectionInterval(selectedRow,
-                                selectedRow);
-                        deleteAllButton.setEnabled(true);
+    public void tableChanged(final TableModelEvent e) {
+        switch (e.getType()) {
+            case TableModelEvent.DELETE:
+                //This selects the incorrect row
+                if (selectedRow >= tableModel.getRowCount()) {
+                    selectedRow = tableModel.getRowCount() - 1;
+                }
+                table.getSelectionModel().setSelectionInterval(selectedRow,
+                        selectedRow);
+                break;
+            case TableModelEvent.INSERT:
+                //This selects the incorrect row
+                table.getSelectionModel().setSelectionInterval(selectedRow,
+                        selectedRow);
+                break;
+            case TableModelEvent.UPDATE:
+                final int errorRow = e.getFirstRow();
+                final ProgramError error = tableModel.getError(errorRow);
+                if (errorRow == table.getSelectedRow()) {
+                    if (error.getReportStatus() ==
+                            ErrorReportStatus.NOT_APPLICABLE ||
+                            error.getReportStatus() ==
+                            ErrorReportStatus.FINISHED) {
+                        sendButton.setEnabled(false);
+                    } else {
+                        sendButton.setEnabled(true);
                     }
                 }
-            }
-        });
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void errorDeleted(final ProgramError error) {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                if (isReady()) {
-                    synchronized (tableModel) {
-                        int selectedRow = table.getSelectedRow();
-                        tableModel.removeRow(error);
-                        if (selectedRow >= tableModel.getRowCount()) {
-                            selectedRow = tableModel.getRowCount() - 1;
-                        }
-                        table.getSelectionModel().setSelectionInterval(selectedRow,
-                                selectedRow);
-
-                        if (tableModel.getRowCount() > 0) {
-                            deleteAllButton.setEnabled(true);
-                        } else {
-                            deleteAllButton.setEnabled(false);
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void errorStatusChanged(final ProgramError error) {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            /** {@inheritDoc} */
-            @Override
-            public void run() {
-                if (isReady()) {
-                    final int errorRow;
-                    synchronized (tableModel) {
-                        errorRow = tableModel.indexOf(error);
-
-                        if (errorRow != -1
-                                && errorRow < tableModel.getRowCount()) {
-                            tableModel.fireTableRowsUpdated(errorRow, errorRow);
-                        }
-                    }
-
-                    if (errorRow == table.getSelectedRow()) {
-                        if (error.getReportStatus() ==
-                                ErrorReportStatus.NOT_APPLICABLE ||
-                                error.getReportStatus() ==
-                                ErrorReportStatus.FINISHED) {
-                            sendButton.setEnabled(false);
-                        } else {
-                            sendButton.setEnabled(true);
-                        }
-                    }
-
-                }
-            }
-        });
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isReady() {
-        return statusBar.isVisible();
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void dispose() {
-        if (me == null) {
-            return;
+                break;
         }
-        synchronized (me) {
-            super.dispose();
-            me = null;
+        if (tableModel.getRowCount() > 0) {
+            deleteAllButton.setEnabled(true);
+        } else {
+            deleteAllButton.setEnabled(false);
         }
     }
 }

@@ -22,11 +22,13 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.error;
 
+import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.ErrorListener;
+import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ErrorReportStatus;
 import com.dmdirc.logger.ProgramError;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +37,8 @@ import javax.swing.table.AbstractTableModel;
 /**
  * Table model for displaying program errors.
  */
-public final class ErrorTableModel extends AbstractTableModel {
+public final class ErrorTableModel extends AbstractTableModel implements
+        ErrorListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -44,11 +47,11 @@ public final class ErrorTableModel extends AbstractTableModel {
      */
     private static final long serialVersionUID = 1;
     /** Data list. */
-    private List<ProgramError> errors;
+    private final List<ProgramError> errors;
 
     /** Creates a new instance of ErrorTableModel. */
     public ErrorTableModel() {
-        this(new ArrayList<ProgramError>());
+        this(ErrorManager.getErrorManager().getErrors());
     }
 
     /** 
@@ -60,6 +63,8 @@ public final class ErrorTableModel extends AbstractTableModel {
         super();
 
         this.errors = errors;
+
+        ErrorManager.getErrorManager().addErrorListener(this);
     }
 
     /**
@@ -68,7 +73,8 @@ public final class ErrorTableModel extends AbstractTableModel {
      * @param errors List of errors
      */
     public void setErrors(final List<ProgramError> errors) {
-        this.errors = errors;
+        this.errors.clear();
+        this.errors.addAll(errors);
 
         fireTableDataChanged();
     }
@@ -160,7 +166,8 @@ public final class ErrorTableModel extends AbstractTableModel {
             switch (columnIndex) {
                 case 3:
                     if (aValue instanceof ErrorReportStatus) {
-                        errors.get(rowIndex).setReportStatus((ErrorReportStatus) aValue);
+                        errors.get(rowIndex).setReportStatus(
+                                (ErrorReportStatus) aValue);
                         break;
                     } else {
                         throw new IllegalArgumentException("Received: " +
@@ -237,5 +244,59 @@ public final class ErrorTableModel extends AbstractTableModel {
                 fireTableRowsDeleted(row, row);
             }
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void errorAdded(final ProgramError error) {
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                synchronized (ErrorTableModel.this) {
+                    addRow(error);
+                }
+            }
+        });
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void errorDeleted(final ProgramError error) {
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                synchronized (ErrorTableModel.this) {
+                    removeRow(error);
+                }
+            }
+        });
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void errorStatusChanged(final ProgramError error) {
+        UIUtilities.invokeLater(new Runnable() {
+
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+                synchronized (ErrorTableModel.this) {
+                    final int errorRow = indexOf(error);
+                    if (errorRow != -1 && errorRow < getRowCount()) {
+                        fireTableRowsUpdated(errorRow, errorRow);
+                    }
+                }
+            }
+        });
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isReady() {
+        return true;
     }
 }

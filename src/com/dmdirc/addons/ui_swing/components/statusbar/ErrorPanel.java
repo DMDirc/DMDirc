@@ -74,6 +74,8 @@ public class ErrorPanel extends StatusbarPopupPanel implements ErrorListener, Ac
     private final JMenuItem dismiss;
     /** Show menu item. */
     private final JMenuItem show;
+    /** Error dialog. */
+    private final ErrorListDialog errorDialog;
 
     /**
      * Creates a new ErrorPanel for the speicified status bar.
@@ -86,6 +88,8 @@ public class ErrorPanel extends StatusbarPopupPanel implements ErrorListener, Ac
 
         this.mainFrame = mainFrame;
         this.statusBar = statusBar;
+
+        errorDialog = new ErrorListDialog(mainFrame, statusBar);
         
         menu = new JPopupMenu();
         dismiss = new JMenuItem("Clear All");
@@ -215,7 +219,7 @@ public class ErrorPanel extends StatusbarPopupPanel implements ErrorListener, Ac
     public void mouseClicked(final MouseEvent mouseEvent) {
         super.mouseClicked(mouseEvent);
         if (mouseEvent.getButton() == MouseEvent.BUTTON1) {
-            ErrorListDialog.showErrorListDialog(mainFrame, statusBar);
+            errorDialog.display();
         }
         checkMouseEvent(mouseEvent);
     }
@@ -239,7 +243,7 @@ public class ErrorPanel extends StatusbarPopupPanel implements ErrorListener, Ac
     @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == show) {
-            ErrorListDialog.showErrorListDialog(mainFrame, statusBar);
+            errorDialog.display();
         } else {
             final Collection<ProgramError> errors =
                     ErrorManager.getErrorManager().getErrors();

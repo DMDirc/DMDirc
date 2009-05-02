@@ -538,7 +538,6 @@ public final class SwingController extends Plugin implements UIController {
                 // UIUtilities.initUISettings();
                 me = new MainFrame(SwingController.this);
                 statusBar = me.getStatusBar();
-                ErrorListDialog.getErrorListDialog(me, me.getStatusBar());
             }
         });
 

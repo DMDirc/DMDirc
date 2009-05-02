@@ -316,7 +316,8 @@ public final class SwingPreferencesDialog extends StandardDialog implements
     }
 
     /** {@inheritDoc} */
-    private void display() {
+    @Override
+    public void display() {
         pack();
         setLocationRelativeTo(getParent());
         setVisible(true);
