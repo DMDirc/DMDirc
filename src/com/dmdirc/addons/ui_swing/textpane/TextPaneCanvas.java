@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.dmdirc.addons.ui_swing.textpane;
 
 import com.dmdirc.addons.ui_swing.UIUtilities;
@@ -99,8 +100,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         addMouseListener(this);
         addMouseMotionListener(this);
         addComponentListener(this);
-        //TODO issue 2251
-        //parent.getFrameContainer().getConfigManager().addChangeListener("ui", "textPaneFontSize", this);
+    //TODO issue 2251
+    //parent.getFrameContainer().getConfigManager().addChangeListener("ui", "textPaneFontSize", this);
     }
 
     /**
@@ -155,7 +156,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         // Iterate through the lines
         for (int i = startLine; i >= 0; i--) {
             float drawPosX;
-            final AttributedCharacterIterator iterator = document.getStyledLine(i);
+            final AttributedCharacterIterator iterator = document.getStyledLine(
+                    i);
             int lineHeight = document.getLineHeight(i);
             lineHeight += lineHeight * 0.2;
             paragraphStart = iterator.getBeginIndex();
@@ -326,7 +328,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                     return;
                 }
 
-                final AttributedCharacterIterator iterator = document.getStyledLine(line);
+                final AttributedCharacterIterator iterator = document.
+                        getStyledLine(line);
                 int lineHeight = document.getLineHeight(line);
                 lineHeight += lineHeight * 0.2;
                 final AttributedString as = new AttributedString(iterator,
@@ -435,19 +438,27 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         if (lineInfo.getLine() != -1) {
             final AttributedCharacterIterator iterator = document.getStyledLine(
                     lineInfo.getLine());
-            iterator.setIndex(lineInfo.getIndex());
-            Object linkattr =
-                    iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
-            if (linkattr instanceof String) {
-                return ClickType.HYPERLINK;
-            }
-            linkattr = iterator.getAttributes().get(IRCTextAttribute.CHANNEL);
-            if (linkattr instanceof String) {
-                return ClickType.CHANNEL;
-            }
-            linkattr = iterator.getAttributes().get(IRCTextAttribute.NICKNAME);
-            if (linkattr instanceof String) {
-                return ClickType.NICKNAME;
+            final int index = lineInfo.getIndex();
+            if (index >= iterator.getRunStart() && index <=
+                    iterator.getRunLimit()) {
+                iterator.setIndex(lineInfo.getIndex());
+                Object linkattr =
+                        iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
+                if (linkattr instanceof String) {
+                    return ClickType.HYPERLINK;
+                }
+                linkattr =
+                        iterator.getAttributes().get(IRCTextAttribute.CHANNEL);
+                if (linkattr instanceof String) {
+                    return ClickType.CHANNEL;
+                }
+                linkattr = iterator.getAttributes().get(
+                        IRCTextAttribute.NICKNAME);
+                if (linkattr instanceof String) {
+                    return ClickType.NICKNAME;
+                }
+            } else {
+                return ClickType.NORMAL;
             }
         }
         return ClickType.NORMAL;
@@ -781,11 +792,13 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         } else if (selection.getStartLine() == selection.getEndLine() &&
                 selection.getStartPos() > selection.getEndPos()) {
             // Just swap the chars
-            return new LinePosition(selection.getStartLine(), selection.getEndPos(), selection.getEndLine(),
+            return new LinePosition(selection.getStartLine(), selection.
+                    getEndPos(), selection.getEndLine(),
                     selection.getStartPos());
         } else {
             // Swap nothing
-            return new LinePosition(selection.getStartLine(), selection.getStartPos(), selection.getEndLine(),
+            return new LinePosition(selection.getStartLine(), selection.
+                    getStartPos(), selection.getEndLine(),
                     selection.getEndPos());
         }
     }
