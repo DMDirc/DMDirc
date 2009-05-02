@@ -230,17 +230,24 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             if (!line.isEmpty()) {
                 if (selectedRange.getEndLine() == selectedRange.getStartLine()) {
                     //loop through range
-                    selectedText.append(line.substring(
-                            selectedRange.getStartPos(),
-                            selectedRange.getEndPos()));
+                    if (selectedRange.getStartPos() != -1
+                            && selectedRange.getEndPos() != -1) {
+                        selectedText.append(line.substring(
+                                selectedRange.getStartPos(),
+                                selectedRange.getEndPos()));
+                    }
                 } else if (i == selectedRange.getStartLine()) {
                     //loop from start of range to the end
-                    selectedText.append(line.substring(
-                            selectedRange.getStartPos(), line.length()));
+                    if (selectedRange.getStartPos() != -1) {
+                        selectedText.append(line.substring(
+                                selectedRange.getStartPos(), line.length()));
+                    }
                 } else if (i == selectedRange.getEndLine()) {
                     //loop from start to end of range
-                    selectedText.append(line.substring(0, selectedRange.
-                            getEndPos()));
+                    if (selectedRange.getEndPos() != -1) {
+                        selectedText.append(line.substring(0, selectedRange.
+                                getEndPos()));
+                    }
                 } else {
                     //loop the whole line
                     selectedText.append(line);
