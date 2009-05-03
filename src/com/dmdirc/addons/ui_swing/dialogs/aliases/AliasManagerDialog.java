@@ -30,7 +30,6 @@ import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.wrappers.AliasWrapper;
-import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.addons.ui_swing.components.PackingTable;
 import com.dmdirc.addons.ui_swing.components.StandardDialog;
 
@@ -183,8 +182,6 @@ public final class AliasManagerDialog extends StandardDialog implements
 
         table.getTableHeader().setReorderingAllowed(false);
 
-        table.setPreferredScrollableViewportSize(new Dimension(600, 150));
-
         scrollPane.setViewportView(table);
 
         aliasDetails = new AliasPanel();
@@ -238,15 +235,17 @@ public final class AliasManagerDialog extends StandardDialog implements
 
     /** Lays out the components. */
     private void layoutComponents() {
-        setLayout(new MigLayout("fill"));
+        setLayout(new MigLayout("fill, pack"));
+        setMinimumSize(new Dimension(800, 400));
+        setPreferredSize(new Dimension(800, 400));
+        table.setPreferredScrollableViewportSize(new Dimension(800, 150));
+        scrollPane.setMinimumSize(new Dimension(750, 150));
         final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
                 true);
-        final JPanel panel = new JPanel();
-
-        panel.setLayout(new MigLayout("fill, hidemode 3"));
+        final JPanel panel = new JPanel(new MigLayout("fill, hidemode 3, pack"));
 
         panel.add(aliasDetails, "span 7, wrap, grow, pushy");
-        panel.add(subsPanel, "spanx, wrap, grow, push");
+        panel.add(subsPanel, "spanx, wrap, grow, pushy");
         panel.add(showSubs, "split 7, sgx button, left");
         panel.add(addButton, "skip 2, sgx button, gap unrel");
         panel.add(deleteButton, "sgx button");
@@ -259,7 +258,7 @@ public final class AliasManagerDialog extends StandardDialog implements
         splitPane.setDividerSize((int) PlatformDefaults.getPanelInsets(0).
                 getValue());
 
-        getContentPane().add(splitPane, "grow, push");
+        add(splitPane, "grow, push");
     }
 
     /** {@inheritDoc}. */
