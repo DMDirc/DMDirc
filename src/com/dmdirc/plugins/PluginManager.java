@@ -321,7 +321,7 @@ public class PluginManager implements ActionListener {
 		delPlugin(filename);
 		boolean result = addPlugin(filename);
 		
-		if (wasLoaded) {
+		if (wasLoaded && result) {
 			getPluginInfo(filename).loadPlugin();
 			result = getPluginInfo(filename).isLoaded();
 		}
