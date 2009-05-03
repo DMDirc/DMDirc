@@ -61,8 +61,8 @@ public class DefaultsComponent implements UpdateComponent {
     public Version getVersion() {
         final ConfigManager globalConfig = IdentityManager.getGlobalConfig();
         
-        if (globalConfig.hasOptionInt("identity", "defaultsversion")) {
-            return new Version(globalConfig.getOptionInt("identity", "defaultsversion"));
+        if (globalConfig.hasOptionString("identity", "defaultsversion")) {
+            return new Version(globalConfig.getOption("identity", "defaultsversion"));
         } else {
             return new Version(-1);
         }

@@ -26,6 +26,7 @@ import com.dmdirc.Main;
 import com.dmdirc.Precondition;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.updater.Version;
 import com.dmdirc.util.ConfigFile;
 import com.dmdirc.util.InvalidConfigFileException;
 import com.dmdirc.util.WeakList;
@@ -71,8 +72,8 @@ public final class IdentityManager {
         identities.clear();
         managers.clear();
 
-        loadDefaults();
         loadVersion();
+        loadDefaults();
         loadUser();
         loadConfig();
         
@@ -97,7 +98,7 @@ public final class IdentityManager {
         addonConfig = new Identity(addonConfigFile, target);
         IdentityManager.addIdentity(addonConfig);
         
-        if (!getGlobalConfig().hasOptionInt("identity", "defaultsversion")) {
+        if (!getGlobalConfig().hasOptionString("identity", "defaultsversion")) {
             Logger.userError(ErrorLevel.FATAL, "Default settings "
                     + "could not be loaded");
         }
@@ -113,6 +114,23 @@ public final class IdentityManager {
             if (!file.exists() || file.listFiles() == null || file.listFiles().length == 0) {
                 file.mkdirs();
                 extractIdentities(target);
+            }
+
+            loadUser(file);
+        }
+
+        // If the bundled defaults are newer than the ones the user is
+        // currently using, extract them.
+        if (getGlobalConfig().hasOptionString("identity", "defaultsversion")
+                && getGlobalConfig().hasOptionString("updater", "bundleddefaultsversion")) {
+            final Version installedVersion = new Version(getGlobalConfig()
+                    .getOption("identity", "defaultsversion"));
+            final Version bundledVersion = new Version(getGlobalConfig()
+                    .getOption("updater", "bundleddefaultsversion"));
+
+            if (bundledVersion.compareTo(installedVersion) > 0) {
+                extractIdentities("default");
+                loadUser(new File(dir, "default"));
             }
         }
     }

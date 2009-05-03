@@ -56,7 +56,7 @@ public class VersionTest {
             {new Version(2), new Version(1), Integer.MAX_VALUE, 0},
             {new Version(1), new Version(1), 1, -1},
             {new Version(0), new Version(0), 1, -1},
-            {new Version("0.6"), new Version(1), 1, -1},
+            {new Version(1), new Version("0.6"), 0, Integer.MIN_VALUE},
             {new Version("0.6"), new Version("0.6"), 1, -1},
             {new Version("0.6"), new Version("0.6.3"), 0, Integer.MIN_VALUE},
             {new Version("0.6-149-gaaaaaaa"), new Version("0.6.3"), 0, Integer.MIN_VALUE},
