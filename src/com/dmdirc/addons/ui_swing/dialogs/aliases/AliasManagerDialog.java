@@ -232,7 +232,7 @@ public final class AliasManagerDialog extends StandardDialog implements
 
     /** Lays out the components. */
     private void layoutComponents() {
-        setLayout(new MigLayout("fill, hidemode 3, pack, debug"));
+        setLayout(new MigLayout("fill, hidemode 3, pack"));
         setMinimumSize(new Dimension(800, 400));
         table.setPreferredScrollableViewportSize(new Dimension(800, 150));
         scrollPane.setMinimumSize(new Dimension(750, 150));
