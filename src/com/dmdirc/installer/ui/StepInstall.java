@@ -25,8 +25,9 @@ package com.dmdirc.installer.ui;
 import com.dmdirc.installer.TextStep;
 
 import java.awt.BorderLayout;
-
 import java.awt.Image;
+
+import java.awt.Insets;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
@@ -55,6 +56,7 @@ public final class StepInstall extends SwingStep implements TextStep {
         scrollPane = new JScrollPane(infoLabel,
                                      JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                                      JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        infoLabel.setMargin(new Insets(5, 5, 5, 5));
         add(scrollPane, BorderLayout.CENTER);
     }
 
