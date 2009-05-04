@@ -58,6 +58,7 @@ public final class CloseFrameContainerAction extends AbstractAction {
      * 
      * @param e Action event
      */
+    @Override
     public void actionPerformed(final ActionEvent e) {
         if (frame != null) {
             frame.close();
