@@ -25,6 +25,8 @@ package com.dmdirc.addons.identd;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.plugins.PluginInfo;
+import com.dmdirc.plugins.PluginManager;
 
 import java.net.Socket;
 import java.net.ServerSocket;
@@ -123,6 +125,14 @@ public final class IdentdServer implements Runnable {
 				myThread.start();
 			} catch (IOException e) {
 				Logger.userError(ErrorLevel.MEDIUM ,"Unable to start identd server: "+e.getMessage());
+				if (e.getMessage().equals("Permission denied")) {
+					final PluginInfo plugin = PluginManager.getPluginManager().getPluginInfoByName("identd");
+					if (plugin != null) {
+						if (PluginManager.getPluginManager().delPlugin(plugin.getRelativeFilename())) {
+							PluginManager.getPluginManager().updateAutoLoad(plugin);
+						}
+					}
+				}
 			}
 		}
 	}
