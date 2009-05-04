@@ -81,7 +81,16 @@ public final class ReorderableJList extends JList implements DragSourceListener,
     
     /** Instantiate new ReorderableJList. */
     public ReorderableJList() {
-        super(new DefaultListModel());
+        this(new DefaultListModel());
+    }
+
+    /**
+     * Instantiate new ReorderableJList.
+     *
+     * @param model Model
+     */
+    public ReorderableJList(final DefaultListModel model) {
+        super(model);
         
         setCellRenderer(new ReorderableJListCellRenderer(this));
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

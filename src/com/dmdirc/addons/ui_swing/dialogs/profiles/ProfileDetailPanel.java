@@ -29,6 +29,7 @@ import com.dmdirc.config.prefs.validator.NicknameValidator;
 import com.dmdirc.config.prefs.validator.NotEmptyValidator;
 import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.addons.ui_swing.components.StandardInputDialog;
+import com.dmdirc.addons.ui_swing.components.reorderablelist.ReorderableJList;
 import com.dmdirc.addons.ui_swing.components.validating.ValidatingJTextField;
 
 import java.awt.Dialog.ModalityType;
@@ -40,7 +41,6 @@ import java.util.Enumeration;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -72,7 +72,7 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
     /** Ident text field. */
     private ValidatingJTextField ident;
     /** Nicknames list. */
-    private JList nicknames;
+    private ReorderableJList nicknames;
     /** Add button. */
     private JButton addButton;
     /** Delete button. */
@@ -106,7 +106,7 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
         name = new ValidatingJTextField(new ProfileNameValidator());
         realname = new ValidatingJTextField(new NotEmptyValidator());
         ident = new ValidatingJTextField(new IdentValidator());
-        nicknames = new JList(new DefaultListModel());
+        nicknames = new ReorderableJList(new DefaultListModel());
 
         addButton = new JButton("Add");
         delButton = new JButton("Delete");
@@ -164,9 +164,9 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
         realname.setText(profile.getRealname());
         ident.setText(profile.getIdent());
 
-        ((DefaultListModel) nicknames.getModel()).clear();
+        nicknames.getModel().clear();
         for (String nickname : profile.getNicknames()) {
-            ((DefaultListModel) nicknames.getModel()).addElement(nickname);
+            nicknames.getModel().addElement(nickname);
         }
 
         name.setEnabled(true);
@@ -181,7 +181,7 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
         name.setText("");
         realname.setText("");
         ident.setText("");
-        ((DefaultListModel) nicknames.getModel()).clear();
+        nicknames.getModel().clear();
 
         name.setEnabled(false);
         realname.setEnabled(false);
@@ -203,7 +203,7 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
         profile.setIdent(ident.getText());
         profile.setNicknames(new ArrayList<String>());
         final Enumeration<?> enumeration =
-                ((DefaultListModel) nicknames.getModel()).elements();
+                nicknames.getModel().elements();
         while (enumeration.hasMoreElements()) {
             profile.addNickname((String) enumeration.nextElement());
         }
@@ -244,7 +244,7 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
                 /** {@inheritDoc} */
                 @Override
                 public boolean save() {
-                    ((DefaultListModel) nicknames.getModel()).addElement(getText());
+                    nicknames.getModel().addElement(getText());
                     return true;
                 }
 
@@ -270,7 +270,7 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
                 /** {@inheritDoc} */
                 @Override
                 public boolean save() {
-                    ((DefaultListModel) nicknames.getModel()).setElementAt(
+                    nicknames.getModel().setElementAt(
                             getText(), nicknames.getSelectedIndex());
                     return true;
                 }
@@ -287,7 +287,7 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
                 "Are you sure you want to delete this nickname?",
                 "Delete Confirmaton", JOptionPane.YES_NO_OPTION) ==
                 JOptionPane.YES_OPTION) {
-            ((DefaultListModel) nicknames.getModel()).removeElementAt(nicknames.getSelectedIndex());
+            nicknames.getModel().removeElementAt(nicknames.getSelectedIndex());
         }
     }
 
