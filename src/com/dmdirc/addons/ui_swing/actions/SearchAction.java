@@ -54,7 +54,12 @@ public final class SearchAction extends AbstractAction {
         this.searchBar = searchBar;
     }
     
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @param e Action event
+     */
+    @Override
     public void actionPerformed(final ActionEvent e) { 
         if (searchBar.isVisible()) {
             searchBar.getFocus();

@@ -59,6 +59,7 @@ public final class TextPaneCopyAction extends AbstractAction {
      * 
      * @param e Action event
      */
+    @Override
     public void actionPerformed(final ActionEvent e) { 
         comp.copy(); 
     } 

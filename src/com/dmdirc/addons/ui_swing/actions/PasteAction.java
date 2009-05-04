@@ -56,12 +56,18 @@ public final class PasteAction extends AbstractAction {
         this.comp = comp;
     }
     
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @param e Action event
+     */
+    @Override
     public void actionPerformed(final ActionEvent e) {
         comp.paste();
     }
     
     /** {@inheritDoc} */
+    @Override
     public boolean isEnabled() {
         if (comp.isEditable() && comp.isEnabled()) {
             final Transferable contents = Toolkit.getDefaultToolkit().

@@ -57,7 +57,12 @@ public final class RedoAction extends AbstractAction {
         this.undoManager = undoManager;
     }
     
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @param evt Action event
+     */
+    @Override
     public void actionPerformed(final ActionEvent evt) {
         try {
             if (undoManager.canRedo()) {
