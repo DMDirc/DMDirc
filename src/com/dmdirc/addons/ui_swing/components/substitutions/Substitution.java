@@ -26,12 +26,12 @@ package com.dmdirc.addons.ui_swing.components.substitutions;
  * Wrapper for action substitutions.
  */
 public final class Substitution {
-    
+
     /** Substitution name. */
     private final String name;
     /** Subsitution value. */
     private final String value;
-    
+
     /** 
      * Creates a new instance of Substitution. 
      *
@@ -42,7 +42,7 @@ public final class Substitution {
         this.name = name;
         this.value = "$" + value;
     }
-    
+
     /**
      * Returns the name of this substitution.
      *
@@ -51,7 +51,7 @@ public final class Substitution {
     public String getName() {
         return name;
     }
-    
+
     /**
      * Returns the value of this substitution.
      * 
@@ -60,11 +60,10 @@ public final class Substitution {
     public String getValue() {
         return value;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String toString() {
         return value;
     }
-    
 }
