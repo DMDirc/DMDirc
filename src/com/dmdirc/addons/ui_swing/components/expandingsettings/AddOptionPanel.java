@@ -31,6 +31,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -39,6 +40,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 
 import net.miginfocom.swing.MigLayout;
@@ -118,6 +120,18 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
         addOptionComboBox.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
         addOptionComboBox.addActionListener(this);
         addOptionButton.addActionListener(this);
+
+        addInputText.getActionMap().put("ctrl-enter", new AbstractAction() {
+            
+            private static final long serialVersionUID = 2;
+
+            /** {@inheritDoc} */
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                addOptionButton.doClick();
+            }
+        });
+        addInputText.getInputMap().put(KeyStroke.getKeyStroke("ctrl ENTER"), "ctrl-enter");
     }
     
     /** Lays out the components. */
