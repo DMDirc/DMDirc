@@ -57,7 +57,7 @@ public final class Apple implements InvocationHandler, ActionListener {
 	 * Dummy interface for ApplicationEvent from the Apple UI on non-Apple platforms.
 	 * http://developer.apple.com/documentation/Java/Reference/1.5.0/appledoc/api/com/apple/eawt/ApplicationEvent.html
 	 */
-	private interface ApplicationEvent {
+	public interface ApplicationEvent {
 		/**
 		 * Provides the filename associated with a particular AppleEvent.
 		 *
@@ -91,6 +91,7 @@ public final class Apple implements InvocationHandler, ActionListener {
 		 *
 		 * @return A string representation of this object.
 		 */
+        @Override
 		String toString();
 	}
 	
@@ -283,7 +284,11 @@ public final class Apple implements InvocationHandler, ActionListener {
 		return false;
 	}
 	
-	/** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @throws Throwable Throws stuff on errors
+     */
 	@Override
 	public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
 		if (!isApple()) { return null; }
