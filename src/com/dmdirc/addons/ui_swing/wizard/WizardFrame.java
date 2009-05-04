@@ -29,8 +29,6 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
-import net.miginfocom.swing.MigLayout;
-
 /**
  * Basic wizard container.
  */
@@ -64,7 +62,7 @@ public final class WizardFrame extends JFrame {
 
     /** Lays out the components. */
     private void layoutComponents() {
-        add(wizard);
+        setContentPane(wizard);
     }
 
     /** Displays the wizard. */

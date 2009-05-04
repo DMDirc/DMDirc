@@ -34,9 +34,6 @@ import java.util.List;
 
 import javax.swing.JButton;
 
-import net.miginfocom.swing.MigLayout;
-
-
 /**
  * Basic wizard container.
  */
@@ -75,10 +72,11 @@ public final class WizardDialog extends StandardDialog implements ActionListener
 
     /** Lays out the components. */
     private void layoutComponents() {
-        add(wizard);
+        setContentPane(wizard);
     }
 
     /** Displays the wizard. */
+    @Override
     public void display() {
         wizard.display();
         if (parentWindow != null) {

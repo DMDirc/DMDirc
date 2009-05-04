@@ -39,6 +39,7 @@ import com.dmdirc.addons.ui_swing.wizard.WizardListener;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
+import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -72,6 +73,7 @@ public final class SwingFirstRunWizard implements WizardListener,
                     "Migration wizard"), new ArrayList<Step>(), this, null);
         wizardDialog.setIconImage(IconManager.getIconManager().getImage("icon"));
         wizardDialog.addWizardListener(this);
+        wizardDialog.setMinimumSize(new Dimension(400, 400));
     }
 
     /** {@inheritDoc} */

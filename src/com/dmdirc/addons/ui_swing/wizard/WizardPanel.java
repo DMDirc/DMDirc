@@ -125,9 +125,9 @@ public class WizardPanel extends JPanel implements ActionListener {
         progressPanel.setBorder(new EtchedLineBorder(EtchedBorder.LOWERED,
                 BorderSide.TOP));
 
-        setLayout(new MigLayout("fill, wrap 1, ins 0, w 400!, pack"));
+        setLayout(new MigLayout("fill, wrap 1, ins 0"));
         add(titleLabel, "growx, pushx");
-        add(stepsPanel, "grow, pushx");
+        add(stepsPanel, "grow, push");
         add(progressPanel, "growx, pushx");
     }
 
