@@ -165,8 +165,6 @@ public final class UpdateChecker implements Runnable {
                 final List<String> response
                     = Downloader.getPage("http://updates.dmdirc.com/", "data=" + data);
 
-                updates.clear();
-
                 for (String line : response) {
                     checkLine(line);
                 }
