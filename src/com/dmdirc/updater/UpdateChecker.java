@@ -25,8 +25,6 @@ package com.dmdirc.updater;
 import com.dmdirc.Precondition;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.updater.UpdateCheckerListener;
-import com.dmdirc.updater.UpdateListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.components.ClientComponent;
