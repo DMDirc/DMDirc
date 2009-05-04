@@ -24,6 +24,7 @@ package com.dmdirc.addons.ui_swing.dialogs.actioneditor;
 
 import com.dmdirc.config.IdentityManager;
 
+import java.util.Comparator;
 import java.util.TreeSet;
 
 import javax.swing.BorderFactory;
@@ -70,8 +71,8 @@ public class ActionResponsePanel extends JPanel {
         ((DefaultComboBoxModel) formatter.getModel()).addElement("No change");
         ((DefaultComboBoxModel) formatter.getModel()).addElement("No response");
 
-        final TreeSet<String> formatters = new TreeSet<String>(
-                IdentityManager.getGlobalConfig().getOptions("formatter").keySet());
+        final TreeSet<String> formatters = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+        formatters.addAll(IdentityManager.getGlobalConfig().getOptions("formatter").keySet());
 
         for (String format : formatters) {
             ((DefaultComboBoxModel) formatter.getModel()).addElement(format);
