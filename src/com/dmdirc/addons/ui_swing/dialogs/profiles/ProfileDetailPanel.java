@@ -32,6 +32,7 @@ import com.dmdirc.addons.ui_swing.components.StandardInputDialog;
 import com.dmdirc.addons.ui_swing.components.reorderablelist.ReorderableJList;
 import com.dmdirc.addons.ui_swing.components.validating.ValidatingJTextField;
 
+import com.dmdirc.config.prefs.validator.ValidatorChain;
 import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -65,6 +66,8 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
     private Profile profile;
     /** The profile list model. */
     private final ProfileListModel model;
+    /** Duplicate nickname validator. */
+    private final ValidatorChain<String> validator;
     /** Name text field. */
     private ValidatingJTextField name;
     /** Realname text field. */
@@ -88,6 +91,7 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
      * @param model The list model to use to validate names
      * @param mainFrame Main frame
      */
+    @SuppressWarnings("unchecked")
     public ProfileDetailPanel(final ProfileListModel model,
             final MainFrame mainFrame) {
         super();
@@ -95,6 +99,7 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
 
         this.model = model;
 
+        validator = new ValidatorChain(new NoDuplicatesInListValidator(model), new NicknameValidator());
         initMainComponents();
         layoutComponents();
 
@@ -232,7 +237,7 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
         if (e.getSource() == addButton) {
             new StandardInputDialog(ProfileManagerDialog.getProfileManagerDialog(mainFrame),
                     ModalityType.DOCUMENT_MODAL, "New Nickname",
-                    "Please enter the new nickname", new NicknameValidator()) {
+                    "Please enter the new nickname", validator) {
 
                 /**
                  * A version number for this class. It should be changed whenever the class
