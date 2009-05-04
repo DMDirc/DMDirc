@@ -53,7 +53,12 @@ public final class NoNewlinesPasteAction extends AbstractAction {
         super("TopicPasteAction");
     }
     
-    /** {@inheritDoc} */
+    /** 
+     * {@inheritDoc}
+     * 
+     * @param e Action event
+     */
+    @Override
     public void actionPerformed(final ActionEvent e) {
         final JTextComponent comp;
         
