@@ -22,8 +22,6 @@
 
 package com.dmdirc.updater;
 
-import com.dmdirc.updater.UpdateChecker;
-
 /**
  * Update Checker Listeners receive notifications when the status of the update
  * checker changes.

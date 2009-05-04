@@ -22,10 +22,6 @@
 
 package com.dmdirc.updater;
 
-import com.dmdirc.updater.Update;
-import com.dmdirc.updater.UpdateStatus;
-
-
 /**
  * Defines the method that must be implemented by update listeners.
  * 
