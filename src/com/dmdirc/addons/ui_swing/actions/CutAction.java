@@ -65,6 +65,7 @@ public final class CutAction extends AbstractAction {
     } 
  
     /** {@inheritDoc} */
+    @Override
     public boolean isEnabled() { 
         return comp.isEditable() 
                 && comp.isEnabled() 
