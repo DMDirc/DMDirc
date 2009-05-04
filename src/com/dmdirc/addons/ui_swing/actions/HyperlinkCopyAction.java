@@ -58,6 +58,7 @@ public final class HyperlinkCopyAction extends AbstractAction {
      * 
      * @param e Action event
      */
+    @Override
     public void actionPerformed(final ActionEvent e) {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(hyperlink),
                 null);
