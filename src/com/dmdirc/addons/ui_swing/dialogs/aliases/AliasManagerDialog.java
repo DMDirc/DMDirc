@@ -43,7 +43,6 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
@@ -103,8 +102,6 @@ public final class AliasManagerDialog extends StandardDialog implements
         initComponents();
         layoutComponents();
         initListeners();
-
-        pack();
     }
 
     /** 
@@ -235,30 +232,22 @@ public final class AliasManagerDialog extends StandardDialog implements
 
     /** Lays out the components. */
     private void layoutComponents() {
-        setLayout(new MigLayout("fill, pack"));
+        setLayout(new MigLayout("fill, hidemode 3, pack, debug"));
         setMinimumSize(new Dimension(800, 400));
-        setPreferredSize(new Dimension(800, 400));
         table.setPreferredScrollableViewportSize(new Dimension(800, 150));
         scrollPane.setMinimumSize(new Dimension(750, 150));
         final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-                true);
-        final JPanel panel = new JPanel(new MigLayout("fill, hidemode 3, pack"));
-
-        panel.add(aliasDetails, "span 7, wrap, grow, pushy");
-        panel.add(subsPanel, "spanx, wrap, grow, pushy");
-        panel.add(showSubs, "split 7, sgx button, left");
-        panel.add(addButton, "skip 2, sgx button, gap unrel");
-        panel.add(deleteButton, "sgx button");
-        panel.add(getLeftButton(), "sgx button, gap unrel");
-        panel.add(getRightButton(), "sgx button");
-
-        splitPane.setTopComponent(scrollPane);
-        splitPane.setBottomComponent(panel);
-
+                true, scrollPane, aliasDetails);
         splitPane.setDividerSize((int) PlatformDefaults.getPanelInsets(0).
                 getValue());
 
-        add(splitPane, "grow, push");
+        add(splitPane, "spanx 5, grow, push, wrap");
+        add(subsPanel, "spanx 5, grow, pushy, wrap");
+        add(showSubs, "split, sgx button");
+        add(addButton, "sgx button, gap unrel");
+        add(deleteButton, "sgx button");
+        add(getLeftButton(), "sgx button, gap unrel");
+        add(getRightButton(), "sgx button");
     }
 
     /** {@inheritDoc}. */
