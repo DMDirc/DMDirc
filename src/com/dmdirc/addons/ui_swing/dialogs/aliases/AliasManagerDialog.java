@@ -243,7 +243,7 @@ public final class AliasManagerDialog extends StandardDialog implements
 
         add(splitPane, "spanx 5, grow, push, wrap");
         add(subsPanel, "spanx 5, grow, pushy, wrap");
-        add(showSubs, "split, sgx button");
+        add(showSubs, "split 3, sgx button");
         add(addButton, "sgx button, gap unrel");
         add(deleteButton, "sgx button");
         add(getLeftButton(), "sgx button, gap unrel");
