@@ -25,8 +25,8 @@ package com.dmdirc.updater;
 import com.dmdirc.Precondition;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.interfaces.UpdateCheckerListener;
-import com.dmdirc.interfaces.UpdateListener;
+import com.dmdirc.updater.UpdateCheckerListener;
+import com.dmdirc.updater.UpdateListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.components.ClientComponent;
@@ -140,6 +140,7 @@ public final class UpdateChecker implements Runnable {
 
         setStatus(STATE.CHECKING);
 
+        // Remove any existing update that isn't waiting for a restart.
         for (Update update : new ArrayList<Update>(updates)) {
             if (update.getStatus() != UpdateStatus.RESTART_NEEDED) {
                 updates.remove(update);
@@ -149,6 +150,7 @@ public final class UpdateChecker implements Runnable {
         final StringBuilder data = new StringBuilder();
         final String updateChannel = config.getOption("updater", "channel");
 
+        // Build the data string to send to the server
         for (UpdateComponent component : components) {
             if (isEnabled(component)) {
                 data.append(component.getName());
@@ -160,6 +162,7 @@ public final class UpdateChecker implements Runnable {
             }
         }
 
+        // If we actually have components to check
         if (data.length() > 0) {
             try {
                 final List<String> response
@@ -180,7 +183,9 @@ public final class UpdateChecker implements Runnable {
             setStatus(STATE.IDLE);
         } else {
             boolean available = false;
-            
+
+            // Check to see if the updates are outstanding or just waiting for
+            // a restart
             for (Update update : updates) {
                 if (update.getStatus() == UpdateStatus.PENDING) {
                     available = true;
@@ -238,10 +243,10 @@ public final class UpdateChecker implements Runnable {
      * frequency specified in the config.
      */
     public static void init() {
-        final int last
-                = IdentityManager.getGlobalConfig().getOptionInt("updater", "lastcheck");
-        final int freq
-                = IdentityManager.getGlobalConfig().getOptionInt("updater", "frequency");
+        final int last = IdentityManager.getGlobalConfig()
+                .getOptionInt("updater", "lastcheck");
+        final int freq = IdentityManager.getGlobalConfig()
+                .getOptionInt("updater", "frequency");
         final int timestamp = (int) (new Date().getTime() / 1000);
         int time = 0;
 

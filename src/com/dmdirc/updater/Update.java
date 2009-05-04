@@ -23,7 +23,7 @@
 package com.dmdirc.updater;
 
 import com.dmdirc.Main;
-import com.dmdirc.interfaces.UpdateListener;
+import com.dmdirc.updater.UpdateListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.util.DownloadListener;

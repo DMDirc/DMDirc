@@ -23,7 +23,7 @@
 package com.dmdirc.addons.ui_swing.dialogs.updater;
 
 import com.dmdirc.addons.ui_swing.MainFrame;
-import com.dmdirc.interfaces.UpdateCheckerListener;
+import com.dmdirc.updater.UpdateCheckerListener;
 import com.dmdirc.ui.interfaces.UpdaterDialog;
 import com.dmdirc.addons.ui_swing.components.TextLabel;
 import com.dmdirc.addons.ui_swing.components.PackingTable;

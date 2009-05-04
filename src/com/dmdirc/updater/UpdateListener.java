@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.interfaces;
+package com.dmdirc.updater;
 
 import com.dmdirc.updater.Update;
 import com.dmdirc.updater.UpdateStatus;

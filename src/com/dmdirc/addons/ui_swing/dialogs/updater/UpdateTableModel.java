@@ -22,7 +22,7 @@
 
 package com.dmdirc.addons.ui_swing.dialogs.updater;
 
-import com.dmdirc.interfaces.UpdateListener;
+import com.dmdirc.updater.UpdateListener;
 import com.dmdirc.updater.Update;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.UpdateStatus;
