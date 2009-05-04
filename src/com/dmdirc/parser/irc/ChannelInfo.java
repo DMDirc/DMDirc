@@ -133,7 +133,7 @@ public class ChannelInfo {
 		final boolean isFreenode = (thisIRCD.equals("hyperion") || thisIRCD.equals("dancer"));
 		final boolean isUnreal = thisIRCD.equals("unreal");
 		final boolean isStarChat = thisIRCD.equals("starchat");
-		final boolean isHybrid = thisIRCD.equals("hybrid");
+		final boolean isHybrid = thisIRCD.equals("hybrid") || thisIRCD.equals("oftc-hybrid");
 		final boolean isCharybdis = thisIRCD.equals("charybdis");
 		
 		// We are considered opped if we have a mode higher than voice (or if we have any modes if voice doesn't exist)
