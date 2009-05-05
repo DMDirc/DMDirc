@@ -60,7 +60,8 @@ public class SwingRestartDialog extends StandardDialog implements ActionListener
     public SwingRestartDialog(final MainFrame mainFrame, final ModalityType modal) {
         super(mainFrame, modal);
         this.mainFrame = mainFrame;
-        
+
+        setTitle("DMDirc: Restart needed");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         
         initComponents();
@@ -73,7 +74,7 @@ public class SwingRestartDialog extends StandardDialog implements ActionListener
     /** Initialise components. */
     private void initComponents() {
         orderButtons(new JButton(), new JButton());
-        info = new TextLabel("Your client needs to be restart to finish updating.");
+        info = new TextLabel("Your client needs to be restarted to finish updating.");
         getOkButton().setText("Now");
         getCancelButton().setText("Later");
         
