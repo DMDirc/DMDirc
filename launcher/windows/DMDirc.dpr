@@ -40,7 +40,7 @@ procedure InitCommonControls; stdcall; External 'comctl32.dll' name 'InitCommonC
   MAIN PROGRAM
   ---------------------------------------------------------------------------- }
 const
-  launcherVersion: String = '2';
+  launcherVersion: String = '3';
 var
   errorMessage: String;
   javaCommand: String = 'javaw.exe';
