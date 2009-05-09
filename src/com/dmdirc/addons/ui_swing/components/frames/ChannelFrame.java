@@ -301,13 +301,9 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
      */
     @Override
     public void processMouseEvent(final MouseEvent e) {
-        if (e.getSource() == nickList && nickList.getMousePosition() != null &&
-                getMousePosition() != null) {
-            boolean showMenu = checkShowNicklistMenu();
-            if (!showMenu) {
-                showMenu = selectNickUnderCursor();
-            }
-            if (showMenu) {
+        if (e.getSource() == nickList && nickList.getMousePosition() != null
+                && getMousePosition() != null) {
+            if (checkCursorInSelectedCell() || selectNickUnderCursor()) {
                 if (e.isPopupTrigger()) {
                     showPopupMenu(ClickType.NICKNAME, getMousePosition(),
                             ((ChannelClientInfo) nickList.getSelectedValue()).getNickname());
@@ -316,16 +312,17 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
                 nickList.clearSelection();
             }
         }
+
         super.processMouseEvent(e);
     }
 
     /**
+     * Checks whether the mouse cursor is currently over a cell in the nicklist
+     * which has been previously selected.
      *
-     * Checks whether to show the nicklist menu.
-     *
-     * @return whether to show the nicklist menu
+     * @return True if the cursor is over a selected cell, false otherwise
      */
-    private boolean checkShowNicklistMenu() {
+    private boolean checkCursorInSelectedCell() {
         boolean showMenu = false;
         final Point mousePos = nickList.getMousePosition();
         if (mousePos != null) {
@@ -341,9 +338,11 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
     }
 
     /**
-     * Selects the nick underneath the mouse.
+     * If the mouse cursor is over a nicklist cell, sets that cell to be
+     * selected and returns true. If the mouse is not over any cell, the
+     * selection is unchanged and the method returns false.
      *
-     * @return true if an item was selected
+     * @return True if an item was selected
      */
     private boolean selectNickUnderCursor() {
         boolean suceeded = false;
