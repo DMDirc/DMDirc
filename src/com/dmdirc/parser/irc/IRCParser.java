@@ -43,6 +43,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Timer;
 import java.util.Queue;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.net.ssl.KeyManager;
@@ -92,6 +93,8 @@ public class IRCParser implements Runnable {
 
 	/** Timer for server ping. */
 	private Timer pingTimer = null;
+    /** Semaphore for access to pingTimer. */
+    private Semaphore pingTimerSem = new Semaphore(1);
 	/** Length of time to wait between ping stuff. */
 	private long pingTimerLength = 10000;
 	/** Is a ping needed? */
@@ -577,10 +580,14 @@ public class IRCParser implements Runnable {
 		sNetworkName = "";
 		lastLine = "";
 		cMyself = new ClientInfo(this, "myself").setFake(true);
+
+        pingTimerSem.acquireUninterruptibly();
 		if (pingTimer != null) {
 			pingTimer.cancel();
 			pingTimer = null;
 		}
+        pingTimerSem.release();
+
 		currentSocketState = SocketState.CLOSED;
 		// Char Mapping
 		updateCharArrays((byte)4);
@@ -1846,11 +1853,15 @@ public class IRCParser implements Runnable {
 	 * Start the pingTimer.
 	 */
 	protected void startPingTimer() {
+        pingTimerSem.acquireUninterruptibly();
+
 		setPingNeeded(false);
 		if (pingTimer != null) { pingTimer.cancel(); }
 		pingTimer = new Timer("IRCParser pingTimer");
 		pingTimer.schedule(new PingTimer(this, pingTimer), 0, pingTimerLength);
 		pingCountDown = 1;
+
+        pingTimerSem.release();
 	}
 
 	/**
@@ -1861,8 +1872,14 @@ public class IRCParser implements Runnable {
 	 * @param timer The timer that called this.
 	 */
 	protected void pingTimerTask(final Timer timer) {
-		if (pingTimer == null || !pingTimer.equals(timer)) { return; }
-		if (getPingNeeded()) {
+        pingTimerSem.acquireUninterruptibly();
+
+		if (pingTimer == null || !pingTimer.equals(timer)) {
+            pingTimerSem.release();
+            return;
+        }
+
+        if (getPingNeeded()) {
 			if (!callPingFailed()) {
 				pingTimer.cancel();
 				disconnect("Server not responding.");
@@ -1878,6 +1895,8 @@ public class IRCParser implements Runnable {
 				sendLine("PING " + lastPingValue);
 			}
 		}
+
+        pingTimerSem.release();
 	}
 
 	/**
