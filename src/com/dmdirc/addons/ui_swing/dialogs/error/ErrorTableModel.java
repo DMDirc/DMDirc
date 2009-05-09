@@ -178,6 +178,7 @@ public final class ErrorTableModel extends AbstractTableModel implements
                     throw new UnsupportedOperationException("Only editing the " +
                             "status is allowed");
             }
+            fireTableCellUpdated(rowIndex, columnIndex);
         }
     }
 
