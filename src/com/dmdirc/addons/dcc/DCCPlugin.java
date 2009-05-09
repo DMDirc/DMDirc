@@ -123,7 +123,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 			@Override
 			public void run() {
 				final JFileChooser jc = KFileChooser.getFileChooser(DCCPlugin.this, IdentityManager.getGlobalConfig().getOption(getDomain(), "receive.savelocation"));
-				jc.setDialogTitle("Save "+sendFilename+" As - DMDirc ");
+				jc.setDialogTitle("Save "+sendFilename+" As - DMDirc");
 				jc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				jc.setMultiSelectionEnabled(false);
 				jc.setSelectedFile(new File(send.getFileName()));
@@ -141,7 +141,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 							if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "receive.autoaccept")) {
 								return;
 							} else {
-								JOptionPane.showMessageDialog((JFrame)Main.getUI().getMainWindow(), "This file has already been completed, or is longer than the file you are reciving.\n Please choose a different file.", "Problem with selected file", JOptionPane.ERROR_MESSAGE);
+								JOptionPane.showMessageDialog((JFrame)Main.getUI().getMainWindow(), "This file has already been completed, or is longer than the file you are receiving.\nPlease choose a different file.", "Problem with selected file", JOptionPane.ERROR_MESSAGE);
 								saveFile(nickname, send, parser, reverse, sendFilename, token);
 								return;
 							}
