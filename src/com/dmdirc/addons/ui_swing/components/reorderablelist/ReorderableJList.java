@@ -113,6 +113,7 @@ public final class ReorderableJList extends JList implements DragSourceListener,
     }
     
     /** {@inheritDoc} */
+    @Override
     public DefaultListModel getModel() {
         return (DefaultListModel) super.getModel();
     }
@@ -145,26 +146,31 @@ public final class ReorderableJList extends JList implements DragSourceListener,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void dragEnter(final DragSourceDragEvent dsde) {
         //Ignore
     }
     
     /** {@inheritDoc} */
+    @Override
     public void dragOver(final DragSourceDragEvent dsde) {
         //Ignore
     }
     
     /** {@inheritDoc} */
+    @Override
     public void dropActionChanged(final DragSourceDragEvent dsde) {
         //Ignore
     }
     
     /** {@inheritDoc} */
+    @Override
     public void dragExit(final DragSourceEvent dse) {
         //Ignore
     }
     
     /** {@inheritDoc} */
+    @Override
     public void dragDropEnd(final DragSourceDropEvent dsde) {
         //clear drop variables and repaint
         dropTargetCell = null;
@@ -173,6 +179,7 @@ public final class ReorderableJList extends JList implements DragSourceListener,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void dragEnter(final DropTargetDragEvent dtde) {
         //check whether to accept drag
         if (dtde.getSource() == dropTarget) {
@@ -183,6 +190,7 @@ public final class ReorderableJList extends JList implements DragSourceListener,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void dragOver(final DropTargetDragEvent dtde) {
         //Reject drops on self
         if (dtde.getSource() != dropTarget) {
@@ -212,16 +220,19 @@ public final class ReorderableJList extends JList implements DragSourceListener,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void dropActionChanged(final DropTargetDragEvent dtde) {
         //Ignore
     }
     
     /** {@inheritDoc} */
+    @Override
     public void dragExit(final DropTargetEvent dte) {
         //Ignore
     }
     
     /** {@inheritDoc} */
+    @Override
     public void drop(final DropTargetDropEvent dtde) {
         //check source and reject
         if (dtde.getSource() != dropTarget) {
@@ -270,6 +281,7 @@ public final class ReorderableJList extends JList implements DragSourceListener,
     }
     
     /** {@inheritDoc} */
+    @Override
     public void dragGestureRecognized(final DragGestureEvent dge) {
         //find the objects location and index
         final Point clickPoint = dge.getDragOrigin();

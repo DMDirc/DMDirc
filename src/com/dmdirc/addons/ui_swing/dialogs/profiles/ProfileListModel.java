@@ -26,10 +26,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.AbstractListModel;
+import javax.swing.DefaultListModel;
 
 /** Profile list model. */
-public class ProfileListModel extends AbstractListModel implements Iterable<Profile> {
+public class ProfileListModel extends DefaultListModel implements Iterable<Profile> {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -73,6 +73,7 @@ public class ProfileListModel extends AbstractListModel implements Iterable<Prof
      *
      * @return the profile that was removed
      */
+    @Override
     public Profile remove(int index) {
         final Profile returnValue = profiles.remove(index);
 
@@ -102,6 +103,7 @@ public class ProfileListModel extends AbstractListModel implements Iterable<Prof
      *
      * @return true if the model is empty
      */
+    @Override
     public boolean isEmpty() {
         return profiles.isEmpty();
     }
@@ -124,6 +126,7 @@ public class ProfileListModel extends AbstractListModel implements Iterable<Prof
      *
      * @return the profile that was removed
      */
+    @Override
     public Profile get(int index) {
         return profiles.get(index);
     }
@@ -172,6 +175,7 @@ public class ProfileListModel extends AbstractListModel implements Iterable<Prof
     /**
      * Clears the model.
      */
+    @Override
     public void clear() {
         final int size = profiles.size();
         profiles.clear();

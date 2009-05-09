@@ -66,6 +66,8 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
     private Profile profile;
     /** The profile list model. */
     private final ProfileListModel model;
+    /** The nickname list model. */
+    private final DefaultListModel nicknameModel;
     /** Duplicate nickname validator. */
     private final ValidatorChain<String> validator;
     /** Name text field. */
@@ -98,8 +100,10 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
         this.mainFrame = mainFrame;
 
         this.model = model;
+        this.nicknameModel = new DefaultListModel();
 
-        validator = new ValidatorChain(new NoDuplicatesInListValidator(model), new NicknameValidator());
+        validator = new ValidatorChain(new NoDuplicatesInListValidator(
+                nicknameModel), new NicknameValidator());
         initMainComponents();
         layoutComponents();
 
@@ -111,7 +115,7 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
         name = new ValidatingJTextField(new ProfileNameValidator());
         realname = new ValidatingJTextField(new NotEmptyValidator());
         ident = new ValidatingJTextField(new IdentValidator());
-        nicknames = new ReorderableJList(new DefaultListModel());
+        nicknames = new ReorderableJList(nicknameModel);
 
         addButton = new JButton("Add");
         delButton = new JButton("Delete");
@@ -153,9 +157,8 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
      * @param profile new Profile for the detail panel
      */
     public void setProfile(final Profile profile) {
-        this.profile = profile;
-
-        updateProfile();
+            this.profile = profile;
+            updateProfile();
     }
 
     /** Updates this detail panel. */
@@ -221,7 +224,7 @@ public final class ProfileDetailPanel extends JPanel implements ActionListener,
      */
     public boolean validateDetails() {
         if (!ident.validateText() || !realname.validateText() ||
-                !name.validateText()) {
+                !name.validateText() || nicknames.getModel().getSize() <= 0) {
             return false;
         }
         return true;

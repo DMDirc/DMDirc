@@ -26,20 +26,22 @@ package com.dmdirc.addons.ui_swing.dialogs.profiles;
 import com.dmdirc.config.prefs.validator.ValidationResponse;
 import com.dmdirc.config.prefs.validator.Validator;
 
+import javax.swing.DefaultListModel;
+
 /**
  * Validator to check for duplicate values in a list.
  */
 public class NoDuplicatesInListValidator implements Validator<String> {
 
     /** List to validate. */
-    private ProfileListModel model;
+    private DefaultListModel model;
 
     /**
      * Creates a new validator.
      *
      * @param model Model to validate
      */
-    public NoDuplicatesInListValidator(final ProfileListModel model) {
+    public NoDuplicatesInListValidator(final DefaultListModel model) {
         this.model = model;
     }
 
