@@ -384,6 +384,7 @@ public final class ChannelFrame extends InputTextFrame implements ActionListener
             nickScrollPane.setPreferredSize(new Dimension(splitPanePosition, 0));
             splitPane.setDividerLocation(splitPane.getWidth() - splitPanePosition);
         }
+        nickList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     }
 
     /** {@inheritDoc} */
