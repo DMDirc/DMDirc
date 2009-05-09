@@ -25,22 +25,20 @@ package com.dmdirc.addons.dcc;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.addons.dcc.actions.DCCActions;
 import com.dmdirc.config.IdentityManager;
-
-import javax.swing.JLabel;
-import javax.swing.JProgressBar;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import net.miginfocom.swing.MigLayout;
-
 import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.parser.irc.SocketState;
 import com.dmdirc.parser.irc.callbacks.interfaces.ISocketClosed;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * This class links DCC Send objects to a window.
@@ -50,9 +48,6 @@ import java.io.File;
 public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionListener, ISocketClosed {
 	/** The DCCSend object we are a window for */
 	private final DCCSend dcc;
-	
-	/** My Nickname */
-	private final String nickname;
 	
 	/** Other Nickname */
 	private final String otherNickname;
@@ -93,11 +88,10 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 	 * @param plugin the DCC Plugin responsible for this window
 	 * @param dcc The DCCSend object this window wraps around
 	 * @param title The title of this window
-	 * @param nick My Current Nickname
 	 * @param targetNick Nickname of target
 	 * @param parser The IRC parser that initiated this send
 	 */
-	public DCCSendWindow(final DCCPlugin plugin, final DCCSend dcc, final String title, final String nick, final String targetNick, final IRCParser parser) {
+	public DCCSendWindow(final DCCPlugin plugin, final DCCSend dcc, final String title, final String targetNick, final IRCParser parser) {
 		super(plugin, title, dcc.getType() == DCCSend.TransferType.SEND ? "dcc-send-inactive" : "dcc-receive-inactive");
 		this.dcc = dcc;
 		this.parser = parser;
@@ -107,7 +101,7 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 			parser.getCallbackManager().addNonCriticalCallback("onSocketClosed", this);
 		}
 		dcc.setHandler(this);
-		nickname = nick;
+
 		otherNickname = targetNick;
 		
 		getContentPane().setLayout(new MigLayout());

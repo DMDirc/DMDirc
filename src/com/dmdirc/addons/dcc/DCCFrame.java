@@ -25,6 +25,8 @@ package com.dmdirc.addons.dcc;
 import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.addons.ui_swing.components.frames.InputTextFrame;
+import com.dmdirc.addons.ui_swing.components.frames.TextFrame;
 import com.dmdirc.addons.ui_swing.SwingController;
 import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.commandparser.parsers.CommandParser;
@@ -32,8 +34,6 @@ import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.addons.ui_swing.components.frames.InputTextFrame;
-import com.dmdirc.addons.ui_swing.components.frames.TextFrame;
 
 import java.awt.Container;
 

@@ -155,7 +155,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 						}
 					}
 					if (reverse && !token.isEmpty()) {
-						new DCCSendWindow(DCCPlugin.this, send, "*Receive: "+nickname, parser.getMyNickname(), nickname, null);
+						new DCCSendWindow(DCCPlugin.this, send, "*Receive: "+nickname, nickname, null);
 						send.setToken(token);
 						if (resume) {
 							if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "receive.reverse.sendtoken")) {
@@ -171,7 +171,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 							}
 						}
 					} else {
-						new DCCSendWindow(DCCPlugin.this, send, "Receive: "+nickname, parser.getMyNickname(), nickname, null);
+						new DCCSendWindow(DCCPlugin.this, send, "Receive: "+nickname, nickname, null);
 						if (resume) {
 							parser.sendCTCP(nickname, "DCC", "RESUME "+sendFilename+" "+send.getPort()+" "+jc.getSelectedFile().length());
 						} else {

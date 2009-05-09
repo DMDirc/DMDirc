@@ -24,27 +24,25 @@ package com.dmdirc.addons.dcc;
 
 import com.dmdirc.Main;
 import com.dmdirc.Server;
-import com.dmdirc.parser.irc.IRCParser;
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.addons.dcc.actions.DCCActions;
+import com.dmdirc.addons.dcc.kde.KFileChooser;
+import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.ServerCommand;
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.parser.irc.IRCParser;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.interfaces.InputWindow;
 
-import com.dmdirc.actions.ActionManager;
-import com.dmdirc.addons.dcc.kde.KFileChooser;
-import com.dmdirc.addons.dcc.actions.DCCActions;
+import java.io.File;
+import java.util.List;
 
-import com.dmdirc.commandparser.CommandArguments;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
-import java.io.File;
-
-import java.util.List;
 
 /**
  * This command allows starting dcc chats/file transfers
@@ -153,7 +151,6 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 						return;
 					}
 					final IRCParser parser = server.getParser();
-					final String myNickname = parser.getMyNickname();
 					DCCSend send = new DCCSend(IdentityManager.getGlobalConfig().getOptionInt(myPlugin.getDomain(), "send.blocksize"));
 					send.setTurbo(IdentityManager.getGlobalConfig().getOptionBool(myPlugin.getDomain(), "send.forceturbo"));
 					send.setType(DCCSend.TransferType.SEND);
@@ -166,11 +163,11 @@ public final class DCCCommand extends ServerCommand implements IntelligentComman
 					send.setFileSize(jc.getSelectedFile().length());
 					
 					if (IdentityManager.getGlobalConfig().getOptionBool(myPlugin.getDomain(), "send.reverse")) {
-						new DCCSendWindow(myPlugin, send, "Send: "+target, myNickname, target, parser);
+						new DCCSendWindow(myPlugin, send, "Send: "+target, target, parser);
 						parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(myPlugin.getListenIP(parser))+" 0 "+send.getFileSize()+" "+send.makeToken()+((send.isTurbo()) ? " T" : ""));
 					} else {
 						if (myPlugin.listen(send)) {
-							new DCCSendWindow(myPlugin, send, "*Send: "+target, myNickname, target, parser);
+							new DCCSendWindow(myPlugin, send, "*Send: "+target, target, parser);
 							parser.sendCTCP(target, "DCC", "SEND \""+jc.getSelectedFile().getName()+"\" "+DCC.ipToLong(myPlugin.getListenIP(parser))+" "+send.getPort()+" "+send.getFileSize()+((send.isTurbo()) ? " T" : ""));
 						} else {
 							sendLine(origin, isSilent, "DCCSendError", "Unable to start dcc send with "+target+" - unable to create listen socket");

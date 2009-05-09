@@ -68,7 +68,9 @@ public class DCCChat extends DCC {
 			if (handler != null) {
 				handler.socketOpened(this);
 			}
-		} catch (IOException ioe) { }
+		} catch (IOException ioe) {
+            socketClosed();
+        }
 	}
 	
 	/**
