@@ -198,7 +198,9 @@ public class WindowManager {
             }
         }
 
-        childWindows.remove(window);
+        synchronized (childWindows) {
+            childWindows.remove(window);
+        }
 
         if (rootWindows.contains(window)) {
             rootWindows.remove(window);
@@ -289,9 +291,11 @@ public class WindowManager {
      * @return The parent of the specified window, or null if not found
      */
     public static Window getParent(final Window window) {
-        for (Entry<Window, List<Window>> entry : childWindows.entrySet()) {
-            if (entry.getValue().contains(window)) {
-                return entry.getKey();
+        synchronized (childWindows) {
+            for (Entry<Window, List<Window>> entry : childWindows.entrySet()) {
+                if (entry.getValue().contains(window)) {
+                    return entry.getKey();
+                }
             }
         }
 
