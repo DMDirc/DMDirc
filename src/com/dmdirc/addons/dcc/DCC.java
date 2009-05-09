@@ -96,9 +96,8 @@ public abstract class DCC implements Runnable {
 				socket = new Socket(longToIP(address), port);
 				socketOpened();
 			}
-		} catch (UnknownHostException uhe) {
-			return;
 		} catch (IOException uhe) {
+            socketClosed();
 			return;
 		}
 
@@ -180,6 +179,7 @@ public abstract class DCC implements Runnable {
 					serverSocket.close();
 					socketOpened();
 				} catch (IOException ioe) {
+                    socketClosed();
 					break;
 				} finally {
 					serverListeningSem.acquireUninterruptibly();

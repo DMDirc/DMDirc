@@ -258,8 +258,8 @@ public class DCCSendWindow extends DCCFrame implements DCCSendInterface, ActionL
 		}
 		final double remainingSeconds = (bytesPerSecond > 0) ? (remaningBytes / bytesPerSecond) : 1;
 		
-		remaining.setText(String.format("Time Remaining: %s", duration((int)Math.floor(remainingSeconds))));
-		taken.setText(String.format("Time Taken: %s", duration(time)));
+		remaining.setText(String.format("Time Remaining: %s", duration((int) Math.floor(remainingSeconds))));
+		taken.setText(String.format("Time Taken: %s", timeStarted == 0 ? "N/A" : duration(time)));
 	}
 	
 	/**

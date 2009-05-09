@@ -39,7 +39,7 @@ import java.util.List;
  */
 public class DCCSend extends DCC {
 	/** List of active sends. */
-	private static List<DCCSend> sends = new ArrayList<DCCSend>();
+	private static final List<DCCSend> SENDS = new ArrayList<DCCSend>();
 	
 	/** File Transfer Types. */
 	public enum TransferType { SEND, RECEIVE; }
@@ -85,8 +85,8 @@ public class DCCSend extends DCC {
 	public DCCSend(final int blockSize) {
 		super();
 		this.blockSize = blockSize;
-		synchronized (sends) {
-			sends.add(this);
+		synchronized (SENDS) {
+			SENDS.add(this);
 		}
 	}
 	
@@ -105,8 +105,8 @@ public class DCCSend extends DCC {
 	 * @return A copy of the list of active sends.
 	 */
 	public static List<DCCSend> getSends() {
-		synchronized (sends) {
-			return new ArrayList<DCCSend>(sends);
+		synchronized (SENDS) {
+			return new ArrayList<DCCSend>(SENDS);
 		}
 	}
 	
@@ -114,8 +114,8 @@ public class DCCSend extends DCC {
 	 * Called to remove this object from the sends list.
 	 */
 	public void removeFromSends() {
-		synchronized (sends) {
-			sends.remove(this);
+		synchronized (SENDS) {
+			SENDS.remove(this);
 		}
 	}
 	
@@ -219,14 +219,14 @@ public class DCCSend extends DCC {
 	 * @return The Token for this send.
 	 */
 	public String makeToken() {
-		String token = "";
+		String myToken = "";
 		boolean unique = true;
 		do {
-			token = Integer.toString(Math.abs((token+filename).hashCode()));
-			unique = (findByToken(token) == null);
+			myToken = Integer.toString(Math.abs((myToken+filename).hashCode()));
+			unique = (findByToken(myToken) == null);
 		} while (!unique);
-		setToken(token);
-		return token;
+		setToken(myToken);
+		return myToken;
 	}
 	
 	/**
@@ -315,7 +315,9 @@ public class DCCSend extends DCC {
 			if (handler != null) {
 				handler.socketOpened(this);
 			}
-		} catch (IOException ioe) { }
+		} catch (IOException ioe) {
+            socketClosed();
+        }
 	}
 	
 	/**
@@ -331,8 +333,8 @@ public class DCCSend extends DCC {
 		if (handler != null) {
 			handler.socketClosed(this);
 		}
-		synchronized (sends) {
-			sends.remove(this);
+		synchronized (SENDS) {
+			SENDS.remove(this);
 		}
 	}
 	
