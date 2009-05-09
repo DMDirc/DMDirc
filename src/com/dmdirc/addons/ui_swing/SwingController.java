@@ -540,8 +540,7 @@ public final class SwingController extends Plugin implements UIController {
         });
 
         if(!mainFrameCreated.get()) {
-            Logger.appError(ErrorLevel.FATAL, "Main frame not created.", 
-                    new IllegalStateException());
+            throw new IllegalStateException("Main frame not created. Unable to continue.");
         }
 
         Main.setUI(this);
