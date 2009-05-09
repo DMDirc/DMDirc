@@ -71,6 +71,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -93,6 +94,8 @@ public final class SwingController extends Plugin implements UIController {
     private SwingStatusBar statusBar;
     /** Top level window list. */
     private final List<java.awt.Window> windows;
+    /** Waiting on mainframe creation. */
+    private AtomicBoolean mainFrameCreated = new AtomicBoolean(false);
 
     /** Instantiates a new SwingController. */
     public SwingController() {
@@ -105,7 +108,7 @@ public final class SwingController extends Plugin implements UIController {
      * @return true iif mainframe exists
      */
     protected boolean hasMainFrame() {
-        return me != null;
+        return mainFrameCreated.get();
     }
 
     /** {@inheritDoc} */
@@ -407,17 +410,13 @@ public final class SwingController extends Plugin implements UIController {
     /** {@inheritDoc} */
     @Override
     public Window getActiveWindow() {
-        if (me == null) {
-            return null;
-        }
-
         return me.getActiveFrame();
     }
 
     /** {@inheritDoc} */
     @Override
     public Server getActiveServer() {
-        if (me == null) {
+        if (!mainFrameCreated.get()) {
             return null;
         }
 
@@ -534,11 +533,16 @@ public final class SwingController extends Plugin implements UIController {
             @Override
             public void run() {
                 initUISettings();
-                // UIUtilities.initUISettings();
                 me = new MainFrame(SwingController.this);
+                mainFrameCreated.set(true);
                 statusBar = me.getStatusBar();
             }
         });
+
+        if(!mainFrameCreated.get()) {
+            Logger.appError(ErrorLevel.FATAL, "Main frame not created.", 
+                    new IllegalStateException());
+        }
 
         Main.setUI(this);
     }
