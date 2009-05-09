@@ -121,7 +121,7 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
         addOptionComboBox.addActionListener(this);
         addOptionButton.addActionListener(this);
 
-        addInputText.getActionMap().put("ctrl-enter", new AbstractAction() {
+        addInputText.getActionMap().put("enter", new AbstractAction() {
             
             private static final long serialVersionUID = 2;
 
@@ -131,7 +131,7 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
                 addOptionButton.doClick();
             }
         });
-        addInputText.getInputMap().put(KeyStroke.getKeyStroke("ctrl ENTER"), "ctrl-enter");
+        addInputText.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "enter");
     }
     
     /** Lays out the components. */

@@ -23,12 +23,14 @@
 package com.dmdirc.addons.ui_swing.components;
 
 import com.dmdirc.ui.CoreUIUtils;
+
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
@@ -202,7 +204,8 @@ public class StandardDialog extends JDialog {
         };
 
         final KeyStroke escape = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-        final KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
+        final KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,
+                InputEvent.CTRL_DOWN_MASK);
 
         final JRootPane customRootPane = new JRootPane();
 
