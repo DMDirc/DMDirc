@@ -95,7 +95,7 @@ public abstract class DCC implements Runnable {
 				socket = new Socket(longToIP(address), port);
 				socketOpened();
 			}
-		} catch (IOException uhe) {
+		} catch (IOException ioe) {
             socketClosed();
 			return;
 		}

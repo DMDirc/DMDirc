@@ -300,7 +300,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 							size = Integer.parseInt(ctcpData[++i]);
 						} catch (NumberFormatException nfe) { size = -1; }
 					} else { size = -1; }
-					final String token = (ctcpData.length-1 > i) ? ctcpData[++i] : "";
+					final String token = (ctcpData.length-1 > i && !ctcpData[i + 1].equals("T")) ? ctcpData[++i] : "";
 					
 					// Ignore incorrect ports, or non-numeric IP/Port
 					try {
