@@ -155,13 +155,19 @@ public class ActionSubstitutor {
         if (args.length > 0 && args[0] instanceof FrameContainer) {
             final Server server = ((FrameContainer) args[0]).getServer();
         
-            if (server != null && server.getState().equals(ServerState.CONNECTED)) {
-                for (ActionComponent comp : ActionManager.getCompatibleComponents(Server.class)) {
-                    final String key = "${" + comp.toString() + "}";
-                    final Object res = comp.get(((FrameContainer) args[0]).getServer());
-                
-                    if (res != null) {
-                        doReplacement(target, key, res.toString());
+            if (server != null) {
+                synchronized (server) {
+                    if (!server.getState().equals(ServerState.CONNECTED)) {
+                        return;
+                    }
+                    
+                    for (ActionComponent comp : ActionManager.getCompatibleComponents(Server.class)) {
+                        final String key = "${" + comp.toString() + "}";
+                        final Object res = comp.get(((FrameContainer) args[0]).getServer());
+
+                        if (res != null) {
+                            doReplacement(target, key, res.toString());
+                        }
                     }
                 }
             }
