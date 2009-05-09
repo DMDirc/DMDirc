@@ -195,9 +195,8 @@ public final class ErrorListDialog extends StandardDialog implements
             if (rowBeingDeleted) {
                 table.getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
                 rowBeingDeleted = false;
-            } else {
-                selectedRow = localRow;
             }
+            selectedRow = localRow;
         }
     }
 
