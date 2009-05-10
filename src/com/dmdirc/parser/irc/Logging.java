@@ -89,7 +89,7 @@ public class Logging {
 		return me;
 	}
 	
-	/** Create a new Logging */
+	/** Create a new Logging. */
 	@SuppressWarnings("unchecked")
 	private Logging() {
 		boolean classExists = false;
