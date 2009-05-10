@@ -76,7 +76,7 @@ public class Logging {
 	/** Is log4j available. */
 	private final boolean isAvailable;
 	
-	/** "Log" object if available */
+	/** "Log" object if available. */
 	private Object log = null;
 	
 	/**
