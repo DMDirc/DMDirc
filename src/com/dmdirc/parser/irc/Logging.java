@@ -80,7 +80,7 @@ public class Logging {
 	private Object log = null;
 	
 	/**
-	 * Get an instance of Logging
+	 * Get an instance of Logging.
 	 *
 	 * @return The instance of Logging
 	 */
