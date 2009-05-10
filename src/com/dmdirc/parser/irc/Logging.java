@@ -79,7 +79,11 @@ public class Logging {
 	/** "Log" object if available */
 	private Object log = null;
 	
-	/** Get an instance of Logging */
+	/**
+	 * Get an instance of Logging
+	 *
+	 * @return The instance of Logging
+	 */
 	public static Logging getLogging() {
 		if (me == null) { me = new Logging(); }
 		return me;
