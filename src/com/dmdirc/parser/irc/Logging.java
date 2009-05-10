@@ -70,7 +70,7 @@ public class Logging {
 		public String getCheckMethodName() { return checkMethodName; }
 	};
 	
-	/** Singleton Instance of Logging */
+	/** Singleton Instance of Logging. */
 	private static Logging me;
 	
 	/** Is log4j available */
