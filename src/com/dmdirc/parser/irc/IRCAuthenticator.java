@@ -69,7 +69,7 @@ public class IRCAuthenticator extends Authenticator {
 	}
 	
 	/**
-	 * Get the instance of IRCAuthenticator
+	 * Get the instance of IRCAuthenticator.
 	 *
 	 * @return The IRCAuthenticator instance.
 	 */
