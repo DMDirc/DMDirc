@@ -410,6 +410,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 		label.setText(label.getText()+"\n\nClosing this window will close all the active DCCs");
 		((TextFrame)container.getFrame()).getContentPane().add(label);
 		WindowManager.addWindow(container.getFrame());
+        container.getFrame().open();
 	}
 
 	/**
@@ -423,6 +424,7 @@ public final class DCCPlugin extends Plugin implements ActionListener {
 
 		WindowManager.addWindow(container.getFrame(), window.getFrame());
 		childFrames.add(window);
+        window.getFrame().open();
 	}
 
 	/**

@@ -28,6 +28,7 @@ import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.addons.ui_swing.components.frames.InputTextFrame;
 import com.dmdirc.addons.ui_swing.components.frames.TextFrame;
 import com.dmdirc.addons.ui_swing.SwingController;
+import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
@@ -35,6 +36,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
+import com.dmdirc.util.ReturnableThread;
 import java.awt.Container;
 
 import javax.swing.JPopupMenu;
@@ -138,9 +140,15 @@ public abstract class DCCFrame extends WritableFrameContainer {
 		this.plugin = plugin;
 
 		if (defaultWindow) {
-			myWindow = new EmptyFrame(this);
-			myWindow.setTitle(title);
-//			myWindow.setVisible(true);
+            myWindow = UIUtilities.invokeAndWait(new ReturnableThread<EmptyFrame>() {
+                /** {@inheritDoc} */
+                @Override
+                public void run() {
+                    final EmptyFrame frame = new EmptyFrame(DCCFrame.this);
+                    frame.setTitle(title);
+                    setObject(frame);
+                }
+            });
 		}
 	}
 	
