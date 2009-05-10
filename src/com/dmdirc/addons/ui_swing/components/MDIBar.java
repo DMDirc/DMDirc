@@ -23,25 +23,24 @@
 
 package com.dmdirc.addons.ui_swing.components;
 
+import com.dmdirc.addons.ui_swing.MainFrame;
+import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.addons.ui_swing.components.frames.TextFrame;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.ConfigChangeListener;
+import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
-import com.dmdirc.addons.ui_swing.MainFrame;
-import com.dmdirc.addons.ui_swing.UIUtilities;
+import com.dmdirc.ui.interfaces.FrameListener;
 
-import com.dmdirc.interfaces.SelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
@@ -50,7 +49,7 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Provides an MDI style bar for restore/minimise/close.
  */
-public class MDIBar extends JPanel implements FrameManager, SelectionListener,
+public class MDIBar extends JPanel implements FrameListener, SelectionListener,
         PropertyChangeListener, ActionListener, ConfigChangeListener {
 
     private static final long serialVersionUID = -8028057596226636245L;
@@ -88,7 +87,7 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
         add(closeButton, "w 17!, h 17!, right");
 
 
-        WindowManager.addFrameManager(this);
+        WindowManager.addFrameListener(this);
         WindowManager.addSelectionListener(this);
         closeButton.addActionListener(this);
         minimiseButton.addActionListener(this);
@@ -126,24 +125,6 @@ public class MDIBar extends JPanel implements FrameManager, SelectionListener,
                 setEnabled(mainFrame.getDesktopPane().getAllFrames().length > 0);
             }
         });
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setParent(final JComponent parent) {
-        //Ignore
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean canPositionVertically() {
-        return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean canPositionHorizontally() {
-        return true;
     }
 
     /** {@inheritDoc} */

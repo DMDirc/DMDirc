@@ -23,6 +23,7 @@ package com.dmdirc.addons.ui_swing.framemanager.buttonbar;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.FrameContainerComparator;
+import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.interfaces.IconChangeListener;
 import com.dmdirc.interfaces.NotificationListener;
@@ -30,7 +31,6 @@ import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.FramemanagerPosition;
 import com.dmdirc.ui.interfaces.Window;
-import com.dmdirc.addons.ui_swing.UIUtilities;
 import com.dmdirc.util.MapList;
 
 import java.awt.Color;
