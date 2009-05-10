@@ -73,7 +73,7 @@ public class Logging {
 	/** Singleton Instance of Logging. */
 	private static Logging me;
 	
-	/** Is log4j available */
+	/** Is log4j available. */
 	private final boolean isAvailable;
 	
 	/** "Log" object if available */
