@@ -70,6 +70,8 @@ public class IRCAuthenticator extends Authenticator {
 	
 	/**
 	 * Get the instance of IRCAuthenticator
+	 *
+	 * @return The IRCAuthenticator instance.
 	 */
 	public static synchronized IRCAuthenticator getIRCAuthenticator() {
 		if (me == null) {
