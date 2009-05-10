@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 /**
- * Handles proxy authentication for the parser
+ * Handles proxy authentication for the parser.
  * 
  * @author Shane Mc Cormack
  * @see IRCParser
