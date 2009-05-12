@@ -1872,16 +1872,17 @@ public class IRCParser implements Runnable {
 	 * @param timer The timer that called this.
 	 */
 	protected void pingTimerTask(final Timer timer) {
-        pingTimerSem.acquireUninterruptibly();
-
-		if (pingTimer == null || !pingTimer.equals(timer)) {
-            pingTimerSem.release();
-            return;
-        }
-
         if (getPingNeeded()) {
 			if (!callPingFailed()) {
-				pingTimer.cancel();
+
+                pingTimerSem.acquireUninterruptibly();
+                
+                if (pingTimer != null && pingTimer.equals(timer)) {
+                    pingTimer.cancel();
+                }
+
+                pingTimerSem.release();
+                
 				disconnect("Server not responding.");
 			}
 		} else {
@@ -1895,8 +1896,6 @@ public class IRCParser implements Runnable {
 				sendLine("PING " + lastPingValue);
 			}
 		}
-
-        pingTimerSem.release();
 	}
 
 	/**
