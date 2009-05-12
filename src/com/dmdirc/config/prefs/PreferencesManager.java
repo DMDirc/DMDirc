@@ -442,8 +442,6 @@ public class PreferencesManager {
                 "manager be positioned?", fmpositions).setRestartNeeded());
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "ui", "stylelinks", "Style links", "Style links in text areas"));
-        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "ui", "stylelinks", "Style links", "Style links in text areas"));
 
         addThemesCategory(category);
         addNicklistCategory(category);
