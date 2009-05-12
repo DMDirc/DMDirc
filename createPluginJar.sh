@@ -31,8 +31,8 @@ TMPDIR=`mktemp -d`
 cd $TMPDIR
 
 mkdir META-INF
-if [ -e ${srcdir}/src/${foldername}/plugin.config ]; then
-	cp ${srcdir}/src/${foldername}/plugin.config META-INF/
+if [ -e "${srcdir}/src/${foldername}/plugin.config" ]; then
+	cp "${srcdir}/src/${foldername}/plugin.config" META-INF/
 fi;
 
 # Do the same for plugin.config
@@ -47,9 +47,9 @@ if [ -e META-INF/plugin.config ]; then
 		mv META-INF/plugin.config.temp META-INF/plugin.config		
 	fi;
 
-	if [ -d "$srcdir/.git" ]; then
-		GIT="`which git` --git-dir $srcdir/.git";
-		REV=$($GIT describe --tags `$GIT rev-list --max-count=1 HEAD -- src/$foldername`);
+	if [ -d "${srcdir}/.git" ]; then
+		GIT=`which git`
+		REV=$(${GIT} --git-dir "${srcdir}/.git" describe --tags `${GIT} --git-dir "${srcdir}/.git" rev-list --max-count=1 HEAD -- "src/${foldername}"`);
 	else
 		cd $srcdir;
 		SVN=`which svn`	
@@ -57,28 +57,28 @@ if [ -e META-INF/plugin.config ]; then
 		SVNREV=${SVNREV##*: }
 
 		if [ -n "$SVNREV" ]; then
-	                REV=`$SVN log -r $SVNREV | grep ^Git-version: | cut -f 2 -d ' '`
+			REV=`$SVN log -r $SVNREV | grep ^Git-version: | cut -f 2 -d ' '`
 		else
 			REV=0;
 		fi;
 		cd $TMPDIR;
 	fi;
 
-        echo "" >> META-INF/plugin.config
-        echo "" >> META-INF/plugin.config
+	echo "" >> META-INF/plugin.config
+	echo "" >> META-INF/plugin.config
 	echo "version:" >> META-INF/plugin.config;
 	echo "  number=$REV" >> META-INF/plugin.config;
 fi;
 
 foo=`echo $foldername | sed -e 's/\/[^\/]*$//g'`
-mkdir -p $foo
-cd ${foo}
-ln -s ${srcdir}/build/classes/${foldername} .
-cd $TMPDIR
-mkdir -p ${srcdir}/plugins/
+mkdir -p "$foo"
+cd "${foo}"
+ln -s "${srcdir}/build/classes/${foldername}" .
+cd "$TMPDIR"
+mkdir -p "${srcdir}/plugins/"
 
-rm -Rf ${srcdir}/plugins/${2}.jar
-jar -cvf ${srcdir}/src/${foldername}/${2}.jar META-INF >/dev/null
+rm -Rf "${srcdir}/plugins/${2}.jar"
+jar -cvf "${srcdir}/src/${foldername}/${2}.jar" META-INF >/dev/null
 bit=""
 while [ 1 -eq 1 ]; do
 	bit=${bit}/*
@@ -86,18 +86,18 @@ while [ 1 -eq 1 ]; do
 	if [ ${?} -ne 0 ]; then
 		break;
 	else
-		DIR=${PWD}
-		for prepackage in `ls ${srcdir}/src/${foldername}${bit}/prePackage.sh 2>/dev/null`; do
-			cd `dirname ${prepackage}`
-			/bin/sh ${prepackage}
+		DIR="${PWD}"
+		for prepackage in `ls "${srcdir}/src/${foldername}${bit}/prePackage.sh" 2>/dev/null`; do
+			cd `dirname "${prepackage}"`
+			/bin/sh "${prepackage}"
 			cd ${DIR}
 		done;
-		jar -uvf ${srcdir}/src/${foldername}/${2}.jar `ls -1 ${foo}${bit}/*.class ${foo}${bit}/*.png ${foo}${bit}/*.exe ${foo}${bit}/*.dll 2>/dev/null` >/dev/null
+		jar -uvf "${srcdir}/src/${foldername}/${2}.jar" `ls -1 ${foo}${bit}/*.class ${foo}${bit}/*.png ${foo}${bit}/*.exe ${foo}${bit}/*.dll 2>/dev/null` >/dev/null
 	fi
 done
 
-mv ${srcdir}/src/${foldername}/${2}.jar ${srcdir}/plugins/
+mv "${srcdir}/src/${foldername}/${2}.jar" "${srcdir}/plugins/"
 
-cd ${srcdir}
+cd "${srcdir}"
 rm -Rf ${TMPDIR}
 #echo "done";
